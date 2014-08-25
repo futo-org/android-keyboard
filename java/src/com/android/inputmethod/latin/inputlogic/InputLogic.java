@@ -233,6 +233,20 @@ public final class InputLogic {
     }
 
     /**
+     * Determines whether "Touch again to save" should be shown or not.
+     * @param suggestionInfo the suggested word chosen by the user.
+     * @return {@code true} if we should show the "Touch again to save" hint.
+     */
+    private boolean shouldShowAddToDictionaryHint(final SuggestedWordInfo suggestionInfo) {
+        // We should show the "Touch again to save" hint if the user pressed the first entry
+        // AND it's in none of our current dictionaries (main, user or otherwise).
+        return (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_TYPED)
+                || suggestionInfo.isKindOf(SuggestedWordInfo.KIND_OOV_CORRECTION))
+                && !mDictionaryFacilitator.isValidWord(suggestionInfo.mWord,　true /* ignoreCase */)
+                && mDictionaryFacilitator.isUserDictionaryEnabled();
+    }
+
+    /**
      * A suggestion was picked from the suggestion strip.
      * @param settingsValues the current values of the settings.
      * @param suggestionInfo the suggestion info.
@@ -298,14 +312,7 @@ public final class InputLogic {
         mSpaceState = SpaceState.PHANTOM;
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
 
-        // We should show the "Touch again to save" hint if the user pressed the first entry
-        // AND it's in none of our current dictionaries (main, user or otherwise).
-        final boolean showingAddToDictionaryHint =
-                (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_TYPED)
-                        || suggestionInfo.isKindOf(SuggestedWordInfo.KIND_OOV_CORRECTION))
-                        && !mDictionaryFacilitator.isValidWord(suggestion, true /* ignoreCase */);
-
-        if (showingAddToDictionaryHint && mDictionaryFacilitator.isUserDictionaryEnabled()) {
+        if (shouldShowAddToDictionaryHint(suggestionInfo)) {
             mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
