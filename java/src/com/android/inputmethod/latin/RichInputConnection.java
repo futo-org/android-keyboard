@@ -16,9 +16,13 @@
 
 package com.android.inputmethod.latin;
 
+import android.graphics.Color;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -80,6 +84,18 @@ public final class RichInputConnection {
      * This contains the currently composing text, as LatinIME thinks the TextView is seeing it.
      */
     private final StringBuilder mComposingText = new StringBuilder();
+
+    /**
+     * This variable is a temporary object used in
+     * {@link #commitTextWithBackgroundColor(CharSequence, int, int)} to avoid object creation.
+     */
+    private SpannableStringBuilder mTempObjectForCommitText = new SpannableStringBuilder();
+    /**
+     * This variable is used to track whether the last committed text had the background color or
+     * not.
+     * TODO: Omit this flag if possible.
+     */
+    private boolean mLastCommittedTextHasBackgroundColor = false;
 
     private final InputMethodService mParent;
     InputConnection mIC;
@@ -219,12 +235,37 @@ public final class RichInputConnection {
         // it works, but it's wrong and should be fixed.
         mCommittedTextBeforeComposingText.append(mComposingText);
         mComposingText.setLength(0);
+        // TODO: Clear this flag in setComposingRegion() and setComposingText() as well if needed.
+        mLastCommittedTextHasBackgroundColor = false;
         if (null != mIC) {
             mIC.finishComposingText();
         }
     }
 
-    public void commitText(final CharSequence text, final int i) {
+    /**
+     * Synonym of {@code commitTextWithBackgroundColor(text, newCursorPosition, Color.TRANSPARENT}.
+     * @param text The text to commit. This may include styles.
+     * See {@link InputConnection#commitText(CharSequence, int)}.
+     * @param newCursorPosition The new cursor position around the text.
+     * See {@link InputConnection#commitText(CharSequence, int)}.
+     */
+    public void commitText(final CharSequence text, final int newCursorPosition) {
+        commitTextWithBackgroundColor(text, newCursorPosition, Color.TRANSPARENT);
+    }
+
+    /**
+     * Calls {@link InputConnection#commitText(CharSequence, int)} with the given background color.
+     * @param text The text to commit. This may include styles.
+     * See {@link InputConnection#commitText(CharSequence, int)}.
+     * @param newCursorPosition The new cursor position around the text.
+     * See {@link InputConnection#commitText(CharSequence, int)}.
+     * @param color The background color to be attached. Set {@link Color#TRANSPARENT} to disable
+     * the background color. Note that this method specifies {@link BackgroundColorSpan} with
+     * {@link Spanned#SPAN_COMPOSING} flag, meaning that the background color persists until
+     * {@link #finishComposingText()} is called.
+     */
+    public void commitTextWithBackgroundColor(final CharSequence text, final int newCursorPosition,
+            final int color) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
@@ -234,9 +275,41 @@ public final class RichInputConnection {
         mExpectedSelStart += text.length() - mComposingText.length();
         mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
+        mLastCommittedTextHasBackgroundColor = false;
         if (null != mIC) {
-            mIC.commitText(text, i);
+            if (color == Color.TRANSPARENT) {
+                mIC.commitText(text, newCursorPosition);
+            } else {
+                mTempObjectForCommitText.clear();
+                mTempObjectForCommitText.append(text);
+                final BackgroundColorSpan backgroundColorSpan = new BackgroundColorSpan(color);
+                mTempObjectForCommitText.setSpan(backgroundColorSpan, 0, text.length(),
+                        Spanned.SPAN_COMPOSING | Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                mIC.commitText(mTempObjectForCommitText, newCursorPosition);
+                mLastCommittedTextHasBackgroundColor = true;
+            }
         }
+    }
+
+    /**
+     * Removes the background color from the highlighted text if necessary. Should be called while
+     * there is no on-going composing text.
+     *
+     * <p>CAVEAT: This method internally calls {@link InputConnection#finishComposingText()}.
+     * Be careful of any unexpected side effects.</p>
+     */
+    public void removeBackgroundColorFromHighlightedTextIfNecessary() {
+        // TODO: We haven't yet full tested if we really need to check this flag or not. Omit this
+        // flag if everything works fine without this condition.
+        if (!mLastCommittedTextHasBackgroundColor) {
+            return;
+        }
+        if (mComposingText.length() > 0) {
+            Log.e(TAG, "clearSpansWithComposingFlags should be called when composing text is " +
+                    "empty. mComposingText=" + mComposingText);
+            return;
+        }
+        finishComposingText();
     }
 
     public CharSequence getSelectedText(final int flags) {
