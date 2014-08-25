@@ -91,6 +91,21 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         AKLOGE("Failed to update probabilities in language model dict content.");
         return false;
     }
+    if (headerPolicy->isDecayingDict()) {
+        int maxEntryCountTable[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
+        maxEntryCountTable[0] = headerPolicy->getMaxUnigramCount();
+        maxEntryCountTable[1] = headerPolicy->getMaxBigramCount();
+        for (size_t i = 2; i < NELEMS(maxEntryCountTable); ++i) {
+            // TODO: Have max n-gram count.
+            maxEntryCountTable[i] = headerPolicy->getMaxBigramCount();
+        }
+        if (!mBuffers->getMutableLanguageModelDictContent()->truncateEntries(entryCountTable,
+                maxEntryCountTable,  headerPolicy)) {
+            AKLOGE("Failed to truncate entries in language model dict content.");
+            return false;
+        }
+    }
+
     DynamicPtReadingHelper readingHelper(&ptNodeReader, &ptNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPtGcEventListeners
@@ -193,6 +208,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     return true;
 }
 
+// TODO: Remove.
 bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
         const Ver4PatriciaTrieNodeReader *const ptNodeReader,
         Ver4PatriciaTrieNodeWriter *const ptNodeWriter, const int maxUnigramCount) {
@@ -233,6 +249,7 @@ bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
     return true;
 }
 
+// TODO: Remove.
 bool Ver4PatriciaTrieWritingHelper::truncateBigrams(const int maxBigramCount) {
     const TerminalPositionLookupTable *const terminalPosLookupTable =
             mBuffers->getTerminalPositionLookupTable();

@@ -18,6 +18,7 @@
 #define LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H
 
 #include <cstdio>
+#include <vector>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
@@ -77,12 +78,42 @@ class LanguageModelDictContent {
 
     bool updateAllProbabilityEntries(const HeaderPolicy *const headerPolicy,
             int *const outEntryCounts) {
+        for (int i = 0; i <= MAX_PREV_WORD_COUNT_FOR_N_GRAM; ++i) {
+            outEntryCounts[i] = 0;
+        }
         return updateAllProbabilityEntriesInner(mTrieMap.getRootBitmapEntryIndex(), 0 /* level */,
                 headerPolicy, outEntryCounts);
     }
 
+    // entryCounts should be created by updateAllProbabilityEntries.
+    bool truncateEntries(const int *const entryCounts, const int *const maxEntryCounts,
+            const HeaderPolicy *const headerPolicy);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(LanguageModelDictContent);
+
+    class EntryInfoToTurncate {
+     public:
+        class Comparator {
+         public:
+            bool operator()(const EntryInfoToTurncate &left,
+                    const EntryInfoToTurncate &right) const;
+         private:
+            DISALLOW_ASSIGNMENT_OPERATOR(Comparator);
+        };
+
+        EntryInfoToTurncate(const int probability, const int timestamp, const int key,
+                const int entryLevel, const int *const prevWordIds);
+
+        int mProbability;
+        int mTimestamp;
+        int mKey;
+        int mEntryLevel;
+        int mPrevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
+
+     private:
+        DISALLOW_DEFAULT_CONSTRUCTOR(EntryInfoToTurncate);
+    };
 
     TrieMap mTrieMap;
     const bool mHasHistoricalInfo;
@@ -94,6 +125,11 @@ class LanguageModelDictContent {
     int getBitmapEntryIndex(const WordIdArrayView prevWordIds) const;
     bool updateAllProbabilityEntriesInner(const int bitmapEntryIndex, const int level,
             const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
+    bool turncateEntriesInSpecifiedLevel(const HeaderPolicy *const headerPolicy,
+            const int maxEntryCount, const int targetLevel);
+    bool getEntryInfo(const HeaderPolicy *const headerPolicy, const int targetLevel,
+            const int bitmapEntryIndex, std::vector<int> *const prevWordIds,
+            std::vector<EntryInfoToTurncate> *const outEntryInfo) const;
 };
 } // namespace latinime
 #endif /* LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H */
