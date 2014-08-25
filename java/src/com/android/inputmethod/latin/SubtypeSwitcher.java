@@ -315,9 +315,12 @@ public final class SubtypeSwitcher {
 
     public RichInputMethodSubtype getEmojiSubtype() {
         if (mEmojiSubtype == null) {
-            mEmojiSubtype = new RichInputMethodSubtype(
+            final InputMethodSubtype rawEmojiSubtype =
                     mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                            SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.EMOJI));
+                        SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.EMOJI);
+            if (null != rawEmojiSubtype) {
+                mEmojiSubtype = new RichInputMethodSubtype(rawEmojiSubtype);
+            }
         }
         if (mEmojiSubtype != null) {
             return mEmojiSubtype;

@@ -151,25 +151,25 @@ public class AdditionalSubtypeUtilsTests extends AndroidTestCase {
     }
 
     public void testRestorable() {
-        final InputMethodSubtype EN_UK_DVORAK =
+        final InputMethodSubtype EN_US_DVORAK =
                 AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
                         Locale.US.toString(), "dvorak");
         final InputMethodSubtype ZZ_AZERTY =
                 AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
                         SubtypeLocaleUtils.NO_LANGUAGE, "azerty");
-        assertEnUsDvorak(EN_UK_DVORAK);
+        assertEnUsDvorak(EN_US_DVORAK);
         assertAzerty(ZZ_AZERTY);
 
         // Make sure the subtype can be stored and restored in a deterministic manner.
-        final InputMethodSubtype[] subtypes = { EN_UK_DVORAK, ZZ_AZERTY };
+        final InputMethodSubtype[] subtypes = { EN_US_DVORAK, ZZ_AZERTY };
         final String prefSubtype = AdditionalSubtypeUtils.createPrefSubtypes(subtypes);
         final InputMethodSubtype[] restoredSubtypes =
                 AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefSubtype);
         assertEquals(2, restoredSubtypes.length);
-        final InputMethodSubtype restored_EN_UK_DVORAK = restoredSubtypes[0];
+        final InputMethodSubtype restored_EN_US_DVORAK = restoredSubtypes[0];
         final InputMethodSubtype restored_ZZ_AZERTY = restoredSubtypes[1];
 
-        assertEnUsDvorak(restored_EN_UK_DVORAK);
+        assertEnUsDvorak(restored_EN_US_DVORAK);
         assertAzerty(restored_ZZ_AZERTY);
     }
 }
