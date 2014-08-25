@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -655,5 +656,16 @@ public class DictionaryFacilitator {
             return;
         }
         dictToDump.dumpAllWordsForDebug();
+    }
+
+    public ArrayList<Pair<String, DictionaryStats>> getStatsOfEnabledSubDicts() {
+        final ArrayList<Pair<String, DictionaryStats>> statsOfEnabledSubDicts = new ArrayList<>();
+        final Dictionaries dictionaries = mDictionaries;
+        for (final String dictType : SUB_DICT_TYPES) {
+            final ExpandableBinaryDictionary dictionary = dictionaries.getSubDict(dictType);
+            if (dictionary == null) continue;
+            statsOfEnabledSubDicts.add(new Pair<>(dictType, dictionary.getDictionaryStats()));
+        }
+        return statsOfEnabledSubDicts;
     }
 }
