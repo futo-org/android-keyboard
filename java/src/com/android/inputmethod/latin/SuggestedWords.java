@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -419,5 +420,19 @@ public class SuggestedWords {
         return new SuggestedWords(newSuggestions, null /* rawSuggestions */, mTypedWordValid,
                 mWillAutoCorrect, mIsObsoleteSuggestions, mIsPrediction,
                 INPUT_STYLE_TAIL_BATCH);
+    }
+
+    /**
+     * @return the {@link SuggestedWordInfo} which corresponds to the word that is originally
+     * typed by the user. Otherwise returns {@code null}. Note that gesture input is not
+     * considered to be a typed word.
+     */
+    @UsedForTesting
+    public SuggestedWordInfo getTypedWordInfoOrNull() {
+        if (this == EMPTY) {
+            return null;
+        }
+        final SuggestedWordInfo info = getInfo(SuggestedWords.INDEX_OF_TYPED_WORD);
+        return (info.getKind() == SuggestedWordInfo.KIND_TYPED) ? info : null;
     }
 }
