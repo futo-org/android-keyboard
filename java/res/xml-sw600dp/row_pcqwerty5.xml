@@ -50,6 +50,6 @@
             latin:keyXPos="-9.0%p"
             latin:keyWidth="9.0%p"
             latin:backgroundType="functional"
-            latin:keyboardLayout="@xml/key_f2" />
+            latin:keyboardLayout="@xml/key_emoji" />
     </Row>
 </merge>

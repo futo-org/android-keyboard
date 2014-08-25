@@ -77,8 +77,7 @@ public final class Farsi extends LayoutBase {
             // U+061B: "؛" ARABIC SEMICOLON
             return joinKeys(key("\u060C", joinMoreKeys(
                     ":", "!", "\u061F", "\u061B", "-", RtlSymbols.DOUBLE_ANGLE_QUOTES_LR_RTL,
-                    SETTINGS_KEY)),
-                    "_");
+                    SETTINGS_KEY)));
         }
 
         @Override
@@ -86,7 +85,7 @@ public final class Farsi extends LayoutBase {
             if (isPhone) {
                 return super.getKeysRightToSpacebar(isPhone);
             }
-            return joinKeys("/", key(".", getPunctuationMoreKeys(isPhone)));
+            return joinKeys(key(".", getPunctuationMoreKeys(isPhone)));
         }
 
         @Override

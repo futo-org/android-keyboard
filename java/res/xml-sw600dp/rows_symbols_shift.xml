@@ -72,6 +72,6 @@
         <include
             latin:keyboardLayout="@xml/row_symbols_shift4" />
         <include
-            latin:keyboardLayout="@xml/key_f2" />
+            latin:keyboardLayout="@xml/key_emoji" />
     </Row>
 </merge>

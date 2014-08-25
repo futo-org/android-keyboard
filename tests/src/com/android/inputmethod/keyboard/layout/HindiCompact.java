@@ -50,7 +50,7 @@ public final class HindiCompact extends LayoutBase {
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             // U+0964: "।" DEVANAGARI DANDA
             final ExpectedKey periodKey = key("\u0964", getPunctuationMoreKeys(isPhone));
-            return isPhone ? joinKeys(periodKey) : joinKeys("/", periodKey);
+            return joinKeys(periodKey);
         }
 
         @Override
