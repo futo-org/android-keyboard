@@ -24,7 +24,7 @@
          at input history to suggest a hopefully helpful suggestions for the next word? -->
     <bool name="config_default_next_word_prediction">true</bool>
 
-    <integer name="config_delay_update_shift_state">100</integer>
+    <integer name="config_delay_in_milliseconds_to_update_shift_state">100</integer>
     <integer name="config_double_space_period_timeout">1100</integer>
 
     <integer name="config_key_repeat_start_timeout">400</integer>
@@ -107,8 +107,8 @@
     <!-- Common suggestion strip configuration. -->
     <integer name="config_suggestions_count_in_strip">3</integer>
     <fraction name="config_center_suggestion_percentile">36%</fraction>
-    <integer name="config_delay_update_suggestions">100</integer>
-    <integer name="config_delay_update_old_suggestions">300</integer>
+    <integer name="config_delay_in_milliseconds_to_update_suggestions">100</integer>
+    <integer name="config_delay_in_milliseconds_to_update_old_suggestions">300</integer>
 
     <!-- Common more suggestions configuraion. -->
     <dimen name="config_more_suggestions_key_horizontal_padding">12dp</dimen>
