@@ -35,6 +35,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
@@ -131,7 +132,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
-        builder.setSubtype(subtype);
+        builder.setSubtype(new RichInputMethodSubtype(subtype));
         builder.setIsSpellChecker(false /* isSpellChecker */);
         final KeyboardLayoutSet layoutSet = builder.build();
         mKeyboard = layoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
