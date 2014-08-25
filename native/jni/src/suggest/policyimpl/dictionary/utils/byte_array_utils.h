@@ -114,7 +114,7 @@ class ByteArrayUtils {
         return buffer[(*pos)++];
     }
 
-    static AK_FORCE_INLINE int readUint(const uint8_t *const buffer,
+    static AK_FORCE_INLINE uint32_t readUint(const uint8_t *const buffer,
             const int size, const int pos) {
         // size must be in 1 to 4.
         ASSERT(size >= 1 && size <= 4);

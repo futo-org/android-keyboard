@@ -31,7 +31,7 @@ uint32_t BufferWithExtendableBuffer::readUint(const int size, const int pos) con
 
 uint32_t BufferWithExtendableBuffer::readUintAndAdvancePosition(const int size,
         int *const pos) const {
-    const int value = readUint(size, *pos);
+    const uint32_t value = readUint(size, *pos);
     *pos += size;
     return value;
 }
