@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.inputlogic;
 
+import android.graphics.Color;
 import android.os.SystemClock;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -1994,7 +1995,9 @@ public final class InputLogic {
     }
 
     /**
-     * Commits the chosen word to the text field and saves it for later retrieval.
+     * Commits the chosen word to the text field and saves it for later retrieval. This is a
+     * synonym of {@code commitChosenWordWithBackgroundColor(settingsValues, chosenWord,
+     * commitType, separatorString, Color.TRANSPARENT}.
      *
      * @param settingsValues the current values of the settings.
      * @param chosenWord the word we want to commit.
@@ -2003,6 +2006,23 @@ public final class InputLogic {
      */
     private void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
             final int commitType, final String separatorString) {
+        commitChosenWordWithBackgroundColor(settingsValues, chosenWord, commitType, separatorString,
+                Color.TRANSPARENT);
+    }
+
+    /**
+     * Commits the chosen word to the text field and saves it for later retrieval.
+     *
+     * @param settingsValues the current values of the settings.
+     * @param chosenWord the word we want to commit.
+     * @param commitType the type of the commit, as one of LastComposedWord.COMMIT_TYPE_*
+     * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
+     * @param backgroundColor the background color to be specified with the committed text. Pass
+     * {@link Color#TRANSPARENT} to not specify the background color.
+     */
+    private void commitChosenWordWithBackgroundColor(final SettingsValues settingsValues,
+            final String chosenWord, final int commitType, final String separatorString,
+            final int backgroundColor) {
         final SuggestedWords suggestedWords = mSuggestedWords;
         final CharSequence chosenWordWithSuggestions =
                 SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
@@ -2012,7 +2032,7 @@ public final class InputLogic {
         // information from the 1st previous word.
         final PrevWordsInfo prevWordsInfo = mConnection.getPrevWordsInfoFromNthPreviousWord(
                 settingsValues.mSpacingAndPunctuations, mWordComposer.isComposingWord() ? 2 : 1);
-        mConnection.commitText(chosenWordWithSuggestions, 1);
+        mConnection.commitTextWithBackgroundColor(chosenWordWithSuggestions, 1, backgroundColor);
         // Add the word to the user history dictionary
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWordsInfo);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
