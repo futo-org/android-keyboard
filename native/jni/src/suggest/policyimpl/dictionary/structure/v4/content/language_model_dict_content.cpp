@@ -16,6 +16,8 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content.h"
 
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
+
 namespace latinime {
 
 bool LanguageModelDictContent::save(FILE *const file) const {
@@ -116,6 +118,48 @@ int LanguageModelDictContent::getBitmapEntryIndex(const WordIdArrayView prevWord
         bitmapEntryIndex = result.mNextLevelBitmapEntryIndex;
     }
     return bitmapEntryIndex;
+}
+
+bool LanguageModelDictContent::updateAllProbabilityEntriesInner(const int bitmapEntryIndex,
+        const int level, const HeaderPolicy *const headerPolicy, int *const outEntryCounts) {
+    for (const auto &entry : mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex)) {
+        if (level > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
+            AKLOGE("Invalid level. level: %d, MAX_PREV_WORD_COUNT_FOR_N_GRAM: %d.",
+                    level, MAX_PREV_WORD_COUNT_FOR_N_GRAM);
+            return false;
+        }
+        const ProbabilityEntry probabilityEntry =
+                ProbabilityEntry::decode(entry.value(), mHasHistoricalInfo);
+        if (mHasHistoricalInfo && !probabilityEntry.representsBeginningOfSentence()) {
+            const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
+                    probabilityEntry.getHistoricalInfo(), headerPolicy);
+            if (ForgettingCurveUtils::needsToKeep(&historicalInfo, headerPolicy)) {
+                // Update the entry.
+                const ProbabilityEntry updatedEntry(probabilityEntry.getFlags(), &historicalInfo);
+                if (!mTrieMap.put(entry.key(), updatedEntry.encode(mHasHistoricalInfo),
+                        bitmapEntryIndex)) {
+                    return false;
+                }
+            } else {
+                // Remove the entry.
+                if (!mTrieMap.remove(entry.key(), bitmapEntryIndex)) {
+                    return false;
+                }
+                continue;
+            }
+        }
+        if (!probabilityEntry.representsBeginningOfSentence()) {
+            outEntryCounts[level] += 1;
+        }
+        if (!entry.hasNextLevelMap()) {
+            continue;
+        }
+        if (!updateAllProbabilityEntriesInner(entry.getNextLevelBitmapEntryIndex(), level + 1,
+                headerPolicy, outEntryCounts)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 } // namespace latinime
