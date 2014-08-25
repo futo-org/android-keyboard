@@ -261,6 +261,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onToggleEmojiKeyboard() {
+        if (mKeyboardLayoutSet == null) {
+            return;
+        }
         if (isShowingEmojiPalettes()) {
             setAlphabetKeyboard();
         } else {
