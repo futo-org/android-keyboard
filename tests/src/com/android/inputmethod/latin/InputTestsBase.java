@@ -36,6 +36,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
+import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -263,14 +264,16 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         // but keep them in mind if something breaks. Commenting them out as is should work.
         //mLatinIME.onPressKey(codePoint, 0 /* repeatCount */, true /* isSinglePointer */);
         final Key key = mKeyboard.getKey(codePoint);
+        final Event event;
         if (key == null) {
-            mLatinIME.onCodeInput(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
-                    isKeyRepeat);
+            event = Event.createSoftwareKeypressEvent(codePoint, Event.NOT_A_KEY_CODE,
+                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, isKeyRepeat);
         } else {
             final int x = key.getX() + key.getWidth() / 2;
             final int y = key.getY() + key.getHeight() / 2;
-            mLatinIME.onCodeInput(codePoint, x, y, isKeyRepeat);
+            event = mLatinIME.createSoftwareKeypressEvent(codePoint, x, y, isKeyRepeat);
         }
+        mLatinIME.onEvent(event);
         // Also see the comment at the top of this function about onReleaseKey
         //mLatinIME.onReleaseKey(codePoint, false /* withSliding */);
     }
