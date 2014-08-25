@@ -37,6 +37,7 @@ abstract class ExpectedKeyVisual {
     }
 
     abstract ExpectedKeyVisual toUpperCase(final Locale locale);
+    abstract ExpectedKeyVisual preserveCase();
     abstract boolean equalsTo(final String text);
     abstract boolean equalsTo(final Key key);
     abstract boolean equalsTo(final MoreKeySpec moreKeySpec);
@@ -55,6 +56,11 @@ abstract class ExpectedKeyVisual {
 
         @Override
         ExpectedKeyVisual toUpperCase(final Locale locale) {
+            return this;
+        }
+
+        @Override
+        ExpectedKeyVisual preserveCase() {
             return this;
         }
 
@@ -103,6 +109,11 @@ abstract class ExpectedKeyVisual {
         }
 
         @Override
+        ExpectedKeyVisual preserveCase() {
+            return new CasePreservedLabel(mLabel);
+        }
+
+        @Override
         boolean equalsTo(final String text) {
             return mLabel.equals(text);
         }
@@ -130,6 +141,16 @@ abstract class ExpectedKeyVisual {
         @Override
         public String toString() {
             return mLabel;
+        }
+
+        private static class CasePreservedLabel extends Label {
+            CasePreservedLabel(final String label) { super(label); }
+
+            @Override
+            ExpectedKeyVisual toUpperCase(final Locale locale) { return this; }
+
+            @Override
+            ExpectedKeyVisual preserveCase() { return this; }
         }
     }
 }

@@ -30,18 +30,14 @@
             latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/key_comma" />
-        <Key
-            latin:keySpec="_" />
         <!-- Space key. -->
         <include
-            latin:keyXPos="28.0%p"
-            latin:keyboardLayout="@xml/key_space_5kw"
+            latin:keyXPos="19.0%p"
+            latin:keyboardLayout="@xml/key_space_7kw"
             latin:backgroundType="normal" />
-        <include
-            latin:keyboardLayout="@xml/key_f1" />
         <include
             latin:keyboardLayout="@xml/key_period" />
         <include
-            latin:keyboardLayout="@xml/key_f2" />
+            latin:keyboardLayout="@xml/key_emoji" />
     </Row>
 </merge>

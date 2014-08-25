@@ -148,6 +148,18 @@ public class ExpectedKey {
         return newInstance(mVisual.toUpperCase(locale), mOutput.toUpperCase(locale));
     }
 
+    public ExpectedKey preserveCase() {
+        final ExpectedKey[] moreKeys = getMoreKeys();
+        final ExpectedKey[] casePreservedMoreKeys = new ExpectedKey[moreKeys.length];
+        for (int index = 0; index < moreKeys.length; index++) {
+            final ExpectedKey moreKey = moreKeys[index];
+            casePreservedMoreKeys[index] = newInstance(
+                    moreKey.getVisual().preserveCase(), moreKey.getOutput().preserveCase());
+        }
+        return newInstance(
+                getVisual().preserveCase(), getOutput().preserveCase(), casePreservedMoreKeys);
+    }
+
     public boolean equalsTo(final Key key) {
         // This key has no "more keys".
         return mVisual.equalsTo(key) && mOutput.equalsTo(key) && key.getMoreKeys() == null;

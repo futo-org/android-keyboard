@@ -36,7 +36,7 @@ public class TestsEnglishDvorak extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class EnglishDvorakCustomizer extends DvorakCustomizer {
+    public static class EnglishDvorakCustomizer extends DvorakCustomizer {
         private final EnglishCustomizer mEnglishCustomizer;
 
         EnglishDvorakCustomizer(final Locale locale) {
