@@ -638,7 +638,7 @@ public final class InputLogic {
             case Constants.CODE_SHIFT:
                 performRecapitalization(inputTransaction.mSettingsValues);
                 inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
-                if (mSuggestedWords.mIsPrediction) {
+                if (mSuggestedWords.isPrediction()) {
                     inputTransaction.setRequiresUpdateSuggestions();
                 }
                 break;
@@ -1466,11 +1466,10 @@ public final class InputLogic {
                                     && !shouldIncludeResumedWordInSuggestions) {
                                 // We were able to compute new suggestions for this word.
                                 // Remove the typed word, since we don't want to display it in this
-                                // case. The #getSuggestedWordsExcludingTypedWord() method sets
-                                // willAutoCorrect to false.
+                                // case. The #getSuggestedWordsExcludingTypedWordForRecorrection()
+                                // method sets willAutoCorrect to false.
                                 suggestedWords = suggestedWordsIncludingTypedWord
-                                        .getSuggestedWordsExcludingTypedWord(SuggestedWords
-                                                .INPUT_STYLE_RECORRECTION);
+                                        .getSuggestedWordsExcludingTypedWordForRecorrection();
                             } else {
                                 // No saved suggestions, and we were unable to compute any good one
                                 // either. Rather than displaying an empty suggestion strip, we'll
@@ -1487,11 +1486,9 @@ public final class InputLogic {
             // color of the word in the suggestion strip changes according to this parameter,
             // and false gives the correct color.
             final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
-                    null /* rawSuggestions */, typedWord,
-                    false /* typedWordValid */, false /* willAutoCorrect */,
-                    false /* isObsoleteSuggestions */, false /* isPrediction */,
-                    SuggestedWords.INPUT_STYLE_RECORRECTION,
-                    SuggestedWords.NOT_A_SEQUENCE_NUMBER);
+                    null /* rawSuggestions */, typedWord, false /* typedWordValid */,
+                    false /* willAutoCorrect */, false /* isObsoleteSuggestions */,
+                    SuggestedWords.INPUT_STYLE_RECORRECTION, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
             mIsAutoCorrectionIndicatorOn = false;
             mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
         }
@@ -1787,8 +1784,7 @@ public final class InputLogic {
                 SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
         return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
                 false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
-                true /* isObsoleteSuggestions */, false /* isPrediction */,
-                oldSuggestedWords.mInputStyle);
+                true /* isObsoleteSuggestions */, oldSuggestedWords.mInputStyle);
     }
 
     /**
