@@ -36,6 +36,7 @@ class UnigramProperty;
  * This class abstracts the structure of dictionaries.
  * Implement this policy to support additional dictionaries.
  */
+// TODO: Use word id instead of terminal PtNode position.
 class DictionaryStructureWithBufferPolicy {
  public:
     typedef std::unique_ptr<DictionaryStructureWithBufferPolicy> StructurePolicyPtr;
