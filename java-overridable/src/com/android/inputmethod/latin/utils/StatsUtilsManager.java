@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
+
 package com.android.inputmethod.latin.utils;
 
-import com.android.inputmethod.latin.RichInputMethodManager;
+import android.content.Context;
+
 import com.android.inputmethod.latin.settings.SettingsValues;
 
-public final class StatsUtils {
+public class StatsUtilsManager {
 
-    public static void onCreate(final SettingsValues settingsValues,
-            RichInputMethodManager richImm) {
+    private static final StatsUtilsManager sInstance = new StatsUtilsManager();
+
+    /**
+     * @return the singleton instance of {@link StatsUtilsManager}.
+     */
+    public static StatsUtilsManager getInstance() {
+        return sInstance;
+    }
+
+    public void onCreate(final Context context) {
+    }
+
+    public void onLoadSettings(final SettingsValues settingsValues) {
+    }
+
+    public void onDestroy() {
     }
 }
