@@ -24,7 +24,6 @@
 
 namespace latinime {
 
-// Note that there is a corresponding implementation in SparseTable.java.
 // TODO: Support multiple content buffers.
 class SparseTable {
  public:
