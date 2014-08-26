@@ -93,13 +93,13 @@ public class Key implements Comparable<Key> {
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private final int mIconId;
 
-    /** Width of the key, not including the gap */
+    /** Width of the key, excluding the gap */
     private final int mWidth;
-    /** Height of the key, not including the gap */
+    /** Height of the key, excluding the gap */
     private final int mHeight;
-    /** X coordinate of the key in the keyboard layout */
+    /** X coordinate of the top-left corner of the key in the keyboard layout, excluding the gap. */
     private final int mX;
-    /** Y coordinate of the key in the keyboard layout */
+    /** Y coordinate of the top-left corner of the key in the keyboard layout, excluding the gap. */
     private final int mY;
     /** Hit bounding box of the key */
     private final Rect mHitBox = new Rect();
@@ -736,18 +736,34 @@ public class Key implements Comparable<Key> {
         return iconSet.getIconDrawable(getIconId());
     }
 
+    /**
+     * Gets the width of the key in pixels, excluding the gap.
+     * @return The width of the key in pixels, excluding the gap.
+     */
     public int getWidth() {
         return mWidth;
     }
 
+    /**
+     * Gets the height of the key in pixels, excluding the gap.
+     * @return The height of the key in pixels, excluding the gap.
+     */
     public int getHeight() {
         return mHeight;
     }
 
+    /**
+     * Gets the x-coordinate of the top-left corner of the key in pixels, excluding the gap.
+     * @return The x-coordinate of the top-left corner of the key in pixels, excluding the gap.
+     */
     public int getX() {
         return mX;
     }
 
+    /**
+     * Gets the y-coordinate of the top-left corner of the key in pixels, excluding the gap.
+     * @return The y-coordinate of the top-left corner of the key in pixels, excluding the gap.
+     */
     public int getY() {
         return mY;
     }
