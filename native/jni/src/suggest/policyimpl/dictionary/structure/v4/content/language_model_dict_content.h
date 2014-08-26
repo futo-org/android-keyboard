@@ -39,6 +39,75 @@ class HeaderPolicy;
  */
 class LanguageModelDictContent {
  public:
+    // Pair of word id and probability entry used for iteration.
+    class WordIdAndProbabilityEntry {
+     public:
+        WordIdAndProbabilityEntry(const int wordId, const ProbabilityEntry &probabilityEntry)
+                : mWordId(wordId), mProbabilityEntry(probabilityEntry) {}
+
+        int getWordId() const { return mWordId; }
+        const ProbabilityEntry getProbabilityEntry() const { return mProbabilityEntry; }
+
+     private:
+        DISALLOW_DEFAULT_CONSTRUCTOR(WordIdAndProbabilityEntry);
+        DISALLOW_ASSIGNMENT_OPERATOR(WordIdAndProbabilityEntry);
+
+        const int mWordId;
+        const ProbabilityEntry mProbabilityEntry;
+    };
+
+    // Iterator.
+    class EntryIterator {
+     public:
+        EntryIterator(const TrieMap::TrieMapIterator &trieMapIterator,
+                const bool hasHistoricalInfo)
+                : mTrieMapIterator(trieMapIterator), mHasHistoricalInfo(hasHistoricalInfo) {}
+
+        const WordIdAndProbabilityEntry operator*() const {
+            const TrieMap::TrieMapIterator::IterationResult &result = *mTrieMapIterator;
+            return WordIdAndProbabilityEntry(
+                    result.key(), ProbabilityEntry::decode(result.value(), mHasHistoricalInfo));
+        }
+
+        bool operator!=(const EntryIterator &other) const {
+            return mTrieMapIterator != other.mTrieMapIterator;
+        }
+
+        const EntryIterator &operator++() {
+            ++mTrieMapIterator;
+            return *this;
+        }
+
+     private:
+        DISALLOW_DEFAULT_CONSTRUCTOR(EntryIterator);
+        DISALLOW_ASSIGNMENT_OPERATOR(EntryIterator);
+
+        TrieMap::TrieMapIterator mTrieMapIterator;
+        const bool mHasHistoricalInfo;
+    };
+
+    // Class represents range to use range base for loops.
+    class EntryRange {
+     public:
+        EntryRange(const TrieMap::TrieMapRange trieMapRange, const bool hasHistoricalInfo)
+                : mTrieMapRange(trieMapRange), mHasHistoricalInfo(hasHistoricalInfo) {}
+
+        EntryIterator begin() const {
+            return EntryIterator(mTrieMapRange.begin(), mHasHistoricalInfo);
+        }
+
+        EntryIterator end() const {
+            return EntryIterator(mTrieMapRange.end(), mHasHistoricalInfo);
+        }
+
+     private:
+        DISALLOW_DEFAULT_CONSTRUCTOR(EntryRange);
+        DISALLOW_ASSIGNMENT_OPERATOR(EntryRange);
+
+        const TrieMap::TrieMapRange mTrieMapRange;
+        const bool mHasHistoricalInfo;
+    };
+
     LanguageModelDictContent(const ReadWriteByteArrayView trieMapBuffer,
             const bool hasHistoricalInfo)
             : mTrieMap(trieMapBuffer), mHasHistoricalInfo(hasHistoricalInfo) {}
@@ -75,6 +144,8 @@ class LanguageModelDictContent {
             const ProbabilityEntry *const probabilityEntry);
 
     bool removeNgramProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId);
+
+    EntryRange getProbabilityEntries(const WordIdArrayView prevWordIds) const;
 
     bool updateAllProbabilityEntries(const HeaderPolicy *const headerPolicy,
             int *const outEntryCounts) {

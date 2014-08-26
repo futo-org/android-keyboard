@@ -71,6 +71,12 @@ bool LanguageModelDictContent::removeNgramProbabilityEntry(const WordIdArrayView
     return mTrieMap.remove(wordId, bitmapEntryIndex);
 }
 
+LanguageModelDictContent::EntryRange LanguageModelDictContent::getProbabilityEntries(
+        const WordIdArrayView prevWordIds) const {
+    const int bitmapEntryIndex = getBitmapEntryIndex(prevWordIds);
+    return EntryRange(mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex), mHasHistoricalInfo);
+}
+
 bool LanguageModelDictContent::truncateEntries(const int *const entryCounts,
         const int *const maxEntryCounts, const HeaderPolicy *const headerPolicy) {
     for (int i = 0; i <= MAX_PREV_WORD_COUNT_FOR_N_GRAM; ++i) {

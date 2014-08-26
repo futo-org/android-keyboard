@@ -98,7 +98,7 @@ class TrieMap {
         TrieMapIterator(const TrieMap *const trieMap, const int bitmapEntryIndex)
                 : mTrieMap(trieMap), mStateStack(), mBaseBitmapEntryIndex(bitmapEntryIndex),
                   mKey(0), mValue(0), mIsValid(false), mNextLevelBitmapEntryIndex(INVALID_INDEX) {
-            if (!trieMap) {
+            if (!trieMap || mBaseBitmapEntryIndex == INVALID_INDEX) {
                 return;
             }
             const Entry bitmapEntry = mTrieMap->readEntry(mBaseBitmapEntryIndex);
