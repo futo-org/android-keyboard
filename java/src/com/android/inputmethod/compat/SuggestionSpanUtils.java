@@ -68,7 +68,7 @@ public final class SuggestionSpanUtils {
     public static CharSequence getTextWithSuggestionSpan(final Context context,
             final String pickedWord, final SuggestedWords suggestedWords) {
         if (TextUtils.isEmpty(pickedWord) || suggestedWords.isEmpty()
-                || suggestedWords.mIsPrediction || suggestedWords.isPunctuationSuggestions()) {
+                || suggestedWords.isPrediction() || suggestedWords.isPunctuationSuggestions()) {
             return pickedWord;
         }
 

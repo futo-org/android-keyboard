@@ -62,6 +62,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
     public void testGetSuggestedWordsExcludingTypedWord() {
         final String TYPED_WORD = "typed";
         final int NUMBER_OF_ADDED_SUGGESTIONS = 5;
+        final int KIND_OF_SECOND_CORRECTION = SuggestedWordInfo.KIND_CORRECTION;
         final ArrayList<SuggestedWordInfo> list = new ArrayList<>();
         list.add(createTypedWordInfo(TYPED_WORD));
         for (int i = 0; i < NUMBER_OF_ADDED_SUGGESTIONS; ++i) {
@@ -73,21 +74,23 @@ public class SuggestedWordsTests extends AndroidTestCase {
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction*/,
                 SuggestedWords.INPUT_STYLE_NONE);
         assertEquals(NUMBER_OF_ADDED_SUGGESTIONS + 1, words.size());
         assertEquals("typed", words.getWord(0));
         assertTrue(words.getInfo(0).isKindOf(SuggestedWordInfo.KIND_TYPED));
         assertEquals("0", words.getWord(1));
-        assertTrue(words.getInfo(1).isKindOf(SuggestedWordInfo.KIND_CORRECTION));
+        assertTrue(words.getInfo(1).isKindOf(KIND_OF_SECOND_CORRECTION));
         assertEquals("4", words.getWord(5));
-        assertTrue(words.getInfo(5).isKindOf(SuggestedWordInfo.KIND_CORRECTION));
+        assertTrue(words.getInfo(5).isKindOf(KIND_OF_SECOND_CORRECTION));
 
-        final SuggestedWords wordsWithoutTyped = words.getSuggestedWordsExcludingTypedWord(
-                SuggestedWords.INPUT_STYLE_NONE);
+        final SuggestedWords wordsWithoutTyped =
+                words.getSuggestedWordsExcludingTypedWordForRecorrection();
+        // Make sure that the typed word has indeed been excluded, by testing the size of the
+        // suggested words, the string and the kind of the top suggestion, which should match
+        // the string and kind of what we inserted after the typed word.
         assertEquals(words.size() - 1, wordsWithoutTyped.size());
         assertEquals("0", wordsWithoutTyped.getWord(0));
-        assertTrue(wordsWithoutTyped.getInfo(0).isKindOf(SuggestedWordInfo.KIND_CORRECTION));
+        assertTrue(wordsWithoutTyped.getInfo(0).isKindOf(KIND_OF_SECOND_CORRECTION));
     }
 
     // Helper for testGetTransformedWordInfo
@@ -133,7 +136,6 @@ public class SuggestedWordsTests extends AndroidTestCase {
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction*/,
                 SuggestedWords.INPUT_STYLE_NONE);
         final SuggestedWordInfo typedWord = wordsWithTypedWord.getTypedWordInfoOrNull();
         assertNotNull(typedWord);
@@ -141,8 +143,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
 
         // Make sure getTypedWordInfoOrNull() returns null.
         final SuggestedWords wordsWithoutTypedWord =
-                wordsWithTypedWord.getSuggestedWordsExcludingTypedWord(
-                        SuggestedWords.INPUT_STYLE_NONE);
+                wordsWithTypedWord.getSuggestedWordsExcludingTypedWordForRecorrection();
         assertNull(wordsWithoutTypedWord.getTypedWordInfoOrNull());
 
         // Make sure getTypedWordInfoOrNull() returns null.

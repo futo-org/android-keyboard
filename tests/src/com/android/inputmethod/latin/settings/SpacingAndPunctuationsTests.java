@@ -429,7 +429,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertFalse("willAutoCorrect", suggestedWords.mWillAutoCorrect);
         assertTrue("isPunctuationSuggestions", suggestedWords.isPunctuationSuggestions());
         assertFalse("isObsoleteSuggestions", suggestedWords.mIsObsoleteSuggestions);
-        assertFalse("isPrediction", suggestedWords.mIsPrediction);
+        assertFalse("isPrediction", suggestedWords.isPrediction());
         assertEquals("size", punctuationLabels.length, suggestedWords.size());
         for (int index = 0; index < suggestedWords.size(); index++) {
             assertEquals("punctuation label at " + index,
