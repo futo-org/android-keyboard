@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
+import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.emoji.EmojiPalettesView;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
@@ -311,9 +312,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
-    public void onCodeInput(final int code, final int currentAutoCapsState,
+    public void onEvent(final Event event, final int currentAutoCapsState,
             final int currentRecapitalizeState) {
-        mState.onCodeInput(code, currentAutoCapsState, currentRecapitalizeState);
+        mState.onEvent(event, currentAutoCapsState, currentRecapitalizeState);
     }
 
     public boolean isShowingEmojiPalettes() {
