@@ -120,9 +120,9 @@ public final class Suggest {
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForNonBatchInput(final WordComposer wordComposer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final SettingsValuesForSuggestion settingsValuesForSuggestion, final int inputStyle,
-            final boolean isCorrectionEnabled, final int sequenceNumber,
-            final OnGetSuggestedWordsCallback callback) {
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
+            final int inputStyleIfNotPrediction, final boolean isCorrectionEnabled,
+            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
         final String typedWord = wordComposer.getTypedWord();
         final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(typedWord);
         final String consideredWord = trailingSingleQuotesCount > 0
@@ -186,6 +186,8 @@ public final class Suggest {
             suggestionsList = suggestionsContainer;
         }
 
+        final int inputStyle = resultsArePredictions ? SuggestedWords.INPUT_STYLE_PREDICTION :
+                inputStyleIfNotPrediction;
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
                 suggestionResults.mRawSuggestions,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
@@ -193,8 +195,7 @@ public final class Suggest {
                 // rename the attribute or change the value.
                 !resultsArePredictions && !allowsToBeAutoCorrected /* typedWordValid */,
                 hasAutoCorrection /* willAutoCorrect */,
-                false /* isObsoleteSuggestions */, resultsArePredictions,
-                inputStyle, sequenceNumber));
+                false /* isObsoleteSuggestions */, inputStyle, sequenceNumber));
     }
 
     // Retrieves suggestions for the batch input
@@ -244,7 +245,6 @@ public final class Suggest {
                 true /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction */,
                 inputStyle, sequenceNumber));
     }
 

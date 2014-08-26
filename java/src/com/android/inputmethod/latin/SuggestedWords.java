@@ -38,14 +38,15 @@ public class SuggestedWords {
     public static final int INPUT_STYLE_TAIL_BATCH = 3;
     public static final int INPUT_STYLE_APPLICATION_SPECIFIED = 4;
     public static final int INPUT_STYLE_RECORRECTION = 5;
+    public static final int INPUT_STYLE_PREDICTION = 6;
 
     // The maximum number of suggestions available.
     public static final int MAX_SUGGESTIONS = 18;
 
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST = new ArrayList<>(0);
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false, false, false, false,
-            INPUT_STYLE_NONE);
+            EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false /* typedWordValid */,
+            false /* willAutoCorrect */, false /* isObsoleteSuggestions */, INPUT_STYLE_NONE);
 
     public final String mTypedWord;
     public final boolean mTypedWordValid;
@@ -54,7 +55,6 @@ public class SuggestedWords {
     // whether this exactly matches the user entry or not.
     public final boolean mWillAutoCorrect;
     public final boolean mIsObsoleteSuggestions;
-    public final boolean mIsPrediction;
     // How the input for these suggested words was done by the user. Must be one of the
     // INPUT_STYLE_* constants above.
     public final int mInputStyle;
@@ -67,10 +67,9 @@ public class SuggestedWords {
             final boolean typedWordValid,
             final boolean willAutoCorrect,
             final boolean isObsoleteSuggestions,
-            final boolean isPrediction,
             final int inputStyle) {
         this(suggestedWordInfoList, rawSuggestions, typedWordValid, willAutoCorrect,
-                isObsoleteSuggestions, isPrediction, inputStyle, NOT_A_SEQUENCE_NUMBER);
+                isObsoleteSuggestions, inputStyle, NOT_A_SEQUENCE_NUMBER);
     }
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
@@ -78,13 +77,12 @@ public class SuggestedWords {
             final boolean typedWordValid,
             final boolean willAutoCorrect,
             final boolean isObsoleteSuggestions,
-            final boolean isPrediction,
             final int inputStyle,
             final int sequenceNumber) {
         this(suggestedWordInfoList, rawSuggestions,
-                (suggestedWordInfoList.isEmpty() || isPrediction) ? null
+                (suggestedWordInfoList.isEmpty() || INPUT_STYLE_PREDICTION == inputStyle) ? null
                         : suggestedWordInfoList.get(INDEX_OF_TYPED_WORD).mWord,
-                typedWordValid, willAutoCorrect, isObsoleteSuggestions, isPrediction, inputStyle,
+                typedWordValid, willAutoCorrect, isObsoleteSuggestions, inputStyle,
                 sequenceNumber);
     }
 
@@ -94,7 +92,6 @@ public class SuggestedWords {
             final boolean typedWordValid,
             final boolean willAutoCorrect,
             final boolean isObsoleteSuggestions,
-            final boolean isPrediction,
             final int inputStyle,
             final int sequenceNumber) {
         mSuggestedWordInfoList = suggestedWordInfoList;
@@ -102,7 +99,6 @@ public class SuggestedWords {
         mTypedWordValid = typedWordValid;
         mWillAutoCorrect = willAutoCorrect;
         mIsObsoleteSuggestions = isObsoleteSuggestions;
-        mIsPrediction = isPrediction;
         mInputStyle = inputStyle;
         mSequenceNumber = sequenceNumber;
         mTypedWord = typedWord;
@@ -381,9 +377,14 @@ public class SuggestedWords {
         }
     }
 
+    public boolean isPrediction() {
+        return INPUT_STYLE_PREDICTION == mInputStyle;
+    }
+
     // SuggestedWords is an immutable object, as much as possible. We must not just remove
     // words from the member ArrayList as some other parties may expect the object to never change.
-    public SuggestedWords getSuggestedWordsExcludingTypedWord(final int inputStyle) {
+    // This is only ever called by recorrection at the moment, hence the ForRecorrection moniker.
+    public SuggestedWords getSuggestedWordsExcludingTypedWordForRecorrection() {
         final ArrayList<SuggestedWordInfo> newSuggestions = new ArrayList<>();
         String typedWord = null;
         for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
@@ -399,7 +400,7 @@ public class SuggestedWords {
         // no auto-correction should take place hence willAutoCorrect = false.
         return new SuggestedWords(newSuggestions, null /* rawSuggestions */, typedWord,
                 true /* typedWordValid */, false /* willAutoCorrect */, mIsObsoleteSuggestions,
-                mIsPrediction, inputStyle, NOT_A_SEQUENCE_NUMBER);
+                SuggestedWords.INPUT_STYLE_RECORRECTION, NOT_A_SEQUENCE_NUMBER);
     }
 
     // Creates a new SuggestedWordInfo from the currently suggested words that removes all but the
@@ -418,8 +419,7 @@ public class SuggestedWords {
                     SuggestedWordInfo.NOT_A_CONFIDENCE));
         }
         return new SuggestedWords(newSuggestions, null /* rawSuggestions */, mTypedWordValid,
-                mWillAutoCorrect, mIsObsoleteSuggestions, mIsPrediction,
-                INPUT_STYLE_TAIL_BATCH);
+                mWillAutoCorrect, mIsObsoleteSuggestions, INPUT_STYLE_TAIL_BATCH);
     }
 
     /**
