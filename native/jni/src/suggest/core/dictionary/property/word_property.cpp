@@ -65,8 +65,6 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     for (const auto &shortcut : mUnigramProperty.getShortcuts()) {
         const std::vector<int> *const targetCodePoints = shortcut.getTargetCodePoints();
         jintArray shortcutTargetCodePointArray = env->NewIntArray(targetCodePoints->size());
-        env->SetIntArrayRegion(shortcutTargetCodePointArray, 0 /* start */,
-                targetCodePoints->size(), targetCodePoints->data());
         JniDataUtils::outputCodePoints(env, shortcutTargetCodePointArray, 0 /* start */,
                 targetCodePoints->size(), targetCodePoints->data(), targetCodePoints->size(),
                 false /* needsNullTermination */);
