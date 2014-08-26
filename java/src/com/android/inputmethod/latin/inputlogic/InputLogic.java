@@ -644,7 +644,7 @@ public final class InputLogic {
                 break;
             case Constants.CODE_CAPSLOCK:
                 // Note: Changing keyboard to shift lock state is handled in
-                // {@link KeyboardSwitcher#onCodeInput(int)}.
+                // {@link KeyboardSwitcher#onEvent(Event)}.
                 break;
             case Constants.CODE_SYMBOL_SHIFT:
                 // Note: Calling back to the keyboard on the symbol Shift key is handled in
@@ -672,11 +672,11 @@ public final class InputLogic {
                 break;
             case Constants.CODE_EMOJI:
                 // Note: Switching emoji keyboard is being handled in
-                // {@link KeyboardState#onCodeInput(int,int)}.
+                // {@link KeyboardState#onEvent(Event,int)}.
                 break;
             case Constants.CODE_ALPHA_FROM_EMOJI:
                 // Note: Switching back from Emoji keyboard to the main keyboard is being
-                // handled in {@link KeyboardState#onCodeInput(int,int)}.
+                // handled in {@link KeyboardState#onEvent(Event,int)}.
                 break;
             case Constants.CODE_SHIFT_ENTER:
                 // TODO: remove this object

@@ -1297,7 +1297,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // code) needs the coordinates in the keyboard frame.
         // TODO: We should reconsider which coordinate system should be used to represent
         // keyboard event. Also we should pull this up -- LatinIME has no business doing
-        // this transformation, it should be done already before calling onCodeInput.
+        // this transformation, it should be done already before calling onEvent.
         final int keyX = mainKeyboardView.getKeyX(x);
         final int keyY = mainKeyboardView.getKeyY(y);
         final Event event = createSoftwareKeypressEvent(getCodePointForKeyboard(codePoint),
@@ -1308,7 +1308,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // This method is public for testability of LatinIME, but also in the future it should
     // completely replace #onCodeInput.
     public void onEvent(final Event event) {
-        if (Constants.CODE_SHORTCUT == event.mCodePoint) {
+        if (Constants.CODE_SHORTCUT == event.mKeyCode) {
             mSubtypeSwitcher.switchToShortcutIME(this);
         }
         final InputTransaction completeInputTransaction =
@@ -1316,8 +1316,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         mKeyboardSwitcher.getKeyboardShiftMode(),
                         mKeyboardSwitcher.getCurrentKeyboardScriptId(), mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
-        mKeyboardSwitcher.onCodeInput(event.mCodePoint, getCurrentAutoCapsState(),
-                getCurrentRecapitalizeState());
+        mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
     }
 
     // A helper method to split the code point and the key code. Ultimately, they should not be
@@ -1341,13 +1340,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onTextInput(final String rawText) {
         // TODO: have the keyboard pass the correct key code when we need it.
-        final Event event = Event.createSoftwareTextEvent(rawText, Event.NOT_A_KEY_CODE);
+        final Event event = Event.createSoftwareTextEvent(rawText, Constants.CODE_OUTPUT_TEXT);
         final InputTransaction completeInputTransaction =
                 mInputLogic.onTextInput(mSettings.getCurrent(), event,
                         mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
-        mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT, getCurrentAutoCapsState(),
-                getCurrentRecapitalizeState());
+        mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
     }
 
     @Override
