@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.event.Event;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 
@@ -29,7 +30,7 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
  *
  * The input events are {@link #onLoadKeyboard(int, int)}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int,boolean,int,int)}, {@link #onReleaseKey(int,boolean,int,int)},
- * {@link #onCodeInput(int,int,int)}, {@link #onFinishSlidingInput(int,int)},
+ * {@link #onEvent(Event,int,int)}, {@link #onFinishSlidingInput(int,int)},
  * {@link #onUpdateShiftState(int,int)}, {@link #onResetKeyboardStateToAlphabet(int,int)}.
  *
  * The actions are {@link SwitchActions}'s methods.
@@ -610,10 +611,11 @@ public final class KeyboardState {
         return c == Constants.CODE_SPACE || c == Constants.CODE_ENTER;
     }
 
-    public void onCodeInput(final int code, final int currentAutoCapsState,
+    public void onEvent(final Event event, final int currentAutoCapsState,
             final int currentRecapitalizeState) {
+        final int code = event.isFunctionalKeyEvent() ? event.mKeyCode : event.mCodePoint;
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onCodeInput: code=" + Constants.printableCode(code)
+            Log.d(TAG, "onEvent: code=" + Constants.printableCode(code)
                     + " autoCaps=" + currentAutoCapsState + " " + this);
         }
 
