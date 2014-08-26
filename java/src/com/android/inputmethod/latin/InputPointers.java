@@ -145,6 +145,12 @@ public final class InputPointers {
         return mPointerIds.getPrimitiveArray();
     }
 
+    /**
+     * Gets the time each point was registered, in milliseconds, relative to the first event in the
+     * sequence.
+     * @return The time each point was registered, in milliseconds, relative to the first event in
+     * the sequence.
+     */
     public int[] getTimes() {
         if (DebugFlags.DEBUG_ENABLED || DEBUG_TIME) {
             if (!isValidTimeStamps()) {
