@@ -80,14 +80,17 @@
     <string name="help_and_feedback" msgid="5328219371839879161">"დახმარება და უკუკავშირი"</string>
     <string name="select_language" msgid="3693815588777926848">"შეყვანის ენები"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"შეეხეთ ისევ შესანახად"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"აქ შეეხეთ, რომ შეინახოს"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ხელმისაწვდომია ლექსიკონი"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"კლავიატურის თემა"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ინგლისური (გართ. სამ.)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ინგლისური (აშშ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ესპანური (აშშ)"</string>
+    <string name="subtype_hi_ZZ" msgid="8860448146262798623">"ჰინგლისური"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"ინგლისური (გაერთ.სამ.) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"ინგლისური (აშშ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"ესპანური (აშშ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"ჰინგლისური (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ტრადიციული)"</string>
     <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (კირილიცა)"</string>
     <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ლათინური)"</string>
