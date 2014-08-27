@@ -136,7 +136,7 @@ class DicNode {
     }
 
     void initAsChild(const DicNode *const dicNode, const int ptNodePos,
-            const int childrenPtNodeArrayPos, const int probability, const bool isTerminal,
+            const int childrenPtNodeArrayPos, const int probability, const int wordId,
             const bool hasChildren, const bool isBlacklistedOrNotAWord,
             const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
@@ -144,7 +144,7 @@ class DicNode {
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
         mDicNodeProperties.init(ptNodePos, childrenPtNodeArrayPos, mergedNodeCodePoints[0],
-                probability, isTerminal, hasChildren, isBlacklistedOrNotAWord, newDepth,
+                probability, wordId, hasChildren, isBlacklistedOrNotAWord, newDepth,
                 newLeavingDepth, dicNode->mDicNodeProperties.getPrevWordsTerminalPtNodePos());
         mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
                 mergedNodeCodePoints);

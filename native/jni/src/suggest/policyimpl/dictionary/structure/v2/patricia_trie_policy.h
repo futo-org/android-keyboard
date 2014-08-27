@@ -36,6 +36,7 @@ namespace latinime {
 class DicNode;
 class DicNodeVector;
 
+// Word id = Position of a PtNode that represents the word.
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     PatriciaTriePolicy(MmappedBuffer::MmappedBufferPtr mmappedBuffer)

@@ -299,6 +299,7 @@ static inline void prof_out(void) {
 #define NOT_AN_INDEX (-1)
 #define NOT_A_PROBABILITY (-1)
 #define NOT_A_DICT_POS (S_INT_MIN)
+#define NOT_A_WORD_ID (S_INT_MIN)
 #define NOT_A_TIMESTAMP (-1)
 #define NOT_A_LANGUAGE_WEIGHT (-1.0f)
 

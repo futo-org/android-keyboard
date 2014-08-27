@@ -36,6 +36,7 @@ namespace latinime {
 class DicNode;
 class DicNodeVector;
 
+// Word id = Artificial id that is stored in the PtNode looked up by the word.
 class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     Ver4PatriciaTriePolicy(Ver4DictBuffers::Ver4DictBuffersPtr buffers)
