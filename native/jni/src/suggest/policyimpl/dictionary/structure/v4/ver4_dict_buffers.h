@@ -22,7 +22,6 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/shortcut_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
@@ -53,7 +52,6 @@ class Ver4DictBuffers {
         return mExpandableTrieBuffer.isNearSizeLimit()
                 || mTerminalPositionLookupTable.isNearSizeLimit()
                 || mLanguageModelDictContent.isNearSizeLimit()
-                || mBigramDictContent.isNearSizeLimit()
                 || mShortcutDictContent.isNearSizeLimit();
     }
 
@@ -87,14 +85,6 @@ class Ver4DictBuffers {
 
     AK_FORCE_INLINE const LanguageModelDictContent *getLanguageModelDictContent() const {
         return &mLanguageModelDictContent;
-    }
-
-    AK_FORCE_INLINE BigramDictContent *getMutableBigramDictContent() {
-        return &mBigramDictContent;
-    }
-
-    AK_FORCE_INLINE const BigramDictContent *getBigramDictContent() const {
-        return &mBigramDictContent;
     }
 
     AK_FORCE_INLINE ShortcutDictContent *getMutableShortcutDictContent() {
@@ -135,7 +125,6 @@ class Ver4DictBuffers {
     BufferWithExtendableBuffer mExpandableTrieBuffer;
     TerminalPositionLookupTable mTerminalPositionLookupTable;
     LanguageModelDictContent mLanguageModelDictContent;
-    BigramDictContent mBigramDictContent;
     ShortcutDictContent mShortcutDictContent;
     const int mIsUpdatable;
 };

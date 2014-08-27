@@ -61,7 +61,6 @@ LATIN_IME_CORE_SRC_FILES := \
         ver2_patricia_trie_node_reader.cpp \
         ver2_pt_node_array_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/, \
-        bigram/ver4_bigram_list_policy.cpp \
         ver4_dict_buffers.cpp \
         ver4_dict_constants.cpp \
         ver4_patricia_trie_node_reader.cpp \
@@ -71,7 +70,6 @@ LATIN_IME_CORE_SRC_FILES := \
         ver4_patricia_trie_writing_helper.cpp \
         ver4_pt_node_array_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
-        bigram_dict_content.cpp \
         language_model_dict_content.cpp \
         shortcut_dict_content.cpp \
         sparse_table_dict_content.cpp \

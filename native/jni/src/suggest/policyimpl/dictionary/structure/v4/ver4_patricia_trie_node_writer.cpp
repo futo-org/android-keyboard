@@ -21,7 +21,6 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v4/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
@@ -230,12 +229,6 @@ bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds
     if (!probabilityEntry.isValid() && outAddedNewBigram) {
         *outAddedNewBigram = true;
     }
-    // TODO: Remove.
-    if (!mBigramPolicy->addNewEntry(prevWordIds[0], wordId, bigramProperty, outAddedNewBigram)) {
-        AKLOGE("Cannot add new bigram entry. prevWordId: %d, wordId: %d",
-                prevWordIds[0], wordId);
-        return false;
-    }
     return true;
 }
 
@@ -244,19 +237,15 @@ bool Ver4PatriciaTrieNodeWriter::removeNgramEntry(const WordIdArrayView prevWord
     // TODO: Support n-gram.
     LanguageModelDictContent *const languageModelDictContent =
             mBuffers->getMutableLanguageModelDictContent();
-    if (!languageModelDictContent->removeNgramProbabilityEntry(prevWordIds.limit(1 /* maxSize */),
-            wordId)) {
-        // TODO: Uncomment.
-        // return false;
-    }
-    // TODO: Remove.
-    return mBigramPolicy->removeEntry(prevWordIds[0], wordId);
+    return languageModelDictContent->removeNgramProbabilityEntry(prevWordIds.limit(1 /* maxSize */),
+            wordId);
 }
 
+// TODO: Remove when we stop supporting v402 format.
 bool Ver4PatriciaTrieNodeWriter::updateAllBigramEntriesAndDeleteUselessEntries(
             const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount) {
-    return mBigramPolicy->updateAllBigramEntriesAndDeleteUselessEntries(
-            sourcePtNodeParams->getTerminalId(), outBigramEntryCount);
+    // Do nothing.
+    return true;
 }
 
 bool Ver4PatriciaTrieNodeWriter::updateAllPositionFields(
@@ -290,12 +279,6 @@ bool Ver4PatriciaTrieNodeWriter::updateAllPositionFields(
     }
     if (!updateChildrenPosition(toBeUpdatedPtNodeParams, childrenPos)) {
         return false;
-    }
-
-    // Counts bigram entries.
-    if (outBigramEntryCount) {
-        *outBigramEntryCount = mBigramPolicy->getBigramEntryConut(
-                toBeUpdatedPtNodeParams->getTerminalId());
     }
     return true;
 }

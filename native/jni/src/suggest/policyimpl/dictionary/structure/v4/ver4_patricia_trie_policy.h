@@ -23,7 +23,6 @@
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_updating_helper.h"
-#include "suggest/policyimpl/dictionary/structure/v4/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
@@ -42,14 +41,12 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4PatriciaTriePolicy(Ver4DictBuffers::Ver4DictBuffersPtr buffers)
             : mBuffers(std::move(buffers)), mHeaderPolicy(mBuffers->getHeaderPolicy()),
               mDictBuffer(mBuffers->getWritableTrieBuffer()),
-              mBigramPolicy(mBuffers->getMutableBigramDictContent(),
-                      mBuffers->getTerminalPositionLookupTable(), mHeaderPolicy),
               mShortcutPolicy(mBuffers->getMutableShortcutDictContent(),
                       mBuffers->getTerminalPositionLookupTable()),
               mNodeReader(mDictBuffer, mBuffers->getLanguageModelDictContent(), mHeaderPolicy),
               mPtNodeArrayReader(mDictBuffer),
               mNodeWriter(mDictBuffer, mBuffers.get(), mHeaderPolicy, &mNodeReader,
-                      &mPtNodeArrayReader, &mBigramPolicy, &mShortcutPolicy),
+                      &mPtNodeArrayReader, &mShortcutPolicy),
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy->getUnigramCount()),
@@ -132,7 +129,6 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
     const HeaderPolicy *const mHeaderPolicy;
     BufferWithExtendableBuffer *const mDictBuffer;
-    Ver4BigramListPolicy mBigramPolicy;
     Ver4ShortcutListPolicy mShortcutPolicy;
     Ver4PatriciaTrieNodeReader mNodeReader;
     Ver4PtNodeArrayReader mPtNodeArrayReader;

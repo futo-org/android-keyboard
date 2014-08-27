@@ -20,7 +20,6 @@
 #include <queue>
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/structure/v4/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -77,13 +76,10 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer(),
             mBuffers->getLanguageModelDictContent(), headerPolicy);
     Ver4PtNodeArrayReader ptNodeArrayReader(mBuffers->getTrieBuffer());
-    Ver4BigramListPolicy bigramPolicy(mBuffers->getMutableBigramDictContent(),
-            mBuffers->getTerminalPositionLookupTable(), headerPolicy);
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getMutableShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
-            mBuffers, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy,
-            &shortcutPolicy);
+            mBuffers, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &shortcutPolicy);
 
     int entryCountTable[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
     if (!mBuffers->getMutableLanguageModelDictContent()->updateAllProbabilityEntries(headerPolicy,
@@ -118,16 +114,6 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
         return false;
     }
-    const int unigramCount = traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
-            .getValidUnigramCount();
-    const int maxUnigramCount = headerPolicy->getMaxUnigramCount();
-    if (headerPolicy->isDecayingDict() && unigramCount > maxUnigramCount) {
-        if (!truncateUnigrams(&ptNodeReader, &ptNodeWriter, maxUnigramCount)) {
-            AKLOGE("Cannot remove unigrams. current: %d, max: %d", unigramCount,
-                    maxUnigramCount);
-            return false;
-        }
-    }
 
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPtGcEventListeners::TraversePolicyToUpdateBigramProbability
@@ -136,21 +122,12 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &traversePolicyToUpdateBigramProbability)) {
         return false;
     }
-    const int bigramCount = traversePolicyToUpdateBigramProbability.getValidBigramEntryCount();
-    const int maxBigramCount = headerPolicy->getMaxBigramCount();
-    if (headerPolicy->isDecayingDict() && bigramCount > maxBigramCount) {
-        if (!truncateBigrams(maxBigramCount)) {
-            AKLOGE("Cannot remove bigrams. current: %d, max: %d", bigramCount, maxBigramCount);
-            return false;
-        }
-    }
 
     // Mapping from positions in mBuffer to positions in bufferToWrite.
     PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     Ver4PatriciaTrieNodeWriter ptNodeWriterForNewBuffers(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy,
-            &shortcutPolicy);
+            buffersToWrite, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &shortcutPolicy);
     DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&ptNodeWriterForNewBuffers,
                     buffersToWrite->getWritableTrieBuffer(), &dictPositionRelocationMap);
@@ -163,12 +140,10 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
             buffersToWrite->getLanguageModelDictContent(), headerPolicy);
     Ver4PtNodeArrayReader newPtNodeArrayreader(buffersToWrite->getTrieBuffer());
-    Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getMutableBigramDictContent(),
-            buffersToWrite->getTerminalPositionLookupTable(), headerPolicy);
     Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getMutableShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, headerPolicy, &newPtNodeReader, &newPtNodeArrayreader, &newBigramPolicy,
+            buffersToWrite, headerPolicy, &newPtNodeReader, &newPtNodeArrayreader,
             &newShortcutPolicy);
     // Re-assign terminal IDs for valid terminal PtNodes.
     TerminalPositionLookupTable::TerminalIdMap terminalIdMap;
@@ -179,11 +154,6 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     // Run GC for probability dict content.
     if (!buffersToWrite->getMutableLanguageModelDictContent()->runGC(&terminalIdMap,
             mBuffers->getLanguageModelDictContent(), nullptr /* outNgramCount */)) {
-        return false;
-    }
-    // Run GC for bigram dict content.
-    if(!buffersToWrite->getMutableBigramDictContent()->runGC(&terminalIdMap,
-            mBuffers->getBigramDictContent(), outBigramCount)) {
         return false;
     }
     // Run GC for shortcut dict content.
@@ -210,93 +180,6 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             entryCountTable[LanguageModelDictContent::UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE];
     *outBigramCount =
             entryCountTable[LanguageModelDictContent::BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE];
-    return true;
-}
-
-// TODO: Remove.
-bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
-        const Ver4PatriciaTrieNodeReader *const ptNodeReader,
-        Ver4PatriciaTrieNodeWriter *const ptNodeWriter, const int maxUnigramCount) {
-    const TerminalPositionLookupTable *const terminalPosLookupTable =
-            mBuffers->getTerminalPositionLookupTable();
-    const int nextTerminalId = terminalPosLookupTable->getNextTerminalId();
-    std::priority_queue<DictProbability, std::vector<DictProbability>, DictProbabilityComparator>
-            priorityQueue;
-    for (int i = 0; i < nextTerminalId; ++i) {
-        const int terminalPos = terminalPosLookupTable->getTerminalPtNodePosition(i);
-        if (terminalPos == NOT_A_DICT_POS) {
-            continue;
-        }
-        const ProbabilityEntry probabilityEntry =
-                mBuffers->getLanguageModelDictContent()->getProbabilityEntry(i);
-        const int probability = probabilityEntry.hasHistoricalInfo() ?
-                ForgettingCurveUtils::decodeProbability(
-                        probabilityEntry.getHistoricalInfo(), mBuffers->getHeaderPolicy()) :
-                probabilityEntry.getProbability();
-        priorityQueue.push(DictProbability(terminalPos, probability,
-                probabilityEntry.getHistoricalInfo()->getTimeStamp()));
-    }
-
-    // Delete unigrams.
-    while (static_cast<int>(priorityQueue.size()) > maxUnigramCount) {
-        const int ptNodePos = priorityQueue.top().getDictPos();
-        priorityQueue.pop();
-        const PtNodeParams ptNodeParams =
-                ptNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
-        if (ptNodeParams.representsNonWordInfo()) {
-            continue;
-        }
-        if (!ptNodeWriter->markPtNodeAsWillBecomeNonTerminal(&ptNodeParams)) {
-            AKLOGE("Cannot mark PtNode as willBecomeNonterminal. PtNode pos: %d", ptNodePos);
-            return false;
-        }
-    }
-    return true;
-}
-
-// TODO: Remove.
-bool Ver4PatriciaTrieWritingHelper::truncateBigrams(const int maxBigramCount) {
-    const TerminalPositionLookupTable *const terminalPosLookupTable =
-            mBuffers->getTerminalPositionLookupTable();
-    const int nextTerminalId = terminalPosLookupTable->getNextTerminalId();
-    std::priority_queue<DictProbability, std::vector<DictProbability>, DictProbabilityComparator>
-            priorityQueue;
-    BigramDictContent *const bigramDictContent = mBuffers->getMutableBigramDictContent();
-    for (int i = 0; i < nextTerminalId; ++i) {
-        const int bigramListPos = bigramDictContent->getBigramListHeadPos(i);
-        if (bigramListPos == NOT_A_DICT_POS) {
-            continue;
-        }
-        bool hasNext = true;
-        int readingPos = bigramListPos;
-        while (hasNext) {
-            const BigramEntry bigramEntry =
-                    bigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
-            const int entryPos = readingPos - bigramDictContent->getBigramEntrySize();
-            hasNext = bigramEntry.hasNext();
-            if (!bigramEntry.isValid()) {
-                continue;
-            }
-            const int probability = bigramEntry.hasHistoricalInfo() ?
-                    ForgettingCurveUtils::decodeProbability(
-                            bigramEntry.getHistoricalInfo(), mBuffers->getHeaderPolicy()) :
-                    bigramEntry.getProbability();
-            priorityQueue.push(DictProbability(entryPos, probability,
-                    bigramEntry.getHistoricalInfo()->getTimeStamp()));
-        }
-    }
-
-    // Delete bigrams.
-    while (static_cast<int>(priorityQueue.size()) > maxBigramCount) {
-        const int entryPos = priorityQueue.top().getDictPos();
-        const BigramEntry bigramEntry = bigramDictContent->getBigramEntry(entryPos);
-        const BigramEntry invalidatedBigramEntry = bigramEntry.getInvalidatedEntry();
-        if (!bigramDictContent->writeBigramEntry(&invalidatedBigramEntry, entryPos)) {
-            AKLOGE("Cannot write bigram entry to remove. pos: %d", entryPos);
-            return false;
-        }
-        priorityQueue.pop();
-    }
     return true;
 }
 

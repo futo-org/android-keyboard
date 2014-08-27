@@ -52,18 +52,8 @@ class Ver4DictConstants {
     // Flags in probability entry.
     static const uint8_t FLAG_REPRESENTS_BEGINNING_OF_SENTENCE;
 
-    static const int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE;
-    static const int BIGRAM_ADDRESS_TABLE_DATA_SIZE;
     static const int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE;
     static const int SHORTCUT_ADDRESS_TABLE_DATA_SIZE;
-
-    static const int BIGRAM_FLAGS_FIELD_SIZE;
-    static const int BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE;
-    static const int INVALID_BIGRAM_TARGET_TERMINAL_ID;
-    static const int BIGRAM_IS_LINK_MASK;
-    static const int BIGRAM_PROBABILITY_MASK;
-    // Used when bigram list has time stamp.
-    static const int BIGRAM_LARGE_PROBABILITY_FIELD_SIZE;
 
     static const int SHORTCUT_FLAGS_FIELD_SIZE;
     static const int SHORTCUT_PROBABILITY_MASK;
