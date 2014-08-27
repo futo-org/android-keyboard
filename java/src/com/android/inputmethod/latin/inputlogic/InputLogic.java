@@ -649,7 +649,7 @@ public final class InputLogic {
             // message, this is called outside any batch edit. Potentially, this may result in some
             // janky flickering of the screen, although the display speed makes it unlikely in
             // the practice.
-            mConnection.setComposingText(textWithUnderline, 1);
+            setComposingTextInternal(textWithUnderline, 1);
         }
     }
 
@@ -672,7 +672,7 @@ public final class InputLogic {
             inputTransaction.setDidAffectContents();
         }
         if (mWordComposer.isComposingWord()) {
-            mConnection.setComposingText(mWordComposer.getTypedWord(), 1);
+            setComposingTextInternal(mWordComposer.getTypedWord(), 1);
             inputTransaction.setDidAffectContents();
             inputTransaction.setRequiresUpdateSuggestions();
         }
@@ -908,8 +908,7 @@ public final class InputLogic {
             if (mWordComposer.isSingleLetter()) {
                 mWordComposer.setCapitalizedModeAtStartComposingTime(inputTransaction.mShiftState);
             }
-            mConnection.setComposingText(getTextWithUnderline(
-                    mWordComposer.getTypedWord()), 1);
+            setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
             final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event,
                     inputTransaction);
@@ -1072,7 +1071,7 @@ public final class InputLogic {
                 mWordComposer.applyProcessedEvent(event);
             }
             if (mWordComposer.isComposingWord()) {
-                mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+                setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             } else {
                 mConnection.commitText("", 1);
             }
@@ -1640,7 +1639,7 @@ public final class InputLogic {
             final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
             mWordComposer.setComposingWord(codePoints,
                     mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
-            mConnection.setComposingText(textToCommit, 1);
+            setComposingTextInternal(textToCommit, 1);
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -1973,10 +1972,10 @@ public final class InputLogic {
             }
             final String lastWord = batchInputText.substring(indexOfLastSpace);
             mWordComposer.setBatchInputWord(lastWord);
-            mConnection.setComposingText(lastWord, 1);
+            setComposingTextInternal(lastWord, 1);
         } else {
             mWordComposer.setBatchInputWord(batchInputText);
-            mConnection.setComposingText(batchInputText, 1);
+            setComposingTextInternal(batchInputText, 1);
         }
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
@@ -2173,6 +2172,24 @@ public final class InputLogic {
                         settingsValues.mAdditionalFeaturesSettingValues),
                 settingsValues.mAutoCorrectionEnabledPerUserSettings,
                 inputStyle, sequenceNumber, callback);
+    }
+
+    /**
+     * Used as an injection point for each call of
+     * {@link RichInputConnection#setComposingText(CharSequence, int)}.
+     *
+     * <p>Currently using this method is optional and you can still directly call
+     * {@link RichInputConnection#setComposingText(CharSequence, int)}, but it is recommended to
+     * use this method whenever possible to optimize the behavior of {@link TextDecorator}.<p>
+     * <p>TODO: Should we move this mechanism to {@link RichInputConnection}?</p>
+     *
+     * @param newComposingText the composing text to be set
+     * @param newCursorPosition the new cursor position
+     */
+    private void setComposingTextInternal(final CharSequence newComposingText,
+            final int newCursorPosition) {
+        mConnection.setComposingText(newComposingText, newCursorPosition);
+        mTextDecorator.hideIndicatorIfNecessary(newComposingText);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////

@@ -158,7 +158,7 @@ public class TextDecorator {
         if (!currentFullScreenMode && fullScreenMode) {
             // Currently full screen mode is not supported.
             // TODO: Support full screen mode.
-            hideIndicator();
+            mUiOperator.hideUi();
         }
         mIsFullScreenMode = fullScreenMode;
     }
@@ -193,17 +193,36 @@ public class TextDecorator {
         layoutImmediately();
     }
 
-    private void hideIndicator() {
-        mUiOperator.hideUi();
+    /**
+     * Hides indicator if the new composing text doesn't match the expected one.
+     *
+     * <p>Calling this method is optional but recommended whenever the new composition is passed to
+     * the application. The motivation of this method is to reduce the UI latency. With this method,
+     * we can hide the indicator without waiting the arrival of the
+     * {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} callback, assuming that
+     * the application accepts the new composing text without any modification. Even if this
+     * assumption is false, the indicator will be shown again when
+     * {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} is actually received.
+     * </p>
+     *
+     * @param newComposingText the new composing text that is being passed to the application.
+     */
+    public void hideIndicatorIfNecessary(final CharSequence newComposingText) {
+        if (mMode != MODE_COMMIT && mMode != MODE_ADD_TO_DICTIONARY) {
+            return;
+        }
+        if (!TextUtils.equals(newComposingText, mWaitingWord.mWord)) {
+            mUiOperator.hideUi();
+        }
     }
 
     private void cancelLayoutInternalUnexpectedly(final String message) {
-        hideIndicator();
+        mUiOperator.hideUi();
         Log.d(TAG, message);
     }
 
     private void cancelLayoutInternalExpectedly(final String message) {
-        hideIndicator();
+        mUiOperator.hideUi();
         if (DEBUG) {
             Log.d(TAG, message);
         }
@@ -261,7 +280,7 @@ public class TextDecorator {
                     lastCharRectFlag & CursorAnchorInfoCompatWrapper.CHARACTER_RECT_TYPE_MASK;
             if (lastCharRect == null || matrix == null || lastCharRectType !=
                     CursorAnchorInfoCompatWrapper.CHARACTER_RECT_TYPE_FULLY_VISIBLE) {
-                hideIndicator();
+                mUiOperator.hideUi();
                 return;
             }
             final RectF segmentStartCharRect = new RectF(lastCharRect);
@@ -312,13 +331,13 @@ public class TextDecorator {
             if (!TextUtils.isEmpty(composingText)) {
                 // This is an unexpected case.
                 // TODO: Document this.
-                hideIndicator();
+                mUiOperator.hideUi();
                 return;
             }
             // In MODE_ADD_TO_DICTIONARY, we cannot retrieve the character position at all because
             // of the lack of composing text. We will use the insertion marker position instead.
             if (info.isInsertionMarkerClipped()) {
-                hideIndicator();
+                mUiOperator.hideUi();
                 return;
             }
             final float insertionMarkerHolizontal = info.getInsertionMarkerHorizontal();
