@@ -104,12 +104,12 @@ int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
     return codePointCount;
 }
 
-int Ver4PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
-        const int length, const bool forceLowerCaseSearch) const {
+int Ver4PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
+        const bool forceLowerCaseSearch) const {
     DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
-    const int ptNodePos =
-            readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
+    const int ptNodePos = readingHelper.getTerminalPtNodePositionOfWord(wordCodePoints.data(),
+            wordCodePoints.size(), forceLowerCaseSearch);
     if (readingHelper.isError()) {
         mIsCorrupted = true;
         AKLOGE("Dictionary reading error in createAndGetAllChildDicNodes().");
@@ -194,7 +194,7 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
             ptNodeParams.getTerminalId());
 }
 
-bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int length,
+bool Ver4PatriciaTriePolicy::addUnigramEntry(const CodePointArrayView wordCodePoints,
         const UnigramProperty *const unigramProperty) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addUnigramEntry() is called for non-updatable dictionary.");
@@ -205,8 +205,9 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
                 mDictBuffer->getTailPosition());
         return false;
     }
-    if (length > MAX_WORD_LENGTH) {
-        AKLOGE("The word is too long to insert to the dictionary, length: %d", length);
+    if (wordCodePoints.size() > MAX_WORD_LENGTH) {
+        AKLOGE("The word is too long to insert to the dictionary, length: %zd",
+                wordCodePoints.size());
         return false;
     }
     for (const auto &shortcut : unigramProperty->getShortcuts()) {
@@ -220,8 +221,8 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
     int codePointsToAdd[MAX_WORD_LENGTH];
-    int codePointCountToAdd = length;
-    memmove(codePointsToAdd, word, sizeof(int) * length);
+    int codePointCountToAdd = wordCodePoints.size();
+    memmove(codePointsToAdd, wordCodePoints.data(), sizeof(int) * codePointCountToAdd);
     if (unigramProperty->representsBeginningOfSentence()) {
         codePointCountToAdd = CharUtils::attachBeginningOfSentenceMarker(codePointsToAdd,
                 codePointCountToAdd, MAX_WORD_LENGTH);
@@ -229,14 +230,15 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
     if (codePointCountToAdd <= 0) {
         return false;
     }
-    if (mUpdatingHelper.addUnigramWord(&readingHelper, codePointsToAdd, codePointCountToAdd,
-            unigramProperty, &addedNewUnigram)) {
+    const CodePointArrayView codePointArrayView(codePointsToAdd, codePointCountToAdd);
+    if (mUpdatingHelper.addUnigramWord(&readingHelper, codePointArrayView.data(),
+            codePointArrayView.size(), unigramProperty, &addedNewUnigram)) {
         if (addedNewUnigram && !unigramProperty->representsBeginningOfSentence()) {
             mUnigramCount++;
         }
         if (unigramProperty->getShortcuts().size() > 0) {
             // Add shortcut target.
-            const int wordPos = getTerminalPtNodePositionOfWord(word, length,
+            const int wordPos = getTerminalPtNodePositionOfWord(codePointArrayView,
                     false /* forceLowerCaseSearch */);
             if (wordPos == NOT_A_DICT_POS) {
                 AKLOGE("Cannot find terminal PtNode position to add shortcut target.");
@@ -259,12 +261,12 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
     }
 }
 
-bool Ver4PatriciaTriePolicy::removeUnigramEntry(const int *const word, const int length) {
+bool Ver4PatriciaTriePolicy::removeUnigramEntry(const CodePointArrayView wordCodePoints) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: removeUnigramEntry() is called for non-updatable dictionary.");
         return false;
     }
-    const int ptNodePos = getTerminalPtNodePositionOfWord(word, length,
+    const int ptNodePos = getTerminalPtNodePositionOfWord(wordCodePoints,
             false /* forceLowerCaseSearch */);
     if (ptNodePos == NOT_A_DICT_POS) {
         return false;
@@ -305,7 +307,6 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
                     false /* isBlacklisted */, MAX_PROBABILITY /* probability */,
                     NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
             if (!addUnigramEntry(prevWordsInfo->getNthPrevWordCodePoints(1 /* n */),
-                    prevWordsInfo->getNthPrevWordCodePointCount(1 /* n */),
                     &beginningOfSentenceUnigramProperty)) {
                 AKLOGE("Cannot add unigram entry for the beginning-of-sentence.");
                 return false;
@@ -318,8 +319,8 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
         }
     }
     const int word1Pos = getTerminalPtNodePositionOfWord(
-            bigramProperty->getTargetCodePoints()->data(),
-            bigramProperty->getTargetCodePoints()->size(), false /* forceLowerCaseSearch */);
+            CodePointArrayView(*bigramProperty->getTargetCodePoints()),
+            false /* forceLowerCaseSearch */);
     if (word1Pos == NOT_A_DICT_POS) {
         return false;
     }
@@ -336,7 +337,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
 }
 
 bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-        const int *const word, const int length) {
+        const CodePointArrayView wordCodePoints) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: removeNgramEntry() is called for non-updatable dictionary.");
         return false;
@@ -350,8 +351,9 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
         AKLOGE("prev words info is not valid for removing n-gram entry form the dictionary.");
         return false;
     }
-    if (length > MAX_WORD_LENGTH) {
-        AKLOGE("word is too long to remove n-gram entry form the dictionary. length: %d", length);
+    if (wordCodePoints.size() > MAX_WORD_LENGTH) {
+        AKLOGE("word is too long to remove n-gram entry form the dictionary. length: %zd",
+                wordCodePoints.size());
     }
     int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     prevWordsInfo->getPrevWordsTerminalPtNodePos(this, prevWordsPtNodePos,
@@ -360,7 +362,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     if (prevWordsPtNodePos[0] == NOT_A_DICT_POS) {
         return false;
     }
-    const int wordPos = getTerminalPtNodePositionOfWord(word, length,
+    const int wordPos = getTerminalPtNodePositionOfWord(wordCodePoints,
             false /* forceLowerCaseSearch */);
     if (wordPos == NOT_A_DICT_POS) {
         return false;
@@ -445,9 +447,9 @@ void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int quer
     }
 }
 
-const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const codePoints,
-        const int codePointCount) const {
-    const int ptNodePos = getTerminalPtNodePositionOfWord(codePoints, codePointCount,
+const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
+        const CodePointArrayView wordCodePoints) const {
+    const int ptNodePos = getTerminalPtNodePositionOfWord(wordCodePoints,
             false /* forceLowerCaseSearch */);
     if (ptNodePos == NOT_A_DICT_POS) {
         AKLOGE("getWordProperty is called for invalid word.");

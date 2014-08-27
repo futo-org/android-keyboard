@@ -30,6 +30,7 @@
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 #include "utils/byte_array_view.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -63,8 +64,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             const int terminalNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
-    int getTerminalPtNodePositionOfWord(const int *const inWord,
-            const int length, const bool forceLowerCaseSearch) const;
+    int getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
+            const bool forceLowerCaseSearch) const;
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
@@ -83,14 +84,14 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mShortcutListPolicy;
     }
 
-    bool addUnigramEntry(const int *const word, const int length,
+    bool addUnigramEntry(const CodePointArrayView wordCodePoints,
             const UnigramProperty *const unigramProperty) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: addUnigramEntry() is called for non-updatable dictionary.");
         return false;
     }
 
-    bool removeUnigramEntry(const int *const word, const int length) {
+    bool removeUnigramEntry(const CodePointArrayView wordCodePoints) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: removeUnigramEntry() is called for non-updatable dictionary.");
         return false;
@@ -103,8 +104,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return false;
     }
 
-    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo, const int *const word,
-            const int length) {
+    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+            const CodePointArrayView wordCodePoints) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: removeNgramEntry() is called for non-updatable dictionary.");
         return false;
@@ -136,8 +137,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         }
     }
 
-    const WordProperty getWordProperty(const int *const codePoints,
-            const int codePointCount) const;
+    const WordProperty getWordProperty(const CodePointArrayView wordCodePoints) const;
 
     int getNextWordAndNextToken(const int token, int *const outCodePoints,
             int *const outCodePointCount);

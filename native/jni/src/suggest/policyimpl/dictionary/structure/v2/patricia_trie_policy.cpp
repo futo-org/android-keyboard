@@ -268,12 +268,12 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
 
 // This function gets the position of the terminal PtNode of the exact matching word in the
 // dictionary. If no match is found, it returns NOT_A_DICT_POS.
-int PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
-        const int length, const bool forceLowerCaseSearch) const {
+int PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
+        const bool forceLowerCaseSearch) const {
     DynamicPtReadingHelper readingHelper(&mPtNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
-    const int ptNodePos =
-            readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
+    const int ptNodePos = readingHelper.getTerminalPtNodePositionOfWord(wordCodePoints.data(),
+            wordCodePoints.size(), forceLowerCaseSearch);
     if (readingHelper.isError()) {
         mIsCorrupted = true;
         AKLOGE("Dictionary reading error in createAndGetAllChildDicNodes().");
@@ -377,9 +377,9 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     return siblingPos;
 }
 
-const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoints,
-        const int codePointCount) const {
-    const int ptNodePos = getTerminalPtNodePositionOfWord(codePoints, codePointCount,
+const WordProperty PatriciaTriePolicy::getWordProperty(
+        const CodePointArrayView wordCodePoints) const {
+    const int ptNodePos = getTerminalPtNodePositionOfWord(wordCodePoints,
             false /* forceLowerCaseSearch */);
     if (ptNodePos == NOT_A_DICT_POS) {
         AKLOGE("getWordProperty was called for invalid word.");

@@ -32,6 +32,7 @@
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/char_utils.h"
+#include "utils/int_array_view.h"
 #include "utils/jni_data_utils.h"
 #include "utils/log_utils.h"
 #include "utils/time_keeper.h"
@@ -581,8 +582,9 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
-        if (!dictionaryStructureWithBufferPolicy->addUnigramEntry(wordCodePoints,
-                wordCodePointCount, wordProperty.getUnigramProperty())) {
+        if (!dictionaryStructureWithBufferPolicy->addUnigramEntry(
+                CodePointArrayView(wordCodePoints, wordCodePointCount),
+                wordProperty.getUnigramProperty())) {
             LogUtils::logToJava(env, "Cannot add unigram to the new dict.");
             return false;
         }

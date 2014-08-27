@@ -28,6 +28,7 @@
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
 #include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
+#include "utils/int_array_view.h"
 #include "utils/log_utils.h"
 #include "utils/time_keeper.h"
 
@@ -112,8 +113,8 @@ int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) con
 int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
         int length) const {
     TimeKeeper::setCurrentTime();
-    int nextWordPos = mDictionaryStructureWithBufferPolicy->getTerminalPtNodePositionOfWord(word,
-            length, false /* forceLowerCaseSearch */);
+    int nextWordPos = mDictionaryStructureWithBufferPolicy->getTerminalPtNodePositionOfWord(
+            CodePointArrayView(word, length), false /* forceLowerCaseSearch */);
     if (NOT_A_DICT_POS == nextWordPos) return NOT_A_PROBABILITY;
     if (!prevWordsInfo) {
         return getDictionaryStructurePolicy()->getProbabilityOfPtNode(
@@ -135,12 +136,14 @@ bool Dictionary::addUnigramEntry(const int *const word, const int length,
         return false;
     }
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->addUnigramEntry(word, length, unigramProperty);
+    return mDictionaryStructureWithBufferPolicy->addUnigramEntry(CodePointArrayView(word, length),
+            unigramProperty);
 }
 
 bool Dictionary::removeUnigramEntry(const int *const codePoints, const int codePointCount) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->removeUnigramEntry(codePoints, codePointCount);
+    return mDictionaryStructureWithBufferPolicy->removeUnigramEntry(
+            CodePointArrayView(codePoints, codePointCount));
 }
 
 bool Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
@@ -152,7 +155,8 @@ bool Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
 bool Dictionary::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const int *const word, const int length) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo, word, length);
+    return mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo,
+            CodePointArrayView(word, length));
 }
 
 bool Dictionary::flush(const char *const filePath) {
@@ -181,7 +185,7 @@ const WordProperty Dictionary::getWordProperty(const int *const codePoints,
         const int codePointCount) {
     TimeKeeper::setCurrentTime();
     return mDictionaryStructureWithBufferPolicy->getWordProperty(
-            codePoints, codePointCount);
+            CodePointArrayView(codePoints, codePointCount));
 }
 
 int Dictionary::getNextWordAndNextToken(const int token, int *const outCodePoints,
