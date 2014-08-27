@@ -55,6 +55,7 @@ class DicNodeVector;
 namespace backward {
 namespace v402 {
 
+// Word id = Position of a PtNode that represents the word.
 class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     Ver4PatriciaTriePolicy(Ver4DictBuffers::Ver4DictBuffersPtr buffers)

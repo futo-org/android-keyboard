@@ -367,8 +367,8 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
             &probability, &childrenPos, &shortcutPos, &bigramPos, &siblingPos);
     // Skip PtNodes don't start with Unicode code point because they represent non-word information.
     if (CharUtils::isInUnicodeSpace(mergedNodeCodePoints[0])) {
-        childDicNodes->pushLeavingChild(dicNode, ptNodePos, childrenPos, probability,
-                PatriciaTrieReadingUtils::isTerminal(flags),
+        const int wordId = PatriciaTrieReadingUtils::isTerminal(flags) ? ptNodePos : NOT_A_WORD_ID;
+        childDicNodes->pushLeavingChild(dicNode, ptNodePos, childrenPos, probability, wordId,
                 PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
                 PatriciaTrieReadingUtils::isBlacklisted(flags)
                         || PatriciaTrieReadingUtils::isNotAWord(flags),

@@ -66,8 +66,9 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
             // Skip PtNodes that represent non-word information.
             continue;
         }
+        const int wordId = isTerminal ? ptNodeParams.getTerminalId() : NOT_A_WORD_ID;
         childDicNodes->pushLeavingChild(dicNode, ptNodeParams.getHeadPos(),
-                ptNodeParams.getChildrenPos(), ptNodeParams.getProbability(), isTerminal,
+                ptNodeParams.getChildrenPos(), ptNodeParams.getProbability(), wordId,
                 ptNodeParams.hasChildren(),
                 ptNodeParams.isBlacklisted()
                         || ptNodeParams.isNotAWord() /* isBlacklistedOrNotAWord */,
