@@ -69,6 +69,7 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.TextDecoratorUi;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.DebugFlags;
@@ -183,8 +184,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED = 6;
         private static final int MSG_RESET_CACHES = 7;
         private static final int MSG_WAIT_FOR_DICTIONARY_LOAD = 8;
+        private static final int MSG_SHOW_COMMIT_INDICATOR = 9;
         // Update this when adding new messages
-        private static final int MSG_LAST = MSG_WAIT_FOR_DICTIONARY_LOAD;
+        private static final int MSG_LAST = MSG_SHOW_COMMIT_INDICATOR;
 
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
@@ -195,6 +197,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         private int mDelayInMillisecondsToUpdateSuggestions;
         private int mDelayInMillisecondsToUpdateShiftState;
+        private int mDelayInMillisecondsToShowCommitIndicator;
 
         public UIHandler(final LatinIME ownerInstance) {
             super(ownerInstance);
@@ -206,10 +209,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return;
             }
             final Resources res = latinIme.getResources();
-            mDelayInMillisecondsToUpdateSuggestions =
-                    res.getInteger(R.integer.config_delay_in_milliseconds_to_update_suggestions);
-            mDelayInMillisecondsToUpdateShiftState =
-                    res.getInteger(R.integer.config_delay_in_milliseconds_to_update_shift_state);
+            mDelayInMillisecondsToUpdateSuggestions = res.getInteger(
+                    R.integer.config_delay_in_milliseconds_to_update_suggestions);
+            mDelayInMillisecondsToUpdateShiftState = res.getInteger(
+                    R.integer.config_delay_in_milliseconds_to_update_shift_state);
+            mDelayInMillisecondsToShowCommitIndicator = res.getInteger(
+                    R.integer.text_decorator_delay_in_milliseconds_to_show_commit_indicator);
         }
 
         @Override
@@ -258,7 +263,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case MSG_RESET_CACHES:
                 final SettingsValues settingsValues = latinIme.mSettings.getCurrent();
                 if (latinIme.mInputLogic.retryResetCachesAndReturnSuccess(
-                        msg.arg1 == 1 /* tryResumeSuggestions */,
+                        msg.arg1 == ARG1_TRUE /* tryResumeSuggestions */,
                         msg.arg2 /* remainingTries */, this /* handler */)) {
                     // If we were able to reset the caches, then we can reload the keyboard.
                     // Otherwise, we'll do it when we can.
@@ -266,6 +271,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                             settingsValues, latinIme.getCurrentAutoCapsState(),
                             latinIme.getCurrentRecapitalizeState());
                 }
+                break;
+            case MSG_SHOW_COMMIT_INDICATOR:
+                // Protocol of MSG_SET_COMMIT_INDICATOR_ENABLED:
+                // - what: MSG_SHOW_COMMIT_INDICATOR
+                // - arg1: not used.
+                // - arg2: not used.
+                // - obj:  the Runnable object to be called back.
+                ((Runnable) msg.obj).run();
                 break;
             case MSG_WAIT_FOR_DICTIONARY_LOAD:
                 Log.i(TAG, "Timeout waiting for dictionary load");
@@ -365,6 +378,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void showTailBatchInputResult(final SuggestedWords suggestedWords) {
             obtainMessage(MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED, suggestedWords).sendToTarget();
+        }
+
+        /**
+         * Posts a delayed task to show the commit indicator.
+         *
+         * <p>Only one task can exist in the queue. When this method is called, any prior task that
+         * has not yet fired will be canceled.</p>
+         * @param task the runnable object that will be fired when the delayed task is dispatched.
+         */
+        public void postShowCommitIndicatorTask(final Runnable task) {
+            removeMessages(MSG_SHOW_COMMIT_INDICATOR);
+            sendMessageDelayed(obtainMessage(MSG_SHOW_COMMIT_INDICATOR, task),
+                    mDelayInMillisecondsToShowCommitIndicator);
         }
 
         // Working variables for the following methods.
@@ -717,6 +743,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
         }
+        mInputLogic.setTextDecoratorUi(new TextDecoratorUi(this, view));
     }
 
     @Override
@@ -973,9 +1000,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // @Override
     public void onUpdateCursorAnchorInfo(final CursorAnchorInfo info) {
         if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
-            final CursorAnchorInfoCompatWrapper wrapper =
-                    CursorAnchorInfoCompatWrapper.fromObject(info);
-            // TODO: Implement here
+            mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
         }
     }
 
@@ -1179,6 +1204,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // In fullscreen mode, no need to have extra space to show the key preview.
         // If not, we should have extra space above the keyboard to show the key preview.
         mKeyPreviewBackingView.setVisibility(isFullscreenMode() ? View.GONE : View.VISIBLE);
+        mInputLogic.onUpdateFullscreenMode(isFullscreenMode());
     }
 
     private int getCurrentAutoCapsState() {
@@ -1216,6 +1242,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         mDictionaryFacilitator.addWordToUserDictionary(this /* context */, word);
+        mInputLogic.onAddWordToUserDictionary();
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
@@ -1412,7 +1439,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void setSuggestedWords(final SuggestedWords suggestedWords) {
-        mInputLogic.setSuggestedWords(suggestedWords);
+        final SettingsValues currentSettingsValues = mSettings.getCurrent();
+        mInputLogic.setSuggestedWords(suggestedWords, currentSettingsValues, mHandler);
         // TODO: Modify this when we support suggestions with hard keyboard
         if (!hasSuggestionStripView()) {
             return;
@@ -1421,7 +1449,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        final SettingsValues currentSettingsValues = mSettings.getCurrent();
         final boolean shouldShowImportantNotice =
                 ImportantNoticeUtils.shouldShowImportantNotice(this);
         final boolean shouldShowSuggestionCandidates =
