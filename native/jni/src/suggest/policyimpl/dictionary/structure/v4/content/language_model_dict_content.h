@@ -39,6 +39,9 @@ class HeaderPolicy;
  */
 class LanguageModelDictContent {
  public:
+    static const int UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE;
+    static const int BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE;
+
     // Pair of word id and probability entry used for iteration.
     class WordIdAndProbabilityEntry {
      public:
@@ -158,7 +161,7 @@ class LanguageModelDictContent {
 
     // entryCounts should be created by updateAllProbabilityEntries.
     bool truncateEntries(const int *const entryCounts, const int *const maxEntryCounts,
-            const HeaderPolicy *const headerPolicy);
+            const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
 
  private:
     DISALLOW_COPY_AND_ASSIGN(LanguageModelDictContent);
@@ -197,7 +200,7 @@ class LanguageModelDictContent {
     bool updateAllProbabilityEntriesInner(const int bitmapEntryIndex, const int level,
             const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
     bool turncateEntriesInSpecifiedLevel(const HeaderPolicy *const headerPolicy,
-            const int maxEntryCount, const int targetLevel);
+            const int maxEntryCount, const int targetLevel, int *const outEntryCount);
     bool getEntryInfo(const HeaderPolicy *const headerPolicy, const int targetLevel,
             const int bitmapEntryIndex, std::vector<int> *const prevWordIds,
             std::vector<EntryInfoToTurncate> *const outEntryInfo) const;

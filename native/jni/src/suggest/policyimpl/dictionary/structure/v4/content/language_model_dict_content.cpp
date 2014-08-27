@@ -23,6 +23,9 @@
 
 namespace latinime {
 
+const int LanguageModelDictContent::UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE = 0;
+const int LanguageModelDictContent::BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE = 1;
+
 bool LanguageModelDictContent::save(FILE *const file) const {
     return mTrieMap.save(file);
 }
@@ -78,12 +81,15 @@ LanguageModelDictContent::EntryRange LanguageModelDictContent::getProbabilityEnt
 }
 
 bool LanguageModelDictContent::truncateEntries(const int *const entryCounts,
-        const int *const maxEntryCounts, const HeaderPolicy *const headerPolicy) {
+        const int *const maxEntryCounts, const HeaderPolicy *const headerPolicy,
+        int *const outEntryCounts) {
     for (int i = 0; i <= MAX_PREV_WORD_COUNT_FOR_N_GRAM; ++i) {
         if (entryCounts[i] <= maxEntryCounts[i]) {
+            outEntryCounts[i] = entryCounts[i];
             continue;
         }
-        if (!turncateEntriesInSpecifiedLevel(headerPolicy, maxEntryCounts[i], i)) {
+        if (!turncateEntriesInSpecifiedLevel(headerPolicy, maxEntryCounts[i], i,
+                &outEntryCounts[i])) {
             return false;
         }
     }
@@ -185,7 +191,8 @@ bool LanguageModelDictContent::updateAllProbabilityEntriesInner(const int bitmap
 }
 
 bool LanguageModelDictContent::turncateEntriesInSpecifiedLevel(
-        const HeaderPolicy *const headerPolicy, const int maxEntryCount, const int targetLevel) {
+        const HeaderPolicy *const headerPolicy, const int maxEntryCount, const int targetLevel,
+        int *const outEntryCount) {
     std::vector<int> prevWordIds;
     std::vector<EntryInfoToTurncate> entryInfoVector;
     if (!getEntryInfo(headerPolicy, targetLevel, mTrieMap.getRootBitmapEntryIndex(),
@@ -193,8 +200,10 @@ bool LanguageModelDictContent::turncateEntriesInSpecifiedLevel(
         return false;
     }
     if (static_cast<int>(entryInfoVector.size()) <= maxEntryCount) {
+        *outEntryCount = static_cast<int>(entryInfoVector.size());
         return true;
     }
+    *outEntryCount = maxEntryCount;
     const int entryCountToRemove = static_cast<int>(entryInfoVector.size()) - maxEntryCount;
     std::partial_sort(entryInfoVector.begin(), entryInfoVector.begin() + entryCountToRemove,
             entryInfoVector.end(),

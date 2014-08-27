@@ -93,14 +93,16 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     }
     if (headerPolicy->isDecayingDict()) {
         int maxEntryCountTable[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
-        maxEntryCountTable[0] = headerPolicy->getMaxUnigramCount();
-        maxEntryCountTable[1] = headerPolicy->getMaxBigramCount();
+        maxEntryCountTable[LanguageModelDictContent::UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE] =
+                headerPolicy->getMaxUnigramCount();
+        maxEntryCountTable[LanguageModelDictContent::BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE] =
+                headerPolicy->getMaxBigramCount();
         for (size_t i = 2; i < NELEMS(maxEntryCountTable); ++i) {
             // TODO: Have max n-gram count.
             maxEntryCountTable[i] = headerPolicy->getMaxBigramCount();
         }
         if (!mBuffers->getMutableLanguageModelDictContent()->truncateEntries(entryCountTable,
-                maxEntryCountTable,  headerPolicy)) {
+                maxEntryCountTable, headerPolicy, entryCountTable)) {
             AKLOGE("Failed to truncate entries in language model dict content.");
             return false;
         }
@@ -204,7 +206,10 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &traversePolicyToUpdateAllPtNodeFlagsAndTerminalIds)) {
         return false;
     }
-    *outUnigramCount = traversePolicyToUpdateAllPositionFields.getUnigramCount();
+    *outUnigramCount =
+            entryCountTable[LanguageModelDictContent::UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE];
+    *outBigramCount =
+            entryCountTable[LanguageModelDictContent::BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE];
     return true;
 }
 
