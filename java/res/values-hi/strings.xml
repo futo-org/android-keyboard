@@ -80,14 +80,17 @@
     <string name="help_and_feedback" msgid="5328219371839879161">"सहायता और फ़ीडबैक"</string>
     <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाएं"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"सहेजने के लिए पुन: स्‍पर्श करें"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"सहेजने के लिए यहां स्पर्श करें"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"शब्‍दकोश उपलब्‍ध है"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेज़ी (यूएस)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"स्पेनिश (यूएस)"</string>
+    <string name="subtype_hi_ZZ" msgid="8860448146262798623">"हिंग्लिश"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"अंग्रेज़ी (यूके) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"अंग्रेज़ी (यूएस) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"स्‍पेनिश (यूएस) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"हिंग्लिश (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (पारंपरिक)"</string>
     <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (सिरिलिक)"</string>
     <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (लैटिन)"</string>
