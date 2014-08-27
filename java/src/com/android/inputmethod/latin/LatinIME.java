@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -43,6 +42,7 @@ import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -94,6 +94,7 @@ import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
+import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -150,8 +151,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO: Move these {@link View}s to {@link KeyboardSwitcher}.
     private View mInputView;
-    private View mExtractArea;
-    private View mKeyPreviewBackingView;
     private SuggestionStripView mSuggestionStripView;
 
     private RichInputMethodManager mRichImm;
@@ -735,9 +734,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setInputView(final View view) {
         super.setInputView(view);
         mInputView = view;
-        mExtractArea = getWindow().getWindow().getDecorView()
-                .findViewById(android.R.id.extractArea);
-        mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
@@ -1075,36 +1071,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestedWords(suggestedWords);
     }
 
-    private int getAdjustedBackingViewHeight() {
-        final int currentHeight = mKeyPreviewBackingView.getHeight();
-        if (currentHeight > 0) {
-            return currentHeight;
-        }
-
-        final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
-        if (visibleKeyboardView == null) {
-            return 0;
-        }
-        // TODO: !!!!!!!!!!!!!!!!!!!! Handle different backing view heights between the main   !!!
-        // keyboard and the emoji keyboard. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        final int keyboardHeight = visibleKeyboardView.getHeight();
-        final int suggestionsHeight = mSuggestionStripView.getHeight();
-        final int displayHeight = getResources().getDisplayMetrics().heightPixels;
-        final Rect rect = new Rect();
-        mKeyPreviewBackingView.getWindowVisibleDisplayFrame(rect);
-        final int notificationBarHeight = rect.top;
-        final int remainingHeight = displayHeight - notificationBarHeight - suggestionsHeight
-                - keyboardHeight;
-
-        final LayoutParams params = mKeyPreviewBackingView.getLayoutParams();
-        mSuggestionStripView.setMoreSuggestionsHeight(remainingHeight);
-
-        // Let the backing cover the remaining region entirely.
-        params.height = remainingHeight;
-        mKeyPreviewBackingView.setLayoutParams(params);
-        return params.height;
-    }
-
     @Override
     public void onComputeInsets(final InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
@@ -1112,40 +1078,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (visibleKeyboardView == null || !hasSuggestionStripView()) {
             return;
         }
+        final int inputHeight = mInputView.getHeight();
         final boolean hasHardwareKeyboard = mKeyboardSwitcher.hasHardwareKeyboard();
         if (hasHardwareKeyboard && visibleKeyboardView.getVisibility() == View.GONE) {
             // If there is a hardware keyboard and a visible software keyboard view has been hidden,
             // no visual element will be shown on the screen.
-            outInsets.touchableInsets = mInputView.getHeight();
-            outInsets.visibleTopInsets = mInputView.getHeight();
+            outInsets.touchableInsets = inputHeight;
+            outInsets.visibleTopInsets = inputHeight;
             return;
         }
-        final int adjustedBackingHeight = getAdjustedBackingViewHeight();
-        final boolean backingGone = (mKeyPreviewBackingView.getVisibility() == View.GONE);
-        final int backingHeight = backingGone ? 0 : adjustedBackingHeight;
-        // In fullscreen mode, the height of the extract area managed by InputMethodService should
-        // be considered.
-        // See {@link android.inputmethodservice.InputMethodService#onComputeInsets}.
-        final int extractHeight = isFullscreenMode() ? mExtractArea.getHeight() : 0;
-        final int suggestionsHeight = (mSuggestionStripView.getVisibility() == View.GONE) ? 0
-                : mSuggestionStripView.getHeight();
-        final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
-        int visibleTopY = extraHeight;
-        // Need to set touchable region only if input view is being shown
+        final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
+                && mSuggestionStripView.getVisibility() == View.VISIBLE)
+                ? mSuggestionStripView.getHeight() : 0;
+        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight;
+        mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
+        // Need to set touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {
-            // Note that the height of Emoji layout is the same as the height of the main keyboard
-            // and the suggestion strip
-            if (mKeyboardSwitcher.isShowingEmojiPalettes()
-                    || mSuggestionStripView.getVisibility() == View.VISIBLE) {
-                visibleTopY -= suggestionsHeight;
-            }
-            final int touchY = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
-            final int touchWidth = visibleKeyboardView.getWidth();
-            final int touchHeight = visibleKeyboardView.getHeight() + extraHeight
+            final int touchLeft = 0;
+            final int touchTop = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
+            final int touchRight = visibleKeyboardView.getWidth();
+            final int touchBottom = inputHeight
                     // Extend touchable region below the keyboard.
                     + EXTENDED_TOUCHABLE_REGION_HEIGHT;
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
-            outInsets.touchableRegion.set(0, touchY, touchWidth, touchHeight);
+            outInsets.touchableRegion.set(touchLeft, touchTop, touchRight, touchBottom);
         }
         outInsets.contentTopInsets = visibleTopY;
         outInsets.visibleTopInsets = visibleTopY;
@@ -1190,12 +1146,27 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void updateFullscreenMode() {
+        // Override layout parameters to expand {@link SoftInputWindow} to the entire screen.
+        // See {@link InputMethodService#setinputView(View) and
+        // {@link SoftInputWindow#updateWidthHeight(WindowManager.LayoutParams)}.
+        final Window window = getWindow().getWindow();
+        ViewLayoutUtils.updateLayoutHeightOf(window, LayoutParams.MATCH_PARENT);
+        // This method may be called before {@link #setInputView(View)}.
+        if (mInputView != null) {
+            // In non-fullscreen mode, {@link InputView} and its parent inputArea should expand to
+            // the entire screen and be placed at the bottom of {@link SoftInputWindow}.
+            // In fullscreen mode, these shouldn't expand to the entire screen and should be
+            // coexistent with {@link #mExtractedArea} above.
+            // See {@link InputMethodService#setInputView(View) and
+            // com.android.internal.R.layout.input_method.xml.
+            final int layoutHeight = isFullscreenMode()
+                    ? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT;
+            final View inputArea = window.findViewById(android.R.id.inputArea);
+            ViewLayoutUtils.updateLayoutHeightOf(inputArea, layoutHeight);
+            ViewLayoutUtils.updateLayoutGravityOf(inputArea, Gravity.BOTTOM);
+            ViewLayoutUtils.updateLayoutHeightOf(mInputView, layoutHeight);
+        }
         super.updateFullscreenMode();
-
-        if (mKeyPreviewBackingView == null) return;
-        // In fullscreen mode, no need to have extra space to show the key preview.
-        // If not, we should have extra space above the keyboard to show the key preview.
-        mKeyPreviewBackingView.setVisibility(isFullscreenMode() ? View.GONE : View.VISIBLE);
         mInputLogic.onUpdateFullscreenMode(isFullscreenMode());
     }
 
