@@ -924,8 +924,14 @@ public final class RichInputConnection {
      */
     public boolean requestUpdateCursorAnchorInfo(final boolean enableMonitor,
             final boolean requestImmediateCallback) {
-        final boolean scheduled = InputConnectionCompatUtils.requestUpdateCursorAnchorInfo(mIC,
-                enableMonitor, requestImmediateCallback);
+        mIC = mParent.getCurrentInputConnection();
+        final boolean scheduled;
+        if (null != mIC) {
+            scheduled = InputConnectionCompatUtils.requestUpdateCursorAnchorInfo(mIC,
+                    enableMonitor, requestImmediateCallback);
+        } else {
+            scheduled = false;
+        }
         mCursorAnchorInfoMonitorEnabled = (scheduled && enableMonitor);
         return scheduled;
     }
