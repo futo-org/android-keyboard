@@ -132,4 +132,5 @@ LATIN_IME_CORE_TEST_FILES := \
     suggest/policyimpl/dictionary/utils/sparse_table_test.cpp \
     suggest/policyimpl/dictionary/utils/trie_map_test.cpp \
     utils/autocorrection_threshold_utils_test.cpp \
-    utils/int_array_view_test.cpp
+    utils/int_array_view_test.cpp \
+    utils/time_keeper_test.cpp
