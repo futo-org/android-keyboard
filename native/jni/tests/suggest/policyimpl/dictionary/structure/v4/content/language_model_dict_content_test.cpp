@@ -18,6 +18,8 @@
 
 #include <gtest/gtest.h>
 
+#include <unordered_set>
+
 #include "utils/int_array_view.h"
 
 namespace latinime {
@@ -67,6 +69,24 @@ TEST(LanguageModelDictContentTest, TestUnigramProbabilityWithHistoricalInfo) {
     EXPECT_FALSE(LanguageModelDictContent.removeProbabilityEntry(wordId));
     EXPECT_TRUE(LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry));
     EXPECT_TRUE(LanguageModelDictContent.removeProbabilityEntry(wordId));
+}
+
+TEST(LanguageModelDictContentTest, TestIterateProbabilityEntry) {
+    LanguageModelDictContent languageModelDictContent(false /* useHistoricalInfo */);
+
+    const ProbabilityEntry originalEntry(0xFC, 100);
+
+    const int wordIds[] = { 1, 2, 3, 4, 5 };
+    for (const int wordId : wordIds) {
+        languageModelDictContent.setProbabilityEntry(wordId, &originalEntry);
+    }
+    std::unordered_set<int> wordIdSet(std::begin(wordIds), std::end(wordIds));
+    for (const auto entry : languageModelDictContent.getProbabilityEntries(WordIdArrayView())) {
+        EXPECT_EQ(originalEntry.getFlags(), entry.getProbabilityEntry().getFlags());
+        EXPECT_EQ(originalEntry.getProbability(), entry.getProbabilityEntry().getProbability());
+        wordIdSet.erase(entry.getWordId());
+    }
+    EXPECT_TRUE(wordIdSet.empty());
 }
 
 }  // namespace
