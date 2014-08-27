@@ -50,6 +50,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.DebugFlags;
+import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -140,8 +141,9 @@ public final class InputLogic {
      * Call this when input starts or restarts in some editor (typically, in onStartInputView).
      *
      * @param combiningSpec the combining spec string for this subtype
+     * @param settingsValues the current settings values
      */
-    public void startInput(final String combiningSpec) {
+    public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
         mEnteredText = null;
         mWordComposer.restartCombining(combiningSpec);
         resetComposingState(true /* alsoResetLastComposedWord */);
@@ -159,15 +161,24 @@ public final class InputLogic {
         } else {
             mInputLogicHandler.reset();
         }
+
+        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
+            // AcceptTypedWord feature relies on CursorAnchorInfo.
+            if (settingsValues.mShouldShowUiToAcceptTypedWord) {
+                mConnection.requestUpdateCursorAnchorInfo(true /* enableMonitor */,
+                        true /* requestImmediateCallback */);
+            }
+        }
     }
 
     /**
      * Call this when the subtype changes.
      * @param combiningSpec the spec string for the combining rules
+     * @param settingsValues the current settings values
      */
-    public void onSubtypeChanged(final String combiningSpec) {
+    public void onSubtypeChanged(final String combiningSpec, final SettingsValues settingsValues) {
         finishInput();
-        startInput(combiningSpec);
+        startInput(combiningSpec, settingsValues);
     }
 
     /**
@@ -649,7 +660,7 @@ public final class InputLogic {
             // message, this is called outside any batch edit. Potentially, this may result in some
             // janky flickering of the screen, although the display speed makes it unlikely in
             // the practice.
-            mConnection.setComposingText(textWithUnderline, 1);
+            setComposingTextInternal(textWithUnderline, 1);
         }
     }
 
@@ -672,7 +683,7 @@ public final class InputLogic {
             inputTransaction.setDidAffectContents();
         }
         if (mWordComposer.isComposingWord()) {
-            mConnection.setComposingText(mWordComposer.getTypedWord(), 1);
+            setComposingTextInternal(mWordComposer.getTypedWord(), 1);
             inputTransaction.setDidAffectContents();
             inputTransaction.setRequiresUpdateSuggestions();
         }
@@ -908,8 +919,7 @@ public final class InputLogic {
             if (mWordComposer.isSingleLetter()) {
                 mWordComposer.setCapitalizedModeAtStartComposingTime(inputTransaction.mShiftState);
             }
-            mConnection.setComposingText(getTextWithUnderline(
-                    mWordComposer.getTypedWord()), 1);
+            setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
             final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event,
                     inputTransaction);
@@ -1072,7 +1082,7 @@ public final class InputLogic {
                 mWordComposer.applyProcessedEvent(event);
             }
             if (mWordComposer.isComposingWord()) {
-                mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+                setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             } else {
                 mConnection.commitText("", 1);
             }
@@ -1640,7 +1650,7 @@ public final class InputLogic {
             final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
             mWordComposer.setComposingWord(codePoints,
                     mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
-            mConnection.setComposingText(textToCommit, 1);
+            setComposingTextInternal(textToCommit, 1);
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -1973,10 +1983,10 @@ public final class InputLogic {
             }
             final String lastWord = batchInputText.substring(indexOfLastSpace);
             mWordComposer.setBatchInputWord(lastWord);
-            mConnection.setComposingText(lastWord, 1);
+            setComposingTextInternal(lastWord, 1);
         } else {
             mWordComposer.setBatchInputWord(batchInputText);
-            mConnection.setComposingText(batchInputText, 1);
+            setComposingTextInternal(batchInputText, 1);
         }
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
@@ -2175,6 +2185,24 @@ public final class InputLogic {
                 inputStyle, sequenceNumber, callback);
     }
 
+    /**
+     * Used as an injection point for each call of
+     * {@link RichInputConnection#setComposingText(CharSequence, int)}.
+     *
+     * <p>Currently using this method is optional and you can still directly call
+     * {@link RichInputConnection#setComposingText(CharSequence, int)}, but it is recommended to
+     * use this method whenever possible to optimize the behavior of {@link TextDecorator}.<p>
+     * <p>TODO: Should we move this mechanism to {@link RichInputConnection}?</p>
+     *
+     * @param newComposingText the composing text to be set
+     * @param newCursorPosition the new cursor position
+     */
+    private void setComposingTextInternal(final CharSequence newComposingText,
+            final int newCursorPosition) {
+        mConnection.setComposingText(newComposingText, newCursorPosition);
+        mTextDecorator.hideIndicatorIfNecessary(newComposingText);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Following methods are tentatively placed in this class for the integration with
     // TextDecorator.
@@ -2221,6 +2249,10 @@ public final class InputLogic {
      */
     private boolean shouldShowCommitIndicator(final SuggestedWords suggestedWords,
             final SettingsValues settingsValues) {
+        if (!mConnection.isCursorAnchorInfoMonitorEnabled()) {
+            // We cannot help in this case because we are heavily relying on this new API.
+            return false;
+        }
         if (!settingsValues.mShouldShowUiToAcceptTypedWord) {
             return false;
         }
