@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.inputlogic;
 
 import android.graphics.Color;
+import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -27,11 +28,14 @@ import android.view.KeyEvent;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.keyboard.TextDecorator;
+import com.android.inputmethod.keyboard.TextDecoratorUiOperator;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
@@ -80,6 +84,18 @@ public final class InputLogic {
     public SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
     public final Suggest mSuggest;
     private final DictionaryFacilitator mDictionaryFacilitator;
+
+    private final TextDecorator mTextDecorator = new TextDecorator(new TextDecorator.Listener() {
+        @Override
+        public void onClickComposingTextToCommit(SuggestedWordInfo wordInfo) {
+            mLatinIME.pickSuggestionManually(wordInfo);
+        }
+        @Override
+        public void onClickComposingTextToAddToDictionary(SuggestedWordInfo wordInfo) {
+            mLatinIME.addWordToUserDictionary(wordInfo.mWord);
+            mLatinIME.dismissAddToDictionaryHint();
+        }
+    });
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     // This has package visibility so it can be accessed from InputLogicHandler.
@@ -303,8 +319,18 @@ public final class InputLogic {
             return inputTransaction;
         }
 
-        commitChosenWord(settingsValues, suggestion,
-                LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR);
+        final boolean shouldShowAddToDictionaryHint = shouldShowAddToDictionaryHint(suggestionInfo);
+        final boolean shouldShowAddToDictionaryIndicator =
+                shouldShowAddToDictionaryHint && settingsValues.mShouldShowUiToAcceptTypedWord;
+        final int backgroundColor;
+        if (shouldShowAddToDictionaryIndicator) {
+            backgroundColor = settingsValues.mTextHighlightColorForAddToDictionaryIndicator;
+        } else {
+            backgroundColor = Color.TRANSPARENT;
+        }
+        commitChosenWordWithBackgroundColor(settingsValues, suggestion,
+                LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR,
+                backgroundColor);
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
@@ -312,12 +338,15 @@ public final class InputLogic {
         mSpaceState = SpaceState.PHANTOM;
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
 
-        if (shouldShowAddToDictionaryHint(suggestionInfo)) {
+        if (shouldShowAddToDictionaryHint) {
             mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
             // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
             handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
+        }
+        if (shouldShowAddToDictionaryIndicator) {
+            mTextDecorator.showAddToDictionaryIndicator(suggestionInfo);
         }
         return inputTransaction;
     }
@@ -386,6 +415,8 @@ public final class InputLogic {
 
         // The cursor has been moved : we now accept to perform recapitalization
         mRecapitalizeStatus.enable();
+        // We moved the cursor and need to invalidate the indicator right now.
+        mTextDecorator.reset();
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
         mLatinIME.mHandler.postResumeSuggestions(false /* shouldIncludeResumedWordInSuggestions */,
                 true /* shouldDelay */);
@@ -561,7 +592,8 @@ public final class InputLogic {
 
     // TODO: on the long term, this method should become private, but it will be difficult.
     // Especially, how do we deal with InputMethodService.onDisplayCompletions?
-    public void setSuggestedWords(final SuggestedWords suggestedWords) {
+    public void setSuggestedWords(final SuggestedWords suggestedWords,
+            final SettingsValues settingsValues, final LatinIME.UIHandler handler) {
         if (SuggestedWords.EMPTY != suggestedWords) {
             final String autoCorrection;
             if (suggestedWords.mWillAutoCorrect) {
@@ -575,6 +607,38 @@ public final class InputLogic {
         }
         mSuggestedWords = suggestedWords;
         final boolean newAutoCorrectionIndicator = suggestedWords.mWillAutoCorrect;
+        if (shouldShowCommitIndicator(suggestedWords, settingsValues)) {
+            // typedWordInfo is never null here.
+            final SuggestedWordInfo typedWordInfo = suggestedWords.getTypedWordInfoOrNull();
+            handler.postShowCommitIndicatorTask(new Runnable() {
+                @Override
+                public void run() {
+                    // TODO: This needs to be refactored to ensure that mWordComposer is accessed
+                    // only from the UI thread.
+                    if (!mWordComposer.isComposingWord()) {
+                        mTextDecorator.reset();
+                        return;
+                    }
+                    final SuggestedWordInfo currentTypedWordInfo =
+                            mSuggestedWords.getTypedWordInfoOrNull();
+                    if (currentTypedWordInfo == null) {
+                        mTextDecorator.reset();
+                        return;
+                    }
+                    if (!currentTypedWordInfo.equals(typedWordInfo)) {
+                        // Suggested word has been changed. This task is obsolete.
+                        mTextDecorator.reset();
+                        return;
+                    }
+                    mTextDecorator.showCommitIndicator(typedWordInfo);
+                }
+            });
+        } else {
+            // Note: It is OK to not cancel previous postShowCommitIndicatorTask() here. Having a
+            // cancellation mechanism could improve performance a bit though.
+            mTextDecorator.reset();
+        }
+
         // Put a blue underline to a word in TextView which will be auto-corrected.
         if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
                 && mWordComposer.isComposingWord()) {
@@ -756,6 +820,8 @@ public final class InputLogic {
         if (!mWordComposer.isComposingWord() &&
                 mSuggestionStripViewAccessor.isShowingAddToDictionaryHint()) {
             mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
+            mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
+            mTextDecorator.reset();
         }
 
         final int codePoint = event.mCodePoint;
@@ -2107,5 +2173,75 @@ public final class InputLogic {
                         settingsValues.mAdditionalFeaturesSettingValues),
                 settingsValues.mAutoCorrectionEnabledPerUserSettings,
                 inputStyle, sequenceNumber, callback);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Following methods are tentatively placed in this class for the integration with
+    // TextDecorator.
+    // TODO: Decouple things that are not related to the input logic.
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Sets the UI operator for {@link TextDecorator}.
+     * @param uiOperator the UI operator which should be associated with {@link TextDecorator}.
+     */
+    public void setTextDecoratorUi(final TextDecoratorUiOperator uiOperator) {
+        mTextDecorator.setUiOperator(uiOperator);
+    }
+
+    /**
+     * Must be called from {@link InputMethodService#onUpdateCursorAnchorInfo} is called.
+     * @param info The wrapper object with which we can access cursor/anchor info.
+     */
+    public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
+        mTextDecorator.onUpdateCursorAnchorInfo(info);
+    }
+
+    /**
+     * Must be called when {@link InputMethodService#updateFullscreenMode} is called.
+     * @param isFullscreen {@code true} if the input method is in full-screen mode.
+     */
+    public void onUpdateFullscreenMode(final boolean isFullscreen) {
+        mTextDecorator.notifyFullScreenMode(isFullscreen);
+    }
+
+    /**
+     * Must be called from {@link LatinIME#addWordToUserDictionary(String)}.
+     */
+    public void onAddWordToUserDictionary() {
+        mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
+        mTextDecorator.reset();
+    }
+
+    /**
+     * Returns whether the commit indicator should be shown or not.
+     * @param suggestedWords the suggested word that is being displayed.
+     * @param settingsValues the current settings value.
+     * @return {@code true} if the commit indicator should be shown.
+     */
+    private boolean shouldShowCommitIndicator(final SuggestedWords suggestedWords,
+            final SettingsValues settingsValues) {
+        if (!settingsValues.mShouldShowUiToAcceptTypedWord) {
+            return false;
+        }
+        final SuggestedWordInfo typedWordInfo = suggestedWords.getTypedWordInfoOrNull();
+        if (typedWordInfo == null) {
+            return false;
+        }
+        if (suggestedWords.mInputStyle != SuggestedWords.INPUT_STYLE_TYPING){
+            return false;
+        }
+        if (settingsValues.mShowCommitIndicatorOnlyForAutoCorrection
+                && !suggestedWords.mWillAutoCorrect) {
+            return false;
+        }
+        // TODO: Calling shouldShowAddToDictionaryHint(typedWordInfo) multiple times should be fine
+        // in terms of performance, but we can do better. One idea is to make SuggestedWords include
+        // a boolean that tells whether the word is a dictionary word or not.
+        if (settingsValues.mShowCommitIndicatorOnlyForOutOfVocabulary
+                && !shouldShowAddToDictionaryHint(typedWordInfo)) {
+            return false;
+        }
+        return true;
     }
 }
