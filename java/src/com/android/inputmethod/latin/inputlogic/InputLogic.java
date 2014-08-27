@@ -20,7 +20,9 @@ import android.graphics.Color;
 import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.KeyCharacterMap;
@@ -620,6 +622,7 @@ public final class InputLogic {
         final boolean newAutoCorrectionIndicator = suggestedWords.mWillAutoCorrect;
         if (shouldShowCommitIndicator(suggestedWords, settingsValues)) {
             // typedWordInfo is never null here.
+            final int textBackgroundColor = settingsValues.mTextHighlightColorForCommitIndicator;
             final SuggestedWordInfo typedWordInfo = suggestedWords.getTypedWordInfoOrNull();
             handler.postShowCommitIndicatorTask(new Runnable() {
                 @Override
@@ -641,6 +644,10 @@ public final class InputLogic {
                         mTextDecorator.reset();
                         return;
                     }
+                    // TODO: As with the above TODO comment, this operation must be performed only
+                    // on the UI thread too. Needs to be refactored.
+                    setComposingTextInternalWithBackgroundColor(typedWordInfo.mWord,
+                            1 /* newCursorPosition */, textBackgroundColor);
                     mTextDecorator.showCommitIndicator(typedWordInfo);
                 }
             });
@@ -2199,8 +2206,38 @@ public final class InputLogic {
      */
     private void setComposingTextInternal(final CharSequence newComposingText,
             final int newCursorPosition) {
-        mConnection.setComposingText(newComposingText, newCursorPosition);
-        mTextDecorator.hideIndicatorIfNecessary(newComposingText);
+        setComposingTextInternalWithBackgroundColor(newComposingText, newCursorPosition,
+                Color.TRANSPARENT);
+    }
+
+    /**
+     * Equivalent to {@link #setComposingTextInternal(CharSequence, int)} except that this method
+     * allows to set {@link BackgroundColorSpan} to the composing text with the given color.
+     *
+     * <p>TODO: Currently the background color is exclusive with the black underline, which is
+     * automatically added by the framework. We need to change the framework if we need to have both
+     * of them at the same time.</p>
+     * <p>TODO: Should we move this method to {@link RichInputConnection}?</p>
+     *
+     * @param newComposingText the composing text to be set
+     * @param newCursorPosition the new cursor position
+     * @param backgroundColor the background color to be set to the composing text. Set
+     * {@link Color#TRANSPARENT} to disable the background color.
+     */
+    private void setComposingTextInternalWithBackgroundColor(final CharSequence newComposingText,
+            final int newCursorPosition, final int backgroundColor) {
+        final CharSequence composingTextToBeSet;
+        if (backgroundColor == Color.TRANSPARENT) {
+            composingTextToBeSet = newComposingText;
+        } else {
+            final SpannableString spannable = new SpannableString(newComposingText);
+            final BackgroundColorSpan backgroundColorSpan =
+                    new BackgroundColorSpan(backgroundColor);
+            spannable.setSpan(backgroundColorSpan, 0, spannable.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
+            composingTextToBeSet = spannable;
+        }
+        mConnection.setComposingText(composingTextToBeSet, newCursorPosition);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
