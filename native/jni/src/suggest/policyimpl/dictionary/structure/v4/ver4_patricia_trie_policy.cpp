@@ -158,11 +158,21 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordsPtNod
     if (!prevWordsPtNodePos) {
         return;
     }
-    const int bigramsPosition = getBigramsPositionOfPtNode(prevWordsPtNodePos[0]);
-    BinaryDictionaryBigramsIterator bigramsIt(&mBigramPolicy, bigramsPosition);
-    while (bigramsIt.hasNext()) {
-        bigramsIt.next();
-        listener->onVisitEntry(bigramsIt.getProbability(), bigramsIt.getBigramPos());
+    // TODO: Support n-gram.
+    const PtNodeParams ptNodeParams =
+            mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(prevWordsPtNodePos[0]);
+    const int prevWordId = ptNodeParams.getTerminalId();
+    const WordIdArrayView prevWordIds = WordIdArrayView::fromObject(&prevWordId);
+    const auto languageModelDictContent = mBuffers->getLanguageModelDictContent();
+    for (const auto entry : languageModelDictContent->getProbabilityEntries(prevWordIds)) {
+        const ProbabilityEntry &probabilityEntry = entry.getProbabilityEntry();
+        const int probability = probabilityEntry.hasHistoricalInfo() ?
+                ForgettingCurveUtils::decodeProbability(
+                        probabilityEntry.getHistoricalInfo(), mHeaderPolicy) :
+                probabilityEntry.getProbability();
+        const int ptNodePos = mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(
+                entry.getWordId());
+        listener->onVisitEntry(probability, ptNodePos);
     }
 }
 
