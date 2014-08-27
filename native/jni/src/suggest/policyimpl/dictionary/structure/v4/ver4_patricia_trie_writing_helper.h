@@ -66,49 +66,6 @@ class Ver4PatriciaTrieWritingHelper {
         const TerminalPositionLookupTable::TerminalIdMap *const mTerminalIdMap;
     };
 
-    // For truncateUnigrams() and truncateBigrams().
-    class DictProbability {
-     public:
-        DictProbability(const int dictPos, const int probability, const int timestamp)
-                : mDictPos(dictPos), mProbability(probability), mTimestamp(timestamp) {}
-
-        int getDictPos() const {
-            return mDictPos;
-        }
-
-        int getProbability() const {
-            return mProbability;
-        }
-
-        int getTimestamp() const {
-            return mTimestamp;
-        }
-
-     private:
-        DISALLOW_DEFAULT_CONSTRUCTOR(DictProbability);
-
-        int mDictPos;
-        int mProbability;
-        int mTimestamp;
-    };
-
-    // For truncateUnigrams() and truncateBigrams().
-    class DictProbabilityComparator {
-     public:
-        bool operator()(const DictProbability &left, const DictProbability &right) {
-            if (left.getProbability() != right.getProbability()) {
-                return left.getProbability() > right.getProbability();
-            }
-            if (left.getTimestamp() != right.getTimestamp()) {
-                return left.getTimestamp() < right.getTimestamp();
-            }
-            return left.getDictPos() > right.getDictPos();
-        }
-
-     private:
-        DISALLOW_ASSIGNMENT_OPERATOR(DictProbabilityComparator);
-    };
-
     bool runGC(const int rootPtNodeArrayPos, const HeaderPolicy *const headerPolicy,
             Ver4DictBuffers *const buffersToWrite, int *const outUnigramCount,
             int *const outBigramCount);

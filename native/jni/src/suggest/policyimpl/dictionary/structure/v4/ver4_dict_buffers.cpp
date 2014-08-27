@@ -159,11 +159,6 @@ bool Ver4DictBuffers::flushDictBuffers(FILE *const file) const {
         AKLOGE("Language model dict content cannot be written.");
         return false;
     }
-    // Write bigram dict content.
-    if (!mBigramDictContent.flushToFile(file)) {
-        AKLOGE("Bigram dict content cannot be written.");
-        return false;
-    }
     // Write shortcut dict content.
     if (!mShortcutDictContent.flushToFile(file)) {
         AKLOGE("Shortcut dict content cannot be written.");
@@ -186,8 +181,6 @@ Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
                   contentBuffers[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX]),
           mLanguageModelDictContent(contentBuffers[Ver4DictConstants::LANGUAGE_MODEL_BUFFER_INDEX],
                   mHeaderPolicy.hasHistoricalInfoOfWords()),
-          mBigramDictContent(&contentBuffers[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
-                  mHeaderPolicy.hasHistoricalInfoOfWords()),
           mShortcutDictContent(&contentBuffers[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX]),
           mIsUpdatable(mDictBuffer->isUpdatable()) {}
 
@@ -196,7 +189,6 @@ Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const i
           mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
           mExpandableTrieBuffer(maxTrieSize), mTerminalPositionLookupTable(),
           mLanguageModelDictContent(headerPolicy->hasHistoricalInfoOfWords()),
-          mBigramDictContent(headerPolicy->hasHistoricalInfoOfWords()), mShortcutDictContent(),
-          mIsUpdatable(true) {}
+          mShortcutDictContent(),  mIsUpdatable(true) {}
 
 } // namespace latinime
