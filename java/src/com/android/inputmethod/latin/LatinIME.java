@@ -57,7 +57,6 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
-import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.event.Event;
@@ -777,20 +776,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.onSubtypeChanged(subtype);
-        mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype));
+        mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype),
+                mSettings.getCurrent());
         loadKeyboard();
     }
 
     private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
-        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
-            // AcceptTypedWord feature relies on CursorAnchorInfo.
-            if (mSettings.getCurrent().mShouldShowUiToAcceptTypedWord) {
-                InputConnectionCompatUtils.requestUpdateCursorAnchorInfo(
-                        getCurrentInputConnection(), true /* enableMonitor */,
-                        true /* requestImmediateCallback */);
-            }
-        }
     }
 
     @SuppressWarnings("deprecation")
@@ -859,7 +851,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // span, so we should reset our state unconditionally, even if restarting is true.
         // We also tell the input logic about the combining rules for the current subtype, so
         // it can adjust its combiners if needed.
-        mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype());
+        mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype(),
+                currentSettingsValues);
 
         // Note: the following does a round-trip IPC on the main thread: be careful
         final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();

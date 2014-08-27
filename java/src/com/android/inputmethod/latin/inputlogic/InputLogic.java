@@ -50,6 +50,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.DebugFlags;
+import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -140,8 +141,9 @@ public final class InputLogic {
      * Call this when input starts or restarts in some editor (typically, in onStartInputView).
      *
      * @param combiningSpec the combining spec string for this subtype
+     * @param settingsValues the current settings values
      */
-    public void startInput(final String combiningSpec) {
+    public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
         mEnteredText = null;
         mWordComposer.restartCombining(combiningSpec);
         resetComposingState(true /* alsoResetLastComposedWord */);
@@ -159,15 +161,24 @@ public final class InputLogic {
         } else {
             mInputLogicHandler.reset();
         }
+
+        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
+            // AcceptTypedWord feature relies on CursorAnchorInfo.
+            if (settingsValues.mShouldShowUiToAcceptTypedWord) {
+                mConnection.requestUpdateCursorAnchorInfo(true /* enableMonitor */,
+                        true /* requestImmediateCallback */);
+            }
+        }
     }
 
     /**
      * Call this when the subtype changes.
      * @param combiningSpec the spec string for the combining rules
+     * @param settingsValues the current settings values
      */
-    public void onSubtypeChanged(final String combiningSpec) {
+    public void onSubtypeChanged(final String combiningSpec, final SettingsValues settingsValues) {
         finishInput();
-        startInput(combiningSpec);
+        startInput(combiningSpec, settingsValues);
     }
 
     /**
@@ -2238,6 +2249,10 @@ public final class InputLogic {
      */
     private boolean shouldShowCommitIndicator(final SuggestedWords suggestedWords,
             final SettingsValues settingsValues) {
+        if (!mConnection.isCursorAnchorInfoMonitorEnabled()) {
+            // We cannot help in this case because we are heavily relying on this new API.
+            return false;
+        }
         if (!settingsValues.mShouldShowUiToAcceptTypedWord) {
             return false;
         }

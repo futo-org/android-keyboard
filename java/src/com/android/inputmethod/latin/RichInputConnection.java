@@ -30,7 +30,9 @@ import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 
+import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
@@ -905,5 +907,34 @@ public final class RichInputConnection {
             }
             mIC.setSelection(mExpectedSelStart, mExpectedSelEnd);
         }
+    }
+
+    private boolean mCursorAnchorInfoMonitorEnabled = false;
+
+    /**
+     * Requests the editor to call back {@link InputMethodManager#updateCursorAnchorInfo}.
+     * @param enableMonitor {@code true} to request the editor to call back the method whenever the
+     * cursor/anchor position is changed.
+     * @param requestImmediateCallback {@code true} to request the editor to call back the method
+     * as soon as possible to notify the current cursor/anchor position to the input method.
+     * @return {@code true} if the request is accepted. Returns {@code false} otherwise, which
+     * includes "not implemented" or "rejected" or "temporarily unavailable" or whatever which
+     * prevents the application from fulfilling the request. (TODO: Improve the API when it turns
+     * out that we actually need more detailed error codes)
+     */
+    public boolean requestUpdateCursorAnchorInfo(final boolean enableMonitor,
+            final boolean requestImmediateCallback) {
+        final boolean scheduled = InputConnectionCompatUtils.requestUpdateCursorAnchorInfo(mIC,
+                enableMonitor, requestImmediateCallback);
+        mCursorAnchorInfoMonitorEnabled = (scheduled && enableMonitor);
+        return scheduled;
+    }
+
+    /**
+     * @return {@code true} if the application reported that the monitor mode of
+     * {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} is currently enabled.
+     */
+    public boolean isCursorAnchorInfoMonitorEnabled() {
+        return mCursorAnchorInfoMonitorEnabled;
     }
 }
