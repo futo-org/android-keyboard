@@ -39,6 +39,7 @@
 #include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_pt_node_array_reader.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 namespace backward {
@@ -75,7 +76,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mBigramCount(mHeaderPolicy->getBigramCount()),
               mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {};
 
-    AK_FORCE_INLINE int getRootPosition() const {
+    virtual int getRootPosition() const {
         return 0;
     }
 
@@ -86,8 +87,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             const int terminalPtNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
-    int getTerminalPtNodePositionOfWord(const int *const inWord,
-            const int length, const bool forceLowerCaseSearch) const;
+    int getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
+            const bool forceLowerCaseSearch) const;
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
@@ -106,16 +107,16 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mShortcutPolicy;
     }
 
-    bool addUnigramEntry(const int *const word, const int length,
+    bool addUnigramEntry(const CodePointArrayView wordCodePoints,
             const UnigramProperty *const unigramProperty);
 
-    bool removeUnigramEntry(const int *const word, const int length);
+    bool removeUnigramEntry(const CodePointArrayView wordCodePoints);
 
     bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty);
 
-    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo, const int *const word1,
-            const int length1);
+    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+            const CodePointArrayView wordCodePoints);
 
     bool flush(const char *const filePath);
 
@@ -126,8 +127,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength);
 
-    const WordProperty getWordProperty(const int *const codePoints,
-            const int codePointCount) const;
+    const WordProperty getWordProperty(const CodePointArrayView wordCodePoints) const;
 
     int getNextWordAndNextToken(const int token, int *const outCodePoints,
             int *const outCodePointCount);

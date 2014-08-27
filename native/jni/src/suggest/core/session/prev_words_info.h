@@ -21,6 +21,7 @@
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/char_utils.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -91,19 +92,11 @@ class PrevWordsInfo {
     }
 
     // n is 1-indexed.
-    const int *getNthPrevWordCodePoints(const int n) const {
+    const CodePointArrayView getNthPrevWordCodePoints(const int n) const {
         if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
-            return nullptr;
+            return CodePointArrayView();
         }
-        return mPrevWordCodePoints[n - 1];
-    }
-
-    // n is 1-indexed.
-    int getNthPrevWordCodePointCount(const int n) const {
-        if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
-            return 0;
-        }
-        return mPrevWordCodePointCount[n - 1];
+        return CodePointArrayView(mPrevWordCodePoints[n - 1], mPrevWordCodePointCount[n - 1]);
     }
 
     // n is 1-indexed.
@@ -134,8 +127,9 @@ class PrevWordsInfo {
                 return NOT_A_DICT_POS;
             }
         }
+        const CodePointArrayView codePointArrayView(codePoints, codePointCount);
         const int wordPtNodePos = dictStructurePolicy->getTerminalPtNodePositionOfWord(
-                codePoints, codePointCount, false /* forceLowerCaseSearch */);
+                codePointArrayView, false /* forceLowerCaseSearch */);
         if (wordPtNodePos != NOT_A_DICT_POS || !tryLowerCaseSearch) {
             // Return the position when when the word was found or doesn't try lower case
             // search.
@@ -144,7 +138,7 @@ class PrevWordsInfo {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
         return dictStructurePolicy->getTerminalPtNodePositionOfWord(
-                codePoints, codePointCount, true /* forceLowerCaseSearch */);
+                codePointArrayView, true /* forceLowerCaseSearch */);
     }
 
     void clear() {

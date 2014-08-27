@@ -105,6 +105,7 @@ class IntArrayView {
 
 using WordIdArrayView = IntArrayView;
 using PtNodePosArrayView = IntArrayView;
+using CodePointArrayView = IntArrayView;
 
 } // namespace latinime
 #endif // LATINIME_MEMORY_VIEW_H

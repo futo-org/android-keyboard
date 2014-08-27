@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/property/word_property.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -49,33 +50,32 @@ class DictionaryStructureWithBufferPolicy {
             DicNodeVector *const childDicNodes) const = 0;
 
     virtual int getCodePointsAndProbabilityAndReturnCodePointCount(
-            const int nodePos, const int maxCodePointCount, int *const outCodePoints,
+            const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const = 0;
 
-    virtual int getTerminalPtNodePositionOfWord(const int *const inWord,
-            const int length, const bool forceLowerCaseSearch) const = 0;
+    virtual int getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
+            const bool forceLowerCaseSearch) const = 0;
 
-    virtual int getProbability(const int unigramProbability,
-            const int bigramProbability) const = 0;
+    virtual int getProbability(const int unigramProbability, const int bigramProbability) const = 0;
 
     virtual int getProbabilityOfPtNode(const int *const prevWordsPtNodePos,
-            const int nodePos) const = 0;
+            const int ptNodePos) const = 0;
 
     virtual void iterateNgramEntries(const int *const prevWordsPtNodePos,
             NgramListener *const listener) const = 0;
 
-    virtual int getShortcutPositionOfPtNode(const int nodePos) const = 0;
+    virtual int getShortcutPositionOfPtNode(const int ptNodePos) const = 0;
 
     virtual const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const = 0;
 
     virtual const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const = 0;
 
     // Returns whether the update was success or not.
-    virtual bool addUnigramEntry(const int *const word, const int length,
+    virtual bool addUnigramEntry(const CodePointArrayView wordCodePoints,
             const UnigramProperty *const unigramProperty) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool removeUnigramEntry(const int *const word, const int length) = 0;
+    virtual bool removeUnigramEntry(const CodePointArrayView wordCodePoints) = 0;
 
     // Returns whether the update was success or not.
     virtual bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
@@ -83,7 +83,7 @@ class DictionaryStructureWithBufferPolicy {
 
     // Returns whether the update was success or not.
     virtual bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-            const int *const word, const int length) = 0;
+            const CodePointArrayView wordCodePoints) = 0;
 
     // Returns whether the flush was success or not.
     virtual bool flush(const char *const filePath) = 0;
@@ -99,8 +99,7 @@ class DictionaryStructureWithBufferPolicy {
             const int maxResultLength) = 0;
 
     // Used for testing.
-    virtual const WordProperty getWordProperty(const int *const codePonts,
-            const int codePointCount) const = 0;
+    virtual const WordProperty getWordProperty(const CodePointArrayView wordCodePoints) const = 0;
 
     // Method to iterate all words in the dictionary.
     // The returned token has to be used to get the next word. If token is 0, this method newly
