@@ -118,8 +118,16 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
         super.testActionCustom();
     }
 
+    // Working variable to simulate system locale changing.
+    private Locale mSystemLocale = Locale.getDefault();
+
     private void doTestActionLabelInLocale(final InputMethodSubtype subtype,
             final Locale labelLocale, final Locale systemLocale) {
+        // Simulate system locale changing, see {@link SystemBroadcastReceiver}.
+        if (!systemLocale.equals(mSystemLocale)) {
+            KeyboardLayoutSet.onSystemLocaleChanged();
+            mSystemLocale = systemLocale;
+        }
         final String tag = "label=" + labelLocale + " system=" + systemLocale
                 + " " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
         final RunInLocale<Void> job = new RunInLocale<Void>() {
@@ -164,9 +172,8 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
                 SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.QWERTY);
         // An action label of no language keyboard should be displayed in the system locale.
         doTestActionLabelInLocale(noLanguage, Locale.US, Locale.US);
-        // TODO: Uncomment the following test once a bug is fixed.
-        // doTestActionLabelInLocale(noLanguage, Locale.FRENCH, Locale.FRENCH);
-        // doTestActionLabelInLocale(noLanguage, Locale.ITALIAN, Locale.ITALIAN);
-        // doTestActionLabelInLocale(noLanguage, Locale.JAPANESE, Locale.JAPANESE);
+        doTestActionLabelInLocale(noLanguage, Locale.FRENCH, Locale.FRENCH);
+        doTestActionLabelInLocale(noLanguage, Locale.ITALIAN, Locale.ITALIAN);
+        doTestActionLabelInLocale(noLanguage, Locale.JAPANESE, Locale.JAPANESE);
     }
 }

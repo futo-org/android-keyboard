@@ -24,7 +24,6 @@ import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.android.inputmethod.compat.IntentCompatUtils;
 import com.android.inputmethod.latin.settings.Settings;
 
 /**
@@ -54,14 +53,6 @@ import com.android.inputmethod.latin.settings.Settings;
  */
 public final class LauncherIconVisibilityManager {
     private static final String TAG = LauncherIconVisibilityManager.class.getSimpleName();
-
-    public static void onReceiveGlobalIntent(final String action, final Context context) {
-        if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(action) ||
-                Intent.ACTION_BOOT_COMPLETED.equals(action) ||
-                IntentCompatUtils.is_ACTION_USER_INITIALIZE(action)) {
-            updateSetupWizardIconVisibility(context);
-        }
-    }
 
     public static void updateSetupWizardIconVisibility(final Context context) {
         final ComponentName setupWizardActivity = new ComponentName(context, SetupActivity.class);
