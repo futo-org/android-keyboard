@@ -96,6 +96,13 @@ class IntArrayView {
         return IntArrayView(mPtr, std::min(maxSize, mSize));
     }
 
+    const IntArrayView skip(const size_t n) const {
+        if (mSize <= n) {
+            return IntArrayView();
+        }
+        return IntArrayView(mPtr + n, mSize - n);
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(IntArrayView);
 
