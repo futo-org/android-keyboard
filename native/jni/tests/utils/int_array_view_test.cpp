@@ -72,5 +72,22 @@ TEST(IntArrayViewTest, TestLimit) {
     }
 }
 
+TEST(IntArrayViewTest, TestSkip) {
+    const std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
+    IntArrayView intArrayView(intVector);
+
+    EXPECT_TRUE(intArrayView.skip(intVector.size()).empty());
+    EXPECT_TRUE(intArrayView.skip(intVector.size() + 1).empty());
+    EXPECT_EQ(intArrayView.size(), intArrayView.skip(0).size());
+    EXPECT_EQ(intArrayView.size(), intArrayView.limit(1000).size());
+
+    static const size_t SKIP_COUNT = 2;
+    IntArrayView subView = intArrayView.skip(SKIP_COUNT);
+    EXPECT_EQ(intVector.size() - SKIP_COUNT, subView.size());
+    for (size_t i = 0; i < subView.size(); ++i) {
+        EXPECT_EQ(intVector[i + SKIP_COUNT], subView[i]);
+    }
+}
+
 }  // namespace
 }  // namespace latinime
