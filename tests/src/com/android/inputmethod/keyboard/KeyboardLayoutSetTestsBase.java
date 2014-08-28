@@ -43,7 +43,6 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     private final ArrayList<InputMethodSubtype> mAsciiCapableSubtypesList = new ArrayList<>();
     private final ArrayList<InputMethodSubtype> mAdditionalSubtypesList = new ArrayList<>();
 
-    private Context mThemeContext;
     private int mScreenMetrics;
 
     protected abstract int getKeyboardThemeForTests();
@@ -51,12 +50,13 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mScreenMetrics = mContext.getResources().getInteger(R.integer.config_screen_metrics);
-
         final KeyboardTheme keyboardTheme = KeyboardTheme.searchKeyboardThemeById(
                 getKeyboardThemeForTests());
-        mThemeContext = new ContextThemeWrapper(mContext, keyboardTheme.mStyleId);
-        RichInputMethodManager.init(mThemeContext);
+        setContext(new ContextThemeWrapper(getContext(), keyboardTheme.mStyleId));
+
+        final Context context = getContext();
+        mScreenMetrics = context.getResources().getInteger(R.integer.config_screen_metrics);
+        RichInputMethodManager.init(context);
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
 
         final InputMethodInfo imi = richImm.getInputMethodInfoOfThisIme();
@@ -122,7 +122,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
             final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
             final boolean languageSwitchKeyEnabled) {
-        final Context context = mThemeContext;
+        final Context context = getContext();
         final Resources res = context.getResources();
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
