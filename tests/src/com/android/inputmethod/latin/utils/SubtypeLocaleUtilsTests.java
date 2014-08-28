@@ -263,7 +263,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
                 assertEquals("de_CH", "Allemand (Suisse)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE_CH));
-                assertEquals("hi_ZZ", "Hinglish",
+                assertEquals("hi_ZZ", "Hindi/Anglais",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_ZZ));
                 assertEquals("zz", "Alphabet latin (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
