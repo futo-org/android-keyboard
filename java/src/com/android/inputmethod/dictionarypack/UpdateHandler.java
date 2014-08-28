@@ -31,12 +31,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.compat.ConnectivityManagerCompatUtils;
 import com.android.inputmethod.compat.DownloadManagerCompatUtils;
+import com.android.inputmethod.compat.NotificationCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
@@ -858,7 +860,7 @@ public final class UpdateHandler {
         final String language = (null == locale ? "" : locale.getDisplayLanguage());
         final String titleFormat = context.getString(R.string.dict_available_notification_title);
         final String notificationTitle = String.format(titleFormat, language);
-        final Notification notification = new Notification.Builder(context)
+        final Notification.Builder builder = new Notification.Builder(context)
                 .setAutoCancel(true)
                 .setContentIntent(notificationIntent)
                 .setContentTitle(notificationTitle)
@@ -866,8 +868,13 @@ public final class UpdateHandler {
                 .setTicker(notificationTitle)
                 .setOngoing(false)
                 .setOnlyAlertOnce(true)
-                .setSmallIcon(R.drawable.ic_notify_dictionary)
-                .getNotification();
+                .setSmallIcon(R.drawable.ic_notify_dictionary);
+        NotificationCompatUtils.setColor(builder,
+                context.getResources().getColor(R.color.notification_accent_color));
+        NotificationCompatUtils.setPriorityToLow(builder);
+        NotificationCompatUtils.setVisibilityToSecret(builder);
+        NotificationCompatUtils.setCategoryToRecommendation(builder);
+        final Notification notification = NotificationCompatUtils.build(builder);
         notificationManager.notify(DICT_AVAILABLE_NOTIFICATION_ID, notification);
     }
 
