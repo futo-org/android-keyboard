@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.event;
 
+import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -147,6 +148,7 @@ public class Event {
     }
 
     // This creates an input event for a dead character. @see {@link #FLAG_DEAD}
+    @ExternallyReferenced
     public static Event createDeadEvent(final int codePoint, final int keyCode, final Event next) {
         // TODO: add an argument or something if we ever create a software layout with dead keys.
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, keyCode,
