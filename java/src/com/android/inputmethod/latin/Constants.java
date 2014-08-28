@@ -57,6 +57,13 @@ public final class Constants {
         @SuppressWarnings("dep-ann")
         public static final String FORCE_ASCII = "forceAscii";
 
+        /**
+         * The private IME option used to suppress the floating gesture preview for a given text
+         * field. This overrides the corresponding keyboard settings preference.
+         * {@link com.android.inputmethod.latin.settings.SettingsValues#mGestureFloatingPreviewTextEnabled}
+         */
+        public static final String NO_FLOATING_GESTURE_PREVIEW = "noGestureFloatingPreview";
+
         private ImeOption() {
             // This utility class is not publicly instantiable.
         }
