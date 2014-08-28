@@ -167,7 +167,7 @@ public final class SubtypeLocaleUtils {
         return nameId == null ? UNKNOWN_KEYBOARD_LAYOUT : nameId;
     }
 
-    private static Locale getDisplayLocaleOfSubtypeLocale(final String localeString) {
+    public static Locale getDisplayLocaleOfSubtypeLocale(final String localeString) {
         if (NO_LANGUAGE.equals(localeString)) {
             return sResources.getConfiguration().locale;
         }
