@@ -34,6 +34,9 @@ public final class ViewCompatUtils {
     // Note that View.setElevation(float) has been introduced in API level 21.
     private static final Method METHOD_setElevation = CompatUtils.getMethod(
             View.class, "setElevation", float.class);
+    // Note that View.setTextAlignment(int) has been introduced in API level 17.
+    private static final Method METHOD_setTextAlignment = CompatUtils.getMethod(
+            View.class, "setTextAlignment", int.class);
 
     private ViewCompatUtils() {
         // This utility class is not publicly instantiable.
@@ -56,9 +59,19 @@ public final class ViewCompatUtils {
     }
 
     public static void setElevation(final View view, final float elevation) {
-        if (METHOD_setElevation == null) {
-            return;
-        }
         CompatUtils.invoke(view, null, METHOD_setElevation, elevation);
+    }
+
+    // These TEXT_ALIGNMENT_* constants have been introduced in API 17.
+    public static final int TEXT_ALIGNMENT_INHERIT = 0;
+    public static final int TEXT_ALIGNMENT_GRAVITY = 1;
+    public static final int TEXT_ALIGNMENT_TEXT_START = 2;
+    public static final int TEXT_ALIGNMENT_TEXT_END = 3;
+    public static final int TEXT_ALIGNMENT_CENTER = 4;
+    public static final int TEXT_ALIGNMENT_VIEW_START = 5;
+    public static final int TEXT_ALIGNMENT_VIEW_END = 6;
+
+    public static void setTextAlignment(final View view, final int textAlignment) {
+        CompatUtils.invoke(view, null, METHOD_setTextAlignment, textAlignment);
     }
 }
