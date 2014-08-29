@@ -103,7 +103,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (mThemeContext == null || !keyboardTheme.equals(mKeyboardTheme)) {
             mKeyboardTheme = keyboardTheme;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
-            KeyboardLayoutSet.clearKeyboardCache();
+            KeyboardLayoutSet.onKeyboardThemeChanged();
             return true;
         }
         return false;
