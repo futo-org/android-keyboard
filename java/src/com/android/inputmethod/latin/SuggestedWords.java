@@ -429,7 +429,7 @@ public class SuggestedWords {
      */
     @UsedForTesting
     public SuggestedWordInfo getTypedWordInfoOrNull() {
-        if (this == EMPTY) {
+        if (SuggestedWords.INDEX_OF_TYPED_WORD >= size()) {
             return null;
         }
         final SuggestedWordInfo info = getInfo(SuggestedWords.INDEX_OF_TYPED_WORD);
