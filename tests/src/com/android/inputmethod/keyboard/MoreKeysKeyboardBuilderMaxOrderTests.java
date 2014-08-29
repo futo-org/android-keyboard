@@ -22,7 +22,7 @@ import android.test.suitebuilder.annotation.MediumTest;
 import com.android.inputmethod.keyboard.MoreKeysKeyboard.MoreKeysKeyboardParams;
 
 @MediumTest
-public class MoreKeysKeyboardBuilderTests extends AndroidTestCase {
+public class MoreKeysKeyboardBuilderMaxOrderTests extends AndroidTestCase {
     private static final int WIDTH = 10;
     private static final int HEIGHT = 10;
 
@@ -47,7 +47,8 @@ public class MoreKeysKeyboardBuilderTests extends AndroidTestCase {
             final int coordXInParent) {
         final MoreKeysKeyboardParams params = new MoreKeysKeyboardParams();
         params.setParameters(numKeys, maxColumns, WIDTH, HEIGHT, coordXInParent, KEYBOARD_WIDTH,
-                false /* isFixedOrderColumn */, 0 /* dividerWidth */);
+                false /* isMoreKeysFixedColumn */, false /* isMoreKeysFixedOrder */,
+                0 /* dividerWidth */);
         return params;
     }
 
