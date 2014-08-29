@@ -33,6 +33,7 @@ import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.DistracterFilter;
+import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingIsInDictionary;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
@@ -59,6 +60,7 @@ public class DictionaryFacilitator {
     // HACK: This threshold is being used when adding a capitalized entry in the User History
     // dictionary.
     private static final int CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT = 140;
+    private static final int MAX_DICTIONARY_FACILITATOR_CACHE_SIZE = 3;
 
     private Dictionaries mDictionaries = new Dictionaries();
     private boolean mIsUserDictEnabled = false;
@@ -66,6 +68,7 @@ public class DictionaryFacilitator {
     // To synchronize assigning mDictionaries to ensure closing dictionaries.
     private final Object mLock = new Object();
     private final DistracterFilter mDistracterFilter;
+    private final DictionaryFacilitatorLruCache mFacilitatorCacheForPersonalization;
 
     private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS =
             new String[] {
@@ -173,10 +176,14 @@ public class DictionaryFacilitator {
 
     public DictionaryFacilitator() {
         mDistracterFilter = DistracterFilter.EMPTY_DISTRACTER_FILTER;
+        mFacilitatorCacheForPersonalization = null;
     }
 
-    public DictionaryFacilitator(final DistracterFilter distracterFilter) {
-        mDistracterFilter = distracterFilter;
+    public DictionaryFacilitator(final Context context) {
+        mFacilitatorCacheForPersonalization = new DictionaryFacilitatorLruCache(context,
+                MAX_DICTIONARY_FACILITATOR_CACHE_SIZE, "" /* dictionaryNamePrefix */);
+        mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context,
+                mFacilitatorCacheForPersonalization);
     }
 
     public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes) {
@@ -350,6 +357,9 @@ public class DictionaryFacilitator {
         }
         for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
             dictionaries.closeDict(dictType);
+        }
+        if (mFacilitatorCacheForPersonalization != null) {
+            mFacilitatorCacheForPersonalization.evictAll();
         }
         mDistracterFilter.close();
     }
@@ -597,11 +607,15 @@ public class DictionaryFacilitator {
             }
             return;
         }
+        // TODO: Get locale from personalizationDataChunk.mDetectedLanguage.
+        final Locale dataChunkLocale = getLocale();
+        final DictionaryFacilitator dictionaryFacilitatorForLocale =
+                mFacilitatorCacheForPersonalization.get(dataChunkLocale);
         final ArrayList<LanguageModelParam> languageModelParams =
                 LanguageModelParam.createLanguageModelParamsFrom(
                         personalizationDataChunk.mTokens,
                         personalizationDataChunk.mTimestampInSeconds,
-                        this /* dictionaryFacilitator */, spacingAndPunctuations,
+                        dictionaryFacilitatorForLocale, spacingAndPunctuations,
                         new DistracterFilterCheckingIsInDictionary(
                                 mDistracterFilter, personalizationDict));
         if (languageModelParams == null || languageModelParams.isEmpty()) {
