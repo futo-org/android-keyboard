@@ -93,6 +93,7 @@ import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.StatsUtils;
+import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
@@ -158,6 +159,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
     private final SpecialKeyDetector mSpecialKeyDetector;
+    private StatsUtilsManager mStatsUtilsManager;
 
     // Object for reacting to adding/removing a dictionary pack.
     private final BroadcastReceiver mDictionaryPackInstallReceiver =
@@ -538,6 +540,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mSpecialKeyDetector = new SpecialKeyDetector(this);
+        mStatsUtilsManager = StatsUtilsManager.getInstance();
         mIsHardwareAcceleratedDrawingEnabled =
                 InputMethodServiceCompatUtils.enableHardwareAcceleration(this);
         Log.i(TAG, "Hardware accelerated drawing: " + mIsHardwareAcceleratedDrawingEnabled);
@@ -553,8 +556,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
-        StatsUtils.init(this);
-
         super.onCreate();
 
         mHandler.onCreate();
@@ -586,7 +587,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
 
         DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
-
+        mStatsUtilsManager.onCreate(this /* context */);
         StatsUtils.onCreate(mSettings.getCurrent(), mRichImm);
     }
 
@@ -609,7 +610,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
                 true /* allowsImplicitlySelectedSubtypes */));
         refreshPersonalizationDictionarySession(currentSettingsValues);
-        StatsUtils.onLoadSettings(currentSettingsValues);
+        mStatsUtilsManager.onLoadSettings(currentSettingsValues);
     }
 
     private void refreshPersonalizationDictionarySession(
@@ -699,7 +700,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
-        StatsUtils.onDestroy();
+        mStatsUtilsManager.onDestroy();
         super.onDestroy();
     }
 
