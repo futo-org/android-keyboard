@@ -52,7 +52,7 @@ public class PersonalizationDictionaryTests extends AndroidTestCase {
         final ArrayList<String> dictTypes = new ArrayList<>();
         dictTypes.add(Dictionary.TYPE_MAIN);
         dictTypes.add(Dictionary.TYPE_PERSONALIZATION);
-        final DictionaryFacilitator dictionaryFacilitator = new DictionaryFacilitator();
+        final DictionaryFacilitator dictionaryFacilitator = new DictionaryFacilitator(getContext());
         dictionaryFacilitator.resetDictionariesForTesting(getContext(), LOCALE_EN_US, dictTypes,
                 new HashMap<String, File>(), new HashMap<String, Map<String, String>>());
         return dictionaryFacilitator;
