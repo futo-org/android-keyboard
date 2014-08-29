@@ -119,7 +119,15 @@ public final class KeyboardLayoutSet {
                 new SparseArray<>();
     }
 
-    public static void clearKeyboardCache() {
+    public static void onSystemLocaleChanged() {
+        clearKeyboardCache();
+    }
+
+    public static void onKeyboardThemeChanged() {
+        clearKeyboardCache();
+    }
+
+    private static void clearKeyboardCache() {
         sKeyboardCache.clear();
         sKeysCache.clear();
     }

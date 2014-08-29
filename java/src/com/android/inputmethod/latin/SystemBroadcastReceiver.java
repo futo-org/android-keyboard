@@ -17,21 +17,16 @@
 package com.android.inputmethod.latin;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Process;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.IntentCompatUtils;
-import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
-import com.android.inputmethod.latin.setup.SetupActivity;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
 
 /**
@@ -58,6 +53,9 @@ import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
  * When a multiuser account has been created, {@link Intent#ACTION_USER_INITIALIZE} is received
  * by this receiver and it checks the whether the setup wizard's icon should be appeared or not on
  * the launcher depending on which partition this IME is installed.
+ *
+ * When the system locale has been changed, {@link Intent#ACTION_LOCALE_CHANGED} is received by
+ * this receiver and the {@link KeyboardLayoutSet}'s cache is cleared.
  */
 public final class SystemBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = SystemBroadcastReceiver.class.getSimpleName();
@@ -67,21 +65,22 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         final String intentAction = intent.getAction();
         if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intentAction)) {
             Log.i(TAG, "Package has been replaced: " + context.getPackageName());
-        } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
-            Log.i(TAG, "Boot has been completed");
-        } else if (IntentCompatUtils.is_ACTION_USER_INITIALIZE(intentAction)) {
-            Log.i(TAG, "User initialize");
-        }
-
-        LauncherIconVisibilityManager.onReceiveGlobalIntent(intentAction, context);
-
-        if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intentAction)) {
             // Need to restore additional subtypes because system always clears additional
             // subtypes when the package is replaced.
             RichInputMethodManager.init(context);
             final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
             final InputMethodSubtype[] additionalSubtypes = richImm.getAdditionalSubtypes(context);
             richImm.setAdditionalInputMethodSubtypes(additionalSubtypes);
+            LauncherIconVisibilityManager.updateSetupWizardIconVisibility(context);
+        } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
+            Log.i(TAG, "Boot has been completed");
+            LauncherIconVisibilityManager.updateSetupWizardIconVisibility(context);
+        } else if (IntentCompatUtils.is_ACTION_USER_INITIALIZE(intentAction)) {
+            Log.i(TAG, "User initialize");
+            LauncherIconVisibilityManager.updateSetupWizardIconVisibility(context);
+        } else if (Intent.ACTION_LOCALE_CHANGED.equals(intentAction)) {
+            Log.i(TAG, "System locale changed");
+            KeyboardLayoutSet.onSystemLocaleChanged();
         }
 
         // The process that hosts this broadcast receiver is invoked and remains alive even after
