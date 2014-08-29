@@ -126,6 +126,7 @@ LATIN_IME_CORE_TEST_FILES := \
     suggest/core/layout/normal_distribution_2d_test.cpp \
     suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content_test.cpp \
     suggest/policyimpl/dictionary/structure/v4/content/probability_entry_test.cpp \
+    suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table_test.cpp \
     suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer_test.cpp \
     suggest/policyimpl/dictionary/utils/byte_array_utils_test.cpp \
     suggest/policyimpl/dictionary/utils/sparse_table_test.cpp \

@@ -34,7 +34,7 @@ int TerminalPositionLookupTable::getTerminalPtNodePosition(const int terminalId)
 bool TerminalPositionLookupTable::setTerminalPtNodePosition(
         const int terminalId, const int terminalPtNodePos) {
     if (terminalId < 0) {
-        return NOT_A_DICT_POS;
+        return false;
     }
     while (terminalId >= mSize) {
         // Write new entry.
