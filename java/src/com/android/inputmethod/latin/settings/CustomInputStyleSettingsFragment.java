@@ -30,11 +30,14 @@ import android.preference.DialogPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.support.v4.view.ViewCompat;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.ArrayAdapter;
@@ -43,6 +46,7 @@ import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
+import com.android.inputmethod.compat.ViewCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
@@ -233,6 +237,12 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
             mSubtypeLocaleSpinner.setAdapter(mProxy.getSubtypeLocaleAdapter());
             mKeyboardLayoutSetSpinner = (Spinner) v.findViewById(R.id.keyboard_layout_set_spinner);
             mKeyboardLayoutSetSpinner.setAdapter(mProxy.getKeyboardLayoutSetAdapter());
+            // All keyboard layout names are in the Latin script and thus left to right. That means
+            // the view would align them to the left even if the system locale is RTL, but that
+            // would look strange. To fix this, we align them to the view's start, which will be
+            // natural for any direction.
+            ViewCompatUtils.setTextAlignment(
+                    mKeyboardLayoutSetSpinner, ViewCompatUtils.TEXT_ALIGNMENT_VIEW_START);
             return v;
         }
 
@@ -398,6 +408,16 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
     }
 
     @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+            final Bundle savedInstanceState) {
+        final View view = super.onCreateView(inflater, container, savedInstanceState);
+        // For correct display in RTL locales, we need to set the layout direction of the
+        // fragment's top view.
+        ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_LOCALE);
+        return view;
+    }
+
+    @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         final Context context = getActivity();
         mSubtypeLocaleAdapter = new SubtypeLocaleAdapter(context);
@@ -422,7 +442,7 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
                     KEY_SUBTYPE_FOR_SUBTYPE_ENABLER);
             final SubtypePreference subtypePref = (SubtypePreference)findPreference(
                     mSubtypePreferenceKeyForSubtypeEnabler);
-            mSubtypeEnablerNotificationDialog = createDialog(subtypePref);
+            mSubtypeEnablerNotificationDialog = createDialog();
             mSubtypeEnablerNotificationDialog.show();
         }
     }
@@ -476,7 +496,7 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
             if (findDuplicatedSubtype(subtype) == null) {
                 mRichImm.setAdditionalInputMethodSubtypes(getSubtypes());
                 mSubtypePreferenceKeyForSubtypeEnabler = subtypePref.getKey();
-                mSubtypeEnablerNotificationDialog = createDialog(subtypePref);
+                mSubtypeEnablerNotificationDialog = createDialog();
                 mSubtypeEnablerNotificationDialog.show();
                 return;
             }
@@ -513,7 +533,7 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
                 localeString, keyboardLayoutSetName);
     }
 
-    private AlertDialog createDialog(final SubtypePreference subtypePref) {
+    private AlertDialog createDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(
                 DialogUtils.getPlatformDialogThemeContext(getActivity()));
         builder.setTitle(R.string.custom_input_styles_title)

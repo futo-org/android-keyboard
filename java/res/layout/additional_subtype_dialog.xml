@@ -18,39 +18,60 @@
 */
 -->
 
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:columnCount="2"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="8dip"
-    android:layout_marginRight="8dip"
-    android:padding="8dip">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        style="?android:attr/textAppearanceSmall"
-        android:text="@string/subtype_locale" />
-    <Spinner
-        android:id="@+id/subtype_locale_spinner"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="8dip"
-        android:layout_marginBottom="8dip"
-        android:layout_marginTop="8dip"
-        android:layout_gravity="fill_horizontal|center_vertical"
-        android:prompt="@string/subtype_locale" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        style="?android:attr/textAppearanceSmall"
-        android:text="@string/keyboard_layout_set" />
-    <Spinner
-        android:id="@+id/keyboard_layout_set_spinner"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="8dip"
-        android:layout_marginBottom="8dip"
-        android:layout_marginTop="8dip"
-        android:layout_gravity="fill_horizontal|center_vertical"
-        android:prompt="@string/keyboard_layout_set" />
-</GridLayout>
+    android:padding="16dip">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="30"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:gravity="start|left"
+            android:textAlignment="viewStart"
+            style="?android:attr/textAppearanceSmall"
+            android:text="@string/subtype_locale" />
+        <Spinner
+            android:id="@+id/subtype_locale_spinner"
+            android:spinnerMode="dialog"
+            android:layout_width="0dp"
+            android:layout_weight="70"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dip"
+            android:layout_marginBottom="8dip"
+            android:layout_marginTop="8dip"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:gravity="start|left"
+            android:prompt="@string/subtype_locale" />
+        </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="30"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="?android:attr/textAppearanceSmall"
+            android:text="@string/keyboard_layout_set" />
+        <Spinner
+            android:id="@+id/keyboard_layout_set_spinner"
+            android:spinnerMode="dialog"
+            android:layout_width="0dp"
+            android:layout_weight="70"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dip"
+            android:layout_marginBottom="8dip"
+            android:layout_marginTop="8dip"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:gravity="start|left"
+            android:prompt="@string/keyboard_layout_set" />
+    </LinearLayout>
+</LinearLayout>
