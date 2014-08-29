@@ -31,13 +31,17 @@ import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesA
  */
 @LargeTest
 public class DistracterFilterTest extends AndroidTestCase {
+    private DictionaryFacilitatorLruCache mDictionaryFacilitatorLruCache;
     private DistracterFilterCheckingExactMatchesAndSuggestions mDistracterFilter;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         final Context context = getContext();
-        mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context);
+        mDictionaryFacilitatorLruCache = new DictionaryFacilitatorLruCache(context,
+                2 /* maxSize */, "" /* dictionaryNamePrefix */);
+        mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context,
+                mDictionaryFacilitatorLruCache);
         RichInputMethodManager.init(context);
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
         final ArrayList<InputMethodSubtype> subtypes = new ArrayList<>();
@@ -48,6 +52,11 @@ public class DistracterFilterTest extends AndroidTestCase {
         subtypes.add(richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.GERMAN.toString(), "qwertz"));
         mDistracterFilter.updateEnabledSubtypes(subtypes);
+    }
+
+    @Override
+    protected void tearDown() {
+        mDictionaryFacilitatorLruCache.evictAll();
     }
 
     public void testIsDistractorToWordsInDictionaries() {

@@ -130,8 +130,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator =
-            new DictionaryFacilitator(
-                    new DistracterFilterCheckingExactMatchesAndSuggestions(this /* context */));
+            new DictionaryFacilitator(this /* context */);
     // TODO: Move from LatinIME.
     private final PersonalizationDictionaryUpdater mPersonalizationDictionaryUpdater =
             new PersonalizationDictionaryUpdater(this /* context */, mDictionaryFacilitator);
