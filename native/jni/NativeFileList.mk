@@ -121,8 +121,9 @@ LATIN_IME_CORE_SRC_FILES += $(LATIN_IME_CORE_SRC_FILES_BACKWARD_V402)
 
 LATIN_IME_CORE_TEST_FILES := \
     defines_test.cpp \
-    suggest/core/layout/normal_distribution_2d_test.cpp \
+    suggest/core/dicnode/dic_node_pool_test.cpp \
     suggest/core/dictionary/bloom_filter_test.cpp \
+    suggest/core/layout/normal_distribution_2d_test.cpp \
     suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content_test.cpp \
     suggest/policyimpl/dictionary/structure/v4/content/probability_entry_test.cpp \
     suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer_test.cpp \
