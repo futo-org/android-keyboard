@@ -148,5 +148,15 @@ public class SuggestedWordsTests extends AndroidTestCase {
 
         // Make sure getTypedWordInfoOrNull() returns null.
         assertNull(SuggestedWords.EMPTY.getTypedWordInfoOrNull());
+
+        final SuggestedWords emptySuggestedWords = new SuggestedWords(
+                new ArrayList<SuggestedWordInfo>(), null /* rawSuggestions */,
+                false /* typedWordValid */,
+                false /* willAutoCorrect */,
+                false /* isObsoleteSuggestions */,
+                SuggestedWords.INPUT_STYLE_NONE);
+        assertNull(emptySuggestedWords.getTypedWordInfoOrNull());
+
+        assertNull(SuggestedWords.EMPTY.getTypedWordInfoOrNull());
     }
 }
