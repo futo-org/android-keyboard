@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -34,6 +33,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.DictionaryFacilitator;
+import com.android.inputmethod.latin.DictionaryFacilitatorLruCache;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -49,14 +49,15 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             DistracterFilterCheckingExactMatchesAndSuggestions.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final long TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS = 120;
     private static final int MAX_DISTRACTERS_CACHE_SIZE = 512;
 
     private final Context mContext;
     private final Map<Locale, InputMethodSubtype> mLocaleToSubtypeMap;
     private final Map<Locale, Keyboard> mLocaleToKeyboardMap;
-    private final DictionaryFacilitator mDictionaryFacilitator;
+    private final DictionaryFacilitatorLruCache mDictionaryFacilitatorLruCache;
     private final LruCache<String, Boolean> mDistractersCache;
+    // TODO: Remove and support multiple locales at the same time.
+    private Locale mCurrentLocale;
     private Keyboard mKeyboard;
     private final Object mLock = new Object();
 
@@ -71,19 +72,26 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
      * Create a DistracterFilter instance.
      *
      * @param context the context.
+     * @param dictionaryFacilitatorLruCache the cache of dictionaryFacilitators that are used for
+     * checking distracters.
      */
-    public DistracterFilterCheckingExactMatchesAndSuggestions(final Context context) {
+    public DistracterFilterCheckingExactMatchesAndSuggestions(final Context context,
+            final DictionaryFacilitatorLruCache dictionaryFacilitatorLruCache) {
         mContext = context;
         mLocaleToSubtypeMap = new HashMap<>();
         mLocaleToKeyboardMap = new HashMap<>();
-        mDictionaryFacilitator = new DictionaryFacilitator();
+        mDictionaryFacilitatorLruCache = dictionaryFacilitatorLruCache;
         mDistractersCache = new LruCache<>(MAX_DISTRACTERS_CACHE_SIZE);
+        mCurrentLocale = null;
         mKeyboard = null;
     }
 
     @Override
     public void close() {
-        mDictionaryFacilitator.closeDictionaries();
+        mLocaleToKeyboardMap.clear();
+        mDistractersCache.evictAll();
+        mCurrentLocale = null;
+        mKeyboard = null;
     }
 
     @Override
@@ -138,14 +146,6 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         mKeyboard = layoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
     }
 
-    private void loadDictionariesForLocale(final Locale newlocale) throws InterruptedException {
-        mDictionaryFacilitator.resetDictionaries(mContext, newlocale,
-                false /* useContactsDict */, false /* usePersonalizedDicts */,
-                false /* forceReloadMainDictionary */, null /* listener */);
-        mDictionaryFacilitator.waitForLoadingMainDictionary(
-                TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS, TimeUnit.SECONDS);
-    }
-
     /**
      * Determine whether a word is a distracter to words in dictionaries.
      *
@@ -161,26 +161,20 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         if (locale == null) {
             return false;
         }
-        if (!locale.equals(mDictionaryFacilitator.getLocale())) {
+        if (!locale.equals(mCurrentLocale)) {
             synchronized (mLock) {
                 if (!mLocaleToSubtypeMap.containsKey(locale)) {
                     Log.e(TAG, "Locale " + locale + " is not enabled.");
                     // TODO: Investigate what we should do for disabled locales.
                     return false;
                 }
+                mCurrentLocale = locale;
                 loadKeyboardForLocale(locale);
-                // Reset dictionaries for the locale.
-                try {
-                    mDistractersCache.evictAll();
-                    loadDictionariesForLocale(locale);
-                } catch (final InterruptedException e) {
-                    Log.e(TAG, "Interrupted while waiting for loading dicts in DistracterFilter",
-                            e);
-                    return false;
-                }
+                mDistractersCache.evictAll();
             }
         }
-
+        final DictionaryFacilitator dictionaryFacilitator =
+                mDictionaryFacilitatorLruCache.get(locale);
         if (DEBUG) {
             Log.d(TAG, "testedWord: " + testedWord);
         }
@@ -193,13 +187,13 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         }
 
         final boolean isDistracterCheckedByGetMaxFreqencyOfExactMatches =
-                checkDistracterUsingMaxFreqencyOfExactMatches(testedWord);
+                checkDistracterUsingMaxFreqencyOfExactMatches(dictionaryFacilitator, testedWord);
         if (isDistracterCheckedByGetMaxFreqencyOfExactMatches) {
             // Add the word to the cache.
             mDistractersCache.put(testedWord, Boolean.TRUE);
             return true;
         }
-        final boolean isValidWord = mDictionaryFacilitator.isValidWord(testedWord,
+        final boolean isValidWord = dictionaryFacilitator.isValidWord(testedWord,
                 false /* ignoreCase */);
         if (isValidWord) {
             // Valid word is not a distractor.
@@ -210,7 +204,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         }
 
         final boolean isDistracterCheckedByGetSuggestion =
-                checkDistracterUsingGetSuggestions(testedWord);
+                checkDistracterUsingGetSuggestions(dictionaryFacilitator, testedWord);
         if (isDistracterCheckedByGetSuggestion) {
             // Add the word to the cache.
             mDistractersCache.put(testedWord, Boolean.TRUE);
@@ -219,11 +213,12 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         return false;
     }
 
-    private boolean checkDistracterUsingMaxFreqencyOfExactMatches(final String testedWord) {
+    private static boolean checkDistracterUsingMaxFreqencyOfExactMatches(
+            final DictionaryFacilitator dictionaryFacilitator, final String testedWord) {
         // The tested word is a distracter when there is a word that is exact matched to the tested
         // word and its probability is higher than the tested word's probability.
-        final int perfectMatchFreq = mDictionaryFacilitator.getFrequency(testedWord);
-        final int exactMatchFreq = mDictionaryFacilitator.getMaxFrequencyOfExactMatches(testedWord);
+        final int perfectMatchFreq = dictionaryFacilitator.getFrequency(testedWord);
+        final int exactMatchFreq = dictionaryFacilitator.getMaxFrequencyOfExactMatches(testedWord);
         final boolean isDistracter = perfectMatchFreq < exactMatchFreq;
         if (DEBUG) {
             Log.d(TAG, "perfectMatchFreq: " + perfectMatchFreq);
@@ -233,7 +228,8 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         return isDistracter;
     }
 
-    private boolean checkDistracterUsingGetSuggestions(final String testedWord) {
+    private boolean checkDistracterUsingGetSuggestions(
+            final DictionaryFacilitator dictionaryFacilitator, final String testedWord) {
         if (mKeyboard == null) {
             return false;
         }
@@ -251,7 +247,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         synchronized (mLock) {
             final int[] coordinates = mKeyboard.getCoordinates(codePoints);
             composer.setComposingWord(codePoints, coordinates);
-            final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
+            final SuggestionResults suggestionResults = dictionaryFacilitator.getSuggestionResults(
                     composer, PrevWordsInfo.EMPTY_PREV_WORDS_INFO, mKeyboard.getProximityInfo(),
                     settingsValuesForSuggestion, 0 /* sessionId */);
             if (suggestionResults.isEmpty()) {
