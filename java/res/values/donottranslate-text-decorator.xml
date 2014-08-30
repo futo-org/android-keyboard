@@ -31,7 +31,7 @@
 
     <!-- If true, the commit/add-to-text indicator will be suppressed when the word isn't going to
          trigger auto-correction. -->
-    <bool name="text_decorator_only_for_auto_correction">false</bool>
+    <bool name="text_decorator_only_for_auto_correction">true</bool>
 
     <!-- If true, the commit/add-to-text indicator will be suppressed when the word is already in
          the dictionary. -->
