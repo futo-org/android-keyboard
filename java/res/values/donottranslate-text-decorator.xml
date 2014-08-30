@@ -61,18 +61,24 @@
     <!-- Coordinates of the closed path to be used to render the commit indicator.
          The format is:  X[0], Y[0], X[1], Y[1], ..., X[N-1], Y[N-1] -->
     <integer-array name="text_decorator_commit_indicator_path">
-        <item>180</item>
-        <item>323</item>
-        <item>97</item>
         <item>240</item>
-        <item>68</item>
-        <item>268</item>
-        <item>180</item>
-        <item>380</item>
-        <item>420</item>
-        <item>140</item>
-        <item>392</item>
-        <item>112</item>
+        <item>80</item>
+        <item>212</item>
+        <item>108</item>
+        <item>323</item>
+        <item>220</item>
+        <item>80</item>
+        <item>220</item>
+        <item>80</item>
+        <item>260</item>
+        <item>323</item>
+        <item>260</item>
+        <item>212</item>
+        <item>372</item>
+        <item>240</item>
+        <item>400</item>
+        <item>400</item>
+        <item>240</item>
     </integer-array>
 
     <!-- Background color to be used to highlight the target text when the add-to-dictionary
