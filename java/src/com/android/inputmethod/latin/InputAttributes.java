@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.ImeOption.NO_FLOATING_GESTURE_PREVIEW;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
@@ -42,6 +43,12 @@ public final class InputAttributes {
     final public boolean mApplicationSpecifiedCompletionOn;
     final public boolean mShouldInsertSpacesAutomatically;
     final public boolean mShouldShowVoiceInputKey;
+    /**
+     * Whether the floating gesture preview should be disabled. If true, this should override the
+     * corresponding keyboard settings preference, always suppressing the floating preview text.
+     * {@link com.android.inputmethod.latin.settings.SettingsValues#mGestureFloatingPreviewTextEnabled}
+     */
+    final public boolean mDisableGestureFloatingPreviewText;
     final private int mInputType;
     final private EditorInfo mEditorInfo;
     final private String mPackageNameForPrivateImeOptions;
@@ -76,6 +83,7 @@ public final class InputAttributes {
             mApplicationSpecifiedCompletionOn = false;
             mShouldInsertSpacesAutomatically = false;
             mShouldShowVoiceInputKey = false;
+            mDisableGestureFloatingPreviewText = false;
             return;
         }
         // inputClass == InputType.TYPE_CLASS_TEXT
@@ -106,6 +114,9 @@ public final class InputAttributes {
                 || InputType.TYPE_TEXT_VARIATION_URI == variation
                 || hasNoMicrophoneKeyOption();
         mShouldShowVoiceInputKey = !noMicrophone;
+
+        mDisableGestureFloatingPreviewText = InputAttributes.inPrivateImeOptions(
+                mPackageNameForPrivateImeOptions, NO_FLOATING_GESTURE_PREVIEW, editorInfo);
 
         // If it's a browser edit field and auto correct is not ON explicitly, then
         // disable auto correction, but keep suggestions on.
