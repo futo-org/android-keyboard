@@ -86,6 +86,8 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_keyPreviewOffset
  * @attr ref R.styleable#MainKeyboardView_keyPreviewHeight
  * @attr ref R.styleable#MainKeyboardView_keyPreviewLingerTimeout
+ * @attr ref R.styleable#MainKeyboardView_keyPreviewShowUpAnimator
+ * @attr ref R.styleable#MainKeyboardView_keyPreviewDismissAnimator
  * @attr ref R.styleable#MainKeyboardView_moreKeysKeyboardLayout
  * @attr ref R.styleable#MainKeyboardView_backgroundDimAlpha
  * @attr ref R.styleable#MainKeyboardView_showMoreKeysKeyboardAtTouchPoint
@@ -391,20 +393,34 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     /**
-     * Enables or disables the key feedback popup. This is a popup that shows a magnified
+     * Enables or disables the key preview popup. This is a popup that shows a magnified
      * version of the depressed key. By default the preview is enabled.
      * @param previewEnabled whether or not to enable the key feedback preview
      * @param delay the delay after which the preview is dismissed
-     * @see #isKeyPreviewPopupEnabled()
      */
     public void setKeyPreviewPopupEnabled(final boolean previewEnabled, final int delay) {
         mKeyPreviewDrawParams.setPopupEnabled(previewEnabled, delay);
     }
 
-    public void setKeyPreviewAnimationParams(final float showUpStartScale, final int showUpDuration,
-            final float dismissEndScale, final int dismissDuration) {
-        mKeyPreviewDrawParams.setAnimationParams(
-                showUpStartScale, showUpDuration, dismissEndScale, dismissDuration);
+    /**
+     * Enables or disables the key preview popup animations and set animations' parameters.
+     *
+     * @param hasCustomAnimationParams false to use the default key preview popup animations
+     *   specified by keyPreviewShowUpAnimator and keyPreviewDismissAnimator attributes.
+     *   true to override the default animations with the specified parameters.
+     * @param showUpStartXScale from this x-scale the show up animation will start.
+     * @param showUpStartYScale from this y-scale the show up animation will start.
+     * @param showUpDuration the duration of the show up animation in milliseconds.
+     * @param dismissEndXScale to this x-scale the dismiss animation will end.
+     * @param dismissEndYScale to this y-scale the dismiss animation will end.
+     * @param dismissDuration the duration of the dismiss animation in milliseconds.
+     */
+    public void setKeyPreviewAnimationParams(final boolean hasCustomAnimationParams,
+            final float showUpStartXScale, final float showUpStartYScale, final int showUpDuration,
+            final float dismissEndXScale, final float dismissEndYScale, final int dismissDuration) {
+        mKeyPreviewDrawParams.setAnimationParams(hasCustomAnimationParams,
+                showUpStartXScale, showUpStartYScale, showUpDuration,
+                dismissEndXScale, dismissEndYScale, dismissDuration);
     }
 
     private void locatePreviewPlacerView() {

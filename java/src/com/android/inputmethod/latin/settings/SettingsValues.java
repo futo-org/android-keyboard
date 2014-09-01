@@ -103,10 +103,13 @@ public final class SettingsValues {
 
     // Debug settings
     public final boolean mIsInternal;
+    public final boolean mHasCustomKeyPreviewAnimationParams;
     public final int mKeyPreviewShowUpDuration;
     public final int mKeyPreviewDismissDuration;
-    public final float mKeyPreviewShowUpStartScale;
-    public final float mKeyPreviewDismissEndScale;
+    public final float mKeyPreviewShowUpStartXScale;
+    public final float mKeyPreviewShowUpStartYScale;
+    public final float mKeyPreviewDismissEndXScale;
+    public final float mKeyPreviewDismissEndYScale;
 
     public SettingsValues(final Context context, final SharedPreferences prefs, final Resources res,
             final InputAttributes inputAttributes) {
@@ -178,20 +181,30 @@ public final class SettingsValues {
         mTextHighlightColorForAddToDictionaryIndicator = res.getColor(
                 R.color.text_decorator_add_to_dictionary_indicator_text_highlight_color);
         mIsInternal = Settings.isInternal(prefs);
+        mHasCustomKeyPreviewAnimationParams = prefs.getBoolean(
+                DebugSettings.PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS, false);
         mKeyPreviewShowUpDuration = Settings.readKeyPreviewAnimationDuration(
                 prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_DURATION,
                 res.getInteger(R.integer.config_key_preview_show_up_duration));
         mKeyPreviewDismissDuration = Settings.readKeyPreviewAnimationDuration(
                 prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_DURATION,
                 res.getInteger(R.integer.config_key_preview_dismiss_duration));
-        mKeyPreviewShowUpStartScale = Settings.readKeyPreviewAnimationScale(
-                prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_SCALE,
-                ResourceUtils.getFloatFromFraction(
-                        res, R.fraction.config_key_preview_show_up_start_scale));
-        mKeyPreviewDismissEndScale = Settings.readKeyPreviewAnimationScale(
-                prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_SCALE,
-                ResourceUtils.getFloatFromFraction(
-                        res, R.fraction.config_key_preview_dismiss_end_scale));
+        final float defaultKeyPreviewShowUpStartScale = ResourceUtils.getFloatFromFraction(
+                res, R.fraction.config_key_preview_show_up_start_scale);
+        final float defaultKeyPreviewDismissEndScale = ResourceUtils.getFloatFromFraction(
+                res, R.fraction.config_key_preview_dismiss_end_scale);
+        mKeyPreviewShowUpStartXScale = Settings.readKeyPreviewAnimationScale(
+                prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_X_SCALE,
+                defaultKeyPreviewShowUpStartScale);
+        mKeyPreviewShowUpStartYScale = Settings.readKeyPreviewAnimationScale(
+                prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_Y_SCALE,
+                defaultKeyPreviewShowUpStartScale);
+        mKeyPreviewDismissEndXScale = Settings.readKeyPreviewAnimationScale(
+                prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_X_SCALE,
+                defaultKeyPreviewDismissEndScale);
+        mKeyPreviewDismissEndYScale = Settings.readKeyPreviewAnimationScale(
+                prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
+                defaultKeyPreviewDismissEndScale);
         mDisplayOrientation = res.getConfiguration().orientation;
         mAppWorkarounds = new AsyncResultHolder<>();
         final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(
@@ -424,10 +437,14 @@ public final class SettingsValues {
         sb.append("" + mKeyPreviewShowUpDuration);
         sb.append("\n   mKeyPreviewDismissDuration = ");
         sb.append("" + mKeyPreviewDismissDuration);
-        sb.append("\n   mKeyPreviewShowUpStartScale = ");
-        sb.append("" + mKeyPreviewShowUpStartScale);
-        sb.append("\n   mKeyPreviewDismissEndScale = ");
-        sb.append("" + mKeyPreviewDismissEndScale);
+        sb.append("\n   mKeyPreviewShowUpStartScaleX = ");
+        sb.append("" + mKeyPreviewShowUpStartXScale);
+        sb.append("\n   mKeyPreviewShowUpStartScaleY = ");
+        sb.append("" + mKeyPreviewShowUpStartYScale);
+        sb.append("\n   mKeyPreviewDismissEndScaleX = ");
+        sb.append("" + mKeyPreviewDismissEndXScale);
+        sb.append("\n   mKeyPreviewDismissEndScaleY = ");
+        sb.append("" + mKeyPreviewDismissEndYScale);
         return sb.toString();
     }
 }
