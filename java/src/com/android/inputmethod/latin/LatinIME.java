@@ -1179,10 +1179,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mInputLogic.getCurrentRecapitalizeState();
     }
 
-    public Locale getCurrentSubtypeLocale() {
-        return mSubtypeSwitcher.getCurrentSubtypeLocale();
-    }
-
     /**
      * @param codePoints code points to get coordinates for.
      * @return x,y coordinates for this keyboard, as a flattened array.
@@ -1496,7 +1492,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final String wordToShow;
         if (CapsModeUtils.isAutoCapsMode(mInputLogic.mLastComposedWord.mCapitalizedMode)) {
-            wordToShow = word.toLowerCase(getCurrentSubtypeLocale());
+            wordToShow = word.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
         } else {
             wordToShow = word;
         }
