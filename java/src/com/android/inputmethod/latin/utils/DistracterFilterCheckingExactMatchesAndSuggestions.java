@@ -20,12 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.InputType;
 import android.util.Log;
 import android.util.LruCache;
+import android.util.Pair;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -49,16 +51,15 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             DistracterFilterCheckingExactMatchesAndSuggestions.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final int MAX_DISTRACTERS_CACHE_SIZE = 512;
+    private static final int MAX_DISTRACTERS_CACHE_SIZE = 1024;
 
     private final Context mContext;
-    private final Map<Locale, InputMethodSubtype> mLocaleToSubtypeMap;
-    private final Map<Locale, Keyboard> mLocaleToKeyboardMap;
+    private final ConcurrentHashMap<Locale, InputMethodSubtype> mLocaleToSubtypeCache;
+    private final ConcurrentHashMap<Locale, Keyboard> mLocaleToKeyboardCache;
     private final DictionaryFacilitatorLruCache mDictionaryFacilitatorLruCache;
-    private final LruCache<String, Boolean> mDistractersCache;
-    // TODO: Remove and support multiple locales at the same time.
-    private Locale mCurrentLocale;
-    private Keyboard mKeyboard;
+    // The key is a pair of a locale and a word. The value indicates the word is a distracter to
+    // words of the locale.
+    private final LruCache<Pair<Locale, String>, Boolean> mDistractersCache;
     private final Object mLock = new Object();
 
     // If the score of the top suggestion exceeds this value, the tested word (e.g.,
@@ -78,20 +79,17 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
     public DistracterFilterCheckingExactMatchesAndSuggestions(final Context context,
             final DictionaryFacilitatorLruCache dictionaryFacilitatorLruCache) {
         mContext = context;
-        mLocaleToSubtypeMap = new HashMap<>();
-        mLocaleToKeyboardMap = new HashMap<>();
+        mLocaleToSubtypeCache = new ConcurrentHashMap<>();
+        mLocaleToKeyboardCache = new ConcurrentHashMap<>();
         mDictionaryFacilitatorLruCache = dictionaryFacilitatorLruCache;
         mDistractersCache = new LruCache<>(MAX_DISTRACTERS_CACHE_SIZE);
-        mCurrentLocale = null;
-        mKeyboard = null;
     }
 
     @Override
     public void close() {
-        mLocaleToKeyboardMap.clear();
+        mLocaleToSubtypeCache.clear();
+        mLocaleToKeyboardCache.clear();
         mDistractersCache.evictAll();
-        mCurrentLocale = null;
-        mKeyboard = null;
     }
 
     @Override
@@ -108,29 +106,36 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
                 newLocaleToSubtypeMap.put(locale, subtype);
             }
         }
-        if (mLocaleToSubtypeMap.equals(newLocaleToSubtypeMap)) {
+        if (mLocaleToSubtypeCache.equals(newLocaleToSubtypeMap)) {
             // Enabled subtypes have not been changed.
             return;
         }
-        synchronized (mLock) {
-            mLocaleToSubtypeMap.clear();
-            mLocaleToSubtypeMap.putAll(newLocaleToSubtypeMap);
-            mLocaleToKeyboardMap.clear();
+        // Update subtype and keyboard map for locales that are in the current mapping.
+        for (final Locale locale: mLocaleToSubtypeCache.keySet()) {
+            if (newLocaleToSubtypeMap.containsKey(locale)) {
+                final InputMethodSubtype newSubtype = newLocaleToSubtypeMap.remove(locale);
+                if (newSubtype.equals(newLocaleToSubtypeMap.get(locale))) {
+                    // Mapping has not been changed.
+                    continue;
+                }
+                mLocaleToSubtypeCache.replace(locale, newSubtype);
+            } else {
+                mLocaleToSubtypeCache.remove(locale);
+            }
+            mLocaleToKeyboardCache.remove(locale);
         }
+        // Add locales that are not in the current mapping.
+        mLocaleToSubtypeCache.putAll(newLocaleToSubtypeMap);
     }
 
-    private void loadKeyboardForLocale(final Locale newLocale) {
-        final Keyboard cachedKeyboard = mLocaleToKeyboardMap.get(newLocale);
+    private Keyboard getKeyboardForLocale(final Locale locale) {
+        final Keyboard cachedKeyboard = mLocaleToKeyboardCache.get(locale);
         if (cachedKeyboard != null) {
-            mKeyboard = cachedKeyboard;
-            return;
+            return cachedKeyboard;
         }
-        final InputMethodSubtype subtype;
-        synchronized (mLock) {
-            subtype = mLocaleToSubtypeMap.get(newLocale);
-        }
+        final InputMethodSubtype subtype = mLocaleToSubtypeCache.get(locale);
         if (subtype == null) {
-            return;
+            return null;
         }
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
@@ -143,7 +148,9 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         builder.setSubtype(new RichInputMethodSubtype(subtype));
         builder.setIsSpellChecker(false /* isSpellChecker */);
         final KeyboardLayoutSet layoutSet = builder.build();
-        mKeyboard = layoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
+        final Keyboard newKeyboard = layoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
+        mLocaleToKeyboardCache.put(locale, newKeyboard);
+        return newKeyboard;
     }
 
     /**
@@ -161,24 +168,18 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         if (locale == null) {
             return false;
         }
-        if (!locale.equals(mCurrentLocale)) {
-            synchronized (mLock) {
-                if (!mLocaleToSubtypeMap.containsKey(locale)) {
-                    Log.e(TAG, "Locale " + locale + " is not enabled.");
-                    // TODO: Investigate what we should do for disabled locales.
-                    return false;
-                }
-                mCurrentLocale = locale;
-                loadKeyboardForLocale(locale);
-                mDistractersCache.evictAll();
-            }
+        if (!mLocaleToSubtypeCache.containsKey(locale)) {
+            Log.e(TAG, "Locale " + locale + " is not enabled.");
+            // TODO: Investigate what we should do for disabled locales.
+            return false;
         }
         final DictionaryFacilitator dictionaryFacilitator =
                 mDictionaryFacilitatorLruCache.get(locale);
         if (DEBUG) {
             Log.d(TAG, "testedWord: " + testedWord);
         }
-        final Boolean isCachedDistracter = mDistractersCache.get(testedWord);
+        final Pair<Locale, String> cacheKey = new Pair<>(locale, testedWord);
+        final Boolean isCachedDistracter = mDistractersCache.get(cacheKey);
         if (isCachedDistracter != null && isCachedDistracter) {
             if (DEBUG) {
                 Log.d(TAG, "isDistracter: true (cache hit)");
@@ -189,8 +190,8 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         final boolean isDistracterCheckedByGetMaxFreqencyOfExactMatches =
                 checkDistracterUsingMaxFreqencyOfExactMatches(dictionaryFacilitator, testedWord);
         if (isDistracterCheckedByGetMaxFreqencyOfExactMatches) {
-            // Add the word to the cache.
-            mDistractersCache.put(testedWord, Boolean.TRUE);
+            // Add the pair of locale and word to the cache.
+            mDistractersCache.put(cacheKey, Boolean.TRUE);
             return true;
         }
         final boolean isValidWord = dictionaryFacilitator.isValidWord(testedWord,
@@ -203,11 +204,12 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             return false;
         }
 
+        final Keyboard keyboard = getKeyboardForLocale(locale);
         final boolean isDistracterCheckedByGetSuggestion =
-                checkDistracterUsingGetSuggestions(dictionaryFacilitator, testedWord);
+                checkDistracterUsingGetSuggestions(dictionaryFacilitator, keyboard, testedWord);
         if (isDistracterCheckedByGetSuggestion) {
-            // Add the word to the cache.
-            mDistractersCache.put(testedWord, Boolean.TRUE);
+            // Add the pair of locale and word to the cache.
+            mDistractersCache.put(cacheKey, Boolean.TRUE);
             return true;
         }
         return false;
@@ -229,8 +231,9 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
     }
 
     private boolean checkDistracterUsingGetSuggestions(
-            final DictionaryFacilitator dictionaryFacilitator, final String testedWord) {
-        if (mKeyboard == null) {
+            final DictionaryFacilitator dictionaryFacilitator, final Keyboard keyboard,
+            final String testedWord) {
+        if (keyboard == null) {
             return false;
         }
         final SettingsValuesForSuggestion settingsValuesForSuggestion =
@@ -243,24 +246,24 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
                 testedWord;
         final WordComposer composer = new WordComposer();
         final int[] codePoints = StringUtils.toCodePointArray(testedWord);
-
+        final int[] coordinates = keyboard.getCoordinates(codePoints);
+        composer.setComposingWord(codePoints, coordinates);
+        final SuggestionResults suggestionResults;
         synchronized (mLock) {
-            final int[] coordinates = mKeyboard.getCoordinates(codePoints);
-            composer.setComposingWord(codePoints, coordinates);
-            final SuggestionResults suggestionResults = dictionaryFacilitator.getSuggestionResults(
-                    composer, PrevWordsInfo.EMPTY_PREV_WORDS_INFO, mKeyboard.getProximityInfo(),
+            suggestionResults = dictionaryFacilitator.getSuggestionResults(
+                    composer, PrevWordsInfo.EMPTY_PREV_WORDS_INFO, keyboard.getProximityInfo(),
                     settingsValuesForSuggestion, 0 /* sessionId */);
-            if (suggestionResults.isEmpty()) {
-                return false;
-            }
-            final SuggestedWordInfo firstSuggestion = suggestionResults.first();
-            final boolean isDistractor = suggestionExceedsDistracterThreshold(
-                    firstSuggestion, consideredWord, DISTRACTER_WORD_SCORE_THRESHOLD);
-            if (DEBUG) {
-                Log.d(TAG, "isDistracter: " + isDistractor);
-            }
-            return isDistractor;
         }
+        if (suggestionResults.isEmpty()) {
+            return false;
+        }
+        final SuggestedWordInfo firstSuggestion = suggestionResults.first();
+        final boolean isDistractor = suggestionExceedsDistracterThreshold(
+                firstSuggestion, consideredWord, DISTRACTER_WORD_SCORE_THRESHOLD);
+        if (DEBUG) {
+            Log.d(TAG, "isDistracter: " + isDistractor);
+        }
+        return isDistractor;
     }
 
     private static boolean suggestionExceedsDistracterThreshold(final SuggestedWordInfo suggestion,
