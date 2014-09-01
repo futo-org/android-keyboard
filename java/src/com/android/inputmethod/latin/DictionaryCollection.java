@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -34,13 +35,14 @@ public final class DictionaryCollection extends Dictionary {
     private final String TAG = DictionaryCollection.class.getSimpleName();
     protected final CopyOnWriteArrayList<Dictionary> mDictionaries;
 
-    public DictionaryCollection(final String dictType) {
-        super(dictType);
+    public DictionaryCollection(final String dictType, final Locale locale) {
+        super(dictType, locale);
         mDictionaries = new CopyOnWriteArrayList<>();
     }
 
-    public DictionaryCollection(final String dictType, final Dictionary... dictionaries) {
-        super(dictType);
+    public DictionaryCollection(final String dictType, final Locale locale,
+            final Dictionary... dictionaries) {
+        super(dictType, locale);
         if (null == dictionaries) {
             mDictionaries = new CopyOnWriteArrayList<>();
         } else {
@@ -49,8 +51,9 @@ public final class DictionaryCollection extends Dictionary {
         }
     }
 
-    public DictionaryCollection(final String dictType, final Collection<Dictionary> dictionaries) {
-        super(dictType);
+    public DictionaryCollection(final String dictType, final Locale locale,
+            final Collection<Dictionary> dictionaries) {
+        super(dictType, locale);
         mDictionaries = new CopyOnWriteArrayList<>(dictionaries);
         mDictionaries.removeAll(Collections.singleton(null));
     }

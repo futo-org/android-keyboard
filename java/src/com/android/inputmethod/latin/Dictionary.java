@@ -16,12 +16,12 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Abstract base class for a dictionary that can do a fuzzy search for words based on a set of key
@@ -62,9 +62,12 @@ public abstract class Dictionary {
     // Contextual dictionary.
     public static final String TYPE_CONTEXTUAL = "contextual";
     public final String mDictType;
+    // The locale for this dictionary. May be null if unknown (phony dictionary for example).
+    public final Locale mLocale;
 
-    public Dictionary(final String dictType) {
+    public Dictionary(final String dictType, final Locale locale) {
         mDictType = dictType;
+        mLocale = locale;
     }
 
     /**
@@ -162,7 +165,7 @@ public abstract class Dictionary {
     private static class PhonyDictionary extends Dictionary {
         // This class is not publicly instantiable.
         private PhonyDictionary(final String type) {
-            super(type);
+            super(type, null);
         }
 
         @Override

@@ -83,7 +83,6 @@ public final class BinaryDictionary extends Dictionary {
     public static final String DIR_NAME_SUFFIX_FOR_RECORD_MIGRATION = ".migrating";
 
     private long mNativeDict;
-    private final Locale mLocale;
     private final long mDictSize;
     private final String mDictFilePath;
     private final boolean mUseFullEditDistance;
@@ -117,8 +116,7 @@ public final class BinaryDictionary extends Dictionary {
     public BinaryDictionary(final String filename, final long offset, final long length,
             final boolean useFullEditDistance, final Locale locale, final String dictType,
             final boolean isUpdatable) {
-        super(dictType);
-        mLocale = locale;
+        super(dictType, locale);
         mDictSize = length;
         mDictFilePath = filename;
         mIsUpdatable = isUpdatable;
@@ -138,8 +136,7 @@ public final class BinaryDictionary extends Dictionary {
     public BinaryDictionary(final String filename, final boolean useFullEditDistance,
             final Locale locale, final String dictType, final long formatVersion,
             final Map<String, String> attributeMap) {
-        super(dictType);
-        mLocale = locale;
+        super(dictType, locale);
         mDictSize = 0;
         mDictFilePath = filename;
         // On memory dictionary is always updatable.
