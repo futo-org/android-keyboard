@@ -47,9 +47,12 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     // used to identify the versions for upgrades. This should never change going forward.
     private static final int METADATA_DATABASE_VERSION_WITH_CLIENTID = 6;
     // The current database version.
-    private static final int CURRENT_METADATA_DATABASE_VERSION = 9;
+    private static final int CURRENT_METADATA_DATABASE_VERSION = 10;
 
     private final static long NOT_A_DOWNLOAD_ID = -1;
+
+    // The number of retries allowed when attempting to download a broken dictionary.
+    public static final int DICTIONARY_RETRY_THRESHOLD = 2;
 
     public static final String METADATA_TABLE_NAME = "pendingUpdates";
     static final String CLIENT_TABLE_NAME = "clients";
@@ -68,7 +71,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static final String FORMATVERSION_COLUMN = "formatversion";
     public static final String FLAGS_COLUMN = "flags";
     public static final String RAW_CHECKSUM_COLUMN = "rawChecksum";
-    public static final int COLUMN_COUNT = 14;
+    public static final String RETRY_COUNT_COLUMN = "remainingRetries";
+    public static final int COLUMN_COUNT = 15;
 
     private static final String CLIENT_CLIENT_ID_COLUMN = "clientid";
     private static final String CLIENT_METADATA_URI_COLUMN = "uri";
@@ -98,6 +102,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     // Deleting: the user marked this word list to be deleted, but it has not been yet because
     // Latin IME is not up yet.
     public static final int STATUS_DELETING = 5;
+    // Retry: dictionary got corrupted, so an attempt must be done to download & install it again.
+    public static final int STATUS_RETRYING = 6;
 
     // Types, for storing in the TYPE_COLUMN
     // This is metadata about what is available.
@@ -124,6 +130,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             + FORMATVERSION_COLUMN + " INTEGER, "
             + FLAGS_COLUMN + " INTEGER, "
             + RAW_CHECKSUM_COLUMN + " TEXT,"
+            + RETRY_COUNT_COLUMN + " INTEGER, "
             + "PRIMARY KEY (" + WORDLISTID_COLUMN + "," + VERSION_COLUMN + "));";
     private static final String METADATA_CREATE_CLIENT_TABLE =
             "CREATE TABLE IF NOT EXISTS " + CLIENT_TABLE_NAME + " ("
@@ -140,7 +147,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             STATUS_COLUMN, WORDLISTID_COLUMN, LOCALE_COLUMN, DESCRIPTION_COLUMN,
             LOCAL_FILENAME_COLUMN, REMOTE_FILENAME_COLUMN, DATE_COLUMN, CHECKSUM_COLUMN,
             FILESIZE_COLUMN, VERSION_COLUMN, FORMATVERSION_COLUMN, FLAGS_COLUMN,
-            RAW_CHECKSUM_COLUMN };
+            RAW_CHECKSUM_COLUMN, RETRY_COUNT_COLUMN };
     // List of all client table columns.
     static final String[] CLIENT_TABLE_COLUMNS = { CLIENT_CLIENT_ID_COLUMN,
             CLIENT_METADATA_URI_COLUMN, CLIENT_PENDINGID_COLUMN, FLAGS_COLUMN };
@@ -219,7 +226,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         createClientTable(db);
     }
 
-    private void addRawChecksumColumnUnlessPresent(final SQLiteDatabase db, final String clientId) {
+    private void addRawChecksumColumnUnlessPresent(final SQLiteDatabase db) {
         try {
             db.execSQL("SELECT " + RAW_CHECKSUM_COLUMN + " FROM "
                     + METADATA_TABLE_NAME + " LIMIT 0;");
@@ -227,6 +234,17 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             Log.i(TAG, "No " + RAW_CHECKSUM_COLUMN + " column : creating it");
             db.execSQL("ALTER TABLE " + METADATA_TABLE_NAME + " ADD COLUMN "
                     + RAW_CHECKSUM_COLUMN + " TEXT;");
+        }
+    }
+
+    private void addRetryCountColumnUnlessPresent(final SQLiteDatabase db) {
+        try {
+            db.execSQL("SELECT " + RETRY_COUNT_COLUMN + " FROM "
+                    + METADATA_TABLE_NAME + " LIMIT 0;");
+        } catch (SQLiteException e) {
+            Log.i(TAG, "No " + RETRY_COUNT_COLUMN + " column : creating it");
+            db.execSQL("ALTER TABLE " + METADATA_TABLE_NAME + " ADD COLUMN "
+                    + RETRY_COUNT_COLUMN + " INTEGER DEFAULT " + DICTIONARY_RETRY_THRESHOLD + ";");
         }
     }
 
@@ -280,7 +298,14 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         // strengthen the system against corrupted dictionary files.
         // The most secure way to upgrade a database is to just test for the column presence, and
         // add it if it's not there.
-        addRawChecksumColumnUnlessPresent(db, mClientId);
+        addRawChecksumColumnUnlessPresent(db);
+
+        // A retry count column that did not exist in the previous versions was added that
+        // corresponds to the number of download & installation attempts that have been made
+        // in order to strengthen the system recovery from corrupted dictionary files.
+        // The most secure way to upgrade a database is to just test for the column presence, and
+        // add it if it's not there.
+        addRetryCountColumnUnlessPresent(db);
     }
 
     /**
@@ -452,8 +477,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static ContentValues makeContentValues(final int pendingId, final int type,
             final int status, final String wordlistId, final String locale,
             final String description, final String filename, final String url, final long date,
-            final String rawChecksum, final String checksum, final long filesize, final int version,
-            final int formatVersion) {
+            final String rawChecksum, final String checksum, final int retryCount,
+            final long filesize, final int version, final int formatVersion) {
         final ContentValues result = new ContentValues(COLUMN_COUNT);
         result.put(PENDINGID_COLUMN, pendingId);
         result.put(TYPE_COLUMN, type);
@@ -465,6 +490,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         result.put(REMOTE_FILENAME_COLUMN, url);
         result.put(DATE_COLUMN, date);
         result.put(RAW_CHECKSUM_COLUMN, rawChecksum);
+        result.put(RETRY_COUNT_COLUMN, retryCount);
         result.put(CHECKSUM_COLUMN, checksum);
         result.put(FILESIZE_COLUMN, filesize);
         result.put(VERSION_COLUMN, version);
@@ -502,6 +528,9 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         if (null == result.get(DATE_COLUMN)) result.put(DATE_COLUMN, 0);
         // Raw checksum unknown unless specified
         if (null == result.get(RAW_CHECKSUM_COLUMN)) result.put(RAW_CHECKSUM_COLUMN, "");
+        // Retry column 0 unless specified
+        if (null == result.get(RETRY_COUNT_COLUMN)) result.put(RETRY_COUNT_COLUMN,
+                DICTIONARY_RETRY_THRESHOLD);
         // Checksum unknown unless specified
         if (null == result.get(CHECKSUM_COLUMN)) result.put(CHECKSUM_COLUMN, "");
         // No filesize unless specified
@@ -551,6 +580,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             putIntResult(result, cursor, DATE_COLUMN);
             putStringResult(result, cursor, RAW_CHECKSUM_COLUMN);
             putStringResult(result, cursor, CHECKSUM_COLUMN);
+            putIntResult(result, cursor, RETRY_COUNT_COLUMN);
             putIntResult(result, cursor, FILESIZE_COLUMN);
             putIntResult(result, cursor, VERSION_COLUMN);
             putIntResult(result, cursor, FORMATVERSION_COLUMN);
@@ -676,8 +706,16 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             final String id, final int version) {
         final Cursor cursor = db.query(METADATA_TABLE_NAME,
                 METADATA_TABLE_COLUMNS,
-                WORDLISTID_COLUMN + "= ? AND " + VERSION_COLUMN + "= ?",
-                new String[] { id, Integer.toString(version) }, null, null, null);
+                WORDLISTID_COLUMN + "= ? AND " + VERSION_COLUMN + "= ? AND "
+                        + FORMATVERSION_COLUMN + "<= ?",
+                new String[]
+                        { id,
+                          Integer.toString(version),
+                          Integer.toString(UpdateHandler.MAXIMUM_SUPPORTED_FORMAT_VERSION)
+                        },
+                null /* groupBy */,
+                null /* having */,
+                FORMATVERSION_COLUMN + " DESC"/* orderBy */);
         if (null == cursor) {
             return null;
         }
@@ -706,7 +744,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             return null;
         }
         try {
-            // This is a lookup by primary key, so there can't be more than one result.
+            // Return the first result from the list of results.
             return getFirstLineAsContentValues(cursor);
         } finally {
             cursor.close();
@@ -1084,5 +1122,28 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static void markEntryAsDeleting(final SQLiteDatabase db, final String id,
             final int version) {
         markEntryAs(db, id, version, STATUS_DELETING, NOT_A_DOWNLOAD_ID);
+    }
+
+    /**
+     * Checks retry counts and marks the word list as retrying if retry is possible.
+     *
+     * @param db the metadata database.
+     * @param id the id of the word list.
+     * @param version the version of the word list.
+     * @return {@code true} if the retry is possible.
+     */
+    public static boolean maybeMarkEntryAsRetrying(final SQLiteDatabase db, final String id,
+            final int version) {
+        final ContentValues values = MetadataDbHelper.getContentValuesByWordListId(db, id, version);
+        int retryCount = values.getAsInteger(MetadataDbHelper.RETRY_COUNT_COLUMN);
+        if (retryCount > 1) {
+            values.put(STATUS_COLUMN, STATUS_RETRYING);
+            values.put(RETRY_COUNT_COLUMN, retryCount - 1);
+            db.update(METADATA_TABLE_NAME, values,
+                    WORDLISTID_COLUMN + " = ? AND " + VERSION_COLUMN + " = ?",
+                    new String[] { id, Integer.toString(version) });
+            return true;
+        }
+        return false;
     }
 }
