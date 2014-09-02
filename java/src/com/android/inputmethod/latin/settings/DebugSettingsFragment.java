@@ -78,12 +78,18 @@ public final class DebugSettingsFragment extends SubScreenFragment
                 res.getInteger(R.integer.config_key_preview_show_up_duration));
         setupKeyPreviewAnimationDuration(DebugSettings.PREF_KEY_PREVIEW_DISMISS_DURATION,
                 res.getInteger(R.integer.config_key_preview_dismiss_duration));
-        setupKeyPreviewAnimationScale(DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_SCALE,
-                ResourceUtils.getFloatFromFraction(
-                        res, R.fraction.config_key_preview_show_up_start_scale));
-        setupKeyPreviewAnimationScale(DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_SCALE,
-                ResourceUtils.getFloatFromFraction(
-                        res, R.fraction.config_key_preview_dismiss_end_scale));
+        final float defaultKeyPreviewShowUpStartScale = ResourceUtils.getFloatFromFraction(
+                res, R.fraction.config_key_preview_show_up_start_scale);
+        final float defaultKeyPreviewDismissEndScale = ResourceUtils.getFloatFromFraction(
+                res, R.fraction.config_key_preview_dismiss_end_scale);
+        setupKeyPreviewAnimationScale(DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_X_SCALE,
+                defaultKeyPreviewShowUpStartScale);
+        setupKeyPreviewAnimationScale(DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_Y_SCALE,
+                defaultKeyPreviewShowUpStartScale);
+        setupKeyPreviewAnimationScale(DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_X_SCALE,
+                defaultKeyPreviewDismissEndScale);
+        setupKeyPreviewAnimationScale(DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
+                defaultKeyPreviewDismissEndScale);
 
         mServiceNeedsRestart = false;
         mDebugMode = (TwoStatePreference) findPreference(DebugSettings.PREF_DEBUG_MODE);
