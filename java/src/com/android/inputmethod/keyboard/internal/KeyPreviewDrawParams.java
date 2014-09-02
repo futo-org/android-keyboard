@@ -16,8 +16,14 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.res.TypedArray;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 
 import com.android.inputmethod.latin.R;
 
@@ -26,10 +32,15 @@ public final class KeyPreviewDrawParams {
     public final int mPreviewOffset;
     public final int mPreviewHeight;
     public final int mPreviewBackgroundResId;
+    private final int mShowUpAnimatorResId;
+    private final int mDismissAnimatorResId;
+    private boolean mHasCustomAnimationParams;
     private int mShowUpDuration;
     private int mDismissDuration;
-    private float mShowUpStartScale;
-    private float mDismissEndScale;
+    private float mShowUpStartXScale;
+    private float mShowUpStartYScale;
+    private float mDismissEndXScale;
+    private float mDismissEndYScale;
     private int mLingerTimeout;
     private boolean mShowPopup = true;
 
@@ -67,6 +78,10 @@ public final class KeyPreviewDrawParams {
                 R.styleable.MainKeyboardView_keyPreviewBackground, 0);
         mLingerTimeout = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_keyPreviewLingerTimeout, 0);
+        mShowUpAnimatorResId = mainKeyboardViewAttr.getResourceId(
+                R.styleable.MainKeyboardView_keyPreviewShowUpAnimator, 0);
+        mDismissAnimatorResId = mainKeyboardViewAttr.getResourceId(
+                R.styleable.MainKeyboardView_keyPreviewDismissAnimator, 0);
     }
 
     public void setVisibleOffset(final int previewVisibleOffset) {
@@ -112,27 +127,62 @@ public final class KeyPreviewDrawParams {
         return mLingerTimeout;
     }
 
-    public void setAnimationParams(final float showUpStartScale, final int showUpDuration,
-            final float dismissEndScale, final int dismissDuration) {
-        mShowUpStartScale = showUpStartScale;
+    public void setAnimationParams(final boolean hasCustomAnimationParams,
+            final float showUpStartXScale, final float showUpStartYScale, final int showUpDuration,
+            final float dismissEndXScale, final float dismissEndYScale, final int dismissDuration) {
+        mHasCustomAnimationParams = hasCustomAnimationParams;
+        mShowUpStartXScale = showUpStartXScale;
+        mShowUpStartYScale = showUpStartYScale;
         mShowUpDuration = showUpDuration;
-        mDismissEndScale = dismissEndScale;
+        mDismissEndXScale = dismissEndXScale;
+        mDismissEndYScale = dismissEndYScale;
         mDismissDuration = dismissDuration;
     }
 
-    public float getShowUpStartScale() {
-        return mShowUpStartScale;
+    private static final float KEY_PREVIEW_SHOW_UP_END_SCALE = 1.0f;
+    private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR =
+            new AccelerateInterpolator();
+    private static final DecelerateInterpolator DECELERATE_INTERPOLATOR =
+            new DecelerateInterpolator();
+
+    public Animator createShowUpAnimator(final View target) {
+        if (mHasCustomAnimationParams) {
+            final ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(
+                    target, View.SCALE_X, mShowUpStartXScale,
+                    KEY_PREVIEW_SHOW_UP_END_SCALE);
+            final ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(
+                    target, View.SCALE_Y, mShowUpStartYScale,
+                    KEY_PREVIEW_SHOW_UP_END_SCALE);
+            final AnimatorSet showUpAnimator = new AnimatorSet();
+            showUpAnimator.play(scaleXAnimator).with(scaleYAnimator);
+            showUpAnimator.setDuration(mShowUpDuration);
+            showUpAnimator.setInterpolator(DECELERATE_INTERPOLATOR);
+            return showUpAnimator;
+        }
+        final Animator animator = AnimatorInflater.loadAnimator(
+                target.getContext(), mShowUpAnimatorResId);
+        animator.setTarget(target);
+        animator.setInterpolator(DECELERATE_INTERPOLATOR);
+        return animator;
     }
 
-    public int getShowUpDuration() {
-        return mShowUpDuration;
-    }
-
-    public float getDismissEndScale() {
-        return mDismissEndScale;
-    }
-
-    public int getDismissDuration() {
-        return mDismissDuration;
+    public Animator createDismissAnimator(final View target) {
+        if (mHasCustomAnimationParams) {
+            final ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(
+                    target, View.SCALE_X, mDismissEndXScale);
+            final ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(
+                    target, View.SCALE_Y, mDismissEndYScale);
+            final AnimatorSet dismissAnimator = new AnimatorSet();
+            dismissAnimator.play(scaleXAnimator).with(scaleYAnimator);
+            final int dismissDuration = Math.min(mDismissDuration, mLingerTimeout);
+            dismissAnimator.setDuration(dismissDuration);
+            dismissAnimator.setInterpolator(ACCELERATE_INTERPOLATOR);
+            return dismissAnimator;
+        }
+        final Animator animator = AnimatorInflater.loadAnimator(
+                target.getContext(), mDismissAnimatorResId);
+        animator.setTarget(target);
+        animator.setInterpolator(ACCELERATE_INTERPOLATOR);
+        return animator;
     }
 }
