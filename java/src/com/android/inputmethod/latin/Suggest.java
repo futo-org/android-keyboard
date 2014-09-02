@@ -84,7 +84,7 @@ public final class Suggest {
 
     private static ArrayList<SuggestedWordInfo> getTransformedSuggestedWordInfoList(
             final WordComposer wordComposer, final SuggestionResults results,
-            final int trailingSingleQuotesCount) {
+            final int trailingSingleQuotesCount, final Locale defaultLocale) {
         final boolean shouldMakeSuggestionsAllUpperCase = wordComposer.isAllUpperCase()
                 && !wordComposer.isResumed();
         final boolean isOnlyFirstCharCapitalized =
@@ -96,9 +96,11 @@ public final class Suggest {
                 || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
+                final Locale wordLocale = wordInfo.mSourceDict.mLocale;
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
-                        wordInfo, results.mLocale, shouldMakeSuggestionsAllUpperCase,
-                        isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
+                        wordInfo, null == wordLocale ? defaultLocale : wordLocale,
+                        shouldMakeSuggestionsAllUpperCase, isOnlyFirstCharCapitalized,
+                        trailingSingleQuotesCount);
                 suggestionsContainer.set(i, transformedWordInfo);
             }
         }
@@ -134,7 +136,7 @@ public final class Suggest {
                 SESSION_ID_TYPING);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
-                        trailingSingleQuotesCount);
+                        trailingSingleQuotesCount, mDictionaryFacilitator.getLocale());
         final boolean didRemoveTypedWord =
                 SuggestedWordInfo.removeDups(wordComposer.getTypedWord(), suggestionsContainer);
 
@@ -208,6 +210,7 @@ public final class Suggest {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, prevWordsInfo, proximityInfo, settingsValuesForSuggestion,
                 SESSION_ID_GESTURE);
+        final Locale defaultLocale = mDictionaryFacilitator.getLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
@@ -216,9 +219,10 @@ public final class Suggest {
         if (isFirstCharCapitalized || isAllUpperCase) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
+                final Locale wordlocale = wordInfo.mSourceDict.mLocale;
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
-                        wordInfo, suggestionResults.mLocale, isAllUpperCase, isFirstCharCapitalized,
-                        0 /* trailingSingleQuotesCount */);
+                        wordInfo, null == wordlocale ? defaultLocale : wordlocale, isAllUpperCase,
+                        isFirstCharCapitalized, 0 /* trailingSingleQuotesCount */);
                 suggestionsContainer.set(i, transformedWordInfo);
             }
         }

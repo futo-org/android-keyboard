@@ -50,7 +50,7 @@ public final class DictionaryFactory {
             final Locale locale, final boolean useFullEditDistance) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
-            return new DictionaryCollection(Dictionary.TYPE_MAIN,
+            return new DictionaryCollection(Dictionary.TYPE_MAIN, locale,
                     createReadOnlyBinaryDictionary(context, locale));
         }
 
@@ -75,7 +75,7 @@ public final class DictionaryFactory {
         // If the list is empty, that means we should not use any dictionary (for example, the user
         // explicitly disabled the main dictionary), so the following is okay. dictList is never
         // null, but if for some reason it is, DictionaryCollection handles it gracefully.
-        return new DictionaryCollection(Dictionary.TYPE_MAIN, dictList);
+        return new DictionaryCollection(Dictionary.TYPE_MAIN, locale, dictList);
     }
 
     /**
@@ -188,7 +188,7 @@ public final class DictionaryFactory {
     public static Dictionary createDictionaryForTest(final AssetFileAddress[] dictionaryList,
             final boolean useFullEditDistance, Locale locale) {
         final DictionaryCollection dictionaryCollection =
-                new DictionaryCollection(Dictionary.TYPE_MAIN);
+                new DictionaryCollection(Dictionary.TYPE_MAIN, locale);
         for (final AssetFileAddress address : dictionaryList) {
             final ReadOnlyBinaryDictionary readOnlyBinaryDictionary = new ReadOnlyBinaryDictionary(
                     address.mFilename, address.mOffset, address.mLength, useFullEditDistance,

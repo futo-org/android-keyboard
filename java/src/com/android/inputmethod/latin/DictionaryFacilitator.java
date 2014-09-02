@@ -503,7 +503,7 @@ public class DictionaryFacilitator {
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId) {
         final Dictionaries dictionaries = mDictionaries;
         final SuggestionResults suggestionResults =
-                new SuggestionResults(dictionaries.mLocale, SuggestedWords.MAX_SUGGESTIONS);
+                new SuggestionResults(SuggestedWords.MAX_SUGGESTIONS);
         final float[] languageWeight = new float[] { Dictionary.NOT_A_LANGUAGE_WEIGHT };
         for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
             final Dictionary dictionary = dictionaries.getDict(dictType);

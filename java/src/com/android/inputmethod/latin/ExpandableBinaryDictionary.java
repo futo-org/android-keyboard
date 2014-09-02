@@ -86,9 +86,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     private final String mDictName;
 
-    /** Dictionary locale */
-    private final Locale mLocale;
-
     /** Dictionary file */
     private final File mDictFile;
 
@@ -137,10 +134,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     public ExpandableBinaryDictionary(final Context context, final String dictName,
             final Locale locale, final String dictType, final File dictFile) {
-        super(dictType);
+        super(dictType, locale);
         mDictName = dictName;
         mContext = context;
-        mLocale = locale;
         mDictFile = getDictFile(context, dictName, dictFile);
         mBinaryDictionary = null;
         mIsReloading = new AtomicBoolean();

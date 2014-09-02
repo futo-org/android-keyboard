@@ -30,18 +30,16 @@ import java.util.TreeSet;
  * than its limit
  */
 public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
-    public final Locale mLocale;
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
     private final int mCapacity;
 
-    public SuggestionResults(final Locale locale, final int capacity) {
-        this(locale, sSuggestedWordInfoComparator, capacity);
+    public SuggestionResults(final int capacity) {
+        this(sSuggestedWordInfoComparator, capacity);
     }
 
-    public SuggestionResults(final Locale locale, final Comparator<SuggestedWordInfo> comparator,
+    public SuggestionResults(final Comparator<SuggestedWordInfo> comparator,
             final int capacity) {
         super(comparator);
-        mLocale = locale;
         mCapacity = capacity;
         if (ProductionFlags.INCLUDE_RAW_SUGGESTIONS) {
             mRawSuggestions = new ArrayList<>();
