@@ -98,8 +98,7 @@
         parent="KeyboardView.LXX_Light"
     >
         <item name="android:background">@drawable/keyboard_popup_panel_background_lxx_light</item>
-        <!-- Reuse KLP key background -->
-        <item name="keyBackground">@drawable/btn_keyboard_key_popup_klp</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_lxx_light</item>
         <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
     </style>
