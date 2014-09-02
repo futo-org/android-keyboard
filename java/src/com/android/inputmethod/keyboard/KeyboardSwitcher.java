@@ -154,9 +154,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 mCurrentSettingsValues.mKeyPreviewPopupOn,
                 mCurrentSettingsValues.mKeyPreviewPopupDismissDelay);
         keyboardView.setKeyPreviewAnimationParams(
-                mCurrentSettingsValues.mKeyPreviewShowUpStartScale,
+                mCurrentSettingsValues.mHasCustomKeyPreviewAnimationParams,
+                mCurrentSettingsValues.mKeyPreviewShowUpStartXScale,
+                mCurrentSettingsValues.mKeyPreviewShowUpStartYScale,
                 mCurrentSettingsValues.mKeyPreviewShowUpDuration,
-                mCurrentSettingsValues.mKeyPreviewDismissEndScale,
+                mCurrentSettingsValues.mKeyPreviewDismissEndXScale,
+                mCurrentSettingsValues.mKeyPreviewDismissEndYScale,
                 mCurrentSettingsValues.mKeyPreviewDismissDuration);
         keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
