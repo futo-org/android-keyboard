@@ -40,7 +40,7 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
 
     public ReadOnlyBinaryDictionary(final String filename, final long offset, final long length,
             final boolean useFullEditDistance, final Locale locale, final String dictType) {
-        super(dictType);
+        super(dictType, locale);
         mBinaryDictionary = new BinaryDictionary(filename, offset, length, useFullEditDistance,
                 locale, dictType, false /* isUpdatable */);
     }
