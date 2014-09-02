@@ -67,7 +67,7 @@ public class DictionaryFacilitator {
     // To synchronize assigning mDictionaryGroup to ensure closing dictionaries.
     private final Object mLock = new Object();
     private final DistracterFilter mDistracterFilter;
-    private final PersonalizationDictionaryFacilitator mPersonalizationDictionaryFacilitator;
+    private final PersonalizationHelperForDictionaryFacilitator mPersonalizationHelper;
 
     private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS =
             new String[] {
@@ -175,22 +175,22 @@ public class DictionaryFacilitator {
 
     public DictionaryFacilitator() {
         mDistracterFilter = DistracterFilter.EMPTY_DISTRACTER_FILTER;
-        mPersonalizationDictionaryFacilitator = null;
+        mPersonalizationHelper = null;
     }
 
     public DictionaryFacilitator(final Context context) {
         mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context);
-        mPersonalizationDictionaryFacilitator =
-                new PersonalizationDictionaryFacilitator(context, mDistracterFilter);
+        mPersonalizationHelper =
+                new PersonalizationHelperForDictionaryFacilitator(context, mDistracterFilter);
     }
 
     public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes) {
         mDistracterFilter.updateEnabledSubtypes(enabledSubtypes);
-        mPersonalizationDictionaryFacilitator.updateEnabledSubtypes(enabledSubtypes);
+        mPersonalizationHelper.updateEnabledSubtypes(enabledSubtypes);
     }
 
     public void setIsMonolingualUser(final boolean isMonolingualUser) {
-        mPersonalizationDictionaryFacilitator.setIsMonolingualUser(isMonolingualUser);
+        mPersonalizationHelper.setIsMonolingualUser(isMonolingualUser);
     }
 
     public Locale getLocale() {
@@ -226,76 +226,105 @@ public class DictionaryFacilitator {
                 usePersonalizedDicts, forceReloadMainDictionary, listener, "" /* dictNamePrefix */);
     }
 
-    public void resetDictionariesWithDictNamePrefix(final Context context, final Locale newLocale,
+    public void resetDictionariesWithDictNamePrefix(final Context context,
+            final Locale newLocaleToUse,
             final boolean useContactsDict, final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
             final DictionaryInitializationListener listener,
             final String dictNamePrefix) {
-        final boolean localeHasBeenChanged = !newLocale.equals(mDictionaryGroup.mLocale);
-        // We always try to have the main dictionary. Other dictionaries can be unused.
-        final boolean reloadMainDictionary = localeHasBeenChanged || forceReloadMainDictionary;
+        final HashMap<Locale, ArrayList<String>> existingDictsToCleanup = new HashMap<>();
+        // TODO: use several locales
+        final Locale[] newLocales = new Locale[] { newLocaleToUse };
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
         final HashSet<String> subDictTypesToUse = new HashSet<>();
+        subDictTypesToUse.add(Dictionary.TYPE_USER);
         if (useContactsDict) {
             subDictTypesToUse.add(Dictionary.TYPE_CONTACTS);
         }
-        subDictTypesToUse.add(Dictionary.TYPE_USER);
         if (usePersonalizedDicts) {
             subDictTypesToUse.add(Dictionary.TYPE_USER_HISTORY);
             subDictTypesToUse.add(Dictionary.TYPE_PERSONALIZATION);
             subDictTypesToUse.add(Dictionary.TYPE_CONTEXTUAL);
         }
 
-        final Dictionary newMainDict;
-        if (reloadMainDictionary) {
-            // The main dictionary will be asynchronously loaded.
-            newMainDict = null;
-        } else {
-            newMainDict = mDictionaryGroup.getDict(Dictionary.TYPE_MAIN);
-        }
-
-        final Map<String, ExpandableBinaryDictionary> subDicts = new HashMap<>();
-        for (final String dictType : SUB_DICT_TYPES) {
-            if (!subDictTypesToUse.contains(dictType)) {
-                // This dictionary will not be used.
+        // Gather all dictionaries. We'll remove them from the list to clean up later.
+        for (final Locale newLocale : newLocales) {
+            final ArrayList<String> dictsForLocale = new ArrayList<>();
+            existingDictsToCleanup.put(newLocale, dictsForLocale);
+            final DictionaryGroup currentDictionaryGroupForLocale =
+                    newLocale.equals(mDictionaryGroup.mLocale) ? mDictionaryGroup : null;
+            if (null == currentDictionaryGroupForLocale) {
                 continue;
             }
-            final ExpandableBinaryDictionary dict;
-            if (!localeHasBeenChanged && mDictionaryGroup.hasDict(dictType)) {
-                // Continue to use current dictionary.
-                dict = mDictionaryGroup.getSubDict(dictType);
-            } else {
-                // Start to use new dictionary.
-                dict = getSubDict(dictType, context, newLocale, null /* dictFile */,
-                        dictNamePrefix);
+            for (final String dictType : SUB_DICT_TYPES) {
+                if (currentDictionaryGroupForLocale.hasDict(dictType)) {
+                    dictsForLocale.add(dictType);
+                }
             }
-            subDicts.put(dictType, dict);
+            if (currentDictionaryGroupForLocale.hasDict(Dictionary.TYPE_MAIN)) {
+                dictsForLocale.add(Dictionary.TYPE_MAIN);
+            }
         }
 
-        // Replace DictionaryGroup.
-        final DictionaryGroup newDictionaryGroup = new DictionaryGroup(newLocale, newMainDict, subDicts);
+        final HashMap<Locale, DictionaryGroup> newDictionaryGroups = new HashMap<>();
+        for (final Locale newLocale : newLocales) {
+            final DictionaryGroup dictionaryGroupForLocale =
+                    newLocale.equals(mDictionaryGroup.mLocale) ? mDictionaryGroup : null;
+            final ArrayList<String> dictsToCleanupForLocale = existingDictsToCleanup.get(newLocale);
+            final boolean noExistingDictsForThisLocale = (null == dictionaryGroupForLocale);
+
+            final Dictionary mainDict;
+            if (forceReloadMainDictionary || noExistingDictsForThisLocale
+                    || !dictionaryGroupForLocale.hasDict(Dictionary.TYPE_MAIN)) {
+                mainDict = null;
+            } else {
+                mainDict = dictionaryGroupForLocale.getDict(Dictionary.TYPE_MAIN);
+                dictsToCleanupForLocale.remove(Dictionary.TYPE_MAIN);
+            }
+
+            final Map<String, ExpandableBinaryDictionary> subDicts = new HashMap<>();
+            for (final String subDictType : subDictTypesToUse) {
+                final ExpandableBinaryDictionary subDict;
+                if (noExistingDictsForThisLocale
+                        || !dictionaryGroupForLocale.hasDict(subDictType)) {
+                    // Create a new dictionary.
+                    subDict = getSubDict(subDictType, context, newLocale, null /* dictFile */,
+                            dictNamePrefix);
+                } else {
+                    // Reuse the existing dictionary, and don't close it at the end
+                    subDict = dictionaryGroupForLocale.getSubDict(subDictType);
+                    dictsToCleanupForLocale.remove(subDictType);
+                }
+                subDicts.put(subDictType, subDict);
+            }
+            newDictionaryGroups.put(newLocale, new DictionaryGroup(newLocale, mainDict, subDicts));
+        }
+
+        // Replace Dictionaries.
+        // TODO: use multiple locales.
+        final DictionaryGroup newDictionaryGroup = newDictionaryGroups.get(newLocaleToUse);
         final DictionaryGroup oldDictionaryGroup;
         synchronized (mLock) {
             oldDictionaryGroup = mDictionaryGroup;
             mDictionaryGroup = newDictionaryGroup;
             mIsUserDictEnabled = UserBinaryDictionary.isEnabled(context);
-            if (reloadMainDictionary) {
-                asyncReloadMainDictionary(context, newLocale, listener);
+            if (null == newDictionaryGroup.getDict(Dictionary.TYPE_MAIN)) {
+                asyncReloadMainDictionary(context, newLocaleToUse, listener);
             }
         }
         if (listener != null) {
             listener.onUpdateMainDictionaryAvailability(hasInitializedMainDictionary());
         }
+
         // Clean up old dictionaries.
-        if (reloadMainDictionary) {
-            oldDictionaryGroup.closeDict(Dictionary.TYPE_MAIN);
-        }
-        for (final String dictType : SUB_DICT_TYPES) {
-            if (localeHasBeenChanged || !subDictTypesToUse.contains(dictType)) {
-                oldDictionaryGroup.closeDict(dictType);
+        for (final Locale localeToCleanUp : existingDictsToCleanup.keySet()) {
+            final ArrayList<String> dictTypesToCleanUp =
+                    existingDictsToCleanup.get(localeToCleanUp);
+            final DictionaryGroup dictionarySetToCleanup = oldDictionaryGroup;
+            for (final String dictType : dictTypesToCleanUp) {
+                dictionarySetToCleanup.closeDict(dictType);
             }
         }
-        oldDictionaryGroup.mSubDictMap.clear();
     }
 
     private void asyncReloadMainDictionary(final Context context, final Locale locale,
@@ -362,8 +391,8 @@ public class DictionaryFacilitator {
             dictionaryGroup.closeDict(dictType);
         }
         mDistracterFilter.close();
-        if (mPersonalizationDictionaryFacilitator != null) {
-            mPersonalizationDictionaryFacilitator.close();
+        if (mPersonalizationHelper != null) {
+            mPersonalizationHelper.close();
         }
     }
 
@@ -386,7 +415,7 @@ public class DictionaryFacilitator {
     public void flushPersonalizationDictionary() {
         final ExpandableBinaryDictionary personalizationDictUsedForSuggestion =
                 mDictionaryGroup.getSubDict(Dictionary.TYPE_PERSONALIZATION);
-        mPersonalizationDictionaryFacilitator.flushPersonalizationDictionariesToUpdate(
+        mPersonalizationHelper.flushPersonalizationDictionariesToUpdate(
                 personalizationDictUsedForSuggestion);
         mDistracterFilter.close();
     }
@@ -592,7 +621,7 @@ public class DictionaryFacilitator {
     // personalization dictionary.
     public void clearPersonalizationDictionary() {
         clearSubDictionary(Dictionary.TYPE_PERSONALIZATION);
-        mPersonalizationDictionaryFacilitator.clearDictionariesToUpdate();
+        mPersonalizationHelper.clearDictionariesToUpdate();
     }
 
     public void clearContextualDictionary() {
@@ -603,7 +632,7 @@ public class DictionaryFacilitator {
             final PersonalizationDataChunk personalizationDataChunk,
             final SpacingAndPunctuations spacingAndPunctuations,
             final AddMultipleDictionaryEntriesCallback callback) {
-        mPersonalizationDictionaryFacilitator.addEntriesToPersonalizationDictionariesToUpdate(
+        mPersonalizationHelper.addEntriesToPersonalizationDictionariesToUpdate(
                 getLocale(), personalizationDataChunk, spacingAndPunctuations, callback);
     }
 
