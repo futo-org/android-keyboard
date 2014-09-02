@@ -23,34 +23,16 @@ import com.android.inputmethod.annotations.UsedForTesting;
 
 @UsedForTesting
 public final class CursorAnchorInfoCompatWrapper {
-    public static final int CHARACTER_RECT_TYPE_MASK = 0x0f;
 
     /**
-     * Type for {@link #CHARACTER_RECT_TYPE_MASK}: the editor did not specify any type of this
-     * character. Editor authors should not use this flag.
+     * The insertion marker or character bounds have at least one visible region.
      */
-    public static final int CHARACTER_RECT_TYPE_UNSPECIFIED = 0;
+    public static final int FLAG_HAS_VISIBLE_REGION = 0x01;
 
     /**
-     * Type for {@link #CHARACTER_RECT_TYPE_MASK}: the character is entirely visible.
+     * The insertion marker or character bounds have at least one invisible (clipped) region.
      */
-    public static final int CHARACTER_RECT_TYPE_FULLY_VISIBLE = 1;
-
-    /**
-     * Type for {@link #CHARACTER_RECT_TYPE_MASK}: some area of the character is invisible.
-     */
-    public static final int CHARACTER_RECT_TYPE_PARTIALLY_VISIBLE = 2;
-
-    /**
-     * Type for {@link #CHARACTER_RECT_TYPE_MASK}: the character is entirely invisible.
-     */
-    public static final int CHARACTER_RECT_TYPE_INVISIBLE = 3;
-
-    /**
-     * Type for {@link #CHARACTER_RECT_TYPE_MASK}: the editor gave up to calculate the rectangle
-     * for this character. Input method authors should ignore the returned rectangle.
-     */
-    public static final int CHARACTER_RECT_TYPE_NOT_FEASIBLE = 4;
+    public static final int FLAG_HAS_INVISIBLE_REGION = 0x02;
 
     // Note that CursorAnchorInfo has been introduced in API level XX (Build.VERSION_CODE.LXX).
     private static final CompatUtils.ClassWrapper sCursorAnchorInfoClass;
@@ -63,7 +45,7 @@ public final class CursorAnchorInfoCompatWrapper {
     private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerHorizontalMethod;
     private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerTopMethod;
     private static final CompatUtils.ToObjectMethodWrapper<Matrix> sGetMatrixMethod;
-    private static final CompatUtils.ToBooleanMethodWrapper sIsInsertionMarkerClippedMethod;
+    private static final CompatUtils.ToIntMethodWrapper sGetInsertionMarkerFlagsMethod;
 
     private static int COMPOSING_TEXT_START_DEFAULT = -1;
     static {
@@ -72,7 +54,7 @@ public final class CursorAnchorInfoCompatWrapper {
         sGetCharacterRectMethod = sCursorAnchorInfoClass.getMethod(
                 "getCharacterRect", (RectF)null, int.class);
         sGetCharacterRectFlagsMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getCharacterRectFlags", CHARACTER_RECT_TYPE_UNSPECIFIED, int.class);
+                "getCharacterRectFlags", 0, int.class);
         sGetComposingTextMethod = sCursorAnchorInfoClass.getMethod(
                 "getComposingText", (CharSequence)null);
         sGetComposingTextStartMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
@@ -86,8 +68,8 @@ public final class CursorAnchorInfoCompatWrapper {
         sGetInsertionMarkerTopMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
                 "getInsertionMarkerTop", 0.0f);
         sGetMatrixMethod = sCursorAnchorInfoClass.getMethod("getMatrix", (Matrix)null);
-        sIsInsertionMarkerClippedMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "isInsertionMarkerClipped", false);
+        sGetInsertionMarkerFlagsMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getInsertionMarkerFlags", 0);
     }
 
     @UsedForTesting
@@ -154,7 +136,7 @@ public final class CursorAnchorInfoCompatWrapper {
         return sGetInsertionMarkerTopMethod.invoke(mInstance);
     }
 
-    public boolean isInsertionMarkerClipped() {
-        return sIsInsertionMarkerClippedMethod.invoke(mInstance);
+    public int getInsertionMarkerFlags() {
+        return sGetInsertionMarkerFlagsMethod.invoke(mInstance);
     }
 }
