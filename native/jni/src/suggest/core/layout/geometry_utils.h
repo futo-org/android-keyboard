@@ -38,13 +38,15 @@ class GeometryUtils {
     }
 
     static AK_FORCE_INLINE float getAngleDiff(const float a1, const float a2) {
-        const float deltaA = fabsf(a1 - a2);
-        const float diff = ROUND_FLOAT_10000(deltaA);
-        if (diff > M_PI_F) {
-            const float normalizedDiff = 2.0f * M_PI_F - diff;
-            return ROUND_FLOAT_10000(normalizedDiff);
+        static const float M_2PI_F = M_PI * 2.0f;
+        float delta = fabsf(a1 - a2);
+        if (delta > M_2PI_F) {
+            delta -= (M_2PI_F * static_cast<int>(delta / M_2PI_F));
         }
-        return diff;
+        if (delta > M_PI_F) {
+            delta = M_2PI_F - delta;
+        }
+        return ROUND_FLOAT_10000(delta);
     }
 
     static AK_FORCE_INLINE int getDistanceInt(const int x1, const int y1, const int x2,
