@@ -23,10 +23,16 @@ public final class DebugSettings {
             "force_physical_keyboard_special_key";
     public static final String PREF_SHOW_UI_TO_ACCEPT_TYPED_WORD =
             "pref_show_ui_to_accept_typed_word";
-    public static final String PREF_KEY_PREVIEW_SHOW_UP_START_SCALE =
-            "pref_key_preview_show_up_start_scale";
-    public static final String PREF_KEY_PREVIEW_DISMISS_END_SCALE =
-            "pref_key_preview_dismiss_end_scale";
+    public static final String PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS =
+            "pref_has_custom_key_preview_animation_params";
+    public static final String PREF_KEY_PREVIEW_SHOW_UP_START_X_SCALE =
+            "pref_key_preview_show_up_start_x_scale";
+    public static final String PREF_KEY_PREVIEW_SHOW_UP_START_Y_SCALE =
+            "pref_key_preview_show_up_start_y_scale";
+    public static final String PREF_KEY_PREVIEW_DISMISS_END_X_SCALE =
+            "pref_key_preview_dismiss_end_x_scale";
+    public static final String PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE =
+            "pref_key_preview_dismiss_end_y_scale";
     public static final String PREF_KEY_PREVIEW_SHOW_UP_DURATION =
             "pref_key_preview_show_up_duration";
     public static final String PREF_KEY_PREVIEW_DISMISS_DURATION =

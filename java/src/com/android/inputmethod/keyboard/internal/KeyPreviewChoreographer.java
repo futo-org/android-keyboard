@@ -18,13 +18,9 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
@@ -89,9 +85,9 @@ public final class KeyPreviewChoreographer {
         }
         final Object tag = keyPreviewView.getTag();
         if (withAnimation) {
-            if (tag instanceof KeyPreviewAnimations) {
-                final KeyPreviewAnimations animation = (KeyPreviewAnimations)tag;
-                animation.startDismiss();
+            if (tag instanceof KeyPreviewAnimators) {
+                final KeyPreviewAnimators animators = (KeyPreviewAnimators)tag;
+                animators.startDismiss();
                 return;
             }
         }
@@ -161,87 +157,60 @@ public final class KeyPreviewChoreographer {
         }
 
         // Show preview with animation.
-        final Animator showUpAnimation = createShowUpAniation(key, keyPreviewView);
-        final Animator dismissAnimation = createDismissAnimation(key, keyPreviewView);
-        final KeyPreviewAnimations animation = new KeyPreviewAnimations(
-                showUpAnimation, dismissAnimation);
-        keyPreviewView.setTag(animation);
-        animation.startShowUp();
+        final Animator showUpAnimator = createShowUpAnimator(key, keyPreviewView);
+        final Animator dismissAnimator = createDismissAnimator(key, keyPreviewView);
+        final KeyPreviewAnimators animators = new KeyPreviewAnimators(
+                showUpAnimator, dismissAnimator);
+        keyPreviewView.setTag(animators);
+        animators.startShowUp();
     }
 
-    private static final float KEY_PREVIEW_SHOW_UP_END_SCALE = 1.0f;
-    private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR =
-            new AccelerateInterpolator();
-    private static final DecelerateInterpolator DECELERATE_INTERPOLATOR =
-            new DecelerateInterpolator();
-
-    private Animator createShowUpAniation(final Key key, final KeyPreviewView keyPreviewView) {
-        // TODO: Optimization for no scale animation and no duration.
-        final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(
-                keyPreviewView, View.SCALE_X, mParams.getShowUpStartScale(),
-                KEY_PREVIEW_SHOW_UP_END_SCALE);
-        final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(
-                keyPreviewView, View.SCALE_Y, mParams.getShowUpStartScale(),
-                KEY_PREVIEW_SHOW_UP_END_SCALE);
-        final AnimatorSet showUpAnimation = new AnimatorSet();
-        showUpAnimation.play(scaleXAnimation).with(scaleYAnimation);
-        showUpAnimation.setDuration(mParams.getShowUpDuration());
-        showUpAnimation.setInterpolator(DECELERATE_INTERPOLATOR);
-        showUpAnimation.addListener(new AnimatorListenerAdapter() {
+    public Animator createShowUpAnimator(final Key key, final KeyPreviewView keyPreviewView) {
+        final Animator animator = mParams.createShowUpAnimator(keyPreviewView);
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(final Animator animation) {
+            public void onAnimationStart(final Animator animator) {
                 showKeyPreview(key, keyPreviewView, false /* withAnimation */);
             }
         });
-        return showUpAnimation;
+        return animator;
     }
 
-    private Animator createDismissAnimation(final Key key, final KeyPreviewView keyPreviewView) {
-        // TODO: Optimization for no scale animation and no duration.
-        final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(
-                keyPreviewView, View.SCALE_X, mParams.getDismissEndScale());
-        final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(
-                keyPreviewView, View.SCALE_Y, mParams.getDismissEndScale());
-        final AnimatorSet dismissAnimation = new AnimatorSet();
-        dismissAnimation.play(scaleXAnimation).with(scaleYAnimation);
-        final int dismissDuration = Math.min(
-                mParams.getDismissDuration(), mParams.getLingerTimeout());
-        dismissAnimation.setDuration(dismissDuration);
-        dismissAnimation.setInterpolator(ACCELERATE_INTERPOLATOR);
-        dismissAnimation.addListener(new AnimatorListenerAdapter() {
+    private Animator createDismissAnimator(final Key key, final KeyPreviewView keyPreviewView) {
+        final Animator animator = mParams.createDismissAnimator(keyPreviewView);
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(final Animator animation) {
+            public void onAnimationEnd(final Animator animator) {
                 dismissKeyPreview(key, false /* withAnimation */);
             }
         });
-        return dismissAnimation;
+        return animator;
     }
 
-    private static class KeyPreviewAnimations extends AnimatorListenerAdapter {
-        private final Animator mShowUpAnimation;
-        private final Animator mDismissAnimation;
+    private static class KeyPreviewAnimators extends AnimatorListenerAdapter {
+        private final Animator mShowUpAnimator;
+        private final Animator mDismissAnimator;
 
-        public KeyPreviewAnimations(final Animator showUpAnimation,
-                final Animator dismissAnimation) {
-            mShowUpAnimation = showUpAnimation;
-            mDismissAnimation = dismissAnimation;
+        public KeyPreviewAnimators(final Animator showUpAnimator, final Animator dismissAnimator) {
+            mShowUpAnimator = showUpAnimator;
+            mDismissAnimator = dismissAnimator;
         }
 
         public void startShowUp() {
-            mShowUpAnimation.start();
+            mShowUpAnimator.start();
         }
 
         public void startDismiss() {
-            if (mShowUpAnimation.isRunning()) {
-                mShowUpAnimation.addListener(this);
+            if (mShowUpAnimator.isRunning()) {
+                mShowUpAnimator.addListener(this);
                 return;
             }
-            mDismissAnimation.start();
+            mDismissAnimator.start();
         }
 
         @Override
-        public void onAnimationEnd(final Animator animation) {
-            mDismissAnimation.start();
+        public void onAnimationEnd(final Animator animator) {
+            mDismissAnimator.start();
         }
     }
 }
