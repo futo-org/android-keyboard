@@ -1057,11 +1057,11 @@ static int compare_pair_capital(const void *a, const void *b) {
             - static_cast<int>((static_cast<const struct LatinCapitalSmallPair *>(b))->capital);
 }
 
-/* static */ unsigned short CharUtils::latin_tolower(const unsigned short c) {
+/* static */ int CharUtils::latin_tolower(const int c) {
     struct LatinCapitalSmallPair *p =
             static_cast<struct LatinCapitalSmallPair *>(bsearch(&c, SORTED_CHAR_MAP,
                     NELEMS(SORTED_CHAR_MAP), sizeof(SORTED_CHAR_MAP[0]), compare_pair_capital));
-    return p ? p->small : c;
+    return p ? static_cast<int>(p->small) : c;
 }
 
 /*
