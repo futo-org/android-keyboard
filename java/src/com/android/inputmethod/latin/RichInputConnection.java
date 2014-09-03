@@ -623,14 +623,24 @@ public final class RichInputConnection {
         return Arrays.binarySearch(sortedSeparators, code) >= 0;
     }
 
+    private static boolean isPartOfCompositionForScript(final int codePoint,
+            final SpacingAndPunctuations spacingAndPunctuations, final int scriptId) {
+        // We always consider word connectors part of compositions.
+        return spacingAndPunctuations.isWordConnector(codePoint)
+                // Otherwise, it's part of composition if it's part of script and not a separator.
+                || (!spacingAndPunctuations.isWordSeparator(codePoint)
+                        && ScriptUtils.isLetterPartOfScript(codePoint, scriptId));
+    }
+
     /**
      * Returns the text surrounding the cursor.
      *
-     * @param sortedSeparators a sorted array of code points that split words.
+     * @param spacingAndPunctuations the rules for spacing and punctuation
      * @param scriptId the script we consider to be writing words, as one of ScriptUtils.SCRIPT_*
      * @return a range containing the text surrounding the cursor
      */
-    public TextRange getWordRangeAtCursor(final int[] sortedSeparators, final int scriptId) {
+    public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
+            final int scriptId) {
         mIC = mParent.getCurrentInputConnection();
         if (mIC == null) {
             return null;
@@ -647,8 +657,7 @@ public final class RichInputConnection {
         int startIndexInBefore = before.length();
         while (startIndexInBefore > 0) {
             final int codePoint = Character.codePointBefore(before, startIndexInBefore);
-            if (isSeparator(codePoint, sortedSeparators)
-                    || !ScriptUtils.isLetterPartOfScript(codePoint, scriptId)) {
+            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId)) {
                 break;
             }
             --startIndexInBefore;
@@ -661,8 +670,7 @@ public final class RichInputConnection {
         int endIndexInAfter = -1;
         while (++endIndexInAfter < after.length()) {
             final int codePoint = Character.codePointAt(after, endIndexInAfter);
-            if (isSeparator(codePoint, sortedSeparators)
-                    || !ScriptUtils.isLetterPartOfScript(codePoint, scriptId)) {
+            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId)) {
                 break;
             }
             if (Character.isSupplementaryCodePoint(codePoint)) {
