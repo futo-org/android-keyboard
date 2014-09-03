@@ -922,13 +922,13 @@ public final class RichInputConnection {
      * prevents the application from fulfilling the request. (TODO: Improve the API when it turns
      * out that we actually need more detailed error codes)
      */
-    public boolean requestUpdateCursorAnchorInfo(final boolean enableMonitor,
+    public boolean requestCursorUpdates(final boolean enableMonitor,
             final boolean requestImmediateCallback) {
         mIC = mParent.getCurrentInputConnection();
         final boolean scheduled;
         if (null != mIC) {
-            scheduled = InputConnectionCompatUtils.requestUpdateCursorAnchorInfo(mIC,
-                    enableMonitor, requestImmediateCallback);
+            scheduled = InputConnectionCompatUtils.requestCursorUpdates(mIC, enableMonitor,
+                    requestImmediateCallback);
         } else {
             scheduled = false;
         }
