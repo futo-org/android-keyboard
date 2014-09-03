@@ -141,7 +141,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     if (!terminalDicNode->hasMultipleWords()) {
         BinaryDictionaryShortcutIterator shortcutIt =
                 traverseSession->getDictionaryStructurePolicy()->getShortcutIterator(
-                        terminalDicNode->getPtNodePos());
+                        terminalDicNode->getWordId());
         const bool sameAsTyped = scoringPolicy->sameAsTyped(traverseSession, terminalDicNode);
         outputShortcuts(&shortcutIt, finalScore, sameAsTyped, outSuggestionResults);
     }

@@ -157,8 +157,8 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds,
 }
 
 BinaryDictionaryShortcutIterator Ver4PatriciaTriePolicy::getShortcutIterator(
-        const int ptNodePos) const {
-    const int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
+        const int wordId) const {
+    const int shortcutPos = getShortcutPositionOfWord(wordId);
     return BinaryDictionaryShortcutIterator(&mShortcutPolicy, shortcutPos);
 }
 
@@ -180,10 +180,12 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
     }
 }
 
-int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) const {
-    if (ptNodePos == NOT_A_DICT_POS) {
+int Ver4PatriciaTriePolicy::getShortcutPositionOfWord(const int wordId) const {
+    if (wordId == NOT_A_WORD_ID) {
         return NOT_A_DICT_POS;
     }
+    const int ptNodePos =
+            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
     const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
     if (ptNodeParams.isDeleted()) {
         return NOT_A_DICT_POS;
@@ -511,7 +513,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     }
     // Fetch shortcut information.
     std::vector<UnigramProperty::ShortcutProperty> shortcuts;
-    int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
+    int shortcutPos = getShortcutPositionOfWord(wordId);
     if (shortcutPos != NOT_A_DICT_POS) {
         int shortcutTarget[MAX_WORD_LENGTH];
         const ShortcutDictContent *const shortcutDictContent =
