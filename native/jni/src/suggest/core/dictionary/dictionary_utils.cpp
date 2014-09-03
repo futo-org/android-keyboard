@@ -34,11 +34,11 @@ namespace latinime {
 
     // No prev words information.
     PrevWordsInfo emptyPrevWordsInfo;
-    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    emptyPrevWordsInfo.getPrevWordsTerminalPtNodePos(dictionaryStructurePolicy,
-            prevWordsPtNodePos, false /* tryLowerCaseSearch */);
+    int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    emptyPrevWordsInfo.getPrevWordIds(dictionaryStructurePolicy, prevWordIds,
+            false /* tryLowerCaseSearch */);
     current.emplace_back();
-    DicNodeUtils::initAsRoot(dictionaryStructurePolicy, prevWordsPtNodePos, &current.front());
+    DicNodeUtils::initAsRoot(dictionaryStructurePolicy, prevWordIds, &current.front());
     for (int i = 0; i < codePointCount; ++i) {
         // The base-lower input is used to ignore case errors and accent errors.
         const int codePoint = CharUtils::toBaseLowerCase(codePoints[i]);

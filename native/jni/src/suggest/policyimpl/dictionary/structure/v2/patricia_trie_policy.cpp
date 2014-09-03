@@ -267,8 +267,8 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
 }
 
 // This function gets the position of the terminal PtNode of the exact matching word in the
-// dictionary. If no match is found, it returns NOT_A_DICT_POS.
-int PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
+// dictionary. If no match is found, it returns NOT_A_WORD_ID.
+int PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
         const bool forceLowerCaseSearch) const {
     DynamicPtReadingHelper readingHelper(&mPtNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
@@ -276,9 +276,9 @@ int PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const CodePointArrayView
             wordCodePoints.size(), forceLowerCaseSearch);
     if (readingHelper.isError()) {
         mIsCorrupted = true;
-        AKLOGE("Dictionary reading error in createAndGetAllChildDicNodes().");
+        AKLOGE("Dictionary reading error in getWordId().");
     }
-    return ptNodePos;
+    return getWordIdFromTerminalPtNodePos(ptNodePos);
 }
 
 int PatriciaTriePolicy::getProbability(const int unigramProbability,
@@ -297,11 +297,11 @@ int PatriciaTriePolicy::getProbability(const int unigramProbability,
     }
 }
 
-int PatriciaTriePolicy::getProbabilityOfPtNode(const int *const prevWordsPtNodePos,
-        const int ptNodePos) const {
-    if (ptNodePos == NOT_A_DICT_POS) {
+int PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds, const int wordId) const {
+    if (wordId == NOT_A_WORD_ID) {
         return NOT_A_PROBABILITY;
     }
+    const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
     const PtNodeParams ptNodeParams =
             mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     if (ptNodeParams.isNotAWord() || ptNodeParams.isBlacklisted()) {
@@ -310,8 +310,9 @@ int PatriciaTriePolicy::getProbabilityOfPtNode(const int *const prevWordsPtNodeP
         // for shortcuts).
         return NOT_A_PROBABILITY;
     }
-    if (prevWordsPtNodePos) {
-        const int bigramsPosition = getBigramsPositionOfPtNode(prevWordsPtNodePos[0]);
+    if (prevWordIds) {
+        const int bigramsPosition = getBigramsPositionOfPtNode(
+                getTerminalPtNodePosFromWordId(prevWordIds[0]));
         BinaryDictionaryBigramsIterator bigramsIt(&mBigramListPolicy, bigramsPosition);
         while (bigramsIt.hasNext()) {
             bigramsIt.next();
@@ -325,16 +326,18 @@ int PatriciaTriePolicy::getProbabilityOfPtNode(const int *const prevWordsPtNodeP
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
-void PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordsPtNodePos,
+void PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
         NgramListener *const listener) const {
-    if (!prevWordsPtNodePos) {
+    if (!prevWordIds) {
         return;
     }
-    const int bigramsPosition = getBigramsPositionOfPtNode(prevWordsPtNodePos[0]);
+    const int bigramsPosition = getBigramsPositionOfPtNode(
+            getTerminalPtNodePosFromWordId(prevWordIds[0]));
     BinaryDictionaryBigramsIterator bigramsIt(&mBigramListPolicy, bigramsPosition);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
-        listener->onVisitEntry(bigramsIt.getProbability(), bigramsIt.getBigramPos());
+        listener->onVisitEntry(bigramsIt.getProbability(),
+                getWordIdFromTerminalPtNodePos(bigramsIt.getBigramPos()));
     }
 }
 
@@ -379,12 +382,12 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
 
 const WordProperty PatriciaTriePolicy::getWordProperty(
         const CodePointArrayView wordCodePoints) const {
-    const int ptNodePos = getTerminalPtNodePositionOfWord(wordCodePoints,
-            false /* forceLowerCaseSearch */);
-    if (ptNodePos == NOT_A_DICT_POS) {
+    const int wordId = getWordId(wordCodePoints, false /* forceLowerCaseSearch */);
+    if (wordId == NOT_A_WORD_ID) {
         AKLOGE("getWordProperty was called for invalid word.");
         return WordProperty();
     }
+    const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
     const PtNodeParams ptNodeParams =
             mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
@@ -467,4 +470,11 @@ int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outC
     return nextToken;
 }
 
+int PatriciaTriePolicy::getWordIdFromTerminalPtNodePos(const int ptNodePos) const {
+    return ptNodePos == NOT_A_DICT_POS ? NOT_A_WORD_ID : ptNodePos;
+}
+
+int PatriciaTriePolicy::getTerminalPtNodePosFromWordId(const int wordId) const {
+    return wordId == NOT_A_WORD_ID ? NOT_A_DICT_POS : wordId;
+}
 } // namespace latinime

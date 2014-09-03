@@ -29,8 +29,8 @@ namespace latinime {
 
 /* static */ void DicNodeUtils::initAsRoot(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const int *const prevWordsPtNodePos, DicNode *const newRootDicNode) {
-    newRootDicNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordsPtNodePos);
+        const int *const prevWordIds, DicNode *const newRootDicNode) {
+    newRootDicNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordIds);
 }
 
 /*static */ void DicNodeUtils::initAsRootWithPreviousWord(
@@ -86,9 +86,9 @@ namespace latinime {
         const DicNode *const dicNode, MultiBigramMap *const multiBigramMap) {
     const int unigramProbability = dicNode->getProbability();
     if (multiBigramMap) {
-        const int *const prevWordsPtNodePos = dicNode->getPrevWordsTerminalPtNodePos();
+        const int *const prevWordIds = dicNode->getPrevWordIds();
         return multiBigramMap->getBigramProbability(dictionaryStructurePolicy,
-                prevWordsPtNodePos, dicNode->getPtNodePos(), unigramProbability);
+                prevWordIds, dicNode->getWordId(), unigramProbability);
     }
     return dictionaryStructurePolicy->getProbability(unigramProbability,
             NOT_A_PROBABILITY);

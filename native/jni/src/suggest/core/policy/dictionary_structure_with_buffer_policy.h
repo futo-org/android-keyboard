@@ -53,15 +53,14 @@ class DictionaryStructureWithBufferPolicy {
             const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const = 0;
 
-    virtual int getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
+    virtual int getWordId(const CodePointArrayView wordCodePoints,
             const bool forceLowerCaseSearch) const = 0;
 
     virtual int getProbability(const int unigramProbability, const int bigramProbability) const = 0;
 
-    virtual int getProbabilityOfPtNode(const int *const prevWordsPtNodePos,
-            const int ptNodePos) const = 0;
+    virtual int getProbabilityOfWord(const int *const prevWordIds, const int wordId) const = 0;
 
-    virtual void iterateNgramEntries(const int *const prevWordsPtNodePos,
+    virtual void iterateNgramEntries(const int *const prevWordIds,
             NgramListener *const listener) const = 0;
 
     virtual int getShortcutPositionOfPtNode(const int ptNodePos) const = 0;

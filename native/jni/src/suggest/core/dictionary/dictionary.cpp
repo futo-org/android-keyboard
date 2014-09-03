@@ -93,11 +93,10 @@ void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
     TimeKeeper::setCurrentTime();
     NgramListenerForPrediction listener(prevWordsInfo, outSuggestionResults,
             mDictionaryStructureWithBufferPolicy.get());
-    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    prevWordsInfo->getPrevWordsTerminalPtNodePos(
-            mDictionaryStructureWithBufferPolicy.get(), prevWordsPtNodePos,
+    int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    prevWordsInfo->getPrevWordIds(mDictionaryStructureWithBufferPolicy.get(), prevWordIds,
             true /* tryLowerCaseSearch */);
-    mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordsPtNodePos, &listener);
+    mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordIds, &listener);
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
@@ -113,18 +112,17 @@ int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) con
 int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
         int length) const {
     TimeKeeper::setCurrentTime();
-    int nextWordPos = mDictionaryStructureWithBufferPolicy->getTerminalPtNodePositionOfWord(
+    int wordId = mDictionaryStructureWithBufferPolicy->getWordId(
             CodePointArrayView(word, length), false /* forceLowerCaseSearch */);
-    if (NOT_A_DICT_POS == nextWordPos) return NOT_A_PROBABILITY;
+    if (wordId == NOT_A_WORD_ID) return NOT_A_PROBABILITY;
     if (!prevWordsInfo) {
-        return getDictionaryStructurePolicy()->getProbabilityOfPtNode(
-                nullptr /* prevWordsPtNodePos */, nextWordPos);
+        return getDictionaryStructurePolicy()->getProbabilityOfWord(
+                nullptr /* prevWordsPtNodePos */, wordId);
     }
-    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    prevWordsInfo->getPrevWordsTerminalPtNodePos(
-            mDictionaryStructureWithBufferPolicy.get(), prevWordsPtNodePos,
+    int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    prevWordsInfo->getPrevWordIds(mDictionaryStructureWithBufferPolicy.get(), prevWordIds,
             true /* tryLowerCaseSearch */);
-    return getDictionaryStructurePolicy()->getProbabilityOfPtNode(prevWordsPtNodePos, nextWordPos);
+    return getDictionaryStructurePolicy()->getProbabilityOfWord(prevWordIds, wordId);
 }
 
 bool Dictionary::addUnigramEntry(const int *const word, const int length,

@@ -55,8 +55,8 @@ class DicTraverseSession {
               mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
         // No need to initialize it explicitly here.
-        for (size_t i = 0; i < NELEMS(mPrevWordsPtNodePos); ++i) {
-            mPrevWordsPtNodePos[i] = NOT_A_DICT_POS;
+        for (size_t i = 0; i < NELEMS(mPrevWordsIds); ++i) {
+            mPrevWordsIds[i] = NOT_A_DICT_POS;
         }
     }
 
@@ -79,7 +79,7 @@ class DicTraverseSession {
     //--------------------
     const ProximityInfo *getProximityInfo() const { return mProximityInfo; }
     const SuggestOptions *getSuggestOptions() const { return mSuggestOptions; }
-    const int *getPrevWordsPtNodePos() const { return mPrevWordsPtNodePos; }
+    const int *getPrevWordIds() const { return mPrevWordsIds; }
     DicNodesCache *getDicTraverseCache() { return &mDicNodesCache; }
     MultiBigramMap *getMultiBigramMap() { return &mMultiBigramMap; }
     const ProximityInfoState *getProximityInfoState(int id) const {
@@ -166,7 +166,7 @@ class DicTraverseSession {
             const int *const inputYs, const int *const times, const int *const pointerIds,
             const int inputSize, const float maxSpatialDistance, const int maxPointerCount);
 
-    int mPrevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    int mPrevWordsIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     const ProximityInfo *mProximityInfo;
     const Dictionary *mDictionary;
     const SuggestOptions *mSuggestOptions;
