@@ -132,6 +132,7 @@ LATIN_IME_CORE_TEST_FILES := \
     suggest/policyimpl/dictionary/utils/byte_array_utils_test.cpp \
     suggest/policyimpl/dictionary/utils/sparse_table_test.cpp \
     suggest/policyimpl/dictionary/utils/trie_map_test.cpp \
+    suggest/policyimpl/utils/damerau_levenshtein_edit_distance_policy_test.cpp \
     utils/autocorrection_threshold_utils_test.cpp \
     utils/int_array_view_test.cpp \
     utils/time_keeper_test.cpp
