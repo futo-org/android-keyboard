@@ -120,7 +120,7 @@ class Dictionary {
         NgramListenerForPrediction(const PrevWordsInfo *const prevWordsInfo,
                 SuggestionResults *const suggestionResults,
                 const DictionaryStructureWithBufferPolicy *const dictStructurePolicy);
-        virtual void onVisitEntry(const int ngramProbability, const int targetPtNodePos);
+        virtual void onVisitEntry(const int ngramProbability, const int targetWordId);
 
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(NgramListenerForPrediction);

@@ -91,9 +91,10 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
 }
 
 int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
-        const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
+        const int wordId, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
     DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
+    const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
     readingHelper.initWithPtNodePos(ptNodePos);
     const int codePointCount =  readingHelper.getCodePointsAndProbabilityAndReturnCodePointCount(
             maxCodePointCount, outCodePoints, outUnigramProbability);
@@ -492,8 +493,8 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
             // Word (unigram) probability
             int word1Probability = NOT_A_PROBABILITY;
             const int codePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
-                    word1TerminalPtNodePos, MAX_WORD_LENGTH, bigramWord1CodePoints,
-                    &word1Probability);
+                    getWordIdFromTerminalPtNodePos(word1TerminalPtNodePos), MAX_WORD_LENGTH,
+                    bigramWord1CodePoints, &word1Probability);
             const std::vector<int> word1(bigramWord1CodePoints,
                     bigramWord1CodePoints + codePointCount);
             const HistoricalInfo *const historicalInfo = bigramEntry.getHistoricalInfo();
@@ -550,7 +551,8 @@ int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const 
     const int terminalPtNodePos = mTerminalPtNodePositionsForIteratingWords[token];
     int unigramProbability = NOT_A_PROBABILITY;
     *outCodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
-            terminalPtNodePos, MAX_WORD_LENGTH, outCodePoints, &unigramProbability);
+            getWordIdFromTerminalPtNodePos(terminalPtNodePos), MAX_WORD_LENGTH, outCodePoints,
+            &unigramProbability);
     const int nextToken = token + 1;
     if (nextToken >= terminalPtNodePositionsVectorSize) {
         // All words have been iterated.

@@ -81,9 +81,11 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
 }
 
 int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
-        const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
+        const int wordId, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
     DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
+    const int ptNodePos =
+            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
     readingHelper.initWithPtNodePos(ptNodePos);
     const int codePointCount =  readingHelper.getCodePointsAndProbabilityAndReturnCodePointCount(
             maxCodePointCount, outCodePoints, outUnigramProbability);
@@ -488,18 +490,13 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     // TODO: Support n-gram.
     std::vector<BigramProperty> bigrams;
     const WordIdArrayView prevWordIds = WordIdArrayView::fromObject(&wordId);
-    const TerminalPositionLookupTable *const terminalPositionLookupTable =
-            mBuffers->getTerminalPositionLookupTable();
     int bigramWord1CodePoints[MAX_WORD_LENGTH];
     for (const auto entry : mBuffers->getLanguageModelDictContent()->getProbabilityEntries(
             prevWordIds)) {
-        const int word1TerminalPtNodePos =
-                terminalPositionLookupTable->getTerminalPtNodePosition(entry.getWordId());
         // Word (unigram) probability
         int word1Probability = NOT_A_PROBABILITY;
         const int codePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
-                word1TerminalPtNodePos, MAX_WORD_LENGTH, bigramWord1CodePoints,
-                &word1Probability);
+                entry.getWordId(), MAX_WORD_LENGTH, bigramWord1CodePoints, &word1Probability);
         const std::vector<int> word1(bigramWord1CodePoints,
                 bigramWord1CodePoints + codePointCount);
         const ProbabilityEntry probabilityEntry = entry.getProbabilityEntry();
@@ -553,9 +550,11 @@ int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const 
         return 0;
     }
     const int terminalPtNodePos = mTerminalPtNodePositionsForIteratingWords[token];
+    const PtNodeParams ptNodeParams =
+            mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(terminalPtNodePos);
     int unigramProbability = NOT_A_PROBABILITY;
     *outCodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
-            terminalPtNodePos, MAX_WORD_LENGTH, outCodePoints, &unigramProbability);
+            ptNodeParams.getTerminalId(), MAX_WORD_LENGTH, outCodePoints, &unigramProbability);
     const int nextToken = token + 1;
     if (nextToken >= terminalPtNodePositionsVectorSize) {
         // All words have been iterated.

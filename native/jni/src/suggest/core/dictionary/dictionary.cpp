@@ -67,8 +67,8 @@ Dictionary::NgramListenerForPrediction::NgramListenerForPrediction(
       mDictStructurePolicy(dictStructurePolicy) {}
 
 void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbability,
-        const int targetPtNodePos) {
-    if (targetPtNodePos == NOT_A_DICT_POS) {
+        const int targetWordId) {
+    if (targetWordId == NOT_A_WORD_ID) {
         return;
     }
     if (mPrevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
@@ -78,8 +78,8 @@ void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbabi
     int targetWordCodePoints[MAX_WORD_LENGTH];
     int unigramProbability = 0;
     const int codePointCount = mDictStructurePolicy->
-            getCodePointsAndProbabilityAndReturnCodePointCount(targetPtNodePos,
-                    MAX_WORD_LENGTH, targetWordCodePoints, &unigramProbability);
+            getCodePointsAndProbabilityAndReturnCodePointCount(targetWordId, MAX_WORD_LENGTH,
+                    targetWordCodePoints, &unigramProbability);
     if (codePointCount <= 0) {
         return;
     }

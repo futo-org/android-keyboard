@@ -63,7 +63,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             DicNodeVector *const childDicNodes) const;
 
     int getCodePointsAndProbabilityAndReturnCodePointCount(
-            const int terminalPtNodePos, const int maxCodePointCount, int *const outCodePoints,
+            const int wordId, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
     int getWordId(const CodePointArrayView wordCodePoints, const bool forceLowerCaseSearch) const;
