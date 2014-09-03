@@ -58,32 +58,32 @@
         android:defaultValue="false"
         android:persistent="true" />
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-        android:dependency="pref_customize_key_preview_animation"
+        android:dependency="pref_has_custom_key_preview_animation_params"
         android:key="pref_key_preview_show_up_start_x_scale"
         android:title="@string/prefs_key_popup_show_up_start_x_scale_settings"
         latin:maxValue="100" /> <!-- percent -->
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-        android:dependency="pref_customize_key_preview_animation"
+        android:dependency="pref_has_custom_key_preview_animation_params"
         android:key="pref_key_preview_show_up_start_y_scale"
         android:title="@string/prefs_key_popup_show_up_start_y_scale_settings"
         latin:maxValue="100" /> <!-- percent -->
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-        android:dependency="pref_customize_key_preview_animation"
+        android:dependency="pref_has_custom_key_preview_animation_params"
         android:key="pref_key_preview_dismiss_end_x_scale"
         android:title="@string/prefs_key_popup_dismiss_end_x_scale_settings"
         latin:maxValue="100" /> <!-- percent -->
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-        android:dependency="pref_customize_key_preview_animation"
+        android:dependency="pref_has_custom_key_preview_animation_params"
         android:key="pref_key_preview_dismiss_end_y_scale"
         android:title="@string/prefs_key_popup_dismiss_end_y_scale_settings"
         latin:maxValue="100" /> <!-- percent -->
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-        android:dependency="pref_customize_key_preview_animation"
+        android:dependency="pref_has_custom_key_preview_animation_params"
         android:key="pref_key_preview_show_up_duration"
         android:title="@string/prefs_key_popup_show_up_duration_settings"
         latin:maxValue="100" /> <!-- milliseconds -->
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-        android:dependency="pref_customize_key_preview_animation"
+        android:dependency="pref_has_custom_key_preview_animation_params"
         android:key="pref_key_preview_dismiss_duration"
         android:title="@string/prefs_key_popup_dismiss_duration_settings"
         latin:maxValue="100" /> <!-- milliseconds -->
