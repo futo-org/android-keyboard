@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.dictionarypack;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -55,6 +56,7 @@ public class MetadataHandler {
             final int rawChecksumIndex =
                     results.getColumnIndex(MetadataDbHelper.RAW_CHECKSUM_COLUMN);
             final int checksumIndex = results.getColumnIndex(MetadataDbHelper.CHECKSUM_COLUMN);
+            final int retryCountIndex = results.getColumnIndex(MetadataDbHelper.RETRY_COUNT_COLUMN);
             final int localFilenameIndex =
                     results.getColumnIndex(MetadataDbHelper.LOCAL_FILENAME_COLUMN);
             final int remoteFilenameIndex =
@@ -70,6 +72,7 @@ public class MetadataHandler {
                         results.getLong(fileSizeIndex),
                         results.getString(rawChecksumIndex),
                         results.getString(checksumIndex),
+                        results.getInt(retryCountIndex),
                         results.getString(localFilenameIndex),
                         results.getString(remoteFilenameIndex),
                         results.getInt(versionIndex),
@@ -99,6 +102,22 @@ public class MetadataHandler {
                 results.close();
             }
         }
+    }
+
+    /**
+     * Gets the metadata, for a specific dictionary.
+     *
+     * @param context The context to open files over.
+     * @param clientId the client id for retrieving the database. null for default (deprecated).
+     * @param wordListId the word list ID.
+     * @param version the word list version.
+     * @return the current metaData
+     */
+    public static WordListMetadata getCurrentMetadataForWordList(final Context context,
+            final String clientId, final String wordListId, final int version) {
+        final ContentValues contentValues = MetadataDbHelper.getContentValuesByWordListId(
+                MetadataDbHelper.getDb(context, clientId), wordListId, version);
+        return WordListMetadata.createFromContentValues(contentValues);
     }
 
     /**

@@ -31,7 +31,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
@@ -785,6 +784,10 @@ public final class UpdateHandler {
             } else {
                 final SQLiteDatabase db = MetadataDbHelper.getDb(context, clientId);
                 if (newInfo.mVersion == currentInfo.mVersion) {
+                    if (newInfo.mRemoteFilename == currentInfo.mRemoteFilename) {
+                        // If the dictionary url hasn't changed, we should preserve the retryCount.
+                        newInfo.mRetryCount = currentInfo.mRetryCount;
+                    }
                     // If it's the same id/version, we update the DB with the new values.
                     // It doesn't matter too much if they didn't change.
                     actions.add(new ActionBatch.UpdateDataAction(clientId, newInfo));
@@ -987,16 +990,17 @@ public final class UpdateHandler {
     public static void markAsUsed(final Context context, final String clientId,
             final String wordlistId, final int version,
             final int status, final boolean allowDownloadOnMeteredData) {
-        final List<WordListMetadata> currentMetadata =
-                MetadataHandler.getCurrentMetadata(context, clientId);
-        WordListMetadata wordList = MetadataHandler.findWordListById(currentMetadata, wordlistId);
-        if (null == wordList) return;
+        final WordListMetadata wordListMetaData = MetadataHandler.getCurrentMetadataForWordList(
+                context, clientId, wordlistId, version);
+
+        if (null == wordListMetaData) return;
+
         final ActionBatch actions = new ActionBatch();
         if (MetadataDbHelper.STATUS_DISABLED == status
                 || MetadataDbHelper.STATUS_DELETING == status) {
-            actions.add(new ActionBatch.EnableAction(clientId, wordList));
+            actions.add(new ActionBatch.EnableAction(clientId, wordListMetaData));
         } else if (MetadataDbHelper.STATUS_AVAILABLE == status) {
-            actions.add(new ActionBatch.StartDownloadAction(clientId, wordList,
+            actions.add(new ActionBatch.StartDownloadAction(clientId, wordListMetaData,
                     allowDownloadOnMeteredData));
         } else {
             Log.e(TAG, "Unexpected state of the word list for markAsUsed : " + status);
@@ -1022,13 +1026,13 @@ public final class UpdateHandler {
     // markAsUsed for consistency.
     public static void markAsUnused(final Context context, final String clientId,
             final String wordlistId, final int version, final int status) {
-        final List<WordListMetadata> currentMetadata =
-                MetadataHandler.getCurrentMetadata(context, clientId);
-        final WordListMetadata wordList =
-                MetadataHandler.findWordListById(currentMetadata, wordlistId);
-        if (null == wordList) return;
+
+        final WordListMetadata wordListMetaData = MetadataHandler.getCurrentMetadataForWordList(
+                context, clientId, wordlistId, version);
+
+        if (null == wordListMetaData) return;
         final ActionBatch actions = new ActionBatch();
-        actions.add(new ActionBatch.DisableAction(clientId, wordList));
+        actions.add(new ActionBatch.DisableAction(clientId, wordListMetaData));
         actions.execute(context, new LogProblemReporter(TAG));
         signalNewDictionaryState(context);
     }
@@ -1051,14 +1055,14 @@ public final class UpdateHandler {
      */
     public static void markAsDeleting(final Context context, final String clientId,
             final String wordlistId, final int version, final int status) {
-        final List<WordListMetadata> currentMetadata =
-                MetadataHandler.getCurrentMetadata(context, clientId);
-        final WordListMetadata wordList =
-                MetadataHandler.findWordListById(currentMetadata, wordlistId);
-        if (null == wordList) return;
+
+        final WordListMetadata wordListMetaData = MetadataHandler.getCurrentMetadataForWordList(
+                context, clientId, wordlistId, version);
+
+        if (null == wordListMetaData) return;
         final ActionBatch actions = new ActionBatch();
-        actions.add(new ActionBatch.DisableAction(clientId, wordList));
-        actions.add(new ActionBatch.StartDeleteAction(clientId, wordList));
+        actions.add(new ActionBatch.DisableAction(clientId, wordListMetaData));
+        actions.add(new ActionBatch.StartDeleteAction(clientId, wordListMetaData));
         actions.execute(context, new LogProblemReporter(TAG));
         signalNewDictionaryState(context);
     }
@@ -1076,33 +1080,47 @@ public final class UpdateHandler {
      */
     public static void markAsDeleted(final Context context, final String clientId,
             final String wordlistId, final int version, final int status) {
-        final List<WordListMetadata> currentMetadata =
-                MetadataHandler.getCurrentMetadata(context, clientId);
-        final WordListMetadata wordList =
-                MetadataHandler.findWordListById(currentMetadata, wordlistId);
-        if (null == wordList) return;
+        final WordListMetadata wordListMetaData = MetadataHandler.getCurrentMetadataForWordList(
+                        context, clientId, wordlistId, version);
+
+        if (null == wordListMetaData) return;
+
         final ActionBatch actions = new ActionBatch();
-        actions.add(new ActionBatch.FinishDeleteAction(clientId, wordList));
+        actions.add(new ActionBatch.FinishDeleteAction(clientId, wordListMetaData));
         actions.execute(context, new LogProblemReporter(TAG));
         signalNewDictionaryState(context);
     }
 
     /**
-     * Marks the word list with the passed id as broken.
-     *
-     * This effectively deletes the entry from the metadata. It doesn't prevent the same
-     * word list to be downloaded again at a later time if the same or a new version is
-     * available the next time we download the metadata.
+     * Checks whether the word list should be downloaded again; in which case an download &
+     * installation attempt is made. Otherwise the word list is marked broken.
      *
      * @param context the context to open the database on.
      * @param clientId the id of the client.
-     * @param wordlistId the id of the word list to mark as broken.
-     * @param version the version of the word list to mark as deleted.
+     * @param wordlistId the id of the word list which is broken.
+     * @param version the version of the broken word list.
      */
-    public static void markAsBroken(final Context context, final String clientId,
+    public static void markAsBrokenOrRetrying(final Context context, final String clientId,
             final String wordlistId, final int version) {
-        // TODO: do this on another thread to avoid blocking the UI.
-        MetadataDbHelper.deleteEntry(MetadataDbHelper.getDb(context, clientId),
-                wordlistId, version);
+        boolean isRetryPossible = MetadataDbHelper.maybeMarkEntryAsRetrying(
+                MetadataDbHelper.getDb(context, clientId), wordlistId, version);
+
+        if (isRetryPossible) {
+            if (DEBUG) {
+                Log.d(TAG, "Attempting to download & install the wordlist again.");
+            }
+            final WordListMetadata wordListMetaData = MetadataHandler.getCurrentMetadataForWordList(
+                    context, clientId, wordlistId, version);
+
+            final ActionBatch actions = new ActionBatch();
+            actions.add(new ActionBatch.StartDownloadAction(clientId, wordListMetaData, false));
+            actions.execute(context, new LogProblemReporter(TAG));
+        } else {
+            if (DEBUG) {
+                Log.d(TAG, "Retries for wordlist exhausted, deleting the wordlist from table.");
+            }
+            MetadataDbHelper.deleteEntry(MetadataDbHelper.getDb(context, clientId),
+                    wordlistId, version);
+        }
     }
 }

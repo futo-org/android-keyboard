@@ -470,7 +470,11 @@ public final class DictionaryProvider extends ContentProvider {
         } else if (MetadataDbHelper.STATUS_INSTALLED == status) {
             final String result = uri.getQueryParameter(QUERY_PARAMETER_DELETE_RESULT);
             if (QUERY_PARAMETER_FAILURE.equals(result)) {
-                UpdateHandler.markAsBroken(getContext(), clientId, wordlistId, version);
+                if (DEBUG) {
+                    Log.d(TAG,
+                            "Dictionary is broken, attempting to retry download & installation.");
+                }
+                UpdateHandler.markAsBrokenOrRetrying(getContext(), clientId, wordlistId, version);
             }
             final String localFilename =
                     wordList.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN);

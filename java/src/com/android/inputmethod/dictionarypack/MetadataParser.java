@@ -83,6 +83,7 @@ public class MetadataParser {
                 Long.parseLong(arguments.get(FILESIZE_FIELD_NAME)),
                 arguments.get(RAW_CHECKSUM_FIELD_NAME),
                 arguments.get(CHECKSUM_FIELD_NAME),
+                MetadataDbHelper.DICTIONARY_RETRY_THRESHOLD /* retryCount */,
                 null,
                 arguments.get(REMOTE_FILENAME_FIELD_NAME),
                 Integer.parseInt(arguments.get(VERSION_FIELD_NAME)),
