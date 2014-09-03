@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_updating_helper.h"
