@@ -39,8 +39,7 @@ class MultiBigramMap {
     // Look up the bigram probability for the given word pair from the cached bigram maps.
     // Also caches the bigrams if there is space remaining and they have not been cached already.
     int getBigramProbability(const DictionaryStructureWithBufferPolicy *const structurePolicy,
-            const int *const prevWordsPtNodePos, const int nextWordPosition,
-            const int unigramProbability);
+            const int *const prevWordIds, const int nextWordId, const int unigramProbability);
 
     void clear() {
         mBigramMaps.clear();
@@ -58,11 +57,11 @@ class MultiBigramMap {
         virtual ~BigramMap() {}
 
         void init(const DictionaryStructureWithBufferPolicy *const structurePolicy,
-                const int *const prevWordsPtNodePos);
+                const int *const prevWordIds);
         int getBigramProbability(
                 const DictionaryStructureWithBufferPolicy *const structurePolicy,
-                const int nextWordPosition, const int unigramProbability) const;
-        virtual void onVisitEntry(const int ngramProbability, const int targetPtNodePos);
+                const int nextWordId, const int unigramProbability) const;
+        virtual void onVisitEntry(const int ngramProbability, const int targetWordId);
 
      private:
         static const int DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP;
@@ -70,14 +69,12 @@ class MultiBigramMap {
         BloomFilter mBloomFilter;
     };
 
-    void addBigramsForWordPosition(
-            const DictionaryStructureWithBufferPolicy *const structurePolicy,
-            const int *const prevWordsPtNodePos);
+    void addBigramsForWord(const DictionaryStructureWithBufferPolicy *const structurePolicy,
+            const int *const prevWordIds);
 
     int readBigramProbabilityFromBinaryDictionary(
             const DictionaryStructureWithBufferPolicy *const structurePolicy,
-            const int *const prevWordsPtNodePos, const int nextWordPosition,
-            const int unigramProbability);
+            const int *const prevWordIds, const int nextWordId, const int unigramProbability);
 
     static const size_t MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP;
     std::unordered_map<int, BigramMap> mBigramMaps;

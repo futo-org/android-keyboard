@@ -26,7 +26,7 @@ namespace latinime {
  */
 class NgramListener {
  public:
-    virtual void onVisitEntry(const int ngramProbability, const int targetPtNodePos) = 0;
+    virtual void onVisitEntry(const int ngramProbability, const int targetWordId) = 0;
     virtual ~NgramListener() {};
 
  protected:

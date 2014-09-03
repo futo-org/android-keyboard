@@ -18,14 +18,12 @@
 #define LATINIME_PREV_WORDS_INFO_H
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/char_utils.h"
 #include "utils/int_array_view.h"
 
 namespace latinime {
 
-// TODO: Support n-gram.
 class PrevWordsInfo {
  public:
     // No prev word information.
@@ -81,11 +79,10 @@ class PrevWordsInfo {
         return false;
     }
 
-    void getPrevWordsTerminalPtNodePos(
-            const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
-            int *const outPrevWordsTerminalPtNodePos, const bool tryLowerCaseSearch) const {
+    void getPrevWordIds(const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
+            int *const outPrevWordIds, const bool tryLowerCaseSearch) const {
         for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
-            outPrevWordsTerminalPtNodePos[i] = getTerminalPtNodePosOfWord(dictStructurePolicy,
+            outPrevWordIds[i] = getWordId(dictStructurePolicy,
                     mPrevWordCodePoints[i], mPrevWordCodePointCount[i],
                     mIsBeginningOfSentence[i], tryLowerCaseSearch);
         }
@@ -110,12 +107,11 @@ class PrevWordsInfo {
  private:
     DISALLOW_COPY_AND_ASSIGN(PrevWordsInfo);
 
-    static int getTerminalPtNodePosOfWord(
-            const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
+    static int getWordId(const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
             const int *const wordCodePoints, const int wordCodePointCount,
             const bool isBeginningOfSentence, const bool tryLowerCaseSearch) {
         if (!dictStructurePolicy || !wordCodePoints || wordCodePointCount > MAX_WORD_LENGTH) {
-            return NOT_A_DICT_POS;
+            return NOT_A_WORD_ID;
         }
         int codePoints[MAX_WORD_LENGTH];
         int codePointCount = wordCodePointCount;
@@ -124,21 +120,19 @@ class PrevWordsInfo {
             codePointCount = CharUtils::attachBeginningOfSentenceMarker(codePoints,
                     codePointCount, MAX_WORD_LENGTH);
             if (codePointCount <= 0) {
-                return NOT_A_DICT_POS;
+                return NOT_A_WORD_ID;
             }
         }
         const CodePointArrayView codePointArrayView(codePoints, codePointCount);
-        const int wordPtNodePos = dictStructurePolicy->getTerminalPtNodePositionOfWord(
+        const int wordId = dictStructurePolicy->getWordId(
                 codePointArrayView, false /* forceLowerCaseSearch */);
-        if (wordPtNodePos != NOT_A_DICT_POS || !tryLowerCaseSearch) {
-            // Return the position when when the word was found or doesn't try lower case
-            // search.
-            return wordPtNodePos;
+        if (wordId != NOT_A_WORD_ID || !tryLowerCaseSearch) {
+            // Return the id when when the word was found or doesn't try lower case search.
+            return wordId;
         }
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
-        return dictStructurePolicy->getTerminalPtNodePositionOfWord(
-                codePointArrayView, true /* forceLowerCaseSearch */);
+        return dictStructurePolicy->getWordId(codePointArrayView, true /* forceLowerCaseSearch */);
     }
 
     void clear() {
