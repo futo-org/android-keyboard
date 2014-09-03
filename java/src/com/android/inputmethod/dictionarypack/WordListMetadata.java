@@ -36,6 +36,7 @@ public class WordListMetadata {
     public final String mRemoteFilename;
     public final int mVersion; // version of this word list
     public final int mFlags; // Always 0 in this version, reserved for future use
+    public int mRetryCount;
 
     // The locale is matched against the locale requested by the client. The matching algorithm
     // is a standard locale matching with fallback; it is implemented in
@@ -51,8 +52,9 @@ public class WordListMetadata {
 
     public WordListMetadata(final String id, final int type,
             final String description, final long lastUpdate, final long fileSize,
-            final String rawChecksum, final String checksum, final String localFilename,
-            final String remoteFilename, final int version, final int formatVersion,
+            final String rawChecksum, final String checksum, final int retryCount,
+            final String localFilename, final String remoteFilename,
+            final int version, final int formatVersion,
             final int flags, final String locale) {
         mId = id;
         mType = type;
@@ -61,6 +63,7 @@ public class WordListMetadata {
         mFileSize = fileSize;
         mRawChecksum = rawChecksum;
         mChecksum = checksum;
+        mRetryCount = retryCount;
         mLocalFilename = localFilename;
         mRemoteFilename = remoteFilename;
         mVersion = version;
@@ -82,6 +85,7 @@ public class WordListMetadata {
         final Long fileSize = values.getAsLong(MetadataDbHelper.FILESIZE_COLUMN);
         final String rawChecksum = values.getAsString(MetadataDbHelper.RAW_CHECKSUM_COLUMN);
         final String checksum = values.getAsString(MetadataDbHelper.CHECKSUM_COLUMN);
+        final int retryCount = values.getAsInteger(MetadataDbHelper.RETRY_COUNT_COLUMN);
         final String localFilename = values.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN);
         final String remoteFilename = values.getAsString(MetadataDbHelper.REMOTE_FILENAME_COLUMN);
         final Integer version = values.getAsInteger(MetadataDbHelper.VERSION_COLUMN);
@@ -103,7 +107,8 @@ public class WordListMetadata {
             throw new IllegalArgumentException();
         }
         return new WordListMetadata(id, type, description, lastUpdate, fileSize, rawChecksum,
-                checksum, localFilename, remoteFilename, version, formatVersion, flags, locale);
+                checksum, retryCount, localFilename, remoteFilename, version, formatVersion,
+                flags, locale);
     }
 
     @Override
@@ -116,6 +121,7 @@ public class WordListMetadata {
         sb.append("\nFileSize : ").append(mFileSize);
         sb.append("\nRawChecksum : ").append(mRawChecksum);
         sb.append("\nChecksum : ").append(mChecksum);
+        sb.append("\nRetryCount: ").append(mRetryCount);
         sb.append("\nLocalFilename : ").append(mLocalFilename);
         sb.append("\nRemoteFilename : ").append(mRemoteFilename);
         sb.append("\nVersion : ").append(mVersion);

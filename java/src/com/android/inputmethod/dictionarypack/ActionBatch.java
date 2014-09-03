@@ -120,9 +120,10 @@ public final class ActionBatch {
             if (MetadataDbHelper.STATUS_DOWNLOADING == status) {
                 // The word list is still downloading. Cancel the download and revert the
                 // word list status to "available".
-                 manager.remove(values.getAsLong(MetadataDbHelper.PENDINGID_COLUMN));
+                manager.remove(values.getAsLong(MetadataDbHelper.PENDINGID_COLUMN));
                 MetadataDbHelper.markEntryAsAvailable(db, mWordList.mId, mWordList.mVersion);
-            } else if (MetadataDbHelper.STATUS_AVAILABLE != status) {
+            } else if (MetadataDbHelper.STATUS_AVAILABLE != status
+                    && MetadataDbHelper.STATUS_RETRYING != status) {
                 // Should never happen
                 Log.e(TAG, "Unexpected state of the word list '" + mWordList.mId + "' : " + status
                         + " for an upgrade action. Fall back to download.");
@@ -325,8 +326,8 @@ public final class ActionBatch {
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
                     null == mWordList.mLocalFilename ? "" : mWordList.mLocalFilename,
                     mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
-                    mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
-                    mWordList.mFormatVersion);
+                    mWordList.mChecksum, mWordList.mRetryCount, mWordList.mFileSize,
+                    mWordList.mVersion, mWordList.mFormatVersion);
             PrivateLog.log("Insert 'available' record for " + mWordList.mDescription
                     + " and locale " + mWordList.mLocale);
             db.insert(MetadataDbHelper.METADATA_TABLE_NAME, null, values);
@@ -374,9 +375,9 @@ public final class ActionBatch {
             final ContentValues values = MetadataDbHelper.makeContentValues(0,
                     MetadataDbHelper.TYPE_BULK, MetadataDbHelper.STATUS_INSTALLED,
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
-                    "", mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
-                    mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
-                    mWordList.mFormatVersion);
+                    "", mWordList.mRemoteFilename, mWordList.mLastUpdate,
+                    mWordList.mRawChecksum, mWordList.mChecksum, mWordList.mRetryCount,
+                    mWordList.mFileSize, mWordList.mVersion, mWordList.mFormatVersion);
             PrivateLog.log("Insert 'preinstalled' record for " + mWordList.mDescription
                     + " and locale " + mWordList.mLocale);
             db.insert(MetadataDbHelper.METADATA_TABLE_NAME, null, values);
@@ -417,8 +418,8 @@ public final class ActionBatch {
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
                     oldValues.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN),
                     mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
-                    mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
-                    mWordList.mFormatVersion);
+                    mWordList.mChecksum, mWordList.mRetryCount, mWordList.mFileSize,
+                    mWordList.mVersion, mWordList.mFormatVersion);
             PrivateLog.log("Updating record for " + mWordList.mDescription
                     + " and locale " + mWordList.mLocale);
             db.update(MetadataDbHelper.METADATA_TABLE_NAME, values,
