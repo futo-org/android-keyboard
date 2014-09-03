@@ -284,6 +284,7 @@
             <enum name="stickyOff" value="3" />
             <enum name="stickyOn" value="4" />
             <enum name="action" value="5" />
+            <enum name="spacebar" value="6" />
         </attr>
         <!-- The key action flags. -->
         <attr name="keyActionFlags" format="integer">
