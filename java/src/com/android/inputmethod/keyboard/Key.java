@@ -139,6 +139,7 @@ public class Key implements Comparable<Key> {
     public static final int BACKGROUND_TYPE_STICKY_OFF = 3;
     public static final int BACKGROUND_TYPE_STICKY_ON = 4;
     public static final int BACKGROUND_TYPE_ACTION = 5;
+    public static final int BACKGROUND_TYPE_SPACEBAR = 6;
 
     private final int mActionFlags;
     private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
@@ -505,6 +506,7 @@ public class Key implements Comparable<Key> {
         case BACKGROUND_TYPE_STICKY_OFF: return "stickyOff";
         case BACKGROUND_TYPE_STICKY_ON: return "stickyOn";
         case BACKGROUND_TYPE_ACTION: return "action";
+        case BACKGROUND_TYPE_SPACEBAR: return "spacebar";
         default: return null;
         }
     }
@@ -871,6 +873,8 @@ public class Key implements Comparable<Key> {
             new KeyBackgroundState(android.R.attr.state_checkable, android.R.attr.state_checked),
             // 5: BACKGROUND_TYPE_ACTION
             new KeyBackgroundState(android.R.attr.state_active),
+            // 6: BACKGROUND_TYPE_SPACEBAR
+            new KeyBackgroundState(),
         };
     }
 
@@ -884,7 +888,7 @@ public class Key implements Comparable<Key> {
         final Drawable background;
         if (mBackgroundType == BACKGROUND_TYPE_FUNCTIONAL) {
             background = functionalKeyBackground;
-        } else if (getCode() == Constants.CODE_SPACE) {
+        } else if (mBackgroundType == BACKGROUND_TYPE_SPACEBAR) {
             background = spacebarBackground;
         } else {
             background = keyBackground;

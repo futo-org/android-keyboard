@@ -22,7 +22,6 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:backgroundType="normal"
         latin:keyStyle="spaceKeyStyle"
         latin:keyWidth="30%p" />
 </merge>

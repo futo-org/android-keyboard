@@ -107,9 +107,8 @@
     </Row>
     <Row>
         <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="30%p"
-            latin:backgroundType="functional" />
+            latin:keyStyle="tabletNumSpaceKeyStyle"
+            latin:keyWidth="30%p" />
         <Key
             latin:keyStyle="numStarKeyStyle"
             latin:keyXPos="31%p" />
