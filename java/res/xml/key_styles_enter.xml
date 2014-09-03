@@ -393,12 +393,24 @@
         </case>
         <case
             latin:imeAction="actionCustomLabel"
+            latin:keyboardTheme="ICS|KLP"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="dummy_label|!code/key_enter"
                 latin:keyLabelFlags="fromCustomActionLabel"
-                latin:backgroundType="customAction"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionCustomLabel"
+            latin:keyboardTheme="LXXLight|LXXDark"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keySpec="dummy_label|!code/key_enter"
+                latin:keyLabelFlags="fromCustomActionLabel"
+                latin:backgroundType="functional"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <!-- imeAction is either actionNone or actionUnspecified. -->

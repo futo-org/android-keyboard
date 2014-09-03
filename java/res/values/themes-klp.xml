@@ -33,8 +33,8 @@
         name="Keyboard.KLP"
         parent="Keyboard"
     >
-        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
-        <item name="themeId">0</item>
+        <!-- This should be aligned with KeyboardTheme.THEME_ID_* -->
+        <item name="themeId">KLP</item>
     </style>
     <style
         name="KeyboardView.KLP"
