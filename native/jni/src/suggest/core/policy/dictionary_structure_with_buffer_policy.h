@@ -20,6 +20,7 @@
 #include <memory>
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "utils/int_array_view.h"
 
@@ -28,7 +29,6 @@ namespace latinime {
 class DicNode;
 class DicNodeVector;
 class DictionaryHeaderStructurePolicy;
-class DictionaryShortcutsStructurePolicy;
 class NgramListener;
 class PrevWordsInfo;
 class UnigramProperty;
@@ -63,11 +63,9 @@ class DictionaryStructureWithBufferPolicy {
     virtual void iterateNgramEntries(const int *const prevWordIds,
             NgramListener *const listener) const = 0;
 
-    virtual int getShortcutPositionOfPtNode(const int ptNodePos) const = 0;
+    virtual BinaryDictionaryShortcutIterator getShortcutIterator(const int ptNodePos) const = 0;
 
     virtual const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const = 0;
-
-    virtual const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const = 0;
 
     // Returns whether the update was success or not.
     virtual bool addUnigramEntry(const CodePointArrayView wordCodePoints,

@@ -29,6 +29,7 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
+#include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_updating_helper.h"
@@ -96,14 +97,10 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     void iterateNgramEntries(const int *const prevWordIds, NgramListener *const listener) const;
 
-    int getShortcutPositionOfPtNode(const int ptNodePos) const;
+    BinaryDictionaryShortcutIterator getShortcutIterator(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return mHeaderPolicy;
-    }
-
-    const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const {
-        return &mShortcutPolicy;
     }
 
     bool addUnigramEntry(const CodePointArrayView wordCodePoints,
@@ -163,6 +160,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     mutable bool mIsCorrupted;
 
     int getBigramsPositionOfPtNode(const int ptNodePos) const;
+    int getShortcutPositionOfPtNode(const int ptNodePos) const;
     int getWordIdFromTerminalPtNodePos(const int ptNodePos) const;
     int getTerminalPtNodePosFromWordId(const int wordId) const;
 };

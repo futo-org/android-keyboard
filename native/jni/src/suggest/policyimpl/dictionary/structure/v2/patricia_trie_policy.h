@@ -72,14 +72,10 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     void iterateNgramEntries(const int *const prevWordIds, NgramListener *const listener) const;
 
-    int getShortcutPositionOfPtNode(const int ptNodePos) const;
+    BinaryDictionaryShortcutIterator getShortcutIterator(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return &mHeaderPolicy;
-    }
-
-    const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const {
-        return &mShortcutListPolicy;
     }
 
     bool addUnigramEntry(const CodePointArrayView wordCodePoints,
@@ -158,6 +154,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
 
+    int getShortcutPositionOfPtNode(const int ptNodePos) const;
     int getBigramsPositionOfPtNode(const int ptNodePos) const;
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int ptNodePos,
             DicNodeVector *const childDicNodes) const;

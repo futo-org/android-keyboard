@@ -156,6 +156,12 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds,
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
+BinaryDictionaryShortcutIterator Ver4PatriciaTriePolicy::getShortcutIterator(
+        const int ptNodePos) const {
+    const int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
+    return BinaryDictionaryShortcutIterator(&mShortcutPolicy, shortcutPos);
+}
+
 void Ver4PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
         NgramListener *const listener) const {
     if (!prevWordIds) {
