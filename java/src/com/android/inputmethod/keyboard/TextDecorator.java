@@ -276,10 +276,10 @@ public class TextDecorator {
             final int lastCharRectIndex = composingTextStart + composingText.length() - 1;
             final RectF lastCharRect = info.getCharacterRect(lastCharRectIndex);
             final int lastCharRectFlag = info.getCharacterRectFlags(lastCharRectIndex);
-            final int lastCharRectType =
-                    lastCharRectFlag & CursorAnchorInfoCompatWrapper.CHARACTER_RECT_TYPE_MASK;
-            if (lastCharRect == null || matrix == null || lastCharRectType !=
-                    CursorAnchorInfoCompatWrapper.CHARACTER_RECT_TYPE_FULLY_VISIBLE) {
+            final boolean hasInvisibleRegionInLastCharRect =
+                    (lastCharRectFlag & CursorAnchorInfoCompatWrapper.FLAG_HAS_INVISIBLE_REGION)
+                            != 0;
+            if (lastCharRect == null || matrix == null || hasInvisibleRegionInLastCharRect) {
                 mUiOperator.hideUi();
                 return;
             }
@@ -336,7 +336,8 @@ public class TextDecorator {
             }
             // In MODE_ADD_TO_DICTIONARY, we cannot retrieve the character position at all because
             // of the lack of composing text. We will use the insertion marker position instead.
-            if (info.isInsertionMarkerClipped()) {
+            if ((info.getInsertionMarkerFlags() &
+                    CursorAnchorInfoCompatWrapper.FLAG_HAS_INVISIBLE_REGION) != 0) {
                 mUiOperator.hideUi();
                 return;
             }
