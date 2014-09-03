@@ -98,6 +98,16 @@ public class Key implements Comparable<Key> {
     private final int mWidth;
     /** Height of the key, excluding the gap */
     private final int mHeight;
+    /**
+     * The combined width in pixels of the horizontal gaps belonging to this key, both to the left
+     * and to the right. I.e., mWidth + mHorizontalGap = total width belonging to the key.
+     */
+    private final int mHorizontalGap;
+    /**
+     * The combined height in pixels of the vertical gaps belonging to this key, both above and
+     * below. I.e., mHeight + mVerticalGap = total height belonging to the key.
+     */
+    private final int mVerticalGap;
     /** X coordinate of the top-left corner of the key in the keyboard layout, excluding the gap. */
     private final int mX;
     /** Y coordinate of the top-left corner of the key in the keyboard layout, excluding the gap. */
@@ -198,8 +208,10 @@ public class Key implements Comparable<Key> {
             final String hintLabel, final int labelFlags, final int backgroundType, final int x,
             final int y, final int width, final int height, final int horizontalGap,
             final int verticalGap) {
-        mHeight = height - verticalGap;
         mWidth = width - horizontalGap;
+        mHeight = height - verticalGap;
+        mHorizontalGap = horizontalGap;
+        mVerticalGap = verticalGap;
         mHintLabel = hintLabel;
         mLabelFlags = labelFlags;
         mBackgroundType = backgroundType;
@@ -214,7 +226,7 @@ public class Key implements Comparable<Key> {
         mEnabled = (code != CODE_UNSPECIFIED);
         mIconId = iconId;
         // Horizontal gap is divided equally to both sides of the key.
-        mX = x + horizontalGap / 2;
+        mX = x + mHorizontalGap / 2;
         mY = y;
         mHitBox.set(x, y, x + width + 1, y + height);
         mKeyVisualAttributes = null;
@@ -235,18 +247,21 @@ public class Key implements Comparable<Key> {
      */
     public Key(final String keySpec, final TypedArray keyAttr, final KeyStyle style,
             final KeyboardParams params, final KeyboardRow row) {
-        final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
+        mHorizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
+        mVerticalGap = params.mVerticalGap;
+
+        final float horizontalGapFloat = mHorizontalGap;
         final int rowHeight = row.getRowHeight();
-        mHeight = rowHeight - params.mVerticalGap;
+        mHeight = rowHeight - mVerticalGap;
 
         final float keyXPos = row.getKeyX(keyAttr);
         final float keyWidth = row.getKeyWidth(keyAttr, keyXPos);
         final int keyYPos = row.getKeyY();
 
         // Horizontal gap is divided equally to both sides of the key.
-        mX = Math.round(keyXPos + horizontalGap / 2);
+        mX = Math.round(keyXPos + horizontalGapFloat / 2);
         mY = keyYPos;
-        mWidth = Math.round(keyWidth - horizontalGap);
+        mWidth = Math.round(keyWidth - horizontalGapFloat);
         mHitBox.set(Math.round(keyXPos), keyYPos, Math.round(keyXPos + keyWidth) + 1,
                 keyYPos + rowHeight);
         // Update row to have current x coordinate.
@@ -388,6 +403,8 @@ public class Key implements Comparable<Key> {
         mIconId = key.mIconId;
         mWidth = key.mWidth;
         mHeight = key.mHeight;
+        mHorizontalGap = key.mHorizontalGap;
+        mVerticalGap = key.mVerticalGap;
         mX = key.mX;
         mY = key.mY;
         mHitBox.set(key.mHitBox);
@@ -785,6 +802,24 @@ public class Key implements Comparable<Key> {
      */
     public int getHeight() {
         return mHeight;
+    }
+
+    /**
+     * The combined width in pixels of the horizontal gaps belonging to this key, both above and
+     * below. I.e., getWidth() + getHorizontalGap() = total width belonging to the key.
+     * @return Horizontal gap belonging to this key.
+     */
+    public int getHorizontalGap() {
+        return mHorizontalGap;
+    }
+
+    /**
+     * The combined height in pixels of the vertical gaps belonging to this key, both above and
+     * below. I.e., getHeight() + getVerticalGap() = total height belonging to the key.
+     * @return Vertical gap belonging to this key.
+     */
+    public int getVerticalGap() {
+        return mVerticalGap;
     }
 
     /**
