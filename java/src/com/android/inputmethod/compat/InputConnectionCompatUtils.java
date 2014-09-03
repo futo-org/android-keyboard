@@ -21,30 +21,29 @@ import android.view.inputmethod.InputMethodManager;
 
 public final class InputConnectionCompatUtils {
     private static final CompatUtils.ClassWrapper sInputConnectionType;
-    private static final CompatUtils.ToBooleanMethodWrapper sRequestUpdateCursorAnchorInfoMethod;
+    private static final CompatUtils.ToBooleanMethodWrapper sRequestCursorUpdatesMethod;
     static {
         sInputConnectionType = new CompatUtils.ClassWrapper(InputConnection.class);
-        sRequestUpdateCursorAnchorInfoMethod = sInputConnectionType.getPrimitiveMethod(
-                "requestUpdateCursorAnchorInfo", false, int.class);
+        sRequestCursorUpdatesMethod = sInputConnectionType.getPrimitiveMethod(
+                "requestCursorUpdates", false, int.class);
     }
 
-    public static boolean isRequestUpdateCursorAnchorInfoAvailable() {
-        return sRequestUpdateCursorAnchorInfoMethod != null;
+    public static boolean isRequestCursorUpdatesAvailable() {
+        return sRequestCursorUpdatesMethod != null;
     }
 
     /**
-     * Local copies of some constants in CursorAnchorInfoRequest until the SDK becomes publicly
-     * available.
+     * Local copies of some constants in InputConnection until the SDK becomes publicly available.
      */
-    private static int REQUEST_UPDATE_CURSOR_UPDATE_IMMEDIATE = 1 << 0;
-    private static int REQUEST_UPDATE_CURSOR_UPDATE_MONITOR = 1 << 1;
+    private static int CURSOR_UPDATE_IMMEDIATE = 1 << 0;
+    private static int CURSOR_UPDATE_MONITOR = 1 << 1;
 
-    private static boolean requestUpdateCursorAnchorInfoImpl(final InputConnection inputConnection,
+    private static boolean requestCursorUpdatesImpl(final InputConnection inputConnection,
             final int cursorUpdateMode) {
-        if (!isRequestUpdateCursorAnchorInfoAvailable()) {
+        if (!isRequestCursorUpdatesAvailable()) {
              return false;
         }
-        return sRequestUpdateCursorAnchorInfoMethod.invoke(inputConnection, cursorUpdateMode);
+        return sRequestCursorUpdatesMethod.invoke(inputConnection, cursorUpdateMode);
     }
 
     /**
@@ -56,11 +55,10 @@ public final class InputConnectionCompatUtils {
      * as soon as possible to notify the current cursor/anchor position to the input method.
      * @return {@code false} if the request is not handled. Otherwise returns {@code true}.
      */
-    public static boolean requestUpdateCursorAnchorInfo(final InputConnection inputConnection,
+    public static boolean requestCursorUpdates(final InputConnection inputConnection,
             final boolean enableMonitor, final boolean requestImmediateCallback) {
-        final int cursorUpdateMode = (enableMonitor ? REQUEST_UPDATE_CURSOR_UPDATE_MONITOR : 0)
-                | (requestImmediateCallback ? REQUEST_UPDATE_CURSOR_UPDATE_IMMEDIATE : 0);
-        return requestUpdateCursorAnchorInfoImpl(inputConnection, cursorUpdateMode);
+        final int cursorUpdateMode = (enableMonitor ? CURSOR_UPDATE_MONITOR : 0)
+                | (requestImmediateCallback ? CURSOR_UPDATE_IMMEDIATE : 0);
+        return requestCursorUpdatesImpl(inputConnection, cursorUpdateMode);
     }
-
 }
