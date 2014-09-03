@@ -342,8 +342,8 @@ void PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
 }
 
 BinaryDictionaryShortcutIterator PatriciaTriePolicy::getShortcutIterator(
-        const int ptNodePos) const {
-    const int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
+        const int wordId) const {
+    const int shortcutPos = getShortcutPositionOfPtNode(getTerminalPtNodePosFromWordId(wordId));
     return BinaryDictionaryShortcutIterator(&mShortcutListPolicy, shortcutPos);
 }
 

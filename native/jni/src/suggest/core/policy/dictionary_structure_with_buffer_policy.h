@@ -63,7 +63,7 @@ class DictionaryStructureWithBufferPolicy {
     virtual void iterateNgramEntries(const int *const prevWordIds,
             NgramListener *const listener) const = 0;
 
-    virtual BinaryDictionaryShortcutIterator getShortcutIterator(const int ptNodePos) const = 0;
+    virtual BinaryDictionaryShortcutIterator getShortcutIterator(const int wordId) const = 0;
 
     virtual const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const = 0;
 

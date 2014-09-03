@@ -74,7 +74,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     void iterateNgramEntries(const int *const prevWordIds, NgramListener *const listener) const;
 
-    BinaryDictionaryShortcutIterator getShortcutIterator(const int ptNodePos) const;
+    BinaryDictionaryShortcutIterator getShortcutIterator(const int wordId) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return mHeaderPolicy;
@@ -135,7 +135,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
 
-    int getShortcutPositionOfPtNode(const int ptNodePos) const;
+    int getShortcutPositionOfWord(const int wordId) const;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

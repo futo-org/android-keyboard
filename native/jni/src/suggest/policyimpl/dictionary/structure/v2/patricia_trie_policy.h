@@ -72,7 +72,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     void iterateNgramEntries(const int *const prevWordIds, NgramListener *const listener) const;
 
-    BinaryDictionaryShortcutIterator getShortcutIterator(const int ptNodePos) const;
+    BinaryDictionaryShortcutIterator getShortcutIterator(const int wordId) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return &mHeaderPolicy;
