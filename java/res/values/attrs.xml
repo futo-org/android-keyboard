@@ -207,7 +207,13 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard">
-        <attr name="themeId" format="integer" />
+        <attr name="themeId" format="enum">
+            <!-- This should be aligned with KeyboardTheme.THEME_ID_*. -->
+            <enum name="ICS" value="0" />
+            <enum name="KLP" value="2" />
+            <enum name="LXXLight" value="3" />
+            <enum name="LXXDark" value="4" />
+        </attr>
         <!-- Touch position correction -->
         <attr name="touchPositionCorrectionData" format="reference" />
         <!-- Keyboard top, bottom, left, right edges paddings, in propotion of keyboard height. -->
@@ -426,6 +432,13 @@
             <enum name="emojiCategory4" value="14" />
             <enum name="emojiCategory5" value="15" />
             <enum name="emojiCategory6" value="16" />
+        </attr>
+        <!-- This should be aligned with Keyboard.themeId and KeyboardTheme.THEME_ID_* -->
+        <attr name="keyboardTheme" format="enum|string">
+            <enum name="ICS" value="0" />
+            <enum name="KLP" value="2" />
+            <enum name="LXXLight" value="3" />
+            <enum name="LXXDark" value="4" />
         </attr>
         <!-- This should be aligned with KeyboardId.MODE_* -->
         <attr name="mode" format="enum|string">

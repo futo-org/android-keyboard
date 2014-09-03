@@ -31,6 +31,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -643,6 +644,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean keyboardLayoutSetElementMatched = matchTypedValue(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSetElement, id.mElementId,
                     KeyboardId.elementIdToName(id.mElementId));
+            final boolean keyboardThemeMacthed = matchTypedValue(caseAttr,
+                    R.styleable.Keyboard_Case_keyboardTheme, mParams.mThemeId,
+                    KeyboardTheme.getKeyboardThemeName(mParams.mThemeId));
             final boolean modeMatched = matchTypedValue(caseAttr,
                     R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
             final boolean navigateNextMatched = matchBoolean(caseAttr,
@@ -671,19 +675,21 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean countryCodeMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
             final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
-                    && modeMatched && navigateNextMatched && navigatePreviousMatched
-                    && passwordInputMatched && clobberSettingsKeyMatched && hasShortcutKeyMatched
-                    && languageSwitchKeyEnabledMatched && isMultiLineMatched && imeActionMatched
-                    && isIconDefinedMatched && localeCodeMatched && languageCodeMatched
-                    && countryCodeMatched;
+                    && keyboardThemeMacthed && modeMatched && navigateNextMatched
+                    && navigatePreviousMatched && passwordInputMatched && clobberSettingsKeyMatched
+                    && hasShortcutKeyMatched  && languageSwitchKeyEnabledMatched
+                    && isMultiLineMatched && imeActionMatched && isIconDefinedMatched
+                    && localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
             if (DEBUG) {
-                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
                         textAttr(caseAttr.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSet), "keyboardLayoutSet"),
                         textAttr(caseAttr.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSetElement),
                                 "keyboardLayoutSetElement"),
+                        textAttr(caseAttr.getString(
+                                R.styleable.Keyboard_Case_keyboardTheme), "keyboardTheme"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_mode), "mode"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_imeAction),
                                 "imeAction"),
