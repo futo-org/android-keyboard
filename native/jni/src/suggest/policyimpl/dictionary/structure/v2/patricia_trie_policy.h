@@ -64,15 +64,13 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             const int terminalNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
-    int getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
-            const bool forceLowerCaseSearch) const;
+    int getWordId(const CodePointArrayView wordCodePoints, const bool forceLowerCaseSearch) const;
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
-    int getProbabilityOfPtNode(const int *const prevWordsPtNodePos, const int ptNodePos) const;
+    int getProbabilityOfWord(const int *const prevWordIds, const int wordId) const;
 
-    void iterateNgramEntries(const int *const prevWordsPtNodePos,
-            NgramListener *const listener) const;
+    void iterateNgramEntries(const int *const prevWordIds, NgramListener *const listener) const;
 
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
@@ -163,6 +161,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int getBigramsPositionOfPtNode(const int ptNodePos) const;
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int ptNodePos,
             DicNodeVector *const childDicNodes) const;
+    int getWordIdFromTerminalPtNodePos(const int ptNodePos) const;
+    int getTerminalPtNodePosFromWordId(const int wordId) const;
 };
 } // namespace latinime
 #endif // LATINIME_PATRICIA_TRIE_POLICY_H

@@ -87,15 +87,13 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             const int terminalPtNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
-    int getTerminalPtNodePositionOfWord(const CodePointArrayView wordCodePoints,
-            const bool forceLowerCaseSearch) const;
+    int getWordId(const CodePointArrayView wordCodePoints, const bool forceLowerCaseSearch) const;
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
-    int getProbabilityOfPtNode(const int *const prevWordsPtNodePos, const int ptNodePos) const;
+    int getProbabilityOfWord(const int *const prevWordIds, const int wordId) const;
 
-    void iterateNgramEntries(const int *const prevWordsPtNodePos,
-            NgramListener *const listener) const;
+    void iterateNgramEntries(const int *const prevWordIds, NgramListener *const listener) const;
 
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
@@ -164,6 +162,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     mutable bool mIsCorrupted;
 
     int getBigramsPositionOfPtNode(const int ptNodePos) const;
+    int getWordIdFromTerminalPtNodePos(const int ptNodePos) const;
+    int getTerminalPtNodePosFromWordId(const int wordId) const;
 };
 } // namespace v402
 } // namespace backward

@@ -103,10 +103,10 @@ class DicNode {
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
-    // Init for root with prevWordsPtNodePos which is used for n-gram
-    void initAsRoot(const int rootPtNodeArrayPos, const int *const prevWordsPtNodePos) {
+    // Init for root with prevWordIds which is used for n-gram
+    void initAsRoot(const int rootPtNodeArrayPos, const int *const prevWordIds) {
         mIsCachedForNextSuggestion = false;
-        mDicNodeProperties.init(rootPtNodeArrayPos, prevWordsPtNodePos);
+        mDicNodeProperties.init(rootPtNodeArrayPos, prevWordIds);
         mDicNodeState.init();
         PROF_NODE_RESET(mProfiler);
     }
@@ -114,12 +114,12 @@ class DicNode {
     // Init for root with previous word
     void initAsRootWithPreviousWord(const DicNode *const dicNode, const int rootPtNodeArrayPos) {
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
-        int newPrevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-        newPrevWordsPtNodePos[0] = dicNode->mDicNodeProperties.getPtNodePos();
-        for (size_t i = 1; i < NELEMS(newPrevWordsPtNodePos); ++i) {
-            newPrevWordsPtNodePos[i] = dicNode->getPrevWordsTerminalPtNodePos()[i - 1];
+        int newPrevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        newPrevWordIds[0] = dicNode->mDicNodeProperties.getWordId();
+        for (size_t i = 1; i < NELEMS(newPrevWordIds); ++i) {
+            newPrevWordIds[i] = dicNode->getPrevWordIds()[i - 1];
         }
-        mDicNodeProperties.init(rootPtNodeArrayPos, newPrevWordsPtNodePos);
+        mDicNodeProperties.init(rootPtNodeArrayPos, newPrevWordIds);
         mDicNodeState.initAsRootWithPreviousWord(&dicNode->mDicNodeState,
                 dicNode->mDicNodeProperties.getDepth());
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
@@ -145,7 +145,7 @@ class DicNode {
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
         mDicNodeProperties.init(ptNodePos, childrenPtNodeArrayPos, mergedNodeCodePoints[0],
                 probability, wordId, hasChildren, isBlacklistedOrNotAWord, newDepth,
-                newLeavingDepth, dicNode->mDicNodeProperties.getPrevWordsTerminalPtNodePos());
+                newLeavingDepth, dicNode->mDicNodeProperties.getPrevWordIds());
         mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
                 mergedNodeCodePoints);
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
@@ -204,13 +204,18 @@ class DicNode {
     }
 
     // Used to get n-gram probability in DicNodeUtils.
+    int getWordId() const {
+        return mDicNodeProperties.getWordId();
+    }
+
+    // TODO: Remove
     int getPtNodePos() const {
         return mDicNodeProperties.getPtNodePos();
     }
 
-    // TODO: Use view class to return PtNodePos array.
-    const int *getPrevWordsTerminalPtNodePos() const {
-        return mDicNodeProperties.getPrevWordsTerminalPtNodePos();
+    // TODO: Use view class to return word id array.
+    const int *getPrevWordIds() const {
+        return mDicNodeProperties.getPrevWordIds();
     }
 
     // Used in DicNodeUtils
