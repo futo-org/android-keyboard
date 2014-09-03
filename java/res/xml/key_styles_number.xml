@@ -123,4 +123,24 @@
         latin:keyLabelFlags="alignIconToBottom"
         latin:keyActionFlags="enableLongPress"
         latin:parentStyle="numKeyBaseStyle" />
+    <!-- TODO: Consolidate these space key styles with numSpaceKeyStyle above by introducing <case>
+         predicator that checks device form-factor. -->
+    <switch>
+        <case latin:keyboardTheme="ICS|KLP">
+            <key-style
+                latin:styleName="tabletNumSpaceKeyStyle"
+                latin:keySpec="!icon/space_key|!code/key_space"
+                latin:backgroundType="functional"
+                latin:keyActionFlags="enableLongPress"
+                latin:parentStyle="numKeyBaseStyle" />
+        </case>
+        <case latin:keyboardTheme="LXXLight|LXXDark">
+            <key-style
+                latin:styleName="tabletNumSpaceKeyStyle"
+                latin:keySpec="!icon/space_key|!code/key_space"
+                latin:backgroundType="spacebar"
+                latin:keyActionFlags="enableLongPress"
+                latin:parentStyle="numKeyBaseStyle" />
+        </case>
+    </switch>
 </merge>
