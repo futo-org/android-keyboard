@@ -27,18 +27,12 @@ namespace latinime {
 
 class CharUtils {
  public:
+    static const std::vector<int> EMPTY_STRING;
+
     static AK_FORCE_INLINE bool isAsciiUpper(int c) {
         // Note: isupper(...) reports false positives for some Cyrillic characters, causing them to
         // be incorrectly lower-cased using toAsciiLower(...) rather than latin_tolower(...).
         return (c >= 'A' && c <= 'Z');
-    }
-
-    static AK_FORCE_INLINE int toAsciiLower(int c) {
-        return c - 'A' + 'a';
-    }
-
-    static AK_FORCE_INLINE bool isAscii(int c) {
-        return isascii(c) != 0;
     }
 
     static AK_FORCE_INLINE int toLowerCase(const int c) {
@@ -48,7 +42,7 @@ class CharUtils {
         if (isAscii(c)) {
             return c;
         }
-        return static_cast<int>(latin_tolower(static_cast<unsigned short>(c)));
+        return latin_tolower(c);
     }
 
     static AK_FORCE_INLINE int toBaseLowerCase(const int c) {
@@ -59,7 +53,6 @@ class CharUtils {
         // TODO: Do not hardcode here
         return codePoint == KEYCODE_SINGLE_QUOTE || codePoint == KEYCODE_HYPHEN_MINUS;
     }
-
     static AK_FORCE_INLINE int getCodePointCount(const int arraySize, const int *const codePoints) {
         int size = 0;
         for (; size < arraySize; ++size) {
@@ -90,9 +83,6 @@ class CharUtils {
     static AK_FORCE_INLINE int isInUnicodeSpace(const int codePoint) {
         return codePoint >= MIN_UNICODE_CODE_POINT && codePoint <= MAX_UNICODE_CODE_POINT;
     }
-
-    static unsigned short latin_tolower(const unsigned short c);
-    static const std::vector<int> EMPTY_STRING;
 
     // Returns updated code point count. Returns 0 when the code points cannot be marked as a
     // Beginning-of-Sentence.
@@ -125,6 +115,16 @@ class CharUtils {
      */
     static const int BASE_CHARS_SIZE = 0x0500;
     static const unsigned short BASE_CHARS[BASE_CHARS_SIZE];
+
+    static AK_FORCE_INLINE bool isAscii(int c) {
+        return isascii(c) != 0;
+    }
+
+    static AK_FORCE_INLINE int toAsciiLower(int c) {
+        return c - 'A' + 'a';
+    }
+
+    static int latin_tolower(const int c);
 };
 } // namespace latinime
 #endif // LATINIME_CHAR_UTILS_H
