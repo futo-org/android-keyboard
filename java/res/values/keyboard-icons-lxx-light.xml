@@ -24,7 +24,7 @@
         <item name="iconShiftKey">@drawable/sym_keyboard_shift_lxx_light</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete_lxx_light</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_lxx_light</item>
-        <item name="iconSpaceKey">@drawable/sym_keyboard_spacebar_lxx_light</item>
+        <item name="iconSpaceKey">@null</item>
         <item name="iconEnterKey">@drawable/sym_keyboard_return_lxx_light</item>
         <item name="iconGoKey">@drawable/sym_keyboard_go_lxx_light</item>
         <item name="iconSearchKey">@drawable/sym_keyboard_search_lxx_light</item>
