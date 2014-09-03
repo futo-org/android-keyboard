@@ -341,6 +341,12 @@ void PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
     }
 }
 
+BinaryDictionaryShortcutIterator PatriciaTriePolicy::getShortcutIterator(
+        const int ptNodePos) const {
+    const int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
+    return BinaryDictionaryShortcutIterator(&mShortcutListPolicy, shortcutPos);
+}
+
 int PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) const {
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
@@ -365,7 +371,7 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     int shortcutPos = NOT_A_DICT_POS;
     int bigramPos = NOT_A_DICT_POS;
     int siblingPos = NOT_A_DICT_POS;
-    PatriciaTrieReadingUtils::readPtNodeInfo(mDictRoot, ptNodePos, getShortcutsStructurePolicy(),
+    PatriciaTrieReadingUtils::readPtNodeInfo(mDictRoot, ptNodePos, &mShortcutListPolicy,
             &mBigramListPolicy, &flags, &mergedNodeCodePointCount, mergedNodeCodePoints,
             &probability, &childrenPos, &shortcutPos, &bigramPos, &siblingPos);
     // Skip PtNodes don't start with Unicode code point because they represent non-word information.

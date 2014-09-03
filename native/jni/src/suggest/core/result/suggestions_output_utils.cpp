@@ -139,10 +139,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // Shortcut is not supported for multiple words suggestions.
     // TODO: Check shortcuts during traversal for multiple words suggestions.
     if (!terminalDicNode->hasMultipleWords()) {
-        BinaryDictionaryShortcutIterator shortcutIt(
-                traverseSession->getDictionaryStructurePolicy()->getShortcutsStructurePolicy(),
-                traverseSession->getDictionaryStructurePolicy()
-                        ->getShortcutPositionOfPtNode(terminalDicNode->getPtNodePos()));
+        BinaryDictionaryShortcutIterator shortcutIt =
+                traverseSession->getDictionaryStructurePolicy()->getShortcutIterator(
+                        terminalDicNode->getPtNodePos());
         const bool sameAsTyped = scoringPolicy->sameAsTyped(traverseSession, terminalDicNode);
         outputShortcuts(&shortcutIt, finalScore, sameAsTyped, outSuggestionResults);
     }

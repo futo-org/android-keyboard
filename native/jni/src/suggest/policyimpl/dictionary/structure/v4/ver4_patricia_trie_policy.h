@@ -74,14 +74,10 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     void iterateNgramEntries(const int *const prevWordIds, NgramListener *const listener) const;
 
-    int getShortcutPositionOfPtNode(const int ptNodePos) const;
+    BinaryDictionaryShortcutIterator getShortcutIterator(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return mHeaderPolicy;
-    }
-
-    const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const {
-        return &mShortcutPolicy;
     }
 
     bool addUnigramEntry(const CodePointArrayView wordCodePoints,
@@ -138,6 +134,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int mBigramCount;
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
+
+    int getShortcutPositionOfPtNode(const int ptNodePos) const;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

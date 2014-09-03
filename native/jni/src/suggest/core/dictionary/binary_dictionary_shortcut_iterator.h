@@ -31,6 +31,11 @@ class BinaryDictionaryShortcutIterator {
               mPos(shortcutStructurePolicy->getStartPos(shortcutPos)),
               mHasNextShortcutTarget(shortcutPos != NOT_A_DICT_POS) {}
 
+    BinaryDictionaryShortcutIterator(const BinaryDictionaryShortcutIterator &&shortcutIterator)
+            : mShortcutStructurePolicy(shortcutIterator.mShortcutStructurePolicy),
+              mPos(shortcutIterator.mPos),
+              mHasNextShortcutTarget(shortcutIterator.mHasNextShortcutTarget) {}
+
     AK_FORCE_INLINE bool hasNextShortcutTarget() const {
         return mHasNextShortcutTarget;
     }
@@ -45,7 +50,8 @@ class BinaryDictionaryShortcutIterator {
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryShortcutIterator);
+    DISALLOW_DEFAULT_CONSTRUCTOR(BinaryDictionaryShortcutIterator);
+    DISALLOW_ASSIGNMENT_OPERATOR(BinaryDictionaryShortcutIterator);
 
     const DictionaryShortcutsStructurePolicy *const mShortcutStructurePolicy;
     int mPos;
