@@ -57,7 +57,7 @@ void PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNo
     }
 }
 
-// This retrieves code points and the probability of the word by its terminal position.
+// This retrieves code points and the probability of the word by its id.
 // Due to the fact that words are ordered in the dictionary in a strict breadth-first order,
 // it is possible to check for this with advantageous complexity. For each PtNode array, we search
 // for PtNodes with children and compare the children position with the position we look for.
@@ -68,16 +68,16 @@ void PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNo
 // with a z, it's the last PtNode of the root array, so all children addresses will be smaller
 // than the position we look for, and we have to descend the z PtNode).
 /* Parameters :
- * ptNodePos: the byte position of the terminal PtNode of the word we are searching for (this is
- *   what is stored as the "bigram position" in each bigram)
+ * wordId: Id of the word we are searching for.
  * outCodePoints: an array to write the found word, with MAX_WORD_LENGTH size.
  * outUnigramProbability: a pointer to an int to write the probability into.
  * Return value : the code point count, of 0 if the word was not found.
  */
 // TODO: Split this function to be more readable
 int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
-        const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
+        const int wordId, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
+    const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
     int pos = getRootPosition();
     int wordPos = 0;
     // One iteration of the outer loop iterates through PtNode arrays. As stated above, we will
@@ -410,8 +410,8 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
         if (bigramsIt.getBigramPos() != NOT_A_DICT_POS) {
             int word1Probability = NOT_A_PROBABILITY;
             const int word1CodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
-                    bigramsIt.getBigramPos(), MAX_WORD_LENGTH, bigramWord1CodePoints,
-                    &word1Probability);
+                    getWordIdFromTerminalPtNodePos(bigramsIt.getBigramPos()), MAX_WORD_LENGTH,
+                    bigramWord1CodePoints, &word1Probability);
             const std::vector<int> word1(bigramWord1CodePoints,
                     bigramWord1CodePoints + word1CodePointCount);
             const int probability = getProbability(word1Probability, bigramsIt.getProbability());
@@ -465,8 +465,9 @@ int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outC
     }
     const int terminalPtNodePos = mTerminalPtNodePositionsForIteratingWords[token];
     int unigramProbability = NOT_A_PROBABILITY;
-    *outCodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(terminalPtNodePos,
-            MAX_WORD_LENGTH, outCodePoints, &unigramProbability);
+    *outCodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
+            getWordIdFromTerminalPtNodePos(terminalPtNodePos), MAX_WORD_LENGTH, outCodePoints,
+            &unigramProbability);
     const int nextToken = token + 1;
     if (nextToken >= terminalPtNodePositionsVectorSize) {
         // All words have been iterated.

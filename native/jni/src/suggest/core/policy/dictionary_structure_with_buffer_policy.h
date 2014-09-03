@@ -50,7 +50,7 @@ class DictionaryStructureWithBufferPolicy {
             DicNodeVector *const childDicNodes) const = 0;
 
     virtual int getCodePointsAndProbabilityAndReturnCodePointCount(
-            const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
+            const int wordId, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const = 0;
 
     virtual int getWordId(const CodePointArrayView wordCodePoints,
