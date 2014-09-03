@@ -167,7 +167,7 @@ public final class InputLogic {
         if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
             // AcceptTypedWord feature relies on CursorAnchorInfo.
             if (settingsValues.mShouldShowUiToAcceptTypedWord) {
-                mConnection.requestUpdateCursorAnchorInfo(true /* enableMonitor */,
+                mConnection.requestCursorUpdates(true /* enableMonitor */,
                         true /* requestImmediateCallback */);
             }
         }
