@@ -44,7 +44,7 @@
     <string name="spoken_description_search" msgid="5099937658231911288">"ရှာဖွေရန်"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"အစက်"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"ဘာသာစကား ပြောင်းလဲရန်"</string>
-    <string name="spoken_description_action_next" msgid="431761808119616962">"အရှေ့သို့"</string>
+    <string name="spoken_description_action_next" msgid="431761808119616962">"ရှေ့သို့"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"အနောက်သို့"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Shift ဖွင့်ထားသည်"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"စာလုံးကြီးရိုက်ရန် ဖွင့်ထားသည်"</string>
