@@ -142,7 +142,8 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
 }
 
 /* static */ void HeaderReadWriteUtils::setCodePointVectorAttribute(
-        AttributeMap *const headerAttributes, const char *const key, const std::vector<int> value) {
+        AttributeMap *const headerAttributes, const char *const key,
+        const std::vector<int> &value) {
     AttributeMap::key_type keyVector;
     insertCharactersIntoVector(key, &keyVector);
     (*headerAttributes)[keyVector] = value;
