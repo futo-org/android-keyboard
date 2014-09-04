@@ -117,6 +117,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"কী প্রেসে দীর্ঘ বিলম্ব"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"কীপ্রেস কম্পন সময়কাল"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"কীপ্রেস সাউন্ড ভলিউম"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"কী-এর পূর্বরূপের অ্যানিমেশন কাস্টমাইজ করুন"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"বহিরাগত অভিধান ফাইলটি পড়ুন"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ডাউনলোডস ফোল্ডারে কোনো অভিধান ফাইল নেই"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ইনস্টল করার জন্য একটি অভিধান ফাইল নির্বাচন করুন"</string>

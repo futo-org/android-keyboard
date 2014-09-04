@@ -117,6 +117,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Пернені ұзақ басу кідірісі"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Пернені басқан кездегі діріл ұзақтығы"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Пернені басқан кездегі дыбыс деңгейі"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"Перн. алдын ала қарау аним. теңшеу"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Сыртқы сөздік файлын оқу"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Жүктеп алулар қалтасында сөздік файлдары жоқ"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Орнату үшін сөздік файлын таңдау"</string>

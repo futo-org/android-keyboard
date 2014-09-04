@@ -117,6 +117,8 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Key long press delay"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tagal ng vibration ng keypress"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume ng tunog ng keypress"</string>
+    <!-- no translation found for prefs_customize_key_preview_animation (4537507402140318920) -->
+    <skip />
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Magbasa ng panlabas na file ng diksyunaryo"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Walang mga file ng diksyunaryo sa folder na Mga Download"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Pumili ng file ng diksyunaryo na ii-install"</string>

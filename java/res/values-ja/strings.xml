@@ -117,6 +117,8 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"キーの長押し時間"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"キー操作バイブの振動時間"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"キー操作音の音量"</string>
+    <!-- no translation found for prefs_customize_key_preview_animation (4537507402140318920) -->
+    <skip />
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"外部辞書ファイルの読み取り"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ダウンロードフォルダに辞書ファイルはありません"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"インストールする辞書ファイルの選択"</string>
