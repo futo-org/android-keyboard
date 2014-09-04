@@ -2263,6 +2263,47 @@ public final class InputLogic {
         mConnection.setComposingText(composingTextToBeSet, newCursorPosition);
     }
 
+    /**
+     * Gets an object allowing private IME commands to be sent to the
+     * underlying editor.
+     * @return An object for sending private commands to the underlying editor.
+     */
+    public PrivateCommandPerformer getPrivateCommandPerformer() {
+        return mConnection;
+    }
+
+    /**
+     * Gets the expected index of the first char of the composing span within the editor's text.
+     * Returns a negative value in case there appears to be no valid composing span.
+     *
+     * @see #getComposingLength()
+     * @see RichInputConnection#hasSelection()
+     * @see RichInputConnection#isCursorPositionKnown()
+     * @see RichInputConnection#getExpectedSelectionStart()
+     * @see RichInputConnection#getExpectedSelectionEnd()
+     * @return The expected index in Java chars of the first char of the composing span.
+     */
+    // TODO: try and see if we can get rid of this method. Ideally the users of this class should
+    // never need to know this.
+    public int getComposingStart() {
+        if (!mConnection.isCursorPositionKnown() || mConnection.hasSelection()) {
+            return -1;
+        }
+        return mConnection.getExpectedSelectionStart() - mWordComposer.size();
+    }
+
+    /**
+     * Gets the expected length in Java chars of the composing span.
+     * May be 0 if there is no valid composing span.
+     * @see #getComposingStart()
+     * @return The expected length of the composing span.
+     */
+    // TODO: try and see if we can get rid of this method. Ideally the users of this class should
+    // never need to know this.
+    public int getComposingLength() {
+        return mWordComposer.size();
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Following methods are tentatively placed in this class for the integration with
     // TextDecorator.

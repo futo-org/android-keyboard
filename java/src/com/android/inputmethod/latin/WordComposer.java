@@ -128,8 +128,7 @@ public final class WordComposer {
      * Number of keystrokes in the composing word.
      * @return the number of keystrokes
      */
-    // This may be made public if need be, but right now it's not used anywhere
-    /* package for tests */ int size() {
+    public int size() {
         return mCodePointSize;
     }
 

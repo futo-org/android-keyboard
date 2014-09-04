@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -39,5 +40,14 @@ public final class CollectionUtils {
             list.add(array[i]);
         }
         return list;
+    }
+
+    /**
+     * Tests whether c contains no elements, true if c is null or c is empty.
+     * @param c Collection to test.
+     * @return Whether c contains no elements.
+     */
+    public static boolean isNullOrEmpty(final Collection c) {
+        return c == null || c.isEmpty();
     }
 }
