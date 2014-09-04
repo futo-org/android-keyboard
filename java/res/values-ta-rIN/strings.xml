@@ -117,6 +117,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"விசையின் நீண்ட அழுத்தத்தின் தாமதம்"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"விசையழுத்த அதிர்வின் காலஅளவு"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"விசையழுத்த ஒலியளவு"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"விசை முன்னோட்ட அனிமேஷனைத் தனிப்பயனாக்கு"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"வெளிப்புற அகராதி கோப்பைப் படித்தல்"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"பதிவிறக்கங்கள் கோப்புறையில் அகராதி கோப்புகள் எதுவும் இல்லை"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"நிறுவுவதற்கு அகராதி கோப்பைத் தேர்ந்தெடுக்கவும்"</string>

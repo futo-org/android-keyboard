@@ -117,6 +117,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुञ्जी लामो थिचाइ ढिलाइ"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुञ्जी थिचाइ भाइब्रेसन अवधि"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुञ्जी थिचाइ आवाज भोल्युम"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"प्रमुख पूर्वावलोकन एनिमेसन अनुकूलित"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"बाह्य शब्दकोश फाइल पढ्नुहोस्"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"डाउनलोड फोल्डरमा कुनै शब्दकोश फाइलहरू छैनन्।"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"स्थापना गर्न कुनै शब्दकोश फाइल चयन गर्नुहोस्"</string>

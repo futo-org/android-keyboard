@@ -107,7 +107,7 @@
     <string name="add_style" msgid="6163126614514489951">"စတိုင်လ်ထည့်ရန်"</string>
     <string name="add" msgid="8299699805688017798">"ထည့်ရန်"</string>
     <string name="remove" msgid="4486081658752944606">"ဖယ်ရှားပါ"</string>
-    <string name="save" msgid="7646738597196767214">"သိမ်းဆည်းရန်"</string>
+    <string name="save" msgid="7646738597196767214">"သိမ်းပါ"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"ဘာသာစကား"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"အဆင်အပြင်"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"သင့်စိတ်ကြိုက် ထည့်သွင်းမှုစတိုင်လ်အား စတင် အသုံးမပြုမှီ ဖွင့်ရပါမည်။ ၎င်းအားယခု ဖွင့်လိုပါသလား?"</string>
@@ -117,6 +117,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ကီးကြာမြင့်စွာ ဖိနှိပ်မှုနှုန်း"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ခလုတ်နှိပ်တုန်ခါမှု ကြာမြင့်ချိန်"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ခလုတ်နှိပ်သည့် အသံအတိုးကျယ်"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"ကီး လှုပ်ပုံ စမ်းကြည့် စိတ်တိုင်းကျ"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ပြင်ပ အဘိဓါန်ဖိုင် ဖတ်မည်"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ဒေါင်းလုပ်ဖိုင်တွဲထဲတွင် အဘိဓါန်ဖိုင်များ မရှိပါ"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ထည့်သွင်းရန် အဘိဓါန်ဖိုင်အားရွေးပါ"</string>

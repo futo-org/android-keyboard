@@ -117,6 +117,8 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tgian chờ cho nhấn và giữ phím"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Thời gian rung khi nhấn phím"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Âm lượng khi nhấn phím"</string>
+    <!-- no translation found for prefs_customize_key_preview_animation (4537507402140318920) -->
+    <skip />
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Đọc tệp từ điển bên ngoài"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Không có tệp từ điển nào trong thư mục Nội dung tải xuống"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Chọn tệp từ điển để cài đặt"</string>

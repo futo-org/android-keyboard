@@ -117,6 +117,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"की जास्त दाबण्यात विलंब"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कीप्रेस कंपन कालावधी"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कीप्रेस ध्वनी तीव्रता"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"सानुकूल की पूर्वावलोकन अॅनिमेशन"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"बाह्य शब्दकोश फाईल वाचा"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"डाउनलोड फोल्डरमध्ये शब्दकोश फायली नाहीत"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"स्थापित करण्यासाठी शब्दकोश फाईल निवडा"</string>

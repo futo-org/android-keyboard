@@ -117,6 +117,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"కీని ఎక్కువసేపు నొక్కి ఉంచాల్సిన సమయంలో ఆలస్యం"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"కీని నొక్కినప్పుడు వైబ్రేషన్ వ్యవధి"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"కీని నొక్కినప్పుడు చేసే ధ్వని వాల్యూమ్"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"కీ పరిదృశ్య యానిమే. అనుకూలీకరించండి"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"బాహ్య నిఘంటువు ఫైల్‌ను చదవండి"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"డౌన్‌లోడ్‌ల ఫోల్డర్‌లో నిఘంటువు ఫైల్‌లు ఏవీ లేవు"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ఇన్‌స్టాల్ చేయాల్సిన నిఘంటువు ఫైల్‌ను ఎంచుకోండి"</string>
