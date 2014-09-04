@@ -64,7 +64,7 @@ class HeaderReadWriteUtils {
      */
     static void setCodePointVectorAttribute(
             DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
-            const char *const key, const std::vector<int> value);
+            const char *const key, const std::vector<int> &value);
 
     static void setBoolAttribute(
             DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
