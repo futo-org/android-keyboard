@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"कुंजी दबाने पर कंपन करता है"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"कुंजी दबाने पर आवाज"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"कुंजी दबाने पर पॉपअप दिखाएं"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"इनपुट प्राथमिकताएं"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"प्रकटन"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"बहुभाषी विकल्प"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"हावभाव लेखन वरीयताएं"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"पाठ सुधार"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"अतिरिक्त सेटिंग"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्‍य इनपुट पद्धतियों पर जाएं"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्‍विच कुंजी में अन्‍य इनपुट पद्धतियां भी शामिल हैं"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुंजी"</string>
@@ -57,14 +51,11 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"स्पेसबार पर डबल टैप करने से पीरियड शामिल हो जाता है जिसके बाद एक रिक्ति होती है"</string>
     <string name="auto_cap" msgid="1719746674854628252">"स्‍वत: अक्षर बड़े करना"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"प्रत्येक वाक्य के पहले शब्द को बड़ा लिखें"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"व्यक्तिगत शब्दकोश"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"निजी शब्दकोश"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"एड-ऑन शब्दकोश"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"मुख्‍य डिक्‍शनरी"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधार सुझाव दिखाएं"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"लिखते समय सुझाए गए शब्‍द दिखाएं"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"हमेशा दिखाएं"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"पोर्ट्रेट मोड में दिखाएं"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"हमेशा छुपाएं"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"आपत्तिजनक शब्द अवरुद्ध करें"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"संभावित आपत्तिजनक शब्दों का सुझाव न दें"</string>
     <string name="auto_correction" msgid="7630720885194996950">"स्‍वत: सुधार"</string>
@@ -86,9 +77,10 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"कोई ध्वनि इनपुट पद्धति सक्षम नहीं है. भाषा और इनपुट सेटिंग जांचें."</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धति कॉन्‍फ़िगर करें"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषा"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"सुझाव भेजें"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"सहायता और फ़ीडबैक"</string>
     <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाएं"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"सहेजने के लिए पुन: स्‍पर्श करें"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"सहेजने के लिए यहां स्पर्श करें"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"शब्‍दकोश उपलब्‍ध है"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
@@ -108,16 +100,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"वर्णाक्षर (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"वर्णाक्षर (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"कीबोर्ड थीम"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"कस्‍टम इनपुट शैलियां"</string>
     <string name="add_style" msgid="6163126614514489951">"शैली जोड़ें"</string>
     <string name="add" msgid="8299699805688017798">"जोड़ें"</string>
@@ -132,6 +115,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुंजी को देर तक दबाने का विलंब"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुंजी-स्पर्श कंपन अवधि"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुंजी-स्पर्श ध्वनि आवाज़"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"कुंजी पूर्वावलोकन एनिमेशन कस्टमाइज़ करें"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"बाहरी शब्दकोश फ़ाइल पढ़ें"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"डाउनलोड फ़ोल्डर में कोई शब्दकोश फ़ाइल नहीं है"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"इंस्टॉल करने के लिए कोई शब्दकोश फ़ाइल चुनें"</string>
@@ -181,9 +165,9 @@
     <string name="install_dict" msgid="180852772562189365">"इंस्टॉल करें"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द करें"</string>
     <string name="delete_dict" msgid="756853268088330054">"हटाएं"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"आपके मोबाइल पर चयनित भाषा के लिए शब्‍दकोश उपलब्‍ध है.&lt;br/&gt; हम आपके लेखन अनुभव को बेहतर बनाने के लिए <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्‍दकोश &lt;b&gt;डाउनलोड करने&lt;/b&gt; की अनुशंसा करते हैं.&lt;br/&gt; &lt;br/&gt; 3G में डाउनलोड करने पर एक या दो मिनट लगेंगे. यदि आपके पास &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; नहीं है, तो शुल्क लागू हो सकते हैं.&lt;br/&gt; यदि आप अपनी डेटा योजना के बारे में सुनिश्चित नहीं हैं, तो हम अपने आप डाउनलोड प्रारंभ करने के लिए Wi-Fi कनेक्‍शन ढूंढने की अनुशंसा करते हैं.&lt;br/&gt; &lt;br/&gt; युक्ति: आप अपने मोबाइल उपकरण के &lt;b&gt;सेटिंग&lt;/b&gt; मेनू में &lt;b&gt;भाषा और इनपुट&lt;/b&gt; पर जाकर शब्‍दकोशों को डाउनलोड कर सकते हैं और निकाल सकते हैं."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"आपके मोबाइल पर चयनित भाषा के लिए शब्‍दकोश उपलब्‍ध है.&lt;br/&gt; हम आपके लेखन अनुभव को बेहतर बनाने के लिए <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्‍दकोश &lt;b&gt;डाउनलोड करने&lt;/b&gt; की सुझाव देते हैं.&lt;br/&gt; &lt;br/&gt; 3G में डाउनलोड करने पर एक या दो मिनट लगेंगे. यदि आपके पास &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; नहीं है, तो शुल्क लागू हो सकते हैं.&lt;br/&gt; यदि आप अपनी डेटा योजना के बारे में सुनिश्चित नहीं हैं, तो हम अपने आप डाउनलोड प्रारंभ करने के लिए वाई-फ़ाई  कनेक्‍शन ढूंढने की सुझाव देते हैं.&lt;br/&gt; &lt;br/&gt; युक्ति: आप अपने मोबाइल उपकरण के &lt;b&gt;सेटिंग&lt;/b&gt; मेनू में &lt;b&gt;भाषा और इनपुट&lt;/b&gt; पर जाकर शब्‍दकोशों को डाउनलोड कर सकते हैं और निकाल सकते हैं."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"अभी डाउनलोड करें (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi से डाउनलोड करें"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाई-फ़ाई  से डाउनलोड करें"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> के लिए एक शब्‍दकोश उपलब्‍ध है"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"समीक्षा करने और डाउनलोड करने के लिए दबाएं"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"डाउनलोड प्रारंभ हो रहा है: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> के लिए सुझाव जल्दी ही उपलब्ध होंगे."</string>

@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"కీని నొక్కినప్పుడు వైబ్రేట్"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"కీని నొక్కినప్పుడు ధ్వని"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"కీని నొక్కినప్పుడు పాప్‌అప్ చూపు"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"ఇన్‌పుట్ ప్రాధాన్యతలు"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"కనిపించే తీరు"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"బహుళ భాషా ఎంపికలు"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"సంజ్ఞ టైపింగ్ ప్రాధాన్యతలు"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"వచన సవరణ"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"అధునాతనం"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ఇతర ఇన్‌పుట్ పద్ధతులకు మారండి"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"భాష మార్పు కీ ఇతర ఇన్‌పుట్ పద్ధతులను కూడా కవర్ చేస్తుంది"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"భాష మార్పు కీ"</string>
@@ -62,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"ప్రధాన నిఘంటువు"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"సవరణ సూచనలను చూపు"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"టైప్ చేసేటప్పుడు సూచిత పదాలను ప్రదర్శించు"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ఎల్లప్పుడూ చూపు"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"పోర్ట్రెయిట్ మోడ్‌లో చూపు"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ఎల్లప్పుడూ దాచు"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"అభ్యంతరకరమైన పదాలను బ్లాక్ చేయి"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"సంభావ్యంగా అభ్యంతరకరమైన పదాలను సూచించవద్దు"</string>
     <string name="auto_correction" msgid="7630720885194996950">"స్వీయ-సవరణ"</string>
@@ -86,9 +77,10 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"వాయిస్ ఇన్‌పుట్ పద్ధతులు ఏవీ ప్రారంభించబడలేదు. భాష &amp; ఇన్‌పుట్ సెట్టింగ్‌లను తనిఖీ చేయండి."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ఇన్‌పుట్ పద్ధతులను కాన్ఫిగర్ చేయండి"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ఇన్‌పుట్ భాషలు"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"అభిప్రాయాన్ని పంపండి"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"సహాయం &amp; అభిప్రాయం"</string>
     <string name="select_language" msgid="3693815588777926848">"ఇన్‌పుట్ భాషలు"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"సేవ్ చేయడానికి మళ్లీ తాకండి"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"సేవ్ చేయడానికి ఇక్కడ తాకండి"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"నిఘంటువు అందుబాటులో ఉంది"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"కీబోర్డ్ థీమ్"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ఆంగ్లం (యుకె)"</string>
@@ -108,16 +100,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"ఆల్ఫాబెట్ (కోల్‌మాక్)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"ఆల్ఫాబెట్ (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"ఎమోజి"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"కీబోర్డ్ థీమ్"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"అనుకూల ఇన్‌పుట్ శైలులు"</string>
     <string name="add_style" msgid="6163126614514489951">"శైలిని జోడించండి"</string>
     <string name="add" msgid="8299699805688017798">"జోడించండి"</string>
@@ -132,6 +115,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"కీని ఎక్కువసేపు నొక్కి ఉంచాల్సిన సమయంలో ఆలస్యం"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"కీని నొక్కినప్పుడు వైబ్రేషన్ వ్యవధి"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"కీని నొక్కినప్పుడు చేసే ధ్వని వాల్యూమ్"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"కీ పరిదృశ్య యానిమే. అనుకూలీకరించండి"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"బాహ్య నిఘంటువు ఫైల్‌ను చదవండి"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"డౌన్‌లోడ్‌ల ఫోల్డర్‌లో నిఘంటువు ఫైల్‌లు ఏవీ లేవు"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ఇన్‌స్టాల్ చేయాల్సిన నిఘంటువు ఫైల్‌ను ఎంచుకోండి"</string>

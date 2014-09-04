@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao tocar as teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son ao premer as teclas"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ventás emerxentes ao premer as teclas"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"Preferencias de entrada"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"Aparencia"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Opcións multilingües"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"Preferencias de escritura de xestos"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Corrección de texto"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Avanzada"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Outros métodos de entrada"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A tecla de cambio de idioma inclúe outros métodos de entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de cambio de idioma"</string>
@@ -62,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Dicionario principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar suxestións de corrección"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra palabras suxeridas mentres escribes"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostrar sempre"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Mostrar en modo vertical"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ocultar sempre"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palabras ofensivas"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Non suxerir palabras potencialmente ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>
@@ -86,9 +77,10 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Non hai ningún método de entrada de voz activado. Comproba a configuración de Idioma e entrada de texto."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"Enviar comentarios"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Axuda e opinións"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toca de novo para gardar"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Toca aquí para gardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionario dispoñible"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema do teclado"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglés (Reino Unido)"</string>
@@ -97,12 +89,9 @@
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Inglés (Reino Unido) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Inglés (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Español (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <!-- no translation found for subtype_generic_traditional (8584594350973800586) -->
-    <skip />
-    <!-- no translation found for subtype_generic_cyrillic (7486451947618138947) -->
-    <skip />
-    <!-- no translation found for subtype_generic_latin (9128716486310604145) -->
-    <skip />
+    <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradicional)"</string>
+    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (cirílico)"</string>
+    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (latino)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Ningún idioma (alfabeto)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabeto (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabeto (QWERTZ)"</string>
@@ -111,16 +100,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabeto (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabeto (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"Tema do teclado"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos de entrada personalizados"</string>
     <string name="add_style" msgid="6163126614514489951">"Engadir estilo"</string>
     <string name="add" msgid="8299699805688017798">"Engadir"</string>
@@ -135,6 +115,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Retraso de pulsación prolongada"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Duración vibración ao premer teclas"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume do son ao premer teclas"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"Person. animación vista prev. clave"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Ler ficheiro de dicionario externo"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Non hai ningún ficheiro de dicionario no cartafol de descargas"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Selecciona un ficheiro de dicionario para instalar"</string>

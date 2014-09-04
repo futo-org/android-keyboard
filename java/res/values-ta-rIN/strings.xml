@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"விசையழுத்தின்போது அதிர்வுரு"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"விசையழுத்தத்தின்போது ஒலியெழுப்பு"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"விழை அழுத்தத்தின்போது பாப்அப் செய்"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"உள்ளீட்டு விருப்பங்கள்"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"தோற்றம்"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"பல மொழி விருப்பங்கள்"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"சைகைத்தட்டச்சு விருப்பம்"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"உரை திருத்தம்"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"மேம்பட்டவை"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"பிற உள்ளீட்டு முறைகளுக்கு மாறு"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"மொழி மாற்றல் விசை பிற உள்ளீட்டு முறைகளையும் கட்டுப்படுத்துகிறது"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"மொழி மாற்ற விசை"</string>
@@ -62,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"முதன்மை அகராதி"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"திருத்துதல் விருப்பங்களைக் காட்டு"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"உள்ளிடும்போது பரிந்துரைக்கப்பட்ட வார்த்தைகளைக் காட்டும்"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"எப்போதும் காட்டு"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"நிலைப்பதிப்பு பயன்முறையில் காட்டு"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"எப்போதும் மறை"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"தீங்குவிளைவிக்கும் வார்த்தைகளை தடு"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"தீங்குவிளைவிக்க சாத்தியமுள்ளதான வார்த்தைகளைப் பரிந்துரைக்க வேண்டாம்"</string>
     <string name="auto_correction" msgid="7630720885194996950">"தன்னியக்க திருத்தம்"</string>
@@ -86,9 +77,10 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"குரல் உள்ளீட்டு முறைகள் எதுவும் இயக்கப்படவில்லை. மொழி &amp; உள்ளீட்டு அமைப்புகளைச் சரிபார்க்கவும்."</string>
     <string name="configure_input_method" msgid="373356270290742459">"உள்ளீட்டு முறைகளை உள்ளமைத்தல்"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"உள்ளீட்டு மொழிகள்"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"கருத்தை அனுப்பு"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"உதவி &amp; கருத்து"</string>
     <string name="select_language" msgid="3693815588777926848">"உள்ளீட்டு மொழிகள்"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"சேமிக்க தொடவும்"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"சேமிக்க இங்கு தொடவும்"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"அகராதி உள்ளது"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"விசைப்பலகை தீம்"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ஆங்கிலம் (யூகே)"</string>
@@ -108,16 +100,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"அகரவரிசை (கொல்மக்)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"அகரவரிசை (பிசி)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"எமோஜி"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"விசைப்பலகை தீம்"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"தனிப்பயன் உள்ளீட்டு நடைகள்"</string>
     <string name="add_style" msgid="6163126614514489951">"நடையைச் சேர்"</string>
     <string name="add" msgid="8299699805688017798">"சேர்"</string>
@@ -132,6 +115,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"விசையின் நீண்ட அழுத்தத்தின் தாமதம்"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"விசையழுத்த அதிர்வின் காலஅளவு"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"விசையழுத்த ஒலியளவு"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"விசை முன்னோட்ட அனிமேஷனைத் தனிப்பயனாக்கு"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"வெளிப்புற அகராதி கோப்பைப் படித்தல்"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"பதிவிறக்கங்கள் கோப்புறையில் அகராதி கோப்புகள் எதுவும் இல்லை"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"நிறுவுவதற்கு அகராதி கோப்பைத் தேர்ந்தெடுக்கவும்"</string>
@@ -162,7 +146,7 @@
     <string name="download_description" msgid="6014835283119198591">"அகராதியின் புதுப்பிப்பு தகவல்"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"துணை அகராதிகள்"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"அகராதி கிடைக்கிறது"</string>
-    <string name="dictionary_settings_summary" msgid="5305694987799824349">"அகராதிகளுக்கான அமைப்புகள்"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"அகராதிகளுக்கான அமைப்பு"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"பயனர் அகராதிகள்"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"பயனர் அகராதி"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"அகராதி கிடைக்கிறது"</string>
@@ -177,13 +161,13 @@
     <string name="message_loading" msgid="5638680861387748936">"ஏற்றுகிறது..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"முதன்மை அகராதி"</string>
     <string name="cancel" msgid="6830980399865683324">"ரத்துசெய்"</string>
-    <string name="go_to_settings" msgid="3876892339342569259">"அமைப்புகள்"</string>
+    <string name="go_to_settings" msgid="3876892339342569259">"அமைப்பு"</string>
     <string name="install_dict" msgid="180852772562189365">"நிறுவு"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ரத்துசெய்"</string>
     <string name="delete_dict" msgid="756853268088330054">"நீக்கு"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"உங்கள் மொபைலில் தேர்ந்தெடுத்த மொழிக்கு அகராதி உள்ளது.&lt;br/&gt; உங்கள் உள்ளீட்டு அனுபவத்தை மேம்படுத்த <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> அகராதியைப்  &lt;b&gt;பதிவிறக்குவதைப்&lt;/b&gt; பரிந்துரைக்கிறோம்.&lt;br/&gt; &lt;br/&gt; 3G இல் பதிவிறக்கத்திற்கு ஒன்று அல்லது இரண்டு நிமிடங்கள் ஆகலாம். உங்களிடம் &lt;b&gt;வரம்பில்லா தரவு திட்டம்&lt;/b&gt; இல்லையெனில் கட்டணம் விதிக்கப்படலாம்.&lt;br/&gt; உங்களிடம் எந்தத் தரவு திட்டம் உள்ளது என்பது உறுதியாகத் தெரியவில்லையெனில், பதிவிறக்கத்தைத் தானாகத் துவங்க, Wi-Fi இணைப்பைக் கண்டறிவதைப் பரிந்துரைக்கிறோம்.&lt;br/&gt; &lt;br/&gt; உதவிக்குறிப்பு: உங்கள் மொபைல் சாதனத்தில் &lt;b&gt;அமைப்புகள்&lt;/b&gt; மெனுவில் உள்ள &lt;b&gt;மொழி &amp; உள்ளீடு&lt;/b&gt; என்பதற்குச் செலவதன் மூலம் அகராதிகளைப் பதிவிறக்கலாம் மற்றும் அகற்றலாம்."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"உங்கள் மொபைலில் தேர்ந்தெடுத்த மொழிக்கு அகராதி உள்ளது.&lt;br/&gt; உங்கள் உள்ளீட்டு அனுபவத்தை மேம்படுத்த <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> அகராதியைப்  &lt;b&gt;பதிவிறக்குவதைப்&lt;/b&gt; பரிந்துரைக்கிறோம்.&lt;br/&gt; &lt;br/&gt; 3G இல் பதிவிறக்கத்திற்கு ஒன்று அல்லது இரண்டு நிமிடங்கள் ஆகலாம். உங்களிடம் &lt;b&gt;வரம்பில்லா தரவு திட்டம்&lt;/b&gt; இல்லையெனில் கட்டணம் விதிக்கப்படலாம்.&lt;br/&gt; உங்களிடம் எந்தத் தரவு திட்டம் உள்ளது என்பது உறுதியாகத் தெரியவில்லையெனில், பதிவிறக்கத்தைத் தானாகத் துவங்க, வைஃபை இணைப்பைக் கண்டறிவதைப் பரிந்துரைக்கிறோம்.&lt;br/&gt; &lt;br/&gt; உதவிக்குறிப்பு: உங்கள் மொபைல் சாதனத்தில் &lt;b&gt;அமைப்பு&lt;/b&gt; மெனுவில் உள்ள &lt;b&gt;மொழி &amp; உள்ளீடு&lt;/b&gt; என்பதற்குச் செலவதன் மூலம் அகராதிகளைப் பதிவிறக்கலாம் மற்றும் அகற்றலாம்."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"இப்போது பதிவிறக்கு (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>மெ.பை.)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi வழியாகப் பதிவிறக்கு"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"வைஃபை வழியாகப் பதிவிறக்கு"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> மொழிக்கு அகராதி கிடைக்கிறது"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"மதிப்பாய்வு செய்து பதிவிறக்க அழுத்தவும்"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"பதிவிறக்குகிறது: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> க்கான பரிந்துரைகள் விரைவில் தயாராகிவிடும்."</string>

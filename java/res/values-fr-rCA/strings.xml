@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer à chaque touche"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son à chaque touche"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"Préférences d\'entrée"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"Apparence"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Options multilingues"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"Préfér. entrée gestuelle"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Correction du texte"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Avancés"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Autres modes de saisie"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La touche de sélection de langue couvre d\'autres modes de saisie"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Touche de sélection de langue"</string>
@@ -62,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Dictionnaire principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Suggestions de correction"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Afficher les suggestions de terme lors de la saisie"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Toujours afficher"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Afficher en mode Portrait"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Toujours masquer"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquer les termes choquants"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Pas de termes potentiellement choquants"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Correction auto"</string>
@@ -86,9 +77,10 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Aucun mode d\'entrée vocale n\'a été activé. Vérifiez les paramètres de langues et d\'entrée de texte."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurer les modes de saisie"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Langues de saisie"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"Envoyer des commentaires"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Aide et commentaires"</string>
     <string name="select_language" msgid="3693815588777926848">"Langues de saisie"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Appuyer de nouveau pour enregistrer"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Touchez ici pour enregistrer le mot dans le dictionnaire"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Thème du clavier"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglais (britannique)"</string>
@@ -108,16 +100,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alphabet latin (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alphabet latin (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"Thème du clavier"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Styles saisie personnalisés"</string>
     <string name="add_style" msgid="6163126614514489951">"Ajouter style"</string>
     <string name="add" msgid="8299699805688017798">"Ajouter"</string>
@@ -132,6 +115,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Délai appui prolongé sur touche"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durée vibration press. touche"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume pression de touche"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"Personn. animation clé de l\'aperçu"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Lire un fichier de dictionnaire externe"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Aucun fichier de dictionnaire dans le dossier \"Téléchargements\""</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Sélectionner un fichier de dictionnaire à installer"</string>

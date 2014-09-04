@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rung khi nhấn phím"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Âm thanh khi nhấn phím"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Cửa sổ bật lên khi nhấn phím"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"Tùy chọn nhập"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"Giao diện"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Tùy chọn đa ngôn ngữ"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"Tùy chọn nhập bằng cử chỉ"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Sửa văn bản"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Nâng cao"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Phương thức nhập khác"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Khóa chuyển ngôn ngữ bao gồm cả các phương thức nhập liệu khác"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Phím chuyển đổi ngôn ngữ"</string>
@@ -62,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Từ điển chính"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Hiển thị gợi ý sửa"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Hiển thị từ được đề xuất khi nhập"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Luôn hiển thị"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Hiển thị ở chế độ dọc"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Luôn ẩn"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Chặn các từ xúc phạm"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Không đề xuất các từ có thể gây xúc phạm"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Tự động sửa"</string>
@@ -86,9 +77,10 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Không có phương thức nhập bằng giọng nói nào được bật. Kiểm tra cài đặt Ngôn ngữ và phương thức nhập."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Định cấu hình phương thức nhập"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ngôn ngữ nhập"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"Gửi phản hồi"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Trợ giúp và phản hồi"</string>
     <string name="select_language" msgid="3693815588777926848">"Ngôn ngữ nhập"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Chạm lại để lưu"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Chạm vào đây để lưu"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Có sẵn từ điển"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Tiếng Anh (Anh)"</string>
@@ -108,16 +100,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Bảng chữ cái (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Bảng chữ cái (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Biểu tượng cảm xúc"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"Chủ đề bàn phím"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Kiểu nhập tùy chỉnh"</string>
     <string name="add_style" msgid="6163126614514489951">"Thêm kiểu"</string>
     <string name="add" msgid="8299699805688017798">"Thêm"</string>
@@ -132,6 +115,8 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tgian chờ cho nhấn và giữ phím"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Thời gian rung khi nhấn phím"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Âm lượng khi nhấn phím"</string>
+    <!-- no translation found for prefs_customize_key_preview_animation (4537507402140318920) -->
+    <skip />
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Đọc tệp từ điển bên ngoài"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Không có tệp từ điển nào trong thư mục Nội dung tải xuống"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Chọn tệp từ điển để cài đặt"</string>
@@ -181,7 +166,7 @@
     <string name="install_dict" msgid="180852772562189365">"Cài đặt"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Hủy"</string>
     <string name="delete_dict" msgid="756853268088330054">"Xóa"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ngôn ngữ đã chọn trên thiết bị di động của bạn hiện có từ điển.&lt;br/&gt; Bạn nên &lt;b&gt;tải xuống&lt;/b&gt; từ điển <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> để cải thiện trải nghiệm nhập của mình.&lt;br/&gt; &lt;br/&gt; Quá trình tải xuống có thể mất vài phút qua 3G. Có thể mất phí nếu bạn không có &lt;b&gt;gói dữ liệu không giới hạn&lt;/b&gt;.&lt;br/&gt; Nếu bạn không chắc mình có gói dữ liệu nào, bạn nên tìm kết nối Wi-Fi để bắt đầu tải xuống tự động.&lt;br/&gt; &lt;br/&gt; Mẹo: Bạn có thể tải xuống và xóa từ điển bằng cách đi tới &lt;b&gt;Ngôn ngữ và nhập&lt;/b&gt; trong trình đơn &lt;b&gt;Cài đặt&lt;/b&gt; trên thiết bị di động của mình."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ngôn ngữ đã chọn trên thiết bị di động của bạn hiện có từ điển.&lt;br/&gt; Bạn nên &lt;b&gt;tải xuống&lt;/b&gt; từ điển <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> để cải thiện trải nghiệm nhập của mình.&lt;br/&gt; &lt;br/&gt; Quá trình tải xuống có thể mất vài phút qua 3G. Có thể mất phí nếu bạn không có &lt;b&gt;gói dữ liệu không giới hạn&lt;/b&gt;.&lt;br/&gt; Nếu bạn không chắc mình có gói dữ liệu nào, bạn nên tìm kết nối Wi-Fi để bắt đầu tải xuống tự động.&lt;br/&gt; &lt;br/&gt; Mẹo: Bạn có thể tải xuống và xóa từ điển bằng cách đi tới &lt;b&gt;Ngôn ngữ và nhập&lt;/b&gt; trong menu &lt;b&gt;Cài đặt&lt;/b&gt; trên thiết bị di động của mình."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Tải xuống bây giờ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Tải xuống qua Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Hiện có từ điển cho <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
