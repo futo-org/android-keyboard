@@ -117,6 +117,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ໄລຍະເວລາຂອງການກົດປຸ່ມ"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ໄລຍະເວລາຂອງການສັ່ນໃນການກົດປຸ່ມ"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ລະດັບສຽງຂອງການກົດປຸ່ມ"</string>
+    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"ປັບແຕ່ງ​ອະນິເມຊັນ​ຕົວຢ່າງ​ປຸ່ມ​ກົດ"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ອ່ານໄຟລ໌ວັດຈະນານຸກົມພາຍນອກ"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ບໍ່ມີໄຟລ໌ວັດຈະນານຸກົມໃນໂຟນເດີຂອງການດາວໂຫລດ"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ເລືອກໄຟລ໌ວັດຈະນານຸກົມເພື່ອຕິດຕັ້ງ"</string>
