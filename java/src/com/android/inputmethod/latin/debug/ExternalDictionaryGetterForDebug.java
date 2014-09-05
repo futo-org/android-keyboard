@@ -168,7 +168,7 @@ public class ExternalDictionaryGetterForDebug {
         } catch (IOException e) {
             // There was an error: show a dialog
             new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
-                    .setTitle(R.string.error)
+                    .setTitle(R.string.read_external_dictionary_error)
                     .setMessage(e.toString())
                     .setPositiveButton(android.R.string.ok, new OnClickListener() {
                         @Override
