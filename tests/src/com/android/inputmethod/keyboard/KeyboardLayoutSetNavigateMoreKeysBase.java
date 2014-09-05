@@ -35,12 +35,24 @@ abstract class KeyboardLayoutSetNavigateMoreKeysBase extends KeyboardLayoutSetTe
     private ExpectedMoreKey mExpectedNavigatePreviousMoreKey;
     private ExpectedMoreKey mExpectedEmojiMoreKey;
 
+    protected ExpectedMoreKey getExpectedNavigateNextMoreKey() {
+        return new ExpectedMoreKey(R.string.label_next_key);
+    }
+
+    protected ExpectedMoreKey getExpectedNavigatePreviousMoreKey() {
+        return new ExpectedMoreKey(R.string.label_previous_key);
+    }
+
+    protected ExpectedMoreKey getExpectedEmojiMoreKey() {
+        return new ExpectedMoreKey(KeyboardIconsSet.NAME_EMOJI_ACTION_KEY);
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mExpectedNavigateNextMoreKey = new ExpectedMoreKey(R.string.label_next_key);
-        mExpectedNavigatePreviousMoreKey = new ExpectedMoreKey(R.string.label_previous_key);
-        mExpectedEmojiMoreKey = new ExpectedMoreKey(KeyboardIconsSet.NAME_EMOJI_ACTION_KEY);
+        mExpectedNavigateNextMoreKey = getExpectedNavigateNextMoreKey();
+        mExpectedNavigatePreviousMoreKey =  getExpectedNavigatePreviousMoreKey();
+        mExpectedEmojiMoreKey = getExpectedEmojiMoreKey();
     }
 
     /**
@@ -90,6 +102,7 @@ abstract class KeyboardLayoutSetNavigateMoreKeysBase extends KeyboardLayoutSetTe
             assertEquals(tag + " column",
                     expectedMoreKeys.length, actualKey.getMoreKeysColumnNumber());
         }
+        assertNotNull(tag + " moreKeys", actualMoreKeys);
         assertEquals(tag, expectedMoreKeys.length, actualMoreKeys.length);
         for (int index = 0; index < actualMoreKeys.length; index++) {
             final int expectedLabelResId = expectedMoreKeys[index].mLabelResId;

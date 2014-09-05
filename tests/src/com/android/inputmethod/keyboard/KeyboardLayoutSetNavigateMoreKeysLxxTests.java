@@ -18,11 +18,23 @@ package com.android.inputmethod.keyboard;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+
 @SmallTest
 public class KeyboardLayoutSetNavigateMoreKeysLxxTests
         extends KeyboardLayoutSetNavigateMoreKeysBase {
     @Override
     protected int getKeyboardThemeForTests() {
         return KeyboardTheme.THEME_ID_LXX_LIGHT;
+    }
+
+    @Override
+    protected ExpectedMoreKey getExpectedNavigateNextMoreKey() {
+        return new ExpectedMoreKey(KeyboardIconsSet.NAME_NEXT_KEY);
+    }
+
+    @Override
+    protected ExpectedMoreKey getExpectedNavigatePreviousMoreKey() {
+        return new ExpectedMoreKey(KeyboardIconsSet.NAME_PREVIOUS_KEY);
     }
 }
