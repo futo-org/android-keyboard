@@ -217,7 +217,8 @@ public final class CapsModeUtils {
         // a sentence. If it's neither, the only remaining case is the period so we get the opposite
         // case out of the way.
         if (c == Constants.CODE_QUESTION_MARK || c == Constants.CODE_EXCLAMATION_MARK) {
-            return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
+            return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
+                    | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
         if (!spacingAndPunctuations.isSentenceSeparator(c) || j <= 0) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
