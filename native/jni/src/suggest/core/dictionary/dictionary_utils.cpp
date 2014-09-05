@@ -54,15 +54,15 @@ namespace latinime {
         current.swap(next);
     }
 
-    int maxProbability = NOT_A_PROBABILITY;
+    int maxUnigramProbability = NOT_A_PROBABILITY;
     for (const DicNode &dicNode : current) {
         if (!dicNode.isTerminalDicNode()) {
             continue;
         }
         // dicNode can contain case errors, accent errors, intentional omissions or digraphs.
-        maxProbability = std::max(maxProbability, dicNode.getProbability());
+        maxUnigramProbability = std::max(maxUnigramProbability, dicNode.getUnigramProbability());
     }
-    return maxProbability;
+    return maxUnigramProbability;
 }
 
 /* static */ void DictionaryUtils::processChildDicNodes(

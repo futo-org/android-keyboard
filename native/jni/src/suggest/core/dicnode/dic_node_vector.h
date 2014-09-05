@@ -59,11 +59,11 @@ class DicNodeVector {
     }
 
     void pushLeavingChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
-            const int probability, const int wordId, const bool isBlacklistedOrNotAWord,
+            const int unigramProbability, const int wordId, const bool isBlacklistedOrNotAWord,
             const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
         ASSERT(!mLock);
         mDicNodes.emplace_back();
-        mDicNodes.back().initAsChild(dicNode, childrenPtNodeArrayPos, probability,
+        mDicNodes.back().initAsChild(dicNode, childrenPtNodeArrayPos, unigramProbability,
                 wordId, isBlacklistedOrNotAWord, mergedNodeCodePointCount, mergedNodeCodePoints);
     }
 
