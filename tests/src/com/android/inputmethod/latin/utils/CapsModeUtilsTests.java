@@ -124,5 +124,17 @@ public class CapsModeUtilsTests extends AndroidTestCase {
         allPathsForCaps("Word. ", c | w, sp, false);
         // Armenian period : capitalize if MODE_SENTENCES
         allPathsForCaps("Word\u0589 ", c | w | s, sp, false);
+
+        // Test for sentence terminators
+        sp = job.runInLocale(res, Locale.ENGLISH);
+        allPathsForCaps("Word? ", c | w | s, sp, false);
+        allPathsForCaps("Word?", c | w | s, sp, true);
+        allPathsForCaps("Word?", c, sp, false);
+        allPathsForCaps("Word! ", c | w | s, sp, false);
+        allPathsForCaps("Word!", c | w | s, sp, true);
+        allPathsForCaps("Word!", c, sp, false);
+        allPathsForCaps("Word; ", c | w, sp, false);
+        allPathsForCaps("Word;", c | w, sp, true);
+        allPathsForCaps("Word;", c, sp, false);
     }
 }
