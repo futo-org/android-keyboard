@@ -135,15 +135,15 @@ class DicNode {
         PROF_NODE_COPY(&parentDicNode->mProfiler, mProfiler);
     }
 
-    void initAsChild(const DicNode *const dicNode, const int ptNodePos,
-            const int childrenPtNodeArrayPos, const int probability, const int wordId,
-            const bool hasChildren, const bool isBlacklistedOrNotAWord,
-            const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
+    void initAsChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
+            const int probability, const int wordId, const bool hasChildren,
+            const bool isBlacklistedOrNotAWord, const uint16_t mergedNodeCodePointCount,
+            const int *const mergedNodeCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
-        mDicNodeProperties.init(ptNodePos, childrenPtNodeArrayPos, mergedNodeCodePoints[0],
+        mDicNodeProperties.init(childrenPtNodeArrayPos, mergedNodeCodePoints[0],
                 probability, wordId, hasChildren, isBlacklistedOrNotAWord, newDepth,
                 newLeavingDepth, dicNode->mDicNodeProperties.getPrevWordIds());
         mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
@@ -206,11 +206,6 @@ class DicNode {
     // Used to get n-gram probability in DicNodeUtils.
     int getWordId() const {
         return mDicNodeProperties.getWordId();
-    }
-
-    // TODO: Remove
-    int getPtNodePos() const {
-        return mDicNodeProperties.getPtNodePos();
     }
 
     // TODO: Use view class to return word id array.
