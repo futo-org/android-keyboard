@@ -215,18 +215,23 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
                 "abc 'def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
     }
 
-    /**
-     * Test logic in getting the word range at the cursor.
-     */
-    private static final int[] SPACE = { Constants.CODE_SPACE };
-    static final int[] TAB = { Constants.CODE_TAB };
-    private static final int[] SPACE_TAB = StringUtils.toSortedCodePointArray(" \t");
-    // A character that needs surrogate pair to represent its code point (U+2008A).
-    private static final String SUPPLEMENTARY_CHAR = "\uD840\uDC8A";
-    private static final String HIRAGANA_WORD = "\u3042\u3044\u3046\u3048\u304A"; // あいうえお
-    private static final String GREEK_WORD = "\u03BA\u03B1\u03B9"; // και
-
     public void testGetWordRangeAtCursor() {
+        /**
+         * Test logic in getting the word range at the cursor.
+         */
+        final SpacingAndPunctuations SPACE = new SpacingAndPunctuations(
+                mSpacingAndPunctuations, new int[] { Constants.CODE_SPACE });
+        final SpacingAndPunctuations TAB = new SpacingAndPunctuations(
+                mSpacingAndPunctuations, new int[] { Constants.CODE_TAB });
+        final int[] SPACE_TAB = StringUtils.toSortedCodePointArray(" \t");
+        // A character that needs surrogate pair to represent its code point (U+2008A).
+        final String SUPPLEMENTARY_CHAR_STRING = "\uD840\uDC8A";
+        final SpacingAndPunctuations SUPPLEMENTARY_CHAR = new SpacingAndPunctuations(
+                mSpacingAndPunctuations, StringUtils.toSortedCodePointArray(
+                        SUPPLEMENTARY_CHAR_STRING));
+        final String HIRAGANA_WORD = "\u3042\u3044\u3046\u3048\u304A"; // あいうえお
+        final String GREEK_WORD = "\u03BA\u03B1\u03B9"; // και
+
         ExtractedText et = new ExtractedText();
         final MockInputMethodService mockInputMethodService = new MockInputMethodService();
         final RichInputConnection ic = new RichInputConnection(mockInputMethodService);
@@ -249,10 +254,9 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
 
         // splitting on supplementary character
         mockInputMethodService.setInputConnection(
-                new MockConnection("one word" + SUPPLEMENTARY_CHAR + "wo", "rd", et));
+                new MockConnection("one word" + SUPPLEMENTARY_CHAR_STRING + "wo", "rd", et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(StringUtils.toSortedCodePointArray(SUPPLEMENTARY_CHAR),
-                ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_LATIN);
         ic.endBatchEdit();
         assertTrue(TextUtils.equals("word", r.mWord));
 
@@ -260,8 +264,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         mockInputMethodService.setInputConnection(
                 new MockConnection(HIRAGANA_WORD + "wo", "rd" + GREEK_WORD, et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(StringUtils.toSortedCodePointArray(SUPPLEMENTARY_CHAR),
-                ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_LATIN);
         ic.endBatchEdit();
         assertTrue(TextUtils.equals("word", r.mWord));
 
@@ -269,8 +272,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         mockInputMethodService.setInputConnection(
                 new MockConnection("text" + GREEK_WORD, "text", et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(StringUtils.toSortedCodePointArray(SUPPLEMENTARY_CHAR),
-                ScriptUtils.SCRIPT_GREEK);
+        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_GREEK);
         ic.endBatchEdit();
         assertTrue(TextUtils.equals(GREEK_WORD, r.mWord));
     }
@@ -286,6 +288,8 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
     }
 
     private void helpTestGetSuggestionSpansAtWord(final int cursorPos) {
+        final SpacingAndPunctuations SPACE = new SpacingAndPunctuations(
+                mSpacingAndPunctuations, new int[] { Constants.CODE_SPACE });
         final MockInputMethodService mockInputMethodService = new MockInputMethodService();
         final RichInputConnection ic = new RichInputConnection(mockInputMethodService);
 
