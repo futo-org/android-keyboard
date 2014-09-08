@@ -34,10 +34,15 @@ public final class CursorAnchorInfoCompatWrapper {
      */
     public static final int FLAG_HAS_INVISIBLE_REGION = 0x02;
 
+    /**
+     * The insertion marker or character bounds is placed at right-to-left (RTL) character.
+     */
+    public static final int FLAG_IS_RTL = 0x04;
+
     // Note that CursorAnchorInfo has been introduced in API level XX (Build.VERSION_CODE.LXX).
     private static final CompatUtils.ClassWrapper sCursorAnchorInfoClass;
-    private static final CompatUtils.ToObjectMethodWrapper<RectF> sGetCharacterRectMethod;
-    private static final CompatUtils.ToIntMethodWrapper sGetCharacterRectFlagsMethod;
+    private static final CompatUtils.ToObjectMethodWrapper<RectF> sGetCharacterBoundsMethod;
+    private static final CompatUtils.ToIntMethodWrapper sGetCharacterBoundsFlagsMethod;
     private static final CompatUtils.ToObjectMethodWrapper<CharSequence> sGetComposingTextMethod;
     private static final CompatUtils.ToIntMethodWrapper sGetComposingTextStartMethod;
     private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerBaselineMethod;
@@ -51,10 +56,10 @@ public final class CursorAnchorInfoCompatWrapper {
     static {
         sCursorAnchorInfoClass = CompatUtils.getClassWrapper(
                 "android.view.inputmethod.CursorAnchorInfo");
-        sGetCharacterRectMethod = sCursorAnchorInfoClass.getMethod(
-                "getCharacterRect", (RectF)null, int.class);
-        sGetCharacterRectFlagsMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getCharacterRectFlags", 0, int.class);
+        sGetCharacterBoundsMethod = sCursorAnchorInfoClass.getMethod(
+                "getCharacterBounds", (RectF)null, int.class);
+        sGetCharacterBoundsFlagsMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getCharacterBoundsFlags", 0, int.class);
         sGetComposingTextMethod = sCursorAnchorInfoClass.getMethod(
                 "getComposingText", (CharSequence)null);
         sGetComposingTextStartMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
@@ -112,12 +117,12 @@ public final class CursorAnchorInfoCompatWrapper {
         return sGetMatrixMethod.invoke(mInstance);
     }
 
-    public RectF getCharacterRect(final int index) {
-        return sGetCharacterRectMethod.invoke(mInstance, index);
+    public RectF getCharacterBounds(final int index) {
+        return sGetCharacterBoundsMethod.invoke(mInstance, index);
     }
 
-    public int getCharacterRectFlags(final int index) {
-        return sGetCharacterRectFlagsMethod.invoke(mInstance, index);
+    public int getCharacterBoundsFlags(final int index) {
+        return sGetCharacterBoundsFlagsMethod.invoke(mInstance, index);
     }
 
     public float getInsertionMarkerBaseline() {
