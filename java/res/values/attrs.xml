@@ -173,6 +173,10 @@
         <attr name="suppressKeyPreviewAfterBatchInputDuration" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="MoreKeysKeyboardView">
+        <attr name="divider" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="EmojiPalettesView">
         <attr name="categoryIndicatorEnabled" format="boolean" />
         <attr name="categoryIndicatorDrawable" format="reference" />

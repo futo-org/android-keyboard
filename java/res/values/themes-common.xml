@@ -115,10 +115,7 @@
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style name="EmojiPalettesView" />
     <style name="MoreKeysKeyboard" />
-    <style
-        name="MoreKeysKeyboardView"
-        parent="KeyboardView" />
-    <style name="MoreKeysKeyboardContainer" />
+    <style name="MoreKeysKeyboardView" />
     <style name="SuggestionStripView" />
     <style name="SuggestionWord">
         <item name="android:minWidth">@dimen/config_suggestion_min_width</item>
