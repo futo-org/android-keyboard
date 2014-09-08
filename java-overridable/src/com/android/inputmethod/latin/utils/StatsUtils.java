@@ -17,11 +17,17 @@
 package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.settings.SettingsValues;
 
 public final class StatsUtils {
 
     public static void onCreate(final SettingsValues settingsValues,
             RichInputMethodManager richImm) {
+    }
+
+    public static void onPickSuggestionManually(final SuggestedWords suggestedWords,
+            final SuggestedWords.SuggestedWordInfo suggestionInfo) {
+
     }
 }
