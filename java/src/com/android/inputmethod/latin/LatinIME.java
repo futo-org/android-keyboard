@@ -713,10 +713,26 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onConfigurationChanged(final Configuration conf) {
-        final SettingsValues settingsValues = mSettings.getCurrent();
+        SettingsValues settingsValues = mSettings.getCurrent();
         if (settingsValues.mDisplayOrientation != conf.orientation) {
             mHandler.startOrientationChanging();
             mInputLogic.onOrientationChange(mSettings.getCurrent());
+        }
+        if (settingsValues.mHasHardwareKeyboard != Settings.readHasHardwareKeyboard(conf)) {
+            // If the state of having a hardware keyboard changed, then we want to reload the
+            // settings to adjust for that.
+            // TODO: we should probably do this unconditionally here, rather than only when we
+            // have a change in hardware keyboard configuration.
+            loadSettings();
+            settingsValues = mSettings.getCurrent();
+            if (settingsValues.mHasHardwareKeyboard) {
+                // We call cleanupInternalStateForFinishInput() because it's the right thing to do;
+                // however, it seems at the moment the framework is passing us a seemingly valid
+                // but actually non-functional InputConnection object. So if this bug ever gets
+                // fixed we'll be able to remove the composition, but until it is this code is
+                // actually not doing much.
+                cleanupInternalStateForFinishInput();
+            }
         }
         // TODO: Remove this test.
         if (!conf.locale.equals(mPersonalizationDictionaryUpdater.getLocale())) {
@@ -843,40 +859,52 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
 
-        // The app calling setText() has the effect of clearing the composing
-        // span, so we should reset our state unconditionally, even if restarting is true.
-        // We also tell the input logic about the combining rules for the current subtype, so
-        // it can adjust its combiners if needed.
-        mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype(),
-                currentSettingsValues);
+        // ALERT: settings have not been reloaded and there is a chance they may be stale.
+        // In the practice, if it is, we should have gotten onConfigurationChanged so it should
+        // be fine, but this is horribly confusing and must be fixed AS SOON AS POSSIBLE.
 
-        // Note: the following does a round-trip IPC on the main thread: be careful
-        final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        // In some cases the input connection has not been reset yet and we can't access it. In
+        // this case we will need to call loadKeyboard() later, when it's accessible, so that we
+        // can go into the correct mode, so we need to do some housekeeping here.
+        final boolean needToCallLoadKeyboardLater;
         final Suggest suggest = mInputLogic.mSuggest;
-        if (null != currentLocale && !currentLocale.equals(suggest.getLocale())) {
-            // TODO: Do this automatically.
-            resetSuggest();
-        }
+        if (!currentSettingsValues.mHasHardwareKeyboard) {
+            // The app calling setText() has the effect of clearing the composing
+            // span, so we should reset our state unconditionally, even if restarting is true.
+            // We also tell the input logic about the combining rules for the current subtype, so
+            // it can adjust its combiners if needed.
+            mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype(),
+                    currentSettingsValues);
 
-        // TODO[IL]: Can the following be moved to InputLogic#startInput?
-        final boolean canReachInputConnection;
-        if (!mInputLogic.mConnection.resetCachesUponCursorMoveAndReturnSuccess(
-                editorInfo.initialSelStart, editorInfo.initialSelEnd,
-                false /* shouldFinishComposition */)) {
-            // Sometimes, while rotating, for some reason the framework tells the app we are not
-            // connected to it and that means we can't refresh the cache. In this case, schedule a
-            // refresh later.
-            // We try resetting the caches up to 5 times before giving up.
-            mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
-            // mLastSelection{Start,End} are reset later in this method, don't need to do it here
-            canReachInputConnection = false;
+            // Note: the following does a round-trip IPC on the main thread: be careful
+            final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+            if (null != currentLocale && !currentLocale.equals(suggest.getLocale())) {
+                // TODO: Do this automatically.
+                resetSuggest();
+            }
+
+            // TODO[IL]: Can the following be moved to InputLogic#startInput?
+            if (!mInputLogic.mConnection.resetCachesUponCursorMoveAndReturnSuccess(
+                    editorInfo.initialSelStart, editorInfo.initialSelEnd,
+                    false /* shouldFinishComposition */)) {
+                // Sometimes, while rotating, for some reason the framework tells the app we are not
+                // connected to it and that means we can't refresh the cache. In this case, schedule
+                // a refresh later.
+                // We try resetting the caches up to 5 times before giving up.
+                mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
+                // mLastSelection{Start,End} are reset later in this method, no need to do it here
+                needToCallLoadKeyboardLater = true;
+            } else {
+                // When rotating, initialSelStart and initialSelEnd sometimes are lying. Make a best
+                // effort to work around this bug.
+                mInputLogic.mConnection.tryFixLyingCursorPosition();
+                mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
+                        true /* shouldDelay */);
+                needToCallLoadKeyboardLater = false;
+            }
         } else {
-            // When rotating, initialSelStart and initialSelEnd sometimes are lying. Make a best
-            // effort to work around this bug.
-            mInputLogic.mConnection.tryFixLyingCursorPosition();
-            mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
-                    true /* shouldDelay */);
-            canReachInputConnection = true;
+            // If we have a hardware keyboard we don't need to call loadKeyboard later anyway.
+            needToCallLoadKeyboardLater = false;
         }
 
         if (isDifferentTextField ||
@@ -894,9 +922,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
             switcher.loadKeyboard(editorInfo, currentSettingsValues, getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
-            if (!canReachInputConnection) {
-                // If we can't reach the input connection, we will call loadKeyboard again later,
-                // so we need to save its state now. The call will be done in #retryResetCaches.
+            if (needToCallLoadKeyboardLater) {
+                // If we need to call loadKeyboard again later, we need to save its state now. The
+                // later call will be done in #retryResetCaches.
                 switcher.saveKeyboardState();
             }
         } else if (restarting) {
@@ -953,6 +981,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onFinishInputViewInternal(final boolean finishingInput) {
         super.onFinishInputView(finishingInput);
+        cleanupInternalStateForFinishInput();
+    }
+
+    private void cleanupInternalStateForFinishInput() {
         mKeyboardSwitcher.deallocateMemory();
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
@@ -972,13 +1004,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + ", cs=" + composingSpanStart + ", ce=" + composingSpanEnd);
         }
 
-        // If the keyboard is not visible, we don't need to do all the housekeeping work, as it
-        // will be reset when the keyboard shows up anyway.
-        // TODO: revisit this when LatinIME supports hardware keyboards.
-        // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
-        // TODO: find a better way to simulate actual execution.
-        if (isInputViewShown() &&
-                mInputLogic.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd)) {
+        // This call happens when we have a hardware keyboard as well as when we don't. While we
+        // don't support hardware keyboards yet we should avoid doing the processing associated
+        // with cursor movement when we have a hardware keyboard since we are not in charge.
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        if ((!settingsValues.mHasHardwareKeyboard || ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED)
+                && mInputLogic.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd)) {
             mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
         }
