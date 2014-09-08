@@ -25,7 +25,9 @@
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.KLP</item>
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.KLP</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.KLP</item>
+        <!-- Note: KLP theme uses the same style for both general more keys and action more keys. -->
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.KLP</item>
+        <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.KLP</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.KLP</item>
         <item name="suggestionWordStyle">@style/SuggestionWord.KLP</item>
     </style>
