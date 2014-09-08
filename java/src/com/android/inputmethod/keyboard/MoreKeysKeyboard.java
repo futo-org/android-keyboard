@@ -18,11 +18,9 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
-import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.R;
@@ -257,7 +255,6 @@ public final class MoreKeysKeyboard extends Keyboard {
 
     public static class Builder extends KeyboardBuilder<MoreKeysKeyboardParams> {
         private final Key mParentKey;
-        private final Drawable mDivider;
 
         private static final float LABEL_PADDING_RATIO = 0.2f;
         private static final float DIVIDER_RATIO = 0.2f;
@@ -306,10 +303,8 @@ public final class MoreKeysKeyboard extends Keyboard {
             }
             final int dividerWidth;
             if (key.needsDividersInMoreKeys()) {
-                mDivider = mResources.getDrawable(R.drawable.more_keys_divider);
                 dividerWidth = (int)(keyWidth * DIVIDER_RATIO);
             } else {
-                mDivider = null;
                 dividerWidth = 0;
             }
             final MoreKeySpec[] moreKeys = key.getMoreKeys();
@@ -352,7 +347,8 @@ public final class MoreKeysKeyboard extends Keyboard {
                 if (params.mDividerWidth > 0 && pos != 0) {
                     final int dividerX = (pos > 0) ? x - params.mDividerWidth
                             : x + params.mDefaultKeyWidth;
-                    final Key divider = new MoreKeyDivider(params, mDivider, dividerX, y);
+                    final Key divider = new MoreKeyDivider(
+                            params, dividerX, y, params.mDividerWidth, params.mDefaultRowHeight);
                     params.onAddKey(divider);
                 }
             }
@@ -360,22 +356,11 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
     }
 
-    private static class MoreKeyDivider extends Key.Spacer {
-        private final Drawable mIcon;
-
-        public MoreKeyDivider(final MoreKeysKeyboardParams params, final Drawable icon,
-                final int x, final int y) {
-            super(params, x, y, params.mDividerWidth, params.mDefaultRowHeight);
-            mIcon = icon;
-        }
-
-        @Override
-        public Drawable getIcon(final KeyboardIconsSet iconSet, final int alpha) {
-            // KeyboardIconsSet and alpha are unused. Use the icon that has been passed to the
-            // constructor.
-            // TODO: Drawable itself should have an alpha value.
-            mIcon.setAlpha(128);
-            return mIcon;
+    // Used as a divider maker. A divider is drawn by {@link MoreKeysKeyboardView}.
+    public static class MoreKeyDivider extends Key.Spacer {
+        public MoreKeyDivider(final KeyboardParams params, final int x, final int y,
+                final int width, final int height) {
+            super(params, x, y, width, height);
         }
     }
 }
