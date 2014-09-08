@@ -213,13 +213,22 @@ public final class CapsModeUtils {
         char c = cs.charAt(--j);
 
         // We found the next interesting chunk of text ; next we need to determine if it's the
-        // end of a sentence. If we have a question mark or an exclamation mark, it's the end of
-        // a sentence. If it's neither, the only remaining case is the period so we get the opposite
-        // case out of the way.
-        if (c == Constants.CODE_QUESTION_MARK || c == Constants.CODE_EXCLAMATION_MARK) {
+        // end of a sentence. If we have a sentence terminator (typically a question mark or an
+        // exclamation mark), then it's the end of a sentence; however, we treat the abbreviation
+        // marker specially because usually is the same char as the sentence separator (the
+        // period in most languages) and in this case we need to apply a heuristic to determine
+        // in which of these senses it's used.
+        if (spacingAndPunctuations.isSentenceTerminator(c)
+                && !spacingAndPunctuations.isAbbreviationMarker(c)) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
                     | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
+        // If we reach here, we know we have whitespace before the cursor and before that there
+        // is something that either does not terminate the sentence, or a symbol preceded by the
+        // start of the text, or it's the sentence separator AND it happens to be the same code
+        // point as the abbreviation marker.
+        // If it's a symbol or something that does not terminate the sentence, then we need to
+        // return caps for MODE_CHARACTERS and MODE_WORDS, but not for MODE_SENTENCES.
         if (!spacingAndPunctuations.isSentenceSeparator(c) || j <= 0) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
         }
