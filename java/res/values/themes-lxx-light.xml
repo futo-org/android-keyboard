@@ -26,6 +26,7 @@
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LXX_Light</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LXX_Light</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LXX_Light</item>
+        <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.LXX_Light.Action</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.LXX_Light</item>
         <item name="suggestionWordStyle">@style/SuggestionWord.LXX_Light</item>
     </style>
@@ -57,6 +58,7 @@
         name="MainKeyboardView.LXX_Light"
         parent="KeyboardView.LXX_Light"
     >
+        <item name="moreKeysKeyboardForActionLayout">@layout/more_keys_keyboard_for_action_lxx</item>
         <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_lxx_light</item>
         <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
         <item name="keyPreviewShowUpAnimator">@anim/key_preview_show_up_lxx</item>
@@ -104,6 +106,14 @@
         <item name="divider">@drawable/more_keys_divider</item>
         <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
+    </style>
+    <style
+        name="MoreKeysKeyboardView.LXX_Light.Action"
+        parent="MoreKeysKeyboardView.LXX_Light"
+    >
+        <item name="android:background">@android:color/transparent</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_action_lxx_light</item>
+        <item name="divider">@null</item>
     </style>
     <style
         name="SuggestionStripView.LXX_Light"

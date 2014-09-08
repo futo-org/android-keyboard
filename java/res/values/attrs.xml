@@ -32,6 +32,8 @@
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
         <attr name="moreKeysKeyboardViewStyle" format="reference" />
+        <!-- MoreKeysKeyboardView style for action key -->
+        <attr name="moreKeysKeyboardViewForActionStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionStripViewStyle" format="reference" />
         <!-- Suggestion word style -->
@@ -119,6 +121,8 @@
         <attr name="keyPreviewDismissAnimator" format="reference" />
         <!-- Layout resource for more keys keyboard -->
         <attr name="moreKeysKeyboardLayout" format="reference" />
+        <!-- Layout resource for more keys keyboard of action key -->
+        <attr name="moreKeysKeyboardForActionLayout" format="reference" />
         <attr name="backgroundDimAlpha" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
