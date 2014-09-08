@@ -1075,12 +1075,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onComputeInsets(final InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
+        final SettingsValues settingsValues = mSettings.getCurrent();
         final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
         if (visibleKeyboardView == null || !hasSuggestionStripView()) {
             return;
         }
         final int inputHeight = mInputView.getHeight();
-        final boolean hasHardwareKeyboard = mKeyboardSwitcher.hasHardwareKeyboard();
+        final boolean hasHardwareKeyboard = settingsValues.mHasHardwareKeyboard;
         if (hasHardwareKeyboard && visibleKeyboardView.getVisibility() == View.GONE) {
             // If there is a hardware keyboard and a visible software keyboard view has been hidden,
             // no visual element will be shown on the screen.
@@ -1116,7 +1117,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onShowInputRequested(final int flags, final boolean configChange) {
-        if ((flags & InputMethod.SHOW_EXPLICIT) == 0 && mKeyboardSwitcher.hasHardwareKeyboard()) {
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        if ((flags & InputMethod.SHOW_EXPLICIT) == 0 && settingsValues.mHasHardwareKeyboard) {
             // Even when IME is implicitly shown and physical keyboard is connected, we should
             // show {@link InputView}.
             // See {@link InputMethodService#onShowInputRequested(int,boolean)}.
@@ -1127,7 +1129,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onEvaluateFullscreenMode() {
-        if (mKeyboardSwitcher.hasHardwareKeyboard()) {
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        if (settingsValues.mHasHardwareKeyboard) {
             // If there is a hardware keyboard, disable full screen mode.
             return false;
         }
