@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.android.inputmethod.latin.settings.Settings;
+
 @LargeTest
 public class InputLogicTestsNonEnglish extends InputTestsBase {
     final String NEXT_WORD_PREDICTION_OPTION = "next_word_prediction";
@@ -120,5 +122,33 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         type(STRING_TO_TYPE);
         assertEquals("auto-correct with umlaut for German", EXPECTED_RESULT,
                 mEditText.getText().toString());
+    }
+
+    // Corresponds to InputLogicTests#testDoubleSpace
+    public void testDoubleSpaceHindi() {
+        changeLanguage("hi");
+        // Set default pref just in case
+        setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
+        // U+1F607 is an emoji
+        final String[] STRINGS_TO_TYPE =
+                new String[] { "this   ", "a+  ", "\u1F607  ", "||  ", ")  ", "(  ", "%  " };
+        final String[] EXPECTED_RESULTS =
+                new String[] { "this|  ", "a+| ", "\u1F607| ", "||  ", ")| ", "(  ", "%| " };
+        for (int i = 0; i < STRINGS_TO_TYPE.length; ++i) {
+            mEditText.setText("");
+            type(STRINGS_TO_TYPE[i]);
+            assertEquals("double space processing", EXPECTED_RESULTS[i],
+                    mEditText.getText().toString());
+        }
+    }
+
+    // Corresponds to InputLogicTests#testCancelDoubleSpace
+    public void testCancelDoubleSpaceHindi() {
+        changeLanguage("hi");
+        final String STRING_TO_TYPE = "this  ";
+        final String EXPECTED_RESULT = "this ";
+        type(STRING_TO_TYPE);
+        type(Constants.CODE_DELETE);
+        assertEquals("double space make a period", EXPECTED_RESULT, mEditText.getText().toString());
     }
 }
