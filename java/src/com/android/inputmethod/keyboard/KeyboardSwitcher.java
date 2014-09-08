@@ -38,6 +38,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
@@ -60,7 +61,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private KeyboardLayoutSet mKeyboardLayoutSet;
     // TODO: The following {@link KeyboardTextsSet} should be in {@link KeyboardLayoutSet}.
     private final KeyboardTextsSet mKeyboardTextsSet = new KeyboardTextsSet();
-    private SettingsValues mCurrentSettingsValues;
 
     private KeyboardTheme mKeyboardTheme;
     private Context mThemeContext;
@@ -120,7 +120,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         builder.setVoiceInputKeyEnabled(settingsValues.mShowsVoiceInputKey);
         builder.setLanguageSwitchKeyEnabled(mLatinIME.shouldShowLanguageSwitchKey());
         mKeyboardLayoutSet = builder.build();
-        mCurrentSettingsValues = settingsValues;
         try {
             mState.onLoadKeyboard(currentAutoCapsState, currentRecapitalizeState);
             mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale(), mThemeContext);
@@ -144,22 +143,24 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private void setKeyboard(final Keyboard keyboard) {
         // Make {@link MainKeyboardView} visible and hide {@link EmojiPalettesView}.
-        setMainKeyboardFrame();
+        final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
+        setMainKeyboardFrame(currentSettingsValues);
+        // TODO: pass this object to setKeyboard instead of getting the current values.
         final MainKeyboardView keyboardView = mKeyboardView;
         final Keyboard oldKeyboard = keyboardView.getKeyboard();
         keyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardTopPadding(keyboard.mTopPadding);
         keyboardView.setKeyPreviewPopupEnabled(
-                mCurrentSettingsValues.mKeyPreviewPopupOn,
-                mCurrentSettingsValues.mKeyPreviewPopupDismissDelay);
+                currentSettingsValues.mKeyPreviewPopupOn,
+                currentSettingsValues.mKeyPreviewPopupDismissDelay);
         keyboardView.setKeyPreviewAnimationParams(
-                mCurrentSettingsValues.mHasCustomKeyPreviewAnimationParams,
-                mCurrentSettingsValues.mKeyPreviewShowUpStartXScale,
-                mCurrentSettingsValues.mKeyPreviewShowUpStartYScale,
-                mCurrentSettingsValues.mKeyPreviewShowUpDuration,
-                mCurrentSettingsValues.mKeyPreviewDismissEndXScale,
-                mCurrentSettingsValues.mKeyPreviewDismissEndYScale,
-                mCurrentSettingsValues.mKeyPreviewDismissDuration);
+                currentSettingsValues.mHasCustomKeyPreviewAnimationParams,
+                currentSettingsValues.mKeyPreviewShowUpStartXScale,
+                currentSettingsValues.mKeyPreviewShowUpStartYScale,
+                currentSettingsValues.mKeyPreviewShowUpDuration,
+                currentSettingsValues.mKeyPreviewDismissEndXScale,
+                currentSettingsValues.mKeyPreviewDismissEndYScale,
+                currentSettingsValues.mKeyPreviewDismissDuration);
         keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
@@ -236,20 +237,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS));
     }
 
-    private void setMainKeyboardFrame() {
-        mMainKeyboardFrame.setVisibility(hasHardwareKeyboard() ? View.GONE : View.VISIBLE);
+    private void setMainKeyboardFrame(final SettingsValues settingsValues) {
+        mMainKeyboardFrame.setVisibility(
+                settingsValues.mHasHardwareKeyboard ? View.GONE : View.VISIBLE);
         mEmojiPalettesView.setVisibility(View.GONE);
         mEmojiPalettesView.stopEmojiPalettes();
-    }
-
-    // TODO: Move this boolean to a member of {@link SettingsValues} and reset it
-    // at {@link LatinIME#onConfigurationChanged(Configuration)}.
-    public boolean hasHardwareKeyboard() {
-        // Copied from {@link InputMethodServce#onEvaluateInputViewShown()}.
-        final Configuration config = mLatinIME.getResources().getConfiguration();
-        final boolean noHardwareKeyboard = config.keyboard == Configuration.KEYBOARD_NOKEYS
-                || config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES;
-        return !noHardwareKeyboard;
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
