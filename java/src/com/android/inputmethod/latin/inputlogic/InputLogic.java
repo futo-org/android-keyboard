@@ -60,6 +60,7 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
+import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
@@ -361,6 +362,8 @@ public final class InputLogic {
         if (shouldShowAddToDictionaryIndicator) {
             mTextDecorator.showAddToDictionaryIndicator(suggestionInfo);
         }
+
+        StatsUtils.onPickSuggestionManually(mSuggestedWords, suggestionInfo);
         return inputTransaction;
     }
 
