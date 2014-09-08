@@ -82,8 +82,10 @@ public final class SpacingAndPunctuations {
         mSortedSymbolsClusteringTogether = model.mSortedSymbolsClusteringTogether;
         mSortedWordConnectors = model.mSortedWordConnectors;
         mSortedWordSeparators = overrideSortedWordSeparators;
+        mSortedSentenceTerminators = model.mSortedSentenceTerminators;
         mSuggestPuncList = model.mSuggestPuncList;
         mSentenceSeparator = model.mSentenceSeparator;
+        mAbbreviationMarker = model.mAbbreviationMarker;
         mSentenceSeparatorAndSpace = model.mSentenceSeparatorAndSpace;
         mCurrentLanguageHasSpaces = model.mCurrentLanguageHasSpaces;
         mUsesAmericanTypography = model.mUsesAmericanTypography;
