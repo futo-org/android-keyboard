@@ -88,6 +88,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_keyPreviewShowUpAnimator
  * @attr ref R.styleable#MainKeyboardView_keyPreviewDismissAnimator
  * @attr ref R.styleable#MainKeyboardView_moreKeysKeyboardLayout
+ * @attr ref R.styleable#MainKeyboardView_moreKeysKeyboardForActionLayout
  * @attr ref R.styleable#MainKeyboardView_backgroundDimAlpha
  * @attr ref R.styleable#MainKeyboardView_showMoreKeysKeyboardAtTouchPoint
  * @attr ref R.styleable#MainKeyboardView_gestureFloatingPreviewTextLingerTimeout
@@ -147,6 +148,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final Paint mBackgroundDimAlphaPaint = new Paint();
     private boolean mNeedsToDimEntireKeyboard;
     private final View mMoreKeysKeyboardContainer;
+    private final View mMoreKeysKeyboardForActionContainer;
     private final WeakHashMap<Key, Keyboard> mMoreKeysKeyboardCache = new WeakHashMap<>();
     private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
     // More keys panel (used by both more keys keyboard and more suggestions view)
@@ -231,6 +233,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         final int moreKeysKeyboardLayoutId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
+        final int moreKeysKeyboardForActionLayoutId = mainKeyboardViewAttr.getResourceId(
+                R.styleable.MainKeyboardView_moreKeysKeyboardForActionLayout,
+                moreKeysKeyboardLayoutId);
         mConfigShowMoreKeysKeyboardAtTouchedPoint = mainKeyboardViewAttr.getBoolean(
                 R.styleable.MainKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
 
@@ -248,8 +253,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mSlidingKeyInputDrawingPreview.setDrawingView(mDrawingPreviewPlacerView);
         mainKeyboardViewAttr.recycle();
 
-        mMoreKeysKeyboardContainer = LayoutInflater.from(getContext())
-                .inflate(moreKeysKeyboardLayoutId, null);
+        final LayoutInflater inflater = LayoutInflater.from(getContext());
+        mMoreKeysKeyboardContainer = inflater.inflate(moreKeysKeyboardLayoutId, null);
+        mMoreKeysKeyboardForActionContainer = inflater.inflate(
+                moreKeysKeyboardForActionLayoutId, null);
         mLanguageOnSpacebarFadeoutAnimator = loadObjectAnimator(
                 languageOnSpacebarFadeoutAnimatorResId, this);
         mAltCodeKeyWhileTypingFadeoutAnimator = loadObjectAnimator(
@@ -581,7 +588,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             mMoreKeysKeyboardCache.put(key, moreKeysKeyboard);
         }
 
-        final View container = mMoreKeysKeyboardContainer;
+        final View container = key.isActionKey() ? mMoreKeysKeyboardForActionContainer
+                : mMoreKeysKeyboardContainer;
         final MoreKeysKeyboardView moreKeysKeyboardView =
                 (MoreKeysKeyboardView)container.findViewById(R.id.more_keys_keyboard_view);
         moreKeysKeyboardView.setKeyboard(moreKeysKeyboard);

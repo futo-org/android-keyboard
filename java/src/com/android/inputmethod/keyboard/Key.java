@@ -547,6 +547,10 @@ public class Key implements Comparable<Key> {
         return this instanceof Spacer;
     }
 
+    public final boolean isActionKey() {
+        return mBackgroundType == BACKGROUND_TYPE_ACTION;
+    }
+
     public final boolean isShift() {
         return mCode == CODE_SHIFT;
     }
