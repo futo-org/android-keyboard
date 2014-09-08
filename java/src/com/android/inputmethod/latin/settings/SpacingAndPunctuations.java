@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.res.Resources;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.PunctuationSuggestions;
@@ -71,6 +72,22 @@ public final class SpacingAndPunctuations {
         final String[] suggestPuncsSpec = MoreKeySpec.splitKeySpecs(
                 res.getString(R.string.suggested_punctuations));
         mSuggestPuncList = PunctuationSuggestions.newPunctuationSuggestions(suggestPuncsSpec);
+    }
+
+    @UsedForTesting
+    public SpacingAndPunctuations(final SpacingAndPunctuations model,
+            final int[] overrideSortedWordSeparators) {
+        mSortedSymbolsPrecededBySpace = model.mSortedSymbolsPrecededBySpace;
+        mSortedSymbolsFollowedBySpace = model.mSortedSymbolsFollowedBySpace;
+        mSortedSymbolsClusteringTogether = model.mSortedSymbolsClusteringTogether;
+        mSortedWordConnectors = model.mSortedWordConnectors;
+        mSortedWordSeparators = overrideSortedWordSeparators;
+        mSuggestPuncList = model.mSuggestPuncList;
+        mSentenceSeparator = model.mSentenceSeparator;
+        mSentenceSeparatorAndSpace = model.mSentenceSeparatorAndSpace;
+        mCurrentLanguageHasSpaces = model.mCurrentLanguageHasSpaces;
+        mUsesAmericanTypography = model.mUsesAmericanTypography;
+        mUsesGermanRules = model.mUsesGermanRules;
     }
 
     public boolean isWordSeparator(final int code) {
