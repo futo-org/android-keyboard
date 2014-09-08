@@ -142,6 +142,15 @@ public class SuggestedWords {
         return mSuggestedWordInfoList.get(index);
     }
 
+    /**
+     * Gets the suggestion index from the suggestions list.
+     * @param suggestedWordInfo The {@link SuggestedWordInfo} to find the index.
+     * @return The position of the suggestion in the suggestion list.
+     */
+    public int indexOf(SuggestedWordInfo suggestedWordInfo) {
+        return mSuggestedWordInfoList.indexOf(suggestedWordInfo);
+    }
+
     public String getDebugString(final int pos) {
         if (!DebugFlags.DEBUG_ENABLED) {
             return null;
