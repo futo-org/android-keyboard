@@ -274,8 +274,8 @@ public class TextDecorator {
             }
             final int composingTextStart = info.getComposingTextStart();
             final int lastCharRectIndex = composingTextStart + composingText.length() - 1;
-            final RectF lastCharRect = info.getCharacterRect(lastCharRectIndex);
-            final int lastCharRectFlag = info.getCharacterRectFlags(lastCharRectIndex);
+            final RectF lastCharRect = info.getCharacterBounds(lastCharRectIndex);
+            final int lastCharRectFlag = info.getCharacterBoundsFlags(lastCharRectIndex);
             final boolean hasInvisibleRegionInLastCharRect =
                     (lastCharRectFlag & CursorAnchorInfoCompatWrapper.FLAG_HAS_INVISIBLE_REGION)
                             != 0;
@@ -285,7 +285,7 @@ public class TextDecorator {
             }
             final RectF segmentStartCharRect = new RectF(lastCharRect);
             for (int i = composingText.length() - 2; i >= 0; --i) {
-                final RectF charRect = info.getCharacterRect(composingTextStart + i);
+                final RectF charRect = info.getCharacterBounds(composingTextStart + i);
                 if (charRect == null) {
                     break;
                 }
