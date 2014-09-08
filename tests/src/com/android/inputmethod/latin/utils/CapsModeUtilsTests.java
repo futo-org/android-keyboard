@@ -136,5 +136,17 @@ public class CapsModeUtilsTests extends AndroidTestCase {
         allPathsForCaps("Word; ", c | w, sp, false);
         allPathsForCaps("Word;", c | w, sp, true);
         allPathsForCaps("Word;", c, sp, false);
+        // Test for sentence terminators in Greek
+        sp = job.runInLocale(res, LocaleUtils.constructLocaleFromString("el"));
+        allPathsForCaps("Word? ", c | w | s, sp, false);
+        allPathsForCaps("Word?", c | w | s, sp, true);
+        allPathsForCaps("Word?", c, sp, false);
+        allPathsForCaps("Word! ", c | w | s, sp, false);
+        allPathsForCaps("Word!", c | w | s, sp, true);
+        allPathsForCaps("Word!", c, sp, false);
+        // In Greek ";" is the question mark and it terminates the sentence
+        allPathsForCaps("Word; ", c | w | s, sp, false);
+        allPathsForCaps("Word;", c | w | s, sp, true);
+        allPathsForCaps("Word;", c, sp, false);
     }
 }
