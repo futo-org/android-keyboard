@@ -1115,7 +1115,8 @@ public final class InputLogic {
             }
             if (SpaceState.DOUBLE == inputTransaction.mSpaceState) {
                 cancelDoubleSpacePeriodCountdown();
-                if (mConnection.revertDoubleSpacePeriod()) {
+                if (mConnection.revertDoubleSpacePeriod(
+                        inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
                     inputTransaction.setRequiresUpdateSuggestions();
@@ -1298,7 +1299,9 @@ public final class InputLogic {
         if (null == lastTwo) return false;
         final int length = lastTwo.length();
         if (length < 2) return false;
-        if (lastTwo.charAt(length - 1) != Constants.CODE_SPACE) return false;
+        if (lastTwo.charAt(length - 1) != Constants.CODE_SPACE) {
+            return false;
+        }
         // We know there is a space in pos -1, and we have at least two chars. If we have only two
         // chars, isSurrogatePairs can't return true as charAt(1) is a space, so this is fine.
         final int firstCodePoint =

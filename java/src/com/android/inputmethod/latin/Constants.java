@@ -230,7 +230,6 @@ public final class Constants {
 
     public static final String REGEXP_PERIOD = "\\.";
     public static final String STRING_SPACE = " ";
-    public static final String STRING_PERIOD_AND_SPACE = ". ";
 
     /**
      * Special keys code. Must be negative.
