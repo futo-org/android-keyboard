@@ -52,7 +52,10 @@ public final class SettingsValues {
     public final SpacingAndPunctuations mSpacingAndPunctuations;
     public final int mDelayInMillisecondsToUpdateOldSuggestions;
     public final long mDoubleSpacePeriodTimeout;
-
+    // From configuration:
+    public final Locale mLocale;
+    public final boolean mHasHardwareKeyboard;
+    public final int mDisplayOrientation;
     // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
     public final boolean mVibrateOn;
@@ -73,7 +76,6 @@ public final class SettingsValues {
     public final boolean mSlidingKeyInputPreviewEnabled;
     public final boolean mPhraseGestureEnabled;
     public final int mKeyLongpressTimeout;
-    public final Locale mLocale;
     public final boolean mEnableMetricsLogging;
     public final boolean mShouldShowUiToAcceptTypedWord;
 
@@ -88,7 +90,6 @@ public final class SettingsValues {
     public final float mAutoCorrectionThreshold;
     public final boolean mAutoCorrectionEnabledPerUserSettings;
     private final boolean mSuggestionsEnabledPerUserSettings;
-    public final int mDisplayOrientation;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
     // Setting values for additional features
@@ -152,6 +153,7 @@ public final class SettingsValues {
         mAutoCorrectEnabled = Settings.readAutoCorrectEnabled(autoCorrectionThresholdRawValue, res);
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
         mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
+        mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
         mShouldShowUiToAcceptTypedWord = Settings.HAS_UI_TO_ACCEPT_TYPED_WORD
                 && prefs.getBoolean(DebugSettings.PREF_SHOW_UI_TO_ACCEPT_TYPED_WORD, true);

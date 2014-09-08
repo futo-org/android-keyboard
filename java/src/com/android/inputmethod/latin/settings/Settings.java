@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -366,6 +367,15 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             return !isApplicationInSystemImage;
         }
         return prefs.getBoolean(PREF_SHOW_SETUP_WIZARD_ICON, false);
+    }
+
+    public static boolean readHasHardwareKeyboard(final Configuration conf) {
+        // The standard way of finding out whether we have a hardware keyboard. This code is taken
+        // from InputMethodService#onEvaluateInputShown, which canonically determines this.
+        // In a nutshell, we have a keyboard if the configuration says the type of hardware keyboard
+        // is NOKEYS and if it's not hidden (e.g. folded inside the device).
+        return conf.keyboard != Configuration.KEYBOARD_NOKEYS
+                && conf.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES;
     }
 
     public static boolean isInternal(final SharedPreferences prefs) {
