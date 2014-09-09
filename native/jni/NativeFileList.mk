@@ -131,6 +131,7 @@ LATIN_IME_CORE_TEST_FILES := \
     suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table_test.cpp \
     suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer_test.cpp \
     suggest/policyimpl/dictionary/utils/byte_array_utils_test.cpp \
+    suggest/policyimpl/dictionary/utils/format_utils_test.cpp \
     suggest/policyimpl/dictionary/utils/sparse_table_test.cpp \
     suggest/policyimpl/dictionary/utils/trie_map_test.cpp \
     suggest/policyimpl/utils/damerau_levenshtein_edit_distance_policy_test.cpp \
