@@ -87,6 +87,7 @@ public class Key implements Comparable<Key> {
     private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x20000;
     private static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x40000;
     private static final int LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR = 0x80000;
+    private static final int LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO = 0x100000;
     private static final int LABEL_FLAGS_DISABLE_HINT_LABEL = 0x40000000;
     private static final int LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS = 0x80000000;
 
@@ -695,6 +696,10 @@ public class Key implements Comparable<Key> {
 
     public final boolean needsAutoScale() {
         return (mLabelFlags & LABEL_FLAGS_AUTO_SCALE) == LABEL_FLAGS_AUTO_SCALE;
+    }
+
+    public final boolean needsToKeepBackgroundAspectRatio(final int defaultFlags) {
+        return ((mLabelFlags | defaultFlags) & LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO) != 0;
     }
 
     private final boolean isShiftedLetterActivated() {
