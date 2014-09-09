@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ഭാഷ മാറൽ കീയിൽ മറ്റ് ടൈപ്പുചെയ്യൽ രീതികളും ഉൾപ്പെടുന്നു"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ഭാഷ മാറൽ കീ"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"ഒന്നിലധികം ടൈപ്പുചെയ്യൽ ഭാഷകൾ പ്രവർത്തനക്ഷമമാക്കുമ്പോൾ കാണിക്കുക"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"സ്ലൈഡ് ഇൻഡിക്കേറ്റർ കാണിക്കുക"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Shift അല്ലെങ്കിൽ ചിഹ്ന കീകളിൽ നിന്ന് സ്ലൈഡ് ചെയ്യുമ്പോൾ ദൃശ്യ സൂചകം പ്രദർശിപ്പിക്കുക"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"കീ പോപ്പ്അപ്പ് നിരസിക്കൽ കാലതാമസം"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"കാലതാമസമില്ല"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"സ്ഥിരമായത്"</string>
@@ -112,15 +110,8 @@
     <string name="enable" msgid="5031294444630523247">"പ്രവർത്തനക്ഷമമാക്കുക"</string>
     <string name="not_now" msgid="6172462888202790482">"ഇപ്പോൾ വേണ്ട"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"സമാന ടൈപ്പുചെയ്യൽ ശൈലി ഇതിനകം നിലവിലുണ്ട്: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"കീ ദീർഘനേരം അമർത്തിപ്പിടിക്കൽ കാലതാമസം"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"കീ അമർത്തുമ്പോഴുള്ള വൈബ്രേഷൻ ദൈർഘ്യം"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"കീ അമർത്തുമ്പോഴുള്ള ശബ്‌ദ വോളിയം"</string>
-    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"കീ പ്രിവ്യൂ ആനിമേഷൻ ഇഷ്‌ടാനുസൃതമാക്കുക"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ബാഹ്യ നിഘണ്ടു ഫയൽ റീഡുചെയ്യുക"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ഡൗൺലോഡുകളുടെ ഫോൾഡറിൽ നിഘണ്ടു ഫയലുകളൊന്നുമില്ല"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ഇൻസ്‌റ്റാൾ ചെയ്യുന്നതിനായി ഒരു നിഘണ്ടു ഫയൽ തിരഞ്ഞെടുക്കുക"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> ഭാഷയ്‌ക്കായി ശരിക്കും ഈ ഫയൽ ഇൻസ്‌റ്റാൾ ചെയ്യണോ?"</string>
-    <string name="error" msgid="8940763624668513648">"ഒരു പിശകുണ്ടായി"</string>
     <string name="button_default" msgid="3988017840431881491">"സ്ഥിരമായത്"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> എന്നതിലേക്ക് സ്വാഗതം"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ജെസ്റ്റർ ടൈപ്പുചെയ്യലിനൊപ്പം"</string>
