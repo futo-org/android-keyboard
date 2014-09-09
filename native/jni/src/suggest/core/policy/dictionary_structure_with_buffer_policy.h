@@ -29,6 +29,7 @@ namespace latinime {
 class DicNode;
 class DicNodeVector;
 class DictionaryHeaderStructurePolicy;
+class MultiBigramMap;
 class NgramListener;
 class PrevWordsInfo;
 class UnigramProperty;
@@ -56,6 +57,10 @@ class DictionaryStructureWithBufferPolicy {
     virtual int getWordId(const CodePointArrayView wordCodePoints,
             const bool forceLowerCaseSearch) const = 0;
 
+    virtual int getProbabilityOfWordInContext(const int *const prevWordIds, const int wordId,
+            MultiBigramMap *const multiBigramMap) const = 0;
+
+    // TODO: Remove
     virtual int getProbability(const int unigramProbability, const int bigramProbability) const = 0;
 
     virtual int getProbabilityOfWord(const int *const prevWordIds, const int wordId) const = 0;

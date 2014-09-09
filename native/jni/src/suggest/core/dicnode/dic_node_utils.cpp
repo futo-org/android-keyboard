@@ -18,7 +18,6 @@
 
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
@@ -73,25 +72,12 @@ namespace latinime {
     if (dicNode->hasMultipleWords() && !dicNode->isValidMultipleWordSuggestion()) {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
-    const int probability = getBigramNodeProbability(dictionaryStructurePolicy, dicNode,
-            multiBigramMap);
+    const int probability = dictionaryStructurePolicy->getProbabilityOfWordInContext(
+            dicNode->getPrevWordIds(), dicNode->getWordId(), multiBigramMap);
     // TODO: This equation to calculate the improbability looks unreasonable.  Investigate this.
     const float cost = static_cast<float>(MAX_PROBABILITY - probability)
             / static_cast<float>(MAX_PROBABILITY);
     return cost;
-}
-
-/* static */ int DicNodeUtils::getBigramNodeProbability(
-        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const DicNode *const dicNode, MultiBigramMap *const multiBigramMap) {
-    const int unigramProbability = dicNode->getUnigramProbability();
-    if (multiBigramMap) {
-        const int *const prevWordIds = dicNode->getPrevWordIds();
-        return multiBigramMap->getBigramProbability(dictionaryStructurePolicy,
-                prevWordIds, dicNode->getWordId(), unigramProbability);
-    }
-    return dictionaryStructurePolicy->getProbability(unigramProbability,
-            NOT_A_PROBABILITY);
 }
 
 } // namespace latinime
