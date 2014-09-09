@@ -84,7 +84,7 @@ namespace latinime {
 /* static */ int DicNodeUtils::getBigramNodeProbability(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
         const DicNode *const dicNode, MultiBigramMap *const multiBigramMap) {
-    const int unigramProbability = dicNode->getProbability();
+    const int unigramProbability = dicNode->getUnigramProbability();
     if (multiBigramMap) {
         const int *const prevWordIds = dicNode->getPrevWordIds();
         return multiBigramMap->getBigramProbability(dictionaryStructurePolicy,

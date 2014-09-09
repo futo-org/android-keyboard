@@ -136,14 +136,14 @@ class DicNode {
     }
 
     void initAsChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
-            const int probability, const int wordId, const bool isBlacklistedOrNotAWord,
+            const int unigramProbability, const int wordId, const bool isBlacklistedOrNotAWord,
             const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
         mDicNodeProperties.init(childrenPtNodeArrayPos, mergedNodeCodePoints[0],
-                probability, wordId, isBlacklistedOrNotAWord, newDepth, newLeavingDepth,
+                unigramProbability, wordId, isBlacklistedOrNotAWord, newDepth, newLeavingDepth,
                 dicNode->mDicNodeProperties.getPrevWordIds());
         mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
                 mergedNodeCodePoints);
@@ -217,8 +217,9 @@ class DicNode {
         return mDicNodeProperties.getChildrenPtNodeArrayPos();
     }
 
-    int getProbability() const {
-        return mDicNodeProperties.getProbability();
+    // TODO: Remove
+    int getUnigramProbability() const {
+        return mDicNodeProperties.getUnigramProbability();
     }
 
     AK_FORCE_INLINE bool isTerminalDicNode() const {
