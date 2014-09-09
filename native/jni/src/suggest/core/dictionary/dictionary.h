@@ -26,6 +26,7 @@
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/suggest_interface.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -118,7 +119,7 @@ class Dictionary {
     class NgramListenerForPrediction : public NgramListener {
      public:
         NgramListenerForPrediction(const PrevWordsInfo *const prevWordsInfo,
-                SuggestionResults *const suggestionResults,
+                const WordIdArrayView prevWordIds, SuggestionResults *const suggestionResults,
                 const DictionaryStructureWithBufferPolicy *const dictStructurePolicy);
         virtual void onVisitEntry(const int ngramProbability, const int targetWordId);
 
@@ -126,6 +127,7 @@ class Dictionary {
         DISALLOW_IMPLICIT_CONSTRUCTORS(NgramListenerForPrediction);
 
         const PrevWordsInfo *const mPrevWordsInfo;
+        const WordIdArrayView mPrevWordIds;
         SuggestionResults *const mSuggestionResults;
         const DictionaryStructureWithBufferPolicy *const mDictStructurePolicy;
     };
