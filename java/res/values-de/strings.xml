@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Sprachwechseltaste umfasst auch andere Eingabemethoden."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Sprachwechsel"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Anzeigen, wenn mehrere Eingabesprachen aktiviert sind"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Ziehbewegung anzeigen"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Ziehen mit gedrückter Symboltaste oder Shift visuell darstellen"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tasten-Pop-up"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Keine Verzögerung"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>
@@ -114,15 +112,8 @@
     <string name="enable" msgid="5031294444630523247">"Aktivieren"</string>
     <string name="not_now" msgid="6172462888202790482">"Später"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Der gleiche Eingabestil ist bereits vorhanden: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Verzögerung für langes Drücken"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrationsdauer bei Tastendruck"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tonlautstärke bei Tastendruck"</string>
-    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"Vorschau-Animation anpassen"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Externe Wörterbuchdatei lesen"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Keine Wörterbuchdateien im Ordner \"Downloads\""</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Wörterbuchdatei zum Installieren auswählen"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Möchten Sie diese Datei für <xliff:g id="LANGUAGE_NAME">%s</xliff:g> installieren?"</string>
-    <string name="error" msgid="8940763624668513648">"Es ist ein Fehler aufgetreten"</string>
     <string name="button_default" msgid="3988017840431881491">"Standard"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Willkommen bei <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"mit Bewegungseingabe"</string>

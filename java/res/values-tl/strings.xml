@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Saklaw din ng key ng pagpalit ng wika ang ibang paraan ng input"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Key ng panlipat ng wika"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Ipakita kapag maraming wika ng input na pinagana"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Ipakita ang indicator ng slide"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Magpakita ng visual cue kapag nag-i-slide sa Shift o Symbol key"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Balewala antala key popup"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Walang antala"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Default"</string>
@@ -114,16 +112,8 @@
     <string name="enable" msgid="5031294444630523247">"Paganahin"</string>
     <string name="not_now" msgid="6172462888202790482">"Hindi ngayon"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Umiiral na ang parehong estilo ng input: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Key long press delay"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tagal ng vibration ng keypress"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume ng tunog ng keypress"</string>
-    <!-- no translation found for prefs_customize_key_preview_animation (4537507402140318920) -->
-    <skip />
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Magbasa ng panlabas na file ng diksyunaryo"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Walang mga file ng diksyunaryo sa folder na Mga Download"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Pumili ng file ng diksyunaryo na ii-install"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Talagang ii-install ang file na ito para sa <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
-    <string name="error" msgid="8940763624668513648">"Nagkaroon ng error"</string>
     <string name="button_default" msgid="3988017840431881491">"Default"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Maligayang pagdating sa <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"gamit ang Gesture na Pag-type"</string>

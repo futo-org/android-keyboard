@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"భాష మార్పు కీ ఇతర ఇన్‌పుట్ పద్ధతులను కూడా కవర్ చేస్తుంది"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"భాష మార్పు కీ"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"బహుళ ఇన్‌పుట్ భాషలు ప్రారంభించబడినప్పుడు చూపు"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"స్లైడ్ సూచికను చూపు"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Shift లేదా గుర్తు కీల నుండి స్లైడ్ చేసేటప్పుడు దృశ్యమాన సంకేతాన్ని ప్రదర్శించు"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"కీ పాప్‌అప్ తీసివేత ఆలస్యం"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ఆలస్యం లేదు"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"డిఫాల్ట్"</string>
@@ -114,15 +112,8 @@
     <string name="enable" msgid="5031294444630523247">"ప్రారంభించండి"</string>
     <string name="not_now" msgid="6172462888202790482">"ఇప్పుడు కాదు"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ఇదే ఇన్‌పుట్ శైలి ఇప్పటికే ఉంది: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"కీని ఎక్కువసేపు నొక్కి ఉంచాల్సిన సమయంలో ఆలస్యం"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"కీని నొక్కినప్పుడు వైబ్రేషన్ వ్యవధి"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"కీని నొక్కినప్పుడు చేసే ధ్వని వాల్యూమ్"</string>
-    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"కీ పరిదృశ్య యానిమే. అనుకూలీకరించండి"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"బాహ్య నిఘంటువు ఫైల్‌ను చదవండి"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"డౌన్‌లోడ్‌ల ఫోల్డర్‌లో నిఘంటువు ఫైల్‌లు ఏవీ లేవు"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ఇన్‌స్టాల్ చేయాల్సిన నిఘంటువు ఫైల్‌ను ఎంచుకోండి"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> కోసం ఈ ఫైల్‌ను నిజంగానే ఇన్‌స్టాల్ చేయాలా?"</string>
-    <string name="error" msgid="8940763624668513648">"లోపం ఏర్పడింది"</string>
     <string name="button_default" msgid="3988017840431881491">"డిఫాల్ట్"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>కు స్వాగతం"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"సంజ్ఞ టైపింగ్‌తో"</string>

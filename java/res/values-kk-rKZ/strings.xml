@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Тілді ауыстыру пернесі басқа енгізу әдістерін де қамтиды"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Тілді ауыстыру пернесі"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Бірнеше енгізу тілдері қосылған кезде көрсету"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Жылжыту индикаторын көрсету"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Shift немесе Таңба пернелерінен жылжыту кезіндегі көрнекі сөзкөмекті көрсету"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Перненің ашылмалы мәзірі кідірісті жояды"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Кідіріс жоқ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Әдепкі"</string>
@@ -114,15 +112,8 @@
     <string name="enable" msgid="5031294444630523247">"Қосу"</string>
     <string name="not_now" msgid="6172462888202790482">"Қазір емес"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Бірдей енгізу стилі бұрыннан бар: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Пернені ұзақ басу кідірісі"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Пернені басқан кездегі діріл ұзақтығы"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Пернені басқан кездегі дыбыс деңгейі"</string>
-    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"Перн. алдын ала қарау аним. теңшеу"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Сыртқы сөздік файлын оқу"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Жүктеп алулар қалтасында сөздік файлдары жоқ"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Орнату үшін сөздік файлын таңдау"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> үшін осы файлды орнату керек пе?"</string>
-    <string name="error" msgid="8940763624668513648">"Қате болды"</string>
     <string name="button_default" msgid="3988017840431881491">"Әдепкі"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасына қош келдіңіз"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Қимылмен теру арқылы"</string>
