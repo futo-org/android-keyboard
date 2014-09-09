@@ -66,7 +66,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getWordId(const CodePointArrayView wordCodePoints, const bool forceLowerCaseSearch) const;
 
-    int getProbabilityOfWordInContext(const int *const prevWordIds, const int wordId,
+    const WordAttributes getWordAttributesInContext(const int *const prevWordIds, const int wordId,
             MultiBigramMap *const multiBigramMap) const;
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
@@ -163,6 +163,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             DicNodeVector *const childDicNodes) const;
     int getWordIdFromTerminalPtNodePos(const int ptNodePos) const;
     int getTerminalPtNodePosFromWordId(const int wordId) const;
+    const WordAttributes getWordAttributes(const int probability,
+            const PtNodeParams &ptNodeParams) const;
 };
 } // namespace latinime
 #endif // LATINIME_PATRICIA_TRIE_POLICY_H

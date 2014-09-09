@@ -113,14 +113,19 @@ int Ver4PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
     return ptNodeParams.getTerminalId();
 }
 
-int Ver4PatriciaTriePolicy::getProbabilityOfWordInContext(const int *const prevWordIds,
-        const int wordId, MultiBigramMap *const multiBigramMap) const {
+const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
+        const int *const prevWordIds, const int wordId,
+        MultiBigramMap *const multiBigramMap) const {
     if (wordId == NOT_A_WORD_ID) {
-        return NOT_A_PROBABILITY;
+        return WordAttributes();
     }
+    const int ptNodePos =
+            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
+    const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     // TODO: Support n-gram.
-    return mBuffers->getLanguageModelDictContent()->getWordProbability(
-            WordIdArrayView::singleElementView(prevWordIds), wordId);
+    return WordAttributes(mBuffers->getLanguageModelDictContent()->getWordProbability(
+            WordIdArrayView::singleElementView(prevWordIds), wordId), ptNodeParams.isBlacklisted(),
+            ptNodeParams.isNotAWord(), ptNodeParams.getProbability() == 0);
 }
 
 int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,

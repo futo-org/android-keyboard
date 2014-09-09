@@ -22,6 +22,7 @@
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dictionary/property/word_property.h"
+#include "suggest/core/dictionary/word_attributes.h"
 #include "utils/int_array_view.h"
 
 namespace latinime {
@@ -57,8 +58,8 @@ class DictionaryStructureWithBufferPolicy {
     virtual int getWordId(const CodePointArrayView wordCodePoints,
             const bool forceLowerCaseSearch) const = 0;
 
-    virtual int getProbabilityOfWordInContext(const int *const prevWordIds, const int wordId,
-            MultiBigramMap *const multiBigramMap) const = 0;
+    virtual const WordAttributes getWordAttributesInContext(const int *const prevWordIds,
+            const int wordId, MultiBigramMap *const multiBigramMap) const = 0;
 
     // TODO: Remove
     virtual int getProbability(const int unigramProbability, const int bigramProbability) const = 0;
