@@ -31,20 +31,18 @@ class DicNodeProperties {
     AK_FORCE_INLINE DicNodeProperties()
             : mChildrenPtNodeArrayPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
               mDicNodeCodePoint(NOT_A_CODE_POINT), mWordId(NOT_A_WORD_ID),
-              mHasChildrenPtNodes(false), mIsBlacklistedOrNotAWord(false), mDepth(0),
-              mLeavingDepth(0) {}
+              mIsBlacklistedOrNotAWord(false), mDepth(0), mLeavingDepth(0) {}
 
     ~DicNodeProperties() {}
 
     // Should be called only once per DicNode is initialized.
     void init(const int childrenPos, const int nodeCodePoint, const int probability,
-            const int wordId, const bool hasChildren, const bool isBlacklistedOrNotAWord,
-            const uint16_t depth, const uint16_t leavingDepth, const int *const prevWordIds) {
+            const int wordId, const bool isBlacklistedOrNotAWord, const uint16_t depth,
+            const uint16_t leavingDepth, const int *const prevWordIds) {
         mChildrenPtNodeArrayPos = childrenPos;
         mDicNodeCodePoint = nodeCodePoint;
         mProbability = probability;
         mWordId = wordId;
-        mHasChildrenPtNodes = hasChildren;
         mIsBlacklistedOrNotAWord = isBlacklistedOrNotAWord;
         mDepth = depth;
         mLeavingDepth = leavingDepth;
@@ -57,7 +55,6 @@ class DicNodeProperties {
         mDicNodeCodePoint = NOT_A_CODE_POINT;
         mProbability = NOT_A_PROBABILITY;
         mWordId = NOT_A_WORD_ID;
-        mHasChildrenPtNodes = true;
         mIsBlacklistedOrNotAWord = false;
         mDepth = 0;
         mLeavingDepth = 0;
@@ -69,7 +66,6 @@ class DicNodeProperties {
         mDicNodeCodePoint = dicNodeProp->mDicNodeCodePoint;
         mProbability = dicNodeProp->mProbability;
         mWordId = dicNodeProp->mWordId;
-        mHasChildrenPtNodes = dicNodeProp->mHasChildrenPtNodes;
         mIsBlacklistedOrNotAWord = dicNodeProp->mIsBlacklistedOrNotAWord;
         mDepth = dicNodeProp->mDepth;
         mLeavingDepth = dicNodeProp->mLeavingDepth;
@@ -82,7 +78,6 @@ class DicNodeProperties {
         mDicNodeCodePoint = codePoint; // Overwrite the node char of a passing child
         mProbability = dicNodeProp->mProbability;
         mWordId = dicNodeProp->mWordId;
-        mHasChildrenPtNodes = dicNodeProp->mHasChildrenPtNodes;
         mIsBlacklistedOrNotAWord = dicNodeProp->mIsBlacklistedOrNotAWord;
         mDepth = dicNodeProp->mDepth + 1; // Increment the depth of a passing child
         mLeavingDepth = dicNodeProp->mLeavingDepth;
@@ -115,7 +110,7 @@ class DicNodeProperties {
     }
 
     bool hasChildren() const {
-        return mHasChildrenPtNodes || mDepth != mLeavingDepth;
+        return (mChildrenPtNodeArrayPos != NOT_A_DICT_POS) || mDepth != mLeavingDepth;
     }
 
     bool isBlacklistedOrNotAWord() const {
@@ -138,7 +133,6 @@ class DicNodeProperties {
     int mProbability;
     int mDicNodeCodePoint;
     int mWordId;
-    bool mHasChildrenPtNodes;
     bool mIsBlacklistedOrNotAWord;
     uint16_t mDepth;
     uint16_t mLeavingDepth;
