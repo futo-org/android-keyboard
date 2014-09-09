@@ -80,13 +80,27 @@
         </default>
     </switch>
     <!-- Enter key style -->
-    <key-style
-        latin:styleName="defaultEnterKeyStyle"
-        latin:keySpec="!icon/enter_key|!code/key_enter"
-        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="action"
-        latin:parentStyle="navigateMoreKeysStyle" />
+    <switch>
+        <case latin:keyboardTheme="ICS|KLP">
+            <key-style
+                latin:styleName="defaultEnterKeyStyle"
+                latin:keySpec="!icon/enter_key|!code/key_enter"
+                latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="action"
+                latin:parentStyle="navigateMoreKeysStyle" />
+        </case>
+        <!-- keyboardTheme="LXXLight|LXXDark" -->
+        <default>
+            <key-style
+                latin:styleName="defaultEnterKeyStyle"
+                latin:keySpec="!icon/enter_key|!code/key_enter"
+                latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor|keepBackgroundAspectRatio"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="action"
+                latin:parentStyle="navigateMoreKeysStyle" />
+        </default>
+    </switch>
     <include latin:keyboardLayout="@xml/key_styles_actions" />
     <switch>
         <!-- Shift + Enter in textMultiLine field. -->

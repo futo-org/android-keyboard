@@ -308,8 +308,8 @@ public final class MoreKeysKeyboard extends Keyboard {
                 dividerWidth = 0;
             }
             final MoreKeySpec[] moreKeys = key.getMoreKeys();
-            mParams.setParameters(moreKeys.length, key.getMoreKeysColumnNumber(), keyWidth, rowHeight,
-                    key.getX() + key.getWidth() / 2, keyboard.mId.mWidth,
+            mParams.setParameters(moreKeys.length, key.getMoreKeysColumnNumber(), keyWidth,
+                    rowHeight, key.getX() + key.getWidth() / 2, keyboard.mId.mWidth,
                     key.isMoreKeysFixedColumn(), key.isMoreKeysFixedOrder(), dividerWidth);
         }
 

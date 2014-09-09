@@ -338,6 +338,8 @@
             <!-- If true, use functionalTextColor instead of ketTextColor to drawing the label on
                  the key -->
             <flag name="followFunctionalTextColor" value="0x80000" />
+            <!-- Keep aspect ratio of key background. -->
+            <flag name="keepBackgroundAspectRatio" value="0x100000" />
             <!-- If true, disable keyHintLabel. -->
             <flag name="disableKeyHintLabel" value="0x40000000" />
             <!-- If true, disable additionalMoreKeys. -->
