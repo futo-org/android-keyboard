@@ -87,7 +87,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             + doubleLetterCost;
     const bool isPossiblyOffensiveWord =
             traverseSession->getDictionaryStructurePolicy()->getProbability(
-                    terminalDicNode->getProbability(), NOT_A_PROBABILITY) <= 0;
+                    terminalDicNode->getUnigramProbability(), NOT_A_PROBABILITY) <= 0;
     const bool isExactMatch =
             ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
     const bool isExactMatchWithIntentionalOmission =
