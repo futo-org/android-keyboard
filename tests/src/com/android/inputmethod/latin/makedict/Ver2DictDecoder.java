@@ -177,7 +177,8 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         if (header == null) {
             throw new IOException("Cannot read the dictionary header.");
         }
-        if (header.mFormatOptions.mVersion != FormatSpec.VERSION2) {
+        if (header.mFormatOptions.mVersion != FormatSpec.VERSION2 &&
+                header.mFormatOptions.mVersion != FormatSpec.VERSION201) {
             throw new UnsupportedFormatException("File header has a wrong version : "
                     + header.mFormatOptions.mVersion);
         }
@@ -200,19 +201,19 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         if (0 != (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS)) {
             int index = 0;
             int character = CharEncoding.readChar(mDictBuffer);
-            addressPointer += CharEncoding.getCharSize(character);
+            addressPointer += CharEncoding.getCharSize(character, null);
             while (FormatSpec.INVALID_CHARACTER != character) {
                 // FusionDictionary is making sure that the length of the word is smaller than
                 // MAX_WORD_LENGTH.
                 // So we'll never write past the end of mCharacterBuffer.
                 mCharacterBuffer[index++] = character;
                 character = CharEncoding.readChar(mDictBuffer);
-                addressPointer += CharEncoding.getCharSize(character);
+                addressPointer += CharEncoding.getCharSize(character, null);
             }
             characters = Arrays.copyOfRange(mCharacterBuffer, 0, index);
         } else {
             final int character = CharEncoding.readChar(mDictBuffer);
-            addressPointer += CharEncoding.getCharSize(character);
+            addressPointer += CharEncoding.getCharSize(character, null);
             characters = new int[] { character };
         }
         final ProbabilityInfo probabilityInfo;

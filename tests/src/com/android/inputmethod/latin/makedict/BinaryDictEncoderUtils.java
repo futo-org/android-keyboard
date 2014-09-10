@@ -61,8 +61,9 @@ public class BinaryDictEncoderUtils {
      * @param characters the character array
      * @return the size of the char array, including the terminator if any
      */
-    static int getPtNodeCharactersSize(final int[] characters) {
-        int size = CharEncoding.getCharArraySize(characters);
+    static int getPtNodeCharactersSize(final int[] characters,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+        int size = CharEncoding.getCharArraySize(characters, codePointToOneByteCodeMap);
         if (characters.length > 1) size += FormatSpec.PTNODE_TERMINATOR_SIZE;
         return size;
     }
@@ -76,8 +77,9 @@ public class BinaryDictEncoderUtils {
      * @param ptNode the PtNode
      * @return the size of the char array, including the terminator if any
      */
-    private static int getPtNodeCharactersSize(final PtNode ptNode) {
-        return getPtNodeCharactersSize(ptNode.mChars);
+    private static int getPtNodeCharactersSize(final PtNode ptNode,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+        return getPtNodeCharactersSize(ptNode.mChars, codePointToOneByteCodeMap);
     }
 
     /**
@@ -92,13 +94,14 @@ public class BinaryDictEncoderUtils {
     /**
      * Compute the size of a shortcut in bytes.
      */
-    private static int getShortcutSize(final WeightedString shortcut) {
+    private static int getShortcutSize(final WeightedString shortcut,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         int size = FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE;
         final String word = shortcut.mWord;
         final int length = word.length();
         for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
             final int codePoint = word.codePointAt(i);
-            size += CharEncoding.getCharSize(codePoint);
+            size += CharEncoding.getCharSize(codePoint, codePointToOneByteCodeMap);
         }
         size += FormatSpec.PTNODE_TERMINATOR_SIZE;
         return size;
@@ -110,11 +113,12 @@ public class BinaryDictEncoderUtils {
      * This is known in advance and does not change according to position in the file
      * like address lists do.
      */
-    static int getShortcutListSize(final ArrayList<WeightedString> shortcutList) {
+    static int getShortcutListSize(final ArrayList<WeightedString> shortcutList,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         if (null == shortcutList || shortcutList.isEmpty()) return 0;
         int size = FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
         for (final WeightedString shortcut : shortcutList) {
-            size += getShortcutSize(shortcut);
+            size += getShortcutSize(shortcut, codePointToOneByteCodeMap);
         }
         return size;
     }
@@ -125,14 +129,16 @@ public class BinaryDictEncoderUtils {
      * @param ptNode the PtNode to compute the size of.
      * @return the maximum size of the PtNode.
      */
-    private static int getPtNodeMaximumSize(final PtNode ptNode) {
-        int size = getNodeHeaderSize(ptNode);
+    private static int getPtNodeMaximumSize(final PtNode ptNode,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+        int size = getNodeHeaderSize(ptNode, codePointToOneByteCodeMap);
         if (ptNode.isTerminal()) {
             // If terminal, one byte for the frequency.
             size += FormatSpec.PTNODE_FREQUENCY_SIZE;
         }
         size += FormatSpec.PTNODE_MAX_ADDRESS_SIZE; // For children address
-        size += getShortcutListSize(ptNode.mShortcutTargets);
+        // TODO: Use codePointToOneByteCodeMap for shortcuts.
+        size += getShortcutListSize(ptNode.mShortcutTargets, null /* codePointToOneByteCodeMap */);
         if (null != ptNode.mBigrams) {
             size += (FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE
                     + FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE)
@@ -148,10 +154,11 @@ public class BinaryDictEncoderUtils {
      *
      * @param ptNodeArray the node array to compute the maximum size of.
      */
-    private static void calculatePtNodeArrayMaximumSize(final PtNodeArray ptNodeArray) {
+    private static void calculatePtNodeArrayMaximumSize(final PtNodeArray ptNodeArray,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         int size = getPtNodeCountSize(ptNodeArray);
         for (PtNode node : ptNodeArray.mData) {
-            final int nodeSize = getPtNodeMaximumSize(node);
+            final int nodeSize = getPtNodeMaximumSize(node, codePointToOneByteCodeMap);
             node.mCachedSize = nodeSize;
             size += nodeSize;
         }
@@ -163,8 +170,10 @@ public class BinaryDictEncoderUtils {
      *
      * @param ptNode the PtNode of which to compute the size of the header
      */
-    private static int getNodeHeaderSize(final PtNode ptNode) {
-        return FormatSpec.PTNODE_FLAGS_SIZE + getPtNodeCharactersSize(ptNode);
+    private static int getNodeHeaderSize(final PtNode ptNode,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+        return FormatSpec.PTNODE_FLAGS_SIZE + getPtNodeCharactersSize(ptNode,
+                codePointToOneByteCodeMap);
     }
 
     /**
@@ -367,7 +376,8 @@ public class BinaryDictEncoderUtils {
      * @return false if none of the cached addresses inside the node array changed, true otherwise.
      */
     private static boolean computeActualPtNodeArraySize(final PtNodeArray ptNodeArray,
-            final FusionDictionary dict) {
+            final FusionDictionary dict,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         boolean changed = false;
         int size = getPtNodeCountSize(ptNodeArray);
         for (PtNode ptNode : ptNodeArray.mData) {
@@ -375,7 +385,7 @@ public class BinaryDictEncoderUtils {
             if (ptNode.mCachedAddressAfterUpdate != ptNode.mCachedAddressBeforeUpdate) {
                 changed = true;
             }
-            int nodeSize = getNodeHeaderSize(ptNode);
+            int nodeSize = getNodeHeaderSize(ptNode, codePointToOneByteCodeMap);
             if (ptNode.isTerminal()) {
                 nodeSize += FormatSpec.PTNODE_FREQUENCY_SIZE;
             }
@@ -383,7 +393,9 @@ public class BinaryDictEncoderUtils {
                 nodeSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(ptNodeArray,
                         nodeSize + size, ptNode.mChildren));
             }
-            nodeSize += getShortcutListSize(ptNode.mShortcutTargets);
+            // TODO: Use codePointToOneByteCodeMap for shortcuts.
+            nodeSize += getShortcutListSize(ptNode.mShortcutTargets,
+                    null /* codePointToOneByteCodeMap */);
             if (null != ptNode.mBigrams) {
                 for (WeightedString bigram : ptNode.mBigrams) {
                     final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
@@ -454,10 +466,11 @@ public class BinaryDictEncoderUtils {
      * @return the same array it was passed. The nodes have been updated for address and size.
      */
     /* package */ static ArrayList<PtNodeArray> computeAddresses(final FusionDictionary dict,
-            final ArrayList<PtNodeArray> flatNodes) {
+            final ArrayList<PtNodeArray> flatNodes,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         // First get the worst possible sizes and offsets
         for (final PtNodeArray n : flatNodes) {
-            calculatePtNodeArrayMaximumSize(n);
+            calculatePtNodeArrayMaximumSize(n, codePointToOneByteCodeMap);
         }
         final int offset = initializePtNodeArraysCachedAddresses(flatNodes);
 
@@ -472,7 +485,8 @@ public class BinaryDictEncoderUtils {
             for (final PtNodeArray ptNodeArray : flatNodes) {
                 ptNodeArray.mCachedAddressAfterUpdate = ptNodeArrayStartOffset;
                 final int oldNodeArraySize = ptNodeArray.mCachedSize;
-                final boolean changed = computeActualPtNodeArraySize(ptNodeArray, dict);
+                final boolean changed = computeActualPtNodeArraySize(ptNodeArray, dict,
+                        codePointToOneByteCodeMap);
                 final int newNodeArraySize = ptNodeArray.mCachedSize;
                 if (oldNodeArraySize < newNodeArraySize) {
                     throw new RuntimeException("Increased size ?!");
@@ -686,9 +700,10 @@ public class BinaryDictEncoderUtils {
                 + (frequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY);
     }
 
-    /* package */ static final int getChildrenPosition(final PtNode ptNode) {
+    /* package */ static final int getChildrenPosition(final PtNode ptNode,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         int positionOfChildrenPosField = ptNode.mCachedAddressAfterUpdate
-                + getNodeHeaderSize(ptNode);
+                + getNodeHeaderSize(ptNode, codePointToOneByteCodeMap);
         if (ptNode.isTerminal()) {
             // A terminal node has the frequency.
             // If positionOfChildrenPosField is incorrect, we may crash when jumping to the children
@@ -705,10 +720,12 @@ public class BinaryDictEncoderUtils {
      * @param dict the dictionary the node array is a part of (for relative offsets).
      * @param dictEncoder the dictionary encoder.
      * @param ptNodeArray the node array to write.
+     * @param codePointToOneByteCodeMap the map to convert the code points.
      */
     @SuppressWarnings("unused")
     /* package */ static void writePlacedPtNodeArray(final FusionDictionary dict,
-            final DictEncoder dictEncoder, final PtNodeArray ptNodeArray) {
+            final DictEncoder dictEncoder, final PtNodeArray ptNodeArray,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         // TODO: Make the code in common with BinaryDictIOUtils#writePtNode
         dictEncoder.setPosition(ptNodeArray.mCachedAddressAfterUpdate);
 
@@ -727,7 +744,7 @@ public class BinaryDictEncoderUtils {
                         + FormatSpec.MAX_TERMINAL_FREQUENCY
                         + " : " + ptNode.mProbabilityInfo.toString());
             }
-            dictEncoder.writePtNode(ptNode, dict);
+            dictEncoder.writePtNode(ptNode, dict, codePointToOneByteCodeMap);
         }
         if (dictEncoder.getPosition() != ptNodeArray.mCachedAddressAfterUpdate
                 + ptNodeArray.mCachedSize) {
@@ -834,12 +851,16 @@ public class BinaryDictEncoderUtils {
         // Write out the options.
         for (final String key : dict.mOptions.mAttributes.keySet()) {
             final String value = dict.mOptions.mAttributes.get(key);
-            CharEncoding.writeString(headerBuffer, key);
-            CharEncoding.writeString(headerBuffer, value);
+            CharEncoding.writeString(headerBuffer, key, null);
+            CharEncoding.writeString(headerBuffer, value, null);
         }
-
-        // TODO: Write out the code point table.
-
+        // Write out the codePointTable if there is codePointOccurrenceArray.
+        if (codePointOccurrenceArray != null) {
+            final String codePointTableString =
+                    encodeCodePointTable(codePointOccurrenceArray);
+            CharEncoding.writeString(headerBuffer, DictionaryHeader.CODE_POINT_TABLE_KEY, null);
+            CharEncoding.writeString(headerBuffer, codePointTableString, null);
+        }
         final int size = headerBuffer.size();
         final byte[] bytes = headerBuffer.toByteArray();
         // Write out the header size.
@@ -857,10 +878,30 @@ public class BinaryDictEncoderUtils {
         final HashMap<Integer, Integer> mCodePointToOneByteCodeMap;
         final ArrayList<Entry<Integer, Integer>> mCodePointOccurrenceArray;
 
+        // Let code point table empty for version 200 dictionary which used in test
+        CodePointTable() {
+            mCodePointToOneByteCodeMap = null;
+            mCodePointOccurrenceArray = null;
+        }
+
         CodePointTable(final HashMap<Integer, Integer> codePointToOneByteCodeMap,
                 final ArrayList<Entry<Integer, Integer>> codePointOccurrenceArray) {
             mCodePointToOneByteCodeMap = codePointToOneByteCodeMap;
             mCodePointOccurrenceArray = codePointOccurrenceArray;
         }
+    }
+
+    private static String encodeCodePointTable(
+            final ArrayList<Entry<Integer, Integer>> codePointOccurrenceArray) {
+        final StringBuilder codePointTableString = new StringBuilder();
+        int currentCodePointTableIndex = FormatSpec.MINIMAL_ONE_BYTE_CHARACTER_VALUE;
+        for (final Entry<Integer, Integer> entry : codePointOccurrenceArray) {
+            // Native reads the table as a string
+            codePointTableString.appendCodePoint(entry.getKey());
+            if (FormatSpec.MAXIMAL_ONE_BYTE_CHARACTER_VALUE < ++currentCodePointTableIndex) {
+                break;
+            }
+        }
+        return codePointTableString.toString();
     }
 }

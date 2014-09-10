@@ -21,6 +21,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * An interface of binary dictionary encoder.
@@ -33,5 +34,6 @@ public interface DictEncoder {
     public void setPosition(final int position);
     public int getPosition();
     public void writePtNodeCount(final int ptNodeCount);
-    public void writePtNode(final PtNode ptNode, final FusionDictionary dict);
+    public void writePtNode(final PtNode ptNode, final FusionDictionary dict,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap);
 }

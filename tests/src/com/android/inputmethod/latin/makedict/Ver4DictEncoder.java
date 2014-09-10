@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * An implementation of DictEncoder for version 4 binary dictionary.
@@ -141,6 +142,7 @@ public class Ver4DictEncoder implements DictEncoder {
     }
 
     @Override
-    public void writePtNode(PtNode ptNode, FusionDictionary dict) {
+    public void writePtNode(PtNode ptNode, FusionDictionary dict,
+            HashMap<Integer, Integer> codePointToOneByteCodeMap) {
     }
 }
