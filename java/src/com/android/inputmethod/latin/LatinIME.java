@@ -743,6 +743,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public View onCreateInputView() {
+        StatsUtils.onCreateInputView();
         return mKeyboardSwitcher.onCreateInputView(mIsHardwareAcceleratedDrawingEnabled);
     }
 
@@ -775,6 +776,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onFinishInputView(final boolean finishingInput) {
+        StatsUtils.onFinishInputView();
         mHandler.onFinishInputView(finishingInput);
     }
 
@@ -852,6 +854,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final boolean inputTypeChanged = !currentSettingsValues.isSameInputType(editorInfo);
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
+
+        StatsUtils.onStartInputView(editorInfo.inputType,
+                Settings.getInstance().getCurrent().mDisplayOrientation,
+                !isDifferentTextField);
+
         if (isDifferentTextField) {
             mSubtypeSwitcher.updateParametersOnStartInputView();
         }
