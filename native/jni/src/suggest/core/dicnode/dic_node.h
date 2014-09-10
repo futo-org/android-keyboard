@@ -26,6 +26,7 @@
 #include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "utils/char_utils.h"
+#include "utils/int_array_view.h"
 
 #if DEBUG_DICT
 #define LOGI_SHOW_ADD_COST_PROP \
@@ -136,17 +137,17 @@ class DicNode {
     }
 
     void initAsChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
-            const int unigramProbability, const int wordId, const uint16_t mergedNodeCodePointCount,
-            const int *const mergedNodeCodePoints) {
+            const int unigramProbability, const int wordId,
+            const CodePointArrayView mergedCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
-                dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
-        mDicNodeProperties.init(childrenPtNodeArrayPos, mergedNodeCodePoints[0],
+                dicNode->mDicNodeProperties.getLeavingDepth() + mergedCodePoints.size());
+        mDicNodeProperties.init(childrenPtNodeArrayPos, mergedCodePoints[0],
                 unigramProbability, wordId, newDepth, newLeavingDepth,
                 dicNode->mDicNodeProperties.getPrevWordIds());
-        mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
-                mergedNodeCodePoints);
+        mDicNodeState.init(&dicNode->mDicNodeState, mergedCodePoints.size(),
+                mergedCodePoints.data());
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
