@@ -52,7 +52,7 @@ TEST(IntArrayViewTest, TestConstructFromArray) {
 
 TEST(IntArrayViewTest, TestConstructFromObject) {
     const int object = 10;
-    const auto intArrayView = IntArrayView::fromObject(&object);
+    const auto intArrayView = IntArrayView::singleElementView(&object);
     EXPECT_EQ(1u, intArrayView.size());
     EXPECT_EQ(object, intArrayView[0]);
 }

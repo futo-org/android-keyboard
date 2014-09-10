@@ -26,28 +26,28 @@ namespace latinime {
 namespace {
 
 TEST(LanguageModelDictContentTest, TestUnigramProbability) {
-    LanguageModelDictContent LanguageModelDictContent(false /* useHistoricalInfo */);
+    LanguageModelDictContent languageModelDictContent(false /* useHistoricalInfo */);
 
     const int flag = 0xFF;
     const int probability = 10;
     const int wordId = 100;
     const ProbabilityEntry probabilityEntry(flag, probability);
-    LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
+    languageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
     const ProbabilityEntry entry =
-            LanguageModelDictContent.getProbabilityEntry(wordId);
+            languageModelDictContent.getProbabilityEntry(wordId);
     EXPECT_EQ(flag, entry.getFlags());
     EXPECT_EQ(probability, entry.getProbability());
 
     // Remove
-    EXPECT_TRUE(LanguageModelDictContent.removeProbabilityEntry(wordId));
-    EXPECT_FALSE(LanguageModelDictContent.getProbabilityEntry(wordId).isValid());
-    EXPECT_FALSE(LanguageModelDictContent.removeProbabilityEntry(wordId));
-    EXPECT_TRUE(LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry));
-    EXPECT_TRUE(LanguageModelDictContent.getProbabilityEntry(wordId).isValid());
+    EXPECT_TRUE(languageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_FALSE(languageModelDictContent.getProbabilityEntry(wordId).isValid());
+    EXPECT_FALSE(languageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_TRUE(languageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry));
+    EXPECT_TRUE(languageModelDictContent.getProbabilityEntry(wordId).isValid());
 }
 
 TEST(LanguageModelDictContentTest, TestUnigramProbabilityWithHistoricalInfo) {
-    LanguageModelDictContent LanguageModelDictContent(true /* useHistoricalInfo */);
+    LanguageModelDictContent languageModelDictContent(true /* useHistoricalInfo */);
 
     const int flag = 0xF0;
     const int timestamp = 0x3FFFFFFF;
@@ -56,19 +56,19 @@ TEST(LanguageModelDictContentTest, TestUnigramProbabilityWithHistoricalInfo) {
     const int wordId = 100;
     const HistoricalInfo historicalInfo(timestamp, level, count);
     const ProbabilityEntry probabilityEntry(flag, &historicalInfo);
-    LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
-    const ProbabilityEntry entry = LanguageModelDictContent.getProbabilityEntry(wordId);
+    languageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
+    const ProbabilityEntry entry = languageModelDictContent.getProbabilityEntry(wordId);
     EXPECT_EQ(flag, entry.getFlags());
     EXPECT_EQ(timestamp, entry.getHistoricalInfo()->getTimeStamp());
     EXPECT_EQ(level, entry.getHistoricalInfo()->getLevel());
     EXPECT_EQ(count, entry.getHistoricalInfo()->getCount());
 
     // Remove
-    EXPECT_TRUE(LanguageModelDictContent.removeProbabilityEntry(wordId));
-    EXPECT_FALSE(LanguageModelDictContent.getProbabilityEntry(wordId).isValid());
-    EXPECT_FALSE(LanguageModelDictContent.removeProbabilityEntry(wordId));
-    EXPECT_TRUE(LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry));
-    EXPECT_TRUE(LanguageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_TRUE(languageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_FALSE(languageModelDictContent.getProbabilityEntry(wordId).isValid());
+    EXPECT_FALSE(languageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_TRUE(languageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry));
+    EXPECT_TRUE(languageModelDictContent.removeProbabilityEntry(wordId));
 }
 
 TEST(LanguageModelDictContentTest, TestIterateProbabilityEntry) {
@@ -87,6 +87,32 @@ TEST(LanguageModelDictContentTest, TestIterateProbabilityEntry) {
         wordIdSet.erase(entry.getWordId());
     }
     EXPECT_TRUE(wordIdSet.empty());
+}
+
+TEST(LanguageModelDictContentTest, TestGetWordProbability) {
+    LanguageModelDictContent languageModelDictContent(false /* useHistoricalInfo */);
+
+    const int flag = 0xFF;
+    const int probability = 10;
+    const int bigramProbability = 20;
+    const int trigramProbability = 30;
+    const int wordId = 100;
+    const int prevWordIdArray[] = { 1, 2 };
+    const WordIdArrayView prevWordIds = WordIdArrayView::fromFixedSizeArray(prevWordIdArray);
+
+    const ProbabilityEntry probabilityEntry(flag, probability);
+    languageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
+    const ProbabilityEntry bigramProbabilityEntry(flag, bigramProbability);
+    languageModelDictContent.setProbabilityEntry(prevWordIds[0], &probabilityEntry);
+    languageModelDictContent.setNgramProbabilityEntry(prevWordIds.limit(1), wordId,
+            &bigramProbabilityEntry);
+    EXPECT_EQ(bigramProbability, languageModelDictContent.getWordProbability(prevWordIds, wordId));
+    const ProbabilityEntry trigramProbabilityEntry(flag, trigramProbability);
+    languageModelDictContent.setNgramProbabilityEntry(prevWordIds.limit(1),
+            prevWordIds[1], &probabilityEntry);
+    languageModelDictContent.setNgramProbabilityEntry(prevWordIds.limit(2), wordId,
+            &trigramProbabilityEntry);
+    EXPECT_EQ(trigramProbability, languageModelDictContent.getWordProbability(prevWordIds, wordId));
 }
 
 }  // namespace

@@ -61,9 +61,9 @@ class IntArrayView {
         return IntArrayView(array, N);
     }
 
-    // Returns a view that points one int object. Does not take ownership of the given object.
-    AK_FORCE_INLINE static IntArrayView fromObject(const int *const object) {
-        return IntArrayView(object, 1);
+    // Returns a view that points one int object.
+    AK_FORCE_INLINE static IntArrayView singleElementView(const int *const ptr) {
+        return IntArrayView(ptr, 1);
     }
 
     AK_FORCE_INLINE int operator[](const size_t index) const {
