@@ -614,9 +614,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void refreshPersonalizationDictionarySession(
             final SettingsValues currentSettingsValues) {
-        mPersonalizationDictionaryUpdater.onLoadSettings(
-                currentSettingsValues.mUsePersonalizedDicts,
+        mDictionaryFacilitator.setIsMonolingualUser(
                 mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
+        mPersonalizationDictionaryUpdater.onLoadSettings(
+                currentSettingsValues.mUsePersonalizedDicts);
         mContextualDictionaryUpdater.onLoadSettings(currentSettingsValues.mUsePersonalizedDicts);
         final boolean shouldKeepUserHistoryDictionaries;
         if (currentSettingsValues.mUsePersonalizedDicts) {
@@ -733,10 +734,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // actually not doing much.
                 cleanupInternalStateForFinishInput();
             }
-        }
-        // TODO: Remove this test.
-        if (!conf.locale.equals(mPersonalizationDictionaryUpdater.getLocale())) {
-            refreshPersonalizationDictionarySession(settingsValues);
         }
         super.onConfigurationChanged(conf);
     }

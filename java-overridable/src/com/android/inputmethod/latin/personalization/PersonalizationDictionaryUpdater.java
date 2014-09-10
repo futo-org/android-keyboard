@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import java.util.Locale;
-
 import android.content.Context;
 
 import com.android.inputmethod.latin.DictionaryFacilitator;
@@ -33,12 +31,7 @@ public class PersonalizationDictionaryUpdater {
         mDictionaryFacilitator = dictionaryFacilitator;
     }
 
-    public Locale getLocale() {
-        return null;
-    }
-
-    public void onLoadSettings(final boolean usePersonalizedDicts,
-            final boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes) {
+    public void onLoadSettings(final boolean usePersonalizedDicts) {
         if (!mDictCleared) {
             // Clear and never update the personalization dictionary.
             PersonalizationHelper.removeAllPersonalizationDictionaries(mContext);
