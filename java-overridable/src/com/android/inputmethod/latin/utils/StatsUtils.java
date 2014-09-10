@@ -28,6 +28,26 @@ public final class StatsUtils {
 
     public static void onPickSuggestionManually(final SuggestedWords suggestedWords,
             final SuggestedWords.SuggestedWordInfo suggestionInfo) {
+    }
 
+    public static void onBackspaceWordDelete(int wordLength) {
+    }
+
+    public static void onBackspacePressed(int lengthToDelete) {
+    }
+
+    public static void onBackspaceSelectedText(int selectedTextLength) {
+    }
+
+    public static void onDeleteMultiCharInput(int multiCharLength) {
+    }
+
+    public static void onRevertAutoCorrect() {
+    }
+
+    public static void onRevertDoubleSpacePeriod() {
+    }
+
+    public static void onRevertSwapPunctuation() {
     }
 }

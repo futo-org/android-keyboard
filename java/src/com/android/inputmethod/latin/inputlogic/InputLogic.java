@@ -1088,8 +1088,10 @@ public final class InputLogic {
                 if (!TextUtils.isEmpty(rejectedSuggestion)) {
                     mDictionaryFacilitator.removeWordFromPersonalizedDicts(rejectedSuggestion);
                 }
+                StatsUtils.onBackspaceWordDelete(rejectedSuggestion.length());
             } else {
                 mWordComposer.applyProcessedEvent(event);
+                StatsUtils.onBackspacePressed(1);
             }
             if (mWordComposer.isComposingWord()) {
                 setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
@@ -1100,6 +1102,7 @@ public final class InputLogic {
         } else {
             if (mLastComposedWord.canRevertCommit()) {
                 revertCommit(inputTransaction);
+                StatsUtils.onRevertAutoCorrect();
                 return;
             }
             if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
@@ -1107,6 +1110,7 @@ public final class InputLogic {
                 // This is triggered on backspace after a key that inputs multiple characters,
                 // like the smiley key or the .com key.
                 mConnection.deleteSurroundingText(mEnteredText.length(), 0);
+                StatsUtils.onDeleteMultiCharInput(mEnteredText.length());
                 mEnteredText = null;
                 // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
                 // In addition we know that spaceState is false, and that we should not be
@@ -1122,10 +1126,12 @@ public final class InputLogic {
                     inputTransaction.setRequiresUpdateSuggestions();
                     mWordComposer.setCapitalizedModeAtStartComposingTime(
                             WordComposer.CAPS_MODE_OFF);
+                    StatsUtils.onRevertDoubleSpacePeriod();
                     return;
                 }
             } else if (SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
                 if (mConnection.revertSwapPunctuation()) {
+                    StatsUtils.onRevertSwapPunctuation();
                     // Likewise
                     return;
                 }
@@ -1140,6 +1146,7 @@ public final class InputLogic {
                 mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
                         mConnection.getExpectedSelectionEnd());
                 mConnection.deleteSurroundingText(numCharsDeleted, 0);
+                StatsUtils.onBackspaceSelectedText(numCharsDeleted);
             } else {
                 // There is no selection, just delete one character.
                 if (Constants.NOT_A_CURSOR_POSITION == mConnection.getExpectedSelectionEnd()) {
@@ -1156,9 +1163,12 @@ public final class InputLogic {
                     // applications are relying on this behavior so we continue to support it for
                     // older apps, so we retain this behavior if the app has target SDK < JellyBean.
                     sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
+                    int totalDeletedLength = 1;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
                         sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
+                        totalDeletedLength++;
                     }
+                    StatsUtils.onBackspacePressed(totalDeletedLength);
                 } else {
                     final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
                     if (codePointBeforeCursor == Constants.NOT_A_CODE) {
@@ -1169,11 +1179,13 @@ public final class InputLogic {
                         // catch it and have their broken interface react. If you need the keyboard
                         // to do this, you're doing it wrong -- please fix your app.
                         mConnection.deleteSurroundingText(1, 0);
+                        // TODO: Add a new StatsUtils method onBackspaceWhenNoText()
                         return;
                     }
                     final int lengthToDelete =
                             Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
                     mConnection.deleteSurroundingText(lengthToDelete, 0);
+                    int totalDeletedLength = lengthToDelete;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
                         final int codePointBeforeCursorToDeleteAgain =
                                 mConnection.getCodePointBeforeCursor();
@@ -1181,8 +1193,10 @@ public final class InputLogic {
                             final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
                                     codePointBeforeCursorToDeleteAgain) ? 2 : 1;
                             mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
+                            totalDeletedLength += lengthToDeleteAgain;
                         }
                     }
+                    StatsUtils.onBackspacePressed(totalDeletedLength);
                 }
             }
             if (inputTransaction.mSettingsValues
