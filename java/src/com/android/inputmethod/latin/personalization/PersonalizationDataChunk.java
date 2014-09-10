@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class PersonalizationDataChunk {
+    public static final String LANGUAGE_UNKNOWN = "";
+
     public final boolean mInputByUser;
     public final List<String> mTokens;
     public final int mTimestampInSeconds;

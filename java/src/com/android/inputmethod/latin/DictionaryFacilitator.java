@@ -189,6 +189,10 @@ public class DictionaryFacilitator {
         mPersonalizationDictionaryFacilitator.updateEnabledSubtypes(enabledSubtypes);
     }
 
+    public void setIsMonolingualUser(final boolean isMonolingualUser) {
+        mPersonalizationDictionaryFacilitator.setIsMonolingualUser(isMonolingualUser);
+    }
+
     public Locale getLocale() {
         return mDictionaryGroup.mLocale;
     }
@@ -600,7 +604,7 @@ public class DictionaryFacilitator {
             final SpacingAndPunctuations spacingAndPunctuations,
             final AddMultipleDictionaryEntriesCallback callback) {
         mPersonalizationDictionaryFacilitator.addEntriesToPersonalizationDictionariesToUpdate(
-                personalizationDataChunk, spacingAndPunctuations, callback);
+                getLocale(), personalizationDataChunk, spacingAndPunctuations, callback);
     }
 
     public void addPhraseToContextualDictionary(final String[] phrase, final int probability,

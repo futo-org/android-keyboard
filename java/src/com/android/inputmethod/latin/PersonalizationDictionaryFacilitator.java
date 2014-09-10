@@ -44,6 +44,7 @@ public class PersonalizationDictionaryFacilitator {
     private final HashMap<String, HashSet<Locale>> mLangToLocalesMap = new HashMap<>();
     private final HashMap<Locale, ExpandableBinaryDictionary> mPersonalizationDictsToUpdate =
             new HashMap<>();
+    private boolean mIsMonolingualUser = false;;
 
     PersonalizationDictionaryFacilitator(final Context context,
             final DistracterFilter distracterFilter) {
@@ -79,6 +80,10 @@ public class PersonalizationDictionaryFacilitator {
                 mLangToLocalesMap.put(language, localeSet);
             }
         }
+    }
+
+    public void setIsMonolingualUser(final boolean isMonolingualUser) {
+        mIsMonolingualUser = isMonolingualUser;
     }
 
     /**
@@ -141,12 +146,18 @@ public class PersonalizationDictionaryFacilitator {
         personalizationDict.addMultipleDictionaryEntriesDynamically(languageModelParams, callback);
     }
 
-    public void addEntriesToPersonalizationDictionariesToUpdate(
+    public void addEntriesToPersonalizationDictionariesToUpdate(final Locale defaultLocale,
             final PersonalizationDataChunk personalizationDataChunk,
             final SpacingAndPunctuations spacingAndPunctuations,
             final AddMultipleDictionaryEntriesCallback callback) {
-        final HashSet<Locale> locales =
-                mLangToLocalesMap.get(personalizationDataChunk.mDetectedLanguage);
+        final String language = personalizationDataChunk.mDetectedLanguage;
+        final HashSet<Locale> locales;
+        if (mIsMonolingualUser && PersonalizationDataChunk.LANGUAGE_UNKNOWN.equals(language)
+                && mLangToLocalesMap.size() == 1) {
+            locales = mLangToLocalesMap.get(defaultLocale.getLanguage());
+        } else {
+            locales = mLangToLocalesMap.get(language);
+        }
         if (locales == null || locales.isEmpty()) {
             if (callback != null) {
                 callback.onFinished();
