@@ -282,25 +282,33 @@ int PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
     return getWordIdFromTerminalPtNodePos(ptNodePos);
 }
 
-int PatriciaTriePolicy::getProbabilityOfWordInContext(const int *const prevWordIds,
+const WordAttributes PatriciaTriePolicy::getWordAttributesInContext(const int *const prevWordIds,
         const int wordId, MultiBigramMap *const multiBigramMap) const {
     if (wordId == NOT_A_WORD_ID) {
-        return NOT_A_PROBABILITY;
+        return WordAttributes();
     }
     const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
     const PtNodeParams ptNodeParams =
             mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     if (multiBigramMap) {
-        return multiBigramMap->getBigramProbability(this /* structurePolicy */, prevWordIds,
-                wordId, ptNodeParams.getProbability());
+        const int probability =  multiBigramMap->getBigramProbability(this /* structurePolicy */,
+                prevWordIds, wordId, ptNodeParams.getProbability());
+        return getWordAttributes(probability, ptNodeParams);
     }
     if (prevWordIds) {
         const int bigramProbability = getProbabilityOfWord(prevWordIds, wordId);
         if (bigramProbability != NOT_A_PROBABILITY) {
-            return bigramProbability;
+            return getWordAttributes(bigramProbability, ptNodeParams);
         }
     }
-    return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
+    return getWordAttributes(getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY),
+            ptNodeParams);
+}
+
+const WordAttributes PatriciaTriePolicy::getWordAttributes(const int probability,
+        const PtNodeParams &ptNodeParams) const {
+    return WordAttributes(probability, ptNodeParams.isBlacklisted(), ptNodeParams.isNotAWord(),
+            ptNodeParams.getProbability() == 0);
 }
 
 int PatriciaTriePolicy::getProbability(const int unigramProbability,

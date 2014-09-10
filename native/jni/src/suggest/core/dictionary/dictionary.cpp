@@ -84,9 +84,10 @@ void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbabi
     if (codePointCount <= 0) {
         return;
     }
-    const int probability = mDictStructurePolicy->getProbabilityOfWordInContext(mPrevWordIds.data(),
-            targetWordId, nullptr /* multiBigramMap */);
-    mSuggestionResults->addPrediction(targetWordCodePoints, codePointCount, probability);
+    const WordAttributes wordAttributes = mDictStructurePolicy->getWordAttributesInContext(
+            mPrevWordIds.data(), targetWordId, nullptr /* multiBigramMap */);
+    mSuggestionResults->addPrediction(targetWordCodePoints, codePointCount,
+            wordAttributes.getProbability());
 }
 
 void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
