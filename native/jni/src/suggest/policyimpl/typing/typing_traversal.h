@@ -161,9 +161,8 @@ class TypingTraversal : public Traversal {
         return true;
     }
 
-    AK_FORCE_INLINE bool isGoodToTraverseNextWord(const DicNode *const dicNode) const {
-        // TODO: Quit using unigram probability and use probability in the context.
-        const int probability = dicNode->getUnigramProbability();
+    AK_FORCE_INLINE bool isGoodToTraverseNextWord(const DicNode *const dicNode,
+            const int probability) const {
         if (probability < ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY) {
             return false;
         }
