@@ -137,15 +137,13 @@ class DicNode {
     }
 
     void initAsChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
-            const int unigramProbability, const int wordId,
-            const CodePointArrayView mergedCodePoints) {
+            const int wordId, const CodePointArrayView mergedCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedCodePoints.size());
         mDicNodeProperties.init(childrenPtNodeArrayPos, mergedCodePoints[0],
-                unigramProbability, wordId, newDepth, newLeavingDepth,
-                dicNode->mDicNodeProperties.getPrevWordIds());
+                wordId, newDepth, newLeavingDepth, dicNode->mDicNodeProperties.getPrevWordIds());
         mDicNodeState.init(&dicNode->mDicNodeState, mergedCodePoints.size(),
                 mergedCodePoints.data());
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
@@ -213,11 +211,6 @@ class DicNode {
     // Used in DicNodeUtils
     int getChildrenPtNodeArrayPos() const {
         return mDicNodeProperties.getChildrenPtNodeArrayPos();
-    }
-
-    // TODO: Remove
-    int getUnigramProbability() const {
-        return mDicNodeProperties.getUnigramProbability();
     }
 
     AK_FORCE_INLINE bool isTerminalDicNode() const {

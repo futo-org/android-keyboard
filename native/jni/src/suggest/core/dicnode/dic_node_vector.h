@@ -60,12 +60,10 @@ class DicNodeVector {
     }
 
     void pushLeavingChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
-            const int unigramProbability, const int wordId,
-            const CodePointArrayView mergedCodePoints) {
+            const int wordId, const CodePointArrayView mergedCodePoints) {
         ASSERT(!mLock);
         mDicNodes.emplace_back();
-        mDicNodes.back().initAsChild(dicNode, childrenPtNodeArrayPos, unigramProbability,
-                wordId, mergedCodePoints);
+        mDicNodes.back().initAsChild(dicNode, childrenPtNodeArrayPos, wordId, mergedCodePoints);
     }
 
     DicNode *operator[](const int id) {
