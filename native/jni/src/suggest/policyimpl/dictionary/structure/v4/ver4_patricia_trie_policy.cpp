@@ -20,6 +20,7 @@
 
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/ngram_listener.h"
 #include "suggest/core/dictionary/property/bigram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
@@ -110,6 +111,28 @@ int Ver4PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
     }
     const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     return ptNodeParams.getTerminalId();
+}
+
+int Ver4PatriciaTriePolicy::getProbabilityOfWordInContext(const int *const prevWordIds,
+        const int wordId, MultiBigramMap *const multiBigramMap) const {
+    // TODO: Quit using MultiBigramMap.
+    if (wordId == NOT_A_WORD_ID) {
+        return NOT_A_PROBABILITY;
+    }
+    const int ptNodePos =
+            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
+    const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
+    if (multiBigramMap) {
+        return multiBigramMap->getBigramProbability(this /* structurePolicy */, prevWordIds,
+                wordId, ptNodeParams.getProbability());
+    }
+    if (prevWordIds) {
+        const int probability = getProbabilityOfWord(prevWordIds, wordId);
+        if (probability != NOT_A_PROBABILITY) {
+            return probability;
+        }
+    }
+    return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
 int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,

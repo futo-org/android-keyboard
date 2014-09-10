@@ -66,6 +66,9 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getWordId(const CodePointArrayView wordCodePoints, const bool forceLowerCaseSearch) const;
 
+    int getProbabilityOfWordInContext(const int *const prevWordIds, const int wordId,
+            MultiBigramMap *const multiBigramMap) const;
+
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
     int getProbabilityOfWord(const int *const prevWordIds, const int wordId) const;
