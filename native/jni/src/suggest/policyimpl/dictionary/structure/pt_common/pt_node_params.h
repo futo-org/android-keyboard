@@ -24,6 +24,7 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "utils/char_utils.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -174,11 +175,17 @@ class PtNodeParams {
         return mParentPos;
     }
 
+    AK_FORCE_INLINE const CodePointArrayView getCodePointArrayView() const {
+        return CodePointArrayView(mCodePoints, mCodePointCount);
+    }
+
+    // TODO: Remove
     // Number of code points
     AK_FORCE_INLINE uint8_t getCodePointCount() const {
         return mCodePointCount;
     }
 
+    // TODO: Remove
     AK_FORCE_INLINE const int *getCodePoints() const {
         return mCodePoints;
     }
