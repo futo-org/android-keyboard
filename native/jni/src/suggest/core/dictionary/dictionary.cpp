@@ -61,10 +61,11 @@ void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession
 }
 
 Dictionary::NgramListenerForPrediction::NgramListenerForPrediction(
-        const PrevWordsInfo *const prevWordsInfo, SuggestionResults *const suggestionResults,
+        const PrevWordsInfo *const prevWordsInfo, const WordIdArrayView prevWordIds,
+        SuggestionResults *const suggestionResults,
         const DictionaryStructureWithBufferPolicy *const dictStructurePolicy)
-    : mPrevWordsInfo(prevWordsInfo), mSuggestionResults(suggestionResults),
-      mDictStructurePolicy(dictStructurePolicy) {}
+    : mPrevWordsInfo(prevWordsInfo), mPrevWordIds(prevWordIds),
+      mSuggestionResults(suggestionResults), mDictStructurePolicy(dictStructurePolicy) {}
 
 void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbability,
         const int targetWordId) {
@@ -83,19 +84,20 @@ void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbabi
     if (codePointCount <= 0) {
         return;
     }
-    const int probability = mDictStructurePolicy->getProbability(
-            unigramProbability, ngramProbability);
+    const int probability = mDictStructurePolicy->getProbabilityOfWordInContext(mPrevWordIds.data(),
+            targetWordId, nullptr /* multiBigramMap */);
     mSuggestionResults->addPrediction(targetWordCodePoints, codePointCount, probability);
 }
 
 void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    NgramListenerForPrediction listener(prevWordsInfo, outSuggestionResults,
-            mDictionaryStructureWithBufferPolicy.get());
     int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     prevWordsInfo->getPrevWordIds(mDictionaryStructureWithBufferPolicy.get(), prevWordIds,
             true /* tryLowerCaseSearch */);
+    NgramListenerForPrediction listener(prevWordsInfo,
+            WordIdArrayView::fromFixedSizeArray(prevWordIds), outSuggestionResults,
+            mDictionaryStructureWithBufferPolicy.get());
     mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordIds, &listener);
 }
 
