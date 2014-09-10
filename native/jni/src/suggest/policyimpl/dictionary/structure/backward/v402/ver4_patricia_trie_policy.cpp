@@ -354,7 +354,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
     }
     bool addedNewBigram = false;
     const int prevWordPtNodePos = getTerminalPtNodePosFromWordId(prevWordIds[0]);
-    if (mUpdatingHelper.addNgramEntry(PtNodePosArrayView::fromObject(&prevWordPtNodePos),
+    if (mUpdatingHelper.addNgramEntry(PtNodePosArrayView::singleElementView(&prevWordPtNodePos),
             wordPos, bigramProperty, &addedNewBigram)) {
         if (addedNewBigram) {
             mBigramCount++;
@@ -396,7 +396,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     }
     const int prevWordPtNodePos = getTerminalPtNodePosFromWordId(prevWordIds[0]);
     if (mUpdatingHelper.removeNgramEntry(
-            PtNodePosArrayView::fromObject(&prevWordPtNodePos), wordPos)) {
+            PtNodePosArrayView::singleElementView(&prevWordPtNodePos), wordPos)) {
         mBigramCount--;
         return true;
     } else {
