@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.settings;
 import android.os.Bundle;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.define.ProductionFlags;
 
 
 /**
@@ -29,6 +30,10 @@ public final class AppearanceSettingsFragment extends SubScreenFragment {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_screen_appearance);
+        if (!ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED
+                || !Settings.getInstance().getCurrent().isTablet()) {
+            removePreference(Settings.PREF_ENABLE_SPLIT_KEYBOARD);
+        }
     }
 
     @Override

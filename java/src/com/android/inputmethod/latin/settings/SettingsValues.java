@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.AppWorkaroundsUtils;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
@@ -79,6 +80,9 @@ public class SettingsValues {
     public final int mKeyLongpressTimeout;
     public final boolean mEnableMetricsLogging;
     public final boolean mShouldShowUiToAcceptTypedWord;
+    // Use split layout for keyboard.
+    public final boolean mIsSplitKeyboardEnabled;
+    public final int mScreenMetrics;
 
     // From the input box
     public final InputAttributes mInputAttributes;
@@ -157,6 +161,9 @@ public class SettingsValues {
         mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
+        mIsSplitKeyboardEnabled = prefs.getBoolean(Settings.PREF_ENABLE_SPLIT_KEYBOARD, false);
+        mScreenMetrics = res.getInteger(R.integer.config_screen_metrics);
+
         mShouldShowUiToAcceptTypedWord = Settings.HAS_UI_TO_ACCEPT_TYPED_WORD
                 && prefs.getBoolean(DebugSettings.PREF_SHOW_UI_TO_ACCEPT_TYPED_WORD, true);
         // Compute other readable settings
@@ -223,6 +230,11 @@ public class SettingsValues {
 
     public boolean isMetricsLoggingEnabled() {
         return mEnableMetricsLogging;
+    }
+
+    public boolean isTablet() {
+        return mScreenMetrics == Constants.SCREEN_METRICS_SMALL_TABLET
+                || mScreenMetrics == Constants.SCREEN_METRICS_LARGE_TABLET;
     }
 
     public boolean isApplicationSpecifiedCompletionsOn() {
