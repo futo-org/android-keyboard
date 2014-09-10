@@ -61,19 +61,20 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
 }
 
 /* static */ int PtReadingUtils::getCodePointAndAdvancePosition(const uint8_t *const buffer,
-        int *const pos) {
-    return ByteArrayUtils::readCodePointAndAdvancePosition(buffer, pos);
+        const int *const codePointTable, int *const pos) {
+    return ByteArrayUtils::readCodePointAndAdvancePosition(buffer, codePointTable, pos);
 }
 
 // Returns the number of read characters.
 /* static */ int PtReadingUtils::getCharsAndAdvancePosition(const uint8_t *const buffer,
-        const NodeFlags flags, const int maxLength, int *const outBuffer, int *const pos) {
+        const NodeFlags flags, const int maxLength, const int *const codePointTable,
+        int *const outBuffer, int *const pos) {
     int length = 0;
     if (hasMultipleChars(flags)) {
-        length = ByteArrayUtils::readStringAndAdvancePosition(buffer, maxLength, outBuffer,
-                pos);
+        length = ByteArrayUtils::readStringAndAdvancePosition(buffer, maxLength, codePointTable,
+                outBuffer, pos);
     } else {
-        const int codePoint = getCodePointAndAdvancePosition(buffer, pos);
+        const int codePoint = getCodePointAndAdvancePosition(buffer, codePointTable, pos);
         if (codePoint == NOT_A_CODE_POINT) {
             // CAVEAT: codePoint == NOT_A_CODE_POINT means the code point is
             // CHARACTER_ARRAY_TERMINATOR. The code point must not be CHARACTER_ARRAY_TERMINATOR
@@ -92,12 +93,12 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
 
 // Returns the number of skipped characters.
 /* static */ int PtReadingUtils::skipCharacters(const uint8_t *const buffer, const NodeFlags flags,
-        const int maxLength, int *const pos) {
+        const int maxLength, const int *const codePointTable, int *const pos) {
     if (hasMultipleChars(flags)) {
         return ByteArrayUtils::advancePositionToBehindString(buffer, maxLength, pos);
     } else {
         if (maxLength > 0) {
-            getCodePointAndAdvancePosition(buffer, pos);
+            getCodePointAndAdvancePosition(buffer, codePointTable, pos);
             return 1;
         } else {
             return 0;
@@ -134,7 +135,7 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
 
 /* static */ void PtReadingUtils::readPtNodeInfo(const uint8_t *const dictBuf, const int ptNodePos,
         const DictionaryShortcutsStructurePolicy *const shortcutPolicy,
-        const DictionaryBigramsStructurePolicy *const bigramPolicy,
+        const DictionaryBigramsStructurePolicy *const bigramPolicy, const int *const codePointTable,
         NodeFlags *const outFlags, int *const outCodePointCount, int *const outCodePoint,
         int *const outProbability, int *const outChildrenPos, int *const outShortcutPos,
         int *const outBigramPos, int *const outSiblingPos) {
@@ -142,7 +143,7 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
     const NodeFlags flags = getFlagsAndAdvancePosition(dictBuf, &readingPos);
     *outFlags = flags;
     *outCodePointCount = getCharsAndAdvancePosition(
-            dictBuf, flags, MAX_WORD_LENGTH, outCodePoint, &readingPos);
+            dictBuf, flags, MAX_WORD_LENGTH, codePointTable, outCodePoint, &readingPos);
     *outProbability = isTerminal(flags) ?
             readProbabilityAndAdvancePosition(dictBuf, &readingPos) : NOT_A_PROBABILITY;
     *outChildrenPos = hasChildrenInFlags(flags) ?

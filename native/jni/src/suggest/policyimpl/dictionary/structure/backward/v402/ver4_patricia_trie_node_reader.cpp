@@ -23,6 +23,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_patricia_trie_node_reader.h"
 
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v402/content/probability_dict_content.h"
@@ -59,8 +60,8 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
     const int parentPos =
             DynamicPtReadingUtils::getParentPtNodePos(parentPosOffset, headPos);
     int codePoints[MAX_WORD_LENGTH];
-    const int codePonitCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
-            dictBuf, flags, MAX_WORD_LENGTH, codePoints, &pos);
+    const int codePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
+            dictBuf, flags, MAX_WORD_LENGTH, mHeaderPolicy->getCodePointTable(), codePoints, &pos);
     int terminalIdFieldPos = NOT_A_DICT_POS;
     int terminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
     int probability = NOT_A_PROBABILITY;
@@ -98,7 +99,7 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
         // The destination position is stored at the same place as the parent position.
         return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(parentPos, newSiblingNodePos);
     } else {
-        return PtNodeParams(headPos, flags, parentPos, codePonitCount, codePoints,
+        return PtNodeParams(headPos, flags, parentPos, codePointCount, codePoints,
                 terminalIdFieldPos, terminalId, probability, childrenPosFieldPos, childrenPos,
                 newSiblingNodePos);
     }

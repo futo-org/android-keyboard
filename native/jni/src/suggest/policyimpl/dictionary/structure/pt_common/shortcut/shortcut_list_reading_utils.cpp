@@ -45,7 +45,9 @@ const int ShortcutListReadingUtils::WHITELIST_SHORTCUT_PROBABILITY = 15;
 
 /* static */ int ShortcutListReadingUtils::readShortcutTarget(const ReadOnlyByteArrayView buffer,
         const int maxLength, int *const outWord, int *const pos) {
-    return ByteArrayUtils::readStringAndAdvancePosition(buffer.data(), maxLength, outWord, pos);
+    // TODO: Use codePointTable for shortcuts.
+    return ByteArrayUtils::readStringAndAdvancePosition(buffer.data(), maxLength,
+            nullptr /* codePointTable */, outWord, pos);
 }
 
 } // namespace latinime

@@ -33,8 +33,10 @@ class Ver2ParticiaTrieNodeReader : public PtNodeReader {
  public:
     Ver2ParticiaTrieNodeReader(const ReadOnlyByteArrayView buffer,
             const DictionaryBigramsStructurePolicy *const bigramPolicy,
-            const DictionaryShortcutsStructurePolicy *const shortcutPolicy)
-            : mBuffer(buffer), mBigramPolicy(bigramPolicy), mShortuctPolicy(shortcutPolicy) {}
+            const DictionaryShortcutsStructurePolicy *const shortcutPolicy,
+            const int *const codePointTable)
+            : mBuffer(buffer), mBigramPolicy(bigramPolicy), mShortuctPolicy(shortcutPolicy),
+              mCodePointTable(codePointTable) {}
 
     virtual const PtNodeParams fetchPtNodeParamsInBufferFromPtNodePos(const int ptNodePos) const;
 
@@ -44,6 +46,7 @@ class Ver2ParticiaTrieNodeReader : public PtNodeReader {
     const ReadOnlyByteArrayView mBuffer;
     const DictionaryBigramsStructurePolicy *const mBigramPolicy;
     const DictionaryShortcutsStructurePolicy *const mShortuctPolicy;
+    const int *const mCodePointTable;
 };
 } // namespace latinime
 #endif /* LATINIME_VER2_PATRICIA_TRIE_NODE_READER_H */
