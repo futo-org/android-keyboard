@@ -54,15 +54,18 @@ namespace latinime {
         current.swap(next);
     }
 
-    int maxUnigramProbability = NOT_A_PROBABILITY;
+    int maxProbability = NOT_A_PROBABILITY;
     for (const DicNode &dicNode : current) {
         if (!dicNode.isTerminalDicNode()) {
             continue;
         }
+        const WordAttributes wordAttributes =
+                dictionaryStructurePolicy->getWordAttributesInContext(dicNode.getPrevWordIds(),
+                        dicNode.getWordId(), nullptr /* multiBigramMap */);
         // dicNode can contain case errors, accent errors, intentional omissions or digraphs.
-        maxUnigramProbability = std::max(maxUnigramProbability, dicNode.getUnigramProbability());
+        maxProbability = std::max(maxProbability, wordAttributes.getProbability());
     }
-    return maxUnigramProbability;
+    return maxProbability;
 }
 
 /* static */ void DictionaryUtils::processChildDicNodes(
