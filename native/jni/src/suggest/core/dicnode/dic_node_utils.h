@@ -46,10 +46,6 @@ class DicNodeUtils {
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicNodeUtils);
     // Max number of bigrams to look up
     static const int MAX_BIGRAMS_CONSIDERED_PER_CONTEXT = 500;
-
-    static int getBigramNodeProbability(
-            const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            const DicNode *const dicNode, MultiBigramMap *const multiBigramMap);
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_UTILS_H

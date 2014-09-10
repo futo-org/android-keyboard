@@ -21,6 +21,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
+#include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/ngram_listener.h"
 #include "suggest/core/session/prev_words_info.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
@@ -279,6 +280,27 @@ int PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
         AKLOGE("Dictionary reading error in getWordId().");
     }
     return getWordIdFromTerminalPtNodePos(ptNodePos);
+}
+
+int PatriciaTriePolicy::getProbabilityOfWordInContext(const int *const prevWordIds,
+        const int wordId, MultiBigramMap *const multiBigramMap) const {
+    if (wordId == NOT_A_WORD_ID) {
+        return NOT_A_PROBABILITY;
+    }
+    const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
+    const PtNodeParams ptNodeParams =
+            mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
+    if (multiBigramMap) {
+        return multiBigramMap->getBigramProbability(this /* structurePolicy */, prevWordIds,
+                wordId, ptNodeParams.getProbability());
+    }
+    if (prevWordIds) {
+        const int bigramProbability = getProbabilityOfWord(prevWordIds, wordId);
+        if (bigramProbability != NOT_A_PROBABILITY) {
+            return bigramProbability;
+        }
+    }
+    return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
 int PatriciaTriePolicy::getProbability(const int unigramProbability,
