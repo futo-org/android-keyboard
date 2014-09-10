@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -60,11 +61,11 @@ class DicNodeVector {
 
     void pushLeavingChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
             const int unigramProbability, const int wordId,
-            const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
+            const CodePointArrayView mergedCodePoints) {
         ASSERT(!mLock);
         mDicNodes.emplace_back();
         mDicNodes.back().initAsChild(dicNode, childrenPtNodeArrayPos, unigramProbability,
-                wordId, mergedNodeCodePointCount, mergedNodeCodePoints);
+                wordId, mergedCodePoints);
     }
 
     DicNode *operator[](const int id) {
