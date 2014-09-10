@@ -29,19 +29,16 @@ namespace latinime {
 class DicNodeProperties {
  public:
     AK_FORCE_INLINE DicNodeProperties()
-            : mChildrenPtNodeArrayPos(NOT_A_DICT_POS), mUnigramProbability(NOT_A_PROBABILITY),
-              mDicNodeCodePoint(NOT_A_CODE_POINT), mWordId(NOT_A_WORD_ID), mDepth(0),
-              mLeavingDepth(0) {}
+            : mChildrenPtNodeArrayPos(NOT_A_DICT_POS), mDicNodeCodePoint(NOT_A_CODE_POINT),
+              mWordId(NOT_A_WORD_ID), mDepth(0), mLeavingDepth(0) {}
 
     ~DicNodeProperties() {}
 
     // Should be called only once per DicNode is initialized.
-    void init(const int childrenPos, const int nodeCodePoint, const int unigramProbability,
-            const int wordId, const uint16_t depth, const uint16_t leavingDepth,
-            const int *const prevWordIds) {
+    void init(const int childrenPos, const int nodeCodePoint, const int wordId,
+            const uint16_t depth, const uint16_t leavingDepth, const int *const prevWordIds) {
         mChildrenPtNodeArrayPos = childrenPos;
         mDicNodeCodePoint = nodeCodePoint;
-        mUnigramProbability = unigramProbability;
         mWordId = wordId;
         mDepth = depth;
         mLeavingDepth = leavingDepth;
@@ -52,7 +49,6 @@ class DicNodeProperties {
     void init(const int rootPtNodeArrayPos, const int *const prevWordIds) {
         mChildrenPtNodeArrayPos = rootPtNodeArrayPos;
         mDicNodeCodePoint = NOT_A_CODE_POINT;
-        mUnigramProbability = NOT_A_PROBABILITY;
         mWordId = NOT_A_WORD_ID;
         mDepth = 0;
         mLeavingDepth = 0;
@@ -62,7 +58,6 @@ class DicNodeProperties {
     void initByCopy(const DicNodeProperties *const dicNodeProp) {
         mChildrenPtNodeArrayPos = dicNodeProp->mChildrenPtNodeArrayPos;
         mDicNodeCodePoint = dicNodeProp->mDicNodeCodePoint;
-        mUnigramProbability = dicNodeProp->mUnigramProbability;
         mWordId = dicNodeProp->mWordId;
         mDepth = dicNodeProp->mDepth;
         mLeavingDepth = dicNodeProp->mLeavingDepth;
@@ -73,7 +68,6 @@ class DicNodeProperties {
     void init(const DicNodeProperties *const dicNodeProp, const int codePoint) {
         mChildrenPtNodeArrayPos = dicNodeProp->mChildrenPtNodeArrayPos;
         mDicNodeCodePoint = codePoint; // Overwrite the node char of a passing child
-        mUnigramProbability = dicNodeProp->mUnigramProbability;
         mWordId = dicNodeProp->mWordId;
         mDepth = dicNodeProp->mDepth + 1; // Increment the depth of a passing child
         mLeavingDepth = dicNodeProp->mLeavingDepth;
@@ -82,10 +76,6 @@ class DicNodeProperties {
 
     int getChildrenPtNodeArrayPos() const {
         return mChildrenPtNodeArrayPos;
-    }
-
-    int getUnigramProbability() const {
-        return mUnigramProbability;
     }
 
     int getDicNodeCodePoint() const {
@@ -122,8 +112,6 @@ class DicNodeProperties {
     // Use a default copy constructor and an assign operator because shallow copies are ok
     // for this class
     int mChildrenPtNodeArrayPos;
-    // TODO: Remove
-    int mUnigramProbability;
     int mDicNodeCodePoint;
     int mWordId;
     uint16_t mDepth;
