@@ -85,9 +85,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             scoringPolicy->getDoubleLetterDemotionDistanceCost(terminalDicNode);
     const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
             + doubleLetterCost;
-    const bool isPossiblyOffensiveWord =
-            traverseSession->getDictionaryStructurePolicy()->getProbability(
-                    terminalDicNode->getUnigramProbability(), NOT_A_PROBABILITY) <= 0;
+    const WordAttributes wordAttributes = traverseSession->getDictionaryStructurePolicy()
+            ->getWordAttributesInContext(terminalDicNode->getPrevWordIds(),
+                    terminalDicNode->getWordId(), nullptr /* multiBigramMap */);
     const bool isExactMatch =
             ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
     const bool isExactMatchWithIntentionalOmission =
@@ -97,19 +97,19 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // Heuristic: We exclude probability=0 first-char-uppercase words from exact match.
     // (e.g. "AMD" and "and")
     const bool isSafeExactMatch = isExactMatch
-            && !(isPossiblyOffensiveWord && isFirstCharUppercase);
+            && !(wordAttributes.isPossiblyOffensive() && isFirstCharUppercase);
     const int outputTypeFlags =
-            (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
+            (wordAttributes.isPossiblyOffensive() ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
             | ((isSafeExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0)
             | (isExactMatchWithIntentionalOmission ?
                     Dictionary::KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION : 0);
 
     // Entries that are blacklisted or do not represent a word should not be output.
-    const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();
+    const bool isValidWord = !(wordAttributes.isBlacklisted() || wordAttributes.isNotAWord());
     // When we have to block offensive words, non-exact matched offensive words should not be
     // output.
     const bool blockOffensiveWords = traverseSession->getSuggestOptions()->blockOffensiveWords();
-    const bool isBlockedOffensiveWord = blockOffensiveWords && isPossiblyOffensiveWord
+    const bool isBlockedOffensiveWord = blockOffensiveWords && wordAttributes.isPossiblyOffensive()
             && !isSafeExactMatch;
 
     // Increase output score of top typing suggestion to ensure autocorrection.
