@@ -408,8 +408,6 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     if (CharUtils::isInUnicodeSpace(mergedNodeCodePoints[0])) {
         const int wordId = PatriciaTrieReadingUtils::isTerminal(flags) ? ptNodePos : NOT_A_WORD_ID;
         childDicNodes->pushLeavingChild(dicNode, childrenPos, probability, wordId,
-                PatriciaTrieReadingUtils::isBlacklisted(flags)
-                        || PatriciaTrieReadingUtils::isNotAWord(flags),
                 mergedNodeCodePointCount, mergedNodeCodePoints);
     }
     return siblingPos;

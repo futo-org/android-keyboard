@@ -30,20 +30,19 @@ class DicNodeProperties {
  public:
     AK_FORCE_INLINE DicNodeProperties()
             : mChildrenPtNodeArrayPos(NOT_A_DICT_POS), mUnigramProbability(NOT_A_PROBABILITY),
-              mDicNodeCodePoint(NOT_A_CODE_POINT), mWordId(NOT_A_WORD_ID),
-              mIsBlacklistedOrNotAWord(false), mDepth(0), mLeavingDepth(0) {}
+              mDicNodeCodePoint(NOT_A_CODE_POINT), mWordId(NOT_A_WORD_ID), mDepth(0),
+              mLeavingDepth(0) {}
 
     ~DicNodeProperties() {}
 
     // Should be called only once per DicNode is initialized.
     void init(const int childrenPos, const int nodeCodePoint, const int unigramProbability,
-            const int wordId, const bool isBlacklistedOrNotAWord, const uint16_t depth,
-            const uint16_t leavingDepth, const int *const prevWordIds) {
+            const int wordId, const uint16_t depth, const uint16_t leavingDepth,
+            const int *const prevWordIds) {
         mChildrenPtNodeArrayPos = childrenPos;
         mDicNodeCodePoint = nodeCodePoint;
         mUnigramProbability = unigramProbability;
         mWordId = wordId;
-        mIsBlacklistedOrNotAWord = isBlacklistedOrNotAWord;
         mDepth = depth;
         mLeavingDepth = leavingDepth;
         memmove(mPrevWordIds, prevWordIds, sizeof(mPrevWordIds));
@@ -55,7 +54,6 @@ class DicNodeProperties {
         mDicNodeCodePoint = NOT_A_CODE_POINT;
         mUnigramProbability = NOT_A_PROBABILITY;
         mWordId = NOT_A_WORD_ID;
-        mIsBlacklistedOrNotAWord = false;
         mDepth = 0;
         mLeavingDepth = 0;
         memmove(mPrevWordIds, prevWordIds, sizeof(mPrevWordIds));
@@ -66,7 +64,6 @@ class DicNodeProperties {
         mDicNodeCodePoint = dicNodeProp->mDicNodeCodePoint;
         mUnigramProbability = dicNodeProp->mUnigramProbability;
         mWordId = dicNodeProp->mWordId;
-        mIsBlacklistedOrNotAWord = dicNodeProp->mIsBlacklistedOrNotAWord;
         mDepth = dicNodeProp->mDepth;
         mLeavingDepth = dicNodeProp->mLeavingDepth;
         memmove(mPrevWordIds, dicNodeProp->mPrevWordIds, sizeof(mPrevWordIds));
@@ -78,7 +75,6 @@ class DicNodeProperties {
         mDicNodeCodePoint = codePoint; // Overwrite the node char of a passing child
         mUnigramProbability = dicNodeProp->mUnigramProbability;
         mWordId = dicNodeProp->mWordId;
-        mIsBlacklistedOrNotAWord = dicNodeProp->mIsBlacklistedOrNotAWord;
         mDepth = dicNodeProp->mDepth + 1; // Increment the depth of a passing child
         mLeavingDepth = dicNodeProp->mLeavingDepth;
         memmove(mPrevWordIds, dicNodeProp->mPrevWordIds, sizeof(mPrevWordIds));
@@ -113,10 +109,6 @@ class DicNodeProperties {
         return (mChildrenPtNodeArrayPos != NOT_A_DICT_POS) || mDepth != mLeavingDepth;
     }
 
-    bool isBlacklistedOrNotAWord() const {
-        return mIsBlacklistedOrNotAWord;
-    }
-
     const int *getPrevWordIds() const {
         return mPrevWordIds;
     }
@@ -134,8 +126,6 @@ class DicNodeProperties {
     int mUnigramProbability;
     int mDicNodeCodePoint;
     int mWordId;
-    // TODO: Remove
-    bool mIsBlacklistedOrNotAWord;
     uint16_t mDepth;
     uint16_t mLeavingDepth;
     int mPrevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
