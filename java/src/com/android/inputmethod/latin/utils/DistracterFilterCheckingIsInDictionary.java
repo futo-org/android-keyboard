@@ -48,6 +48,12 @@ public class DistracterFilterCheckingIsInDictionary implements DistracterFilter 
     }
 
     @Override
+    public int getWordHandlingType(final PrevWordsInfo prevWordsInfo, final String testedWord,
+            final Locale locale) {
+        return mDistracterFilter.getWordHandlingType(prevWordsInfo, testedWord, locale);
+    }
+
+    @Override
     public void updateEnabledSubtypes(List<InputMethodSubtype> enabledSubtypes) {
         // Do nothing.
     }

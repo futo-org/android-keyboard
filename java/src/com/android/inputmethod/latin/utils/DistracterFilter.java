@@ -36,15 +36,49 @@ public interface DistracterFilter {
     public boolean isDistracterToWordsInDictionaries(final PrevWordsInfo prevWordsInfo,
             final String testedWord, final Locale locale);
 
+    public int getWordHandlingType(final PrevWordsInfo prevWordsInfo, final String testedWord,
+            final Locale locale);
+
     public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes);
 
     public void close();
+
+    public static final class HandlingType {
+        private final static int REQUIRE_NO_SPECIAL_HANDLINGS = 0x0;
+        private final static int SHOULD_BE_LOWER_CASED = 0x1;
+        private final static int SHOULD_BE_HANDLED_AS_OOV = 0x2;
+
+        public static int getHandlingType(final boolean shouldBeLowerCased, final boolean isOov) {
+            int wordHandlingType = HandlingType.REQUIRE_NO_SPECIAL_HANDLINGS;
+            if (shouldBeLowerCased) {
+                wordHandlingType |= HandlingType.SHOULD_BE_LOWER_CASED;
+            }
+            if (isOov) {
+                wordHandlingType |= HandlingType.SHOULD_BE_HANDLED_AS_OOV;
+            }
+            return wordHandlingType;
+        }
+
+        public static boolean shouldBeLowerCased(final int handlingType) {
+            return (handlingType & SHOULD_BE_LOWER_CASED) != 0;
+        }
+
+        public static boolean shouldBeHandledAsOov(final int handlingType) {
+            return (handlingType & SHOULD_BE_HANDLED_AS_OOV) != 0;
+        }
+    };
 
     public static final DistracterFilter EMPTY_DISTRACTER_FILTER = new DistracterFilter() {
         @Override
         public boolean isDistracterToWordsInDictionaries(PrevWordsInfo prevWordsInfo,
                 String testedWord, Locale locale) {
             return false;
+        }
+
+        @Override
+        public int getWordHandlingType(final PrevWordsInfo prevWordsInfo,
+                final String testedWord, final Locale locale) {
+            return HandlingType.REQUIRE_NO_SPECIAL_HANDLINGS;
         }
 
         @Override

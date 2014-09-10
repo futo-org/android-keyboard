@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.utils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -24,24 +24,22 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
+import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.utils.DistracterFilter.HandlingType;
 
 /**
  * Unit test for DistracterFilter
  */
 @LargeTest
 public class DistracterFilterTest extends AndroidTestCase {
-    private DictionaryFacilitatorLruCache mDictionaryFacilitatorLruCache;
     private DistracterFilterCheckingExactMatchesAndSuggestions mDistracterFilter;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         final Context context = getContext();
-        mDictionaryFacilitatorLruCache = new DictionaryFacilitatorLruCache(context,
-                2 /* maxSize */, "" /* dictionaryNamePrefix */);
-        mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context,
-                mDictionaryFacilitatorLruCache);
+        mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context);
         RichInputMethodManager.init(context);
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
         final ArrayList<InputMethodSubtype> subtypes = new ArrayList<>();
@@ -56,7 +54,7 @@ public class DistracterFilterTest extends AndroidTestCase {
 
     @Override
     protected void tearDown() {
-        mDictionaryFacilitatorLruCache.evictAll();
+        mDistracterFilter.close();
     }
 
     public void testIsDistractorToWordsInDictionaries() {
@@ -202,5 +200,26 @@ public class DistracterFilterTest extends AndroidTestCase {
         // For this test case, we consider "ÉtatsUnis" is a distracter to "États-Unis".
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeFrFr));
+    }
+
+    public void testGetWordHandlingType() {
+        final Locale localeEnUs = new Locale("en", "US");
+        final PrevWordsInfo EMPTY_PREV_WORDS_INFO = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+        int handlingType = 0;
+
+        handlingType = mDistracterFilter.getWordHandlingType(EMPTY_PREV_WORDS_INFO,
+                "this", localeEnUs);
+        assertFalse(HandlingType.shouldBeLowerCased(handlingType));
+        assertFalse(HandlingType.shouldBeHandledAsOov(handlingType));
+
+        handlingType = mDistracterFilter.getWordHandlingType(EMPTY_PREV_WORDS_INFO,
+                "This", localeEnUs);
+        assertTrue(HandlingType.shouldBeLowerCased(handlingType));
+        assertFalse(HandlingType.shouldBeHandledAsOov(handlingType));
+
+        handlingType = mDistracterFilter.getWordHandlingType(EMPTY_PREV_WORDS_INFO,
+                "thibk", localeEnUs);
+        assertFalse(HandlingType.shouldBeLowerCased(handlingType));
+        assertTrue(HandlingType.shouldBeHandledAsOov(handlingType));
     }
 }
