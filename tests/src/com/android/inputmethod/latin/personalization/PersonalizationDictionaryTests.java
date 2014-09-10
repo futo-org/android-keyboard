@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -36,6 +37,7 @@ import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
+import android.view.inputmethod.InputMethodSubtype;
 
 /**
  * Unit tests for personalization dictionary
@@ -55,16 +57,28 @@ public class PersonalizationDictionaryTests extends AndroidTestCase {
         final DictionaryFacilitator dictionaryFacilitator = new DictionaryFacilitator(getContext());
         dictionaryFacilitator.resetDictionariesForTesting(getContext(), LOCALE_EN_US, dictTypes,
                 new HashMap<String, File>(), new HashMap<String, Map<String, String>>());
+        // Set subtypes.
+        RichInputMethodManager.init(getContext());
+        final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
+        final ArrayList<InputMethodSubtype> subtypes = new ArrayList<>();
+        subtypes.add(richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                LOCALE_EN_US.toString(), "qwerty"));
+        dictionaryFacilitator.updateEnabledSubtypes(subtypes);
         return dictionaryFacilitator;
     }
 
     public void testAddManyTokens() {
         final DictionaryFacilitator dictionaryFacilitator = getDictionaryFacilitator();
         dictionaryFacilitator.clearPersonalizationDictionary();
-        final int dataChunkCount = 20;
-        final int wordCountInOneChunk = 2000;
+        final int dataChunkCount = 100;
+        final int wordCountInOneChunk = 200;
+        final int uniqueWordCount = 100;
         final Random random = new Random(System.currentTimeMillis());
         final int[] codePointSet = CodePointUtils.LATIN_ALPHABETS_LOWER;
+        final ArrayList<String> words = new ArrayList<>();
+        for (int i = 0; i < uniqueWordCount; i++) {
+            words.add(CodePointUtils.generateWord(random, codePointSet));
+        }
 
         final SpacingAndPunctuations spacingAndPunctuations =
                 new SpacingAndPunctuations(getContext().getResources());
@@ -75,7 +89,7 @@ public class PersonalizationDictionaryTests extends AndroidTestCase {
         for (int i = 0; i < dataChunkCount; i++) {
             final ArrayList<String> tokens = new ArrayList<>();
             for (int j = 0; j < wordCountInOneChunk; j++) {
-                tokens.add(CodePointUtils.generateWord(random, codePointSet));
+                tokens.add(words.get(random.nextInt(words.size())));
             }
             final PersonalizationDataChunk personalizationDataChunk = new PersonalizationDataChunk(
                     true /* inputByUser */, tokens, timeStampInSeconds, DUMMY_PACKAGE_NAME,
