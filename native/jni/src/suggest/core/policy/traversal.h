@@ -48,7 +48,8 @@ class Traversal {
     virtual int getTerminalCacheSize() const = 0;
     virtual bool isPossibleOmissionChildNode(const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode) const = 0;
-    virtual bool isGoodToTraverseNextWord(const DicNode *const dicNode) const = 0;
+    virtual bool isGoodToTraverseNextWord(const DicNode *const dicNode,
+            const int probability) const = 0;
 
  protected:
     Traversal() {}

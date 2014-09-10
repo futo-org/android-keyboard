@@ -21,6 +21,7 @@
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
+#include "suggest/core/dictionary/word_attributes.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/policy/traversal.h"
@@ -412,7 +413,11 @@ void Suggest::weightChildNode(DicTraverseSession *traverseSession, DicNode *dicN
  */
 void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode *dicNode,
         const bool spaceSubstitution) const {
-    if (!TRAVERSAL->isGoodToTraverseNextWord(dicNode)) {
+    const WordAttributes wordAttributes =
+            traverseSession->getDictionaryStructurePolicy()->getWordAttributesInContext(
+                    dicNode->getPrevWordIds(), dicNode->getWordId(),
+                    traverseSession->getMultiBigramMap());
+    if (!TRAVERSAL->isGoodToTraverseNextWord(dicNode, wordAttributes.getProbability())) {
         return;
     }
 
