@@ -74,6 +74,10 @@ namespace latinime {
     }
     const WordAttributes wordAttributes = dictionaryStructurePolicy->getWordAttributesInContext(
             dicNode->getPrevWordIds(), dicNode->getWordId(), multiBigramMap);
+    if (dicNode->hasMultipleWords()
+            && (wordAttributes.isBlacklisted() || wordAttributes.isNotAWord())) {
+        return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
+    }
     // TODO: This equation to calculate the improbability looks unreasonable.  Investigate this.
     const float cost = static_cast<float>(MAX_PROBABILITY - wordAttributes.getProbability())
             / static_cast<float>(MAX_PROBABILITY);

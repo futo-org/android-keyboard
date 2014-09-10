@@ -79,10 +79,8 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
         }
         const int wordId = isTerminal ? ptNodeParams.getHeadPos() : NOT_A_WORD_ID;
         childDicNodes->pushLeavingChild(dicNode, ptNodeParams.getChildrenPos(),
-                ptNodeParams.getProbability(), wordId,
-                ptNodeParams.isBlacklisted()
-                        || ptNodeParams.isNotAWord() /* isBlacklistedOrNotAWord */,
-                ptNodeParams.getCodePointCount(), ptNodeParams.getCodePoints());
+                ptNodeParams.getProbability(), wordId, ptNodeParams.getCodePointCount(),
+                ptNodeParams.getCodePoints());
     }
     if (readingHelper.isError()) {
         mIsCorrupted = true;

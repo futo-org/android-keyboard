@@ -136,14 +136,14 @@ class DicNode {
     }
 
     void initAsChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
-            const int unigramProbability, const int wordId, const bool isBlacklistedOrNotAWord,
-            const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
+            const int unigramProbability, const int wordId, const uint16_t mergedNodeCodePointCount,
+            const int *const mergedNodeCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
         mDicNodeProperties.init(childrenPtNodeArrayPos, mergedNodeCodePoints[0],
-                unigramProbability, wordId, isBlacklistedOrNotAWord, newDepth, newLeavingDepth,
+                unigramProbability, wordId, newDepth, newLeavingDepth,
                 dicNode->mDicNodeProperties.getPrevWordIds());
         mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
                 mergedNodeCodePoints);
@@ -178,9 +178,6 @@ class DicNode {
     // Check if the current word and the previous word can be considered as a valid multiple word
     // suggestion.
     bool isValidMultipleWordSuggestion() const {
-        if (isBlacklistedOrNotAWord()) {
-            return false;
-        }
         // Treat suggestion as invalid if the current and the previous word are single character
         // words.
         const int prevWordLen = mDicNodeState.mDicNodeStateOutput.getPrevWordsLength()
@@ -402,10 +399,6 @@ class DicNode {
 
     ErrorTypeUtils::ErrorType getContainedErrorTypes() const {
         return mDicNodeState.mDicNodeStateScoring.getContainedErrorTypes();
-    }
-
-    bool isBlacklistedOrNotAWord() const {
-        return mDicNodeProperties.isBlacklistedOrNotAWord();
     }
 
     inline uint16_t getNodeCodePointCount() const {
