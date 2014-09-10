@@ -24,6 +24,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback;
 import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.ContextualDictionary;
@@ -36,7 +37,6 @@ import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingIsInDictionary;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
-import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
 import java.io.File;
@@ -67,6 +67,7 @@ public class DictionaryFacilitator {
     // To synchronize assigning mDictionaryGroup to ensure closing dictionaries.
     private final Object mLock = new Object();
     private final DistracterFilter mDistracterFilter;
+    private final PersonalizationDictionaryFacilitator mPersonalizationDictionaryFacilitator;
 
     private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS =
             new String[] {
@@ -174,14 +175,18 @@ public class DictionaryFacilitator {
 
     public DictionaryFacilitator() {
         mDistracterFilter = DistracterFilter.EMPTY_DISTRACTER_FILTER;
+        mPersonalizationDictionaryFacilitator = null;
     }
 
     public DictionaryFacilitator(final Context context) {
         mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context);
+        mPersonalizationDictionaryFacilitator =
+                new PersonalizationDictionaryFacilitator(context, mDistracterFilter);
     }
 
     public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes) {
         mDistracterFilter.updateEnabledSubtypes(enabledSubtypes);
+        mPersonalizationDictionaryFacilitator.updateEnabledSubtypes(enabledSubtypes);
     }
 
     public Locale getLocale() {
@@ -353,6 +358,9 @@ public class DictionaryFacilitator {
             dictionaryGroup.closeDict(dictType);
         }
         mDistracterFilter.close();
+        if (mPersonalizationDictionaryFacilitator != null) {
+            mPersonalizationDictionaryFacilitator.close();
+        }
     }
 
     @UsedForTesting
@@ -372,11 +380,11 @@ public class DictionaryFacilitator {
     }
 
     public void flushPersonalizationDictionary() {
-        final ExpandableBinaryDictionary personalizationDict =
+        final ExpandableBinaryDictionary personalizationDictUsedForSuggestion =
                 mDictionaryGroup.getSubDict(Dictionary.TYPE_PERSONALIZATION);
-        if (personalizationDict != null) {
-            personalizationDict.asyncFlushBinaryDictionary();
-        }
+        mPersonalizationDictionaryFacilitator.flushPersonalizationDictionariesToUpdate(
+                personalizationDictUsedForSuggestion);
+        mDistracterFilter.close();
     }
 
     public void waitForLoadingMainDictionary(final long timeout, final TimeUnit unit)
@@ -580,6 +588,7 @@ public class DictionaryFacilitator {
     // personalization dictionary.
     public void clearPersonalizationDictionary() {
         clearSubDictionary(Dictionary.TYPE_PERSONALIZATION);
+        mPersonalizationDictionaryFacilitator.clearDictionariesToUpdate();
     }
 
     public void clearContextualDictionary() {
@@ -589,30 +598,9 @@ public class DictionaryFacilitator {
     public void addEntriesToPersonalizationDictionary(
             final PersonalizationDataChunk personalizationDataChunk,
             final SpacingAndPunctuations spacingAndPunctuations,
-            final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
-        final ExpandableBinaryDictionary personalizationDict =
-                mDictionaryGroup.getSubDict(Dictionary.TYPE_PERSONALIZATION);
-        if (personalizationDict == null) {
-            if (callback != null) {
-                callback.onFinished();
-            }
-            return;
-        }
-        // TODO: Get locale from personalizationDataChunk.mDetectedLanguage.
-        final Locale dataChunkLocale = getLocale();
-        final ArrayList<LanguageModelParam> languageModelParams =
-                LanguageModelParam.createLanguageModelParamsFrom(
-                        personalizationDataChunk.mTokens,
-                        personalizationDataChunk.mTimestampInSeconds, spacingAndPunctuations,
-                        dataChunkLocale, new DistracterFilterCheckingIsInDictionary(
-                                mDistracterFilter, personalizationDict));
-        if (languageModelParams == null || languageModelParams.isEmpty()) {
-            if (callback != null) {
-                callback.onFinished();
-            }
-            return;
-        }
-        personalizationDict.addMultipleDictionaryEntriesDynamically(languageModelParams, callback);
+            final AddMultipleDictionaryEntriesCallback callback) {
+        mPersonalizationDictionaryFacilitator.addEntriesToPersonalizationDictionariesToUpdate(
+                personalizationDataChunk, spacingAndPunctuations, callback);
     }
 
     public void addPhraseToContextualDictionary(final String[] phrase, final int probability,
