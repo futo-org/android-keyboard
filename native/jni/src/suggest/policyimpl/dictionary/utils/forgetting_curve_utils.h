@@ -48,6 +48,11 @@ class ForgettingCurveUtils {
     static bool needsToDecay(const bool mindsBlockByDecay, const int unigramCount,
             const int bigramCount, const HeaderPolicy *const headerPolicy);
 
+    // TODO: Improve probability computation method and remove this.
+    static int getProbabilityBiasForNgram(const int n) {
+        return (n - 1) * MULTIPLIER_TWO_IN_PROBABILITY_SCALE;
+    }
+
     AK_FORCE_INLINE static int getUnigramCountHardLimit(const int maxUnigramCount) {
         return static_cast<int>(static_cast<float>(maxUnigramCount)
                 * UNIGRAM_COUNT_HARD_LIMIT_WEIGHT);

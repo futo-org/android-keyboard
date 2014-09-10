@@ -38,6 +38,40 @@ bool LanguageModelDictContent::runGC(
             0 /* nextLevelBitmapEntryIndex */, outNgramCount);
 }
 
+int LanguageModelDictContent::getWordProbability(const WordIdArrayView prevWordIds,
+        const int wordId) const {
+    int bitmapEntryIndices[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
+    bitmapEntryIndices[0] = mTrieMap.getRootBitmapEntryIndex();
+    int maxLevel = 0;
+    for (size_t i = 0; i < prevWordIds.size(); ++i) {
+        const int nextBitmapEntryIndex =
+                mTrieMap.get(prevWordIds[i], bitmapEntryIndices[i]).mNextLevelBitmapEntryIndex;
+        if (nextBitmapEntryIndex == TrieMap::INVALID_INDEX) {
+            break;
+        }
+        maxLevel = i + 1;
+        bitmapEntryIndices[i + 1] = nextBitmapEntryIndex;
+    }
+
+    for (int i = maxLevel; i >= 0; --i) {
+        const TrieMap::Result result = mTrieMap.get(wordId, bitmapEntryIndices[i]);
+        if (!result.mIsValid) {
+            continue;
+        }
+        const int probability =
+                ProbabilityEntry::decode(result.mValue, mHasHistoricalInfo).getProbability();
+        if (mHasHistoricalInfo) {
+            return std::min(
+                    probability + ForgettingCurveUtils::getProbabilityBiasForNgram(i + 1 /* n */),
+                    MAX_PROBABILITY);
+        } else {
+            return probability;
+        }
+    }
+    // Cannot find the word.
+    return NOT_A_PROBABILITY;
+}
+
 ProbabilityEntry LanguageModelDictContent::getNgramProbabilityEntry(
         const WordIdArrayView prevWordIds, const int wordId) const {
     const int bitmapEntryIndex = getBitmapEntryIndex(prevWordIds);

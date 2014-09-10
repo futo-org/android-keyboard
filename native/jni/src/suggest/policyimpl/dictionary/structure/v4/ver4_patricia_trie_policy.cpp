@@ -115,24 +115,12 @@ int Ver4PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
 
 int Ver4PatriciaTriePolicy::getProbabilityOfWordInContext(const int *const prevWordIds,
         const int wordId, MultiBigramMap *const multiBigramMap) const {
-    // TODO: Quit using MultiBigramMap.
     if (wordId == NOT_A_WORD_ID) {
         return NOT_A_PROBABILITY;
     }
-    const int ptNodePos =
-            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
-    const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
-    if (multiBigramMap) {
-        return multiBigramMap->getBigramProbability(this /* structurePolicy */, prevWordIds,
-                wordId, ptNodeParams.getProbability());
-    }
-    if (prevWordIds) {
-        const int probability = getProbabilityOfWord(prevWordIds, wordId);
-        if (probability != NOT_A_PROBABILITY) {
-            return probability;
-        }
-    }
-    return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
+    // TODO: Support n-gram.
+    return mBuffers->getLanguageModelDictContent()->getWordProbability(
+            WordIdArrayView::singleElementView(prevWordIds), wordId);
 }
 
 int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
@@ -166,7 +154,7 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds,
         // TODO: Support n-gram.
         const ProbabilityEntry probabilityEntry =
                 mBuffers->getLanguageModelDictContent()->getNgramProbabilityEntry(
-                        IntArrayView::fromObject(prevWordIds), wordId);
+                        IntArrayView::singleElementView(prevWordIds), wordId);
         if (!probabilityEntry.isValid()) {
             return NOT_A_PROBABILITY;
         }
@@ -194,7 +182,7 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
     // TODO: Support n-gram.
     const auto languageModelDictContent = mBuffers->getLanguageModelDictContent();
     for (const auto entry : languageModelDictContent->getProbabilityEntries(
-            WordIdArrayView::fromObject(prevWordIds))) {
+            WordIdArrayView::singleElementView(prevWordIds))) {
         const ProbabilityEntry &probabilityEntry = entry.getProbabilityEntry();
         const int probability = probabilityEntry.hasHistoricalInfo() ?
                 ForgettingCurveUtils::decodeProbability(
@@ -511,7 +499,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     // Fetch bigram information.
     // TODO: Support n-gram.
     std::vector<BigramProperty> bigrams;
-    const WordIdArrayView prevWordIds = WordIdArrayView::fromObject(&wordId);
+    const WordIdArrayView prevWordIds = WordIdArrayView::singleElementView(&wordId);
     int bigramWord1CodePoints[MAX_WORD_LENGTH];
     for (const auto entry : mBuffers->getLanguageModelDictContent()->getProbabilityEntries(
             prevWordIds)) {
