@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import com.android.inputmethod.latin.utils.DistracterFilter.HandlingType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +82,7 @@ public final class LanguageModelParam {
     // Process a list of words and return a list of {@link LanguageModelParam} objects.
     public static ArrayList<LanguageModelParam> createLanguageModelParamsFrom(
             final List<String> tokens, final int timestamp,
-            final DictionaryFacilitator dictionaryFacilitator,
-            final SpacingAndPunctuations spacingAndPunctuations,
+            final SpacingAndPunctuations spacingAndPunctuations, final Locale locale,
             final DistracterFilter distracterFilter) {
         final ArrayList<LanguageModelParam> languageModelParams = new ArrayList<>();
         final int N = tokens.size();
@@ -111,8 +111,7 @@ public final class LanguageModelParam {
             }
             final LanguageModelParam languageModelParam =
                     detectWhetherVaildWordOrNotAndGetLanguageModelParam(
-                            prevWordsInfo, tempWord, timestamp, dictionaryFacilitator,
-                            distracterFilter);
+                            prevWordsInfo, tempWord, timestamp, locale, distracterFilter);
             if (languageModelParam == null) {
                 continue;
             }
@@ -125,47 +124,25 @@ public final class LanguageModelParam {
 
     private static LanguageModelParam detectWhetherVaildWordOrNotAndGetLanguageModelParam(
             final PrevWordsInfo prevWordsInfo, final String targetWord, final int timestamp,
-            final DictionaryFacilitator dictionaryFacilitator,
-            final DistracterFilter distracterFilter) {
-        final Locale locale = dictionaryFacilitator.getLocale();
+            final Locale locale, final DistracterFilter distracterFilter) {
         if (locale == null) {
             return null;
         }
-        if (dictionaryFacilitator.isValidWord(targetWord, false /* ignoreCase */)) {
-            return createAndGetLanguageModelParamOfWord(prevWordsInfo, targetWord, timestamp,
-                    true /* isValidWord */, locale, distracterFilter);
+        final int wordHandlingType = distracterFilter.getWordHandlingType(prevWordsInfo,
+                targetWord, locale);
+        final String word = HandlingType.shouldBeLowerCased(wordHandlingType) ?
+                targetWord.toLowerCase(locale) : targetWord;
+        if (distracterFilter.isDistracterToWordsInDictionaries(prevWordsInfo, targetWord, locale)) {
+            // The word is a distracter.
+            return null;
         }
-
-        final String lowerCaseTargetWord = targetWord.toLowerCase(locale);
-        if (dictionaryFacilitator.isValidWord(lowerCaseTargetWord, false /* ignoreCase */)) {
-            // Add the lower-cased word.
-            return createAndGetLanguageModelParamOfWord(prevWordsInfo, lowerCaseTargetWord,
-                    timestamp, true /* isValidWord */, locale, distracterFilter);
-        }
-
-        // Treat the word as an OOV word.
-        return createAndGetLanguageModelParamOfWord(prevWordsInfo, targetWord, timestamp,
-                false /* isValidWord */, locale, distracterFilter);
+        return createAndGetLanguageModelParamOfWord(prevWordsInfo, word, timestamp,
+                !HandlingType.shouldBeHandledAsOov(wordHandlingType));
     }
 
     private static LanguageModelParam createAndGetLanguageModelParamOfWord(
-            final PrevWordsInfo prevWordsInfo, final String targetWord, final int timestamp,
-            final boolean isValidWord, final Locale locale,
-            final DistracterFilter distracterFilter) {
-        final String word;
-        if (StringUtils.getCapitalizationType(targetWord) == StringUtils.CAPITALIZE_FIRST
-                && !prevWordsInfo.isValid() && !isValidWord) {
-            word = targetWord.toLowerCase(locale);
-        } else {
-            word = targetWord;
-        }
-        // Check whether the word is a distracter to words in the dictionaries.
-        if (distracterFilter.isDistracterToWordsInDictionaries(prevWordsInfo, word, locale)) {
-            if (DEBUG) {
-                Log.d(TAG, "The word (" + word + ") is a distracter. Skip this word.");
-            }
-            return null;
-        }
+            final PrevWordsInfo prevWordsInfo, final String word, final int timestamp,
+            final boolean isValidWord) {
         final int unigramProbability = isValidWord ?
                 UNIGRAM_PROBABILITY_FOR_VALID_WORD : UNIGRAM_PROBABILITY_FOR_OOV_WORD;
         if (!prevWordsInfo.isValid()) {

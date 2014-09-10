@@ -51,6 +51,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             DistracterFilterCheckingExactMatchesAndSuggestions.class.getSimpleName();
     private static final boolean DEBUG = false;
 
+    private static final int MAX_DICTIONARY_FACILITATOR_CACHE_SIZE = 3;
     private static final int MAX_DISTRACTERS_CACHE_SIZE = 1024;
 
     private final Context mContext;
@@ -73,15 +74,13 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
      * Create a DistracterFilter instance.
      *
      * @param context the context.
-     * @param dictionaryFacilitatorLruCache the cache of dictionaryFacilitators that are used for
-     * checking distracters.
      */
-    public DistracterFilterCheckingExactMatchesAndSuggestions(final Context context,
-            final DictionaryFacilitatorLruCache dictionaryFacilitatorLruCache) {
+    public DistracterFilterCheckingExactMatchesAndSuggestions(final Context context) {
         mContext = context;
         mLocaleToSubtypeCache = new ConcurrentHashMap<>();
         mLocaleToKeyboardCache = new ConcurrentHashMap<>();
-        mDictionaryFacilitatorLruCache = dictionaryFacilitatorLruCache;
+        mDictionaryFacilitatorLruCache = new DictionaryFacilitatorLruCache(context,
+                MAX_DICTIONARY_FACILITATOR_CACHE_SIZE, "" /* dictionaryNamePrefix */);
         mDistractersCache = new LruCache<>(MAX_DISTRACTERS_CACHE_SIZE);
     }
 
@@ -89,7 +88,8 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
     public void close() {
         mLocaleToSubtypeCache.clear();
         mLocaleToKeyboardCache.clear();
-        mDistractersCache.evictAll();
+        mDictionaryFacilitatorLruCache.evictAll();
+        // Don't clear mDistractersCache.
     }
 
     @Override
@@ -194,9 +194,8 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             mDistractersCache.put(cacheKey, Boolean.TRUE);
             return true;
         }
-        final boolean isValidWord = dictionaryFacilitator.isValidWord(testedWord,
-                false /* ignoreCase */);
-        if (isValidWord) {
+        final boolean Word = dictionaryFacilitator.isValidWord(testedWord, false /* ignoreCase */);
+        if (Word) {
             // Valid word is not a distractor.
             if (DEBUG) {
                 Log.d(TAG, "isDistracter: false (valid word)");
@@ -282,5 +281,42 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             return true;
         }
         return false;
+    }
+
+    private boolean shouldBeLowerCased(final PrevWordsInfo prevWordsInfo, final String testedWord,
+            final Locale locale) {
+        final DictionaryFacilitator dictionaryFacilitator =
+                mDictionaryFacilitatorLruCache.get(locale);
+        if (dictionaryFacilitator.isValidWord(testedWord, false /* ignoreCase */)) {
+            return false;
+        }
+        final String lowerCaseTargetWord = testedWord.toLowerCase(locale);
+        if (testedWord.equals(lowerCaseTargetWord)) {
+            return false;
+        }
+        if (dictionaryFacilitator.isValidWord(lowerCaseTargetWord, false /* ignoreCase */)) {
+            return true;
+        }
+        if (StringUtils.getCapitalizationType(testedWord) == StringUtils.CAPITALIZE_FIRST
+                && !prevWordsInfo.isValid()) {
+            // TODO: Check beginning-of-sentence.
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int getWordHandlingType(final PrevWordsInfo prevWordsInfo, final String testedWord,
+            final Locale locale) {
+        // TODO: Use this method for user history dictionary.
+        if (testedWord == null|| locale == null) {
+            return HandlingType.getHandlingType(false /* shouldBeLowerCased */, false /* isOov */);
+        }
+        final boolean shouldBeLowerCased = shouldBeLowerCased(prevWordsInfo, testedWord, locale);
+        final String caseModifiedWord =
+                shouldBeLowerCased ? testedWord.toLowerCase(locale) : testedWord;
+        final boolean isOov = !mDictionaryFacilitatorLruCache.get(locale).isValidWord(
+                caseModifiedWord, false /* ignoreCase */);
+        return HandlingType.getHandlingType(shouldBeLowerCased, isOov);
     }
 }
