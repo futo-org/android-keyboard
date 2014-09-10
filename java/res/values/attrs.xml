@@ -514,6 +514,8 @@
         <attr name="elementKeyboard" format="reference"/>
         <!-- Enable proximity characters correction. Disabled by default. -->
         <attr name="enableProximityCharsCorrection" format="boolean" />
+        <!-- Indicates if the keyboard layout supports being split or not. false by default -->
+        <attr name="supportsSplitLayout" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="KeyboardLayoutSet_Feature">

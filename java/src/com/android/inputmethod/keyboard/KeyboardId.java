@@ -73,10 +73,12 @@ public final class KeyboardId {
     public final boolean mLanguageSwitchKeyEnabled;
     public final String mCustomActionLabel;
     public final boolean mHasShortcutKey;
+    public final boolean mIsSplitLayout;
 
     private final int mHashCode;
 
-    public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
+    public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params,
+        boolean isSplitLayout) {
         mSubtype = params.mSubtype;
         mLocale = SubtypeLocaleUtils.getSubtypeLocale(mSubtype);
         mWidth = params.mKeyboardWidth;
@@ -89,6 +91,7 @@ public final class KeyboardId {
         mCustomActionLabel = (mEditorInfo.actionLabel != null)
                 ? mEditorInfo.actionLabel.toString() : null;
         mHasShortcutKey = params.mVoiceInputKeyEnabled;
+        mIsSplitLayout = isSplitLayout;
 
         mHashCode = computeHashCode(this);
     }
@@ -108,7 +111,8 @@ public final class KeyboardId {
                 id.mCustomActionLabel,
                 id.navigateNext(),
                 id.navigatePrevious(),
-                id.mSubtype
+                id.mSubtype,
+                id.mIsSplitLayout
         });
     }
 
@@ -128,7 +132,8 @@ public final class KeyboardId {
                 && TextUtils.equals(other.mCustomActionLabel, mCustomActionLabel)
                 && other.navigateNext() == navigateNext()
                 && other.navigatePrevious() == navigatePrevious()
-                && other.mSubtype.equals(mSubtype);
+                && other.mSubtype.equals(mSubtype)
+                && other.mIsSplitLayout == mIsSplitLayout;
     }
 
     private static boolean isAlphabetKeyboard(final int elementId) {
@@ -175,7 +180,7 @@ public final class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s%s%s%s%s%s%s%s]",
+        return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s%s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale, mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
                 mWidth, mHeight,
@@ -187,7 +192,8 @@ public final class KeyboardId {
                 (passwordInput() ? " passwordInput" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : ""),
                 (mLanguageSwitchKeyEnabled ? " languageSwitchKeyEnabled" : ""),
-                (isMultiLine() ? " isMultiLine" : "")
+                (isMultiLine() ? " isMultiLine" : ""),
+                (mIsSplitLayout ? " isSplitLayout" : "")
         );
     }
 
