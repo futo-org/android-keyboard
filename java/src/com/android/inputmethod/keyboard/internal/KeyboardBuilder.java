@@ -674,15 +674,18 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
             final boolean countryCodeMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
+            final boolean splitLayoutMatched = matchBoolean(caseAttr,
+                    R.styleable.Keyboard_Case_isSplitLayout, id.mIsSplitLayout);
             final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
                     && keyboardThemeMacthed && modeMatched && navigateNextMatched
                     && navigatePreviousMatched && passwordInputMatched && clobberSettingsKeyMatched
                     && hasShortcutKeyMatched  && languageSwitchKeyEnabledMatched
                     && isMultiLineMatched && imeActionMatched && isIconDefinedMatched
-                    && localeCodeMatched && languageCodeMatched && countryCodeMatched;
+                    && localeCodeMatched && languageCodeMatched && countryCodeMatched
+                    && splitLayoutMatched;
 
             if (DEBUG) {
-                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
                         textAttr(caseAttr.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSet), "keyboardLayoutSet"),
                         textAttr(caseAttr.getString(
@@ -707,6 +710,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                                 "languageSwitchKeyEnabled"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_isMultiLine,
                                 "isMultiLine"),
+                        booleanAttr(caseAttr, R.styleable.Keyboard_Case_isSplitLayout,
+                                "splitLayout"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_isIconDefined),
                                 "isIconDefined"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_localeCode),

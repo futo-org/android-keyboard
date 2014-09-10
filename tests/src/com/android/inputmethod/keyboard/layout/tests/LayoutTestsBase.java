@@ -54,7 +54,8 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
                 + (isPhone() ? "phone" : "tablet");
         // TODO: Test with language switch key enabled and disabled.
         mKeyboardLayoutSet = createKeyboardLayoutSet(mSubtype, null /* editorInfo */,
-                true /* voiceInputKeyEnabled */, true /* languageSwitchKeyEnabled */);
+                true /* voiceInputKeyEnabled */, true /* languageSwitchKeyEnabled */,
+                false /* splitLayoutEnabled */);
     }
 
     @Override

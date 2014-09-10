@@ -115,6 +115,12 @@ public final class KeyboardLayoutSet {
         int mKeyboardWidth;
         int mKeyboardHeight;
         int mScriptId = ScriptUtils.SCRIPT_LATIN;
+        // Indicates if the user has enabled the split-layout preference
+        // and the required ProductionFlags are enabled.
+        boolean mIsSplitLayoutEnabledByUser;
+        // Indicates if split layout is actually enabled, taking into account
+        // whether the user has enabled it, and the keyboard layout supports it.
+        boolean mIsSplitLayoutEnabled;
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
         final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
                 new SparseArray<>();
@@ -170,9 +176,9 @@ public final class KeyboardLayoutSet {
         // specified as an elementKeyboard attribute in the file.
         // The KeyboardId is an internal key for a Keyboard object.
 
-        // TODO: AND mSupportsSplitLayout with the user preference that forces a split.
-        final KeyboardId id = new KeyboardId(keyboardLayoutSetElementId, mParams,
-                elementParams.mSupportsSplitLayout);
+        mParams.mIsSplitLayoutEnabled = mParams.mIsSplitLayoutEnabledByUser
+                && elementParams.mSupportsSplitLayout;
+        final KeyboardId id = new KeyboardId(keyboardLayoutSetElementId, mParams);
         try {
             return getKeyboard(elementParams, id);
         } catch (final RuntimeException e) {
@@ -290,12 +296,19 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        public void disableTouchPositionCorrectionData() {
+        public Builder disableTouchPositionCorrectionData() {
             mParams.mDisableTouchPositionCorrectionDataForTest = true;
+            return this;
         }
 
-        public void setScriptId(final int scriptId) {
+        public Builder setScriptId(final int scriptId) {
             mParams.mScriptId = scriptId;
+            return this;
+        }
+
+        public Builder setSplitLayoutEnabledByUser(final boolean enabled) {
+            mParams.mIsSplitLayoutEnabledByUser = enabled;
+            return this;
         }
 
         public KeyboardLayoutSet build() {
