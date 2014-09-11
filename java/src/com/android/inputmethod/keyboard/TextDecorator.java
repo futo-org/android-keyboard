@@ -24,7 +24,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.CursorAnchorInfo;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
@@ -154,13 +153,11 @@ public class TextDecorator {
      * {@code false} is the input method is finishing the full screen mode.
      */
     public void notifyFullScreenMode(final boolean fullScreenMode) {
-        final boolean currentFullScreenMode = mIsFullScreenMode;
-        if (!currentFullScreenMode && fullScreenMode) {
-            // Currently full screen mode is not supported.
-            // TODO: Support full screen mode.
-            mUiOperator.hideUi();
-        }
+        final boolean fullScreenModeChanged = (mIsFullScreenMode != fullScreenMode);
         mIsFullScreenMode = fullScreenMode;
+        if (fullScreenModeChanged) {
+            layoutLater();
+        }
     }
 
     /**
@@ -183,11 +180,6 @@ public class TextDecorator {
      * @param info the compatibility wrapper object for the received {@link CursorAnchorInfo}.
      */
     public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
-        if (mIsFullScreenMode) {
-            // TODO: Consider to call InputConnection#requestCursorAnchorInfo to disable the
-            // event callback to suppress unnecessary event callbacks.
-            return;
-        }
         mCursorAnchorInfoWrapper = info;
         // Do not use layoutLater() to minimize the latency.
         layoutImmediately();
@@ -240,11 +232,6 @@ public class TextDecorator {
     }
 
     private void layoutMain() {
-        if (mIsFullScreenMode) {
-            cancelLayoutInternalUnexpectedly("Full screen mode isn't yet supported.");
-            return;
-        }
-
         if (mMode != MODE_COMMIT && mMode != MODE_ADD_TO_DICTIONARY) {
             if (mMode == MODE_NONE) {
                 cancelLayoutInternalExpectedly("Not ready for layouting.");
@@ -328,7 +315,7 @@ public class TextDecorator {
                 return;
             }
         } else {
-            if (!TextUtils.isEmpty(composingText)) {
+            if (!mIsFullScreenMode && !TextUtils.isEmpty(composingText)) {
                 // This is an unexpected case.
                 // TODO: Document this.
                 mUiOperator.hideUi();
