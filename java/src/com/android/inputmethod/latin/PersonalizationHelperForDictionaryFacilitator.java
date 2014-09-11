@@ -38,15 +38,15 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 /**
  * Class for managing and updating personalization dictionaries.
  */
-public class PersonalizationDictionaryFacilitator {
+public class PersonalizationHelperForDictionaryFacilitator {
     private final Context mContext;
     private final DistracterFilter mDistracterFilter;
     private final HashMap<String, HashSet<Locale>> mLangToLocalesMap = new HashMap<>();
     private final HashMap<Locale, ExpandableBinaryDictionary> mPersonalizationDictsToUpdate =
             new HashMap<>();
-    private boolean mIsMonolingualUser = false;;
+    private boolean mIsMonolingualUser = false;
 
-    PersonalizationDictionaryFacilitator(final Context context,
+    PersonalizationHelperForDictionaryFacilitator(final Context context,
             final DistracterFilter distracterFilter) {
         mContext = context;
         mDistracterFilter = distracterFilter;
