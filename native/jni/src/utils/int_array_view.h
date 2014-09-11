@@ -17,8 +17,9 @@
 #ifndef LATINIME_INT_ARRAY_VIEW_H
 #define LATINIME_INT_ARRAY_VIEW_H
 
+#include <array>
 #include <cstdint>
-#include <cstdlib>
+#include <cstring>
 #include <vector>
 
 #include "defines.h"
@@ -101,6 +102,12 @@ class IntArrayView {
             return IntArrayView();
         }
         return IntArrayView(mPtr + n, mSize - n);
+    }
+
+    template <size_t N>
+    void copyToArray(std::array<int, N> *const buffer, const size_t offset) const {
+        ASSERT(mSize + offset <= N);
+        memmove(buffer->data() + offset, mPtr, sizeof(int) * mSize);
     }
 
  private:
