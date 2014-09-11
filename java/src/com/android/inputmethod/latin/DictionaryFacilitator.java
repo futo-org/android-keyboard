@@ -309,7 +309,7 @@ public class DictionaryFacilitator {
             mDictionaryGroup = newDictionaryGroup;
             mIsUserDictEnabled = UserBinaryDictionary.isEnabled(context);
             if (null == newDictionaryGroup.getDict(Dictionary.TYPE_MAIN)) {
-                asyncReloadMainDictionary(context, newLocaleToUse, listener);
+                asyncReloadUninitializedMainDictionaries(context, newLocales, listener);
             }
         }
         if (listener != null) {
@@ -327,21 +327,24 @@ public class DictionaryFacilitator {
         }
     }
 
-    private void asyncReloadMainDictionary(final Context context, final Locale locale,
-            final DictionaryInitializationListener listener) {
+    private void asyncReloadUninitializedMainDictionaries(final Context context,
+            final Locale[] locales, final DictionaryInitializationListener listener) {
         final CountDownLatch latchForWaitingLoadingMainDictionary = new CountDownLatch(1);
         mLatchForWaitingLoadingMainDictionary = latchForWaitingLoadingMainDictionary;
         ExecutorUtils.getExecutor("InitializeBinaryDictionary").execute(new Runnable() {
             @Override
             public void run() {
-                final Dictionary mainDict =
-                        DictionaryFactory.createMainDictionaryFromManager(context, locale);
-                synchronized (mLock) {
-                    if (locale.equals(mDictionaryGroup.mLocale)) {
-                        mDictionaryGroup.setMainDict(mainDict);
-                    } else {
-                        // Dictionary facilitator has been reset for another locale.
-                        mainDict.close();
+                for (final Locale locale : locales) {
+                    final DictionaryGroup dictionaryGroup = mDictionaryGroup;
+                    final Dictionary mainDict =
+                            DictionaryFactory.createMainDictionaryFromManager(context, locale);
+                    synchronized (mLock) {
+                        if (locale.equals(dictionaryGroup.mLocale)) {
+                            dictionaryGroup.setMainDict(mainDict);
+                        } else {
+                            // Dictionary facilitator has been reset for another locale.
+                            mainDict.close();
+                        }
                     }
                 }
                 if (listener != null) {
