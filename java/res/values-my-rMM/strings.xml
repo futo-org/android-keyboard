@@ -26,7 +26,7 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ခလုတ်နှိပ်သည်နှင့် တုံခါစေပါ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ခလုတ်နှိပ်လျှင် အသံမြည်"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ကီးနှိပ်လိုက်သည်နှင့် ပေါ်လာရန်"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"ထည့်သွင်းမှု စိတ်ကြိုက်"</string>
+    <string name="settings_screen_input" msgid="2808654300248306866">"စာရိုက်ထည့်မှု ရွေးစရာ"</string>
     <string name="settings_screen_appearances" msgid="3611951947835553700">"အပြင်အဆင်"</string>
     <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"ဘာသာများစွာ ရွေးချယ်မှု"</string>
     <string name="settings_screen_gesture" msgid="9113437621722871665">"အမူယာစာရိုက်ခြင်း စိတ်ကြိုက်များ"</string>
@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ဘာသာပြောင်းသည့် ကီးသည် အခြားထည့်သွင်းရန် နည်းလမ်းများလည်း ပါဝင်သည်"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ဘာသာစကား ပြောင်းခလုတ်"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"များပြားသည့် ထည့်သွင်းရန်နည်းလမ်းများဖွင့်ထားလျှင် ပြပါ"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"ဆွဲရွှေ့ခြင်း ညွှန်ပြကိရိယာ ပြရန်"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Shift ခလုတ် သို့မဟုတ် သင်္ကေတခလုတ်မှ ဆွဲရွှေ့လျှင် ဖွင့်ထားသည့် အရာများအား ပြရန်"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"ကီးပေါ်လာ၍ ဖျောက်ရန်နှုန်း"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"နောက်မကျ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"မူရင်းအတိုင်း"</string>
@@ -76,9 +74,9 @@
     <string name="voice_input" msgid="3583258583521397548">"အသံထည့်သွင်းရန် ခလုတ်"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"မည်သည့် Check Language &amp; input settings."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ထည့်သွင်းရန် နည်းလမ်းကို ပြုပြင်မည်"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"ထည့်သွင်းမှု ဘာသာ"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"စာရိုက်ထည့် ဘာသာ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"အကူအညီ &amp; တုံ့ပြန်ချက်"</string>
-    <string name="select_language" msgid="3693815588777926848">"ထည့်သွင်းမှု ဘာသာ"</string>
+    <string name="select_language" msgid="3693815588777926848">"စာရိုက်ထည့် ဘာသာ"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"သိမ်းရန် နောက်တစ်ကြိမ်နှိပ်ပါ"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"သိမ်းရန် ဤနေရာကို ထိပါ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"အဘိဓါန်ရနိုင်"</string>
@@ -114,15 +112,8 @@
     <string name="enable" msgid="5031294444630523247">"ဖွင့်ရန်"</string>
     <string name="not_now" msgid="6172462888202790482">"ယခု မဟုတ်"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"တူညီသည့် ထည့်သွင်းရန် စတိုင်လ် ရှိပြီးဖြစ်: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ကီးကြာမြင့်စွာ ဖိနှိပ်မှုနှုန်း"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ခလုတ်နှိပ်တုန်ခါမှု ကြာမြင့်ချိန်"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ခလုတ်နှိပ်သည့် အသံအတိုးကျယ်"</string>
-    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"ကီး လှုပ်ပုံ စမ်းကြည့် စိတ်တိုင်းကျ"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ပြင်ပ အဘိဓါန်ဖိုင် ဖတ်မည်"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ဒေါင်းလုပ်ဖိုင်တွဲထဲတွင် အဘိဓါန်ဖိုင်များ မရှိပါ"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ထည့်သွင်းရန် အဘိဓါန်ဖိုင်အားရွေးပါ"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> အတွက်ဤအရာအား တကယ်ထည့်သွင်းမည်လား?"</string>
-    <string name="error" msgid="8940763624668513648">"မှားယွင်းမှု တစ်ခုရှိခဲ့သည်"</string>
     <string name="button_default" msgid="3988017840431881491">"ပုံသေ"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> မှကြိုဆိုပါသည်"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"အမူယာ ရိုက်ခြင်းဖြင့်"</string>
@@ -130,12 +121,12 @@
     <string name="setup_next_action" msgid="371821437915144603">"နောက်တစ်ဆင့်"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> တပ်ဆင်ရန်"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ဖွင့်ရန်"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"သင့်ဘာသာစကား&amp; ထည့်သွင်းမှု ဆက်တင်များတွင် \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" အားစစ်ဆေးပါ။ ဤသည်မှာ သင့်ကိရိယာတွင် ဖွင့်ရန် အခွင့်ပေးပါမည်။"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> သည် သင့်ဘာသာစကား &amp; ထည့်သွင်းမှု ဆက်တင်များတွင် ဖွင့်ပြီးသောကြောင့်၊ ဤအဆင့်ပြီးပါပြီ။ နောက်တစ်ခုသို့!"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"သင့်ဘာသာစကား&amp; စာရိုက်ထည့်မှု ဆက်တင်များတွင် \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" အားစစ်ဆေးပါ။ ဤသည်မှာ သင့်ကိရိယာတွင် ဖွင့်ရန် အခွင့်ပေးပါမည်။"</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> သည် သင့်ဘာသာစကား &amp; စာရိုက်ထည့်မှု ဆက်တင်များတွင် ဖွင့်ပြီးသောကြောင့်၊ ဤအဆင့်ပြီးပါပြီ။ နောက်တစ်ခုသို့!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"ဆက်တင်များတွင် ဖွင့်ရန်"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> သို့ပြောင်းမည်"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ရှေ့၊ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" အားသင်၏ ပွင့်နေသည့်ထည့်သွင်းမှု နည်းလမ်းအဖြစ်ရွေးပါ။"</string>
-    <string name="setup_step2_action" msgid="1660330307159824337">"ထည့်သွင်းခြင်းနည်းလမ်းများ ပြောင်းရန်"</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"စာရိုက်သွင်းမှုနည်းလမ်း ပြောင်းရန်"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"ဝမ်းသာပါသည်၊ သင်အားလုံးသတ်မှတ်ပြီးပါပြီ!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ဖြင့်သင့် ကြိုက်နှစ်သက်ရာ အပလီကေးရှင်းများအားလုံးအား ရိုက်ထည့်နိုင်ပါပြီ။"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"ထပ်ပေါင်းဘာသာစကားများ ပြုပြင်မည်"</string>
@@ -167,7 +158,7 @@
     <string name="install_dict" msgid="180852772562189365">"တပ်ဆင်ပါ"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ပယ်ဖျက်ရန်"</string>
     <string name="delete_dict" msgid="756853268088330054">"ဖျက်ရန်"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"သင့်ဖုန်းရှိ ရွေးချယ်ထားသည့် ဘာသာအတွက် အဘိဓါန်ရှိပါသည်။ &lt;br/&gt; အဘိဓါန်အား &lt;b&gt;ဒေါင်းလုပ်လုပ်ကာ&lt;/b&gt; the <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>  သင့်စာရိုက် အတွေ့အကြုံတိုးတက်စေရန် ကျွန်ုပ်တို့အကြံပြုပါသည်။ &lt;br/&gt; &lt;br/&gt; ဒေါင်းလုပ်လုပ်ရန် 3G ပေါ်တွင် ၁ မှ ၂ မိနစ်ခန့်ကြာနိုင်သည်။ သင့်တွင် &lt;b&gt;အကန့်သတ်မှရိ အချက်လက် သုံးစွဲမှု&lt;/b&gt;မရှိလျှင် ငွေကျသင့်နိုင်ပါသည်။ &lt;br/&gt; သင့်တွင် မည်သည့်အချက်လက်သုံးစွဲမှု ရှိနေသည်ကိုမသိလျှင်၊ အလိုအလျောက် ဒေါင်းလုပ်လုပ်ရန် Wi-Fi ကွန်ရက်တစ်ခု ရှာဖွေရန် တိုက်တွန်းပါသည်။ &lt;br/&gt; &lt;br/&gt; နည်းလမ်း: သင့်ဖုန်းကိရိယာရှိ &lt;b&gt;ဆက်တင်ထဲတွင်&lt;/b&gt; &lt;b&gt;ဘာသာ &amp; ထည့်သွင်းမှု&lt;/b&gt; သို့သွားကာ အဘိဓါန်များကို ဒေါင်းလုပ်လုပ်နိုင် ဖယ်ရှားနိုင်ပါသည်။"</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"သင့်ဖုန်းရှိ ရွေးချယ်ထားသည့် ဘာသာအတွက် အဘိဓါန်ရှိပါသည်။ &lt;br/&gt; အဘိဓါန်အား &lt;b&gt;ဒေါင်းလုပ်လုပ်ကာ&lt;/b&gt; the <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>  သင့်စာရိုက် အတွေ့အကြုံတိုးတက်စေရန် ကျွန်ုပ်တို့အကြံပြုပါသည်။ &lt;br/&gt; &lt;br/&gt; ဒေါင်းလုပ်လုပ်ရန် 3G ပေါ်တွင် ၁ မှ ၂ မိနစ်ခန့်ကြာနိုင်သည်။ သင့်တွင် &lt;b&gt;အကန့်သတ်မှရိ အချက်လက် သုံးစွဲမှု&lt;/b&gt;မရှိလျှင် ငွေကျသင့်နိုင်ပါသည်။ &lt;br/&gt; သင့်တွင် မည်သည့်အချက်လက်သုံးစွဲမှု ရှိနေသည်ကိုမသိလျှင်၊ အလိုအလျောက် ဒေါင်းလုပ်လုပ်ရန် Wi-Fi ကွန်ရက်တစ်ခု ရှာဖွေရန် တိုက်တွန်းပါသည်။ &lt;br/&gt; &lt;br/&gt; နည်းလမ်း: သင့်ဖုန်းကိရိယာရှိ &lt;b&gt;ဆက်တင်ထဲတွင်&lt;/b&gt; &lt;b&gt;ဘာသာ &amp; စာရိုက်ထည့်မှု&lt;/b&gt; သို့သွားကာ အဘိဓါန်များကို ဒေါင်းလုပ်လုပ်နိုင် ဖယ်ရှားနိုင်ပါသည်။"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ယခုဒေါင်းလုပ်လုပ်မည် (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi အသုံးပြု၍ ဒေါင်းလုပ်လုပ်ရန်"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> အတွက် အဘိဓါန် ရနိုင်ပါသည်"</string>

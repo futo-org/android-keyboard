@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Тил которуштуруу баскычында башка киргизүү ыкмалары дагы камтылган"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Тил которуштуруу баскычы"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Бир нече киргизүү тили иштетилгенде көрсөтүлсүн"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Сүрүү көрсөткүчүн көрсөтүү"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Shift же Символ баскычтары сүрүлүп жаткнда кеңештр көрсөтүлп турсн"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Кечигүүнү өткөрүү калкып чыкма баскычы"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Дароо"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Демейки"</string>
@@ -114,15 +112,8 @@
     <string name="enable" msgid="5031294444630523247">"Иштетүү"</string>
     <string name="not_now" msgid="6172462888202790482">"Азыр эмес"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Мындай жазуу стили мурунтан бар: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Баскычты көпкө басууну кечиктирүү"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Басылган баскычтын дирлдөө узактгы"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Басылган баскычтын үнүнүн катуулугу"</string>
-    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"Баскч алдырт көрүү анимцясн өзгөчлш"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Тышкы сөздүк файлын окуу"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Жүктөп алынгандар папкасында сөздүк файлдары жок"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Орнотула турган сөздүк файлын тандаңыз"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Бул файл <xliff:g id="LANGUAGE_NAME">%s</xliff:g> үчүн орнотулсунбу?"</string>
-    <string name="error" msgid="8940763624668513648">"Ката кетти"</string>
     <string name="button_default" msgid="3988017840431881491">"Демейки"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> кош келиңиз"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Жаңсап терүү менен"</string>
