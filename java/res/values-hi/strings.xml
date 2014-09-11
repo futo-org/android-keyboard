@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्‍विच कुंजी में अन्‍य इनपुट पद्धतियां भी शामिल हैं"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुंजी"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"एकाधिक इनपुट भाषाएं सक्षम होने पर दिखाएं"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"स्लाइड संकेतक दिखाएं"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Shift या Symbol कुंजियो से स्लाइड करते समय विज़ुअल क्यू दिखाएं"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"कुंजी पॉपअप खारिज़ विलंब"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"कोई विलंब नहीं"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"सामान्य"</string>
@@ -114,15 +112,8 @@
     <string name="enable" msgid="5031294444630523247">"सक्षम करें"</string>
     <string name="not_now" msgid="6172462888202790482">"अभी नहीं"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ऐसी ही इनपुट शैली पहले से मौजूद है: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुंजी को देर तक दबाने का विलंब"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुंजी-स्पर्श कंपन अवधि"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुंजी-स्पर्श ध्वनि आवाज़"</string>
-    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"कुंजी पूर्वावलोकन एनिमेशन कस्टमाइज़ करें"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"बाहरी शब्दकोश फ़ाइल पढ़ें"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"डाउनलोड फ़ोल्डर में कोई शब्दकोश फ़ाइल नहीं है"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"इंस्टॉल करने के लिए कोई शब्दकोश फ़ाइल चुनें"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"क्या वाकई <xliff:g id="LANGUAGE_NAME">%s</xliff:g> के लिए यह फ़ाइल इंस्‍टॉल करें?"</string>
-    <string name="error" msgid="8940763624668513648">"कोई त्रुटि हुई थी"</string>
     <string name="button_default" msgid="3988017840431881491">"सामान्य"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> में आपका स्वागत है"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"हावभाव लेखन के साथ"</string>

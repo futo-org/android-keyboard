@@ -36,8 +36,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A tecla p/ mudar o idioma também cobre outros métodos de entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de seleção de idioma"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar quando vários idiomas de entrada estiverem ativados"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Mostrar indicador de deslize"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Mostrar indicação visual ao deslizar teclas Shift ou de símbolos"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Duração de popup da tecla"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sem atraso"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Padrão"</string>
@@ -114,15 +112,8 @@
     <string name="enable" msgid="5031294444630523247">"Ativar"</string>
     <string name="not_now" msgid="6172462888202790482">"Agora não"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"O estilo de entrada já existe: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Atraso ao pressionar teclas"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Duração da vibração ao tocar"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume ao tocar na tela"</string>
-    <string name="prefs_customize_key_preview_animation" msgid="4537507402140318920">"Person. princ. anim. de visualiz."</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Ler arquivo de dicionário externo"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Nenhum arquivo de dicionário na pasta Downloads"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Selecione um arquivo de dicionário para instalar"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Deseja instalar este arquivo para <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
-    <string name="error" msgid="8940763624668513648">"Ocorreu um erro"</string>
     <string name="button_default" msgid="3988017840431881491">"Padrão"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Bem-vindo ao <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"com entrada por gestos"</string>
