@@ -91,14 +91,15 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getWordId(const CodePointArrayView wordCodePoints, const bool forceLowerCaseSearch) const;
 
-    const WordAttributes getWordAttributesInContext(const int *const prevWordIds, const int wordId,
-            MultiBigramMap *const multiBigramMap) const;
+    const WordAttributes getWordAttributesInContext(const WordIdArrayView prevWordIds,
+            const int wordId, MultiBigramMap *const multiBigramMap) const;
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
-    int getProbabilityOfWord(const int *const prevWordIds, const int wordId) const;
+    int getProbabilityOfWord(const WordIdArrayView prevWordIds, const int wordId) const;
 
-    void iterateNgramEntries(const int *const prevWordIds, NgramListener *const listener) const;
+    void iterateNgramEntries(const WordIdArrayView prevWordIds,
+            NgramListener *const listener) const;
 
     BinaryDictionaryShortcutIterator getShortcutIterator(const int wordId) const;
 

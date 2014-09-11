@@ -18,8 +18,10 @@
 #define LATINIME_DIC_NODE_PROPERTIES_H
 
 #include <cstdint>
+#include <cstdlib>
 
 #include "defines.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -36,23 +38,23 @@ class DicNodeProperties {
 
     // Should be called only once per DicNode is initialized.
     void init(const int childrenPos, const int nodeCodePoint, const int wordId,
-            const uint16_t depth, const uint16_t leavingDepth, const int *const prevWordIds) {
+            const uint16_t depth, const uint16_t leavingDepth, const WordIdArrayView prevWordIds) {
         mChildrenPtNodeArrayPos = childrenPos;
         mDicNodeCodePoint = nodeCodePoint;
         mWordId = wordId;
         mDepth = depth;
         mLeavingDepth = leavingDepth;
-        memmove(mPrevWordIds, prevWordIds, sizeof(mPrevWordIds));
+        prevWordIds.copyToArray(&mPrevWordIds, 0 /* offset */);
     }
 
     // Init for root with prevWordsPtNodePos which is used for n-gram
-    void init(const int rootPtNodeArrayPos, const int *const prevWordIds) {
+    void init(const int rootPtNodeArrayPos, const WordIdArrayView prevWordIds) {
         mChildrenPtNodeArrayPos = rootPtNodeArrayPos;
         mDicNodeCodePoint = NOT_A_CODE_POINT;
         mWordId = NOT_A_WORD_ID;
         mDepth = 0;
         mLeavingDepth = 0;
-        memmove(mPrevWordIds, prevWordIds, sizeof(mPrevWordIds));
+        prevWordIds.copyToArray(&mPrevWordIds, 0 /* offset */);
     }
 
     void initByCopy(const DicNodeProperties *const dicNodeProp) {
@@ -61,7 +63,8 @@ class DicNodeProperties {
         mWordId = dicNodeProp->mWordId;
         mDepth = dicNodeProp->mDepth;
         mLeavingDepth = dicNodeProp->mLeavingDepth;
-        memmove(mPrevWordIds, dicNodeProp->mPrevWordIds, sizeof(mPrevWordIds));
+        WordIdArrayView::fromArray(dicNodeProp->mPrevWordIds)
+                .copyToArray(&mPrevWordIds, 0 /* offset */);
     }
 
     // Init as passing child
@@ -71,7 +74,8 @@ class DicNodeProperties {
         mWordId = dicNodeProp->mWordId;
         mDepth = dicNodeProp->mDepth + 1; // Increment the depth of a passing child
         mLeavingDepth = dicNodeProp->mLeavingDepth;
-        memmove(mPrevWordIds, dicNodeProp->mPrevWordIds, sizeof(mPrevWordIds));
+        WordIdArrayView::fromArray(dicNodeProp->mPrevWordIds)
+                .copyToArray(&mPrevWordIds, 0 /* offset */);
     }
 
     int getChildrenPtNodeArrayPos() const {
@@ -99,8 +103,8 @@ class DicNodeProperties {
         return (mChildrenPtNodeArrayPos != NOT_A_DICT_POS) || mDepth != mLeavingDepth;
     }
 
-    const int *getPrevWordIds() const {
-        return mPrevWordIds;
+    const WordIdArrayView getPrevWordIds() const {
+        return WordIdArrayView::fromArray(mPrevWordIds);
     }
 
     int getWordId() const {
@@ -116,7 +120,7 @@ class DicNodeProperties {
     int mWordId;
     uint16_t mDepth;
     uint16_t mLeavingDepth;
-    int mPrevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> mPrevWordIds;
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_PROPERTIES_H

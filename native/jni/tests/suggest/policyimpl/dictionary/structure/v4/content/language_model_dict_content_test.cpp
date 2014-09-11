@@ -18,6 +18,7 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
 #include <unordered_set>
 
 #include "utils/int_array_view.h"
@@ -97,8 +98,8 @@ TEST(LanguageModelDictContentTest, TestGetWordProbability) {
     const int bigramProbability = 20;
     const int trigramProbability = 30;
     const int wordId = 100;
-    const int prevWordIdArray[] = { 1, 2 };
-    const WordIdArrayView prevWordIds = WordIdArrayView::fromFixedSizeArray(prevWordIdArray);
+    const std::array<int, 2> prevWordIdArray = {{ 1, 2 }};
+    const WordIdArrayView prevWordIds = WordIdArrayView::fromArray(prevWordIdArray);
 
     const ProbabilityEntry probabilityEntry(flag, probability);
     languageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);

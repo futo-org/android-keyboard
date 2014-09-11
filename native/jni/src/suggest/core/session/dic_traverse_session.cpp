@@ -35,7 +35,7 @@ void DicTraverseSession::init(const Dictionary *const dictionary,
     mMultiWordCostMultiplier = getDictionaryStructurePolicy()->getHeaderStructurePolicy()
             ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
-    prevWordsInfo->getPrevWordIds(getDictionaryStructurePolicy(), mPrevWordsIds,
+    prevWordsInfo->getPrevWordIds(getDictionaryStructurePolicy(), mPrevWordsIds.data(),
             true /* tryLowerCaseSearch */);
 }
 

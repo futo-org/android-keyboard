@@ -35,9 +35,9 @@ const int MultiBigramMap::BigramMap::DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP =
 // Also caches the bigrams if there is space remaining and they have not been cached already.
 int MultiBigramMap::getBigramProbability(
         const DictionaryStructureWithBufferPolicy *const structurePolicy,
-        const int *const prevWordIds, const int nextWordId,
+        const WordIdArrayView prevWordIds, const int nextWordId,
         const int unigramProbability) {
-    if (!prevWordIds || prevWordIds[0] == NOT_A_WORD_ID) {
+    if (prevWordIds.empty() || prevWordIds[0] == NOT_A_WORD_ID) {
         return structurePolicy->getProbability(unigramProbability, NOT_A_PROBABILITY);
     }
     const auto mapPosition = mBigramMaps.find(prevWordIds[0]);
@@ -56,7 +56,7 @@ int MultiBigramMap::getBigramProbability(
 
 void MultiBigramMap::BigramMap::init(
         const DictionaryStructureWithBufferPolicy *const structurePolicy,
-        const int *const prevWordIds) {
+        const WordIdArrayView prevWordIds) {
     structurePolicy->iterateNgramEntries(prevWordIds, this /* listener */);
 }
 
@@ -83,16 +83,13 @@ void MultiBigramMap::BigramMap::onVisitEntry(const int ngramProbability, const i
 
 void MultiBigramMap::addBigramsForWord(
         const DictionaryStructureWithBufferPolicy *const structurePolicy,
-        const int *const prevWordIds) {
-    if (prevWordIds) {
-        mBigramMaps[prevWordIds[0]].init(structurePolicy, prevWordIds);
-    }
+        const WordIdArrayView prevWordIds) {
+    mBigramMaps[prevWordIds[0]].init(structurePolicy, prevWordIds);
 }
 
 int MultiBigramMap::readBigramProbabilityFromBinaryDictionary(
         const DictionaryStructureWithBufferPolicy *const structurePolicy,
-        const int *const prevWordIds, const int nextWordId,
-        const int unigramProbability) {
+        const WordIdArrayView prevWordIds, const int nextWordId, const int unigramProbability) {
     const int bigramProbability = structurePolicy->getProbabilityOfWord(prevWordIds, nextWordId);
     if (bigramProbability != NOT_A_PROBABILITY) {
         return bigramProbability;

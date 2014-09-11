@@ -18,6 +18,7 @@
 #define LATINIME_DIC_NODE_UTILS_H
 
 #include "defines.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -30,7 +31,7 @@ class DicNodeUtils {
  public:
     static void initAsRoot(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            const int *const prevWordIds, DicNode *const newRootDicNode);
+            const WordIdArrayView prevWordIds, DicNode *const newRootDicNode);
     static void initAsRootWithPreviousWord(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const DicNode *const prevWordLastDicNode, DicNode *const newRootDicNode);

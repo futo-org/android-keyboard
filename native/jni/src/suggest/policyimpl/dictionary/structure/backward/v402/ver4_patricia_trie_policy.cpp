@@ -116,7 +116,7 @@ int Ver4PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
 }
 
 const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
-        const int *const prevWordIds, const int wordId,
+        const WordIdArrayView prevWordIds, const int wordId,
         MultiBigramMap *const multiBigramMap) const {
     if (wordId == NOT_A_WORD_ID) {
         return WordAttributes();
@@ -128,7 +128,7 @@ const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
                 prevWordIds, wordId, ptNodeParams.getProbability());
         return getWordAttributes(probability, ptNodeParams);
     }
-    if (prevWordIds) {
+    if (!prevWordIds.empty()) {
         const int probability = getProbabilityOfWord(prevWordIds, wordId);
         if (probability != NOT_A_PROBABILITY) {
             return getWordAttributes(probability, ptNodeParams);
@@ -160,7 +160,7 @@ int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
     }
 }
 
-int Ver4PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds,
+int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,
         const int wordId) const {
     if (wordId == NOT_A_WORD_ID) {
         return NOT_A_PROBABILITY;
@@ -170,7 +170,7 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds,
     if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
-    if (prevWordIds) {
+    if (!prevWordIds.empty()) {
         const int bigramsPosition = getBigramsPositionOfPtNode(
                 getTerminalPtNodePosFromWordId(prevWordIds[0]));
         BinaryDictionaryBigramsIterator bigramsIt(&mBigramPolicy, bigramsPosition);
@@ -186,9 +186,9 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds,
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
-void Ver4PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
+void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordIds,
         NgramListener *const listener) const {
-    if (!prevWordIds) {
+    if (prevWordIds.empty()) {
         return;
     }
     const int bigramsPosition = getBigramsPositionOfPtNode(

@@ -23,6 +23,7 @@
 #include "suggest/core/dictionary/digraph_utils.h"
 #include "suggest/core/session/prev_words_info.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -34,11 +35,12 @@ namespace latinime {
 
     // No prev words information.
     PrevWordsInfo emptyPrevWordsInfo;
-    int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    emptyPrevWordsInfo.getPrevWordIds(dictionaryStructurePolicy, prevWordIds,
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIds;
+    emptyPrevWordsInfo.getPrevWordIds(dictionaryStructurePolicy, prevWordIds.data(),
             false /* tryLowerCaseSearch */);
     current.emplace_back();
-    DicNodeUtils::initAsRoot(dictionaryStructurePolicy, prevWordIds, &current.front());
+    DicNodeUtils::initAsRoot(dictionaryStructurePolicy,
+            IntArrayView::fromArray(prevWordIds), &current.front());
     for (int i = 0; i < codePointCount; ++i) {
         // The base-lower input is used to ignore case errors and accent errors.
         const int codePoint = CharUtils::toBaseLowerCase(codePoints[i]);
