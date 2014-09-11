@@ -22,6 +22,10 @@ import com.android.inputmethod.latin.settings.SettingsValues;
 
 public final class StatsUtils {
 
+    private StatsUtils() {
+        // Intentional empty constructor.
+    }
+
     public static void onCreate(final SettingsValues settingsValues,
             RichInputMethodManager richImm) {
     }
@@ -49,5 +53,14 @@ public final class StatsUtils {
     }
 
     public static void onRevertSwapPunctuation() {
+    }
+
+    public static void onFinishInputView() {
+    }
+
+    public static void onCreateInputView() {
+    }
+
+    public static void onStartInputView(int inputType, int displayOrientation, boolean restarting) {
     }
 }
