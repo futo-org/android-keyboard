@@ -46,6 +46,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
@@ -53,6 +54,7 @@ import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodSubtype;
+import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -85,6 +87,7 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
+import com.android.inputmethod.latin.utils.CursorAnchorInfoUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
@@ -152,6 +155,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO: Move these {@link View}s to {@link KeyboardSwitcher}.
     private View mInputView;
     private SuggestionStripView mSuggestionStripView;
+    private TextView mExtractEditText;
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
@@ -758,6 +762,49 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
+    public void setExtractView(final View view) {
+        final TextView prevExtractEditText = mExtractEditText;
+        super.setExtractView(view);
+        TextView nextExtractEditText = null;
+        if (view != null) {
+            final View extractEditText = view.findViewById(android.R.id.inputExtractEditText);
+            if (extractEditText instanceof TextView) {
+                nextExtractEditText = (TextView)extractEditText;
+            }
+        }
+        if (prevExtractEditText == nextExtractEditText) {
+            return;
+        }
+        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK && prevExtractEditText != null) {
+            prevExtractEditText.getViewTreeObserver().removeOnPreDrawListener(
+                    mExtractTextViewPreDrawListener);
+        }
+        mExtractEditText = nextExtractEditText;
+        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK && mExtractEditText != null) {
+            mExtractEditText.getViewTreeObserver().addOnPreDrawListener(
+                    mExtractTextViewPreDrawListener);
+        }
+    }
+
+    private final ViewTreeObserver.OnPreDrawListener mExtractTextViewPreDrawListener =
+            new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    onExtractTextViewPreDraw();
+                    return true;
+                }
+            };
+
+    private void onExtractTextViewPreDraw() {
+        if (!ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK || !isFullscreenMode()
+                || mExtractEditText == null) {
+            return;
+        }
+        final CursorAnchorInfo info = CursorAnchorInfoUtils.getCursorAnchorInfo(mExtractEditText);
+        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
+    }
+
+    @Override
     public void setCandidatesView(final View view) {
         // To ensure that CandidatesView will never be set.
         return;
@@ -1018,9 +1065,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // We cannot mark this method as @Override until new SDK becomes publicly available.
     // @Override
     public void onUpdateCursorAnchorInfo(final CursorAnchorInfo info) {
-        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
-            mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
+        if (!ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK || isFullscreenMode()) {
+            return;
         }
+        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
     }
 
     /**
