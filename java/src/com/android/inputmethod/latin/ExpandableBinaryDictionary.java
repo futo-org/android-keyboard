@@ -156,23 +156,25 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private void asyncExecuteTaskWithWriteLock(final Runnable task) {
-        asyncExecuteTaskWithLock(mLock.writeLock(), task);
+        asyncExecuteTaskWithLock(mLock.writeLock(), mDictName /* executorName */, task);
     }
 
-    private void asyncExecuteTaskWithLock(final Lock lock, final Runnable task) {
-        asyncPreCheckAndExecuteTaskWithLock(lock, null /* preCheckTask */, task);
+    private void asyncExecuteTaskWithLock(final Lock lock, final String executorName,
+            final Runnable task) {
+        asyncPreCheckAndExecuteTaskWithLock(lock, null /* preCheckTask */, executorName, task);
     }
 
     private void asyncPreCheckAndExecuteTaskWithWriteLock(
             final Callable<Boolean> preCheckTask, final Runnable task) {
-        asyncPreCheckAndExecuteTaskWithLock(mLock.writeLock(), preCheckTask, task);
+        asyncPreCheckAndExecuteTaskWithLock(mLock.writeLock(), preCheckTask,
+                mDictName /* executorName */, task);
 
     }
 
     // Execute task with lock when the result of preCheckTask is true or preCheckTask is null.
     private void asyncPreCheckAndExecuteTaskWithLock(final Lock lock,
-            final Callable<Boolean> preCheckTask, final Runnable task) {
-        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
+            final Callable<Boolean> preCheckTask, final String executorName, final Runnable task) {
+        ExecutorUtils.getExecutor(executorName).execute(new Runnable() {
             @Override
             public void run() {
                 if (preCheckTask != null) {
@@ -676,10 +678,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     public void dumpAllWordsForDebug() {
         reloadDictionaryIfRequired();
-        asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
+        asyncExecuteTaskWithLock(mLock.readLock(), "dumpAllWordsForDebug", new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "Dump dictionary: " + mDictName);
+                Log.d(TAG, "Dump dictionary: " + mDictName + " for " + mLocale);
                 try {
                     final DictionaryHeader header = mBinaryDictionary.getHeader();
                     Log.d(TAG, "Format version: " + mBinaryDictionary.getFormatVersion());

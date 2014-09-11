@@ -998,7 +998,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.cancelUpdateSuggestionStrip();
 
         mainKeyboardView.setMainDictionaryAvailability(
-                mDictionaryFacilitator.hasInitializedMainDictionary());
+                mDictionaryFacilitator.hasAtLeastOneInitializedMainDictionary());
         mainKeyboardView.setKeyPreviewPopupEnabled(currentSettingsValues.mKeyPreviewPopupOn,
                 currentSettingsValues.mKeyPreviewPopupDismissDelay);
         mainKeyboardView.setSlidingKeyInputPreviewEnabled(
