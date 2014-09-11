@@ -18,6 +18,7 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
 #include <vector>
 
 namespace latinime {
@@ -87,6 +88,27 @@ TEST(IntArrayViewTest, TestSkip) {
     for (size_t i = 0; i < subView.size(); ++i) {
         EXPECT_EQ(intVector[i + SKIP_COUNT], subView[i]);
     }
+}
+
+TEST(IntArrayViewTest, TestCopyToArray) {
+    // "{{" to suppress warning.
+    std::array<int, 7> buffer = {{10, 20, 30, 40, 50, 60, 70}};
+    const std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
+    IntArrayView intArrayView(intVector);
+    intArrayView.limit(0).copyToArray(&buffer, 0);
+    EXPECT_EQ(10, buffer[0]);
+    EXPECT_EQ(20, buffer[1]);
+    intArrayView.limit(1).copyToArray(&buffer, 0);
+    EXPECT_EQ(intVector[0], buffer[0]);
+    EXPECT_EQ(20, buffer[1]);
+    intArrayView.limit(1).copyToArray(&buffer, 1);
+    EXPECT_EQ(intVector[0], buffer[0]);
+    EXPECT_EQ(intVector[0], buffer[1]);
+    intArrayView.copyToArray(&buffer, 0);
+    for (size_t i = 0; i < intArrayView.size(); ++i) {
+        EXPECT_EQ(intVector[i], buffer[i]);
+    }
+    EXPECT_EQ(70, buffer[6]);
 }
 
 }  // namespace
