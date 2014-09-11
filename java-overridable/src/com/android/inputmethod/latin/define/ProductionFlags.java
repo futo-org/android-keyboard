@@ -40,4 +40,9 @@ public final class ProductionFlags {
      * When false, the metrics logging is not yet ready to be enabled.
      */
     public static final boolean IS_METRICS_LOGGING_SUPPORTED = false;
+
+    /**
+     * When {@code false}, the split keyboard is not yet ready to be enabled.
+     */
+    public static final boolean IS_SPLIT_KEYBOARD_SUPPORTED = true;
 }
