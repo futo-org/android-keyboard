@@ -31,6 +31,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -394,6 +395,25 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
 
     public CustomInputStyleSettingsFragment() {
         // Empty constructor for fragment generation.
+    }
+
+    static void updateCustomInputStylesSummary(final Preference pref) {
+        // When we are called from the Settings application but we are not already running, some
+        // singleton and utility classes may not have been initialized.  We have to call
+        // initialization method of these classes here. See {@link LatinIME#onCreate()}.
+        SubtypeLocaleUtils.init(pref.getContext());
+
+        final Resources res = pref.getContext().getResources();
+        final SharedPreferences prefs = pref.getSharedPreferences();
+        final String prefSubtype = Settings.readPrefAdditionalSubtypes(prefs, res);
+        final InputMethodSubtype[] subtypes =
+                AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefSubtype);
+        final ArrayList<String> subtypeNames = new ArrayList<>();
+        for (final InputMethodSubtype subtype : subtypes) {
+            subtypeNames.add(SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype));
+        }
+        // TODO: A delimiter of custom input styles should be localized.
+        pref.setSummary(TextUtils.join(", ", subtypeNames));
     }
 
     @Override
