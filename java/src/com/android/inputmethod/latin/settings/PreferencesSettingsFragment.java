@@ -27,7 +27,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
 /**
- * "Input preferences" settings sub screen.
+ * "Preferences" settings sub screen.
  *
  * This settings sub screen handles the following input preferences.
  * - Auto-capitalization
@@ -37,11 +37,11 @@ import com.android.inputmethod.latin.SubtypeSwitcher;
  * - Popup on keypress
  * - Voice input key
  */
-public final class InputSettingsFragment extends SubScreenFragment {
+public final class PreferencesSettingsFragment extends SubScreenFragment {
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
-        addPreferencesFromResource(R.xml.prefs_screen_input);
+        addPreferencesFromResource(R.xml.prefs_screen_preferences);
 
         final Resources res = getResources();
         final Context context = getActivity();
