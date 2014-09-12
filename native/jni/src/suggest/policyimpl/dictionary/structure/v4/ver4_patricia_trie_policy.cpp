@@ -16,6 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_policy.h"
 
+#include <array>
 #include <vector>
 
 #include "suggest/core/dicnode/dic_node.h"
@@ -111,7 +112,7 @@ int Ver4PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
 }
 
 const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
-        const int *const prevWordIds, const int wordId,
+        const WordIdArrayView prevWordIds, const int wordId,
         MultiBigramMap *const multiBigramMap) const {
     if (wordId == NOT_A_WORD_ID) {
         return WordAttributes();
@@ -121,27 +122,11 @@ const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
     const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     // TODO: Support n-gram.
     return WordAttributes(mBuffers->getLanguageModelDictContent()->getWordProbability(
-            WordIdArrayView::singleElementView(prevWordIds), wordId), ptNodeParams.isBlacklisted(),
+            prevWordIds.limit(1 /* maxSize */), wordId), ptNodeParams.isBlacklisted(),
             ptNodeParams.isNotAWord(), ptNodeParams.getProbability() == 0);
 }
 
-int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
-        const int bigramProbability) const {
-    if (mHeaderPolicy->isDecayingDict()) {
-        // Both probabilities are encoded. Decode them and get probability.
-        return ForgettingCurveUtils::getProbability(unigramProbability, bigramProbability);
-    } else {
-        if (unigramProbability == NOT_A_PROBABILITY) {
-            return NOT_A_PROBABILITY;
-        } else if (bigramProbability == NOT_A_PROBABILITY) {
-            return ProbabilityUtils::backoff(unigramProbability);
-        } else {
-            return bigramProbability;
-        }
-    }
-}
-
-int Ver4PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds,
+int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,
         const int wordId) const {
     if (wordId == NOT_A_WORD_ID) {
         return NOT_A_PROBABILITY;
@@ -152,22 +137,19 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds,
     if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
-    if (prevWordIds) {
-        // TODO: Support n-gram.
-        const ProbabilityEntry probabilityEntry =
-                mBuffers->getLanguageModelDictContent()->getNgramProbabilityEntry(
-                        IntArrayView::singleElementView(prevWordIds), wordId);
-        if (!probabilityEntry.isValid()) {
-            return NOT_A_PROBABILITY;
-        }
-        if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
-            return ForgettingCurveUtils::decodeProbability(probabilityEntry.getHistoricalInfo(),
-                    mHeaderPolicy);
-        } else {
-            return probabilityEntry.getProbability();
-        }
+    // TODO: Support n-gram.
+    const ProbabilityEntry probabilityEntry =
+            mBuffers->getLanguageModelDictContent()->getNgramProbabilityEntry(
+                    prevWordIds.limit(1 /* maxSize */), wordId);
+    if (!probabilityEntry.isValid()) {
+        return NOT_A_PROBABILITY;
     }
-    return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
+    if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
+        return ForgettingCurveUtils::decodeProbability(probabilityEntry.getHistoricalInfo(),
+                mHeaderPolicy);
+    } else {
+        return probabilityEntry.getProbability();
+    }
 }
 
 BinaryDictionaryShortcutIterator Ver4PatriciaTriePolicy::getShortcutIterator(
@@ -176,15 +158,15 @@ BinaryDictionaryShortcutIterator Ver4PatriciaTriePolicy::getShortcutIterator(
     return BinaryDictionaryShortcutIterator(&mShortcutPolicy, shortcutPos);
 }
 
-void Ver4PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
+void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordIds,
         NgramListener *const listener) const {
-    if (!prevWordIds) {
+    if (prevWordIds.empty()) {
         return;
     }
     // TODO: Support n-gram.
     const auto languageModelDictContent = mBuffers->getLanguageModelDictContent();
     for (const auto entry : languageModelDictContent->getProbabilityEntries(
-            WordIdArrayView::singleElementView(prevWordIds))) {
+            prevWordIds.limit(1 /* maxSize */))) {
         const ProbabilityEntry &probabilityEntry = entry.getProbabilityEntry();
         const int probability = probabilityEntry.hasHistoricalInfo() ?
                 ForgettingCurveUtils::decodeProbability(
@@ -321,8 +303,8 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
                 "length: %zd", bigramProperty->getTargetCodePoints()->size());
         return false;
     }
-    int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    prevWordsInfo->getPrevWordIds(this, prevWordIds, false /* tryLowerCaseSearch */);
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIds;
+    prevWordsInfo->getPrevWordIds(this, prevWordIds.data(), false /* tryLowerCaseSearch */);
     // TODO: Support N-gram.
     if (prevWordIds[0] == NOT_A_WORD_ID) {
         if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)) {
@@ -337,7 +319,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
                 return false;
             }
             // Refresh word ids.
-            prevWordsInfo->getPrevWordIds(this, prevWordIds, false /* tryLowerCaseSearch */);
+            prevWordsInfo->getPrevWordIds(this, prevWordIds.data(), false /* tryLowerCaseSearch */);
         } else {
             return false;
         }
@@ -348,14 +330,14 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
         return false;
     }
     bool addedNewEntry = false;
-    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    for (size_t i = 0; i < NELEMS(prevWordIds); ++i) {
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordsPtNodePos;
+    for (size_t i = 0; i < prevWordsPtNodePos.size(); ++i) {
         prevWordsPtNodePos[i] = mBuffers->getTerminalPositionLookupTable()
                 ->getTerminalPtNodePosition(prevWordIds[i]);
     }
     const int wordPtNodePos = mBuffers->getTerminalPositionLookupTable()
             ->getTerminalPtNodePosition(wordId);
-    if (mUpdatingHelper.addNgramEntry(WordIdArrayView::fromFixedSizeArray(prevWordsPtNodePos),
+    if (mUpdatingHelper.addNgramEntry(WordIdArrayView::fromArray(prevWordsPtNodePos),
             wordPtNodePos, bigramProperty, &addedNewEntry)) {
         if (addedNewEntry) {
             mBigramCount++;
@@ -385,8 +367,8 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
         AKLOGE("word is too long to remove n-gram entry form the dictionary. length: %zd",
                 wordCodePoints.size());
     }
-    int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    prevWordsInfo->getPrevWordIds(this, prevWordIds, false /* tryLowerCaseSerch */);
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIds;
+    prevWordsInfo->getPrevWordIds(this, prevWordIds.data(), false /* tryLowerCaseSerch */);
     // TODO: Support N-gram.
     if (prevWordIds[0] == NOT_A_WORD_ID) {
         return false;
@@ -395,14 +377,14 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     if (wordId == NOT_A_WORD_ID) {
         return false;
     }
-    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    for (size_t i = 0; i < NELEMS(prevWordIds); ++i) {
+    std::array<int, MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordsPtNodePos;
+    for (size_t i = 0; i < prevWordsPtNodePos.size(); ++i) {
         prevWordsPtNodePos[i] = mBuffers->getTerminalPositionLookupTable()
                 ->getTerminalPtNodePosition(prevWordIds[i]);
     }
     const int wordPtNodePos = mBuffers->getTerminalPositionLookupTable()
             ->getTerminalPtNodePosition(wordId);
-    if (mUpdatingHelper.removeNgramEntry(WordIdArrayView::fromFixedSizeArray(prevWordsPtNodePos),
+    if (mUpdatingHelper.removeNgramEntry(WordIdArrayView::fromArray(prevWordsPtNodePos),
             wordPtNodePos)) {
         mBigramCount--;
         return true;

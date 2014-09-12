@@ -105,7 +105,7 @@ class DicNode {
     }
 
     // Init for root with prevWordIds which is used for n-gram
-    void initAsRoot(const int rootPtNodeArrayPos, const int *const prevWordIds) {
+    void initAsRoot(const int rootPtNodeArrayPos, const WordIdArrayView prevWordIds) {
         mIsCachedForNextSuggestion = false;
         mDicNodeProperties.init(rootPtNodeArrayPos, prevWordIds);
         mDicNodeState.init();
@@ -115,12 +115,11 @@ class DicNode {
     // Init for root with previous word
     void initAsRootWithPreviousWord(const DicNode *const dicNode, const int rootPtNodeArrayPos) {
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
-        int newPrevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> newPrevWordIds;
         newPrevWordIds[0] = dicNode->mDicNodeProperties.getWordId();
-        for (size_t i = 1; i < NELEMS(newPrevWordIds); ++i) {
-            newPrevWordIds[i] = dicNode->getPrevWordIds()[i - 1];
-        }
-        mDicNodeProperties.init(rootPtNodeArrayPos, newPrevWordIds);
+        dicNode->getPrevWordIds().limit(newPrevWordIds.size() - 1)
+                .copyToArray(&newPrevWordIds, 1 /* offset */);
+        mDicNodeProperties.init(rootPtNodeArrayPos, WordIdArrayView::fromArray(newPrevWordIds));
         mDicNodeState.initAsRootWithPreviousWord(&dicNode->mDicNodeState,
                 dicNode->mDicNodeProperties.getDepth());
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
@@ -203,8 +202,7 @@ class DicNode {
         return mDicNodeProperties.getWordId();
     }
 
-    // TODO: Use view class to return word id array.
-    const int *getPrevWordIds() const {
+    const WordIdArrayView getPrevWordIds() const {
         return mDicNodeProperties.getPrevWordIds();
     }
 

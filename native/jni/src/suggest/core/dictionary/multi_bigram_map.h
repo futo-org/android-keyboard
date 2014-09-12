@@ -25,6 +25,7 @@
 #include "suggest/core/dictionary/bloom_filter.h"
 #include "suggest/core/dictionary/ngram_listener.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -39,7 +40,7 @@ class MultiBigramMap {
     // Look up the bigram probability for the given word pair from the cached bigram maps.
     // Also caches the bigrams if there is space remaining and they have not been cached already.
     int getBigramProbability(const DictionaryStructureWithBufferPolicy *const structurePolicy,
-            const int *const prevWordIds, const int nextWordId, const int unigramProbability);
+            const WordIdArrayView prevWordIds, const int nextWordId, const int unigramProbability);
 
     void clear() {
         mBigramMaps.clear();
@@ -57,7 +58,7 @@ class MultiBigramMap {
         virtual ~BigramMap() {}
 
         void init(const DictionaryStructureWithBufferPolicy *const structurePolicy,
-                const int *const prevWordIds);
+                const WordIdArrayView prevWordIds);
         int getBigramProbability(
                 const DictionaryStructureWithBufferPolicy *const structurePolicy,
                 const int nextWordId, const int unigramProbability) const;
@@ -70,11 +71,11 @@ class MultiBigramMap {
     };
 
     void addBigramsForWord(const DictionaryStructureWithBufferPolicy *const structurePolicy,
-            const int *const prevWordIds);
+            const WordIdArrayView prevWordIds);
 
     int readBigramProbabilityFromBinaryDictionary(
             const DictionaryStructureWithBufferPolicy *const structurePolicy,
-            const int *const prevWordIds, const int nextWordId, const int unigramProbability);
+            const WordIdArrayView prevWordIds, const int nextWordId, const int unigramProbability);
 
     static const size_t MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP;
     std::unordered_map<int, BigramMap> mBigramMaps;

@@ -28,7 +28,7 @@ namespace latinime {
 
 /* static */ void DicNodeUtils::initAsRoot(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const int *const prevWordIds, DicNode *const newRootDicNode) {
+        const WordIdArrayView prevWordIds, DicNode *const newRootDicNode) {
     newRootDicNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordIds);
 }
 
