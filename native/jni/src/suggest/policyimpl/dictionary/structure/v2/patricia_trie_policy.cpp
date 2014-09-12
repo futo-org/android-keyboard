@@ -282,8 +282,9 @@ int PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
     return getWordIdFromTerminalPtNodePos(ptNodePos);
 }
 
-const WordAttributes PatriciaTriePolicy::getWordAttributesInContext(const int *const prevWordIds,
-        const int wordId, MultiBigramMap *const multiBigramMap) const {
+const WordAttributes PatriciaTriePolicy::getWordAttributesInContext(
+        const WordIdArrayView prevWordIds, const int wordId,
+        MultiBigramMap *const multiBigramMap) const {
     if (wordId == NOT_A_WORD_ID) {
         return WordAttributes();
     }
@@ -295,7 +296,7 @@ const WordAttributes PatriciaTriePolicy::getWordAttributesInContext(const int *c
                 prevWordIds, wordId, ptNodeParams.getProbability());
         return getWordAttributes(probability, ptNodeParams);
     }
-    if (prevWordIds) {
+    if (!prevWordIds.empty()) {
         const int bigramProbability = getProbabilityOfWord(prevWordIds, wordId);
         if (bigramProbability != NOT_A_PROBABILITY) {
             return getWordAttributes(bigramProbability, ptNodeParams);
@@ -327,7 +328,8 @@ int PatriciaTriePolicy::getProbability(const int unigramProbability,
     }
 }
 
-int PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds, const int wordId) const {
+int PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,
+        const int wordId) const {
     if (wordId == NOT_A_WORD_ID) {
         return NOT_A_PROBABILITY;
     }
@@ -340,7 +342,7 @@ int PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds, const
         // for shortcuts).
         return NOT_A_PROBABILITY;
     }
-    if (prevWordIds) {
+    if (!prevWordIds.empty()) {
         const int bigramsPosition = getBigramsPositionOfPtNode(
                 getTerminalPtNodePosFromWordId(prevWordIds[0]));
         BinaryDictionaryBigramsIterator bigramsIt(&mBigramListPolicy, bigramsPosition);
@@ -356,9 +358,9 @@ int PatriciaTriePolicy::getProbabilityOfWord(const int *const prevWordIds, const
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
-void PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
+void PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordIds,
         NgramListener *const listener) const {
-    if (!prevWordIds) {
+    if (prevWordIds.empty()) {
         return;
     }
     const int bigramsPosition = getBigramsPositionOfPtNode(
@@ -371,8 +373,7 @@ void PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordIds,
     }
 }
 
-BinaryDictionaryShortcutIterator PatriciaTriePolicy::getShortcutIterator(
-        const int wordId) const {
+BinaryDictionaryShortcutIterator PatriciaTriePolicy::getShortcutIterator(const int wordId) const {
     const int shortcutPos = getShortcutPositionOfPtNode(getTerminalPtNodePosFromWordId(wordId));
     return BinaryDictionaryShortcutIterator(&mShortcutListPolicy, shortcutPos);
 }

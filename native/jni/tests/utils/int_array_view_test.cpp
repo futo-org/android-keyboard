@@ -46,8 +46,8 @@ TEST(IntArrayViewTest, TestIteration) {
 
 TEST(IntArrayViewTest, TestConstructFromArray) {
     const size_t ARRAY_SIZE = 100;
-    int intArray[ARRAY_SIZE];
-    const auto intArrayView = IntArrayView::fromFixedSizeArray(intArray);
+    std::array<int, ARRAY_SIZE> intArray;
+    const auto intArrayView = IntArrayView::fromArray(intArray);
     EXPECT_EQ(ARRAY_SIZE, intArrayView.size());
 }
 

@@ -58,15 +58,15 @@ class DictionaryStructureWithBufferPolicy {
     virtual int getWordId(const CodePointArrayView wordCodePoints,
             const bool forceLowerCaseSearch) const = 0;
 
-    virtual const WordAttributes getWordAttributesInContext(const int *const prevWordIds,
+    virtual const WordAttributes getWordAttributesInContext(const WordIdArrayView prevWordIds,
             const int wordId, MultiBigramMap *const multiBigramMap) const = 0;
 
     // TODO: Remove
     virtual int getProbability(const int unigramProbability, const int bigramProbability) const = 0;
 
-    virtual int getProbabilityOfWord(const int *const prevWordIds, const int wordId) const = 0;
+    virtual int getProbabilityOfWord(const WordIdArrayView prevWordIds, const int wordId) const = 0;
 
-    virtual void iterateNgramEntries(const int *const prevWordIds,
+    virtual void iterateNgramEntries(const WordIdArrayView prevWordIds,
             NgramListener *const listener) const = 0;
 
     virtual BinaryDictionaryShortcutIterator getShortcutIterator(const int wordId) const = 0;
