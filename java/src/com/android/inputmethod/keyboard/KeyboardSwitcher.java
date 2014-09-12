@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -256,13 +255,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onToggleEmojiKeyboard() {
-        if (mKeyboardLayoutSet == null) {
-            return;
-        }
-        if (isShowingEmojiPalettes()) {
-            setAlphabetKeyboard();
-        } else {
+        if (mKeyboardLayoutSet == null || !isShowingEmojiPalettes()) {
+            mLatinIME.startShowingInputView();
             setEmojiKeyboard();
+        } else {
+            mLatinIME.stopShowingInputView();
+            setAlphabetKeyboard();
         }
     }
 
