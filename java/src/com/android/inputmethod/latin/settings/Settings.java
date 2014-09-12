@@ -42,9 +42,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Settings.class.getSimpleName();
     // Settings screens
-    public static final String SCREEN_INPUT = "screen_input";
+    public static final String SCREEN_PREFERENCES = "screen_preferences";
+    public static final String SCREEN_APPEARANCE = "screen_appearance";
     public static final String SCREEN_THEME = "screen_theme";
-    public static final String SCREEN_MULTI_LINGUAL = "screen_multi_lingual";
+    public static final String SCREEN_MULTILINGUAL = "screen_multilingual";
     public static final String SCREEN_GESTURE = "screen_gesture";
     public static final String SCREEN_CORRECTION = "screen_correction";
     public static final String SCREEN_ADVANCED = "screen_advanced";
@@ -69,6 +70,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_key_use_double_space_period";
     public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =
             "pref_key_block_potentially_offensive";
+    // No multilingual options in Android L and above for now.
+    public static final boolean SHOW_MULTILINGUAL_SETTINGS =
+            BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
     public static final boolean ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS =
             BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
     public static final boolean HAS_UI_TO_ACCEPT_TYPED_WORD =
