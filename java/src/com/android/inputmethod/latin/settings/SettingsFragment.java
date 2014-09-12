@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,12 +47,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         preferenceScreen.setTitle(
                 ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ThemeSettingsFragment.updateKeyboardThemeSummary(findPreference(Settings.SCREEN_THEME));
+        if (!Settings.SHOW_MULTILINGUAL_SETTINGS) {
+            final Preference multilingualOptions = findPreference(Settings.SCREEN_MULTILINGUAL);
+            preferenceScreen.removePreference(multilingualOptions);
+        }
     }
 
     @Override
