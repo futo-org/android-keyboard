@@ -19,12 +19,13 @@ package com.android.inputmethod.latin.utils;
 import com.android.inputmethod.dictionarypack.DictionarySettingsFragment;
 import com.android.inputmethod.latin.about.AboutPreferences;
 import com.android.inputmethod.latin.settings.AdvancedSettingsFragment;
+import com.android.inputmethod.latin.settings.AppearanceSettingsFragment;
 import com.android.inputmethod.latin.settings.CorrectionSettingsFragment;
 import com.android.inputmethod.latin.settings.CustomInputStyleSettingsFragment;
 import com.android.inputmethod.latin.settings.DebugSettingsFragment;
 import com.android.inputmethod.latin.settings.GestureSettingsFragment;
-import com.android.inputmethod.latin.settings.InputSettingsFragment;
 import com.android.inputmethod.latin.settings.MultiLingualSettingsFragment;
+import com.android.inputmethod.latin.settings.PreferencesSettingsFragment;
 import com.android.inputmethod.latin.settings.SettingsFragment;
 import com.android.inputmethod.latin.settings.ThemeSettingsFragment;
 import com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment;
@@ -40,7 +41,8 @@ public class FragmentUtils {
     static {
         sLatinImeFragments.add(DictionarySettingsFragment.class.getName());
         sLatinImeFragments.add(AboutPreferences.class.getName());
-        sLatinImeFragments.add(InputSettingsFragment.class.getName());
+        sLatinImeFragments.add(PreferencesSettingsFragment.class.getName());
+        sLatinImeFragments.add(AppearanceSettingsFragment.class.getName());
         sLatinImeFragments.add(ThemeSettingsFragment.class.getName());
         sLatinImeFragments.add(MultiLingualSettingsFragment.class.getName());
         sLatinImeFragments.add(CustomInputStyleSettingsFragment.class.getName());

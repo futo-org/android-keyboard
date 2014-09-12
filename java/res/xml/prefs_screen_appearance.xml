@@ -16,8 +16,14 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    android:title="@string/settings_screen_theme"
-    android:key="screen_theme">
-    <!-- Keyboard theme list will be populated programmatically here. -->
+    android:key="screen_appearance"
+    android:title="@string/settings_screen_appearance">
+    <PreferenceScreen
+        android:fragment="com.android.inputmethod.latin.settings.ThemeSettingsFragment"
+        android:key="screen_theme"
+        android:title="@string/settings_screen_theme" />
+    <PreferenceScreen
+        android:fragment="com.android.inputmethod.latin.settings.CustomInputStyleSettingsFragment"
+        android:key="custom_input_styles"
+        android:title="@string/custom_input_styles_title" />
 </PreferenceScreen>
