@@ -40,7 +40,7 @@ public final class DicTraverseSession {
     public final int[] mOutputTypes = new int[MAX_RESULTS];
     // Only one result is ever used
     public final int[] mOutputAutoCommitFirstWordConfidence = new int[1];
-    public final float[] mInputOutputLanguageWeight = new float[1];
+    public final float[] mInputOutputWeightOfLangModelVsSpatialModel = new float[1];
 
     public final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions();
 

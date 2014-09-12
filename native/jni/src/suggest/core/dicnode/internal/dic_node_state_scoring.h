@@ -103,8 +103,10 @@ class DicNodeStateScoring {
         return getCompoundDistance(1.0f);
     }
 
-    float getCompoundDistance(const float languageWeight) const {
-        return mSpatialDistance + mLanguageDistance * languageWeight;
+    float getCompoundDistance(
+            const float weightOfLangModelVsSpatialModel) const {
+        return mSpatialDistance
+                + mLanguageDistance * weightOfLangModelVsSpatialModel;
     }
 
     float getNormalizedCompoundDistance() const {

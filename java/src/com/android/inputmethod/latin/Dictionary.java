@@ -31,7 +31,7 @@ import java.util.HashSet;
  */
 public abstract class Dictionary {
     public static final int NOT_A_PROBABILITY = -1;
-    public static final float NOT_A_LANGUAGE_WEIGHT = -1.0f;
+    public static final float NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL = -1.0f;
 
     // The following types do not actually come from real dictionary instances, so we create
     // corresponding instances.
@@ -88,15 +88,18 @@ public abstract class Dictionary {
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @param settingsValuesForSuggestion the settings values used for the suggestion.
      * @param sessionId the session id.
-     * @param inOutLanguageWeight the language weight used for generating suggestions.
-     * inOutLanguageWeight is a float array that has only one element. This can be updated when the
-     * different language weight is used.
+     * @param weightForLocale the weight given to this locale, to multiply the output scores for
+     * multilingual input.
+     * @param inOutWeightOfLangModelVsSpatialModel the weight of the language model as a ratio of
+     * the spatial model, used for generating suggestions. inOutWeightOfLangModelVsSpatialModel is
+     * a float array that has only one element. This can be updated when a different value is used.
      * @return the list of suggestions (possibly null if none)
      */
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
-            final int sessionId, final float[] inOutLanguageWeight);
+            final int sessionId, final float weightForLocale,
+            final float[] inOutWeightOfLangModelVsSpatialModel);
 
     /**
      * Checks if the given word has to be treated as a valid word. Please note that some
@@ -190,7 +193,8 @@ public abstract class Dictionary {
         public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
                 final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
                 final SettingsValuesForSuggestion settingsValuesForSuggestion,
-                final int sessionId, final float[] inOutLanguageWeight) {
+                final int sessionId, final float weightForLocale,
+                final float[] inOutWeightOfLangModelVsSpatialModel) {
             return null;
         }
 

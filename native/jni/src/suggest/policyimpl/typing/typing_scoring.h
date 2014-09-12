@@ -33,10 +33,12 @@ class TypingScoring : public Scoring {
     static const TypingScoring *getInstance() { return &sInstance; }
 
     AK_FORCE_INLINE void getMostProbableString(const DicTraverseSession *const traverseSession,
-            const float languageWeight, SuggestionResults *const outSuggestionResults) const {}
+            const float weightOfLangModelVsSpatialModel,
+            SuggestionResults *const outSuggestionResults) const {}
 
-    AK_FORCE_INLINE float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,
-            DicNode *const terminals, const int size) const {
+    AK_FORCE_INLINE float getAdjustedWeightOfLangModelVsSpatialModel(
+            DicTraverseSession *const traverseSession, DicNode *const terminals,
+            const int size) const {
         return 1.0f;
     }
 

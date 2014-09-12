@@ -182,7 +182,8 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         jobjectArray prevWordCodePointArrays, jbooleanArray isBeginningOfSentenceArray,
         jint prevWordCount, jintArray outSuggestionCount, jintArray outCodePointsArray,
         jintArray outScoresArray, jintArray outSpaceIndicesArray, jintArray outTypesArray,
-        jintArray outAutoCommitFirstWordConfidenceArray, jfloatArray inOutLanguageWeight) {
+        jintArray outAutoCommitFirstWordConfidenceArray,
+        jfloatArray inOutWeightOfLangModelVsSpatialModel) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     // Assign 0 to outSuggestionCount here in case of returning earlier in this method.
     JniDataUtils::putIntToArray(env, outSuggestionCount, 0 /* index */, 0);
@@ -237,8 +238,9 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         ASSERT(false);
         return;
     }
-    float languageWeight;
-    env->GetFloatArrayRegion(inOutLanguageWeight, 0, 1 /* len */, &languageWeight);
+    float weightOfLangModelVsSpatialModel;
+    env->GetFloatArrayRegion(inOutWeightOfLangModelVsSpatialModel, 0, 1 /* len */,
+            &weightOfLangModelVsSpatialModel);
     SuggestionResults suggestionResults(MAX_RESULTS);
     const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
             prevWordCodePointArrays, isBeginningOfSentenceArray, prevWordCount);
@@ -246,13 +248,13 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         // TODO: Use SuggestionResults to return suggestions.
         dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
                 times, pointerIds, inputCodePoints, inputSize, &prevWordsInfo,
-                &givenSuggestOptions, languageWeight, &suggestionResults);
+                &givenSuggestOptions, weightOfLangModelVsSpatialModel, &suggestionResults);
     } else {
         dictionary->getPredictions(&prevWordsInfo, &suggestionResults);
     }
     suggestionResults.outputSuggestions(env, outSuggestionCount, outCodePointsArray,
             outScoresArray, outSpaceIndicesArray, outTypesArray,
-            outAutoCommitFirstWordConfidenceArray, inOutLanguageWeight);
+            outAutoCommitFirstWordConfidenceArray, inOutWeightOfLangModelVsSpatialModel);
 }
 
 static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, jlong dict,

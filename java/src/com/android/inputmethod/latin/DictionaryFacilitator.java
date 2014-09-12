@@ -104,6 +104,7 @@ public class DictionaryFacilitator {
     private static class DictionaryGroup {
         public final Locale mLocale;
         private Dictionary mMainDict;
+        public float mWeightForLocale = 1.0f;
         public final ConcurrentHashMap<String, ExpandableBinaryDictionary> mSubDictMap =
                 new ConcurrentHashMap<>();
 
@@ -598,14 +599,16 @@ public class DictionaryFacilitator {
         final SuggestionResults suggestionResults = new SuggestionResults(
                 SuggestedWords.MAX_SUGGESTIONS,
                 prevWordsInfo.mPrevWordsInfo[0].mIsBeginningOfSentence);
-        final float[] languageWeight = new float[] { Dictionary.NOT_A_LANGUAGE_WEIGHT };
+        final float[] weightOfLangModelVsSpatialModel =
+                new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
             for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
                 if (null == dictionary) continue;
                 final ArrayList<SuggestedWordInfo> dictionarySuggestions =
                         dictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
-                                settingsValuesForSuggestion, sessionId, languageWeight);
+                                settingsValuesForSuggestion, sessionId,
+                                dictionaryGroup.mWeightForLocale, weightOfLangModelVsSpatialModel);
                 if (null == dictionarySuggestions) continue;
                 suggestionResults.addAll(dictionarySuggestions);
                 if (null != suggestionResults.mRawSuggestions) {

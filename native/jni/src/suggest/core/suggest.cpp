@@ -45,7 +45,7 @@ const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
  */
 void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, const float languageWeight,
+        int inputSize, const float weightOfLangModelVsSpatialModel,
         SuggestionResults *const outSuggestionResults) const {
     PROF_OPEN;
     PROF_START(0);
@@ -68,7 +68,7 @@ void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
     PROF_END(1);
     PROF_START(2);
     SuggestionsOutputUtils::outputSuggestions(
-            SCORING, tSession, languageWeight, outSuggestionResults);
+            SCORING, tSession, weightOfLangModelVsSpatialModel, outSuggestionResults);
     PROF_END(2);
     PROF_CLOSE;
 }
