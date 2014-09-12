@@ -52,7 +52,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.TextView;
 
@@ -87,8 +86,8 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
-import com.android.inputmethod.latin.utils.CursorAnchorInfoUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
+import com.android.inputmethod.latin.utils.CursorAnchorInfoUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
@@ -162,6 +161,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
     private final SpecialKeyDetector mSpecialKeyDetector;
+    // Working variable for {@link #startShowingInputView()} and
+    // {@link #onEvaluateInputViewShown()}.
+    private boolean mIsExecutingStartShowingInputView;
 
     // Object for reacting to adding/removing a dictionary pack.
     private final BroadcastReceiver mDictionaryPackInstallReceiver =
@@ -1187,22 +1189,24 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         outInsets.visibleTopInsets = visibleTopY;
     }
 
-    @Override
-    public boolean onEvaluateInputViewShown() {
-        // Always show {@link InputView}.
-        return true;
+    public void startShowingInputView() {
+        mIsExecutingStartShowingInputView = true;
+        // This {@link #showWindow(boolean)} will eventually call back
+        // {@link #onEvaluateInputViewShown()}.
+        showWindow(true /* showInput */);
+        mIsExecutingStartShowingInputView = false;
+    }
+
+    public void stopShowingInputView() {
+        showWindow(false /* showInput */);
     }
 
     @Override
-    public boolean onShowInputRequested(final int flags, final boolean configChange) {
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        if ((flags & InputMethod.SHOW_EXPLICIT) == 0 && settingsValues.mHasHardwareKeyboard) {
-            // Even when IME is implicitly shown and physical keyboard is connected, we should
-            // show {@link InputView}.
-            // See {@link InputMethodService#onShowInputRequested(int,boolean)}.
+    public boolean onEvaluateInputViewShown() {
+        if (mIsExecutingStartShowingInputView) {
             return true;
         }
-        return super.onShowInputRequested(flags, configChange);
+        return super.onEvaluateInputViewShown();
     }
 
     @Override
@@ -1221,9 +1225,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // hack for now.  Let's get rid of this once the framework gets fixed.
             final EditorInfo ei = getCurrentInputEditorInfo();
             return !(ei != null && ((ei.imeOptions & EditorInfo.IME_FLAG_NO_EXTRACT_UI) != 0));
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -1273,9 +1276,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (null == keyboard) {
             return CoordinateUtils.newCoordinateArray(codePoints.length,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        } else {
-            return keyboard.getCoordinates(codePoints);
         }
+        return keyboard.getCoordinates(codePoints);
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
