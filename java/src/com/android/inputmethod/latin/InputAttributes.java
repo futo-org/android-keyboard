@@ -42,6 +42,7 @@ public final class InputAttributes {
     final public boolean mApplicationSpecifiedCompletionOn;
     final public boolean mShouldInsertSpacesAutomatically;
     final public boolean mShouldShowVoiceInputKey;
+    final public boolean mIsGeneralTextInput;
     final private int mInputType;
     final private EditorInfo mEditorInfo;
     final private String mPackageNameForPrivateImeOptions;
@@ -76,6 +77,7 @@ public final class InputAttributes {
             mApplicationSpecifiedCompletionOn = false;
             mShouldInsertSpacesAutomatically = false;
             mShouldShowVoiceInputKey = false;
+            mIsGeneralTextInput = false;
             return;
         }
         // inputClass == InputType.TYPE_CLASS_TEXT
@@ -117,6 +119,15 @@ public final class InputAttributes {
                 || (!flagAutoCorrect && !flagMultiLine);
 
         mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
+
+        // If we come here, inputClass is always TYPE_CLASS_TEXT
+        mIsGeneralTextInput = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS != variation
+                && InputType.TYPE_TEXT_VARIATION_PASSWORD != variation
+                && InputType.TYPE_TEXT_VARIATION_PHONETIC != variation
+                && InputType.TYPE_TEXT_VARIATION_URI != variation
+                && InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD != variation
+                && InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS != variation
+                && InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD != variation;
     }
 
     public boolean isTypeNull() {
