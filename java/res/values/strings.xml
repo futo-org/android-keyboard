@@ -38,8 +38,8 @@
 
     <!-- Settings screen title for preferences [CHAR LIMIT=33]-->
     <string name="settings_screen_preferences">Preferences</string>
-    <!-- Settings screen title for appearance preferences [CHAR LIMIT=33] -->
-    <string name="settings_screen_appearance">Appearance</string>
+    <!-- Settings screen title for appearance & layouts preferences [CHAR LIMIT=33] -->
+    <string name="settings_screen_appearance">Appearance &amp; layouts</string>
     <!-- Settings screen title for multilingual options [CHAR_LIMIT=33] -->
     <string name="settings_screen_multilingual">Multilingual options</string>
     <!-- Settings screen title for gesture typing preferences [CHAR_LIMIT=33] -->
