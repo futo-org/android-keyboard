@@ -20,23 +20,22 @@ import android.os.Bundle;
 
 import com.android.inputmethod.latin.R;
 
-import java.util.ArrayList;
 
 /**
- * "Multilingual options" settings sub screen.
- *
- * This settings sub screen handles the following input preferences.
- * - Language switch key
- * - Switch to other input methods
+ * "Appearance" settings sub screen.
  */
-public final class MultiLingualSettingsFragment extends SubScreenFragment {
+public final class AppearanceSettingsFragment extends SubScreenFragment {
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
-        addPreferencesFromResource(R.xml.prefs_screen_multilingual);
-        if (!Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS) {
-            removePreference(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY);
-            removePreference(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST);
-        }
+        addPreferencesFromResource(R.xml.prefs_screen_appearance);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        CustomInputStyleSettingsFragment.updateCustomInputStylesSummary(
+                findPreference(Settings.PREF_CUSTOM_INPUT_STYLES));
+        ThemeSettingsFragment.updateKeyboardThemeSummary(findPreference(Settings.SCREEN_THEME));
     }
 }
