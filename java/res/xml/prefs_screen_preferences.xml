@@ -17,7 +17,7 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    android:title="@string/settings_screen_input">
+    android:title="@string/settings_screen_preferences">
     <CheckBoxPreference
         android:key="auto_cap"
         android:title="@string/auto_cap"
