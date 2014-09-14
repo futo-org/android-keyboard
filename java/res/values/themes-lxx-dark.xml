@@ -60,7 +60,8 @@
     >
         <item name="moreKeysKeyboardForActionLayout">@layout/more_keys_keyboard_for_action_lxx</item>
         <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_lxx_dark</item>
-        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
+        <item name="keyPreviewHeight">@dimen/config_key_preview_height_lxx</item>
+        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_lxx</item>
         <item name="keyPreviewShowUpAnimator">@anim/key_preview_show_up_lxx</item>
         <item name="keyPreviewDismissAnimator">@anim/key_preview_dismiss_lxx</item>
         <item name="gestureFloatingPreviewTextColor">@color/auto_correct_color_lxx_dark</item>

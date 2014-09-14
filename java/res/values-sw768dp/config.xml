@@ -32,7 +32,6 @@
     <fraction name="config_key_horizontal_gap_holo">1.066%p</fraction>
     <!-- config_more_keys_keyboard_key_height x -0.5 -->
     <dimen name="config_more_keys_keyboard_vertical_correction_holo">-31.5dp</dimen>
-    <dimen name="config_key_preview_offset_holo">8.0dp</dimen>
 
     <dimen name="config_more_keys_keyboard_key_height">63.0dp</dimen>
     <dimen name="config_more_keys_keyboard_key_horizontal_padding">12dp</dimen>
@@ -40,7 +39,6 @@
     <!-- config_more_keys_keyboard_key_height x 1.2 -->
     <dimen name="config_more_keys_keyboard_slide_allowance">98.3dp</dimen>
 
-    <dimen name="config_key_preview_height">94.5dp</dimen>
     <fraction name="config_key_preview_text_ratio">50%</fraction>
     <fraction name="config_key_letter_ratio_holo">40%</fraction>
     <fraction name="config_key_letter_ratio_lxx">50%</fraction>
