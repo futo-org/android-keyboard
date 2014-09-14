@@ -35,12 +35,11 @@ namespace latinime {
 
     // No prev words information.
     PrevWordsInfo emptyPrevWordsInfo;
-    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIds;
-    emptyPrevWordsInfo.getPrevWordIds(dictionaryStructurePolicy, prevWordIds.data(),
-            false /* tryLowerCaseSearch */);
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
+    const WordIdArrayView prevWordIds = emptyPrevWordsInfo.getPrevWordIds(
+            dictionaryStructurePolicy, &prevWordIdArray, false /* tryLowerCaseSearch */);
     current.emplace_back();
-    DicNodeUtils::initAsRoot(dictionaryStructurePolicy,
-            IntArrayView::fromArray(prevWordIds), &current.front());
+    DicNodeUtils::initAsRoot(dictionaryStructurePolicy, prevWordIds, &current.front());
     for (int i = 0; i < codePointCount; ++i) {
         // The base-lower input is used to ignore case errors and accent errors.
         const int codePoint = CharUtils::toBaseLowerCase(codePoints[i]);
