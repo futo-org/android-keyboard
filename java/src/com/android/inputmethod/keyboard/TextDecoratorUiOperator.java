@@ -44,12 +44,10 @@ public interface TextDecoratorUiOperator {
 
     /**
      * Called when the layout should be updated.
-     * @param isCommitMode {@code true} if the commit indicator should be shown. Show the
-     * add-to-dictionary indicator otherwise.
      * @param matrix The matrix that transforms the local coordinates into the screen coordinates.
      * @param indicatorBounds The bounding box of the indicator, in local coordinates.
      * @param composingTextBounds The bounding box of the composing text, in local coordinates.
      */
-    void layoutUi(final boolean isCommitMode, final Matrix matrix, final RectF indicatorBounds,
+    void layoutUi(final Matrix matrix, final RectF indicatorBounds,
             final RectF composingTextBounds);
 }

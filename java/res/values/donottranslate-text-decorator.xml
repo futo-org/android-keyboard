@@ -19,61 +19,10 @@
 -->
 
 <resources>
-    <!-- The delay time in milliseconds from to show the commit indicator -->
-    <integer name="text_decorator_delay_in_milliseconds_to_show_commit_indicator">
-        500
-    </integer>
-
     <!-- The extra margin in dp around the hit area of the commit/add-to-dictionary indicator -->
     <integer name="text_decorator_hit_area_margin_in_dp">
         4
     </integer>
-
-    <!-- If true, the commit/add-to-text indicator will be suppressed when the word isn't going to
-         trigger auto-correction. -->
-    <bool name="text_decorator_only_for_auto_correction">true</bool>
-
-    <!-- If true, the commit/add-to-text indicator will be suppressed when the word is already in
-         the dictionary. -->
-    <bool name="text_decorator_only_for_out_of_vocabulary">false</bool>
-
-    <!-- Background color to be used to highlight the target text when the commit indicator is
-         visible. -->
-    <color name="text_decorator_commit_indicator_text_highlight_color">
-        #B6E2DE
-    </color>
-
-    <!-- Background color of the commit indicator. -->
-    <color name="text_decorator_commit_indicator_background_color">
-        #48B6AC
-    </color>
-
-    <!-- Foreground color of the commit indicator. -->
-    <color name="text_decorator_commit_indicator_foreground_color">
-        #FFFFFF
-    </color>
-
-    <!-- Viewport size of "text_decorator_commit_indicator_path". -->
-    <integer name="text_decorator_commit_indicator_path_size">
-        480
-    </integer>
-
-    <!-- Coordinates of the closed path to be used to render the commit indicator.
-         The format is:  X[0], Y[0], X[1], Y[1], ..., X[N-1], Y[N-1] -->
-    <integer-array name="text_decorator_commit_indicator_path">
-        <item>180</item>
-        <item>323</item>
-        <item>97</item>
-        <item>240</item>
-        <item>68</item>
-        <item>268</item>
-        <item>180</item>
-        <item>380</item>
-        <item>420</item>
-        <item>140</item>
-        <item>392</item>
-        <item>112</item>
-    </integer-array>
 
     <!-- Background color to be used to highlight the target text when the add-to-dictionary
          indicator is visible. -->
