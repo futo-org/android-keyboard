@@ -26,12 +26,17 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Да вибрира при натискане на клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при натискане на клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Изскачащ прозорец при натискане на клавиш"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"Въвеждане: Предпочитания"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"Облик"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Опции за няколко езика"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"Въвежд. чрез жест: Предпоч."</string>
+    <!-- no translation found for settings_screen_preferences (2696713156722014624) -->
+    <skip />
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Облик и оформления"</string>
+    <!-- no translation found for settings_screen_multilingual (1391301621464509659) -->
+    <skip />
+    <!-- no translation found for settings_screen_gesture (8826372746901183556) -->
+    <skip />
     <string name="settings_screen_correction" msgid="1616818407747682955">"Коригиране на текст"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Разширени"</string>
+    <!-- no translation found for settings_screen_theme (2137262503543943871) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Други методи за въвеждане"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавишът за превкл. на езика обхваща и други методи за въвеждане"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиш за превкл. на езика"</string>
@@ -74,9 +79,11 @@
     <string name="voice_input" msgid="3583258583521397548">"Клавиш за гласово въвеждане"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Няма активирани методи на гласово въвеждане. Проверете настройките за език и въвеждане."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Конфигуриране на въвеждането"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Входни езици"</string>
+    <!-- no translation found for language_selection_title (3666971864764478269) -->
+    <skip />
     <string name="help_and_feedback" msgid="5328219371839879161">"Помощ и отзиви"</string>
-    <string name="select_language" msgid="3693815588777926848">"Езици за въвеждане"</string>
+    <!-- no translation found for select_language (5709487854987078367) -->
+    <skip />
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Докоснете отново, за да запазите"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Докоснете тук, за да запазите"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Има достъп до речник"</string>

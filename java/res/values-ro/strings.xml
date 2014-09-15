@@ -26,12 +26,18 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrare la apăsarea tastei"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sunet la apăsarea tastei"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up la apăsarea tastei"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"Preferințe pentru intrare"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"Aspect"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Opțiuni pt. diverse limbi"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"Prefer. tastare gestuală"</string>
+    <!-- no translation found for settings_screen_preferences (2696713156722014624) -->
+    <skip />
+    <!-- no translation found for settings_screen_appearance (9153102634339912029) -->
+    <skip />
+    <!-- no translation found for settings_screen_multilingual (1391301621464509659) -->
+    <skip />
+    <!-- no translation found for settings_screen_gesture (8826372746901183556) -->
+    <skip />
     <string name="settings_screen_correction" msgid="1616818407747682955">"Corectare text"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Setări avansate"</string>
+    <!-- no translation found for settings_screen_theme (2137262503543943871) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Comut. alte metode de introd."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasta de comutare între limbi include şi alte metode de introd."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tastă comutare limbi"</string>
@@ -74,9 +80,11 @@
     <string name="voice_input" msgid="3583258583521397548">"Tastă pentru intrarea vocală"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nicio metodă de intrare vocală activată. Verificați setările pentru limbă și introducere de text."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configuraţi metodele de intrare"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
+    <!-- no translation found for language_selection_title (3666971864764478269) -->
+    <skip />
     <string name="help_and_feedback" msgid="5328219371839879161">"Ajutor și feedback"</string>
-    <string name="select_language" msgid="3693815588777926848">"Limbi de introducere de text"</string>
+    <!-- no translation found for select_language (5709487854987078367) -->
+    <skip />
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Atingeţi din nou pentru a salva"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Atingeți aici pentru a salva"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>
