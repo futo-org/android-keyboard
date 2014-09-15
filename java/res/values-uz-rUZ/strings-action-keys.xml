@@ -20,19 +20,12 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for label_go_key (4033615332628671065) -->
-    <skip />
-    <!-- no translation found for label_next_key (5586407279258592635) -->
-    <skip />
-    <!-- no translation found for label_previous_key (1421141755779895275) -->
-    <skip />
-    <!-- no translation found for label_done_key (7564866296502630852) -->
-    <skip />
-    <!-- no translation found for label_send_key (482252074224462163) -->
-    <skip />
+    <string name="label_go_key" msgid="4033615332628671065">"OK"</string>
+    <string name="label_next_key" msgid="5586407279258592635">"Keyingi"</string>
+    <string name="label_previous_key" msgid="1421141755779895275">"Avvalgi"</string>
+    <string name="label_done_key" msgid="7564866296502630852">"Tayyor"</string>
+    <string name="label_send_key" msgid="482252074224462163">"Yuborish"</string>
     <string name="label_search_key" msgid="7965186050435796642">"Qidiruv"</string>
-    <!-- no translation found for label_pause_key (2225922926459730642) -->
-    <skip />
-    <!-- no translation found for label_wait_key (5891247853595466039) -->
-    <skip />
+    <string name="label_pause_key" msgid="2225922926459730642">"Pauza"</string>
+    <string name="label_wait_key" msgid="5891247853595466039">"Kutish"</string>
 </resources>
