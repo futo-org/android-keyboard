@@ -20,6 +20,8 @@ import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.settings.SettingsValues;
 
+import javax.annotation.Nullable;
+
 public final class StatsUtils {
 
     private StatsUtils() {
@@ -62,5 +64,9 @@ public final class StatsUtils {
     }
 
     public static void onStartInputView(int inputType, int displayOrientation, boolean restarting) {
+    }
+
+    public static void onAutoCorrection(final String typedWord, final String autoCorrectionWord,
+            final boolean isBatchInput, @Nullable final String dictionaryType) {
     }
 }
