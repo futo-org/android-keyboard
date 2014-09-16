@@ -702,6 +702,10 @@ public class Key implements Comparable<Key> {
         return ((mLabelFlags | defaultFlags) & LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO) != 0;
     }
 
+    public final boolean hasCustomActionLabel() {
+        return (mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0;
+    }
+
     private final boolean isShiftedLetterActivated() {
         return (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0
                 && !TextUtils.isEmpty(mHintLabel);
