@@ -121,9 +121,10 @@ const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
             mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
     const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     // TODO: Support n-gram.
-    return WordAttributes(mBuffers->getLanguageModelDictContent()->getWordProbability(
-            prevWordIds.limit(1 /* maxSize */), wordId), ptNodeParams.isBlacklisted(),
-            ptNodeParams.isNotAWord(), ptNodeParams.getProbability() == 0);
+    const int probability = mBuffers->getLanguageModelDictContent()->getWordProbability(
+            prevWordIds.limit(1 /* maxSize */), wordId, mHeaderPolicy);
+    return WordAttributes(probability, ptNodeParams.isBlacklisted(), ptNodeParams.isNotAWord(),
+            probability == 0);
 }
 
 int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,

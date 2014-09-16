@@ -128,7 +128,8 @@ class LanguageModelDictContent {
             const LanguageModelDictContent *const originalContent,
             int *const outNgramCount);
 
-    int getWordProbability(const WordIdArrayView prevWordIds, const int wordId) const;
+    int getWordProbability(const WordIdArrayView prevWordIds, const int wordId,
+            const HeaderPolicy *const headerPolicy) const;
 
     ProbabilityEntry getProbabilityEntry(const int wordId) const {
         return getNgramProbabilityEntry(WordIdArrayView(), wordId);

@@ -107,13 +107,15 @@ TEST(LanguageModelDictContentTest, TestGetWordProbability) {
     languageModelDictContent.setProbabilityEntry(prevWordIds[0], &probabilityEntry);
     languageModelDictContent.setNgramProbabilityEntry(prevWordIds.limit(1), wordId,
             &bigramProbabilityEntry);
-    EXPECT_EQ(bigramProbability, languageModelDictContent.getWordProbability(prevWordIds, wordId));
+    EXPECT_EQ(bigramProbability, languageModelDictContent.getWordProbability(prevWordIds, wordId,
+            nullptr /* headerPolicy */));
     const ProbabilityEntry trigramProbabilityEntry(flag, trigramProbability);
     languageModelDictContent.setNgramProbabilityEntry(prevWordIds.limit(1),
             prevWordIds[1], &probabilityEntry);
     languageModelDictContent.setNgramProbabilityEntry(prevWordIds.limit(2), wordId,
             &trigramProbabilityEntry);
-    EXPECT_EQ(trigramProbability, languageModelDictContent.getWordProbability(prevWordIds, wordId));
+    EXPECT_EQ(trigramProbability, languageModelDictContent.getWordProbability(prevWordIds, wordId,
+            nullptr /* headerPolicy */));
 }
 
 }  // namespace
