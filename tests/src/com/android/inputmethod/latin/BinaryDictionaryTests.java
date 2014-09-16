@@ -55,6 +55,10 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         return formatVersion > FormatSpec.VERSION401;
     }
 
+    private static boolean supportsNgram(final int formatVersion) {
+        return formatVersion >= FormatSpec.VERSION4_DEV;
+    }
+
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
         if (formatVersion == FormatSpec.VERSION4
@@ -208,6 +212,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
     }
 
+    private static void addTrigramEntry(final BinaryDictionary binaryDictionary, final String word0,
+            final String word1, final String word2, final int probability) {
+        final PrevWordsInfo prevWordsInfo =
+                new PrevWordsInfo(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
+        binaryDictionary.addNgramEntry(prevWordsInfo, word2, probability,
+                BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
+    }
+
     private static boolean isValidBigram(final BinaryDictionary binaryDictionary,
             final String word0, final String word1) {
         return binaryDictionary.isValidNgram(new PrevWordsInfo(new WordInfo(word0)), word1);
@@ -218,9 +230,23 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.removeNgramEntry(new PrevWordsInfo(new WordInfo(word0)), word1);
     }
 
+    private static void removeTrigramEntry(final BinaryDictionary binaryDictionary,
+            final String word0, final String word1, final String word2) {
+        final PrevWordsInfo prevWordsInfo =
+                new PrevWordsInfo(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
+        binaryDictionary.removeNgramEntry(prevWordsInfo, word2);
+    }
+
     private static int getBigramProbability(final BinaryDictionary binaryDictionary,
             final String word0,  final String word1) {
         return binaryDictionary.getNgramProbability(new PrevWordsInfo(new WordInfo(word0)), word1);
+    }
+
+    private static int getTrigramProbability(final BinaryDictionary binaryDictionary,
+            final String word0, final String word1, final String word2) {
+        final PrevWordsInfo prevWordsInfo =
+                new PrevWordsInfo(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
+        return binaryDictionary.getNgramProbability(prevWordsInfo, word2);
     }
 
     public void testAddUnigramWord() {
@@ -496,6 +522,56 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         // Test remove non-existing bigram operation.
         removeBigramEntry(binaryDictionary, "aaa", "abb");
         removeBigramEntry(binaryDictionary, "bcc", "aaa");
+
+        dictFile.delete();
+    }
+
+    public void testAddTrigramWords() {
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            if (supportsNgram(formatVersion)) {
+                testAddTrigramWords(formatVersion);
+            }
+        }
+    }
+
+    private void testAddTrigramWords(final int formatVersion) {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int unigramProbability = 100;
+        final int trigramProbability = 150;
+        final int updatedTrigramProbability = 200;
+        addUnigramWord(binaryDictionary, "aaa", unigramProbability);
+        addUnigramWord(binaryDictionary, "abb", unigramProbability);
+        addUnigramWord(binaryDictionary, "bcc", unigramProbability);
+
+        addBigramWords(binaryDictionary, "abb", "bcc", 10);
+        addBigramWords(binaryDictionary, "abb", "aaa", 10);
+
+        addTrigramEntry(binaryDictionary, "aaa", "abb", "bcc", trigramProbability);
+        addTrigramEntry(binaryDictionary, "bcc", "abb", "aaa", trigramProbability);
+
+        assertEquals(trigramProbability,
+                getTrigramProbability(binaryDictionary, "aaa", "abb", "bcc"));
+        assertEquals(trigramProbability,
+                getTrigramProbability(binaryDictionary, "bcc", "abb", "aaa"));
+        assertFalse(isValidBigram(binaryDictionary, "aaa", "abb"));
+
+        addTrigramEntry(binaryDictionary, "bcc", "abb", "aaa", updatedTrigramProbability);
+        assertEquals(updatedTrigramProbability,
+                getTrigramProbability(binaryDictionary, "bcc", "abb", "aaa"));
+
+        removeTrigramEntry(binaryDictionary, "aaa", "abb", "bcc");
+        assertEquals(Dictionary.NOT_A_PROBABILITY,
+                getTrigramProbability(binaryDictionary, "aaa", "abb", "bcc"));
+        assertTrue(isValidBigram(binaryDictionary, "abb", "bcc"));
 
         dictFile.delete();
     }
