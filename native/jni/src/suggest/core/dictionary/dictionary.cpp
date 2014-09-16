@@ -93,13 +93,13 @@ void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbabi
 void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIds;
-    prevWordsInfo->getPrevWordIds(mDictionaryStructureWithBufferPolicy.get(), prevWordIds.data(),
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
+    const WordIdArrayView prevWordIds = prevWordsInfo->getPrevWordIds(
+            mDictionaryStructureWithBufferPolicy.get(), &prevWordIdArray,
             true /* tryLowerCaseSearch */);
-    const WordIdArrayView prevWordIdArrayView = WordIdArrayView::fromArray(prevWordIds);
-    NgramListenerForPrediction listener(prevWordsInfo, prevWordIdArrayView, outSuggestionResults,
+    NgramListenerForPrediction listener(prevWordsInfo, prevWordIds, outSuggestionResults,
             mDictionaryStructureWithBufferPolicy.get());
-    mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordIdArrayView, &listener);
+    mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordIds, &listener);
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
@@ -121,11 +121,11 @@ int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, co
     if (!prevWordsInfo) {
         return getDictionaryStructurePolicy()->getProbabilityOfWord(WordIdArrayView(), wordId);
     }
-    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIds;
-    prevWordsInfo->getPrevWordIds(mDictionaryStructureWithBufferPolicy.get(), prevWordIds.data(),
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
+    const WordIdArrayView prevWordIds = prevWordsInfo->getPrevWordIds
+            (mDictionaryStructureWithBufferPolicy.get(), &prevWordIdArray,
             true /* tryLowerCaseSearch */);
-    return getDictionaryStructurePolicy()->getProbabilityOfWord(
-            IntArrayView::fromArray(prevWordIds), wordId);
+    return getDictionaryStructurePolicy()->getProbabilityOfWord(prevWordIds, wordId);
 }
 
 bool Dictionary::addUnigramEntry(const int *const word, const int length,
