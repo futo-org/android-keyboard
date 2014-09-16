@@ -32,7 +32,7 @@ class DicNodeProperties {
  public:
     AK_FORCE_INLINE DicNodeProperties()
             : mChildrenPtNodeArrayPos(NOT_A_DICT_POS), mDicNodeCodePoint(NOT_A_CODE_POINT),
-              mWordId(NOT_A_WORD_ID), mDepth(0), mLeavingDepth(0) {}
+              mWordId(NOT_A_WORD_ID), mDepth(0), mLeavingDepth(0), mPrevWordCount(0) {}
 
     ~DicNodeProperties() {}
 
@@ -45,6 +45,7 @@ class DicNodeProperties {
         mDepth = depth;
         mLeavingDepth = leavingDepth;
         prevWordIds.copyToArray(&mPrevWordIds, 0 /* offset */);
+        mPrevWordCount = prevWordIds.size();
     }
 
     // Init for root with prevWordsPtNodePos which is used for n-gram
@@ -55,6 +56,7 @@ class DicNodeProperties {
         mDepth = 0;
         mLeavingDepth = 0;
         prevWordIds.copyToArray(&mPrevWordIds, 0 /* offset */);
+        mPrevWordCount = prevWordIds.size();
     }
 
     void initByCopy(const DicNodeProperties *const dicNodeProp) {
@@ -63,8 +65,9 @@ class DicNodeProperties {
         mWordId = dicNodeProp->mWordId;
         mDepth = dicNodeProp->mDepth;
         mLeavingDepth = dicNodeProp->mLeavingDepth;
-        WordIdArrayView::fromArray(dicNodeProp->mPrevWordIds)
-                .copyToArray(&mPrevWordIds, 0 /* offset */);
+        const WordIdArrayView prevWordIdArrayView = dicNodeProp->getPrevWordIds();
+        prevWordIdArrayView.copyToArray(&mPrevWordIds, 0 /* offset */);
+        mPrevWordCount = prevWordIdArrayView.size();
     }
 
     // Init as passing child
@@ -74,8 +77,9 @@ class DicNodeProperties {
         mWordId = dicNodeProp->mWordId;
         mDepth = dicNodeProp->mDepth + 1; // Increment the depth of a passing child
         mLeavingDepth = dicNodeProp->mLeavingDepth;
-        WordIdArrayView::fromArray(dicNodeProp->mPrevWordIds)
-                .copyToArray(&mPrevWordIds, 0 /* offset */);
+        const WordIdArrayView prevWordIdArrayView = dicNodeProp->getPrevWordIds();
+        prevWordIdArrayView.copyToArray(&mPrevWordIds, 0 /* offset */);
+        mPrevWordCount = prevWordIdArrayView.size();
     }
 
     int getChildrenPtNodeArrayPos() const {
@@ -104,7 +108,7 @@ class DicNodeProperties {
     }
 
     const WordIdArrayView getPrevWordIds() const {
-        return WordIdArrayView::fromArray(mPrevWordIds);
+        return WordIdArrayView::fromArray(mPrevWordIds).limit(mPrevWordCount);
     }
 
     int getWordId() const {
@@ -121,6 +125,7 @@ class DicNodeProperties {
     uint16_t mDepth;
     uint16_t mLeavingDepth;
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> mPrevWordIds;
+    size_t mPrevWordCount;
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_PROPERTIES_H
