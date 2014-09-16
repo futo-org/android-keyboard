@@ -310,30 +310,32 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
     if (prevWordIds.empty()) {
         return false;
     }
-    // TODO: Support N-gram.
-    if (prevWordIds[0] == NOT_A_WORD_ID) {
-        if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)) {
-            const std::vector<UnigramProperty::ShortcutProperty> shortcuts;
-            const UnigramProperty beginningOfSentenceUnigramProperty(
-                    true /* representsBeginningOfSentence */, true /* isNotAWord */,
-                    false /* isBlacklisted */, MAX_PROBABILITY /* probability */,
-                    NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
-            if (!addUnigramEntry(prevWordsInfo->getNthPrevWordCodePoints(1 /* n */),
-                    &beginningOfSentenceUnigramProperty)) {
-                AKLOGE("Cannot add unigram entry for the beginning-of-sentence.");
-                return false;
-            }
-            // Refresh word ids.
-            prevWordsInfo->getPrevWordIds(this, &prevWordIdArray, false /* tryLowerCaseSearch */);
-        } else {
+    for (size_t i = 0; i < prevWordIds.size(); ++i) {
+        if (prevWordIds[i] != NOT_A_WORD_ID) {
+            continue;
+        }
+        if (!prevWordsInfo->isNthPrevWordBeginningOfSentence(i + 1 /* n */)) {
             return false;
         }
+        const std::vector<UnigramProperty::ShortcutProperty> shortcuts;
+        const UnigramProperty beginningOfSentenceUnigramProperty(
+                true /* representsBeginningOfSentence */, true /* isNotAWord */,
+                false /* isBlacklisted */, MAX_PROBABILITY /* probability */,
+                NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
+        if (!addUnigramEntry(prevWordsInfo->getNthPrevWordCodePoints(1 /* n */),
+                &beginningOfSentenceUnigramProperty)) {
+            AKLOGE("Cannot add unigram entry for the beginning-of-sentence.");
+            return false;
+        }
+        // Refresh word ids.
+        prevWordsInfo->getPrevWordIds(this, &prevWordIdArray, false /* tryLowerCaseSearch */);
     }
     const int wordId = getWordId(CodePointArrayView(*bigramProperty->getTargetCodePoints()),
             false /* forceLowerCaseSearch */);
     if (wordId == NOT_A_WORD_ID) {
         return false;
     }
+    // TODO: Support N-gram.
     bool addedNewEntry = false;
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordsPtNodePos;
     for (size_t i = 0; i < prevWordsPtNodePos.size(); ++i) {
@@ -375,8 +377,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
     const WordIdArrayView prevWordIds = prevWordsInfo->getPrevWordIds(this, &prevWordIdArray,
             false /* tryLowerCaseSerch */);
-    // TODO: Support N-gram.
-    if (prevWordIds.empty() || prevWordIds[0] == NOT_A_WORD_ID) {
+    if (prevWordIds.empty() || prevWordIds.contains(NOT_A_WORD_ID)) {
         return false;
     }
     const int wordId = getWordId(wordCodePoints, false /* forceLowerCaseSearch */);
