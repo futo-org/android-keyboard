@@ -96,6 +96,7 @@ public final class KeyboardLayoutSet {
     private static final class ElementParams {
         int mKeyboardXmlId;
         boolean mProximityCharsCorrectionEnabled;
+        boolean mSupportsSplitLayout;
         public ElementParams() {}
     }
 
@@ -168,7 +169,10 @@ public final class KeyboardLayoutSet {
         // attribute in a keyboard_layout_set XML file.  Also each keyboard layout XML resource is
         // specified as an elementKeyboard attribute in the file.
         // The KeyboardId is an internal key for a Keyboard object.
-        final KeyboardId id = new KeyboardId(keyboardLayoutSetElementId, mParams);
+
+        // TODO: AND mSupportsSplitLayout with the user preference that forces a split.
+        final KeyboardId id = new KeyboardId(keyboardLayoutSetElementId, mParams,
+                elementParams.mSupportsSplitLayout);
         try {
             return getKeyboard(elementParams, id);
         } catch (final RuntimeException e) {
@@ -376,6 +380,8 @@ public final class KeyboardLayoutSet {
                 elementParams.mProximityCharsCorrectionEnabled = a.getBoolean(
                         R.styleable.KeyboardLayoutSet_Element_enableProximityCharsCorrection,
                         false);
+                elementParams.mSupportsSplitLayout = a.getBoolean(
+                        R.styleable.KeyboardLayoutSet_Element_supportsSplitLayout, false);
                 mParams.mKeyboardLayoutSetElementIdToParamsMap.put(elementName, elementParams);
             } finally {
                 a.recycle();
