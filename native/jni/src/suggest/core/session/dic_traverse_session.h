@@ -51,12 +51,11 @@ class DicTraverseSession {
     }
 
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr, bool usesLargeCache)
-            : mProximityInfo(nullptr), mDictionary(nullptr), mSuggestOptions(nullptr),
-              mDicNodesCache(usesLargeCache), mMultiBigramMap(), mInputSize(0), mMaxPointerCount(1),
-              mMultiWordCostMultiplier(1.0f) {
+            : mPrevWordIdCount(0), mProximityInfo(nullptr), mDictionary(nullptr),
+              mSuggestOptions(nullptr), mDicNodesCache(usesLargeCache), mMultiBigramMap(),
+              mInputSize(0), mMaxPointerCount(1), mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
         // No need to initialize it explicitly here.
-        mPrevWordsIds.fill(NOT_A_DICT_POS);
     }
 
     // Non virtual inline destructor -- never inherit this class
@@ -78,7 +77,9 @@ class DicTraverseSession {
     //--------------------
     const ProximityInfo *getProximityInfo() const { return mProximityInfo; }
     const SuggestOptions *getSuggestOptions() const { return mSuggestOptions; }
-    const WordIdArrayView getPrevWordIds() const { return IntArrayView::fromArray(mPrevWordsIds); }
+    const WordIdArrayView getPrevWordIds() const {
+        return WordIdArrayView::fromArray(mPrevWordIdArray).limit(mPrevWordIdCount);
+    }
     DicNodesCache *getDicTraverseCache() { return &mDicNodesCache; }
     MultiBigramMap *getMultiBigramMap() { return &mMultiBigramMap; }
     const ProximityInfoState *getProximityInfoState(int id) const {
@@ -165,7 +166,8 @@ class DicTraverseSession {
             const int *const inputYs, const int *const times, const int *const pointerIds,
             const int inputSize, const float maxSpatialDistance, const int maxPointerCount);
 
-    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> mPrevWordsIds;
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> mPrevWordIdArray;
+    size_t mPrevWordIdCount;
     const ProximityInfo *mProximityInfo;
     const Dictionary *mDictionary;
     const SuggestOptions *mSuggestOptions;

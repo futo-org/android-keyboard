@@ -332,8 +332,12 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
                 "length: %zd", bigramProperty->getTargetCodePoints()->size());
         return false;
     }
-    int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    prevWordsInfo->getPrevWordIds(this, prevWordIds, false /* tryLowerCaseSearch */);
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
+    const WordIdArrayView prevWordIds = prevWordsInfo->getPrevWordIds(this, &prevWordIdArray,
+            false /* tryLowerCaseSearch */);
+    if (prevWordIds.empty()) {
+        return false;
+    }
     if (prevWordIds[0] == NOT_A_WORD_ID) {
         if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)) {
             const std::vector<UnigramProperty::ShortcutProperty> shortcuts;
@@ -347,7 +351,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
                 return false;
             }
             // Refresh word ids.
-            prevWordsInfo->getPrevWordIds(this, prevWordIds, false /* tryLowerCaseSearch */);
+            prevWordsInfo->getPrevWordIds(this, &prevWordIdArray, false /* tryLowerCaseSearch */);
         } else {
             return false;
         }
@@ -390,9 +394,10 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
         AKLOGE("word is too long to remove n-gram entry form the dictionary. length: %zd",
                 wordCodePoints.size());
     }
-    int prevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    prevWordsInfo->getPrevWordIds(this, prevWordIds, false /* tryLowerCaseSerch */);
-    if (prevWordIds[0] == NOT_A_WORD_ID) {
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
+    const WordIdArrayView prevWordIds = prevWordsInfo->getPrevWordIds(this, &prevWordIdArray,
+            false /* tryLowerCaseSerch */);
+    if (prevWordIds.empty() || prevWordIds[0] == NOT_A_WORD_ID) {
         return false;
     }
     const int wordPos = getTerminalPtNodePosFromWordId(getWordId(wordCodePoints,

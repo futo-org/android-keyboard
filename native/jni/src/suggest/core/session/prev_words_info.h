@@ -17,6 +17,8 @@
 #ifndef LATINIME_PREV_WORDS_INFO_H
 #define LATINIME_PREV_WORDS_INFO_H
 
+#include <array>
+
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/char_utils.h"
@@ -27,12 +29,13 @@ namespace latinime {
 class PrevWordsInfo {
  public:
     // No prev word information.
-    PrevWordsInfo() {
+    PrevWordsInfo() : mPrevWordCount(0) {
         clear();
     }
 
-    PrevWordsInfo(PrevWordsInfo &&prevWordsInfo) {
-        for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
+    PrevWordsInfo(PrevWordsInfo &&prevWordsInfo)
+            : mPrevWordCount(prevWordsInfo.mPrevWordCount) {
+        for (size_t i = 0; i < mPrevWordCount; ++i) {
             mPrevWordCodePointCount[i] = prevWordsInfo.mPrevWordCodePointCount[i];
             memmove(mPrevWordCodePoints[i], prevWordsInfo.mPrevWordCodePoints[i],
                     sizeof(mPrevWordCodePoints[i][0]) * mPrevWordCodePointCount[i]);
@@ -43,9 +46,10 @@ class PrevWordsInfo {
     // Construct from previous words.
     PrevWordsInfo(const int prevWordCodePoints[][MAX_WORD_LENGTH],
             const int *const prevWordCodePointCount, const bool *const isBeginningOfSentence,
-            const size_t prevWordCount) {
+            const size_t prevWordCount)
+            : mPrevWordCount(std::min(NELEMS(mPrevWordCodePoints), prevWordCount)) {
         clear();
-        for (size_t i = 0; i < std::min(NELEMS(mPrevWordCodePoints), prevWordCount); ++i) {
+        for (size_t i = 0; i < mPrevWordCount; ++i) {
             if (prevWordCodePointCount[i] < 0 || prevWordCodePointCount[i] > MAX_WORD_LENGTH) {
                 continue;
             }
@@ -58,7 +62,7 @@ class PrevWordsInfo {
 
     // Construct from a previous word.
     PrevWordsInfo(const int *const prevWordCodePoints, const int prevWordCodePointCount,
-            const bool isBeginningOfSentence) {
+            const bool isBeginningOfSentence) : mPrevWordCount(1) {
         clear();
         if (prevWordCodePointCount > MAX_WORD_LENGTH || !prevWordCodePoints) {
             return;
@@ -79,26 +83,29 @@ class PrevWordsInfo {
         return false;
     }
 
-    void getPrevWordIds(const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
-            int *const outPrevWordIds, const bool tryLowerCaseSearch) const {
-        for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
-            outPrevWordIds[i] = getWordId(dictStructurePolicy,
+    template<size_t N>
+    const WordIdArrayView getPrevWordIds(
+            const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
+            std::array<int, N> *const prevWordIdBuffer, const bool tryLowerCaseSearch) const {
+        for (size_t i = 0; i < std::min(mPrevWordCount, N); ++i) {
+            prevWordIdBuffer->at(i) = getWordId(dictStructurePolicy,
                     mPrevWordCodePoints[i], mPrevWordCodePointCount[i],
                     mIsBeginningOfSentence[i], tryLowerCaseSearch);
         }
+        return WordIdArrayView::fromArray(*prevWordIdBuffer).limit(mPrevWordCount);
     }
 
     // n is 1-indexed.
-    const CodePointArrayView getNthPrevWordCodePoints(const int n) const {
-        if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
+    const CodePointArrayView getNthPrevWordCodePoints(const size_t n) const {
+        if (n <= 0 || n > mPrevWordCount) {
             return CodePointArrayView();
         }
         return CodePointArrayView(mPrevWordCodePoints[n - 1], mPrevWordCodePointCount[n - 1]);
     }
 
     // n is 1-indexed.
-    bool isNthPrevWordBeginningOfSentence(const int n) const {
-        if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
+    bool isNthPrevWordBeginningOfSentence(const size_t n) const {
+        if (n <= 0 || n > mPrevWordCount) {
             return false;
         }
         return mIsBeginningOfSentence[n - 1];
@@ -142,6 +149,7 @@ class PrevWordsInfo {
         }
     }
 
+    const size_t mPrevWordCount;
     int mPrevWordCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM][MAX_WORD_LENGTH];
     int mPrevWordCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     bool mIsBeginningOfSentence[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
