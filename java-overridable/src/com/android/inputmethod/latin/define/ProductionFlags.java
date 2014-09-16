@@ -45,4 +45,9 @@ public final class ProductionFlags {
      * When {@code false}, the split keyboard is not yet ready to be enabled.
      */
     public static final boolean IS_SPLIT_KEYBOARD_SUPPORTED = true;
+
+    /**
+     * When {@code false}, account sign-in in keyboard is not yet ready to be enabled.
+     */
+    public static final boolean ENABLE_ACCOUNT_SIGN_IN = false;
 }
