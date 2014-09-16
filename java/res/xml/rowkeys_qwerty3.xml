@@ -21,23 +21,10 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Key
-        latin:keySpec="z"
-        latin:moreKeys="!text/morekeys_z" />
-    <Key
-        latin:keySpec="!text/keyspec_x"
-        latin:moreKeys="!text/morekeys_x" />
-    <Key
-        latin:keySpec="c"
-        latin:moreKeys="!text/morekeys_c" />
-    <Key
-        latin:keySpec="v"
-        latin:moreKeys="!text/morekeys_v" />
-    <Key
-        latin:keySpec="b" />
-    <Key
-        latin:keySpec="n"
-        latin:moreKeys="!text/morekeys_n" />
-    <Key
-        latin:keySpec="m" />
+    <!-- z,x,c,v -->
+    <include
+        latin:keyboardLayout="@xml/rowkeys_qwerty3_left4" />
+    <!-- b,n,m -->
+    <include
+        latin:keyboardLayout="@xml/rowkeys_qwerty3_right3" />
 </merge>
