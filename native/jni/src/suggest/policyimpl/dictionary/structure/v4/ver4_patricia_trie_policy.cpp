@@ -120,16 +120,15 @@ const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
     const int ptNodePos =
             mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
     const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
-    // TODO: Support n-gram.
     const int probability = mBuffers->getLanguageModelDictContent()->getWordProbability(
-            prevWordIds.limit(1 /* maxSize */), wordId, mHeaderPolicy);
+            prevWordIds, wordId, mHeaderPolicy);
     return WordAttributes(probability, ptNodeParams.isBlacklisted(), ptNodeParams.isNotAWord(),
             probability == 0);
 }
 
 int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,
         const int wordId) const {
-    if (wordId == NOT_A_WORD_ID) {
+    if (wordId == NOT_A_WORD_ID || prevWordIds.contains(NOT_A_WORD_ID)) {
         return NOT_A_PROBABILITY;
     }
     const int ptNodePos =
@@ -138,10 +137,8 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordI
     if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
-    // TODO: Support n-gram.
     const ProbabilityEntry probabilityEntry =
-            mBuffers->getLanguageModelDictContent()->getNgramProbabilityEntry(
-                    prevWordIds.limit(1 /* maxSize */), wordId);
+            mBuffers->getLanguageModelDictContent()->getNgramProbabilityEntry(prevWordIds, wordId);
     if (!probabilityEntry.isValid()) {
         return NOT_A_PROBABILITY;
     }
@@ -164,16 +161,18 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordI
     if (prevWordIds.empty()) {
         return;
     }
-    // TODO: Support n-gram.
     const auto languageModelDictContent = mBuffers->getLanguageModelDictContent();
-    for (const auto entry : languageModelDictContent->getProbabilityEntries(
-            prevWordIds.limit(1 /* maxSize */))) {
-        const ProbabilityEntry &probabilityEntry = entry.getProbabilityEntry();
-        const int probability = probabilityEntry.hasHistoricalInfo() ?
-                ForgettingCurveUtils::decodeProbability(
-                        probabilityEntry.getHistoricalInfo(), mHeaderPolicy) :
-                probabilityEntry.getProbability();
-        listener->onVisitEntry(probability, entry.getWordId());
+    for (size_t i = 1; i <= prevWordIds.size(); ++i) {
+        for (const auto entry : languageModelDictContent->getProbabilityEntries(
+                prevWordIds.limit(i))) {
+            const ProbabilityEntry &probabilityEntry = entry.getProbabilityEntry();
+            const int probability = probabilityEntry.hasHistoricalInfo() ?
+                    ForgettingCurveUtils::decodeProbability(
+                            probabilityEntry.getHistoricalInfo(), mHeaderPolicy)
+                            + ForgettingCurveUtils::getProbabilityBiasForNgram(i + 1 /* n */) :
+                    probabilityEntry.getProbability();
+            listener->onVisitEntry(probability, entry.getWordId());
+        }
     }
 }
 
