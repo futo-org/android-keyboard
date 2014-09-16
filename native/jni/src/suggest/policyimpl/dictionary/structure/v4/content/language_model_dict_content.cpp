@@ -39,7 +39,7 @@ bool LanguageModelDictContent::runGC(
 }
 
 int LanguageModelDictContent::getWordProbability(const WordIdArrayView prevWordIds,
-        const int wordId) const {
+        const int wordId, const HeaderPolicy *const headerPolicy) const {
     int bitmapEntryIndices[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
     bitmapEntryIndices[0] = mTrieMap.getRootBitmapEntryIndex();
     int maxLevel = 0;
@@ -58,14 +58,15 @@ int LanguageModelDictContent::getWordProbability(const WordIdArrayView prevWordI
         if (!result.mIsValid) {
             continue;
         }
-        const int probability =
-                ProbabilityEntry::decode(result.mValue, mHasHistoricalInfo).getProbability();
+        const ProbabilityEntry probabilityEntry =
+                ProbabilityEntry::decode(result.mValue, mHasHistoricalInfo);
         if (mHasHistoricalInfo) {
-            return std::min(
-                    probability + ForgettingCurveUtils::getProbabilityBiasForNgram(i + 1 /* n */),
-                    MAX_PROBABILITY);
+            const int probability = ForgettingCurveUtils::decodeProbability(
+                    probabilityEntry.getHistoricalInfo(), headerPolicy)
+                            + ForgettingCurveUtils::getProbabilityBiasForNgram(i + 1 /* n */);
+            return std::min(probability, MAX_PROBABILITY);
         } else {
-            return probability;
+            return probabilityEntry.getProbability();
         }
     }
     // Cannot find the word.
