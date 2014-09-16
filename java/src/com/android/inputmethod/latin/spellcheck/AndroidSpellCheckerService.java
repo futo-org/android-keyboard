@@ -185,7 +185,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         try {
             final DictionaryFacilitator dictionaryFacilitator =
                     mDictionaryFacilitatorCache.get(locale);
-            return dictionaryFacilitator.hasInitializedMainDictionary();
+            return dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary();
         } finally {
             mSemaphore.release();
         }

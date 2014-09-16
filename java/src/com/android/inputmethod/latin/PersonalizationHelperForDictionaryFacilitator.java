@@ -88,17 +88,17 @@ public class PersonalizationHelperForDictionaryFacilitator {
 
     /**
      * Flush personalization dictionaries to dictionary files. Close dictionaries after writing
-     * files except the dictionary that is used for generating suggestions.
+     * files except the dictionaries that is used for generating suggestions.
      *
-     * @param personalizationDictUsedForSuggestion the personalization dictionary used for
+     * @param personalizationDictsUsedForSuggestion the personalization dictionaries used for
      * generating suggestions that won't be closed.
      */
     public void flushPersonalizationDictionariesToUpdate(
-            final ExpandableBinaryDictionary personalizationDictUsedForSuggestion) {
+            final HashSet<ExpandableBinaryDictionary> personalizationDictsUsedForSuggestion) {
         for (final ExpandableBinaryDictionary personalizationDict :
                 mPersonalizationDictsToUpdate.values()) {
             personalizationDict.asyncFlushBinaryDictionary();
-            if (personalizationDict != personalizationDictUsedForSuggestion) {
+            if (!personalizationDictsUsedForSuggestion.contains(personalizationDict)) {
                 // Close if the dictionary is not being used for suggestion.
                 personalizationDict.close();
             }
