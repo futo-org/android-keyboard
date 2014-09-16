@@ -97,17 +97,13 @@ class JniDataUtils {
     }
 
     static PrevWordsInfo constructPrevWordsInfo(JNIEnv *env, jobjectArray prevWordCodePointArrays,
-            jbooleanArray isBeginningOfSentenceArray) {
+            jbooleanArray isBeginningOfSentenceArray, const size_t prevWordCount) {
         int prevWordCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM][MAX_WORD_LENGTH];
         int prevWordCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
         bool isBeginningOfSentence[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-        jsize prevWordsCount = env->GetArrayLength(prevWordCodePointArrays);
-        for (size_t i = 0; i < NELEMS(prevWordCodePoints); ++i) {
+        for (size_t i = 0; i < prevWordCount; ++i) {
             prevWordCodePointCount[i] = 0;
             isBeginningOfSentence[i] = false;
-            if (prevWordsCount <= static_cast<int>(i)) {
-                continue;
-            }
             jintArray prevWord = (jintArray)env->GetObjectArrayElement(prevWordCodePointArrays, i);
             if (!prevWord) {
                 continue;
@@ -124,7 +120,7 @@ class JniDataUtils {
             isBeginningOfSentence[i] = isBeginningOfSentenceBoolean == JNI_TRUE;
         }
         return PrevWordsInfo(prevWordCodePoints, prevWordCodePointCount, isBeginningOfSentence,
-                MAX_PREV_WORD_COUNT_FOR_N_GRAM);
+                prevWordCount);
     }
 
     static void putBooleanToArray(JNIEnv *env, jbooleanArray array, const int index,

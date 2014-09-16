@@ -180,8 +180,8 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         jintArray yCoordinatesArray, jintArray timesArray, jintArray pointerIdsArray,
         jintArray inputCodePointsArray, jint inputSize, jintArray suggestOptions,
         jobjectArray prevWordCodePointArrays, jbooleanArray isBeginningOfSentenceArray,
-        jintArray outSuggestionCount, jintArray outCodePointsArray, jintArray outScoresArray,
-        jintArray outSpaceIndicesArray, jintArray outTypesArray,
+        jint prevWordCount, jintArray outSuggestionCount, jintArray outCodePointsArray,
+        jintArray outScoresArray, jintArray outSpaceIndicesArray, jintArray outTypesArray,
         jintArray outAutoCommitFirstWordConfidenceArray, jfloatArray inOutLanguageWeight) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     // Assign 0 to outSuggestionCount here in case of returning earlier in this method.
@@ -241,7 +241,7 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
     env->GetFloatArrayRegion(inOutLanguageWeight, 0, 1 /* len */, &languageWeight);
     SuggestionResults suggestionResults(MAX_RESULTS);
     const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
-            prevWordCodePointArrays, isBeginningOfSentenceArray);
+            prevWordCodePointArrays, isBeginningOfSentenceArray, prevWordCount);
     if (givenSuggestOptions.isGesture() || inputSize > 0) {
         // TODO: Use SuggestionResults to return suggestions.
         dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
@@ -285,7 +285,8 @@ static jint latinime_BinaryDictionary_getNgramProbability(JNIEnv *env, jclass cl
     int wordCodePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
     const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
-            prevWordCodePointArrays, isBeginningOfSentenceArray);
+            prevWordCodePointArrays, isBeginningOfSentenceArray,
+            env->GetArrayLength(prevWordCodePointArrays));
     return dictionary->getNgramProbability(&prevWordsInfo,
             CodePointArrayView(wordCodePoints, wordLength));
 }
@@ -393,7 +394,8 @@ static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, j
         return false;
     }
     const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
-            prevWordCodePointArrays, isBeginningOfSentenceArray);
+            prevWordCodePointArrays, isBeginningOfSentenceArray,
+            env->GetArrayLength(prevWordCodePointArrays));
     jsize wordLength = env->GetArrayLength(word);
     int wordCodePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
@@ -413,7 +415,8 @@ static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz
         return false;
     }
     const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
-            prevWordCodePointArrays, isBeginningOfSentenceArray);
+            prevWordCodePointArrays, isBeginningOfSentenceArray,
+            env->GetArrayLength(prevWordCodePointArrays));
     jsize codePointCount = env->GetArrayLength(word);
     int wordCodePoints[codePointCount];
     env->GetIntArrayRegion(word, 0, codePointCount, wordCodePoints);
@@ -667,7 +670,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("getSuggestionsNative"),
-        const_cast<char *>("(JJJ[I[I[I[I[II[I[[I[Z[I[I[I[I[I[I[F)V"),
+        const_cast<char *>("(JJJ[I[I[I[I[II[I[[I[ZI[I[I[I[I[I[I[F)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)
     },
     {
