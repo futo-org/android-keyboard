@@ -343,7 +343,9 @@ public class KeyboardView extends View {
         final int keyWidth = key.getDrawWidth();
         final int keyHeight = key.getHeight();
         final int bgWidth, bgHeight, bgX, bgY;
-        if (key.needsToKeepBackgroundAspectRatio(mDefaultKeyLabelFlags)) {
+        if (key.needsToKeepBackgroundAspectRatio(mDefaultKeyLabelFlags)
+                // HACK: To disable expanding normal/functional key background.
+                && !key.hasCustomActionLabel()) {
             final int intrinsicWidth = background.getIntrinsicWidth();
             final int intrinsicHeight = background.getIntrinsicHeight();
             final float minScale = Math.min(
