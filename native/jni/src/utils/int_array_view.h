@@ -17,6 +17,7 @@
 #ifndef LATINIME_INT_ARRAY_VIEW_H
 #define LATINIME_INT_ARRAY_VIEW_H
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <cstring>
@@ -92,12 +93,16 @@ class IntArrayView {
         return mPtr + mSize;
     }
 
+    AK_FORCE_INLINE bool contains(const int value) const {
+        return std::find(begin(), end(), value) != end();
+    }
+
     // Returns the view whose size is smaller than or equal to the given count.
-    const IntArrayView limit(const size_t maxSize) const {
+    AK_FORCE_INLINE const IntArrayView limit(const size_t maxSize) const {
         return IntArrayView(mPtr, std::min(maxSize, mSize));
     }
 
-    const IntArrayView skip(const size_t n) const {
+    AK_FORCE_INLINE const IntArrayView skip(const size_t n) const {
         if (mSize <= n) {
             return IntArrayView();
         }

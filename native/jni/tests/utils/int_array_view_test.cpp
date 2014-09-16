@@ -58,6 +58,19 @@ TEST(IntArrayViewTest, TestConstructFromObject) {
     EXPECT_EQ(object, intArrayView[0]);
 }
 
+TEST(IntArrayViewTest, TestContains) {
+    EXPECT_FALSE(IntArrayView().contains(0));
+    EXPECT_FALSE(IntArrayView().contains(1));
+
+    const std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
+    IntArrayView intArrayView(intVector);
+    EXPECT_TRUE(intArrayView.contains(0));
+    EXPECT_TRUE(intArrayView.contains(3));
+    EXPECT_TRUE(intArrayView.contains(-2));
+    EXPECT_FALSE(intArrayView.contains(-3));
+    EXPECT_FALSE(intArrayView.limit(0).contains(3));
+}
+
 TEST(IntArrayViewTest, TestLimit) {
     const std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
     IntArrayView intArrayView(intVector);
