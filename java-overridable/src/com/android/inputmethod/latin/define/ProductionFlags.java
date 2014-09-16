@@ -50,4 +50,9 @@ public final class ProductionFlags {
      * When {@code false}, account sign-in in keyboard is not yet ready to be enabled.
      */
     public static final boolean ENABLE_ACCOUNT_SIGN_IN = false;
+
+    /**
+     * When {@code true}, personal dictionary sync feature is ready to be enabled.
+     */
+    public static final boolean ENABLE_PERSONAL_DICTIONARY_SYNC = false;
 }

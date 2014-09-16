@@ -34,4 +34,9 @@
         android:summary="@string/enable_metrics_logging_summary"
         android:defaultValue="true"
         android:persistent="true" />
+
+    <!-- This preference (acts like a button) enables the user to initiate an one time sync. -->
+    <Preference android:key="pref_beanstalk"
+        android:persistent="false"
+        android:title="@string/sync_now_title" />
 </PreferenceScreen>
