@@ -612,14 +612,21 @@ public final class InputLogic {
             final SettingsValues settingsValues, final LatinIME.UIHandler handler) {
         if (SuggestedWords.EMPTY != suggestedWords) {
             final String autoCorrection;
+            final String dictType;
             if (suggestedWords.mWillAutoCorrect) {
-                autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
+                SuggestedWordInfo info = suggestedWords.getInfo(
+                        SuggestedWords.INDEX_OF_AUTO_CORRECTION);
+                autoCorrection = info.mWord;
+                dictType = info.mSourceDict.mDictType;
             } else {
                 // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
                 // because it may differ from mWordComposer.mTypedWord.
                 autoCorrection = suggestedWords.mTypedWord;
+                dictType = Dictionary.TYPE_USER_TYPED;
             }
-            mWordComposer.setAutoCorrection(autoCorrection);
+            // TODO: Use the SuggestedWordInfo to set the auto correction when
+            // user typed word is available via SuggestedWordInfo.
+            mWordComposer.setAutoCorrection(autoCorrection, dictType);
         }
         mSuggestedWords = suggestedWords;
         final boolean newAutoCorrectionIndicator = suggestedWords.mWillAutoCorrect;
@@ -2100,6 +2107,8 @@ public final class InputLogic {
                 mConnection.commitCorrection(new CorrectionInfo(
                         mConnection.getExpectedSelectionEnd() - autoCorrection.length(),
                         typedWord, autoCorrection));
+                StatsUtils.onAutoCorrection(typedWord, autoCorrection, mWordComposer.isBatchMode(),
+                        mWordComposer.getAutoCorrectionDictionaryTypeOrNull());
             }
         }
     }
