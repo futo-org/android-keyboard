@@ -157,7 +157,7 @@ public final class Suggest {
         if (!isCorrectionEnabled || !allowsToBeAutoCorrected || resultsArePredictions
                 || suggestionResults.isEmpty() || wordComposer.hasDigits()
                 || wordComposer.isMostlyCaps() || wordComposer.isResumed()
-                || !mDictionaryFacilitator.hasInitializedMainDictionary()
+                || !mDictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
                 || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
             // this is, the user may have a contact whose name happens to match a valid word in
