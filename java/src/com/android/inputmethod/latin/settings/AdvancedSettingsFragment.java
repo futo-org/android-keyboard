@@ -93,14 +93,16 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
             removePreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
         }
 
+        // If metrics logging isn't supported, or account sign in is enabled
+        // don't show the logging preference.
+        // TODO: Eventually when we enable account sign in by default,
+        // we'll remove logging preference from here.
         if (ProductionFlags.IS_METRICS_LOGGING_SUPPORTED) {
             final Preference enableMetricsLogging =
                     findPreference(Settings.PREF_ENABLE_METRICS_LOGGING);
             if (enableMetricsLogging != null) {
-                final int applicationLabelRes = context.getApplicationInfo().labelRes;
-                final String applicationName = res.getString(applicationLabelRes);
                 final String enableMetricsLoggingTitle = res.getString(
-                        R.string.enable_metrics_logging, applicationName);
+                        R.string.enable_metrics_logging, getApplicationName());
                 enableMetricsLogging.setTitle(enableMetricsLoggingTitle);
             }
         } else {
