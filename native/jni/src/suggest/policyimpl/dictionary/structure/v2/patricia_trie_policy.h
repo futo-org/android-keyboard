@@ -48,7 +48,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mBigramListPolicy(mBuffer), mShortcutListPolicy(mBuffer),
               mPtNodeReader(mBuffer.data(), mBuffer.size(), &mBigramListPolicy,
                       &mShortcutListPolicy),
-              mPtNodeArrayReader(mBuffer.data(), mBuffer.size()),
+              mPtNodeArrayReader(mBuffer),
               mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {}
 
     AK_FORCE_INLINE int getRootPosition() const {
