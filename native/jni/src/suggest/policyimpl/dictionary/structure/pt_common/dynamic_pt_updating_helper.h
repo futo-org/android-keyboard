@@ -40,8 +40,8 @@ class DynamicPtUpdatingHelper {
 
     // Add a word to the dictionary. If the word already exists, update the probability.
     bool addUnigramWord(DynamicPtReadingHelper *const readingHelper,
-            const int *const wordCodePoints, const int codePointCount,
-            const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram);
+            const CodePointArrayView wordCodePoints, const UnigramProperty *const unigramProperty,
+            bool *const outAddedNewUnigram);
 
     // TODO: Remove after stopping supporting v402.
     // Add an n-gram entry.
@@ -53,8 +53,8 @@ class DynamicPtUpdatingHelper {
     bool removeNgramEntry(const PtNodePosArrayView prevWordsPtNodePos, const int wordPos);
 
     // Add a shortcut target.
-    bool addShortcutTarget(const int wordPos, const int *const targetCodePoints,
-            const int targetCodePointCount, const int shortcutProbability);
+    bool addShortcutTarget(const int wordPos, const CodePointArrayView targetCodePoints,
+            const int shortcutProbability);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPtUpdatingHelper);
@@ -65,33 +65,32 @@ class DynamicPtUpdatingHelper {
     const PtNodeReader *const mPtNodeReader;
     PtNodeWriter *const mPtNodeWriter;
 
-    bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
-            const int nodeCodePointCount, const UnigramProperty *const unigramProperty,
+    bool createAndInsertNodeIntoPtNodeArray(const int parentPos,
+            const CodePointArrayView ptNodeCodePoints, const UnigramProperty *const unigramProperty,
             int *const forwardLinkFieldPos);
 
     bool setPtNodeProbability(const PtNodeParams *const originalPtNodeParams,
             const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram);
 
     bool createChildrenPtNodeArrayAndAChildPtNode(const PtNodeParams *const parentPtNodeParams,
-            const UnigramProperty *const unigramProperty, const int *const codePoints,
-            const int codePointCount);
+            const UnigramProperty *const unigramProperty,
+            const CodePointArrayView remainingCodePoints);
 
-    bool createNewPtNodeArrayWithAChildPtNode(const int parentPos, const int *const nodeCodePoints,
-            const int nodeCodePointCount, const UnigramProperty *const unigramProperty);
+    bool createNewPtNodeArrayWithAChildPtNode(const int parentPos,
+            const CodePointArrayView ptNodeCodePoints,
+            const UnigramProperty *const unigramProperty);
 
-    bool reallocatePtNodeAndAddNewPtNodes(
-            const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
-            const UnigramProperty *const unigramProperty, const int *const newNodeCodePoints,
-            const int newNodeCodePointCount);
+    bool reallocatePtNodeAndAddNewPtNodes(const PtNodeParams *const reallocatingPtNodeParams,
+            const size_t overlappingCodePointCount, const UnigramProperty *const unigramProperty,
+            const CodePointArrayView newPtNodeCodePoints);
 
     const PtNodeParams getUpdatedPtNodeParams(const PtNodeParams *const originalPtNodeParams,
             const bool isNotAWord, const bool isBlacklisted, const bool isTerminal,
-            const int parentPos, const int codePointCount,
-            const int *const codePoints, const int probability) const;
+            const int parentPos, const CodePointArrayView codePoints, const int probability) const;
 
     const PtNodeParams getPtNodeParamsForNewPtNode(const bool isNotAWord, const bool isBlacklisted,
-            const bool isTerminal, const int parentPos,
-            const int codePointCount, const int *const codePoints, const int probability) const;
+            const bool isTerminal, const int parentPos, const CodePointArrayView codePoints,
+            const int probability) const;
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_UPDATING_HELPER_H */
