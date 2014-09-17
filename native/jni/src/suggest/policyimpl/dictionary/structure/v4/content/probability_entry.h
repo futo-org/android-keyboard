@@ -36,7 +36,8 @@ class ProbabilityEntry {
 
     // Dummy entry
     ProbabilityEntry()
-            : mFlags(0), mProbability(NOT_A_PROBABILITY), mHistoricalInfo() {}
+            : mFlags(Ver4DictConstants::FLAG_NOT_A_VALID_ENTRY), mProbability(NOT_A_PROBABILITY),
+              mHistoricalInfo() {}
 
     // Entry without historical information
     ProbabilityEntry(const int flags, const int probability)
@@ -61,7 +62,7 @@ class ProbabilityEntry {
                       bigramProperty->getCount()) {}
 
     bool isValid() const {
-        return (mProbability != NOT_A_PROBABILITY) || hasHistoricalInfo();
+        return (mFlags & Ver4DictConstants::FLAG_NOT_A_VALID_ENTRY) == 0;
     }
 
     bool hasHistoricalInfo() const {

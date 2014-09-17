@@ -167,6 +167,14 @@ int LanguageModelDictContent::createAndGetBitmapEntryIndex(const WordIdArrayView
     if (lastBitmapEntryIndex == TrieMap::INVALID_INDEX) {
         return TrieMap::INVALID_INDEX;
     }
+    const int oldestPrevWordId = prevWordIds[prevWordIds.size() - 1];
+    const TrieMap::Result result = mTrieMap.get(oldestPrevWordId, lastBitmapEntryIndex);
+    if (!result.mIsValid) {
+        if (!mTrieMap.put(oldestPrevWordId,
+                ProbabilityEntry().encode(mHasHistoricalInfo), lastBitmapEntryIndex)) {
+            return TrieMap::INVALID_INDEX;
+        }
+    }
     return mTrieMap.getNextLevelBitmapEntryIndex(prevWordIds[prevWordIds.size() - 1],
             lastBitmapEntryIndex);
 }
