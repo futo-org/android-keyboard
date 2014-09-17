@@ -22,13 +22,13 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/shortcut/shortcut_list_reading_utils.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
 class ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
  public:
-    explicit ShortcutListPolicy(const uint8_t *const shortcutBuf)
-            : mShortcutsBuf(shortcutBuf) {}
+    explicit ShortcutListPolicy(const ReadOnlyByteArrayView buffer) : mBuffer(buffer) {}
 
     ~ShortcutListPolicy() {}
 
@@ -37,7 +37,7 @@ class ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
             return NOT_A_DICT_POS;
         }
         int listPos = pos;
-        ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(mShortcutsBuf, &listPos);
+        ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(mBuffer, &listPos);
         return listPos;
     }
 
@@ -45,7 +45,7 @@ class ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
             int *const outCodePointCount, bool *const outIsWhitelist, bool *const outHasNext,
             int *const pos) const {
         const ShortcutListReadingUtils::ShortcutFlags flags =
-                ShortcutListReadingUtils::getFlagsAndForwardPointer(mShortcutsBuf, pos);
+                ShortcutListReadingUtils::getFlagsAndForwardPointer(mBuffer, pos);
         if (outHasNext) {
             *outHasNext = ShortcutListReadingUtils::hasNext(flags);
         }
@@ -54,20 +54,20 @@ class ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
         }
         if (outCodePoint) {
             *outCodePointCount = ShortcutListReadingUtils::readShortcutTarget(
-                        mShortcutsBuf, maxCodePointCount, outCodePoint, pos);
+                    mBuffer, maxCodePointCount, outCodePoint, pos);
         }
     }
 
     void skipAllShortcuts(int *const pos) const {
         const int shortcutListSize = ShortcutListReadingUtils
-                ::getShortcutListSizeAndForwardPointer(mShortcutsBuf, pos);
+                ::getShortcutListSizeAndForwardPointer(mBuffer, pos);
         *pos += shortcutListSize;
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ShortcutListPolicy);
 
-    const uint8_t *const mShortcutsBuf;
+    const ReadOnlyByteArrayView mBuffer;
 };
 } // namespace latinime
 #endif // LATINIME_SHORTCUT_LIST_POLICY_H

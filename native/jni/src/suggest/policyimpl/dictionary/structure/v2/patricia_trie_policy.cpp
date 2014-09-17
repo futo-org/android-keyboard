@@ -454,16 +454,14 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
     int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
     if (shortcutPos != NOT_A_DICT_POS) {
         int shortcutTargetCodePoints[MAX_WORD_LENGTH];
-        ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(mBuffer.data(),
-                &shortcutPos);
+        ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(mBuffer, &shortcutPos);
         bool hasNext = true;
         while (hasNext) {
             const ShortcutListReadingUtils::ShortcutFlags shortcutFlags =
-                    ShortcutListReadingUtils::getFlagsAndForwardPointer(mBuffer.data(),
-                            &shortcutPos);
+                    ShortcutListReadingUtils::getFlagsAndForwardPointer(mBuffer, &shortcutPos);
             hasNext = ShortcutListReadingUtils::hasNext(shortcutFlags);
             const int shortcutTargetLength = ShortcutListReadingUtils::readShortcutTarget(
-                    mBuffer.data(), MAX_WORD_LENGTH, shortcutTargetCodePoints, &shortcutPos);
+                    mBuffer, MAX_WORD_LENGTH, shortcutTargetCodePoints, &shortcutPos);
             const std::vector<int> shortcutTarget(shortcutTargetCodePoints,
                     shortcutTargetCodePoints + shortcutTargetLength);
             const int shortcutProbability =
