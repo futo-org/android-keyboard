@@ -232,11 +232,9 @@ bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds
 
 bool Ver4PatriciaTrieNodeWriter::removeNgramEntry(const WordIdArrayView prevWordIds,
         const int wordId) {
-    // TODO: Support n-gram.
     LanguageModelDictContent *const languageModelDictContent =
             mBuffers->getMutableLanguageModelDictContent();
-    return languageModelDictContent->removeNgramProbabilityEntry(prevWordIds.limit(1 /* maxSize */),
-            wordId);
+    return languageModelDictContent->removeNgramProbabilityEntry(prevWordIds, wordId);
 }
 
 // TODO: Remove when we stop supporting v402 format.

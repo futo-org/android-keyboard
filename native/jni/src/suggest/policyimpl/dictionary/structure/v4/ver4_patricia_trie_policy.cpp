@@ -375,15 +375,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     if (wordId == NOT_A_WORD_ID) {
         return false;
     }
-    std::array<int, MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordsPtNodePos;
-    for (size_t i = 0; i < prevWordsPtNodePos.size(); ++i) {
-        prevWordsPtNodePos[i] = mBuffers->getTerminalPositionLookupTable()
-                ->getTerminalPtNodePosition(prevWordIds[i]);
-    }
-    const int wordPtNodePos = mBuffers->getTerminalPositionLookupTable()
-            ->getTerminalPtNodePosition(wordId);
-    if (mUpdatingHelper.removeNgramEntry(WordIdArrayView::fromArray(prevWordsPtNodePos),
-            wordPtNodePos)) {
+    if (mNodeWriter.removeNgramEntry(prevWordIds, wordId)) {
         mBigramCount--;
         return true;
     } else {
