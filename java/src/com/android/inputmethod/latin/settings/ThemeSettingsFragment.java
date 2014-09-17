@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.settings;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -31,12 +32,12 @@ import com.android.inputmethod.latin.settings.RadioButtonPreference.OnRadioButto
  */
 public final class ThemeSettingsFragment extends SubScreenFragment
         implements OnRadioButtonClickedListener {
-    private int mSelectedThemeId;
+    private String mSelectedThemeId;
 
     static class KeyboardThemePreference extends RadioButtonPreference {
-        final int mThemeId;
+        final String mThemeId;
 
-        KeyboardThemePreference(final Context context, final String name, final int id) {
+        KeyboardThemePreference(final Context context, final String name, final String id) {
             super(context);
             setTitle(name);
             mThemeId = id;
@@ -44,13 +45,14 @@ public final class ThemeSettingsFragment extends SubScreenFragment
     }
 
     static void updateKeyboardThemeSummary(final Preference pref) {
-        final Context context = pref.getContext();
-        final Resources res = context.getResources();
-        final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(context);
+        final Resources res = pref.getContext().getResources();
+        final SharedPreferences prefs = pref.getSharedPreferences();
+        final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(prefs);
+        final String keyboardThemeId = String.valueOf(keyboardTheme.mThemeId);
         final String[] keyboardThemeNames = res.getStringArray(R.array.keyboard_theme_names);
-        final int[] keyboardThemeIds = res.getIntArray(R.array.keyboard_theme_ids);
+        final String[] keyboardThemeIds = res.getStringArray(R.array.keyboard_theme_ids);
         for (int index = 0; index < keyboardThemeNames.length; index++) {
-            if (keyboardTheme.mThemeId == keyboardThemeIds[index]) {
+            if (keyboardThemeId.equals(keyboardThemeIds[index])) {
                 pref.setSummary(keyboardThemeNames[index]);
                 return;
             }
@@ -62,18 +64,18 @@ public final class ThemeSettingsFragment extends SubScreenFragment
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_screen_theme);
         final PreferenceScreen screen = getPreferenceScreen();
-        final Context context = getActivity();
         final Resources res = getResources();
         final String[] keyboardThemeNames = res.getStringArray(R.array.keyboard_theme_names);
-        final int[] keyboardThemeIds = res.getIntArray(R.array.keyboard_theme_ids);
+        final String[] keyboardThemeIds = res.getStringArray(R.array.keyboard_theme_ids);
         for (int index = 0; index < keyboardThemeNames.length; index++) {
             final KeyboardThemePreference pref = new KeyboardThemePreference(
-                    context, keyboardThemeNames[index], keyboardThemeIds[index]);
+                    getActivity(), keyboardThemeNames[index], keyboardThemeIds[index]);
             screen.addPreference(pref);
             pref.setOnRadioButtonClickedListener(this);
         }
-        final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(context);
-        mSelectedThemeId = keyboardTheme.mThemeId;
+        final SharedPreferences prefs = getSharedPreferences();
+        final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(prefs);
+        mSelectedThemeId = String.valueOf(keyboardTheme.mThemeId);
     }
 
     @Override
@@ -104,7 +106,7 @@ public final class ThemeSettingsFragment extends SubScreenFragment
             final Preference preference = screen.getPreference(index);
             if (preference instanceof KeyboardThemePreference) {
                 final KeyboardThemePreference pref = (KeyboardThemePreference)preference;
-                final boolean selected = (mSelectedThemeId == pref.mThemeId);
+                final boolean selected = mSelectedThemeId.equals(pref.mThemeId);
                 pref.setSelected(selected);
             }
         }
