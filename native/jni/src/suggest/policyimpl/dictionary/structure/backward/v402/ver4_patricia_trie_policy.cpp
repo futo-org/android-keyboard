@@ -397,7 +397,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
     const WordIdArrayView prevWordIds = prevWordsInfo->getPrevWordIds(this, &prevWordIdArray,
             false /* tryLowerCaseSerch */);
-    if (prevWordIds.empty() || prevWordIds[0] == NOT_A_WORD_ID) {
+    if (prevWordIds.firstOrDefault(NOT_A_WORD_ID) == NOT_A_WORD_ID) {
         return false;
     }
     const int wordPos = getTerminalPtNodePosFromWordId(getWordId(wordCodePoints,

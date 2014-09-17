@@ -115,6 +115,20 @@ class IntArrayView {
         memmove(buffer->data() + offset, mPtr, sizeof(int) * mSize);
     }
 
+    AK_FORCE_INLINE int firstOrDefault(const int defaultValue) const {
+        if (empty()) {
+            return defaultValue;
+        }
+        return mPtr[0];
+    }
+
+    AK_FORCE_INLINE int lastOrDefault(const int defaultValue) const {
+        if (empty()) {
+            return defaultValue;
+        }
+        return mPtr[mSize - 1];
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(IntArrayView);
 
