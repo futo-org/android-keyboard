@@ -109,7 +109,7 @@ int Dictionary::getProbability(const CodePointArrayView codePoints) const {
 int Dictionary::getMaxProbabilityOfExactMatches(const CodePointArrayView codePoints) const {
     TimeKeeper::setCurrentTime();
     return DictionaryUtils::getMaxProbabilityOfExactMatches(
-            mDictionaryStructureWithBufferPolicy.get(), codePoints.data(), codePoints.size());
+            mDictionaryStructureWithBufferPolicy.get(), codePoints);
 }
 
 int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo,

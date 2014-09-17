@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "defines.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -30,7 +31,7 @@ class DictionaryUtils {
  public:
     static int getMaxProbabilityOfExactMatches(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            const int *const codePoints, const int codePointCount);
+            const CodePointArrayView codePoints);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictionaryUtils);
