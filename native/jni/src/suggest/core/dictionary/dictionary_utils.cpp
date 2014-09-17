@@ -29,7 +29,7 @@ namespace latinime {
 
 /* static */ int DictionaryUtils::getMaxProbabilityOfExactMatches(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const int *const codePoints, const int codePointCount) {
+        const CodePointArrayView codePoints) {
     std::vector<DicNode> current;
     std::vector<DicNode> next;
 
@@ -40,16 +40,16 @@ namespace latinime {
             dictionaryStructurePolicy, &prevWordIdArray, false /* tryLowerCaseSearch */);
     current.emplace_back();
     DicNodeUtils::initAsRoot(dictionaryStructurePolicy, prevWordIds, &current.front());
-    for (int i = 0; i < codePointCount; ++i) {
+    for (const int codePoint : codePoints) {
         // The base-lower input is used to ignore case errors and accent errors.
-        const int codePoint = CharUtils::toBaseLowerCase(codePoints[i]);
+        const int baseLowerCodePoint = CharUtils::toBaseLowerCase(codePoint);
         for (const DicNode &dicNode : current) {
-            if (dicNode.isInDigraph() && dicNode.getNodeCodePoint() == codePoint) {
+            if (dicNode.isInDigraph() && dicNode.getNodeCodePoint() == baseLowerCodePoint) {
                 next.emplace_back(dicNode);
                 next.back().advanceDigraphIndex();
                 continue;
             }
-            processChildDicNodes(dictionaryStructurePolicy, codePoint, &dicNode, &next);
+            processChildDicNodes(dictionaryStructurePolicy, baseLowerCodePoint, &dicNode, &next);
         }
         current.clear();
         current.swap(next);
