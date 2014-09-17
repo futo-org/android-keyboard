@@ -72,23 +72,23 @@ class Dictionary {
     void getPredictions(const PrevWordsInfo *const prevWordsInfo,
             SuggestionResults *const outSuggestionResults) const;
 
-    int getProbability(const int *word, int length) const;
+    int getProbability(const CodePointArrayView codePoints) const;
 
-    int getMaxProbabilityOfExactMatches(const int *word, int length) const;
+    int getMaxProbabilityOfExactMatches(const CodePointArrayView codePoints) const;
 
     int getNgramProbability(const PrevWordsInfo *const prevWordsInfo,
-            const int *word, int length) const;
+            const CodePointArrayView codePoints) const;
 
-    bool addUnigramEntry(const int *const codePoints, const int codePointCount,
+    bool addUnigramEntry(const CodePointArrayView codePoints,
             const UnigramProperty *const unigramProperty);
 
-    bool removeUnigramEntry(const int *const codePoints, const int codePointCount);
+    bool removeUnigramEntry(const CodePointArrayView codePoints);
 
     bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty);
 
-    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo, const int *const word,
-            const int length);
+    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+            const CodePointArrayView codePoints);
 
     bool flush(const char *const filePath);
 
@@ -99,7 +99,7 @@ class Dictionary {
     void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength);
 
-    const WordProperty getWordProperty(const int *const codePoints, const int codePointCount);
+    const WordProperty getWordProperty(const CodePointArrayView codePoints);
 
     // Method to iterate all words in the dictionary.
     // The returned token has to be used to get the next word. If token is 0, this method newly
