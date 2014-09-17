@@ -188,8 +188,14 @@ public final class Suggest {
             suggestionsList = suggestionsContainer;
         }
 
-        final int inputStyle = resultsArePredictions ? SuggestedWords.INPUT_STYLE_PREDICTION :
-                inputStyleIfNotPrediction;
+        final int inputStyle;
+        if (resultsArePredictions) {
+            inputStyle = suggestionResults.mIsBeginningOfSentence
+                    ? SuggestedWords.INPUT_STYLE_BEGINNING_OF_SENTENCE_PREDICTION
+                    : SuggestedWords.INPUT_STYLE_PREDICTION;
+        } else {
+            inputStyle = inputStyleIfNotPrediction;
+        }
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
                 suggestionResults.mRawSuggestions,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
@@ -244,6 +250,8 @@ public final class Suggest {
 
         // In the batch input mode, the most relevant suggested word should act as a "typed word"
         // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
+        // Note that because this method is never used to get predictions, there is no need to
+        // modify inputType such in getSuggestedWordsForNonBatchInput.
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer,
                 suggestionResults.mRawSuggestions,
                 true /* typedWordValid */,

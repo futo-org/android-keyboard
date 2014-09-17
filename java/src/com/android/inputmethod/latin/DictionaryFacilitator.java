@@ -595,8 +595,9 @@ public class DictionaryFacilitator {
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId) {
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
-        final SuggestionResults suggestionResults =
-                new SuggestionResults(SuggestedWords.MAX_SUGGESTIONS);
+        final SuggestionResults suggestionResults = new SuggestionResults(
+                SuggestedWords.MAX_SUGGESTIONS,
+                prevWordsInfo.mPrevWordsInfo[0].mIsBeginningOfSentence);
         final float[] languageWeight = new float[] { Dictionary.NOT_A_LANGUAGE_WEIGHT };
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
             for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
