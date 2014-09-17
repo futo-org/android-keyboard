@@ -57,7 +57,7 @@ public class DistracterFilterTest extends AndroidTestCase {
         mDistracterFilter.close();
     }
 
-    public void testIsDistractorToWordsInDictionaries() {
+    public void testIsDistracterToWordsInDictionaries() {
         final PrevWordsInfo EMPTY_PREV_WORDS_INFO = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
 
         final Locale localeEnUs = new Locale("en", "US");
