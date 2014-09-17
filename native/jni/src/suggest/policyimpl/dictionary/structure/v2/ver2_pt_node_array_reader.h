@@ -21,13 +21,13 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_array_reader.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
 class Ver2PtNodeArrayReader : public PtNodeArrayReader {
  public:
-    Ver2PtNodeArrayReader(const uint8_t *const dictBuffer, const int dictSize)
-            : mDictBuffer(dictBuffer), mDictSize(dictSize) {};
+    Ver2PtNodeArrayReader(const ReadOnlyByteArrayView buffer) : mBuffer(buffer) {};
 
     virtual bool readPtNodeArrayInfoAndReturnIfValid(const int ptNodeArrayPos,
             int *const outPtNodeCount, int *const outFirstPtNodePos) const;
@@ -37,8 +37,7 @@ class Ver2PtNodeArrayReader : public PtNodeArrayReader {
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver2PtNodeArrayReader);
 
-    const uint8_t *const mDictBuffer;
-    const int mDictSize;
+    const ReadOnlyByteArrayView mBuffer;
 };
 } // namespace latinime
 #endif /* LATINIME_VER2_PT_NODE_ARRAY_READER_H */

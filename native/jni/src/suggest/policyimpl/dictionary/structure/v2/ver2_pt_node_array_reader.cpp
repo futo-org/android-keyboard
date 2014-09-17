@@ -22,16 +22,16 @@ namespace latinime {
 
 bool Ver2PtNodeArrayReader::readPtNodeArrayInfoAndReturnIfValid(const int ptNodeArrayPos,
         int *const outPtNodeCount, int *const outFirstPtNodePos) const {
-    if (ptNodeArrayPos < 0 || ptNodeArrayPos >= mDictSize) {
+    if (ptNodeArrayPos < 0 || ptNodeArrayPos >= static_cast<int>(mBuffer.size())) {
         // Reading invalid position because of a bug or a broken dictionary.
-        AKLOGE("Reading PtNode array info from invalid dictionary position: %d, dict size: %d",
-                ptNodeArrayPos, mDictSize);
+        AKLOGE("Reading PtNode array info from invalid dictionary position: %d, dict size: %zd",
+                ptNodeArrayPos, mBuffer.size());
         ASSERT(false);
         return false;
     }
     int readingPos = ptNodeArrayPos;
     const int ptNodeCountInArray = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
-            mDictBuffer, &readingPos);
+            mBuffer.data(), &readingPos);
     *outPtNodeCount = ptNodeCountInArray;
     *outFirstPtNodePos = readingPos;
     return true;
@@ -39,10 +39,10 @@ bool Ver2PtNodeArrayReader::readPtNodeArrayInfoAndReturnIfValid(const int ptNode
 
 bool Ver2PtNodeArrayReader::readForwardLinkAndReturnIfValid(const int forwordLinkPos,
         int *const outNextPtNodeArrayPos) const {
-    if (forwordLinkPos < 0 || forwordLinkPos >= mDictSize) {
+    if (forwordLinkPos < 0 || forwordLinkPos >=  static_cast<int>(mBuffer.size())) {
         // Reading invalid position because of bug or broken dictionary.
-        AKLOGE("Reading forward link from invalid dictionary position: %d, dict size: %d",
-                forwordLinkPos, mDictSize);
+        AKLOGE("Reading forward link from invalid dictionary position: %d, dict size: %zd",
+                forwordLinkPos, mBuffer.size());
         ASSERT(false);
         return false;
     }
