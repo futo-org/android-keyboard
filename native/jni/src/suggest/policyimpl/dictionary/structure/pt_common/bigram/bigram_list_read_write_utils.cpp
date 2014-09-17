@@ -39,32 +39,31 @@ const BigramListReadWriteUtils::BigramFlags
         BigramListReadWriteUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
 
 /* static */ bool BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
-        const uint8_t *const bigramsBuf, const int bufSize, BigramFlags *const outBigramFlags,
+        const ReadOnlyByteArrayView buffer, BigramFlags *const outBigramFlags,
         int *const outTargetPtNodePos, int *const bigramEntryPos) {
-    if (bufSize <= *bigramEntryPos) {
-        AKLOGE("Read invalid pos in getBigramEntryPropertiesAndAdvancePosition(). bufSize: %d, "
-                "bigramEntryPos: %d.", bufSize, *bigramEntryPos);
+    if (static_cast<int>(buffer.size()) <= *bigramEntryPos) {
+        AKLOGE("Read invalid pos in getBigramEntryPropertiesAndAdvancePosition(). bufSize: %zd, "
+                "bigramEntryPos: %d.", buffer.size(), *bigramEntryPos);
         return false;
     }
-    const BigramFlags bigramFlags = ByteArrayUtils::readUint8AndAdvancePosition(bigramsBuf,
+    const BigramFlags bigramFlags = ByteArrayUtils::readUint8AndAdvancePosition(buffer.data(),
             bigramEntryPos);
     if (outBigramFlags) {
         *outBigramFlags = bigramFlags;
     }
-    const int targetPos = getBigramAddressAndAdvancePosition(bigramsBuf, bigramFlags,
-            bigramEntryPos);
+    const int targetPos = getBigramAddressAndAdvancePosition(buffer, bigramFlags, bigramEntryPos);
     if (outTargetPtNodePos) {
         *outTargetPtNodePos = targetPos;
     }
     return true;
 }
 
-/* static */ bool BigramListReadWriteUtils::skipExistingBigrams(const uint8_t *const bigramsBuf,
-        const int bufSize, int *const bigramListPos) {
+/* static */ bool BigramListReadWriteUtils::skipExistingBigrams(const ReadOnlyByteArrayView buffer,
+        int *const bigramListPos) {
     BigramFlags flags;
     do {
-        if (!getBigramEntryPropertiesAndAdvancePosition(bigramsBuf, bufSize, &flags,
-                0 /* outTargetPtNodePos */, bigramListPos)) {
+        if (!getBigramEntryPropertiesAndAdvancePosition(buffer, &flags, 0 /* outTargetPtNodePos */,
+                bigramListPos)) {
             return false;
         }
     } while(hasNext(flags));
@@ -72,18 +71,18 @@ const BigramListReadWriteUtils::BigramFlags
 }
 
 /* static */ int BigramListReadWriteUtils::getBigramAddressAndAdvancePosition(
-        const uint8_t *const bigramsBuf, const BigramFlags flags, int *const pos) {
+        const ReadOnlyByteArrayView buffer, const BigramFlags flags, int *const pos) {
     int offset = 0;
     const int origin = *pos;
     switch (MASK_ATTRIBUTE_ADDRESS_TYPE & flags) {
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-            offset = ByteArrayUtils::readUint8AndAdvancePosition(bigramsBuf, pos);
+            offset = ByteArrayUtils::readUint8AndAdvancePosition(buffer.data(), pos);
             break;
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-            offset = ByteArrayUtils::readUint16AndAdvancePosition(bigramsBuf, pos);
+            offset = ByteArrayUtils::readUint16AndAdvancePosition(buffer.data(), pos);
             break;
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-            offset = ByteArrayUtils::readUint24AndAdvancePosition(bigramsBuf, pos);
+            offset = ByteArrayUtils::readUint24AndAdvancePosition(buffer.data(), pos);
             break;
     }
     if (isOffsetNegative(flags)) {
