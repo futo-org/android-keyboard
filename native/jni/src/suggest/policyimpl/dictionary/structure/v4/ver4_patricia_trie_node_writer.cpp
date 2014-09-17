@@ -211,19 +211,17 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
 
 bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
         const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
-    // TODO: Support n-gram.
     LanguageModelDictContent *const languageModelDictContent =
             mBuffers->getMutableLanguageModelDictContent();
     const ProbabilityEntry probabilityEntry =
-            languageModelDictContent->getNgramProbabilityEntry(
-                    prevWordIds.limit(1 /* maxSize */), wordId);
+            languageModelDictContent->getNgramProbabilityEntry(prevWordIds, wordId);
     const ProbabilityEntry probabilityEntryOfBigramProperty(bigramProperty);
     const ProbabilityEntry updatedProbabilityEntry = createUpdatedEntryFrom(
             &probabilityEntry, &probabilityEntryOfBigramProperty);
     if (!languageModelDictContent->setNgramProbabilityEntry(
-            prevWordIds.limit(1 /* maxSize */), wordId, &updatedProbabilityEntry)) {
-        AKLOGE("Cannot add new ngram entry. prevWordId: %d, wordId: %d",
-                prevWordIds[0], wordId);
+            prevWordIds, wordId, &updatedProbabilityEntry)) {
+        AKLOGE("Cannot add new ngram entry. prevWordId[0]: %d, prevWordId.size(): %zd, wordId: %d",
+                prevWordIds[0], prevWordIds.size(), wordId);
         return false;
     }
     if (!probabilityEntry.isValid() && outAddedNewBigram) {

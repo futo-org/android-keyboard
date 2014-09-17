@@ -335,17 +335,8 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
     if (wordId == NOT_A_WORD_ID) {
         return false;
     }
-    // TODO: Support N-gram.
     bool addedNewEntry = false;
-    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordsPtNodePos;
-    for (size_t i = 0; i < prevWordsPtNodePos.size(); ++i) {
-        prevWordsPtNodePos[i] = mBuffers->getTerminalPositionLookupTable()
-                ->getTerminalPtNodePosition(prevWordIds[i]);
-    }
-    const int wordPtNodePos = mBuffers->getTerminalPositionLookupTable()
-            ->getTerminalPtNodePosition(wordId);
-    if (mUpdatingHelper.addNgramEntry(WordIdArrayView::fromArray(prevWordsPtNodePos),
-            wordPtNodePos, bigramProperty, &addedNewEntry)) {
+    if (mNodeWriter.addNgramEntry(prevWordIds, wordId, bigramProperty, &addedNewEntry)) {
         if (addedNewEntry) {
             mBigramCount++;
         }
