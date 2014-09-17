@@ -183,6 +183,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 | InputType.TYPE_TEXT_FLAG_MULTI_LINE;
         mEditText.setInputType(inputType);
         mEditText.setEnabled(true);
+        if (null == Looper.myLooper()) {
+            Looper.prepare();
+        }
         setupService();
         mLatinIME = getService();
         setDebugMode(true);
