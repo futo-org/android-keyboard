@@ -26,12 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"कीप्रेस करताना होणारे कंपन"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"कीप्रेस करताना होणारा ध्वनी"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"कीप्रेस करताना पॉपअप"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"इनपुट प्राधान्ये"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"दिसणे"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"बहुभाषिक पर्याय"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"हावभाग टायपिंग प्राधान्ये"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"प्राधान्ये"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"स्वरूप आणि लेआउट"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"बहुभाषिक पर्याय"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"जेश्चर टायपिंग"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"मजकूर दुरुस्ती"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"प्रगत"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"थीम"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्य इनपुट पद्धतींवर स्विच करा"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्विच की अन्य इनपुट पद्धती देखील समाविष्ट करते"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच की"</string>
@@ -74,9 +75,9 @@
     <string name="voice_input" msgid="3583258583521397548">"व्हॉइस इनपुट की"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"व्हॉइस इनपुट पद्धती सक्षम केल्या नाहीत. भाषा आणि इनपुट सेटिंग्ज तपासा."</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धती कॉन्फिगर करा"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषा"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"भाषा"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"मदत आणि अभिप्राय"</string>
-    <string name="select_language" msgid="3693815588777926848">"इनपुट भाषा"</string>
+    <string name="select_language" msgid="5709487854987078367">"भाषा"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"जतन करण्यासाठी पुन्हा स्पर्श करा"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"जतन करण्यासाठी येथे स्पर्श करा"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"शब्दकोश उपलब्ध"</string>

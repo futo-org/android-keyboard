@@ -26,12 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"কীপ্রেস এর সময় কম্পন"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"কীপ্রেস এর সময়ের শব্দ"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"কীপ্রেস এর ফলে পপআপ"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"ইনপুট পছন্দগুলি"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"উপস্থিতি"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"একাধিক ভাষা বিকল্পগুলি"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"অঙ্গভঙ্গি টাইপিং অভিরুচি"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"পছন্দসমূহ"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"চেহারা ও লেআউটগুলি"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"বহুভাষিক বিকল্পগুলি"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"অঙ্গভঙ্গি টাইপিং"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"পাঠ্য সংশোধন"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"উন্নত"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"থিম"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"অন্য ইনপুট পদ্ধতিতে স্যুইচ করুন"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ভাষা স্যুইচ কীতে অন্যান্য ইনপুট পদ্ধতি পাওয়া যায়"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ভাষা স্যুইচ কী"</string>
@@ -74,9 +75,9 @@
     <string name="voice_input" msgid="3583258583521397548">"ভয়েস ইনপুট কী"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"কোনো ভয়েস ইনপুট পদ্ধতি সক্ষম নয়। ভাষা &amp; ইনপুট সেটিংস পরীক্ষা করুন।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ইনপুট পদ্ধতি কনফিগার করুন"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"ইনপুট ভাষাগুলি"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"ভাষাগুলি"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"সহায়তা এবং প্রতিক্রিয়া"</string>
-    <string name="select_language" msgid="3693815588777926848">"ইনপুট ভাষাগুলি"</string>
+    <string name="select_language" msgid="5709487854987078367">"ভাষাগুলি"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"সংরক্ষণ করতে আবার ছোঁন"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"সংরক্ষণ করতে এখানে স্পর্শ করুন"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"অভিধান উপলব্ধ"</string>
@@ -121,8 +122,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"পরবর্তী পদক্ষেপ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সেট আপ হচ্ছে"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করুন"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"দয়া করে আপনার ভাষা ও ইনপুট সেটিংস <xliff:g id="APPLICATION_NAME">%s</xliff:g> পরীক্ষা করুন। এর ফলে এটি আপনার ডিভাইসে চলার জন্য অনুমোদন পাবে।"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"আপনার ভাষা ও ইনপুট সেটিংসে ইতোমধ্যে <xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করা হয়েছে, তাই এই পদক্ষেপটি সমাপ্ত। পরবর্তীটিতে এগোন!"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"দয়া করে আপনার ভাষা ও কিবোর্ড সেটিংস <xliff:g id="APPLICATION_NAME">%s</xliff:g> পরীক্ষা করুন। এর ফলে এটি আপনার ডিভাইসে চলার জন্য অনুমোদন পাবে।"</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"আপনার ভাষা ও কিবোর্ড সেটিংসে ইতোমধ্যে <xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করা হয়েছে, তাই এই পদক্ষেপটি সমাপ্ত। পরবর্তীটিতে এগোন!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"সেটিংসে সক্ষম করুন"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> এ স্যুইচ করুন"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"এখন, সক্রিয় পাঠ্য-ইনপুট পদ্ধতি হিসেবে \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" নির্বাচন করুন।"</string>

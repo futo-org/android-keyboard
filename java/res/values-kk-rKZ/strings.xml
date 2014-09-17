@@ -26,12 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Пернені басқан кездегі діріл"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Пернені басу кезіндегі дыбыс"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Пернені басқан кездегі ашылмалы мәзір"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"Енгізу параметрлері"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"Сыртқы түр"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Көп тілді опциялар"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"Қимыл арқылы теру параметрлері"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Қалауларыңыз"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Сыртқы түр және орналасулар"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Көп тілдік опциялар"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Қимыл арқылы теру"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Мәтінді түзету"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Кеңейтілген"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"Тақырып"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Басқа енгізу әдістеріне ауыстырыңыз"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Тілді ауыстыру пернесі басқа енгізу әдістерін де қамтиды"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Тілді ауыстыру пернесі"</string>
@@ -74,9 +75,9 @@
     <string name="voice_input" msgid="3583258583521397548">"Дауыстық енгізу пернесі"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Дауыспен енгізу әдістері қосылмаған. «Тіл және енгізу параметрлері» тармағын тексеріңіз."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Енгізу әдістерін теңшеу"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Енгізу тілдері"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"Тілдер"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Анықтама және кері байланыс"</string>
-    <string name="select_language" msgid="3693815588777926848">"Енгізу тілдері"</string>
+    <string name="select_language" msgid="5709487854987078367">"Тілдер"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Сақтау үшін қайта түртіңіз"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Сақтау үшін осы жерді түртіңіз"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Сөздік қолжетімді"</string>

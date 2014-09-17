@@ -26,12 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"යතුර එබීමට කම්පනය කිරීම සක්‍රියයි"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"යතුරු එබිම මත හඬ"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"යතුරු එබීම මත උත්පතනය"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"ආදාන මනාපය"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"පෙනුම"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"බහු මූර්ධජ අක්ෂර විකල්ප"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"ඉංගිතයෙන් ටයිප් කිරීමේ මනාපය"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"අභිරුචි"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"පෙනුම සහ පිරිසැලසුම්"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"බහු භාෂා විකල්ප"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"ඉංගිත ටයිප් කිරීම"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"පෙළ නිවැරදි කිරීම"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"උසස්"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"තේමාව"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"වෙනත් ආදාන ක්‍රම වෙත මාරුවන්න"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"භාෂා මාරු යතුර වෙනත් ආදාන ක්‍රමද ආවරණය කරයි"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"භාෂා මාරු යතුර"</string>
@@ -74,9 +75,9 @@
     <string name="voice_input" msgid="3583258583521397548">"හඬ ආදාන යතුර"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"හඬ ආදාන සබල කර නැත. භාෂාව සහ ආදාන සැකසීම් පරීක්ෂා කරන්න."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ආදාන ක්‍රම වින්‍යාස කරන්න"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"ආදාන භාෂා"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"භාෂා"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"උදවු සහ ප්‍රතිපෝෂණ"</string>
-    <string name="select_language" msgid="3693815588777926848">"ආදාන භාෂා"</string>
+    <string name="select_language" msgid="5709487854987078367">"භාෂා"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"සුරැකීමට නැවත ස්පර්ශ කරන්න"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"සුරැකීමට මෙතැන ස්පර්ෂ කරන්න"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ශබ්ද කෝෂය ලබාගත හැක"</string>

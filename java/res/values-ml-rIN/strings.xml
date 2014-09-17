@@ -26,12 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"കീ അമർത്തുമ്പോൾ വൈബ്രേറ്റുചെയ്യുക"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"കീ അമർത്തുമ്പോഴുള്ള ശബ്‌ദമുണ്ടാക്കുക"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"കീ അമർത്തുമ്പോൾ പോപ്പ്അപ്പ് ചെയ്യുക"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"ഇൻപുട്ട് മുൻഗണനകൾ"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"കാഴ്ച്ച"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"ഒന്നിലധികം ഭാഷകൾക്കുള്ള ഓ‌പ്ഷനുകൾ"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"ടൈപ്പുചെയ്യുന്നതിന് മുൻഗണന നൽകുന്ന സവിശേഷത"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"മുൻഗണനകൾ"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"രൂപഭാവവും ലേഔട്ടുകളും"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"മൾട്ടിലിംഗ്വൽ ഓപ്‌ഷനുകൾ"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"ഗെസ്ചർ ടൈപ്പിംഗ്"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"വാചകം തിരുത്തൽ"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"വിപുലമായ"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"തീം"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"മറ്റു ടൈപ്പുചെയ്യൽ രീതികളിലേക്ക് മാറുക"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ഭാഷ മാറൽ കീയിൽ മറ്റ് ടൈപ്പുചെയ്യൽ രീതികളും ഉൾപ്പെടുന്നു"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ഭാഷ മാറൽ കീ"</string>
@@ -74,9 +75,9 @@
     <string name="voice_input" msgid="3583258583521397548">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ കീ"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ രീതികളൊന്നും പ്രവർത്തനക്ഷമമല്ല. ഭാഷ &amp; ടൈപ്പു ചെയ്യൽ ക്രമീകരണങ്ങൾ പരിശോധിക്കുക."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ടൈപ്പുചെയ്യൽ രീതികൾ കോൺഫിഗർ ചെയ്യുക"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"ടൈപ്പുചെയ്യൽ ഭാഷകൾ"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"ഭാഷകള്‍‌"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"സഹായവും ഫീഡ്‌ബാക്കും"</string>
-    <string name="select_language" msgid="3693815588777926848">"ടൈപ്പുചെയ്യൽ ഭാഷകൾ"</string>
+    <string name="select_language" msgid="5709487854987078367">"ഭാഷകള്‍‌"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"സംരക്ഷിക്കുന്നതിനായി വീണ്ടും സ്‌പർശിക്കുക"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"സംരക്ഷിക്കാൻ ഇവിടെ സ്‌പർശിക്കുക"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"നിഘണ്ടു ലഭ്യമാണ്"</string>
@@ -102,7 +103,7 @@
     <string name="subtype_emoji" msgid="7483586578074549196">"ഇമോജി"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"കീബോർഡ് തീം"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"ഇഷ്‌ടാനുസൃത ടൈപ്പുചെയ്യൽ ശൈലികൾ"</string>
-    <string name="add_style" msgid="6163126614514489951">"ശൈലി ചേർക്കുക"</string>
+    <string name="add_style" msgid="6163126614514489951">"സ്റ്റൈൽ ചേർക്കുക"</string>
     <string name="add" msgid="8299699805688017798">"ചേര്‍ക്കുക"</string>
     <string name="remove" msgid="4486081658752944606">"നീക്കംചെയ്യുക"</string>
     <string name="save" msgid="7646738597196767214">"സംരക്ഷിക്കുക"</string>
