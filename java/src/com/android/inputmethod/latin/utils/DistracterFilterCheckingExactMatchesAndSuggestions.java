@@ -64,9 +64,9 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
     private final Object mLock = new Object();
 
     // If the score of the top suggestion exceeds this value, the tested word (e.g.,
-    // an OOV, a misspelling, or an in-vocabulary word) would be considered as a distractor to
+    // an OOV, a misspelling, or an in-vocabulary word) would be considered as a distracter to
     // words in dictionary. The greater the threshold is, the less likely the tested word would
-    // become a distractor, which means the tested word will be more likely to be added to
+    // become a distracter, which means the tested word will be more likely to be added to
     // the dictionary.
     private static final float DISTRACTER_WORD_SCORE_THRESHOLD = 0.4f;
 
@@ -196,7 +196,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         }
         final boolean Word = dictionaryFacilitator.isValidWord(testedWord, false /* ignoreCase */);
         if (Word) {
-            // Valid word is not a distractor.
+            // Valid word is not a distracter.
             if (DEBUG) {
                 Log.d(TAG, "isDistracter: false (valid word)");
             }
@@ -257,12 +257,12 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             return false;
         }
         final SuggestedWordInfo firstSuggestion = suggestionResults.first();
-        final boolean isDistractor = suggestionExceedsDistracterThreshold(
+        final boolean isDistracter = suggestionExceedsDistracterThreshold(
                 firstSuggestion, consideredWord, DISTRACTER_WORD_SCORE_THRESHOLD);
         if (DEBUG) {
-            Log.d(TAG, "isDistracter: " + isDistractor);
+            Log.d(TAG, "isDistracter: " + isDistracter);
         }
-        return isDistractor;
+        return isDistracter;
     }
 
     private static boolean suggestionExceedsDistracterThreshold(final SuggestedWordInfo suggestion,

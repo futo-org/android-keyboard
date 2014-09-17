@@ -235,7 +235,7 @@ public final class Suggest {
         SuggestedWordInfo.removeDups(null /* typedWord */, suggestionsContainer);
 
         // For some reason some suggestions with MIN_VALUE are making their way here.
-        // TODO: Find a more robust way to detect distractors.
+        // TODO: Find a more robust way to detect distracters.
         for (int i = suggestionsContainer.size() - 1; i >= 0; --i) {
             if (suggestionsContainer.get(i).mScore < SUPPRESS_SUGGEST_THRESHOLD) {
                 suggestionsContainer.remove(i);
