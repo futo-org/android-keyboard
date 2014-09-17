@@ -167,7 +167,7 @@ int LanguageModelDictContent::createAndGetBitmapEntryIndex(const WordIdArrayView
     if (lastBitmapEntryIndex == TrieMap::INVALID_INDEX) {
         return TrieMap::INVALID_INDEX;
     }
-    const int oldestPrevWordId = prevWordIds[prevWordIds.size() - 1];
+    const int oldestPrevWordId = prevWordIds.lastOrDefault(NOT_A_WORD_ID);
     const TrieMap::Result result = mTrieMap.get(oldestPrevWordId, lastBitmapEntryIndex);
     if (!result.mIsValid) {
         if (!mTrieMap.put(oldestPrevWordId,
@@ -175,7 +175,7 @@ int LanguageModelDictContent::createAndGetBitmapEntryIndex(const WordIdArrayView
             return TrieMap::INVALID_INDEX;
         }
     }
-    return mTrieMap.getNextLevelBitmapEntryIndex(prevWordIds[prevWordIds.size() - 1],
+    return mTrieMap.getNextLevelBitmapEntryIndex(prevWordIds.lastOrDefault(NOT_A_WORD_ID),
             lastBitmapEntryIndex);
 }
 

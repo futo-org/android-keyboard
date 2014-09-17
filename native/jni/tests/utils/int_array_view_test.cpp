@@ -124,5 +124,25 @@ TEST(IntArrayViewTest, TestCopyToArray) {
     EXPECT_EQ(70, buffer[6]);
 }
 
+TEST(IntArrayViewTest, TestFirstOrDefault) {
+    const std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
+    IntArrayView intArrayView(intVector);
+
+    EXPECT_EQ(3, intArrayView.firstOrDefault(10));
+    EXPECT_EQ(10, intArrayView.limit(0).firstOrDefault(10));
+    EXPECT_EQ(-10, intArrayView.limit(0).firstOrDefault(-10));
+    EXPECT_EQ(10, intArrayView.skip(6).firstOrDefault(10));
+}
+
+TEST(IntArrayViewTest, TestLastOrDefault) {
+    const std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
+    IntArrayView intArrayView(intVector);
+
+    EXPECT_EQ(-2, intArrayView.lastOrDefault(10));
+    EXPECT_EQ(10, intArrayView.limit(0).lastOrDefault(10));
+    EXPECT_EQ(-10, intArrayView.limit(0).lastOrDefault(-10));
+    EXPECT_EQ(10, intArrayView.skip(6).lastOrDefault(10));
+}
+
 }  // namespace
 }  // namespace latinime
