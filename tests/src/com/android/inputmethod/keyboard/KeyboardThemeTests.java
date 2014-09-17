@@ -28,6 +28,8 @@ import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import java.util.Arrays;
+
 @SmallTest
 public class KeyboardThemeTests extends AndroidTestCase {
     private SharedPreferences mPrefs;
@@ -77,7 +79,9 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     private void assertKeyboardTheme(final int sdkVersion, final int expectedThemeId) {
-        assertEquals(expectedThemeId, KeyboardTheme.getKeyboardTheme(mPrefs, sdkVersion).mThemeId);
+        final KeyboardTheme actualTheme = KeyboardTheme.getKeyboardTheme(
+                mPrefs, sdkVersion, KeyboardTheme.KEYBOARD_THEMES);
+        assertEquals(expectedThemeId, actualTheme.mThemeId);
     }
 
     /*
@@ -139,8 +143,8 @@ public class KeyboardThemeTests extends AndroidTestCase {
         final String oldPrefKey = KeyboardTheme.KLP_KEYBOARD_THEME_KEY;
         setKeyboardThemePreference(oldPrefKey, previousThemeId);
 
-        final KeyboardTheme defaultTheme =
-                KeyboardTheme.getDefaultKeyboardTheme(mPrefs, sdkVersion);
+        final KeyboardTheme defaultTheme = KeyboardTheme.getDefaultKeyboardTheme(
+                mPrefs, sdkVersion, KeyboardTheme.KEYBOARD_THEMES);
 
         assertNotNull(defaultTheme);
         assertEquals(expectedThemeId, defaultTheme.mThemeId);
@@ -194,7 +198,8 @@ public class KeyboardThemeTests extends AndroidTestCase {
         // Clean up new keyboard theme preference to simulate "upgrade to LXX keyboard".
         setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
 
-        final KeyboardTheme theme = KeyboardTheme.getKeyboardTheme(mPrefs, sdkVersion);
+        final KeyboardTheme theme = KeyboardTheme.getKeyboardTheme(
+                mPrefs, sdkVersion, KeyboardTheme.KEYBOARD_THEMES);
 
         assertNotNull(theme);
         assertEquals(expectedThemeId, theme.mThemeId);
@@ -340,5 +345,61 @@ public class KeyboardThemeTests extends AndroidTestCase {
                 oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
+    }
+
+    /*
+     * Test for missing selected theme.
+     */
+    private static KeyboardTheme[] LIMITED_THEMES = {
+        KeyboardTheme.searchKeyboardThemeById(THEME_ID_ICS, KeyboardTheme.KEYBOARD_THEMES),
+        KeyboardTheme.searchKeyboardThemeById(THEME_ID_KLP, KeyboardTheme.KEYBOARD_THEMES)
+    };
+    static {
+        Arrays.sort(LIMITED_THEMES);
+    }
+
+    public void testMissingSelectedThemeIcs() {
+        // Clean up preferences.
+        setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+        setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+
+        final int sdkVersion = VERSION_CODES.ICE_CREAM_SANDWICH;
+        final String oldPrefKey = KeyboardTheme.getPreferenceKey(sdkVersion);
+        setKeyboardThemePreference(oldPrefKey, THEME_ID_LXX_LIGHT);
+
+        final KeyboardTheme actualTheme = KeyboardTheme.getKeyboardTheme(
+                mPrefs, sdkVersion, LIMITED_THEMES);
+        // LXX_LIGHT is missing, fall-back to KLP.
+        assertEquals(THEME_ID_KLP, actualTheme.mThemeId);
+    }
+
+    public void testMissingSelectedThemeKlp() {
+        // Clean up preferences.
+        setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+        setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+
+        final int sdkVersion = VERSION_CODES.KITKAT;
+        final String oldPrefKey = KeyboardTheme.getPreferenceKey(sdkVersion);
+        setKeyboardThemePreference(oldPrefKey, THEME_ID_LXX_LIGHT);
+
+        final KeyboardTheme actualTheme = KeyboardTheme.getKeyboardTheme(
+                mPrefs, sdkVersion, LIMITED_THEMES);
+        // LXX_LIGHT is missing, fall-back to KLP.
+        assertEquals(THEME_ID_KLP, actualTheme.mThemeId);
+    }
+
+    public void testMissingSelectedThemeLxx() {
+        // Clean up preferences.
+        setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+        setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+
+        final int sdkVersion = VERSION_CODES_LXX;
+        final String oldPrefKey = KeyboardTheme.getPreferenceKey(sdkVersion);
+        setKeyboardThemePreference(oldPrefKey, THEME_ID_LXX_DARK);
+
+        final KeyboardTheme actualTheme = KeyboardTheme.getKeyboardTheme(
+                mPrefs, sdkVersion, LIMITED_THEMES);
+        // LXX_DARK is missing, fall-back to KLP.
+        assertEquals(THEME_ID_KLP, actualTheme.mThemeId);
     }
 }
