@@ -22,6 +22,7 @@
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_reader.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -30,19 +31,17 @@ class DictionaryShortcutsStructurePolicy;
 
 class Ver2ParticiaTrieNodeReader : public PtNodeReader {
  public:
-    Ver2ParticiaTrieNodeReader(const uint8_t *const dictBuffer, const int dictSize,
+    Ver2ParticiaTrieNodeReader(const ReadOnlyByteArrayView buffer,
             const DictionaryBigramsStructurePolicy *const bigramPolicy,
             const DictionaryShortcutsStructurePolicy *const shortcutPolicy)
-            : mDictBuffer(dictBuffer), mDictSize(dictSize), mBigramPolicy(bigramPolicy),
-              mShortuctPolicy(shortcutPolicy) {}
+            : mBuffer(buffer), mBigramPolicy(bigramPolicy), mShortuctPolicy(shortcutPolicy) {}
 
     virtual const PtNodeParams fetchPtNodeParamsInBufferFromPtNodePos(const int ptNodePos) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver2ParticiaTrieNodeReader);
 
-    const uint8_t *const mDictBuffer;
-    const int mDictSize;
+    const ReadOnlyByteArrayView mBuffer;
     const DictionaryBigramsStructurePolicy *const mBigramPolicy;
     const DictionaryShortcutsStructurePolicy *const mShortuctPolicy;
 };
