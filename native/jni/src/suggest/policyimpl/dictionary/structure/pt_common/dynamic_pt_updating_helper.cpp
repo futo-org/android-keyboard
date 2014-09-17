@@ -28,17 +28,16 @@ namespace latinime {
 
 const int DynamicPtUpdatingHelper::CHILDREN_POSITION_FIELD_SIZE = 3;
 
-bool DynamicPtUpdatingHelper::addUnigramWord(
-        DynamicPtReadingHelper *const readingHelper,
-        const int *const wordCodePoints, const int codePointCount,
-        const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram) {
+bool DynamicPtUpdatingHelper::addUnigramWord(DynamicPtReadingHelper *const readingHelper,
+        const CodePointArrayView wordCodePoints, const UnigramProperty *const unigramProperty,
+        bool *const outAddedNewUnigram) {
     int parentPos = NOT_A_DICT_POS;
     while (!readingHelper->isEnd()) {
         const PtNodeParams ptNodeParams(readingHelper->getPtNodeParams());
         if (!ptNodeParams.isValid()) {
             break;
         }
-        const int matchedCodePointCount = readingHelper->getPrevTotalCodePointCount();
+        const size_t matchedCodePointCount = readingHelper->getPrevTotalCodePointCount();
         if (!readingHelper->isMatchedCodePoint(ptNodeParams, 0 /* index */,
                 wordCodePoints[matchedCodePointCount])) {
             // The first code point is different from target code point. Skip this node and read
@@ -47,26 +46,25 @@ bool DynamicPtUpdatingHelper::addUnigramWord(
             continue;
         }
         // Check following merged node code points.
-        const int nodeCodePointCount = ptNodeParams.getCodePointCount();
-        for (int j = 1; j < nodeCodePointCount; ++j) {
-            const int nextIndex = matchedCodePointCount + j;
-            if (nextIndex >= codePointCount || !readingHelper->isMatchedCodePoint(ptNodeParams, j,
-                    wordCodePoints[matchedCodePointCount + j])) {
+        const size_t nodeCodePointCount = ptNodeParams.getCodePointArrayView().size();
+        for (size_t j = 1; j < nodeCodePointCount; ++j) {
+            const size_t nextIndex = matchedCodePointCount + j;
+            if (nextIndex >= wordCodePoints.size()
+                    || !readingHelper->isMatchedCodePoint(ptNodeParams, j,
+                            wordCodePoints[matchedCodePointCount + j])) {
                 *outAddedNewUnigram = true;
                 return reallocatePtNodeAndAddNewPtNodes(&ptNodeParams, j, unigramProperty,
-                        wordCodePoints + matchedCodePointCount,
-                        codePointCount - matchedCodePointCount);
+                        wordCodePoints.skip(matchedCodePointCount));
             }
         }
         // All characters are matched.
-        if (codePointCount == readingHelper->getTotalCodePointCount(ptNodeParams)) {
+        if (wordCodePoints.size() == readingHelper->getTotalCodePointCount(ptNodeParams)) {
             return setPtNodeProbability(&ptNodeParams, unigramProperty, outAddedNewUnigram);
         }
         if (!ptNodeParams.hasChildren()) {
             *outAddedNewUnigram = true;
             return createChildrenPtNodeArrayAndAChildPtNode(&ptNodeParams, unigramProperty,
-                    wordCodePoints + readingHelper->getTotalCodePointCount(ptNodeParams),
-                    codePointCount - readingHelper->getTotalCodePointCount(ptNodeParams));
+                    wordCodePoints.skip(readingHelper->getTotalCodePointCount(ptNodeParams)));
         }
         // Advance to the children nodes.
         parentPos = ptNodeParams.getHeadPos();
@@ -79,9 +77,8 @@ bool DynamicPtUpdatingHelper::addUnigramWord(
     int pos = readingHelper->getPosOfLastForwardLinkField();
     *outAddedNewUnigram = true;
     return createAndInsertNodeIntoPtNodeArray(parentPos,
-            wordCodePoints + readingHelper->getPrevTotalCodePointCount(),
-            codePointCount - readingHelper->getPrevTotalCodePointCount(),
-            unigramProperty, &pos);
+            wordCodePoints.skip(readingHelper->getPrevTotalCodePointCount()), unigramProperty,
+            &pos);
 }
 
 bool DynamicPtUpdatingHelper::addNgramEntry(const PtNodePosArrayView prevWordsPtNodePos,
@@ -120,23 +117,21 @@ bool DynamicPtUpdatingHelper::removeNgramEntry(const PtNodePosArrayView prevWord
 }
 
 bool DynamicPtUpdatingHelper::addShortcutTarget(const int wordPos,
-        const int *const targetCodePoints, const int targetCodePointCount,
-        const int shortcutProbability) {
+        const CodePointArrayView targetCodePoints, const int shortcutProbability) {
     const PtNodeParams ptNodeParams(mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(wordPos));
-    return mPtNodeWriter->addShortcutTarget(&ptNodeParams, targetCodePoints, targetCodePointCount,
-            shortcutProbability);
+    return mPtNodeWriter->addShortcutTarget(&ptNodeParams, targetCodePoints.data(),
+            targetCodePoints.size(), shortcutProbability);
 }
 
 bool DynamicPtUpdatingHelper::createAndInsertNodeIntoPtNodeArray(const int parentPos,
-        const int *const nodeCodePoints, const int nodeCodePointCount,
-        const UnigramProperty *const unigramProperty, int *const forwardLinkFieldPos) {
+        const CodePointArrayView ptNodeCodePoints, const UnigramProperty *const unigramProperty,
+        int *const forwardLinkFieldPos) {
     const int newPtNodeArrayPos = mBuffer->getTailPosition();
     if (!DynamicPtWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
             newPtNodeArrayPos, forwardLinkFieldPos)) {
         return false;
     }
-    return createNewPtNodeArrayWithAChildPtNode(parentPos, nodeCodePoints, nodeCodePointCount,
-            unigramProperty);
+    return createNewPtNodeArrayWithAChildPtNode(parentPos, ptNodeCodePoints, unigramProperty);
 }
 
 bool DynamicPtUpdatingHelper::setPtNodeProbability(const PtNodeParams *const originalPtNodeParams,
@@ -153,8 +148,7 @@ bool DynamicPtUpdatingHelper::setPtNodeProbability(const PtNodeParams *const ori
         const PtNodeParams ptNodeParamsToWrite(getUpdatedPtNodeParams(originalPtNodeParams,
                 unigramProperty->isNotAWord(), unigramProperty->isBlacklisted(),
                 true /* isTerminal */, originalPtNodeParams->getParentPos(),
-                originalPtNodeParams->getCodePointCount(), originalPtNodeParams->getCodePoints(),
-                unigramProperty->getProbability()));
+                originalPtNodeParams->getCodePointArrayView(), unigramProperty->getProbability()));
         if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite,
                 unigramProperty, &writingPos)) {
             return false;
@@ -168,17 +162,17 @@ bool DynamicPtUpdatingHelper::setPtNodeProbability(const PtNodeParams *const ori
 
 bool DynamicPtUpdatingHelper::createChildrenPtNodeArrayAndAChildPtNode(
         const PtNodeParams *const parentPtNodeParams, const UnigramProperty *const unigramProperty,
-        const int *const codePoints, const int codePointCount) {
+        const CodePointArrayView codePoints) {
     const int newPtNodeArrayPos = mBuffer->getTailPosition();
     if (!mPtNodeWriter->updateChildrenPosition(parentPtNodeParams, newPtNodeArrayPos)) {
         return false;
     }
     return createNewPtNodeArrayWithAChildPtNode(parentPtNodeParams->getHeadPos(), codePoints,
-            codePointCount, unigramProperty);
+            unigramProperty);
 }
 
 bool DynamicPtUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
-        const int parentPtNodePos, const int *const nodeCodePoints, const int nodeCodePointCount,
+        const int parentPtNodePos, const CodePointArrayView ptNodeCodePoints,
         const UnigramProperty *const unigramProperty) {
     int writingPos = mBuffer->getTailPosition();
     if (!DynamicPtWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
@@ -187,8 +181,7 @@ bool DynamicPtUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
     }
     const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(
             unigramProperty->isNotAWord(), unigramProperty->isBlacklisted(), true /* isTerminal */,
-            parentPtNodePos, nodeCodePointCount, nodeCodePoints,
-            unigramProperty->getProbability()));
+            parentPtNodePos, ptNodeCodePoints, unigramProperty->getProbability()));
     if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite,
             unigramProperty, &writingPos)) {
         return false;
@@ -202,9 +195,9 @@ bool DynamicPtUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
 
 // Returns whether the dictionary updating was succeeded or not.
 bool DynamicPtUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
-        const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
-        const UnigramProperty *const unigramProperty, const int *const newNodeCodePoints,
-        const int newNodeCodePointCount) {
+        const PtNodeParams *const reallocatingPtNodeParams, const size_t overlappingCodePointCount,
+        const UnigramProperty *const unigramProperty,
+        const CodePointArrayView newPtNodeCodePoints) {
     // When addsExtraChild is true, split the reallocating PtNode and add new child.
     // Reallocating PtNode: abcde, newNode: abcxy.
     // abc (1st, not terminal) __ de (2nd)
@@ -212,16 +205,18 @@ bool DynamicPtUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     // Otherwise, this method makes 1st part terminal and write information in unigramProperty.
     // Reallocating PtNode: abcde, newNode: abc.
     // abc (1st, terminal) __ de (2nd)
-    const bool addsExtraChild = newNodeCodePointCount > overlappingCodePointCount;
+    const bool addsExtraChild = newPtNodeCodePoints.size() > overlappingCodePointCount;
     const int firstPartOfReallocatedPtNodePos = mBuffer->getTailPosition();
     int writingPos = firstPartOfReallocatedPtNodePos;
     // Write the 1st part of the reallocating node. The children position will be updated later
     // with actual children position.
+    const CodePointArrayView firstPtNodeCodePoints =
+            reallocatingPtNodeParams->getCodePointArrayView().limit(overlappingCodePointCount);
     if (addsExtraChild) {
         const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(
                 false /* isNotAWord */, false /* isBlacklisted */, false /* isTerminal */,
-                reallocatingPtNodeParams->getParentPos(), overlappingCodePointCount,
-                reallocatingPtNodeParams->getCodePoints(), NOT_A_PROBABILITY));
+                reallocatingPtNodeParams->getParentPos(), firstPtNodeCodePoints,
+                NOT_A_PROBABILITY));
         if (!mPtNodeWriter->writePtNodeAndAdvancePosition(&ptNodeParamsToWrite, &writingPos)) {
             return false;
         }
@@ -229,8 +224,7 @@ bool DynamicPtUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
         const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(
                 unigramProperty->isNotAWord(), unigramProperty->isBlacklisted(),
                 true /* isTerminal */, reallocatingPtNodeParams->getParentPos(),
-                overlappingCodePointCount, reallocatingPtNodeParams->getCodePoints(),
-                unigramProperty->getProbability()));
+                firstPtNodeCodePoints, unigramProperty->getProbability()));
         if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite,
                 unigramProperty, &writingPos)) {
             return false;
@@ -248,8 +242,7 @@ bool DynamicPtUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     const PtNodeParams childPartPtNodeParams(getUpdatedPtNodeParams(reallocatingPtNodeParams,
             reallocatingPtNodeParams->isNotAWord(), reallocatingPtNodeParams->isBlacklisted(),
             reallocatingPtNodeParams->isTerminal(), firstPartOfReallocatedPtNodePos,
-            reallocatingPtNodeParams->getCodePointCount() - overlappingCodePointCount,
-            reallocatingPtNodeParams->getCodePoints() + overlappingCodePointCount,
+            reallocatingPtNodeParams->getCodePointArrayView().skip(overlappingCodePointCount),
             reallocatingPtNodeParams->getProbability()));
     if (!mPtNodeWriter->writePtNodeAndAdvancePosition(&childPartPtNodeParams, &writingPos)) {
         return false;
@@ -258,8 +251,8 @@ bool DynamicPtUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
         const PtNodeParams extraChildPtNodeParams(getPtNodeParamsForNewPtNode(
                 unigramProperty->isNotAWord(), unigramProperty->isBlacklisted(),
                 true /* isTerminal */, firstPartOfReallocatedPtNodePos,
-                newNodeCodePointCount - overlappingCodePointCount,
-                newNodeCodePoints + overlappingCodePointCount, unigramProperty->getProbability()));
+                newPtNodeCodePoints.skip(overlappingCodePointCount),
+                unigramProperty->getProbability()));
         if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&extraChildPtNodeParams,
                 unigramProperty, &writingPos)) {
             return false;
@@ -282,26 +275,24 @@ bool DynamicPtUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
 }
 
 const PtNodeParams DynamicPtUpdatingHelper::getUpdatedPtNodeParams(
-        const PtNodeParams *const originalPtNodeParams,
-        const bool isNotAWord, const bool isBlacklisted, const bool isTerminal, const int parentPos,
-        const int codePointCount, const int *const codePoints, const int probability) const {
+        const PtNodeParams *const originalPtNodeParams, const bool isNotAWord,
+        const bool isBlacklisted, const bool isTerminal, const int parentPos,
+        const CodePointArrayView codePoints, const int probability) const {
     const PatriciaTrieReadingUtils::NodeFlags flags = PatriciaTrieReadingUtils::createAndGetFlags(
             isBlacklisted, isNotAWord, isTerminal, false /* hasShortcutTargets */,
-            false /* hasBigrams */, codePointCount > 1 /* hasMultipleChars */,
+            false /* hasBigrams */, codePoints.size() > 1u /* hasMultipleChars */,
             CHILDREN_POSITION_FIELD_SIZE);
-    return PtNodeParams(originalPtNodeParams, flags, parentPos, codePointCount, codePoints,
-            probability);
+    return PtNodeParams(originalPtNodeParams, flags, parentPos, codePoints, probability);
 }
 
-const PtNodeParams DynamicPtUpdatingHelper::getPtNodeParamsForNewPtNode(
-        const bool isNotAWord, const bool isBlacklisted, const bool isTerminal,
-        const int parentPos, const int codePointCount, const int *const codePoints,
-        const int probability) const {
+const PtNodeParams DynamicPtUpdatingHelper::getPtNodeParamsForNewPtNode(const bool isNotAWord,
+        const bool isBlacklisted, const bool isTerminal, const int parentPos,
+        const CodePointArrayView codePoints, const int probability) const {
     const PatriciaTrieReadingUtils::NodeFlags flags = PatriciaTrieReadingUtils::createAndGetFlags(
             isBlacklisted, isNotAWord, isTerminal, false /* hasShortcutTargets */,
-            false /* hasBigrams */, codePointCount > 1 /* hasMultipleChars */,
+            false /* hasBigrams */, codePoints.size() > 1u /* hasMultipleChars */,
             CHILDREN_POSITION_FIELD_SIZE);
-    return PtNodeParams(flags, parentPos, codePointCount, codePoints, probability);
+    return PtNodeParams(flags, parentPos, codePoints, probability);
 }
 
 } // namespace latinime

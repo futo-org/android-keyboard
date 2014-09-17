@@ -218,9 +218,9 @@ int DynamicPtReadingHelper::getCodePointsAndProbabilityAndReturnCodePointCount(
 }
 
 int DynamicPtReadingHelper::getTerminalPtNodePositionOfWord(const int *const inWord,
-        const int length, const bool forceLowerCaseSearch) {
+        const size_t length, const bool forceLowerCaseSearch) {
     int searchCodePoints[length];
-    for (int i = 0; i < length; ++i) {
+    for (size_t i = 0; i < length; ++i) {
         searchCodePoints[i] = forceLowerCaseSearch ? CharUtils::toLowerCase(inWord[i]) : inWord[i];
     }
     while (!isEnd()) {
