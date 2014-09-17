@@ -53,6 +53,7 @@ const int Ver4DictConstants::WORD_LEVEL_FIELD_SIZE = 1;
 const int Ver4DictConstants::WORD_COUNT_FIELD_SIZE = 1;
 
 const uint8_t Ver4DictConstants::FLAG_REPRESENTS_BEGINNING_OF_SENTENCE = 0x1;
+const uint8_t Ver4DictConstants::FLAG_NOT_A_VALID_ENTRY = 0x2;
 
 const int Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 64;
 const int Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE = 4;

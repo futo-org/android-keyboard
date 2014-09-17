@@ -29,7 +29,7 @@ namespace {
 TEST(LanguageModelDictContentTest, TestUnigramProbability) {
     LanguageModelDictContent languageModelDictContent(false /* useHistoricalInfo */);
 
-    const int flag = 0xFF;
+    const int flag = 0xF0;
     const int probability = 10;
     const int wordId = 100;
     const ProbabilityEntry probabilityEntry(flag, probability);
