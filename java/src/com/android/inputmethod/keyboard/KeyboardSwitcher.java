@@ -17,7 +17,9 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -45,6 +47,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
 
     private SubtypeSwitcher mSubtypeSwitcher;
+    private SharedPreferences mPrefs;
 
     private InputView mCurrentInputView;
     private View mMainKeyboardFrame;
@@ -73,11 +76,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public static void init(final LatinIME latinIme) {
-        sInstance.initInternal(latinIme);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIme);
+        sInstance.initInternal(latinIme, prefs);
     }
 
-    private void initInternal(final LatinIME latinIme) {
+    private void initInternal(final LatinIME latinIme, final SharedPreferences prefs) {
         mLatinIME = latinIme;
+        mPrefs = prefs;
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
         mIsHardwareAcceleratedDrawingEnabled =
@@ -86,7 +91,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void updateKeyboardTheme() {
         final boolean themeUpdated = updateKeyboardThemeAndContextThemeWrapper(
-                mLatinIME, KeyboardTheme.getKeyboardTheme(mLatinIME /* context */));
+                mLatinIME, KeyboardTheme.getKeyboardTheme(mPrefs));
         if (themeUpdated && mKeyboardView != null) {
             mLatinIME.setInputView(onCreateInputView(mIsHardwareAcceleratedDrawingEnabled));
         }
@@ -343,7 +348,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
 
         updateKeyboardThemeAndContextThemeWrapper(
-                mLatinIME, KeyboardTheme.getKeyboardTheme(mLatinIME /* context */));
+                mLatinIME, KeyboardTheme.getKeyboardTheme(mPrefs));
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);

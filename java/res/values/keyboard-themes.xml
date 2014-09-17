@@ -26,10 +26,10 @@
         <item>@string/keyboard_theme_holo_blue</item>
     </string-array>
     <!-- An element must be a keyboard theme id of {@link KeyboardTheme#THEME_ID_*}. -->
-    <integer-array name="keyboard_theme_ids" translatable="false">
+    <string-array name="keyboard_theme_ids" translatable="false">
         <item>3</item>
         <item>4</item>
         <item>2</item>
         <item>0</item>
-    </integer-array>
+    </string-array>
 </resources>
