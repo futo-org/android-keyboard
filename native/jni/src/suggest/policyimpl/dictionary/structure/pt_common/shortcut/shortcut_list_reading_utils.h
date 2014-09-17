@@ -20,6 +20,7 @@
 #include <cstdint>
 
 #include "defines.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -27,7 +28,8 @@ class ShortcutListReadingUtils {
  public:
     typedef uint8_t ShortcutFlags;
 
-    static ShortcutFlags getFlagsAndForwardPointer(const uint8_t *const dictRoot, int *const pos);
+    static ShortcutFlags getFlagsAndForwardPointer(const ReadOnlyByteArrayView buffer,
+            int *const pos);
 
     static AK_FORCE_INLINE int getProbabilityFromFlags(const ShortcutFlags flags) {
         return flags & MASK_ATTRIBUTE_PROBABILITY;
@@ -39,14 +41,15 @@ class ShortcutListReadingUtils {
 
     // This method returns the size of the shortcut list region excluding the shortcut list size
     // field at the beginning.
-    static int getShortcutListSizeAndForwardPointer(const uint8_t *const dictRoot, int *const pos);
+    static int getShortcutListSizeAndForwardPointer(const ReadOnlyByteArrayView buffer,
+            int *const pos);
 
     static AK_FORCE_INLINE int getShortcutListSizeFieldSize() {
         return SHORTCUT_LIST_SIZE_FIELD_SIZE;
     }
 
-    static AK_FORCE_INLINE void skipShortcuts(const uint8_t *const dictRoot, int *const pos) {
-        const int shortcutListSize = getShortcutListSizeAndForwardPointer(dictRoot, pos);
+    static AK_FORCE_INLINE void skipShortcuts(const ReadOnlyByteArrayView buffer, int *const pos) {
+        const int shortcutListSize = getShortcutListSizeAndForwardPointer(buffer, pos);
         *pos += shortcutListSize;
     }
 
@@ -54,7 +57,7 @@ class ShortcutListReadingUtils {
         return getProbabilityFromFlags(flags) == WHITELIST_SHORTCUT_PROBABILITY;
     }
 
-    static int readShortcutTarget(const uint8_t *const dictRoot, const int maxLength,
+    static int readShortcutTarget(const ReadOnlyByteArrayView buffer, const int maxLength,
             int *const outWord, int *const pos);
 
  private:
