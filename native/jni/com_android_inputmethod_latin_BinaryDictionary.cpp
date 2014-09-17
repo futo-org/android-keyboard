@@ -259,20 +259,21 @@ static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, 
         jintArray word) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return NOT_A_PROBABILITY;
-    const jsize wordLength = env->GetArrayLength(word);
-    int codePoints[wordLength];
-    env->GetIntArrayRegion(word, 0, wordLength, codePoints);
-    return dictionary->getProbability(codePoints, wordLength);
+    const jsize codePointCount = env->GetArrayLength(word);
+    int codePoints[codePointCount];
+    env->GetIntArrayRegion(word, 0, codePointCount, codePoints);
+    return dictionary->getProbability(CodePointArrayView(codePoints, codePointCount));
 }
 
 static jint latinime_BinaryDictionary_getMaxProbabilityOfExactMatches(
         JNIEnv *env, jclass clazz, jlong dict, jintArray word) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return NOT_A_PROBABILITY;
-    const jsize wordLength = env->GetArrayLength(word);
-    int codePoints[wordLength];
-    env->GetIntArrayRegion(word, 0, wordLength, codePoints);
-    return dictionary->getMaxProbabilityOfExactMatches(codePoints, wordLength);
+    const jsize codePointCount = env->GetArrayLength(word);
+    int codePoints[codePointCount];
+    env->GetIntArrayRegion(word, 0, codePointCount, codePoints);
+    return dictionary->getMaxProbabilityOfExactMatches(
+            CodePointArrayView(codePoints, codePointCount));
 }
 
 static jint latinime_BinaryDictionary_getNgramProbability(JNIEnv *env, jclass clazz,
@@ -285,7 +286,8 @@ static jint latinime_BinaryDictionary_getNgramProbability(JNIEnv *env, jclass cl
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
     const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
             prevWordCodePointArrays, isBeginningOfSentenceArray);
-    return dictionary->getNgramProbability(&prevWordsInfo, wordCodePoints, wordLength);
+    return dictionary->getNgramProbability(&prevWordsInfo,
+            CodePointArrayView(wordCodePoints, wordLength));
 }
 
 // Method to iterate all words in the dictionary for makedict.
@@ -340,7 +342,8 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
             return;
         }
     }
-    const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, codePointCount);
+    const WordProperty wordProperty = dictionary->getWordProperty(
+            CodePointArrayView(wordCodePoints, codePointCount));
     wordProperty.outputProperties(env, outCodePoints, outFlags, outProbabilityInfo,
             outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
             outShortcutProbabilities);
@@ -366,7 +369,8 @@ static bool latinime_BinaryDictionary_addUnigramEntry(JNIEnv *env, jclass clazz,
     // Use 1 for count to indicate the word has inputted.
     const UnigramProperty unigramProperty(isBeginningOfSentence, isNotAWord,
             isBlacklisted, probability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
-    return dictionary->addUnigramEntry(codePoints, codePointCount, &unigramProperty);
+    return dictionary->addUnigramEntry(CodePointArrayView(codePoints, codePointCount),
+            &unigramProperty);
 }
 
 static bool latinime_BinaryDictionary_removeUnigramEntry(JNIEnv *env, jclass clazz, jlong dict,
@@ -378,7 +382,7 @@ static bool latinime_BinaryDictionary_removeUnigramEntry(JNIEnv *env, jclass cla
     jsize codePointCount = env->GetArrayLength(word);
     int codePoints[codePointCount];
     env->GetIntArrayRegion(word, 0, codePointCount, codePoints);
-    return dictionary->removeUnigramEntry(codePoints, codePointCount);
+    return dictionary->removeUnigramEntry(CodePointArrayView(codePoints, codePointCount));
 }
 
 static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, jlong dict,
@@ -410,10 +414,11 @@ static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz
     }
     const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
             prevWordCodePointArrays, isBeginningOfSentenceArray);
-    jsize wordLength = env->GetArrayLength(word);
-    int wordCodePoints[wordLength];
-    env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
-    return dictionary->removeNgramEntry(&prevWordsInfo, wordCodePoints, wordLength);
+    jsize codePointCount = env->GetArrayLength(word);
+    int wordCodePoints[codePointCount];
+    env->GetIntArrayRegion(word, 0, codePointCount, wordCodePoints);
+    return dictionary->removeNgramEntry(&prevWordsInfo,
+            CodePointArrayView(wordCodePoints, codePointCount));
 }
 
 // Returns how many language model params are processed.
@@ -484,7 +489,8 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         const UnigramProperty unigramProperty(false /* isBeginningOfSentence */, isNotAWord,
                 isBlacklisted, unigramProbability, timestamp, 0 /* level */, 1 /* count */,
                 &shortcuts);
-        dictionary->addUnigramEntry(word1CodePoints, word1Length, &unigramProperty);
+        dictionary->addUnigramEntry(CodePointArrayView(word1CodePoints, word1Length),
+                &unigramProperty);
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
             const std::vector<int> bigramTargetCodePoints(
@@ -568,8 +574,8 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
     // Add unigrams.
     do {
         token = dictionary->getNextWordAndNextToken(token, wordCodePoints, &wordCodePointCount);
-        const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints,
-                wordCodePointCount);
+        const WordProperty wordProperty = dictionary->getWordProperty(
+                CodePointArrayView(wordCodePoints, wordCodePointCount));
         if (wordCodePoints[0] == CODE_POINT_BEGINNING_OF_SENTENCE) {
             // Skip beginning-of-sentence unigram.
             continue;
@@ -593,8 +599,8 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
     // Add bigrams.
     do {
         token = dictionary->getNextWordAndNextToken(token, wordCodePoints, &wordCodePointCount);
-        const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints,
-                wordCodePointCount);
+        const WordProperty wordProperty = dictionary->getWordProperty(
+                CodePointArrayView(wordCodePoints, wordCodePointCount));
         if (dictionaryStructureWithBufferPolicy->needsToRunGC(true /* mindsBlockByGC */)) {
             dictionaryStructureWithBufferPolicy = runGCAndGetNewStructurePolicy(
                     std::move(dictionaryStructureWithBufferPolicy), dictFilePathChars);

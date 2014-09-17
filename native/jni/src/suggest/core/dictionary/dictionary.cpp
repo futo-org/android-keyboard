@@ -102,21 +102,21 @@ void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
     mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordIds, &listener);
 }
 
-int Dictionary::getProbability(const int *word, int length) const {
-    return getNgramProbability(nullptr /* prevWordsInfo */, word, length);
+int Dictionary::getProbability(const CodePointArrayView codePoints) const {
+    return getNgramProbability(nullptr /* prevWordsInfo */, codePoints);
 }
 
-int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) const {
+int Dictionary::getMaxProbabilityOfExactMatches(const CodePointArrayView codePoints) const {
     TimeKeeper::setCurrentTime();
     return DictionaryUtils::getMaxProbabilityOfExactMatches(
-            mDictionaryStructureWithBufferPolicy.get(), word, length);
+            mDictionaryStructureWithBufferPolicy.get(), codePoints.data(), codePoints.size());
 }
 
-int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
-        int length) const {
+int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo,
+        const CodePointArrayView codePoints) const {
     TimeKeeper::setCurrentTime();
-    int wordId = mDictionaryStructureWithBufferPolicy->getWordId(
-            CodePointArrayView(word, length), false /* forceLowerCaseSearch */);
+    const int wordId = mDictionaryStructureWithBufferPolicy->getWordId(codePoints,
+            false /* forceLowerCaseSearch */);
     if (wordId == NOT_A_WORD_ID) return NOT_A_PROBABILITY;
     if (!prevWordsInfo) {
         return getDictionaryStructurePolicy()->getProbabilityOfWord(WordIdArrayView(), wordId);
@@ -128,7 +128,7 @@ int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, co
     return getDictionaryStructurePolicy()->getProbabilityOfWord(prevWordIds, wordId);
 }
 
-bool Dictionary::addUnigramEntry(const int *const word, const int length,
+bool Dictionary::addUnigramEntry(const CodePointArrayView codePoints,
         const UnigramProperty *const unigramProperty) {
     if (unigramProperty->representsBeginningOfSentence()
             && !mDictionaryStructureWithBufferPolicy->getHeaderStructurePolicy()
@@ -137,14 +137,12 @@ bool Dictionary::addUnigramEntry(const int *const word, const int length,
         return false;
     }
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->addUnigramEntry(CodePointArrayView(word, length),
-            unigramProperty);
+    return mDictionaryStructureWithBufferPolicy->addUnigramEntry(codePoints, unigramProperty);
 }
 
-bool Dictionary::removeUnigramEntry(const int *const codePoints, const int codePointCount) {
+bool Dictionary::removeUnigramEntry(const CodePointArrayView codePoints) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->removeUnigramEntry(
-            CodePointArrayView(codePoints, codePointCount));
+    return mDictionaryStructureWithBufferPolicy->removeUnigramEntry(codePoints);
 }
 
 bool Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
@@ -154,10 +152,9 @@ bool Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
 }
 
 bool Dictionary::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-        const int *const word, const int length) {
+        const CodePointArrayView codePoints) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo,
-            CodePointArrayView(word, length));
+    return mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo, codePoints);
 }
 
 bool Dictionary::flush(const char *const filePath) {
@@ -182,11 +179,9 @@ void Dictionary::getProperty(const char *const query, const int queryLength, cha
             maxResultLength);
 }
 
-const WordProperty Dictionary::getWordProperty(const int *const codePoints,
-        const int codePointCount) {
+const WordProperty Dictionary::getWordProperty(const CodePointArrayView codePoints) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->getWordProperty(
-            CodePointArrayView(codePoints, codePointCount));
+    return mDictionaryStructureWithBufferPolicy->getWordProperty(codePoints);
 }
 
 int Dictionary::getNextWordAndNextToken(const int token, int *const outCodePoints,
