@@ -51,7 +51,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         final KeyboardTheme keyboardTheme = KeyboardTheme.searchKeyboardThemeById(
-                getKeyboardThemeForTests());
+                getKeyboardThemeForTests(), KeyboardTheme.KEYBOARD_THEMES);
         setContext(new ContextThemeWrapper(getContext(), keyboardTheme.mStyleId));
         KeyboardLayoutSet.onKeyboardThemeChanged();
 
