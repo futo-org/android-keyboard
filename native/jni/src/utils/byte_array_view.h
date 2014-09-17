@@ -42,6 +42,13 @@ class ReadOnlyByteArrayView {
         return mPtr;
     }
 
+    AK_FORCE_INLINE const ReadOnlyByteArrayView skip(const size_t n) const {
+        if (mSize <= n) {
+            return ReadOnlyByteArrayView();
+        }
+        return ReadOnlyByteArrayView(mPtr + n, mSize - n);
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(ReadOnlyByteArrayView);
 
