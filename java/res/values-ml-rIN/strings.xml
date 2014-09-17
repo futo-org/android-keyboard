@@ -26,18 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"കീ അമർത്തുമ്പോൾ വൈബ്രേറ്റുചെയ്യുക"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"കീ അമർത്തുമ്പോഴുള്ള ശബ്‌ദമുണ്ടാക്കുക"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"കീ അമർത്തുമ്പോൾ പോപ്പ്അപ്പ് ചെയ്യുക"</string>
-    <!-- no translation found for settings_screen_preferences (2696713156722014624) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearance (9153102634339912029) -->
-    <skip />
-    <!-- no translation found for settings_screen_multilingual (1391301621464509659) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (8826372746901183556) -->
-    <skip />
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"മുൻഗണനകൾ"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"രൂപഭാവവും ലേഔട്ടുകളും"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"മൾട്ടിലിംഗ്വൽ ഓപ്‌ഷനുകൾ"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"ഗെസ്ചർ ടൈപ്പിംഗ്"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"വാചകം തിരുത്തൽ"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"വിപുലമായ"</string>
-    <!-- no translation found for settings_screen_theme (2137262503543943871) -->
-    <skip />
+    <string name="settings_screen_theme" msgid="2137262503543943871">"തീം"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"മറ്റു ടൈപ്പുചെയ്യൽ രീതികളിലേക്ക് മാറുക"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ഭാഷ മാറൽ കീയിൽ മറ്റ് ടൈപ്പുചെയ്യൽ രീതികളും ഉൾപ്പെടുന്നു"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ഭാഷ മാറൽ കീ"</string>
@@ -80,11 +75,9 @@
     <string name="voice_input" msgid="3583258583521397548">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ കീ"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ രീതികളൊന്നും പ്രവർത്തനക്ഷമമല്ല. ഭാഷ &amp; ടൈപ്പു ചെയ്യൽ ക്രമീകരണങ്ങൾ പരിശോധിക്കുക."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ടൈപ്പുചെയ്യൽ രീതികൾ കോൺഫിഗർ ചെയ്യുക"</string>
-    <!-- no translation found for language_selection_title (3666971864764478269) -->
-    <skip />
+    <string name="language_selection_title" msgid="3666971864764478269">"ഭാഷകള്‍‌"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"സഹായവും ഫീഡ്‌ബാക്കും"</string>
-    <!-- no translation found for select_language (5709487854987078367) -->
-    <skip />
+    <string name="select_language" msgid="5709487854987078367">"ഭാഷകള്‍‌"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"സംരക്ഷിക്കുന്നതിനായി വീണ്ടും സ്‌പർശിക്കുക"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"സംരക്ഷിക്കാൻ ഇവിടെ സ്‌പർശിക്കുക"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"നിഘണ്ടു ലഭ്യമാണ്"</string>

@@ -26,18 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Товч дарахад чичрэх"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Товч дарахад дуу гаргах"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Товч дарахад попап гарна"</string>
-    <!-- no translation found for settings_screen_preferences (2696713156722014624) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearance (9153102634339912029) -->
-    <skip />
-    <!-- no translation found for settings_screen_multilingual (1391301621464509659) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (8826372746901183556) -->
-    <skip />
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Тохируулга"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Харагдац &amp; байрлал"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Олон хэлний сонголт"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Зангаагаар бичих"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Текст залруулалт"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Дэлгэрэнгүй"</string>
-    <!-- no translation found for settings_screen_theme (2137262503543943871) -->
-    <skip />
+    <string name="settings_screen_theme" msgid="2137262503543943871">"Загвар"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Оруулах өөр арга руу шилжүүлэх"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Хэл солих түлхүүрт өөр оруулах аргууд мөн багтсан байгаа"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Хэл солих товч"</string>
@@ -80,11 +75,9 @@
     <string name="voice_input" msgid="3583258583521397548">"Дуун оруулгын товч"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Ямар ч дуу оруулах хэрэглүүр идэвхжээгүй байна. Хэл болон оруулалтын тохиргоог шалгана уу."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Оруулах аргуудын тохиргоо"</string>
-    <!-- no translation found for language_selection_title (3666971864764478269) -->
-    <skip />
+    <string name="language_selection_title" msgid="3666971864764478269">"Хэл"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Тусламж &amp; санал хүсэлт"</string>
-    <!-- no translation found for select_language (5709487854987078367) -->
-    <skip />
+    <string name="select_language" msgid="5709487854987078367">"Хэл"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Хадгалахын тулд дахин хүрнэ үү"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Хадгалахын тулд хүрнэ үү"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Толь бичиг байна"</string>
