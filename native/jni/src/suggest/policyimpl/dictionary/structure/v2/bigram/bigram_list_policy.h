@@ -22,22 +22,22 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/bigram/bigram_list_read_write_utils.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
 class BigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
-    BigramListPolicy(const uint8_t *const bigramsBuf, const int bufSize)
-            : mBigramsBuf(bigramsBuf), mBufSize(bufSize) {}
+    BigramListPolicy(const ReadOnlyByteArrayView buffer) : mBuffer(buffer) {}
 
     ~BigramListPolicy() {}
 
     void getNextBigram(int *const outBigramPos, int *const outProbability, bool *const outHasNext,
             int *const pos) const {
         BigramListReadWriteUtils::BigramFlags flags;
-        if (!BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(mBigramsBuf,
-                mBufSize, &flags, outBigramPos, pos)) {
-            AKLOGE("Cannot read bigram entry. mBufSize: %d, pos: %d. ", mBufSize, *pos);
+        if (!BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(mBuffer, &flags,
+                outBigramPos, pos)) {
+            AKLOGE("Cannot read bigram entry. bufSize: %zd, pos: %d. ", mBuffer.size(), *pos);
             *outProbability = NOT_A_PROBABILITY;
             *outHasNext = false;
             return;
@@ -47,14 +47,13 @@ class BigramListPolicy : public DictionaryBigramsStructurePolicy {
     }
 
     bool skipAllBigrams(int *const pos) const {
-        return BigramListReadWriteUtils::skipExistingBigrams(mBigramsBuf, mBufSize, pos);
+        return BigramListReadWriteUtils::skipExistingBigrams(mBuffer, pos);
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramListPolicy);
 
-    const uint8_t *const mBigramsBuf;
-    const int mBufSize;
+    const ReadOnlyByteArrayView mBuffer;
 };
 } // namespace latinime
 #endif // LATINIME_BIGRAM_LIST_POLICY_H

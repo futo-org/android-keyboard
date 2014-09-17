@@ -21,6 +21,7 @@
 #include <cstdlib>
 
 #include "defines.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -30,8 +31,8 @@ class BigramListReadWriteUtils {
 public:
    typedef uint8_t BigramFlags;
 
-   static bool getBigramEntryPropertiesAndAdvancePosition(const uint8_t *const bigramsBuf,
-           const int bufSize, BigramFlags *const outBigramFlags, int *const outTargetPtNodePos,
+   static bool getBigramEntryPropertiesAndAdvancePosition(const ReadOnlyByteArrayView buffer,
+           BigramFlags *const outBigramFlags, int *const outTargetPtNodePos,
            int *const bigramEntryPos);
 
    static AK_FORCE_INLINE int getProbabilityFromFlags(const BigramFlags flags) {
@@ -43,8 +44,7 @@ public:
    }
 
    // Bigrams reading methods
-   static bool skipExistingBigrams(const uint8_t *const bigramsBuf, const int bufSize,
-           int *const bigramListPos);
+   static bool skipExistingBigrams(const ReadOnlyByteArrayView buffer, int *const bigramListPos);
 
 private:
    DISALLOW_IMPLICIT_CONSTRUCTORS(BigramListReadWriteUtils);
@@ -61,7 +61,7 @@ private:
        return (flags & FLAG_ATTRIBUTE_OFFSET_NEGATIVE) != 0;
    }
 
-   static int getBigramAddressAndAdvancePosition(const uint8_t *const bigramsBuf,
+   static int getBigramAddressAndAdvancePosition(const ReadOnlyByteArrayView buffer,
            const BigramFlags flags, int *const pos);
 };
 } // namespace latinime
