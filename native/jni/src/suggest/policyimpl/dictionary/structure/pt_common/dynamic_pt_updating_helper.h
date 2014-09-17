@@ -43,10 +43,12 @@ class DynamicPtUpdatingHelper {
             const int *const wordCodePoints, const int codePointCount,
             const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram);
 
+    // TODO: Remove after stopping supporting v402.
     // Add an n-gram entry.
     bool addNgramEntry(const PtNodePosArrayView prevWordsPtNodePos, const int wordPos,
             const BigramProperty *const bigramProperty, bool *const outAddedNewEntry);
 
+    // TODO: Remove after stopping supporting v402.
     // Remove an n-gram entry.
     bool removeNgramEntry(const PtNodePosArrayView prevWordsPtNodePos, const int wordPos);
 
