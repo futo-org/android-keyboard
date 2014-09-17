@@ -84,7 +84,7 @@
     <string name="spoken_emoji_267B" msgid="21716857176812762">"Símbol universal de reciclatge negre"</string>
     <string name="spoken_emoji_267F" msgid="8833496533226475443">"Símbol de cadira de rodes"</string>
     <string name="spoken_emoji_2693" msgid="7443148847598433088">"Àncora"</string>
-    <string name="spoken_emoji_26A0" msgid="6272635532992727510">"Senyal de perill"</string>
+    <string name="spoken_emoji_26A0" msgid="6272635532992727510">"Senyal d\'advertiment"</string>
     <string name="spoken_emoji_26A1" msgid="5604749644693339145">"Senyal d\'alt voltatge"</string>
     <string name="spoken_emoji_26AA" msgid="8005748091690377153">"Cercle blanc mitjà"</string>
     <string name="spoken_emoji_26AB" msgid="1655910278422753244">"Cercle negre mitjà"</string>
@@ -578,7 +578,7 @@
     <string name="spoken_emoji_1F4D8" msgid="7189799718984979521">"Llibre blau"</string>
     <string name="spoken_emoji_1F4D9" msgid="3874664073186440225">"Llibre taronja"</string>
     <string name="spoken_emoji_1F4DA" msgid="872212072924287762">"Llibres"</string>
-    <string name="spoken_emoji_1F4DB" msgid="2015183603583392969">"Insígnia de nom"</string>
+    <string name="spoken_emoji_1F4DB" msgid="2015183603583392969">"Etiqueta identificativa"</string>
     <string name="spoken_emoji_1F4DC" msgid="5075845110932456783">"Desplaça"</string>
     <string name="spoken_emoji_1F4DD" msgid="2494006707147586786">"Nota"</string>
     <string name="spoken_emoji_1F4DE" msgid="7883008605002117671">"Auricular del telèfon"</string>
@@ -591,7 +591,7 @@
     <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"Safata d\'entrada"</string>
     <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"Paquet"</string>
     <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"Símbol de correu electrònic"</string>
-    <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Sobre entrant"</string>
+    <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Correu entrant"</string>
     <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"Sobre amb una fletxa cap avall al damunt"</string>
     <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"Bústia tancada amb la bandera baixada"</string>
     <string name="spoken_emoji_1F4EB" msgid="6491414165464146137">"Bústia tancada amb la bandera aixecada"</string>
@@ -616,8 +616,8 @@
     <string name="spoken_emoji_1F502" msgid="2361976580513178391">"Fletxes cap a la dreta i l\'esquerra que formen un cercle obert en sentit horari i un número u encerclat"</string>
     <string name="spoken_emoji_1F503" msgid="8936283551917858793">"Fletxes cap avall i cap amunt que formen un cercle obert en sentit horari"</string>
     <string name="spoken_emoji_1F504" msgid="708290317843535943">"Fletxes cap avall i cap amunt que formen un cercle obert en sentit antihorari"</string>
-    <string name="spoken_emoji_1F505" msgid="6348909939004951860">"Signe de brillantor baixa"</string>
-    <string name="spoken_emoji_1F506" msgid="4449609297521280173">"Signe de brillantor alta"</string>
+    <string name="spoken_emoji_1F505" msgid="6348909939004951860">"Símbol de brillantor baixa"</string>
+    <string name="spoken_emoji_1F506" msgid="4449609297521280173">"Símbol de brillantor alta"</string>
     <string name="spoken_emoji_1F507" msgid="7136386694923708448">"Altaveu amb barra de cancel·lació"</string>
     <string name="spoken_emoji_1F508" msgid="5063567689831527865">"Altaveu"</string>
     <string name="spoken_emoji_1F509" msgid="3948050077992370791">"Altaveu amb una ona de so"</string>
