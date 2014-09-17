@@ -44,13 +44,12 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             : mMmappedBuffer(std::move(mmappedBuffer)),
               mHeaderPolicy(mMmappedBuffer->getReadOnlyByteArrayView().data(),
                       FormatUtils::VERSION_2),
-              mDictRoot(mMmappedBuffer->getReadOnlyByteArrayView().data()
-                      + mHeaderPolicy.getSize()),
-              mDictBufferSize(mMmappedBuffer->getReadOnlyByteArrayView().size()
-                      - mHeaderPolicy.getSize()),
-              mBigramListPolicy(mDictRoot, mDictBufferSize), mShortcutListPolicy(mDictRoot),
-              mPtNodeReader(mDictRoot, mDictBufferSize, &mBigramListPolicy, &mShortcutListPolicy),
-              mPtNodeArrayReader(mDictRoot, mDictBufferSize),
+              mBuffer(mMmappedBuffer->getReadOnlyByteArrayView().skip(mHeaderPolicy.getSize())),
+              mBigramListPolicy(mBuffer.data(), mBuffer.size()),
+              mShortcutListPolicy(mBuffer.data()),
+              mPtNodeReader(mBuffer.data(), mBuffer.size(), &mBigramListPolicy,
+                      &mShortcutListPolicy),
+              mPtNodeArrayReader(mBuffer.data(), mBuffer.size()),
               mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {}
 
     AK_FORCE_INLINE int getRootPosition() const {
@@ -149,8 +148,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     const MmappedBuffer::MmappedBufferPtr mMmappedBuffer;
     const HeaderPolicy mHeaderPolicy;
-    const uint8_t *const mDictRoot;
-    const int mDictBufferSize;
+    const ReadOnlyByteArrayView mBuffer;
     const BigramListPolicy mBigramListPolicy;
     const ShortcutListPolicy mShortcutListPolicy;
     const Ver2ParticiaTrieNodeReader mPtNodeReader;
@@ -166,6 +164,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int getTerminalPtNodePosFromWordId(const int wordId) const;
     const WordAttributes getWordAttributes(const int probability,
             const PtNodeParams &ptNodeParams) const;
+    bool isValidPos(const int pos) const;
 };
 } // namespace latinime
 #endif // LATINIME_PATRICIA_TRIE_POLICY_H
