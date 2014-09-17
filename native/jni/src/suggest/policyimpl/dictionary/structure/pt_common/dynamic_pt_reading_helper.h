@@ -138,12 +138,12 @@ class DynamicPtReadingHelper {
     }
 
     // Return code point count exclude the last read node's code points.
-    AK_FORCE_INLINE int getPrevTotalCodePointCount() const {
+    AK_FORCE_INLINE size_t getPrevTotalCodePointCount() const {
         return mReadingState.mTotalCodePointCountSinceInitialization;
     }
 
     // Return code point count include the last read node's code points.
-    AK_FORCE_INLINE int getTotalCodePointCount(const PtNodeParams &ptNodeParams) const {
+    AK_FORCE_INLINE size_t getTotalCodePointCount(const PtNodeParams &ptNodeParams) const {
         return mReadingState.mTotalCodePointCountSinceInitialization
                 + ptNodeParams.getCodePointCount();
     }
@@ -214,7 +214,7 @@ class DynamicPtReadingHelper {
     int getCodePointsAndProbabilityAndReturnCodePointCount(const int maxCodePointCount,
             int *const outCodePoints, int *const outUnigramProbability);
 
-    int getTerminalPtNodePositionOfWord(const int *const inWord, const int length,
+    int getTerminalPtNodePositionOfWord(const int *const inWord, const size_t length,
             const bool forceLowerCaseSearch);
 
  private:
@@ -234,7 +234,7 @@ class DynamicPtReadingHelper {
         int mPos;
         // Remaining node count in the current array.
         int mRemainingPtNodeCountInThisArray;
-        int mTotalCodePointCountSinceInitialization;
+        size_t mTotalCodePointCountSinceInitialization;
         // Counter of PtNodes used to avoid infinite loops caused by broken or malicious links.
         int mTotalPtNodeIndexInThisArrayChain;
         // Counter of PtNode arrays used to avoid infinite loops caused by cyclic links of empty

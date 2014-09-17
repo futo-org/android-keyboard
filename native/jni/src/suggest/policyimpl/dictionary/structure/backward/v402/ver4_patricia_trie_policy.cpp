@@ -268,8 +268,8 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const CodePointArrayView wordCodePo
         return false;
     }
     const CodePointArrayView codePointArrayView(codePointsToAdd, codePointCountToAdd);
-    if (mUpdatingHelper.addUnigramWord(&readingHelper, codePointArrayView.data(),
-            codePointArrayView.size(), unigramProperty, &addedNewUnigram)) {
+    if (mUpdatingHelper.addUnigramWord(&readingHelper, codePointArrayView, unigramProperty,
+            &addedNewUnigram)) {
         if (addedNewUnigram && !unigramProperty->representsBeginningOfSentence()) {
             mUnigramCount++;
         }
@@ -283,8 +283,8 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const CodePointArrayView wordCodePo
             }
             for (const auto &shortcut : unigramProperty->getShortcuts()) {
                 if (!mUpdatingHelper.addShortcutTarget(wordPos,
-                        shortcut.getTargetCodePoints()->data(),
-                        shortcut.getTargetCodePoints()->size(), shortcut.getProbability())) {
+                        CodePointArrayView(*shortcut.getTargetCodePoints()),
+                        shortcut.getProbability())) {
                     AKLOGE("Cannot add new shortcut target. PtNodePos: %d, length: %zd, "
                             "probability: %d", wordPos, shortcut.getTargetCodePoints()->size(),
                             shortcut.getProbability());
