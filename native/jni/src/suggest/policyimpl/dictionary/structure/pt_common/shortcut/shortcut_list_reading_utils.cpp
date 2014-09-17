@@ -31,21 +31,21 @@ const int ShortcutListReadingUtils::SHORTCUT_LIST_SIZE_FIELD_SIZE = 2;
 const int ShortcutListReadingUtils::WHITELIST_SHORTCUT_PROBABILITY = 15;
 
 /* static */ ShortcutListReadingUtils::ShortcutFlags
-        ShortcutListReadingUtils::getFlagsAndForwardPointer(const uint8_t *const dictRoot,
+        ShortcutListReadingUtils::getFlagsAndForwardPointer(const ReadOnlyByteArrayView buffer,
                 int *const pos) {
-    return ByteArrayUtils::readUint8AndAdvancePosition(dictRoot, pos);
+    return ByteArrayUtils::readUint8AndAdvancePosition(buffer.data(), pos);
 }
 
 /* static */ int ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(
-        const uint8_t *const dictRoot, int *const pos) {
+        const ReadOnlyByteArrayView buffer, int *const pos) {
     // readUint16andAdvancePosition() returns an offset *including* the uint16 field itself.
-    return ByteArrayUtils::readUint16AndAdvancePosition(dictRoot, pos)
+    return ByteArrayUtils::readUint16AndAdvancePosition(buffer.data(), pos)
             - SHORTCUT_LIST_SIZE_FIELD_SIZE;
 }
 
-/* static */ int ShortcutListReadingUtils::readShortcutTarget(
-        const uint8_t *const dictRoot, const int maxLength, int *const outWord, int *const pos) {
-    return ByteArrayUtils::readStringAndAdvancePosition(dictRoot, maxLength, outWord, pos);
+/* static */ int ShortcutListReadingUtils::readShortcutTarget(const ReadOnlyByteArrayView buffer,
+        const int maxLength, int *const outWord, int *const pos) {
+    return ByteArrayUtils::readStringAndAdvancePosition(buffer.data(), maxLength, outWord, pos);
 }
 
 } // namespace latinime
