@@ -22,10 +22,10 @@ namespace latinime {
 
 const PtNodeParams Ver2ParticiaTrieNodeReader::fetchPtNodeParamsInBufferFromPtNodePos(
         const int ptNodePos) const {
-    if (ptNodePos < 0 || ptNodePos >= mDictSize) {
+    if (ptNodePos < 0 || ptNodePos >= static_cast<int>(mBuffer.size())) {
         // Reading invalid position because of bug or broken dictionary.
-        AKLOGE("Fetching PtNode info from invalid dictionary position: %d, dictionary size: %d",
-                ptNodePos, mDictSize);
+        AKLOGE("Fetching PtNode info from invalid dictionary position: %d, dictionary size: %zd",
+                ptNodePos, mBuffer.size());
         ASSERT(false);
         return PtNodeParams();
     }
@@ -37,7 +37,7 @@ const PtNodeParams Ver2ParticiaTrieNodeReader::fetchPtNodeParamsInBufferFromPtNo
     int shortcutPos = NOT_A_DICT_POS;
     int bigramPos = NOT_A_DICT_POS;
     int siblingPos = NOT_A_DICT_POS;
-    PatriciaTrieReadingUtils::readPtNodeInfo(mDictBuffer, ptNodePos, mShortuctPolicy,
+    PatriciaTrieReadingUtils::readPtNodeInfo(mBuffer.data(), ptNodePos, mShortuctPolicy,
             mBigramPolicy, &flags, &mergedNodeCodePointCount, mergedNodeCodePoints, &probability,
             &childrenPos, &shortcutPos, &bigramPos, &siblingPos);
     if (mergedNodeCodePointCount <= 0) {

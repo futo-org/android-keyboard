@@ -46,10 +46,9 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       FormatUtils::VERSION_2),
               mBuffer(mMmappedBuffer->getReadOnlyByteArrayView().skip(mHeaderPolicy.getSize())),
               mBigramListPolicy(mBuffer), mShortcutListPolicy(mBuffer),
-              mPtNodeReader(mBuffer.data(), mBuffer.size(), &mBigramListPolicy,
-                      &mShortcutListPolicy),
-              mPtNodeArrayReader(mBuffer),
-              mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {}
+              mPtNodeReader(mBuffer, &mBigramListPolicy, &mShortcutListPolicy),
+              mPtNodeArrayReader(mBuffer), mTerminalPtNodePositionsForIteratingWords(),
+              mIsCorrupted(false) {}
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
