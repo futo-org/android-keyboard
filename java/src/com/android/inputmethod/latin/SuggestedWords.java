@@ -39,6 +39,7 @@ public class SuggestedWords {
     public static final int INPUT_STYLE_APPLICATION_SPECIFIED = 4;
     public static final int INPUT_STYLE_RECORRECTION = 5;
     public static final int INPUT_STYLE_PREDICTION = 6;
+    public static final int INPUT_STYLE_BEGINNING_OF_SENTENCE_PREDICTION = 7;
 
     // The maximum number of suggestions available.
     public static final int MAX_SUGGESTIONS = 18;
@@ -80,10 +81,9 @@ public class SuggestedWords {
             final int inputStyle,
             final int sequenceNumber) {
         this(suggestedWordInfoList, rawSuggestions,
-                (suggestedWordInfoList.isEmpty() || INPUT_STYLE_PREDICTION == inputStyle) ? null
+                (suggestedWordInfoList.isEmpty() || isPrediction(inputStyle)) ? null
                         : suggestedWordInfoList.get(INDEX_OF_TYPED_WORD).mWord,
-                typedWordValid, willAutoCorrect, isObsoleteSuggestions, inputStyle,
-                sequenceNumber);
+                typedWordValid, willAutoCorrect, isObsoleteSuggestions, inputStyle, sequenceNumber);
     }
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
@@ -171,6 +171,7 @@ public class SuggestedWords {
         return "SuggestedWords:"
                 + " mTypedWordValid=" + mTypedWordValid
                 + " mWillAutoCorrect=" + mWillAutoCorrect
+                + " mInputStyle=" + mInputStyle
                 + " words=" + Arrays.toString(mSuggestedWordInfoList.toArray());
     }
 
@@ -377,8 +378,13 @@ public class SuggestedWords {
         }
     }
 
+    private static boolean isPrediction(final int inputStyle) {
+        return INPUT_STYLE_PREDICTION == inputStyle
+                || INPUT_STYLE_BEGINNING_OF_SENTENCE_PREDICTION == inputStyle;
+    }
+
     public boolean isPrediction() {
-        return INPUT_STYLE_PREDICTION == mInputStyle;
+        return isPrediction(mInputStyle);
     }
 
     // SuggestedWords is an immutable object, as much as possible. We must not just remove
