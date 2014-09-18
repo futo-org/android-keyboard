@@ -158,5 +158,9 @@
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
+
+        <!-- Unexported activity used for tests. -->
+        <activity android:name=".settings.TestFragmentActivity"
+                android:exported="false" />
     </application>
 </manifest>

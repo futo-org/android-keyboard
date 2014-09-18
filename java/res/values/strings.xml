@@ -181,14 +181,20 @@
 
     <!-- Title of the preference item for switching accounts [CHAR LIMIT=30] -->
     <string name="switch_accounts">Switch accounts</string>
-
     <!-- Summary of the preference item for switching accounts when no accounts
          are selected [CHAR LIMIT=65] -->
     <string name="no_accounts_selected">No accounts selected</string>
-
     <!-- Summary of the preference item for switching accounts when an account
          is selected [CHAR LIMIT=65] -->
     <string name="account_selected">Currently using <xliff:g id="EMAIL_ADDRESS" example="someone@example.com">%1$s</xliff:g></string>
+    <!-- Positive text for selecting an account -->
+    <string name="account_select_ok">OK</string>
+    <!-- Negative text for selecting an account -->
+    <string name="account_select_cancel">Cancel</string>
+    <!-- Text for signing out of an account -->
+    <string name="account_select_sign_out">Sign out</string>
+    <!-- Title of the account picker dialog for selecting an account [CHAR LIMIT=40] -->
+    <string name="account_select_title">Select an account to use</string>
 
     <!-- Description for English (UK) keyboard subtype [CHAR LIMIT=25]
          (UK) should be an abbreviation of United Kingdom to fit in the CHAR LIMIT. -->
