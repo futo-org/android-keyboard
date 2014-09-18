@@ -3028,16 +3028,16 @@ public final class KeyboardTextsTable {
 
     /* Locale ro: Romanian */
     private static final String[] TEXTS_ro = {
+        // U+0103: "ă" LATIN SMALL LETTER A WITH BREVE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
         // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
-        // U+0103: "ă" LATIN SMALL LETTER A WITH BREVE
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         // U+00E6: "æ" LATIN SMALL LETTER AE
         // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
         // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
-        /* morekeys_a */ "\u00E2,\u00E3,\u0103,\u00E0,\u00E1,\u00E4,\u00E6,\u00E5,\u0101",
+        /* morekeys_a */ "\u0103,\u00E2,\u00E3,\u00E0,\u00E1,\u00E4,\u00E6,\u00E5,\u0101",
         /* morekeys_o ~ */
         null, null, null, null,
         /* ~ morekeys_e */

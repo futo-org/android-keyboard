@@ -59,9 +59,9 @@ public final class TestsRomanian extends LayoutTestsBase {
                     // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
                     // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
                     .setMoreKeysOf("i", "\u00EE", "\u00EF", "\u00EC", "\u00ED", "\u012F", "\u012B")
+                    // U+0103: "ă" LATIN SMALL LETTER A WITH BREVE
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
                     // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
-                    // U+0103: "ă" LATIN SMALL LETTER A WITH BREVE
                     // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
@@ -69,7 +69,7 @@ public final class TestsRomanian extends LayoutTestsBase {
                     // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
                     // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
                     .setMoreKeysOf("a",
-                            "\u00E2", "\u00E3", "\u0103", "\u00E0", "\u00E1", "\u00E4", "\u00E6",
+                            "\u0103", "\u00E2", "\u00E3", "\u00E0", "\u00E1", "\u00E4", "\u00E6",
                             "\u00E5", "\u0101")
                     // U+0219: "ș" LATIN SMALL LETTER S WITH COMMA BELOW
                     // U+00DF: "ß" LATIN SMALL LETTER SHARP S
