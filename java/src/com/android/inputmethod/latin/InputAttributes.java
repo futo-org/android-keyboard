@@ -104,7 +104,7 @@ public final class InputAttributes {
         mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
 
         final boolean noMicrophone = mIsPasswordField
-                || InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS == variation
+                || InputTypeUtils.isEmailVariation(variation)
                 || InputType.TYPE_TEXT_VARIATION_URI == variation
                 || hasNoMicrophoneKeyOption();
         mShouldShowVoiceInputKey = !noMicrophone;
