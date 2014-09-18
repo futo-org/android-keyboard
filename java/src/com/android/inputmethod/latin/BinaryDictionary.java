@@ -186,9 +186,9 @@ public final class BinaryDictionary extends Dictionary {
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int[] suggestOptions,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
-            int[] outputSuggestionCount, int[] outputCodePoints, int[] outputScores,
-            int[] outputIndices, int[] outputTypes, int[] outputAutoCommitFirstWordConfidence,
-            float[] inOutLanguageWeight);
+            int prevWordCount, int[] outputSuggestionCount, int[] outputCodePoints,
+            int[] outputScores, int[] outputIndices, int[] outputTypes,
+            int[] outputAutoCommitFirstWordConfidence, float[] inOutLanguageWeight);
     private static native boolean addUnigramEntryNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isBeginningOfSentence,
             boolean isNotAWord, boolean isBlacklisted, int timestamp);
@@ -295,10 +295,10 @@ public final class BinaryDictionary extends Dictionary {
                 inputPointers.getYCoordinates(), inputPointers.getTimes(),
                 inputPointers.getPointerIds(), session.mInputCodePoints, inputSize,
                 session.mNativeSuggestOptions.getOptions(), session.mPrevWordCodePointArrays,
-                session.mIsBeginningOfSentenceArray, session.mOutputSuggestionCount,
-                session.mOutputCodePoints, session.mOutputScores, session.mSpaceIndices,
-                session.mOutputTypes, session.mOutputAutoCommitFirstWordConfidence,
-                session.mInputOutputLanguageWeight);
+                session.mIsBeginningOfSentenceArray, prevWordsInfo.getPrevWordCount(),
+                session.mOutputSuggestionCount, session.mOutputCodePoints, session.mOutputScores,
+                session.mSpaceIndices, session.mOutputTypes,
+                session.mOutputAutoCommitFirstWordConfidence, session.mInputOutputLanguageWeight);
         if (inOutLanguageWeight != null) {
             inOutLanguageWeight[0] = session.mInputOutputLanguageWeight[0];
         }
