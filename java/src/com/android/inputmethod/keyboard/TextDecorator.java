@@ -17,23 +17,22 @@
 package com.android.inputmethod.keyboard;
 
 import android.graphics.Matrix;
-import android.graphics.PointF;
 import android.graphics.RectF;
 import android.inputmethodservice.InputMethodService;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.CursorAnchorInfo;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 import javax.annotation.Nonnull;
 
 /**
- * A controller class of commit/add-to-dictionary indicator (a.k.a. TextDecorator). This class
+ * A controller class of the add-to-dictionary indicator (a.k.a. TextDecorator). This class
  * is designed to be independent of UI subsystems such as {@link View}. All the UI related
  * operations are delegated to {@link TextDecoratorUi} via {@link TextDecoratorUiOperator}.
  */
@@ -41,18 +40,22 @@ public class TextDecorator {
     private static final String TAG = TextDecorator.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final int MODE_NONE = 0;
-    private static final int MODE_COMMIT = 1;
-    private static final int MODE_ADD_TO_DICTIONARY = 2;
+    private static final int INVALID_CURSOR_INDEX = -1;
 
-    private int mMode = MODE_NONE;
+    private static final int MODE_MONITOR = 0;
+    private static final int MODE_WAITING_CURSOR_INDEX = 1;
+    private static final int MODE_SHOWING_INDICATOR = 2;
 
-    private final PointF mLocalOrigin = new PointF();
-    private final RectF mRelativeIndicatorBounds = new RectF();
-    private final RectF mRelativeComposingTextBounds = new RectF();
+    private int mMode = MODE_MONITOR;
+
+    private String mLastComposingText = null;
+    private RectF mIndicatorBoundsForLastComposingText = new RectF();
+    private RectF mComposingTextBoundsForLastComposingText = new RectF();
 
     private boolean mIsFullScreenMode = false;
-    private SuggestedWordInfo mWaitingWord = null;
+    private String mWaitingWord = null;
+    private int mWaitingCursorStart = INVALID_CURSOR_INDEX;
+    private int mWaitingCursorEnd = INVALID_CURSOR_INDEX;
     private CursorAnchorInfoCompatWrapper mCursorAnchorInfoWrapper = null;
 
     @Nonnull
@@ -63,16 +66,10 @@ public class TextDecorator {
 
     public interface Listener {
         /**
-         * Called when the user clicks the composing text to commit.
-         * @param wordInfo the suggested word which the user clicked on.
+         * Called when the user clicks the indicator to add the word into the dictionary.
+         * @param word the word which the user clicked on.
          */
-        void onClickComposingTextToCommit(final SuggestedWordInfo wordInfo);
-
-        /**
-         * Called when the user clicks the composing text to add the word into the dictionary.
-         * @param wordInfo the suggested word which the user clicked on.
-         */
-        void onClickComposingTextToAddToDictionary(final SuggestedWordInfo wordInfo);
+        void onClickComposingTextToAddToDictionary(final String word);
     }
 
     public TextDecorator(final Listener listener) {
@@ -103,46 +100,19 @@ public class TextDecorator {
     }
 
     /**
-     * Shows the "Commit" indicator and associates it with the given suggested word.
+     * Shows the "Add to dictionary" indicator and associates it with associating the given word.
      *
-     * <p>The effect of {@link #showCommitIndicator(SuggestedWordInfo)} and
-     * {@link #showAddToDictionaryIndicator(SuggestedWordInfo)} are exclusive to each other. Call
-     * {@link #reset()} to hide the indicator.</p>
-     *
-     * @param wordInfo the suggested word which should be associated with the indicator. This object
-     * will be passed back in {@link Listener#onClickComposingTextToCommit(SuggestedWordInfo)}
+     * @param word the word which should be associated with the indicator. This object will be
+     * passed back in {@link Listener#onClickComposingTextToAddToDictionary(String)}.
+     * @param selectionStart the cursor index (inclusive) when the indicator should be displayed.
+     * @param selectionEnd the cursor index (exclusive) when the indicator should be displayed.
      */
-    public void showCommitIndicator(final SuggestedWordInfo wordInfo) {
-        if (mMode == MODE_COMMIT && wordInfo != null &&
-                TextUtils.equals(mWaitingWord.mWord, wordInfo.mWord)) {
-            // Skip layout for better performance.
-            return;
-        }
-        mWaitingWord = wordInfo;
-        mMode = MODE_COMMIT;
-        layoutLater();
-    }
-
-    /**
-     * Shows the "Add to dictionary" indicator and associates it with associating the given
-     * suggested word.
-     *
-     * <p>The effect of {@link #showCommitIndicator(SuggestedWordInfo)} and
-     * {@link #showAddToDictionaryIndicator(SuggestedWordInfo)} are exclusive to each other. Call
-     * {@link #reset()} to hide the indicator.</p>
-     *
-     * @param wordInfo the suggested word which should be associated with the indicator. This object
-     * will be passed back in
-     * {@link Listener#onClickComposingTextToAddToDictionary(SuggestedWordInfo)}.
-     */
-    public void showAddToDictionaryIndicator(final SuggestedWordInfo wordInfo) {
-        if (mMode == MODE_ADD_TO_DICTIONARY && wordInfo != null &&
-                TextUtils.equals(mWaitingWord.mWord, wordInfo.mWord)) {
-            // Skip layout for better performance.
-            return;
-        }
-        mWaitingWord = wordInfo;
-        mMode = MODE_ADD_TO_DICTIONARY;
+    public void showAddToDictionaryIndicator(final String word, final int selectionStart,
+            final int selectionEnd) {
+        mWaitingWord = word;
+        mWaitingCursorStart = selectionStart;
+        mWaitingCursorEnd = selectionEnd;
+        mMode = MODE_WAITING_CURSOR_INDEX;
         layoutLater();
         return;
     }
@@ -165,47 +135,25 @@ public class TextDecorator {
      */
     public void reset() {
         mWaitingWord = null;
-        mMode = MODE_NONE;
-        mLocalOrigin.set(0.0f, 0.0f);
-        mRelativeIndicatorBounds.set(0.0f, 0.0f, 0.0f, 0.0f);
-        mRelativeComposingTextBounds.set(0.0f, 0.0f, 0.0f, 0.0f);
+        mMode = MODE_MONITOR;
+        mWaitingCursorStart = INVALID_CURSOR_INDEX;
+        mWaitingCursorEnd = INVALID_CURSOR_INDEX;
         cancelLayoutInternalExpectedly("Resetting internal state.");
     }
 
     /**
-     * Must be called when the {@link InputMethodService#onUpdateCursorAnchorInfo()} is called.
+     * Must be called when the {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)}
+     * is called.
      *
      * <p>CAVEAT: Currently the input method author is responsible for ignoring
-     * {@link InputMethodService#onUpdateCursorAnchorInfo()} called in full screen mode.</p>
+     * {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} called in full screen
+     * mode.</p>
      * @param info the compatibility wrapper object for the received {@link CursorAnchorInfo}.
      */
     public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
         mCursorAnchorInfoWrapper = info;
         // Do not use layoutLater() to minimize the latency.
         layoutImmediately();
-    }
-
-    /**
-     * Hides indicator if the new composing text doesn't match the expected one.
-     *
-     * <p>Calling this method is optional but recommended whenever the new composition is passed to
-     * the application. The motivation of this method is to reduce the UI latency. With this method,
-     * we can hide the indicator without waiting the arrival of the
-     * {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} callback, assuming that
-     * the application accepts the new composing text without any modification. Even if this
-     * assumption is false, the indicator will be shown again when
-     * {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} is actually received.
-     * </p>
-     *
-     * @param newComposingText the new composing text that is being passed to the application.
-     */
-    public void hideIndicatorIfNecessary(final CharSequence newComposingText) {
-        if (mMode != MODE_COMMIT && mMode != MODE_ADD_TO_DICTIONARY) {
-            return;
-        }
-        if (!TextUtils.equals(newComposingText, mWaitingWord.mWord)) {
-            mUiOperator.hideUi();
-        }
     }
 
     private void cancelLayoutInternalUnexpectedly(final String message) {
@@ -232,15 +180,6 @@ public class TextDecorator {
     }
 
     private void layoutMain() {
-        if (mMode != MODE_COMMIT && mMode != MODE_ADD_TO_DICTIONARY) {
-            if (mMode == MODE_NONE) {
-                cancelLayoutInternalExpectedly("Not ready for layouting.");
-            } else {
-                cancelLayoutInternalUnexpectedly("Unknown mMode=" + mMode);
-            }
-            return;
-        }
-
         final CursorAnchorInfoCompatWrapper info = mCursorAnchorInfoWrapper;
 
         if (info == null) {
@@ -254,104 +193,117 @@ public class TextDecorator {
         }
 
         final CharSequence composingText = info.getComposingText();
-        if (mMode == MODE_COMMIT) {
-            if (composingText == null) {
-                cancelLayoutInternalExpectedly("composingText is null.");
-                return;
-            }
+        if (!TextUtils.isEmpty(composingText)) {
             final int composingTextStart = info.getComposingTextStart();
             final int lastCharRectIndex = composingTextStart + composingText.length() - 1;
             final RectF lastCharRect = info.getCharacterBounds(lastCharRectIndex);
-            final int lastCharRectFlag = info.getCharacterBoundsFlags(lastCharRectIndex);
+            final int lastCharRectFlags = info.getCharacterBoundsFlags(lastCharRectIndex);
             final boolean hasInvisibleRegionInLastCharRect =
-                    (lastCharRectFlag & CursorAnchorInfoCompatWrapper.FLAG_HAS_INVISIBLE_REGION)
+                    (lastCharRectFlags & CursorAnchorInfoCompatWrapper.FLAG_HAS_INVISIBLE_REGION)
                             != 0;
             if (lastCharRect == null || matrix == null || hasInvisibleRegionInLastCharRect) {
                 mUiOperator.hideUi();
                 return;
             }
-            final RectF segmentStartCharRect = new RectF(lastCharRect);
-            for (int i = composingText.length() - 2; i >= 0; --i) {
-                final RectF charRect = info.getCharacterBounds(composingTextStart + i);
-                if (charRect == null) {
+
+            // Note that the following layout information is fragile, and must be invalidated
+            // even when surrounding text next to the composing text is changed because it can
+            // affect how the composing text is rendered.
+            // TODO: Investigate if we can change the input logic to make the target text
+            // composing state so that we can retrieve the character bounds reliably.
+            final String composingTextString = composingText.toString();
+            final float top = lastCharRect.top;
+            final float bottom = lastCharRect.bottom;
+            float left = lastCharRect.left;
+            float right = lastCharRect.right;
+            boolean useRtlLayout = false;
+            for (int i = composingText.length() - 1; i >= 0; --i) {
+                final int characterIndex = composingTextStart + i;
+                final RectF characterBounds = info.getCharacterBounds(characterIndex);
+                final int characterBoundsFlags = info.getCharacterBoundsFlags(characterIndex);
+                if (characterBounds == null) {
                     break;
                 }
-                if (charRect.top != segmentStartCharRect.top) {
+                if (characterBounds.top != top) {
                     break;
                 }
-                if (charRect.bottom != segmentStartCharRect.bottom) {
+                if (characterBounds.bottom != bottom) {
                     break;
                 }
-                segmentStartCharRect.set(charRect);
+                if ((characterBoundsFlags & CursorAnchorInfoCompatWrapper.FLAG_IS_RTL) != 0) {
+                    // This is for both RTL text and bi-directional text. RTL languages usually mix
+                    // RTL characters with LTR characters and in this case we should display the
+                    // indicator on the left, while in LTR languages that normally never happens.
+                    // TODO: Try to come up with a better algorithm.
+                    useRtlLayout = true;
+                }
+                left = Math.min(characterBounds.left, left);
+                right = Math.max(characterBounds.right, right);
             }
-
-            mLocalOrigin.set(lastCharRect.right, lastCharRect.top);
-            mRelativeIndicatorBounds.set(lastCharRect.right, lastCharRect.top,
-                    lastCharRect.right + lastCharRect.height(), lastCharRect.bottom);
-            mRelativeIndicatorBounds.offset(-mLocalOrigin.x, -mLocalOrigin.y);
-
-            mRelativeIndicatorBounds.set(lastCharRect.right, lastCharRect.top,
-                    lastCharRect.right + lastCharRect.height(), lastCharRect.bottom);
-            mRelativeIndicatorBounds.offset(-mLocalOrigin.x, -mLocalOrigin.y);
-
-            mRelativeComposingTextBounds.set(segmentStartCharRect.left, segmentStartCharRect.top,
-                    segmentStartCharRect.right, segmentStartCharRect.bottom);
-            mRelativeComposingTextBounds.offset(-mLocalOrigin.x, -mLocalOrigin.y);
-
-            if (mWaitingWord == null) {
-                cancelLayoutInternalExpectedly("mWaitingText is null.");
-                return;
+            mLastComposingText = composingTextString;
+            mComposingTextBoundsForLastComposingText.set(left, top, right, bottom);
+            // The height and width of the indicator is the same as the height of the composing
+            // text.
+            final float indicatorSize = bottom - top;
+            mIndicatorBoundsForLastComposingText.set(0.0f, 0.0f, indicatorSize, indicatorSize);
+            // The horizontal position of the indicator depends on the text direction.
+            final float indicatorTop = top;
+            final float indicatorLeft;
+            if (useRtlLayout) {
+                indicatorLeft = left - indicatorSize;
+            } else {
+                indicatorLeft = right;
             }
-            if (TextUtils.isEmpty(mWaitingWord.mWord)) {
-                cancelLayoutInternalExpectedly("mWaitingText.mWord is empty.");
-                return;
-            }
-            if (!TextUtils.equals(composingText, mWaitingWord.mWord)) {
-                // This is indeed an expected situation because of the asynchronous nature of
-                // input method framework in Android. Note that composingText is notified from the
-                // application, while mWaitingWord.mWord is obtained directly from the InputLogic.
-                cancelLayoutInternalExpectedly(
-                        "Composing text doesn't match the one we are waiting for.");
-                return;
-            }
-        } else {
-            if (!mIsFullScreenMode && !TextUtils.isEmpty(composingText)) {
-                // This is an unexpected case.
-                // TODO: Document this.
-                mUiOperator.hideUi();
-                return;
-            }
-            // In MODE_ADD_TO_DICTIONARY, we cannot retrieve the character position at all because
-            // of the lack of composing text. We will use the insertion marker position instead.
-            if ((info.getInsertionMarkerFlags() &
-                    CursorAnchorInfoCompatWrapper.FLAG_HAS_INVISIBLE_REGION) != 0) {
-                mUiOperator.hideUi();
-                return;
-            }
-            final float insertionMarkerHolizontal = info.getInsertionMarkerHorizontal();
-            final float insertionMarkerTop = info.getInsertionMarkerTop();
-            mLocalOrigin.set(insertionMarkerHolizontal, insertionMarkerTop);
+            mIndicatorBoundsForLastComposingText.offset(indicatorLeft, indicatorTop);
         }
 
-        final RectF indicatorBounds = new RectF(mRelativeIndicatorBounds);
-        final RectF composingTextBounds = new RectF(mRelativeComposingTextBounds);
-        indicatorBounds.offset(mLocalOrigin.x, mLocalOrigin.y);
-        composingTextBounds.offset(mLocalOrigin.x, mLocalOrigin.y);
-        mUiOperator.layoutUi(mMode == MODE_COMMIT, matrix, indicatorBounds, composingTextBounds);
+        final int selectionStart = info.getSelectionStart();
+        final int selectionEnd = info.getSelectionEnd();
+        switch (mMode) {
+            case MODE_MONITOR:
+                mUiOperator.hideUi();
+                return;
+            case MODE_WAITING_CURSOR_INDEX:
+                if (selectionStart != mWaitingCursorStart || selectionEnd != mWaitingCursorEnd) {
+                    mUiOperator.hideUi();
+                    return;
+                }
+                mMode = MODE_SHOWING_INDICATOR;
+                break;
+            case MODE_SHOWING_INDICATOR:
+                if (selectionStart != mWaitingCursorStart || selectionEnd != mWaitingCursorEnd) {
+                    mUiOperator.hideUi();
+                    mMode = MODE_MONITOR;
+                    mWaitingCursorStart = INVALID_CURSOR_INDEX;
+                    mWaitingCursorEnd = INVALID_CURSOR_INDEX;
+                    return;
+                }
+                break;
+            default:
+                cancelLayoutInternalUnexpectedly("Unexpected internal mode=" + mMode);
+                return;
+        }
+
+        if (!TextUtils.equals(mLastComposingText, mWaitingWord)) {
+            cancelLayoutInternalUnexpectedly("mLastComposingText doesn't match mWaitingWord");
+            return;
+        }
+
+        if ((info.getInsertionMarkerFlags() &
+                CursorAnchorInfoCompatWrapper.FLAG_HAS_INVISIBLE_REGION) != 0) {
+            mUiOperator.hideUi();
+            return;
+        }
+
+        mUiOperator.layoutUi(matrix, mIndicatorBoundsForLastComposingText,
+                mComposingTextBoundsForLastComposingText);
     }
 
     private void onClickIndicator() {
-        if (mWaitingWord == null || TextUtils.isEmpty(mWaitingWord.mWord)) {
+        if (mMode != MODE_SHOWING_INDICATOR) {
             return;
         }
-        switch (mMode) {
-            case MODE_COMMIT:
-                mListener.onClickComposingTextToCommit(mWaitingWord);
-                break;
-            case MODE_ADD_TO_DICTIONARY:
-                mListener.onClickComposingTextToAddToDictionary(mWaitingWord);
-                break;
-        }
+        mListener.onClickComposingTextToAddToDictionary(mWaitingWord);
     }
 
     private final LayoutInvalidator mLayoutInvalidator = new LayoutInvalidator(this);
@@ -407,10 +359,7 @@ public class TextDecorator {
 
     private final static Listener EMPTY_LISTENER = new Listener() {
         @Override
-        public void onClickComposingTextToCommit(SuggestedWordInfo wordInfo) {
-        }
-        @Override
-        public void onClickComposingTextToAddToDictionary(SuggestedWordInfo wordInfo) {
+        public void onClickComposingTextToAddToDictionary(final String word) {
         }
     };
 
@@ -425,8 +374,7 @@ public class TextDecorator {
         public void setOnClickListener(Runnable listener) {
         }
         @Override
-        public void layoutUi(boolean isCommitMode, Matrix matrix, RectF indicatorBounds,
-                RectF composingTextBounds) {
+        public void layoutUi(Matrix matrix, RectF indicatorBounds, RectF composingTextBounds) {
         }
     };
 }

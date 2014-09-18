@@ -46,7 +46,6 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
     private static final int VISUAL_DEBUG_HIT_AREA_COLOR = 0x80ff8000;
 
     private final RelativeLayout mLocalRootView;
-    private final CommitIndicatorView mCommitIndicatorView;
     private final AddToDictionaryIndicatorView mAddToDictionaryIndicatorView;
     private final PopupWindow mTouchEventWindow;
     private final View mTouchEventWindowClickListenerView;
@@ -73,9 +72,7 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
         mLocalRootView.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         final ViewGroup contentView = getContentView(inputView);
-        mCommitIndicatorView = new CommitIndicatorView(context);
         mAddToDictionaryIndicatorView = new AddToDictionaryIndicatorView(context);
-        mLocalRootView.addView(mCommitIndicatorView);
         mLocalRootView.addView(mAddToDictionaryIndicatorView);
         if (contentView != null) {
             contentView.addView(mLocalRootView);
@@ -110,17 +107,15 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
 
     @Override
     public void hideUi() {
-        mCommitIndicatorView.setVisibility(View.GONE);
         mAddToDictionaryIndicatorView.setVisibility(View.GONE);
         mTouchEventWindow.dismiss();
     }
 
     @Override
-    public void layoutUi(final boolean isCommitMode, final Matrix matrix,
-            final RectF indicatorBounds, final RectF composingTextBounds) {
+    public void layoutUi(final Matrix matrix, final RectF indicatorBounds,
+            final RectF composingTextBounds) {
         final RectF indicatorBoundsInScreenCoordinates = new RectF();
         matrix.mapRect(indicatorBoundsInScreenCoordinates, indicatorBounds);
-        mCommitIndicatorView.setBounds(indicatorBoundsInScreenCoordinates);
         mAddToDictionaryIndicatorView.setBounds(indicatorBoundsInScreenCoordinates);
 
         final RectF hitAreaBounds = new RectF(composingTextBounds);
@@ -133,20 +128,9 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
         mLocalRootView.getLocationOnScreen(originScreen);
         final int viewOriginX = originScreen[0];
         final int viewOriginY = originScreen[1];
-
-        final View toBeShown;
-        final View toBeHidden;
-        if (isCommitMode) {
-            toBeShown = mCommitIndicatorView;
-            toBeHidden = mAddToDictionaryIndicatorView;
-        } else {
-            toBeShown = mAddToDictionaryIndicatorView;
-            toBeHidden = mCommitIndicatorView;
-        }
-        toBeShown.setX(indicatorBoundsInScreenCoordinates.left - viewOriginX);
-        toBeShown.setY(indicatorBoundsInScreenCoordinates.top - viewOriginY);
-        toBeShown.setVisibility(View.VISIBLE);
-        toBeHidden.setVisibility(View.GONE);
+        mAddToDictionaryIndicatorView.setX(indicatorBoundsInScreenCoordinates.left - viewOriginX);
+        mAddToDictionaryIndicatorView.setY(indicatorBoundsInScreenCoordinates.top - viewOriginY);
+        mAddToDictionaryIndicatorView.setVisibility(View.VISIBLE);
 
         if (mTouchEventWindow.isShowing()) {
             mTouchEventWindow.update((int)hitAreaBoundsInScreenCoordinates.left - viewOriginX,
@@ -237,15 +221,6 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
             return null;
         }
         return windowContentView;
-    }
-
-    private static final class CommitIndicatorView extends TextDecoratorUi.IndicatorView {
-        public CommitIndicatorView(final Context context) {
-            super(context, R.array.text_decorator_commit_indicator_path,
-                    R.integer.text_decorator_commit_indicator_path_size,
-                    R.color.text_decorator_commit_indicator_background_color,
-                    R.color.text_decorator_commit_indicator_foreground_color);
-        }
     }
 
     private static final class AddToDictionaryIndicatorView extends TextDecoratorUi.IndicatorView {
