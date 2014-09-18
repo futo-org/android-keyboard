@@ -211,8 +211,7 @@ class DynamicPtReadingHelper {
     bool traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
             TraversingEventListener *const listener);
 
-    int getCodePointsAndProbabilityAndReturnCodePointCount(const int maxCodePointCount,
-            int *const outCodePoints, int *const outUnigramProbability);
+    int getCodePointsAndReturnCodePointCount(const int maxCodePointCount, int *const outCodePoints);
 
     int getTerminalPtNodePositionOfWord(const int *const inWord, const size_t length,
             const bool forceLowerCaseSearch);

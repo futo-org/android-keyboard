@@ -175,8 +175,8 @@ bool DynamicPtReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFi
     return !isError();
 }
 
-int DynamicPtReadingHelper::getCodePointsAndProbabilityAndReturnCodePointCount(
-        const int maxCodePointCount, int *const outCodePoints, int *const outUnigramProbability) {
+int DynamicPtReadingHelper::getCodePointsAndReturnCodePointCount(const int maxCodePointCount,
+        int *const outCodePoints) {
     // This method traverses parent nodes from the terminal by following parent pointers; thus,
     // node code points are stored in the buffer in the reverse order.
     int reverseCodePoints[maxCodePointCount];
@@ -184,11 +184,8 @@ int DynamicPtReadingHelper::getCodePointsAndProbabilityAndReturnCodePointCount(
     // First, read the terminal node and get its probability.
     if (!isValidTerminalNode(terminalPtNodeParams)) {
         // Node at the ptNodePos is not a valid terminal node.
-        *outUnigramProbability = NOT_A_PROBABILITY;
         return 0;
     }
-    // Store terminal node probability.
-    *outUnigramProbability = terminalPtNodeParams.getProbability();
     // Then, following parent node link to the dictionary root and fetch node code points.
     int totalCodePointCount = 0;
     while (!isEnd()) {
@@ -196,7 +193,6 @@ int DynamicPtReadingHelper::getCodePointsAndProbabilityAndReturnCodePointCount(
         totalCodePointCount = getTotalCodePointCount(ptNodeParams);
         if (!ptNodeParams.isValid() || totalCodePointCount > maxCodePointCount) {
             // The ptNodePos is not a valid terminal node position in the dictionary.
-            *outUnigramProbability = NOT_A_PROBABILITY;
             return 0;
         }
         // Store node code points to buffer in the reverse order.
@@ -207,7 +203,6 @@ int DynamicPtReadingHelper::getCodePointsAndProbabilityAndReturnCodePointCount(
     }
     if (isError()) {
         // The node position or the dictionary is invalid.
-        *outUnigramProbability = NOT_A_PROBABILITY;
         return 0;
     }
     // Reverse the stored code points to output them.
