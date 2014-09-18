@@ -22,6 +22,8 @@ import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * Abstract base class for a dictionary that can do a fuzzy search for words based on a set of key
@@ -64,6 +66,14 @@ public abstract class Dictionary {
     public final String mDictType;
     // The locale for this dictionary. May be null if unknown (phony dictionary for example).
     public final Locale mLocale;
+
+    /**
+     * Set out of the dictionary types listed above that are based on data specific to the user,
+     * e.g., the user's contacts.
+     */
+    private static final HashSet<String> sUserSpecificDictionaryTypes =
+            new HashSet(Arrays.asList(new String[] { TYPE_USER_TYPED, TYPE_USER, TYPE_CONTACTS,
+                    TYPE_USER_HISTORY, TYPE_PERSONALIZATION, TYPE_CONTEXTUAL }));
 
     public Dictionary(final String dictType, final Locale locale) {
         mDictType = dictType;
@@ -156,6 +166,14 @@ public abstract class Dictionary {
         // avoid auto-committing stuff. Implementations of the Dictionary class that know to
         // determine whether we should auto-commit will override this.
         return false;
+    }
+
+    /**
+     * Whether this dictionary is based on data specific to the user, e.g., the user's contacts.
+     * @return Whether this dictionary is specific to the user.
+     */
+    public boolean isUserSpecific() {
+        return sUserSpecificDictionaryTypes.contains(mDictType);
     }
 
     /**
