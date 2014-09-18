@@ -24,6 +24,8 @@ LOCAL_AAPT_FLAGS += -0 .dict
 # Do not compress test data file
 LOCAL_AAPT_FLAGS += -0 .txt
 
+LOCAL_STATIC_JAVA_LIBRARIES := mockito-target android-support-test
+
 # Include all test java files.
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
