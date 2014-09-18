@@ -37,6 +37,14 @@ public final class StringUtils {
 
     private static final String EMPTY_STRING = "";
 
+    private static final char CHAR_LINE_FEED = 0X000A;
+    private static final char CHAR_VERTICAL_TAB = 0X000B;
+    private static final char CHAR_FORM_FEED = 0X000C;
+    private static final char CHAR_CARRIAGE_RETURN = 0X000D;
+    private static final char CHAR_NEXT_LINE = 0X0085;
+    private static final char CHAR_LINE_SEPARATOR = 0X2028;
+    private static final char CHAR_PARAGRAPH_SEPARATOR = 0X2029;
+
     private StringUtils() {
         // This utility class is not publicly instantiable.
     }
@@ -593,5 +601,31 @@ public final class StringUtils {
             }
             return sb + "]";
         }
+    }
+
+    /**
+     * Returns whether the last composed word contains line-breaking character (e.g. CR or LF).
+     * @param text the text to be examined.
+     * @return {@code true} if the last composed word contains line-breaking separator.
+     */
+    @UsedForTesting
+    public static boolean hasLineBreakCharacter(final String text) {
+        if (TextUtils.isEmpty(text)) {
+            return false;
+        }
+        for (int i = text.length() - 1; i >= 0; --i) {
+            final char c = text.charAt(i);
+            switch (c) {
+                case CHAR_LINE_FEED:
+                case CHAR_VERTICAL_TAB:
+                case CHAR_FORM_FEED:
+                case CHAR_CARRIAGE_RETURN:
+                case CHAR_NEXT_LINE:
+                case CHAR_LINE_SEPARATOR:
+                case CHAR_PARAGRAPH_SEPARATOR:
+                    return true;
+            }
+        }
+        return false;
     }
 }

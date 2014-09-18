@@ -189,9 +189,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED = 6;
         private static final int MSG_RESET_CACHES = 7;
         private static final int MSG_WAIT_FOR_DICTIONARY_LOAD = 8;
-        private static final int MSG_SHOW_COMMIT_INDICATOR = 9;
         // Update this when adding new messages
-        private static final int MSG_LAST = MSG_SHOW_COMMIT_INDICATOR;
+        private static final int MSG_LAST = MSG_WAIT_FOR_DICTIONARY_LOAD;
 
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
@@ -202,7 +201,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         private int mDelayInMillisecondsToUpdateSuggestions;
         private int mDelayInMillisecondsToUpdateShiftState;
-        private int mDelayInMillisecondsToShowCommitIndicator;
 
         public UIHandler(final LatinIME ownerInstance) {
             super(ownerInstance);
@@ -218,8 +216,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     R.integer.config_delay_in_milliseconds_to_update_suggestions);
             mDelayInMillisecondsToUpdateShiftState = res.getInteger(
                     R.integer.config_delay_in_milliseconds_to_update_shift_state);
-            mDelayInMillisecondsToShowCommitIndicator = res.getInteger(
-                    R.integer.text_decorator_delay_in_milliseconds_to_show_commit_indicator);
         }
 
         @Override
@@ -276,14 +272,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                             settingsValues, latinIme.getCurrentAutoCapsState(),
                             latinIme.getCurrentRecapitalizeState());
                 }
-                break;
-            case MSG_SHOW_COMMIT_INDICATOR:
-                // Protocol of MSG_SET_COMMIT_INDICATOR_ENABLED:
-                // - what: MSG_SHOW_COMMIT_INDICATOR
-                // - arg1: not used.
-                // - arg2: not used.
-                // - obj:  the Runnable object to be called back.
-                ((Runnable) msg.obj).run();
                 break;
             case MSG_WAIT_FOR_DICTIONARY_LOAD:
                 Log.i(TAG, "Timeout waiting for dictionary load");
@@ -383,19 +371,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void showTailBatchInputResult(final SuggestedWords suggestedWords) {
             obtainMessage(MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED, suggestedWords).sendToTarget();
-        }
-
-        /**
-         * Posts a delayed task to show the commit indicator.
-         *
-         * <p>Only one task can exist in the queue. When this method is called, any prior task that
-         * has not yet fired will be canceled.</p>
-         * @param task the runnable object that will be fired when the delayed task is dispatched.
-         */
-        public void postShowCommitIndicatorTask(final Runnable task) {
-            removeMessages(MSG_SHOW_COMMIT_INDICATOR);
-            sendMessageDelayed(obtainMessage(MSG_SHOW_COMMIT_INDICATOR, task),
-                    mDelayInMillisecondsToShowCommitIndicator);
         }
 
         // Working variables for the following methods.
