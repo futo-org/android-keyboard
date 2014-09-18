@@ -43,6 +43,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private static final String TAG = Settings.class.getSimpleName();
     // Settings screens
     public static final String SCREEN_PREFERENCES = "screen_preferences";
+    public static final String SCREEN_ACCOUNTS = "screen_accounts";
     public static final String SCREEN_APPEARANCE = "screen_appearance";
     public static final String SCREEN_THEME = "screen_theme";
     public static final String SCREEN_MULTILINGUAL = "screen_multilingual";
@@ -104,6 +105,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
 
     public static final String PREF_ENABLE_METRICS_LOGGING = "pref_enable_metrics_logging";
+    public static final String PREF_ACCOUNT_NAME = "pref_account_name";
 
     // This preference key is deprecated. Use {@link #PREF_SHOW_LANGUAGE_SWITCH_KEY} instead.
     // This is being used only for the backward compatibility.

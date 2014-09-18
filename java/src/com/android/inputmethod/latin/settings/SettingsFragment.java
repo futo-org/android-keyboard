@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.FeedbackUtils;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
@@ -50,6 +51,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
         if (!Settings.SHOW_MULTILINGUAL_SETTINGS) {
             final Preference multilingualOptions = findPreference(Settings.SCREEN_MULTILINGUAL);
             preferenceScreen.removePreference(multilingualOptions);
+        }
+        if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
+            final Preference accountsPreference = findPreference(Settings.SCREEN_ACCOUNTS);
+            preferenceScreen.removePreference(accountsPreference);
         }
     }
 

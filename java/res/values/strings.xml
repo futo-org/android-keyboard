@@ -38,6 +38,8 @@
 
     <!-- Settings screen title for preferences [CHAR LIMIT=33]-->
     <string name="settings_screen_preferences">Preferences</string>
+    <!-- Settings screen title for accounts and privacy preferences [CHAR LIMIT=33]-->
+    <string name="settings_screen_accounts">Accounts &amp; privacy</string>
     <!-- Settings screen title for appearance & layouts preferences [CHAR LIMIT=33] -->
     <string name="settings_screen_appearance">Appearance &amp; layouts</string>
     <!-- Settings screen title for multilingual options [CHAR_LIMIT=33] -->
@@ -176,6 +178,17 @@
 
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
+
+    <!-- Title of the preference item for switching accounts [CHAR LIMIT=30] -->
+    <string name="switch_accounts">Switch accounts</string>
+
+    <!-- Summary of the preference item for switching accounts when no accounts
+         are selected [CHAR LIMIT=65] -->
+    <string name="no_accounts_selected">No accounts selected</string>
+
+    <!-- Summary of the preference item for switching accounts when an account
+         is selected [CHAR LIMIT=65] -->
+    <string name="account_selected">Currently using <xliff:g id="EMAIL_ADDRESS" example="someone@example.com">%1$s</xliff:g></string>
 
     <!-- Description for English (UK) keyboard subtype [CHAR LIMIT=25]
          (UK) should be an abbreviation of United Kingdom to fit in the CHAR LIMIT. -->
