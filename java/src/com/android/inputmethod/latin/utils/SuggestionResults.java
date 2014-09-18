@@ -22,7 +22,6 @@ import com.android.inputmethod.latin.define.ProductionFlags;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Locale;
 import java.util.TreeSet;
 
 /**
@@ -31,14 +30,17 @@ import java.util.TreeSet;
  */
 public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
+    // TODO: Instead of a boolean , we may want to include the context of this suggestion results,
+    // such as {@link PrevWordsInfo}.
+    public final boolean mIsBeginningOfSentence;
     private final int mCapacity;
 
-    public SuggestionResults(final int capacity) {
-        this(sSuggestedWordInfoComparator, capacity);
+    public SuggestionResults(final int capacity, final boolean isBeginningOfSentence) {
+        this(sSuggestedWordInfoComparator, capacity, isBeginningOfSentence);
     }
 
-    public SuggestionResults(final Comparator<SuggestedWordInfo> comparator,
-            final int capacity) {
+    private SuggestionResults(final Comparator<SuggestedWordInfo> comparator,
+            final int capacity, final boolean isBeginningOfSentence) {
         super(comparator);
         mCapacity = capacity;
         if (ProductionFlags.INCLUDE_RAW_SUGGESTIONS) {
@@ -46,6 +48,7 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
         } else {
             mRawSuggestions = null;
         }
+        mIsBeginningOfSentence = isBeginningOfSentence;
     }
 
     @Override
