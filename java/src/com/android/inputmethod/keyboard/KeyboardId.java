@@ -77,8 +77,7 @@ public final class KeyboardId {
 
     private final int mHashCode;
 
-    public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params,
-        boolean isSplitLayout) {
+    public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
         mSubtype = params.mSubtype;
         mLocale = SubtypeLocaleUtils.getSubtypeLocale(mSubtype);
         mWidth = params.mKeyboardWidth;
@@ -91,7 +90,7 @@ public final class KeyboardId {
         mCustomActionLabel = (mEditorInfo.actionLabel != null)
                 ? mEditorInfo.actionLabel.toString() : null;
         mHasShortcutKey = params.mVoiceInputKeyEnabled;
-        mIsSplitLayout = isSplitLayout;
+        mIsSplitLayout = params.mIsSplitLayoutEnabled;
 
         mHashCode = computeHashCode(this);
     }

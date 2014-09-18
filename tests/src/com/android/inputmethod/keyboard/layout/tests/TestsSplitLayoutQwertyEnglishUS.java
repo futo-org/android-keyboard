@@ -17,58 +17,31 @@
 package com.android.inputmethod.keyboard.layout.tests;
 
 import android.test.suitebuilder.annotation.SmallTest;
-import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
-import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
 
 /**
- * en_US: English (United States)/qwerty, URL input field.
+ * en_US: English (United States)/qwerty - split layout
  */
 @SmallTest
-public class TestsQwertyUrl extends LayoutTestsBase {
+public class TestsSplitLayoutQwertyEnglishUS extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("en", "US");
-    private static final LayoutBase LAYOUT = new Qwerty(new EnglishUrlCustomizer(LOCALE));
-
-    @Override
-    LayoutBase getLayout() { return LAYOUT; }
+    private static final LayoutBase LAYOUT = new Qwerty(new EnglishSplitCustomizer(LOCALE));
 
     @Override
     protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
             final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
             final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
-        final EditorInfo emailField = new EditorInfo();
-        emailField.inputType =
-                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
-        return super.createKeyboardLayoutSet(
-                subtype, emailField, voiceInputKeyEnabled, languageSwitchKeyEnabled,
-                splitLayoutEnabled);
+        return super.createKeyboardLayoutSet(subtype, editorInfo, voiceInputKeyEnabled,
+            languageSwitchKeyEnabled, true /* splitLayoutEnabled */);
     }
 
-    private static class EnglishUrlCustomizer extends EnglishCustomizer {
-        EnglishUrlCustomizer(final Locale locale) {
-            super(locale);
-        }
-
-        @Override
-        public ExpectedKey getEnterKey(final boolean isPhone) {
-            return isPhone ? LayoutBase.ENTER_KEY : super.getEnterKey(isPhone);
-        }
-
-        @Override
-        public ExpectedKey getEmojiKey(final boolean isPhone) {
-            return LayoutBase.DOMAIN_KEY;
-        }
-
-        @Override
-        public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return joinKeys(key("/", LayoutBase.SETTINGS_KEY));
-        }
-    }
+    @Override
+    LayoutBase getLayout() { return LAYOUT; }
 }
