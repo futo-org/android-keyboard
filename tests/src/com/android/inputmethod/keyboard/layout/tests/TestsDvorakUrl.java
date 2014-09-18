@@ -44,12 +44,13 @@ public class TestsDvorakUrl extends LayoutTestsBase {
     @Override
     protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
             final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
-            final boolean languageSwitchKeyEnabled) {
+            final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
         final EditorInfo emailField = new EditorInfo();
         emailField.inputType =
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
         return super.createKeyboardLayoutSet(
-                subtype, emailField, voiceInputKeyEnabled, languageSwitchKeyEnabled);
+                subtype, emailField, voiceInputKeyEnabled, languageSwitchKeyEnabled,
+                splitLayoutEnabled);
     }
 
     private static class DvorakUrlCustomizer extends EnglishDvorakCustomizer {
