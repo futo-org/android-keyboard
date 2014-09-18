@@ -41,6 +41,8 @@ public final class CursorAnchorInfoCompatWrapper {
 
     // Note that CursorAnchorInfo has been introduced in API level XX (Build.VERSION_CODE.LXX).
     private static final CompatUtils.ClassWrapper sCursorAnchorInfoClass;
+    private static final CompatUtils.ToIntMethodWrapper sGetSelectionStartMethod;
+    private static final CompatUtils.ToIntMethodWrapper sGetSelectionEndMethod;
     private static final CompatUtils.ToObjectMethodWrapper<RectF> sGetCharacterBoundsMethod;
     private static final CompatUtils.ToIntMethodWrapper sGetCharacterBoundsFlagsMethod;
     private static final CompatUtils.ToObjectMethodWrapper<CharSequence> sGetComposingTextMethod;
@@ -52,10 +54,14 @@ public final class CursorAnchorInfoCompatWrapper {
     private static final CompatUtils.ToObjectMethodWrapper<Matrix> sGetMatrixMethod;
     private static final CompatUtils.ToIntMethodWrapper sGetInsertionMarkerFlagsMethod;
 
-    private static int COMPOSING_TEXT_START_DEFAULT = -1;
+    private static int INVALID_TEXT_INDEX = -1;
     static {
         sCursorAnchorInfoClass = CompatUtils.getClassWrapper(
                 "android.view.inputmethod.CursorAnchorInfo");
+        sGetSelectionStartMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getSelectionStart", INVALID_TEXT_INDEX);
+        sGetSelectionEndMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getSelectionEnd", INVALID_TEXT_INDEX);
         sGetCharacterBoundsMethod = sCursorAnchorInfoClass.getMethod(
                 "getCharacterBounds", (RectF)null, int.class);
         sGetCharacterBoundsFlagsMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
@@ -63,7 +69,7 @@ public final class CursorAnchorInfoCompatWrapper {
         sGetComposingTextMethod = sCursorAnchorInfoClass.getMethod(
                 "getComposingText", (CharSequence)null);
         sGetComposingTextStartMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getComposingTextStart", COMPOSING_TEXT_START_DEFAULT);
+                "getComposingTextStart", INVALID_TEXT_INDEX);
         sGetInsertionMarkerBaselineMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
                 "getInsertionMarkerBaseline", 0.0f);
         sGetInsertionMarkerBottomMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
@@ -103,6 +109,14 @@ public final class CursorAnchorInfoCompatWrapper {
     @UsedForTesting
     public static CursorAnchorInfoCompatWrapper getFake() {
         return FakeHolder.sInstance;
+    }
+
+    public int getSelectionStart() {
+        return sGetSelectionStartMethod.invoke(mInstance);
+    }
+
+    public int getSelectionEnd() {
+        return sGetSelectionEndMethod.invoke(mInstance);
     }
 
     public CharSequence getComposingText() {

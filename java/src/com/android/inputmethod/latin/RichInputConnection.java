@@ -252,7 +252,7 @@ public final class RichInputConnection {
      * See {@link InputConnection#commitText(CharSequence, int)}.
      */
     public void commitText(final CharSequence text, final int newCursorPosition) {
-        commitTextWithBackgroundColor(text, newCursorPosition, Color.TRANSPARENT);
+        commitTextWithBackgroundColor(text, newCursorPosition, Color.TRANSPARENT, text.length());
     }
 
     /**
@@ -265,9 +265,11 @@ public final class RichInputConnection {
      * the background color. Note that this method specifies {@link BackgroundColorSpan} with
      * {@link Spanned#SPAN_COMPOSING} flag, meaning that the background color persists until
      * {@link #finishComposingText()} is called.
+     * @param coloredTextLength the length of text, in Java chars, which should be rendered with
+     * the given background color.
      */
     public void commitTextWithBackgroundColor(final CharSequence text, final int newCursorPosition,
-            final int color) {
+            final int color, final int coloredTextLength) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
@@ -285,7 +287,8 @@ public final class RichInputConnection {
                 mTempObjectForCommitText.clear();
                 mTempObjectForCommitText.append(text);
                 final BackgroundColorSpan backgroundColorSpan = new BackgroundColorSpan(color);
-                mTempObjectForCommitText.setSpan(backgroundColorSpan, 0, text.length(),
+                final int spanLength = Math.min(coloredTextLength, text.length());
+                mTempObjectForCommitText.setSpan(backgroundColorSpan, 0, spanLength,
                         Spanned.SPAN_COMPOSING | Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 mIC.commitText(mTempObjectForCommitText, newCursorPosition);
                 mLastCommittedTextHasBackgroundColor = true;
