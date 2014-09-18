@@ -69,4 +69,14 @@ public final class StatsUtils {
     public static void onAutoCorrection(final String typedWord, final String autoCorrectionWord,
             final boolean isBatchInput, @Nullable final String dictionaryType) {
     }
+
+    public static void onWordCommitUserTyped(final String commitWord, final boolean isBatchMode) {
+    }
+
+    public static void onWordCommitAutoCorrect(final String commitWord, final boolean isBatchMode) {
+    }
+
+    public static void onWordCommitSuggestionPickedManually(
+            final String commitWord, final boolean isBatchMode) {
+    }
 }
