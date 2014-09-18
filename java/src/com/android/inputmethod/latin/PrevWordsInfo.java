@@ -86,33 +86,30 @@ public class PrevWordsInfo {
     // For simplicity of implementation, elements may also be EMPTY_WORD_INFO transiently after the
     // WordComposer was reset and before starting a new composing word, but we should never be
     // calling getSuggetions* in this situation.
-    public WordInfo[] mPrevWordsInfo = new WordInfo[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    public final WordInfo[] mPrevWordsInfo;
 
     // Construct from the previous word information.
     public PrevWordsInfo(final WordInfo prevWordInfo) {
-        mPrevWordsInfo[0] = prevWordInfo;
+        mPrevWordsInfo = new WordInfo[] { prevWordInfo };
     }
 
     // Construct from WordInfo array. n-th element represents (n+1)-th previous word's information.
     public PrevWordsInfo(final WordInfo[] prevWordsInfo) {
-        for (int i = 0; i < Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM; i++) {
-            mPrevWordsInfo[i] =
-                    (prevWordsInfo.length > i) ? prevWordsInfo[i] : WordInfo.EMPTY_WORD_INFO;
-        }
+        mPrevWordsInfo = prevWordsInfo;
     }
 
     // Create next prevWordsInfo using current prevWordsInfo.
     public PrevWordsInfo getNextPrevWordsInfo(final WordInfo wordInfo) {
-        final WordInfo[] prevWordsInfo = new WordInfo[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        final int nextPrevWordCount = Math.min(Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM,
+                mPrevWordsInfo.length + 1);
+        final WordInfo[] prevWordsInfo = new WordInfo[nextPrevWordCount];
         prevWordsInfo[0] = wordInfo;
-        for (int i = 1; i < prevWordsInfo.length; i++) {
-            prevWordsInfo[i] = mPrevWordsInfo[i - 1];
-        }
+        System.arraycopy(mPrevWordsInfo, 0, prevWordsInfo, 1, prevWordsInfo.length - 1);
         return new PrevWordsInfo(prevWordsInfo);
     }
 
     public boolean isValid() {
-        return mPrevWordsInfo[0].isValid();
+        return mPrevWordsInfo.length > 0 && mPrevWordsInfo[0].isValid();
     }
 
     public void outputToArray(final int[][] codePointArrays,
@@ -127,6 +124,10 @@ public class PrevWordsInfo {
             codePointArrays[i] = StringUtils.toCodePointArray(wordInfo.mWord);
             isBeginningOfSentenceArray[i] = wordInfo.mIsBeginningOfSentence;
         }
+    }
+
+    public int getPrevWordCount() {
+        return mPrevWordsInfo.length;
     }
 
     @Override
