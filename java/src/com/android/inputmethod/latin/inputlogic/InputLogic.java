@@ -205,6 +205,8 @@ public final class InputLogic {
     public void finishInput() {
         if (mWordComposer.isComposingWord()) {
             mConnection.finishComposingText();
+            StatsUtils.onWordCommitUserTyped(
+                    mWordComposer.getTypedWord(), mWordComposer.isBatchMode());
         }
         resetComposingState(true /* alsoResetLastComposedWord */);
         mInputLogicHandler.reset();
@@ -251,6 +253,7 @@ public final class InputLogic {
             promotePhantomSpace(settingsValues);
         }
         mConnection.commitText(text, 1);
+        StatsUtils.onWordCommitUserTyped(mEnteredText, mWordComposer.isBatchMode());
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.NONE;
@@ -350,6 +353,8 @@ public final class InputLogic {
         }
 
         StatsUtils.onPickSuggestionManually(mSuggestedWords, suggestionInfo);
+        StatsUtils.onWordCommitSuggestionPickedManually(
+                suggestionInfo.mWord, mWordComposer.isBatchMode());
         return inputTransaction;
     }
 
@@ -573,6 +578,7 @@ public final class InputLogic {
                     batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
                     promotePhantomSpace(settingsValues);
                     mConnection.commitText(commitParts[0], 0);
+                    StatsUtils.onWordCommitUserTyped(commitParts[0], mWordComposer.isBatchMode());
                     mSpaceState = SpaceState.PHANTOM;
                     keyboardSwitcher.requestUpdatingShiftState(
                             getCurrentAutoCapsState(settingsValues), getCurrentRecapitalizeState());
@@ -1064,8 +1070,10 @@ public final class InputLogic {
             inputTransaction.setRequiresUpdateSuggestions();
         } else {
             if (mLastComposedWord.canRevertCommit()) {
+                final String lastComposedWord = mLastComposedWord.mTypedWord;
                 revertCommit(inputTransaction, inputTransaction.mSettingsValues);
                 StatsUtils.onRevertAutoCorrect();
+                StatsUtils.onWordCommitUserTyped(lastComposedWord, mWordComposer.isBatchMode());
                 return;
             }
             if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
@@ -2001,6 +2009,8 @@ public final class InputLogic {
             final int indexOfLastSpace = batchInputText.lastIndexOf(Constants.CODE_SPACE) + 1;
             if (0 != indexOfLastSpace) {
                 mConnection.commitText(batchInputText.substring(0, indexOfLastSpace), 1);
+                StatsUtils.onWordCommitUserTyped(
+                        batchInputText.substring(0, indexOfLastSpace), mWordComposer.isBatchMode());
                 final SuggestedWords suggestedWordsForLastWordOfPhraseGesture =
                         suggestedWords.getSuggestedWordsForLastWordOfPhraseGesture();
                 mLatinIME.showSuggestionStrip(suggestedWordsForLastWordOfPhraseGesture);
@@ -2039,8 +2049,10 @@ public final class InputLogic {
         if (!mWordComposer.isComposingWord()) return;
         final String typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
+            final boolean isBatchMode = mWordComposer.isBatchMode();
             commitChosenWord(settingsValues, typedWord,
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
+            StatsUtils.onWordCommitUserTyped(typedWord, isBatchMode);
         }
     }
 
@@ -2086,6 +2098,7 @@ public final class InputLogic {
                 throw new RuntimeException("We have an auto-correction but the typed word "
                         + "is empty? Impossible! I must commit suicide.");
             }
+            final boolean isBatchMode = mWordComposer.isBatchMode();
             commitChosenWord(settingsValues, autoCorrection,
                     LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator);
             if (!typedWord.equals(autoCorrection)) {
@@ -2098,8 +2111,11 @@ public final class InputLogic {
                 mConnection.commitCorrection(new CorrectionInfo(
                         mConnection.getExpectedSelectionEnd() - autoCorrection.length(),
                         typedWord, autoCorrection));
-                StatsUtils.onAutoCorrection(typedWord, autoCorrection, mWordComposer.isBatchMode(),
+                StatsUtils.onAutoCorrection(typedWord, autoCorrection, isBatchMode,
                         mWordComposer.getAutoCorrectionDictionaryTypeOrNull());
+                StatsUtils.onWordCommitAutoCorrect(autoCorrection, isBatchMode);
+            } else {
+                StatsUtils.onWordCommitUserTyped(autoCorrection, isBatchMode);
             }
         }
     }
