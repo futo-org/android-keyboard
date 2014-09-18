@@ -358,9 +358,8 @@ public final class BinaryDictionary extends Dictionary {
         if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
             return NOT_A_PROBABILITY;
         }
-        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
-        final boolean[] isBeginningOfSentenceArray =
-                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        final int[][] prevWordCodePointArrays = new int[prevWordsInfo.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[prevWordsInfo.getPrevWordCount()];
         prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         return getNgramProbabilityNative(mNativeDict, prevWordCodePointArrays,
@@ -455,9 +454,8 @@ public final class BinaryDictionary extends Dictionary {
         if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
             return false;
         }
-        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
-        final boolean[] isBeginningOfSentenceArray =
-                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        final int[][] prevWordCodePointArrays = new int[prevWordsInfo.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[prevWordsInfo.getPrevWordCount()];
         prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         if (!addNgramEntryNative(mNativeDict, prevWordCodePointArrays,
@@ -473,9 +471,8 @@ public final class BinaryDictionary extends Dictionary {
         if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
             return false;
         }
-        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
-        final boolean[] isBeginningOfSentenceArray =
-                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        final int[][] prevWordCodePointArrays = new int[prevWordsInfo.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[prevWordsInfo.getPrevWordCount()];
         prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         if (!removeNgramEntryNative(mNativeDict, prevWordCodePointArrays,
