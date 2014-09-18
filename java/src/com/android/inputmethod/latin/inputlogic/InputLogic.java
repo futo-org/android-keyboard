@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.inputmethod.CorrectionInfo;
+import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
@@ -91,12 +92,8 @@ public final class InputLogic {
 
     private final TextDecorator mTextDecorator = new TextDecorator(new TextDecorator.Listener() {
         @Override
-        public void onClickComposingTextToCommit(SuggestedWordInfo wordInfo) {
-            mLatinIME.pickSuggestionManually(wordInfo);
-        }
-        @Override
-        public void onClickComposingTextToAddToDictionary(SuggestedWordInfo wordInfo) {
-            mLatinIME.addWordToUserDictionary(wordInfo.mWord);
+        public void onClickComposingTextToAddToDictionary(final String word) {
+            mLatinIME.addWordToUserDictionary(word);
             mLatinIME.dismissAddToDictionaryHint();
         }
     });
@@ -171,6 +168,7 @@ public final class InputLogic {
                 mConnection.requestCursorUpdates(true /* enableMonitor */,
                         true /* requestImmediateCallback */);
             }
+            mTextDecorator.reset();
         }
     }
 
@@ -334,17 +332,8 @@ public final class InputLogic {
         }
 
         final boolean shouldShowAddToDictionaryHint = shouldShowAddToDictionaryHint(suggestionInfo);
-        final boolean shouldShowAddToDictionaryIndicator =
-                shouldShowAddToDictionaryHint && settingsValues.mShouldShowUiToAcceptTypedWord;
-        final int backgroundColor;
-        if (shouldShowAddToDictionaryIndicator) {
-            backgroundColor = settingsValues.mTextHighlightColorForAddToDictionaryIndicator;
-        } else {
-            backgroundColor = Color.TRANSPARENT;
-        }
-        commitChosenWordWithBackgroundColor(settingsValues, suggestion,
-                LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR,
-                backgroundColor);
+        commitChosenWord(settingsValues, suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
+                LastComposedWord.NOT_A_SEPARATOR);
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
@@ -358,9 +347,6 @@ public final class InputLogic {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
             // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
             handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
-        }
-        if (shouldShowAddToDictionaryIndicator) {
-            mTextDecorator.showAddToDictionaryIndicator(suggestionInfo);
         }
 
         StatsUtils.onPickSuggestionManually(mSuggestedWords, suggestionInfo);
@@ -433,6 +419,9 @@ public final class InputLogic {
         mRecapitalizeStatus.enable();
         // We moved the cursor and need to invalidate the indicator right now.
         mTextDecorator.reset();
+        // Remaining background color that was used for the add-to-dictionary indicator should be
+        // removed.
+        mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
         mLatinIME.mHandler.postResumeSuggestions(false /* shouldIncludeResumedWordInSuggestions */,
                 true /* shouldDelay */);
@@ -511,7 +500,9 @@ public final class InputLogic {
         handler.cancelUpdateSuggestionStrip();
         ++mAutoCommitSequenceNumber;
         mConnection.beginBatchEdit();
-        if (mWordComposer.isComposingWord()) {
+        if (!mWordComposer.isComposingWord()) {
+            mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
+        } else {
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
@@ -630,42 +621,6 @@ public final class InputLogic {
         }
         mSuggestedWords = suggestedWords;
         final boolean newAutoCorrectionIndicator = suggestedWords.mWillAutoCorrect;
-        if (shouldShowCommitIndicator(suggestedWords, settingsValues)) {
-            // typedWordInfo is never null here.
-            final int textBackgroundColor = settingsValues.mTextHighlightColorForCommitIndicator;
-            final SuggestedWordInfo typedWordInfo = suggestedWords.getTypedWordInfoOrNull();
-            handler.postShowCommitIndicatorTask(new Runnable() {
-                @Override
-                public void run() {
-                    // TODO: This needs to be refactored to ensure that mWordComposer is accessed
-                    // only from the UI thread.
-                    if (!mWordComposer.isComposingWord()) {
-                        mTextDecorator.reset();
-                        return;
-                    }
-                    final SuggestedWordInfo currentTypedWordInfo =
-                            mSuggestedWords.getTypedWordInfoOrNull();
-                    if (currentTypedWordInfo == null) {
-                        mTextDecorator.reset();
-                        return;
-                    }
-                    if (!currentTypedWordInfo.equals(typedWordInfo)) {
-                        // Suggested word has been changed. This task is obsolete.
-                        mTextDecorator.reset();
-                        return;
-                    }
-                    // TODO: As with the above TODO comment, this operation must be performed only
-                    // on the UI thread too. Needs to be refactored.
-                    setComposingTextInternalWithBackgroundColor(typedWordInfo.mWord,
-                            1 /* newCursorPosition */, textBackgroundColor);
-                    mTextDecorator.showCommitIndicator(typedWordInfo);
-                }
-            });
-        } else {
-            // Note: It is OK to not cancel previous postShowCommitIndicatorTask() here. Having a
-            // cancellation mechanism could improve performance a bit though.
-            mTextDecorator.reset();
-        }
 
         // Put a blue underline to a word in TextView which will be auto-corrected.
         if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
@@ -843,13 +798,14 @@ public final class InputLogic {
             final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
-        // In case the "add to dictionary" hint was still displayed.
-        // TODO: Do we really need to check if we have composing text here?
-        if (!mWordComposer.isComposingWord() &&
-                mSuggestionStripViewAccessor.isShowingAddToDictionaryHint()) {
-            mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
+        if (!mWordComposer.isComposingWord()) {
             mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
-            mTextDecorator.reset();
+            // In case the "add to dictionary" hint was still displayed.
+            // TODO: Do we really need to check if we have composing text here?
+            if (mSuggestionStripViewAccessor.isShowingAddToDictionaryHint()) {
+                mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
+                mTextDecorator.reset();
+            }
         }
 
         final int codePoint = event.mCodePoint;
@@ -1108,7 +1064,7 @@ public final class InputLogic {
             inputTransaction.setRequiresUpdateSuggestions();
         } else {
             if (mLastComposedWord.canRevertCommit()) {
-                revertCommit(inputTransaction);
+                revertCommit(inputTransaction, inputTransaction.mSettingsValues);
                 StatsUtils.onRevertAutoCorrect();
                 return;
             }
@@ -1609,14 +1565,19 @@ public final class InputLogic {
      * This is triggered upon pressing backspace just after a commit with auto-correction.
      *
      * @param inputTransaction The transaction in progress.
+     * @param settingsValues the current values of the settings.
      */
-    private void revertCommit(final InputTransaction inputTransaction) {
+    private void revertCommit(final InputTransaction inputTransaction,
+            final SettingsValues settingsValues) {
         final CharSequence originallyTypedWord = mLastComposedWord.mTypedWord;
+        final String originallyTypedWordString =
+                originallyTypedWord != null ? originallyTypedWord.toString() : "";
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final String committedWordString = committedWord.toString();
         final int cancelLength = committedWord.length();
+        final String separatorString = mLastComposedWord.mSeparatorString;
         // We want java chars, not codepoints for the following.
-        final int separatorLength = mLastComposedWord.mSeparatorString.length();
+        final int separatorLength = separatorString.length();
         // TODO: should we check our saved separator against the actual contents of the text view?
         final int deleteLength = cancelLength + separatorLength;
         if (DebugFlags.DEBUG_ENABLED) {
@@ -1635,7 +1596,7 @@ public final class InputLogic {
         if (!TextUtils.isEmpty(committedWord)) {
             mDictionaryFacilitator.removeWordFromPersonalizedDicts(committedWordString);
         }
-        final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
+        final String stringToCommit = originallyTypedWord + separatorString;
         final SpannableString textToCommit = new SpannableString(stringToCommit);
         if (committedWord instanceof SpannableString) {
             final SpannableString committedWordWithSuggestionSpans = (SpannableString)committedWord;
@@ -1672,23 +1633,53 @@ public final class InputLogic {
                     suggestions.toArray(new String[suggestions.size()]), 0 /* flags */),
                     0 /* start */, lastCharIndex /* end */, 0 /* flags */);
         }
+
+        final boolean shouldShowAddToDictionaryForTypedWord =
+                shouldShowAddToDictionaryForTypedWord(mLastComposedWord, settingsValues);
+
         if (inputTransaction.mSettingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // For languages with spaces, we revert to the typed string, but the cursor is still
             // after the separator so we don't resume suggestions. If the user wants to correct
             // the word, they have to press backspace again.
-            mConnection.commitText(textToCommit, 1);
+            if (shouldShowAddToDictionaryForTypedWord) {
+                mConnection.commitTextWithBackgroundColor(textToCommit, 1,
+                        settingsValues.mTextHighlightColorForAddToDictionaryIndicator,
+                        originallyTypedWordString.length());
+            } else {
+                mConnection.commitText(textToCommit, 1);
+            }
         } else {
             // For languages without spaces, we revert the typed string but the cursor is flush
             // with the typed word, so we need to resume suggestions right away.
             final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
             mWordComposer.setComposingWord(codePoints,
                     mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
-            setComposingTextInternal(textToCommit, 1);
+            if (shouldShowAddToDictionaryForTypedWord) {
+                setComposingTextInternalWithBackgroundColor(textToCommit, 1,
+                        settingsValues.mTextHighlightColorForAddToDictionaryIndicator,
+                        originallyTypedWordString.length());
+            } else {
+                setComposingTextInternal(textToCommit, 1);
+            }
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-        // We have a separator between the word and the cursor: we should show predictions.
-        inputTransaction.setRequiresUpdateSuggestions();
+
+        if (shouldShowAddToDictionaryForTypedWord) {
+            // Due to the API limitation as of L, we cannot reliably retrieve the reverted text
+            // when the separator causes line breaking. Until this API limitation is addressed in
+            // the framework, show the indicator only when the separator doesn't contain
+            // line-breaking characters.
+            if (!StringUtils.hasLineBreakCharacter(separatorString)) {
+                mTextDecorator.showAddToDictionaryIndicator(originallyTypedWordString,
+                        mConnection.getExpectedSelectionStart(),
+                        mConnection.getExpectedSelectionEnd());
+            }
+            mSuggestionStripViewAccessor.showAddToDictionaryHint(originallyTypedWordString);
+        } else {
+            // We have a separator between the word and the cursor: we should show predictions.
+            inputTransaction.setRequiresUpdateSuggestions();
+        }
     }
 
     /**
@@ -2114,9 +2105,7 @@ public final class InputLogic {
     }
 
     /**
-     * Commits the chosen word to the text field and saves it for later retrieval. This is a
-     * synonym of {@code commitChosenWordWithBackgroundColor(settingsValues, chosenWord,
-     * commitType, separatorString, Color.TRANSPARENT}.
+     * Commits the chosen word to the text field and saves it for later retrieval.
      *
      * @param settingsValues the current values of the settings.
      * @param chosenWord the word we want to commit.
@@ -2125,23 +2114,6 @@ public final class InputLogic {
      */
     private void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
             final int commitType, final String separatorString) {
-        commitChosenWordWithBackgroundColor(settingsValues, chosenWord, commitType, separatorString,
-                Color.TRANSPARENT);
-    }
-
-    /**
-     * Commits the chosen word to the text field and saves it for later retrieval.
-     *
-     * @param settingsValues the current values of the settings.
-     * @param chosenWord the word we want to commit.
-     * @param commitType the type of the commit, as one of LastComposedWord.COMMIT_TYPE_*
-     * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
-     * @param backgroundColor the background color to be specified with the committed text. Pass
-     * {@link Color#TRANSPARENT} to not specify the background color.
-     */
-    private void commitChosenWordWithBackgroundColor(final SettingsValues settingsValues,
-            final String chosenWord, final int commitType, final String separatorString,
-            final int backgroundColor) {
         final SuggestedWords suggestedWords = mSuggestedWords;
         final CharSequence chosenWordWithSuggestions =
                 SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
@@ -2151,7 +2123,7 @@ public final class InputLogic {
         // information from the 1st previous word.
         final PrevWordsInfo prevWordsInfo = mConnection.getPrevWordsInfoFromNthPreviousWord(
                 settingsValues.mSpacingAndPunctuations, mWordComposer.isComposingWord() ? 2 : 1);
-        mConnection.commitTextWithBackgroundColor(chosenWordWithSuggestions, 1, backgroundColor);
+        mConnection.commitText(chosenWordWithSuggestions, 1);
         // Add the word to the user history dictionary
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWordsInfo);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
@@ -2235,7 +2207,7 @@ public final class InputLogic {
     private void setComposingTextInternal(final CharSequence newComposingText,
             final int newCursorPosition) {
         setComposingTextInternalWithBackgroundColor(newComposingText, newCursorPosition,
-                Color.TRANSPARENT);
+                Color.TRANSPARENT, newComposingText.length());
     }
 
     /**
@@ -2251,9 +2223,11 @@ public final class InputLogic {
      * @param newCursorPosition the new cursor position
      * @param backgroundColor the background color to be set to the composing text. Set
      * {@link Color#TRANSPARENT} to disable the background color.
+     * @param coloredTextLength the length of text, in Java chars, which should be rendered with
+     * the given background color.
      */
     private void setComposingTextInternalWithBackgroundColor(final CharSequence newComposingText,
-            final int newCursorPosition, final int backgroundColor) {
+            final int newCursorPosition, final int backgroundColor, final int coloredTextLength) {
         final CharSequence composingTextToBeSet;
         if (backgroundColor == Color.TRANSPARENT) {
             composingTextToBeSet = newComposingText;
@@ -2261,7 +2235,8 @@ public final class InputLogic {
             final SpannableString spannable = new SpannableString(newComposingText);
             final BackgroundColorSpan backgroundColorSpan =
                     new BackgroundColorSpan(backgroundColor);
-            spannable.setSpan(backgroundColorSpan, 0, spannable.length(),
+            final int spanLength = Math.min(coloredTextLength, spannable.length());
+            spannable.setSpan(backgroundColorSpan, 0, spanLength,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
             composingTextToBeSet = spannable;
         }
@@ -2283,7 +2258,8 @@ public final class InputLogic {
     }
 
     /**
-     * Must be called from {@link InputMethodService#onUpdateCursorAnchorInfo} is called.
+     * Must be called from {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} is
+     * called.
      * @param info The wrapper object with which we can access cursor/anchor info.
      */
     public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
@@ -2307,12 +2283,12 @@ public final class InputLogic {
     }
 
     /**
-     * Returns whether the commit indicator should be shown or not.
-     * @param suggestedWords the suggested word that is being displayed.
+     * Returns whether the add to dictionary indicator should be shown or not.
+     * @param lastComposedWord the last composed word information.
      * @param settingsValues the current settings value.
      * @return {@code true} if the commit indicator should be shown.
      */
-    private boolean shouldShowCommitIndicator(final SuggestedWords suggestedWords,
+    private boolean shouldShowAddToDictionaryForTypedWord(final LastComposedWord lastComposedWord,
             final SettingsValues settingsValues) {
         if (!mConnection.isCursorAnchorInfoMonitorEnabled()) {
             // We cannot help in this case because we are heavily relying on this new API.
@@ -2321,24 +2297,16 @@ public final class InputLogic {
         if (!settingsValues.mShouldShowUiToAcceptTypedWord) {
             return false;
         }
-        final SuggestedWordInfo typedWordInfo = suggestedWords.getTypedWordInfoOrNull();
-        if (typedWordInfo == null) {
+        if (TextUtils.isEmpty(lastComposedWord.mTypedWord)) {
             return false;
         }
-        if (suggestedWords.mInputStyle != SuggestedWords.INPUT_STYLE_TYPING){
+        if (TextUtils.equals(lastComposedWord.mTypedWord, lastComposedWord.mCommittedWord)) {
             return false;
         }
-        if (settingsValues.mShowCommitIndicatorOnlyForAutoCorrection
-                && !suggestedWords.mWillAutoCorrect) {
+        if (!mDictionaryFacilitator.isUserDictionaryEnabled()) {
             return false;
         }
-        // TODO: Calling shouldShowAddToDictionaryHint(typedWordInfo) multiple times should be fine
-        // in terms of performance, but we can do better. One idea is to make SuggestedWords include
-        // a boolean that tells whether the word is a dictionary word or not.
-        if (settingsValues.mShowCommitIndicatorOnlyForOutOfVocabulary
-                && !shouldShowAddToDictionaryHint(typedWordInfo)) {
-            return false;
-        }
-        return true;
+        return !mDictionaryFacilitator.isValidWord(lastComposedWord.mTypedWord,
+                true /* ignoreCase */);
     }
 }
