@@ -43,7 +43,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     PatriciaTriePolicy(MmappedBuffer::MmappedBufferPtr mmappedBuffer)
             : mMmappedBuffer(std::move(mmappedBuffer)),
               mHeaderPolicy(mMmappedBuffer->getReadOnlyByteArrayView().data(),
-                      FormatUtils::detectFormatVersion(mmappedBuffer->getReadOnlyByteArrayView())),
+                      FormatUtils::detectFormatVersion(mMmappedBuffer->getReadOnlyByteArrayView())),
               mBuffer(mMmappedBuffer->getReadOnlyByteArrayView().skip(mHeaderPolicy.getSize())),
               mBigramListPolicy(mBuffer), mShortcutListPolicy(mBuffer),
               mPtNodeReader(mBuffer, &mBigramListPolicy, &mShortcutListPolicy,
