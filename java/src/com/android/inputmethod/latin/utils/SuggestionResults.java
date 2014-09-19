@@ -32,14 +32,18 @@ import java.util.TreeSet;
 public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
     public final Locale mLocale;
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
+    // TODO: Instead of a boolean , we may want to include the context of this suggestion results,
+    // such as {@link PrevWordsInfo}.
+    public final boolean mIsBeginningOfSentence;
     private final int mCapacity;
 
-    public SuggestionResults(final Locale locale, final int capacity) {
-        this(locale, sSuggestedWordInfoComparator, capacity);
+    public SuggestionResults(final Locale locale, final int capacity,
+            final boolean isBeginningOfSentence) {
+        this(locale, sSuggestedWordInfoComparator, capacity, isBeginningOfSentence);
     }
 
-    public SuggestionResults(final Locale locale, final Comparator<SuggestedWordInfo> comparator,
-            final int capacity) {
+    private SuggestionResults(final Locale locale, final Comparator<SuggestedWordInfo> comparator,
+            final int capacity, final boolean isBeginningOfSentence) {
         super(comparator);
         mLocale = locale;
         mCapacity = capacity;
@@ -48,6 +52,7 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
         } else {
             mRawSuggestions = null;
         }
+        mIsBeginningOfSentence = isBeginningOfSentence;
     }
 
     @Override
