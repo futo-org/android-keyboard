@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.utils;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import com.android.inputmethod.latin.Constants;
@@ -56,6 +57,7 @@ public final class PrevWordsInfoUtils {
         if (prev == null) return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         final String[] w = SPACE_REGEX.split(prev);
         final WordInfo[] prevWordsInfo = new WordInfo[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        Arrays.fill(prevWordsInfo, WordInfo.EMPTY_WORD_INFO);
         for (int i = 0; i < prevWordsInfo.length; i++) {
             final int focusedWordIndex = w.length - n - i;
             // Referring to the word after the focused word.
@@ -66,7 +68,6 @@ public final class PrevWordsInfoUtils {
                     if (spacingAndPunctuations.isWordConnector(firstChar)) {
                         // The word following the focused word is starting with a word connector.
                         // TODO: Return meaningful context for this case.
-                        prevWordsInfo[i] = WordInfo.EMPTY_WORD_INFO;
                         break;
                     }
                 }
@@ -93,7 +94,6 @@ public final class PrevWordsInfoUtils {
             // TODO: Return meaningful context for this case.
             if (spacingAndPunctuations.isWordSeparator(lastChar)
                     || spacingAndPunctuations.isWordConnector(lastChar)) {
-                prevWordsInfo[i] = WordInfo.EMPTY_WORD_INFO;
                 break;
             }
             prevWordsInfo[i] = new WordInfo(focusedWord);
