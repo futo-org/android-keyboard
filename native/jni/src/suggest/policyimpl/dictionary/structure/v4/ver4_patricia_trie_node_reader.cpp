@@ -16,6 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content.h"
@@ -51,7 +52,7 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
             DynamicPtReadingUtils::getParentPtNodePos(parentPosOffset, headPos);
     int codePoints[MAX_WORD_LENGTH];
     const int codePonitCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
-            dictBuf, flags, MAX_WORD_LENGTH, codePoints, &pos);
+            dictBuf, flags, MAX_WORD_LENGTH, mHeaderPolicy->getCodePointTable(), codePoints, &pos);
     int terminalIdFieldPos = NOT_A_DICT_POS;
     int terminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
     int probability = NOT_A_PROBABILITY;

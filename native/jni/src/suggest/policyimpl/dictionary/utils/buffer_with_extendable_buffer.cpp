@@ -42,8 +42,10 @@ void BufferWithExtendableBuffer::readCodePointsAndAdvancePosition(const int maxC
     if (readingPosIsInAdditionalBuffer) {
         *pos -= mOriginalBuffer.size();
     }
+    // Code point table is not used for dynamic format.
     *outCodePointCount = ByteArrayUtils::readStringAndAdvancePosition(
-            getBuffer(readingPosIsInAdditionalBuffer), maxCodePointCount, outCodePoints, pos);
+            getBuffer(readingPosIsInAdditionalBuffer), maxCodePointCount,
+            nullptr /* codePointTable */, outCodePoints, pos);
     if (readingPosIsInAdditionalBuffer) {
         *pos += mOriginalBuffer.size();
     }

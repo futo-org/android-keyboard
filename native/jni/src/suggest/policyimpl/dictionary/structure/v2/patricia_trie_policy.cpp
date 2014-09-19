@@ -81,6 +81,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
     const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
     int pos = getRootPosition();
     int wordPos = 0;
+    const int *const codePointTable = mHeaderPolicy.getCodePointTable();
     // One iteration of the outer loop iterates through PtNode arrays. As stated above, we will
     // only traverse PtNodes that are actually a part of the terminal we are searching, so each
     // time we enter this loop we are one depth level further than last time.
@@ -112,21 +113,21 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
             const PatriciaTrieReadingUtils::NodeFlags flags =
                     PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mBuffer.data(), &pos);
             const int character = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
-                    mBuffer.data(), &pos);
+                    mBuffer.data(), codePointTable, &pos);
             if (ptNodePos == startPos) {
                 // We found the position. Copy the rest of the code points in the buffer and return
                 // the length.
                 outCodePoints[wordPos] = character;
                 if (PatriciaTrieReadingUtils::hasMultipleChars(flags)) {
                     int nextChar = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
-                            mBuffer.data(), &pos);
+                            mBuffer.data(), codePointTable, &pos);
                     // We count code points in order to avoid infinite loops if the file is broken
                     // or if there is some other bug
                     int charCount = maxCodePointCount;
                     while (NOT_A_CODE_POINT != nextChar && --charCount > 0) {
                         outCodePoints[++wordPos] = nextChar;
                         nextChar = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
-                                mBuffer.data(), &pos);
+                                mBuffer.data(), codePointTable, &pos);
                     }
                 }
                 *outUnigramProbability =
@@ -138,7 +139,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
             // first and possibly the probability.
             if (PatriciaTrieReadingUtils::hasMultipleChars(flags)) {
                 PatriciaTrieReadingUtils::skipCharacters(mBuffer.data(), flags, MAX_WORD_LENGTH,
-                        &pos);
+                        codePointTable, &pos);
             }
             if (PatriciaTrieReadingUtils::isTerminal(flags)) {
                 PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mBuffer.data(), &pos);
@@ -189,17 +190,17 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(
                                     mBuffer.data(), &lastCandidatePtNodePos);
                     const int lastChar = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
-                            mBuffer.data(), &lastCandidatePtNodePos);
+                            mBuffer.data(), codePointTable, &lastCandidatePtNodePos);
                     // We copy all the characters in this PtNode to the buffer
                     outCodePoints[wordPos] = lastChar;
                     if (PatriciaTrieReadingUtils::hasMultipleChars(lastFlags)) {
                         int nextChar = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
-                                mBuffer.data(), &lastCandidatePtNodePos);
+                                mBuffer.data(), codePointTable, &lastCandidatePtNodePos);
                         int charCount = maxCodePointCount;
                         while (-1 != nextChar && --charCount > 0) {
                             outCodePoints[++wordPos] = nextChar;
                             nextChar = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
-                                    mBuffer.data(), &lastCandidatePtNodePos);
+                                    mBuffer.data(), codePointTable, &lastCandidatePtNodePos);
                         }
                     }
                     ++wordPos;
@@ -404,9 +405,11 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     int shortcutPos = NOT_A_DICT_POS;
     int bigramPos = NOT_A_DICT_POS;
     int siblingPos = NOT_A_DICT_POS;
+    const int *const codePointTable = mHeaderPolicy.getCodePointTable();
     PatriciaTrieReadingUtils::readPtNodeInfo(mBuffer.data(), ptNodePos, &mShortcutListPolicy,
-            &mBigramListPolicy, &flags, &mergedNodeCodePointCount, mergedNodeCodePoints,
-            &probability, &childrenPos, &shortcutPos, &bigramPos, &siblingPos);
+            &mBigramListPolicy, codePointTable, &flags, &mergedNodeCodePointCount,
+            mergedNodeCodePoints, &probability, &childrenPos, &shortcutPos, &bigramPos,
+            &siblingPos);
     // Skip PtNodes don't start with Unicode code point because they represent non-word information.
     if (CharUtils::isInUnicodeSpace(mergedNodeCodePoints[0])) {
         const int wordId = PatriciaTrieReadingUtils::isTerminal(flags) ? ptNodePos : NOT_A_WORD_ID;

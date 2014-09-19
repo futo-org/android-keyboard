@@ -65,7 +65,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mMaxUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(
                       &mAttributeMap, MAX_UNIGRAM_COUNT_KEY, DEFAULT_MAX_UNIGRAM_COUNT)),
               mMaxBigramCount(HeaderReadWriteUtils::readIntAttributeValue(
-                      &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)) {}
+                      &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)),
+              mCodePointTable(HeaderReadWriteUtils::readCodePointTable(&mAttributeMap)) {}
 
     // Constructs header information using an attribute map.
     HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
@@ -97,7 +98,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mMaxUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(
                       &mAttributeMap, MAX_UNIGRAM_COUNT_KEY, DEFAULT_MAX_UNIGRAM_COUNT)),
               mMaxBigramCount(HeaderReadWriteUtils::readIntAttributeValue(
-                      &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)) {}
+                      &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)),
+              mCodePointTable(HeaderReadWriteUtils::readCodePointTable(&mAttributeMap)) {}
 
     // Copy header information
     HeaderPolicy(const HeaderPolicy *const headerPolicy)
@@ -118,7 +120,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mForgettingCurveDurationToLevelDown(
                       headerPolicy->mForgettingCurveDurationToLevelDown),
               mMaxUnigramCount(headerPolicy->mMaxUnigramCount),
-              mMaxBigramCount(headerPolicy->mMaxBigramCount) {}
+              mMaxBigramCount(headerPolicy->mMaxBigramCount),
+              mCodePointTable(headerPolicy->mCodePointTable) {}
 
     // Temporary dummy header.
     HeaderPolicy()
@@ -128,7 +131,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mDate(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
               mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false),
               mForgettingCurveOccurrencesToLevelUp(0), mForgettingCurveProbabilityValuesTableId(0),
-              mForgettingCurveDurationToLevelDown(0), mMaxUnigramCount(0), mMaxBigramCount(0) {}
+              mForgettingCurveDurationToLevelDown(0), mMaxUnigramCount(0), mMaxBigramCount(0),
+              mCodePointTable(nullptr) {}
 
     ~HeaderPolicy() {}
 
@@ -139,6 +143,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         switch (mDictFormatVersion) {
             case FormatUtils::VERSION_2:
                 return FormatUtils::VERSION_2;
+            case FormatUtils::VERSION_201:
+                return FormatUtils::VERSION_201;
             case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
                 return FormatUtils::VERSION_4_ONLY_FOR_TESTING;
             case FormatUtils::VERSION_4:
@@ -250,6 +256,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mDictFormatVersion >= FormatUtils::VERSION_4;
     }
 
+    const int *getCodePointTable() const {
+        return mCodePointTable;
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(HeaderPolicy);
 
@@ -295,6 +305,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const int mForgettingCurveDurationToLevelDown;
     const int mMaxUnigramCount;
     const int mMaxBigramCount;
+    const int *const mCodePointTable;
 
     const std::vector<int> readLocale() const;
     float readMultipleWordCostMultiplier() const;
