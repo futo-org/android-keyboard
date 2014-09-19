@@ -16,12 +16,14 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyVisual;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -29,28 +31,70 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import java.util.Locale;
 
 abstract class KeyboardLayoutSetActionLabelBase extends KeyboardLayoutSetTestsBase {
+    static class ExpectedActionKey {
+        static ExpectedActionKey newIconKey(final String iconName) {
+            final int iconId = KeyboardIconsSet.getIconId(iconName);
+            return new ExpectedActionKey(ExpectedKeyVisual.newInstance(iconId));
+        }
+
+        static ExpectedActionKey newLabelKey(final String label) {
+            return new ExpectedActionKey(ExpectedKeyVisual.newInstance(label));
+        }
+
+        static ExpectedActionKey newLabelKey(final int labelResId,
+                final Locale labelLocale, final Context context) {
+            final RunInLocale<String> getString = new RunInLocale<String>() {
+                @Override
+                protected String job(final Resources res) {
+                    return res.getString(labelResId);
+                }
+            };
+            return newLabelKey(getString.runInLocale(context.getResources(), labelLocale));
+        }
+
+        private final ExpectedKeyVisual mVisual;
+
+        private ExpectedActionKey(final ExpectedKeyVisual visual) {
+            mVisual = visual;
+        }
+
+        public int getIconId() { return mVisual.getIconId(); }
+
+        public String getLabel() { return mVisual.getLabel(); }
+    }
+
+    protected static Locale getLabelLocale(final InputMethodSubtype subtype) {
+        if (subtype.getLocale().equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
+            return null;
+        }
+        return SubtypeLocaleUtils.getSubtypeLocale(subtype);
+    }
+
     public void testActionUnspecified() {
+        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_ENTER_KEY);
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "unspecifiled "
                     + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_UNSPECIFIED,
-                    KeyboardIconsSet.NAME_ENTER_KEY);
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_UNSPECIFIED, expectedKey);
         }
     }
 
     public void testActionNone() {
+        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_ENTER_KEY);
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "none " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_NONE,
-                    KeyboardIconsSet.NAME_ENTER_KEY);
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_NONE, expectedKey);
         }
     }
 
     public void testActionSearch() {
+        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_SEARCH_KEY);
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "search " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_SEARCH,
-                    KeyboardIconsSet.NAME_SEARCH_KEY);
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_SEARCH, expectedKey);
         }
     }
 
@@ -63,94 +107,47 @@ abstract class KeyboardLayoutSetActionLabelBase extends KeyboardLayoutSetTestsBa
     public void testActionCustom() {
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "custom " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            final CharSequence customLabel = "customLabel";
             final EditorInfo editorInfo = new EditorInfo();
             editorInfo.imeOptions = EditorInfo.IME_ACTION_UNSPECIFIED;
-            editorInfo.actionLabel = customLabel;
-            doTestActionKeyLabel(tag, subtype, editorInfo, customLabel);
+            editorInfo.actionLabel = "customLabel";
+            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey("customLabel");
+            doTestActionKey(tag, subtype, editorInfo, expectedKey);
         }
     }
 
-    private static void doTestActionKey(final String tag, final KeyboardLayoutSet layoutSet,
-            final int elementId, final CharSequence label, final int iconId) {
+    private static void assertActionKey(final String tag, final KeyboardLayoutSet layoutSet,
+            final int elementId, final ExpectedActionKey expectedKey) {
         final Keyboard keyboard = layoutSet.getKeyboard(elementId);
-        final Key enterKey = keyboard.getKey(Constants.CODE_ENTER);
-        assertNotNull(tag + " enter key on " + keyboard.mId, enterKey);
-        assertEquals(tag + " enter label " + enterKey, label, enterKey.getLabel());
-        assertEquals(tag + " enter icon " + enterKey, iconId, enterKey.getIconId());
+        final Key actualKey = keyboard.getKey(Constants.CODE_ENTER);
+        assertNotNull(tag + " enter key on " + keyboard.mId, actualKey);
+        assertEquals(tag + " label " + expectedKey, expectedKey.getLabel(), actualKey.getLabel());
+        assertEquals(tag + " icon " + expectedKey, expectedKey.getIconId(), actualKey.getIconId());
     }
 
-    protected void doTestActionKeyLabelResId(final String tag, final InputMethodSubtype subtype,
-            final int actionId, final int labelResId) {
-        final Locale labelLocale = subtype.getLocale().equals(SubtypeLocaleUtils.NO_LANGUAGE)
-                ? null : SubtypeLocaleUtils.getSubtypeLocale(subtype);
-        doTestActionKeyLabelResIdInLocale(tag, subtype, actionId, labelLocale, labelResId);
-    }
-
-    protected void doTestActionKeyLabelResIdInLocale(final String tag,
-            final InputMethodSubtype subtype, final int actionId, final Locale labelLocale,
-            final int labelResId) {
+    protected void doTestActionKey(final String tag, final InputMethodSubtype subtype,
+            final int actionId, final ExpectedActionKey expectedKey) {
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.imeOptions = actionId;
-        final RunInLocale<String> job = new RunInLocale<String>() {
-            @Override
-            protected String job(final Resources res) {
-                return res.getString(labelResId);
-            }
-        };
-        final String label = job.runInLocale(getContext().getResources(), labelLocale);
-        doTestActionKeyLabel(tag, subtype, editorInfo, label);
+        doTestActionKey(tag, subtype, editorInfo, expectedKey);
     }
 
-    protected void doTestActionKeyLabel(final String tag, final InputMethodSubtype subtype,
-            final EditorInfo editorInfo, final CharSequence label) {
+    protected void doTestActionKey(final String tag, final InputMethodSubtype subtype,
+            final EditorInfo editorInfo, final ExpectedActionKey expectedKey) {
         // Test text layouts.
         editorInfo.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL;
         final KeyboardLayoutSet layoutSet = createKeyboardLayoutSet(subtype, editorInfo);
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_ALPHABET,
-                label, KeyboardIconsSet.ICON_UNDEFINED);
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_SYMBOLS,
-                label, KeyboardIconsSet.ICON_UNDEFINED);
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_SYMBOLS_SHIFTED,
-                label, KeyboardIconsSet.ICON_UNDEFINED);
+        assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_ALPHABET, expectedKey);
+        assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_SYMBOLS, expectedKey);
+        assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_SYMBOLS_SHIFTED, expectedKey);
         // Test phone number layouts.
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_PHONE,
-                label, KeyboardIconsSet.ICON_UNDEFINED);
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_PHONE_SYMBOLS,
-                label, KeyboardIconsSet.ICON_UNDEFINED);
+        assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_PHONE, expectedKey);
+        assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_PHONE_SYMBOLS, expectedKey);
         // Test normal number layout.
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_NUMBER,
-                label, KeyboardIconsSet.ICON_UNDEFINED);
-        // Test number password layouts.
-        editorInfo.inputType =
-                InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD;
-        final KeyboardLayoutSet passwordSet = createKeyboardLayoutSet(subtype, editorInfo);
-        doTestActionKey(tag, passwordSet, KeyboardId.ELEMENT_NUMBER,
-                label, KeyboardIconsSet.ICON_UNDEFINED);
-    }
-
-    protected void doTestActionKeyIcon(final String tag, final InputMethodSubtype subtype,
-            final int actionId, final String iconName) {
-        final int iconId = KeyboardIconsSet.getIconId(iconName);
-        final EditorInfo editorInfo = new EditorInfo();
-        editorInfo.imeOptions = actionId;
-        // Test text layouts.
-        editorInfo.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL;
-        final KeyboardLayoutSet layoutSet = createKeyboardLayoutSet(subtype, editorInfo);
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_ALPHABET, null /* label */, iconId);
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_SYMBOLS, null /* label */, iconId);
-        doTestActionKey(
-                tag, layoutSet, KeyboardId.ELEMENT_SYMBOLS_SHIFTED, null /* label */, iconId);
-        // Test phone number layouts.
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_PHONE, null /* label */, iconId);
-        doTestActionKey(
-                tag, layoutSet, KeyboardId.ELEMENT_PHONE_SYMBOLS, null /* label */, iconId);
-        // Test normal number layout.
-        doTestActionKey(tag, layoutSet, KeyboardId.ELEMENT_NUMBER, null /* label */, iconId);
+        assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_NUMBER, expectedKey);
         // Test number password layout.
         editorInfo.inputType =
                 InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD;
         final KeyboardLayoutSet passwordSet = createKeyboardLayoutSet(subtype, editorInfo);
-        doTestActionKey(tag, passwordSet, KeyboardId.ELEMENT_NUMBER, null /* label */, iconId);
+        assertActionKey(tag, passwordSet, KeyboardId.ELEMENT_NUMBER, expectedKey);
     }
 }

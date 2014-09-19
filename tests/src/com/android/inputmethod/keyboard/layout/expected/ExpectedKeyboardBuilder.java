@@ -91,7 +91,7 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
             ExpectedKey[] keys = getRowAt(row);
             for (int columnIndex = 0; columnIndex < keys.length; /* nothing */) {
                 final ExpectedKey currentKey = keys[columnIndex];
-                if (!currentKey.getVisual().equalsTo(visual)) {
+                if (!currentKey.getVisual().hasSameKeyVisual(visual)) {
                     columnIndex++;
                     continue;
                 }

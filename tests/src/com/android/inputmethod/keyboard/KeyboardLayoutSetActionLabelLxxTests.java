@@ -32,46 +32,51 @@ public class KeyboardLayoutSetActionLabelLxxTests extends KeyboardLayoutSetActio
 
     @Override
     public void testActionGo() {
+        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_GO_KEY);
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "go " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_GO,
-                    KeyboardIconsSet.NAME_GO_KEY);
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_GO, expectedKey);
         }
     }
 
     @Override
     public void testActionSend() {
+        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_SEND_KEY);
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "send " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_SEND,
-                    KeyboardIconsSet.NAME_SEND_KEY);
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_SEND, expectedKey);
         }
     }
 
     @Override
     public void testActionNext() {
+        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_NEXT_KEY);
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "next " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_NEXT,
-                    KeyboardIconsSet.NAME_NEXT_KEY);
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_NEXT, expectedKey);
         }
     }
 
     @Override
     public void testActionDone() {
+        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_DONE_KEY);
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "done " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_DONE,
-                    KeyboardIconsSet.NAME_DONE_KEY);
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_DONE, expectedKey);
         }
     }
 
     @Override
     public void testActionPrevious() {
+        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_PREVIOUS_KEY);
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "previous " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_PREVIOUS,
-                    KeyboardIconsSet.NAME_PREVIOUS_KEY);
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_PREVIOUS, expectedKey);
         }
     }
 }

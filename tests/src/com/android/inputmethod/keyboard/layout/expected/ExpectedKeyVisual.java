@@ -27,22 +27,24 @@ import java.util.Locale;
  *
  * There are two types of expected visual, an integer icon id and a string label.
  */
-abstract class ExpectedKeyVisual {
-    static ExpectedKeyVisual newInstance(final String label) {
+public abstract class ExpectedKeyVisual {
+    public static ExpectedKeyVisual newInstance(final String label) {
         return new Label(label);
     }
 
-    static ExpectedKeyVisual newInstance(final int iconId) {
+    public static ExpectedKeyVisual newInstance(final int iconId) {
         return new Icon(iconId);
     }
 
+    public abstract int getIconId();
+    public abstract String getLabel();
     abstract ExpectedKeyVisual toUpperCase(final Locale locale);
     abstract ExpectedKeyVisual preserveCase();
-    abstract boolean equalsTo(final String text);
-    abstract boolean equalsTo(final Key key);
-    abstract boolean equalsTo(final MoreKeySpec moreKeySpec);
-    abstract boolean equalsTo(final ExpectedKeyOutput output);
-    abstract boolean equalsTo(final ExpectedKeyVisual visual);
+    abstract boolean hasSameKeyVisual(final String text);
+    abstract boolean hasSameKeyVisual(final Key key);
+    abstract boolean hasSameKeyVisual(final MoreKeySpec moreKeySpec);
+    abstract boolean hasSameKeyVisual(final ExpectedKeyOutput output);
+    abstract boolean hasSameKeyVisual(final ExpectedKeyVisual visual);
 
     /**
      * This class represents an integer icon id.
@@ -52,6 +54,16 @@ abstract class ExpectedKeyVisual {
 
         Icon(final int iconId) {
             mIconId = iconId;
+        }
+
+        @Override
+        public int getIconId() {
+            return mIconId;
+        }
+
+        @Override
+        public String getLabel() {
+            return null;
         }
 
         @Override
@@ -65,27 +77,32 @@ abstract class ExpectedKeyVisual {
         }
 
         @Override
-        boolean equalsTo(final String text) {
+        boolean hasSameKeyVisual(final String text) {
             return false;
         }
 
         @Override
-        boolean equalsTo(final Key key) {
-            return mIconId == key.getIconId();
+        boolean hasSameKeyVisual(final Key key) {
+            // If the actual key has an icon as its visual, a label has to be null.
+            // See {@link KeyboardView#onDrawKeyTopVisuals(Key,Canvas,Paint,KeyDrawParams).
+            return mIconId == key.getIconId() && key.getLabel() == null;
         }
 
         @Override
-        boolean equalsTo(final MoreKeySpec moreKeySpec) {
-            return mIconId == moreKeySpec.mIconId;
+        boolean hasSameKeyVisual(final MoreKeySpec moreKeySpec) {
+            // If the actual more key has an icon as its visual, a label has to be null.
+            // See {@link KeySpecParser#getIconId(String)} and
+            // {@link KeySpecParser#getLabel(String)}.
+            return mIconId == moreKeySpec.mIconId && moreKeySpec.mLabel == null;
         }
 
         @Override
-        boolean equalsTo(final ExpectedKeyOutput output) {
+        boolean hasSameKeyVisual(final ExpectedKeyOutput output) {
             return false;
         }
 
         @Override
-        boolean equalsTo(final ExpectedKeyVisual visual) {
+        boolean hasSameKeyVisual(final ExpectedKeyVisual visual) {
             return (visual instanceof Icon) && mIconId == ((Icon)visual).mIconId;
         }
 
@@ -101,7 +118,19 @@ abstract class ExpectedKeyVisual {
     private static class Label extends ExpectedKeyVisual {
         private final String mLabel;
 
-        Label(final String label) { mLabel = label; }
+        Label(final String label) {
+            mLabel = label;
+        }
+
+        @Override
+        public int getIconId() {
+            return KeyboardIconsSet.ICON_UNDEFINED;
+        }
+
+        @Override
+        public String getLabel() {
+            return mLabel;
+        }
 
         @Override
         ExpectedKeyVisual toUpperCase(final Locale locale) {
@@ -114,27 +143,34 @@ abstract class ExpectedKeyVisual {
         }
 
         @Override
-        boolean equalsTo(final String text) {
+        boolean hasSameKeyVisual(final String text) {
             return mLabel.equals(text);
         }
 
         @Override
-        boolean equalsTo(final Key key) {
-            return mLabel.equals(key.getLabel());
+        boolean hasSameKeyVisual(final Key key) {
+            // If the actual key has a label as its visual, an icon has to be undefined.
+            // See {@link KeyboardView#onDrawKeyTopVisuals(Key,Canvas,Paint,KeyDrawParams).
+            return mLabel.equals(key.getLabel())
+                    && key.getIconId() == KeyboardIconsSet.ICON_UNDEFINED;
         }
 
         @Override
-        boolean equalsTo(final MoreKeySpec moreKeySpec) {
-            return mLabel.equals(moreKeySpec.mLabel);
+        boolean hasSameKeyVisual(final MoreKeySpec moreKeySpec) {
+            // If the actual more key has a label as its visual, an icon has to be undefined.
+            // See {@link KeySpecParser#getIconId(String)} and
+            // {@link KeySpecParser#getLabel(String)}.
+            return mLabel.equals(moreKeySpec.mLabel)
+                    && moreKeySpec.mIconId == KeyboardIconsSet.ICON_UNDEFINED;
         }
 
         @Override
-        boolean equalsTo(final ExpectedKeyOutput output) {
-            return output.equalsTo(mLabel);
+        boolean hasSameKeyVisual(final ExpectedKeyOutput output) {
+            return output.hasSameKeyOutput(mLabel);
         }
 
         @Override
-        boolean equalsTo(final ExpectedKeyVisual visual) {
+        boolean hasSameKeyVisual(final ExpectedKeyVisual visual) {
             return (visual instanceof Label) && mLabel.equals(((Label)visual).mLabel);
         }
 
