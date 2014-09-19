@@ -1488,19 +1488,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final boolean isEmptyApplicationSpecifiedCompletions =
                 currentSettingsValues.isApplicationSpecifiedCompletionsOn()
                 && suggestedWords.isEmpty();
-        final boolean noSuggestionsToShow = (SuggestedWords.EMPTY == suggestedWords)
+        final boolean noSuggestionsFromDictionaries = (SuggestedWords.EMPTY == suggestedWords)
                 || suggestedWords.isPunctuationSuggestions()
                 || isEmptyApplicationSpecifiedCompletions;
-        if (shouldShowImportantNotice && noSuggestionsToShow) {
+        final boolean isBeginningOfSentencePrediction = (suggestedWords.mInputStyle
+                == SuggestedWords.INPUT_STYLE_BEGINNING_OF_SENTENCE_PREDICTION);
+        final boolean noSuggestionsToOverrideImportantNotice = noSuggestionsFromDictionaries
+                || isBeginningOfSentencePrediction;
+        if (shouldShowImportantNotice && noSuggestionsToOverrideImportantNotice) {
             if (mSuggestionStripView.maybeShowImportantNoticeTitle()) {
                 return;
             }
         }
 
         if (currentSettingsValues.isSuggestionsEnabledPerUserSettings()
-                // We should clear suggestions if there is no suggestion to show.
-                || noSuggestionsToShow
-                || currentSettingsValues.isApplicationSpecifiedCompletionsOn()) {
+                || currentSettingsValues.isApplicationSpecifiedCompletionsOn()
+                // We should clear the contextual strip if there is no suggestion from dictionaries.
+                || noSuggestionsFromDictionaries) {
             mSuggestionStripView.setSuggestions(suggestedWords,
                     SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
         }
