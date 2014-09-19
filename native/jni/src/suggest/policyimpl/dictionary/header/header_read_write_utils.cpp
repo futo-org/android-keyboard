@@ -18,6 +18,7 @@
 
 #include <cctype>
 #include <cstdio>
+#include <memory>
 #include <vector>
 
 #include "defines.h"
@@ -34,12 +35,13 @@ namespace latinime {
 const int HeaderReadWriteUtils::LARGEST_INT_DIGIT_COUNT = 11;
 
 const int HeaderReadWriteUtils::MAX_ATTRIBUTE_KEY_LENGTH = 256;
-const int HeaderReadWriteUtils::MAX_ATTRIBUTE_VALUE_LENGTH = 256;
+const int HeaderReadWriteUtils::MAX_ATTRIBUTE_VALUE_LENGTH = 2048;
 
 const int HeaderReadWriteUtils::HEADER_MAGIC_NUMBER_SIZE = 4;
 const int HeaderReadWriteUtils::HEADER_DICTIONARY_VERSION_SIZE = 2;
 const int HeaderReadWriteUtils::HEADER_FLAG_SIZE = 2;
 const int HeaderReadWriteUtils::HEADER_SIZE_FIELD_SIZE = 4;
+const char *const HeaderReadWriteUtils::CODE_POINT_TABLE_KEY = "codePointTable";
 
 const HeaderReadWriteUtils::DictionaryFlags HeaderReadWriteUtils::NO_FLAGS = 0;
 
@@ -73,18 +75,30 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
         return;
     }
     int keyBuffer[MAX_ATTRIBUTE_KEY_LENGTH];
-    int valueBuffer[MAX_ATTRIBUTE_VALUE_LENGTH];
+    std::unique_ptr<int[]> valueBuffer(new int[MAX_ATTRIBUTE_VALUE_LENGTH]);
     while (pos < headerSize) {
+        // The values in the header don't use the code point table for their encoding.
         const int keyLength = ByteArrayUtils::readStringAndAdvancePosition(dictBuf,
-                MAX_ATTRIBUTE_KEY_LENGTH, keyBuffer, &pos);
+                MAX_ATTRIBUTE_KEY_LENGTH, nullptr /* codePointTable */, keyBuffer, &pos);
         std::vector<int> key;
         key.insert(key.end(), keyBuffer, keyBuffer + keyLength);
         const int valueLength = ByteArrayUtils::readStringAndAdvancePosition(dictBuf,
-                MAX_ATTRIBUTE_VALUE_LENGTH, valueBuffer, &pos);
+                MAX_ATTRIBUTE_VALUE_LENGTH, nullptr /* codePointTable */, valueBuffer.get(), &pos);
         std::vector<int> value;
-        value.insert(value.end(), valueBuffer, valueBuffer + valueLength);
+        value.insert(value.end(), valueBuffer.get(), valueBuffer.get() + valueLength);
         headerAttributes->insert(AttributeMap::value_type(key, value));
     }
+}
+
+/* static */ const int *HeaderReadWriteUtils::readCodePointTable(
+        AttributeMap *const headerAttributes) {
+    AttributeMap::key_type keyVector;
+    insertCharactersIntoVector(CODE_POINT_TABLE_KEY, &keyVector);
+    AttributeMap::const_iterator it = headerAttributes->find(keyVector);
+    if (it == headerAttributes->end()) {
+        return nullptr;
+    }
+    return it->second.data();
 }
 
 /* static */ bool HeaderReadWriteUtils::writeDictionaryVersion(
@@ -96,7 +110,8 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
     }
     switch (version) {
         case FormatUtils::VERSION_2:
-            // Version 2 dictionary writing is not supported.
+        case FormatUtils::VERSION_201:
+            // Version 2 or 201 dictionary writing is not supported.
             return false;
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:

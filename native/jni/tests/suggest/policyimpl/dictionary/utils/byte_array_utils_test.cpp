@@ -23,6 +23,19 @@
 namespace latinime {
 namespace {
 
+TEST(ByteArrayUtilsTest, TestReadCodePointTable) {
+    const int codePointTable[] = { 0x6f, 0x6b };
+    const uint8_t buffer[] = { 0x20u, 0x21u, 0x00u, 0x01u, 0x00u };
+    int pos = 0;
+    // Expect the first entry of codePointTable
+    EXPECT_EQ(0x6f, ByteArrayUtils::readCodePointAndAdvancePosition(buffer, codePointTable, &pos));
+    // Expect the second entry of codePointTable
+    EXPECT_EQ(0x6b, ByteArrayUtils::readCodePointAndAdvancePosition(buffer, codePointTable, &pos));
+    // Expect the original code point from buffer[2] to buffer[4], 0x100
+    // It isn't picked from the codePointTable, since it exceeds the range of the codePointTable.
+    EXPECT_EQ(0x100, ByteArrayUtils::readCodePointAndAdvancePosition(buffer, codePointTable, &pos));
+}
+
 TEST(ByteArrayUtilsTest, TestReadInt) {
     const uint8_t buffer[] = { 0x1u, 0x8Au, 0x0u, 0xAAu };
 
@@ -67,7 +80,7 @@ TEST(ByteArrayUtilsTest, TestReadCodePoint) {
 
     int pos = 0;
     int codePointArray[3];
-    EXPECT_EQ(3, ByteArrayUtils::readStringAndAdvancePosition(buffer, MAX_WORD_LENGTH,
+    EXPECT_EQ(3, ByteArrayUtils::readStringAndAdvancePosition(buffer, MAX_WORD_LENGTH, nullptr,
             codePointArray, &pos));
     EXPECT_EQ(0x10FF00, codePointArray[0]);
     EXPECT_EQ(0x20, codePointArray[1]);

@@ -114,7 +114,8 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
             mmappedBuffer->getReadOnlyByteArrayView());
     switch (formatVersion) {
         case FormatUtils::VERSION_2:
-            AKLOGE("Given path is a directory but the format is version 2. path: %s", path);
+        case FormatUtils::VERSION_201:
+            AKLOGE("Given path is a directory but the format is version 2 or 201. path: %s", path);
             break;
         case FormatUtils::VERSION_4: {
             return newPolicyForV4Dict<backward::v402::Ver4DictConstants,
@@ -175,6 +176,7 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
     }
     switch (FormatUtils::detectFormatVersion(mmappedBuffer->getReadOnlyByteArrayView())) {
         case FormatUtils::VERSION_2:
+        case FormatUtils::VERSION_201:
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new PatriciaTriePolicy(std::move(mmappedBuffer)));
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:

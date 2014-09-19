@@ -46,6 +46,9 @@ class HeaderReadWriteUtils {
     static void fetchAllHeaderAttributes(const uint8_t *const dictBuf,
             DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes);
 
+    static const int *readCodePointTable(
+            DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes);
+
     static bool writeDictionaryVersion(BufferWithExtendableBuffer *const buffer,
             const FormatUtils::FORMAT_VERSION version, int *const writingPos);
 
@@ -100,6 +103,8 @@ class HeaderReadWriteUtils {
     static const int HEADER_DICTIONARY_VERSION_SIZE;
     static const int HEADER_FLAG_SIZE;
     static const int HEADER_SIZE_FIELD_SIZE;
+
+    static const char *const CODE_POINT_TABLE_KEY;
 
     // Value for the "flags" field. It's unused at the moment.
     static const DictionaryFlags NO_FLAGS;

@@ -34,15 +34,17 @@ class PatriciaTrieReadingUtils {
 
     static NodeFlags getFlagsAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
-    static int getCodePointAndAdvancePosition(const uint8_t *const buffer, int *const pos);
+    static int getCodePointAndAdvancePosition(const uint8_t *const buffer,
+            const int *const codePointTable, int *const pos);
 
     // Returns the number of read characters.
     static int getCharsAndAdvancePosition(const uint8_t *const buffer, const NodeFlags flags,
-            const int maxLength, int *const outBuffer, int *const pos);
+            const int maxLength, const int *const codePointTable, int *const outBuffer,
+            int *const pos);
 
     // Returns the number of skipped characters.
     static int skipCharacters(const uint8_t *const buffer, const NodeFlags flags,
-            const int maxLength, int *const pos);
+            const int maxLength, const int *const codePointTable, int *const pos);
 
     static int readProbabilityAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
@@ -106,9 +108,10 @@ class PatriciaTrieReadingUtils {
     static void readPtNodeInfo(const uint8_t *const dictBuf, const int ptNodePos,
             const DictionaryShortcutsStructurePolicy *const shortcutPolicy,
             const DictionaryBigramsStructurePolicy *const bigramPolicy,
-            NodeFlags *const outFlags, int *const outCodePointCount, int *const outCodePoint,
-            int *const outProbability, int *const outChildrenPos, int *const outShortcutPos,
-            int *const outBigramPos, int *const outSiblingPos);
+            const int *const codePointTable, NodeFlags *const outFlags,
+            int *const outCodePointCount, int *const outCodePoint, int *const outProbability,
+            int *const outChildrenPos, int *const outShortcutPos, int *const outBigramPos,
+            int *const outSiblingPos);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTrieReadingUtils);

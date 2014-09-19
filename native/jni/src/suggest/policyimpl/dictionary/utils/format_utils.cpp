@@ -29,6 +29,8 @@ const size_t FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
     switch (formatVersion) {
         case VERSION_2:
             return VERSION_2;
+        case VERSION_201:
+            return VERSION_201;
         case VERSION_4_ONLY_FOR_TESTING:
             return VERSION_4_ONLY_FOR_TESTING;
         case VERSION_4:
