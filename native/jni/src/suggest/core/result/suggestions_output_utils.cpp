@@ -34,7 +34,8 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 
 /* static */ void SuggestionsOutputUtils::outputSuggestions(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
-        const float languageWeight, SuggestionResults *const outSuggestionResults) {
+        const float weightOfLangModelVsSpatialModel,
+        SuggestionResults *const outSuggestionResults) {
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
 #else
@@ -44,12 +45,15 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     for (int index = terminalSize - 1; index >= 0; --index) {
         traverseSession->getDicTraverseCache()->popTerminal(&terminals[index]);
     }
-    // Compute a language weight when an invalid language weight is passed.
-    // NOT_A_LANGUAGE_WEIGHT (-1) is assumed as an invalid language weight.
-    const float languageWeightToOutputSuggestions = (languageWeight < 0.0f) ?
-            scoringPolicy->getAdjustedLanguageWeight(
-                    traverseSession, terminals.data(), terminalSize) : languageWeight;
-    outSuggestionResults->setLanguageWeight(languageWeightToOutputSuggestions);
+    // Compute a weight of language model when an invalid weight is passed.
+    // NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL (-1) is taken as an invalid value.
+    const float weightOfLangModelVsSpatialModelToOutputSuggestions =
+            (weightOfLangModelVsSpatialModel < 0.0f)
+            ? scoringPolicy->getAdjustedWeightOfLangModelVsSpatialModel(traverseSession,
+                    terminals.data(), terminalSize)
+            : weightOfLangModelVsSpatialModel;
+    outSuggestionResults->setWeightOfLangModelVsSpatialModel(
+            weightOfLangModelVsSpatialModelToOutputSuggestions);
     // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
     // a long multiple words suggestion.
     // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
@@ -65,16 +69,16 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // Output suggestion results here
     for (auto &terminalDicNode : terminals) {
         outputSuggestionsOfDicNode(scoringPolicy, traverseSession, &terminalDicNode,
-                languageWeightToOutputSuggestions, boostExactMatches, forceCommitMultiWords,
-                outputSecondWordFirstLetterInputIndex, outSuggestionResults);
+                weightOfLangModelVsSpatialModelToOutputSuggestions, boostExactMatches,
+                forceCommitMultiWords, outputSecondWordFirstLetterInputIndex, outSuggestionResults);
     }
-    scoringPolicy->getMostProbableString(traverseSession, languageWeightToOutputSuggestions,
-            outSuggestionResults);
+    scoringPolicy->getMostProbableString(traverseSession,
+            weightOfLangModelVsSpatialModelToOutputSuggestions, outSuggestionResults);
 }
 
 /* static */ void SuggestionsOutputUtils::outputSuggestionsOfDicNode(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
-        const DicNode *const terminalDicNode, const float languageWeight,
+        const DicNode *const terminalDicNode, const float weightOfLangModelVsSpatialModel,
         const bool boostExactMatches, const bool forceCommitMultiWords,
         const bool outputSecondWordFirstLetterInputIndex,
         SuggestionResults *const outSuggestionResults) {
@@ -83,8 +87,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     }
     const float doubleLetterCost =
             scoringPolicy->getDoubleLetterDemotionDistanceCost(terminalDicNode);
-    const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
-            + doubleLetterCost;
+    const float compoundDistance =
+            terminalDicNode->getCompoundDistance(weightOfLangModelVsSpatialModel)
+                    + doubleLetterCost;
     const WordAttributes wordAttributes = traverseSession->getDictionaryStructurePolicy()
             ->getWordAttributesInContext(terminalDicNode->getPrevWordIds(),
                     terminalDicNode->getWordId(), nullptr /* multiBigramMap */);

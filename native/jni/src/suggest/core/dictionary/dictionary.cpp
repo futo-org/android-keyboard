@@ -47,14 +47,14 @@ Dictionary::Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::Structu
 void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
         int inputSize, const PrevWordsInfo *const prevWordsInfo,
-        const SuggestOptions *const suggestOptions, const float languageWeight,
+        const SuggestOptions *const suggestOptions, const float weightOfLangModelVsSpatialModel,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
     traverseSession->init(this, prevWordsInfo, suggestOptions);
     const auto &suggest = suggestOptions->isGesture() ? mGestureSuggest : mTypingSuggest;
     suggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
             ycoordinates, times, pointerIds, inputCodePoints, inputSize,
-            languageWeight, outSuggestionResults);
+            weightOfLangModelVsSpatialModel, outSuggestionResults);
     if (DEBUG_DICT) {
         outSuggestionResults->dumpSuggestions();
     }

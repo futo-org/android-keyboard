@@ -33,7 +33,7 @@ class SuggestionsOutputUtils {
      * Outputs the final list of suggestions (i.e., terminal nodes).
      */
     static void outputSuggestions(const Scoring *const scoringPolicy,
-            DicTraverseSession *traverseSession, const float languageWeight,
+            DicTraverseSession *traverseSession, const float weightOfLangModelVsSpatialModel,
             SuggestionResults *const outSuggestionResults);
 
  private:
@@ -44,7 +44,7 @@ class SuggestionsOutputUtils {
 
     static void outputSuggestionsOfDicNode(const Scoring *const scoringPolicy,
             DicTraverseSession *traverseSession, const DicNode *const terminalDicNode,
-            const float languageWeight, const bool boostExactMatches,
+            const float weightOfLangModelVsSpatialModel, const bool boostExactMatches,
             const bool forceCommitMultiWords, const bool outputSecondWordFirstLetterInputIndex,
             SuggestionResults *const outSuggestionResults);
     static void outputShortcuts(BinaryDictionaryShortcutIterator *const shortcutIt,

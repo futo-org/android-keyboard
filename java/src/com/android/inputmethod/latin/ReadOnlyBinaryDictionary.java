@@ -53,11 +53,13 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
-            final int sessionId, final float[] inOutLanguageWeight) {
+            final int sessionId, final float weightForLocale,
+            final float[] inOutWeightOfLangModelVsSpatialModel) {
         if (mLock.readLock().tryLock()) {
             try {
                 return mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
-                        settingsValuesForSuggestion, sessionId, inOutLanguageWeight);
+                        settingsValuesForSuggestion, sessionId, weightForLocale,
+                        inOutWeightOfLangModelVsSpatialModel);
             } finally {
                 mLock.readLock().unlock();
             }

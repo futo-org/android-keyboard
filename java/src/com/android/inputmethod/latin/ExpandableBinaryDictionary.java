@@ -435,7 +435,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
-            final float[] inOutLanguageWeight) {
+            final float weightForLocale, final float[] inOutWeightOfLangModelVsSpatialModel) {
         reloadDictionaryIfRequired();
         boolean lockAcquired = false;
         try {
@@ -447,7 +447,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =
                         mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
-                                settingsValuesForSuggestion, sessionId, inOutLanguageWeight);
+                                settingsValuesForSuggestion, sessionId, weightForLocale,
+                                inOutWeightOfLangModelVsSpatialModel);
                 if (mBinaryDictionary.isCorrupted()) {
                     Log.i(TAG, "Dictionary (" + mDictName +") is corrupted. "
                             + "Remove and regenerate it.");
