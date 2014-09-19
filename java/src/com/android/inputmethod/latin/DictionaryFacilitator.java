@@ -710,6 +710,7 @@ public class DictionaryFacilitator {
                 getLocale(), personalizationDataChunk, spacingAndPunctuations, callback);
     }
 
+    @UsedForTesting
     public void addPhraseToContextualDictionary(final String[] phrase, final int probability,
             final int bigramProbabilityForWords, final int bigramProbabilityForPhrases) {
         // TODO: we're inserting the phrase into the dictionary for the active language. Rethink

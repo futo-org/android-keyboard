@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.utils;
 
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.PrevWordsInfo;
@@ -58,12 +59,14 @@ public final class LanguageModelParam {
     public final int mTimestamp;
 
     // Constructor for unigram. TODO: support shortcuts
+    @UsedForTesting
     public LanguageModelParam(final CharSequence word, final int unigramProbability,
             final int timestamp) {
         this(null /* word0 */, word, unigramProbability, Dictionary.NOT_A_PROBABILITY, timestamp);
     }
 
     // Constructor for unigram and bigram.
+    @UsedForTesting
     public LanguageModelParam(final CharSequence word0, final CharSequence word1,
             final int unigramProbability, final int bigramProbability,
             final int timestamp) {
