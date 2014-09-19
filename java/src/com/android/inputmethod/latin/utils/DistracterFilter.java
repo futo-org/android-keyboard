@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.PrevWordsInfo;
 
 public interface DistracterFilter {
@@ -36,6 +37,7 @@ public interface DistracterFilter {
     public boolean isDistracterToWordsInDictionaries(final PrevWordsInfo prevWordsInfo,
             final String testedWord, final Locale locale);
 
+    @UsedForTesting
     public int getWordHandlingType(final PrevWordsInfo prevWordsInfo, final String testedWord,
             final Locale locale);
 

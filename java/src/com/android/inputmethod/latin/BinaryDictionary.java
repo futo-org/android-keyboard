@@ -483,6 +483,7 @@ public final class BinaryDictionary extends Dictionary {
         return true;
     }
 
+    @UsedForTesting
     public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
         if (!isValidDictionary()) return;
         int processedParamCount = 0;
