@@ -29,13 +29,15 @@ namespace latinime {
 class SuggestionResults {
  public:
     explicit SuggestionResults(const int maxSuggestionCount)
-            : mMaxSuggestionCount(maxSuggestionCount), mLanguageWeight(NOT_A_LANGUAGE_WEIGHT),
+            : mMaxSuggestionCount(maxSuggestionCount),
+              mWeightOfLangModelVsSpatialModel(NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL),
               mSuggestedWords() {}
 
     // Returns suggestion count.
     void outputSuggestions(JNIEnv *env, jintArray outSuggestionCount, jintArray outCodePointsArray,
             jintArray outScoresArray, jintArray outSpaceIndicesArray, jintArray outTypesArray,
-            jintArray outAutoCommitFirstWordConfidenceArray, jfloatArray outLanguageWeight);
+            jintArray outAutoCommitFirstWordConfidenceArray,
+            jfloatArray outWeightOfLangModelVsSpatialModel);
     void addPrediction(const int *const codePoints, const int codePointCount, const int score);
     void addSuggestion(const int *const codePoints, const int codePointCount,
             const int score, const int type, const int indexToPartialCommit,
@@ -43,8 +45,8 @@ class SuggestionResults {
     void getSortedScores(int *const outScores) const;
     void dumpSuggestions() const;
 
-    void setLanguageWeight(const float languageWeight) {
-        mLanguageWeight = languageWeight;
+    void setWeightOfLangModelVsSpatialModel(const float weightOfLangModelVsSpatialModel) {
+        mWeightOfLangModelVsSpatialModel = weightOfLangModelVsSpatialModel;
     }
 
     int getSuggestionCount() const {
@@ -55,7 +57,7 @@ class SuggestionResults {
     DISALLOW_IMPLICIT_CONSTRUCTORS(SuggestionResults);
 
     const int mMaxSuggestionCount;
-    float mLanguageWeight;
+    float mWeightOfLangModelVsSpatialModel;
     std::priority_queue<
             SuggestedWord, std::vector<SuggestedWord>, SuggestedWord::Comparator> mSuggestedWords;
 };

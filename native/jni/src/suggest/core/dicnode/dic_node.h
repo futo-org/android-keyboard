@@ -295,8 +295,9 @@ class DicNode {
     }
 
     // Used to prune nodes
-    float getCompoundDistance(const float languageWeight) const {
-        return mDicNodeState.mDicNodeStateScoring.getCompoundDistance(languageWeight);
+    float getCompoundDistance(const float weightOfLangModelVsSpatialModel) const {
+        return mDicNodeState.mDicNodeStateScoring.getCompoundDistance(
+                weightOfLangModelVsSpatialModel);
     }
 
     AK_FORCE_INLINE const int *getOutputWordBuf() const {

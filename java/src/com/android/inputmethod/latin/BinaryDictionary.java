@@ -188,7 +188,8 @@ public final class BinaryDictionary extends Dictionary {
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
             int prevWordCount, int[] outputSuggestionCount, int[] outputCodePoints,
             int[] outputScores, int[] outputIndices, int[] outputTypes,
-            int[] outputAutoCommitFirstWordConfidence, float[] inOutLanguageWeight);
+            int[] outputAutoCommitFirstWordConfidence,
+            float[] inOutWeightOfLangModelVsSpatialModel);
     private static native boolean addUnigramEntryNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isBeginningOfSentence,
             boolean isNotAWord, boolean isBlacklisted, int timestamp);
@@ -256,7 +257,8 @@ public final class BinaryDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
-            final int sessionId, final float[] inOutLanguageWeight) {
+            final int sessionId, final float weightForLocale,
+            final float[] inOutWeightOfLangModelVsSpatialModel) {
         if (!isValidDictionary()) {
             return null;
         }
@@ -284,10 +286,12 @@ public final class BinaryDictionary extends Dictionary {
                 settingsValuesForSuggestion.mSpaceAwareGestureEnabled);
         session.mNativeSuggestOptions.setAdditionalFeaturesOptions(
                 settingsValuesForSuggestion.mAdditionalFeaturesSettingValues);
-        if (inOutLanguageWeight != null) {
-            session.mInputOutputLanguageWeight[0] = inOutLanguageWeight[0];
+        if (inOutWeightOfLangModelVsSpatialModel != null) {
+            session.mInputOutputWeightOfLangModelVsSpatialModel[0] =
+                    inOutWeightOfLangModelVsSpatialModel[0];
         } else {
-            session.mInputOutputLanguageWeight[0] = Dictionary.NOT_A_LANGUAGE_WEIGHT;
+            session.mInputOutputWeightOfLangModelVsSpatialModel[0] =
+                    Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL;
         }
         // TOOD: Pass multiple previous words information for n-gram.
         getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
@@ -298,9 +302,11 @@ public final class BinaryDictionary extends Dictionary {
                 session.mIsBeginningOfSentenceArray, prevWordsInfo.getPrevWordCount(),
                 session.mOutputSuggestionCount, session.mOutputCodePoints, session.mOutputScores,
                 session.mSpaceIndices, session.mOutputTypes,
-                session.mOutputAutoCommitFirstWordConfidence, session.mInputOutputLanguageWeight);
-        if (inOutLanguageWeight != null) {
-            inOutLanguageWeight[0] = session.mInputOutputLanguageWeight[0];
+                session.mOutputAutoCommitFirstWordConfidence,
+                session.mInputOutputWeightOfLangModelVsSpatialModel);
+        if (inOutWeightOfLangModelVsSpatialModel != null) {
+            inOutWeightOfLangModelVsSpatialModel[0] =
+                    session.mInputOutputWeightOfLangModelVsSpatialModel[0];
         }
         final int count = session.mOutputSuggestionCount[0];
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
@@ -314,7 +320,8 @@ public final class BinaryDictionary extends Dictionary {
             if (len > 0) {
                 suggestions.add(new SuggestedWordInfo(
                         new String(session.mOutputCodePoints, start, len),
-                        session.mOutputScores[j], session.mOutputTypes[j], this /* sourceDict */,
+                        (int)(session.mOutputScores[j] * weightForLocale), session.mOutputTypes[j],
+                        this /* sourceDict */,
                         session.mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
                         session.mOutputAutoCommitFirstWordConfidence[0]));
             }

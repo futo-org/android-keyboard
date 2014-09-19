@@ -49,7 +49,8 @@ class Suggest : public SuggestInterface {
     AK_FORCE_INLINE virtual ~Suggest() {}
     void getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
             int *times, int *pointerIds, int *inputCodePoints, int inputSize,
-            const float languageWeight, SuggestionResults *const outSuggestionResults) const;
+            const float weightOfLangModelVsSpatialModel,
+            SuggestionResults *const outSuggestionResults) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Suggest);

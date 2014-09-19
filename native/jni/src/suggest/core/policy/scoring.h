@@ -32,9 +32,11 @@ class Scoring {
             const ErrorTypeUtils::ErrorType containedErrorTypes, const bool forceCommit,
             const bool boostExactMatches) const = 0;
     virtual void getMostProbableString(const DicTraverseSession *const traverseSession,
-            const float languageWeight, SuggestionResults *const outSuggestionResults) const = 0;
-    virtual float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,
-            DicNode *const terminals, const int size) const = 0;
+            const float weightOfLangModelVsSpatialModel,
+            SuggestionResults *const outSuggestionResults) const = 0;
+    virtual float getAdjustedWeightOfLangModelVsSpatialModel(
+            DicTraverseSession *const traverseSession, DicNode *const terminals,
+            const int size) const = 0;
     virtual float getDoubleLetterDemotionDistanceCost(
             const DicNode *const terminalDicNode) const = 0;
     virtual bool autoCorrectsToMultiWordSuggestionIfTop() const = 0;

@@ -23,7 +23,7 @@ namespace latinime {
 void SuggestionResults::outputSuggestions(JNIEnv *env, jintArray outSuggestionCount,
         jintArray outputCodePointsArray, jintArray outScoresArray, jintArray outSpaceIndicesArray,
         jintArray outTypesArray, jintArray outAutoCommitFirstWordConfidenceArray,
-        jfloatArray outLanguageWeight) {
+        jfloatArray outWeightOfLangModelVsSpatialModel) {
     int outputIndex = 0;
     while (!mSuggestedWords.empty()) {
         const SuggestedWord &suggestedWord = mSuggestedWords.top();
@@ -44,7 +44,8 @@ void SuggestionResults::outputSuggestions(JNIEnv *env, jintArray outSuggestionCo
         mSuggestedWords.pop();
     }
     JniDataUtils::putIntToArray(env, outSuggestionCount, 0 /* index */, outputIndex);
-    JniDataUtils::putFloatToArray(env, outLanguageWeight, 0 /* index */, mLanguageWeight);
+    JniDataUtils::putFloatToArray(env, outWeightOfLangModelVsSpatialModel, 0 /* index */,
+            mWeightOfLangModelVsSpatialModel);
 }
 
 void SuggestionResults::addPrediction(const int *const codePoints, const int codePointCount,
@@ -89,7 +90,7 @@ void SuggestionResults::getSortedScores(int *const outScores) const {
 }
 
 void SuggestionResults::dumpSuggestions() const {
-    AKLOGE("language weight: %f", mLanguageWeight);
+    AKLOGE("weight of language model vs spatial model: %f", mWeightOfLangModelVsSpatialModel);
     std::vector<SuggestedWord> suggestedWords;
     auto copyOfSuggestedWords = mSuggestedWords;
     while (!copyOfSuggestedWords.empty()) {

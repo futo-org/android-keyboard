@@ -28,7 +28,8 @@ class SuggestInterface {
  public:
     virtual void getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs,
             int *inputYs, int *times, int *pointerIds, int *inputCodePoints, int inputSize,
-            const float languageWeight, SuggestionResults *const suggestionResults) const = 0;
+            const float weightOfLangModelVsSpatialModel,
+            SuggestionResults *const suggestionResults) const = 0;
     SuggestInterface() {}
     virtual ~SuggestInterface() {}
  private:

@@ -301,7 +301,7 @@ static inline void prof_out(void) {
 #define NOT_A_DICT_POS (S_INT_MIN)
 #define NOT_A_WORD_ID (S_INT_MIN)
 #define NOT_A_TIMESTAMP (-1)
-#define NOT_A_LANGUAGE_WEIGHT (-1.0f)
+#define NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL (-1.0f)
 
 // A special value to mean the first word confidence makes no sense in this case,
 // e.g. this is not a multi-word suggestion.
