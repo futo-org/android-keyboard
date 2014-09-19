@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.AssetFileAddress;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.Constants;
@@ -382,6 +383,7 @@ public class DictionaryInfoUtils {
         return dictList;
     }
 
+    @UsedForTesting
     public static boolean looksValidForDictionaryInsertion(final CharSequence text,
             final SpacingAndPunctuations spacingAndPunctuations) {
         if (TextUtils.isEmpty(text)) return false;
