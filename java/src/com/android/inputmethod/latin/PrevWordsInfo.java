@@ -132,7 +132,8 @@ public class PrevWordsInfo {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(mPrevWordsInfo);
+        // Just for having equals().
+        return mPrevWordsInfo[0].hashCode();
     }
 
     @Override
@@ -140,7 +141,23 @@ public class PrevWordsInfo {
         if (this == o) return true;
         if (!(o instanceof PrevWordsInfo)) return false;
         final PrevWordsInfo prevWordsInfo = (PrevWordsInfo)o;
-        return Arrays.equals(mPrevWordsInfo, prevWordsInfo.mPrevWordsInfo);
+
+        final int minLength = Math.min(mPrevWordsInfo.length, prevWordsInfo.mPrevWordsInfo.length);
+        for (int i = 0; i < minLength; i++) {
+            if (!mPrevWordsInfo[i].equals(prevWordsInfo.mPrevWordsInfo[i])) {
+                return false;
+            }
+        }
+        final WordInfo[] longerWordsInfo =
+                (mPrevWordsInfo.length > prevWordsInfo.mPrevWordsInfo.length) ?
+                        mPrevWordsInfo : prevWordsInfo.mPrevWordsInfo;
+        for (int i = minLength; i < longerWordsInfo.length; i++) {
+            if (longerWordsInfo[i] != null
+                    && !WordInfo.EMPTY_WORD_INFO.equals(longerWordsInfo[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -151,7 +168,11 @@ public class PrevWordsInfo {
             builder.append("PrevWord[");
             builder.append(i);
             builder.append("]: ");
-            if (wordInfo == null || !wordInfo.isValid()) {
+            if (wordInfo == null) {
+                builder.append("null. ");
+                continue;
+            }
+            if (!wordInfo.isValid()) {
                 builder.append("Empty. ");
                 continue;
             }
