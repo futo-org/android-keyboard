@@ -54,15 +54,13 @@ public class DownloadManagerWrapper {
             if (null != mDownloadManager) {
                 mDownloadManager.remove(ids);
             }
+        } catch (IllegalArgumentException e) {
+            // This is expected to happen on boot when the device is encrypted.
         } catch (SQLiteException e) {
             // We couldn't remove the file from DownloadManager. Apparently, the database can't
             // be opened. It may be a problem with file system corruption. In any case, there is
             // not much we can do apart from avoiding crashing.
             Log.e(TAG, "Can't remove files with ID " + ids + " from download manager", e);
-        } catch (IllegalArgumentException e) {
-            // Not sure how this can happen, but it could be another case where the provider
-            // is disabled. Or it could be a bug in older versions of the framework.
-            Log.e(TAG, "Can't find the content URL for DownloadManager?", e);
         }
     }
 
@@ -71,10 +69,10 @@ public class DownloadManagerWrapper {
             if (null != mDownloadManager) {
                 return mDownloadManager.openDownloadedFile(fileId);
             }
+        } catch (IllegalArgumentException e) {
+            // This is expected to happen on boot when the device is encrypted.
         } catch (SQLiteException e) {
             Log.e(TAG, "Can't open downloaded file with ID " + fileId, e);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Can't find the content URL for DownloadManager?", e);
         }
         // We come here if mDownloadManager is null or if an exception was thrown.
         throw new FileNotFoundException();
@@ -85,10 +83,10 @@ public class DownloadManagerWrapper {
             if (null != mDownloadManager) {
                 return mDownloadManager.query(query);
             }
+        } catch (IllegalArgumentException e) {
+            // This is expected to happen on boot when the device is encrypted.
         } catch (SQLiteException e) {
             Log.e(TAG, "Can't query the download manager", e);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Can't find the content URL for DownloadManager?", e);
         }
         // We come here if mDownloadManager is null or if an exception was thrown.
         return null;
@@ -99,10 +97,10 @@ public class DownloadManagerWrapper {
             if (null != mDownloadManager) {
                 return mDownloadManager.enqueue(request);
             }
+        } catch (IllegalArgumentException e) {
+            // This is expected to happen on boot when the device is encrypted.
         } catch (SQLiteException e) {
             Log.e(TAG, "Can't enqueue a request with the download manager", e);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Can't find the content URL for DownloadManager?", e);
         }
         return 0;
     }
