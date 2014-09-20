@@ -49,7 +49,7 @@ public class TextDecorator {
     private int mMode = MODE_MONITOR;
 
     private String mLastComposingText = null;
-    private RectF mIndicatorBoundsForLastComposingText = new RectF();
+    private boolean mHasRtlCharsInLastComposingText = false;
     private RectF mComposingTextBoundsForLastComposingText = new RectF();
 
     private boolean mIsFullScreenMode = false;
@@ -241,20 +241,8 @@ public class TextDecorator {
                 right = Math.max(characterBounds.right, right);
             }
             mLastComposingText = composingTextString;
+            mHasRtlCharsInLastComposingText = useRtlLayout;
             mComposingTextBoundsForLastComposingText.set(left, top, right, bottom);
-            // The height and width of the indicator is the same as the height of the composing
-            // text.
-            final float indicatorSize = bottom - top;
-            mIndicatorBoundsForLastComposingText.set(0.0f, 0.0f, indicatorSize, indicatorSize);
-            // The horizontal position of the indicator depends on the text direction.
-            final float indicatorTop = top;
-            final float indicatorLeft;
-            if (useRtlLayout) {
-                indicatorLeft = left - indicatorSize;
-            } else {
-                indicatorLeft = right;
-            }
-            mIndicatorBoundsForLastComposingText.offset(indicatorLeft, indicatorTop);
         }
 
         final int selectionStart = info.getSelectionStart();
@@ -295,8 +283,8 @@ public class TextDecorator {
             return;
         }
 
-        mUiOperator.layoutUi(matrix, mIndicatorBoundsForLastComposingText,
-                mComposingTextBoundsForLastComposingText);
+        mUiOperator.layoutUi(matrix, mComposingTextBoundsForLastComposingText,
+                mHasRtlCharsInLastComposingText);
     }
 
     private void onClickIndicator() {
@@ -374,7 +362,7 @@ public class TextDecorator {
         public void setOnClickListener(Runnable listener) {
         }
         @Override
-        public void layoutUi(Matrix matrix, RectF indicatorBounds, RectF composingTextBounds) {
+        public void layoutUi(Matrix matrix, RectF composingTextBounds, boolean useRtlLayout) {
         }
     };
 }

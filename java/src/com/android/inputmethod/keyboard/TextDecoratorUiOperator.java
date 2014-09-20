@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import android.graphics.Matrix;
-import android.graphics.PointF;
 import android.graphics.RectF;
 
 /**
@@ -45,9 +44,8 @@ public interface TextDecoratorUiOperator {
     /**
      * Called when the layout should be updated.
      * @param matrix The matrix that transforms the local coordinates into the screen coordinates.
-     * @param indicatorBounds The bounding box of the indicator, in local coordinates.
      * @param composingTextBounds The bounding box of the composing text, in local coordinates.
+     * @param useRtlLayout {@code true} if the indicator should be optimized for RTL layout.
      */
-    void layoutUi(final Matrix matrix, final RectF indicatorBounds,
-            final RectF composingTextBounds);
+    void layoutUi(final Matrix matrix, final RectF composingTextBounds, final boolean useRtlLayout);
 }
