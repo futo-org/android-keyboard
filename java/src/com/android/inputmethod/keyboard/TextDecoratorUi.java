@@ -26,6 +26,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.inputmethodservice.InputMethodService;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -50,6 +51,7 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
     private final PopupWindow mTouchEventWindow;
     private final View mTouchEventWindowClickListenerView;
     private final float mHitAreaMarginInPixels;
+    private final RectF mDisplayRect;
 
     /**
      * This constructor is designed to be called from {@link InputMethodService#setInputView(View)}.
@@ -64,6 +66,9 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
                 R.integer.text_decorator_hit_area_margin_in_dp);
         mHitAreaMarginInPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 hitAreaMarginInDP, resources.getDisplayMetrics());
+        final DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        mDisplayRect = new RectF(0.0f, 0.0f, displayMetrics.widthPixels,
+                displayMetrics.heightPixels);
 
         mLocalRootView = new RelativeLayout(context);
         mLocalRootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -111,17 +116,40 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
         mTouchEventWindow.dismiss();
     }
 
+    private static final RectF getIndicatorBoundsInScreenCoordinates(final Matrix matrix,
+            final RectF composingTextBounds, final boolean showAtLeftSide) {
+        final float indicatorSize = composingTextBounds.height();
+        final RectF indicatorBounds;
+        if (showAtLeftSide) {
+            indicatorBounds = new RectF(composingTextBounds.left - indicatorSize,
+                    composingTextBounds.top, composingTextBounds.left,
+                    composingTextBounds.top + indicatorSize);
+        } else {
+            indicatorBounds = new RectF(composingTextBounds.right, composingTextBounds.top,
+                    composingTextBounds.right + indicatorSize,
+                    composingTextBounds.top + indicatorSize);
+        }
+        matrix.mapRect(indicatorBounds);
+        return indicatorBounds;
+    }
+
     @Override
-    public void layoutUi(final Matrix matrix, final RectF indicatorBounds,
-            final RectF composingTextBounds) {
-        final RectF indicatorBoundsInScreenCoordinates = new RectF();
-        matrix.mapRect(indicatorBoundsInScreenCoordinates, indicatorBounds);
+    public void layoutUi(final Matrix matrix, final RectF composingTextBounds,
+            final boolean useRtlLayout) {
+        RectF indicatorBoundsInScreenCoordinates = getIndicatorBoundsInScreenCoordinates(matrix,
+                composingTextBounds, useRtlLayout /* showAtLeftSide */);
+        if (indicatorBoundsInScreenCoordinates.left < mDisplayRect.left ||
+                mDisplayRect.right < indicatorBoundsInScreenCoordinates.right) {
+            // The indicator is clipped by the screen. Show the indicator at the opposite side.
+            indicatorBoundsInScreenCoordinates = getIndicatorBoundsInScreenCoordinates(matrix,
+                    composingTextBounds, !useRtlLayout /* showAtLeftSide */);
+        }
+
         mAddToDictionaryIndicatorView.setBounds(indicatorBoundsInScreenCoordinates);
 
-        final RectF hitAreaBounds = new RectF(composingTextBounds);
-        hitAreaBounds.union(indicatorBounds);
         final RectF hitAreaBoundsInScreenCoordinates = new RectF();
-        matrix.mapRect(hitAreaBoundsInScreenCoordinates, hitAreaBounds);
+        matrix.mapRect(hitAreaBoundsInScreenCoordinates, composingTextBounds);
+        hitAreaBoundsInScreenCoordinates.union(indicatorBoundsInScreenCoordinates);
         hitAreaBoundsInScreenCoordinates.inset(-mHitAreaMarginInPixels, -mHitAreaMarginInPixels);
 
         final int[] originScreen = new int[2];
