@@ -26,12 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"Параметры ввода"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"Внешний вид"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Языковые параметры"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"Непрерывный ввод"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Настройки"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Вид и разметка"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Дополнительные языки"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Непрерывный ввод"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Исправление текста"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Дополнительные настройки"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"Тема"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Смена способов ввода"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавиша переключения языков также служит для смены способа ввода"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиша смены языка"</string>
@@ -74,9 +75,9 @@
     <string name="voice_input" msgid="3583258583521397548">"Кнопка голосового ввода"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Голосовой способ ввода не включен. Проверьте раздел настроек \"Язык и ввод\"."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Настройка способов ввода"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"Выберите язык"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Справка/отзыв"</string>
-    <string name="select_language" msgid="3693815588777926848">"Языки ввода"</string>
+    <string name="select_language" msgid="5709487854987078367">"Язык"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Нажмите, чтобы сохранить"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Нажмите, чтобы сохранить"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Доступен словарь"</string>
