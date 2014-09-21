@@ -104,7 +104,7 @@
     <string name="add_style" msgid="6163126614514489951">"शैली जोड़ें"</string>
     <string name="add" msgid="8299699805688017798">"जोड़ें"</string>
     <string name="remove" msgid="4486081658752944606">"निकालें"</string>
-    <string name="save" msgid="7646738597196767214">"सहेजें"</string>
+    <string name="save" msgid="7646738597196767214">"जोड़ें"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"भाषा"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"लेआउट"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"कस्‍टम इनपुट शैली का उपयोग करने से पहले सक्षम करना होगा. उसे सक्षम करना चाहते हैं?"</string>

@@ -27,7 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"ხმა კლავიშზე დაჭერისას"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"გადიდება ღილაკზე დაჭერისას"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"პარამეტრები"</string>
-    <string name="settings_screen_appearance" msgid="9153102634339912029">"იარსახე &amp; განლაგებები"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"იერსახე &amp; განლაგებები"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"მრავალენობრივი ვარიანტები"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ჟესტებით წერა"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"ტექსტის კორექცია"</string>

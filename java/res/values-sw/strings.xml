@@ -27,7 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Toa sauti unapobofya kitufe"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ibuka kitufe kinapobonyezwa"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Mapendeleo"</string>
-    <string name="settings_screen_appearance" msgid="9153102634339912029">"Muonekano na mipangilio"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Mwonekano na mipangilio"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"Chaguo za lugha nyingi"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Kuandika kwa Ishara"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Masahihisho ya maandishi"</string>
