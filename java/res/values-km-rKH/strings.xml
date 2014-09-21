@@ -27,12 +27,15 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"សំឡេង​នៅ​ពេល​ចុច​គ្រាប់ចុច"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"លេច​ឡើង​នៅ​​ពេល​ចុច​គ្រាប់​ចុច"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"ចំណូលចិត្ត"</string>
+    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
+    <skip />
     <string name="settings_screen_appearance" msgid="9153102634339912029">"រូបរាង &amp; ប្លង់"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"ជម្រើស​ច្រើន​ភាសា"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"កាយវិការ​បញ្ចូល"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"ការ​កែ​​អត្ថបទ"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"កម្រិត​ខ្ពស់"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"រូបរាង"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"បើក​ការ​បំបែក​ក្ដារចុច"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ប្ដូរ​ទៅ​​​វិធីសាស្ត្រ​បញ្ចូល​​​ផ្សេង​ទៀត"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"គ្រាប់ចុច​ប្ដូរ​ភាសា​តាម​វិធីសាស្ត្រ​បញ្ចូល​ផ្សេងទៀត"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"គ្រាប់​ចុច​ប្ដូរ​​ភាសា"</string>
@@ -82,6 +85,20 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"ប៉ះ​ទីនេះ​ដើម្បី​រក្សាទុក"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"មាន​វចនានុក្រម"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"រូបរាង​ក្ដារចុច"</string>
+    <!-- no translation found for switch_accounts (3321216593719006162) -->
+    <skip />
+    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
+    <skip />
+    <!-- no translation found for account_selected (2846876462199625974) -->
+    <skip />
+    <!-- no translation found for account_select_ok (9141195141763227797) -->
+    <skip />
+    <!-- no translation found for account_select_cancel (5181012062618504340) -->
+    <skip />
+    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
+    <skip />
+    <!-- no translation found for account_select_title (6279711684772922649) -->
+    <skip />
     <string name="subtype_en_GB" msgid="88170601942311355">"អង់គ្លេស (​អង់គ្លេស)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"អង់គ្លេស (សហរដ្ឋ​អាមេរិក)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"អេស្ប៉ាញ (សហរដ្ឋ​អាមេរិក​)"</string>

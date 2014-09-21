@@ -27,12 +27,14 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sound on keypress"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up on key press"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferences"</string>
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"Accounts &amp; privacy"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"Appearance &amp; layouts"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"Multilingual options"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Gesture Typing"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Text correction"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Advanced"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Theme"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"Enable split keyboard"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Switch to other input methods"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Language switch key also covers other input methods"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Language switch key"</string>
@@ -82,6 +84,13 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Touch here to save"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionary available"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Keyboard theme"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Change accounts"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"No accounts selected"</string>
+    <string name="account_selected" msgid="2846876462199625974">"Currently using <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"OK"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"Cancel"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"Sign out"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Select an account to use"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"English (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"English (US)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Spanish (US)"</string>

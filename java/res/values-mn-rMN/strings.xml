@@ -27,12 +27,14 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Товч дарахад дуу гаргах"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Товч дарахад попап гарна"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Тохируулга"</string>
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"Акаунт &amp; нууцлал"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"Харагдац &amp; байрлал"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"Олон хэлний сонголт"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Зангаагаар бичих"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Текст залруулалт"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Дэлгэрэнгүй"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Загвар"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"Хуваагдмал гарыг идэвхжүүлэх"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Оруулах өөр арга руу шилжүүлэх"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Хэл солих түлхүүрт өөр оруулах аргууд мөн багтсан байгаа"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Хэл солих товч"</string>
@@ -82,6 +84,13 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Хадгалахын тулд хүрнэ үү"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Толь бичиг байна"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Гарын загвар"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Акаунт сэлгэх"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"Акаунт сонгогдоогүй"</string>
+    <string name="account_selected" msgid="2846876462199625974">"Одоо <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>-г ашиглаж байна"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"ТИЙМ"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"Цуцлах"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"Гарах"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Ашиглах акаунтаа сонгоно уу"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англи (ИБ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англи (АНУ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Испани (АНУ)"</string>

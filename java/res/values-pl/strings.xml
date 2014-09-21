@@ -27,12 +27,15 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Dźwięk przy naciśnięciu"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Powiększ po naciśnięciu"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Ustawienia"</string>
+    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
+    <skip />
     <string name="settings_screen_appearance" msgid="9153102634339912029">"Wygląd i układy"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"Opcje obsługi wielu języków"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Pisanie gestami"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Korekta tekstu"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Zaawansowane"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Motyw"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"Włącz podzieloną klawiaturę"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Inne metody wprowadzania"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Klawisz zmiany języka obejmuje też inne metody wprowadzania"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Klawisz zmiany języka"</string>
@@ -82,6 +85,20 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Kliknij tutaj, by zapisać"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Słownik dostępny"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motyw klawiatury"</string>
+    <!-- no translation found for switch_accounts (3321216593719006162) -->
+    <skip />
+    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
+    <skip />
+    <!-- no translation found for account_selected (2846876462199625974) -->
+    <skip />
+    <!-- no translation found for account_select_ok (9141195141763227797) -->
+    <skip />
+    <!-- no translation found for account_select_cancel (5181012062618504340) -->
+    <skip />
+    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
+    <skip />
+    <!-- no translation found for account_select_title (6279711684772922649) -->
+    <skip />
     <string name="subtype_en_GB" msgid="88170601942311355">"angielski (Wielka Brytania)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"angielski (Stany Zjednoczone)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"hiszpański (USA)"</string>
