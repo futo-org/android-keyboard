@@ -27,12 +27,16 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Som ao tocar a tecla"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Exibir pop-up ao digitar"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferências"</string>
+    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
+    <skip />
     <string name="settings_screen_appearance" msgid="9153102634339912029">"Aparência e layouts"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"Opções multilíngues"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Escrita com gestos"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Correção de texto"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Avançadas"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
+    <!-- no translation found for enable_split_keyboard (4177264923999493614) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Outros métodos de entrada"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A tecla p/ mudar o idioma também cobre outros métodos de entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de seleção de idioma"</string>
@@ -82,6 +86,20 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Toque aqui para salvar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema do teclado"</string>
+    <!-- no translation found for switch_accounts (3321216593719006162) -->
+    <skip />
+    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
+    <skip />
+    <!-- no translation found for account_selected (2846876462199625974) -->
+    <skip />
+    <!-- no translation found for account_select_ok (9141195141763227797) -->
+    <skip />
+    <!-- no translation found for account_select_cancel (5181012062618504340) -->
+    <skip />
+    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
+    <skip />
+    <!-- no translation found for account_select_title (6279711684772922649) -->
+    <skip />
     <string name="subtype_en_GB" msgid="88170601942311355">"inglês (Reino Unido)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"inglês (EUA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"espanhol (EUA)"</string>
@@ -129,11 +147,11 @@
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Em seguida, selecione \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de entrada de texto ativo."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"Alternar métodos de entrada"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Parabéns, você terminou!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"Agora você pode digitar em todos os seus aplicativos favoritos com o <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Agora você pode digitar em todos os seus apps favoritos com o <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Configurar idiomas adicionais"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Concluído"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Mostrar ícone do aplicativo"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Mostrar ícone do aplicativo no iniciador"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Mostrar ícone do app"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Mostrar ícone do app no iniciador"</string>
     <string name="app_name" msgid="6320102637491234792">"Provedor de dicionário"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Provedor de dicionário"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Serviço de dicionário"</string>

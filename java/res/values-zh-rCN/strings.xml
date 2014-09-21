@@ -27,12 +27,16 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"按键音效"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"按键时弹出显示字符"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"偏好设置"</string>
+    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
+    <skip />
     <string name="settings_screen_appearance" msgid="9153102634339912029">"外观和布局"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"多语言选项"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"滑行输入"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"文字更正"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"高级"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"主题背景"</string>
+    <!-- no translation found for enable_split_keyboard (4177264923999493614) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切换到其他输入法"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"语言切换键也可用于切换其他输入法"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"语言切换键"</string>
@@ -82,6 +86,20 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"触摸此处即可保存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"有可用字典"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"键盘主题"</string>
+    <!-- no translation found for switch_accounts (3321216593719006162) -->
+    <skip />
+    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
+    <skip />
+    <!-- no translation found for account_selected (2846876462199625974) -->
+    <skip />
+    <!-- no translation found for account_select_ok (9141195141763227797) -->
+    <skip />
+    <!-- no translation found for account_select_cancel (5181012062618504340) -->
+    <skip />
+    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
+    <skip />
+    <!-- no translation found for account_select_title (6279711684772922649) -->
+    <skip />
     <string name="subtype_en_GB" msgid="88170601942311355">"英语(英国)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英语(美国)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"西班牙语（美国）"</string>

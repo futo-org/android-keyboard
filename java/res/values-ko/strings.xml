@@ -27,12 +27,15 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"키를 누를 때 소리 발생"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"키를 누를 때 팝업"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"환경설정"</string>
+    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
+    <skip />
     <string name="settings_screen_appearance" msgid="9153102634339912029">"모양 및 레이아웃"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"다국어 옵션"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"제스처 타이핑"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"텍스트 수정"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"고급"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"테마"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"분할 키보드 사용"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"다른 입력 방법으로 전환"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"언어 전환 키가 제공하는 기타 입력 방법"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"언어 전환 키"</string>
@@ -82,6 +85,20 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"저장하려면 여기를 터치하세요."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"키보드 테마"</string>
+    <!-- no translation found for switch_accounts (3321216593719006162) -->
+    <skip />
+    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
+    <skip />
+    <!-- no translation found for account_selected (2846876462199625974) -->
+    <skip />
+    <!-- no translation found for account_select_ok (9141195141763227797) -->
+    <skip />
+    <!-- no translation found for account_select_cancel (5181012062618504340) -->
+    <skip />
+    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
+    <skip />
+    <!-- no translation found for account_select_title (6279711684772922649) -->
+    <skip />
     <string name="subtype_en_GB" msgid="88170601942311355">"영어(영국)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"영어(미국)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"스페인어(미국)"</string>
