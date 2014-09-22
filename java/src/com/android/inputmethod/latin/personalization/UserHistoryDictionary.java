@@ -35,6 +35,7 @@ import java.util.Locale;
  */
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package */ static final String NAME = UserHistoryDictionary.class.getSimpleName();
+    private final static int SUPPORTED_NGRAM = 2; // TODO: 3
 
     // TODO: Make this constructor private
     /* package */ UserHistoryDictionary(final Context context, final Locale locale) {
@@ -61,9 +62,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
             final PrevWordsInfo prevWordsInfo, final String word, final boolean isValid,
             final int timestamp, final DistracterFilter distracterFilter) {
-        final CharSequence prevWord = prevWordsInfo.mPrevWordsInfo[0].mWord;
-        if (word.length() > Constants.DICTIONARY_MAX_WORD_LENGTH ||
-                (prevWord != null && prevWord.length() > Constants.DICTIONARY_MAX_WORD_LENGTH)) {
+        if (word.length() > Constants.DICTIONARY_MAX_WORD_LENGTH) {
             return;
         }
         final int frequency = isValid ?
@@ -71,17 +70,29 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
         userHistoryDictionary.addUnigramEntryWithCheckingDistracter(word, frequency,
                 null /* shortcutTarget */, 0 /* shortcutFreq */, false /* isNotAWord */,
                 false /* isBlacklisted */, timestamp, distracterFilter);
-        // Do not insert a word as a bigram of itself
-        if (TextUtils.equals(word, prevWord)) {
-            return;
-        }
-        if (null != prevWord) {
-            if (prevWordsInfo.mPrevWordsInfo[0].mIsBeginningOfSentence) {
-                // Beginning-of-Sentence n-gram entry is treated as a n-gram entry of invalid word.
-                userHistoryDictionary.addNgramEntry(prevWordsInfo, word,
+
+        final boolean isBeginningOfSentenceContext =
+                prevWordsInfo.mPrevWordsInfo[0].mIsBeginningOfSentence;
+        final PrevWordsInfo prevWordsInfoToBeSaved =
+                prevWordsInfo.getTrimmedPrevWordsInfo(SUPPORTED_NGRAM - 1);
+        for (int i = 0; i < prevWordsInfoToBeSaved.getPrevWordCount(); i++) {
+            final CharSequence prevWord = prevWordsInfoToBeSaved.mPrevWordsInfo[i].mWord;
+            if (prevWord == null || (prevWord.length() > Constants.DICTIONARY_MAX_WORD_LENGTH)) {
+                return;
+            }
+            // Do not insert a word as a bigram of itself
+            if (i == 0 && TextUtils.equals(word, prevWord)) {
+                return;
+            }
+            if (isBeginningOfSentenceContext) {
+                // Beginning-of-Sentence n-gram entry is added as an n-gram entry of an OOV word.
+                userHistoryDictionary.addNgramEntry(
+                        prevWordsInfoToBeSaved.getTrimmedPrevWordsInfo(i + 1), word,
                         FREQUENCY_FOR_WORDS_NOT_IN_DICTS, timestamp);
             } else {
-                userHistoryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp);
+                userHistoryDictionary.addNgramEntry(
+                        prevWordsInfoToBeSaved.getTrimmedPrevWordsInfo(i + 1), word, frequency,
+                        timestamp);
             }
         }
     }
