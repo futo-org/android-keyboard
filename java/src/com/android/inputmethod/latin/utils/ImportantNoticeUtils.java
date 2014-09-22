@@ -23,7 +23,10 @@ import android.provider.Settings.SettingNotFoundException;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
+
+import java.util.concurrent.TimeUnit;
 
 public final class ImportantNoticeUtils {
     private static final String TAG = ImportantNoticeUtils.class.getSimpleName();
@@ -31,7 +34,13 @@ public final class ImportantNoticeUtils {
     // {@link SharedPreferences} name to save the last important notice version that has been
     // displayed to users.
     private static final String PREFERENCE_NAME = "important_notice_pref";
-    private static final String KEY_IMPORTANT_NOTICE_VERSION = "important_notice_version";
+    @UsedForTesting
+    static final String KEY_IMPORTANT_NOTICE_VERSION = "important_notice_version";
+    @UsedForTesting
+    static final String KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE =
+            "timestamp_of_first_important_notice";
+    @UsedForTesting
+    static final long TIMEOUT_OF_IMPORTANT_NOTICE = TimeUnit.HOURS.toMillis(23);
     public static final int VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS = 1;
 
     // Copy of the hidden {@link Settings.Secure#USER_SETUP_COMPLETE} settings key.
@@ -56,15 +65,18 @@ public final class ImportantNoticeUtils {
         }
     }
 
-    private static SharedPreferences getImportantNoticePreferences(final Context context) {
+    @UsedForTesting
+    static SharedPreferences getImportantNoticePreferences(final Context context) {
         return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
-    private static int getCurrentImportantNoticeVersion(final Context context) {
+    @UsedForTesting
+    static int getCurrentImportantNoticeVersion(final Context context) {
         return context.getResources().getInteger(R.integer.config_important_notice_version);
     }
 
-    private static int getLastImportantNoticeVersion(final Context context) {
+    @UsedForTesting
+    static int getLastImportantNoticeVersion(final Context context) {
         return getImportantNoticePreferences(context).getInt(KEY_IMPORTANT_NOTICE_VERSION, 0);
     }
 
@@ -75,6 +87,20 @@ public final class ImportantNoticeUtils {
     private static boolean hasNewImportantNotice(final Context context) {
         final int lastVersion = getLastImportantNoticeVersion(context);
         return getCurrentImportantNoticeVersion(context) > lastVersion;
+    }
+
+    @UsedForTesting
+    static boolean hasTimeoutPassed(final Context context, final long currentTimeInMillis) {
+        final SharedPreferences prefs = getImportantNoticePreferences(context);
+        if (!prefs.contains(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE)) {
+            prefs.edit()
+                    .putLong(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE, currentTimeInMillis)
+                    .apply();
+        }
+        final long firstDisplayTimeInMillis = prefs.getLong(
+                KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE, currentTimeInMillis);
+        final long elapsedTime = currentTimeInMillis - firstDisplayTimeInMillis;
+        return elapsedTime >= TIMEOUT_OF_IMPORTANT_NOTICE;
     }
 
     public static boolean shouldShowImportantNotice(final Context context) {
@@ -88,6 +114,10 @@ public final class ImportantNoticeUtils {
         if (isInSystemSetupWizard(context)) {
             return false;
         }
+        if (hasTimeoutPassed(context, System.currentTimeMillis())) {
+            updateLastImportantNoticeVersion(context);
+            return false;
+        }
         return true;
     }
 
@@ -95,11 +125,12 @@ public final class ImportantNoticeUtils {
         getImportantNoticePreferences(context)
                 .edit()
                 .putInt(KEY_IMPORTANT_NOTICE_VERSION, getNextImportantNoticeVersion(context))
+                .remove(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE)
                 .apply();
     }
 
     public static String getNextImportantNoticeTitle(final Context context) {
-        final int nextVersion = getCurrentImportantNoticeVersion(context);
+        final int nextVersion = getNextImportantNoticeVersion(context);
         final String[] importantNoticeTitleArray = context.getResources().getStringArray(
                 R.array.important_notice_title_array);
         if (nextVersion > 0 && nextVersion < importantNoticeTitleArray.length) {
