@@ -145,6 +145,13 @@ public final class InputLogic {
      */
     public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
         mEnteredText = null;
+        if (!mWordComposer.getTypedWord().isEmpty()) {
+            // For messaging apps that offer send button, the IME does not get the opportunity
+            // to capture the last word. This block should capture those uncommitted words.
+            // The timestamp at which it is captured is not accurate but close enough.
+            StatsUtils.onWordCommitUserTyped(
+                    mWordComposer.getTypedWord(), mWordComposer.isBatchMode());
+        }
         mWordComposer.restartCombining(combiningSpec);
         resetComposingState(true /* alsoResetLastComposedWord */);
         mDeleteCount = 0;
