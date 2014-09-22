@@ -86,7 +86,7 @@ public final class InputLogic {
     // Current space state of the input method. This can be any of the above constants.
     private int mSpaceState;
     // Never null
-    public SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
+    public SuggestedWords mSuggestedWords = SuggestedWords.getEmptyInstance();
     public final Suggest mSuggest;
     private final DictionaryFacilitator mDictionaryFacilitator;
 
@@ -151,7 +151,7 @@ public final class InputLogic {
         mSpaceState = SpaceState.NONE;
         mRecapitalizeStatus.disable(); // Do not perform recapitalize until the cursor is moved once
         mCurrentlyPressedHardwareKeys.clear();
-        mSuggestedWords = SuggestedWords.EMPTY;
+        mSuggestedWords = SuggestedWords.getEmptyInstance();
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
         // so we try using some heuristics to find out about these and fix them.
         mConnection.tryFixLyingCursorPosition();
@@ -325,7 +325,7 @@ public final class InputLogic {
         // however need to reset the suggestion strip right away, because we know we can't take
         // the risk of calling commitCompletion twice because we don't know how the app will react.
         if (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_APP_DEFINED)) {
-            mSuggestedWords = SuggestedWords.EMPTY;
+            mSuggestedWords = SuggestedWords.getEmptyInstance();
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
             resetComposingState(true /* alsoResetLastComposedWord */);
@@ -501,7 +501,7 @@ public final class InputLogic {
             final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
         mInputLogicHandler.onStartBatchInput();
         handler.showGesturePreviewAndSuggestionStrip(
-                SuggestedWords.EMPTY, false /* dismissGestureFloatingPreviewText */);
+                SuggestedWords.getEmptyInstance(), false /* dismissGestureFloatingPreviewText */);
         handler.cancelUpdateSuggestionStrip();
         ++mAutoCommitSequenceNumber;
         mConnection.beginBatchEdit();
@@ -600,14 +600,14 @@ public final class InputLogic {
     public void onCancelBatchInput(final LatinIME.UIHandler handler) {
         mInputLogicHandler.onCancelBatchInput();
         handler.showGesturePreviewAndSuggestionStrip(
-                SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
+                SuggestedWords.getEmptyInstance(), true /* dismissGestureFloatingPreviewText */);
     }
 
     // TODO: on the long term, this method should become private, but it will be difficult.
     // Especially, how do we deal with InputMethodService.onDisplayCompletions?
     public void setSuggestedWords(final SuggestedWords suggestedWords,
             final SettingsValues settingsValues, final LatinIME.UIHandler handler) {
-        if (SuggestedWords.EMPTY != suggestedWords) {
+        if (!suggestedWords.isEmpty()) {
             final String autoCorrection;
             final String dictType;
             if (suggestedWords.mWillAutoCorrect) {
@@ -1393,7 +1393,7 @@ public final class InputLogic {
                         + "requested!");
             }
             // Clear the suggestions strip.
-            mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.EMPTY);
+            mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance());
             return;
         }
 
@@ -1885,9 +1885,8 @@ public final class InputLogic {
      */
     private SuggestedWords retrieveOlderSuggestions(final String typedWord,
             final SuggestedWords previousSuggestedWords) {
-        final SuggestedWords oldSuggestedWords =
-                previousSuggestedWords.isPunctuationSuggestions() ? SuggestedWords.EMPTY
-                        : previousSuggestedWords;
+        final SuggestedWords oldSuggestedWords = previousSuggestedWords.isPunctuationSuggestions()
+                ? SuggestedWords.getEmptyInstance() : previousSuggestedWords;
         final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
                 SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
         return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
