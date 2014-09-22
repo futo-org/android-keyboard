@@ -38,6 +38,12 @@ public class StatsUtilsManager {
     public void onLoadSettings(final SettingsValues settingsValues) {
     }
 
+    public void onStartInputView() {
+    }
+
+    public void onFinishInputView() {
+    }
+
     public void onDestroy() {
     }
 }
