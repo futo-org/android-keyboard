@@ -213,13 +213,9 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
 
         final int numberOfWords = 1000;
         final Random random = new Random(123456);
-
-        try {
-            clearHistory(dict);
-            addAndWriteRandomWords(dict, numberOfWords, random, true /* checksContents */);
-        } finally {
-            checkExistenceAndRemoveDictFile(dict, dictFile);
-        }
+        clearHistory(dict);
+        addAndWriteRandomWords(dict, numberOfWords, random, true /* checksContents */);
+        checkExistenceAndRemoveDictFile(dict, dictFile);
     }
 
     public void testStressTestForSwitchingLanguagesAndAddingWords() {
