@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
+import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
@@ -645,13 +646,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     public DictionaryStats getDictionaryStats() {
         reloadDictionaryIfRequired();
-        mLock.readLock().lock();
-        try {
-            // TODO: Get stats form the dictionary.
-            return new DictionaryStats(mLocale, mDictName, mDictFile);
-        } finally {
-            mLock.readLock().unlock();
-        }
+        final AsyncResultHolder<DictionaryStats> result = new AsyncResultHolder<>();
+        asyncExecuteTaskWithLock(mLock.readLock(), mDictName /* executorName */, new Runnable() {
+            @Override
+            public void run() {
+                // TODO: Get stats from the dictionary.
+                result.set(new DictionaryStats(mLocale, mDictName, mDictFile));
+            }
+        });
+        return result.get(null /* defaultValue */, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
     }
 
     @UsedForTesting
