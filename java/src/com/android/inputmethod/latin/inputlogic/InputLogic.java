@@ -1591,6 +1591,10 @@ public final class InputLogic {
         final String committedWordString = committedWord.toString();
         final int cancelLength = committedWord.length();
         final String separatorString = mLastComposedWord.mSeparatorString;
+        // If our separator is a space, we won't actually commit it,
+        // but set the space state to PHANTOM so that a space will be inserted
+        // on the next keypress
+        final boolean usePhantomSpace = separatorString.equals(Constants.STRING_SPACE);
         // We want java chars, not codepoints for the following.
         final int separatorLength = separatorString.length();
         // TODO: should we check our saved separator against the actual contents of the text view?
@@ -1611,7 +1615,8 @@ public final class InputLogic {
         if (!TextUtils.isEmpty(committedWord)) {
             mDictionaryFacilitator.removeWordFromPersonalizedDicts(committedWordString);
         }
-        final String stringToCommit = originallyTypedWord + separatorString;
+        final String stringToCommit = originallyTypedWord +
+                (usePhantomSpace ? "" : separatorString);
         final SpannableString textToCommit = new SpannableString(stringToCommit);
         if (committedWord instanceof SpannableString) {
             final SpannableString committedWordWithSuggestionSpans = (SpannableString)committedWord;
@@ -1662,6 +1667,9 @@ public final class InputLogic {
                         originallyTypedWordString.length());
             } else {
                 mConnection.commitText(textToCommit, 1);
+            }
+            if (usePhantomSpace) {
+                mSpaceState = SpaceState.PHANTOM;
             }
         } else {
             // For languages without spaces, we revert the typed string but the cursor is flush

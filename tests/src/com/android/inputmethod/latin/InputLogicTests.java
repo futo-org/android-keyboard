@@ -159,12 +159,33 @@ public class InputLogicTests extends InputTestsBase {
     }
 
     public void testAutoCorrectWithSpaceThenRevert() {
+        // Backspacing to cancel the "tgis"->"this" autocorrection should result in
+        // a "phantom space": if the user presses space immediately after,
+        // only one space will be inserted in total.
         final String STRING_TO_TYPE = "tgis ";
-        final String EXPECTED_RESULT = "tgis ";
+        final String EXPECTED_RESULT = "tgis";
         type(STRING_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("auto-correct with space then revert", EXPECTED_RESULT,
+                mEditText.getText().toString());
+    }
+
+    public void testAutoCorrectWithSpaceThenRevertThenTypeMore() {
+        final String STRING_TO_TYPE_FIRST = "tgis ";
+        final String STRING_TO_TYPE_SECOND = "a";
+        final String EXPECTED_RESULT = "tgis a";
+        type(STRING_TO_TYPE_FIRST);
+        mLatinIME.onUpdateSelection(0, 0,
+                STRING_TO_TYPE_FIRST.length(), STRING_TO_TYPE_FIRST.length(), -1, -1);
+        type(Constants.CODE_DELETE);
+
+        type(STRING_TO_TYPE_SECOND);
+        mLatinIME.onUpdateSelection(STRING_TO_TYPE_FIRST.length(), STRING_TO_TYPE_FIRST.length(),
+                STRING_TO_TYPE_FIRST.length() - 1 + STRING_TO_TYPE_SECOND.length(),
+                STRING_TO_TYPE_FIRST.length() - 1 + STRING_TO_TYPE_SECOND.length(),
+                -1, -1);
+        assertEquals("auto-correct with space then revert then type more", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
 
