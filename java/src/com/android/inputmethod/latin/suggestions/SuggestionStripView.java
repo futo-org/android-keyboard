@@ -82,7 +82,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final ArrayList<View> mDividerViews = new ArrayList<>();
 
     Listener mListener;
-    private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
+    private SuggestedWords mSuggestedWords = SuggestedWords.getEmptyInstance();
     private int mStartIndexOfMoreSuggestions;
 
     private final SuggestionStripLayoutHelper mLayoutHelper;

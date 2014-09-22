@@ -49,7 +49,7 @@ public class DrawingHandler extends LeakGuardHandlerWrapper<Callbacks> {
             callbacks.dismissKeyPreviewWithoutDelay((Key)msg.obj);
             break;
         case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
-            callbacks.showGestureFloatingPreviewText(SuggestedWords.EMPTY);
+            callbacks.showGestureFloatingPreviewText(SuggestedWords.getEmptyInstance());
             break;
         }
     }

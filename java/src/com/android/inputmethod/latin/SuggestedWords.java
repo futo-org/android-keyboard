@@ -45,7 +45,7 @@ public class SuggestedWords {
     public static final int MAX_SUGGESTIONS = 18;
 
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST = new ArrayList<>(0);
-    public static final SuggestedWords EMPTY = new SuggestedWords(
+    private static final SuggestedWords EMPTY = new SuggestedWords(
             EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false /* typedWordValid */,
             false /* willAutoCorrect */, false /* isObsoleteSuggestions */, INPUT_STYLE_NONE);
 
@@ -194,6 +194,10 @@ public class SuggestedWords {
             result.add(new SuggestedWordInfo(info));
         }
         return result;
+    }
+
+    public static final SuggestedWords getEmptyInstance() {
+        return SuggestedWords.EMPTY;
     }
 
     // Should get rid of the first one (what the user typed previously) from suggestions

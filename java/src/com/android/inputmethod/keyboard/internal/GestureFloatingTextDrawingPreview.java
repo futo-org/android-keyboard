@@ -98,7 +98,7 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
     private final RectF mGesturePreviewRectangle = new RectF();
     private int mPreviewTextX;
     private int mPreviewTextY;
-    private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
+    private SuggestedWords mSuggestedWords = SuggestedWords.getEmptyInstance();
     private final int[] mLastPointerCoords = CoordinateUtils.newInstance();
 
     public GestureFloatingTextDrawingPreview(final TypedArray mainKeyboardViewAttr) {
