@@ -1491,7 +1491,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final boolean isEmptyApplicationSpecifiedCompletions =
                 currentSettingsValues.isApplicationSpecifiedCompletionsOn()
                 && suggestedWords.isEmpty();
-        final boolean noSuggestionsFromDictionaries = (SuggestedWords.EMPTY == suggestedWords)
+        final boolean noSuggestionsFromDictionaries = suggestedWords.isEmpty()
                 || suggestedWords.isPunctuationSuggestions()
                 || isEmptyApplicationSpecifiedCompletions;
         final boolean isBeginningOfSentencePrediction = (suggestedWords.mInputStyle
@@ -1518,7 +1518,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final OnGetSuggestedWordsCallback callback) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         if (keyboard == null) {
-            callback.onGetSuggestedWords(SuggestedWords.EMPTY);
+            callback.onGetSuggestedWords(SuggestedWords.getEmptyInstance());
             return;
         }
         mInputLogic.getSuggestedWords(mSettings.getCurrent(), keyboard.getProximityInfo(),
@@ -1526,10 +1526,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void showSuggestionStrip(final SuggestedWords sourceSuggestedWords) {
-        final SuggestedWords suggestedWords =
-                sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
-        if (SuggestedWords.EMPTY == suggestedWords) {
+    public void showSuggestionStrip(final SuggestedWords suggestedWords) {
+        if (suggestedWords.isEmpty()) {
             setNeutralSuggestionStrip();
         } else {
             setSuggestedWords(suggestedWords);
@@ -1537,7 +1535,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.
         AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords,
-                sourceSuggestedWords.mTypedWord);
+                suggestedWords.mTypedWord);
     }
 
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
@@ -1572,7 +1570,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setNeutralSuggestionStrip() {
         final SettingsValues currentSettings = mSettings.getCurrent();
         final SuggestedWords neutralSuggestions = currentSettings.mBigramPredictionEnabled
-                ? SuggestedWords.EMPTY : currentSettings.mSpacingAndPunctuations.mSuggestPuncList;
+                ? SuggestedWords.getEmptyInstance()
+                : currentSettings.mSpacingAndPunctuations.mSuggestPuncList;
         setSuggestedWords(neutralSuggestions);
     }
 
