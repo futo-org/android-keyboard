@@ -166,6 +166,9 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordI
         for (const auto entry : languageModelDictContent->getProbabilityEntries(
                 prevWordIds.limit(i))) {
             const ProbabilityEntry &probabilityEntry = entry.getProbabilityEntry();
+            if (!probabilityEntry.isValid()) {
+                continue;
+            }
             const int probability = probabilityEntry.hasHistoricalInfo() ?
                     ForgettingCurveUtils::decodeProbability(
                             probabilityEntry.getHistoricalInfo(), mHeaderPolicy)
