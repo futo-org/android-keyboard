@@ -126,6 +126,13 @@ public class PrevWordsInfo {
         }
     }
 
+    public PrevWordsInfo getTrimmedPrevWordsInfo(final int maxPrevWordCount) {
+        final int newSize = Math.min(maxPrevWordCount, mPrevWordsInfo.length);
+        // TODO: Quit creating a new array.
+        final WordInfo[] prevWordsInfo = Arrays.copyOf(mPrevWordsInfo, newSize);
+        return new PrevWordsInfo(prevWordsInfo);
+    }
+
     public int getPrevWordCount() {
         return mPrevWordsInfo.length;
     }
