@@ -18,8 +18,7 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.android.inputmethodcommon.InputMethodSettingsFragment;
+import android.preference.PreferenceFragment;
 
 /**
  * Utility class for managing additional features settings.
@@ -32,7 +31,7 @@ public class AdditionalFeaturesSettingUtils {
     }
 
     public static void addAdditionalFeaturesPreferences(
-            final Context context, final InputMethodSettingsFragment settingsFragment) {
+            final Context context, final PreferenceFragment settingsFragment) {
         // do nothing.
     }
 
