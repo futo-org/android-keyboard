@@ -103,8 +103,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const ProbabilityEntry *const originalProbabilityEntry,
             const ProbabilityEntry *const probabilityEntry) const;
 
-    bool updatePtNodeFlags(const int ptNodePos, const bool isBlacklisted, const bool isNotAWord,
-            const bool isTerminal, const bool hasMultipleChars);
+    bool updatePtNodeFlags(const int ptNodePos, const bool isTerminal, const bool hasMultipleChars);
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
 

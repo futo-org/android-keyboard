@@ -191,7 +191,6 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
             ptNodeWritingPos);
 }
 
-
 bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
         const PtNodeParams *const ptNodeParams, const UnigramProperty *const unigramProperty,
         int *const ptNodeWritingPos) {
@@ -341,8 +340,8 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
             ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
         return false;
     }
-    return updatePtNodeFlags(nodePos, ptNodeParams->isBlacklisted(), ptNodeParams->isNotAWord(),
-            isTerminal, ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
+    return updatePtNodeFlags(nodePos, isTerminal,
+            ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
 }
 
 // TODO: Move probability handling code to LanguageModelDictContent.
@@ -361,14 +360,13 @@ const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
     }
 }
 
-bool Ver4PatriciaTrieNodeWriter::updatePtNodeFlags(const int ptNodePos,
-        const bool isBlacklisted, const bool isNotAWord, const bool isTerminal,
+bool Ver4PatriciaTrieNodeWriter::updatePtNodeFlags(const int ptNodePos, const bool isTerminal,
         const bool hasMultipleChars) {
     // Create node flags and write them.
     PatriciaTrieReadingUtils::NodeFlags nodeFlags =
-            PatriciaTrieReadingUtils::createAndGetFlags(isBlacklisted, isNotAWord, isTerminal,
-                    false /* hasShortcutTargets */, false /* hasBigrams */, hasMultipleChars,
-                    CHILDREN_POSITION_FIELD_SIZE);
+            PatriciaTrieReadingUtils::createAndGetFlags(false /* isNotAWord */,
+                    false /* isBlacklisted */, isTerminal, false /* hasShortcutTargets */,
+                    false /* hasBigrams */, hasMultipleChars, CHILDREN_POSITION_FIELD_SIZE);
     if (!DynamicPtWritingUtils::writeFlags(mTrieBuffer, nodeFlags, ptNodePos)) {
         AKLOGE("Cannot write PtNode flags. flags: %x, pos: %d", nodeFlags, ptNodePos);
         return false;

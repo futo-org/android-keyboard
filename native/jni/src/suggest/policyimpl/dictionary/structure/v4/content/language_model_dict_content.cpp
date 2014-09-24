@@ -38,7 +38,7 @@ bool LanguageModelDictContent::runGC(
             0 /* nextLevelBitmapEntryIndex */, outNgramCount);
 }
 
-int LanguageModelDictContent::getWordProbability(const WordIdArrayView prevWordIds,
+const WordAttributes LanguageModelDictContent::getWordAttributes(const WordIdArrayView prevWordIds,
         const int wordId, const HeaderPolicy *const headerPolicy) const {
     int bitmapEntryIndices[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
     bitmapEntryIndices[0] = mTrieMap.getRootBitmapEntryIndex();
@@ -60,17 +60,24 @@ int LanguageModelDictContent::getWordProbability(const WordIdArrayView prevWordI
         }
         const ProbabilityEntry probabilityEntry =
                 ProbabilityEntry::decode(result.mValue, mHasHistoricalInfo);
+        int probability = NOT_A_PROBABILITY;
         if (mHasHistoricalInfo) {
-            const int probability = ForgettingCurveUtils::decodeProbability(
+            const int rawProbability = ForgettingCurveUtils::decodeProbability(
                     probabilityEntry.getHistoricalInfo(), headerPolicy)
                             + ForgettingCurveUtils::getProbabilityBiasForNgram(i + 1 /* n */);
-            return std::min(probability, MAX_PROBABILITY);
+            probability = std::min(rawProbability, MAX_PROBABILITY);
         } else {
-            return probabilityEntry.getProbability();
+            probability = probabilityEntry.getProbability();
         }
+        // TODO: Some flags in unigramProbabilityEntry should be overwritten by flags in
+        // probabilityEntry.
+        const ProbabilityEntry unigramProbabilityEntry = getProbabilityEntry(wordId);
+        return WordAttributes(probability, unigramProbabilityEntry.isNotAWord(),
+                unigramProbabilityEntry.isBlacklisted(),
+                unigramProbabilityEntry.isPossiblyOffensive());
     }
     // Cannot find the word.
-    return NOT_A_PROBABILITY;
+    return WordAttributes();
 }
 
 ProbabilityEntry LanguageModelDictContent::getNgramProbabilityEntry(
