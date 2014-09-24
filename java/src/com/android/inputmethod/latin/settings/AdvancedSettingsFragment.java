@@ -109,6 +109,8 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
             removePreference(Settings.PREF_ENABLE_METRICS_LOGGING);
         }
 
+        AdditionalFeaturesSettingUtils.addAdditionalFeaturesPreferences(context, this);
+
         setupKeypressVibrationDurationSettings();
         setupKeypressSoundVolumeSettings();
         refreshEnablingsOfKeypressSoundAndVibrationSettings();
