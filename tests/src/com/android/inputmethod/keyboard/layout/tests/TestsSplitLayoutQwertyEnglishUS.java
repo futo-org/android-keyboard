@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
 
@@ -44,4 +45,20 @@ public class TestsSplitLayoutQwertyEnglishUS extends LayoutTestsBase {
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
+
+    private static class EnglishSplitCustomizer extends EnglishCustomizer {
+        EnglishSplitCustomizer(Locale locale) {
+            super(locale);
+        }
+
+        @Override
+        public ExpectedKey[] getSpaceKeys(final boolean isPhone) {
+            if (isPhone) {
+                return super.getSpaceKeys(isPhone);
+            } else {
+                return LayoutBase.joinKeys(
+                        LayoutBase.LANGUAGE_SWITCH_KEY, LayoutBase.SPACE_KEY, LayoutBase.SPACE_KEY);
+            }
+        }
+    }
 }
