@@ -451,8 +451,6 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     const int ptNodePos =
             mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
     const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
-    std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
-            ptNodeParams.getCodePoints() + ptNodeParams.getCodePointCount());
     const ProbabilityEntry probabilityEntry =
             mBuffers->getLanguageModelDictContent()->getProbabilityEntry(
                     ptNodeParams.getTerminalId());
@@ -498,7 +496,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
             probabilityEntry.isNotAWord(), probabilityEntry.isBlacklisted(),
             probabilityEntry.getProbability(), historicalInfo->getTimeStamp(),
             historicalInfo->getLevel(), historicalInfo->getCount(), &shortcuts);
-    return WordProperty(&codePointVector, &unigramProperty, &bigrams);
+    return WordProperty(wordCodePoints, &unigramProperty, &bigrams);
 }
 
 int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints,
