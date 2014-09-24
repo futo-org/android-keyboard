@@ -40,8 +40,9 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
     public void testActionGo() {
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "go " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyLabelResId(tag, subtype, EditorInfo.IME_ACTION_GO,
-                    R.string.label_go_key);
+            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
+                    R.string.label_go_key, getLabelLocale(subtype), getContext());
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_GO, expectedKey);
         }
     }
 
@@ -49,8 +50,9 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
     public void testActionSend() {
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "send " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyLabelResId(tag, subtype, EditorInfo.IME_ACTION_SEND,
-                    R.string.label_send_key);
+            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
+                    R.string.label_send_key, getLabelLocale(subtype), getContext());
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_SEND, expectedKey);
         }
     }
 
@@ -58,8 +60,9 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
     public void testActionNext() {
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "next " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyLabelResId(tag, subtype, EditorInfo.IME_ACTION_NEXT,
-                    R.string.label_next_key);
+            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
+                    R.string.label_next_key, getLabelLocale(subtype), getContext());
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_NEXT, expectedKey);
         }
     }
 
@@ -67,8 +70,9 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
     public void testActionDone() {
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "done " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyLabelResId(tag, subtype, EditorInfo.IME_ACTION_DONE,
-                    R.string.label_done_key);
+            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
+                    R.string.label_done_key, getLabelLocale(subtype), getContext());
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_DONE, expectedKey);
         }
     }
 
@@ -76,42 +80,59 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
     public void testActionPrevious() {
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "previous " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyLabelResId(tag, subtype, EditorInfo.IME_ACTION_PREVIOUS,
-                    R.string.label_previous_key);
+            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
+                    R.string.label_previous_key, getLabelLocale(subtype), getContext());
+            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_PREVIOUS, expectedKey);
         }
+    }
+
+    private void doTestActionKeys(final InputMethodSubtype subtype, final String tag,
+            final ExpectedActionKey unspecifiedKey, final ExpectedActionKey noneKey,
+            final ExpectedActionKey goKey, final ExpectedActionKey searchKey,
+            final ExpectedActionKey sendKey, final ExpectedActionKey nextKey,
+            final ExpectedActionKey doneKey, final ExpectedActionKey previousKey) {
+        doTestActionKey(
+                tag + " unspecified", subtype, EditorInfo.IME_ACTION_UNSPECIFIED, unspecifiedKey);
+        doTestActionKey(tag + " none", subtype, EditorInfo.IME_ACTION_NONE, noneKey);
+        doTestActionKey(tag + " go", subtype, EditorInfo.IME_ACTION_GO, goKey);
+        doTestActionKey(tag + " search", subtype, EditorInfo.IME_ACTION_SEARCH, searchKey);
+        doTestActionKey(tag + " send", subtype, EditorInfo.IME_ACTION_SEND, sendKey);
+        doTestActionKey(tag + " next", subtype, EditorInfo.IME_ACTION_NEXT, nextKey);
+        doTestActionKey(tag + " done", subtype, EditorInfo.IME_ACTION_DONE, doneKey);
+        doTestActionKey(tag + " previous", subtype, EditorInfo.IME_ACTION_PREVIOUS, previousKey);
     }
 
     // Working variable to simulate system locale changing.
     private Locale mSystemLocale = Locale.getDefault();
 
-    private void doTestActionLabelInLocale(final InputMethodSubtype subtype,
+    private void doTestActionKeysInLocale(final InputMethodSubtype subtype,
             final Locale labelLocale, final Locale systemLocale) {
         // Simulate system locale changing, see {@link SystemBroadcastReceiver}.
         if (!systemLocale.equals(mSystemLocale)) {
             KeyboardLayoutSet.onSystemLocaleChanged();
             mSystemLocale = systemLocale;
         }
+        final ExpectedActionKey enterKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_ENTER_KEY);
+        final ExpectedActionKey goKey = ExpectedActionKey.newLabelKey(
+                R.string.label_go_key, labelLocale, getContext());
+        final ExpectedActionKey searchKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_SEARCH_KEY);
+        final ExpectedActionKey sendKey = ExpectedActionKey.newLabelKey(
+                R.string.label_send_key, labelLocale, getContext());
+        final ExpectedActionKey nextKey = ExpectedActionKey.newLabelKey(
+                R.string.label_next_key, labelLocale, getContext());
+        final ExpectedActionKey doneKey = ExpectedActionKey.newLabelKey(
+                R.string.label_done_key, labelLocale, getContext());
+        final ExpectedActionKey previousKey = ExpectedActionKey.newLabelKey(
+                R.string.label_previous_key, labelLocale, getContext());
         final String tag = "label=" + labelLocale + " system=" + systemLocale
                 + " " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
         final RunInLocale<Void> job = new RunInLocale<Void>() {
             @Override
             public Void job(final Resources res) {
-                doTestActionKeyIcon(tag + " unspecified", subtype,
-                        EditorInfo.IME_ACTION_UNSPECIFIED, KeyboardIconsSet.NAME_ENTER_KEY);
-                doTestActionKeyIcon(tag + " none", subtype,
-                        EditorInfo.IME_ACTION_NONE, KeyboardIconsSet.NAME_ENTER_KEY);
-                doTestActionKeyLabelResIdInLocale(tag + " go", subtype,
-                        EditorInfo.IME_ACTION_GO, labelLocale, R.string.label_go_key);
-                doTestActionKeyIcon(tag + " search", subtype,
-                        EditorInfo.IME_ACTION_SEARCH, KeyboardIconsSet.NAME_SEARCH_KEY);
-                doTestActionKeyLabelResIdInLocale(tag + " send", subtype,
-                        EditorInfo.IME_ACTION_SEND, labelLocale, R.string.label_send_key);
-                doTestActionKeyLabelResIdInLocale(tag + " next", subtype,
-                        EditorInfo.IME_ACTION_NEXT, labelLocale, R.string.label_next_key);
-                doTestActionKeyLabelResIdInLocale(tag + " done", subtype,
-                        EditorInfo.IME_ACTION_DONE, labelLocale, R.string.label_done_key);
-                doTestActionKeyLabelResIdInLocale(tag + " previous", subtype,
-                        EditorInfo.IME_ACTION_PREVIOUS, labelLocale, R.string.label_previous_key);
+                doTestActionKeys(subtype, tag, enterKey, enterKey, goKey, searchKey, sendKey,
+                        nextKey, doneKey, previousKey);
                 return null;
             }
         };
@@ -123,10 +144,10 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
         final InputMethodSubtype italian = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.ITALIAN.toString(), SubtypeLocaleUtils.QWERTY);
         // An action label should be displayed in subtype's locale regardless of the system locale.
-        doTestActionLabelInLocale(italian, Locale.ITALIAN, Locale.US);
-        doTestActionLabelInLocale(italian, Locale.ITALIAN, Locale.FRENCH);
-        doTestActionLabelInLocale(italian, Locale.ITALIAN, Locale.ITALIAN);
-        doTestActionLabelInLocale(italian, Locale.ITALIAN, Locale.JAPANESE);
+        doTestActionKeysInLocale(italian, Locale.ITALIAN, Locale.US);
+        doTestActionKeysInLocale(italian, Locale.ITALIAN, Locale.FRENCH);
+        doTestActionKeysInLocale(italian, Locale.ITALIAN, Locale.ITALIAN);
+        doTestActionKeysInLocale(italian, Locale.ITALIAN, Locale.JAPANESE);
     }
 
     public void testNoLanguageSubtypeActionLabel() {
@@ -134,9 +155,9 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
         final InputMethodSubtype noLanguage = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.QWERTY);
         // An action label of no language keyboard should be displayed in the system locale.
-        doTestActionLabelInLocale(noLanguage, Locale.US, Locale.US);
-        doTestActionLabelInLocale(noLanguage, Locale.FRENCH, Locale.FRENCH);
-        doTestActionLabelInLocale(noLanguage, Locale.ITALIAN, Locale.ITALIAN);
-        doTestActionLabelInLocale(noLanguage, Locale.JAPANESE, Locale.JAPANESE);
+        doTestActionKeysInLocale(noLanguage, Locale.US, Locale.US);
+        doTestActionKeysInLocale(noLanguage, Locale.FRENCH, Locale.FRENCH);
+        doTestActionKeysInLocale(noLanguage, Locale.ITALIAN, Locale.ITALIAN);
+        doTestActionKeysInLocale(noLanguage, Locale.JAPANESE, Locale.JAPANESE);
     }
 }

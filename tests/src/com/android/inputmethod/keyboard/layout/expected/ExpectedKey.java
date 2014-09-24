@@ -105,11 +105,11 @@ public class ExpectedKey {
     // The expected output of this key.
     private final ExpectedKeyOutput mOutput;
 
-    public final ExpectedKeyVisual getVisual() {
+    protected final ExpectedKeyVisual getVisual() {
         return mVisual;
     }
 
-    public final ExpectedKeyOutput getOutput() {
+    protected final ExpectedKeyOutput getOutput() {
         return mOutput;
     }
 
@@ -162,18 +162,19 @@ public class ExpectedKey {
 
     public boolean equalsTo(final Key key) {
         // This key has no "more keys".
-        return mVisual.equalsTo(key) && mOutput.equalsTo(key) && key.getMoreKeys() == null;
+        return mVisual.hasSameKeyVisual(key) && mOutput.hasSameKeyOutput(key)
+                && key.getMoreKeys() == null;
     }
 
     public boolean equalsTo(final MoreKeySpec moreKeySpec) {
-        return mVisual.equalsTo(moreKeySpec) && mOutput.equalsTo(moreKeySpec);
+        return mVisual.hasSameKeyVisual(moreKeySpec) && mOutput.hasSameKeyOutput(moreKeySpec);
     }
 
     @Override
     public boolean equals(final Object object) {
         if (object instanceof ExpectedKey) {
             final ExpectedKey key = (ExpectedKey) object;
-            return mVisual.equalsTo(key.mVisual) && mOutput.equalsTo(key.mOutput)
+            return mVisual.hasSameKeyVisual(key.mVisual) && mOutput.hasSameKeyOutput(key.mOutput)
                     && Arrays.equals(getMoreKeys(), key.getMoreKeys());
         }
         return false;
@@ -190,7 +191,7 @@ public class ExpectedKey {
 
     @Override
     public String toString() {
-        if (mVisual.equalsTo(mOutput)) {
+        if (mVisual.hasSameKeyVisual(mOutput)) {
             return mVisual.toString();
         }
         return mVisual + "|" + mOutput;
@@ -274,7 +275,7 @@ public class ExpectedKey {
 
         @Override
         public boolean equalsTo(final Key key) {
-            if (getVisual().equalsTo(key) && getOutput().equalsTo(key)) {
+            if (getVisual().hasSameKeyVisual(key) && getOutput().hasSameKeyOutput(key)) {
                 final MoreKeySpec[] moreKeySpecs = key.getMoreKeys();
                 final ExpectedKey[] moreKeys = getMoreKeys();
                 // This key should have at least one "more key".
