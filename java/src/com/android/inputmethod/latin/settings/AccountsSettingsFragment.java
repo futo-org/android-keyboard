@@ -30,8 +30,8 @@ import android.widget.Toast;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.define.ProductionFlags;
-import com.android.inputmethod.latin.utils.LoginAccountUtils;
 
 import javax.annotation.Nullable;
 

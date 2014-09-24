@@ -37,6 +37,7 @@
             android:supportsRtl="true"
             android:allowBackup="true">
 
+        <!-- Services -->
         <service android:name="LatinIME"
                 android:label="@string/english_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
@@ -56,6 +57,11 @@
                     android:resource="@xml/spellchecker" />
         </service>
 
+        <service android:name="com.android.inputmethod.dictionarypack.DictionaryService"
+                android:label="@string/dictionary_service_name">
+        </service>
+
+        <!-- Activities -->
         <activity android:name=".setup.SetupActivity"
                 android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
@@ -77,15 +83,6 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="SystemBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_INITIALIZE" />
-                <action android:name="android.intent.action.LOCALE_CHANGED" />
-            </intent-filter>
-        </receiver>
-
         <activity android:name=".settings.SettingsActivity"
                 android:theme="@style/platformSettingsTheme"
                 android:label="@string/english_ime_settings"
@@ -102,45 +99,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
-        <receiver android:name="SuggestionSpanPickedNotificationReceiver" android:enabled="true">
-            <intent-filter>
-                <action android:name="android.text.style.SUGGESTION_PICKED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".personalization.DictionaryDecayBroadcastReciever"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.android.inputmethod.latin.personalization.DICT_DECAY" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".DictionaryPackInstallBroadcastReceiver" android:exported="false">
-            <intent-filter>
-                <action android:name="com.android.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
-            </intent-filter>
-        </receiver>
-
-        <provider android:name="com.android.inputmethod.dictionarypack.DictionaryProvider"
-                android:grantUriPermissions="true"
-                android:exported="false"
-                android:authorities="@string/authority"
-                android:multiprocess="false"
-                android:label="@string/dictionary_provider_name">
-        </provider>
-
-        <service android:name="com.android.inputmethod.dictionarypack.DictionaryService"
-                android:label="@string/dictionary_service_name">
-        </service>
-
-        <receiver android:name="com.android.inputmethod.dictionarypack.EventHandler">
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-                <action android:name="android.intent.action.DATE_CHANGED" />
-                <action android:name="com.android.inputmethod.dictionarypack.aosp.UPDATE_NOW" />
-            </intent-filter>
-        </receiver>
 
         <activity android:name="com.android.inputmethod.dictionarypack.DictionarySettingsActivity"
                 android:theme="@style/platformSettingsTheme"
@@ -162,5 +120,59 @@
         <!-- Unexported activity used for tests. -->
         <activity android:name=".settings.TestFragmentActivity"
                 android:exported="false" />
+
+        <!-- Broadcast receivers -->
+        <receiver android:name="SystemBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_INITIALIZE" />
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".personalization.DictionaryDecayBroadcastReciever"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.android.inputmethod.latin.personalization.DICT_DECAY" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".DictionaryPackInstallBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.android.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="SuggestionSpanPickedNotificationReceiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="android.text.style.SUGGESTION_PICKED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.android.inputmethod.dictionarypack.EventHandler">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="com.android.inputmethod.dictionarypack.aosp.UPDATE_NOW" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Broadcast receiver for AccountManager#LOGIN_ACCOUNTS_CHANGED_ACTION. -->
+        <receiver
+            android:name=".accounts.AccountsChangedReceiver">
+            <intent-filter>
+                <action android:name="android.accounts.LOGIN_ACCOUNTS_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Content providers -->
+        <provider android:name="com.android.inputmethod.dictionarypack.DictionaryProvider"
+                android:grantUriPermissions="true"
+                android:exported="false"
+                android:authorities="@string/authority"
+                android:multiprocess="false"
+                android:label="@string/dictionary_provider_name">
+        </provider>
     </application>
 </manifest>
