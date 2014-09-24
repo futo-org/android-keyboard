@@ -131,6 +131,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mImportantNoticeStrip.setVisibility(VISIBLE);
         }
 
+        public boolean isShowingImportantNoticeStrip() {
+            return mImportantNoticeStrip.getVisibility() == VISIBLE;
+        }
+
         public boolean isShowingAddToDictionaryStrip() {
             return mAddToDictionaryStrip.getVisibility() == VISIBLE;
         }
@@ -393,13 +397,16 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public boolean onInterceptTouchEvent(final MotionEvent me) {
-        if (mMoreSuggestionsView.isInModalMode()) {
+        if (mStripVisibilityGroup.isShowingImportantNoticeStrip()) {
             return false;
         }
         if (!mMoreSuggestionsView.isShowingInParent()) {
             mLastX = (int)me.getX();
             mLastY = (int)me.getY();
             return mMoreSuggestionsSlidingDetector.onTouchEvent(me);
+        }
+        if (mMoreSuggestionsView.isInModalMode()) {
+            return false;
         }
 
         final int action = me.getAction();
