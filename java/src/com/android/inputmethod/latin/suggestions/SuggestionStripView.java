@@ -393,6 +393,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public boolean onInterceptTouchEvent(final MotionEvent me) {
+        if (mMoreSuggestionsView.isInModalMode()) {
+            return false;
+        }
         if (!mMoreSuggestionsView.isShowingInParent()) {
             mLastX = (int)me.getX();
             mLastY = (int)me.getY();
@@ -416,7 +419,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
             // Decided to be in the modal input mode.
-            mMoreSuggestionsView.adjustVerticalCorrectionForModalMode();
+            mMoreSuggestionsView.setModalMode();
         }
         return false;
     }
