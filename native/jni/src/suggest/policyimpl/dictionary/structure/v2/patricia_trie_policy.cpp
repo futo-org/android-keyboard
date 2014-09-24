@@ -58,6 +58,11 @@ void PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNo
     }
 }
 
+int PatriciaTriePolicy::getCodePointsAndReturnCodePointCount(const int wordId,
+        const int maxCodePointCount, int *const outCodePoints) const {
+    return getCodePointsAndProbabilityAndReturnCodePointCount(wordId, maxCodePointCount,
+            outCodePoints, nullptr /* outUnigramProbability */);
+}
 // This retrieves code points and the probability of the word by its id.
 // Due to the fact that words are ordered in the dictionary in a strict breadth-first order,
 // it is possible to check for this with advantageous complexity. For each PtNode array, we search
@@ -82,6 +87,9 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
     int pos = getRootPosition();
     int wordPos = 0;
     const int *const codePointTable = mHeaderPolicy.getCodePointTable();
+    if (outUnigramProbability) {
+        *outUnigramProbability = NOT_A_PROBABILITY;
+    }
     // One iteration of the outer loop iterates through PtNode arrays. As stated above, we will
     // only traverse PtNodes that are actually a part of the terminal we are searching, so each
     // time we enter this loop we are one depth level further than last time.
@@ -97,7 +105,6 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                     pos, mBuffer.size());
             mIsCorrupted = true;
             ASSERT(false);
-            *outUnigramProbability = NOT_A_PROBABILITY;
             return 0;
         }
         for (int ptNodeCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
@@ -107,7 +114,6 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                 AKLOGE("PtNode position is invalid. pos: %d, dict size: %zd", pos, mBuffer.size());
                 mIsCorrupted = true;
                 ASSERT(false);
-                *outUnigramProbability = NOT_A_PROBABILITY;
                 return 0;
             }
             const PatriciaTrieReadingUtils::NodeFlags flags =
@@ -130,9 +136,11 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                                 mBuffer.data(), codePointTable, &pos);
                     }
                 }
-                *outUnigramProbability =
-                        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mBuffer.data(),
-                                &pos);
+                if (outUnigramProbability) {
+                    *outUnigramProbability =
+                            PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(
+                                    mBuffer.data(), &pos);
+                }
                 return ++wordPos;
             }
             // We need to skip past this PtNode, so skip any remaining code points after the
@@ -234,7 +242,6 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                                     pos);
                             mIsCorrupted = true;
                             ASSERT(false);
-                            *outUnigramProbability = NOT_A_PROBABILITY;
                             return 0;
                         }
                     }
@@ -257,7 +264,6 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                         AKLOGE("Cannot skip bigrams. BufSize: %zd, pos: %d.", mBuffer.size(), pos);
                         mIsCorrupted = true;
                         ASSERT(false);
-                        *outUnigramProbability = NOT_A_PROBABILITY;
                         return 0;
                     }
                 }
@@ -497,10 +503,8 @@ int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outC
         return 0;
     }
     const int terminalPtNodePos = mTerminalPtNodePositionsForIteratingWords[token];
-    int unigramProbability = NOT_A_PROBABILITY;
-    *outCodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
-            getWordIdFromTerminalPtNodePos(terminalPtNodePos), MAX_WORD_LENGTH, outCodePoints,
-            &unigramProbability);
+    *outCodePointCount = getCodePointsAndReturnCodePointCount(
+            getWordIdFromTerminalPtNodePos(terminalPtNodePos), MAX_WORD_LENGTH, outCodePoints);
     const int nextToken = token + 1;
     if (nextToken >= terminalPtNodePositionsVectorSize) {
         // All words have been iterated.

@@ -77,10 +77,8 @@ void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbabi
         return;
     }
     int targetWordCodePoints[MAX_WORD_LENGTH];
-    int unigramProbability = 0;
-    const int codePointCount = mDictStructurePolicy->
-            getCodePointsAndProbabilityAndReturnCodePointCount(targetWordId, MAX_WORD_LENGTH,
-                    targetWordCodePoints, &unigramProbability);
+    const int codePointCount = mDictStructurePolicy->getCodePointsAndReturnCodePointCount(
+            targetWordId, MAX_WORD_LENGTH, targetWordCodePoints);
     if (codePointCount <= 0) {
         return;
     }
