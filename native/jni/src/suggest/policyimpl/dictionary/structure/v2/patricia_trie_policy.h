@@ -58,9 +58,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     void createAndGetAllChildDicNodes(const DicNode *const dicNode,
             DicNodeVector *const childDicNodes) const;
 
-    int getCodePointsAndProbabilityAndReturnCodePointCount(
-            const int wordId, const int maxCodePointCount, int *const outCodePoints,
-            int *const outUnigramProbability) const;
+    int getCodePointsAndReturnCodePointCount(const int wordId, const int maxCodePointCount,
+            int *const outCodePoints) const;
 
     int getWordId(const CodePointArrayView wordCodePoints, const bool forceLowerCaseSearch) const;
 
@@ -155,6 +154,9 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
 
+    int getCodePointsAndProbabilityAndReturnCodePointCount(const int wordId,
+            const int maxCodePointCount, int *const outCodePoints,
+            int *const outUnigramProbability) const;
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
     int getBigramsPositionOfPtNode(const int ptNodePos) const;
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int ptNodePos,
