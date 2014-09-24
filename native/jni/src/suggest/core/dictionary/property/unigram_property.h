@@ -71,6 +71,11 @@ class UnigramProperty {
         return mIsBlacklisted;
     }
 
+    bool isPossiblyOffensive() const {
+        // TODO: Have dedicated flag.
+        return mProbability == 0;
+    }
+
     bool hasShortcuts() const {
         return !mShortcuts.empty();
     }

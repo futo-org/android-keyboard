@@ -52,6 +52,9 @@ class Ver4DictConstants {
     // Flags in probability entry.
     static const uint8_t FLAG_REPRESENTS_BEGINNING_OF_SENTENCE;
     static const uint8_t FLAG_NOT_A_VALID_ENTRY;
+    static const uint8_t FLAG_NOT_A_WORD;
+    static const uint8_t FLAG_BLACKLISTED;
+    static const uint8_t FLAG_POSSIBLY_OFFENSIVE;
 
     static const int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE;
     static const int SHORTCUT_ADDRESS_TABLE_DATA_SIZE;
