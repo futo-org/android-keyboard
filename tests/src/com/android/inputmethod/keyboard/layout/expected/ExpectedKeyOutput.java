@@ -43,10 +43,10 @@ abstract class ExpectedKeyOutput {
 
     abstract ExpectedKeyOutput toUpperCase(final Locale locale);
     abstract ExpectedKeyOutput preserveCase();
-    abstract boolean equalsTo(final String text);
-    abstract boolean equalsTo(final Key key);
-    abstract boolean equalsTo(final MoreKeySpec moreKeySpec);
-    abstract boolean equalsTo(final ExpectedKeyOutput output);
+    abstract boolean hasSameKeyOutput(final String text);
+    abstract boolean hasSameKeyOutput(final Key key);
+    abstract boolean hasSameKeyOutput(final MoreKeySpec moreKeySpec);
+    abstract boolean hasSameKeyOutput(final ExpectedKeyOutput output);
 
     /**
      * This class represents an integer code point.
@@ -75,22 +75,22 @@ abstract class ExpectedKeyOutput {
         }
 
         @Override
-        boolean equalsTo(final String text) {
+        boolean hasSameKeyOutput(final String text) {
             return StringUtils.codePointCount(text) == 1 && text.codePointAt(0) == mCode;
         }
 
         @Override
-        boolean equalsTo(final Key key) {
+        boolean hasSameKeyOutput(final Key key) {
             return mCode == key.getCode();
         }
 
         @Override
-        boolean equalsTo(final MoreKeySpec moreKeySpec) {
+        boolean hasSameKeyOutput(final MoreKeySpec moreKeySpec) {
             return mCode == moreKeySpec.mCode;
         }
 
         @Override
-        boolean equalsTo(final ExpectedKeyOutput output) {
+        boolean hasSameKeyOutput(final ExpectedKeyOutput output) {
             return (output instanceof Code) && mCode == ((Code)output).mCode;
         }
 
@@ -130,24 +130,24 @@ abstract class ExpectedKeyOutput {
         }
 
         @Override
-        boolean equalsTo(final String text) {
+        boolean hasSameKeyOutput(final String text) {
             return text.equals(text);
         }
 
         @Override
-        boolean equalsTo(final Key key) {
+        boolean hasSameKeyOutput(final Key key) {
             return key.getCode() == Constants.CODE_OUTPUT_TEXT
                     && mText.equals(key.getOutputText());
         }
 
         @Override
-        boolean equalsTo(final MoreKeySpec moreKeySpec) {
+        boolean hasSameKeyOutput(final MoreKeySpec moreKeySpec) {
             return moreKeySpec.mCode == Constants.CODE_OUTPUT_TEXT
                     && mText.equals(moreKeySpec.mOutputText);
         }
 
         @Override
-        boolean equalsTo(final ExpectedKeyOutput output) {
+        boolean hasSameKeyOutput(final ExpectedKeyOutput output) {
             return (output instanceof Text) && mText == ((Text)output).mText;
         }
 
