@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/core/dictionary/word_attributes.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -128,7 +129,7 @@ class LanguageModelDictContent {
             const LanguageModelDictContent *const originalContent,
             int *const outNgramCount);
 
-    int getWordProbability(const WordIdArrayView prevWordIds, const int wordId,
+    const WordAttributes getWordAttributes(const WordIdArrayView prevWordIds, const int wordId,
             const HeaderPolicy *const headerPolicy) const;
 
     ProbabilityEntry getProbabilityEntry(const int wordId) const {

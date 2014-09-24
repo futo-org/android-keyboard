@@ -49,7 +49,9 @@ class ProbabilityEntry {
 
     // Create from unigram property.
     ProbabilityEntry(const UnigramProperty *const unigramProperty)
-            : mFlags(createFlags(unigramProperty->representsBeginningOfSentence())),
+            : mFlags(createFlags(unigramProperty->representsBeginningOfSentence(),
+                    unigramProperty->isNotAWord(), unigramProperty->isBlacklisted(),
+                    unigramProperty->isPossiblyOffensive())),
               mProbability(unigramProperty->getProbability()),
               mHistoricalInfo(unigramProperty->getTimestamp(), unigramProperty->getLevel(),
                       unigramProperty->getCount()) {}
@@ -83,6 +85,18 @@ class ProbabilityEntry {
 
     bool representsBeginningOfSentence() const {
         return (mFlags & Ver4DictConstants::FLAG_REPRESENTS_BEGINNING_OF_SENTENCE) != 0;
+    }
+
+    bool isNotAWord() const {
+        return (mFlags & Ver4DictConstants::FLAG_NOT_A_WORD) != 0;
+    }
+
+    bool isBlacklisted() const {
+        return (mFlags & Ver4DictConstants::FLAG_BLACKLISTED) != 0;
+    }
+
+    bool isPossiblyOffensive() const {
+        return (mFlags & Ver4DictConstants::FLAG_POSSIBLY_OFFENSIVE) != 0;
     }
 
     uint64_t encode(const bool hasHistoricalInfo) const {
@@ -142,10 +156,20 @@ class ProbabilityEntry {
                 (encodedEntry >> (pos * CHAR_BIT)) & ((1ull << (size * CHAR_BIT)) - 1));
     }
 
-    static uint8_t createFlags(const bool representsBeginningOfSentence) {
+    static uint8_t createFlags(const bool representsBeginningOfSentence,
+            const bool isNotAWord, const bool isBlacklisted, const bool isPossiblyOffensive) {
         uint8_t flags = 0;
         if (representsBeginningOfSentence) {
-            flags ^= Ver4DictConstants::FLAG_REPRESENTS_BEGINNING_OF_SENTENCE;
+            flags |= Ver4DictConstants::FLAG_REPRESENTS_BEGINNING_OF_SENTENCE;
+        }
+        if (isNotAWord) {
+            flags |= Ver4DictConstants::FLAG_NOT_A_WORD;
+        }
+        if (isBlacklisted) {
+            flags |= Ver4DictConstants::FLAG_BLACKLISTED;
+        }
+        if (isPossiblyOffensive) {
+            flags |= Ver4DictConstants::FLAG_POSSIBLY_OFFENSIVE;
         }
         return flags;
     }

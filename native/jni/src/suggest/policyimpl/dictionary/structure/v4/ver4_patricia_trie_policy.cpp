@@ -63,14 +63,10 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
             // valid terminal DicNode.
             isTerminal = ptNodeParams.getProbability() != NOT_A_PROBABILITY;
         }
-        readingHelper.readNextSiblingNode(ptNodeParams);
-        if (ptNodeParams.representsNonWordInfo()) {
-            // Skip PtNodes that represent non-word information.
-            continue;
-        }
         const int wordId = isTerminal ? ptNodeParams.getTerminalId() : NOT_A_WORD_ID;
         childDicNodes->pushLeavingChild(dicNode, ptNodeParams.getChildrenPos(),
                 wordId, ptNodeParams.getCodePointArrayView());
+        readingHelper.readNextSiblingNode(ptNodeParams);
     }
     if (readingHelper.isError()) {
         mIsCorrupted = true;
@@ -117,13 +113,8 @@ const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
     if (wordId == NOT_A_WORD_ID) {
         return WordAttributes();
     }
-    const int ptNodePos =
-            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
-    const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
-    const int probability = mBuffers->getLanguageModelDictContent()->getWordProbability(
-            prevWordIds, wordId, mHeaderPolicy);
-    return WordAttributes(probability, ptNodeParams.isBlacklisted(), ptNodeParams.isNotAWord(),
-            probability == 0);
+    return mBuffers->getLanguageModelDictContent()->getWordAttributes(prevWordIds, wordId,
+            mHeaderPolicy);
 }
 
 int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,
@@ -131,15 +122,10 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordI
     if (wordId == NOT_A_WORD_ID || prevWordIds.contains(NOT_A_WORD_ID)) {
         return NOT_A_PROBABILITY;
     }
-    const int ptNodePos =
-            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
-    const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
-    if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
-        return NOT_A_PROBABILITY;
-    }
     const ProbabilityEntry probabilityEntry =
             mBuffers->getLanguageModelDictContent()->getNgramProbabilityEntry(prevWordIds, wordId);
-    if (!probabilityEntry.isValid()) {
+    if (!probabilityEntry.isValid() || probabilityEntry.isBlacklisted()
+            || probabilityEntry.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
@@ -511,10 +497,10 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
             shortcuts.emplace_back(&target, shortcutProbability);
         }
     }
-    const UnigramProperty unigramProperty(ptNodeParams.representsBeginningOfSentence(),
-            ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
-            historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
-            historicalInfo->getCount(), &shortcuts);
+    const UnigramProperty unigramProperty(probabilityEntry.representsBeginningOfSentence(),
+            probabilityEntry.isNotAWord(), probabilityEntry.isBlacklisted(),
+            probabilityEntry.getProbability(), historicalInfo->getTimeStamp(),
+            historicalInfo->getLevel(), historicalInfo->getCount(), &shortcuts);
     return WordProperty(&codePointVector, &unigramProperty, &bigrams);
 }
 
