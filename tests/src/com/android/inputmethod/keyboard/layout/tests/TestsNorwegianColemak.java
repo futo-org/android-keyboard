@@ -18,19 +18,31 @@ package com.android.inputmethod.keyboard.layout.tests;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.keyboard.layout.Colemak;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.Nordic;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
 /**
- * fi: Finnish/nordic
+ * nb: Norwegian Bokmål/colemak
  */
 @SmallTest
-public final class TestsFinnish extends LayoutTestsBase {
-    private static final Locale LOCALE = new Locale("fi");
-    private static final LayoutBase LAYOUT = new Nordic(new FinnishCustomizer(LOCALE));
+public final class TestsNorwegianColemak extends LayoutTestsBase {
+    private static final Locale LOCALE = new Locale("nb");
+    private static final LayoutBase LAYOUT = new Colemak(new NorwegianColemakCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
+
+    private static class NorwegianColemakCustomizer extends NorwegianCustomizer {
+        public NorwegianColemakCustomizer(final Locale locale) {
+            super(locale);
+        }
+
+        @Override
+        protected void setNordicKeys(final ExpectedKeyboardBuilder builder) {
+            // Colemak layout doesn't have Nordic keys.
+        }
+    }
 }

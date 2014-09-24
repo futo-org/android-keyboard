@@ -68,6 +68,7 @@ public class KeyboardParams {
     public final KeyStylesSet mKeyStyles = new KeyStylesSet(mTextsSet);
 
     public KeysCache mKeysCache;
+    public boolean mAllowRedundantMoreKeys;
 
     public int mMostCommonKeyHeight = 0;
     public int mMostCommonKeyWidth = 0;
@@ -112,6 +113,23 @@ public class KeyboardParams {
         }
         if (key.altCodeWhileTyping()) {
             mAltCodeKeysWhileTyping.add(key);
+        }
+    }
+
+    public void removeRedundantMoreKeys() {
+        if (mAllowRedundantMoreKeys) {
+            return;
+        }
+        final MoreKeySpec.LettersOnBaseLayout lettersOnBaseLayout =
+                new MoreKeySpec.LettersOnBaseLayout();
+        for (final Key key : mSortedKeys) {
+            lettersOnBaseLayout.addLetter(key);
+        }
+        final ArrayList<Key> allKeys = new ArrayList<>(mSortedKeys);
+        mSortedKeys.clear();
+        for (final Key key : allKeys) {
+            final Key filteredKey = Key.removeRedundantMoreKeys(key, lettersOnBaseLayout);
+            mSortedKeys.add(mKeysCache.replace(key, filteredKey));
         }
     }
 

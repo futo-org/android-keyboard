@@ -395,6 +395,10 @@ public class Key implements Comparable<Key> {
      * @param key the original key.
      */
     protected Key(final Key key) {
+        this(key, key.mMoreKeys);
+    }
+
+    private Key(final Key key, final MoreKeySpec[] moreKeys) {
         // Final attributes.
         mCode = key.mCode;
         mLabel = key.mLabel;
@@ -408,7 +412,7 @@ public class Key implements Comparable<Key> {
         mX = key.mX;
         mY = key.mY;
         mHitBox.set(key.mHitBox);
-        mMoreKeys = key.mMoreKeys;
+        mMoreKeys = moreKeys;
         mMoreKeysColumnAndFlags = key.mMoreKeysColumnAndFlags;
         mBackgroundType = key.mBackgroundType;
         mActionFlags = key.mActionFlags;
@@ -418,6 +422,14 @@ public class Key implements Comparable<Key> {
         // Key state.
         mPressed = key.mPressed;
         mEnabled = key.mEnabled;
+    }
+
+    public static Key removeRedundantMoreKeys(final Key key,
+            final MoreKeySpec.LettersOnBaseLayout lettersOnBaseLayout) {
+        final MoreKeySpec[] moreKeys = key.getMoreKeys();
+        final MoreKeySpec[] filteredMoreKeys = MoreKeySpec.removeRedundantMoreKeys(
+                moreKeys, lettersOnBaseLayout);
+        return (filteredMoreKeys == moreKeys) ? key : new Key(key, filteredMoreKeys);
     }
 
     private static boolean needsToUpperCase(final int labelFlags, final int keyboardElementId) {
