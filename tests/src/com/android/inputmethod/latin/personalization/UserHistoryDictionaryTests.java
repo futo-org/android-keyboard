@@ -308,5 +308,6 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         for (final String word : words) {
             assertFalse(dict.isInDictionary(word));
         }
+        stopTestModeInNativeCode();
     }
 }
