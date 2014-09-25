@@ -20,16 +20,24 @@ import java.io.File;
 import java.util.Locale;
 
 public class DictionaryStats {
+    public static final int NOT_AN_ENTRY_COUNT = -1;
+
     public final Locale mLocale;
     public final String mDictName;
     public final String mDictFilePath;
     public final long mDictFileSize;
+
+    public final int mUnigramCount;
+    public final int mNgramCount;
     // TODO: Add more members.
 
-    public DictionaryStats(final Locale locale, final String dictName, final File dictFile) {
+    public DictionaryStats(final Locale locale, final String dictName, final File dictFile,
+            final int unigramCount, final int ngramCount) {
         mLocale = locale;
         mDictName = dictName;
         mDictFilePath = dictFile.getAbsolutePath();
         mDictFileSize = dictFile.length();
+        mUnigramCount = unigramCount;
+        mNgramCount = ngramCount;
     }
 }

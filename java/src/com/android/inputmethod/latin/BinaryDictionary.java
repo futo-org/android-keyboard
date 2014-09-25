@@ -598,7 +598,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
-    public String getPropertyForTest(final String query) {
+    public String getPropertyForGettingStats(final String query) {
         if (!isValidDictionary()) return "";
         return getPropertyNative(mNativeDict, query);
     }
