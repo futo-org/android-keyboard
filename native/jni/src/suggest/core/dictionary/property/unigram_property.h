@@ -27,8 +27,9 @@ class UnigramProperty {
  public:
     class ShortcutProperty {
      public:
-        ShortcutProperty(const std::vector<int> *const targetCodePoints, const int probability)
-                : mTargetCodePoints(*targetCodePoints), mProbability(probability) {}
+        ShortcutProperty(const std::vector<int> &&targetCodePoints, const int probability)
+                : mTargetCodePoints(std::move(targetCodePoints)),
+                  mProbability(probability) {}
 
         const std::vector<int> *getTargetCodePoints() const {
             return &mTargetCodePoints;

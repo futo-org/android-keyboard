@@ -26,9 +26,9 @@ namespace latinime {
 // TODO: Change to NgramProperty.
 class BigramProperty {
  public:
-    BigramProperty(const std::vector<int> *const targetCodePoints,
-            const int probability, const int timestamp, const int level, const int count)
-            : mTargetCodePoints(*targetCodePoints), mProbability(probability),
+    BigramProperty(const std::vector<int> &&targetCodePoints, const int probability,
+            const int timestamp, const int level, const int count)
+            : mTargetCodePoints(std::move(targetCodePoints)), mProbability(probability),
               mTimestamp(timestamp), mLevel(level), mCount(count) {}
 
     const std::vector<int> *getTargetCodePoints() const {

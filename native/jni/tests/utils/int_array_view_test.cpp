@@ -144,5 +144,12 @@ TEST(IntArrayViewTest, TestLastOrDefault) {
     EXPECT_EQ(10, intArrayView.skip(6).lastOrDefault(10));
 }
 
+TEST(IntArrayViewTest, TestToVector) {
+    const std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
+    IntArrayView intArrayView(intVector);
+    EXPECT_EQ(intVector, intArrayView.toVector());
+    EXPECT_EQ(std::vector<int>(), CodePointArrayView().toVector());
+}
+
 }  // namespace
 }  // namespace latinime
