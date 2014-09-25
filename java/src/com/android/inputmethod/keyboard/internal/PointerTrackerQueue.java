@@ -95,7 +95,7 @@ public final class PointerTrackerQueue {
     public void releaseAllPointersOlderThan(final Element pointer, final long eventTime) {
         synchronized (mExpandableArrayOfActivePointers) {
             if (DEBUG) {
-                Log.d(TAG, "releaseAllPoniterOlderThan: " + pointer + " " + this);
+                Log.d(TAG, "releaseAllPointerOlderThan: " + pointer + " " + this);
             }
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
             final int arraySize = mArraySize;
@@ -144,9 +144,9 @@ public final class PointerTrackerQueue {
         synchronized (mExpandableArrayOfActivePointers) {
             if (DEBUG) {
                 if (pointer == null) {
-                    Log.d(TAG, "releaseAllPoniters: " + this);
+                    Log.d(TAG, "releaseAllPointers: " + this);
                 } else {
-                    Log.d(TAG, "releaseAllPoniterExcept: " + pointer + " " + this);
+                    Log.d(TAG, "releaseAllPointerExcept: " + pointer + " " + this);
                 }
             }
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
