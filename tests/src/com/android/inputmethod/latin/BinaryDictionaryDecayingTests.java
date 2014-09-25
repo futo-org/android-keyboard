@@ -342,31 +342,31 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         }
 
         final int maxUnigramCount = Integer.parseInt(
-                binaryDictionary.getPropertyForTest(BinaryDictionary.MAX_UNIGRAM_COUNT_QUERY));
+                binaryDictionary.getPropertyForGettingStats(BinaryDictionary.MAX_UNIGRAM_COUNT_QUERY));
         for (int i = 0; i < unigramTypedCount; i++) {
             final String word = words.get(random.nextInt(words.size()));
             addUnigramWord(binaryDictionary, word, DUMMY_PROBABILITY);
 
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final int unigramCountBeforeGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTest(
+                        Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                     forcePassingShortTime(binaryDictionary);
                 }
                 final int unigramCountAfterGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTest(
+                        Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 assertTrue(unigramCountBeforeGC > unigramCountAfterGC);
             }
         }
 
-        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTest(
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)) > 0);
-        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTest(
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)) <= maxUnigramCount);
         forcePassingLongTime(binaryDictionary);
-        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTest(
+        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)));
     }
 
@@ -415,13 +415,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             }
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final int unigramCountBeforeGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTest(
+                        Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 assertTrue(binaryDictionary.isValidWord(strong));
                 assertTrue(binaryDictionary.isValidWord(weak));
                 binaryDictionary.flushWithGC();
                 final int unigramCountAfterGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTest(
+                        Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 assertTrue(unigramCountBeforeGC > unigramCountAfterGC);
                 assertFalse(binaryDictionary.isValidWord(weak));
@@ -477,7 +477,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         }
 
         final int maxBigramCount = Integer.parseInt(
-                binaryDictionary.getPropertyForTest(BinaryDictionary.MAX_BIGRAM_COUNT_QUERY));
+                binaryDictionary.getPropertyForGettingStats(BinaryDictionary.MAX_BIGRAM_COUNT_QUERY));
         for (int i = 0; i < bigramTypedCount; ++i) {
             final Pair<String, String> bigram = bigrams.get(random.nextInt(bigrams.size()));
             addUnigramWord(binaryDictionary, bigram.first, DUMMY_PROBABILITY);
@@ -486,24 +486,24 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final int bigramCountBeforeGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTest(
+                        Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                     forcePassingShortTime(binaryDictionary);
                 }
                 final int bigramCountAfterGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTest(
+                        Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 assertTrue(bigramCountBeforeGC > bigramCountAfterGC);
             }
         }
 
-        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTest(
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)) > 0);
-        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTest(
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)) <= maxBigramCount);
         forcePassingLongTime(binaryDictionary);
-        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTest(
+        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)));
     }
 
@@ -574,11 +574,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             }
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final int bigramCountBeforeGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTest(
+                        Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 binaryDictionary.flushWithGC();
                 final int bigramCountAfterGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTest(
+                        Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 assertTrue(bigramCountBeforeGC > bigramCountAfterGC);
                 assertTrue(isValidBigram(binaryDictionary, strong, target));
