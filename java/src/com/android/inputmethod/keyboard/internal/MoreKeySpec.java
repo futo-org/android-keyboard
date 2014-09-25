@@ -149,8 +149,13 @@ public final class MoreKeySpec {
             }
         }
         final int size = filteredMoreKeys.size();
-        return (moreKeys.length == size) ? moreKeys
-                : filteredMoreKeys.toArray(new MoreKeySpec[size]);
+        if (size == moreKeys.length) {
+            return moreKeys;
+        }
+        if (size == 0) {
+            return null;
+        }
+        return filteredMoreKeys.toArray(new MoreKeySpec[size]);
     }
 
     private static final boolean DEBUG = DebugFlags.DEBUG_ENABLED;
