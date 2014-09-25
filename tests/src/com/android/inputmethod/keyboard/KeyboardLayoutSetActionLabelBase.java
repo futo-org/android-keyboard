@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyVisual;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -64,10 +65,11 @@ abstract class KeyboardLayoutSetActionLabelBase extends KeyboardLayoutSetTestsBa
     }
 
     protected static Locale getLabelLocale(final InputMethodSubtype subtype) {
-        if (subtype.getLocale().equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
+        final String localeString = subtype.getLocale();
+        if (localeString.equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
             return null;
         }
-        return SubtypeLocaleUtils.getSubtypeLocale(subtype);
+        return LocaleUtils.constructLocaleFromString(localeString);
     }
 
     public void testActionUnspecified() {

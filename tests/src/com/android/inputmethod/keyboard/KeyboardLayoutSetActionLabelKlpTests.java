@@ -22,15 +22,40 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 @MediumTest
 public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActionLabelBase {
+    // Filter a subtype whose name should be displayed using {@link Locale#ROOT}, such like
+    // Hinglish (hi_ZZ) and Serbian-Latn (sr_ZZ).
+    static final SubtypeFilter SUBTYPE_FILTER_NAME_IN_BASE_LOCALE = new SubtypeFilter() {
+        @Override
+        public boolean accept(final InputMethodSubtype subtype) {
+            return Locale.ROOT.equals(
+                    SubtypeLocaleUtils.getDisplayLocaleOfSubtypeLocale(subtype.getLocale()));
+        }
+    };
+
+    private ArrayList<InputMethodSubtype> mSubtypesWhoseNameIsDisplayedInItsLocale;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mSubtypesWhoseNameIsDisplayedInItsLocale = getSubtypesFilteredBy(new SubtypeFilter() {
+            @Override
+            public boolean accept(final InputMethodSubtype subtype) {
+                return !SUBTYPE_FILTER_NAME_IN_BASE_LOCALE.accept(subtype);
+            }
+        });
+    }
+
     @Override
     protected int getKeyboardThemeForTests() {
         return KeyboardTheme.THEME_ID_KLP;
@@ -38,7 +63,7 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
 
     @Override
     public void testActionGo() {
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
             final String tag = "go " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
                     R.string.label_go_key, getLabelLocale(subtype), getContext());
@@ -48,7 +73,7 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
 
     @Override
     public void testActionSend() {
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
             final String tag = "send " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
                     R.string.label_send_key, getLabelLocale(subtype), getContext());
@@ -58,7 +83,7 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
 
     @Override
     public void testActionNext() {
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
             final String tag = "next " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
                     R.string.label_next_key, getLabelLocale(subtype), getContext());
@@ -68,7 +93,7 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
 
     @Override
     public void testActionDone() {
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
             final String tag = "done " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
                     R.string.label_done_key, getLabelLocale(subtype), getContext());
@@ -78,7 +103,7 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
 
     @Override
     public void testActionPrevious() {
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
             final String tag = "previous " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
                     R.string.label_previous_key, getLabelLocale(subtype), getContext());
@@ -105,7 +130,7 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
     // Working variable to simulate system locale changing.
     private Locale mSystemLocale = Locale.getDefault();
 
-    private void doTestActionKeysInLocale(final InputMethodSubtype subtype,
+    private void doTestActionKeysInLocaleWithStringResources(final InputMethodSubtype subtype,
             final Locale labelLocale, final Locale systemLocale) {
         // Simulate system locale changing, see {@link SystemBroadcastReceiver}.
         if (!systemLocale.equals(mSystemLocale)) {
@@ -144,10 +169,10 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
         final InputMethodSubtype italian = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.ITALIAN.toString(), SubtypeLocaleUtils.QWERTY);
         // An action label should be displayed in subtype's locale regardless of the system locale.
-        doTestActionKeysInLocale(italian, Locale.ITALIAN, Locale.US);
-        doTestActionKeysInLocale(italian, Locale.ITALIAN, Locale.FRENCH);
-        doTestActionKeysInLocale(italian, Locale.ITALIAN, Locale.ITALIAN);
-        doTestActionKeysInLocale(italian, Locale.ITALIAN, Locale.JAPANESE);
+        doTestActionKeysInLocaleWithStringResources(italian, Locale.ITALIAN, Locale.US);
+        doTestActionKeysInLocaleWithStringResources(italian, Locale.ITALIAN, Locale.FRENCH);
+        doTestActionKeysInLocaleWithStringResources(italian, Locale.ITALIAN, Locale.ITALIAN);
+        doTestActionKeysInLocaleWithStringResources(italian, Locale.ITALIAN, Locale.JAPANESE);
     }
 
     public void testNoLanguageSubtypeActionLabel() {
@@ -155,9 +180,58 @@ public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActio
         final InputMethodSubtype noLanguage = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.QWERTY);
         // An action label of no language keyboard should be displayed in the system locale.
-        doTestActionKeysInLocale(noLanguage, Locale.US, Locale.US);
-        doTestActionKeysInLocale(noLanguage, Locale.FRENCH, Locale.FRENCH);
-        doTestActionKeysInLocale(noLanguage, Locale.ITALIAN, Locale.ITALIAN);
-        doTestActionKeysInLocale(noLanguage, Locale.JAPANESE, Locale.JAPANESE);
+        doTestActionKeysInLocaleWithStringResources(noLanguage, Locale.US, Locale.US);
+        doTestActionKeysInLocaleWithStringResources(noLanguage, Locale.FRENCH, Locale.FRENCH);
+        doTestActionKeysInLocaleWithStringResources(noLanguage, Locale.ITALIAN, Locale.ITALIAN);
+        doTestActionKeysInLocaleWithStringResources(noLanguage, Locale.JAPANESE, Locale.JAPANESE);
+    }
+
+    private void doTestActionKeysInLocaleWithKeyboardTextsSet(final InputMethodSubtype subtype,
+            final Locale labelLocale, final Locale systemLocale) {
+        // Simulate system locale changing, see {@link SystemBroadcastReceiver}.
+        if (!systemLocale.equals(mSystemLocale)) {
+            KeyboardLayoutSet.onSystemLocaleChanged();
+            mSystemLocale = systemLocale;
+        }
+        final KeyboardTextsSet textsSet = new KeyboardTextsSet();
+        textsSet.setLocale(labelLocale, getContext());
+        final ExpectedActionKey enterKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_ENTER_KEY);
+        final ExpectedActionKey goKey = ExpectedActionKey.newLabelKey(
+                textsSet.getText("label_go_key"));
+        final ExpectedActionKey searchKey = ExpectedActionKey.newIconKey(
+                KeyboardIconsSet.NAME_SEARCH_KEY);
+        final ExpectedActionKey sendKey = ExpectedActionKey.newLabelKey(
+                textsSet.getText("label_send_key"));
+        final ExpectedActionKey nextKey = ExpectedActionKey.newLabelKey(
+                textsSet.getText("label_next_key"));
+        final ExpectedActionKey doneKey = ExpectedActionKey.newLabelKey(
+                textsSet.getText("label_done_key"));
+        final ExpectedActionKey previousKey = ExpectedActionKey.newLabelKey(
+                textsSet.getText("label_previous_key"));
+        final String tag = "label=hi_ZZ system=" + systemLocale
+                + " " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
+        final RunInLocale<Void> job = new RunInLocale<Void>() {
+            @Override
+            public Void job(final Resources res) {
+                doTestActionKeys(subtype, tag, enterKey, enterKey, goKey, searchKey, sendKey,
+                        nextKey, doneKey, previousKey);
+                return null;
+            }
+        };
+        job.runInLocale(getContext().getResources(), systemLocale);
+    }
+
+    public void testHinglishActionLabel() {
+        final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
+        final Locale hi_ZZ = new Locale("hi", "ZZ");
+        final InputMethodSubtype hinglish = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                hi_ZZ.toString(), SubtypeLocaleUtils.QWERTY);
+        // An action label should be displayed in subtype's locale regardless of the system locale.
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, hi_ZZ);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.US);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.FRENCH);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.ITALIAN);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.JAPANESE);
     }
 }

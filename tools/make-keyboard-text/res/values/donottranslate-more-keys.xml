@@ -259,4 +259,12 @@
     <string name="morekeys_double_quote">!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes</string>
     <string name="morekeys_tablet_double_quote">!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes</string>
     <string name="keyspec_emoji_action_key">!icon/emoji_action_key|!code/key_emoji</string>
+    <string name="label_go_key">!string/label_go_key</string>
+    <string name="label_send_key">!string/label_send_key</string>
+    <string name="label_next_key">!string/label_next_key</string>
+    <string name="label_done_key">!string/label_done_key</string>
+    <string name="label_search_key">!string/label_search_key</string>
+    <string name="label_previous_key">!string/label_previous_key</string>
+    <string name="label_pause_key">!string/label_pause_key</string>
+    <string name="label_wait_key">!string/label_wait_key</string>
 </resources>

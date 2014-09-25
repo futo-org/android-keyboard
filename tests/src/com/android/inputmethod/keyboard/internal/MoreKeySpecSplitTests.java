@@ -16,52 +16,33 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.res.Resources;
-import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.MediumTest;
+import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
+import com.android.inputmethod.latin.R;
+
 import java.util.Arrays;
 import java.util.Locale;
 
-@MediumTest
-public class MoreKeySpecSplitTests extends InstrumentationTestCase {
+@SmallTest
+public class MoreKeySpecSplitTests extends AndroidTestCase {
     private static final Locale TEST_LOCALE = Locale.ENGLISH;
-    final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
+    private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        final Instrumentation instrumentation = getInstrumentation();
-        final Context targetContext = instrumentation.getTargetContext();
-        mTextsSet.setLocale(TEST_LOCALE, targetContext);
-        final String[] testResourceNames = getAllResourceIdNames(
-                com.android.inputmethod.latin.tests.R.string.class);
-        final Context testContext = instrumentation.getContext();
-        final Resources testRes = testContext.getResources();
-        final String testResPackageName = testRes.getResourcePackageName(
-                // This dummy raw resource is needed to be able to load string resources from a test
-                // APK successfully.
-                com.android.inputmethod.latin.tests.R.raw.dummy_resource_for_testing);
-        mTextsSet.loadStringResourcesInternal(testRes, testResourceNames, testResPackageName);
+        final Context targetContext = getContext();
+        final Resources targetRes = targetContext.getResources();
+        final String targetPackageName = targetRes.getResourcePackageName(
+                R.string.english_ime_name);
+        mTextsSet.setLocale(TEST_LOCALE, targetRes, targetPackageName);
     }
 
-    private static String[] getAllResourceIdNames(final Class<?> resourceIdClass) {
-        final ArrayList<String> names = new ArrayList<>();
-        for (final Field field : resourceIdClass.getFields()) {
-            if (field.getType() == int.class) {
-                names.add(field.getName());
-            }
-        }
-        return names.toArray(new String[names.size()]);
-    }
-
-    private static <T> void assertArrayEquals(final String message, final T[] expected,
-            final T[] actual) {
+    static <T> void assertArrayEquals(final String message, final T[] expected, final T[] actual) {
         if (expected == actual) {
             return;
         }
@@ -108,14 +89,6 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
     private static final String PAIR3 = "\ud87e\udca6";
     private static final String SURROGATE1 = PAIR1 + PAIR2;
     private static final String SURROGATE2 = PAIR1 + PAIR2 + PAIR3;
-
-    public void testResolveNullText() {
-        assertNull("resolve null", mTextsSet.resolveTextReference(null));
-    }
-
-    public void testResolveEmptyText() {
-        assertNull("resolve empty text", mTextsSet.resolveTextReference("!text/empty_string"));
-    }
 
     public void testSplitZero() {
         assertTextArray("Empty string", "");
@@ -224,132 +197,14 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
                 "\\!", "\\!TEXT/EMPTY_STRING");
     }
 
-    public void testSplitResourceError() {
-        assertError("Incomplete resource name", "!text/", "!text/");
-        assertError("Non existing resource", "!text/non_existing");
+    public void testSplitTextReferenceError() {
+        assertError("Incomplete text name", "!text/", "!text/");
+        assertError("Non existing text", "!text/non_existing");
     }
 
-    public void testSplitResourceZero() {
-        assertTextArray("Empty string",
-                "!text/empty_string");
-    }
-
-    public void testSplitResourceSingle() {
-        assertTextArray("Single char",
-                "!text/single_char", "a");
-        assertTextArray("Space",
-                "!text/space", " ");
-        assertTextArray("Single label",
-                "!text/single_label", "abc");
-        assertTextArray("Spaces",
-                "!text/spaces", "   ");
-        assertTextArray("Spaces in label",
-                "!text/spaces_in_label", "a b c");
-        assertTextArray("Spaces at beginning of label",
-                "!text/spaces_at_beginning_of_label", " abc");
-        assertTextArray("Spaces at end of label",
-                "!text/spaces_at_end_of_label", "abc ");
-        assertTextArray("label surrounded by spaces",
-                "!text/label_surrounded_by_spaces", " abc ");
-
-        assertTextArray("Escape and single char",
-                "\\\\!text/single_char", "\\\\a");
-    }
-
-    public void testSplitResourceSingleEscaped() {
-        assertTextArray("Escaped char",
-                "!text/escaped_char", "\\a");
-        assertTextArray("Escaped comma",
-                "!text/escaped_comma", "\\,");
-        assertTextArray("Escaped comma escape",
-                "!text/escaped_comma_escape", "a\\,\\");
-        assertTextArray("Escaped escape",
-                "!text/escaped_escape", "\\\\");
-        assertTextArray("Escaped label",
-                "!text/escaped_label", "a\\bc");
-        assertTextArray("Escaped label at beginning",
-                "!text/escaped_label_at_beginning", "\\abc");
-        assertTextArray("Escaped label at end",
-                "!text/escaped_label_at_end", "abc\\");
-        assertTextArray("Escaped label with comma",
-                "!text/escaped_label_with_comma", "a\\,c");
-        assertTextArray("Escaped label with comma at beginning",
-                "!text/escaped_label_with_comma_at_beginning", "\\,bc");
-        assertTextArray("Escaped label with comma at end",
-                "!text/escaped_label_with_comma_at_end", "ab\\,");
-        assertTextArray("Escaped label with successive",
-                "!text/escaped_label_with_successive", "\\,\\\\bc");
-        assertTextArray("Escaped label with escape",
-                "!text/escaped_label_with_escape", "a\\\\c");
-    }
-
-    public void testSplitResourceMulti() {
-        assertTextArray("Multiple chars",
-                "!text/multiple_chars", "a", "b", "c");
-        assertTextArray("Multiple chars surrounded by spaces",
-                "!text/multiple_chars_surrounded_by_spaces",
-                " a ", " b ", " c ");
-        assertTextArray("Multiple labels",
-                "!text/multiple_labels", "abc", "def", "ghi");
-        assertTextArray("Multiple labels surrounded by spaces",
-                "!text/multiple_labels_surrounded_by_spaces", " abc ", " def ", " ghi ");
-    }
-
-    public void testSplitResourcetMultiEscaped() {
-        assertTextArray("Multiple chars with comma",
-                "!text/multiple_chars_with_comma",
-                "a", "\\,", "c");
-        assertTextArray("Multiple chars with comma surrounded by spaces",
-                "!text/multiple_chars_with_comma_surrounded_by_spaces",
-                " a ", " \\, ", " c ");
-        assertTextArray("Multiple labels with escape",
-                "!text/multiple_labels_with_escape",
-                "\\abc", "d\\ef", "gh\\i");
-        assertTextArray("Multiple labels with escape surrounded by spaces",
-                "!text/multiple_labels_with_escape_surrounded_by_spaces",
-                " \\abc ", " d\\ef ", " gh\\i ");
-        assertTextArray("Multiple labels with comma and escape",
-                "!text/multiple_labels_with_comma_and_escape",
-                "ab\\\\", "d\\\\\\,", "g\\,i");
-        assertTextArray("Multiple labels with comma and escape surrounded by spaces",
-                "!text/multiple_labels_with_comma_and_escape_surrounded_by_spaces",
-                " ab\\\\ ", " d\\\\\\, ", " g\\,i ");
-    }
-
-    public void testSplitMultipleResources() {
-        assertTextArray("Literals and resources",
-                "1,!text/multiple_chars,z", "1", "a", "b", "c", "z");
-        assertTextArray("Literals and resources and escape at end",
-                "\\1,!text/multiple_chars,z\\", "\\1", "a", "b", "c", "z\\");
-        assertTextArray("Multiple single resource chars and labels",
-                "!text/single_char,!text/single_label,!text/escaped_comma",
-                "a", "abc", "\\,");
-        assertTextArray("Multiple single resource chars and labels 2",
-                "!text/single_char,!text/single_label,!text/escaped_comma_escape",
-                "a", "abc", "a\\,\\");
-        assertTextArray("Multiple multiple resource chars and labels",
-                "!text/multiple_chars,!text/multiple_labels,!text/multiple_chars_with_comma",
-                "a", "b", "c", "abc", "def", "ghi", "a", "\\,", "c");
-        assertTextArray("Concatenated resources",
-                "!text/multiple_chars!text/multiple_labels!text/multiple_chars_with_comma",
-                "a", "b", "cabc", "def", "ghia", "\\,", "c");
-        assertTextArray("Concatenated resource and literal",
-                "abc!text/multiple_labels",
-                "abcabc", "def", "ghi");
-    }
-
-    public void testSplitIndirectReference() {
-        assertTextArray("Indirect",
-                "!text/indirect_string", "a", "b", "c");
-        assertTextArray("Indirect with literal",
-                "1,!text/indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
-        assertTextArray("Indirect2",
-                "!text/indirect2_string", "a", "b", "c");
-    }
-
-    public void testSplitInfiniteIndirectReference() {
-        assertError("Infinite indirection",
-                "1,!text/infinite_indirection,2", "1", "infinite", "<infinite>", "loop", "2");
+    public void testSplitEmptyTextReference() {
+        // Note that morekeys_q of English locale is empty.
+        assertTextArray("Empty string", "!text/morekeys_q");
     }
 
     public void testLabelReferece() {
@@ -360,12 +215,6 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
 
         assertTextArray("Settings as more key", "!text/keyspec_settings",
                 "!icon/settings_key|!code/key_settings");
-
-        assertTextArray("Indirect naviagte actions as more key",
-                "!text/keyspec_indirect_navigate_actions",
-                "!fixedColumnOrder!2",
-                "!hasLabels!", "Prev|!code/key_action_previous",
-                "!hasLabels!", "Next|!code/key_action_next");
     }
 
     public void testUselessUpperCaseSpecifier() {
@@ -394,14 +243,6 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
         assertTextArray("INDIRECT2",
                 "!TEXT/INDIRECT2_STRING", "!TEXT/INDIRECT2_STRING");
 
-        assertTextArray("Upper indirect",
-                "!text/upper_indirect_string", "!TEXT/MULTIPLE_CHARS");
-        assertTextArray("Upper indirect with literal",
-                "1,!text/upper_indirect_string_with_literal,2",
-                "1", "x", "!TEXT/MULTIPLE_CHARS", "y", "2");
-        assertTextArray("Upper indirect2",
-                "!text/upper_indirect2_string", "!TEXT/UPPER_INDIRECT_STRING");
-
         assertTextArray("UPPER INDIRECT",
                 "!TEXT/upper_INDIRECT_STRING", "!TEXT/upper_INDIRECT_STRING");
         assertTextArray("Upper INDIRECT with literal",
@@ -413,9 +254,6 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
         assertTextArray("INFINITE INDIRECTION",
                 "1,!TEXT/INFINITE_INDIRECTION,2", "1", "!TEXT/INFINITE_INDIRECTION", "2");
 
-        assertTextArray("Upper infinite indirection",
-                "1,!text/upper_infinite_indirection,2",
-                "1", "infinite", "!TEXT/INFINITE_INDIRECTION", "loop", "2");
         assertTextArray("Upper INFINITE INDIRECTION",
                 "1,!TEXT/UPPER_INFINITE_INDIRECTION,2",
                 "1", "!TEXT/UPPER_INFINITE_INDIRECTION", "2");
