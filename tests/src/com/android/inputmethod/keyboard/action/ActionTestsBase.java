@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.action;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -22,6 +22,11 @@ import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.keyboard.KeyboardLayoutSetTestsBase;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyVisual;
 import com.android.inputmethod.latin.Constants;
@@ -31,7 +36,7 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Locale;
 
-abstract class KeyboardLayoutSetActionLabelBase extends KeyboardLayoutSetTestsBase {
+abstract class ActionTestsBase extends KeyboardLayoutSetTestsBase {
     static class ExpectedActionKey {
         static ExpectedActionKey newIconKey(final String iconName) {
             final int iconId = KeyboardIconsSet.getIconId(iconName);
@@ -70,51 +75,6 @@ abstract class KeyboardLayoutSetActionLabelBase extends KeyboardLayoutSetTestsBa
             return null;
         }
         return LocaleUtils.constructLocaleFromString(localeString);
-    }
-
-    public void testActionUnspecified() {
-        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
-                KeyboardIconsSet.NAME_ENTER_KEY);
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
-            final String tag = "unspecifiled "
-                    + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_UNSPECIFIED, expectedKey);
-        }
-    }
-
-    public void testActionNone() {
-        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
-                KeyboardIconsSet.NAME_ENTER_KEY);
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
-            final String tag = "none " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_NONE, expectedKey);
-        }
-    }
-
-    public void testActionSearch() {
-        final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
-                KeyboardIconsSet.NAME_SEARCH_KEY);
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
-            final String tag = "search " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_SEARCH, expectedKey);
-        }
-    }
-
-    public abstract void testActionGo();
-    public abstract void testActionSend();
-    public abstract void testActionNext();
-    public abstract void testActionDone();
-    public abstract void testActionPrevious();
-
-    public void testActionCustom() {
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
-            final String tag = "custom " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            final EditorInfo editorInfo = new EditorInfo();
-            editorInfo.imeOptions = EditorInfo.IME_ACTION_UNSPECIFIED;
-            editorInfo.actionLabel = "customLabel";
-            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey("customLabel");
-            doTestActionKey(tag, subtype, editorInfo, expectedKey);
-        }
     }
 
     private static void assertActionKey(final String tag, final KeyboardLayoutSet layoutSet,
