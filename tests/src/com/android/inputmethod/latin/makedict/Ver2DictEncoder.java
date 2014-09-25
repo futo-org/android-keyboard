@@ -40,12 +40,16 @@ public class Ver2DictEncoder implements DictEncoder {
     private OutputStream mOutStream;
     private byte[] mBuffer;
     private int mPosition;
+    private final int mCodePointTableMode;
+    public static final int CODE_POINT_TABLE_OFF = 0;
+    public static final int CODE_POINT_TABLE_ON = 1;
 
     @UsedForTesting
-    public Ver2DictEncoder(final File dictFile) {
+    public Ver2DictEncoder(final File dictFile, final int codePointTableMode) {
         mDictFile = dictFile;
         mOutStream = null;
         mBuffer = null;
+        mCodePointTableMode = codePointTableMode;
     }
 
     // This constructor is used only by BinaryDictOffdeviceUtilsTests.
@@ -55,6 +59,7 @@ public class Ver2DictEncoder implements DictEncoder {
     public Ver2DictEncoder(final OutputStream outStream) {
         mDictFile = null;
         mOutStream = outStream;
+        mCodePointTableMode = CODE_POINT_TABLE_OFF;
     }
 
     private void openStream() throws FileNotFoundException {
