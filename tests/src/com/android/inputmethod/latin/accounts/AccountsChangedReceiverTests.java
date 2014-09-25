@@ -33,18 +33,21 @@ public class AccountsChangedReceiverTests extends AndroidTestCase {
     private static final String ACCOUNT_2 = "account2@example.com";
 
     private SharedPreferences mPrefs;
+    private String mLastKnownAccount = null;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        // Keep track of the current account so that we restore it when the test finishes.
+        mLastKnownAccount = mPrefs.getString(Settings.PREF_ACCOUNT_NAME, null);
     }
 
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        // Remove all preferences before the next test.
-        mPrefs.edit().clear();
+        // Restore the account that was present before running the test.
+        updateAccountName(mLastKnownAccount);
     }
 
     public void testUnknownIntent() {
@@ -95,9 +98,11 @@ public class AccountsChangedReceiverTests extends AndroidTestCase {
     }
 
     private void updateAccountName(String accountName) {
-        mPrefs.edit()
-                .putString(Settings.PREF_ACCOUNT_NAME, accountName)
-                .commit();
+        if (accountName == null) {
+            mPrefs.edit().remove(Settings.PREF_ACCOUNT_NAME).apply();
+        } else {
+            mPrefs.edit().putString(Settings.PREF_ACCOUNT_NAME, accountName).apply();
+        }
     }
 
     private void assertAccountName(String expectedAccountName) {
