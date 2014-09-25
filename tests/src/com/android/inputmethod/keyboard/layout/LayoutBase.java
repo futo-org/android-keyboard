@@ -51,6 +51,24 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         }
 
         /**
+         * Set accented letters to a specific keyboard element.
+         * @param builder the {@link ExpectedKeyboardBuilder} object that contains common keyboard
+         *        layout.
+         * @param elementId the element id of keyboard
+         * @return the {@link ExpectedKeyboardBuilder} object that contains accented letters as
+         *        "more keys".
+         */
+        public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder,
+                final int elementId) {
+            // This method can be overridden by an extended class to provide customized expected
+            // accented letters depending on the shift state of keyboard.
+            // This is a default behavior to call a shift-state-independent
+            // {@link #setAccentedLetters(ExpectedKeyboardBuilder)} implementation, so that
+            // <code>elementId</code> is ignored here.
+            return setAccentedLetters(builder);
+        }
+
+        /**
          * Set accented letters to common layout.
          * @param builder the {@link ExpectedKeyboardBuilder} object that contains common keyboard
          *        layout.
@@ -386,7 +404,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
     ExpectedKey[][] getCommonAlphabetShiftLayout(final boolean isPhone, final int elementId) {
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
                 getCommonAlphabetLayout(isPhone));
-        getCustomizer().setAccentedLetters(builder);
+        getCustomizer().setAccentedLetters(builder, elementId);
         builder.toUpperCase(getLocale());
         return builder.build();
     }
@@ -411,7 +429,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         final ExpectedKeyboardBuilder builder;
         if (elementId == KeyboardId.ELEMENT_ALPHABET) {
             builder = new ExpectedKeyboardBuilder(getCommonAlphabetLayout(isPhone));
-            getCustomizer().setAccentedLetters(builder);
+            getCustomizer().setAccentedLetters(builder, elementId);
         } else {
             final ExpectedKey[][] commonLayout = getCommonAlphabetShiftLayout(isPhone, elementId);
             if (commonLayout == null) {

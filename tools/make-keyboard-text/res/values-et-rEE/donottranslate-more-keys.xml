@@ -72,7 +72,6 @@
          U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
          U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE -->
     <string name="morekeys_n">&#x0146;,&#x00F1;,&#x0144;</string>
-
     <!-- U+010D: "č" LATIN SMALL LETTER C WITH CARON
          U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
          U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE -->

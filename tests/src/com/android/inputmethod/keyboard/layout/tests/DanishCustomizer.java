@@ -53,9 +53,35 @@ class DanishCustomizer extends EuroCustomizer {
                 .setMoreKeysOf("\u00F8", "\u00F6");
     }
 
+    protected void setMoreKeysOfA(final ExpectedKeyboardBuilder builder) {
+        builder
+                // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
+                // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+                // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
+                // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
+                // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
+                // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
+                .setMoreKeysOf("a", "\u00E1", "\u00E4", "\u00E0", "\u00E2", "\u00E3", "\u0101");
+    }
+
+    protected void setMoreKeysOfO(final ExpectedKeyboardBuilder builder) {
+        builder
+                // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+                // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
+                // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+                // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
+                // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
+                // U+0153: "œ" LATIN SMALL LIGATURE OE
+                // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
+                .setMoreKeysOf("o", "\u00F6", "\u00F3", "\u00F4", "\u00F2", "\u00F5", "\u0153",
+                        "\u014D");
+    }
+
     @Override
     public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
         setNordicKeys(builder);
+        setMoreKeysOfA(builder);
+        setMoreKeysOfO(builder);
         return builder
                 // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
                 // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
@@ -72,20 +98,6 @@ class DanishCustomizer extends EuroCustomizer {
                 // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                 // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
                 .setMoreKeysOf("i", "\u00ED", "\u00EF")
-                // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
-                // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
-                // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
-                // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
-                // U+0153: "œ" LATIN SMALL LIGATURE OE
-                // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
-                .setMoreKeysOf("o", "\u00F3", "\u00F4", "\u00F2", "\u00F5", "\u0153", "\u014D")
-                // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
-                // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
-                // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
-                // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
-                // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
-                // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
-                .setMoreKeysOf("a", "\u00E1", "\u00E4", "\u00E0", "\u00E2", "\u00E3", "\u0101")
                 // U+00DF: "ß" LATIN SMALL LETTER SHARP S
                 // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
                 // U+0161: "š" LATIN SMALL LETTER S WITH CARON
