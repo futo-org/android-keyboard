@@ -364,10 +364,12 @@ static bool latinime_BinaryDictionary_addUnigramEntry(JNIEnv *env, jclass clazz,
     int codePoints[codePointCount];
     env->GetIntArrayRegion(word, 0, codePointCount, codePoints);
     std::vector<UnigramProperty::ShortcutProperty> shortcuts;
-    std::vector<int> shortcutTargetCodePoints;
-    JniDataUtils::jintarrayToVector(env, shortcutTarget, &shortcutTargetCodePoints);
-    if (!shortcutTargetCodePoints.empty()) {
-        shortcuts.emplace_back(&shortcutTargetCodePoints, shortcutProbability);
+    {
+        std::vector<int> shortcutTargetCodePoints;
+        JniDataUtils::jintarrayToVector(env, shortcutTarget, &shortcutTargetCodePoints);
+        if (!shortcutTargetCodePoints.empty()) {
+            shortcuts.emplace_back(std::move(shortcutTargetCodePoints), shortcutProbability);
+        }
     }
     // Use 1 for count to indicate the word has inputted.
     const UnigramProperty unigramProperty(isBeginningOfSentence, isNotAWord,
@@ -401,11 +403,9 @@ static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, j
     jsize wordLength = env->GetArrayLength(word);
     int wordCodePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
-    const std::vector<int> bigramTargetCodePoints(
-            wordCodePoints, wordCodePoints + wordLength);
     // Use 1 for count to indicate the bigram has inputted.
-    const BigramProperty bigramProperty(&bigramTargetCodePoints, probability,
-            timestamp, 0 /* level */, 1 /* count */);
+    const BigramProperty bigramProperty(CodePointArrayView(wordCodePoints, wordLength).toVector(),
+            probability, timestamp, 0 /* level */, 1 /* count */);
     return dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);
 }
 
@@ -483,12 +483,14 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         jintArray shortcutTarget = static_cast<jintArray>(
                 env->GetObjectField(languageModelParam, shortcutTargetFieldId));
         std::vector<UnigramProperty::ShortcutProperty> shortcuts;
-        std::vector<int> shortcutTargetCodePoints;
-        JniDataUtils::jintarrayToVector(env, shortcutTarget, &shortcutTargetCodePoints);
-        if (!shortcutTargetCodePoints.empty()) {
-            jint shortcutProbability =
-                    env->GetIntField(languageModelParam, shortcutProbabilityFieldId);
-            shortcuts.emplace_back(&shortcutTargetCodePoints, shortcutProbability);
+        {
+            std::vector<int> shortcutTargetCodePoints;
+            JniDataUtils::jintarrayToVector(env, shortcutTarget, &shortcutTargetCodePoints);
+            if (!shortcutTargetCodePoints.empty()) {
+                jint shortcutProbability =
+                        env->GetIntField(languageModelParam, shortcutProbabilityFieldId);
+                shortcuts.emplace_back(std::move(shortcutTargetCodePoints), shortcutProbability);
+            }
         }
         // Use 1 for count to indicate the word has inputted.
         const UnigramProperty unigramProperty(false /* isBeginningOfSentence */, isNotAWord,
@@ -498,11 +500,10 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
                 &unigramProperty);
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
-            const std::vector<int> bigramTargetCodePoints(
-                    word1CodePoints, word1CodePoints + word1Length);
             // Use 1 for count to indicate the bigram has inputted.
-            const BigramProperty bigramProperty(&bigramTargetCodePoints, bigramProbability,
-                    timestamp, 0 /* level */, 1 /* count */);
+            const BigramProperty bigramProperty(
+                    CodePointArrayView(word1CodePoints, word1Length).toVector(),
+                    bigramProbability, timestamp, 0 /* level */, 1 /* count */);
             const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length,
                     false /* isBeginningOfSentence */);
             dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);

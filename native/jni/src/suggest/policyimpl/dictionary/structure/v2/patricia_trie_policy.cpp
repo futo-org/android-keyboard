@@ -449,11 +449,10 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
             const int word1CodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
                     getWordIdFromTerminalPtNodePos(bigramsIt.getBigramPos()), MAX_WORD_LENGTH,
                     bigramWord1CodePoints, &word1Probability);
-            const std::vector<int> word1(bigramWord1CodePoints,
-                    bigramWord1CodePoints + word1CodePointCount);
             const int probability = getProbability(word1Probability, bigramsIt.getProbability());
-            bigrams.emplace_back(&word1, probability,
-                    NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */);
+            bigrams.emplace_back(
+                    CodePointArrayView(bigramWord1CodePoints, word1CodePointCount).toVector(),
+                    probability, NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */);
         }
     }
     // Fetch shortcut information.
@@ -469,17 +468,17 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
             hasNext = ShortcutListReadingUtils::hasNext(shortcutFlags);
             const int shortcutTargetLength = ShortcutListReadingUtils::readShortcutTarget(
                     mBuffer, MAX_WORD_LENGTH, shortcutTargetCodePoints, &shortcutPos);
-            const std::vector<int> shortcutTarget(shortcutTargetCodePoints,
-                    shortcutTargetCodePoints + shortcutTargetLength);
             const int shortcutProbability =
                     ShortcutListReadingUtils::getProbabilityFromFlags(shortcutFlags);
-            shortcuts.emplace_back(&shortcutTarget, shortcutProbability);
+            shortcuts.emplace_back(
+                    CodePointArrayView(shortcutTargetCodePoints, shortcutTargetLength).toVector(),
+                    shortcutProbability);
         }
     }
     const UnigramProperty unigramProperty(ptNodeParams.representsBeginningOfSentence(),
             ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
             NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
-    return WordProperty(wordCodePoints, &unigramProperty, &bigrams);
+    return WordProperty(wordCodePoints.toVector(), &unigramProperty, &bigrams);
 }
 
 int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints,
