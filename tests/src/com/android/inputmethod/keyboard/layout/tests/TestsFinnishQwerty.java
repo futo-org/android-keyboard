@@ -19,18 +19,30 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.Nordic;
+import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
 /**
- * fi: Finnish/nordic
+ * fi: Finnish/qwerty
  */
 @SmallTest
-public final class TestsFinnish extends LayoutTestsBase {
+public final class TestsFinnishQwerty extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("fi");
-    private static final LayoutBase LAYOUT = new Nordic(new FinnishCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Qwerty(new FinnishQwertyCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
+
+    private static class FinnishQwertyCustomizer extends FinnishCustomizer {
+        public FinnishQwertyCustomizer(final Locale locale) {
+            super(locale);
+        }
+
+        @Override
+        protected void setNordicKeys(final ExpectedKeyboardBuilder builder) {
+            // QWERTY layout doesn't have Nordic keys.
+        }
+    }
 }
