@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.action;
 
 import android.content.res.Resources;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.latin.R;
@@ -28,90 +29,11 @@ import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 @MediumTest
-public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetActionLabelBase {
-    // Filter a subtype whose name should be displayed using {@link Locale#ROOT}, such like
-    // Hinglish (hi_ZZ) and Serbian-Latn (sr_ZZ).
-    static final SubtypeFilter SUBTYPE_FILTER_NAME_IN_BASE_LOCALE = new SubtypeFilter() {
-        @Override
-        public boolean accept(final InputMethodSubtype subtype) {
-            return Locale.ROOT.equals(
-                    SubtypeLocaleUtils.getDisplayLocaleOfSubtypeLocale(subtype.getLocale()));
-        }
-    };
-
-    private ArrayList<InputMethodSubtype> mSubtypesWhoseNameIsDisplayedInItsLocale;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        mSubtypesWhoseNameIsDisplayedInItsLocale = getSubtypesFilteredBy(new SubtypeFilter() {
-            @Override
-            public boolean accept(final InputMethodSubtype subtype) {
-                return !SUBTYPE_FILTER_NAME_IN_BASE_LOCALE.accept(subtype);
-            }
-        });
-    }
-
-    @Override
-    protected int getKeyboardThemeForTests() {
-        return KeyboardTheme.THEME_ID_KLP;
-    }
-
-    @Override
-    public void testActionGo() {
-        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
-            final String tag = "go " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
-                    R.string.label_go_key, getLabelLocale(subtype), getContext());
-            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_GO, expectedKey);
-        }
-    }
-
-    @Override
-    public void testActionSend() {
-        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
-            final String tag = "send " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
-                    R.string.label_send_key, getLabelLocale(subtype), getContext());
-            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_SEND, expectedKey);
-        }
-    }
-
-    @Override
-    public void testActionNext() {
-        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
-            final String tag = "next " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
-                    R.string.label_next_key, getLabelLocale(subtype), getContext());
-            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_NEXT, expectedKey);
-        }
-    }
-
-    @Override
-    public void testActionDone() {
-        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
-            final String tag = "done " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
-                    R.string.label_done_key, getLabelLocale(subtype), getContext());
-            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_DONE, expectedKey);
-        }
-    }
-
-    @Override
-    public void testActionPrevious() {
-        for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
-            final String tag = "previous " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey(
-                    R.string.label_previous_key, getLabelLocale(subtype), getContext());
-            doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_PREVIOUS, expectedKey);
-        }
-    }
-
-    private void doTestActionKeys(final InputMethodSubtype subtype, final String tag,
+public class KlpActionLabelTests extends KlpActionTestsBase {
+    void doTestActionKeys(final InputMethodSubtype subtype, final String tag,
             final ExpectedActionKey unspecifiedKey, final ExpectedActionKey noneKey,
             final ExpectedActionKey goKey, final ExpectedActionKey searchKey,
             final ExpectedActionKey sendKey, final ExpectedActionKey nextKey,
