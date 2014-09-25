@@ -36,4 +36,12 @@ public final class KeysCache {
         mMap.put(key, key);
         return key;
     }
+
+    public Key replace(final Key oldKey, final Key newKey) {
+        if (oldKey.equals(newKey)) {
+            return oldKey;
+        }
+        mMap.remove(oldKey);
+        return get(newKey);
+    }
 }

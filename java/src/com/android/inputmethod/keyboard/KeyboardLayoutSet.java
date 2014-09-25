@@ -97,6 +97,7 @@ public final class KeyboardLayoutSet {
         int mKeyboardXmlId;
         boolean mProximityCharsCorrectionEnabled;
         boolean mSupportsSplitLayout;
+        boolean mAllowRedundantMoreKeys;
         public ElementParams() {}
     }
 
@@ -202,6 +203,7 @@ public final class KeyboardLayoutSet {
         if (id.isAlphabetKeyboard()) {
             builder.setAutoGenerate(sKeysCache);
         }
+        builder.setAllowRedundantMoreKes(elementParams.mAllowRedundantMoreKeys);
         final int keyboardXmlId = elementParams.mKeyboardXmlId;
         builder.load(keyboardXmlId, id);
         if (mParams.mDisableTouchPositionCorrectionDataForTest) {
@@ -395,6 +397,8 @@ public final class KeyboardLayoutSet {
                         false);
                 elementParams.mSupportsSplitLayout = a.getBoolean(
                         R.styleable.KeyboardLayoutSet_Element_supportsSplitLayout, false);
+                elementParams.mAllowRedundantMoreKeys = a.getBoolean(
+                        R.styleable.KeyboardLayoutSet_Element_allowRedundantMoreKeys, true);
                 mParams.mKeyboardLayoutSetElementIdToParamsMap.put(elementName, elementParams);
             } finally {
                 a.recycle();

@@ -17,7 +17,9 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 
+import com.android.inputmethod.compat.CharacterCompat;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.define.DebugFlags;
@@ -26,6 +28,7 @@ import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 
 /**
@@ -108,6 +111,46 @@ public final class MoreKeySpec {
         } else {
             return label + "|" + output;
         }
+    }
+
+    public static class LettersOnBaseLayout {
+        private final SparseIntArray mCodes = new SparseIntArray();
+        private final HashSet<String> mTexts = new HashSet<>();
+
+        public void addLetter(final Key key) {
+            final int code = key.getCode();
+            if (CharacterCompat.isAlphabetic(code)) {
+                mCodes.put(code, 0);
+            } else if (code == Constants.CODE_OUTPUT_TEXT) {
+                mTexts.add(key.getOutputText());
+            }
+        }
+
+        public boolean contains(final MoreKeySpec moreKey) {
+            final int code = moreKey.mCode;
+            if (CharacterCompat.isAlphabetic(code) && mCodes.indexOfKey(code) >= 0) {
+                return true;
+            } else if (code == Constants.CODE_OUTPUT_TEXT && mTexts.contains(moreKey.mOutputText)) {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public static MoreKeySpec[] removeRedundantMoreKeys(final MoreKeySpec[] moreKeys,
+            final LettersOnBaseLayout lettersOnBaseLayout) {
+        if (moreKeys == null) {
+            return null;
+        }
+        final ArrayList<MoreKeySpec> filteredMoreKeys = new ArrayList<>();
+        for (final MoreKeySpec moreKey : moreKeys) {
+            if (!lettersOnBaseLayout.contains(moreKey)) {
+                filteredMoreKeys.add(moreKey);
+            }
+        }
+        final int size = filteredMoreKeys.size();
+        return (moreKeys.length == size) ? moreKeys
+                : filteredMoreKeys.toArray(new MoreKeySpec[size]);
     }
 
     private static final boolean DEBUG = DebugFlags.DEBUG_ENABLED;

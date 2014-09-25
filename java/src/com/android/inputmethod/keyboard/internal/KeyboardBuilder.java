@@ -162,6 +162,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         mParams.mKeysCache = keysCache;
     }
 
+    public void setAllowRedundantMoreKes(final boolean enabled) {
+        mParams.mAllowRedundantMoreKeys = enabled;
+    }
+
     public KeyboardBuilder<KP> load(final int xmlId, final KeyboardId id) {
         mParams.mId = id;
         final XmlResourceParser parser = mResources.getXml(xmlId);
@@ -851,6 +855,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void endKeyboard() {
+        mParams.removeRedundantMoreKeys();
         // {@link #parseGridRows(XmlPullParser,boolean)} may populate keyboard rows higher than
         // previously expected.
         final int actualHeight = mCurrentY - mParams.mVerticalGap + mParams.mBottomPadding;
