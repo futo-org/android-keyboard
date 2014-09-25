@@ -29,15 +29,12 @@ class LanguageModelDictContent;
 
 /*
  * This class is used for helping to read nodes of ver4 patricia trie. This class handles moved
- * node and reads node attributes including probability form language model.
+ * node and reads node attributes.
  */
 class Ver4PatriciaTrieNodeReader : public PtNodeReader {
  public:
-    Ver4PatriciaTrieNodeReader(const BufferWithExtendableBuffer *const buffer,
-            const LanguageModelDictContent *const languageModelDictContent,
-            const HeaderPolicy *const headerPolicy)
-            : mBuffer(buffer), mLanguageModelDictContent(languageModelDictContent),
-              mHeaderPolicy(headerPolicy) {}
+    explicit Ver4PatriciaTrieNodeReader(const BufferWithExtendableBuffer *const buffer)
+            : mBuffer(buffer) {}
 
     ~Ver4PatriciaTrieNodeReader() {}
 
@@ -50,8 +47,6 @@ class Ver4PatriciaTrieNodeReader : public PtNodeReader {
     DISALLOW_COPY_AND_ASSIGN(Ver4PatriciaTrieNodeReader);
 
     const BufferWithExtendableBuffer *const mBuffer;
-    const LanguageModelDictContent *const mLanguageModelDictContent;
-    const HeaderPolicy *const mHeaderPolicy;
 
     const PtNodeParams fetchPtNodeInfoFromBufferAndProcessMovedPtNode(const int ptNodePos,
             const int siblingNodePos) const;
