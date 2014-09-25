@@ -73,8 +73,7 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
 bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         const HeaderPolicy *const headerPolicy, Ver4DictBuffers *const buffersToWrite,
         int *const outUnigramCount, int *const outBigramCount) {
-    Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer(),
-            mBuffers->getLanguageModelDictContent(), headerPolicy);
+    Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer());
     Ver4PtNodeArrayReader ptNodeArrayReader(mBuffers->getTrieBuffer());
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getMutableShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
@@ -137,8 +136,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     }
 
     // Create policy instances for the GCed dictionary.
-    Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
-            buffersToWrite->getLanguageModelDictContent(), headerPolicy);
+    Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer());
     Ver4PtNodeArrayReader newPtNodeArrayreader(buffersToWrite->getTrieBuffer());
     Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getMutableShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());

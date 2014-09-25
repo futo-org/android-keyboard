@@ -56,13 +56,7 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
         if (!ptNodeParams.isValid()) {
             break;
         }
-        bool isTerminal = ptNodeParams.isTerminal() && !ptNodeParams.isDeleted();
-        if (isTerminal && mHeaderPolicy->isDecayingDict()) {
-            // A DecayingDict may have a terminal PtNode that has a terminal DicNode whose
-            // probability is NOT_A_PROBABILITY. In such case, we don't want to treat it as a
-            // valid terminal DicNode.
-            isTerminal = ptNodeParams.getProbability() != NOT_A_PROBABILITY;
-        }
+        const bool isTerminal = ptNodeParams.isTerminal() && !ptNodeParams.isDeleted();
         const int wordId = isTerminal ? ptNodeParams.getTerminalId() : NOT_A_WORD_ID;
         childDicNodes->pushLeavingChild(dicNode, ptNodeParams.getChildrenPos(),
                 wordId, ptNodeParams.getCodePointArrayView());
