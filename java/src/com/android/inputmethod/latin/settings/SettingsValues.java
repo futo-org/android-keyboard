@@ -180,7 +180,7 @@ public class SettingsValues {
         mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
                 && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
-        AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(
+        AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(context,
                 prefs, mAdditionalFeaturesSettingValues);
         mTextHighlightColorForAddToDictionaryIndicator = res.getColor(
                 R.color.text_decorator_add_to_dictionary_indicator_text_highlight_color);

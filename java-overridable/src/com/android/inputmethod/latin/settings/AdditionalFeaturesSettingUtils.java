@@ -35,7 +35,7 @@ public class AdditionalFeaturesSettingUtils {
         // do nothing.
     }
 
-    public static void readAdditionalFeaturesPreferencesIntoArray(
+    public static void readAdditionalFeaturesPreferencesIntoArray(final Context context,
             final SharedPreferences prefs, final int[] additionalFeaturesPreferences) {
         // do nothing.
     }
