@@ -23,7 +23,6 @@
 #include "jni.h"
 #include "suggest/core/dictionary/property/bigram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
-#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -34,9 +33,9 @@ class WordProperty {
     WordProperty()
             : mCodePoints(), mUnigramProperty(), mBigrams() {}
 
-    WordProperty(const CodePointArrayView codePoints, const UnigramProperty *const unigramProperty,
+    WordProperty(const std::vector<int> &&codePoints, const UnigramProperty *const unigramProperty,
             const std::vector<BigramProperty> *const bigrams)
-            : mCodePoints(codePoints.begin(), codePoints.end()), mUnigramProperty(*unigramProperty),
+            : mCodePoints(std::move(codePoints)), mUnigramProperty(*unigramProperty),
               mBigrams(*bigrams) {}
 
     void outputProperties(JNIEnv *const env, jintArray outCodePoints, jbooleanArray outFlags,

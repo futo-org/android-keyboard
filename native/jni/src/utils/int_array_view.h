@@ -129,6 +129,10 @@ class IntArrayView {
         return mPtr[mSize - 1];
     }
 
+    AK_FORCE_INLINE std::vector<int> toVector() const {
+        return std::vector<int>(begin(), end());
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(IntArrayView);
 
