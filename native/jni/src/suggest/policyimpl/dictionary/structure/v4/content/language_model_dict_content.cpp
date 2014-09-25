@@ -63,9 +63,14 @@ const WordAttributes LanguageModelDictContent::getWordAttributes(const WordIdArr
         int probability = NOT_A_PROBABILITY;
         if (mHasHistoricalInfo) {
             const int rawProbability = ForgettingCurveUtils::decodeProbability(
-                    probabilityEntry.getHistoricalInfo(), headerPolicy)
-                            + ForgettingCurveUtils::getProbabilityBiasForNgram(i + 1 /* n */);
-            probability = std::min(rawProbability, MAX_PROBABILITY);
+                    probabilityEntry.getHistoricalInfo(), headerPolicy);
+            if (rawProbability == NOT_A_PROBABILITY) {
+                // The entry should not be treated as a valid entry.
+                continue;
+            }
+            probability = std::min(rawProbability
+                    + ForgettingCurveUtils::getProbabilityBiasForNgram(i + 1 /* n */),
+                            MAX_PROBABILITY);
         } else {
             probability = probabilityEntry.getProbability();
         }

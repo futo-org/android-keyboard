@@ -51,26 +51,17 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
     const int parentPos =
             DynamicPtReadingUtils::getParentPtNodePos(parentPosOffset, headPos);
     int codePoints[MAX_WORD_LENGTH];
-    const int codePonitCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
-            dictBuf, flags, MAX_WORD_LENGTH, mHeaderPolicy->getCodePointTable(), codePoints, &pos);
+    // Code point table is not used for ver4 dictionaries.
+    const int codePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
+            dictBuf, flags, MAX_WORD_LENGTH, nullptr /* codePointTable */, codePoints, &pos);
     int terminalIdFieldPos = NOT_A_DICT_POS;
     int terminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-    int probability = NOT_A_PROBABILITY;
     if (PatriciaTrieReadingUtils::isTerminal(flags)) {
         terminalIdFieldPos = pos;
         if (usesAdditionalBuffer) {
             terminalIdFieldPos += mBuffer->getOriginalBufferSize();
         }
         terminalId = Ver4PatriciaTrieReadingUtils::getTerminalIdAndAdvancePosition(dictBuf, &pos);
-        // TODO: Quit reading probability here.
-        const ProbabilityEntry probabilityEntry =
-                mLanguageModelDictContent->getProbabilityEntry(terminalId);
-        if (probabilityEntry.hasHistoricalInfo()) {
-            probability = ForgettingCurveUtils::decodeProbability(
-                    probabilityEntry.getHistoricalInfo(), mHeaderPolicy);
-        } else {
-            probability = probabilityEntry.getProbability();
-        }
     }
     int childrenPosFieldPos = pos;
     if (usesAdditionalBuffer) {
@@ -91,8 +82,8 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
         // The destination position is stored at the same place as the parent position.
         return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(parentPos, newSiblingNodePos);
     } else {
-        return PtNodeParams(headPos, flags, parentPos, codePonitCount, codePoints,
-                terminalIdFieldPos, terminalId, probability, childrenPosFieldPos, childrenPos,
+        return PtNodeParams(headPos, flags, parentPos, codePointCount, codePoints,
+                terminalIdFieldPos, terminalId, NOT_A_PROBABILITY, childrenPosFieldPos, childrenPos,
                 newSiblingNodePos);
     }
 }
