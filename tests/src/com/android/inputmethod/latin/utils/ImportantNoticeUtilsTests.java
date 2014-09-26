@@ -16,18 +16,18 @@
 
 package com.android.inputmethod.latin.utils;
 
-import static com.android.inputmethod.latin.utils.ImportantNoticeUtils.KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE;
 import static com.android.inputmethod.latin.utils.ImportantNoticeUtils.KEY_IMPORTANT_NOTICE_VERSION;
+import static com.android.inputmethod.latin.utils.ImportantNoticeUtils.KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.MediumTest;
 import android.text.TextUtils;
 
 import java.util.concurrent.TimeUnit;
 
-@SmallTest
+@MediumTest
 public class ImportantNoticeUtilsTests extends AndroidTestCase {
     // This should be aligned with R.integer.config_important_notice_version.
     private static final int CURRENT_IMPORTANT_NOTICE_VERSION = 1;
@@ -112,6 +112,28 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
                 ImportantNoticeUtils.getCurrentImportantNoticeVersion(getContext()));
     }
 
+    public void testStateAfterFreshInstall() {
+        mImportantNoticePreferences.clear();
+
+        // Check internal state of {@link ImportantNoticeUtils.shouldShowImportantNotice(Context)}
+        // after fresh install.
+        assertEquals("Has new imortant notice after fresh install", true,
+                ImportantNoticeUtils.hasNewImportantNotice(getContext()));
+        assertEquals("Next important norice title after fresh install", false, TextUtils.isEmpty(
+                ImportantNoticeUtils.getNextImportantNoticeTitle(getContext())));
+        assertEquals("Is in system setup wizard after fresh install", false,
+                ImportantNoticeUtils.isInSystemSetupWizard(getContext()));
+        final long currentTimeMillis = System.currentTimeMillis();
+        assertEquals("Has timeout passed after fresh install", false,
+                ImportantNoticeUtils.hasTimeoutPassed(getContext(), currentTimeMillis));
+        assertEquals("Timestamp of first important notice after fresh install",
+                (Long)currentTimeMillis,
+                mImportantNoticePreferences.getLong(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE));
+
+        assertEquals("Current boolean before update", true,
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext()));
+    }
+
     public void testUpdateVersion() {
         mImportantNoticePreferences.clear();
 
@@ -163,7 +185,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version before timeout 1", 1,
                 ImportantNoticeUtils.getNextImportantNoticeVersion(getContext()));
-        assertEquals("Last time before timeout 1", (Long)lastTime,
+        assertEquals("Timestamp of first important notice before timeout 1", (Long)lastTime,
                 mImportantNoticePreferences.getLong(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE));
         assertEquals("Current title before timeout 1", false, TextUtils.isEmpty(
                 ImportantNoticeUtils.getNextImportantNoticeTitle(getContext())));
@@ -180,7 +202,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version before timeout 2", 1,
                 ImportantNoticeUtils.getNextImportantNoticeVersion(getContext()));
-        assertEquals("Last time before timeout 2", (Long)lastTime,
+        assertEquals("Timestamp of first important notice before timeout 2", (Long)lastTime,
                 mImportantNoticePreferences.getLong(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE));
         assertEquals("Current title before timeout 2", false, TextUtils.isEmpty(
                 ImportantNoticeUtils.getNextImportantNoticeTitle(getContext())));
@@ -196,7 +218,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version after timeout 1", 2,
                 ImportantNoticeUtils.getNextImportantNoticeVersion(getContext()));
-        assertEquals("Last time aflter timeout 1", null,
+        assertEquals("Timestamp of first important notice after timeout 1", null,
                 mImportantNoticePreferences.getLong(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE));
         assertEquals("Current title after timeout 1", true, TextUtils.isEmpty(
                 ImportantNoticeUtils.getNextImportantNoticeTitle(getContext())));
@@ -212,7 +234,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version after timeout 2", 2,
                 ImportantNoticeUtils.getNextImportantNoticeVersion(getContext()));
-        assertEquals("Last time aflter timeout 2", null,
+        assertEquals("Timestamp of first important notice after timeout 2", null,
                 mImportantNoticePreferences.getLong(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE));
         assertEquals("Current title after timeout 2", true, TextUtils.isEmpty(
                 ImportantNoticeUtils.getNextImportantNoticeTitle(getContext())));
