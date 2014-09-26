@@ -16,14 +16,14 @@
 
 package com.android.inputmethod.keyboard.action;
 
-import android.test.suitebuilder.annotation.MediumTest;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
-@MediumTest
+@LargeTest
 public class KlpActionSendTests extends KlpActionTestsBase {
     public void testActionSend() {
         for (final InputMethodSubtype subtype : mSubtypesWhoseNameIsDisplayedInItsLocale) {
