@@ -69,7 +69,7 @@ public class BinaryDictUtils {
             }
             return new Ver4DictEncoder(file);
         } else if (formatOptions.mVersion == FormatSpec.VERSION2) {
-            return new Ver2DictEncoder(file);
+            return new Ver2DictEncoder(file, Ver2DictEncoder.CODE_POINT_TABLE_OFF);
         } else {
             throw new RuntimeException("The format option has a wrong version : "
                     + formatOptions.mVersion);

@@ -59,6 +59,9 @@ public class DictionaryMaker {
         private static final String OPTION_OUTPUT_XML = "-x";
         private static final String OPTION_OUTPUT_COMBINED = "-o";
         private static final String OPTION_HELP = "-h";
+        private static final String OPTION_CODE_POINT_TABLE = "-t";
+        private static final String OPTION_CODE_POINT_TABLE_OFF = "off";
+        private static final String OPTION_CODE_POINT_TABLE_ON = "on";
         public final String mInputBinary;
         public final String mInputCombined;
         public final String mInputUnigramXml;
@@ -68,6 +71,7 @@ public class DictionaryMaker {
         public final String mOutputXml;
         public final String mOutputCombined;
         public final int mOutputBinaryFormatVersion;
+        public final int mCodePointTableMode;
 
         private void checkIntegrity() throws IOException {
             checkHasExactlyOneInput();
@@ -131,7 +135,7 @@ public class DictionaryMaker {
                     + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts_and_whitelist.xml>] "
                     + "| [-s <combined format input]"
                     + "| [-s <binary input>] [-d <binary output>] [-x <xml output>] "
-                    + " [-o <combined output>]"
+                    + " [-o <combined output>] [-t <code point table switch: on/off/auto>]"
                     + "[-2] [-3] [-4]\n"
                     + "\n"
                     + "  Converts a source dictionary file to one or several outputs.\n"
@@ -155,6 +159,8 @@ public class DictionaryMaker {
             String outputXml = null;
             String outputCombined = null;
             int outputBinaryFormatVersion = 2; // the default version is 2.
+            // Don't use code point table by default.
+            int codePointTableMode = Ver2DictEncoder.CODE_POINT_TABLE_OFF;
 
             while (!args.isEmpty()) {
                 final String arg = args.get(0);
@@ -172,29 +178,38 @@ public class DictionaryMaker {
                             throw new IllegalArgumentException("Option " + arg + " is unknown or "
                                     + "requires an argument");
                         }
-                        String filename = args.get(0);
+                        String argValue = args.get(0);
                         args.remove(0);
                         if (OPTION_INPUT_SOURCE.equals(arg)) {
-                            if (XmlDictInputOutput.isXmlUnigramDictionary(filename)) {
-                                inputUnigramXml = filename;
-                            } else if (CombinedInputOutput.isCombinedDictionary(filename)) {
-                                inputCombined = filename;
-                            } else if (BinaryDictDecoderUtils.isBinaryDictionary(filename)) {
-                                inputBinary = filename;
+                            if (XmlDictInputOutput.isXmlUnigramDictionary(argValue)) {
+                                inputUnigramXml = argValue;
+                            } else if (CombinedInputOutput.isCombinedDictionary(argValue)) {
+                                inputCombined = argValue;
+                            } else if (BinaryDictDecoderUtils.isBinaryDictionary(argValue)) {
+                                inputBinary = argValue;
                             } else {
                                 throw new IllegalArgumentException(
-                                        "Unknown format for file " + filename);
+                                        "Unknown format for file " + argValue);
                             }
                         } else if (OPTION_INPUT_SHORTCUT_XML.equals(arg)) {
-                            inputShortcutXml = filename;
+                            inputShortcutXml = argValue;
                         } else if (OPTION_INPUT_BIGRAM_XML.equals(arg)) {
-                            inputBigramXml = filename;
+                            inputBigramXml = argValue;
                         } else if (OPTION_OUTPUT_BINARY.equals(arg)) {
-                            outputBinary = filename;
+                            outputBinary = argValue;
                         } else if (OPTION_OUTPUT_XML.equals(arg)) {
-                            outputXml = filename;
+                            outputXml = argValue;
                         } else if (OPTION_OUTPUT_COMBINED.equals(arg)) {
-                            outputCombined = filename;
+                            outputCombined = argValue;
+                        } else if (OPTION_CODE_POINT_TABLE.equals(arg)) {
+                            if (OPTION_CODE_POINT_TABLE_OFF.equals(argValue)) {
+                                codePointTableMode = Ver2DictEncoder.CODE_POINT_TABLE_OFF;
+                            } else if (OPTION_CODE_POINT_TABLE_ON.equals(argValue)) {
+                                codePointTableMode = Ver2DictEncoder.CODE_POINT_TABLE_ON;
+                            } else {
+                                throw new IllegalArgumentException(
+                                        "Unknown argument to -t option : " + argValue);
+                            }
                         } else {
                             throw new IllegalArgumentException("Unknown option : " + arg);
                         }
@@ -225,6 +240,7 @@ public class DictionaryMaker {
             mOutputXml = outputXml;
             mOutputCombined = outputCombined;
             mOutputBinaryFormatVersion = outputBinaryFormatVersion;
+            mCodePointTableMode = codePointTableMode;
             checkIntegrity();
         }
     }
@@ -335,7 +351,8 @@ public class DictionaryMaker {
             throws FileNotFoundException, IOException, UnsupportedFormatException,
             IllegalArgumentException {
         if (null != args.mOutputBinary) {
-            writeBinaryDictionary(args.mOutputBinary, dict, args.mOutputBinaryFormatVersion);
+            writeBinaryDictionary(args.mOutputBinary, dict, args.mOutputBinaryFormatVersion,
+                    args.mCodePointTableMode);
         }
         if (null != args.mOutputXml) {
             writeXmlDictionary(args.mOutputXml, dict);
@@ -351,19 +368,21 @@ public class DictionaryMaker {
      * @param outputFilename the name of the file to write to.
      * @param dict the dictionary to write.
      * @param version the binary format version to use.
+     * @param codePointTableMode the value to decide how we treat the code point table.
      * @throws FileNotFoundException if the output file can't be created.
      * @throws IOException if the output file can't be written to.
      */
     private static void writeBinaryDictionary(final String outputFilename,
-            final FusionDictionary dict, final int version)
+            final FusionDictionary dict, final int version, final int codePointTableMode)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File outputFile = new File(outputFilename);
         final FormatSpec.FormatOptions formatOptions = new FormatSpec.FormatOptions(version);
         final DictEncoder dictEncoder;
         if (version == FormatSpec.VERSION4) {
+            // VERSION4 doesn't use the code point table.
             dictEncoder = new Ver4DictEncoder(outputFile);
         } else {
-            dictEncoder = new Ver2DictEncoder(outputFile);
+            dictEncoder = new Ver2DictEncoder(outputFile, codePointTableMode);
         }
         dictEncoder.writeDictionary(dict, formatOptions);
     }
