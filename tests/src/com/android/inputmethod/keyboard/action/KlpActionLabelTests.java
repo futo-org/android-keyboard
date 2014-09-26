@@ -156,4 +156,17 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
         doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.ITALIAN);
         doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.JAPANESE);
     }
+
+    public void testSerbianLatinActionLabel() {
+        final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
+        final Locale sr_ZZ = new Locale("sr", "ZZ");
+        final InputMethodSubtype hinglish = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                sr_ZZ.toString(), "serbian_qwertz");
+        // An action label should be displayed in subtype's locale regardless of the system locale.
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, sr_ZZ);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, Locale.US);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, Locale.FRENCH);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, Locale.ITALIAN);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, Locale.JAPANESE);
+    }
 }

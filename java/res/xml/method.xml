@@ -89,7 +89,7 @@
     sk: Slovak/qwerty
     sl: Slovenian/qwerty
     sr: Serbian/south_slavic
-    (sr-Latn: Serbian/qwerty) # not yet implemented.
+    (sr_ZZ: Serbian (Latin)/serbian_qwertz) # This is a preliminary keyboard layout.
     sv: Swedish/nordic
     sw: Swahili/qwerty
     ta_IN: Tamil (India)/tamil
@@ -661,24 +661,14 @@
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
             android:isAsciiCapable="false"
     />
-    <!-- TODO: Uncomment once we can handle IETF language tag with script name specified.
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/subtype_serbian_cyrillic"
-            android:subtypeId="0xXXXXXXXX"
-            android:imeSubtypeLocale="sr"
+            android:label="@string/subtype_sr_ZZ"
+            android:subtypeId="0xf4a5569c"
+            android:imeSubtypeLocale="sr_ZZ"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="false"
-    />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/subtype_serbian_latin"
-            android:subtypeId="0xXXXXXXXX"
-            android:imeSubtypeLocale="sr-Latn"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=serbian_qwertz,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
     />
-    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x48b4ff43"
