@@ -53,7 +53,8 @@ public final class ImportantNoticeUtils {
         // This utility class is not publicly instantiable.
     }
 
-    private static boolean isInSystemSetupWizard(final Context context) {
+    @UsedForTesting
+    static boolean isInSystemSetupWizard(final Context context) {
         try {
             final int userSetupComplete = Settings.Secure.getInt(
                     context.getContentResolver(), Settings_Secure_USER_SETUP_COMPLETE);
@@ -84,7 +85,8 @@ public final class ImportantNoticeUtils {
         return getLastImportantNoticeVersion(context) + 1;
     }
 
-    private static boolean hasNewImportantNotice(final Context context) {
+    @UsedForTesting
+    static boolean hasNewImportantNotice(final Context context) {
         final int lastVersion = getLastImportantNoticeVersion(context);
         return getCurrentImportantNoticeVersion(context) > lastVersion;
     }
