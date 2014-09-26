@@ -19,10 +19,10 @@ package com.android.inputmethod.keyboard.layout;
 import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.*;
 
 import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.layout.Hindi.HindiCustomizer;
 import com.android.inputmethod.keyboard.layout.Hindi.HindiSymbols;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
+import com.android.inputmethod.keyboard.layout.tests.DevanagariCustomizer;
 
 import java.util.Locale;
 
@@ -39,7 +39,7 @@ public final class NepaliRomanized extends LayoutBase {
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class NepaliRomanizedCustomizer extends HindiCustomizer {
+    public static class NepaliRomanizedCustomizer extends DevanagariCustomizer {
         public NepaliRomanizedCustomizer(final Locale locale) { super(locale); }
 
         @Override
