@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.Arrays;
@@ -86,35 +87,66 @@ public class PrevWordsInfo {
     // For simplicity of implementation, elements may also be EMPTY_WORD_INFO transiently after the
     // WordComposer was reset and before starting a new composing word, but we should never be
     // calling getSuggetions* in this situation.
-    public final WordInfo[] mPrevWordsInfo;
+    private final WordInfo[] mPrevWordsInfo;
+    private final int mPrevWordsCount;
 
     // Construct from the previous word information.
-    public PrevWordsInfo(final WordInfo prevWordInfo) {
-        mPrevWordsInfo = new WordInfo[] { prevWordInfo };
+    public PrevWordsInfo(final WordInfo... prevWordsInfo) {
+        mPrevWordsInfo = prevWordsInfo;
+        mPrevWordsCount = prevWordsInfo.length;
     }
 
-    // Construct from WordInfo array. n-th element represents (n+1)-th previous word's information.
-    public PrevWordsInfo(final WordInfo[] prevWordsInfo) {
-        mPrevWordsInfo = prevWordsInfo;
+    // Construct from WordInfo array and size. The caller shouldn't change prevWordsInfo after
+    // calling this method.
+    private PrevWordsInfo(final PrevWordsInfo prevWordsInfo, final int prevWordsCount) {
+        if (prevWordsInfo.mPrevWordsCount < prevWordsCount) {
+            throw new IndexOutOfBoundsException("prevWordsInfo.mPrevWordsCount ("
+                    + prevWordsInfo.mPrevWordsCount + ") is smaller than prevWordsCount ("
+                    + prevWordsCount + ")");
+        }
+        mPrevWordsInfo = prevWordsInfo.mPrevWordsInfo;
+        mPrevWordsCount = prevWordsCount;
     }
 
     // Create next prevWordsInfo using current prevWordsInfo.
     public PrevWordsInfo getNextPrevWordsInfo(final WordInfo wordInfo) {
         final int nextPrevWordCount = Math.min(Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM,
-                mPrevWordsInfo.length + 1);
+                mPrevWordsCount + 1);
         final WordInfo[] prevWordsInfo = new WordInfo[nextPrevWordCount];
         prevWordsInfo[0] = wordInfo;
-        System.arraycopy(mPrevWordsInfo, 0, prevWordsInfo, 1, prevWordsInfo.length - 1);
+        System.arraycopy(mPrevWordsInfo, 0, prevWordsInfo, 1, nextPrevWordCount - 1);
         return new PrevWordsInfo(prevWordsInfo);
     }
 
     public boolean isValid() {
-        return mPrevWordsInfo.length > 0 && mPrevWordsInfo[0].isValid();
+        return mPrevWordsCount > 0 && mPrevWordsInfo[0].isValid();
+    }
+
+    public boolean isBeginningOfSentenceContext() {
+        return mPrevWordsCount > 0 && mPrevWordsInfo[0].mIsBeginningOfSentence;
+    }
+
+    // n is 1-indexed.
+    // TODO: Remove
+    public CharSequence getNthPrevWord(final int n) {
+        if (n <= 0 || n > mPrevWordsCount) {
+            return null;
+        }
+        return mPrevWordsInfo[n - 1].mWord;
+    }
+
+    // n is 1-indexed.
+    @UsedForTesting
+    public boolean isNthPrevWordBeginningOfSontence(final int n) {
+        if (n <= 0 || n > mPrevWordsCount) {
+            return false;
+        }
+        return mPrevWordsInfo[n - 1].mIsBeginningOfSentence;
     }
 
     public void outputToArray(final int[][] codePointArrays,
             final boolean[] isBeginningOfSentenceArray) {
-        for (int i = 0; i < mPrevWordsInfo.length; i++) {
+        for (int i = 0; i < mPrevWordsCount; i++) {
             final WordInfo wordInfo = mPrevWordsInfo[i];
             if (wordInfo == null || !wordInfo.isValid()) {
                 codePointArrays[i] = new int[0];
@@ -127,14 +159,12 @@ public class PrevWordsInfo {
     }
 
     public PrevWordsInfo getTrimmedPrevWordsInfo(final int maxPrevWordCount) {
-        final int newSize = Math.min(maxPrevWordCount, mPrevWordsInfo.length);
-        // TODO: Quit creating a new array.
-        final WordInfo[] prevWordsInfo = Arrays.copyOf(mPrevWordsInfo, newSize);
-        return new PrevWordsInfo(prevWordsInfo);
+        final int newSize = Math.min(maxPrevWordCount, mPrevWordsCount);
+        return new PrevWordsInfo(this /* prevWordsInfo */, newSize);
     }
 
     public int getPrevWordCount() {
-        return mPrevWordsInfo.length;
+        return mPrevWordsCount;
     }
 
     @Override
@@ -149,16 +179,22 @@ public class PrevWordsInfo {
         if (!(o instanceof PrevWordsInfo)) return false;
         final PrevWordsInfo prevWordsInfo = (PrevWordsInfo)o;
 
-        final int minLength = Math.min(mPrevWordsInfo.length, prevWordsInfo.mPrevWordsInfo.length);
+        final int minLength = Math.min(mPrevWordsCount, prevWordsInfo.mPrevWordsCount);
         for (int i = 0; i < minLength; i++) {
             if (!mPrevWordsInfo[i].equals(prevWordsInfo.mPrevWordsInfo[i])) {
                 return false;
             }
         }
-        final WordInfo[] longerWordsInfo =
-                (mPrevWordsInfo.length > prevWordsInfo.mPrevWordsInfo.length) ?
-                        mPrevWordsInfo : prevWordsInfo.mPrevWordsInfo;
-        for (int i = minLength; i < longerWordsInfo.length; i++) {
+        final WordInfo[] longerWordsInfo;
+        final int longerWordsInfoCount;
+        if (mPrevWordsCount > prevWordsInfo.mPrevWordsCount) {
+            longerWordsInfo = mPrevWordsInfo;
+            longerWordsInfoCount = mPrevWordsCount;
+        } else {
+            longerWordsInfo = prevWordsInfo.mPrevWordsInfo;
+            longerWordsInfoCount = prevWordsInfo.mPrevWordsCount;
+        }
+        for (int i = minLength; i < longerWordsInfoCount; i++) {
             if (longerWordsInfo[i] != null
                     && !WordInfo.EMPTY_WORD_INFO.equals(longerWordsInfo[i])) {
                 return false;
@@ -170,7 +206,7 @@ public class PrevWordsInfo {
     @Override
     public String toString() {
         final StringBuffer builder = new StringBuffer();
-        for (int i = 0; i < mPrevWordsInfo.length; i++) {
+        for (int i = 0; i < mPrevWordsCount; i++) {
             final WordInfo wordInfo = mPrevWordsInfo[i];
             builder.append("PrevWord[");
             builder.append(i);
