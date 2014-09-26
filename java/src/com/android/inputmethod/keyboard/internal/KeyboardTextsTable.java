@@ -952,20 +952,24 @@ public final class KeyboardTextsTable {
 
     /* Locale da: Danish */
     private static final String[] TEXTS_da = {
+        // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
+        // U+00E6: "æ" LATIN SMALL LETTER AE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
         // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
         // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
-        /* morekeys_a */ "\u00E1,\u00E4,\u00E0,\u00E2,\u00E3,\u0101",
+        /* morekeys_a */ "\u00E5,\u00E6,\u00E1,\u00E4,\u00E0,\u00E2,\u00E3,\u0101",
+        // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
+        // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
         // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
         // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
         // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
         // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
         // U+0153: "œ" LATIN SMALL LIGATURE OE
         // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
-        /* morekeys_o */ "\u00F3,\u00F4,\u00F2,\u00F5,\u0153,\u014D",
+        /* morekeys_o */ "\u00F8,\u00F6,\u00F3,\u00F4,\u00F2,\u00F5,\u0153,\u014D",
         // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
         // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
         /* morekeys_e */ "\u00E9,\u00EB",
@@ -1666,13 +1670,16 @@ public final class KeyboardTextsTable {
 
     /* Locale fi: Finnish */
     private static final String[] TEXTS_fi = {
+        // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+        // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
         // U+00E6: "æ" LATIN SMALL LETTER AE
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
         // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
         // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
-        /* morekeys_a */ "\u00E6,\u00E0,\u00E1,\u00E2,\u00E3,\u0101",
+        /* morekeys_a */ "\u00E4,\u00E5,\u00E6,\u00E0,\u00E1,\u00E2,\u00E3,\u0101",
+        // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
         // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
         // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
         // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
@@ -1680,7 +1687,7 @@ public final class KeyboardTextsTable {
         // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
         // U+0153: "œ" LATIN SMALL LIGATURE OE
         // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
-        /* morekeys_o */ "\u00F8,\u00F4,\u00F2,\u00F3,\u00F5,\u0153,\u014D",
+        /* morekeys_o */ "\u00F6,\u00F8,\u00F4,\u00F2,\u00F3,\u00F5,\u0153,\u014D",
         /* morekeys_e */ null,
         // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
         /* morekeys_u */ "\u00FC",
@@ -2784,21 +2791,24 @@ public final class KeyboardTextsTable {
 
     /* Locale nb: Norwegian Bokmål */
     private static final String[] TEXTS_nb = {
-        // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
+        // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
+        // U+00E6: "æ" LATIN SMALL LETTER AE
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+        // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
         // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
         // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
-        /* morekeys_a */ "\u00E0,\u00E4,\u00E1,\u00E2,\u00E3,\u0101",
+        /* morekeys_a */ "\u00E5,\u00E6,\u00E4,\u00E0,\u00E1,\u00E2,\u00E3,\u0101",
+        // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
+        // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
         // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
         // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
         // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
-        // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
         // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
         // U+0153: "œ" LATIN SMALL LIGATURE OE
         // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
-        /* morekeys_o */ "\u00F4,\u00F2,\u00F3,\u00F6,\u00F5,\u0153,\u014D",
+        /* morekeys_o */ "\u00F8,\u00F6,\u00F4,\u00F2,\u00F3,\u00F5,\u0153,\u014D",
         // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
         // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
         // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
@@ -3381,18 +3391,24 @@ public final class KeyboardTextsTable {
 
     /* Locale sv: Swedish */
     private static final String[] TEXTS_sv = {
+        // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+        // U+00E5: "å" LATIN SMALL LETTER A WITH RING
+        // U+00E6: "æ" LATIN SMALL LETTER AE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
         // U+0105: "ą" LATIN SMALL LETTER A WITH OGONEK
         // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
-        /* morekeys_a */ "\u00E1,\u00E0,\u00E2,\u0105,\u00E3",
+        /* morekeys_a */ "\u00E4,\u00E5,\u00E6,\u00E1,\u00E0,\u00E2,\u0105,\u00E3",
+        // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+        // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
+        // U+0153: "œ" LATIN SMALL LIGATURE OE
         // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
         // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
         // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
         // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
         // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
-        /* morekeys_o */ "\u00F3,\u00F2,\u00F4,\u00F5,\u014D",
+        /* morekeys_o */ "\u00F6,\u00F8,\u0153,\u00F3,\u00F2,\u00F4,\u00F5,\u014D",
         // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
         // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
         // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
