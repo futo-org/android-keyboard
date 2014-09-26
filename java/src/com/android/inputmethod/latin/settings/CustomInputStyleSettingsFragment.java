@@ -32,6 +32,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,6 +60,12 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
+    private static final String TAG = CustomInputStyleSettingsFragment.class.getSimpleName();
+    private static final boolean DEBUG_SUBTYPE_ID = false;
+    // Note: We would like to turn this debug flag true in order to see what input styles are
+    // defined in a bug-report.
+    private static final boolean DEBUG_CUSTOM_INPUT_STYLES = true;
+
     private RichInputMethodManager mRichImm;
     private SharedPreferences mPrefs;
     private SubtypeLocaleAdapter mSubtypeLocaleAdapter;
@@ -96,8 +103,7 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
     }
 
     static final class SubtypeLocaleAdapter extends ArrayAdapter<SubtypeLocaleItem> {
-        private static final String TAG = SubtypeLocaleAdapter.class.getSimpleName();
-        private static final boolean DEBUG_SUBTYPE_ID = false;
+        private static final String TAG_SUBTYPE = SubtypeLocaleAdapter.class.getSimpleName();
 
         public SubtypeLocaleAdapter(final Context context) {
             super(context, android.R.layout.simple_spinner_item);
@@ -110,7 +116,7 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
             for (int i = 0; i < count; i++) {
                 final InputMethodSubtype subtype = imi.getSubtypeAt(i);
                 if (DEBUG_SUBTYPE_ID) {
-                    android.util.Log.d(TAG, String.format("%-6s 0x%08x %11d %s",
+                    Log.d(TAG_SUBTYPE, String.format("%-6s 0x%08x %11d %s",
                             subtype.getLocale(), subtype.hashCode(), subtype.hashCode(),
                             SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype)));
                 }
@@ -445,6 +451,9 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
 
         final String prefSubtypes =
                 Settings.readPrefAdditionalSubtypes(mPrefs, getResources());
+        if (DEBUG_CUSTOM_INPUT_STYLES) {
+            Log.i(TAG, "Load custom input styles: " + prefSubtypes);
+        }
         setPrefSubtypes(prefSubtypes, context);
 
         mIsAddingNewSubtype = (savedInstanceState != null)
@@ -611,6 +620,9 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
         final String oldSubtypes = Settings.readPrefAdditionalSubtypes(mPrefs, getResources());
         final InputMethodSubtype[] subtypes = getSubtypes();
         final String prefSubtypes = AdditionalSubtypeUtils.createPrefSubtypes(subtypes);
+        if (DEBUG_CUSTOM_INPUT_STYLES) {
+            Log.i(TAG, "Save custom input styles: " + prefSubtypes);
+        }
         if (prefSubtypes.equals(oldSubtypes)) {
             return;
         }
