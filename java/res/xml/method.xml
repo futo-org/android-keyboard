@@ -101,6 +101,7 @@
     tl: Tagalog/spanish
     tr: Turkish/qwerty
     uk: Ukrainian/east_slavic
+    (uz_UZ: Uzbek (Uzbekistan)/uzbek) # This is a preliminary keyboard layout.
     vi: Vietnamese/qwerty
     zu: Zulu/qwerty
     zz: QWERTY/qwerty
@@ -672,6 +673,8 @@
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    <!-- TODO: This Serbian Latin keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_sr_ZZ"
             android:subtypeId="0xf4a5569c"
@@ -762,6 +765,16 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
             android:isAsciiCapable="false"
+    />
+    <!-- TODO: This Uzbek keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0xad5cf7f6"
+            android:imeSubtypeLocale="uz_UZ"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=uzbek,AsciiCapable,EmojiCapable"
+            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
