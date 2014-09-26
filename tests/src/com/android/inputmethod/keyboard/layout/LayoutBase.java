@@ -310,7 +310,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
 
     // U+00A1: "¡" INVERTED EXCLAMATION MARK
     // U+00BF: "¿" INVERTED QUESTION MARK
-    static final ExpectedKey[] EXCLAMATION_AND_QUESTION_MARKS = joinKeys(
+    public static final ExpectedKey[] EXCLAMATION_AND_QUESTION_MARKS = joinKeys(
             key("!", moreKey("\u00A1")), key("?", moreKey("\u00BF")));
     // U+200C: ZERO WIDTH NON-JOINER
     // U+200D: ZERO WIDTH JOINER
