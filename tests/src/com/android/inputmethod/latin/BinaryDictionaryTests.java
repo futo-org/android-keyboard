@@ -21,7 +21,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
+import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.WeightedString;
@@ -208,45 +208,45 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
     private static void addBigramWords(final BinaryDictionary binaryDictionary, final String word0,
             final String word1, final int probability) {
-        binaryDictionary.addNgramEntry(new PrevWordsInfo(new WordInfo(word0)), word1, probability,
+        binaryDictionary.addNgramEntry(new NgramContext(new WordInfo(word0)), word1, probability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
     }
 
     private static void addTrigramEntry(final BinaryDictionary binaryDictionary, final String word0,
             final String word1, final String word2, final int probability) {
-        final PrevWordsInfo prevWordsInfo =
-                new PrevWordsInfo(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
-        binaryDictionary.addNgramEntry(prevWordsInfo, word2, probability,
+        final NgramContext ngramContext =
+                new NgramContext(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
+        binaryDictionary.addNgramEntry(ngramContext, word2, probability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
     }
 
     private static boolean isValidBigram(final BinaryDictionary binaryDictionary,
             final String word0, final String word1) {
-        return binaryDictionary.isValidNgram(new PrevWordsInfo(new WordInfo(word0)), word1);
+        return binaryDictionary.isValidNgram(new NgramContext(new WordInfo(word0)), word1);
     }
 
     private static void removeBigramEntry(final BinaryDictionary binaryDictionary,
             final String word0, final String word1) {
-        binaryDictionary.removeNgramEntry(new PrevWordsInfo(new WordInfo(word0)), word1);
+        binaryDictionary.removeNgramEntry(new NgramContext(new WordInfo(word0)), word1);
     }
 
     private static void removeTrigramEntry(final BinaryDictionary binaryDictionary,
             final String word0, final String word1, final String word2) {
-        final PrevWordsInfo prevWordsInfo =
-                new PrevWordsInfo(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
-        binaryDictionary.removeNgramEntry(prevWordsInfo, word2);
+        final NgramContext ngramContext =
+                new NgramContext(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
+        binaryDictionary.removeNgramEntry(ngramContext, word2);
     }
 
     private static int getBigramProbability(final BinaryDictionary binaryDictionary,
             final String word0,  final String word1) {
-        return binaryDictionary.getNgramProbability(new PrevWordsInfo(new WordInfo(word0)), word1);
+        return binaryDictionary.getNgramProbability(new NgramContext(new WordInfo(word0)), word1);
     }
 
     private static int getTrigramProbability(final BinaryDictionary binaryDictionary,
             final String word0, final String word1, final String word2) {
-        final PrevWordsInfo prevWordsInfo =
-                new PrevWordsInfo(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
-        return binaryDictionary.getNgramProbability(prevWordsInfo, word2);
+        final NgramContext ngramContext =
+                new NgramContext(new WordInfo[] { new WordInfo(word1), new WordInfo(word0) } );
+        return binaryDictionary.getNgramProbability(ngramContext, word2);
     }
 
     public void testAddUnigramWord() {
@@ -1422,7 +1422,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.addUnigramEntry("ddd", unigramProbability, null /* shortcutTarget */,
                 Dictionary.NOT_A_PROBABILITY, false /* isBeginningOfSentence */,
                 true /* isNotAWord */, true /* isBlacklisted */, 0 /* timestamp */);
-        binaryDictionary.addNgramEntry(PrevWordsInfo.BEGINNING_OF_SENTENCE,
+        binaryDictionary.addNgramEntry(NgramContext.BEGINNING_OF_SENTENCE,
                 "aaa", bigramProbability, 0 /* timestamp */);
         assertEquals(unigramProbability, binaryDictionary.getFrequency("aaa"));
         assertEquals(unigramProbability, binaryDictionary.getFrequency("bbb"));
@@ -1436,7 +1436,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         if (canCheckBigramProbability(toFormatVersion)) {
             assertEquals(bigramProbability, getBigramProbability(binaryDictionary, "aaa", "bbb"));
             assertEquals(bigramProbability, binaryDictionary.getNgramProbability(
-                    PrevWordsInfo.BEGINNING_OF_SENTENCE, "aaa"));
+                    NgramContext.BEGINNING_OF_SENTENCE, "aaa"));
         }
         assertTrue(isValidBigram(binaryDictionary, "aaa", "bbb"));
         WordProperty wordProperty = binaryDictionary.getWordProperty("ccc",
@@ -1546,23 +1546,23 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
         final int dummyProbability = 0;
-        final PrevWordsInfo prevWordsInfoBeginningOfSentence = PrevWordsInfo.BEGINNING_OF_SENTENCE;
+        final NgramContext beginningOfSentenceContext = NgramContext.BEGINNING_OF_SENTENCE;
         final int bigramProbability = 200;
         addUnigramWord(binaryDictionary, "aaa", dummyProbability);
-        binaryDictionary.addNgramEntry(prevWordsInfoBeginningOfSentence, "aaa", bigramProbability,
+        binaryDictionary.addNgramEntry(beginningOfSentenceContext, "aaa", bigramProbability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
         assertEquals(bigramProbability,
-                binaryDictionary.getNgramProbability(prevWordsInfoBeginningOfSentence, "aaa"));
-        binaryDictionary.addNgramEntry(prevWordsInfoBeginningOfSentence, "aaa", bigramProbability,
+                binaryDictionary.getNgramProbability(beginningOfSentenceContext, "aaa"));
+        binaryDictionary.addNgramEntry(beginningOfSentenceContext, "aaa", bigramProbability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
         addUnigramWord(binaryDictionary, "bbb", dummyProbability);
-        binaryDictionary.addNgramEntry(prevWordsInfoBeginningOfSentence, "bbb", bigramProbability,
+        binaryDictionary.addNgramEntry(beginningOfSentenceContext, "bbb", bigramProbability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
         binaryDictionary.flushWithGC();
         assertEquals(bigramProbability,
-                binaryDictionary.getNgramProbability(prevWordsInfoBeginningOfSentence, "aaa"));
+                binaryDictionary.getNgramProbability(beginningOfSentenceContext, "aaa"));
         assertEquals(bigramProbability,
-                binaryDictionary.getNgramProbability(prevWordsInfoBeginningOfSentence, "bbb"));
+                binaryDictionary.getNgramProbability(beginningOfSentenceContext, "bbb"));
     }
 
     public void testGetMaxFrequencyOfExactMatches() {

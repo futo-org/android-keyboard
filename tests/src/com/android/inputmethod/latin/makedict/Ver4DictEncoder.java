@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
@@ -104,12 +104,12 @@ public class Ver4DictEncoder implements DictEncoder {
         for (final WordProperty word0Property : dict) {
             if (null == word0Property.mBigrams) continue;
             for (final WeightedString word1 : word0Property.mBigrams) {
-                final PrevWordsInfo prevWordsInfo =
-                        new PrevWordsInfo(new PrevWordsInfo.WordInfo(word0Property.mWord));
-                if (!binaryDict.addNgramEntry(prevWordsInfo, word1.mWord,
+                final NgramContext ngramContext =
+                        new NgramContext(new NgramContext.WordInfo(word0Property.mWord));
+                if (!binaryDict.addNgramEntry(ngramContext, word1.mWord,
                         word1.getProbability(), 0 /* timestamp */)) {
                     MakedictLog.e("Cannot add n-gram entry for "
-                            + prevWordsInfo + " -> " + word1.mWord);
+                            + ngramContext + " -> " + word1.mWord);
                     return;
                 }
                 if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {

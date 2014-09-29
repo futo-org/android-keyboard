@@ -22,23 +22,23 @@ import java.util.Locale;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 
 public interface DistracterFilter {
     /**
      * Determine whether a word is a distracter to words in dictionaries.
      *
-     * @param prevWordsInfo the information of previous words.
+     * @param ngramContext the n-gram context
      * @param testedWord the word that will be tested to see whether it is a distracter to words
      *                   in dictionaries.
      * @param locale the locale of word.
      * @return true if testedWord is a distracter, otherwise false.
      */
-    public boolean isDistracterToWordsInDictionaries(final PrevWordsInfo prevWordsInfo,
+    public boolean isDistracterToWordsInDictionaries(final NgramContext ngramContext,
             final String testedWord, final Locale locale);
 
     @UsedForTesting
-    public int getWordHandlingType(final PrevWordsInfo prevWordsInfo, final String testedWord,
+    public int getWordHandlingType(final NgramContext ngramContext, final String testedWord,
             final Locale locale);
 
     public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes);
@@ -72,13 +72,13 @@ public interface DistracterFilter {
 
     public static final DistracterFilter EMPTY_DISTRACTER_FILTER = new DistracterFilter() {
         @Override
-        public boolean isDistracterToWordsInDictionaries(PrevWordsInfo prevWordsInfo,
+        public boolean isDistracterToWordsInDictionaries(NgramContext ngramContext,
                 String testedWord, Locale locale) {
             return false;
         }
 
         @Override
-        public int getWordHandlingType(final PrevWordsInfo prevWordsInfo,
+        public int getWordHandlingType(final NgramContext ngramContext,
                 final String testedWord, final Locale locale) {
             return HandlingType.REQUIRE_NO_SPECIAL_HANDLINGS;
         }

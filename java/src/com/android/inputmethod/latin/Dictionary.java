@@ -81,10 +81,9 @@ public abstract class Dictionary {
     }
 
     /**
-     * Searches for suggestions for a given context. For the moment the context is only the
-     * previous word.
+     * Searches for suggestions for a given context.
      * @param composer the key sequence to match with coordinate info, as a WordComposer
-     * @param prevWordsInfo the information of previous words.
+     * @param ngramContext the context for n-gram.
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @param settingsValuesForSuggestion the settings values used for the suggestion.
      * @param sessionId the session id.
@@ -96,7 +95,7 @@ public abstract class Dictionary {
      * @return the list of suggestions (possibly null if none)
      */
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float weightForLocale,
             final float[] inOutWeightOfLangModelVsSpatialModel);
@@ -191,7 +190,7 @@ public abstract class Dictionary {
 
         @Override
         public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-                final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+                final NgramContext ngramContext, final ProximityInfo proximityInfo,
                 final SettingsValuesForSuggestion settingsValuesForSuggestion,
                 final int sessionId, final float weightForLocale,
                 final float[] inOutWeightOfLangModelVsSpatialModel) {
