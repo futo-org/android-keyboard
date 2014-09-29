@@ -81,7 +81,7 @@ class DictionaryStructureWithBufferPolicy {
 
     // Returns whether the update was success or not.
     virtual bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-            const BigramProperty *const bigramProperty) = 0;
+            const NgramProperty *const ngramProperty) = 0;
 
     // Returns whether the update was success or not.
     virtual bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,

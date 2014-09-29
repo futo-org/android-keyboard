@@ -23,7 +23,7 @@
 
 namespace latinime {
 
-class BigramProperty;
+class NgramProperty;
 class BufferWithExtendableBuffer;
 class DynamicPtReadingHelper;
 class PtNodeReader;
@@ -46,7 +46,7 @@ class DynamicPtUpdatingHelper {
     // TODO: Remove after stopping supporting v402.
     // Add an n-gram entry.
     bool addNgramEntry(const PtNodePosArrayView prevWordsPtNodePos, const int wordPos,
-            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry);
+            const NgramProperty *const ngramProperty, bool *const outAddedNewEntry);
 
     // TODO: Remove after stopping supporting v402.
     // Remove an n-gram entry.

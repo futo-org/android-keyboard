@@ -33,6 +33,7 @@ class Ver4PatriciaTrieWritingHelper {
     Ver4PatriciaTrieWritingHelper(Ver4DictBuffers *const buffers)
             : mBuffers(buffers) {}
 
+    // TODO: Support counting ngram entries.
     bool writeToDictFile(const char *const dictDirPath, const int unigramCount,
             const int bigramCount) const;
 
@@ -69,11 +70,6 @@ class Ver4PatriciaTrieWritingHelper {
     bool runGC(const int rootPtNodeArrayPos, const HeaderPolicy *const headerPolicy,
             Ver4DictBuffers *const buffersToWrite, int *const outUnigramCount,
             int *const outBigramCount);
-
-    bool truncateUnigrams(const Ver4PatriciaTrieNodeReader *const ptNodeReader,
-            Ver4PatriciaTrieNodeWriter *const ptNodeWriter, const int maxUnigramCount);
-
-    bool truncateBigrams(const int maxBigramCount);
 
     Ver4DictBuffers *const mBuffers;
 };

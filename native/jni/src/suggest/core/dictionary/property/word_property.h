@@ -21,7 +21,7 @@
 
 #include "defines.h"
 #include "jni.h"
-#include "suggest/core/dictionary/property/bigram_property.h"
+#include "suggest/core/dictionary/property/ngram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 
 namespace latinime {
@@ -31,12 +31,12 @@ class WordProperty {
  public:
     // Default constructor is used to create an instance that indicates an invalid word.
     WordProperty()
-            : mCodePoints(), mUnigramProperty(), mBigrams() {}
+            : mCodePoints(), mUnigramProperty(), mNgrams() {}
 
     WordProperty(const std::vector<int> &&codePoints, const UnigramProperty *const unigramProperty,
-            const std::vector<BigramProperty> *const bigrams)
+            const std::vector<NgramProperty> *const bigrams)
             : mCodePoints(std::move(codePoints)), mUnigramProperty(*unigramProperty),
-              mBigrams(*bigrams) {}
+              mNgrams(*bigrams) {}
 
     void outputProperties(JNIEnv *const env, jintArray outCodePoints, jbooleanArray outFlags,
             jintArray outProbabilityInfo, jobject outBigramTargets, jobject outBigramProbabilities,
@@ -46,8 +46,8 @@ class WordProperty {
         return &mUnigramProperty;
     }
 
-    const std::vector<BigramProperty> *getBigramProperties() const {
-        return &mBigrams;
+    const std::vector<NgramProperty> *getNgramProperties() const {
+        return &mNgrams;
     }
 
  private:
@@ -56,7 +56,7 @@ class WordProperty {
 
     const std::vector<int> mCodePoints;
     const UnigramProperty mUnigramProperty;
-    const std::vector<BigramProperty> mBigrams;
+    const std::vector<NgramProperty> mNgrams;
 };
 } // namespace latinime
 #endif // LATINIME_WORD_PROPERTY_H

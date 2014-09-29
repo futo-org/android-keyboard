@@ -436,7 +436,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
     const PtNodeParams ptNodeParams =
             mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     // Fetch bigram information.
-    std::vector<BigramProperty> bigrams;
+    std::vector<NgramProperty> ngrams;
     const int bigramListPos = getBigramsPositionOfPtNode(ptNodePos);
     int bigramWord1CodePoints[MAX_WORD_LENGTH];
     BinaryDictionaryBigramsIterator bigramsIt(&mBigramListPolicy, bigramListPos);
@@ -450,7 +450,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
                     getWordIdFromTerminalPtNodePos(bigramsIt.getBigramPos()), MAX_WORD_LENGTH,
                     bigramWord1CodePoints, &word1Probability);
             const int probability = getProbability(word1Probability, bigramsIt.getProbability());
-            bigrams.emplace_back(
+            ngrams.emplace_back(
                     CodePointArrayView(bigramWord1CodePoints, word1CodePointCount).toVector(),
                     probability, NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */);
         }
@@ -478,7 +478,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
     const UnigramProperty unigramProperty(ptNodeParams.representsBeginningOfSentence(),
             ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
             NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
-    return WordProperty(wordCodePoints.toVector(), &unigramProperty, &bigrams);
+    return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }
 
 int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints,

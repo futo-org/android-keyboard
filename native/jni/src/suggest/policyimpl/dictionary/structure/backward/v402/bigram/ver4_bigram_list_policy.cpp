@@ -24,7 +24,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/backward/v402/bigram/ver4_bigram_list_policy.h"
 
-#include "suggest/core/dictionary/property/bigram_property.h"
+#include "suggest/core/dictionary/property/ngram_property.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/bigram/bigram_list_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v402/content/bigram_dict_content.h"
@@ -60,7 +60,7 @@ void Ver4BigramListPolicy::getNextBigram(int *const outBigramPos, int *const out
 }
 
 bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTargetTerminalId,
-        const BigramProperty *const bigramProperty, bool *const outAddedNewEntry) {
+        const NgramProperty *const ngramProperty, bool *const outAddedNewEntry) {
     // 1. The word has no bigrams yet.
     // 2. The word has bigrams, and there is the target in the list.
     // 3. The word has bigrams, and there is an invalid entry that can be reclaimed.
@@ -79,7 +79,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
                 newTargetTerminalId);
         const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(&newBigramEntry,
-                bigramProperty);
+                ngramProperty);
         // Write an entry.
         const int writingPos =  mBigramDictContent->getBigramListHeadPos(terminalId);
         if (!mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, writingPos)) {
@@ -112,7 +112,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
                 newTargetTerminalId);
         const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
-                &newBigramEntry, bigramProperty);
+                &newBigramEntry, ngramProperty);
         if (!mBigramDictContent->writeBigramEntryAtTail(&bigramEntryToWrite)) {
             return false;
         }
@@ -138,7 +138,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     const BigramEntry updatedBigramEntry =
             originalBigramEntry.updateTargetTerminalIdAndGetEntry(newTargetTerminalId);
     const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
-            &updatedBigramEntry, bigramProperty);
+            &updatedBigramEntry, ngramProperty);
     return mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, entryPosToUpdate);
 }
 
@@ -264,18 +264,18 @@ int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
 
 const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
         const BigramEntry *const originalBigramEntry,
-        const BigramProperty *const bigramProperty) const {
+        const NgramProperty *const ngramProperty) const {
     // TODO: Consolidate historical info and probability.
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
-        const HistoricalInfo historicalInfoForUpdate(bigramProperty->getTimestamp(),
-                bigramProperty->getLevel(), bigramProperty->getCount());
+        const HistoricalInfo historicalInfoForUpdate(ngramProperty->getTimestamp(),
+                ngramProperty->getLevel(), ngramProperty->getCount());
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
-                        originalBigramEntry->getHistoricalInfo(), bigramProperty->getProbability(),
+                        originalBigramEntry->getHistoricalInfo(), ngramProperty->getProbability(),
                         &historicalInfoForUpdate, mHeaderPolicy);
         return originalBigramEntry->updateHistoricalInfoAndGetEntry(&updatedHistoricalInfo);
     } else {
-        return originalBigramEntry->updateProbabilityAndGetEntry(bigramProperty->getProbability());
+        return originalBigramEntry->updateProbabilityAndGetEntry(ngramProperty->getProbability());
     }
 }
 

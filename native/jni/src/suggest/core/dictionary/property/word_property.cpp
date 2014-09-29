@@ -28,7 +28,7 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
             MAX_WORD_LENGTH /* maxLength */, mCodePoints.data(), mCodePoints.size(),
             false /* needsNullTermination */);
     jboolean flags[] = {mUnigramProperty.isNotAWord(), mUnigramProperty.isBlacklisted(),
-            !mBigrams.empty(), mUnigramProperty.hasShortcuts(),
+            !mNgrams.empty(), mUnigramProperty.hasShortcuts(),
             mUnigramProperty.representsBeginningOfSentence()};
     env->SetBooleanArrayRegion(outFlags, 0 /* start */, NELEMS(flags), flags);
     int probabilityInfo[] = {mUnigramProperty.getProbability(), mUnigramProperty.getTimestamp(),
@@ -42,8 +42,9 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     jmethodID addMethodId = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
 
     // Output bigrams.
-    for (const auto &bigramProperty : mBigrams) {
-        const std::vector<int> *const word1CodePoints = bigramProperty.getTargetCodePoints();
+    // TODO: Support n-gram
+    for (const auto &ngramProperty : mNgrams) {
+        const std::vector<int> *const word1CodePoints = ngramProperty.getTargetCodePoints();
         jintArray bigramWord1CodePointArray = env->NewIntArray(word1CodePoints->size());
         JniDataUtils::outputCodePoints(env, bigramWord1CodePointArray, 0 /* start */,
                 word1CodePoints->size(), word1CodePoints->data(), word1CodePoints->size(),
@@ -51,9 +52,9 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         env->CallBooleanMethod(outBigramTargets, addMethodId, bigramWord1CodePointArray);
         env->DeleteLocalRef(bigramWord1CodePointArray);
 
-        int bigramProbabilityInfo[] = {bigramProperty.getProbability(),
-                bigramProperty.getTimestamp(), bigramProperty.getLevel(),
-                bigramProperty.getCount()};
+        int bigramProbabilityInfo[] = {ngramProperty.getProbability(),
+                ngramProperty.getTimestamp(), ngramProperty.getLevel(),
+                ngramProperty.getCount()};
         jintArray bigramProbabilityInfoArray = env->NewIntArray(NELEMS(bigramProbabilityInfo));
         env->SetIntArrayRegion(bigramProbabilityInfoArray, 0 /* start */,
                 NELEMS(bigramProbabilityInfo), bigramProbabilityInfo);
