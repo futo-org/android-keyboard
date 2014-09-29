@@ -47,6 +47,7 @@ public final class DictionaryHeader {
     public static final String MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_COUNT";
     public static final String MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_COUNT";
     public static final String ATTRIBUTE_VALUE_TRUE = "1";
+    public static final String CODE_POINT_TABLE_KEY = "codePointTable";
 
     public DictionaryHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
             final FormatOptions formatOptions) throws UnsupportedFormatException {

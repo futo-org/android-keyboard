@@ -237,6 +237,8 @@ public final class FormatSpec {
     static final int UINT16_MAX = 0xFFFF;
     static final int UINT24_MAX = 0xFFFFFF;
     static final int MSB8 = 0x80;
+    static final int MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
+    static final int MAXIMAL_ONE_BYTE_CHARACTER_VALUE = 0xFF;
 
     /**
      * Options about file format.
