@@ -21,4 +21,16 @@ public class LatinIMEForTests extends LatinIME {
     public boolean isInputViewShown() {
         return true;
     }
+
+    private boolean deallocateMemoryWasPerformed = false;
+
+    @Override
+    protected void deallocateMemory() {
+        super.deallocateMemory();
+        deallocateMemoryWasPerformed = true;
+    }
+
+    public boolean getDeallocateMemoryWasPerformed() {
+        return deallocateMemoryWasPerformed;
+    }
 }

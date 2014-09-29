@@ -119,12 +119,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static boolean DEBUG = false;
 
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
-
-    private static final int PENDING_IMS_CALLBACK_DURATION = 800;
-
-    private static final int DELAY_WAIT_FOR_DICTIONARY_LOAD = 2000; // 2s
-
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
+    private static final int PENDING_IMS_CALLBACK_DURATION_MILLIS = 800;
+    private static final long DELAY_WAIT_FOR_DICTIONARY_LOAD_MILLIS = TimeUnit.SECONDS.toMillis(2);
+    private static final long DELAY_DEALLOCATE_MEMORY_MILLIS = TimeUnit.SECONDS.toMillis(10);
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -192,8 +190,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED = 6;
         private static final int MSG_RESET_CACHES = 7;
         private static final int MSG_WAIT_FOR_DICTIONARY_LOAD = 8;
+        private static final int MSG_DEALLOCATE_MEMORY = 9;
         // Update this when adding new messages
-        private static final int MSG_LAST = MSG_WAIT_FOR_DICTIONARY_LOAD;
+        private static final int MSG_LAST = MSG_DEALLOCATE_MEMORY;
 
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
@@ -280,6 +279,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case MSG_WAIT_FOR_DICTIONARY_LOAD:
                 Log.i(TAG, "Timeout waiting for dictionary load");
                 break;
+            case MSG_DEALLOCATE_MEMORY:
+                latinIme.deallocateMemory();
+                break;
             }
         }
 
@@ -317,7 +319,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void postWaitForDictionaryLoad() {
             sendMessageDelayed(obtainMessage(MSG_WAIT_FOR_DICTIONARY_LOAD),
-                    DELAY_WAIT_FOR_DICTIONARY_LOAD);
+                    DELAY_WAIT_FOR_DICTIONARY_LOAD_MILLIS);
         }
 
         public void cancelWaitForDictionaryLoad() {
@@ -344,6 +346,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             removeMessages(MSG_UPDATE_SHIFT_STATE);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE),
                     mDelayInMillisecondsToUpdateShiftState);
+        }
+
+        public void postDeallocateMemory() {
+            sendMessageDelayed(obtainMessage(MSG_DEALLOCATE_MEMORY),
+                    DELAY_DEALLOCATE_MEMORY_MILLIS);
+        }
+
+        public void cancelDeallocateMemory() {
+            removeMessages(MSG_DEALLOCATE_MEMORY);
+        }
+
+        public boolean hasPendingDeallocateMemory() {
+            return hasMessages(MSG_DEALLOCATE_MEMORY);
         }
 
         @UsedForTesting
@@ -443,7 +458,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mPendingSuccessiveImsCallback = false;
                     resetPendingImsCallback();
                     sendMessageDelayed(obtainMessage(MSG_PENDING_IMS_CALLBACK),
-                            PENDING_IMS_CALLBACK_DURATION);
+                            PENDING_IMS_CALLBACK_DURATION_MILLIS);
                 }
                 final LatinIME latinIme = getOwnerInstance();
                 if (latinIme != null) {
@@ -451,6 +466,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     latinIme.onStartInputViewInternal(editorInfo, restarting);
                     mAppliedEditorInfo = editorInfo;
                 }
+                cancelDeallocateMemory();
             }
         }
 
@@ -463,6 +479,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (latinIme != null) {
                     latinIme.onFinishInputViewInternal(finishingInput);
                     mAppliedEditorInfo = null;
+                }
+                if (!hasPendingDeallocateMemory()) {
+                    postDeallocateMemory();
                 }
             }
         }
@@ -1026,11 +1045,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void cleanupInternalStateForFinishInput() {
-        mKeyboardSwitcher.deallocateMemory();
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
         // Should do the following in onFinishInputInternal but until JB MR2 it's not called :(
         mInputLogic.finishInput();
+    }
+
+    protected void deallocateMemory() {
+        mKeyboardSwitcher.deallocateMemory();
     }
 
     @Override
