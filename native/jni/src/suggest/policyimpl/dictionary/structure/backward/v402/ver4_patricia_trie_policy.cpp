@@ -30,7 +30,7 @@
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/ngram_listener.h"
-#include "suggest/core/dictionary/property/bigram_property.h"
+#include "suggest/core/dictionary/property/ngram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/session/prev_words_info.h"
@@ -312,7 +312,7 @@ bool Ver4PatriciaTriePolicy::removeUnigramEntry(const CodePointArrayView wordCod
 }
 
 bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-        const BigramProperty *const bigramProperty) {
+        const NgramProperty *const ngramProperty) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;
@@ -326,9 +326,9 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
         AKLOGE("prev words info is not valid for adding n-gram entry to the dictionary.");
         return false;
     }
-    if (bigramProperty->getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
+    if (ngramProperty->getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
         AKLOGE("The word is too long to insert the ngram to the dictionary. "
-                "length: %zd", bigramProperty->getTargetCodePoints()->size());
+                "length: %zd", ngramProperty->getTargetCodePoints()->size());
         return false;
     }
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
@@ -356,7 +356,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
         }
     }
     const int wordPos = getTerminalPtNodePosFromWordId(getWordId(
-            CodePointArrayView(*bigramProperty->getTargetCodePoints()),
+            CodePointArrayView(*ngramProperty->getTargetCodePoints()),
                     false /* forceLowerCaseSearch */));
     if (wordPos == NOT_A_DICT_POS) {
         return false;
@@ -364,7 +364,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
     bool addedNewBigram = false;
     const int prevWordPtNodePos = getTerminalPtNodePosFromWordId(prevWordIds[0]);
     if (mUpdatingHelper.addNgramEntry(PtNodePosArrayView::singleElementView(&prevWordPtNodePos),
-            wordPos, bigramProperty, &addedNewBigram)) {
+            wordPos, ngramProperty, &addedNewBigram)) {
         if (addedNewBigram) {
             mBigramCount++;
         }
@@ -499,7 +499,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
                     ptNodeParams.getTerminalId());
     const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
     // Fetch bigram information.
-    std::vector<BigramProperty> bigrams;
+    std::vector<NgramProperty> ngrams;
     const int bigramListPos = getBigramsPositionOfPtNode(ptNodePos);
     if (bigramListPos != NOT_A_DICT_POS) {
         int bigramWord1CodePoints[MAX_WORD_LENGTH];
@@ -526,7 +526,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
                     ForgettingCurveUtils::decodeProbability(
                             bigramEntry.getHistoricalInfo(), mHeaderPolicy) :
                     bigramEntry.getProbability();
-            bigrams.emplace_back(
+            ngrams.emplace_back(
                     CodePointArrayView(bigramWord1CodePoints, codePointCount).toVector(),
                     probability, historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
                     historicalInfo->getCount());
@@ -554,7 +554,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
             ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
             historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
             historicalInfo->getCount(), &shortcuts);
-    return WordProperty(wordCodePoints.toVector(), &unigramProperty, &bigrams);
+    return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }
 
 int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints,

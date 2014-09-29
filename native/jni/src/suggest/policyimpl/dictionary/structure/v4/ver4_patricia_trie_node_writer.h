@@ -74,7 +74,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const UnigramProperty *const unigramProperty, int *const ptNodeWritingPos);
 
     virtual bool addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
-            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry);
+            const NgramProperty *const ngramProperty, bool *const outAddedNewEntry);
 
     virtual bool removeNgramEntry(const WordIdArrayView prevWordIds, const int wordId);
 

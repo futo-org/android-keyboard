@@ -82,7 +82,7 @@ bool DynamicPtUpdatingHelper::addUnigramWord(DynamicPtReadingHelper *const readi
 }
 
 bool DynamicPtUpdatingHelper::addNgramEntry(const PtNodePosArrayView prevWordsPtNodePos,
-        const int wordPos, const BigramProperty *const bigramProperty,
+        const int wordPos, const NgramProperty *const ngramProperty,
         bool *const outAddedNewEntry) {
     if (prevWordsPtNodePos.empty()) {
         return false;
@@ -96,7 +96,7 @@ bool DynamicPtUpdatingHelper::addNgramEntry(const PtNodePosArrayView prevWordsPt
     const WordIdArrayView prevWordIds(prevWordTerminalIds, prevWordsPtNodePos.size());
     const int wordId =
             mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(wordPos).getTerminalId();
-    return mPtNodeWriter->addNgramEntry(prevWordIds, wordId, bigramProperty, outAddedNewEntry);
+    return mPtNodeWriter->addNgramEntry(prevWordIds, wordId, ngramProperty, outAddedNewEntry);
 }
 
 bool DynamicPtUpdatingHelper::removeNgramEntry(const PtNodePosArrayView prevWordsPtNodePos,

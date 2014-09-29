@@ -59,6 +59,7 @@ namespace backward {
 namespace v402 {
 
 // Word id = Position of a PtNode that represents the word.
+// Max supported n-gram is bigram.
 class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     Ver4PatriciaTriePolicy(Ver4DictBuffers::Ver4DictBuffersPtr buffers)
@@ -112,7 +113,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool removeUnigramEntry(const CodePointArrayView wordCodePoints);
 
     bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-            const BigramProperty *const bigramProperty);
+            const NgramProperty *const ngramProperty);
 
     bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView wordCodePoints);

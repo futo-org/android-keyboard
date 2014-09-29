@@ -61,6 +61,7 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsDeleted(
     }
 }
 
+// TODO: Quit using bigramLinkedNodePos.
 bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
         const PtNodeParams *const toBeUpdatedPtNodeParams,
         const int movedPos, const int bigramLinkedNodePos) {
@@ -208,15 +209,16 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
             terminalId, &probabilityEntryToWrite);
 }
 
+// TODO: Support counting ngram entries.
 bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
-        const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
+        const NgramProperty *const ngramProperty, bool *const outAddedNewBigram) {
     LanguageModelDictContent *const languageModelDictContent =
             mBuffers->getMutableLanguageModelDictContent();
     const ProbabilityEntry probabilityEntry =
             languageModelDictContent->getNgramProbabilityEntry(prevWordIds, wordId);
-    const ProbabilityEntry probabilityEntryOfBigramProperty(bigramProperty);
+    const ProbabilityEntry probabilityEntryOfNgramProperty(ngramProperty);
     const ProbabilityEntry updatedProbabilityEntry = createUpdatedEntryFrom(
-            &probabilityEntry, &probabilityEntryOfBigramProperty);
+            &probabilityEntry, &probabilityEntryOfNgramProperty);
     if (!languageModelDictContent->setNgramProbabilityEntry(
             prevWordIds, wordId, &updatedProbabilityEntry)) {
         AKLOGE("Cannot add new ngram entry. prevWordId[0]: %d, prevWordId.size(): %zd, wordId: %d",

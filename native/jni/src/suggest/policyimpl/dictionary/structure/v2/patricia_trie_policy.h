@@ -38,6 +38,7 @@ class DicNode;
 class DicNodeVector;
 
 // Word id = Position of a PtNode that represents the word.
+// Max supported n-gram is bigram.
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     PatriciaTriePolicy(MmappedBuffer::MmappedBufferPtr mmappedBuffer)
@@ -93,7 +94,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     }
 
     bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-            const BigramProperty *const bigramProperty) {
+            const NgramProperty *const ngramProperty) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;

@@ -403,10 +403,10 @@ static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, j
     jsize wordLength = env->GetArrayLength(word);
     int wordCodePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
-    // Use 1 for count to indicate the bigram has inputted.
-    const BigramProperty bigramProperty(CodePointArrayView(wordCodePoints, wordLength).toVector(),
+    // Use 1 for count to indicate the ngram has inputted.
+    const NgramProperty ngramProperty(CodePointArrayView(wordCodePoints, wordLength).toVector(),
             probability, timestamp, 0 /* level */, 1 /* count */);
-    return dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);
+    return dictionary->addNgramEntry(&prevWordsInfo, &ngramProperty);
 }
 
 static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz, jlong dict,
@@ -501,12 +501,12 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
             // Use 1 for count to indicate the bigram has inputted.
-            const BigramProperty bigramProperty(
+            const NgramProperty ngramProperty(
                     CodePointArrayView(word1CodePoints, word1Length).toVector(),
                     bigramProbability, timestamp, 0 /* level */, 1 /* count */);
             const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length,
                     false /* isBeginningOfSentence */);
-            dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);
+            dictionary->addNgramEntry(&prevWordsInfo, &ngramProperty);
         }
         if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
             return i + 1;
@@ -603,6 +603,7 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
     } while (token != 0);
 
     // Add bigrams.
+    // TODO: Support ngrams.
     do {
         token = dictionary->getNextWordAndNextToken(token, wordCodePoints, &wordCodePointCount);
         const WordProperty wordProperty = dictionary->getWordProperty(
@@ -617,10 +618,10 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
         }
         const PrevWordsInfo prevWordsInfo(wordCodePoints, wordCodePointCount,
                 wordProperty.getUnigramProperty()->representsBeginningOfSentence());
-        for (const BigramProperty &bigramProperty : *wordProperty.getBigramProperties()) {
+        for (const NgramProperty &ngramProperty : *wordProperty.getNgramProperties()) {
             if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&prevWordsInfo,
-                    &bigramProperty)) {
-                LogUtils::logToJava(env, "Cannot add bigram to the new dict.");
+                    &ngramProperty)) {
+                LogUtils::logToJava(env, "Cannot add ngram to the new dict.");
                 return false;
             }
         }

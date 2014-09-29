@@ -114,14 +114,6 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
 
-    readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    DynamicPtGcEventListeners::TraversePolicyToUpdateBigramProbability
-            traversePolicyToUpdateBigramProbability(&ptNodeWriter);
-    if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
-            &traversePolicyToUpdateBigramProbability)) {
-        return false;
-    }
-
     // Mapping from positions in mBuffer to positions in bufferToWrite.
     PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);

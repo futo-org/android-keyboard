@@ -144,9 +144,9 @@ bool Dictionary::removeUnigramEntry(const CodePointArrayView codePoints) {
 }
 
 bool Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-        const BigramProperty *const bigramProperty) {
+        const NgramProperty *const ngramProperty) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->addNgramEntry(prevWordsInfo, bigramProperty);
+    return mDictionaryStructureWithBufferPolicy->addNgramEntry(prevWordsInfo, ngramProperty);
 }
 
 bool Dictionary::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,

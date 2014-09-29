@@ -37,6 +37,7 @@ namespace latinime {
 class DicNode;
 class DicNodeVector;
 
+// TODO: Support counting ngram entries.
 // Word id = Artificial id that is stored in the PtNode looked up by the word.
 class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
@@ -92,7 +93,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool removeUnigramEntry(const CodePointArrayView wordCodePoints);
 
     bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-            const BigramProperty *const bigramProperty);
+            const NgramProperty *const ngramProperty);
 
     bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView wordCodePoints);
