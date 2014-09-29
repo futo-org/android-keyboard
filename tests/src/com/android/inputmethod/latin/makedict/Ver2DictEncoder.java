@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
+import com.android.inputmethod.latin.makedict.BinaryDictEncoderUtils.CodePointTable;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -28,7 +29,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * An implementation of DictEncoder for version 2 binary dictionary.
@@ -73,6 +78,46 @@ public class Ver2DictEncoder implements DictEncoder {
         }
     }
 
+    // Package for testing
+    static CodePointTable makeCodePointTable(final FusionDictionary dict) {
+        final HashMap<Integer, Integer> codePointOccurrenceCounts = new HashMap<>();
+        for (final WordProperty word : dict) {
+            // Store per code point occurrence
+            final String wordString = word.mWord;
+            for (int i = 0; i < wordString.length(); ++i) {
+                final int codePoint = Character.codePointAt(wordString, i);
+                if (codePointOccurrenceCounts.containsKey(codePoint)) {
+                    codePointOccurrenceCounts.put(codePoint,
+                            codePointOccurrenceCounts.get(codePoint) + 1);
+                } else {
+                    codePointOccurrenceCounts.put(codePoint, 1);
+                }
+            }
+        }
+        final ArrayList<Entry<Integer, Integer>> codePointOccurrenceArray =
+                new ArrayList<>(codePointOccurrenceCounts.entrySet());
+        // Descending order sort by occurrence (value side)
+        Collections.sort(codePointOccurrenceArray, new Comparator<Entry<Integer, Integer>>() {
+            @Override
+            public int compare(final Entry<Integer, Integer> a, final Entry<Integer, Integer> b) {
+                return b.getValue().compareTo(a.getValue());
+            }
+        });
+        int currentCodePointTableIndex = FormatSpec.MINIMAL_ONE_BYTE_CHARACTER_VALUE;
+        // Temporary map for writing of nodes
+        final HashMap<Integer, Integer> codePointToOneByteCodeMap = new HashMap<>();
+        for (final Entry<Integer, Integer> entry : codePointOccurrenceArray) {
+            // Put a relation from the original code point to the one byte code.
+            codePointToOneByteCodeMap.put(entry.getKey(), currentCodePointTableIndex);
+            if (FormatSpec.MAXIMAL_ONE_BYTE_CHARACTER_VALUE < ++currentCodePointTableIndex) {
+                break;
+            }
+        }
+        // codePointToOneByteCodeMap for writing the trie
+        // codePointOccurrenceArray for writing the header
+        return new CodePointTable(codePointToOneByteCodeMap, codePointOccurrenceArray);
+    }
+
     @Override
     public void writeDictionary(final FusionDictionary dict, final FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException {
@@ -85,7 +130,12 @@ public class Ver2DictEncoder implements DictEncoder {
         if (mOutStream == null) {
             openStream();
         }
-        BinaryDictEncoderUtils.writeDictionaryHeader(mOutStream, dict, formatOptions);
+
+        // Make code point conversion table ordered by occurrence of code points
+        final CodePointTable codePointTable = makeCodePointTable(dict);
+
+        BinaryDictEncoderUtils.writeDictionaryHeader(mOutStream, dict, formatOptions,
+                codePointTable.mCodePointOccurrenceArray);
 
         // Addresses are limited to 3 bytes, but since addresses can be relative to each node
         // array, the structure itself is not limited to 16MB. However, if it is over 16MB deciding

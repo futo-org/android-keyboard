@@ -27,6 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Encodes binary files for a FusionDictionary.
@@ -791,10 +793,12 @@ public class BinaryDictEncoderUtils {
      * @param destination the stream to write the file header to.
      * @param dict the dictionary to write.
      * @param formatOptions file format options.
+     * @param codePointOccurrenceArray code points ordered by occurrence count.
      * @return the size of the header.
      */
     /* package */ static int writeDictionaryHeader(final OutputStream destination,
-            final FusionDictionary dict, final FormatOptions formatOptions)
+            final FusionDictionary dict, final FormatOptions formatOptions,
+            final ArrayList<Entry<Integer, Integer>> codePointOccurrenceArray)
                     throws IOException, UnsupportedFormatException {
         final int version = formatOptions.mVersion;
         if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
@@ -833,6 +837,9 @@ public class BinaryDictEncoderUtils {
             CharEncoding.writeString(headerBuffer, key);
             CharEncoding.writeString(headerBuffer, value);
         }
+
+        // TODO: Write out the code point table.
+
         final int size = headerBuffer.size();
         final byte[] bytes = headerBuffer.toByteArray();
         // Write out the header size.
@@ -844,5 +851,16 @@ public class BinaryDictEncoderUtils {
 
         headerBuffer.close();
         return size;
+    }
+
+    static final class CodePointTable {
+        final HashMap<Integer, Integer> mCodePointToOneByteCodeMap;
+        final ArrayList<Entry<Integer, Integer>> mCodePointOccurrenceArray;
+
+        CodePointTable(final HashMap<Integer, Integer> codePointToOneByteCodeMap,
+                final ArrayList<Entry<Integer, Integer>> codePointOccurrenceArray) {
+            mCodePointToOneByteCodeMap = codePointToOneByteCodeMap;
+            mCodePointOccurrenceArray = codePointOccurrenceArray;
+        }
     }
 }
