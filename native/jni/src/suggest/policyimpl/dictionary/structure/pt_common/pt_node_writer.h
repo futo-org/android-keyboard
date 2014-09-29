@@ -25,7 +25,7 @@
 
 namespace latinime {
 
-class BigramProperty;
+class NgramProperty;
 class UnigramProperty;
 
 // Interface class used to write PtNode information.
@@ -72,7 +72,7 @@ class PtNodeWriter {
             const UnigramProperty *const unigramProperty, int *const ptNodeWritingPos) = 0;
 
     virtual bool addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
-            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry) = 0;
+            const NgramProperty *const ngramProperty, bool *const outAddedNewEntry) = 0;
 
     virtual bool removeNgramEntry(const WordIdArrayView prevWordIds, const int wordId) = 0;
 

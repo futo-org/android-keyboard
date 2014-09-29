@@ -36,7 +36,7 @@ namespace v402 {
 class BigramDictContent;
 } // namespace v402
 } // namespace backward
-class BigramProperty;
+class NgramProperty;
 namespace backward {
 namespace v402 {
 } // namespace v402
@@ -64,7 +64,7 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
     }
 
     bool addNewEntry(const int terminalId, const int newTargetTerminalId,
-            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry);
+            const NgramProperty *const ngramProperty, bool *const outAddedNewEntry);
 
     bool removeEntry(const int terminalId, const int targetTerminalId);
 
@@ -80,7 +80,7 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
             int *const outTailEntryPos) const;
 
     const BigramEntry createUpdatedBigramEntryFrom(const BigramEntry *const originalBigramEntry,
-            const BigramProperty *const bigramProperty) const;
+            const NgramProperty *const ngramProperty) const;
 
     bool updateHasNextFlag(const bool hasNext, const int bigramEntryPos);
 

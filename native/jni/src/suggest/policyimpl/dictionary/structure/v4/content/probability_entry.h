@@ -21,7 +21,7 @@
 #include <cstdint>
 
 #include "defines.h"
-#include "suggest/core/dictionary/property/bigram_property.h"
+#include "suggest/core/dictionary/property/ngram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/historical_info.h"
@@ -56,12 +56,12 @@ class ProbabilityEntry {
               mHistoricalInfo(unigramProperty->getTimestamp(), unigramProperty->getLevel(),
                       unigramProperty->getCount()) {}
 
-    // Create from bigram property.
+    // Create from ngram property.
     // TODO: Set flags.
-    ProbabilityEntry(const BigramProperty *const bigramProperty)
-            : mFlags(0), mProbability(bigramProperty->getProbability()),
-              mHistoricalInfo(bigramProperty->getTimestamp(), bigramProperty->getLevel(),
-                      bigramProperty->getCount()) {}
+    ProbabilityEntry(const NgramProperty *const ngramProperty)
+            : mFlags(0), mProbability(ngramProperty->getProbability()),
+              mHistoricalInfo(ngramProperty->getTimestamp(), ngramProperty->getLevel(),
+                      ngramProperty->getCount()) {}
 
     bool isValid() const {
         return (mFlags & Ver4DictConstants::FLAG_NOT_A_VALID_ENTRY) == 0;

@@ -76,6 +76,7 @@ class DynamicPtGcEventListeners {
         int mValidUnigramCount;
     };
 
+    // TODO: Remove when we stop supporting v402 format.
     // Updates all bigram entries that are held by valid PtNodes. This removes useless bigram
     // entries.
     class TraversePolicyToUpdateBigramProbability

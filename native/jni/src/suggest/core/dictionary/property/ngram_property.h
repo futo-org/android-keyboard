@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_BIGRAM_PROPERTY_H
-#define LATINIME_BIGRAM_PROPERTY_H
+#ifndef LATINIME_NGRAM_PROPERTY_H
+#define LATINIME_NGRAM_PROPERTY_H
 
 #include <vector>
 
@@ -23,10 +23,9 @@
 
 namespace latinime {
 
-// TODO: Change to NgramProperty.
-class BigramProperty {
+class NgramProperty {
  public:
-    BigramProperty(const std::vector<int> &&targetCodePoints, const int probability,
+    NgramProperty(const std::vector<int> &&targetCodePoints, const int probability,
             const int timestamp, const int level, const int count)
             : mTargetCodePoints(std::move(targetCodePoints)), mProbability(probability),
               mTimestamp(timestamp), mLevel(level), mCount(count) {}
@@ -53,7 +52,7 @@ class BigramProperty {
 
  private:
     // Default copy constructor and assign operator are used for using in std::vector.
-    DISALLOW_DEFAULT_CONSTRUCTOR(BigramProperty);
+    DISALLOW_DEFAULT_CONSTRUCTOR(NgramProperty);
 
     // TODO: Make members const.
     std::vector<int> mTargetCodePoints;
@@ -63,4 +62,4 @@ class BigramProperty {
     int mCount;
 };
 } // namespace latinime
-#endif // LATINIME_WORD_PROPERTY_H
+#endif // LATINIME_NGRAM_PROPERTY_H
