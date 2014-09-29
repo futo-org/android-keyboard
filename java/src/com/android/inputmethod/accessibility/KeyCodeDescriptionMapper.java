@@ -37,6 +37,8 @@ final class KeyCodeDescriptionMapper {
     private static final String SPOKEN_LETTER_RESOURCE_NAME_FORMAT = "spoken_accented_letter_%04X";
     private static final String SPOKEN_SYMBOL_RESOURCE_NAME_FORMAT = "spoken_symbol_%04X";
     private static final String SPOKEN_EMOJI_RESOURCE_NAME_FORMAT = "spoken_emoji_%04X";
+    private static final String SPOKEN_EMOTICON_RESOURCE_NAME_PREFIX = "spoken_emoticon";
+    private static final String SPOKEN_EMOTICON_CODE_POINT_FORMAT = "_%02X";
 
     // The resource ID of the string spoken for obscured keys
     private static final int OBSCURED_KEY_RES_ID = R.string.spoken_description_dot;
@@ -109,7 +111,9 @@ final class KeyCodeDescriptionMapper {
         }
 
         if (code == Constants.CODE_OUTPUT_TEXT) {
-            return key.getOutputText();
+            final String outputText = key.getOutputText();
+            final String description = getSpokenEmoticonDescription(context, outputText);
+            return TextUtils.isEmpty(description) ? outputText : description;
         }
 
         // Just attempt to speak the description.
@@ -339,5 +343,22 @@ final class KeyCodeDescriptionMapper {
             mKeyCodeMap.append(code, resId);
         }
         return resId;
+    }
+
+    // TODO: Remove this method once TTS supports emoticon verbalization.
+    private String getSpokenEmoticonDescription(final Context context, final String outputText) {
+        final StringBuilder sb = new StringBuilder(SPOKEN_EMOTICON_RESOURCE_NAME_PREFIX);
+        final int textLength = outputText.length();
+        for (int index = 0; index < textLength; index = outputText.offsetByCodePoints(index, 1)) {
+            final int codePoint = outputText.codePointAt(index);
+            sb.append(String.format(Locale.ROOT, SPOKEN_EMOTICON_CODE_POINT_FORMAT, codePoint));
+        }
+        final String resourceName = sb.toString();
+        final Resources resources = context.getResources();
+        // Note that the resource package name may differ from the context package name.
+        final String resourcePackageName = resources.getResourcePackageName(
+                R.string.spoken_description_unknown);
+        final int resId = resources.getIdentifier(resourceName, "string", resourcePackageName);
+        return (resId == 0) ? null : resources.getString(resId);
     }
 }
