@@ -20,7 +20,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Pair;
 
-import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
+import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
@@ -78,13 +78,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private void addBigramWords(final BinaryDictionary binaryDictionary, final String word0,
             final String word1, final int probability) {
-        binaryDictionary.addNgramEntry(new PrevWordsInfo(new WordInfo(word0)), word1, probability,
+        binaryDictionary.addNgramEntry(new NgramContext(new WordInfo(word0)), word1, probability,
                 mCurrentTime /* timestamp */);
     }
 
     private static boolean isValidBigram(final BinaryDictionary binaryDictionary,
             final String word0, final String word1) {
-        return binaryDictionary.isValidNgram(new PrevWordsInfo(new WordInfo(word0)), word1);
+        return binaryDictionary.isValidNgram(new NgramContext(new WordInfo(word0)), word1);
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {
@@ -661,31 +661,31 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
                 true /* isBeginningOfSentence */, true /* isNotAWord */, false /* isBlacklisted */,
                 mCurrentTime);
-        final PrevWordsInfo prevWordsInfoStartOfSentence = PrevWordsInfo.BEGINNING_OF_SENTENCE;
+        final NgramContext beginningOfSentenceContext = NgramContext.BEGINNING_OF_SENTENCE;
         addUnigramWord(binaryDictionary, "aaa", DUMMY_PROBABILITY);
-        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "aaa", DUMMY_PROBABILITY,
+        binaryDictionary.addNgramEntry(beginningOfSentenceContext, "aaa", DUMMY_PROBABILITY,
                 mCurrentTime);
-        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "aaa"));
-        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "aaa", DUMMY_PROBABILITY,
+        assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
+        binaryDictionary.addNgramEntry(beginningOfSentenceContext, "aaa", DUMMY_PROBABILITY,
                 mCurrentTime);
         addUnigramWord(binaryDictionary, "bbb", DUMMY_PROBABILITY);
-        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "bbb", DUMMY_PROBABILITY,
+        binaryDictionary.addNgramEntry(beginningOfSentenceContext, "bbb", DUMMY_PROBABILITY,
                 mCurrentTime);
-        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "aaa"));
-        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "bbb"));
+        assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
+        assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
 
         forcePassingLongTime(binaryDictionary);
-        assertFalse(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "aaa"));
-        assertFalse(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "bbb"));
+        assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
+        assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
 
         addUnigramWord(binaryDictionary, "aaa", DUMMY_PROBABILITY);
-        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "aaa", DUMMY_PROBABILITY,
+        binaryDictionary.addNgramEntry(beginningOfSentenceContext, "aaa", DUMMY_PROBABILITY,
                 mCurrentTime);
         addUnigramWord(binaryDictionary, "bbb", DUMMY_PROBABILITY);
-        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "bbb", DUMMY_PROBABILITY,
+        binaryDictionary.addNgramEntry(beginningOfSentenceContext, "bbb", DUMMY_PROBABILITY,
                 mCurrentTime);
-        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "aaa"));
-        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "bbb"));
+        assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
+        assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
         binaryDictionary.close();
         dictFile.delete();
     }

@@ -60,7 +60,7 @@ public final class DictionaryCollection extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float weightForLocale,
             final float[] inOutWeightOfLangModelVsSpatialModel) {
@@ -69,13 +69,13 @@ public final class DictionaryCollection extends Dictionary {
         // To avoid creating unnecessary objects, we get the list out of the first
         // dictionary and add the rest to it if not null, hence the get(0)
         ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getSuggestions(composer,
-                prevWordsInfo, proximityInfo, settingsValuesForSuggestion, sessionId,
+                ngramContext, proximityInfo, settingsValuesForSuggestion, sessionId,
                 weightForLocale, inOutWeightOfLangModelVsSpatialModel);
         if (null == suggestions) suggestions = new ArrayList<>();
         final int length = dictionaries.size();
         for (int i = 1; i < length; ++ i) {
             final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getSuggestions(composer,
-                    prevWordsInfo, proximityInfo, settingsValuesForSuggestion, sessionId,
+                    ngramContext, proximityInfo, settingsValuesForSuggestion, sessionId,
                     weightForLocale, inOutWeightOfLangModelVsSpatialModel);
             if (null != sugg) suggestions.addAll(sugg);
         }

@@ -27,11 +27,11 @@ import java.util.Arrays;
  * Class to represent information of previous words. This class is used to add n-gram entries
  * into binary dictionaries, to get predictions, and to get suggestions.
  */
-public class PrevWordsInfo {
-    public static final PrevWordsInfo EMPTY_PREV_WORDS_INFO =
-            new PrevWordsInfo(WordInfo.EMPTY_WORD_INFO);
-    public static final PrevWordsInfo BEGINNING_OF_SENTENCE =
-            new PrevWordsInfo(WordInfo.BEGINNING_OF_SENTENCE);
+public class NgramContext {
+    public static final NgramContext EMPTY_PREV_WORDS_INFO =
+            new NgramContext(WordInfo.EMPTY_WORD_INFO);
+    public static final NgramContext BEGINNING_OF_SENTENCE =
+            new NgramContext(WordInfo.BEGINNING_OF_SENTENCE);
 
     /**
      * Word information used to represent previous words information.
@@ -91,31 +91,31 @@ public class PrevWordsInfo {
     private final int mPrevWordsCount;
 
     // Construct from the previous word information.
-    public PrevWordsInfo(final WordInfo... prevWordsInfo) {
+    public NgramContext(final WordInfo... prevWordsInfo) {
         mPrevWordsInfo = prevWordsInfo;
         mPrevWordsCount = prevWordsInfo.length;
     }
 
     // Construct from WordInfo array and size. The caller shouldn't change prevWordsInfo after
     // calling this method.
-    private PrevWordsInfo(final PrevWordsInfo prevWordsInfo, final int prevWordsCount) {
-        if (prevWordsInfo.mPrevWordsCount < prevWordsCount) {
-            throw new IndexOutOfBoundsException("prevWordsInfo.mPrevWordsCount ("
-                    + prevWordsInfo.mPrevWordsCount + ") is smaller than prevWordsCount ("
+    private NgramContext(final NgramContext ngramContext, final int prevWordsCount) {
+        if (ngramContext.mPrevWordsCount < prevWordsCount) {
+            throw new IndexOutOfBoundsException("ngramContext.mPrevWordsCount ("
+                    + ngramContext.mPrevWordsCount + ") is smaller than prevWordsCount ("
                     + prevWordsCount + ")");
         }
-        mPrevWordsInfo = prevWordsInfo.mPrevWordsInfo;
+        mPrevWordsInfo = ngramContext.mPrevWordsInfo;
         mPrevWordsCount = prevWordsCount;
     }
 
     // Create next prevWordsInfo using current prevWordsInfo.
-    public PrevWordsInfo getNextPrevWordsInfo(final WordInfo wordInfo) {
+    public NgramContext getNextNgramContext(final WordInfo wordInfo) {
         final int nextPrevWordCount = Math.min(Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM,
                 mPrevWordsCount + 1);
         final WordInfo[] prevWordsInfo = new WordInfo[nextPrevWordCount];
         prevWordsInfo[0] = wordInfo;
         System.arraycopy(mPrevWordsInfo, 0, prevWordsInfo, 1, nextPrevWordCount - 1);
-        return new PrevWordsInfo(prevWordsInfo);
+        return new NgramContext(prevWordsInfo);
     }
 
     public boolean isValid() {
@@ -158,9 +158,9 @@ public class PrevWordsInfo {
         }
     }
 
-    public PrevWordsInfo getTrimmedPrevWordsInfo(final int maxPrevWordCount) {
+    public NgramContext getTrimmedNgramContext(final int maxPrevWordCount) {
         final int newSize = Math.min(maxPrevWordCount, mPrevWordsCount);
-        return new PrevWordsInfo(this /* prevWordsInfo */, newSize);
+        return new NgramContext(this /* prevWordsInfo */, newSize);
     }
 
     public int getPrevWordCount() {
@@ -176,8 +176,8 @@ public class PrevWordsInfo {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PrevWordsInfo)) return false;
-        final PrevWordsInfo prevWordsInfo = (PrevWordsInfo)o;
+        if (!(o instanceof NgramContext)) return false;
+        final NgramContext prevWordsInfo = (NgramContext)o;
 
         final int minLength = Math.min(mPrevWordsCount, prevWordsInfo.mPrevWordsCount);
         for (int i = 0; i < minLength; i++) {

@@ -20,12 +20,12 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.PrevWordsInfo;
-import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
+import com.android.inputmethod.latin.NgramContext;
+import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
-public final class PrevWordsInfoUtils {
-    private PrevWordsInfoUtils() {
+public final class NgramContextUtils {
+    private NgramContextUtils() {
         // Intentional empty constructor for utility class.
     }
 
@@ -44,7 +44,7 @@ public final class PrevWordsInfoUtils {
     // (n = 2) "abc def|" -> beginning-of-sentence, abc
     // (n = 2) "abc def |" -> beginning-of-sentence, abc
     // (n = 2) "abc 'def|" -> empty. The context is different from "abc def", but we cannot
-    // represent this situation using PrevWordsInfo. See TODO in the method.
+    // represent this situation using NgramContext. See TODO in the method.
     // TODO: The next example's result should be "abc, def". This have to be fixed before we
     // retrieve the prior context of Beginning-of-Sentence.
     // (n = 2) "abc def. |" -> beginning-of-sentence, abc
@@ -52,9 +52,9 @@ public final class PrevWordsInfoUtils {
     // (n = 2) "abc|" -> beginning-of-sentence
     // (n = 2) "abc |" -> beginning-of-sentence
     // (n = 2) "abc. def|" -> beginning-of-sentence
-    public static PrevWordsInfo getPrevWordsInfoFromNthPreviousWord(final CharSequence prev,
+    public static NgramContext getNgramContextFromNthPreviousWord(final CharSequence prev,
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
-        if (prev == null) return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+        if (prev == null) return NgramContext.EMPTY_PREV_WORDS_INFO;
         final String[] w = SPACE_REGEX.split(prev);
         final WordInfo[] prevWordsInfo = new WordInfo[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
         Arrays.fill(prevWordsInfo, WordInfo.EMPTY_WORD_INFO);
@@ -98,6 +98,6 @@ public final class PrevWordsInfoUtils {
             }
             prevWordsInfo[i] = new WordInfo(focusedWord);
         }
-        return new PrevWordsInfo(prevWordsInfo);
+        return new NgramContext(prevWordsInfo);
     }
 }

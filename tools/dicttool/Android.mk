@@ -50,7 +50,7 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/Dictionary.java \
         latin/InputPointers.java \
         latin/LastComposedWord.java \
-        latin/PrevWordsInfo.java \
+        latin/NgramContext.java \
         latin/SuggestedWords.java \
         latin/WordComposer.java \
         latin/settings/NativeSuggestOptions.java \

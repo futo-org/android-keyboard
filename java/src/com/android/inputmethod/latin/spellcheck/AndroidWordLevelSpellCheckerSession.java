@@ -31,7 +31,7 @@ import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
@@ -73,27 +73,25 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         private final LruCache<String, SuggestionsParams> mUnigramSuggestionsInfoCache =
                 new LruCache<>(MAX_CACHE_SIZE);
 
-        // TODO: Support n-gram input
-        private static String generateKey(final String query, final PrevWordsInfo prevWordsInfo) {
-            if (TextUtils.isEmpty(query) || !prevWordsInfo.isValid()) {
+        private static String generateKey(final String query, final NgramContext ngramContext) {
+            if (TextUtils.isEmpty(query) || !ngramContext.isValid()) {
                 return query;
             }
-            return query + CHAR_DELIMITER + prevWordsInfo;
+            return query + CHAR_DELIMITER + ngramContext;
         }
 
         public SuggestionsParams getSuggestionsFromCache(String query,
-                final PrevWordsInfo prevWordsInfo) {
-            return mUnigramSuggestionsInfoCache.get(generateKey(query, prevWordsInfo));
+                final NgramContext ngramContext) {
+            return mUnigramSuggestionsInfoCache.get(generateKey(query, ngramContext));
         }
 
-        public void putSuggestionsToCache(
-                final String query, final PrevWordsInfo prevWordsInfo,
+        public void putSuggestionsToCache(final String query, final NgramContext ngramContext,
                 final String[] suggestions, final int flags) {
             if (suggestions == null || TextUtils.isEmpty(query)) {
                 return;
             }
             mUnigramSuggestionsInfoCache.put(
-                    generateKey(query, prevWordsInfo), new SuggestionsParams(suggestions, flags));
+                    generateKey(query, ngramContext), new SuggestionsParams(suggestions, flags));
         }
 
         public void clearCache() {
@@ -223,12 +221,11 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     }
 
     protected SuggestionsInfo onGetSuggestionsInternal(
-            final TextInfo textInfo, final PrevWordsInfo prevWordsInfo,
-            final int suggestionsLimit) {
+            final TextInfo textInfo, final NgramContext ngramContext, final int suggestionsLimit) {
         try {
             final String inText = textInfo.getText();
             final SuggestionsParams cachedSuggestionsParams =
-                    mSuggestionsCache.getSuggestionsFromCache(inText, prevWordsInfo);
+                    mSuggestionsCache.getSuggestionsFromCache(inText, ngramContext);
             if (cachedSuggestionsParams != null) {
                 if (DBG) {
                     Log.d(TAG, "Cache hit: " + inText + ", " + cachedSuggestionsParams.mFlags);
@@ -283,7 +280,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             composer.setComposingWord(codePoints, coordinates);
             // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
             final SuggestionResults suggestionResults = mService.getSuggestionResults(
-                    mLocale, composer, prevWordsInfo, proximityInfo);
+                    mLocale, composer, ngramContext, proximityInfo);
             final Result result = getResult(capitalizeType, mLocale, suggestionsLimit,
                     mService.getRecommendedThreshold(), text, suggestionResults);
             isInDict = isInDictForAnyCapitalization(text, capitalizeType);
@@ -308,7 +305,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                                     .getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS()
                             : 0);
             final SuggestionsInfo retval = new SuggestionsInfo(flags, result.mSuggestions);
-            mSuggestionsCache.putSuggestionsToCache(text, prevWordsInfo, result.mSuggestions,
+            mSuggestionsCache.putSuggestionsToCache(text, ngramContext, result.mSuggestions,
                     flags);
             return retval;
         } catch (RuntimeException e) {

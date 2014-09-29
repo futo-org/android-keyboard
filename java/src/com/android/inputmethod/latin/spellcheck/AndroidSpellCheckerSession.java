@@ -25,7 +25,7 @@ import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.TextInfoCompatUtils;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -62,8 +62,8 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
             final int offset = ssi.getOffsetAt(i);
             final int length = ssi.getLengthAt(i);
             final CharSequence subText = typedText.subSequence(offset, offset + length);
-            final PrevWordsInfo prevWordsInfo =
-                    new PrevWordsInfo(new PrevWordsInfo.WordInfo(currentWord));
+            final NgramContext ngramContext =
+                    new NgramContext(new NgramContext.WordInfo(currentWord));
             currentWord = subText;
             if (!subText.toString().contains(AndroidSpellCheckerService.SINGLE_QUOTE)) {
                 continue;
@@ -80,7 +80,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
                 if (TextUtils.isEmpty(splitText)) {
                     continue;
                 }
-                if (mSuggestionsCache.getSuggestionsFromCache(splitText.toString(), prevWordsInfo)
+                if (mSuggestionsCache.getSuggestionsFromCache(splitText.toString(), ngramContext)
                         == null) {
                     continue;
                 }
@@ -208,10 +208,10 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
                 } else {
                     prevWord = null;
                 }
-                final PrevWordsInfo prevWordsInfo =
-                        new PrevWordsInfo(new PrevWordsInfo.WordInfo(prevWord));
+                final NgramContext ngramContext =
+                        new NgramContext(new NgramContext.WordInfo(prevWord));
                 final TextInfo textInfo = textInfos[i];
-                retval[i] = onGetSuggestionsInternal(textInfo, prevWordsInfo, suggestionsLimit);
+                retval[i] = onGetSuggestionsInternal(textInfo, ngramContext, suggestionsLimit);
                 retval[i].setCookieAndSequence(textInfo.getCookie(), textInfo.getSequence());
             }
             return retval;

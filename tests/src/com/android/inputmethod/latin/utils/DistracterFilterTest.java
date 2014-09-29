@@ -24,7 +24,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.DistracterFilter.HandlingType;
 
@@ -58,7 +58,7 @@ public class DistracterFilterTest extends AndroidTestCase {
     }
 
     public void testIsDistracterToWordsInDictionaries() {
-        final PrevWordsInfo EMPTY_PREV_WORDS_INFO = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+        final NgramContext EMPTY_PREV_WORDS_INFO = NgramContext.EMPTY_PREV_WORDS_INFO;
 
         final Locale localeEnUs = new Locale("en", "US");
         String typedWord;
@@ -204,7 +204,7 @@ public class DistracterFilterTest extends AndroidTestCase {
 
     public void testGetWordHandlingType() {
         final Locale localeEnUs = new Locale("en", "US");
-        final PrevWordsInfo EMPTY_PREV_WORDS_INFO = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+        final NgramContext EMPTY_PREV_WORDS_INFO = NgramContext.EMPTY_PREV_WORDS_INFO;
         int handlingType = 0;
 
         handlingType = mDistracterFilter.getWordHandlingType(EMPTY_PREV_WORDS_INFO,

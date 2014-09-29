@@ -31,7 +31,7 @@ import java.util.TreeSet;
 public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
     // TODO: Instead of a boolean , we may want to include the context of this suggestion results,
-    // such as {@link PrevWordsInfo}.
+    // such as {@link NgramContext}.
     public final boolean mIsBeginningOfSentence;
     private final int mCapacity;
 

@@ -21,7 +21,7 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.DistracterFilter.HandlingType;
 
@@ -89,7 +89,7 @@ public final class LanguageModelParam {
             final DistracterFilter distracterFilter) {
         final ArrayList<LanguageModelParam> languageModelParams = new ArrayList<>();
         final int N = tokens.size();
-        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+        NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
         for (int i = 0; i < N; ++i) {
             final String tempWord = tokens.get(i);
             if (StringUtils.isEmptyStringOrWhiteSpaces(tempWord)) {
@@ -106,7 +106,7 @@ public final class LanguageModelParam {
                             + tempWord + "\"");
                 }
                 // Sentence terminator found. Split.
-                prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+                ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
                 continue;
             }
             if (DEBUG_TOKEN) {
@@ -114,41 +114,41 @@ public final class LanguageModelParam {
             }
             final LanguageModelParam languageModelParam =
                     detectWhetherVaildWordOrNotAndGetLanguageModelParam(
-                            prevWordsInfo, tempWord, timestamp, locale, distracterFilter);
+                            ngramContext, tempWord, timestamp, locale, distracterFilter);
             if (languageModelParam == null) {
                 continue;
             }
             languageModelParams.add(languageModelParam);
-            prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(
-                    new PrevWordsInfo.WordInfo(tempWord));
+            ngramContext = ngramContext.getNextNgramContext(
+                    new NgramContext.WordInfo(tempWord));
         }
         return languageModelParams;
     }
 
     private static LanguageModelParam detectWhetherVaildWordOrNotAndGetLanguageModelParam(
-            final PrevWordsInfo prevWordsInfo, final String targetWord, final int timestamp,
+            final NgramContext ngramContext, final String targetWord, final int timestamp,
             final Locale locale, final DistracterFilter distracterFilter) {
         if (locale == null) {
             return null;
         }
-        final int wordHandlingType = distracterFilter.getWordHandlingType(prevWordsInfo,
+        final int wordHandlingType = distracterFilter.getWordHandlingType(ngramContext,
                 targetWord, locale);
         final String word = HandlingType.shouldBeLowerCased(wordHandlingType) ?
                 targetWord.toLowerCase(locale) : targetWord;
-        if (distracterFilter.isDistracterToWordsInDictionaries(prevWordsInfo, targetWord, locale)) {
+        if (distracterFilter.isDistracterToWordsInDictionaries(ngramContext, targetWord, locale)) {
             // The word is a distracter.
             return null;
         }
-        return createAndGetLanguageModelParamOfWord(prevWordsInfo, word, timestamp,
+        return createAndGetLanguageModelParamOfWord(ngramContext, word, timestamp,
                 !HandlingType.shouldBeHandledAsOov(wordHandlingType));
     }
 
     private static LanguageModelParam createAndGetLanguageModelParamOfWord(
-            final PrevWordsInfo prevWordsInfo, final String word, final int timestamp,
+            final NgramContext ngramContext, final String word, final int timestamp,
             final boolean isValidWord) {
         final int unigramProbability = isValidWord ?
                 UNIGRAM_PROBABILITY_FOR_VALID_WORD : UNIGRAM_PROBABILITY_FOR_OOV_WORD;
-        if (!prevWordsInfo.isValid()) {
+        if (!ngramContext.isValid()) {
             if (DEBUG) {
                 Log.d(TAG, "--- add unigram: current("
                         + (isValidWord ? "Valid" : "OOV") + ") = " + word);
@@ -156,12 +156,12 @@ public final class LanguageModelParam {
             return new LanguageModelParam(word, unigramProbability, timestamp);
         }
         if (DEBUG) {
-            Log.d(TAG, "--- add bigram: prev = " + prevWordsInfo + ", current("
+            Log.d(TAG, "--- add bigram: prev = " + ngramContext + ", current("
                     + (isValidWord ? "Valid" : "OOV") + ") = " + word);
         }
         final int bigramProbability = isValidWord ?
                 BIGRAM_PROBABILITY_FOR_VALID_WORD : BIGRAM_PROBABILITY_FOR_OOV_WORD;
-        return new LanguageModelParam(prevWordsInfo.getNthPrevWord(1 /* n */), word,
+        return new LanguageModelParam(ngramContext.getNthPrevWord(1 /* n */), word,
                 unigramProbability, bigramProbability, timestamp);
     }
 }

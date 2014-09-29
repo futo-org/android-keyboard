@@ -31,7 +31,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
-import com.android.inputmethod.latin.utils.PrevWordsInfoUtils;
+import com.android.inputmethod.latin.utils.NgramContextUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -157,24 +157,24 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
      */
     public void testGetPreviousWord() {
         // If one of the following cases breaks, the bigram suggestions won't work.
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 2).getNthPrevWord(1), "abc");
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
-                "abc", mSpacingAndPunctuations, 2), PrevWordsInfo.BEGINNING_OF_SENTENCE);
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
-                "abc. def", mSpacingAndPunctuations, 2), PrevWordsInfo.BEGINNING_OF_SENTENCE);
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
+                "abc", mSpacingAndPunctuations, 2), NgramContext.BEGINNING_OF_SENTENCE);
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
+                "abc. def", mSpacingAndPunctuations, 2), NgramContext.BEGINNING_OF_SENTENCE);
 
-        assertFalse(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertFalse(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 2).isBeginningOfSentenceContext());
-        assertTrue(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertTrue(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc", mSpacingAndPunctuations, 2).isBeginningOfSentenceContext());
 
         // For n-gram
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 1).getNthPrevWord(1), "def");
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 1).getNthPrevWord(2), "abc");
-        assertTrue(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertTrue(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 2).isNthPrevWordBeginningOfSontence(2));
 
         // The following tests reflect the current behavior of the function
@@ -184,33 +184,33 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         // this function if needed - especially since it does not seem very
         // logical. These tests are just there to catch any unintentional
         // changes in the behavior of the RichInputConnection#getPreviousWord method.
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def ", mSpacingAndPunctuations, 2).getNthPrevWord(1), "abc");
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def.", mSpacingAndPunctuations, 2).getNthPrevWord(1), "abc");
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def .", mSpacingAndPunctuations, 2).getNthPrevWord(1), "def");
-        assertTrue(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertTrue(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc ", mSpacingAndPunctuations, 2).isBeginningOfSentenceContext());
 
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 1).getNthPrevWord(1), "def");
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def ", mSpacingAndPunctuations, 1).getNthPrevWord(1), "def");
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc 'def", mSpacingAndPunctuations, 1).getNthPrevWord(1), "'def");
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
-                "abc def.", mSpacingAndPunctuations, 1), PrevWordsInfo.BEGINNING_OF_SENTENCE);
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
-                "abc def .", mSpacingAndPunctuations, 1), PrevWordsInfo.BEGINNING_OF_SENTENCE);
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
-                "abc, def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
-                "abc? def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
-                "abc! def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
-        assertEquals(PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
-                "abc 'def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
+                "abc def.", mSpacingAndPunctuations, 1), NgramContext.BEGINNING_OF_SENTENCE);
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
+                "abc def .", mSpacingAndPunctuations, 1), NgramContext.BEGINNING_OF_SENTENCE);
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
+                "abc, def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
+                "abc? def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
+                "abc! def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
+        assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
+                "abc 'def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
     }
 
     public void testGetWordRangeAtCursor() {

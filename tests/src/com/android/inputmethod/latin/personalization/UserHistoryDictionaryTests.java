@@ -21,8 +21,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
-import com.android.inputmethod.latin.PrevWordsInfo;
-import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
+import com.android.inputmethod.latin.NgramContext;
+import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.FileUtils;
@@ -160,12 +160,12 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     private static void addToDict(final UserHistoryDictionary dict, final List<String> words) {
-        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+        NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
         for (String word : words) {
-            UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true,
+            UserHistoryDictionary.addToDictionary(dict, ngramContext, word, true,
                     (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()),
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
-            prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(new WordInfo(word));
+            ngramContext = ngramContext.getNextNgramContext(new WordInfo(word));
         }
     }
 
@@ -288,11 +288,11 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         clearHistory(dict);
         final List<String> words = generateWords(numberOfWords, random);
         dict.waitAllTasksForTests();
-        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+        NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
         for (final String word : words) {
-            UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true, mCurrentTime,
+            UserHistoryDictionary.addToDictionary(dict, ngramContext, word, true, mCurrentTime,
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
-            prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(new WordInfo(word));
+            ngramContext = ngramContext.getNextNgramContext(new WordInfo(word));
             dict.waitAllTasksForTests();
             assertTrue(dict.isInDictionary(word));
         }
