@@ -71,12 +71,11 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
                 null /* shortcutTarget */, 0 /* shortcutFreq */, false /* isNotAWord */,
                 false /* isBlacklisted */, timestamp, distracterFilter);
 
-        final boolean isBeginningOfSentenceContext =
-                prevWordsInfo.mPrevWordsInfo[0].mIsBeginningOfSentence;
+        final boolean isBeginningOfSentenceContext = prevWordsInfo.isBeginningOfSentenceContext();
         final PrevWordsInfo prevWordsInfoToBeSaved =
                 prevWordsInfo.getTrimmedPrevWordsInfo(SUPPORTED_NGRAM - 1);
         for (int i = 0; i < prevWordsInfoToBeSaved.getPrevWordCount(); i++) {
-            final CharSequence prevWord = prevWordsInfoToBeSaved.mPrevWordsInfo[i].mWord;
+            final CharSequence prevWord = prevWordsInfoToBeSaved.getNthPrevWord(1 /* n */);
             if (prevWord == null || (prevWord.length() > Constants.DICTIONARY_MAX_WORD_LENGTH)) {
                 return;
             }
