@@ -255,7 +255,7 @@ public final class BinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float weightForLocale,
             final float[] inOutWeightOfLangModelVsSpatialModel) {
@@ -264,7 +264,7 @@ public final class BinaryDictionary extends Dictionary {
         }
         final DicTraverseSession session = getTraverseSession(sessionId);
         Arrays.fill(session.mInputCodePoints, Constants.NOT_A_CODE);
-        prevWordsInfo.outputToArray(session.mPrevWordCodePointArrays,
+        ngramContext.outputToArray(session.mPrevWordCodePointArrays,
                 session.mIsBeginningOfSentenceArray);
         final InputPointers inputPointers = composer.getInputPointers();
         final boolean isGesture = composer.isBatchMode();
@@ -299,7 +299,7 @@ public final class BinaryDictionary extends Dictionary {
                 inputPointers.getYCoordinates(), inputPointers.getTimes(),
                 inputPointers.getPointerIds(), session.mInputCodePoints, inputSize,
                 session.mNativeSuggestOptions.getOptions(), session.mPrevWordCodePointArrays,
-                session.mIsBeginningOfSentenceArray, prevWordsInfo.getPrevWordCount(),
+                session.mIsBeginningOfSentenceArray, ngramContext.getPrevWordCount(),
                 session.mOutputSuggestionCount, session.mOutputCodePoints, session.mOutputScores,
                 session.mSpaceIndices, session.mOutputTypes,
                 session.mOutputAutoCommitFirstWordConfidence,
@@ -357,17 +357,17 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
-    public boolean isValidNgram(final PrevWordsInfo prevWordsInfo, final String word) {
-        return getNgramProbability(prevWordsInfo, word) != NOT_A_PROBABILITY;
+    public boolean isValidNgram(final NgramContext ngramContext, final String word) {
+        return getNgramProbability(ngramContext, word) != NOT_A_PROBABILITY;
     }
 
-    public int getNgramProbability(final PrevWordsInfo prevWordsInfo, final String word) {
-        if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
+    public int getNgramProbability(final NgramContext ngramContext, final String word) {
+        if (!ngramContext.isValid() || TextUtils.isEmpty(word)) {
             return NOT_A_PROBABILITY;
         }
-        final int[][] prevWordCodePointArrays = new int[prevWordsInfo.getPrevWordCount()][];
-        final boolean[] isBeginningOfSentenceArray = new boolean[prevWordsInfo.getPrevWordCount()];
-        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[][] prevWordCodePointArrays = new int[ngramContext.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[ngramContext.getPrevWordCount()];
+        ngramContext.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         return getNgramProbabilityNative(mNativeDict, prevWordCodePointArrays,
                 isBeginningOfSentenceArray, wordCodePoints);
@@ -456,14 +456,14 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Add an n-gram entry to the binary dictionary with timestamp in native code.
-    public boolean addNgramEntry(final PrevWordsInfo prevWordsInfo, final String word,
+    public boolean addNgramEntry(final NgramContext ngramContext, final String word,
             final int probability, final int timestamp) {
-        if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
+        if (!ngramContext.isValid() || TextUtils.isEmpty(word)) {
             return false;
         }
-        final int[][] prevWordCodePointArrays = new int[prevWordsInfo.getPrevWordCount()][];
-        final boolean[] isBeginningOfSentenceArray = new boolean[prevWordsInfo.getPrevWordCount()];
-        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[][] prevWordCodePointArrays = new int[ngramContext.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[ngramContext.getPrevWordCount()];
+        ngramContext.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         if (!addNgramEntryNative(mNativeDict, prevWordCodePointArrays,
                 isBeginningOfSentenceArray, wordCodePoints, probability, timestamp)) {
@@ -474,13 +474,13 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Remove an n-gram entry from the binary dictionary in native code.
-    public boolean removeNgramEntry(final PrevWordsInfo prevWordsInfo, final String word) {
-        if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
+    public boolean removeNgramEntry(final NgramContext ngramContext, final String word) {
+        if (!ngramContext.isValid() || TextUtils.isEmpty(word)) {
             return false;
         }
-        final int[][] prevWordCodePointArrays = new int[prevWordsInfo.getPrevWordCount()][];
-        final boolean[] isBeginningOfSentenceArray = new boolean[prevWordsInfo.getPrevWordCount()];
-        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[][] prevWordCodePointArrays = new int[ngramContext.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[ngramContext.getPrevWordCount()];
+        ngramContext.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         if (!removeNgramEntryNative(mNativeDict, prevWordCodePointArrays,
                 isBeginningOfSentenceArray, wordCodePoints)) {

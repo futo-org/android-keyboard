@@ -36,7 +36,7 @@ import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
-import com.android.inputmethod.latin.utils.PrevWordsInfoUtils;
+import com.android.inputmethod.latin.utils.NgramContextUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.SpannableStringUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -593,11 +593,11 @@ public final class RichInputConnection {
     }
 
     @SuppressWarnings("unused")
-    public PrevWordsInfo getPrevWordsInfoFromNthPreviousWord(
+    public NgramContext getNgramContextFromNthPreviousWord(
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) {
-            return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+            return NgramContext.EMPTY_PREV_WORDS_INFO;
         }
         final CharSequence prev = getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
         if (DEBUG_PREVIOUS_TEXT && null != prev) {
@@ -618,7 +618,7 @@ public final class RichInputConnection {
                 }
             }
         }
-        return PrevWordsInfoUtils.getPrevWordsInfoFromNthPreviousWord(
+        return NgramContextUtils.getNgramContextFromNthPreviousWord(
                 prev, spacingAndPunctuations, n);
     }
 

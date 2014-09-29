@@ -36,7 +36,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.DictionaryFacilitatorLruCache;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
@@ -156,14 +156,14 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
     /**
      * Determine whether a word is a distracter to words in dictionaries.
      *
-     * @param prevWordsInfo the information of previous words. Not used for now.
+     * @param ngramContext the n-gram context. Not used for now.
      * @param testedWord the word that will be tested to see whether it is a distracter to words
      *                   in dictionaries.
      * @param locale the locale of word.
      * @return true if testedWord is a distracter, otherwise false.
      */
     @Override
-    public boolean isDistracterToWordsInDictionaries(final PrevWordsInfo prevWordsInfo,
+    public boolean isDistracterToWordsInDictionaries(final NgramContext ngramContext,
             final String testedWord, final Locale locale) {
         if (locale == null) {
             return false;
@@ -250,7 +250,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         final SuggestionResults suggestionResults;
         synchronized (mLock) {
             suggestionResults = dictionaryFacilitator.getSuggestionResults(
-                    composer, PrevWordsInfo.EMPTY_PREV_WORDS_INFO, keyboard.getProximityInfo(),
+                    composer, NgramContext.EMPTY_PREV_WORDS_INFO, keyboard.getProximityInfo(),
                     settingsValuesForSuggestion, 0 /* sessionId */);
         }
         if (suggestionResults.isEmpty()) {
@@ -283,7 +283,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         return false;
     }
 
-    private boolean shouldBeLowerCased(final PrevWordsInfo prevWordsInfo, final String testedWord,
+    private boolean shouldBeLowerCased(final NgramContext ngramContext, final String testedWord,
             final Locale locale) {
         final DictionaryFacilitator dictionaryFacilitator =
                 mDictionaryFacilitatorLruCache.get(locale);
@@ -298,7 +298,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             return true;
         }
         if (StringUtils.getCapitalizationType(testedWord) == StringUtils.CAPITALIZE_FIRST
-                && !prevWordsInfo.isValid()) {
+                && !ngramContext.isValid()) {
             // TODO: Check beginning-of-sentence.
             return true;
         }
@@ -306,13 +306,13 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
     }
 
     @Override
-    public int getWordHandlingType(final PrevWordsInfo prevWordsInfo, final String testedWord,
+    public int getWordHandlingType(final NgramContext ngramContext, final String testedWord,
             final Locale locale) {
         // TODO: Use this method for user history dictionary.
         if (testedWord == null|| locale == null) {
             return HandlingType.getHandlingType(false /* shouldBeLowerCased */, false /* isOov */);
         }
-        final boolean shouldBeLowerCased = shouldBeLowerCased(prevWordsInfo, testedWord, locale);
+        final boolean shouldBeLowerCased = shouldBeLowerCased(ngramContext, testedWord, locale);
         final String caseModifiedWord =
                 shouldBeLowerCased ? testedWord.toLowerCase(locale) : testedWord;
         final boolean isOov = !mDictionaryFacilitatorLruCache.get(locale).isValidWord(

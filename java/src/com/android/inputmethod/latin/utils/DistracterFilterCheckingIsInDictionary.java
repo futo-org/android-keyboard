@@ -22,7 +22,7 @@ import java.util.Locale;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 
 public class DistracterFilterCheckingIsInDictionary implements DistracterFilter {
     private final DistracterFilter mDistracterFilter;
@@ -35,7 +35,7 @@ public class DistracterFilterCheckingIsInDictionary implements DistracterFilter 
     }
 
     @Override
-    public boolean isDistracterToWordsInDictionaries(PrevWordsInfo prevWordsInfo,
+    public boolean isDistracterToWordsInDictionaries(NgramContext ngramContext,
             String testedWord, Locale locale) {
         if (mDictionary.isInDictionary(testedWord)) {
             // This filter treats entries that are already in the dictionary as non-distracters
@@ -43,14 +43,14 @@ public class DistracterFilterCheckingIsInDictionary implements DistracterFilter 
             return false;
         } else {
             return mDistracterFilter.isDistracterToWordsInDictionaries(
-                    prevWordsInfo, testedWord, locale);
+                    ngramContext, testedWord, locale);
         }
     }
 
     @Override
-    public int getWordHandlingType(final PrevWordsInfo prevWordsInfo, final String testedWord,
+    public int getWordHandlingType(final NgramContext ngramContext, final String testedWord,
             final Locale locale) {
-        return mDistracterFilter.getWordHandlingType(prevWordsInfo, testedWord, locale);
+        return mDistracterFilter.getWordHandlingType(ngramContext, testedWord, locale);
     }
 
     @Override

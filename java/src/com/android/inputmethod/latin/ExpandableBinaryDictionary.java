@@ -305,7 +305,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     @Override
                     public Boolean call() throws Exception {
                         return !distracterFilter.isDistracterToWordsInDictionaries(
-                                PrevWordsInfo.EMPTY_PREV_WORDS_INFO, word, mLocale);
+                                NgramContext.EMPTY_PREV_WORDS_INFO, word, mLocale);
                     }
                 },
                 new Runnable() {
@@ -354,7 +354,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Adds n-gram information of a word to the dictionary. May overwrite an existing entry.
      */
-    public void addNgramEntry(final PrevWordsInfo prevWordsInfo, final String word,
+    public void addNgramEntry(final NgramContext ngramContext, final String word,
             final int frequency, final int timestamp) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
@@ -364,17 +364,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return;
                 }
                 runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                addNgramEntryLocked(prevWordsInfo, word, frequency, timestamp);
+                addNgramEntryLocked(ngramContext, word, frequency, timestamp);
             }
         });
     }
 
-    protected void addNgramEntryLocked(final PrevWordsInfo prevWordsInfo, final String word,
+    protected void addNgramEntryLocked(final NgramContext ngramContext, final String word,
             final int frequency, final int timestamp) {
-        if (!mBinaryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp)) {
+        if (!mBinaryDictionary.addNgramEntry(ngramContext, word, frequency, timestamp)) {
             if (DEBUG) {
                 Log.i(TAG, "Cannot add n-gram entry.");
-                Log.i(TAG, "  PrevWordsInfo: " + prevWordsInfo + ", word: " + word);
+                Log.i(TAG, "  NgramContext: " + ngramContext + ", word: " + word);
             }
         }
     }
@@ -383,7 +383,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Dynamically remove the n-gram entry in the dictionary.
      */
     @UsedForTesting
-    public void removeNgramDynamically(final PrevWordsInfo prevWordsInfo, final String word) {
+    public void removeNgramDynamically(final NgramContext ngramContext, final String word) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
@@ -392,10 +392,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return;
                 }
                 runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                if (!mBinaryDictionary.removeNgramEntry(prevWordsInfo, word)) {
+                if (!mBinaryDictionary.removeNgramEntry(ngramContext, word)) {
                     if (DEBUG) {
                         Log.i(TAG, "Cannot remove n-gram entry.");
-                        Log.i(TAG, "  PrevWordsInfo: " + prevWordsInfo + ", word: " + word);
+                        Log.i(TAG, "  NgramContext: " + ngramContext + ", word: " + word);
                     }
                 }
             }
@@ -434,7 +434,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
             final float weightForLocale, final float[] inOutWeightOfLangModelVsSpatialModel) {
         reloadDictionaryIfRequired();
@@ -447,7 +447,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return null;
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =
-                        mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
+                        mBinaryDictionary.getSuggestions(composer, ngramContext, proximityInfo,
                                 settingsValuesForSuggestion, sessionId, weightForLocale,
                                 inOutWeightOfLangModelVsSpatialModel);
                 if (mBinaryDictionary.isCorrupted()) {
@@ -519,9 +519,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
 
-    protected boolean isValidNgramLocked(final PrevWordsInfo prevWordsInfo, final String word) {
+    protected boolean isValidNgramLocked(final NgramContext ngramContext, final String word) {
         if (mBinaryDictionary == null) return false;
-        return mBinaryDictionary.isValidNgram(prevWordsInfo, word);
+        return mBinaryDictionary.isValidNgram(ngramContext, word);
     }
 
     /**

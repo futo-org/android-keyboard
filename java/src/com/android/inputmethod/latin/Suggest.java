@@ -68,15 +68,15 @@ public final class Suggest {
     }
 
     public void getSuggestedWords(final WordComposer wordComposer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final boolean isCorrectionEnabled, final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         if (wordComposer.isBatchMode()) {
-            getSuggestedWordsForBatchInput(wordComposer, prevWordsInfo, proximityInfo,
+            getSuggestedWordsForBatchInput(wordComposer, ngramContext, proximityInfo,
                     settingsValuesForSuggestion, inputStyle, sequenceNumber, callback);
         } else {
-            getSuggestedWordsForNonBatchInput(wordComposer, prevWordsInfo, proximityInfo,
+            getSuggestedWordsForNonBatchInput(wordComposer, ngramContext, proximityInfo,
                     settingsValuesForSuggestion, inputStyle, isCorrectionEnabled,
                     sequenceNumber, callback);
         }
@@ -121,7 +121,7 @@ public final class Suggest {
     // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForNonBatchInput(final WordComposer wordComposer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int inputStyleIfNotPrediction, final boolean isCorrectionEnabled,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
@@ -132,7 +132,7 @@ public final class Suggest {
                 : typedWord;
 
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, prevWordsInfo, proximityInfo, settingsValuesForSuggestion,
+                wordComposer, ngramContext, proximityInfo, settingsValuesForSuggestion,
                 SESSION_ID_TYPING);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
@@ -209,12 +209,12 @@ public final class Suggest {
     // Retrieves suggestions for the batch input
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForBatchInput(final WordComposer wordComposer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, prevWordsInfo, proximityInfo, settingsValuesForSuggestion,
+                wordComposer, ngramContext, proximityInfo, settingsValuesForSuggestion,
                 SESSION_ID_GESTURE);
         final Locale defaultLocale = mDictionaryFacilitator.getLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =

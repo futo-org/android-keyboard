@@ -23,7 +23,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 
 import java.io.File;
@@ -53,14 +53,14 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
      * Add a word to the user history dictionary.
      *
      * @param userHistoryDictionary the user history dictionary
-     * @param prevWordsInfo the information of previous words
+     * @param ngramContext the n-gram context
      * @param word the word the user inputted
      * @param isValid whether the word is valid or not
      * @param timestamp the timestamp when the word has been inputted
      * @param distracterFilter the filter to check whether the word is a distracter
      */
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
-            final PrevWordsInfo prevWordsInfo, final String word, final boolean isValid,
+            final NgramContext ngramContext, final String word, final boolean isValid,
             final int timestamp, final DistracterFilter distracterFilter) {
         if (word.length() > Constants.DICTIONARY_MAX_WORD_LENGTH) {
             return;
@@ -71,11 +71,11 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
                 null /* shortcutTarget */, 0 /* shortcutFreq */, false /* isNotAWord */,
                 false /* isBlacklisted */, timestamp, distracterFilter);
 
-        final boolean isBeginningOfSentenceContext = prevWordsInfo.isBeginningOfSentenceContext();
-        final PrevWordsInfo prevWordsInfoToBeSaved =
-                prevWordsInfo.getTrimmedPrevWordsInfo(SUPPORTED_NGRAM - 1);
-        for (int i = 0; i < prevWordsInfoToBeSaved.getPrevWordCount(); i++) {
-            final CharSequence prevWord = prevWordsInfoToBeSaved.getNthPrevWord(1 /* n */);
+        final boolean isBeginningOfSentenceContext = ngramContext.isBeginningOfSentenceContext();
+        final NgramContext ngramContextToBeSaved =
+                ngramContext.getTrimmedNgramContext(SUPPORTED_NGRAM - 1);
+        for (int i = 0; i < ngramContextToBeSaved.getPrevWordCount(); i++) {
+            final CharSequence prevWord = ngramContextToBeSaved.getNthPrevWord(1 /* n */);
             if (prevWord == null || (prevWord.length() > Constants.DICTIONARY_MAX_WORD_LENGTH)) {
                 return;
             }
@@ -86,11 +86,11 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
             if (isBeginningOfSentenceContext) {
                 // Beginning-of-Sentence n-gram entry is added as an n-gram entry of an OOV word.
                 userHistoryDictionary.addNgramEntry(
-                        prevWordsInfoToBeSaved.getTrimmedPrevWordsInfo(i + 1), word,
+                        ngramContextToBeSaved.getTrimmedNgramContext(i + 1), word,
                         FREQUENCY_FOR_WORDS_NOT_IN_DICTS, timestamp);
             } else {
                 userHistoryDictionary.addNgramEntry(
-                        prevWordsInfoToBeSaved.getTrimmedPrevWordsInfo(i + 1), word, frequency,
+                        ngramContextToBeSaved.getTrimmedNgramContext(i + 1), word, frequency,
                         timestamp);
             }
         }

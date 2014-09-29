@@ -25,7 +25,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback;
-import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
+import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.ContextualDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDataChunk;
@@ -509,23 +509,23 @@ public class DictionaryFacilitator {
     }
 
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
-            final PrevWordsInfo prevWordsInfo, final int timeStampInSeconds,
+            final NgramContext ngramContext, final int timeStampInSeconds,
             final boolean blockPotentiallyOffensive) {
         final DictionaryGroup dictionaryGroup = getDictionaryGroupForActiveLanguage();
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
-        PrevWordsInfo prevWordsInfoForCurrentWord = prevWordsInfo;
+        NgramContext ngramContextForCurrentWord = ngramContext;
         for (int i = 0; i < words.length; i++) {
             final String currentWord = words[i];
             final boolean wasCurrentWordAutoCapitalized = (i == 0) ? wasAutoCapitalized : false;
-            addWordToUserHistory(dictionaryGroup, prevWordsInfoForCurrentWord, currentWord,
+            addWordToUserHistory(dictionaryGroup, ngramContextForCurrentWord, currentWord,
                     wasCurrentWordAutoCapitalized, timeStampInSeconds, blockPotentiallyOffensive);
-            prevWordsInfoForCurrentWord =
-                    prevWordsInfoForCurrentWord.getNextPrevWordsInfo(new WordInfo(currentWord));
+            ngramContextForCurrentWord =
+                    ngramContextForCurrentWord.getNextNgramContext(new WordInfo(currentWord));
         }
     }
 
     private void addWordToUserHistory(final DictionaryGroup dictionaryGroup,
-            final PrevWordsInfo prevWordsInfo, final String word, final boolean wasAutoCapitalized,
+            final NgramContext ngramContext, final String word, final boolean wasAutoCapitalized,
             final int timeStampInSeconds, final boolean blockPotentiallyOffensive) {
         final ExpandableBinaryDictionary userHistoryDictionary =
                 dictionaryGroup.getSubDict(Dictionary.TYPE_USER_HISTORY);
@@ -571,7 +571,7 @@ public class DictionaryFacilitator {
         // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
-        UserHistoryDictionary.addToDictionary(userHistoryDictionary, prevWordsInfo, secondWord,
+        UserHistoryDictionary.addToDictionary(userHistoryDictionary, ngramContext, secondWord,
                 isValid, timeStampInSeconds,
                 new DistracterFilterCheckingIsInDictionary(
                         mDistracterFilter, userHistoryDictionary));
@@ -593,11 +593,11 @@ public class DictionaryFacilitator {
 
     // TODO: Revise the way to fusion suggestion results.
     public SuggestionResults getSuggestionResults(final WordComposer composer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId) {
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
         final SuggestionResults suggestionResults = new SuggestionResults(
-                SuggestedWords.MAX_SUGGESTIONS, prevWordsInfo.isBeginningOfSentenceContext());
+                SuggestedWords.MAX_SUGGESTIONS, ngramContext.isBeginningOfSentenceContext());
         final float[] weightOfLangModelVsSpatialModel =
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
@@ -605,7 +605,7 @@ public class DictionaryFacilitator {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
                 if (null == dictionary) continue;
                 final ArrayList<SuggestedWordInfo> dictionarySuggestions =
-                        dictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
+                        dictionary.getSuggestions(composer, ngramContext, proximityInfo,
                                 settingsValuesForSuggestion, sessionId,
                                 dictionaryGroup.mWeightForLocale, weightOfLangModelVsSpatialModel);
                 if (null == dictionarySuggestions) continue;
@@ -719,7 +719,7 @@ public class DictionaryFacilitator {
         if (contextualDict == null) {
             return;
         }
-        PrevWordsInfo prevWordsInfo = PrevWordsInfo.BEGINNING_OF_SENTENCE;
+        NgramContext ngramContext = NgramContext.BEGINNING_OF_SENTENCE;
         for (int i = 0; i < phrase.length; i++) {
             final String[] subPhrase = Arrays.copyOfRange(phrase, i /* start */, phrase.length);
             final String subPhraseStr = TextUtils.join(Constants.WORD_SEPARATOR, subPhrase);
@@ -729,7 +729,7 @@ public class DictionaryFacilitator {
                     false /* isNotAWord */, false /* isBlacklisted */,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP,
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
-            contextualDict.addNgramEntry(prevWordsInfo, subPhraseStr,
+            contextualDict.addNgramEntry(ngramContext, subPhraseStr,
                     bigramProbabilityForPhrases, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
 
             if (i < phrase.length - 1) {
@@ -739,11 +739,11 @@ public class DictionaryFacilitator {
                         false /* isNotAWord */, false /* isBlacklisted */,
                         BinaryDictionary.NOT_A_VALID_TIMESTAMP,
                         DistracterFilter.EMPTY_DISTRACTER_FILTER);
-                contextualDict.addNgramEntry(prevWordsInfo, phrase[i],
+                contextualDict.addNgramEntry(ngramContext, phrase[i],
                         bigramProbabilityForWords, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
             }
-            prevWordsInfo =
-                    prevWordsInfo.getNextPrevWordsInfo(new PrevWordsInfo.WordInfo(phrase[i]));
+            ngramContext =
+                    ngramContext.getNextNgramContext(new NgramContext.WordInfo(phrase[i]));
         }
     }
 

@@ -45,7 +45,7 @@ import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
@@ -1376,7 +1376,7 @@ public final class InputLogic {
     }
 
     private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
-            final String suggestion, final PrevWordsInfo prevWordsInfo) {
+            final String suggestion, final NgramContext ngramContext) {
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
@@ -1388,7 +1388,7 @@ public final class InputLogic {
         final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
                 System.currentTimeMillis());
         mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
-                prevWordsInfo, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
+                ngramContext, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
@@ -1519,10 +1519,10 @@ public final class InputLogic {
             }
         }
         final int[] codePoints = StringUtils.toCodePointArray(typedWord);
-        // We want the previous word for suggestion. If we have chars in the word
+        // We want the context of preceding words for suggestion. If we have chars in the word
         // before the cursor, then we want the word before that, hence 2; otherwise,
         // we want the word immediately before the cursor, hence 1.
-        final PrevWordsInfo prevWordsInfo = getPrevWordsInfoFromNthPreviousWordForSuggestion(
+        final NgramContext ngramContext = getNgramContextFromNthPreviousWordForSuggestion(
                 settingsValues.mSpacingAndPunctuations,
                 0 == numberOfCharsInWordBeforeCursor ? 1 : 2);
         mWordComposer.setComposingWord(codePoints,
@@ -1760,24 +1760,24 @@ public final class InputLogic {
     }
 
     /**
-     * Get information fo previous words from the nth previous word before the cursor as context
+     * Get n-gram context from the nth previous word before the cursor as context
      * for the suggestion process.
      * @param spacingAndPunctuations the current spacing and punctuations settings.
      * @param nthPreviousWord reverse index of the word to get (1-indexed)
      * @return the information of previous words
      */
     // TODO: Make this private
-    public PrevWordsInfo getPrevWordsInfoFromNthPreviousWordForSuggestion(
+    public NgramContext getNgramContextFromNthPreviousWordForSuggestion(
             final SpacingAndPunctuations spacingAndPunctuations, final int nthPreviousWord) {
         if (spacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
             // word information from textview.
-            return mConnection.getPrevWordsInfoFromNthPreviousWord(
+            return mConnection.getNgramContextFromNthPreviousWord(
                     spacingAndPunctuations, nthPreviousWord);
         } else {
             return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ?
-                    PrevWordsInfo.BEGINNING_OF_SENTENCE :
-                            new PrevWordsInfo(new PrevWordsInfo.WordInfo(
+                    NgramContext.BEGINNING_OF_SENTENCE :
+                            new NgramContext(new NgramContext.WordInfo(
                                     mLastComposedWord.mCommittedWord.toString()));
         }
     }
@@ -2140,20 +2140,20 @@ public final class InputLogic {
         final CharSequence chosenWordWithSuggestions =
                 SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
                         suggestedWords);
-        // When we are composing word, get previous words information from the 2nd previous word
-        // because the 1st previous word is the word to be committed. Otherwise get previous words
-        // information from the 1st previous word.
-        final PrevWordsInfo prevWordsInfo = mConnection.getPrevWordsInfoFromNthPreviousWord(
+        // When we are composing word, get n-gram context from the 2nd previous word because the
+        // 1st previous word is the word to be committed. Otherwise get n-gram context from the 1st
+        // previous word.
+        final NgramContext ngramContext = mConnection.getNgramContextFromNthPreviousWord(
                 settingsValues.mSpacingAndPunctuations, mWordComposer.isComposingWord() ? 2 : 1);
         mConnection.commitText(chosenWordWithSuggestions, 1);
         // Add the word to the user history dictionary
-        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWordsInfo);
+        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, ngramContext);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType,
-                chosenWordWithSuggestions, separatorString, prevWordsInfo);
+                chosenWordWithSuggestions, separatorString, ngramContext);
     }
 
     /**
@@ -2200,7 +2200,7 @@ public final class InputLogic {
         mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                 getActualCapsMode(settingsValues, keyboardShiftMode));
         mSuggest.getSuggestedWords(mWordComposer,
-                getPrevWordsInfoFromNthPreviousWordForSuggestion(
+                getNgramContextFromNthPreviousWordForSuggestion(
                         settingsValues.mSpacingAndPunctuations,
                         // Get the word on which we should search the bigrams. If we are composing
                         // a word, it's whatever is *before* the half-committed word in the buffer,

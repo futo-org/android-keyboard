@@ -31,7 +31,7 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.DictionaryFacilitatorLruCache;
-import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
@@ -163,14 +163,14 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     public SuggestionResults getSuggestionResults(final Locale locale, final WordComposer composer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo) {
+            final NgramContext ngramContext, final ProximityInfo proximityInfo) {
         Integer sessionId = null;
         mSemaphore.acquireUninterruptibly();
         try {
             sessionId = mSessionIdPool.poll();
             DictionaryFacilitator dictionaryFacilitatorForLocale =
                     mDictionaryFacilitatorCache.get(locale);
-            return dictionaryFacilitatorForLocale.getSuggestionResults(composer, prevWordsInfo,
+            return dictionaryFacilitatorForLocale.getSuggestionResults(composer, ngramContext,
                     proximityInfo, mSettingsValuesForSuggestion, sessionId);
         } finally {
             if (sessionId != null) {

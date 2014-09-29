@@ -218,7 +218,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      */
     private void addNameLocked(final String name) {
         int len = StringUtils.codePointCount(name);
-        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+        NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
         // TODO: Better tokenization for non-Latin writing systems
         for (int i = 0; i < len; i++) {
             if (Character.isLetter(name.codePointAt(i))) {
@@ -233,19 +233,19 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 final int wordLen = StringUtils.codePointCount(word);
                 if (wordLen <= MAX_WORD_LENGTH && wordLen > 1) {
                     if (DEBUG) {
-                        Log.d(TAG, "addName " + name + ", " + word + ", "  + prevWordsInfo);
+                        Log.d(TAG, "addName " + name + ", " + word + ", "  + ngramContext);
                     }
                     runGCIfRequiredLocked(true /* mindsBlockByGC */);
                     addUnigramLocked(word, FREQUENCY_FOR_CONTACTS,
                             null /* shortcut */, 0 /* shortcutFreq */, false /* isNotAWord */,
                             false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-                    if (!prevWordsInfo.isValid() && mUseFirstLastBigrams) {
+                    if (!ngramContext.isValid() && mUseFirstLastBigrams) {
                         runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                        addNgramEntryLocked(prevWordsInfo, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
+                        addNgramEntryLocked(ngramContext, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
                                 BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     }
-                    prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(
-                            new PrevWordsInfo.WordInfo(word));
+                    ngramContext = ngramContext.getNextNgramContext(
+                            new NgramContext.WordInfo(word));
                 }
             }
         }
