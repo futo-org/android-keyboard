@@ -152,10 +152,10 @@
     <string name="message_updating" msgid="4457761393932375219">"အသစ်မွမ်းမံမှုကို ရှာဖွေနေ"</string>
     <string name="message_loading" msgid="5638680861387748936">"တင်နေ…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"အဓိက အဘိဓါန်"</string>
-    <string name="cancel" msgid="6830980399865683324">"ပယ်ဖျက်ရန်"</string>
+    <string name="cancel" msgid="6830980399865683324">"ထားတော့"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"ဆက်တင်များ"</string>
     <string name="install_dict" msgid="180852772562189365">"တပ်ဆင်ပါ"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"ပယ်ဖျက်ရန်"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"ထားတော့"</string>
     <string name="delete_dict" msgid="756853268088330054">"ဖျက်ရန်"</string>
     <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"သင့်ဖုန်းရှိ ရွေးချယ်ထားသည့် ဘာသာအတွက် အဘိဓါန်ရှိပါသည်။ &lt;br/&gt; အဘိဓါန်အား &lt;b&gt;ဒေါင်းလုပ်လုပ်ကာ&lt;/b&gt; the <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>  သင့်စာရိုက် အတွေ့အကြုံတိုးတက်စေရန် ကျွန်ုပ်တို့အကြံပြုပါသည်။ &lt;br/&gt; &lt;br/&gt; ဒေါင်းလုပ်လုပ်ရန် 3G ပေါ်တွင် ၁ မှ ၂ မိနစ်ခန့်ကြာနိုင်သည်။ သင့်တွင် &lt;b&gt;အကန့်သတ်မှရိ အချက်လက် သုံးစွဲမှု&lt;/b&gt;မရှိလျှင် ငွေကျသင့်နိုင်ပါသည်။ &lt;br/&gt; သင့်တွင် မည်သည့်အချက်လက်သုံးစွဲမှု ရှိနေသည်ကိုမသိလျှင်၊ အလိုအလျောက် ဒေါင်းလုပ်လုပ်ရန် Wi-Fi ကွန်ရက်တစ်ခု ရှာဖွေရန် တိုက်တွန်းပါသည်။ &lt;br/&gt; &lt;br/&gt; နည်းလမ်း: သင့်ဖုန်းကိရိယာရှိ &lt;b&gt;ဆက်တင်ထဲတွင်&lt;/b&gt; &lt;b&gt;ဘာသာ &amp; စာရိုက်ထည့်မှု&lt;/b&gt; သို့သွားကာ အဘိဓါန်များကို ဒေါင်းလုပ်လုပ်နိုင် ဖယ်ရှားနိုင်ပါသည်။"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ယခုဒေါင်းလုပ်လုပ်မည် (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
