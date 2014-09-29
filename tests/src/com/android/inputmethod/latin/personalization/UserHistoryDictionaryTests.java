@@ -159,11 +159,11 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         return new ArrayList<>(wordSet);
     }
 
-    private static void addToDict(final UserHistoryDictionary dict, final List<String> words) {
+    private static void addToDict(final UserHistoryDictionary dict, final List<String> words,
+            final int timestamp) {
         NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
         for (String word : words) {
-            UserHistoryDictionary.addToDictionary(dict, ngramContext, word, true,
-                    (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()),
+            UserHistoryDictionary.addToDictionary(dict, ngramContext, word, true, timestamp,
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
             ngramContext = ngramContext.getNextNgramContext(new WordInfo(word));
         }
@@ -177,7 +177,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             final int numberOfWords, final Random random, final boolean checkContents) {
         final List<String> words = generateWords(numberOfWords, random);
         // Add random words to the user history dictionary.
-        addToDict(dict, words);
+        addToDict(dict, words, mCurrentTime);
         if (checkContents) {
             dict.waitAllTasksForTests();
             for (int i = 0; i < numberOfWords; ++i) {
@@ -308,6 +308,5 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         for (final String word : words) {
             assertFalse(dict.isInDictionary(word));
         }
-        stopTestModeInNativeCode();
     }
 }
