@@ -161,7 +161,7 @@ public final class LanguageModelParam {
         }
         final int bigramProbability = isValidWord ?
                 BIGRAM_PROBABILITY_FOR_VALID_WORD : BIGRAM_PROBABILITY_FOR_OOV_WORD;
-        return new LanguageModelParam(prevWordsInfo.mPrevWordsInfo[0].mWord, word,
+        return new LanguageModelParam(prevWordsInfo.getNthPrevWord(1 /* n */), word,
                 unigramProbability, bigramProbability, timestamp);
     }
 }

@@ -597,8 +597,7 @@ public class DictionaryFacilitator {
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId) {
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
         final SuggestionResults suggestionResults = new SuggestionResults(
-                SuggestedWords.MAX_SUGGESTIONS,
-                prevWordsInfo.mPrevWordsInfo[0].mIsBeginningOfSentence);
+                SuggestedWords.MAX_SUGGESTIONS, prevWordsInfo.isBeginningOfSentenceContext());
         final float[] weightOfLangModelVsSpatialModel =
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
