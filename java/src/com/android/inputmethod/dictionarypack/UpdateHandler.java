@@ -251,12 +251,16 @@ public final class UpdateHandler {
                 res.getBoolean(R.bool.metadata_downloads_visible_in_download_UI));
 
         final DownloadManagerWrapper manager = new DownloadManagerWrapper(context);
-        cancelUpdateWithDownloadManager(context, metadataUri, manager);
+        if (maybeCancelUpdateAndReturnIfStillRunning(context, metadataUri, manager,
+                DictionaryService.NO_CANCEL_DOWNLOAD_PERIOD_MILLIS)) {
+            // We already have a recent download in progress. Don't register a new download.
+            return;
+        }
         final long downloadId;
         synchronized (sSharedIdProtector) {
             downloadId = manager.enqueue(metadataRequest);
             DebugLogUtils.l("Metadata download requested with id", downloadId);
-            // If there is already a download in progress, it's been there for a while and
+            // If there is still a download in progress, it's been there for a while and
             // there is probably something wrong with download manager. It's best to just
             // overwrite the id and request it again. If the old one happens to finish
             // anyway, we don't know about its ID any more, so the downloadFinished
@@ -267,21 +271,29 @@ public final class UpdateHandler {
     }
 
     /**
-     * Cancels downloading a file, if there is one for this URI.
+     * Cancels downloading a file if there is one for this URI and it's too long.
      *
      * If we are not currently downloading the file at this URI, this is a no-op.
      *
      * @param context the context to open the database on
      * @param metadataUri the URI to cancel
      * @param manager an wrapped instance of DownloadManager
+     * @param graceTime if there was a download started less than this many milliseconds, don't
+     *  cancel and return true
+     * @return whether the download is still active
      */
-    private static void cancelUpdateWithDownloadManager(final Context context,
-            final String metadataUri, final DownloadManagerWrapper manager) {
+    private static boolean maybeCancelUpdateAndReturnIfStillRunning(final Context context,
+            final String metadataUri, final DownloadManagerWrapper manager, final long graceTime) {
         synchronized (sSharedIdProtector) {
-            final long metadataDownloadId =
-                    MetadataDbHelper.getMetadataDownloadIdForURI(context, metadataUri);
-            if (NOT_AN_ID == metadataDownloadId) return;
-            manager.remove(metadataDownloadId);
+            final DownloadIdAndStartDate metadataDownloadIdAndStartDate =
+                    MetadataDbHelper.getMetadataDownloadIdAndStartDateForURI(context, metadataUri);
+            if (null == metadataDownloadIdAndStartDate) return false;
+            if (NOT_AN_ID == metadataDownloadIdAndStartDate.mId) return false;
+            if (metadataDownloadIdAndStartDate.mStartDate + graceTime
+                    > System.currentTimeMillis()) {
+                return true;
+            }
+            manager.remove(metadataDownloadIdAndStartDate.mId);
             writeMetadataDownloadId(context, metadataUri, NOT_AN_ID);
         }
         // Consider a cancellation as a failure. As such, inform listeners that the download
@@ -289,6 +301,7 @@ public final class UpdateHandler {
         for (UpdateEventListener listener : linkedCopyOfList(sUpdateEventListeners)) {
             listener.downloadedMetadata(false);
         }
+        return false;
     }
 
     /**
@@ -303,7 +316,7 @@ public final class UpdateHandler {
     public static void cancelUpdate(final Context context, final String clientId) {
         final DownloadManagerWrapper manager = new DownloadManagerWrapper(context);
         final String metadataUri = MetadataDbHelper.getMetadataUriAsString(context, clientId);
-        cancelUpdateWithDownloadManager(context, metadataUri, manager);
+        maybeCancelUpdateAndReturnIfStillRunning(context, metadataUri, manager, 0 /* graceTime */);
     }
 
     /**
@@ -387,7 +400,7 @@ public final class UpdateHandler {
             // If any of these is metadata, we should update the DB
             boolean hasMetadata = false;
             for (DownloadRecord record : downloadRecords) {
-                if (null == record.mAttributes) {
+                if (record.isMetadata()) {
                     hasMetadata = true;
                     break;
                 }
