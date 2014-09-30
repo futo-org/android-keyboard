@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.latin.network;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,41 +53,52 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         MockitoAnnotations.initMocks(this);
     }
 
-    public void testError_badGateway() throws IOException {
+    public void testError_badGateway() throws IOException, AuthException {
         when(mMockHttpConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_BAD_GATEWAY);
         final BlockingHttpClient client = new BlockingHttpClient(mMockHttpConnection);
-        final FakeErrorResponseProcessor processor =
-                new FakeErrorResponseProcessor(HttpURLConnection.HTTP_BAD_GATEWAY);
+        final FakeErrorResponseProcessor processor = new FakeErrorResponseProcessor();
 
-        client.execute(null /* empty request */, processor);
-        assertTrue("ResponseProcessor was not invoked", processor.mInvoked);
+        try {
+            client.execute(null /* empty request */, processor);
+            fail("Expecting an HttpException");
+        } catch (HttpException e) {
+            // expected HttpException
+            assertEquals(HttpURLConnection.HTTP_BAD_GATEWAY, e.getHttpStatusCode());
+        }
     }
 
-    public void testError_clientTimeout() throws IOException {
+    public void testError_clientTimeout() throws Exception {
         when(mMockHttpConnection.getResponseCode()).thenReturn(
                 HttpURLConnection.HTTP_CLIENT_TIMEOUT);
         final BlockingHttpClient client = new BlockingHttpClient(mMockHttpConnection);
-        final FakeErrorResponseProcessor processor =
-                new FakeErrorResponseProcessor(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
+        final FakeErrorResponseProcessor processor = new FakeErrorResponseProcessor();
 
-        client.execute(null /* empty request */, processor);
-        assertTrue("ResponseProcessor was not invoked", processor.mInvoked);
+        try {
+            client.execute(null /* empty request */, processor);
+            fail("Expecting an HttpException");
+        } catch (HttpException e) {
+            // expected HttpException
+            assertEquals(HttpURLConnection.HTTP_CLIENT_TIMEOUT, e.getHttpStatusCode());
+        }
     }
 
-    public void testError_forbiddenWithRequest() throws IOException {
+    public void testError_forbiddenWithRequest() throws Exception {
         final OutputStream mockOutputStream = Mockito.mock(OutputStream.class);
         when(mMockHttpConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_FORBIDDEN);
         when(mMockHttpConnection.getOutputStream()).thenReturn(mockOutputStream);
         final BlockingHttpClient client = new BlockingHttpClient(mMockHttpConnection);
-        final FakeErrorResponseProcessor processor =
-                new FakeErrorResponseProcessor(HttpURLConnection.HTTP_FORBIDDEN);
+        final FakeErrorResponseProcessor processor = new FakeErrorResponseProcessor();
 
-        client.execute(new byte[100], processor);
+        try {
+            client.execute(new byte[100], processor);
+            fail("Expecting an HttpException");
+        } catch (HttpException e) {
+            assertEquals(HttpURLConnection.HTTP_FORBIDDEN, e.getHttpStatusCode());
+        }
         verify(mockOutputStream).write(any(byte[].class), eq(0), eq(100));
-        assertTrue("ResponseProcessor was not invoked", processor.mInvoked);
     }
 
-    public void testSuccess_emptyRequest() throws IOException {
+    public void testSuccess_emptyRequest() throws Exception {
         final Random rand = new Random();
         byte[] response = new byte[100];
         rand.nextBytes(response);
@@ -101,7 +112,7 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         assertTrue("ResponseProcessor was not invoked", processor.mInvoked);
     }
 
-    public void testSuccess() throws IOException {
+    public void testSuccess() throws Exception {
         final OutputStream mockOutputStream = Mockito.mock(OutputStream.class);
         final Random rand = new Random();
         byte[] response = new byte[100];
@@ -117,28 +128,15 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         assertTrue("ResponseProcessor was not invoked", processor.mInvoked);
     }
 
-    private static class FakeErrorResponseProcessor implements ResponseProcessor {
-        private final int mExpectedStatusCode;
-
-        boolean mInvoked;
-
-        FakeErrorResponseProcessor(int expectedStatusCode) {
-            mExpectedStatusCode = expectedStatusCode;
-        }
-
+    private static class FakeErrorResponseProcessor implements ResponseProcessor<Void> {
         @Override
-        public void onError(int httpStatusCode, String message) {
-            mInvoked = true;
-            assertEquals("onError:", mExpectedStatusCode, httpStatusCode);
-        }
-
-        @Override
-        public void onSuccess(InputStream response) {
+        public Void onSuccess(InputStream response) {
             fail("Expected an error but received success");
+            return null;
         }
     }
 
-    private static class FakeSuccessResponseProcessor implements ResponseProcessor {
+    private static class FakeSuccessResponseProcessor implements ResponseProcessor<Void> {
         private final byte[] mExpectedResponse;
 
         boolean mInvoked;
@@ -148,12 +146,7 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         }
 
         @Override
-        public void onError(int httpStatusCode, String message) {
-            fail("Expected a response but received an error");
-        }
-
-        @Override
-        public void onSuccess(InputStream response) {
+        public Void onSuccess(InputStream response) {
             try {
                 mInvoked = true;
                 BufferedInputStream in = new BufferedInputStream(response);
@@ -169,6 +162,7 @@ public class BlockingHttpClientTests extends AndroidTestCase {
             } catch (IOException ex) {
                 fail("IOException in onSuccess");
             }
+            return null;
         }
     }
 }

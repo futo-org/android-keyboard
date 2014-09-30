@@ -37,6 +37,11 @@ public class HttpUrlConnectionBuilder {
     private static final int DEFAULT_TIMEOUT_MILLIS = 5 * 1000;
 
     /**
+     * Request header key for authentication.
+     */
+    public static final String HTTP_HEADER_AUTHORIZATION = "Authorization";
+
+    /**
      * Request header key for cache control.
      */
     public static final String KEY_CACHE_CONTROL = "Cache-Control";
@@ -78,7 +83,7 @@ public class HttpUrlConnectionBuilder {
      * Sets the URL that'll be used for the request.
      * This *must* be set before calling {@link #build()}
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
+     * TODO: Remove @UsedForTesting after this method is actually used.
      */
     @UsedForTesting
     public HttpUrlConnectionBuilder setUrl(String url) throws MalformedURLException {
@@ -92,7 +97,7 @@ public class HttpUrlConnectionBuilder {
     /**
      * Sets the connect timeout. Defaults to {@value #DEFAULT_TIMEOUT} milliseconds.
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
+     * TODO: Remove @UsedForTesting after this method is actually used.
      */
     @UsedForTesting
     public HttpUrlConnectionBuilder setConnectTimeout(int timeoutMillis) {
@@ -107,7 +112,7 @@ public class HttpUrlConnectionBuilder {
     /**
      * Sets the read timeout. Defaults to {@value #DEFAULT_TIMEOUT} milliseconds.
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
+     * TODO: Remove @UsedForTesting after this method is actually used.
      */
     @UsedForTesting
     public HttpUrlConnectionBuilder setReadTimeout(int timeoutMillis) {
@@ -122,7 +127,7 @@ public class HttpUrlConnectionBuilder {
     /**
      * Adds an entry to the request header.
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
+     * TODO: Remove @UsedForTesting after this method is actually used.
      */
     @UsedForTesting
     public HttpUrlConnectionBuilder addHeader(String key, String value) {
@@ -131,10 +136,21 @@ public class HttpUrlConnectionBuilder {
     }
 
     /**
+     * Sets an authentication token.
+     *
+     * TODO: Remove @UsedForTesting after this method is actually used.
+     */
+    @UsedForTesting
+    public HttpUrlConnectionBuilder setAuthToken(String value) {
+        mHeaderMap.put(HTTP_HEADER_AUTHORIZATION, value);
+        return this;
+    }
+
+    /**
      * Sets the request to be executed such that the input is not buffered.
      * This may be set when the request size is known beforehand.
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
+     * TODO: Remove @UsedForTesting after this method is actually used.
      */
     @UsedForTesting
     public HttpUrlConnectionBuilder setFixedLengthForStreaming(int length) {
@@ -145,7 +161,7 @@ public class HttpUrlConnectionBuilder {
     /**
      * Indicates if the request can use cached responses or not.
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
+     * TODO: Remove @UsedForTesting after this method is actually used.
      */
     @UsedForTesting
     public HttpUrlConnectionBuilder setUseCache(boolean useCache) {
@@ -161,7 +177,7 @@ public class HttpUrlConnectionBuilder {
      * @see #MODE_DOWNLOAD_ONLY
      * @see #MODE_BI_DIRECTIONAL
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
+     * TODO: Remove @UsedForTesting after this method is actually used
      */
     @UsedForTesting
     public HttpUrlConnectionBuilder setMode(int mode) {
@@ -177,7 +193,7 @@ public class HttpUrlConnectionBuilder {
     /**
      * Builds the {@link HttpURLConnection} instance that can be used to execute the request.
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
+     * TODO: Remove @UsedForTesting after this method is actually used.
      */
     @UsedForTesting
     public HttpURLConnection build() throws IOException {
