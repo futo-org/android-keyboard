@@ -42,8 +42,8 @@ public class Ver2DictEncoderTests extends AndroidTestCase {
         final List<String> words = Arrays.asList(wordSource);
         final String correctCodePointTable = "eotdsanirfg bclwup";
         final String correctCodePointOccurrenceArrayString =
-                "10141164111411531003110297210521142103111911171108198199132111211021";
-        final String correctCodePointExpectedMapString = "323433363538373940494147454644424348";
+                "11641114101411531003114211021052972119111711121108110311021991981321";
+        final String correctCodePointExpectedMapString = "343332363540383937464549484744414243";
         final String dictName = "codePointTableTest";
         final String dictVersion = Long.toString(System.currentTimeMillis());
 
@@ -60,8 +60,8 @@ public class Ver2DictEncoderTests extends AndroidTestCase {
             codePointOccurrenceArrayString.append(entry.getKey());
             codePointOccurrenceArrayString.append(entry.getValue());
         }
-        assertEquals(codePointOccurrenceArrayString.toString(),
-                correctCodePointOccurrenceArrayString);
+        assertEquals(correctCodePointOccurrenceArrayString,
+                codePointOccurrenceArrayString.toString());
 
         // Check if mCodePointToOneByteCodeMap is correct
         final StringBuilder codePointExpectedMapString = new StringBuilder();
@@ -69,7 +69,7 @@ public class Ver2DictEncoderTests extends AndroidTestCase {
             codePointExpectedMapString.append(codePointTable.mCodePointToOneByteCodeMap.get(
                     correctCodePointTable.codePointAt(i)));
         }
-        assertEquals(codePointExpectedMapString.toString(), correctCodePointExpectedMapString);
+        assertEquals(correctCodePointExpectedMapString, codePointExpectedMapString.toString());
     }
 
     /**

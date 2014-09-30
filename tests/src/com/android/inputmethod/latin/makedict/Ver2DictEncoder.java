@@ -100,7 +100,10 @@ public class Ver2DictEncoder implements DictEncoder {
         Collections.sort(codePointOccurrenceArray, new Comparator<Entry<Integer, Integer>>() {
             @Override
             public int compare(final Entry<Integer, Integer> a, final Entry<Integer, Integer> b) {
-                return b.getValue().compareTo(a.getValue());
+                if (a.getValue() != b.getValue()) {
+                    return b.getValue().compareTo(a.getValue());
+                }
+                return b.getKey().compareTo(a.getKey());
             }
         });
         int currentCodePointTableIndex = FormatSpec.MINIMAL_ONE_BYTE_CHARACTER_VALUE;
