@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/core/dictionary/property/historical_info.h"
 
 namespace latinime {
 
@@ -50,15 +51,14 @@ class UnigramProperty {
 
     UnigramProperty()
             : mRepresentsBeginningOfSentence(false), mIsNotAWord(false), mIsBlacklisted(false),
-              mProbability(NOT_A_PROBABILITY), mTimestamp(NOT_A_TIMESTAMP), mLevel(0), mCount(0),
-              mShortcuts() {}
+              mProbability(NOT_A_PROBABILITY), mHistoricalInfo(), mShortcuts() {}
 
     UnigramProperty(const bool representsBeginningOfSentence, const bool isNotAWord,
-            const bool isBlacklisted, const int probability, const int timestamp, const int level,
-            const int count, const std::vector<ShortcutProperty> *const shortcuts)
+            const bool isBlacklisted, const int probability, const HistoricalInfo &historicalInfo,
+            const std::vector<ShortcutProperty> *const shortcuts)
             : mRepresentsBeginningOfSentence(representsBeginningOfSentence),
               mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted), mProbability(probability),
-              mTimestamp(timestamp), mLevel(level), mCount(count), mShortcuts(*shortcuts) {}
+              mHistoricalInfo(historicalInfo), mShortcuts(*shortcuts) {}
 
     bool representsBeginningOfSentence() const {
         return mRepresentsBeginningOfSentence;
@@ -85,16 +85,8 @@ class UnigramProperty {
         return mProbability;
     }
 
-    int getTimestamp() const {
-        return mTimestamp;
-    }
-
-    int getLevel() const {
-        return mLevel;
-    }
-
-    int getCount() const {
-        return mCount;
+    const HistoricalInfo getHistoricalInfo() const {
+        return mHistoricalInfo;
     }
 
     const std::vector<ShortcutProperty> &getShortcuts() const {
@@ -110,10 +102,7 @@ class UnigramProperty {
     bool mIsNotAWord;
     bool mIsBlacklisted;
     int mProbability;
-    // Historical information
-    int mTimestamp;
-    int mLevel;
-    int mCount;
+    HistoricalInfo mHistoricalInfo;
     std::vector<ShortcutProperty> mShortcuts;
 };
 } // namespace latinime

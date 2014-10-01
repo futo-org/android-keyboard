@@ -373,7 +373,8 @@ static bool latinime_BinaryDictionary_addUnigramEntry(JNIEnv *env, jclass clazz,
     }
     // Use 1 for count to indicate the word has inputted.
     const UnigramProperty unigramProperty(isBeginningOfSentence, isNotAWord,
-            isBlacklisted, probability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
+            isBlacklisted, probability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */),
+            &shortcuts);
     return dictionary->addUnigramEntry(CodePointArrayView(codePoints, codePointCount),
             &unigramProperty);
 }
@@ -405,7 +406,7 @@ static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, j
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
     // Use 1 for count to indicate the ngram has inputted.
     const NgramProperty ngramProperty(CodePointArrayView(wordCodePoints, wordLength).toVector(),
-            probability, timestamp, 0 /* level */, 1 /* count */);
+            probability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
     return dictionary->addNgramEntry(&prevWordsInfo, &ngramProperty);
 }
 
@@ -494,8 +495,8 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         }
         // Use 1 for count to indicate the word has inputted.
         const UnigramProperty unigramProperty(false /* isBeginningOfSentence */, isNotAWord,
-                isBlacklisted, unigramProbability, timestamp, 0 /* level */, 1 /* count */,
-                &shortcuts);
+                isBlacklisted, unigramProbability,
+                HistoricalInfo(timestamp, 0 /* level */, 1 /* count */), &shortcuts);
         dictionary->addUnigramEntry(CodePointArrayView(word1CodePoints, word1Length),
                 &unigramProperty);
         if (word0) {
@@ -503,7 +504,7 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
             // Use 1 for count to indicate the bigram has inputted.
             const NgramProperty ngramProperty(
                     CodePointArrayView(word1CodePoints, word1Length).toVector(),
-                    bigramProbability, timestamp, 0 /* level */, 1 /* count */);
+                    bigramProbability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
             const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length,
                     false /* isBeginningOfSentence */);
             dictionary->addNgramEntry(&prevWordsInfo, &ngramProperty);

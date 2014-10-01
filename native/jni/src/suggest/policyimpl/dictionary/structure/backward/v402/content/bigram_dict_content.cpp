@@ -83,10 +83,10 @@ bool BigramDictContent::writeBigramEntryAndAdvancePosition(
     }
     if (mHasHistoricalInfo) {
         const HistoricalInfo *const historicalInfo = bigramEntryToWrite->getHistoricalInfo();
-        if (!bigramListBuffer->writeUintAndAdvancePosition(historicalInfo->getTimeStamp(),
+        if (!bigramListBuffer->writeUintAndAdvancePosition(historicalInfo->getTimestamp(),
                 Ver4DictConstants::TIME_STAMP_FIELD_SIZE, entryWritingPos)) {
             AKLOGE("Cannot write bigram timestamps. pos: %d, timestamp: %d", *entryWritingPos,
-                    historicalInfo->getTimeStamp());
+                    historicalInfo->getTimestamp());
             return false;
         }
         if (!bigramListBuffer->writeUintAndAdvancePosition(historicalInfo->getLevel(),

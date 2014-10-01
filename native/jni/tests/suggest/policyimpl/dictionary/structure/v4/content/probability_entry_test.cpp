@@ -51,7 +51,7 @@ TEST(ProbabilityEntryTest, TestEncodeDecodeWithHistoricalInfo) {
             ProbabilityEntry::decode(encodedEntry, true /* hasHistoricalInfo */);
 
     EXPECT_EQ(flag, decodedEntry.getFlags());
-    EXPECT_EQ(timestamp, decodedEntry.getHistoricalInfo()->getTimeStamp());
+    EXPECT_EQ(timestamp, decodedEntry.getHistoricalInfo()->getTimestamp());
     EXPECT_EQ(level, decodedEntry.getHistoricalInfo()->getLevel());
     EXPECT_EQ(count, decodedEntry.getHistoricalInfo()->getCount());
 }

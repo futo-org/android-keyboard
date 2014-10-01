@@ -17,6 +17,7 @@
 #include "suggest/core/dictionary/property/word_property.h"
 
 #include "utils/jni_data_utils.h"
+#include "suggest/core/dictionary/property/historical_info.h"
 
 namespace latinime {
 
@@ -31,8 +32,9 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
             !mNgrams.empty(), mUnigramProperty.hasShortcuts(),
             mUnigramProperty.representsBeginningOfSentence()};
     env->SetBooleanArrayRegion(outFlags, 0 /* start */, NELEMS(flags), flags);
-    int probabilityInfo[] = {mUnigramProperty.getProbability(), mUnigramProperty.getTimestamp(),
-            mUnigramProperty.getLevel(), mUnigramProperty.getCount()};
+    const HistoricalInfo &historicalInfo = mUnigramProperty.getHistoricalInfo();
+    int probabilityInfo[] = {mUnigramProperty.getProbability(), historicalInfo.getTimestamp(),
+            historicalInfo.getLevel(), historicalInfo.getCount()};
     env->SetIntArrayRegion(outProbabilityInfo, 0 /* start */, NELEMS(probabilityInfo),
             probabilityInfo);
 
@@ -51,10 +53,10 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
                 false /* needsNullTermination */);
         env->CallBooleanMethod(outBigramTargets, addMethodId, bigramWord1CodePointArray);
         env->DeleteLocalRef(bigramWord1CodePointArray);
-
+        const HistoricalInfo &ngramHistoricalInfo = ngramProperty.getHistoricalInfo();
         int bigramProbabilityInfo[] = {ngramProperty.getProbability(),
-                ngramProperty.getTimestamp(), ngramProperty.getLevel(),
-                ngramProperty.getCount()};
+                ngramHistoricalInfo.getTimestamp(), ngramHistoricalInfo.getLevel(),
+                ngramHistoricalInfo.getCount()};
         jintArray bigramProbabilityInfoArray = env->NewIntArray(NELEMS(bigramProbabilityInfo));
         env->SetIntArrayRegion(bigramProbabilityInfoArray, 0 /* start */,
                 NELEMS(bigramProbabilityInfo), bigramProbabilityInfo);

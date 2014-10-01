@@ -25,8 +25,8 @@
 #define LATINIME_BACKWARD_V402_PROBABILITY_ENTRY_H
 
 #include "defines.h"
+#include "suggest/core/dictionary/property/historical_info.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_dict_constants.h"
-#include "suggest/policyimpl/dictionary/utils/historical_info.h"
 
 namespace latinime {
 namespace backward {
