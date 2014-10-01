@@ -21,8 +21,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_use_headphones" msgid="4313642710742229868">"जोर से बोली जाने वाली पासवर्ड कुंजियां सुनने के लिए हैडसेट प्‍लग करें."</string>
-    <string name="spoken_current_text_is" msgid="4240549866156675799">"वर्तमान पाठ %s है"</string>
-    <string name="spoken_no_text_entered" msgid="1711276837961785646">"कोई पाठ नहीं डाला गया"</string>
+    <string name="spoken_current_text_is" msgid="4240549866156675799">"वर्तमान लेख %s है"</string>
+    <string name="spoken_no_text_entered" msgid="1711276837961785646">"कोई लेख नहीं डाला गया"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> को सुधार कर <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> करता है"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> स्वत: सुधार करता है"</string>
     <string name="spoken_description_unknown" msgid="5139930082759824442">"अज्ञात वर्ण"</string>
@@ -44,7 +44,7 @@
     <string name="spoken_description_search" msgid="5099937658231911288">"खोजें"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"डॉट"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"भाषा स्विच करें"</string>
-    <string name="spoken_description_action_next" msgid="431761808119616962">"अगला"</string>
+    <string name="spoken_description_action_next" msgid="431761808119616962">"आगे"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"पिछला"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"शिफ़्ट सक्षम किया गया"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"कैप्स लॉक सक्षम किया गया"</string>
@@ -61,7 +61,7 @@
     <string name="keyboard_mode_im" msgid="3812086215529493501">"संदेश सेवा"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"संख्या"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"फ़ोन"</string>
-    <string name="keyboard_mode_text" msgid="9138789594969187494">"पाठ"</string>
+    <string name="keyboard_mode_text" msgid="9138789594969187494">"लेख"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"समय"</string>
     <string name="keyboard_mode_url" msgid="8072011652949962550">"URL"</string>
     <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"हाल ही के"</string>
@@ -76,6 +76,18 @@
     <string name="spoken_letter_0130" msgid="4766619646231612274">"बड़ा आई, बिंदु ऊपर"</string>
     <string name="spoken_symbol_unknown" msgid="717298227061173706">"अज्ञात प्रतीक"</string>
     <string name="spoken_emoji_unknown" msgid="5981009928135394306">"अज्ञात इमोजी"</string>
+    <!-- no translation found for spoken_emoticon_3A_2D_21_20 (2410905667389534573) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_3A_2D_24_20 (2481260475945560438) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_42_2D_29_20 (1063205250387128068) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_3A_4F_20 (532695091593447238) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_3A_2D_2A_20 (5612342617244114291) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_3A_2D_5B_20 (2223507987759905920) -->
+    <skip />
     <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"वैकल्पिक वर्ण उपलब्ध हैं"</string>
     <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"वैकल्पिक वर्ण ख़ारिज कर दिए जाते हैं"</string>
     <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"वैकल्पिक सुझाव उपलब्ध हैं"</string>

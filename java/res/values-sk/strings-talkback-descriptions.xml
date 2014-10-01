@@ -63,7 +63,7 @@
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"telefón"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"text"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"čas"</string>
-    <string name="keyboard_mode_url" msgid="8072011652949962550">"Adresa URL"</string>
+    <string name="keyboard_mode_url" msgid="8072011652949962550">"Webová adresa"</string>
     <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Nedávne"</string>
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"Ľudia"</string>
     <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"Predmety"</string>
@@ -76,6 +76,18 @@
     <string name="spoken_letter_0130" msgid="4766619646231612274">"Veľké I s bodkou nad písmenom"</string>
     <string name="spoken_symbol_unknown" msgid="717298227061173706">"Neznámy symbol"</string>
     <string name="spoken_emoji_unknown" msgid="5981009928135394306">"Neznámy symbol Emodži"</string>
+    <!-- no translation found for spoken_emoticon_3A_2D_21_20 (2410905667389534573) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_3A_2D_24_20 (2481260475945560438) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_42_2D_29_20 (1063205250387128068) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_3A_4F_20 (532695091593447238) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_3A_2D_2A_20 (5612342617244114291) -->
+    <skip />
+    <!-- no translation found for spoken_emoticon_3A_2D_5B_20 (2223507987759905920) -->
+    <skip />
     <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"Alternatívne znaky sú dostupné"</string>
     <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"Alternatívne znaky boli zrušené"</string>
     <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"Alternatívne návrhy sú dostupné"</string>
