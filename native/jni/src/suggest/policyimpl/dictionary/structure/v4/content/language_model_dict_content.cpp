@@ -296,7 +296,7 @@ bool LanguageModelDictContent::getEntryInfo(const HeaderPolicy *const headerPoli
                 ForgettingCurveUtils::decodeProbability(probabilityEntry.getHistoricalInfo(),
                         headerPolicy) : probabilityEntry.getProbability();
         outEntryInfo->emplace_back(probability,
-                probabilityEntry.getHistoricalInfo()->getTimeStamp(),
+                probabilityEntry.getHistoricalInfo()->getTimestamp(),
                 entry.key(), targetLevel, prevWordIds->data());
     }
     return true;

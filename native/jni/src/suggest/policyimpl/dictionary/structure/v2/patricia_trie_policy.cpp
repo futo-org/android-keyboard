@@ -452,7 +452,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
             const int probability = getProbability(word1Probability, bigramsIt.getProbability());
             ngrams.emplace_back(
                     CodePointArrayView(bigramWord1CodePoints, word1CodePointCount).toVector(),
-                    probability, NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */);
+                    probability, HistoricalInfo());
         }
     }
     // Fetch shortcut information.
@@ -477,7 +477,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
     }
     const UnigramProperty unigramProperty(ptNodeParams.representsBeginningOfSentence(),
             ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
-            NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
+            HistoricalInfo(), &shortcuts);
     return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }
 

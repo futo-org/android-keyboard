@@ -396,8 +396,7 @@ const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
         const UnigramProperty *const unigramProperty) const {
     // TODO: Consolidate historical info and probability.
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
-        const HistoricalInfo historicalInfoForUpdate(unigramProperty->getTimestamp(),
-                unigramProperty->getLevel(), unigramProperty->getCount());
+        const HistoricalInfo &historicalInfoForUpdate = unigramProperty->getHistoricalInfo();
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
                         originalProbabilityEntry->getHistoricalInfo(),

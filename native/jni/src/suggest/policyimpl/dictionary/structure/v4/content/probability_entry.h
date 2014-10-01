@@ -21,10 +21,10 @@
 #include <cstdint>
 
 #include "defines.h"
+#include "suggest/core/dictionary/property/historical_info.h"
 #include "suggest/core/dictionary/property/ngram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
-#include "suggest/policyimpl/dictionary/utils/historical_info.h"
 
 namespace latinime {
 
@@ -53,15 +53,13 @@ class ProbabilityEntry {
                     unigramProperty->isNotAWord(), unigramProperty->isBlacklisted(),
                     unigramProperty->isPossiblyOffensive())),
               mProbability(unigramProperty->getProbability()),
-              mHistoricalInfo(unigramProperty->getTimestamp(), unigramProperty->getLevel(),
-                      unigramProperty->getCount()) {}
+              mHistoricalInfo(unigramProperty->getHistoricalInfo()) {}
 
     // Create from ngram property.
     // TODO: Set flags.
     ProbabilityEntry(const NgramProperty *const ngramProperty)
             : mFlags(0), mProbability(ngramProperty->getProbability()),
-              mHistoricalInfo(ngramProperty->getTimestamp(), ngramProperty->getLevel(),
-                      ngramProperty->getCount()) {}
+              mHistoricalInfo(ngramProperty->getHistoricalInfo()) {}
 
     bool isValid() const {
         return (mFlags & Ver4DictConstants::FLAG_NOT_A_VALID_ENTRY) == 0;
@@ -103,7 +101,7 @@ class ProbabilityEntry {
         uint64_t encodedEntry = static_cast<uint64_t>(mFlags);
         if (hasHistoricalInfo) {
             encodedEntry = (encodedEntry << (Ver4DictConstants::TIME_STAMP_FIELD_SIZE * CHAR_BIT))
-                    ^ static_cast<uint64_t>(mHistoricalInfo.getTimeStamp());
+                    ^ static_cast<uint64_t>(mHistoricalInfo.getTimestamp());
             encodedEntry = (encodedEntry << (Ver4DictConstants::WORD_LEVEL_FIELD_SIZE * CHAR_BIT))
                     ^ static_cast<uint64_t>(mHistoricalInfo.getLevel());
             encodedEntry = (encodedEntry << (Ver4DictConstants::WORD_COUNT_FIELD_SIZE * CHAR_BIT))

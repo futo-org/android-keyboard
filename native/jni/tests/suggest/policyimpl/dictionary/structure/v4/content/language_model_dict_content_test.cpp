@@ -60,7 +60,7 @@ TEST(LanguageModelDictContentTest, TestUnigramProbabilityWithHistoricalInfo) {
     languageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
     const ProbabilityEntry entry = languageModelDictContent.getProbabilityEntry(wordId);
     EXPECT_EQ(flag, entry.getFlags());
-    EXPECT_EQ(timestamp, entry.getHistoricalInfo()->getTimeStamp());
+    EXPECT_EQ(timestamp, entry.getHistoricalInfo()->getTimestamp());
     EXPECT_EQ(level, entry.getHistoricalInfo()->getLevel());
     EXPECT_EQ(count, entry.getHistoricalInfo()->getCount());
 
