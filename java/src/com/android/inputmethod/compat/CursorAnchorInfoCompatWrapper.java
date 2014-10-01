@@ -84,8 +84,8 @@ public final class CursorAnchorInfoCompatWrapper {
     }
 
     @UsedForTesting
-    public static boolean isAvailable() {
-        return sCursorAnchorInfoClass.exists();
+    public boolean isAvailable() {
+        return sCursorAnchorInfoClass.exists() && mInstance != null;
     }
 
     private Object mInstance;
@@ -96,7 +96,7 @@ public final class CursorAnchorInfoCompatWrapper {
 
     @UsedForTesting
     public static CursorAnchorInfoCompatWrapper fromObject(final Object instance) {
-        if (!isAvailable()) {
+        if (!sCursorAnchorInfoClass.exists()) {
             return new CursorAnchorInfoCompatWrapper(null);
         }
         return new CursorAnchorInfoCompatWrapper(instance);
