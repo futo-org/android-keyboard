@@ -247,7 +247,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case MSG_RESUME_SUGGESTIONS:
                 latinIme.mInputLogic.restartSuggestionsOnWordTouchedByCursor(
                         latinIme.mSettings.getCurrent(),
-                        msg.arg1 == ARG1_TRUE /* shouldIncludeResumedWordInSuggestions */,
                         latinIme.mKeyboardSwitcher.getCurrentKeyboardScriptId());
                 break;
             case MSG_REOPEN_DICTIONARIES:
@@ -288,8 +287,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             sendMessage(obtainMessage(MSG_REOPEN_DICTIONARIES));
         }
 
-        public void postResumeSuggestions(final boolean shouldIncludeResumedWordInSuggestions,
-                final boolean shouldDelay) {
+        public void postResumeSuggestions(final boolean shouldDelay) {
             final LatinIME latinIme = getOwnerInstance();
             if (latinIme == null) {
                 return;
@@ -299,13 +297,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             removeMessages(MSG_RESUME_SUGGESTIONS);
             if (shouldDelay) {
-                sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS,
-                        shouldIncludeResumedWordInSuggestions ? ARG1_TRUE : ARG1_FALSE,
-                        0 /* ignored */), mDelayInMillisecondsToUpdateSuggestions);
+                sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS),
+                        mDelayInMillisecondsToUpdateSuggestions);
             } else {
-                sendMessage(obtainMessage(MSG_RESUME_SUGGESTIONS,
-                        shouldIncludeResumedWordInSuggestions ? ARG1_TRUE : ARG1_FALSE,
-                        0 /* ignored */));
+                sendMessage(obtainMessage(MSG_RESUME_SUGGESTIONS));
             }
         }
 
@@ -622,8 +617,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         if (mHandler.hasPendingWaitForDictionaryLoad()) {
             mHandler.cancelWaitForDictionaryLoad();
-            mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
-                    false /* shouldDelay */);
+            mHandler.postResumeSuggestions(false /* shouldDelay */);
         }
     }
 
@@ -931,8 +925,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // initialSelStart and initialSelEnd sometimes are lying. Make a best effort to
                 // work around this bug.
                 mInputLogic.mConnection.tryFixLyingCursorPosition();
-                mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
-                        true /* shouldDelay */);
+                mHandler.postResumeSuggestions(true /* shouldDelay */);
                 needToCallLoadKeyboardLater = false;
             }
         } else {
