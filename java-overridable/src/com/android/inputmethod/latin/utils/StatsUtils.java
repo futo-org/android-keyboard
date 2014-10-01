@@ -79,4 +79,7 @@ public final class StatsUtils {
     public static void onWordCommitSuggestionPickedManually(
             final String commitWord, final boolean isBatchMode) {
     }
+
+    public static void onLoadSettings(SettingsValues settingsValues) {
+    }
 }
