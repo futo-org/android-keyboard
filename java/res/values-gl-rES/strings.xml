@@ -149,7 +149,7 @@
     <string name="no_dictionaries_available" msgid="8039920716566132611">"Non hai dicionarios"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"Actualizar"</string>
     <string name="last_update" msgid="730467549913588780">"Última actualización"</string>
-    <string name="message_updating" msgid="4457761393932375219">"Comprobando se hai actualizacións"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Buscando actualizacións"</string>
     <string name="message_loading" msgid="5638680861387748936">"Cargando..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Dicionario principal"</string>
     <string name="cancel" msgid="6830980399865683324">"Cancelar"</string>

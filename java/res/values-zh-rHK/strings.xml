@@ -76,7 +76,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"尚未啟用語音輸入法，請檢查語言和輸入設定。"</string>
     <string name="configure_input_method" msgid="373356270290742459">"設定輸入法"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"語言"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"說明與意見反映"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"說明和意見反映"</string>
     <string name="select_language" msgid="5709487854987078367">"語言"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次輕觸即可儲存"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"輕觸即可儲存"</string>
