@@ -27,8 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"ხმა კლავიშზე დაჭერისას"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"გადიდება ღილაკზე დაჭერისას"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"პარამეტრები"</string>
-    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"ანგარიშები და კონფიდენციალურობა"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"იერსახე &amp; განლაგებები"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"მრავალენობრივი ვარიანტები"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ჟესტებით წერა"</string>
@@ -85,31 +84,26 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"აქ შეეხეთ, რომ შეინახოს"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ხელმისაწვდომია ლექსიკონი"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"კლავიატურის თემა"</string>
-    <!-- no translation found for switch_accounts (3321216593719006162) -->
-    <skip />
-    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
-    <skip />
-    <!-- no translation found for account_selected (2846876462199625974) -->
-    <skip />
-    <!-- no translation found for account_select_ok (9141195141763227797) -->
-    <skip />
-    <!-- no translation found for account_select_cancel (5181012062618504340) -->
-    <skip />
-    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
-    <skip />
-    <!-- no translation found for account_select_title (6279711684772922649) -->
-    <skip />
+    <string name="switch_accounts" msgid="3321216593719006162">"ანგარიშების გადართვა"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"ანგარიშები არჩეული არ არის"</string>
+    <string name="account_selected" msgid="2846876462199625974">"ამჟამად გამოიყენება <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"კარგი"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"გაუქმება"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"გამოსვლა"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"აირჩიეთ გამოსაყენებელი ანგარიში"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ინგლისური (გართ. სამ.)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ინგლისური (აშშ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ესპანური (აშშ)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"ჰინგლისური"</string>
+    <!-- no translation found for subtype_sr_ZZ (9059219552986034343) -->
+    <skip />
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"ინგლისური (გაერთ.სამ.) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"ინგლისური (აშშ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"ესპანური (აშშ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"ჰინგლისური (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <!-- no translation found for subtype_with_layout_sr_ZZ (2859024772719772407) -->
+    <skip />
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ტრადიციული)"</string>
-    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (კირილიცა)"</string>
-    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ლათინური)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ენის გარეშე (ანბანი)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ანბანი (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ანბანი (QWERTZ)"</string>
