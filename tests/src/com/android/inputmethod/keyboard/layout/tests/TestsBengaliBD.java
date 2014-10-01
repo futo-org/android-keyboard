@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.layout.tests;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.android.inputmethod.keyboard.layout.Bengali;
+import com.android.inputmethod.keyboard.layout.BengaliAkkhor;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
@@ -26,27 +26,29 @@ import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import java.util.Locale;
 
 /**
- * bn_IN: Bengali (India)/bengali
+ * bn_BD: Bengali (Bangladesh)/bengali_akkhor
  */
 @SmallTest
-public final class TestsBengaliIN extends LayoutTestsBase {
-    private static final Locale LOCALE = new Locale("bn", "IN");
-    private static final LayoutBase LAYOUT = new Bengali(new BengaliINCustomzier(LOCALE));
+public final class TestsBengaliBD extends LayoutTestsBase {
+    private static final Locale LOCALE = new Locale("bn", "BD");
+    private static final LayoutBase LAYOUT = new BengaliAkkhor(new BengaliBDCustomzier(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class BengaliINCustomzier extends BengaliCustomizer {
-        public BengaliINCustomzier(final Locale locale) { super(locale); }
+    private static class BengaliBDCustomzier extends BengaliCustomizer {
+        public BengaliBDCustomzier(final Locale locale) { super(locale); }
 
         @Override
-        public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) { return EMPTY_KEYS; }
+        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
+            return isPhone ? EMPTY_KEYS : LayoutBase.EXCLAMATION_AND_QUESTION_MARKS;
+        }
 
         @Override
         public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
 
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
+        // U+09F3: "৳" BENGALI RUPEE SIGN
+        private static final ExpectedKey CURRENCY_RUPEE = key("\u09F3",
                 Symbols.CURRENCY_GENERIC_MORE_KEYS);
     }
 }

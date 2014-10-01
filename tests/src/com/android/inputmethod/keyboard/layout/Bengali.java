@@ -18,9 +18,6 @@ package com.android.inputmethod.keyboard.layout;
 
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.latin.Constants;
-
-import java.util.Locale;
 
 /**
  * The Bengali keyboard.
@@ -34,32 +31,6 @@ public final class Bengali extends LayoutBase {
 
     @Override
     public String getName() { return LAYOUT_NAME; }
-
-    public static class BengaliCustomizer extends LayoutCustomizer {
-        public BengaliCustomizer(final Locale locale) { super(locale); }
-
-        @Override
-        public ExpectedKey getAlphabetKey() { return BENGALI_ALPHABET_KEY; }
-
-        @Override
-        public ExpectedKey[] getOtherCurrencyKeys() {
-            return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
-        }
-
-        @Override
-        public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) { return EMPTY_KEYS; }
-
-        @Override
-        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
-            return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
-        }
-
-        // U+0995: "क" BENGALI LETTER KA
-        // U+0996: "ख" BENGALI LETTER KHA
-        // U+0997: "ग" BENGALI LETTER GA
-        private static final ExpectedKey BENGALI_ALPHABET_KEY = key(
-                "\u0995\u0996\u0997", Constants.CODE_SWITCH_ALPHA_SYMBOL);
-    }
 
     @Override
     ExpectedKey[][] getCommonAlphabetLayout(boolean isPhone) { return ALPHABET_COMMON; }
