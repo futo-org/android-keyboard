@@ -27,6 +27,9 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class KeyboardParams {
     public KeyboardId mId;
     public int mThemeId;
@@ -67,7 +70,7 @@ public class KeyboardParams {
     public final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
     public final KeyStylesSet mKeyStyles = new KeyStylesSet(mTextsSet);
 
-    public KeysCache mKeysCache;
+    @Nullable public KeysCache mKeysCache;
     public boolean mAllowRedundantMoreKeys;
 
     public int mMostCommonKeyHeight = 0;
@@ -96,7 +99,7 @@ public class KeyboardParams {
         clearHistogram();
     }
 
-    public void onAddKey(final Key newKey) {
+    public void onAddKey(@Nonnull final Key newKey) {
         final Key key = (mKeysCache != null) ? mKeysCache.get(newKey) : newKey;
         final boolean isSpacer = key.isSpacer();
         if (isSpacer && key.getWidth() == 0) {
@@ -129,7 +132,10 @@ public class KeyboardParams {
         mSortedKeys.clear();
         for (final Key key : allKeys) {
             final Key filteredKey = Key.removeRedundantMoreKeys(key, lettersOnBaseLayout);
-            mSortedKeys.add(mKeysCache.replace(key, filteredKey));
+            if (mKeysCache != null) {
+                mKeysCache.replace(key, filteredKey);
+            }
+            mSortedKeys.add(filteredKey);
         }
     }
 
