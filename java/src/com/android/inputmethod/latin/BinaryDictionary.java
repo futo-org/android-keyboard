@@ -199,6 +199,9 @@ public final class BinaryDictionary extends Dictionary {
             int[] word, int probability, int timestamp);
     private static native boolean removeNgramEntryNative(long dict,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray, int[] word);
+    private static native boolean updateCounterNative(long dict,
+            int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
+            int[] word, boolean isValidWord, int count, int timestamp);
     private static native int addMultipleDictionaryEntriesNative(long dict,
             LanguageModelParam[] languageModelParams, int startIndex);
     private static native String getPropertyNative(long dict, String query);

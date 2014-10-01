@@ -427,6 +427,19 @@ static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz
             CodePointArrayView(wordCodePoints, codePointCount));
 }
 
+static bool latinime_BinaryDictionary_updateCounter(JNIEnv *env, jclass clazz, jlong dict,
+        jobjectArray prevWordCodePointArrays, jbooleanArray isBeginningOfSentenceArray,
+        jintArray word, jboolean isValidWord, jint count, jint timestamp) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return false;
+    }
+    jsize wordLength = env->GetArrayLength(word);
+    int wordCodePoints[wordLength];
+    env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
+    return false;
+}
+
 // Returns how many language model params are processed.
 static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, jclass clazz,
         jlong dict, jobjectArray languageModelParams, jint startIndex) {
@@ -723,6 +736,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("removeNgramEntryNative"),
         const_cast<char *>("(J[[I[Z[I)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_removeNgramEntry)
+    },
+    {
+        const_cast<char *>("updateCounterNative"),
+        const_cast<char *>("(J[[I[Z[IZII)Z"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_updateCounter)
     },
     {
         const_cast<char *>("addMultipleDictionaryEntriesNative"),
