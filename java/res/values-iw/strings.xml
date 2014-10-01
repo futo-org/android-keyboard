@@ -27,8 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"צלילים בעת לחיצה על מקשים"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"חלון קופץ בלחיצה על מקש"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"העדפות"</string>
-    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"חשבונות ופרטיות"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"מראה ופריסות"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"אפשרויות לריבוי שפות"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"הקלדת החלקה"</string>
@@ -85,31 +84,24 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"גע כאן כדי לשמור"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"מילון זמין"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"עיצוב מקלדת"</string>
-    <!-- no translation found for switch_accounts (3321216593719006162) -->
-    <skip />
-    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
-    <skip />
-    <!-- no translation found for account_selected (2846876462199625974) -->
-    <skip />
-    <!-- no translation found for account_select_ok (9141195141763227797) -->
-    <skip />
-    <!-- no translation found for account_select_cancel (5181012062618504340) -->
-    <skip />
-    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
-    <skip />
-    <!-- no translation found for account_select_title (6279711684772922649) -->
-    <skip />
+    <string name="switch_accounts" msgid="3321216593719006162">"החלף חשבונות"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"לא נבחרו חשבונות"</string>
+    <string name="account_selected" msgid="2846876462199625974">"משתמש כרגע ב-<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"אישור"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"בטל"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"צא"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"בחר באיזה חשבון חשבון להשתמש"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"אנגלית (בריטניה)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"אנגלית (ארה\"ב)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ספרדית (ארצות הברית)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"אנגלית הודית"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"סרבית (באותיות לטיניות)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"אנגלית (בריטניה)‏ (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"אנגלית (ארה\"ב) ‏(<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"ספרדית (ארה\"ב) ‏(<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"אנגלית הודית (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"סרבית (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (מסורתית)"</string>
-    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (קירילית)"</string>
-    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (לטינית)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ללא שפה (אלף-בית)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"‏אלף-בית (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"‏אלף-בית (QWERTZ)"</string>

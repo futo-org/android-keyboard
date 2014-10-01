@@ -27,16 +27,14 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Klikləmə səsi"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Klikləmədə popup"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Seçimlər"</string>
-    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"Hesablama və məxfilik"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"Görünüş və düzənlər"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"Çoxdilli seçimlər"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Jest ilə yazma"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Mətn korreksiyası"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Qabaqcıl"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
-    <!-- no translation found for enable_split_keyboard (4177264923999493614) -->
-    <skip />
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"Klaviaturanı ayırmağa icazə verin"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Digər daxiletmə metodlarına keçin"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Dil keçid düyməsi başqa daxiletmə metodlarını da əhatə edir"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Dil keçidi düyməsi"</string>
@@ -86,31 +84,26 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Yadda saxlamaq üçün buraya toxunun"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Lüğət mövcuddur"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klaviatura teması"</string>
-    <!-- no translation found for switch_accounts (3321216593719006162) -->
-    <skip />
-    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
-    <skip />
-    <!-- no translation found for account_selected (2846876462199625974) -->
-    <skip />
-    <!-- no translation found for account_select_ok (9141195141763227797) -->
-    <skip />
-    <!-- no translation found for account_select_cancel (5181012062618504340) -->
-    <skip />
-    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
-    <skip />
-    <!-- no translation found for account_select_title (6279711684772922649) -->
-    <skip />
+    <string name="switch_accounts" msgid="3321216593719006162">"Hesablar arasında keçid edin"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"Heç bir hesab seçilməyib"</string>
+    <string name="account_selected" msgid="2846876462199625974">"Hazırda istifadə olunur: <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"Ok"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"Ləğv et"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"Çıxış"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"İşlətmək üçün hesab seçin"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"İngilis (BK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"İngilis (ABŞ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"İspan (ABŞ)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hingilis"</string>
+    <!-- no translation found for subtype_sr_ZZ (9059219552986034343) -->
+    <skip />
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"İngilis (Britaniya) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"İngilis (Amerika) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"İspan (Amerika) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"Hingilis (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <!-- no translation found for subtype_with_layout_sr_ZZ (2859024772719772407) -->
+    <skip />
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Ənənəvi)"</string>
-    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Kiril)"</string>
-    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Latın)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Dil yoxdur (Əlifba)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Əlifba (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Əlifba (QWERTZ)"</string>

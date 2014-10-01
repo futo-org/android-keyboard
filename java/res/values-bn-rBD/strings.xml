@@ -27,8 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"কীপ্রেস এর সময়ের শব্দ"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"কীপ্রেস এর ফলে পপআপ"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"পছন্দসমূহ"</string>
-    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"অ্যাকাউন্ট ও গোপনীয়তা"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"চেহারা ও লেআউটগুলি"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"বহুভাষিক বিকল্পগুলি"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"অঙ্গভঙ্গি টাইপিং"</string>
@@ -85,31 +84,24 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"সংরক্ষণ করতে এখানে স্পর্শ করুন"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"অভিধান উপলব্ধ"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"কীবোর্ড থিম"</string>
-    <!-- no translation found for switch_accounts (3321216593719006162) -->
-    <skip />
-    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
-    <skip />
-    <!-- no translation found for account_selected (2846876462199625974) -->
-    <skip />
-    <!-- no translation found for account_select_ok (9141195141763227797) -->
-    <skip />
-    <!-- no translation found for account_select_cancel (5181012062618504340) -->
-    <skip />
-    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
-    <skip />
-    <!-- no translation found for account_select_title (6279711684772922649) -->
-    <skip />
+    <string name="switch_accounts" msgid="3321216593719006162">"অ্যাকাউন্ট পাল্টান"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"কোন অ্যাকাউন্ট নির্বাচন করা হয়নি"</string>
+    <string name="account_selected" msgid="2846876462199625974">"বর্তমানে <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> ব্যবহার করা হচ্ছে"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"ঠিক আছে"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"বাতিল করুন"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"সাইন আউট"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"ব্যবহার করার জন্য একটি অ্যাকাউন্ট নির্বাচন করুন"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ইংরেজি (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ইংরেজি (US)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"স্প্যানিশ (US)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"হিংলিশ"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"সার্বিয়ান (ল্যাটিন)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"ইংরেজি (UK) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"ইংরেজি (US) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"স্প্যানিশ (US) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"হিংলিশ (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"সার্বিয়ান (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ঐতিহ্যবাহি)"</string>
-    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (সিরিলিক)"</string>
-    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ল্যাটিন)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"কোনো ভাষা নয় (বর্ণমালা)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"বর্ণমালা (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"বর্ণমালা (QWERTZ)"</string>

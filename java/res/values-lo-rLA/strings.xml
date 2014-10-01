@@ -34,8 +34,7 @@
     <string name="settings_screen_correction" msgid="1616818407747682955">"​ການ​ແປງ​ຄຳ​ໃຫ້​ຖືກ​ຕ້ອງ"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"​ຂັ້ນ​ສູງ"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"ຮູບແບບສີສັນ"</string>
-    <!-- no translation found for enable_split_keyboard (4177264923999493614) -->
-    <skip />
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"ເປີດ​ນຳ​ໃຊ້​ແປ້ນ​ພິມ​ແຍກ​ຕົວ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ປ່ຽນໄປໃຊ້ການປ້ອນຂໍ້ມູນແບບອື່ນ"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ໂຕປ່ຽນພາສາເປັນທັງໂຕປ່ຽນຮູບແບບການປ້ອນຂໍ້ມູນເຊັ່ນກັນ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ປຸ່ມປ່ຽນພາສາ"</string>
@@ -96,13 +95,13 @@
     <string name="subtype_en_US" msgid="6160452336634534239">"ອັງກິດ (ສະຫະລັດຯ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ສະເປນ (ອາເມລິກາ)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"ຮິງ​ລິສ"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"ເຊີ​ບຽນ (​ລາ​ຕິນ)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"ອັງ​ກິດ (ສະ​ຫະ​ລາດ​ຊະ​ອາ​ນາ​ຈັກ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"ອັງ​ກິດ (ສະ​ຫະ​ລັດຯ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"ສະ​ແປນ​ນິດ (ສະ​ຫະ​ລັດຯ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"ຮິງ​ລິສ (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"ເຊີ​ບຽນ (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ດັ້ງ​ເດີມ)"</string>
-    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ຊິ​ຣິວ​ລິກ)"</string>
-    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ລາ​ຕິນ)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ບໍ່ມີພາສາ (ໂຕອັກສອນ)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ໂຕອັກສອນ (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ໂຕອັກສອນ (QWERTZ)"</string>
