@@ -639,7 +639,6 @@
     />
     <!-- TODO: This Sinhala keyboard is a preliminary layout.
                This isn't based on the final specification. -->
-    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x5c6b3bde"
@@ -648,7 +647,6 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=sinhala,EmojiCapable"
             android:isAsciiCapable="false"
     />
-    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x8e94d413"
@@ -707,8 +705,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
             android:isAsciiCapable="false"
     />
-    <!-- TODO: Enable ta_LK subtype when si_LK subtype is ready -->
-    <!--
+    <!-- TODO: Enabling/Disabling ta_LK subtype must be aligned with si_LK subtype. -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x6ca12d84"
@@ -717,7 +714,6 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
             android:isAsciiCapable="false"
     />
-    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x785abbd9"
