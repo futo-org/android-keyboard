@@ -45,8 +45,8 @@ public class Info extends Dicttool.Command {
         int whitelistCount = 0;
         for (final WordProperty wordProperty : dict) {
             ++wordCount;
-            if (null != wordProperty.mBigrams) {
-                bigramCount += wordProperty.mBigrams.size();
+            if (wordProperty.mHasNgrams) {
+                bigramCount += wordProperty.mNgrams.size();
             }
             if (null != wordProperty.mShortcutTargets) {
                 shortcutCount += wordProperty.mShortcutTargets.size();

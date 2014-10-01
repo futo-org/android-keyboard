@@ -169,8 +169,14 @@ public class NgramContext {
 
     @Override
     public int hashCode() {
-        // Just for having equals().
-        return mPrevWordsInfo[0].hashCode();
+        int hashValue = 0;
+        for (final WordInfo wordInfo : mPrevWordsInfo) {
+            if (wordInfo == null || !WordInfo.EMPTY_WORD_INFO.equals(wordInfo)) {
+                break;
+            }
+            hashValue ^= wordInfo.hashCode();
+        }
+        return hashValue;
     }
 
     @Override

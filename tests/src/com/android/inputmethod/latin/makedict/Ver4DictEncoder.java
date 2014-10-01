@@ -102,8 +102,9 @@ public class Ver4DictEncoder implements DictEncoder {
             }
         }
         for (final WordProperty word0Property : dict) {
-            if (null == word0Property.mBigrams) continue;
-            for (final WeightedString word1 : word0Property.mBigrams) {
+            if (!word0Property.mHasNgrams) continue;
+            // TODO: Support ngram.
+            for (final WeightedString word1 : word0Property.getBigrams()) {
                 final NgramContext ngramContext =
                         new NgramContext(new NgramContext.WordInfo(word0Property.mWord));
                 if (!binaryDict.addNgramEntry(ngramContext, word1.mWord,
