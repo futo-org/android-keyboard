@@ -27,8 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"ခလုတ်နှိပ်လျှင် အသံမြည်"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ကီးနှိပ်လိုက်သည်နှင့် ပေါ်လာရန်"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"ရွေးချယ်စရာများ"</string>
-    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"အကောင့်များ &amp; ကိုယ်ပိုင်ကိစ္စ"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"အပြင်ပန်း &amp; အပြင်အဆင်များ"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"ဘာသာစကားစုံ ရွေးချယ်စရာများ"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"လှုပ်ရှားမှုဖြင့်စာရိုက်ခြင်း"</string>
@@ -85,31 +84,24 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"သိမ်းရန် ဤနေရာကို ထိပါ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"အဘိဓါန်ရနိုင်"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"ကီးဘုတ်အရောင်"</string>
-    <!-- no translation found for switch_accounts (3321216593719006162) -->
-    <skip />
-    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
-    <skip />
-    <!-- no translation found for account_selected (2846876462199625974) -->
-    <skip />
-    <!-- no translation found for account_select_ok (9141195141763227797) -->
-    <skip />
-    <!-- no translation found for account_select_cancel (5181012062618504340) -->
-    <skip />
-    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
-    <skip />
-    <!-- no translation found for account_select_title (6279711684772922649) -->
-    <skip />
+    <string name="switch_accounts" msgid="3321216593719006162">"အကောင့်များကို ပြောင်းရန်"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"အကောင့်များ မရွေးရသေးပါ"</string>
+    <string name="account_selected" msgid="2846876462199625974">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>အား လတ်တလော သုံးန​ေ၏"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"အိုကေ"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"ထားတော့"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"ထွက်ရန်"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"သုံးမည့်အကောင့်ကို ရွေးရန်"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"အင်္ဂလိပ်(ယူကေ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"အင်္ဂလိပ် (ယူအက်စ်)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"စပိန် (ယူအက်စ်)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"ဟင်ဂလိပ်"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"ဆားဘီယား (လက်တင်)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"အင်္ဂလိပ် (ယူကေ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"အင်္ဂလိပ် (ယူအက်စ်) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"စပိန် (ယူအက်စ်) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"ဟင်ဂလိပ် (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"ဆားဘီယား (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ရိုးရာ)"</string>
-    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ဗျည်းအက္ခရာ)"</string>
-    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (လက်တင်)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ဘာသာစကားမရှိ (ဗျည်းအက္ခရာ)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ဗျည်းအက္ခရာ (ကွာတီ)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ဗျည်းအက္ခရာ (ကွာတီ)"</string>
@@ -171,10 +163,10 @@
     <string name="message_updating" msgid="4457761393932375219">"အသစ်မွမ်းမံမှုကို ရှာဖွေနေ"</string>
     <string name="message_loading" msgid="5638680861387748936">"တင်နေ…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"အဓိက အဘိဓါန်"</string>
-    <string name="cancel" msgid="6830980399865683324">"ပယ်ဖျက်ရန်"</string>
+    <string name="cancel" msgid="6830980399865683324">"ထားတော့"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"ဆက်တင်များ"</string>
     <string name="install_dict" msgid="180852772562189365">"တပ်ဆင်ပါ"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"ပယ်ဖျက်ရန်"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"ထားတော့"</string>
     <string name="delete_dict" msgid="756853268088330054">"ဖျက်ရန်"</string>
     <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"သင့်ဖုန်းရှိ ရွေးချယ်ထားသည့် ဘာသာအတွက် အဘိဓါန်ရှိပါသည်။ &lt;br/&gt; အဘိဓါန်အား &lt;b&gt;ဒေါင်းလုပ်လုပ်ကာ&lt;/b&gt; the <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>  သင့်စာရိုက် အတွေ့အကြုံတိုးတက်စေရန် ကျွန်ုပ်တို့အကြံပြုပါသည်။ &lt;br/&gt; &lt;br/&gt; ဒေါင်းလုပ်လုပ်ရန် 3G ပေါ်တွင် ၁ မှ ၂ မိနစ်ခန့်ကြာနိုင်သည်။ သင့်တွင် &lt;b&gt;အကန့်သတ်မှရိ အချက်လက် သုံးစွဲမှု&lt;/b&gt;မရှိလျှင် ငွေကျသင့်နိုင်ပါသည်။ &lt;br/&gt; သင့်တွင် မည်သည့်အချက်လက်သုံးစွဲမှု ရှိနေသည်ကိုမသိလျှင်၊ အလိုအလျောက် ဒေါင်းလုပ်လုပ်ရန် Wi-Fi ကွန်ရက်တစ်ခု ရှာဖွေရန် တိုက်တွန်းပါသည်။ &lt;br/&gt; &lt;br/&gt; နည်းလမ်း: သင့်ဖုန်းကိရိယာရှိ &lt;b&gt;ဆက်တင်ထဲတွင်&lt;/b&gt; &lt;b&gt;ဘာသာ &amp; စာရိုက်ထည့်မှု&lt;/b&gt; သို့သွားကာ အဘိဓါန်များကို ဒေါင်းလုပ်လုပ်နိုင် ဖယ်ရှားနိုင်ပါသည်။"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ယခုဒေါင်းလုပ်လုပ်မည် (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>

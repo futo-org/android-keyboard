@@ -27,8 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"कुंजी दबाने पर आवाज"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"कुंजी दबाने पर पॉपअप दिखाएं"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"प्राथमिकताएं"</string>
-    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"खाते और गोपनीयता"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"प्रकटन और लेआउट"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"बहुभाषीय  विकल्प"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"हावभाव लेखन"</string>
@@ -85,31 +84,24 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"सहेजने के लिए यहां स्पर्श करें"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"शब्‍दकोश उपलब्‍ध है"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
-    <!-- no translation found for switch_accounts (3321216593719006162) -->
-    <skip />
-    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
-    <skip />
-    <!-- no translation found for account_selected (2846876462199625974) -->
-    <skip />
-    <!-- no translation found for account_select_ok (9141195141763227797) -->
-    <skip />
-    <!-- no translation found for account_select_cancel (5181012062618504340) -->
-    <skip />
-    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
-    <skip />
-    <!-- no translation found for account_select_title (6279711684772922649) -->
-    <skip />
+    <string name="switch_accounts" msgid="3321216593719006162">"खाते स्‍विच करें"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"कोई खाता नहीं चुना गया"</string>
+    <string name="account_selected" msgid="2846876462199625974">"वर्तमान में <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> का उपयोग कर रहा है"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"ठीक"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"रहने दें"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"प्रस्थान करें"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"उपयोग करने के लिए कोई खाता चुनें"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेज़ी (यूएस)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"स्पेनिश (यूएस)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"हिंग्लिश"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"सर्बियाई (लैटिन)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"अंग्रेज़ी (यूके) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"अंग्रेज़ी (यूएस) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"स्‍पेनिश (यूएस) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"हिंग्लिश (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"सर्बियाई (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (पारंपरिक)"</string>
-    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (सिरिलिक)"</string>
-    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (लैटिन)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"भाषा उपलब्ध नहीं है (लैटिन वर्णाक्षर)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"वर्णाक्षर (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"वर्णाक्षर (QWERTZ)"</string>

@@ -27,8 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"按鍵時播放音效"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"按鍵時顯示彈出式視窗"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"偏好設定"</string>
-    <!-- no translation found for settings_screen_accounts (7570397912370223287) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"帳戶與私隱權"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"外觀和版面配置"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"多語選項"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"手勢輸入"</string>
@@ -79,37 +78,30 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"尚未啟用語音輸入法，請檢查語言和輸入設定。"</string>
     <string name="configure_input_method" msgid="373356270290742459">"設定輸入法"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"語言"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"說明與意見反映"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"說明和意見反映"</string>
     <string name="select_language" msgid="5709487854987078367">"語言"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次輕觸即可儲存"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"輕觸即可儲存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"鍵盤主題"</string>
-    <!-- no translation found for switch_accounts (3321216593719006162) -->
-    <skip />
-    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
-    <skip />
-    <!-- no translation found for account_selected (2846876462199625974) -->
-    <skip />
-    <!-- no translation found for account_select_ok (9141195141763227797) -->
-    <skip />
-    <!-- no translation found for account_select_cancel (5181012062618504340) -->
-    <skip />
-    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
-    <skip />
-    <!-- no translation found for account_select_title (6279711684772922649) -->
-    <skip />
+    <string name="switch_accounts" msgid="3321216593719006162">"切換帳戶"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"未選取任何帳戶"</string>
+    <string name="account_selected" msgid="2846876462199625974">"目前使用的是 <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"確定"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"取消"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"登出"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"選取要使用的帳戶"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英文 (英國)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英文 (美國)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"西班牙文 (美國)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"印度英文"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"塞爾維亞文 (拉丁文)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"英文 (英國) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"英文 (美國) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"西班牙文 (美國) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"印度英文 (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"塞爾維亞文 (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (傳統)"</string>
-    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (西里爾文)"</string>
-    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (拉丁文)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"無語言 (字母)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"字母 (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"字母 (QWERTZ)"</string>
