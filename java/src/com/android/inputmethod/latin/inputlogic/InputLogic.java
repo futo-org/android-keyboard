@@ -1649,8 +1649,10 @@ public final class InputLogic {
                 }
             }
             // Add the suggestion list to the list of suggestions.
-            textToCommit.setSpan(new SuggestionSpan(inputTransaction.mSettingsValues.mLocale,
-                    suggestions.toArray(new String[suggestions.size()]), 0 /* flags */),
+            textToCommit.setSpan(new SuggestionSpan(mLatinIME /* context */,
+                    inputTransaction.mSettingsValues.mLocale,
+                    suggestions.toArray(new String[suggestions.size()]), 0 /* flags */,
+                    null /* notificationTargetClass */),
                     0 /* start */, lastCharIndex /* end */, 0 /* flags */);
         }
 
