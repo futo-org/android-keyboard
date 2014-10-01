@@ -21,9 +21,6 @@ import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.latin.Constants;
-
-import java.util.Locale;
 
 /**
  * The Hindi keyboard.
@@ -37,50 +34,6 @@ public final class Hindi extends LayoutBase {
 
     @Override
     public String getName() { return LAYOUT_NAME; }
-
-    public static class HindiCustomizer extends LayoutCustomizer {
-        public HindiCustomizer(final Locale locale) { super(locale); }
-
-        @Override
-        public ExpectedKey getAlphabetKey() { return HINDI_ALPHABET_KEY; }
-
-        @Override
-        public ExpectedKey getSymbolsKey() { return HINDI_SYMBOLS_KEY; }
-
-        @Override
-        public ExpectedKey getBackToSymbolsKey() { return HINDI_BACK_TO_SYMBOLS_KEY; }
-
-        @Override
-        public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
-
-        @Override
-        public ExpectedKey[] getOtherCurrencyKeys() {
-            return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
-        }
-
-        @Override
-        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
-            return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
-        }
-
-        // U+0915: "क" DEVANAGARI LETTER KA
-        // U+0916: "ख" DEVANAGARI LETTER KHA
-        // U+0917: "ग" DEVANAGARI LETTER GA
-        private static final ExpectedKey HINDI_ALPHABET_KEY = key(
-                "\u0915\u0916\u0917", Constants.CODE_SWITCH_ALPHA_SYMBOL);
-        // U+0967: "१" DEVANAGARI DIGIT ONE
-        // U+0968: "२" DEVANAGARI DIGIT TWO
-        // U+0969: "३" DEVANAGARI DIGIT THREE
-        private static final String HINDI_SYMBOLS_LABEL = "?\u0967\u0968\u0969";
-        private static final ExpectedKey HINDI_SYMBOLS_KEY = key(HINDI_SYMBOLS_LABEL,
-                Constants.CODE_SWITCH_ALPHA_SYMBOL);
-        private static final ExpectedKey HINDI_BACK_TO_SYMBOLS_KEY = key(HINDI_SYMBOLS_LABEL,
-                Constants.CODE_SHIFT);
-
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
-                Symbols.CURRENCY_GENERIC_MORE_KEYS);
-    }
 
     @Override
     ExpectedKey[][] getCommonAlphabetLayout(boolean isPhone) { return ALPHABET_COMMON; }
