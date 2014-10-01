@@ -733,6 +733,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setInputView(final View view) {
         super.setInputView(view);
         mInputView = view;
+        updateSoftInputWindowLayoutParameters();
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
@@ -1147,6 +1148,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onComputeInsets(final InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
+        // This method may be called before {@link #setInputView(View)}.
+        if (mInputView == null) {
+            return;
+        }
         final SettingsValues settingsValues = mSettings.getCurrent();
         final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
         if (visibleKeyboardView == null || !hasSuggestionStripView()) {
@@ -1181,16 +1186,27 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         outInsets.visibleTopInsets = visibleTopY;
     }
 
-    public void startShowingInputView() {
+    public void startShowingInputView(final boolean needsToLoadKeyboard) {
         mIsExecutingStartShowingInputView = true;
         // This {@link #showWindow(boolean)} will eventually call back
         // {@link #onEvaluateInputViewShown()}.
         showWindow(true /* showInput */);
         mIsExecutingStartShowingInputView = false;
+        if (needsToLoadKeyboard) {
+            loadKeyboard();
+        }
     }
 
     public void stopShowingInputView() {
         showWindow(false /* showInput */);
+    }
+
+    @Override
+    public boolean onShowInputRequested(final int flags, final boolean configChange) {
+        if (Settings.getInstance().getCurrent().mHasHardwareKeyboard) {
+            return true;
+        }
+        return super.onShowInputRequested(flags, configChange);
     }
 
     @Override
@@ -1223,8 +1239,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void updateFullscreenMode() {
+        super.updateFullscreenMode();
+        mInputLogic.onUpdateFullscreenMode(isFullscreenMode());
+        updateSoftInputWindowLayoutParameters();
+    }
+
+    private void updateSoftInputWindowLayoutParameters() {
         // Override layout parameters to expand {@link SoftInputWindow} to the entire screen.
-        // See {@link InputMethodService#setinputView(View) and
+        // See {@link InputMethodService#setinputView(View)} and
         // {@link SoftInputWindow#updateWidthHeight(WindowManager.LayoutParams)}.
         final Window window = getWindow().getWindow();
         ViewLayoutUtils.updateLayoutHeightOf(window, LayoutParams.MATCH_PARENT);
@@ -1243,8 +1265,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ViewLayoutUtils.updateLayoutGravityOf(inputArea, Gravity.BOTTOM);
             ViewLayoutUtils.updateLayoutHeightOf(mInputView, layoutHeight);
         }
-        super.updateFullscreenMode();
-        mInputLogic.onUpdateFullscreenMode(isFullscreenMode());
     }
 
     private int getCurrentAutoCapsState() {
