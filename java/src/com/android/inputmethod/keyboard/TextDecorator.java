@@ -182,7 +182,7 @@ public class TextDecorator {
     private void layoutMain() {
         final CursorAnchorInfoCompatWrapper info = mCursorAnchorInfoWrapper;
 
-        if (info == null) {
+        if (info == null || !info.isAvailable()) {
             cancelLayoutInternalExpectedly("CursorAnchorInfo isn't available.");
             return;
         }
