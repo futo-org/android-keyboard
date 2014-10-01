@@ -67,7 +67,7 @@ public class CombinedFormatUtils {
             builder.append("," + BLACKLISTED_TAG + "=true");
         }
         builder.append("\n");
-        if (wordProperty.mShortcutTargets != null) {
+        if (wordProperty.mHasShortcuts) {
             for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
                 builder.append("  " + SHORTCUT_TAG + "=" + shortcutTarget.mWord);
                 builder.append(",");
@@ -75,8 +75,9 @@ public class CombinedFormatUtils {
                 builder.append("\n");
             }
         }
-        if (wordProperty.mBigrams != null) {
-            for (final WeightedString bigram : wordProperty.mBigrams) {
+        if (wordProperty.mHasNgrams) {
+            // TODO: Support ngram.
+            for (final WeightedString bigram : wordProperty.getBigrams()) {
                 builder.append("  " + BIGRAM_TAG + "=" + bigram.mWord);
                 builder.append(",");
                 builder.append(formatProbabilityInfo(bigram.mProbabilityInfo));

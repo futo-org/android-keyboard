@@ -1105,7 +1105,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             assertTrue(wordProperty.isValid());
             assertEquals(isNotAWord, wordProperty.mIsNotAWord);
             assertEquals(isBlacklisted, wordProperty.mIsBlacklistEntry);
-            assertEquals(false, wordProperty.mHasBigrams);
+            assertEquals(false, wordProperty.mHasNgrams);
             assertEquals(false, wordProperty.mHasShortcuts);
             assertEquals(unigramProbability, wordProperty.mProbabilityInfo.mProbability);
             assertTrue(wordProperty.mShortcutTargets.isEmpty());
@@ -1142,13 +1142,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             final HashSet<String> bigramWord1s = bigrams.get(word0);
             final WordProperty wordProperty = binaryDictionary.getWordProperty(word0,
                     false /* isBeginningOfSentence */);
-            assertEquals(bigramWord1s.size(), wordProperty.mBigrams.size());
-            for (int j = 0; j < wordProperty.mBigrams.size(); j++) {
-                final String word1 = wordProperty.mBigrams.get(j).mWord;
+            assertEquals(bigramWord1s.size(), wordProperty.mNgrams.size());
+            // TODO: Support ngram.
+            for (final WeightedString bigramTarget : wordProperty.getBigrams()) {
+                final String word1 = bigramTarget.mWord;
                 assertTrue(bigramWord1s.contains(word1));
                 if (canCheckBigramProbability(formatVersion)) {
                     final int bigramProbability = bigramProbabilities.get(new Pair<>(word0, word1));
-                    assertEquals(bigramProbability, wordProperty.mBigrams.get(j).getProbability());
+                    assertEquals(bigramProbability, bigramTarget.getProbability());
                 }
             }
         }
@@ -1235,13 +1236,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                     wordProperty.mProbabilityInfo.mProbability);
             wordSet.remove(word0);
             final HashSet<String> bigramWord1s = bigrams.get(word0);
-            for (int j = 0; j < wordProperty.mBigrams.size(); j++) {
-                final String word1 = wordProperty.mBigrams.get(j).mWord;
+            // TODO: Support ngram.
+            for (final WeightedString bigramTarget : wordProperty.getBigrams()) {
+                final String word1 = bigramTarget.mWord;
                 assertTrue(bigramWord1s.contains(word1));
                 final Pair<String, String> bigram = new Pair<>(word0, word1);
                 if (canCheckBigramProbability(formatVersion)) {
                     final int bigramProbability = bigramProbabilitiesToCheckLater.get(bigram);
-                    assertEquals(bigramProbability, wordProperty.mBigrams.get(j).getProbability());
+                    assertEquals(bigramProbability, bigramTarget.getProbability());
                 }
                 bigramSet.remove(bigram);
             }

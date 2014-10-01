@@ -353,7 +353,7 @@ public class XmlDictInputOutput {
                     + "\" " + PROBABILITY_ATTR + "=\"" + wordProperty.getProbability()
                     + (wordProperty.mIsNotAWord ? "\" " + NOT_A_WORD_ATTR + "=\"true" : "")
                     + "\">");
-            if (null != wordProperty.mShortcutTargets) {
+            if (wordProperty.mHasShortcuts) {
                 destination.write("\n");
                 for (WeightedString target : wordProperty.mShortcutTargets) {
                     destination.write("    <" + SHORTCUT_TAG + " " + PROBABILITY_ATTR + "=\""
@@ -362,9 +362,9 @@ public class XmlDictInputOutput {
                 }
                 destination.write("  ");
             }
-            if (null != wordProperty.mBigrams) {
+            if (wordProperty.mHasNgrams) {
                 destination.write("\n");
-                for (WeightedString bigram : wordProperty.mBigrams) {
+                for (WeightedString bigram : wordProperty.getBigrams()) {
                     destination.write("    <" + BIGRAM_TAG + " " + PROBABILITY_ATTR + "=\""
                             + bigram.getProbability() + "\">" + bigram.mWord
                             + "</" + BIGRAM_TAG + ">\n");
