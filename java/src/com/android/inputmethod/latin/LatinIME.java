@@ -926,8 +926,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // mLastSelection{Start,End} are reset later in this method, no need to do it here
                 needToCallLoadKeyboardLater = true;
             } else {
-                // When rotating, initialSelStart and initialSelEnd sometimes are lying. Make a best
-                // effort to work around this bug.
+                // When rotating, and when input is starting again in a field from where the focus
+                // didn't move (the keyboard having been closed with the back key),
+                // initialSelStart and initialSelEnd sometimes are lying. Make a best effort to
+                // work around this bug.
                 mInputLogic.mConnection.tryFixLyingCursorPosition();
                 mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
                         true /* shouldDelay */);

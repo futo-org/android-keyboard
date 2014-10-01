@@ -1127,19 +1127,21 @@ public final class InputLogic {
                 StatsUtils.onBackspaceSelectedText(numCharsDeleted);
             } else {
                 // There is no selection, just delete one character.
-                if (Constants.NOT_A_CURSOR_POSITION == mConnection.getExpectedSelectionEnd()) {
-                    // This should never happen.
-                    Log.e(TAG, "Backspace when we don't know the selection position");
-                }
-                if (inputTransaction.mSettingsValues.isBeforeJellyBean() ||
-                        inputTransaction.mSettingsValues.mInputAttributes.isTypeNull()) {
-                    // There are two possible reasons to send a key event: either the field has
+                if (inputTransaction.mSettingsValues.isBeforeJellyBean()
+                        || inputTransaction.mSettingsValues.mInputAttributes.isTypeNull()
+                        || Constants.NOT_A_CURSOR_POSITION
+                                == mConnection.getExpectedSelectionEnd()) {
+                    // There are three possible reasons to send a key event: either the field has
                     // type TYPE_NULL, in which case the keyboard should send events, or we are
-                    // running in backward compatibility mode. Before Jelly bean, the keyboard
-                    // would simulate a hardware keyboard event on pressing enter or delete. This
-                    // is bad for many reasons (there are race conditions with commits) but some
-                    // applications are relying on this behavior so we continue to support it for
-                    // older apps, so we retain this behavior if the app has target SDK < JellyBean.
+                    // running in backward compatibility mode, or we don't know the cursor position.
+                    // Before Jelly bean, the keyboard would simulate a hardware keyboard event on
+                    // pressing enter or delete. This is bad for many reasons (there are race
+                    // conditions with commits) but some applications are relying on this behavior
+                    // so we continue to support it for older apps, so we retain this behavior if
+                    // the app has target SDK < JellyBean.
+                    // As for the case where we don't know the cursor position, it can happen
+                    // because of bugs in the framework. But the framework should know, so the next
+                    // best thing is to leave it to whatever it thinks is best.
                     sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
                     int totalDeletedLength = 1;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
