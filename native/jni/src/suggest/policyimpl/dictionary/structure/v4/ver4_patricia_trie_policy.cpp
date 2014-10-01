@@ -43,6 +43,7 @@ const char *const Ver4PatriciaTriePolicy::MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_C
 const int Ver4PatriciaTriePolicy::MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS = 1024;
 const int Ver4PatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
         Ver4DictConstants::MAX_DICTIONARY_SIZE - MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
+const int Ver4PatriciaTriePolicy::DUMMY_PROBABILITY_FOR_VALID_WORDS = 1;
 
 void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
@@ -298,11 +299,9 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
         if (!prevWordsInfo->isNthPrevWordBeginningOfSentence(i + 1 /* n */)) {
             return false;
         }
-        const std::vector<UnigramProperty::ShortcutProperty> shortcuts;
         const UnigramProperty beginningOfSentenceUnigramProperty(
                 true /* representsBeginningOfSentence */, true /* isNotAWord */,
-                false /* isBlacklisted */, MAX_PROBABILITY /* probability */,
-                HistoricalInfo(), &shortcuts);
+                false /* isBlacklisted */, MAX_PROBABILITY /* probability */, HistoricalInfo());
         if (!addUnigramEntry(prevWordsInfo->getNthPrevWordCodePoints(1 /* n */),
                 &beginningOfSentenceUnigramProperty)) {
             AKLOGE("Cannot add unigram entry for the beginning-of-sentence.");
@@ -362,6 +361,32 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     } else {
         return false;
     }
+}
+
+bool Ver4PatriciaTriePolicy::updateCounter(const PrevWordsInfo *const prevWordsInfo,
+        const CodePointArrayView wordCodePoints, const bool isValidWord,
+        const HistoricalInfo historicalInfo) {
+    if (!mBuffers->isUpdatable()) {
+        AKLOGI("Warning: updateCounter() is called for non-updatable dictionary.");
+        return false;
+    }
+    // TODO: Have count up method in language model dict content.
+    const int probability = isValidWord ? DUMMY_PROBABILITY_FOR_VALID_WORDS : NOT_A_PROBABILITY;
+    const UnigramProperty unigramProperty(false /* representsBeginningOfSentence */,
+            false /* isNotAWord */, false /*isBlacklisted*/, probability, historicalInfo);
+    if (!addUnigramEntry(wordCodePoints, &unigramProperty)) {
+        AKLOGE("Cannot update unigarm entry in updateCounter().");
+        return false;
+    }
+    const NgramProperty ngramProperty(wordCodePoints.toVector(), probability, historicalInfo);
+    for (size_t i = 1; i <= prevWordsInfo->getPrevWordCount(); ++i) {
+        const PrevWordsInfo trimmedPrevWordsInfo(prevWordsInfo->getTrimmedPrevWordsInfo(i));
+        if (!addNgramEntry(&trimmedPrevWordsInfo, &ngramProperty)) {
+            AKLOGE("Cannot update ngram entry in updateCounter().");
+            return false;
+        }
+    }
+    return true;
 }
 
 bool Ver4PatriciaTriePolicy::flush(const char *const filePath) {
@@ -486,7 +511,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     }
     const UnigramProperty unigramProperty(probabilityEntry.representsBeginningOfSentence(),
             probabilityEntry.isNotAWord(), probabilityEntry.isBlacklisted(),
-            probabilityEntry.getProbability(), *historicalInfo, &shortcuts);
+            probabilityEntry.getProbability(), *historicalInfo, std::move(shortcuts));
     return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }
 

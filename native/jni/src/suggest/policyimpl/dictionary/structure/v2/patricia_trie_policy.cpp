@@ -477,7 +477,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
     }
     const UnigramProperty unigramProperty(ptNodeParams.representsBeginningOfSentence(),
             ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
-            HistoricalInfo(), &shortcuts);
+            HistoricalInfo(), std::move(shortcuts));
     return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }
 

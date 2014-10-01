@@ -54,11 +54,18 @@ class UnigramProperty {
               mProbability(NOT_A_PROBABILITY), mHistoricalInfo(), mShortcuts() {}
 
     UnigramProperty(const bool representsBeginningOfSentence, const bool isNotAWord,
-            const bool isBlacklisted, const int probability, const HistoricalInfo &historicalInfo,
-            const std::vector<ShortcutProperty> *const shortcuts)
+            const bool isBlacklisted, const int probability, const HistoricalInfo historicalInfo,
+            const std::vector<ShortcutProperty> &&shortcuts)
             : mRepresentsBeginningOfSentence(representsBeginningOfSentence),
               mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted), mProbability(probability),
-              mHistoricalInfo(historicalInfo), mShortcuts(*shortcuts) {}
+              mHistoricalInfo(historicalInfo), mShortcuts(std::move(shortcuts)) {}
+
+    // Without shortcuts.
+    UnigramProperty(const bool representsBeginningOfSentence, const bool isNotAWord,
+            const bool isBlacklisted, const int probability, const HistoricalInfo historicalInfo)
+            : mRepresentsBeginningOfSentence(representsBeginningOfSentence),
+              mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted), mProbability(probability),
+              mHistoricalInfo(historicalInfo), mShortcuts() {}
 
     bool representsBeginningOfSentence() const {
         return mRepresentsBeginningOfSentence;

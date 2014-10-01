@@ -33,7 +33,7 @@ class PrevWordsInfo {
         clear();
     }
 
-    PrevWordsInfo(PrevWordsInfo &&prevWordsInfo)
+    PrevWordsInfo(const PrevWordsInfo &prevWordsInfo)
             : mPrevWordCount(prevWordsInfo.mPrevWordCount) {
         for (size_t i = 0; i < mPrevWordCount; ++i) {
             mPrevWordCodePointCount[i] = prevWordsInfo.mPrevWordCodePointCount[i];
@@ -71,6 +71,16 @@ class PrevWordsInfo {
                 sizeof(mPrevWordCodePoints[0][0]) * prevWordCodePointCount);
         mPrevWordCodePointCount[0] = prevWordCodePointCount;
         mIsBeginningOfSentence[0] = isBeginningOfSentence;
+    }
+
+    size_t getPrevWordCount() const {
+        return mPrevWordCount;
+    }
+
+    // TODO: Remove.
+    const PrevWordsInfo getTrimmedPrevWordsInfo(const size_t maxPrevWordCount) const {
+        return PrevWordsInfo(mPrevWordCodePoints, mPrevWordCodePointCount, mIsBeginningOfSentence,
+                std::min(mPrevWordCount, maxPrevWordCount));
     }
 
     bool isValid() const {
@@ -112,7 +122,7 @@ class PrevWordsInfo {
     }
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(PrevWordsInfo);
+    DISALLOW_ASSIGNMENT_OPERATOR(PrevWordsInfo);
 
     static int getWordId(const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
             const int *const wordCodePoints, const int wordCodePointCount,

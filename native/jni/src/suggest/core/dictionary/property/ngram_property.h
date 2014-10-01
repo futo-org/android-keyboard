@@ -27,7 +27,7 @@ namespace latinime {
 class NgramProperty {
  public:
     NgramProperty(const std::vector<int> &&targetCodePoints, const int probability,
-            const HistoricalInfo &historicalInfo)
+            const HistoricalInfo historicalInfo)
             : mTargetCodePoints(std::move(targetCodePoints)), mProbability(probability),
               mHistoricalInfo(historicalInfo) {}
 
