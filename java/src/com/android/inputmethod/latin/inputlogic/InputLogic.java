@@ -435,8 +435,7 @@ public final class InputLogic {
         // removed.
         mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
-        mLatinIME.mHandler.postResumeSuggestions(false /* shouldIncludeResumedWordInSuggestions */,
-                true /* shouldDelay */);
+        mLatinIME.mHandler.postResumeSuggestions(true /* shouldDelay */);
         // Stop the last recapitalization, if started.
         mRecapitalizeStatus.stop();
         return true;
@@ -1184,7 +1183,7 @@ public final class InputLogic {
                     && !mConnection.isCursorFollowedByWordCharacter(
                             inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
                 restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
-                        true /* shouldIncludeResumedWordInSuggestions */, currentKeyboardScriptId);
+                        currentKeyboardScriptId);
             }
         }
     }
@@ -1440,12 +1439,10 @@ public final class InputLogic {
      * do nothing.
      *
      * @param settingsValues the current values of the settings.
-     * @param shouldIncludeResumedWordInSuggestions whether to include the word on which we resume
      *   suggestions in the suggestion list.
      */
     // TODO: make this private.
     public void restartSuggestionsOnWordTouchedByCursor(final SettingsValues settingsValues,
-            final boolean shouldIncludeResumedWordInSuggestions,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
@@ -1493,13 +1490,6 @@ public final class InputLogic {
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         final String typedWord = range.mWord.toString();
-        if (shouldIncludeResumedWordInSuggestions) {
-            suggestions.add(new SuggestedWordInfo(typedWord,
-                    SuggestedWords.MAX_SUGGESTIONS + 1,
-                    SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                    SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
-        }
         if (!isResumableWord(settingsValues, typedWord)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
@@ -1532,7 +1522,7 @@ public final class InputLogic {
         mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
-        if (suggestions.size() <= (shouldIncludeResumedWordInSuggestions ? 1 : 0)) {
+        if (suggestions.size() <= 0) {
             // If there weren't any suggestion spans on this word, suggestions#size() will be 1
             // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
             // have no useful suggestions, so we will try to compute some for it instead.
@@ -1542,8 +1532,7 @@ public final class InputLogic {
                         public void onGetSuggestedWords(
                                 final SuggestedWords suggestedWordsIncludingTypedWord) {
                             final SuggestedWords suggestedWords;
-                            if (suggestedWordsIncludingTypedWord.size() > 1
-                                    && !shouldIncludeResumedWordInSuggestions) {
+                            if (suggestedWordsIncludingTypedWord.size() > 1) {
                                 // We were able to compute new suggestions for this word.
                                 // Remove the typed word, since we don't want to display it in this
                                 // case. The #getSuggestedWordsExcludingTypedWordForRecorrection()
@@ -2194,10 +2183,7 @@ public final class InputLogic {
         }
         mConnection.tryFixLyingCursorPosition();
         if (tryResumeSuggestions) {
-            // This is triggered when starting input anew, so we want to include the resumed
-            // word in suggestions.
-            handler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
-                    true /* shouldDelay */);
+            handler.postResumeSuggestions(true /* shouldDelay */);
         }
         return true;
     }
