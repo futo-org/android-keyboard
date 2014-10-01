@@ -20,15 +20,16 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/core/dictionary/property/historical_info.h"
 
 namespace latinime {
 
 class NgramProperty {
  public:
     NgramProperty(const std::vector<int> &&targetCodePoints, const int probability,
-            const int timestamp, const int level, const int count)
+            const HistoricalInfo &historicalInfo)
             : mTargetCodePoints(std::move(targetCodePoints)), mProbability(probability),
-              mTimestamp(timestamp), mLevel(level), mCount(count) {}
+              mHistoricalInfo(historicalInfo) {}
 
     const std::vector<int> *getTargetCodePoints() const {
         return &mTargetCodePoints;
@@ -38,16 +39,8 @@ class NgramProperty {
         return mProbability;
     }
 
-    int getTimestamp() const {
-        return mTimestamp;
-    }
-
-    int getLevel() const {
-        return mLevel;
-    }
-
-    int getCount() const {
-        return mCount;
+    const HistoricalInfo getHistoricalInfo() const {
+        return mHistoricalInfo;
     }
 
  private:
@@ -57,9 +50,7 @@ class NgramProperty {
     // TODO: Make members const.
     std::vector<int> mTargetCodePoints;
     int mProbability;
-    int mTimestamp;
-    int mLevel;
-    int mCount;
+    HistoricalInfo mHistoricalInfo;
 };
 } // namespace latinime
 #endif // LATINIME_NGRAM_PROPERTY_H

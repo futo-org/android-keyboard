@@ -34,7 +34,7 @@ class HistoricalInfo {
         return mTimestamp != NOT_A_TIMESTAMP;
     }
 
-    int getTimeStamp() const {
+    int getTimestamp() const {
         return mTimestamp;
     }
 
@@ -47,12 +47,12 @@ class HistoricalInfo {
     }
 
  private:
-    // Copy constructor is public to use this class as a type of return value.
-    DISALLOW_ASSIGNMENT_OPERATOR(HistoricalInfo);
+    // Default copy constructor and assign operator are used for using in std::vector.
 
-    const int mTimestamp;
-    const int mLevel;
-    const int mCount;
+    // TODO: Make members const.
+    int mTimestamp;
+    int mLevel;
+    int mCount;
 };
 } // namespace latinime
 #endif /* LATINIME_HISTORICAL_INFO_H */

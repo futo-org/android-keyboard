@@ -216,7 +216,7 @@ bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
                         probabilityEntry.getHistoricalInfo(), mBuffers->getHeaderPolicy()) :
                 probabilityEntry.getProbability();
         priorityQueue.push(DictProbability(terminalPos, probability,
-                probabilityEntry.getHistoricalInfo()->getTimeStamp()));
+                probabilityEntry.getHistoricalInfo()->getTimestamp()));
     }
 
     // Delete unigrams.
@@ -263,7 +263,7 @@ bool Ver4PatriciaTrieWritingHelper::truncateBigrams(const int maxBigramCount) {
                             bigramEntry.getHistoricalInfo(), mBuffers->getHeaderPolicy()) :
                     bigramEntry.getProbability();
             priorityQueue.push(DictProbability(entryPos, probability,
-                    bigramEntry.getHistoricalInfo()->getTimeStamp()));
+                    bigramEntry.getHistoricalInfo()->getTimestamp()));
         }
     }
 

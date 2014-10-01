@@ -302,7 +302,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
         const UnigramProperty beginningOfSentenceUnigramProperty(
                 true /* representsBeginningOfSentence */, true /* isNotAWord */,
                 false /* isBlacklisted */, MAX_PROBABILITY /* probability */,
-                NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
+                HistoricalInfo(), &shortcuts);
         if (!addUnigramEntry(prevWordsInfo->getNthPrevWordCodePoints(1 /* n */),
                 &beginningOfSentenceUnigramProperty)) {
             AKLOGE("Cannot add unigram entry for the beginning-of-sentence.");
@@ -464,8 +464,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
                 ForgettingCurveUtils::decodeProbability(historicalInfo, mHeaderPolicy) :
                 probabilityEntry.getProbability();
         ngrams.emplace_back(CodePointArrayView(bigramWord1CodePoints, codePointCount).toVector(),
-                probability, historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
-                historicalInfo->getCount());
+                probability, *historicalInfo);
     }
     // Fetch shortcut information.
     std::vector<UnigramProperty::ShortcutProperty> shortcuts;
@@ -487,8 +486,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     }
     const UnigramProperty unigramProperty(probabilityEntry.representsBeginningOfSentence(),
             probabilityEntry.isNotAWord(), probabilityEntry.isBlacklisted(),
-            probabilityEntry.getProbability(), historicalInfo->getTimeStamp(),
-            historicalInfo->getLevel(), historicalInfo->getCount(), &shortcuts);
+            probabilityEntry.getProbability(), *historicalInfo, &shortcuts);
     return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }
 

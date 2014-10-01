@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/utils/historical_info.h"
+#include "suggest/core/dictionary/property/historical_info.h"
 
 namespace latinime {
 

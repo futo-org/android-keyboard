@@ -267,8 +267,7 @@ const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
         const NgramProperty *const ngramProperty) const {
     // TODO: Consolidate historical info and probability.
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
-        const HistoricalInfo historicalInfoForUpdate(ngramProperty->getTimestamp(),
-                ngramProperty->getLevel(), ngramProperty->getCount());
+        const HistoricalInfo &historicalInfoForUpdate = ngramProperty->getHistoricalInfo();
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
                         originalBigramEntry->getHistoricalInfo(), ngramProperty->getProbability(),

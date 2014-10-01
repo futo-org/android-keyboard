@@ -147,7 +147,7 @@ bool ProbabilityDictContent::writeEntry(const ProbabilityEntry *const probabilit
     }
     if (mHasHistoricalInfo) {
         const HistoricalInfo *const historicalInfo = probabilityEntry->getHistoricalInfo();
-        if (!bufferToWrite->writeUintAndAdvancePosition(historicalInfo->getTimeStamp(),
+        if (!bufferToWrite->writeUintAndAdvancePosition(historicalInfo->getTimestamp(),
                 Ver4DictConstants::TIME_STAMP_FIELD_SIZE, &writingPos)) {
             AKLOGE("Cannot write timestamp in probability dict content. pos: %d", writingPos);
             return false;

@@ -43,7 +43,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 /* static */ const HistoricalInfo ForgettingCurveUtils::createUpdatedHistoricalInfo(
         const HistoricalInfo *const originalHistoricalInfo, const int newProbability,
         const HistoricalInfo *const newHistoricalInfo, const HeaderPolicy *const headerPolicy) {
-    const int timestamp = newHistoricalInfo->getTimeStamp();
+    const int timestamp = newHistoricalInfo->getTimestamp();
     if (newProbability != NOT_A_PROBABILITY && originalHistoricalInfo->getLevel() == 0) {
         // Add entry as a valid word.
         const int level = clampToVisibleEntryLevelRange(newHistoricalInfo->getLevel());
@@ -78,7 +78,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 
 /* static */ int ForgettingCurveUtils::decodeProbability(
         const HistoricalInfo *const historicalInfo, const HeaderPolicy *const headerPolicy) {
-    const int elapsedTimeStepCount = getElapsedTimeStepCount(historicalInfo->getTimeStamp(),
+    const int elapsedTimeStepCount = getElapsedTimeStepCount(historicalInfo->getTimestamp(),
             headerPolicy->getForgettingCurveDurationToLevelDown());
     return sProbabilityTable.getProbability(
             headerPolicy->getForgettingCurveProbabilityValuesTableId(),
@@ -102,7 +102,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 /* static */ bool ForgettingCurveUtils::needsToKeep(const HistoricalInfo *const historicalInfo,
         const HeaderPolicy *const headerPolicy) {
     return historicalInfo->getLevel() > 0
-            || getElapsedTimeStepCount(historicalInfo->getTimeStamp(),
+            || getElapsedTimeStepCount(historicalInfo->getTimestamp(),
                     headerPolicy->getForgettingCurveDurationToLevelDown())
                             < DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
 }
@@ -110,12 +110,12 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 /* static */ const HistoricalInfo ForgettingCurveUtils::createHistoricalInfoToSave(
         const HistoricalInfo *const originalHistoricalInfo,
         const HeaderPolicy *const headerPolicy) {
-    if (originalHistoricalInfo->getTimeStamp() == NOT_A_TIMESTAMP) {
+    if (originalHistoricalInfo->getTimestamp() == NOT_A_TIMESTAMP) {
         return HistoricalInfo();
     }
     const int durationToLevelDownInSeconds = headerPolicy->getForgettingCurveDurationToLevelDown();
     const int elapsedTimeStep = getElapsedTimeStepCount(
-            originalHistoricalInfo->getTimeStamp(), durationToLevelDownInSeconds);
+            originalHistoricalInfo->getTimestamp(), durationToLevelDownInSeconds);
     if (elapsedTimeStep <= MAX_ELAPSED_TIME_STEP_COUNT) {
         // No need to update historical info.
         return *originalHistoricalInfo;
@@ -124,7 +124,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     const int maxLevelDownAmonut = elapsedTimeStep / (MAX_ELAPSED_TIME_STEP_COUNT + 1);
     const int levelDownAmount = (maxLevelDownAmonut >= originalHistoricalInfo->getLevel()) ?
             originalHistoricalInfo->getLevel() : maxLevelDownAmonut;
-    const int adjustedTimestampInSeconds = originalHistoricalInfo->getTimeStamp() +
+    const int adjustedTimestampInSeconds = originalHistoricalInfo->getTimestamp() +
             levelDownAmount * durationToLevelDownInSeconds;
     return HistoricalInfo(adjustedTimestampInSeconds,
             originalHistoricalInfo->getLevel() - levelDownAmount, 0 /* count */);
