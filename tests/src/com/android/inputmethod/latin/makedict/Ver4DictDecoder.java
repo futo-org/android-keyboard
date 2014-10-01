@@ -97,12 +97,13 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
             }
         }
         // Insert bigrams into the fusion dictionary.
+        // TODO: Support ngrams.
         for (final WordProperty wordProperty : wordProperties) {
-            if (wordProperty.mBigrams == null) {
+            if (!wordProperty.mHasNgrams) {
                 continue;
             }
             final String word0 = wordProperty.mWord;
-            for (final WeightedString bigram : wordProperty.mBigrams) {
+            for (final WeightedString bigram : wordProperty.getBigrams()) {
                 fusionDict.setBigram(word0, bigram.mWord, bigram.mProbabilityInfo);
             }
         }
