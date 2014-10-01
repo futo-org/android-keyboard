@@ -365,17 +365,21 @@ final class SuggestionStripLayoutHelper {
                     (PunctuationSuggestions)suggestedWords, stripView);
         }
 
+        final boolean shouldShowUiToAcceptTypedWord = Settings.getInstance().getCurrent()
+                .mShouldShowUiToAcceptTypedWord;
+        final int suggestionsCount = suggestedWords.size()
+                - (shouldShowUiToAcceptTypedWord ? /* typed word */ 1 : 0);
         final int startIndexOfMoreSuggestions = setupWordViewsAndReturnStartIndexOfMoreSuggestions(
                 suggestedWords, mSuggestionsCountInStrip);
         final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
         final int stripWidth = stripView.getWidth();
         final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, stripWidth);
-        if (suggestedWords.size() == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
+        if (suggestionsCount == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
                 centerWordView.getPaint()) < MIN_TEXT_XSCALE) {
             // Layout only the most relevant suggested word at the center of the suggestion strip
             // by consolidating all slots in the strip.
             final int countInStrip = 1;
-            mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
+            mMoreSuggestionsAvailable = (suggestionsCount > countInStrip);
             layoutWord(mCenterPositionInStrip, stripWidth - mPadding);
             stripView.addView(centerWordView);
             setLayoutWeight(centerWordView, 1.0f, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -387,7 +391,7 @@ final class SuggestionStripLayoutHelper {
         }
 
         final int countInStrip = mSuggestionsCountInStrip;
-        mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
+        mMoreSuggestionsAvailable = (suggestionsCount > countInStrip);
         int x = 0;
         for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
             if (positionInStrip != 0) {
