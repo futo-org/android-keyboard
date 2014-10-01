@@ -18,10 +18,10 @@ package com.android.inputmethod.keyboard.layout;
 
 import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.*;
 
-import com.android.inputmethod.keyboard.layout.Hindi.HindiCustomizer;
 import com.android.inputmethod.keyboard.layout.Hindi.HindiSymbols;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
+import com.android.inputmethod.keyboard.layout.tests.HindiCustomizer;
 
 import java.util.Locale;
 
@@ -45,27 +45,6 @@ public final class HindiCompact extends LayoutBase {
         public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) {
             return EMPTY_KEYS;
         }
-
-        @Override
-        public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
-            // U+0964: "।" DEVANAGARI DANDA
-            final ExpectedKey periodKey = key("\u0964", getPunctuationMoreKeys(isPhone));
-            return joinKeys(periodKey);
-        }
-
-        @Override
-        public ExpectedKey[] getPunctuationMoreKeys(final boolean isPhone) {
-            return isPhone ? HINDI_PHONE_PUNCTUATION_MORE_KEYS : HINDI_TABLET_PUNCTUATION_MORE_KEYS;
-        }
-
-        // Punctuation more keys for phone form factor.
-        private static final ExpectedKey[] HINDI_PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
-                ",", ".", "?", "!", "#", ")", "(", "/", ";",
-                "'", "@", ":", "-", "\"", "+", "%", "&");
-        // Punctuation more keys for tablet form factor.
-        private static final ExpectedKey[] HINDI_TABLET_PUNCTUATION_MORE_KEYS = joinKeys(
-                ",", ".", "'", "#", ")", "(", "/", ";",
-                "@", ":", "-", "\"", "+", "%", "&");
     }
 
     @Override

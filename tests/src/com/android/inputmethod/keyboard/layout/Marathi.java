@@ -18,10 +18,10 @@ package com.android.inputmethod.keyboard.layout;
 
 import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.*;
 
-import com.android.inputmethod.keyboard.layout.Hindi.HindiCustomizer;
 import com.android.inputmethod.keyboard.layout.Hindi.HindiSymbols;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
+import com.android.inputmethod.keyboard.layout.tests.DevanagariCustomizer;
 
 import java.util.Locale;
 
@@ -38,7 +38,7 @@ public final class Marathi extends LayoutBase {
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class MarathiCustomizer extends HindiCustomizer {
+    public static class MarathiCustomizer extends DevanagariCustomizer {
         public MarathiCustomizer(final Locale locale) { super(locale); }
 
         @Override

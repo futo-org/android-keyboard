@@ -25,17 +25,6 @@
     <!-- Kept as a separate file for cleaner overriding by an overlay.  -->
     <switch>
         <case
-            latin:languageCode="hi"
-            latin:keyboardLayoutSet="hindi_compact"
-        >
-            <!-- U+0964: "।" DEVANAGARI DANDA -->
-            <Key
-                latin:keySpec="\u0964"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!autoColumnOrder!8,\\,,.,',#,),(,/,;,@,:,-,&quot;,+,\\%,&amp;"
-                latin:backgroundType="functional" />
-        </case>
-        <case
             latin:keyboardLayoutSet="dvorak"
         >
             <Key
