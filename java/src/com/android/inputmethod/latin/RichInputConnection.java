@@ -849,8 +849,9 @@ public final class RichInputConnection {
 
     /**
      * Try to get the text from the editor to expose lies the framework may have been
-     * telling us. Concretely, when the device rotates, the frameworks tells us about where the
-     * cursor used to be initially in the editor at the time it first received the focus; this
+     * telling us. Concretely, when the device rotates and when the keyboard reopens in the same
+     * text field after having been closed with the back key, the frameworks tells us about where
+     * the cursor used to be initially in the editor at the time it first received the focus; this
      * may be completely different from the place it is upon rotation. Since we don't have any
      * means to get the real value, try at least to ask the text view for some characters and
      * detect the most damaging cases: when the cursor position is declared to be much smaller
@@ -859,7 +860,20 @@ public final class RichInputConnection {
     public void tryFixLyingCursorPosition() {
         final CharSequence textBeforeCursor = getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
-        if (null == textBeforeCursor) {
+        final CharSequence selectedText = mIC.getSelectedText(0 /* flags */);
+        if (null == textBeforeCursor ||
+                (!TextUtils.isEmpty(selectedText) && mExpectedSelEnd == mExpectedSelStart)) {
+            // If textBeforeCursor is null, we have no idea what kind of text field we have or if
+            // thinking about the "cursor position" actually makes any sense. In this case we
+            // remember a meaningless cursor position. Contrast this with an empty string, which is
+            // valid and should mean the cursor is at the start of the text.
+            // Also, if we expect we don't have a selection but we DO have non-empty selected text,
+            // then the framework lied to us about the cursor position. In this case, we should just
+            // revert to the most basic behavior possible for the next action (backspace in
+            // particular comes to mind), so we remember a meaningless cursor position which should
+            // result in degraded behavior from the next input.
+            // Interestingly, in either case, chances are any action the user takes next will result
+            // in a call to onUpdateSelection, which should set things right.
             mExpectedSelStart = mExpectedSelEnd = Constants.NOT_A_CURSOR_POSITION;
         } else {
             final int textLength = textBeforeCursor.length();
