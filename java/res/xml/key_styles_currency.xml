@@ -98,8 +98,9 @@
             <include latin:keyboardLayout="@xml/key_styles_currency_generic" />
         </case>
         <!-- si_LK: Sinhala (Sri Lanka) (Sri Lanka Rupee)
-             ta_LK: Tamil (Sri Lanka) (Sri Lanka Rupee) -->
-        <case latin:countryCode="LK">
+             ta_LK: Tamil (Sri Lanka) (Sri Lanka Rupee)
+             bn_BD: Bengali (Bangladesh) (Taka) -->
+        <case latin:countryCode="LK|BD">
             <include latin:keyboardLayout="@xml/key_styles_currency_generic" />
         </case>
         <!-- bn_IN: Bengali (India) (Indian Rupee)
