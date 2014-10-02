@@ -99,6 +99,30 @@ public class DictionaryFacilitator {
                     DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS.length);
 
     /**
+     * Returns whether this facilitator is exactly for this list of locales.
+     * @param locales the list of locales to test against
+     * @return true if this facilitator handles exactly this list of locales, false otherwise
+     */
+    public boolean isForLocales(final Locale[] locales) {
+        if (locales.length != mDictionaryGroups.length) {
+            return false;
+        }
+        for (final Locale locale : locales) {
+            boolean found = false;
+            for (final DictionaryGroup group : mDictionaryGroups) {
+                if (locale.equals(group.mLocale)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * A group of dictionaries that work together for a single language.
      */
     private static class DictionaryGroup {
@@ -196,6 +220,18 @@ public class DictionaryFacilitator {
 
     // TODO: remove this, replace with version returning multiple locales
     public Locale getLocale() {
+        return mDictionaryGroups[0].mLocale;
+    }
+
+    /**
+     * Returns the primary locale among all currently active locales. BE CAREFUL using this.
+     *
+     * DO NOT USE THIS just because it's convenient. Use it when it's correct, for example when
+     * choosing what dictionary to put a word in, or when changing the capitalization of a typed
+     * string.
+     * @return the primary active locale
+     */
+    public Locale getPrimaryLocale() {
         return mDictionaryGroups[0].mLocale;
     }
 
