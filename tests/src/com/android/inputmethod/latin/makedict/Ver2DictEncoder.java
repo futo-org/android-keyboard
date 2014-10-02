@@ -124,7 +124,7 @@ public class Ver2DictEncoder implements DictEncoder {
     @Override
     public void writeDictionary(final FusionDictionary dict, final FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException {
-        if (formatOptions.mVersion > FormatSpec.VERSION2) {
+        if (formatOptions.mVersion > FormatSpec.VERSION201) {
             throw new UnsupportedFormatException(
                     "The given format options has wrong version number : "
                     + formatOptions.mVersion);
@@ -135,7 +135,13 @@ public class Ver2DictEncoder implements DictEncoder {
         }
 
         // Make code point conversion table ordered by occurrence of code points
-        final CodePointTable codePointTable = makeCodePointTable(dict);
+        // Version 201 or later have codePointTable
+        final CodePointTable codePointTable;
+        if (formatOptions.mVersion >= FormatSpec.MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE) {
+            codePointTable = makeCodePointTable(dict);
+        } else {
+            codePointTable = new CodePointTable();
+        }
 
         BinaryDictEncoderUtils.writeDictionaryHeader(mOutStream, dict, formatOptions,
                 codePointTable.mCodePointOccurrenceArray);
@@ -152,7 +158,8 @@ public class Ver2DictEncoder implements DictEncoder {
         ArrayList<PtNodeArray> flatNodes = BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
 
         MakedictLog.i("Computing addresses...");
-        BinaryDictEncoderUtils.computeAddresses(dict, flatNodes);
+        BinaryDictEncoderUtils.computeAddresses(dict, flatNodes,
+                codePointTable.mCodePointToOneByteCodeMap);
         MakedictLog.i("Checking PtNode array...");
         if (MakedictLog.DBG) BinaryDictEncoderUtils.checkFlatPtNodeArrayList(flatNodes);
 
@@ -164,7 +171,8 @@ public class Ver2DictEncoder implements DictEncoder {
         MakedictLog.i("Writing file...");
 
         for (PtNodeArray nodeArray : flatNodes) {
-            BinaryDictEncoderUtils.writePlacedPtNodeArray(dict, this, nodeArray);
+            BinaryDictEncoderUtils.writePlacedPtNodeArray(dict, this, nodeArray,
+                    codePointTable.mCodePointToOneByteCodeMap);
         }
         if (MakedictLog.DBG) BinaryDictEncoderUtils.showStatistics(flatNodes);
         mOutStream.write(mBuffer, 0, mPosition);
@@ -196,15 +204,19 @@ public class Ver2DictEncoder implements DictEncoder {
                 countSize);
     }
 
-    private void writePtNodeFlags(final PtNode ptNode) {
-        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode);
+    private void writePtNodeFlags(final PtNode ptNode,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode,
+                codePointToOneByteCodeMap);
         mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition,
                 BinaryDictEncoderUtils.makePtNodeFlags(ptNode, childrenPos),
                 FormatSpec.PTNODE_FLAGS_SIZE);
     }
 
-    private void writeCharacters(final int[] codePoints, final boolean hasSeveralChars) {
-        mPosition = CharEncoding.writeCharArray(codePoints, mBuffer, mPosition);
+    private void writeCharacters(final int[] codePoints, final boolean hasSeveralChars,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+        mPosition = CharEncoding.writeCharArray(codePoints, mBuffer, mPosition,
+                codePointToOneByteCodeMap);
         if (hasSeveralChars) {
             mBuffer[mPosition++] = FormatSpec.PTNODE_CHARACTERS_TERMINATOR;
         }
@@ -217,8 +229,10 @@ public class Ver2DictEncoder implements DictEncoder {
         }
     }
 
-    private void writeChildrenPosition(final PtNode ptNode) {
-        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode);
+    private void writeChildrenPosition(final PtNode ptNode,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode,
+                codePointToOneByteCodeMap);
         mPosition += BinaryDictEncoderUtils.writeChildrenPosition(mBuffer, mPosition,
                 childrenPos);
     }
@@ -228,7 +242,8 @@ public class Ver2DictEncoder implements DictEncoder {
      *
      * @param shortcuts the shortcut attributes list.
      */
-    private void writeShortcuts(final ArrayList<WeightedString> shortcuts) {
+    private void writeShortcuts(final ArrayList<WeightedString> shortcuts,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         if (null == shortcuts || shortcuts.isEmpty()) return;
 
         final int indexOfShortcutByteSize = mPosition;
@@ -241,7 +256,8 @@ public class Ver2DictEncoder implements DictEncoder {
                     target.getProbability());
             mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, shortcutFlags,
                     FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
-            final int shortcutShift = CharEncoding.writeString(mBuffer, mPosition, target.mWord);
+            final int shortcutShift = CharEncoding.writeString(mBuffer, mPosition, target.mWord,
+                codePointToOneByteCodeMap);
             mPosition += shortcutShift;
         }
         final int shortcutByteSize = mPosition - indexOfShortcutByteSize;
@@ -281,12 +297,14 @@ public class Ver2DictEncoder implements DictEncoder {
     }
 
     @Override
-    public void writePtNode(final PtNode ptNode, final FusionDictionary dict) {
-        writePtNodeFlags(ptNode);
-        writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
+    public void writePtNode(final PtNode ptNode, final FusionDictionary dict,
+            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+        writePtNodeFlags(ptNode, codePointToOneByteCodeMap);
+        writeCharacters(ptNode.mChars, ptNode.hasSeveralChars(), codePointToOneByteCodeMap);
         writeFrequency(ptNode.getProbability());
-        writeChildrenPosition(ptNode);
-        writeShortcuts(ptNode.mShortcutTargets);
+        writeChildrenPosition(ptNode, codePointToOneByteCodeMap);
+        // TODO: Use codePointToOneByteCodeMap for shortcuts.
+        writeShortcuts(ptNode.mShortcutTargets, null /* codePointToOneByteCodeMap */);
         writeBigrams(ptNode.mBigrams, dict);
     }
 }

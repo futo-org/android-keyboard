@@ -158,7 +158,7 @@ public class DictionaryMaker {
             String outputBinary = null;
             String outputXml = null;
             String outputCombined = null;
-            int outputBinaryFormatVersion = 2; // the default version is 2.
+            int outputBinaryFormatVersion = FormatSpec.VERSION201; // the default version is 201.
             // Don't use code point table by default.
             int codePointTableMode = Ver2DictEncoder.CODE_POINT_TABLE_OFF;
 

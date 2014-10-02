@@ -312,7 +312,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final DictBuffer dictBuffer = new ByteArrayDictBuffer(buffer);
         for (final String word : sWords) {
             Arrays.fill(buffer, (byte) 0);
-            CharEncoding.writeString(buffer, 0, word);
+            CharEncoding.writeString(buffer, 0, word, null);
             dictBuffer.position(0);
             final String str = CharEncoding.readString(dictBuffer);
             assertEquals(word, str);

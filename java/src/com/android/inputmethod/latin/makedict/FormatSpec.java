@@ -163,13 +163,15 @@ public final class FormatSpec {
     static final int NOT_A_VERSION_NUMBER = -1;
 
     // These MUST have the same values as the relevant constants in format_utils.h.
-    // From version 4 on, we use version * 100 + revision as a version number. That allows
+    // From version 2.01 on, we use version * 100 + revision as a version number. That allows
     // us to change the format during development while having testing devices remove
     // older files with each upgrade, while still having a readable versioning scheme.
     // When we bump up the dictionary format version, we should update
     // ExpandableDictionary.needsToMigrateDictionary() and
     // ExpandableDictionary.matchesExpectedBinaryDictFormatVersionForThisType().
     public static final int VERSION2 = 2;
+    public static final int VERSION201 = 201;
+    public static final int MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE = VERSION201;
     // Dictionary version used for testing.
     public static final int VERSION4_ONLY_FOR_TESTING = 399;
     public static final int VERSION401 = 401;
