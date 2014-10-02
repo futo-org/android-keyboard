@@ -145,9 +145,8 @@ public class SentenceLevelAdapter {
         int wordEnd = wordIterator.getEndOfWord(originalText, wordStart);
         while (wordStart <= end && wordEnd != -1 && wordStart != -1) {
             if (wordEnd >= start && wordEnd > wordStart) {
-                CharSequence subSequence = originalText.subSequence(wordStart, wordEnd).toString();
-                final TextInfo ti = TextInfoCompatUtils.newInstance(subSequence, 0,
-                        subSequence.length(), cookie, subSequence.hashCode());
+                final TextInfo ti = TextInfoCompatUtils.newInstance(originalText, wordStart,
+                        wordEnd, cookie, originalText.subSequence(wordStart, wordEnd).hashCode());
                 wordItems.add(new SentenceWordItem(ti, wordStart, wordEnd));
             }
             wordStart = wordIterator.getBeginningOfNextWord(originalText, wordEnd);
