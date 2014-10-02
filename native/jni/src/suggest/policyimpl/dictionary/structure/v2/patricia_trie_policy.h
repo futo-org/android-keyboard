@@ -107,6 +107,14 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return false;
     }
 
+    bool updateCounter(const PrevWordsInfo *const prevWordsInfo,
+            const CodePointArrayView wordCodePoints, const bool isValidWord,
+            const HistoricalInfo historicalInfo) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: updateCounter() is called for non-updatable dictionary.");
+        return false;
+    }
+
     bool flush(const char *const filePath) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: flush() is called for non-updatable dictionary.");

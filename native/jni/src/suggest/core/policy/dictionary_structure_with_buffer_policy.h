@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
+#include "suggest/core/dictionary/property/historical_info.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/dictionary/word_attributes.h"
 #include "utils/int_array_view.h"
@@ -86,6 +87,11 @@ class DictionaryStructureWithBufferPolicy {
     // Returns whether the update was success or not.
     virtual bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView wordCodePoints) = 0;
+
+    // Returns whether the update was success or not.
+    virtual bool updateCounter(const PrevWordsInfo *const prevWordsInfo,
+            const CodePointArrayView wordCodePoints, const bool isValidWord,
+            const HistoricalInfo historicalInfo) = 0;
 
     // Returns whether the flush was success or not.
     virtual bool flush(const char *const filePath) = 0;

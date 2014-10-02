@@ -22,6 +22,7 @@
 #include "defines.h"
 #include "jni.h"
 #include "suggest/core/dictionary/ngram_listener.h"
+#include "suggest/core/dictionary/property/historical_info.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
@@ -89,6 +90,10 @@ class Dictionary {
 
     bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView codePoints);
+
+    bool updateCounter(const PrevWordsInfo *const prevWordsInfo,
+            const CodePointArrayView codePoints, const bool isValidWord,
+            const HistoricalInfo historicalInfo);
 
     bool flush(const char *const filePath);
 
