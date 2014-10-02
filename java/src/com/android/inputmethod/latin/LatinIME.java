@@ -89,7 +89,6 @@ import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.CursorAnchorInfoUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
-import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -253,7 +252,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // We need to re-evaluate the currently composing word in case the script has
                 // changed.
                 postWaitForDictionaryLoad();
-                latinIme.resetSuggest();
+                latinIme.resetDictionaryFacilitatorIfNecessary();
                 break;
             case MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED:
                 latinIme.mInputLogic.onUpdateTailBatchInputCompleted(
@@ -537,9 +536,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.onCreate();
         DEBUG = DebugFlags.DEBUG_ENABLED;
 
-        // TODO: Resolve mutual dependencies of {@link #loadSettings()} and {@link #initSuggest()}.
+        // TODO: Resolve mutual dependencies of {@link #loadSettings()} and
+        // {@link #resetDictionaryFacilitatorIfNecessary()}.
         loadSettings();
-        resetSuggest();
+        resetDictionaryFacilitatorIfNecessary();
 
         // Register to receive ringer mode change and network state change.
         // Also receive installation and removal of a dictionary pack.
@@ -580,7 +580,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // been displayed. Opening dictionaries never affects responsivity as dictionaries are
         // asynchronously loaded.
         if (!mHandler.hasPendingReopenDictionaries()) {
-            resetSuggestForLocale(locale);
+            resetDictionaryFacilitatorForLocale(locale);
         }
         mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
                 true /* allowsImplicitlySelectedSubtypes */));
@@ -621,8 +621,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void resetSuggest() {
+    private void resetDictionaryFacilitatorIfNecessary() {
         final Locale switcherSubtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        if (mDictionaryFacilitator.isForLocales(new Locale[] { switcherSubtypeLocale })) {
+            return;
+        }
         final String switcherLocaleStr = switcherSubtypeLocale.toString();
         final Locale subtypeLocale;
         if (TextUtils.isEmpty(switcherLocaleStr)) {
@@ -637,15 +640,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             subtypeLocale = switcherSubtypeLocale;
         }
-        resetSuggestForLocale(subtypeLocale);
+        resetDictionaryFacilitatorForLocale(subtypeLocale);
     }
 
     /**
-     * Reset suggest by loading dictionaries for the locale and the current settings values.
+     * Reset the facilitator by loading dictionaries for the locale and the current settings values.
      *
      * @param locale the locale
      */
-    private void resetSuggestForLocale(final Locale locale) {
+    // TODO: make sure the current settings always have the right locale, and read from them
+    private void resetDictionaryFacilitatorForLocale(final Locale locale) {
         final SettingsValues settingsValues = mSettings.getCurrent();
         mDictionaryFacilitator.resetDictionaries(this /* context */, locale,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
@@ -901,12 +905,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype(),
                     currentSettingsValues);
 
-            // Note: the following does a round-trip IPC on the main thread: be careful
-            final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-            if (null != currentLocale && !currentLocale.equals(suggest.getLocale())) {
-                // TODO: Do this automatically.
-                resetSuggest();
-            }
+            resetDictionaryFacilitatorIfNecessary();
 
             // TODO[IL]: Can the following be moved to InputLogic#startInput?
             if (!mInputLogic.mConnection.resetCachesUponCursorMoveAndReturnSuccess(
@@ -1554,7 +1553,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final String wordToShow;
         if (CapsModeUtils.isAutoCapsMode(mInputLogic.mLastComposedWord.mCapitalizedMode)) {
-            wordToShow = word.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
+            wordToShow = word.toLowerCase(mDictionaryFacilitator.getPrimaryLocale());
         } else {
             wordToShow = word;
         }
@@ -1840,7 +1839,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public void dumpDictionaryForDebug(final String dictName) {
         if (mDictionaryFacilitator.getLocale() == null) {
-            resetSuggest();
+            resetDictionaryFacilitatorIfNecessary();
         }
         mDictionaryFacilitator.dumpDictionaryForDebug(dictName);
     }
