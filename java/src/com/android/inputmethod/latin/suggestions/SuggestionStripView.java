@@ -400,6 +400,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (mStripVisibilityGroup.isShowingImportantNoticeStrip()) {
             return false;
         }
+        // Detecting sliding up finger to show {@link MoreSuggestionsView}.
         if (!mMoreSuggestionsView.isShowingInParent()) {
             mLastX = (int)me.getX();
             mLastY = (int)me.getY();
@@ -439,6 +440,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public boolean onTouchEvent(final MotionEvent me) {
+        if (!mMoreSuggestionsView.isShowingInParent()) {
+            // Ignore any touch event while more suggestions panel hasn't been shown.
+            // Detecting sliding up is done at {@link #onInterceptTouchEvent}.
+            return true;
+        }
         // In the sliding input mode. {@link MotionEvent} should be forwarded to
         // {@link MoreSuggestionsView}.
         final int index = me.getActionIndex();
