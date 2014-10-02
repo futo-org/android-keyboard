@@ -60,6 +60,9 @@ import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 final class SuggestionStripLayoutHelper {
     private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
     private static final float DEFAULT_CENTER_SUGGESTION_PERCENTILE = 0.40f;
@@ -213,15 +216,14 @@ final class SuggestionStripLayoutHelper {
             return word;
         }
 
-        final int len = word.length();
         final Spannable spannedWord = new SpannableString(word);
         final int options = mSuggestionStripOptions;
         if ((isAutoCorrection && (options & AUTO_CORRECT_BOLD) != 0)
                 || (isTypedWordValid && (options & VALID_TYPED_WORD_BOLD) != 0)) {
-            spannedWord.setSpan(BOLD_SPAN, 0, len, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            addStyleSpan(spannedWord, BOLD_SPAN);
         }
         if (isAutoCorrection && (options & AUTO_CORRECT_UNDERLINE) != 0) {
-            spannedWord.setSpan(UNDERLINE_SPAN, 0, len, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            addStyleSpan(spannedWord, UNDERLINE_SPAN);
         }
         return spannedWord;
     }
@@ -446,10 +448,11 @@ final class SuggestionStripLayoutHelper {
         // {@link StyleSpan} in a content description may cause an issue of TTS/TalkBack.
         // Use a simple {@link String} to avoid the issue.
         wordView.setContentDescription(TextUtils.isEmpty(word) ? null : word.toString());
-        final CharSequence text = getEllipsizedText(word, width, wordView.getPaint());
-        final float scaleX = getTextScaleX(word, width, wordView.getPaint());
+        final CharSequence text = getEllipsizedTextWithSettingScaleX(
+                word, width, wordView.getPaint());
+        final float scaleX = wordView.getTextScaleX();
         wordView.setText(text); // TextView.setText() resets text scale x to 1.0.
-        wordView.setTextScaleX(Math.max(scaleX, MIN_TEXT_XSCALE));
+        wordView.setTextScaleX(scaleX);
         // A <code>wordView</code> should be disabled when <code>word</code> is empty in order to
         // make it unclickable.
         // With accessibility touch exploration on, <code>wordView</code> should be enabled even
@@ -562,7 +565,8 @@ final class SuggestionStripLayoutHelper {
         final TextView wordView = (TextView)addToDictionaryStrip.findViewById(R.id.word_to_save);
         wordView.setTextColor(mColorTypedWord);
         final int wordWidth = (int)(width * mCenterSuggestionWeight);
-        final CharSequence wordToSave = getEllipsizedText(word, wordWidth, wordView.getPaint());
+        final CharSequence wordToSave = getEllipsizedTextWithSettingScaleX(
+                word, wordWidth, wordView.getPaint());
         final float wordScaleX = wordView.getTextScaleX();
         wordView.setText(wordToSave);
         wordView.setTextScaleX(wordScaleX);
@@ -596,7 +600,7 @@ final class SuggestionStripLayoutHelper {
         }
         hintView.setTextColor(mColorAutoCorrect);
         final float hintScaleX = getTextScaleX(hintText, hintWidth, hintView.getPaint());
-        hintView.setText(hintText);
+        hintView.setText(hintText); // TextView.setText() resets text scale x to 1.0.
         hintView.setTextScaleX(hintScaleX);
         setLayoutWeight(hintView, hintWeight, ViewGroup.LayoutParams.MATCH_PARENT);
     }
@@ -608,8 +612,7 @@ final class SuggestionStripLayoutHelper {
         final int width = titleView.getWidth() - titleView.getPaddingLeft()
                 - titleView.getPaddingRight();
         titleView.setTextColor(mColorAutoCorrect);
-        titleView.setText(importantNoticeTitle);
-        titleView.setTextScaleX(1.0f); // Reset textScaleX.
+        titleView.setText(importantNoticeTitle); // TextView.setText() resets text scale x to 1.0.
         final float titleScaleX = getTextScaleX(importantNoticeTitle, width, titleView.getPaint());
         titleView.setTextScaleX(titleScaleX);
     }
@@ -624,18 +627,19 @@ final class SuggestionStripLayoutHelper {
         }
     }
 
-    private static float getTextScaleX(final CharSequence text, final int maxWidth,
+    private static float getTextScaleX(@Nullable final CharSequence text, final int maxWidth,
             final TextPaint paint) {
         paint.setTextScaleX(1.0f);
         final int width = getTextWidth(text, paint);
         if (width <= maxWidth || maxWidth <= 0) {
             return 1.0f;
         }
-        return maxWidth / (float)width;
+        return maxWidth / (float) width;
     }
 
-    private static CharSequence getEllipsizedText(final CharSequence text, final int maxWidth,
-            final TextPaint paint) {
+    @Nullable
+    private static CharSequence getEllipsizedTextWithSettingScaleX(
+            @Nullable final CharSequence text, final int maxWidth, @Nonnull final TextPaint paint) {
         if (text == null) {
             return null;
         }
@@ -645,62 +649,63 @@ final class SuggestionStripLayoutHelper {
             return text;
         }
 
-        // Note that TextUtils.ellipsize() use text-x-scale as 1.0 if ellipsize is needed. To
-        // get squeezed and ellipsized text, passes enlarged width (maxWidth / MIN_TEXT_XSCALE).
-        final float upscaledWidth = maxWidth / MIN_TEXT_XSCALE;
-        CharSequence ellipsized = TextUtils.ellipsize(
-                text, paint, upscaledWidth, TextUtils.TruncateAt.MIDDLE);
-        // For an unknown reason, ellipsized seems to return a text that does indeed fit inside the
-        // passed width according to paint.measureText, but not according to paint.getTextWidths.
-        // But when rendered, the text seems to actually take up as many pixels as returned by
-        // paint.getTextWidths, hence problem.
-        // To save this case, we compare the measured size of the new text, and if it's too much,
-        // try it again removing the difference. This may still give a text too long by one or
-        // two pixels so we take an additional 2 pixels cushion and call it a day.
-        // TODO: figure out why getTextWidths and measureText don't agree with each other, and
-        // remove the following code.
-        final float ellipsizedTextWidth = getTextWidth(ellipsized, paint);
-        if (upscaledWidth <= ellipsizedTextWidth) {
-            ellipsized = TextUtils.ellipsize(
-                    text, paint, upscaledWidth - (ellipsizedTextWidth - upscaledWidth) - 2,
-                    TextUtils.TruncateAt.MIDDLE);
-        }
+        // <code>text</code> must be ellipsized with minimum text scale x.
         paint.setTextScaleX(MIN_TEXT_XSCALE);
-        return ellipsized;
+        final boolean hasBoldStyle = hasStyleSpan(text, BOLD_SPAN);
+        final boolean hasUnderlineStyle = hasStyleSpan(text, UNDERLINE_SPAN);
+        // TextUtils.ellipsize erases any span object existed after ellipsized point.
+        // We have to restore these spans afterward.
+        final CharSequence ellipsizedText = TextUtils.ellipsize(
+                text, paint, maxWidth, TextUtils.TruncateAt.MIDDLE);
+        if (!hasBoldStyle && !hasUnderlineStyle) {
+            return ellipsizedText;
+        }
+        final Spannable spannableText = (ellipsizedText instanceof Spannable)
+                ? (Spannable)ellipsizedText : new SpannableString(ellipsizedText);
+        if (hasBoldStyle) {
+            addStyleSpan(spannableText, BOLD_SPAN);
+        }
+        if (hasUnderlineStyle) {
+            addStyleSpan(spannableText, UNDERLINE_SPAN);
+        }
+        return spannableText;
     }
 
-    private static int getTextWidth(final CharSequence text, final TextPaint paint) {
+    private static boolean hasStyleSpan(@Nullable final CharSequence text,
+            final CharacterStyle style) {
+        if (text instanceof Spanned) {
+            return ((Spanned)text).getSpanStart(style) >= 0;
+        }
+        return false;
+    }
+
+    private static void addStyleSpan(@Nonnull final Spannable text, final CharacterStyle style) {
+        text.removeSpan(style);
+        text.setSpan(style, 0, text.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    }
+
+    private static int getTextWidth(@Nullable final CharSequence text, final TextPaint paint) {
         if (TextUtils.isEmpty(text)) {
             return 0;
         }
+        final int length = text.length();
+        final float[] widths = new float[length];
+        final int count;
         final Typeface savedTypeface = paint.getTypeface();
-        paint.setTypeface(getTextTypeface(text));
-        final int len = text.length();
-        final float[] widths = new float[len];
-        final int count = paint.getTextWidths(text, 0, len, widths);
+        try {
+            paint.setTypeface(getTextTypeface(text));
+            count = paint.getTextWidths(text, 0, length, widths);
+        } finally {
+            paint.setTypeface(savedTypeface);
+        }
         int width = 0;
         for (int i = 0; i < count; i++) {
             width += Math.round(widths[i] + 0.5f);
         }
-        paint.setTypeface(savedTypeface);
         return width;
     }
 
-    private static Typeface getTextTypeface(final CharSequence text) {
-        if (!(text instanceof SpannableString)) {
-            return Typeface.DEFAULT;
-        }
-
-        final SpannableString ss = (SpannableString)text;
-        final StyleSpan[] styles = ss.getSpans(0, text.length(), StyleSpan.class);
-        if (styles.length == 0) {
-            return Typeface.DEFAULT;
-        }
-
-        if (styles[0].getStyle() == Typeface.BOLD) {
-            return Typeface.DEFAULT_BOLD;
-        }
-        // TODO: BOLD_ITALIC, ITALIC case?
-        return Typeface.DEFAULT;
+    private static Typeface getTextTypeface(@Nullable final CharSequence text) {
+        return hasStyleSpan(text, BOLD_SPAN) ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT;
     }
 }
