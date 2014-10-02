@@ -374,7 +374,7 @@ static bool latinime_BinaryDictionary_addUnigramEntry(JNIEnv *env, jclass clazz,
     // Use 1 for count to indicate the word has inputted.
     const UnigramProperty unigramProperty(isBeginningOfSentence, isNotAWord,
             isBlacklisted, probability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */),
-            &shortcuts);
+            std::move(shortcuts));
     return dictionary->addUnigramEntry(CodePointArrayView(codePoints, codePointCount),
             &unigramProperty);
 }
@@ -434,10 +434,16 @@ static bool latinime_BinaryDictionary_updateCounter(JNIEnv *env, jclass clazz, j
     if (!dictionary) {
         return false;
     }
-    jsize wordLength = env->GetArrayLength(word);
-    int wordCodePoints[wordLength];
-    env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
-    return false;
+    const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
+            prevWordCodePointArrays, isBeginningOfSentenceArray,
+            env->GetArrayLength(prevWordCodePointArrays));
+    jsize codePointCount = env->GetArrayLength(word);
+    int wordCodePoints[codePointCount];
+    env->GetIntArrayRegion(word, 0, codePointCount, wordCodePoints);
+    const HistoricalInfo historicalInfo(timestamp, 0 /* level */, count);
+    return dictionary->updateCounter(&prevWordsInfo,
+            CodePointArrayView(wordCodePoints, codePointCount), isValidWord == JNI_TRUE,
+            historicalInfo);
 }
 
 // Returns how many language model params are processed.
@@ -509,7 +515,7 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         // Use 1 for count to indicate the word has inputted.
         const UnigramProperty unigramProperty(false /* isBeginningOfSentence */, isNotAWord,
                 isBlacklisted, unigramProbability,
-                HistoricalInfo(timestamp, 0 /* level */, 1 /* count */), &shortcuts);
+                HistoricalInfo(timestamp, 0 /* level */, 1 /* count */), std::move(shortcuts));
         dictionary->addUnigramEntry(CodePointArrayView(word1CodePoints, word1Length),
                 &unigramProperty);
         if (word0) {

@@ -98,6 +98,10 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView wordCodePoints);
 
+    bool updateCounter(const PrevWordsInfo *const prevWordsInfo,
+            const CodePointArrayView wordCodePoints, const bool isValidWord,
+            const HistoricalInfo historicalInfo);
+
     bool flush(const char *const filePath);
 
     bool flushWithGC(const char *const filePath);
@@ -127,6 +131,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     // prevent the dictionary from overflowing.
     static const int MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
     static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
+    // TODO: Remove
+    static const int DUMMY_PROBABILITY_FOR_VALID_WORDS;
 
     const Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
     const HeaderPolicy *const mHeaderPolicy;
