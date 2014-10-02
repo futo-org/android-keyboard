@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.layout.tests;
 
 import android.test.suitebuilder.annotation.SmallTest;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.keyboard.KeyboardLayoutSetTestsBase;
+import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.ArrayList;
