@@ -293,13 +293,6 @@ public final class SubtypeLocaleUtils {
         return LocaleUtils.constructLocaleFromString(localeString);
     }
 
-    // TODO: remove this. When RichInputMethodSubtype#getLocale is removed we can do away with this
-    // method at the same time.
-    public static Locale getSubtypeLocale(final RichInputMethodSubtype subtype) {
-        final String localeString = subtype.getLocale();
-        return LocaleUtils.constructLocaleFromString(localeString);
-    }
-
     public static String getKeyboardLayoutSetDisplayName(final InputMethodSubtype subtype) {
         final String layoutName = getKeyboardLayoutSetName(subtype);
         return getKeyboardLayoutSetDisplayName(layoutName);
@@ -346,10 +339,6 @@ public final class SubtypeLocaleUtils {
     public static boolean isRtlLanguage(final Locale locale) {
         final String language = locale.getLanguage();
         return Arrays.binarySearch(SORTED_RTL_LANGUAGES, language) >= 0;
-    }
-
-    public static boolean isRtlLanguage(final RichInputMethodSubtype subtype) {
-        return isRtlLanguage(getSubtypeLocale(subtype));
     }
 
     public static String getCombiningRulesExtraValue(final InputMethodSubtype subtype) {

@@ -114,10 +114,13 @@ public final class RichInputMethodSubtype {
         return "Multi-lingual subtype: " + mSubtype.toString() + ", " + Arrays.toString(mLocales);
     }
 
-    // TODO: remove this method! We can always have several locales. Multi-lingual input will only
-    // be done when this method is gone.
-    public String getLocale() {
-        return mSubtype.getLocale();
+    public Locale[] getLocales() {
+        return mLocales;
+    }
+
+    public boolean isRtlSubtype() {
+        // The subtype is considered RTL if the language of the main subtype is RTL.
+        return SubtypeLocaleUtils.isRtlLanguage(mLocales[0]);
     }
 
     // TODO: remove this method
