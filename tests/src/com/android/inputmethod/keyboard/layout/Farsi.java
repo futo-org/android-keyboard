@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.layout;
 
 import com.android.inputmethod.keyboard.layout.Symbols.RtlSymbols;
 import com.android.inputmethod.keyboard.layout.SymbolsShifted.RtlSymbolsShifted;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.latin.Constants;
@@ -27,17 +28,15 @@ import java.util.Locale;
 public final class Farsi extends LayoutBase {
     private static final String LAYOUT_NAME = "farsi";
 
-    public Farsi(final LayoutCustomizer customizer) {
-        super(customizer, FarsiSymbols.class, FarsiSymbolsShifted.class);
+    public Farsi(final Locale locale) {
+        super(new FarsiCustomizer(locale), FarsiSymbols.class, FarsiSymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class FarsiCustomizer extends LayoutCustomizer {
-        public FarsiCustomizer(final Locale locale) {
-            super(locale);
-        }
+    private static class FarsiCustomizer extends LayoutCustomizer {
+        FarsiCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getAlphabetKey() { return FARSI_ALPHABET_KEY; }

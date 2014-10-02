@@ -19,10 +19,10 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.SymbolsShifted;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -40,9 +40,7 @@ public final class TestsVietnamese extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class VietnameseCustomizer extends LayoutCustomizer {
-        public VietnameseCustomizer(final Locale locale) {
-            super(locale);
-        }
+        VietnameseCustomizer(final Locale locale) { super(locale);  }
 
         @Override
         public ExpectedKey getCurrencyKey() { return CURRENCY_DONG; }

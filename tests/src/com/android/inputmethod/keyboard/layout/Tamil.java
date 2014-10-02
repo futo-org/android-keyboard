@@ -16,11 +16,9 @@
 
 package com.android.inputmethod.keyboard.layout;
 
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.latin.Constants;
-
-import java.util.Locale;
 
 /**
  * The Tamil keyboard.
@@ -34,29 +32,6 @@ public final class Tamil extends LayoutBase {
 
     @Override
     public String getName() { return LAYOUT_NAME; }
-
-    public static class TamilCustomizer extends LayoutCustomizer {
-        public TamilCustomizer(final Locale locale) { super(locale); }
-
-        @Override
-        public ExpectedKey getAlphabetKey() { return TAMIL_ALPHABET_KEY; }
-
-        @Override
-        public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) {
-            return EMPTY_KEYS;
-        }
-
-        @Override
-        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
-            return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
-        }
-
-        // U+0BA4: "த" TAMIL LETTER TA
-        // U+0BAE/U+0BBF: "மி" TAMIL LETTER MA/TAMIL VOWEL SIGN I
-        // U+0BB4/U+0BCD: "ழ்" TAMIL LETTER LLLA/TAMIL SIGN VIRAMA
-        private static final ExpectedKey TAMIL_ALPHABET_KEY = key(
-                "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD", Constants.CODE_SWITCH_ALPHA_SYMBOL);
-    }
 
     @Override
     ExpectedKey[][] getCommonAlphabetLayout(boolean isPhone) { return ALPHABET_COMMON; }

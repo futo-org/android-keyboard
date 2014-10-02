@@ -20,9 +20,9 @@ import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.
 
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.layout.Hindi.HindiSymbols;
+import com.android.inputmethod.keyboard.layout.customizer.NepaliCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.keyboard.layout.tests.DevanagariCustomizer;
 
 import java.util.Locale;
 
@@ -32,28 +32,20 @@ import java.util.Locale;
 public final class NepaliRomanized extends LayoutBase {
     private static final String LAYOUT_NAME = "nepali_romanized";
 
-    public NepaliRomanized(final LayoutCustomizer customizer) {
-        super(customizer, HindiSymbols.class, SymbolsShifted.class);
+    public NepaliRomanized(final Locale locale) {
+        super(new NepaliRomanizedCustomizer(locale), HindiSymbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class NepaliRomanizedCustomizer extends DevanagariCustomizer {
-        public NepaliRomanizedCustomizer(final Locale locale) { super(locale); }
+    private static class NepaliRomanizedCustomizer extends NepaliCustomizer {
+        NepaliRomanizedCustomizer(final Locale locale) { super(locale); }
 
         @Override
-        public ExpectedKey getCurrencyKey() { return CURRENCY_NEPALI; }
-
-        @Override
-        public ExpectedKey[] getSpaceKeys(final boolean isPhone) {
-            return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
+        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
+            return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
         }
-
-        // U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN
-        private static final ExpectedKey CURRENCY_NEPALI = key("\u0930\u0941\u002E",
-                Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.POUND_SIGN,
-                Symbols.YEN_SIGN, Symbols.PESO_SIGN);
     }
 
     @Override

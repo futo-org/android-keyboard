@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Arabic;
-import com.android.inputmethod.keyboard.layout.Arabic.ArabicCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 
 import java.util.Locale;
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public class TestsArabic extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("ar");
-    private static final LayoutBase LAYOUT = new Arabic(new ArabicCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Arabic(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

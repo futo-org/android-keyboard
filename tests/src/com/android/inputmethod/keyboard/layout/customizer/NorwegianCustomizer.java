@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
 import com.android.inputmethod.keyboard.layout.Nordic;
 import com.android.inputmethod.keyboard.layout.Symbols;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
-class NorwegianCustomizer extends LayoutCustomizer {
+public class NorwegianCustomizer extends LayoutCustomizer {
     public NorwegianCustomizer(final Locale locale) { super(locale); }
 
     @Override

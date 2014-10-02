@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
-class NoLanguageCustomizer extends LayoutCustomizer {
-    NoLanguageCustomizer(final Locale locale) { super(locale); }
+public class NoLanguageCustomizer extends LayoutCustomizer {
+    public NoLanguageCustomizer(final Locale locale) { super(locale); }
 
     @Override
     public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {

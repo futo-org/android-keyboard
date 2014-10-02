@@ -20,8 +20,8 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.SouthSlavic;
-import com.android.inputmethod.keyboard.layout.SouthSlavic.SouthSlavicLayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.Symbols;
+import com.android.inputmethod.keyboard.layout.customizer.SouthSlavicLayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -39,7 +39,7 @@ public final class TestsSerbian extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class SerbianCustomizer extends SouthSlavicLayoutCustomizer {
-        public SerbianCustomizer(final Locale locale) { super(locale); }
+        SerbianCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey[] getDoubleQuoteMoreKeys() { return Symbols.DOUBLE_QUOTES_R9L; }

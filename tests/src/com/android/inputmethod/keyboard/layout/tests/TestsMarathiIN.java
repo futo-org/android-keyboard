@@ -20,7 +20,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Marathi;
-import com.android.inputmethod.keyboard.layout.Marathi.MarathiCustomizer;
 
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsMarathiIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("mr", "IN");
-    private static final LayoutBase LAYOUT = new Marathi(new MarathiCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Marathi(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

@@ -19,11 +19,11 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Dvorak;
-import com.android.inputmethod.keyboard.layout.Dvorak.DvorakCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
+import com.android.inputmethod.keyboard.layout.customizer.DvorakCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.FrenchCustomizer.FrenchEuroCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.keyboard.layout.tests.TestsFrench.FrenchEuroCustomizer;
 
 import java.util.Locale;
 
@@ -41,7 +41,7 @@ public final class TestsFrenchDvorak extends LayoutTestsBase {
     private static class FrenchDvorakCustomizer extends DvorakCustomizer {
         private final FrenchEuroCustomizer mFrenchEuroCustomizer;
 
-        public FrenchDvorakCustomizer(final Locale locale) {
+        FrenchDvorakCustomizer(final Locale locale) {
             super(locale);
             mFrenchEuroCustomizer = new FrenchEuroCustomizer(locale);
         }

@@ -17,11 +17,9 @@
 package com.android.inputmethod.keyboard.layout;
 
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
-import com.android.inputmethod.keyboard.layout.expected.ExpectedKey.ExpectedAdditionalMoreKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-
-import java.util.Locale;
 
 /**
  * The Dvorak alphabet keyboard.
@@ -36,52 +34,17 @@ public class Dvorak extends LayoutBase {
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class DvorakCustomizer extends LayoutCustomizer {
-        public DvorakCustomizer(final Locale locale) { super(locale); }
-
-        @Override
-        public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) {
-            return isPhone ? joinKeys(SHIFT_KEY): joinKeys(SHIFT_KEY, key("q"));
-        }
-
-        @Override
-        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
-            return isPhone ? EMPTY_KEYS : joinKeys(key("z"), SHIFT_KEY);
-        }
-
-        @Override
-        public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            // U+00A1: "¡" INVERTED EXCLAMATION MARK
-            return isPhone ? joinKeys(key("q", SETTINGS_KEY))
-                    : joinKeys(key("!", joinMoreKeys("\u00A1", SETTINGS_KEY)));
-        }
-
-        @Override
-        public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
-            final ExpectedAdditionalMoreKey[] punctuationMoreKeys =
-                    convertToAdditionalMoreKeys(getPunctuationMoreKeys(isPhone));
-            // U+00BF: "¿" INVERTED QUESTION MARK
-            return isPhone
-                    ? joinKeys(key("z", punctuationMoreKeys))
-                    : joinKeys(key("?", joinMoreKeys(punctuationMoreKeys, "\u00BF")));
-        }
-
-        private static ExpectedAdditionalMoreKey[] convertToAdditionalMoreKeys(
-                final ExpectedKey ... moreKeys) {
-            final ExpectedAdditionalMoreKey[] additionalMoreKeys =
-                    new ExpectedAdditionalMoreKey[moreKeys.length];
-            for (int index = 0; index < moreKeys.length; index++) {
-                additionalMoreKeys[index] = ExpectedAdditionalMoreKey.newInstance(moreKeys[index]);
-            }
-            return additionalMoreKeys;
-        }
-    }
-
     @Override
     public ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) {
         return ALPHABET_COMMON;
     }
 
+    /**
+     * Get the left most key of the first row.
+     * @param isPhone true if requesting phone's keys.
+     * @param elementId the element id of the requesting shifted mode.
+     * @return the left most key of the first row.
+     */
     protected ExpectedKey getRow1_1Key(final boolean isPhone, final int elementId) {
         if (elementId == KeyboardId.ELEMENT_ALPHABET
                 || elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
@@ -90,6 +53,12 @@ public class Dvorak extends LayoutBase {
         return key("\"", additionalMoreKey("1"));
     }
 
+    /**
+     * Get the 2nd left key of the first row.
+     * @param isPhone true if requesting phone's keys.
+     * @param elementId the element id of the requesting shifted mode.
+     * @return the 2nd left key of the first row.
+     */
     protected ExpectedKey getRow1_2Key(final boolean isPhone, final int elementId) {
         if (elementId == KeyboardId.ELEMENT_ALPHABET
                 || elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
@@ -98,6 +67,12 @@ public class Dvorak extends LayoutBase {
         return key("<", additionalMoreKey("2"));
     }
 
+    /**
+     * Get the 3rd left key of the first row.
+     * @param isPhone true if requesting phone's keys.
+     * @param elementId the element id of the requesting shifted mode.
+     * @return the 3rd left key of the first row.
+     */
     protected ExpectedKey getRow1_3Key(final boolean isPhone, final int elementId) {
         if (elementId == KeyboardId.ELEMENT_ALPHABET
                 || elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {

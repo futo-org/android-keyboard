@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.SerbianQwertz;
+import com.android.inputmethod.keyboard.layout.customizer.SerbianLatinCustomizer;
 
 import java.util.Locale;
 

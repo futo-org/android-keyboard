@@ -22,7 +22,7 @@ import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.SymbolsShifted;
 import com.android.inputmethod.keyboard.layout.Tamil;
-import com.android.inputmethod.keyboard.layout.Tamil.TamilCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.TamilCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
@@ -39,7 +39,7 @@ public final class TestsTamilLK extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class TamilLKCustomizer extends TamilCustomizer {
-        public TamilLKCustomizer(final Locale locale) { super(locale); }
+        TamilLKCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }

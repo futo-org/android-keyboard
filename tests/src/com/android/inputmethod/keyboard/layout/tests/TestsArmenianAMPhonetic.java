@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.ArmenianPhonetic;
-import com.android.inputmethod.keyboard.layout.ArmenianPhonetic.ArmenianPhoneticCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 
 import java.util.Locale;
@@ -30,8 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsArmenianAMPhonetic extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("hy", "AM");
-    private static final LayoutBase LAYOUT = new ArmenianPhonetic(
-            new ArmenianPhoneticCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new ArmenianPhonetic(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

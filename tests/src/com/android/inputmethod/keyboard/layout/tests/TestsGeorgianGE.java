@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Georgian;
-import com.android.inputmethod.keyboard.layout.Georgian.GeorgianCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 
 import java.util.Locale;
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsGeorgianGE extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("ka", "GE");
-    private static final LayoutBase LAYOUT = new Georgian(new GeorgianCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Georgian(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

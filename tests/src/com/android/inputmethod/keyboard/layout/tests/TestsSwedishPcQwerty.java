@@ -19,9 +19,10 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.PcQwerty;
-import com.android.inputmethod.keyboard.layout.PcQwerty.PcQwertyCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.PcQwertyCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.SwedishCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -41,7 +42,7 @@ public final class TestsSwedishPcQwerty extends LayoutTestsBase {
     private static class SwedishPcQwertyCustomizer extends SwedishCustomizer {
         private final LayoutCustomizer mPcQwertyCustomizer;
 
-        public SwedishPcQwertyCustomizer(final Locale locale) {
+        SwedishPcQwertyCustomizer(final Locale locale) {
             super(locale);
             mPcQwertyCustomizer = new PcQwertyCustomizer(locale);
         }

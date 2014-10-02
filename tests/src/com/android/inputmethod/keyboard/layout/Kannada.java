@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout;
 
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.latin.Constants;
@@ -28,15 +29,15 @@ import java.util.Locale;
 public final class Kannada extends LayoutBase {
     private static final String LAYOUT_NAME = "kannada";
 
-    public Kannada(final LayoutCustomizer customizer) {
-        super(customizer, Symbols.class, SymbolsShifted.class);
+    public Kannada(final Locale locale) {
+        super(new KannadaCustomizer(locale), Symbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class KannadaCustomizer extends LayoutCustomizer {
-        public KannadaCustomizer(final Locale locale) { super(locale); }
+    private static class KannadaCustomizer extends LayoutCustomizer {
+        KannadaCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getAlphabetKey() { return KANNADA_ALPHABET_KEY; }

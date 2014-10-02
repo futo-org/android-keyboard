@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
-import com.android.inputmethod.keyboard.layout.LayoutBase;
+import com.android.inputmethod.keyboard.layout.Symbols;
+import com.android.inputmethod.keyboard.layout.SymbolsShifted;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
@@ -25,10 +26,23 @@ public class HindiCustomizer extends DevanagariCustomizer {
     public HindiCustomizer(final Locale locale) { super(locale); }
 
     @Override
+    public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
+
+    @Override
+    public ExpectedKey[] getOtherCurrencyKeys() {
+        return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
+    }
+
+    @Override
+    public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
+        return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
+    }
+
+    @Override
     public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
         // U+0964: "।" DEVANAGARI DANDA
-        final ExpectedKey periodKey = LayoutBase.key("\u0964", getPunctuationMoreKeys(isPhone));
-        return LayoutBase.joinKeys(periodKey);
+        final ExpectedKey periodKey = key("\u0964", getPunctuationMoreKeys(isPhone));
+        return joinKeys(periodKey);
     }
 
     @Override
@@ -36,12 +50,16 @@ public class HindiCustomizer extends DevanagariCustomizer {
         return isPhone ? HINDI_PHONE_PUNCTUATION_MORE_KEYS : HINDI_TABLET_PUNCTUATION_MORE_KEYS;
     }
 
+    // U+20B9: "₹" INDIAN RUPEE SIGN
+    private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
+            Symbols.CURRENCY_GENERIC_MORE_KEYS);
+
     // Punctuation more keys for phone form factor.
-    private static final ExpectedKey[] HINDI_PHONE_PUNCTUATION_MORE_KEYS = LayoutBase.joinKeys(
+    private static final ExpectedKey[] HINDI_PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
             ",", ".", "?", "!", "#", ")", "(", "/", ";",
             "'", "@", ":", "-", "\"", "+", "%", "&");
     // Punctuation more keys for tablet form factor.
-    private static final ExpectedKey[] HINDI_TABLET_PUNCTUATION_MORE_KEYS = LayoutBase.joinKeys(
+    private static final ExpectedKey[] HINDI_TABLET_PUNCTUATION_MORE_KEYS = joinKeys(
             ",", ".", "'", "#", ")", "(", "/", ";",
             "@", ":", "-", "\"", "+", "%", "&");
 }

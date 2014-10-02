@@ -19,8 +19,9 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.EuroCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.ItalianCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -39,7 +40,7 @@ public final class TestsItalian extends LayoutTestsBase {
     private static class ItalianITCustomizer extends EuroCustomizer {
         private final ItalianCustomizer mItalianCustomizer;
 
-        public ItalianITCustomizer(final Locale locale) {
+        ItalianITCustomizer(final Locale locale) {
             super(locale);
             mItalianCustomizer = new ItalianCustomizer(locale);
         }

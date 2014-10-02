@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard.layout;
 
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.latin.Constants;
@@ -29,15 +30,15 @@ import java.util.Locale;
 public final class Myanmar extends LayoutBase {
     private static final String LAYOUT_NAME = "myanmar";
 
-    public Myanmar(final LayoutCustomizer customizer) {
-        super(customizer, Symbols.class, SymbolsShifted.class);
+    public Myanmar(final Locale locale) {
+        super(new MyanmarCustomizer(locale), Symbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class MyanmarCustomizer extends LayoutCustomizer {
-        public MyanmarCustomizer(final Locale locale) { super(locale); }
+    private static class MyanmarCustomizer extends LayoutCustomizer {
+        MyanmarCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public int getNumberOfRows() { return 5; }

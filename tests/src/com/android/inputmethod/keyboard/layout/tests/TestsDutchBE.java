@@ -20,7 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Azerty;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.tests.TestsDutch.DutchCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.DutchCustomizer;
 
 import java.util.Locale;
 

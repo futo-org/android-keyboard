@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Swiss;
+import com.android.inputmethod.keyboard.layout.customizer.FrenchCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -36,7 +37,7 @@ public final class TestsFrenchCH extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class FrenchCHCustomizer extends FrenchCustomizer {
-        public FrenchCHCustomizer(final Locale locale) { super(locale); }
+        FrenchCHCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
