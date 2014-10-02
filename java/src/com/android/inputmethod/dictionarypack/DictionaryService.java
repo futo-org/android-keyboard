@@ -76,19 +76,29 @@ public final class DictionaryService extends Service {
      * How often, in milliseconds, we want to update the metadata. This is a
      * floor value; actually, it may happen several hours later, or even more.
      */
-    private static final long UPDATE_FREQUENCY = TimeUnit.DAYS.toMillis(4);
+    private static final long UPDATE_FREQUENCY_MILLIS = TimeUnit.DAYS.toMillis(4);
 
     /**
      * We are waked around midnight, local time. We want to wake between midnight and 6 am,
      * roughly. So use a random time between 0 and this delay.
      */
-    private static final int MAX_ALARM_DELAY = (int)TimeUnit.HOURS.toMillis(6);
+    private static final int MAX_ALARM_DELAY_MILLIS = (int)TimeUnit.HOURS.toMillis(6);
 
     /**
      * How long we consider a "very long time". If no update took place in this time,
      * the content provider will trigger an update in the background.
      */
-    private static final long VERY_LONG_TIME = TimeUnit.DAYS.toMillis(14);
+    private static final long VERY_LONG_TIME_MILLIS = TimeUnit.DAYS.toMillis(14);
+
+    /**
+     * After starting a download, how long we wait before considering it may be stuck. After this
+     * period is elapsed, if the keyboard tries to download again, then we cancel and re-register
+     * the request; if it's within this time, we just leave it be.
+     * It's important to note that we do not re-submit the request merely because the time is up.
+     * This is only to decide whether to cancel the old one and re-requesting when the keyboard
+     * fires a new request for the same data.
+     */
+    public static final long NO_CANCEL_DOWNLOAD_PERIOD_MILLIS = TimeUnit.SECONDS.toMillis(30);
 
     /**
      * An executor that serializes tasks given to it.
@@ -188,16 +198,16 @@ public final class DictionaryService extends Service {
      */
     private static void checkTimeAndMaybeSetupUpdateAlarm(final Context context) {
         // Of all clients, if the one that hasn't been updated for the longest
-        // is still more recent than UPDATE_FREQUENCY, do nothing.
-        if (!isLastUpdateAtLeastThisOld(context, UPDATE_FREQUENCY)) return;
+        // is still more recent than UPDATE_FREQUENCY_MILLIS, do nothing.
+        if (!isLastUpdateAtLeastThisOld(context, UPDATE_FREQUENCY_MILLIS)) return;
 
         PrivateLog.log("Date changed - registering alarm");
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
-        // Best effort to wake between midnight and MAX_ALARM_DELAY in the morning.
+        // Best effort to wake between midnight and MAX_ALARM_DELAY_MILLIS in the morning.
         // It doesn't matter too much if this is very inexact.
         final long now = System.currentTimeMillis();
-        final long alarmTime = now + new Random().nextInt(MAX_ALARM_DELAY);
+        final long alarmTime = now + new Random().nextInt(MAX_ALARM_DELAY_MILLIS);
         final Intent updateIntent = new Intent(DictionaryPackConstants.UPDATE_NOW_INTENT_ACTION);
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
                 updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -223,11 +233,11 @@ public final class DictionaryService extends Service {
     /**
      * Refreshes data if it hasn't been refreshed in a very long time.
      *
-     * This will check the last update time, and if it's been more than VERY_LONG_TIME,
+     * This will check the last update time, and if it's been more than VERY_LONG_TIME_MILLIS,
      * update metadata now - and possibly take subsequent update actions.
      */
     public static void updateNowIfNotUpdatedInAVeryLongTime(final Context context) {
-        if (!isLastUpdateAtLeastThisOld(context, VERY_LONG_TIME)) return;
+        if (!isLastUpdateAtLeastThisOld(context, VERY_LONG_TIME_MILLIS)) return;
         UpdateHandler.tryUpdate(context, false);
     }
 
