@@ -433,18 +433,18 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      *
      * @param context a context instance to open the database on
      * @param uri the URI to retrieve the metadata download ID of
-     * @return the metadata download ID, or NOT_AN_ID if no download is in progress
+     * @return the download id and start date, or null if the URL is not known
      */
-    public static long getMetadataDownloadIdForURI(final Context context,
-            final String uri) {
+    public static DownloadIdAndStartDate getMetadataDownloadIdAndStartDateForURI(
+            final Context context, final String uri) {
         SQLiteDatabase defaultDb = getDb(context, null);
         final Cursor cursor = defaultDb.query(CLIENT_TABLE_NAME,
-                new String[] { CLIENT_PENDINGID_COLUMN },
+                new String[] { CLIENT_PENDINGID_COLUMN, CLIENT_LAST_UPDATE_DATE_COLUMN },
                 CLIENT_METADATA_URI_COLUMN + " = ?", new String[] { uri },
                 null, null, null, null);
         try {
-            if (!cursor.moveToFirst()) return UpdateHandler.NOT_AN_ID;
-            return cursor.getInt(0); // Only one column, return it
+            if (!cursor.moveToFirst()) return null;
+            return new DownloadIdAndStartDate(cursor.getInt(0), cursor.getLong(1));
         } finally {
             cursor.close();
         }
@@ -922,6 +922,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             final long downloadId) {
         final ContentValues values = new ContentValues();
         values.put(CLIENT_PENDINGID_COLUMN, downloadId);
+        values.put(CLIENT_LAST_UPDATE_DATE_COLUMN, System.currentTimeMillis());
         final SQLiteDatabase defaultDb = getDb(context, "");
         final Cursor cursor = MetadataDbHelper.queryClientIds(context);
         if (null == cursor) return;
