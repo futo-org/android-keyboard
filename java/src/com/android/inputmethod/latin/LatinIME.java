@@ -102,7 +102,7 @@ import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -575,19 +575,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Has to be package-visible for unit tests
     @UsedForTesting
     void loadSettings() {
-        final Locale[] locales = mSubtypeSwitcher.getCurrentSubtypeLocales();
+        final Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
         final EditorInfo editorInfo = getCurrentInputEditorInfo();
         final InputAttributes inputAttributes = new InputAttributes(
                 editorInfo, isFullscreenMode(), getPackageName());
-        // TODO: pass the array instead
-        mSettings.loadSettings(this, locales[0], inputAttributes);
+        mSettings.loadSettings(this, locale, inputAttributes);
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(currentSettingsValues);
         // This method is called on startup and language switch, before the new layout has
         // been displayed. Opening dictionaries never affects responsivity as dictionaries are
         // asynchronously loaded.
         if (!mHandler.hasPendingReopenDictionaries()) {
-            resetDictionaryFacilitatorForLocale(locales);
+            resetDictionaryFacilitatorForLocale(locale);
         }
         mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
                 true /* allowsImplicitlySelectedSubtypes */));
@@ -629,34 +628,35 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void resetDictionaryFacilitatorIfNecessary() {
-        final Locale[] subtypeSwitcherLocales = mSubtypeSwitcher.getCurrentSubtypeLocales();
-        if (mDictionaryFacilitator.isForLocales(subtypeSwitcherLocales)) {
+        final Locale switcherSubtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        if (mDictionaryFacilitator.isForLocales(new Locale[] { switcherSubtypeLocale })) {
             return;
         }
-        final Locale[] subtypeLocales;
-        if (0 == subtypeSwitcherLocales.length) {
+        final String switcherLocaleStr = switcherSubtypeLocale.toString();
+        final Locale subtypeLocale;
+        if (TextUtils.isEmpty(switcherLocaleStr)) {
             // This happens in very rare corner cases - for example, immediately after a switch
             // to LatinIME has been requested, about a frame later another switch happens. In this
             // case, we are about to go down but we still don't know it, however the system tells
-            // us there is no current subtype.
+            // us there is no current subtype so the locale is the empty string. Take the best
+            // possible guess instead -- it's bound to have no consequences, and we have no way
+            // of knowing anyway.
             Log.e(TAG, "System is reporting no current subtype.");
-            subtypeLocales = new Locale[] { getResources().getConfiguration().locale };
+            subtypeLocale = getResources().getConfiguration().locale;
         } else {
-            subtypeLocales = subtypeSwitcherLocales;
+            subtypeLocale = switcherSubtypeLocale;
         }
-        resetDictionaryFacilitatorForLocale(subtypeLocales);
+        resetDictionaryFacilitatorForLocale(subtypeLocale);
     }
 
     /**
-     * Reset the facilitator by loading dictionaries for the locales and the current settings values
+     * Reset the facilitator by loading dictionaries for the locale and the current settings values.
      *
-     * @param locales the locales
+     * @param locale the locale
      */
-    // TODO: make sure the current settings always have the right locales, and read from them
-    private void resetDictionaryFacilitatorForLocale(final Locale[] locales) {
+    // TODO: make sure the current settings always have the right locale, and read from them
+    private void resetDictionaryFacilitatorForLocale(final Locale locale) {
         final SettingsValues settingsValues = mSettings.getCurrent();
-        // TODO: pass the array instead
-        final Locale locale = locales[0];
         mDictionaryFacilitator.resetDictionaries(this /* context */, locale,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
                 false /* forceReloadMainDictionary */, this);
@@ -881,7 +881,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Update to a gesture consumer with the current editor and IME state.
         mGestureConsumer = GestureConsumer.newInstance(editorInfo,
                 mInputLogic.getPrivateCommandPerformer(),
-                Arrays.asList(mSubtypeSwitcher.getCurrentSubtypeLocales()),
+                Collections.singletonList(mSubtypeSwitcher.getCurrentSubtypeLocale()),
                 switcher.getKeyboard());
 
         // Forward this event to the accessibility utilities, if enabled.
@@ -1434,7 +1434,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onStartBatchInput() {
         mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
         mGestureConsumer.onGestureStarted(
-                Arrays.asList(mSubtypeSwitcher.getCurrentSubtypeLocales()),
+                Collections.singletonList(mSubtypeSwitcher.getCurrentSubtypeLocale()),
                 mKeyboardSwitcher.getKeyboard());
     }
 
@@ -1558,7 +1558,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // We should clear the contextual strip if there is no suggestion from dictionaries.
                 || noSuggestionsFromDictionaries) {
             mSuggestionStripView.setSuggestions(suggestedWords,
-                    mSubtypeSwitcher.getCurrentSubtype().isRtlSubtype());
+                    SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
         }
     }
 
