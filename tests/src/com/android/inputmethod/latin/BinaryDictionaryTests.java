@@ -1237,15 +1237,17 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             wordSet.remove(word0);
             final HashSet<String> bigramWord1s = bigrams.get(word0);
             // TODO: Support ngram.
-            for (final WeightedString bigramTarget : wordProperty.getBigrams()) {
-                final String word1 = bigramTarget.mWord;
-                assertTrue(bigramWord1s.contains(word1));
-                final Pair<String, String> bigram = new Pair<>(word0, word1);
-                if (canCheckBigramProbability(formatVersion)) {
-                    final int bigramProbability = bigramProbabilitiesToCheckLater.get(bigram);
-                    assertEquals(bigramProbability, bigramTarget.getProbability());
+            if (wordProperty.mHasNgrams) {
+                for (final WeightedString bigramTarget : wordProperty.getBigrams()) {
+                    final String word1 = bigramTarget.mWord;
+                    assertTrue(bigramWord1s.contains(word1));
+                    final Pair<String, String> bigram = new Pair<>(word0, word1);
+                    if (canCheckBigramProbability(formatVersion)) {
+                        final int bigramProbability = bigramProbabilitiesToCheckLater.get(bigram);
+                        assertEquals(bigramProbability, bigramTarget.getProbability());
+                    }
+                    bigramSet.remove(bigram);
                 }
-                bigramSet.remove(bigram);
             }
             token = result.mNextToken;
         } while (token != 0);
