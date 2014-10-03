@@ -111,19 +111,14 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         for (final RichInputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
                     .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
-            final Locale[] locales = subtype.getLocales();
-            if (1 == locales.length) {
-                if (subtype.isNoLanguage()) {
-                    final String layoutName = SubtypeLocaleUtils
-                            .getKeyboardLayoutSetDisplayName(subtype.getRawSubtype());
-                    assertTrue(subtypeName, subtypeName.contains(layoutName));
-                } else {
-                    final String languageName = SubtypeLocaleUtils
-                            .getSubtypeLocaleDisplayNameInSystemLocale(locales[0].toString());
-                    assertTrue(subtypeName, subtypeName.contains(languageName));
-                }
+            if (subtype.isNoLanguage()) {
+                final String layoutName = SubtypeLocaleUtils
+                        .getKeyboardLayoutSetDisplayName(subtype.getRawSubtype());
+                assertTrue(subtypeName, subtypeName.contains(layoutName));
             } else {
-                // TODO: test multi-lingual subtype spacebar display
+                final String languageName = SubtypeLocaleUtils
+                        .getSubtypeLocaleDisplayNameInSystemLocale(subtype.getLocale());
+                assertTrue(subtypeName, subtypeName.contains(languageName));
             }
         }
     }
@@ -320,9 +315,9 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                     .getSubtypeDisplayNameInSystemLocale(rawSubtype);
             if (rawSubtype.equals(ARABIC) || rawSubtype.equals(FARSI)
                     || rawSubtype.equals(HEBREW)) {
-                assertTrue(subtypeName, subtype.isRtlSubtype());
+                assertTrue(subtypeName, SubtypeLocaleUtils.isRtlLanguage(subtype));
             } else {
-                assertFalse(subtypeName, subtype.isRtlSubtype());
+                assertFalse(subtypeName, SubtypeLocaleUtils.isRtlLanguage(subtype));
             }
         }
     }

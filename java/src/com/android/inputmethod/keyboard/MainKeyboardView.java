@@ -875,11 +875,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // Layout language name on spacebar.
     private String layoutLanguageOnSpacebar(final Paint paint,
             final RichInputMethodSubtype subtype, final int width) {
-        if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarHelper.FORMAT_TYPE_MULTIPLE) {
-            // TODO: return an appropriate string
-            return "";
-        }
-
         // Choose appropriate language name to fit into the width.
         if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarHelper.FORMAT_TYPE_FULL_LOCALE) {
             final String fullText = subtype.getFullDisplayName();
