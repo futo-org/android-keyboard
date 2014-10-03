@@ -108,10 +108,9 @@ public class Keyboard {
         mAltCodeKeysWhileTyping = Collections.unmodifiableList(params.mAltCodeKeysWhileTyping);
         mIconsSet = params.mIconsSet;
 
-        mProximityInfo = new ProximityInfo(params.mId.mLocale.toString(),
-                params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
-                mMostCommonKeyWidth, mMostCommonKeyHeight, mSortedKeys,
-                params.mTouchPositionCorrection);
+        mProximityInfo = new ProximityInfo(params.GRID_WIDTH, params.GRID_HEIGHT,
+                mOccupiedWidth, mOccupiedHeight, mMostCommonKeyWidth, mMostCommonKeyHeight,
+                mSortedKeys, params.mTouchPositionCorrection);
         mProximityCharsCorrectionEnabled = params.mProximityCharsCorrectionEnabled;
     }
 
