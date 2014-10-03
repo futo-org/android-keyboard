@@ -55,9 +55,8 @@ public class PersonalizationDictionaryTests extends AndroidTestCase {
         dictTypes.add(Dictionary.TYPE_MAIN);
         dictTypes.add(Dictionary.TYPE_PERSONALIZATION);
         final DictionaryFacilitator dictionaryFacilitator = new DictionaryFacilitator(getContext());
-        dictionaryFacilitator.resetDictionariesForTesting(getContext(),
-                new Locale[] { LOCALE_EN_US }, dictTypes, new HashMap<String, File>(),
-                new HashMap<String, Map<String, String>>());
+        dictionaryFacilitator.resetDictionariesForTesting(getContext(), LOCALE_EN_US, dictTypes,
+                new HashMap<String, File>(), new HashMap<String, Map<String, String>>());
         // Set subtypes.
         RichInputMethodManager.init(getContext());
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();

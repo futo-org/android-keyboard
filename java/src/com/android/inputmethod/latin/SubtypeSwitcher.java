@@ -170,21 +170,15 @@ public final class SubtypeSwitcher {
             Log.w(TAG, "onSubtypeChanged: " + newSubtype.getNameForLogging());
         }
 
-        final Locale[] newLocales = newSubtype.getLocales();
-        if (newLocales.length > 1) {
-            // In multi-locales mode, the system language is never the same as the input language
-            // because there is no single input language.
-            mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(false);
-        } else {
-            final Locale newLocale = newLocales[0];
-            final Locale systemLocale = mResources.getConfiguration().locale;
-            final boolean sameLocale = systemLocale.equals(newLocale);
-            final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
-            final boolean implicitlyEnabled = mRichImm
-                    .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype.getRawSubtype());
-            mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(
-                    sameLocale || (sameLanguage && implicitlyEnabled));
-        }
+        final Locale newLocale = SubtypeLocaleUtils.getSubtypeLocale(newSubtype);
+        final Locale systemLocale = mResources.getConfiguration().locale;
+        final boolean sameLocale = systemLocale.equals(newLocale);
+        final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
+        final boolean implicitlyEnabled = mRichImm
+                .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype.getRawSubtype());
+        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(
+                sameLocale || (sameLanguage && implicitlyEnabled));
+
         updateShortcutIME();
     }
 
@@ -290,11 +284,11 @@ public final class SubtypeSwitcher {
         sForcedSubtypeForTesting = new RichInputMethodSubtype(subtype);
     }
 
-    public Locale[] getCurrentSubtypeLocales() {
+    public Locale getCurrentSubtypeLocale() {
         if (null != sForcedSubtypeForTesting) {
-            return sForcedSubtypeForTesting.getLocales();
+            return LocaleUtils.constructLocaleFromString(sForcedSubtypeForTesting.getLocale());
         }
-        return getCurrentSubtype().getLocales();
+        return SubtypeLocaleUtils.getSubtypeLocale(getCurrentSubtype());
     }
 
     public RichInputMethodSubtype getCurrentSubtype() {
