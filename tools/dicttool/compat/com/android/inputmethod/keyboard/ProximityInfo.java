@@ -18,11 +18,10 @@ package com.android.inputmethod.keyboard;
 
 public class ProximityInfo {
     public long getNativeProximityInfo() { return 0l; }
-    private static native long setProximityInfoNative(String locale,
-            int displayWidth, int displayHeight, int gridWidth, int gridHeight,
-            int mostCommonKeyWidth, int mostCommonKeyHeight, int[] proximityCharsArray,
-            int keyCount, int[] keyXCoordinates, int[] keyYCoordinates, int[] keyWidths,
-            int[] keyHeights, int[] keyCharCodes, float[] sweetSpotCenterXs,
+    private static native long setProximityInfoNative(int displayWidth, int displayHeight,
+            int gridWidth, int gridHeight, int mostCommonKeyWidth, int mostCommonKeyHeight,
+            int[] proximityCharsArray, int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
+            int[] keyWidths, int[] keyHeights, int[] keyCharCodes, float[] sweetSpotCenterXs,
             float[] sweetSpotCenterYs, float[] sweetSpotRadii);
     private static native void releaseProximityInfoNative(long nativeProximityInfo);
 }
