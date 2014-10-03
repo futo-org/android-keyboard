@@ -35,7 +35,7 @@
                  U+090D: "ऍ" DEVANAGARI LETTER CANDRA E -->
             <key-style
                 latin:styleName="moreKeysDevanagariSignVirama"
-                latin:moreKeys="&#x25CC;&#x0945;,&#x090D;" />
+                latin:moreKeys="&#x25CC;&#x0945;|&#x0945;,&#x090D;" />
         </case>
         <case latin:keyboardLayoutSet="marathi">
             <!-- U+0905: "अ" DEVANAGARI LETTER A -->
