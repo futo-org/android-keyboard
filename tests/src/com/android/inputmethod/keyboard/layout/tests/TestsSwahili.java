@@ -19,8 +19,8 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -37,7 +37,7 @@ public final class TestsSwahili extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class SwahiliCustomizer extends LayoutCustomizer {
-        public SwahiliCustomizer(final Locale locale) { super(locale); }
+        SwahiliCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {

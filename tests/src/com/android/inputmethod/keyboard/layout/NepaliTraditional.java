@@ -20,7 +20,7 @@ import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.
 
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.layout.Hindi.HindiSymbols;
-import com.android.inputmethod.keyboard.layout.NepaliRomanized.NepaliRomanizedCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.NepaliCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -32,15 +32,15 @@ import java.util.Locale;
 public final class NepaliTraditional extends LayoutBase {
     private static final String LAYOUT_NAME = "nepali_traditional";
 
-    public NepaliTraditional(final LayoutCustomizer customizer) {
-        super(customizer, HindiSymbols.class, SymbolsShifted.class);
+    public NepaliTraditional(final Locale locale) {
+        super(new NepaliTraditionalCustomizer(locale), HindiSymbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class NepaliTraditionalCustomizer extends NepaliRomanizedCustomizer {
-        public NepaliTraditionalCustomizer(final Locale locale) { super(locale); }
+    private static class NepaliTraditionalCustomizer extends NepaliCustomizer {
+        NepaliTraditionalCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey[] getRightShiftKeys(final boolean isPhone) { return EMPTY_KEYS; }

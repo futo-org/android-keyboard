@@ -20,7 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Tamil;
-import com.android.inputmethod.keyboard.layout.Tamil.TamilCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.TamilCustomizer;
 
 import java.util.Locale;
 

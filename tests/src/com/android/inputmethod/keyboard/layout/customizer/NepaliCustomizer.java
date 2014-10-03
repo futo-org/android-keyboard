@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
-import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.SymbolsShifted;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
-import com.android.inputmethod.latin.Constants;
 
 import java.util.Locale;
 
-public class BengaliCustomizer extends LayoutCustomizer {
-    public BengaliCustomizer(final Locale locale) { super(locale); }
+public class NepaliCustomizer extends DevanagariCustomizer {
+    public NepaliCustomizer(final Locale locale) { super(locale); }
 
     @Override
-    public ExpectedKey getAlphabetKey() { return BENGALI_ALPHABET_KEY; }
+    public ExpectedKey getCurrencyKey() { return CURRENCY_NEPALI; }
 
     @Override
     public ExpectedKey[] getOtherCurrencyKeys() {
@@ -36,13 +34,12 @@ public class BengaliCustomizer extends LayoutCustomizer {
     }
 
     @Override
-    public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
-        return isPhone ? EMPTY_KEYS : LayoutBase.EXCLAMATION_AND_QUESTION_MARKS;
+    public ExpectedKey[] getSpaceKeys(final boolean isPhone) {
+        return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
     }
 
-    // U+0995: "क" BENGALI LETTER KA
-    // U+0996: "ख" BENGALI LETTER KHA
-    // U+0997: "ग" BENGALI LETTER GA
-    private static final ExpectedKey BENGALI_ALPHABET_KEY = LayoutBase.key(
-            "\u0995\u0996\u0997", Constants.CODE_SWITCH_ALPHA_SYMBOL);
+    // U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN
+    private static final ExpectedKey CURRENCY_NEPALI = key("\u0930\u0941\u002E",
+            Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.POUND_SIGN,
+            Symbols.YEN_SIGN, Symbols.PESO_SIGN);
 }

@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Khmer;
-import com.android.inputmethod.keyboard.layout.Khmer.KhmerCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 
 import java.util.Locale;
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsKhmerKH extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("km", "KH");
-    private static final LayoutBase LAYOUT = new Khmer(new KhmerCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Khmer(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

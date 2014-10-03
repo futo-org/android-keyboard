@@ -19,9 +19,8 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwertz;
-import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
+import com.android.inputmethod.keyboard.layout.customizer.GermanCustomizer.GermanEuroCustomizer;
 
 import java.util.Locale;
 
@@ -35,21 +34,4 @@ public final class TestsGerman extends LayoutTestsBase {
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
-
-    static class GermanEuroCustomizer extends GermanCustomizer {
-        final EuroCustomizer mEuroCustomizer;
-
-        public GermanEuroCustomizer(final Locale locale) {
-            super(locale);
-            mEuroCustomizer = new EuroCustomizer(locale);
-        }
-
-        @Override
-        public ExpectedKey getCurrencyKey() { return mEuroCustomizer.getCurrencyKey(); }
-
-        @Override
-        public ExpectedKey[] getOtherCurrencyKeys() {
-            return mEuroCustomizer.getOtherCurrencyKeys();
-        }
-    }
 }

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
-class FrenchCustomizer extends LayoutCustomizer {
-    FrenchCustomizer(final Locale locale) { super(locale); }
+public class FrenchCustomizer extends LayoutCustomizer {
+    public FrenchCustomizer(final Locale locale) { super(locale); }
 
     @Override
     public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
@@ -85,5 +85,22 @@ class FrenchCustomizer extends LayoutCustomizer {
                 // U+010D: "č" LATIN SMALL LETTER C WITH CARON
                 .setMoreKeysOf("c", "\u00E7", "\u0107", "\u010D")
                 .setAdditionalMoreKeysPositionOf("c", 2);
+    }
+
+    public static final class FrenchEuroCustomizer extends FrenchCustomizer {
+        private final EuroCustomizer mEuroCustomizer;
+
+        public FrenchEuroCustomizer(final Locale locale) {
+            super(locale);
+            mEuroCustomizer = new EuroCustomizer(locale);
+        }
+
+        @Override
+        public final ExpectedKey getCurrencyKey() { return mEuroCustomizer.getCurrencyKey(); }
+
+        @Override
+        public final ExpectedKey[] getOtherCurrencyKeys() {
+            return mEuroCustomizer.getOtherCurrencyKeys();
+        }
     }
 }

@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.UzbekCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -36,9 +37,7 @@ public final class TestsUzbekQwerty extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class UzbekQwertyCustomizer extends UzbekCustomizer {
-        public UzbekQwertyCustomizer(final Locale locale) {
-            super(locale);
-        }
+        UzbekQwertyCustomizer(final Locale locale) { super(locale); }
 
         @Override
         protected void setUzbekKeys(final ExpectedKeyboardBuilder builder) {

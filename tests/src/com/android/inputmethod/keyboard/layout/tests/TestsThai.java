@@ -20,7 +20,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Thai;
-import com.android.inputmethod.keyboard.layout.Thai.ThaiCustomizer;
 
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsThai extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("th");
-    private static final LayoutBase LAYOUT = new Thai(new ThaiCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Thai(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

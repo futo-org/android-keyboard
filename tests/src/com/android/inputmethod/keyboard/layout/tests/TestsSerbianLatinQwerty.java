@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.SerbianLatinCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -37,14 +38,12 @@ public final class TestsSerbianLatinQwerty extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class SerbianLatinQwertyCustomizer extends SerbianLatinCustomizer {
-        public SerbianLatinQwertyCustomizer(final Locale locale) {
-            super(locale);
-        }
+        SerbianLatinQwertyCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
             return isPhone ? EMPTY_KEYS
-                    : joinKeys(LayoutBase.EXCLAMATION_AND_QUESTION_MARKS, LayoutBase.SHIFT_KEY);
+                    : joinKeys(EXCLAMATION_AND_QUESTION_MARKS, SHIFT_KEY);
         }
 
         @Override

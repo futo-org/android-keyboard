@@ -20,8 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Azerty;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
-import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
+import com.android.inputmethod.keyboard.layout.customizer.FrenchCustomizer.FrenchEuroCustomizer;
 
 import java.util.Locale;
 
@@ -35,21 +34,4 @@ public final class TestsFrench extends LayoutTestsBase {
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
-
-    static final class FrenchEuroCustomizer extends FrenchCustomizer {
-        private final EuroCustomizer mEuroCustomizer;
-
-        public FrenchEuroCustomizer(final Locale locale) {
-            super(locale);
-            mEuroCustomizer = new EuroCustomizer(locale);
-        }
-
-        @Override
-        public final ExpectedKey getCurrencyKey() { return mEuroCustomizer.getCurrencyKey(); }
-
-        @Override
-        public final ExpectedKey[] getOtherCurrencyKeys() {
-            return mEuroCustomizer.getOtherCurrencyKeys();
-        }
-    }
 }

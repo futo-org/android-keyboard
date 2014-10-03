@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Hebrew;
-import com.android.inputmethod.keyboard.layout.Hebrew.HebrewCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 
 import java.util.Locale;
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public class TestsHebrew extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("iw");
-    private static final LayoutBase LAYOUT = new Hebrew(new HebrewCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Hebrew(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

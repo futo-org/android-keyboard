@@ -20,7 +20,8 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Colemak;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.NoLanguageCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -39,7 +40,7 @@ public final class TestsNoLanguageColemak extends LayoutTestsBase {
     private static class NoLanguageColemakCustomizer extends LayoutCustomizer {
         private final NoLanguageCustomizer mNoLanguageCustomizer;
 
-        public NoLanguageColemakCustomizer(final Locale locale) {
+        NoLanguageColemakCustomizer(final Locale locale) {
             super(locale);
             mNoLanguageCustomizer = new NoLanguageCustomizer(locale);
         }

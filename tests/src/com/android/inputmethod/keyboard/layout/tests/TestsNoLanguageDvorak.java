@@ -19,8 +19,9 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Dvorak;
-import com.android.inputmethod.keyboard.layout.Dvorak.DvorakCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
+import com.android.inputmethod.keyboard.layout.customizer.DvorakCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.NoLanguageCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -39,7 +40,7 @@ public final class TestsNoLanguageDvorak extends LayoutTestsBase {
     private static class NoLanguageDvorakCustomizer extends DvorakCustomizer {
         private final NoLanguageCustomizer mNoLanguageCustomizer;
 
-        public NoLanguageDvorakCustomizer(final Locale locale) {
+        NoLanguageDvorakCustomizer(final Locale locale) {
             super(locale);
             mNoLanguageCustomizer = new NoLanguageCustomizer(locale);
         }

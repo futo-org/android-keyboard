@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Nordic;
+import com.android.inputmethod.keyboard.layout.customizer.SwedishCustomizer;
 
 import java.util.Locale;
 

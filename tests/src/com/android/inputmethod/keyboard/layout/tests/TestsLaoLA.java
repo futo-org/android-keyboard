@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Lao;
-import com.android.inputmethod.keyboard.layout.Lao.LaoCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 
 import java.util.Locale;
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsLaoLA extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("lo", "LA");
-    private static final LayoutBase LAYOUT = new Lao(new LaoCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Lao(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

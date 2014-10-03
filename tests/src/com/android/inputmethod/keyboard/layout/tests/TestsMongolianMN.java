@@ -20,7 +20,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Mongolian;
-import com.android.inputmethod.keyboard.layout.Mongolian.MongolianMNCustomizer;
 
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsMongolianMN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("mn", "MN");
-    private static final LayoutBase LAYOUT = new Mongolian(new MongolianMNCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Mongolian(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

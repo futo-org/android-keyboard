@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
-import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.SerbianQwertz;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
-class SerbianLatinCustomizer extends LayoutCustomizer {
+public class SerbianLatinCustomizer extends LayoutCustomizer {
     public SerbianLatinCustomizer(final Locale locale) { super(locale); }
 
     @Override
     public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
-        return isPhone ? EMPTY_KEYS : LayoutBase.EXCLAMATION_AND_QUESTION_MARKS;
+        return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
     }
 
     protected void setSerbianKeys(final ExpectedKeyboardBuilder builder) {

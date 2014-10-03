@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
 import com.android.inputmethod.keyboard.layout.Symbols;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
-class GermanCustomizer extends LayoutCustomizer {
+public class GermanCustomizer extends LayoutCustomizer {
     public GermanCustomizer(final Locale locale) { super(locale); }
 
     @Override
@@ -85,5 +84,22 @@ class GermanCustomizer extends LayoutCustomizer {
                 // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
                 // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
                 .setMoreKeysOf("n", "\u00F1", "\u0144");
+    }
+
+    public static class GermanEuroCustomizer extends GermanCustomizer {
+        private final EuroCustomizer mEuroCustomizer;
+
+        public GermanEuroCustomizer(final Locale locale) {
+            super(locale);
+            mEuroCustomizer = new EuroCustomizer(locale);
+        }
+
+        @Override
+        public ExpectedKey getCurrencyKey() { return mEuroCustomizer.getCurrencyKey(); }
+
+        @Override
+        public ExpectedKey[] getOtherCurrencyKeys() {
+            return mEuroCustomizer.getOtherCurrencyKeys();
+        }
     }
 }

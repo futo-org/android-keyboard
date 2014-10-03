@@ -22,6 +22,7 @@ import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.SymbolsShifted;
+import com.android.inputmethod.keyboard.layout.customizer.EnglishCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
@@ -38,7 +39,7 @@ public final class TestsEnglishIN extends TestsEnglishUS {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class EnglishINCustomizer extends EnglishCustomizer {
-        public EnglishINCustomizer(final Locale locale) { super(locale); }
+        EnglishINCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }

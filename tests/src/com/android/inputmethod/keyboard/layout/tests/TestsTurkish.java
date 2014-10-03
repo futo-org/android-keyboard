@@ -19,8 +19,9 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.EuroCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.TurkicCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -39,7 +40,7 @@ public final class TestsTurkish extends LayoutTestsBase {
     private static class TurkishCustomizer extends EuroCustomizer {
         private final TurkicCustomizer mTurkicCustomizer;
 
-        public TurkishCustomizer(final Locale locale) {
+        TurkishCustomizer(final Locale locale) {
             super(locale);
             mTurkicCustomizer = new TurkicCustomizer(locale);
         }

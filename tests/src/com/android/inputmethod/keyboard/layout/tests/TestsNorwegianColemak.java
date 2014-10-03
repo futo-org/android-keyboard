@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Colemak;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
+import com.android.inputmethod.keyboard.layout.customizer.NorwegianCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -36,9 +37,7 @@ public final class TestsNorwegianColemak extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class NorwegianColemakCustomizer extends NorwegianCustomizer {
-        public NorwegianColemakCustomizer(final Locale locale) {
-            super(locale);
-        }
+        NorwegianColemakCustomizer(final Locale locale) { super(locale); }
 
         @Override
         protected void setNordicKeys(final ExpectedKeyboardBuilder builder) {

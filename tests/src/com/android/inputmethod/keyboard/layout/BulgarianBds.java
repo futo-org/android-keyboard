@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout;
 
-import com.android.inputmethod.keyboard.layout.EastSlavic.EastSlavicCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.EastSlavicCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -25,15 +25,15 @@ import java.util.Locale;
 public final class BulgarianBds extends LayoutBase {
     private static final String LAYOUT_NAME = "bulgarian_bds";
 
-    public BulgarianBds(final LayoutCustomizer customizer) {
-        super(customizer, Symbols.class, SymbolsShifted.class);
+    public BulgarianBds(final Locale locale) {
+        super(new BulgarianBdsCustomizer(locale), Symbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class BulgarianBdsCustomizer extends EastSlavicCustomizer {
-        public BulgarianBdsCustomizer(final Locale locale) { super(locale); }
+    private static class BulgarianBdsCustomizer extends EastSlavicCustomizer {
+        BulgarianBdsCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey[] getDoubleQuoteMoreKeys() { return Symbols.DOUBLE_QUOTES_R9L; }

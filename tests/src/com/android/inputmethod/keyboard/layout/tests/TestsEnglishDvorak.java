@@ -19,9 +19,8 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Dvorak;
-import com.android.inputmethod.keyboard.layout.Dvorak.DvorakCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
+import com.android.inputmethod.keyboard.layout.customizer.DvorakCustomizer.EnglishDvorakCustomizer;
 
 import java.util.Locale;
 
@@ -35,18 +34,4 @@ public class TestsEnglishDvorak extends LayoutTestsBase {
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
-
-    public static class EnglishDvorakCustomizer extends DvorakCustomizer {
-        private final EnglishCustomizer mEnglishCustomizer;
-
-        EnglishDvorakCustomizer(final Locale locale) {
-            super(locale);
-            mEnglishCustomizer = new EnglishCustomizer(locale);
-        }
-
-        @Override
-        public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
-            return mEnglishCustomizer.setAccentedLetters(builder);
-        }
-    }
 }

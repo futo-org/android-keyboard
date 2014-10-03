@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout;
 
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.keyboard.layout.expected.AbstractLayoutBase;
@@ -37,7 +37,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
         builder.replaceKeyOfLabel(OTHER_CURRENCIES, (Object[])customizer.getOtherCurrencyKeys());
         if (isPhone) {
             builder.addKeysOnTheLeftOfRow(3, customizer.getBackToSymbolsKey())
-                    .addKeysOnTheRightOfRow(3, LayoutBase.DELETE_KEY)
+                    .addKeysOnTheRightOfRow(3, DELETE_KEY)
                     .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
                     .addKeysOnTheRightOfRow(4, customizer.getEnterKey(isPhone));
         } else {
@@ -45,7 +45,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
             // U+00BF: "¿" INVERTED QUESTION MARK
             // U+00A1: "¡" INVERTED EXCLAMATION MARK
             builder.addKeysOnTheRightOfRow(3, (Object[])joinKeys("\u00A1", "\u00BF"));
-            builder.addKeysOnTheRightOfRow(1, LayoutBase.DELETE_KEY)
+            builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(2, customizer.getEnterKey(isPhone))
                     .addKeysOnTheLeftOfRow(3, customizer.getBackToSymbolsKey())
                     .addKeysOnTheRightOfRow(3, customizer.getBackToSymbolsKey())
@@ -122,7 +122,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
                     // U+2264: "≤" LESS-THAN OR EQUAL TO
                     // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
                     key("<", joinMoreKeys("\u2039", "\u2264", "\u00AB")),
-                    LayoutBase.SPACE_KEY,
+                    SPACE_KEY,
                     // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
                     // U+2265: "≥" GREATER-THAN EQUAL TO
                     // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK

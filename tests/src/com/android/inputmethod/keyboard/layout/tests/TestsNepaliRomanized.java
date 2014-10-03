@@ -20,7 +20,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.NepaliRomanized;
-import com.android.inputmethod.keyboard.layout.NepaliRomanized.NepaliRomanizedCustomizer;
 
 import java.util.Locale;
 
@@ -30,8 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsNepaliRomanized extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("ne", "NP");
-    private static final LayoutBase LAYOUT = new NepaliRomanized(
-            new NepaliRomanizedCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new NepaliRomanized(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

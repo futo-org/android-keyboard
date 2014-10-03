@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.layout;
 
 import com.android.inputmethod.keyboard.layout.Symbols.RtlSymbols;
 import com.android.inputmethod.keyboard.layout.SymbolsShifted.RtlSymbolsShifted;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.latin.Constants;
@@ -27,17 +28,15 @@ import java.util.Locale;
 public final class Arabic extends LayoutBase {
     private static final String LAYOUT_NAME = "arabic";
 
-    public Arabic(final LayoutCustomizer customizer) {
-        super(customizer, ArabicSymbols.class, ArabicSymbolsShifted.class);
+    public Arabic(final Locale locale) {
+        super(new ArabicCustomizer(locale), ArabicSymbols.class, ArabicSymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class ArabicCustomizer extends LayoutCustomizer {
-        public ArabicCustomizer(final Locale locale) {
-            super(locale);
-        }
+    private static class ArabicCustomizer extends LayoutCustomizer {
+        ArabicCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getAlphabetKey() { return ARABIC_ALPHABET_KEY; }
@@ -141,12 +140,11 @@ public final class Arabic extends LayoutBase {
     ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) {
         if (isPhone) {
             return ALPHABET_COMMON;
-        } else {
-            final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
-            // U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
-            builder.insertKeysAtRow(3, 2, "\u0626");
-            return builder.build();
         }
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
+        // U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
+        builder.insertKeysAtRow(3, 2, "\u0626");
+        return builder.build();
     }
 
     @Override

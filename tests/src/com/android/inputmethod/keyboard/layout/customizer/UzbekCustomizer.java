@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
 import com.android.inputmethod.keyboard.layout.Nordic;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
-class UzbekCustomizer extends TurkicCustomizer {
-    public UzbekCustomizer(final Locale locale) {
-        super(locale);
-    }
+public class UzbekCustomizer extends TurkicCustomizer {
+    public UzbekCustomizer(final Locale locale) { super(locale); }
 
     protected void setUzbekKeys(final ExpectedKeyboardBuilder builder) {
         builder

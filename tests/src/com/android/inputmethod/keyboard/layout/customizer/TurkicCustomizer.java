@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -24,7 +23,7 @@ import java.util.Locale;
 /**
  * Turkic languages layout customizer.
  */
-class TurkicCustomizer extends LayoutCustomizer {
+public class TurkicCustomizer extends LayoutCustomizer {
     public TurkicCustomizer(final Locale locale) { super(locale); }
 
     @Override

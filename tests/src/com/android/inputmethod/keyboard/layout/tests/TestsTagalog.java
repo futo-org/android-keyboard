@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Spanish;
+import com.android.inputmethod.keyboard.layout.customizer.SpanishCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
@@ -36,15 +37,11 @@ public class TestsTagalog extends TestsSpanish {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class TagalogCustomizer extends SpanishCustomizer {
-
-        public TagalogCustomizer(final Locale locale) {
-            super(locale);
-        }
+        TagalogCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey[] getPunctuationMoreKeys(final boolean isPhone) {
-            return isPhone ? LayoutBase.PHONE_PUNCTUATION_MORE_KEYS
-                    : LayoutBase.TABLET_PUNCTUATION_MORE_KEYS;
+            return isPhone ? PHONE_PUNCTUATION_MORE_KEYS : TABLET_PUNCTUATION_MORE_KEYS;
         }
     }
 }

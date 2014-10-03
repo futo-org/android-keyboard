@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.EstonianEECustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -36,9 +37,7 @@ public final class TestsEstonianEEQwerty extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class EstonianEEQwertyCustomizer extends EstonianEECustomizer {
-        public EstonianEEQwertyCustomizer(final Locale locale) {
-            super(locale);
-        }
+        EstonianEEQwertyCustomizer(final Locale locale) { super(locale); }
 
         @Override
         protected void setNordicKeys(final ExpectedKeyboardBuilder builder) {

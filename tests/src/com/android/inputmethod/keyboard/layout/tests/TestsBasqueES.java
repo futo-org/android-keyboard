@@ -19,8 +19,9 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Spanish;
+import com.android.inputmethod.keyboard.layout.customizer.EuroCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.SpanishCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -39,7 +40,7 @@ public class TestsBasqueES extends LayoutTestsBase {
     private static class BasqueESCustomizer extends EuroCustomizer {
         private final SpanishCustomizer mSpanishCustomizer;
 
-        public BasqueESCustomizer(final Locale locale) {
+        BasqueESCustomizer(final Locale locale) {
             super(locale);
             mSpanishCustomizer = new SpanishCustomizer(locale);
         }

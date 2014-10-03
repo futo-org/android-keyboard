@@ -17,10 +17,9 @@
 package com.android.inputmethod.keyboard.layout;
 
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-
-import java.util.Locale;
 
 /**
  * The PC QWERTY alphabet keyboard.
@@ -34,35 +33,6 @@ public final class PcQwerty extends LayoutBase {
 
     @Override
     public String getName() { return LAYOUT_NAME; }
-
-    public static class PcQwertyCustomizer extends LayoutCustomizer {
-        public PcQwertyCustomizer(final Locale locale) { super(locale); }
-
-        @Override
-        public int getNumberOfRows() { return 5; }
-
-        @Override
-        public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) {
-            return joinKeys(SHIFT_KEY);
-        }
-
-        @Override
-        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
-            return joinKeys(SHIFT_KEY);
-        }
-
-        @Override
-        public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return joinKeys(SETTINGS_KEY);
-        }
-
-        @Override
-        public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
-            return isPhone
-                    ? joinKeys(key(ENTER_KEY, EMOJI_ACTION_KEY))
-                    : joinKeys(EMOJI_NORMAL_KEY);
-        }
-    }
 
     @Override
     ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) {

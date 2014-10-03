@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Farsi;
-import com.android.inputmethod.keyboard.layout.Farsi.FarsiCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 
 import java.util.Locale;
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public class TestsPersian extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("fa");
-    private static final LayoutBase LAYOUT = new Farsi(new FarsiCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Farsi(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

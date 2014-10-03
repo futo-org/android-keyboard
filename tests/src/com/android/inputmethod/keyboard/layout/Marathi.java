@@ -19,9 +19,9 @@ package com.android.inputmethod.keyboard.layout;
 import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.*;
 
 import com.android.inputmethod.keyboard.layout.Hindi.HindiSymbols;
+import com.android.inputmethod.keyboard.layout.customizer.DevanagariCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.keyboard.layout.tests.DevanagariCustomizer;
 
 import java.util.Locale;
 
@@ -31,20 +31,37 @@ import java.util.Locale;
 public final class Marathi extends LayoutBase {
     private static final String LAYOUT_NAME = "marathi";
 
-    public Marathi(final LayoutCustomizer customizer) {
-        super(customizer, HindiSymbols.class, SymbolsShifted.class);
+    public Marathi(final Locale locale) {
+        super(new MarathiCustomizer(locale), HindiSymbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class MarathiCustomizer extends DevanagariCustomizer {
-        public MarathiCustomizer(final Locale locale) { super(locale); }
+    private static class MarathiCustomizer extends DevanagariCustomizer {
+        MarathiCustomizer(final Locale locale) { super(locale); }
+
+        @Override
+        public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
+
+        @Override
+        public ExpectedKey[] getOtherCurrencyKeys() {
+            return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
+        }
 
         @Override
         public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) {
             return EMPTY_KEYS;
         }
+
+        @Override
+        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
+            return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
+        }
+
+        // U+20B9: "₹" INDIAN RUPEE SIGN
+        private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
+                Symbols.CURRENCY_GENERIC_MORE_KEYS);
     }
 
     @Override
