@@ -40,8 +40,7 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="10.8%p" />
-        <include latin:keyboardLayout="@xml/rowkeys_nepali_traditional3_left6" />
-        <include latin:keyboardLayout="@xml/rowkeys_nepali_traditional3_right3" />
+        <include latin:keyboardLayout="@xml/rowkeys_nepali_traditional3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />

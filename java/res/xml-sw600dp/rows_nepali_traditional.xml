@@ -45,8 +45,8 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="10.0%p" />
-        <include latin:keyboardLayout="@xml/rowkeys_nepali_traditional3_left6" />
-        <include latin:keyboardLayout="@xml/rowkeys_nepali_traditional3_right5" />
-    </Row>
+        <include latin:keyboardLayout="@xml/rowkeys_nepali_traditional3" />
+        <include latin:keyboardLayout="@xml/keys_exclamation_question" />
+        </Row>
     <include latin:keyboardLayout="@xml/row_qwerty4" />
 </merge>

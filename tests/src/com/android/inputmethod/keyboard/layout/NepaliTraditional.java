@@ -43,82 +43,20 @@ public final class NepaliTraditional extends LayoutBase {
         NepaliTraditionalCustomizer(final Locale locale) { super(locale); }
 
         @Override
-        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) { return EMPTY_KEYS; }
-
-        @Override
-        public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
-            if (isPhone) {
-                // U+094D: "्" DEVANAGARI SIGN VIRAMA
-                return joinKeys(key(SIGN_VIRAMA, "\u094D", PHONE_PUNCTUATION_MORE_KEYS));
-            }
-            return super.getKeysRightToSpacebar(isPhone);
+        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
+            return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
         }
     }
 
     @Override
-    ExpectedKey[][] getCommonAlphabetLayout(boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
-        if (isPhone) {
-            builder.addKeysOnTheRightOfRow(3,
-                    // U+0947: "े" DEVANAGARI VOWEL SIGN E
-                    // U+0903: "ः‍" DEVANAGARI SIGN VISARGA
-                    // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
-                    key(VOWEL_SIGN_E, "\u0947", joinMoreKeys(
-                            moreKey(SIGN_VISARGA, "\u0903"), "\u093D")),
-                    // U+0964: "।" DEVANAGARI DANDA
-                    "\u0964",
-                    // U+0930: "र" DEVANAGARI LETTER RA
-                    // U+0930/U+0941: "रु" DEVANAGARI LETTER RA/DEVANAGARI VOWEL SIGN U
-                    key("\u0930", moreKey("\u0930\u0941")));
-        } else {
-            builder.addKeysOnTheRightOfRow(3,
-                    // U+0903: "ः" DEVANAGARI SIGN VISARGA
-                    // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
-                    key(SIGN_VISARGA, "\u0903", moreKey("\u093D")),
-                    // U+0947: "े" DEVANAGARI VOWEL SIGN E
-                    key(VOWEL_SIGN_E, "\u0947"),
-                    // U+0964: "।" DEVANAGARI DANDA
-                    "\u0964",
-                    // U+0930: "र" DEVANAGARI LETTER RA
-                    key("\u0930", moreKey("!")),
-                    // U+094D: "्" DEVANAGARI SIGN VIRAMA
-                    key(SIGN_VIRAMA, "\u094D", moreKey("?")));
-        }
-        return builder.build();
-    }
+    ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) { return ALPHABET_COMMON; }
 
     @Override
-    ExpectedKey[][] getCommonAlphabetShiftLayout(boolean isPhone, final int elementId) {
+    ExpectedKey[][] getCommonAlphabetShiftLayout(final boolean isPhone, final int elementId) {
         if (elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
             return getCommonAlphabetLayout(isPhone);
         }
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
-                ALPHABET_SHIFTED_COMMON);
-        if (isPhone) {
-            builder.addKeysOnTheRightOfRow(3,
-                    // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
-                    key(SIGN_ANUSVARA, "\u0902"),
-                    // U+0919: "ङ" DEVANAGARI LETTER NGA
-                    "\u0919",
-                    // U+0948: "ै" DEVANAGARI VOWEL SIGN AI
-                    // U+0936/U+094D/U+0930:
-                    //     "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA
-                    key(VOWEL_SIGN_AI, "\u0948", moreKey("\u0936\u094D\u0930")));
-        } else {
-            builder.addKeysOnTheRightOfRow(3,
-                    // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
-                    key(SIGN_ANUSVARA, "\u0902"),
-                    // U+0919: "ङ" DEVANAGARI LETTER NGA
-                    "\u0919",
-                    // U+0948: "ै" DEVANAGARI VOWEL SIGN AI
-                    // U+0936/U+094D/U+0930:
-                    //     "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA
-                    key(VOWEL_SIGN_AI, "\u0948", moreKey("\u0936\u094D\u0930")),
-                    // U+0930/U+0941: "रु" DEVANAGARI LETTER RA/DEVANAGARI VOWEL SIGN U
-                    key("\u0930\u0941", moreKey("!")),
-                    "?");
-        }
-        return builder.build();
+        return ALPHABET_SHIFTED_COMMON;
     }
 
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
@@ -181,7 +119,17 @@ public final class NepaliTraditional extends LayoutBase {
                     // U+0916: "ख" DEVANAGARI LETTER KHA
                     // U+0926: "द" DEVANAGARI LETTER DA
                     // U+0932: "ल" DEVANAGARI LETTER LA
-                    "\u0936", "\u0939", "\u0905", "\u0916", "\u0926", "\u0932")
+                    "\u0936", "\u0939", "\u0905", "\u0916", "\u0926", "\u0932",
+                    // U+0947: "े" DEVANAGARI VOWEL SIGN E
+                    // U+0903: "ः‍" DEVANAGARI SIGN VISARGA
+                    // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
+                    key(VOWEL_SIGN_E, "\u0947", joinMoreKeys(
+                            moreKey(SIGN_VISARGA, "\u0903"), "\u093D")),
+                    // U+094D: "्" DEVANAGARI SIGN VIRAMA
+                    key(SIGN_VIRAMA, "\u094D"),
+                    // U+0930: "र" DEVANAGARI LETTER RA
+                    // U+0930/U+0941: "रु" DEVANAGARI LETTER RA/DEVANAGARI VOWEL SIGN U
+                    key("\u0930", moreKey("\u0930\u0941")))
             .build();
 
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
@@ -264,6 +212,14 @@ public final class NepaliTraditional extends LayoutBase {
                     key(VOWEL_SIGN_AU, "\u094C"),
                     // U+0926/U+094D/U+092F:
                     //     "द्य" DEVANAGARI LETTER DA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER YA
-                    "\u0926\u094D\u092F")
+                    "\u0926\u094D\u092F",
+                    // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
+                    key(SIGN_ANUSVARA, "\u0902"),
+                    // U+0919: "ङ" DEVANAGARI LETTER NGA
+                    "\u0919",
+                    // U+0948: "ै" DEVANAGARI VOWEL SIGN AI
+                    // U+0936/U+094D/U+0930:
+                    //     "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA
+                    key(VOWEL_SIGN_AI, "\u0948", moreKey("\u0936\u094D\u0930")))
             .build();
 }

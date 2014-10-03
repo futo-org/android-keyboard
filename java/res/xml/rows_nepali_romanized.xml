@@ -33,16 +33,18 @@
         <include latin:keyboardLayout="@xml/rowkeys_nepali_romanized2" />
     </Row>
     <Row
-        latin:keyWidth="8.711%p"
+        latin:keyWidth="8.75%p"
         latin:keyLabelFlags="fontNormal"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.8%p" />
+            latin:keyWidth="15%p"
+            latin:visualInsetsRight="1%p" />
         <include latin:keyboardLayout="@xml/rowkeys_nepali_romanized3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight" />
+            latin:keyWidth="fillRight"
+            latin:visualInsetsLeft="1%p" />
     </Row>
     <include latin:keyboardLayout="@xml/row_qwerty4" />
 </merge>

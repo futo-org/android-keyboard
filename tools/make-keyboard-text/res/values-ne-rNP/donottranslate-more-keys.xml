@@ -57,4 +57,9 @@
     <string name="additional_morekeys_symbols_0">0</string>
     <!-- U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN -->
     <string name="keyspec_currency">&#x0930;&#x0941;&#x002E;</string>
+    <!-- U+0964: "।" DEVANAGARI DANDA -->
+    <string name="keyspec_period">&#x0964;</string>
+    <string name="keyspec_tablet_period">&#x0964;</string>
+    <string name="morekeys_period">"!autoColumnOrder!9,.,\\,,?,!,#,),(,/,;,',@,:,-,\",+,\\%,&amp;"</string>
+    <string name="morekeys_tablet_period">"!autoColumnOrder!8,.,\\,,',#,),(,/,;,@,:,-,\",+,\\%,&amp;"</string>
 </resources>
