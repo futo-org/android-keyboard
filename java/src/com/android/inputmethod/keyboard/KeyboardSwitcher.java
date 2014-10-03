@@ -254,8 +254,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onToggleEmojiKeyboard() {
-        if (mKeyboardLayoutSet == null || !isShowingEmojiPalettes()) {
-            mLatinIME.startShowingInputView();
+        final boolean needsToLoadKeyboard = (mKeyboardLayoutSet == null);
+        if (needsToLoadKeyboard || !isShowingEmojiPalettes()) {
+            mLatinIME.startShowingInputView(needsToLoadKeyboard);
             setEmojiKeyboard();
         } else {
             mLatinIME.stopShowingInputView();
