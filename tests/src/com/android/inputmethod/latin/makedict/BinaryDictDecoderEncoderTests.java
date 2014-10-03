@@ -307,7 +307,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     public void testCharacterTableIsPresent() throws IOException, UnsupportedFormatException {
         final String[] wordSource = {"words", "used", "for", "testing", "a", "code point", "table"};
         final List<String> words = Arrays.asList(wordSource);
-        final String correctCodePointTable = "eotdsanirfg bclwup";
+        final String correctCodePointTable = "toesdrniawuplgfcb ";
         final String dictName = "codePointTableTest";
         final String dictVersion = Long.toString(System.currentTimeMillis());
         final String codePointTableAttribute = DictionaryHeader.CODE_POINT_TABLE_KEY;
