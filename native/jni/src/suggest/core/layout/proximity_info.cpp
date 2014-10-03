@@ -49,13 +49,13 @@ static AK_FORCE_INLINE void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloa
     }
 }
 
-ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
-        const int keyboardWidth, const int keyboardHeight, const int gridWidth,
-        const int gridHeight, const int mostCommonKeyWidth, const int mostCommonKeyHeight,
-        const jintArray proximityChars, const int keyCount, const jintArray keyXCoordinates,
-        const jintArray keyYCoordinates, const jintArray keyWidths, const jintArray keyHeights,
-        const jintArray keyCharCodes, const jfloatArray sweetSpotCenterXs,
-        const jfloatArray sweetSpotCenterYs, const jfloatArray sweetSpotRadii)
+ProximityInfo::ProximityInfo(JNIEnv *env, const int keyboardWidth, const int keyboardHeight,
+        const int gridWidth, const int gridHeight, const int mostCommonKeyWidth,
+        const int mostCommonKeyHeight, const jintArray proximityChars, const int keyCount,
+        const jintArray keyXCoordinates, const jintArray keyYCoordinates,
+        const jintArray keyWidths, const jintArray keyHeights, const jintArray keyCharCodes,
+        const jfloatArray sweetSpotCenterXs, const jfloatArray sweetSpotCenterYs,
+        const jfloatArray sweetSpotRadii)
         : GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight), MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
           NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE(1.0f +
@@ -82,13 +82,6 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("Create proximity info array %d", proximityCharsLength);
     }
-    const jsize localeCStrUtf8Length = env->GetStringUTFLength(localeJStr);
-    if (localeCStrUtf8Length >= MAX_LOCALE_STRING_LENGTH) {
-        AKLOGI("Locale string length too long: length=%d", localeCStrUtf8Length);
-        ASSERT(false);
-    }
-    memset(mLocaleStr, 0, sizeof(mLocaleStr));
-    env->GetStringUTFRegion(localeJStr, 0, env->GetStringLength(localeJStr), mLocaleStr);
     safeGetOrFillZeroIntArrayRegion(env, proximityChars, proximityCharsLength,
             mProximityCharsArray);
     safeGetOrFillZeroIntArrayRegion(env, keyXCoordinates, KEY_COUNT, mKeyXCoordinates);

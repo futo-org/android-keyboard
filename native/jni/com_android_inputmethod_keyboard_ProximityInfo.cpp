@@ -25,13 +25,13 @@
 
 namespace latinime {
 
-static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jclass clazz, jstring localeJStr,
+static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jclass clazz,
         jint displayWidth, jint displayHeight, jint gridWidth, jint gridHeight,
         jint mostCommonkeyWidth, jint mostCommonkeyHeight, jintArray proximityChars, jint keyCount,
         jintArray keyXCoordinates, jintArray keyYCoordinates, jintArray keyWidths,
         jintArray keyHeights, jintArray keyCharCodes, jfloatArray sweetSpotCenterXs,
         jfloatArray sweetSpotCenterYs, jfloatArray sweetSpotRadii) {
-    ProximityInfo *proximityInfo = new ProximityInfo(env, localeJStr, displayWidth, displayHeight,
+    ProximityInfo *proximityInfo = new ProximityInfo(env, displayWidth, displayHeight,
             gridWidth, gridHeight, mostCommonkeyWidth, mostCommonkeyHeight, proximityChars,
             keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
             sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
@@ -46,7 +46,7 @@ static void latinime_Keyboard_release(JNIEnv *env, jclass clazz, jlong proximity
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("setProximityInfoNative"),
-        const_cast<char *>("(Ljava/lang/String;IIIIII[II[I[I[I[I[I[F[F[F)J"),
+        const_cast<char *>("(IIIIII[II[I[I[I[I[I[F[F[F)J"),
         reinterpret_cast<void *>(latinime_Keyboard_setProximityInfo)
     },
     {

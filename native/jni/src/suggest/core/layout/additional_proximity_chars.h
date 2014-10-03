@@ -18,6 +18,7 @@
 #define LATINIME_ADDITIONAL_PROXIMITY_CHARS_H
 
 #include <cstring>
+#include <vector>
 
 #include "defines.h"
 
@@ -26,7 +27,8 @@ namespace latinime {
 class AdditionalProximityChars {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(AdditionalProximityChars);
-    static const char *LOCALE_EN_US;
+    static const int LOCALE_EN_US_SIZE = 2;
+    static const int LOCALE_EN_US[LOCALE_EN_US_SIZE];
     static const int EN_US_ADDITIONAL_A_SIZE = 4;
     static const int EN_US_ADDITIONAL_A[];
     static const int EN_US_ADDITIONAL_E_SIZE = 4;
@@ -38,15 +40,22 @@ class AdditionalProximityChars {
     static const int EN_US_ADDITIONAL_U_SIZE = 4;
     static const int EN_US_ADDITIONAL_U[];
 
-    AK_FORCE_INLINE static bool isEnLocale(const char *localeStr) {
-        const size_t LOCALE_EN_US_SIZE = strlen(LOCALE_EN_US);
-        return localeStr && strlen(localeStr) >= LOCALE_EN_US_SIZE
-                && strncmp(localeStr, LOCALE_EN_US, LOCALE_EN_US_SIZE) == 0;
+    AK_FORCE_INLINE static bool isEnLocale(const std::vector<int> *locale) {
+        const int NCHARS = NELEMS(LOCALE_EN_US);
+        if (locale->size() < NCHARS) {
+            return false;
+        }
+        for (int i = 0; i < NCHARS; ++i) {
+            if ((*locale)[i] != LOCALE_EN_US[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
  public:
-    static int getAdditionalCharsSize(const char *const localeStr, const int c) {
-        if (!isEnLocale(localeStr)) {
+    static int getAdditionalCharsSize(const std::vector<int> *locale, const int c) {
+        if (!isEnLocale(locale)) {
             return 0;
         }
         switch (c) {
@@ -65,8 +74,8 @@ class AdditionalProximityChars {
         }
     }
 
-    static const int *getAdditionalChars(const char *const localeStr, const int c) {
-        if (!isEnLocale(localeStr)) {
+    static const int *getAdditionalChars(const std::vector<int> *locale, const int c) {
+        if (!isEnLocale(locale)) {
             return 0;
         }
         switch (c) {

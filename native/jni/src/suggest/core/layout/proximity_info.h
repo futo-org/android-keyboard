@@ -18,6 +18,7 @@
 #define LATINIME_PROXIMITY_INFO_H
 
 #include <unordered_map>
+#include <vector>
 
 #include "defines.h"
 #include "jni.h"
@@ -27,9 +28,9 @@ namespace latinime {
 
 class ProximityInfo {
  public:
-    ProximityInfo(JNIEnv *env, const jstring localeJStr,
-            const int keyboardWidth, const int keyboardHeight, const int gridWidth,
-            const int gridHeight, const int mostCommonKeyWidth, const int mostCommonKeyHeight,
+    ProximityInfo(JNIEnv *env, const int keyboardWidth, const int keyboardHeight,
+            const int gridWidth, const int gridHeight,
+            const int mostCommonKeyWidth, const int mostCommonKeyHeight,
             const jintArray proximityChars, const int keyCount, const jintArray keyXCoordinates,
             const jintArray keyYCoordinates, const jintArray keyWidths, const jintArray keyHeights,
             const jintArray keyCharCodes, const jfloatArray sweetSpotCenterXs,
@@ -71,11 +72,11 @@ class ProximityInfo {
 
     AK_FORCE_INLINE void initializeProximities(const int *const inputCodes,
             const int *const inputXCoordinates, const int *const inputYCoordinates,
-            const int inputSize, int *allInputCodes) const {
+            const int inputSize, int *allInputCodes, const std::vector<int> *locale) const {
         ProximityInfoUtils::initializeProximities(inputCodes, inputXCoordinates, inputYCoordinates,
                 inputSize, mKeyXCoordinates, mKeyYCoordinates, mKeyWidths, mKeyHeights,
                 mProximityCharsArray, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH, MOST_COMMON_KEY_WIDTH,
-                KEY_COUNT, mLocaleStr, &mLowerCodePointToKeyMap, allInputCodes);
+                KEY_COUNT, locale, &mLowerCodePointToKeyMap, allInputCodes);
     }
 
     AK_FORCE_INLINE int getKeyIndexOf(const int c) const {
@@ -103,9 +104,6 @@ class ProximityInfo {
     const int KEYBOARD_HEIGHT;
     const float KEYBOARD_HYPOTENUSE;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
-    // Assuming locale strings such as en_US, sr-Latn etc.
-    static const int MAX_LOCALE_STRING_LENGTH = 10;
-    char mLocaleStr[MAX_LOCALE_STRING_LENGTH];
     int *mProximityCharsArray;
     int mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];

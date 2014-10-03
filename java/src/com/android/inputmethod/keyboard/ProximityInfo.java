@@ -52,18 +52,11 @@ public class ProximityInfo {
     private final int mMostCommonKeyHeight;
     private final List<Key> mSortedKeys;
     private final List<Key>[] mGridNeighbors;
-    private final String mLocaleStr;
 
     @SuppressWarnings("unchecked")
-    ProximityInfo(final String localeStr, final int gridWidth, final int gridHeight,
-            final int minWidth, final int height, final int mostCommonKeyWidth,
-            final int mostCommonKeyHeight, final List<Key> sortedKeys,
+    ProximityInfo(final int gridWidth, final int gridHeight, final int minWidth, final int height,
+            final int mostCommonKeyWidth, final int mostCommonKeyHeight, final List<Key> sortedKeys,
             final TouchPositionCorrection touchPositionCorrection) {
-        if (TextUtils.isEmpty(localeStr)) {
-            mLocaleStr = "";
-        } else {
-            mLocaleStr = localeStr;
-        }
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -89,11 +82,10 @@ public class ProximityInfo {
     }
 
     // TODO: Stop passing proximityCharsArray
-    private static native long setProximityInfoNative(String locale,
-            int displayWidth, int displayHeight, int gridWidth, int gridHeight,
-            int mostCommonKeyWidth, int mostCommonKeyHeight, int[] proximityCharsArray,
-            int keyCount, int[] keyXCoordinates, int[] keyYCoordinates, int[] keyWidths,
-            int[] keyHeights, int[] keyCharCodes, float[] sweetSpotCenterXs,
+    private static native long setProximityInfoNative(int displayWidth, int displayHeight,
+            int gridWidth, int gridHeight, int mostCommonKeyWidth, int mostCommonKeyHeight,
+            int[] proximityCharsArray, int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
+            int[] keyWidths, int[] keyHeights, int[] keyCharCodes, float[] sweetSpotCenterXs,
             float[] sweetSpotCenterYs, float[] sweetSpotRadii);
 
     private static native void releaseProximityInfoNative(long nativeProximityInfo);
@@ -221,10 +213,10 @@ public class ProximityInfo {
         }
 
         // TODO: Stop passing proximityCharsArray
-        return setProximityInfoNative(mLocaleStr, mKeyboardMinWidth, mKeyboardHeight,
-                mGridWidth, mGridHeight, mMostCommonKeyWidth, mMostCommonKeyHeight,
-                proximityCharsArray, keyCount, keyXCoordinates, keyYCoordinates, keyWidths,
-                keyHeights, keyCharCodes, sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
+        return setProximityInfoNative(mKeyboardMinWidth, mKeyboardHeight, mGridWidth, mGridHeight,
+                mMostCommonKeyWidth, mMostCommonKeyHeight, proximityCharsArray, keyCount,
+                keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
+                sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
     }
 
     public long getNativeProximityInfo() {
