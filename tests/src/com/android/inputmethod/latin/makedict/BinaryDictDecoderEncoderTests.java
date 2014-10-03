@@ -304,6 +304,39 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 "unigram with various code points"));
     }
 
+    public void testCharacterTableIsPresent() throws IOException, UnsupportedFormatException {
+        final String[] wordSource = {"words", "used", "for", "testing", "a", "code point", "table"};
+        final List<String> words = Arrays.asList(wordSource);
+        final String correctCodePointTable = "eotdsanirfg bclwup";
+        final String dictName = "codePointTableTest";
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final String codePointTableAttribute = DictionaryHeader.CODE_POINT_TABLE_KEY;
+        final File file = new File(dictName);
+
+        // Write a test dictionary
+        final DictEncoder dictEncoder = new Ver2DictEncoder(file,
+                Ver2DictEncoder.CODE_POINT_TABLE_ON);
+        final FormatSpec.FormatOptions formatOptions =
+                new FormatSpec.FormatOptions(
+                        FormatSpec.MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE);
+        final FusionDictionary sourcedict = new FusionDictionary(new PtNodeArray(),
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
+        addUnigrams(words.size(), sourcedict, words, null /* shortcutMap */);
+        dictEncoder.writeDictionary(sourcedict, formatOptions);
+
+        // Read the dictionary
+        final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(file, 0, file.length(),
+                DictDecoder.USE_BYTEARRAY);
+        final DictionaryHeader fileHeader = dictDecoder.readHeader();
+        // Check if codePointTable is present
+        assertTrue("codePointTable is not present",
+                fileHeader.mDictionaryOptions.mAttributes.containsKey(codePointTableAttribute));
+        final String codePointTable =
+                fileHeader.mDictionaryOptions.mAttributes.get(codePointTableAttribute);
+        // Check if codePointTable is correct
+        assertEquals("codePointTable is incorrect", codePointTable, correctCodePointTable);
+    }
+
     // Unit test for CharEncoding.readString and CharEncoding.writeString.
     public void testCharEncoding() {
         // the max length of a word in sWords is less than 50.
