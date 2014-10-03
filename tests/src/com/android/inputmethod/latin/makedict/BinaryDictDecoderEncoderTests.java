@@ -311,7 +311,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final String dictName = "codePointTableTest";
         final String dictVersion = Long.toString(System.currentTimeMillis());
         final String codePointTableAttribute = DictionaryHeader.CODE_POINT_TABLE_KEY;
-        final File file = new File(dictName);
+        final File file = BinaryDictUtils.getDictFile(dictName, dictVersion,
+                BinaryDictUtils.VERSION201_OPTIONS, getContext().getCacheDir());
 
         // Write a test dictionary
         final DictEncoder dictEncoder = new Ver2DictEncoder(file,
