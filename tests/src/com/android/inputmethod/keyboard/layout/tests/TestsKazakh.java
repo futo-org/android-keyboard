@@ -19,8 +19,8 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.EastSlavic;
-import com.android.inputmethod.keyboard.layout.EastSlavic.EastSlavicCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
+import com.android.inputmethod.keyboard.layout.customizer.EastSlavicCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -37,7 +37,7 @@ public final class TestsKazakh extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class KazakhCustomizer extends EastSlavicCustomizer {
-        public KazakhCustomizer(final Locale locale) { super(locale); }
+        KazakhCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {

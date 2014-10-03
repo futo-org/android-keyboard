@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Swiss;
+import com.android.inputmethod.keyboard.layout.customizer.GermanCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -36,7 +37,7 @@ public final class TestsGermanCH extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class GermanCHCustomizer extends GermanCustomizer {
-        public GermanCHCustomizer(final Locale locale) { super(locale); }
+        GermanCHCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {

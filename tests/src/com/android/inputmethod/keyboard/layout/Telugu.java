@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout;
 
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.latin.Constants;
@@ -28,15 +29,15 @@ import java.util.Locale;
 public final class Telugu extends LayoutBase {
     private static final String LAYOUT_NAME = "telugu";
 
-    public Telugu(final LayoutCustomizer customizer) {
-        super(customizer, Symbols.class, SymbolsShifted.class);
+    public Telugu(final Locale locale) {
+        super(new TeluguCustomizer(locale), Symbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class TeluguCustomizer extends LayoutCustomizer {
-        public TeluguCustomizer(final Locale locale) { super(locale); }
+    private static class TeluguCustomizer extends LayoutCustomizer {
+        TeluguCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getAlphabetKey() { return TELUGU_ALPHABET_KEY; }

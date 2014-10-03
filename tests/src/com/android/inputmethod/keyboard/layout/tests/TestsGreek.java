@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Greek;
-import com.android.inputmethod.keyboard.layout.Greek.GreekCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 
 import java.util.Locale;
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public class TestsGreek extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("el");
-    private static final LayoutBase LAYOUT = new Greek(new GreekCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Greek(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

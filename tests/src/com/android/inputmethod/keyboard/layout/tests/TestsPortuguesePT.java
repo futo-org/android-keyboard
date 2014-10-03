@@ -19,8 +19,9 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.EuroCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.PortugueseCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
@@ -39,7 +40,7 @@ public final class TestsPortuguesePT extends TestsPortugueseBR {
     private static class PortuguesePTCustomizer extends PortugueseCustomizer {
         private final EuroCustomizer mEuroCustomizer;
 
-        public PortuguesePTCustomizer(final Locale locale) {
+        PortuguesePTCustomizer(final Locale locale) {
             super(locale);
             mEuroCustomizer = new EuroCustomizer(locale);
         }

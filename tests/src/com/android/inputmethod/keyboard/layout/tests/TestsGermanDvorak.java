@@ -19,10 +19,11 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Dvorak;
-import com.android.inputmethod.keyboard.layout.Dvorak.DvorakCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.SymbolsShifted;
+import com.android.inputmethod.keyboard.layout.customizer.DvorakCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.GermanCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -39,10 +40,10 @@ public final class TestsGermanDvorak extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    static class GermanDvorakCustomizer extends DvorakCustomizer {
-        final GermanCustomizer mGermanCustomizer;
+    private static class GermanDvorakCustomizer extends DvorakCustomizer {
+        private final GermanCustomizer mGermanCustomizer;
 
-        public GermanDvorakCustomizer(final Locale locale) {
+        GermanDvorakCustomizer(final Locale locale) {
             super(locale);
             mGermanCustomizer = new GermanCustomizer(locale);
         }

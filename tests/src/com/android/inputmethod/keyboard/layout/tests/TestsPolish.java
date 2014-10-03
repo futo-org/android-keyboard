@@ -19,9 +19,9 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.Symbols;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -39,7 +39,7 @@ public final class TestsPolish extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class PolishCustomizer extends LayoutCustomizer {
-        public PolishCustomizer(final Locale locale) { super(locale); }
+        PolishCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey[] getDoubleQuoteMoreKeys() { return Symbols.DOUBLE_QUOTES_L9R; }

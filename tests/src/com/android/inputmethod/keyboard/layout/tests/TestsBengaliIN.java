@@ -21,6 +21,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import com.android.inputmethod.keyboard.layout.Bengali;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Symbols;
+import com.android.inputmethod.keyboard.layout.customizer.BengaliCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
@@ -37,7 +38,7 @@ public final class TestsBengaliIN extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class BengaliINCustomzier extends BengaliCustomizer {
-        public BengaliINCustomzier(final Locale locale) { super(locale); }
+        BengaliINCustomzier(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) { return EMPTY_KEYS; }

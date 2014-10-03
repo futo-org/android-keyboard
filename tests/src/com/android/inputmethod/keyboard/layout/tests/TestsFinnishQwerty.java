@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.FinnishCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -36,9 +37,7 @@ public final class TestsFinnishQwerty extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class FinnishQwertyCustomizer extends FinnishCustomizer {
-        public FinnishQwertyCustomizer(final Locale locale) {
-            super(locale);
-        }
+        FinnishQwertyCustomizer(final Locale locale) { super(locale); }
 
         @Override
         protected void setNordicKeys(final ExpectedKeyboardBuilder builder) {

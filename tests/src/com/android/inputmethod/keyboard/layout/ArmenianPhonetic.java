@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout;
 
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.latin.Constants;
@@ -28,15 +29,16 @@ import java.util.Locale;
 public final class ArmenianPhonetic extends LayoutBase {
     private static final String LAYOUT_NAME = "armenian_phonetic";
 
-    public ArmenianPhonetic(final LayoutCustomizer customizer) {
-        super(customizer, ArmenianSymbols.class, ArmenianSymbolsShifted.class);
+    public ArmenianPhonetic(final Locale locale) {
+        super(new ArmenianPhoneticCustomizer(locale), ArmenianSymbols.class,
+                ArmenianSymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class ArmenianPhoneticCustomizer extends LayoutCustomizer {
-        public ArmenianPhoneticCustomizer(final Locale locale) { super(locale); }
+    private static class ArmenianPhoneticCustomizer extends LayoutCustomizer {
+        ArmenianPhoneticCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public int getNumberOfRows() { return 5; }

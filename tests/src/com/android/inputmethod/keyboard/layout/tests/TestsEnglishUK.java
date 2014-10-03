@@ -21,6 +21,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.Symbols;
+import com.android.inputmethod.keyboard.layout.customizer.EnglishCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
@@ -37,7 +38,7 @@ public final class TestsEnglishUK extends TestsEnglishUS {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class EnglishUKCustomizer extends EnglishCustomizer {
-        public EnglishUKCustomizer(final Locale locale) { super(locale); }
+        EnglishUKCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getCurrencyKey() { return CURRENCY_POUND; }

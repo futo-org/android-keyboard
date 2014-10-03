@@ -24,6 +24,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.customizer.EnglishCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
@@ -52,23 +53,21 @@ public class TestsQwertyEmail extends LayoutTestsBase {
     }
 
     private static class EnglishEmailCustomizer extends EnglishCustomizer {
-        EnglishEmailCustomizer(final Locale locale) {
-            super(locale);
-        }
+        EnglishEmailCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getEnterKey(final boolean isPhone) {
-            return isPhone ? LayoutBase.ENTER_KEY : super.getEnterKey(isPhone);
+            return isPhone ? ENTER_KEY : super.getEnterKey(isPhone);
         }
 
         @Override
         public ExpectedKey getEmojiKey(final boolean isPhone) {
-            return LayoutBase.DOMAIN_KEY;
+            return DOMAIN_KEY;
         }
 
         @Override
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return joinKeys(key("@", LayoutBase.SETTINGS_KEY));
+            return joinKeys(key("@", SETTINGS_KEY));
         }
     }
 }

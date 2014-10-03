@@ -20,7 +20,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Malayalam;
-import com.android.inputmethod.keyboard.layout.Malayalam.MalayalamCustomizer;
 
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsMalayalamIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("ml", "IN");
-    private static final LayoutBase LAYOUT = new Malayalam(new MalayalamCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Malayalam(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

@@ -20,7 +20,8 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.PcQwerty;
-import com.android.inputmethod.keyboard.layout.PcQwerty.PcQwertyCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.NoLanguageCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.PcQwertyCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -39,7 +40,7 @@ public final class TestsNoLanguagePcQwerty extends LayoutTestsBase {
     private static class NoLanguagePcQwertyCustomizer extends PcQwertyCustomizer {
         private final NoLanguageCustomizer mNoLanguageCustomizer;
 
-        public NoLanguagePcQwertyCustomizer(final Locale locale) {
+        NoLanguagePcQwertyCustomizer(final Locale locale) {
             super(locale);
             mNoLanguageCustomizer = new NoLanguageCustomizer(locale);
         }

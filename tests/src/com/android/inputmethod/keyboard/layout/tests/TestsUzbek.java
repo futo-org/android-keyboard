@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Uzbek;
+import com.android.inputmethod.keyboard.layout.customizer.UzbekCustomizer;
 
 import java.util.Locale;
 

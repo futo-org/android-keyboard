@@ -20,7 +20,6 @@ import android.test.suitebuilder.annotation.Suppress;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Sinhala;
-import com.android.inputmethod.keyboard.layout.Sinhala.SinhalaCustomizer;
 
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ import java.util.Locale;
 @Suppress
 public final class TestsSinhalaLK extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("si", "LK");
-    private static final LayoutBase LAYOUT = new Sinhala(new SinhalaCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Sinhala(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

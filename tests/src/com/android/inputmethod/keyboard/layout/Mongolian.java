@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout;
 
-import com.android.inputmethod.keyboard.layout.EastSlavic.EastSlavicCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.EastSlavicCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -25,17 +25,15 @@ import java.util.Locale;
 public final class Mongolian extends LayoutBase {
     private static final String LAYOUT_NAME = "mongolian";
 
-    public Mongolian(final LayoutCustomizer customizer) {
-        super(customizer, Symbols.class, SymbolsShifted.class);
+    public Mongolian(final Locale locale) {
+        super(new MongolianCustomizer(locale), Symbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class MongolianMNCustomizer extends EastSlavicCustomizer {
-        public MongolianMNCustomizer(final Locale locale) {
-            super(locale);
-        }
+    private static class MongolianCustomizer extends EastSlavicCustomizer {
+        MongolianCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getCurrencyKey() { return CURRENCY_TUGRIK; }

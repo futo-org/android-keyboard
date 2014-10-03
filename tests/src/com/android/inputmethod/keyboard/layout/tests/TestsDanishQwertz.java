@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwertz;
+import com.android.inputmethod.keyboard.layout.customizer.DanishCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
@@ -36,9 +37,7 @@ public final class TestsDanishQwertz extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class DanishQwertyCustomizer extends DanishCustomizer {
-        public DanishQwertyCustomizer(final Locale locale) {
-            super(locale);
-        }
+        DanishQwertyCustomizer(final Locale locale) { super(locale); }
 
         @Override
         protected void setNordicKeys(final ExpectedKeyboardBuilder builder) {

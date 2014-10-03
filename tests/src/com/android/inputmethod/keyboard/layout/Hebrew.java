@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.layout;
 
 import com.android.inputmethod.keyboard.layout.Symbols.RtlSymbols;
 import com.android.inputmethod.keyboard.layout.SymbolsShifted.RtlSymbolsShifted;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.latin.Constants;
@@ -27,17 +28,15 @@ import java.util.Locale;
 public final class Hebrew extends LayoutBase {
     private static final String LAYOUT_NAME = "hebrew";
 
-    public Hebrew(final LayoutCustomizer customizer) {
-        super(customizer, HebrewSymbols.class, RtlSymbolsShifted.class);
+    public Hebrew(final Locale locale) {
+        super(new HebrewCustomizer(locale), HebrewSymbols.class, RtlSymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class HebrewCustomizer extends LayoutCustomizer {
-        public HebrewCustomizer(final Locale locale) {
-            super(locale);
-        }
+    private static class HebrewCustomizer extends LayoutCustomizer {
+        HebrewCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getAlphabetKey() { return HEBREW_ALPHABET_KEY; }

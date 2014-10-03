@@ -20,7 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwertz;
-import com.android.inputmethod.keyboard.layout.tests.TestsFrench.FrenchEuroCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.FrenchCustomizer.FrenchEuroCustomizer;
 
 import java.util.Locale;
 

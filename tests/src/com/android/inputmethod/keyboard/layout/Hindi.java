@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.layout;
 import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.*;
 
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 

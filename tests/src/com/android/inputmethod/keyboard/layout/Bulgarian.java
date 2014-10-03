@@ -16,7 +16,8 @@
 
 package com.android.inputmethod.keyboard.layout;
 
-import com.android.inputmethod.keyboard.layout.EastSlavic.EastSlavicCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.EastSlavicCustomizer;
+import com.android.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -25,17 +26,17 @@ import java.util.Locale;
 public final class Bulgarian extends LayoutBase {
     private static final String LAYOUT_NAME = "bulgarian";
 
-    public Bulgarian(final LayoutCustomizer customizer) {
-        super(customizer, Symbols.class, SymbolsShifted.class);
+    public Bulgarian(final Locale locale) {
+        super(new BulgarianCustomizer(locale), Symbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class BulgarianCustomizer extends LayoutCustomizer {
+    private static class BulgarianCustomizer extends LayoutCustomizer {
         private final EastSlavicCustomizer mEastSlavicCustomizer;
 
-        public BulgarianCustomizer(final Locale locale) {
+        BulgarianCustomizer(final Locale locale) {
             super(locale);
             mEastSlavicCustomizer = new EastSlavicCustomizer(locale);
         }

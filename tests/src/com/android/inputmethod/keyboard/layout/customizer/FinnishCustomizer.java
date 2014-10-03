@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.layout.tests;
+package com.android.inputmethod.keyboard.layout.customizer;
 
 import com.android.inputmethod.keyboard.layout.Nordic;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
-class FinnishCustomizer extends EuroCustomizer {
+public class FinnishCustomizer extends EuroCustomizer {
     public FinnishCustomizer(final Locale locale) { super(locale); }
 
     protected void setNordicKeys(final ExpectedKeyboardBuilder builder) {

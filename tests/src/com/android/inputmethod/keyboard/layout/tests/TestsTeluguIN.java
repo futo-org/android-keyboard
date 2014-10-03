@@ -20,7 +20,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Telugu;
-import com.android.inputmethod.keyboard.layout.Telugu.TeluguCustomizer;
 
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsTeluguIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("te", "IN");
-    private static final LayoutBase LAYOUT = new Telugu(new TeluguCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Telugu(LOCALE);
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

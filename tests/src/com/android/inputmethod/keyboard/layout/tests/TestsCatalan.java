@@ -19,8 +19,8 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Spanish;
+import com.android.inputmethod.keyboard.layout.customizer.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -38,20 +38,20 @@ public class TestsCatalan extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     private static class CatalanCustomizer extends EuroCustomizer {
-        public CatalanCustomizer(final Locale locale) { super(locale); }
+        CatalanCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey[] getPunctuationMoreKeys(final boolean isPhone) {
-            return isPhone ? PHONE_PUNCTUATION_MORE_KEYS
-                    : TABLET_PUNCTUATION_MORE_KEYS;
+            return isPhone ? CATALAN_PHONE_PUNCTUATION_MORE_KEYS
+                    : CATALAN_TABLET_PUNCTUATION_MORE_KEYS;
         }
 
         // U+00B7: "·" MIDDLE DOT
-        private static final ExpectedKey[] PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
+        private static final ExpectedKey[] CATALAN_PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
                 ",", "?", "!", "\u00B7", "#", ")", "(", "/", ";",
                 "'", "@", ":", "-", "\"", "+", "%", "&");
 
-        private static final ExpectedKey[] TABLET_PUNCTUATION_MORE_KEYS = joinKeys(
+        private static final ExpectedKey[] CATALAN_TABLET_PUNCTUATION_MORE_KEYS = joinKeys(
                 ",", "'", "\u00B7", "#", ")", "(", "/", ";",
                 "@", ":", "-", "\"", "+", "%", "&");
 
