@@ -69,8 +69,12 @@ void DicTraverseSession::initializeProximityInfoStates(const int *const inputCod
     for (int i = 0; i < maxPointerCount; ++i) {
         mProximityInfoStates[i].initInputParams(i, maxSpatialDistance, getProximityInfo(),
                 inputCodePoints, inputSize, inputXs, inputYs, times, pointerIds,
-                maxPointerCount == MAX_POINTER_COUNT_G
-                /* TODO: this is a hack. fix proximity info state */);
+                // Right now the line below is trying to figure out whether this is a gesture by
+                // looking at the pointer count and assuming whatever is above the cutoff is
+                // a gesture and whatever is below is type. This is hacky and incorrect, we
+                // should pass the correct information instead.
+                maxPointerCount == MAX_POINTER_COUNT_G,
+                getDictionaryStructurePolicy()->getHeaderStructurePolicy()->getLocale());
         mInputSize += mProximityInfoStates[i].size();
     }
 }

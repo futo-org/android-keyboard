@@ -42,7 +42,7 @@ int ProximityInfoState::getPrimaryOriginalCodePointAt(const int index) const {
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
         const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
-        const int *const pointerIds, const bool isGeometric) {
+        const int *const pointerIds, const bool isGeometric, const std::vector<int> *locale) {
     ASSERT(isGeometric || (inputSize < MAX_WORD_LENGTH));
     mIsContinuousSuggestionPossible = (mHasBeenUpdatedByGeometricInput != isGeometric) ?
             false : ProximityInfoStateUtils::checkAndReturnIsContinuousSuggestionPossible(
@@ -66,7 +66,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
 
     if (!isGeometric && pointerId == 0) {
         mProximityInfo->initializeProximities(inputCodes, xCoordinates, yCoordinates,
-                inputSize, mInputProximities);
+                inputSize, mInputProximities, locale);
     }
 
     ///////////////////////

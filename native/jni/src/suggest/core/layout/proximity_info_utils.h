@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <unordered_map>
+#include <vector>
 
 #include "defines.h"
 #include "suggest/core/layout/additional_proximity_chars.h"
@@ -51,7 +52,7 @@ class ProximityInfoUtils {
             const int *const keyYCoordinates, const int *const keyWidths, const int *keyHeights,
             const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
-            const char *const localeStr,
+            const std::vector<int> *locale,
             const std::unordered_map<int, int> *const codeToKeyMap, int *inputProximities) {
         // Initialize
         // - mInputCodes
@@ -64,7 +65,7 @@ class ProximityInfoUtils {
             int *proximities = &inputProximities[i * MAX_PROXIMITY_CHARS_SIZE];
             calculateProximities(keyXCoordinates, keyYCoordinates, keyWidths, keyHeights,
                     proximityCharsArray, cellHeight, cellWidth, gridWidth, mostCommonKeyWidth,
-                    keyCount, x, y, primaryKey, localeStr, codeToKeyMap, proximities);
+                    keyCount, x, y, primaryKey, locale, codeToKeyMap, proximities);
         }
 
         if (DEBUG_PROXIMITY_CHARS) {
@@ -143,7 +144,7 @@ class ProximityInfoUtils {
             const int *const keyYCoordinates, const int *const keyWidths, const int *keyHeights,
             const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
-            const int x, const int y, const int primaryKey, const char *const localeStr,
+            const int x, const int y, const int primaryKey, const std::vector<int> *locale,
             const std::unordered_map<int, int> *const codeToKeyMap, int *proximities) {
         const int mostCommonKeyWidthSquare = mostCommonKeyWidth * mostCommonKeyWidth;
         int insertPos = 0;
@@ -177,7 +178,7 @@ class ProximityInfoUtils {
                 }
             }
             const int additionalProximitySize =
-                    AdditionalProximityChars::getAdditionalCharsSize(localeStr, primaryKey);
+                    AdditionalProximityChars::getAdditionalCharsSize(locale, primaryKey);
             if (additionalProximitySize > 0) {
                 proximities[insertPos++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
                 if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
@@ -188,7 +189,7 @@ class ProximityInfoUtils {
                 }
 
                 const int *additionalProximityChars =
-                        AdditionalProximityChars::getAdditionalChars(localeStr, primaryKey);
+                        AdditionalProximityChars::getAdditionalChars(locale, primaryKey);
                 for (int j = 0; j < additionalProximitySize; ++j) {
                     const int ac = additionalProximityChars[j];
                     int k = 0;

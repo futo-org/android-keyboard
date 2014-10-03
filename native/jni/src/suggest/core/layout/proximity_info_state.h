@@ -37,7 +37,8 @@ class ProximityInfoState {
     void initInputParams(const int pointerId, const float maxPointToKeyLength,
             const ProximityInfo *proximityInfo, const int *const inputCodes,
             const int inputSize, const int *xCoordinates, const int *yCoordinates,
-            const int *const times, const int *const pointerIds, const bool isGeometric);
+            const int *const times, const int *const pointerIds, const bool isGeometric,
+            const std::vector<int> *locale);
 
     /////////////////////////////////////////
     // Defined here                        //
