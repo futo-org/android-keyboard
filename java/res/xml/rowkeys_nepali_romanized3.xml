@@ -43,11 +43,6 @@
             <Key latin:keyStyle="baseKeyDevanagariSignAnusvara" />
             <!-- U+0919: "ङ" DEVANAGARI LETTER NGA -->
             <Key latin:keySpec="&#x0919;" />
-            <!-- Because the font rendering system prior to API version 16 can't automatically
-                 render dotted circle for incomplete combining letter of some scripts, different
-                 set of Key definitions are needed based on the API version. -->
-            <include latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama" />
-            <Key latin:keyStyle="baseKeyDevanagariSignVirama" />
         </case>
         <default>
             <!-- U+0937: "ष" DEVANAGARI LETTER SSA -->
@@ -64,16 +59,14 @@
             <Key latin:keySpec="&#x0928;" />
             <!-- U+092E: "म" DEVANAGARI LETTER MA -->
             <Key latin:keySpec="&#x092E;" />
-            <!-- U+0964: "।" DEVANAGARI DANDA
-                 U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA -->
-            <Key
-                latin:keySpec="&#x0964;"
-                latin:moreKeys="&#x093D;" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
             <include latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama" />
-            <Key latin:keyStyle="baseKeyDevanagariSignVirama" />
+            <!-- U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA -->
+            <Key
+                latin:keyStyle="baseKeyDevanagariSignVirama"
+                latin:moreKeys="&#x093D;" />
         </default>
     </switch>
 </merge>

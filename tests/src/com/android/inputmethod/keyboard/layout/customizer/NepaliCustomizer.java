@@ -38,8 +38,30 @@ public class NepaliCustomizer extends DevanagariCustomizer {
         return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
     }
 
+    @Override
+    public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
+        // U+0964: "।" DEVANAGARI DANDA
+        final ExpectedKey periodKey = key("\u0964", getPunctuationMoreKeys(isPhone));
+        return joinKeys(periodKey);
+    }
+
+    @Override
+    public ExpectedKey[] getPunctuationMoreKeys(final boolean isPhone) {
+        return isPhone ? NEPALI_PHONE_PUNCTUATION_MORE_KEYS
+                : NEPALI_TABLET_PUNCTUATION_MORE_KEYS;
+    }
+
     // U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN
     private static final ExpectedKey CURRENCY_NEPALI = key("\u0930\u0941\u002E",
             Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.POUND_SIGN,
             Symbols.YEN_SIGN, Symbols.PESO_SIGN);
+
+    // Punctuation more keys for phone form factor.
+    private static final ExpectedKey[] NEPALI_PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
+            ".", ",", "?", "!", "#", ")", "(", "/", ";",
+            "'", "@", ":", "-", "\"", "+", "%", "&");
+    // Punctuation more keys for tablet form factor.
+    private static final ExpectedKey[] NEPALI_TABLET_PUNCTUATION_MORE_KEYS = joinKeys(
+            ".", ",", "'", "#", ")", "(", "/", ";",
+            "@", ":", "-", "\"", "+", "%", "&");
 }

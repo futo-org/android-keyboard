@@ -33,26 +33,17 @@ public final class NepaliRomanized extends LayoutBase {
     private static final String LAYOUT_NAME = "nepali_romanized";
 
     public NepaliRomanized(final Locale locale) {
-        super(new NepaliRomanizedCustomizer(locale), HindiSymbols.class, SymbolsShifted.class);
+        super(new NepaliCustomizer(locale), HindiSymbols.class, SymbolsShifted.class);
     }
 
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    private static class NepaliRomanizedCustomizer extends NepaliCustomizer {
-        NepaliRomanizedCustomizer(final Locale locale) { super(locale); }
-
-        @Override
-        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
-            return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
-        }
-    }
+    @Override
+    ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) { return ALPHABET_COMMON; }
 
     @Override
-    ExpectedKey[][] getCommonAlphabetLayout(boolean isPhone) { return ALPHABET_COMMON; }
-
-    @Override
-    ExpectedKey[][] getCommonAlphabetShiftLayout(boolean isPhone, final int elementId) {
+    ExpectedKey[][] getCommonAlphabetShiftLayout(final boolean isPhone, final int elementId) {
         if (elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
             return getCommonAlphabetLayout(isPhone);
         }
@@ -118,11 +109,9 @@ public final class NepaliRomanized extends LayoutBase {
                     // U+0928: "न" DEVANAGARI LETTER NA
                     // U+092E: "म" DEVANAGARI LETTER MA
                     "\u0937", "\u0921", "\u091A", "\u0935", "\u092C", "\u0928", "\u092E",
-                    // U+0964: "।" DEVANAGARI DANDA
-                    // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
-                    key("\u0964", moreKey("\u093D")),
                     // U+094D: "्" DEVANAGARI SIGN VIRAMA
-                    key(SIGN_VIRAMA, "\u094D"))
+                    // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
+                    key(SIGN_VIRAMA, "\u094D", moreKey("\u093D")))
             .build();
 
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
@@ -172,8 +161,6 @@ public final class NepaliRomanized extends LayoutBase {
                     // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
                     key(SIGN_ANUSVARA, "\u0902"),
                     // U+0919: "ङ" DEVANAGARI LETTER NGA
-                    "\u0919",
-                    // U+094D: "्" DEVANAGARI SIGN VIRAMA
-                    key(SIGN_VIRAMA, "\u094D"))
+                    "\u0919")
             .build();
 }
