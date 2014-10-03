@@ -715,11 +715,13 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 }
                 assertTrue(shortcutList.isEmpty());
             }
-            for (final WeightedString bigramTarget : wordProperty.getBigrams()) {
-                final String word1 = bigramTarget.mWord;
-                final Pair<String, String> bigram = new Pair<>(word0, word1);
-                assertTrue(bigramSet.contains(bigram));
-                bigramSet.remove(bigram);
+            if (wordProperty.mHasNgrams) {
+                for (final WeightedString bigramTarget : wordProperty.getBigrams()) {
+                    final String word1 = bigramTarget.mWord;
+                    final Pair<String, String> bigram = new Pair<>(word0, word1);
+                    assertTrue(bigramSet.contains(bigram));
+                    bigramSet.remove(bigram);
+                }
             }
             token = result.mNextToken;
         } while (token != 0);
