@@ -54,11 +54,15 @@ public final class WordProperty implements Comparable<WordProperty> {
         mWord = word;
         mProbabilityInfo = probabilityInfo;
         mShortcutTargets = shortcutTargets;
-        mNgrams = new ArrayList<>();
-        final NgramContext ngramContext = new NgramContext(new WordInfo(mWord));
-        if (bigrams != null) {
-            for (final WeightedString bigramTarget : bigrams) {
-                mNgrams.add(new NgramProperty(bigramTarget, ngramContext));
+        if (null == bigrams) {
+            mNgrams = null;
+        } else {
+            mNgrams = new ArrayList<>();
+            final NgramContext ngramContext = new NgramContext(new WordInfo(mWord));
+            if (bigrams != null) {
+                for (final WeightedString bigramTarget : bigrams) {
+                    mNgrams.add(new NgramProperty(bigramTarget, ngramContext));
+                }
             }
         }
         mIsBeginningOfSentence = false;
@@ -87,7 +91,7 @@ public final class WordProperty implements Comparable<WordProperty> {
         mWord = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
         mProbabilityInfo = createProbabilityInfoFromArray(probabilityInfo);
         mShortcutTargets = new ArrayList<>();
-        mNgrams = new ArrayList<>();
+        final ArrayList<NgramProperty> ngrams = new ArrayList<>();
         mIsBeginningOfSentence = isBeginningOfSentence;
         mIsNotAWord = isNotAWord;
         mIsBlacklistEntry = isBlacklisted;
@@ -104,8 +108,9 @@ public final class WordProperty implements Comparable<WordProperty> {
             final WeightedString ngramTarget = new WeightedString(ngramTargetString,
                     createProbabilityInfoFromArray(bigramProbabilityInfo.get(i)));
             // TODO: Support n-gram.
-            mNgrams.add(new NgramProperty(ngramTarget, ngramContext));
+            ngrams.add(new NgramProperty(ngramTarget, ngramContext));
         }
+        mNgrams = ngrams.isEmpty() ? null : ngrams;
 
         final int shortcutTargetCount = shortcutTargets.size();
         for (int i = 0; i < shortcutTargetCount; i++) {
@@ -118,6 +123,9 @@ public final class WordProperty implements Comparable<WordProperty> {
 
     // TODO: Remove
     public ArrayList<WeightedString> getBigrams() {
+        if (null == mNgrams) {
+            return null;
+        }
         final ArrayList<WeightedString> bigrams = new ArrayList<>();
         for (final NgramProperty ngram : mNgrams) {
             if (ngram.mNgramContext.getPrevWordCount() == 1) {
@@ -167,9 +175,16 @@ public final class WordProperty implements Comparable<WordProperty> {
         if (!(o instanceof WordProperty)) return false;
         WordProperty w = (WordProperty)o;
         return mProbabilityInfo.equals(w.mProbabilityInfo) && mWord.equals(w.mWord)
-                && mShortcutTargets.equals(w.mShortcutTargets) && mNgrams.equals(w.mNgrams)
+                && mShortcutTargets.equals(w.mShortcutTargets) && equals(mNgrams, w.mNgrams)
                 && mIsNotAWord == w.mIsNotAWord && mIsBlacklistEntry == w.mIsBlacklistEntry
                 && mHasNgrams == w.mHasNgrams && mHasShortcuts && w.mHasNgrams;
+    }
+
+    private <T> boolean equals(final ArrayList<T> a, final ArrayList<T> b) {
+        if (null == a) {
+            return null == b;
+        }
+        return a.equals(b);
     }
 
     @Override
