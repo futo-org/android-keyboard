@@ -137,10 +137,11 @@ public class Ver2DictEncoder implements DictEncoder {
         // Make code point conversion table ordered by occurrence of code points
         // Version 201 or later have codePointTable
         final CodePointTable codePointTable;
-        if (formatOptions.mVersion >= FormatSpec.MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE) {
-            codePointTable = makeCodePointTable(dict);
-        } else {
+        if (mCodePointTableMode == CODE_POINT_TABLE_OFF || formatOptions.mVersion
+                < FormatSpec.MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE) {
             codePointTable = new CodePointTable();
+        } else {
+            codePointTable = makeCodePointTable(dict);
         }
 
         BinaryDictEncoderUtils.writeDictionaryHeader(mOutStream, dict, formatOptions,
