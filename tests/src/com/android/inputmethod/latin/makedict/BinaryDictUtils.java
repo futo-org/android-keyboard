@@ -30,6 +30,8 @@ public class BinaryDictUtils {
 
     public static final FormatSpec.FormatOptions VERSION2_OPTIONS =
             new FormatSpec.FormatOptions(FormatSpec.VERSION2);
+    public static final FormatSpec.FormatOptions VERSION201_OPTIONS =
+            new FormatSpec.FormatOptions(FormatSpec.VERSION201);
     public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITHOUT_TIMESTAMP =
             new FormatSpec.FormatOptions(FormatSpec.VERSION4, false /* hasTimestamp */);
     public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITH_TIMESTAMP =
@@ -52,7 +54,8 @@ public class BinaryDictUtils {
 
     public static File getDictFile(final String name, final String version,
             final FormatOptions formatOptions, final File directory) {
-        if (formatOptions.mVersion == FormatSpec.VERSION2) {
+        if (formatOptions.mVersion == FormatSpec.VERSION2
+                || formatOptions.mVersion == FormatSpec.VERSION201) {
             return new File(directory, name + "." + version + TEST_DICT_FILE_EXTENSION);
         } else if (formatOptions.mVersion == FormatSpec.VERSION4) {
             return new File(directory, name + "." + version);
