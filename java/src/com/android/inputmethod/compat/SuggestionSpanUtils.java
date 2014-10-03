@@ -23,10 +23,11 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
+import com.android.inputmethod.latin.define.DebugFlags;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -51,12 +52,14 @@ public final class SuggestionSpanUtils {
         // This utility class is not publicly instantiable.
     }
 
+    @UsedForTesting
     public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
             final Context context, final String text) {
         if (TextUtils.isEmpty(text) || OBJ_FLAG_AUTO_CORRECTION == null) {
             return text;
         }
         final Spannable spannable = new SpannableString(text);
+        // TODO: Set locale if it is feasible.
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
                 new String[] {} /* suggestions */, OBJ_FLAG_AUTO_CORRECTION,
                 SuggestionSpanPickedNotificationReceiver.class);
@@ -65,6 +68,7 @@ public final class SuggestionSpanUtils {
         return spannable;
     }
 
+    @UsedForTesting
     public static CharSequence getTextWithSuggestionSpan(final Context context,
             final String pickedWord, final SuggestedWords suggestedWords) {
         if (TextUtils.isEmpty(pickedWord) || suggestedWords.isEmpty()
@@ -86,6 +90,7 @@ public final class SuggestionSpanUtils {
                 suggestionsList.add(word.toString());
             }
         }
+        // TODO: Set locale if it is feasible.
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
                 suggestionsList.toArray(new String[suggestionsList.size()]), 0 /* flags */,
                 SuggestionSpanPickedNotificationReceiver.class);
