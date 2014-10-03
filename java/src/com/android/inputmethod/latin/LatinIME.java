@@ -84,6 +84,7 @@ import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
+import com.android.inputmethod.latin.touchinputconsumer.GestureConsumer;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
@@ -101,6 +102,7 @@ import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -175,6 +177,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private AlertDialog mOptionsDialog;
 
     private final boolean mIsHardwareAcceleratedDrawingEnabled;
+
+    private GestureConsumer mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
 
     public final UIHandler mHandler = new UIHandler(this);
 
@@ -255,9 +259,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 latinIme.resetDictionaryFacilitatorIfNecessary();
                 break;
             case MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED:
+                final SuggestedWords suggestedWords = (SuggestedWords) msg.obj;
                 latinIme.mInputLogic.onUpdateTailBatchInputCompleted(
                         latinIme.mSettings.getCurrent(),
-                        (SuggestedWords) msg.obj, latinIme.mKeyboardSwitcher);
+                        suggestedWords, latinIme.mKeyboardSwitcher);
+                latinIme.onTailBatchInputResultShown(suggestedWords);
                 break;
             case MSG_RESET_CACHES:
                 final SettingsValues settingsValues = latinIme.mSettings.getCurrent();
@@ -799,6 +805,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         StatsUtils.onFinishInputView();
         mHandler.onFinishInputView(finishingInput);
         mStatsUtilsManager.onFinishInputView();
+        mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
     }
 
     @Override
@@ -824,6 +831,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @SuppressWarnings("deprecation")
     private void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
+        // Switch to the null consumer to handle cases leading to early exit below, for which we
+        // also wouldn't be consuming gesture data.
+        mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
         mRichImm.clearSubtypeCaches();
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme();
@@ -866,6 +876,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mainKeyboardView == null) {
             return;
         }
+
+        // Update to a gesture consumer with the current editor and IME state.
+        mGestureConsumer = GestureConsumer.newInstance(editorInfo,
+                mInputLogic.getPrivateCommandPerformer(),
+                Collections.singletonList(mSubtypeSwitcher.getCurrentSubtypeLocale()),
+                switcher.getKeyboard());
 
         // Forward this event to the accessibility utilities, if enabled.
         final AccessibilityUtils accessUtils = AccessibilityUtils.getInstance();
@@ -1397,6 +1413,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onStartBatchInput() {
         mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
+        mGestureConsumer.onGestureStarted(
+                Collections.singletonList(mSubtypeSwitcher.getCurrentSubtypeLocale()),
+                mKeyboardSwitcher.getKeyboard());
     }
 
     @Override
@@ -1407,11 +1426,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
         mInputLogic.onEndBatchInput(batchPointers);
+        mGestureConsumer.onGestureCompleted(batchPointers);
     }
 
     @Override
     public void onCancelBatchInput() {
         mInputLogic.onCancelBatchInput(mHandler);
+        mGestureConsumer.onGestureCanceled();
+    }
+
+    /**
+     * To be called after the InputLogic has gotten a chance to act on the on-device decoding
+     * for the full gesture, possibly updating the TextView to reflect the first decoding.
+     * <p>
+     * This method must be run on the UI Thread.
+     * @param suggestedWords On-device decoding for the full gesture.
+     */
+    public void onTailBatchInputResultShown(final SuggestedWords suggestedWords) {
+        mGestureConsumer.onImeSuggestionsProcessed(suggestedWords,
+                mInputLogic.getComposingStart(), mInputLogic.getComposingLength());
     }
 
     // This method must run on the UI Thread.
