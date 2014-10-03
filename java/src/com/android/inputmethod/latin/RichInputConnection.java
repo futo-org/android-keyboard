@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.graphics.Color;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -33,6 +34,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
+import com.android.inputmethod.latin.inputlogic.PrivateCommandPerformer;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
@@ -52,7 +54,7 @@ import java.util.Arrays;
  * all the time to find out what text is in the buffer, when we need it to determine caps mode
  * for example.
  */
-public final class RichInputConnection {
+public final class RichInputConnection implements PrivateCommandPerformer {
     private static final String TAG = RichInputConnection.class.getSimpleName();
     private static final boolean DBG = false;
     private static final boolean DEBUG_PREVIOUS_TEXT = false;
@@ -894,6 +896,15 @@ public final class RichInputConnection {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean performPrivateCommand(final String action, final Bundle data) {
+        mIC = mParent.getCurrentInputConnection();
+        if (mIC == null) {
+            return false;
+        }
+        return mIC.performPrivateCommand(action, data);
     }
 
     public int getExpectedSelectionStart() {
