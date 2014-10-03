@@ -416,33 +416,38 @@ public class DictionaryFacilitator {
     }
 
     @UsedForTesting
-    public void resetDictionariesForTesting(final Context context, final Locale locale,
+    public void resetDictionariesForTesting(final Context context, final Locale[] locales,
             final ArrayList<String> dictionaryTypes, final HashMap<String, File> dictionaryFiles,
             final Map<String, Map<String, String>> additionalDictAttributes) {
         Dictionary mainDictionary = null;
         final Map<String, ExpandableBinaryDictionary> subDicts = new HashMap<>();
 
-        for (final String dictType : dictionaryTypes) {
-            if (dictType.equals(Dictionary.TYPE_MAIN)) {
-                mainDictionary = DictionaryFactory.createMainDictionaryFromManager(context, locale);
-            } else {
-                final File dictFile = dictionaryFiles.get(dictType);
-                final ExpandableBinaryDictionary dict = getSubDict(
-                        dictType, context, locale, dictFile, "" /* dictNamePrefix */);
-                if (additionalDictAttributes.containsKey(dictType)) {
-                    dict.clearAndFlushDictionaryWithAdditionalAttributes(
-                            additionalDictAttributes.get(dictType));
+        final DictionaryGroup[] dictionaryGroups = new DictionaryGroup[locales.length];
+        for (int i = 0; i < locales.length; ++i) {
+            final Locale locale = locales[i];
+            for (final String dictType : dictionaryTypes) {
+                if (dictType.equals(Dictionary.TYPE_MAIN)) {
+                    mainDictionary = DictionaryFactory.createMainDictionaryFromManager(context,
+                            locale);
+                } else {
+                    final File dictFile = dictionaryFiles.get(dictType);
+                    final ExpandableBinaryDictionary dict = getSubDict(
+                            dictType, context, locale, dictFile, "" /* dictNamePrefix */);
+                    if (additionalDictAttributes.containsKey(dictType)) {
+                        dict.clearAndFlushDictionaryWithAdditionalAttributes(
+                                additionalDictAttributes.get(dictType));
+                    }
+                    if (dict == null) {
+                        throw new RuntimeException("Unknown dictionary type: " + dictType);
+                    }
+                    dict.reloadDictionaryIfRequired();
+                    dict.waitAllTasksForTests();
+                    subDicts.put(dictType, dict);
                 }
-                if (dict == null) {
-                    throw new RuntimeException("Unknown dictionary type: " + dictType);
-                }
-                dict.reloadDictionaryIfRequired();
-                dict.waitAllTasksForTests();
-                subDicts.put(dictType, dict);
             }
+            dictionaryGroups[i] = new DictionaryGroup(locale, mainDictionary, subDicts);
         }
-        mDictionaryGroups = new DictionaryGroup[] {
-                new DictionaryGroup(locale, mainDictionary, subDicts) };
+        mDictionaryGroups = dictionaryGroups;
     }
 
     public void closeDictionaries() {
