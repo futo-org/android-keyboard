@@ -153,7 +153,7 @@
     <string name="user_dictionaries" msgid="3582332055892252845">"Dicionários do usuário"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Dicionário do usuário"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Dicionário disponível"</string>
-    <string name="dictionary_downloading" msgid="2982650524622620983">"Download em andamento"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Fazendo download..."</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Instalado"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Instalado, desativado"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Prob. conexão dic."</string>
@@ -173,7 +173,7 @@
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Fazer o download por Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Há um dicionário disponível para <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Pressione para consultar e fazer o download"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Download em andamento: as sugestões para <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> estarão disponíveis em breve."</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Fazendo download...: as sugestões para <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> estarão disponíveis em breve."</string>
     <string name="version_text" msgid="2715354215568469385">"Versão <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Adicionar"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Adicionar ao dicionário"</string>
