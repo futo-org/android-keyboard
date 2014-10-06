@@ -178,4 +178,30 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
                             typedAndCollectedWords));
         }
     }
+
+    public void testFindFirstLocaleFromSuggestionSpans() {
+        final String[] suggestions = new String[] {"Quality", "Speed", "Price"};
+        final SuggestionSpan nullLocaleSpan = new SuggestionSpan((Locale)null, suggestions, 0);
+        final SuggestionSpan emptyLocaleSpan = new SuggestionSpan(new Locale(""), suggestions, 0);
+        final SuggestionSpan enUsLocaleSpan = new SuggestionSpan(Locale.US, suggestions, 0);
+        final SuggestionSpan jaJpLocaleSpan = new SuggestionSpan(Locale.JAPAN, suggestions, 0);
+
+        assertEquals(null, SuggestionSpanUtils.findFirstLocaleFromSuggestionSpans(
+                new SuggestionSpan[] {}));
+
+        assertEquals(null, SuggestionSpanUtils.findFirstLocaleFromSuggestionSpans(
+                new SuggestionSpan[] {emptyLocaleSpan}));
+
+        assertEquals(Locale.US, SuggestionSpanUtils.findFirstLocaleFromSuggestionSpans(
+                new SuggestionSpan[] {enUsLocaleSpan}));
+
+        assertEquals(Locale.US, SuggestionSpanUtils.findFirstLocaleFromSuggestionSpans(
+                new SuggestionSpan[] {nullLocaleSpan, enUsLocaleSpan}));
+
+        assertEquals(Locale.US, SuggestionSpanUtils.findFirstLocaleFromSuggestionSpans(
+                new SuggestionSpan[] {nullLocaleSpan, emptyLocaleSpan, enUsLocaleSpan}));
+
+        assertEquals(Locale.JAPAN, SuggestionSpanUtils.findFirstLocaleFromSuggestionSpans(
+                new SuggestionSpan[] {nullLocaleSpan, jaJpLocaleSpan, enUsLocaleSpan}));
+    }
 }

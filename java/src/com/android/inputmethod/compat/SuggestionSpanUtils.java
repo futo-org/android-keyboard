@@ -28,9 +28,13 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
 import com.android.inputmethod.latin.define.DebugFlags;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Locale;
+
+import javax.annotation.Nullable;
 
 public final class SuggestionSpanUtils {
     // Note that SuggestionSpan.FLAG_AUTO_CORRECTION has been introduced
@@ -97,5 +101,29 @@ public final class SuggestionSpanUtils {
         final Spannable spannable = new SpannableString(pickedWord);
         spannable.setSpan(suggestionSpan, 0, pickedWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
+    }
+
+    /**
+     * Returns first {@link Locale} found in the given array of {@link SuggestionSpan}.
+     * @param suggestionSpans the array of {@link SuggestionSpan} to be examined.
+     * @return the first {@link Locale} found in {@code suggestionSpans}. {@code null} when not
+     * found.
+     */
+    @UsedForTesting
+    @Nullable
+    public static Locale findFirstLocaleFromSuggestionSpans(
+            final SuggestionSpan[] suggestionSpans) {
+        for (final SuggestionSpan suggestionSpan : suggestionSpans) {
+            final String localeString = suggestionSpan.getLocale();
+            if (TextUtils.isEmpty(localeString)) {
+                continue;
+            }
+            final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
+            if (locale == null) {
+                continue;
+            }
+            return locale;
+        }
+        return null;
     }
 }
