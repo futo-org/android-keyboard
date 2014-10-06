@@ -611,20 +611,23 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 mCurrentTime);
         final NgramContext beginningOfSentenceContext = NgramContext.BEGINNING_OF_SENTENCE;
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
+        assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
+        assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
         forcePassingLongTime(binaryDictionary);
         assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
-
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
+        assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
+        assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
