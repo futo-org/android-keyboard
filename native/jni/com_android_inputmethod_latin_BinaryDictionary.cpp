@@ -252,6 +252,9 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
     } else {
         dictionary->getPredictions(&prevWordsInfo, &suggestionResults);
     }
+    if (DEBUG_DICT) {
+        suggestionResults.dumpSuggestions();
+    }
     suggestionResults.outputSuggestions(env, outSuggestionCount, outCodePointsArray,
             outScoresArray, outSpaceIndicesArray, outTypesArray,
             outAutoCommitFirstWordConfidenceArray, inOutWeightOfLangModelVsSpatialModel);
