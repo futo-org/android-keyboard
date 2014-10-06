@@ -131,7 +131,7 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
                 textsSet.getText("label_done_key"));
         final ExpectedActionKey previousKey = ExpectedActionKey.newLabelKey(
                 textsSet.getText("label_previous_key"));
-        final String tag = "label=hi_ZZ system=" + systemLocale
+        final String tag = "label=" + subtype.getLocale() + " system=" + systemLocale
                 + " " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
         final RunInLocale<Void> job = new RunInLocale<Void>() {
             @Override
@@ -147,26 +147,34 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
     public void testHinglishActionLabel() {
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
         final Locale hi_ZZ = new Locale("hi", "ZZ");
-        final InputMethodSubtype hinglish = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype hiLatn = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 hi_ZZ.toString(), SubtypeLocaleUtils.QWERTY);
+        // This is a preliminary subtype and may not exist.
+        if (hiLatn == null) {
+            return;
+        }
         // An action label should be displayed in subtype's locale regardless of the system locale.
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, hi_ZZ);
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.US);
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.FRENCH);
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.ITALIAN);
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, hi_ZZ, Locale.JAPANESE);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hiLatn, hi_ZZ, new Locale("hi"));
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hiLatn, hi_ZZ, Locale.US);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hiLatn, hi_ZZ, Locale.FRENCH);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hiLatn, hi_ZZ, Locale.ITALIAN);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(hiLatn, hi_ZZ, Locale.JAPANESE);
     }
 
     public void testSerbianLatinActionLabel() {
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
         final Locale sr_ZZ = new Locale("sr", "ZZ");
-        final InputMethodSubtype hinglish = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype srLatn = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 sr_ZZ.toString(), "serbian_qwertz");
+        // This is a preliminary subtype and may not exist.
+        if (srLatn == null) {
+            return;
+        }
         // An action label should be displayed in subtype's locale regardless of the system locale.
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, sr_ZZ);
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, Locale.US);
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, Locale.FRENCH);
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, Locale.ITALIAN);
-        doTestActionKeysInLocaleWithKeyboardTextsSet(hinglish, sr_ZZ, Locale.JAPANESE);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(srLatn, sr_ZZ, new Locale("sr"));
+        doTestActionKeysInLocaleWithKeyboardTextsSet(srLatn, sr_ZZ, Locale.US);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(srLatn, sr_ZZ, Locale.FRENCH);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(srLatn, sr_ZZ, Locale.ITALIAN);
+        doTestActionKeysInLocaleWithKeyboardTextsSet(srLatn, sr_ZZ, Locale.JAPANESE);
     }
 }

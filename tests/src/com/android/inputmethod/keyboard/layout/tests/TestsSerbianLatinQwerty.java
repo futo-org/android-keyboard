@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Qwerty;
@@ -29,7 +29,7 @@ import java.util.Locale;
 /**
  * sr_ZZ: Serbian (Latin)/qwerty
  */
-@SmallTest
+@Suppress
 public final class TestsSerbianLatinQwerty extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("sr", "ZZ");
     private static final LayoutBase LAYOUT = new Qwerty(new SerbianLatinQwertyCustomizer(LOCALE));

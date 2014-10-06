@@ -45,7 +45,6 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
     RichInputMethodSubtype FR_CH;
     RichInputMethodSubtype DE;
     RichInputMethodSubtype DE_CH;
-    RichInputMethodSubtype HI_ZZ;
     RichInputMethodSubtype ZZ;
     RichInputMethodSubtype DE_QWERTY;
     RichInputMethodSubtype FR_QWERTZ;
@@ -54,6 +53,9 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
     RichInputMethodSubtype ES_US_COLEMAK;
     RichInputMethodSubtype ZZ_AZERTY;
     RichInputMethodSubtype ZZ_PC;
+
+    // This is a preliminary subtype and may not exist.
+    RichInputMethodSubtype HI_LATN;
 
     @Override
     protected void setUp() throws Exception {
@@ -87,8 +89,6 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
                 Locale.GERMAN.toString(), "qwertz"));
         DE_CH = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 "de_CH", "swiss"));
-        HI_ZZ = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                "hi_ZZ", "qwerty"));
         ZZ = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty"));
         DE_QWERTY = new RichInputMethodSubtype(
@@ -112,6 +112,12 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
         ZZ_PC = new RichInputMethodSubtype(
                 AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
                     SubtypeLocaleUtils.NO_LANGUAGE, "pcqwerty"));
+
+        final InputMethodSubtype hiLatn = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                "hi_ZZ", "qwerty");
+        if (hiLatn != null) {
+            HI_LATN = new RichInputMethodSubtype(hiLatn);
+        }
     }
 
     public void testAllFullDisplayNameForSpacebar() {
@@ -192,8 +198,11 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
             assertEquals("fr_CH", "Français (Suisse)", FR_CH.getFullDisplayName());
             assertEquals("de", "Deutsch", DE.getFullDisplayName());
             assertEquals("de_CH", "Deutsch (Schweiz)", DE_CH.getFullDisplayName());
-            assertEquals("hi_ZZ", "Hinglish", HI_ZZ.getFullDisplayName());
             assertEquals("zz", "QWERTY", ZZ.getFullDisplayName());
+            // This is a preliminary subtype and may not exist.
+            if (HI_LATN != null) {
+                assertEquals("hi_ZZ", "Hinglish", HI_LATN.getFullDisplayName());
+            }
 
             assertEquals("en_US", "English", EN_US.getMiddleDisplayName());
             assertEquals("en_GB", "English", EN_GB.getMiddleDisplayName());
@@ -203,8 +212,11 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
             assertEquals("fr_CH", "Français", FR_CH.getMiddleDisplayName());
             assertEquals("de", "Deutsch", DE.getMiddleDisplayName());
             assertEquals("de_CH", "Deutsch", DE_CH.getMiddleDisplayName());
-            assertEquals("hi_ZZ", "Hinglish", HI_ZZ.getMiddleDisplayName());
             assertEquals("zz", "QWERTY", ZZ.getMiddleDisplayName());
+            // This is a preliminary subtype and may not exist.
+            if (HI_LATN != null) {
+                assertEquals("hi_ZZ", "Hinglish", HI_LATN.getMiddleDisplayName());
+            }
             return null;
         }
     };
