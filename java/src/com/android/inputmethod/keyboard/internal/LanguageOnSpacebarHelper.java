@@ -23,6 +23,7 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This class determines that the language name on the spacebar should be displayed in what format.
@@ -31,6 +32,7 @@ public final class LanguageOnSpacebarHelper {
     public static final int FORMAT_TYPE_NONE = 0;
     public static final int FORMAT_TYPE_LANGUAGE_ONLY = 1;
     public static final int FORMAT_TYPE_FULL_LOCALE = 2;
+    public static final int FORMAT_TYPE_MULTIPLE = 3;
 
     private List<InputMethodSubtype> mEnabledSubtypes = Collections.emptyList();
     private boolean mIsSystemLanguageSameAsInputLanguage;
@@ -43,7 +45,11 @@ public final class LanguageOnSpacebarHelper {
         if (mEnabledSubtypes.size() < 2 && mIsSystemLanguageSameAsInputLanguage) {
             return FORMAT_TYPE_NONE;
         }
-        final String keyboardLanguage = SubtypeLocaleUtils.getSubtypeLocale(subtype).getLanguage();
+        final Locale[] locales = subtype.getLocales();
+        if (1 < locales.length) {
+            return FORMAT_TYPE_MULTIPLE;
+        }
+        final String keyboardLanguage = locales[0].getLanguage();
         final String keyboardLayout = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
         int sameLanguageAndLayoutCount = 0;
         for (final InputMethodSubtype ims : mEnabledSubtypes) {

@@ -120,7 +120,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mKeyboardLayoutSet = builder.build();
         try {
             mState.onLoadKeyboard(currentAutoCapsState, currentRecapitalizeState);
-            mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale(), mThemeContext);
+            // TODO: revisit this for multi-lingual input
+            mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocales()[0],
+                    mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
             return;
@@ -161,7 +163,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 currentSettingsValues.mKeyPreviewDismissDuration);
         keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
-                || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
+                || !keyboard.mId.mSubtype.equals(oldKeyboard.mId.mSubtype);
         final int languageOnSpacebarFormatType = mSubtypeSwitcher.getLanguageOnSpacebarFormatType(
                 keyboard.mId.mSubtype);
         final boolean hasMultipleEnabledIMEsOrSubtypes = RichInputMethodManager.getInstance()

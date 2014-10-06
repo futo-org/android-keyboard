@@ -45,6 +45,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Keyboard Building helper.
@@ -281,7 +282,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
             params.mIconsSet.loadIcons(keyboardAttr);
-            params.mTextsSet.setLocale(params.mId.mLocale, mContext);
+            // TODO: this needs to be revisited for multi-lingual input.
+            params.mTextsSet.setLocale(params.mId.getLocales()[0], mContext);
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);
@@ -672,12 +674,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_imeAction, id.imeAction());
             final boolean isIconDefinedMatched = isIconDefined(caseAttr,
                     R.styleable.Keyboard_Case_isIconDefined, mParams.mIconsSet);
-            final boolean localeCodeMatched = matchString(caseAttr,
-                    R.styleable.Keyboard_Case_localeCode, id.mLocale.toString());
-            final boolean languageCodeMatched = matchString(caseAttr,
-                    R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
-            final boolean countryCodeMatched = matchString(caseAttr,
-                    R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
+            final Locale[] locales = id.getLocales();
+            final boolean localeCodeMatched = matchLocaleCodes(caseAttr, locales);
+            final boolean languageCodeMatched = matchLanguageCodes(caseAttr, locales);
+            final boolean countryCodeMatched = matchCountryCodes(caseAttr, locales);
             final boolean splitLayoutMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_isSplitLayout, id.mIsSplitLayout);
             final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
@@ -731,6 +731,23 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         } finally {
             caseAttr.recycle();
         }
+    }
+
+    private boolean matchLocaleCodes(TypedArray caseAttr, final Locale[] locales) {
+        // TODO: adujst this for multilingual input
+        return matchString(caseAttr, R.styleable.Keyboard_Case_localeCode, locales[0].toString());
+    }
+
+    private boolean matchLanguageCodes(TypedArray caseAttr, Locale[] locales) {
+        // TODO: adujst this for multilingual input
+        return matchString(caseAttr, R.styleable.Keyboard_Case_languageCode,
+                locales[0].getLanguage());
+    }
+
+    private boolean matchCountryCodes(TypedArray caseAttr, Locale[] locales) {
+        // TODO: adujst this for multilingual input
+        return matchString(caseAttr, R.styleable.Keyboard_Case_countryCode,
+                locales[0].getCountry());
     }
 
     private static boolean matchInteger(final TypedArray a, final int index, final int value) {
