@@ -46,6 +46,8 @@ import java.util.ArrayList;
 public final class SetupWizardActivity extends Activity implements View.OnClickListener {
     static final String TAG = SetupWizardActivity.class.getSimpleName();
 
+    // For debugging purpose.
+    private static final boolean FORCE_TO_SHOW_WELCOME_SCREEN = false;
     private static final boolean ENABLE_WELCOME_VIDEO = true;
 
     private InputMethodManager mImm;
@@ -304,6 +306,9 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
+        if (FORCE_TO_SHOW_WELCOME_SCREEN) {
+            return STEP_1;
+        }
         if (!UncachedInputMethodManagerUtils.isThisImeEnabled(this, mImm)) {
             return STEP_1;
         }
