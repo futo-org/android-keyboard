@@ -33,7 +33,6 @@ import android.preference.PreferenceGroup;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -80,25 +79,26 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
             "is_subtype_enabler_notification_dialog_open";
     private static final String KEY_SUBTYPE_FOR_SUBTYPE_ENABLER = "subtype_for_subtype_enabler";
 
-    static final class SubtypeLocaleItem extends Pair<String, String>
-            implements Comparable<SubtypeLocaleItem> {
-        public SubtypeLocaleItem(final String localeString, final String displayName) {
-            super(localeString, displayName);
+    static final class SubtypeLocaleItem implements Comparable<SubtypeLocaleItem> {
+        public final String mLocaleString;
+        private final String mDisplayName;
+
+        public SubtypeLocaleItem(final InputMethodSubtype subtype) {
+            mLocaleString = subtype.getLocale();
+            mDisplayName = SubtypeLocaleUtils.getSubtypeLocaleDisplayNameInSystemLocale(
+                    mLocaleString);
         }
 
-        public SubtypeLocaleItem(final String localeString) {
-            this(localeString,
-                    SubtypeLocaleUtils.getSubtypeLocaleDisplayNameInSystemLocale(localeString));
-        }
-
+        // {@link ArrayAdapter<T>} that hosts the instance of this class needs {@link #toString()}
+        // to get display name.
         @Override
         public String toString() {
-            return second;
+            return mDisplayName;
         }
 
         @Override
         public int compareTo(final SubtypeLocaleItem o) {
-            return first.compareTo(o.first);
+            return mLocaleString.compareTo(o.mLocaleString);
         }
     }
 
@@ -121,32 +121,28 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
                             SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype)));
                 }
                 if (InputMethodSubtypeCompatUtils.isAsciiCapable(subtype)) {
-                    items.add(createItem(context, subtype.getLocale()));
+                    items.add(new SubtypeLocaleItem(subtype));
                 }
             }
             // TODO: Should filter out already existing combinations of locale and layout.
             addAll(items);
         }
-
-        public static SubtypeLocaleItem createItem(final Context context,
-                final String localeString) {
-            if (localeString.equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
-                final String displayName = context.getString(R.string.subtype_no_language);
-                return new SubtypeLocaleItem(localeString, displayName);
-            }
-            return new SubtypeLocaleItem(localeString);
-        }
     }
 
-    static final class KeyboardLayoutSetItem extends Pair<String, String> {
+    static final class KeyboardLayoutSetItem {
+        public final String mLayoutName;
+        private final String mDisplayName;
+
         public KeyboardLayoutSetItem(final InputMethodSubtype subtype) {
-            super(SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype),
-                    SubtypeLocaleUtils.getKeyboardLayoutSetDisplayName(subtype));
+            mLayoutName = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
+            mDisplayName = SubtypeLocaleUtils.getKeyboardLayoutSetDisplayName(subtype);
         }
 
+        // {@link ArrayAdapter<T>} that hosts the instance of this class needs {@link #toString()}
+        // to get display name.
         @Override
         public String toString() {
-            return second;
+            return mDisplayName;
         }
     }
 
@@ -255,7 +251,6 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
 
         @Override
         protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-            final Context context = builder.getContext();
             builder.setCancelable(true).setOnCancelListener(this);
             if (isIncomplete()) {
                 builder.setPositiveButton(R.string.add, this)
@@ -264,8 +259,7 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
                 builder.setPositiveButton(R.string.save, this)
                         .setNeutralButton(android.R.string.cancel, this)
                         .setNegativeButton(R.string.remove, this);
-                final SubtypeLocaleItem localeItem = SubtypeLocaleAdapter.createItem(
-                        context, mSubtype.getLocale());
+                final SubtypeLocaleItem localeItem = new SubtypeLocaleItem(mSubtype);
                 final KeyboardLayoutSetItem layoutItem = new KeyboardLayoutSetItem(mSubtype);
                 setSpinnerPosition(mSubtypeLocaleSpinner, localeItem);
                 setSpinnerPosition(mKeyboardLayoutSetSpinner, layoutItem);
@@ -303,7 +297,7 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
                         (KeyboardLayoutSetItem) mKeyboardLayoutSetSpinner.getSelectedItem();
                 final InputMethodSubtype subtype =
                         AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
-                                locale.first, layout.first);
+                                locale.mLocaleString, layout.mLayoutName);
                 setSubtype(subtype);
                 notifyChanged();
                 if (isEditing) {
@@ -469,8 +463,6 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
                 KEY_IS_SUBTYPE_ENABLER_NOTIFICATION_DIALOG_OPEN)) {
             mSubtypePreferenceKeyForSubtypeEnabler = savedInstanceState.getString(
                     KEY_SUBTYPE_FOR_SUBTYPE_ENABLER);
-            final SubtypePreference subtypePref = (SubtypePreference)findPreference(
-                    mSubtypePreferenceKeyForSubtypeEnabler);
             mSubtypeEnablerNotificationDialog = createDialog();
             mSubtypeEnablerNotificationDialog.show();
         }
