@@ -158,11 +158,6 @@ public class NgramContext {
         }
     }
 
-    public NgramContext getTrimmedNgramContext(final int maxPrevWordCount) {
-        final int newSize = Math.min(maxPrevWordCount, mPrevWordsCount);
-        return new NgramContext(this /* prevWordsInfo */, newSize);
-    }
-
     public int getPrevWordCount() {
         return mPrevWordsCount;
     }

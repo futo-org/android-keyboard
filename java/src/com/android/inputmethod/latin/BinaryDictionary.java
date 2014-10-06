@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * Implements a static, compacted, binary dictionary of standard words.
  */
@@ -495,8 +497,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Update entries for the word occurrence with the ngramContext.
-    @UsedForTesting
-    public boolean updateEntriesForWordWithNgramContext(final NgramContext ngramContext,
+    public boolean updateEntriesForWordWithNgramContext(@Nonnull final NgramContext ngramContext,
             final String word, final boolean isValidWord, final int count, final int timestamp) {
         if (TextUtils.isEmpty(word)) {
             return false;
