@@ -755,12 +755,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (prevExtractEditText == nextExtractEditText) {
             return;
         }
-        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK && prevExtractEditText != null) {
+        if (prevExtractEditText != null) {
             prevExtractEditText.getViewTreeObserver().removeOnPreDrawListener(
                     mExtractTextViewPreDrawListener);
         }
         mExtractEditText = nextExtractEditText;
-        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK && mExtractEditText != null) {
+        if (mExtractEditText != null) {
             mExtractEditText.getViewTreeObserver().addOnPreDrawListener(
                     mExtractTextViewPreDrawListener);
         }
@@ -776,8 +776,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             };
 
     private void onExtractTextViewPreDraw() {
-        if (!ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK || !isFullscreenMode()
-                || mExtractEditText == null) {
+        if (!isFullscreenMode() || mExtractEditText == null) {
             return;
         }
         final CursorAnchorInfo info = CursorAnchorInfoUtils.getCursorAnchorInfo(mExtractEditText);
@@ -1060,7 +1059,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // We cannot mark this method as @Override until new SDK becomes publicly available.
     // @Override
     public void onUpdateCursorAnchorInfo(final CursorAnchorInfo info) {
-        if (!ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK || isFullscreenMode()) {
+        if (isFullscreenMode()) {
             return;
         }
         mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));

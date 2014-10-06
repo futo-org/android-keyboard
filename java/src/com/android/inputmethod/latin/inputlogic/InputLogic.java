@@ -169,14 +169,11 @@ public final class InputLogic {
             mInputLogicHandler.reset();
         }
 
-        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
-            // AcceptTypedWord feature relies on CursorAnchorInfo.
-            if (settingsValues.mShouldShowUiToAcceptTypedWord) {
-                mConnection.requestCursorUpdates(true /* enableMonitor */,
-                        true /* requestImmediateCallback */);
-            }
-            mTextDecorator.reset();
+        if (settingsValues.mShouldShowUiToAcceptTypedWord) {
+            mConnection.requestCursorUpdates(true /* enableMonitor */,
+                    true /* requestImmediateCallback */);
         }
+        mTextDecorator.reset();
     }
 
     /**
