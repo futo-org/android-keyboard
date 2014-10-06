@@ -113,6 +113,19 @@ public class SuggestedWords {
     }
 
     /**
+     * Get suggested word to show as suggestions to UI.
+     *
+     * @param shouldShowLxxSuggestionUi true if showing suggestion UI introduced in LXX and later.
+     * @return the count of suggested word to show as suggestions to UI.
+     */
+    public int getWordCountToShow(final boolean shouldShowLxxSuggestionUi) {
+        if (isPrediction() || !shouldShowLxxSuggestionUi) {
+            return size();
+        }
+        return size() - /* typed word */ 1;
+    }
+
+    /**
      * Get suggested word at <code>index</code>.
      * @param index The index of the suggested word.
      * @return The suggested word.

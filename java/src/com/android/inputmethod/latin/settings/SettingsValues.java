@@ -80,7 +80,7 @@ public class SettingsValues {
     public final boolean mPhraseGestureEnabled;
     public final int mKeyLongpressTimeout;
     public final boolean mEnableMetricsLogging;
-    public final boolean mShouldShowUiToAcceptTypedWord;
+    public final boolean mShouldShowLxxSuggestionUi;
     // Use split layout for keyboard.
     public final boolean mIsSplitKeyboardEnabled;
     public final int mScreenMetrics;
@@ -163,8 +163,8 @@ public class SettingsValues {
         mIsSplitKeyboardEnabled = prefs.getBoolean(Settings.PREF_ENABLE_SPLIT_KEYBOARD, false);
         mScreenMetrics = res.getInteger(R.integer.config_screen_metrics);
 
-        mShouldShowUiToAcceptTypedWord = Settings.HAS_UI_TO_ACCEPT_TYPED_WORD
-                && prefs.getBoolean(DebugSettings.PREF_SHOW_UI_TO_ACCEPT_TYPED_WORD, true);
+        mShouldShowLxxSuggestionUi = Settings.SHOULD_SHOW_LXX_SUGGESTION_UI
+                && prefs.getBoolean(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI, true);
         // Compute other readable settings
         mKeyLongpressTimeout = Settings.readKeyLongpressTimeout(prefs, res);
         mKeypressVibrationDuration = Settings.readKeypressVibrationDuration(prefs, res);
