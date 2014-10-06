@@ -146,18 +146,15 @@ const WordAttributes Ver4PatriciaTriePolicy::getWordAttributes(const int probabi
 
 int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
         const int bigramProbability) const {
-    if (mHeaderPolicy->isDecayingDict()) {
-        // Both probabilities are encoded. Decode them and get probability.
-        return ForgettingCurveUtils::getProbability(unigramProbability, bigramProbability);
-    } else {
-        if (unigramProbability == NOT_A_PROBABILITY) {
-            return NOT_A_PROBABILITY;
-        } else if (bigramProbability == NOT_A_PROBABILITY) {
-            return ProbabilityUtils::backoff(unigramProbability);
-        } else {
-            return bigramProbability;
-        }
+    // In the v4 format, bigramProbability is a conditional probability.
+    const int bigramConditionalProbability = bigramProbability;
+    if (unigramProbability == NOT_A_PROBABILITY) {
+        return NOT_A_PROBABILITY;
     }
+    if (bigramConditionalProbability == NOT_A_PROBABILITY) {
+        return ProbabilityUtils::backoff(unigramProbability);
+    }
+    return bigramConditionalProbability;
 }
 
 int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,
@@ -170,34 +167,63 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordI
     if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
-    if (!prevWordIds.empty()) {
-        const int bigramsPosition = getBigramsPositionOfPtNode(
-                getTerminalPtNodePosFromWordId(prevWordIds[0]));
-        BinaryDictionaryBigramsIterator bigramsIt(&mBigramPolicy, bigramsPosition);
-        while (bigramsIt.hasNext()) {
-            bigramsIt.next();
-            if (bigramsIt.getBigramPos() == ptNodePos
-                    && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
-                return getProbability(ptNodeParams.getProbability(), bigramsIt.getProbability());
-            }
-        }
+    if (prevWordIds.empty()) {
+        return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
+    }
+    if (prevWordIds[0] == NOT_A_WORD_ID) {
         return NOT_A_PROBABILITY;
     }
-    return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
+    const PtNodeParams prevWordPtNodeParams =
+            mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(prevWordIds[0]);
+    if (prevWordPtNodeParams.isDeleted()) {
+        return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
+    }
+    const int bigramsPosition = mBuffers->getBigramDictContent()->getBigramListHeadPos(
+            prevWordPtNodeParams.getTerminalId());
+    BinaryDictionaryBigramsIterator bigramsIt(&mBigramPolicy, bigramsPosition);
+    while (bigramsIt.hasNext()) {
+        bigramsIt.next();
+        if (bigramsIt.getBigramPos() == ptNodePos
+                && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
+            const int bigramConditionalProbability = getBigramConditionalProbability(
+                    prevWordPtNodeParams.getProbability(), bigramsIt.getProbability());
+            return getProbability(ptNodeParams.getProbability(), bigramConditionalProbability);
+        }
+    }
+    return NOT_A_PROBABILITY;
 }
 
 void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordIds,
         NgramListener *const listener) const {
-    if (prevWordIds.empty()) {
+    if (prevWordIds.firstOrDefault(NOT_A_DICT_POS) == NOT_A_DICT_POS) {
         return;
     }
-    const int bigramsPosition = getBigramsPositionOfPtNode(
-            getTerminalPtNodePosFromWordId(prevWordIds[0]));
+    const PtNodeParams prevWordPtNodeParams =
+            mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(prevWordIds[0]);
+    if (prevWordPtNodeParams.isDeleted()) {
+        return;
+    }
+    const int bigramsPosition = mBuffers->getBigramDictContent()->getBigramListHeadPos(
+            prevWordPtNodeParams.getTerminalId());
     BinaryDictionaryBigramsIterator bigramsIt(&mBigramPolicy, bigramsPosition);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
-        listener->onVisitEntry(bigramsIt.getProbability(),
+        const int bigramConditionalProbability = getBigramConditionalProbability(
+                prevWordPtNodeParams.getProbability(), bigramsIt.getProbability());
+        listener->onVisitEntry(bigramConditionalProbability,
                 getWordIdFromTerminalPtNodePos(bigramsIt.getBigramPos()));
+    }
+}
+
+int Ver4PatriciaTriePolicy::getBigramConditionalProbability(const int prevWordUnigramProbability,
+        const int bigramProbability) const {
+    if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
+        // Calculate conditional probability.
+        return std::min(MAX_PROBABILITY - prevWordUnigramProbability + bigramProbability,
+                MAX_PROBABILITY);
+    } else {
+        // bigramProbability is a conditional probability.
+        return bigramProbability;
     }
 }
 

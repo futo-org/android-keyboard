@@ -174,6 +174,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int getTerminalPtNodePosFromWordId(const int wordId) const;
     const WordAttributes getWordAttributes(const int probability,
             const PtNodeParams &ptNodeParams) const;
+    int getBigramConditionalProbability(const int prevWordUnigramProbability,
+            const int bigramProbability) const;
 };
 } // namespace v402
 } // namespace backward
