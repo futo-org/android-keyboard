@@ -17,9 +17,7 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.view.ContextThemeWrapper;
 import android.view.inputmethod.EditorInfo;
@@ -62,8 +60,8 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         }
     };
 
-    private SharedPreferences mSharedPreferences;
-    private String mSavedAdditionalSubtypes;
+    private RichInputMethodManager mRichImm;
+    private InputMethodSubtype[] mSavedAdditionalSubtypes;
     private int mScreenMetrics;
 
     protected abstract int getKeyboardThemeForTests();
@@ -72,15 +70,17 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         final Context context = getContext();
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         final Resources res = context.getResources();
+        RichInputMethodManager.init(context);
+        mRichImm = RichInputMethodManager.getInstance();
 
-        // Save additional subtypes preference.
-        mSavedAdditionalSubtypes = Settings.readPrefAdditionalSubtypes(mSharedPreferences, res);
-        final String predefinedSubtypes = AdditionalSubtypeUtils.createPrefSubtypes(
-                res.getStringArray(R.array.predefined_subtypes));
-        // Reset additional subtypes to predefined ones.
-        Settings.writePrefAdditionalSubtypes(mSharedPreferences, predefinedSubtypes);
+        // Save and reset additional subtypes preference.
+        mSavedAdditionalSubtypes = mRichImm.getAdditionalSubtypes(context);
+        final InputMethodSubtype[] predefinedAdditionalSubtypes =
+                AdditionalSubtypeUtils.createAdditionalSubtypesArray(
+                        AdditionalSubtypeUtils.createPrefSubtypes(
+                                res.getStringArray(R.array.predefined_subtypes)));
+        mRichImm.setAdditionalInputMethodSubtypes(predefinedAdditionalSubtypes);
 
         final KeyboardTheme keyboardTheme = KeyboardTheme.searchKeyboardThemeById(
                 getKeyboardThemeForTests(), KeyboardTheme.KEYBOARD_THEMES);
@@ -88,10 +88,8 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         KeyboardLayoutSet.onKeyboardThemeChanged();
 
         mScreenMetrics = Settings.readScreenMetrics(res);
-        RichInputMethodManager.init(context);
-        final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
 
-        final InputMethodInfo imi = richImm.getInputMethodInfoOfThisIme();
+        final InputMethodInfo imi = mRichImm.getInputMethodInfoOfThisIme();
         final int subtypeCount = imi.getSubtypeCount();
         for (int index = 0; index < subtypeCount; index++) {
             mAllSubtypesList.add(imi.getSubtypeAt(index));
@@ -101,7 +99,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     @Override
     protected void tearDown() throws Exception {
         // Restore additional subtypes preference.
-        Settings.writePrefAdditionalSubtypes(mSharedPreferences, mSavedAdditionalSubtypes);
+        mRichImm.setAdditionalInputMethodSubtypes(mSavedAdditionalSubtypes);
         super.tearDown();
     }
 

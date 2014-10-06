@@ -39,6 +39,8 @@
         <item>hi_ZZ</item>
         <item>sr_ZZ</item>
     </string-array>
+    <string name="subtype_in_root_locale_hi_ZZ">Hinglish</string>
+    <string name="subtype_in_root_locale_sr_ZZ">Srpski</string>
 
     <!-- Generic subtype label -->
     <string name="subtype_generic">%s</string>
