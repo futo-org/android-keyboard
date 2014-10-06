@@ -42,8 +42,9 @@ public class ContextualDictionaryTests extends AndroidTestCase {
         final ArrayList<String> dictTypes = new ArrayList<>();
         dictTypes.add(Dictionary.TYPE_CONTEXTUAL);
         final DictionaryFacilitator dictionaryFacilitator = new DictionaryFacilitator();
-        dictionaryFacilitator.resetDictionariesForTesting(getContext(), LOCALE_EN_US, dictTypes,
-                new HashMap<String, File>(), new HashMap<String, Map<String, String>>());
+        dictionaryFacilitator.resetDictionariesForTesting(getContext(),
+                new Locale[] { LOCALE_EN_US }, dictTypes, new HashMap<String, File>(),
+                new HashMap<String, Map<String, String>>());
         return dictionaryFacilitator;
     }
 

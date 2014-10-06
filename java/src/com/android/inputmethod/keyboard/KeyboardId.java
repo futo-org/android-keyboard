@@ -63,7 +63,6 @@ public final class KeyboardId {
     public static final int ELEMENT_EMOJI_CATEGORY6 = 16;
 
     public final RichInputMethodSubtype mSubtype;
-    public final Locale mLocale;
     public final int mWidth;
     public final int mHeight;
     public final int mMode;
@@ -79,7 +78,6 @@ public final class KeyboardId {
 
     public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
         mSubtype = params.mSubtype;
-        mLocale = SubtypeLocaleUtils.getSubtypeLocale(mSubtype);
         mWidth = params.mKeyboardWidth;
         mHeight = params.mKeyboardHeight;
         mMode = params.mMode;
@@ -167,6 +165,10 @@ public final class KeyboardId {
         return InputTypeUtils.getImeOptionsActionIdFromEditorInfo(mEditorInfo);
     }
 
+    public Locale[] getLocales() {
+        return mSubtype.getLocales();
+    }
+
     @Override
     public boolean equals(final Object other) {
         return other instanceof KeyboardId && equals((KeyboardId) other);
@@ -181,7 +183,8 @@ public final class KeyboardId {
     public String toString() {
         return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s%s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
-                mLocale, mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
+                Arrays.deepToString(mSubtype.getLocales()),
+                mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
                 mWidth, mHeight,
                 modeName(mMode),
                 actionName(imeAction()),
