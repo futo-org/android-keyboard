@@ -77,7 +77,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
     public static final boolean ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS =
             BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
-    public static final boolean HAS_UI_TO_ACCEPT_TYPED_WORD =
+    public static final boolean SHOULD_SHOW_LXX_SUGGESTION_UI =
             BuildCompatUtils.EFFECTIVE_SDK_INT >= BuildCompatUtils.VERSION_CODES_LXX;
     public static final String PREF_SHOW_LANGUAGE_SWITCH_KEY =
             "pref_show_language_switch_key";

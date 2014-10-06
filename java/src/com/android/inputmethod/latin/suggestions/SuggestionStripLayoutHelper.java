@@ -240,9 +240,9 @@ final class SuggestionStripLayoutHelper {
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
         final boolean shouldOmitTypedWord = shouldOmitTypedWord(suggestedWords.mInputStyle,
                 settingsValues.mGestureFloatingPreviewTextEnabled,
-                settingsValues.mShouldShowUiToAcceptTypedWord);
+                settingsValues.mShouldShowLxxSuggestionUi);
         return getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords.mWillAutoCorrect,
-                settingsValues.mShouldShowUiToAcceptTypedWord && shouldOmitTypedWord,
+                settingsValues.mShouldShowLxxSuggestionUi && shouldOmitTypedWord,
                 mCenterPositionInStrip, mTypedWordPositionWhenAutocorrect);
     }
 
@@ -367,21 +367,19 @@ final class SuggestionStripLayoutHelper {
                     (PunctuationSuggestions)suggestedWords, stripView);
         }
 
-        final boolean shouldShowUiToAcceptTypedWord = Settings.getInstance().getCurrent()
-                .mShouldShowUiToAcceptTypedWord;
-        final int suggestionsCount = suggestedWords.size()
-                - (shouldShowUiToAcceptTypedWord ? /* typed word */ 1 : 0);
+        final int wordCountToShow = suggestedWords.getWordCountToShow(
+                Settings.getInstance().getCurrent().mShouldShowLxxSuggestionUi);
         final int startIndexOfMoreSuggestions = setupWordViewsAndReturnStartIndexOfMoreSuggestions(
                 suggestedWords, mSuggestionsCountInStrip);
         final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
         final int stripWidth = stripView.getWidth();
         final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, stripWidth);
-        if (suggestionsCount == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
+        if (wordCountToShow == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
                 centerWordView.getPaint()) < MIN_TEXT_XSCALE) {
             // Layout only the most relevant suggested word at the center of the suggestion strip
             // by consolidating all slots in the strip.
             final int countInStrip = 1;
-            mMoreSuggestionsAvailable = (suggestionsCount > countInStrip);
+            mMoreSuggestionsAvailable = (wordCountToShow > countInStrip);
             layoutWord(mCenterPositionInStrip, stripWidth - mPadding);
             stripView.addView(centerWordView);
             setLayoutWeight(centerWordView, 1.0f, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -393,7 +391,7 @@ final class SuggestionStripLayoutHelper {
         }
 
         final int countInStrip = mSuggestionsCountInStrip;
-        mMoreSuggestionsAvailable = (suggestionsCount > countInStrip);
+        mMoreSuggestionsAvailable = (wordCountToShow > countInStrip);
         int x = 0;
         for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
             if (positionInStrip != 0) {
@@ -557,7 +555,7 @@ final class SuggestionStripLayoutHelper {
 
     public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip) {
         final boolean shouldShowUiToAcceptTypedWord = Settings.getInstance().getCurrent()
-                .mShouldShowUiToAcceptTypedWord;
+                .mShouldShowLxxSuggestionUi;
         final int stripWidth = addToDictionaryStrip.getWidth();
         final int width = shouldShowUiToAcceptTypedWord ? stripWidth
                 : stripWidth - mDividerWidth - mPadding * 2;

@@ -53,7 +53,6 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -169,7 +168,7 @@ public final class InputLogic {
             mInputLogicHandler.reset();
         }
 
-        if (settingsValues.mShouldShowUiToAcceptTypedWord) {
+        if (settingsValues.mShouldShowLxxSuggestionUi) {
             mConnection.requestCursorUpdates(true /* enableMonitor */,
                     true /* requestImmediateCallback */);
         }
@@ -2352,7 +2351,7 @@ public final class InputLogic {
             // We cannot help in this case because we are heavily relying on this new API.
             return false;
         }
-        if (!settingsValues.mShouldShowUiToAcceptTypedWord) {
+        if (!settingsValues.mShouldShowLxxSuggestionUi) {
             return false;
         }
         if (TextUtils.isEmpty(lastComposedWord.mTypedWord)) {

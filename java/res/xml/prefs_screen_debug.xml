@@ -36,8 +36,8 @@
         android:defaultValue="false"
         android:persistent="true" />
     <CheckBoxPreference
-        android:key="pref_show_ui_to_accept_typed_word"
-        android:title="@string/prefs_show_ui_to_accept_typed_word"
+        android:key="pref_should_show_lxx_suggestion_ui"
+        android:title="@string/prefs_should_show_lxx_suggestion_ui"
         android:defaultValue="true"
         android:persistent="true" />
     <CheckBoxPreference
