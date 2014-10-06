@@ -74,8 +74,8 @@ bool ProbabilityDictContent::setProbabilityEntry(const int terminalId,
                 return false;
             }
             writingPos += getEntrySize();
-            mSize++;
         }
+        mSize = terminalId + 1;
     }
     return writeEntry(probabilityEntry, entryPos);
 }
@@ -100,7 +100,6 @@ bool ProbabilityDictContent::flushToFile(const char *const dictPath) const {
 bool ProbabilityDictContent::runGC(
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
         const ProbabilityDictContent *const originalProbabilityDictContent) {
-    mSize = 0;
     for (TerminalPositionLookupTable::TerminalIdMap::const_iterator it = terminalIdMap->begin();
             it != terminalIdMap->end(); ++it) {
         const ProbabilityEntry probabilityEntry =
@@ -109,7 +108,6 @@ bool ProbabilityDictContent::runGC(
             AKLOGE("Cannot set probability entry in runGC. terminalId: %d", it->second);
             return false;
         }
-        mSize++;
     }
     return true;
 }
