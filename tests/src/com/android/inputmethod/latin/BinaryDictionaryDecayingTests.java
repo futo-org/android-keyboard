@@ -611,6 +611,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 mCurrentTime);
         final NgramContext beginningOfSentenceContext = NgramContext.BEGINNING_OF_SENTENCE;
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
+        onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
@@ -622,6 +623,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
 
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
+        onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
+        onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
