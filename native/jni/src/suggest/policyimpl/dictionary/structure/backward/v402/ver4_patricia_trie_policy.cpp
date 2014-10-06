@@ -428,7 +428,10 @@ bool Ver4PatriciaTriePolicy::updateCounter(const PrevWordsInfo *const prevWordsI
         AKLOGE("Cannot update unigarm entry in updateCounter().");
         return false;
     }
-    const NgramProperty ngramProperty(wordCodePoints.toVector(), probability, historicalInfo);
+    const int probabilityForNgram = prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
+            ? NOT_A_PROBABILITY : probability;
+    const NgramProperty ngramProperty(wordCodePoints.toVector(), probabilityForNgram,
+            historicalInfo);
     if (!addNgramEntry(prevWordsInfo, &ngramProperty)) {
         AKLOGE("Cannot update unigarm entry in updateCounter().");
         return false;
