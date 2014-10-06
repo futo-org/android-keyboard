@@ -55,9 +55,6 @@ void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession
     suggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
             ycoordinates, times, pointerIds, inputCodePoints, inputSize,
             weightOfLangModelVsSpatialModel, outSuggestionResults);
-    if (DEBUG_DICT) {
-        outSuggestionResults->dumpSuggestions();
-    }
 }
 
 Dictionary::NgramListenerForPrediction::NgramListenerForPrediction(

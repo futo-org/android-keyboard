@@ -119,7 +119,7 @@ static inline void dumpWordInfo(const int *word, const int length, const int ran
         const int probability) {
     static char charBuf[50];
     const int N = intArrayToCharArray(word, length, charBuf, NELEMS(charBuf));
-    if (N > 1) {
+    if (N > 0) {
         AKLOGI("%2d [ %s ] (%d)", rank, charBuf, probability);
     }
 }
