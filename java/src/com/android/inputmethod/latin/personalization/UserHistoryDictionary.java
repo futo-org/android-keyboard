@@ -65,34 +65,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
         if (word.length() > Constants.DICTIONARY_MAX_WORD_LENGTH) {
             return;
         }
-        final int frequency = isValid ?
-                FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
-        userHistoryDictionary.addUnigramEntryWithCheckingDistracter(word, frequency,
-                null /* shortcutTarget */, 0 /* shortcutFreq */, false /* isNotAWord */,
-                false /* isBlacklisted */, timestamp, distracterFilter);
-
-        final boolean isBeginningOfSentenceContext = ngramContext.isBeginningOfSentenceContext();
-        final NgramContext ngramContextToBeSaved =
-                ngramContext.getTrimmedNgramContext(SUPPORTED_NGRAM - 1);
-        for (int i = 0; i < ngramContextToBeSaved.getPrevWordCount(); i++) {
-            final CharSequence prevWord = ngramContextToBeSaved.getNthPrevWord(1 /* n */);
-            if (prevWord == null || (prevWord.length() > Constants.DICTIONARY_MAX_WORD_LENGTH)) {
-                return;
-            }
-            // Do not insert a word as a bigram of itself
-            if (i == 0 && TextUtils.equals(word, prevWord)) {
-                return;
-            }
-            if (isBeginningOfSentenceContext) {
-                // Beginning-of-Sentence n-gram entry is added as an n-gram entry of an OOV word.
-                userHistoryDictionary.addNgramEntry(
-                        ngramContextToBeSaved.getTrimmedNgramContext(i + 1), word,
-                        FREQUENCY_FOR_WORDS_NOT_IN_DICTS, timestamp);
-            } else {
-                userHistoryDictionary.addNgramEntry(
-                        ngramContextToBeSaved.getTrimmedNgramContext(i + 1), word, frequency,
-                        timestamp);
-            }
-        }
+        userHistoryDictionary.updateEntriesForWordWithCheckingDistracter(ngramContext, word,
+                isValid, 1 /* count */, timestamp, distracterFilter);
     }
 }
