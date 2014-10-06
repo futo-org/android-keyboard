@@ -24,14 +24,6 @@ public final class ProductionFlags {
     public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = false;
 
     /**
-     * When true, enable {@link InputMethodService#onUpdateCursorAnchorInfo} callback via
-     * {@link InputConnection#requestUpdateCursorAnchorInfo}. This flag has no effect in API
-     * Level 20 and prior. In general, this callback provides detailed positional information,
-     * even though an explicit support is required by the editor.
-     */
-    public static final boolean ENABLE_CURSOR_ANCHOR_INFO_CALLBACK = true;
-
-    /**
      * Include all suggestions from all dictionaries in {@link SuggestedWords#mRawSuggestions}.
      */
     public static final boolean INCLUDE_RAW_SUGGESTIONS = false;
