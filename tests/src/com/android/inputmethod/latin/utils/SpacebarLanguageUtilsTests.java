@@ -119,12 +119,17 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
             final String subtypeName = SubtypeLocaleUtils
                     .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
             final String spacebarText = subtype.getFullDisplayName();
-            final String languageName = SubtypeLocaleUtils
-                    .getSubtypeLocaleDisplayName(subtype.getLocale());
-            if (subtype.isNoLanguage()) {
-                assertFalse(subtypeName, spacebarText.contains(languageName));
+            final Locale[] locales = subtype.getLocales();
+            if (1 == locales.length) {
+                final String languageName = SubtypeLocaleUtils
+                        .getSubtypeLocaleDisplayName(locales[0].toString());
+                if (subtype.isNoLanguage()) {
+                    assertFalse(subtypeName, spacebarText.contains(languageName));
+                } else {
+                    assertTrue(subtypeName, spacebarText.contains(languageName));
+                }
             } else {
-                assertTrue(subtypeName, spacebarText.contains(languageName));
+                // TODO: test multi-lingual subtype spacebar display
             }
         }
     }
@@ -133,8 +138,14 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
         for (final RichInputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
                     .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
+            final Locale[] locales = subtype.getLocales();
+            if (locales.length > 1) {
+                // TODO: test multi-lingual subtype spacebar display
+                continue;
+            }
+            final Locale locale = locales[0];
             if (SubtypeLocaleUtils.sExceptionalLocaleDisplayedInRootLocale.contains(
-                    subtype.getLocale())) {
+                    locale.toString())) {
                 // Skip test because the language part of this locale string doesn't represent
                 // the locale to be displayed on the spacebar (for example hi_ZZ and Hinglish).
                 continue;
@@ -144,7 +155,6 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
                 assertEquals(subtypeName, SubtypeLocaleUtils.getKeyboardLayoutSetDisplayName(
                         subtype.getRawSubtype()), spacebarText);
             } else {
-                final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
                 assertEquals(subtypeName,
                         SubtypeLocaleUtils.getSubtypeLocaleDisplayName(locale.getLanguage()),
                         spacebarText);
