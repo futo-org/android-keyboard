@@ -46,6 +46,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.annotation.Nonnull;
+
 /**
  * Abstract base class for an expandable dictionary that can be created and updated dynamically
  * during runtime. When updated it automatically generates a new binary dictionary to handle future
@@ -292,13 +294,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
     }
 
-    /**
-     * Adds unigram information of a word to the dictionary. May overwrite an existing entry.
-     */
-    public void addUnigramEntryWithCheckingDistracter(final String word, final int frequency,
-            final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
-            final boolean isBlacklisted, final int timestamp,
-            final DistracterFilter distracterFilter) {
+    private void updateDictionaryWithWriteLockIfWordIsNotADistracter(
+            @Nonnull final Runnable updateTask,
+            @Nonnull final String word, @Nonnull final DistracterFilter distracterFilter) {
         reloadDictionaryIfRequired();
         asyncPreCheckAndExecuteTaskWithWriteLock(
                 new Callable<Boolean>() {
@@ -315,10 +313,25 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                             return;
                         }
                         runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                        addUnigramLocked(word, frequency, shortcutTarget, shortcutFreq,
-                                isNotAWord, isBlacklisted, timestamp);
+                        updateTask.run();
                     }
                 });
+    }
+
+    /**
+     * Adds unigram information of a word to the dictionary. May overwrite an existing entry.
+     */
+    public void addUnigramEntryWithCheckingDistracter(final String word, final int frequency,
+            final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
+            final boolean isBlacklisted, final int timestamp,
+            @Nonnull final DistracterFilter distracterFilter) {
+        updateDictionaryWithWriteLockIfWordIsNotADistracter(new Runnable() {
+            @Override
+            public void run() {
+                addUnigramLocked(word, frequency, shortcutTarget, shortcutFreq,
+                        isNotAWord, isBlacklisted, timestamp);
+            }
+        }, word, distracterFilter);
     }
 
     protected void addUnigramLocked(final String word, final int frequency,
@@ -354,7 +367,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Adds n-gram information of a word to the dictionary. May overwrite an existing entry.
      */
-    public void addNgramEntry(final NgramContext ngramContext, final String word,
+    public void addNgramEntry(@Nonnull final NgramContext ngramContext, final String word,
             final int frequency, final int timestamp) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
@@ -369,7 +382,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         });
     }
 
-    protected void addNgramEntryLocked(final NgramContext ngramContext, final String word,
+    protected void addNgramEntryLocked(@Nonnull final NgramContext ngramContext, final String word,
             final int frequency, final int timestamp) {
         if (!mBinaryDictionary.addNgramEntry(ngramContext, word, frequency, timestamp)) {
             if (DEBUG) {
@@ -383,7 +396,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Dynamically remove the n-gram entry in the dictionary.
      */
     @UsedForTesting
-    public void removeNgramDynamically(final NgramContext ngramContext, final String word) {
+    public void removeNgramDynamically(@Nonnull final NgramContext ngramContext,
+            final String word) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
@@ -402,6 +416,26 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         });
     }
 
+    /**
+     * Update dictionary for the word with the ngramContext if the word is not a distracter.
+     */
+    public void updateEntriesForWordWithCheckingDistracter(@Nonnull final NgramContext ngramContext,
+            final String word, final boolean isValidWord, final int count, final int timestamp,
+            @Nonnull final DistracterFilter distracterFilter) {
+        updateDictionaryWithWriteLockIfWordIsNotADistracter(new Runnable() {
+            @Override
+            public void run() {
+                if (!mBinaryDictionary.updateEntriesForWordWithNgramContext(ngramContext, word,
+                        isValidWord, count, timestamp)) {
+                    if (DEBUG) {
+                        Log.e(TAG, "Cannot update counter. word: " + word
+                                + " context: "+ ngramContext.toString());
+                    }
+                }
+            }
+        }, word, distracterFilter);
+    }
+
     public interface AddMultipleDictionaryEntriesCallback {
         public void onFinished();
     }
@@ -410,7 +444,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Dynamically add multiple entries to the dictionary.
      */
     public void addMultipleDictionaryEntriesDynamically(
-            final ArrayList<LanguageModelParam> languageModelParams,
+            @Nonnull final ArrayList<LanguageModelParam> languageModelParams,
             final AddMultipleDictionaryEntriesCallback callback) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
