@@ -89,8 +89,7 @@
 
         <activity android:name=".settings.SettingsActivity"
                 android:theme="@style/platformSettingsTheme"
-                android:label="@string/english_ime_settings"
-                android:uiOptions="splitActionBarWhenNarrow">
+                android:label="@string/english_ime_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
