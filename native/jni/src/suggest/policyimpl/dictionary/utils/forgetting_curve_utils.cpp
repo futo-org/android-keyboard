@@ -29,10 +29,14 @@ namespace latinime {
 const int ForgettingCurveUtils::MULTIPLIER_TWO_IN_PROBABILITY_SCALE = 8;
 const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 
-const int ForgettingCurveUtils::MAX_LEVEL = 3;
-const int ForgettingCurveUtils::MIN_VISIBLE_LEVEL = 1;
-const int ForgettingCurveUtils::MAX_ELAPSED_TIME_STEP_COUNT = 15;
-const int ForgettingCurveUtils::DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD = 14;
+const int ForgettingCurveUtils::MAX_LEVEL = 15;
+const int ForgettingCurveUtils::MIN_VISIBLE_LEVEL = 2;
+const int ForgettingCurveUtils::MAX_ELAPSED_TIME_STEP_COUNT = 31;
+const int ForgettingCurveUtils::DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD = 30;
+const int ForgettingCurveUtils::OCCURRENCES_TO_RAISE_THE_LEVEL = 1;
+// TODO: Evaluate whether this should be 7.5 days.
+// 15 days
+const int ForgettingCurveUtils::DURATION_TO_LOWER_THE_LEVEL_IN_SECONDS = 15 * 24 * 60 * 60;
 
 const float ForgettingCurveUtils::UNIGRAM_COUNT_HARD_LIMIT_WEIGHT = 1.2;
 const float ForgettingCurveUtils::BIGRAM_COUNT_HARD_LIMIT_WEIGHT = 1.2;
@@ -54,19 +58,23 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
             || (originalHistoricalInfo->getLevel() == newHistoricalInfo->getLevel()
                     && originalHistoricalInfo->getCount() < newHistoricalInfo->getCount())) {
         // Initial information.
+        int count = newHistoricalInfo->getCount();
+        if (count >= OCCURRENCES_TO_RAISE_THE_LEVEL) {
+            const int level = clampToValidLevelRange(newHistoricalInfo->getLevel() + 1);
+            return HistoricalInfo(timestamp, level, 0 /* count */);
+        }
         const int level = clampToValidLevelRange(newHistoricalInfo->getLevel());
-        const int count = clampToValidCountRange(newHistoricalInfo->getCount(), headerPolicy);
-        return HistoricalInfo(timestamp, level, count);
+        return HistoricalInfo(timestamp, level, clampToValidCountRange(count, headerPolicy));
     } else {
         const int updatedCount = originalHistoricalInfo->getCount() + 1;
-        if (updatedCount >= headerPolicy->getForgettingCurveOccurrencesToLevelUp()) {
+        if (updatedCount >= OCCURRENCES_TO_RAISE_THE_LEVEL) {
             // The count exceeds the max value the level can be incremented.
             if (originalHistoricalInfo->getLevel() >= MAX_LEVEL) {
                 // The level is already max.
                 return HistoricalInfo(timestamp,
                         originalHistoricalInfo->getLevel(), originalHistoricalInfo->getCount());
             } else {
-                // Level up.
+                // Raise the level.
                 return HistoricalInfo(timestamp,
                         originalHistoricalInfo->getLevel() + 1, 0 /* count */);
             }
@@ -79,31 +87,18 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 /* static */ int ForgettingCurveUtils::decodeProbability(
         const HistoricalInfo *const historicalInfo, const HeaderPolicy *const headerPolicy) {
     const int elapsedTimeStepCount = getElapsedTimeStepCount(historicalInfo->getTimestamp(),
-            headerPolicy->getForgettingCurveDurationToLevelDown());
+            DURATION_TO_LOWER_THE_LEVEL_IN_SECONDS);
     return sProbabilityTable.getProbability(
             headerPolicy->getForgettingCurveProbabilityValuesTableId(),
             clampToValidLevelRange(historicalInfo->getLevel()),
             clampToValidTimeStepCountRange(elapsedTimeStepCount));
 }
 
-/* static */ int ForgettingCurveUtils::getProbability(const int unigramProbability,
-        const int bigramProbability) {
-    if (unigramProbability == NOT_A_PROBABILITY) {
-        return NOT_A_PROBABILITY;
-    } else if (bigramProbability == NOT_A_PROBABILITY) {
-        return std::min(backoff(unigramProbability), MAX_PROBABILITY);
-    } else {
-        // TODO: Investigate better way to handle bigram probability.
-        return std::min(std::max(unigramProbability,
-                bigramProbability + MULTIPLIER_TWO_IN_PROBABILITY_SCALE), MAX_PROBABILITY);
-    }
-}
-
 /* static */ bool ForgettingCurveUtils::needsToKeep(const HistoricalInfo *const historicalInfo,
         const HeaderPolicy *const headerPolicy) {
     return historicalInfo->getLevel() > 0
             || getElapsedTimeStepCount(historicalInfo->getTimestamp(),
-                    headerPolicy->getForgettingCurveDurationToLevelDown())
+                    DURATION_TO_LOWER_THE_LEVEL_IN_SECONDS)
                             < DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
 }
 
@@ -113,14 +108,14 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     if (originalHistoricalInfo->getTimestamp() == NOT_A_TIMESTAMP) {
         return HistoricalInfo();
     }
-    const int durationToLevelDownInSeconds = headerPolicy->getForgettingCurveDurationToLevelDown();
+    const int durationToLevelDownInSeconds = DURATION_TO_LOWER_THE_LEVEL_IN_SECONDS;
     const int elapsedTimeStep = getElapsedTimeStepCount(
             originalHistoricalInfo->getTimestamp(), durationToLevelDownInSeconds);
     if (elapsedTimeStep <= MAX_ELAPSED_TIME_STEP_COUNT) {
         // No need to update historical info.
         return *originalHistoricalInfo;
     }
-    // Level down.
+    // Lower the level.
     const int maxLevelDownAmonut = elapsedTimeStep / (MAX_ELAPSED_TIME_STEP_COUNT + 1);
     const int levelDownAmount = (maxLevelDownAmonut >= originalHistoricalInfo->getLevel()) ?
             originalHistoricalInfo->getLevel() : maxLevelDownAmonut;
@@ -170,7 +165,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 
 /* static */ int ForgettingCurveUtils::clampToValidCountRange(const int count,
         const HeaderPolicy *const headerPolicy) {
-    return std::min(std::max(count, 0), headerPolicy->getForgettingCurveOccurrencesToLevelUp() - 1);
+    return std::min(std::max(count, 0), OCCURRENCES_TO_RAISE_THE_LEVEL - 1);
 }
 
 /* static */ int ForgettingCurveUtils::clampToValidLevelRange(const int level) {
@@ -187,9 +182,9 @@ const int ForgettingCurveUtils::ProbabilityTable::MODEST_PROBABILITY_TABLE_ID = 
 const int ForgettingCurveUtils::ProbabilityTable::STRONG_PROBABILITY_TABLE_ID = 2;
 const int ForgettingCurveUtils::ProbabilityTable::AGGRESSIVE_PROBABILITY_TABLE_ID = 3;
 const int ForgettingCurveUtils::ProbabilityTable::WEAK_MAX_PROBABILITY = 127;
-const int ForgettingCurveUtils::ProbabilityTable::MODEST_BASE_PROBABILITY = 32;
-const int ForgettingCurveUtils::ProbabilityTable::STRONG_BASE_PROBABILITY = 35;
-const int ForgettingCurveUtils::ProbabilityTable::AGGRESSIVE_BASE_PROBABILITY = 40;
+const int ForgettingCurveUtils::ProbabilityTable::MODEST_BASE_PROBABILITY = 8;
+const int ForgettingCurveUtils::ProbabilityTable::STRONG_BASE_PROBABILITY = 9;
+const int ForgettingCurveUtils::ProbabilityTable::AGGRESSIVE_BASE_PROBABILITY = 10;
 
 
 ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTables() {
@@ -202,7 +197,7 @@ ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTables() {
             const float endProbability = getBaseProbabilityForLevel(tableId, level - 1);
             for (int timeStepCount = 0; timeStepCount <= MAX_ELAPSED_TIME_STEP_COUNT;
                     ++timeStepCount) {
-                if (level == 0) {
+                if (level < MIN_VISIBLE_LEVEL) {
                     mTables[tableId][level][timeStepCount] = NOT_A_PROBABILITY;
                     continue;
                 }

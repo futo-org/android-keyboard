@@ -39,9 +39,6 @@ class ForgettingCurveUtils {
     static int decodeProbability(const HistoricalInfo *const historicalInfo,
             const HeaderPolicy *const headerPolicy);
 
-    static int getProbability(const int encodedUnigramProbability,
-            const int encodedBigramProbability);
-
     static bool needsToKeep(const HistoricalInfo *const historicalInfo,
             const HeaderPolicy *const headerPolicy);
 
@@ -101,6 +98,8 @@ class ForgettingCurveUtils {
     static const int MIN_VISIBLE_LEVEL;
     static const int MAX_ELAPSED_TIME_STEP_COUNT;
     static const int DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
+    static const int OCCURRENCES_TO_RAISE_THE_LEVEL;
+    static const int DURATION_TO_LOWER_THE_LEVEL_IN_SECONDS;
 
     static const float UNIGRAM_COUNT_HARD_LIMIT_WEIGHT;
     static const float BIGRAM_COUNT_HARD_LIMIT_WEIGHT;
