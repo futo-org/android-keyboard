@@ -183,6 +183,7 @@
     />
     <!-- TODO: This Bengali (Bangladesh) keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xa2144b0c"
@@ -191,6 +192,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=bengali_akkhor,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xbff5986c"
@@ -369,6 +371,7 @@
     />
     <!-- TODO: This Hinglish keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_hi_ZZ"
             android:subtypeId="0x352eb37c"
@@ -377,6 +380,7 @@
             android:imeSubtypeExtraValue="AsciiCapable,KeyboardLayoutSet=qwerty,EmojiCapable"
             android:isAsciiCapable="true"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x35b7526a"
@@ -549,6 +553,7 @@
     />
     <!-- TODO: This Myanmar keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xea266ea4"
@@ -557,6 +562,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar,EmojiCapable,CombiningRules=MyanmarReordering"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x3f12ee14"
@@ -639,6 +645,7 @@
     />
     <!-- TODO: This Sinhala keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x5c6b3bde"
@@ -647,6 +654,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=sinhala,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x8e94d413"
@@ -673,6 +681,7 @@
     />
     <!-- TODO: This Serbian Latin keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_sr_ZZ"
             android:subtypeId="0xf4a5569c"
@@ -681,6 +690,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=serbian_qwertz,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x48b4ff43"
@@ -706,6 +716,7 @@
             android:isAsciiCapable="false"
     />
     <!-- TODO: Enabling/Disabling ta_LK subtype must be aligned with si_LK subtype. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x6ca12d84"
@@ -714,6 +725,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x785abbd9"
@@ -764,6 +776,7 @@
     />
     <!-- TODO: This Uzbek keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xad5cf7f6"
@@ -772,6 +785,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=uzbek,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x93972eee"
