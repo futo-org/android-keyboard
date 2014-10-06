@@ -45,7 +45,6 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     InputMethodSubtype FR_CH;
     InputMethodSubtype DE;
     InputMethodSubtype DE_CH;
-    InputMethodSubtype HI_ZZ;
     InputMethodSubtype ZZ;
     InputMethodSubtype DE_QWERTY;
     InputMethodSubtype FR_QWERTZ;
@@ -54,6 +53,9 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     InputMethodSubtype ES_US_COLEMAK;
     InputMethodSubtype ZZ_AZERTY;
     InputMethodSubtype ZZ_PC;
+
+    // This is a preliminary subtype and may not exist.
+    InputMethodSubtype HI_LATN;
 
     @Override
     protected void setUp() throws Exception {
@@ -87,8 +89,6 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                 Locale.GERMAN.toString(), "qwertz");
         DE_CH = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 "de_CH", "swiss");
-        HI_ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                "hi_ZZ", "qwerty");
         ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
         DE_QWERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
@@ -105,6 +105,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                 SubtypeLocaleUtils.NO_LANGUAGE, "azerty");
         ZZ_PC = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
                 SubtypeLocaleUtils.NO_LANGUAGE, "pcqwerty");
+
+        HI_LATN = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet("hi_ZZ", "qwerty");
     }
 
     public void testAllFullDisplayName() {
@@ -137,8 +139,11 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         assertEquals("fr_CH", "swiss", SubtypeLocaleUtils.getKeyboardLayoutSetName(FR_CH));
         assertEquals("de", "qwertz", SubtypeLocaleUtils.getKeyboardLayoutSetName(DE));
         assertEquals("de_CH", "swiss", SubtypeLocaleUtils.getKeyboardLayoutSetName(DE_CH));
-        assertEquals("hi_ZZ", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(HI_ZZ));
         assertEquals("zz", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(ZZ));
+        // This is a preliminary subtype and may not exist.
+        if (HI_LATN != null) {
+            assertEquals("hi_ZZ", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(HI_LATN));
+        }
 
         assertEquals("de qwerty", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(DE_QWERTY));
         assertEquals("fr qwertz", "qwertz", SubtypeLocaleUtils.getKeyboardLayoutSetName(FR_QWERTZ));
@@ -193,10 +198,13 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
                 assertEquals("de_CH", "German (Switzerland)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE_CH));
-                assertEquals("hi_ZZ", "Hinglish",
-                        SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_ZZ));
                 assertEquals("zz", "Alphabet (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
+                // This is a preliminary subtype and may not exist.
+                if (HI_LATN != null) {
+                    assertEquals("hi_ZZ", "Hinglish",
+                            SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_LATN));
+                }
                 return null;
             }
         };
@@ -268,10 +276,13 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
                 assertEquals("de_CH", "Allemand (Suisse)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE_CH));
-                assertEquals("hi_ZZ", "Hindi/Anglais",
-                        SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_ZZ));
                 assertEquals("zz", "Alphabet latin (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
+                // This is a preliminary subtype and may not exist.
+                if (HI_LATN != null) {
+                    assertEquals("hi_ZZ", "Hindi/Anglais",
+                            SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_LATN));
+                }
                 return null;
             }
         };
