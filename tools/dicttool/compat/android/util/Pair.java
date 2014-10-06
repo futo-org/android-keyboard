@@ -17,6 +17,7 @@
 package android.util;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Pair<T1, T2> {
     public final T1 mFirst;
@@ -29,7 +30,8 @@ public class Pair<T1, T2> {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(new Object[] { mFirst, mSecond });
+        return (mFirst == null ? 0 : mFirst.hashCode())
+                ^ (mSecond == null ? 0 : mSecond.hashCode());
     }
 
     @Override
@@ -37,7 +39,6 @@ public class Pair<T1, T2> {
         if (o == this) return true;
         if (!(o instanceof Pair)) return false;
         Pair<?, ?> p = (Pair<?, ?>)o;
-        return ((mFirst == null && p.mFirst == null) || mFirst.equals(p.mFirst))
-                && ((mSecond == null && p.mSecond == null) || mSecond.equals(p.mSecond));
+        return Objects.equals(mFirst, p.mFirst) && Objects.equals(mSecond, p.mSecond);
     }
 }
