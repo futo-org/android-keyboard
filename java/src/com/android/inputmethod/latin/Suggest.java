@@ -55,10 +55,6 @@ public final class Suggest {
         mDictionaryFacilitator = dictionaryFacilitator;
     }
 
-    public Locale getLocale() {
-        return mDictionaryFacilitator.getLocale();
-    }
-
     public void setAutoCorrectionThreshold(final float threshold) {
         mAutoCorrectionThreshold = threshold;
     }
@@ -136,7 +132,10 @@ public final class Suggest {
                 SESSION_ID_TYPING);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
-                        trailingSingleQuotesCount, mDictionaryFacilitator.getLocale());
+                        trailingSingleQuotesCount,
+                        // For transforming suggestions that don't come for any dictionary, we
+                        // use the currently most probable locale as it's our best bet.
+                        mDictionaryFacilitator.getMostProbableLocale());
         final boolean didRemoveTypedWord =
                 SuggestedWordInfo.removeDups(wordComposer.getTypedWord(), suggestionsContainer);
 
@@ -216,7 +215,8 @@ public final class Suggest {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, ngramContext, proximityInfo, settingsValuesForSuggestion,
                 SESSION_ID_GESTURE);
-        final Locale defaultLocale = mDictionaryFacilitator.getLocale();
+        // For transforming words that don't come from a dictionary, because it's our best bet
+        final Locale defaultLocale = mDictionaryFacilitator.getMostProbableLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
