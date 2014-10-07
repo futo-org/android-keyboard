@@ -791,22 +791,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
-                    onExtractTextViewPreDraw();
+                    // CursorAnchorInfo is used on L and later.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.L) {
+                        if (isFullscreenMode() && mExtractEditText != null) {
+                            mInputLogic.onUpdateCursorAnchorInfo(
+                                    CursorAnchorInfoUtils.extractFromTextView(mExtractEditText));
+                        }
+                    }
                     return true;
                 }
             };
-
-    private void onExtractTextViewPreDraw() {
-        // CursorAnchorInfo is available on L and later.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
-            return;
-        }
-        if (!isFullscreenMode() || mExtractEditText == null) {
-            return;
-        }
-        final CursorAnchorInfo info = CursorAnchorInfoUtils.getCursorAnchorInfo(mExtractEditText);
-        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
-    }
 
     @Override
     public void setCandidatesView(final View view) {
@@ -1090,7 +1084,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isFullscreenMode()) {
             return;
         }
-        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
+        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.wrap(info));
     }
 
     /**
