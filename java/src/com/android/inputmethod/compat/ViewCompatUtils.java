@@ -31,9 +31,6 @@ public final class ViewCompatUtils {
     private static final Method METHOD_setPaddingRelative = CompatUtils.getMethod(
             View.class, "setPaddingRelative",
             int.class, int.class, int.class, int.class);
-    // Note that View.setElevation(float) has been introduced in API level 21.
-    private static final Method METHOD_setElevation = CompatUtils.getMethod(
-            View.class, "setElevation", float.class);
     // Note that View.setTextAlignment(int) has been introduced in API level 17.
     private static final Method METHOD_setTextAlignment = CompatUtils.getMethod(
             View.class, "setTextAlignment", int.class);
@@ -56,10 +53,6 @@ public final class ViewCompatUtils {
             return;
         }
         CompatUtils.invoke(view, null, METHOD_setPaddingRelative, start, top, end, bottom);
-    }
-
-    public static void setElevation(final View view, final float elevation) {
-        CompatUtils.invoke(view, null, METHOD_setElevation, elevation);
     }
 
     // These TEXT_ALIGNMENT_* constants have been introduced in API 17.

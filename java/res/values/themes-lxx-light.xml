@@ -20,6 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="KeyboardTheme.LXX_Light" parent="KeyboardIcons.LXX_Light">
+        <item name="inputViewStyle">@style/InputView.LXX</item>
         <item name="keyboardStyle">@style/Keyboard.LXX_Light</item>
         <item name="keyboardViewStyle">@style/KeyboardView.LXX_Light</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LXX_Light</item>

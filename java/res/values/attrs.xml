@@ -20,6 +20,8 @@
 
 <resources>
     <declare-styleable name="KeyboardTheme">
+        <!-- InputView style -->
+        <attr name="inputViewStyle" format="reference" />
         <!-- Keyboard style -->
         <attr name="keyboardStyle" format="reference" />
         <!-- KeyboardView style -->
