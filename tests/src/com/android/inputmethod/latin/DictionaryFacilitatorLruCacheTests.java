@@ -50,15 +50,15 @@ public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
     private void testGetFacilitator(final DictionaryFacilitatorLruCache cache) {
         final DictionaryFacilitator dictionaryFacilitatorEnUs = cache.get(Locale.US);
         assertNotNull(dictionaryFacilitatorEnUs);
-        assertEquals(Locale.US, dictionaryFacilitatorEnUs.getLocale());
+        assertTrue(dictionaryFacilitatorEnUs.isForLocales(new Locale[] { Locale.US }));
 
         final DictionaryFacilitator dictionaryFacilitatorFr = cache.get(Locale.FRENCH);
         assertNotNull(dictionaryFacilitatorEnUs);
-        assertEquals(Locale.FRENCH, dictionaryFacilitatorFr.getLocale());
+        assertTrue(dictionaryFacilitatorFr.isForLocales(new Locale[] { Locale.FRENCH }));
 
         final DictionaryFacilitator dictionaryFacilitatorDe = cache.get(Locale.GERMANY);
         assertNotNull(dictionaryFacilitatorDe);
-        assertEquals(Locale.GERMANY, dictionaryFacilitatorDe.getLocale());
+        assertTrue(dictionaryFacilitatorDe.isForLocales(new Locale[] { Locale.GERMANY }));
     }
 
     public void testSetUseContactsDictionary() {
