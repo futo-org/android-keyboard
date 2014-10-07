@@ -1627,7 +1627,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final String wordToShow;
         if (CapsModeUtils.isAutoCapsMode(mInputLogic.mLastComposedWord.mCapitalizedMode)) {
-            wordToShow = word.toLowerCase(mDictionaryFacilitator.getPrimaryLocale());
+            wordToShow = word.toLowerCase(mDictionaryFacilitator.getMostProbableLocale());
         } else {
             wordToShow = word;
         }
@@ -1912,7 +1912,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
-        if (mDictionaryFacilitator.getLocale() == null) {
+        if (!mDictionaryFacilitator.isActive()) {
             resetDictionaryFacilitatorIfNecessary();
         }
         mDictionaryFacilitator.dumpDictionaryForDebug(dictName);

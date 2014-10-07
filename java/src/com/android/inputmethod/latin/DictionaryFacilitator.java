@@ -214,6 +214,7 @@ public class DictionaryFacilitator {
         mPersonalizationHelper.updateEnabledSubtypes(enabledSubtypes);
     }
 
+    // TODO: remove this, it's confusing with seamless multiple language switching
     public void setIsMonolingualUser(final boolean isMonolingualUser) {
         mPersonalizationHelper.setIsMonolingualUser(isMonolingualUser);
     }
@@ -223,16 +224,25 @@ public class DictionaryFacilitator {
         return mDictionaryGroups[0].mLocale;
     }
 
+    public boolean isActive() {
+        return null != mDictionaryGroups[0].mLocale;
+    }
+
     /**
-     * Returns the primary locale among all currently active locales. BE CAREFUL using this.
+     * Returns the most probable locale among all currently active locales. BE CAREFUL using this.
      *
      * DO NOT USE THIS just because it's convenient. Use it when it's correct, for example when
      * choosing what dictionary to put a word in, or when changing the capitalization of a typed
      * string.
-     * @return the primary active locale
+     * @return the most probable locale
      */
-    public Locale getPrimaryLocale() {
-        return mDictionaryGroups[0].mLocale;
+    public Locale getMostProbableLocale() {
+        return getDictionaryGroupForMostProbableLanguage().mLocale;
+    }
+
+    private DictionaryGroup getDictionaryGroupForMostProbableLanguage() {
+        // TODO: implement this
+        return mDictionaryGroups[0];
     }
 
     private static ExpandableBinaryDictionary getSubDict(final String dictType,
@@ -272,11 +282,6 @@ public class DictionaryFacilitator {
             }
         }
         return null;
-    }
-
-    private DictionaryGroup getDictionaryGroupForActiveLanguage() {
-        // TODO: implement this
-        return mDictionaryGroups[0];
     }
 
     public void resetDictionariesWithDictNamePrefix(final Context context,
@@ -542,17 +547,18 @@ public class DictionaryFacilitator {
     }
 
     public void addWordToUserDictionary(final Context context, final String word) {
-        final Locale locale = getLocale();
+        final Locale locale = getMostProbableLocale();
         if (locale == null) {
             return;
         }
+        // TODO: add a toast telling what language this is being added to?
         UserBinaryDictionary.addWordToUserDictionary(context, locale, word);
     }
 
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
             final NgramContext ngramContext, final int timeStampInSeconds,
             final boolean blockPotentiallyOffensive) {
-        final DictionaryGroup dictionaryGroup = getDictionaryGroupForActiveLanguage();
+        final DictionaryGroup dictionaryGroup = getDictionaryGroupForMostProbableLanguage();
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
         NgramContext ngramContextForCurrentWord = ngramContext;
         for (int i = 0; i < words.length; i++) {
@@ -620,7 +626,7 @@ public class DictionaryFacilitator {
 
     private void removeWord(final String dictName, final String word) {
         final ExpandableBinaryDictionary dictionary =
-                getDictionaryGroupForActiveLanguage().getSubDict(dictName);
+                getDictionaryGroupForMostProbableLanguage().getSubDict(dictName);
         if (dictionary != null) {
             dictionary.removeUnigramEntryDynamically(word);
         }
@@ -747,7 +753,8 @@ public class DictionaryFacilitator {
             final SpacingAndPunctuations spacingAndPunctuations,
             final AddMultipleDictionaryEntriesCallback callback) {
         mPersonalizationHelper.addEntriesToPersonalizationDictionariesToUpdate(
-                getLocale(), personalizationDataChunk, spacingAndPunctuations, callback);
+                getMostProbableLocale(), personalizationDataChunk, spacingAndPunctuations,
+                callback);
     }
 
     @UsedForTesting
@@ -756,7 +763,7 @@ public class DictionaryFacilitator {
         // TODO: we're inserting the phrase into the dictionary for the active language. Rethink
         // this a bit from a theoretical point of view.
         final ExpandableBinaryDictionary contextualDict =
-                getDictionaryGroupForActiveLanguage().getSubDict(Dictionary.TYPE_CONTEXTUAL);
+                getDictionaryGroupForMostProbableLanguage().getSubDict(Dictionary.TYPE_CONTEXTUAL);
         if (contextualDict == null) {
             return;
         }
