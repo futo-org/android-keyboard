@@ -62,6 +62,7 @@ public class DictionaryFacilitator {
     private static final int CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT = 140;
 
     private DictionaryGroup[] mDictionaryGroups = new DictionaryGroup[] { new DictionaryGroup() };
+    private DictionaryGroup mMostProbableDictionaryGroup = mDictionaryGroups[0];
     private boolean mIsUserDictEnabled = false;
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionaries = new CountDownLatch(0);
     // To synchronize assigning mDictionaryGroup to ensure closing dictionaries.
@@ -126,9 +127,16 @@ public class DictionaryFacilitator {
      * A group of dictionaries that work together for a single language.
      */
     private static class DictionaryGroup {
+        // TODO: Run evaluation to determine a reasonable value for these constants. The current
+        // values are ad-hoc and chosen without any particular care or methodology.
+        public static final float WEIGHT_FOR_MOST_PROBABLE_LANGUAGE = 1.0f;
+        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.95f;
+        public static final float WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.6f;
+
         public final Locale mLocale;
         private Dictionary mMainDict;
-        public float mWeightForLocale = 1.0f;
+        public float mWeightForTypingInLocale = WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
+        public float mWeightForGesturingInLocale = WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
         public final ConcurrentHashMap<String, ExpandableBinaryDictionary> mSubDictMap =
                 new ConcurrentHashMap<>();
 
@@ -245,8 +253,21 @@ public class DictionaryFacilitator {
     }
 
     private DictionaryGroup getDictionaryGroupForMostProbableLanguage() {
-        // TODO: implement this
-        return mDictionaryGroups[0];
+        return mMostProbableDictionaryGroup;
+    }
+
+    public void switchMostProbableLanguage(final Locale locale) {
+        final DictionaryGroup newMostProbableDictionaryGroup =
+                findDictionaryGroupWithLocale(mDictionaryGroups, locale);
+        mMostProbableDictionaryGroup.mWeightForTypingInLocale =
+                DictionaryGroup.WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE;
+        mMostProbableDictionaryGroup.mWeightForGesturingInLocale =
+                DictionaryGroup.WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE;
+        newMostProbableDictionaryGroup.mWeightForTypingInLocale =
+                DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
+        newMostProbableDictionaryGroup.mWeightForGesturingInLocale =
+                DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
+        mMostProbableDictionaryGroup = newMostProbableDictionaryGroup;
     }
 
     private static ExpandableBinaryDictionary getSubDict(final String dictType,
@@ -366,6 +387,7 @@ public class DictionaryFacilitator {
         synchronized (mLock) {
             oldDictionaryGroups = mDictionaryGroups;
             mDictionaryGroups = newDictionaryGroups;
+            mMostProbableDictionaryGroup = newDictionaryGroups[0];
             mIsUserDictEnabled = UserBinaryDictionary.isEnabled(context);
             if (hasAtLeastOneUninitializedMainDictionary()) {
                 asyncReloadUninitializedMainDictionaries(context, newLocales, listener);
@@ -455,13 +477,15 @@ public class DictionaryFacilitator {
             dictionaryGroups[i] = new DictionaryGroup(locale, mainDictionary, subDicts);
         }
         mDictionaryGroups = dictionaryGroups;
+        mMostProbableDictionaryGroup = dictionaryGroups[0];
     }
 
     public void closeDictionaries() {
         final DictionaryGroup[] dictionaryGroups;
         synchronized (mLock) {
             dictionaryGroups = mDictionaryGroups;
-            mDictionaryGroups = new DictionaryGroup[] { new DictionaryGroup() };
+            mMostProbableDictionaryGroup = new DictionaryGroup();
+            mDictionaryGroups = new DictionaryGroup[] { mMostProbableDictionaryGroup };
         }
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
             for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
@@ -476,7 +500,7 @@ public class DictionaryFacilitator {
 
     @UsedForTesting
     public ExpandableBinaryDictionary getSubDictForTesting(final String dictName) {
-        return mDictionaryGroups[0].getSubDict(dictName);
+        return mMostProbableDictionaryGroup.getSubDict(dictName);
     }
 
     // The main dictionaries are loaded asynchronously.  Don't cache the return value
@@ -653,10 +677,13 @@ public class DictionaryFacilitator {
             for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
                 if (null == dictionary) continue;
+                final float weightForLocale = composer.isBatchMode()
+                        ? dictionaryGroup.mWeightForGesturingInLocale
+                        : dictionaryGroup.mWeightForTypingInLocale;
                 final ArrayList<SuggestedWordInfo> dictionarySuggestions =
                         dictionary.getSuggestions(composer, ngramContext, proximityInfo,
                                 settingsValuesForSuggestion, sessionId,
-                                dictionaryGroup.mWeightForLocale, weightOfLangModelVsSpatialModel);
+                                weightForLocale, weightOfLangModelVsSpatialModel);
                 if (null == dictionarySuggestions) continue;
                 suggestionResults.addAll(dictionarySuggestions);
                 if (null != suggestionResults.mRawSuggestions) {
