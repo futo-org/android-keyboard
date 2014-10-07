@@ -1536,7 +1536,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void setSuggestedWords(final SuggestedWords suggestedWords) {
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        mInputLogic.setSuggestedWords(suggestedWords, currentSettingsValues, mHandler);
+        mInputLogic.setSuggestedWords(suggestedWords);
         // TODO: Modify this when we support suggestions with hard keyboard
         if (!hasSuggestionStripView()) {
             return;
