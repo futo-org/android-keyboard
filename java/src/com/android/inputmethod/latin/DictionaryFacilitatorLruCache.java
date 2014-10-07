@@ -101,7 +101,7 @@ public class DictionaryFacilitatorLruCache {
 
     private void resetDictionariesForLocaleLocked(final DictionaryFacilitator dictionaryFacilitator,
             final Locale locale) {
-        dictionaryFacilitator.resetDictionariesWithDictNamePrefix(mContext, locale,
+        dictionaryFacilitator.resetDictionariesWithDictNamePrefix(mContext, new Locale[] { locale },
                 mUseContactsDictionary, false /* usePersonalizedDicts */,
                 false /* forceReloadMainDictionary */, null /* listener */,
                 mDictionaryNamePrefix);

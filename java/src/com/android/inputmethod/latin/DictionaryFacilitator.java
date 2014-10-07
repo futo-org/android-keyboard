@@ -219,11 +219,6 @@ public class DictionaryFacilitator {
         mPersonalizationHelper.setIsMonolingualUser(isMonolingualUser);
     }
 
-    // TODO: remove this, replace with version returning multiple locales
-    public Locale getLocale() {
-        return mDictionaryGroups[0].mLocale;
-    }
-
     public boolean isActive() {
         return null != mDictionaryGroups[0].mLocale;
     }
@@ -238,6 +233,15 @@ public class DictionaryFacilitator {
      */
     public Locale getMostProbableLocale() {
         return getDictionaryGroupForMostProbableLanguage().mLocale;
+    }
+
+    public Locale[] getLocales() {
+        final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
+        final Locale[] locales = new Locale[dictionaryGroups.length];
+        for (int i = 0; i < dictionaryGroups.length; ++i) {
+            locales[i] = dictionaryGroups[i].mLocale;
+        }
+        return locales;
     }
 
     private DictionaryGroup getDictionaryGroupForMostProbableLanguage() {
@@ -266,11 +270,11 @@ public class DictionaryFacilitator {
         }
     }
 
-    public void resetDictionaries(final Context context, final Locale newLocale,
+    public void resetDictionaries(final Context context, final Locale[] newLocales,
             final boolean useContactsDict, final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
             final DictionaryInitializationListener listener) {
-        resetDictionariesWithDictNamePrefix(context, newLocale, useContactsDict,
+        resetDictionariesWithDictNamePrefix(context, newLocales, useContactsDict,
                 usePersonalizedDicts, forceReloadMainDictionary, listener, "" /* dictNamePrefix */);
     }
 
@@ -285,14 +289,12 @@ public class DictionaryFacilitator {
     }
 
     public void resetDictionariesWithDictNamePrefix(final Context context,
-            final Locale newLocaleToUse,
+            final Locale[] newLocales,
             final boolean useContactsDict, final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
             final DictionaryInitializationListener listener,
             final String dictNamePrefix) {
         final HashMap<Locale, ArrayList<String>> existingDictsToCleanup = new HashMap<>();
-        // TODO: use several locales
-        final Locale[] newLocales = new Locale[] { newLocaleToUse };
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
         final HashSet<String> subDictTypesToUse = new HashSet<>();
         subDictTypesToUse.add(Dictionary.TYPE_USER);

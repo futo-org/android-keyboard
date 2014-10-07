@@ -674,9 +674,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO: make sure the current settings always have the right locales, and read from them
     private void resetDictionaryFacilitatorForLocale(final Locale[] locales) {
         final SettingsValues settingsValues = mSettings.getCurrent();
-        // TODO: pass the array instead
-        final Locale locale = locales[0];
-        mDictionaryFacilitator.resetDictionaries(this /* context */, locale,
+        mDictionaryFacilitator.resetDictionaries(this /* context */, locales,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
                 false /* forceReloadMainDictionary */, this);
         if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
@@ -691,7 +689,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /* package private */ void resetSuggestMainDict() {
         final SettingsValues settingsValues = mSettings.getCurrent();
         mDictionaryFacilitator.resetDictionaries(this /* context */,
-                mDictionaryFacilitator.getLocale(), settingsValues.mUseContactsDict,
+                mDictionaryFacilitator.getLocales(), settingsValues.mUseContactsDict,
                 settingsValues.mUsePersonalizedDicts, true /* forceReloadMainDictionary */, this);
     }
 
@@ -1893,7 +1891,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting
     /* package for test */ void replaceDictionariesForTest(final Locale locale) {
         final SettingsValues settingsValues = mSettings.getCurrent();
-        mDictionaryFacilitator.resetDictionaries(this, locale,
+        mDictionaryFacilitator.resetDictionaries(this, new Locale[] { locale },
             settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
             false /* forceReloadMainDictionary */, this /* listener */);
     }
