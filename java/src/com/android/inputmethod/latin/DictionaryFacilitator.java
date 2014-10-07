@@ -257,6 +257,12 @@ public class DictionaryFacilitator {
     }
 
     public void switchMostProbableLanguage(final Locale locale) {
+        if (null == locale) {
+            // In many cases, there is no locale to a committed word. For example, a typed word
+            // that does not auto-correct has no locale. In this case we simply do not change
+            // the most probable language.
+            return;
+        }
         final DictionaryGroup newMostProbableDictionaryGroup =
                 findDictionaryGroupWithLocale(mDictionaryGroups, locale);
         mMostProbableDictionaryGroup.mWeightForTypingInLocale =

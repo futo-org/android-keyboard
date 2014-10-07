@@ -305,6 +305,7 @@ public final class InputLogic {
                     currentKeyboardScriptId, handler);
         }
 
+        mDictionaryFacilitator.switchMostProbableLanguage(suggestionInfo.mSourceDict.mLocale);
         final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 event, SystemClock.uptimeMillis(), mSpaceState, keyboardShiftState);
@@ -2100,6 +2101,10 @@ public final class InputLogic {
             final boolean isBatchMode = mWordComposer.isBatchMode();
             commitChosenWord(settingsValues, stringToCommit,
                     LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator);
+            if (null != autoCorrectionOrNull) {
+                mDictionaryFacilitator.switchMostProbableLanguage(
+                        autoCorrectionOrNull.mSourceDict.mLocale);
+            }
             if (!typedWord.equals(stringToCommit)) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened. It has no other effect; in particular
