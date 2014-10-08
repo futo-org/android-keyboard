@@ -158,10 +158,10 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         final String currentAccount = getCurrentlySelectedAccount();
         if (currentAccount == null) {
             syncNowPreference.setEnabled(false);
-            syncNowPreference.setSummary(R.string.sync_now_summary);
+            syncNowPreference.setSummary(R.string.sync_now_summary_disabled_signed_out);
         } else {
             syncNowPreference.setEnabled(true);
-            syncNowPreference.setSummary(R.string.sync_now_summary_disabled_signed_out);
+            syncNowPreference.setSummary(R.string.sync_now_summary);
         }
     }
 
