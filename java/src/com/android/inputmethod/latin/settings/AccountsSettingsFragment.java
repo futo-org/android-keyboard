@@ -28,6 +28,7 @@ import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.accounts.LoginAccountUtils;
@@ -176,6 +177,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      *
      * Package-private for testing.
      */
+    @UsedForTesting
     AlertDialog createAccountPicker(final String[] accounts,
             final String selectedAccount) {
         if (accounts == null || accounts.length == 0) {
