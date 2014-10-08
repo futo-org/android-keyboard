@@ -93,21 +93,21 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return false;
     }
 
-    bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+    bool addNgramEntry(const NgramContext *const ngramContext,
             const NgramProperty *const ngramProperty) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;
     }
 
-    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+    bool removeNgramEntry(const NgramContext *const ngramContext,
             const CodePointArrayView wordCodePoints) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: removeNgramEntry() is called for non-updatable dictionary.");
         return false;
     }
 
-    bool updateEntriesForWordWithNgramContext(const PrevWordsInfo *const prevWordsInfo,
+    bool updateEntriesForWordWithNgramContext(const NgramContext *const ngramContext,
             const CodePointArrayView wordCodePoints, const bool isValidWord,
             const HistoricalInfo historicalInfo) {
         // This method should not be called for non-updatable dictionary.
