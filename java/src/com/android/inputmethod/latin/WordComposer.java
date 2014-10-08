@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.event.CombinerChain;
 import com.android.inputmethod.event.Event;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -48,8 +49,7 @@ public final class WordComposer {
     // The list of events that served to compose this string.
     private final ArrayList<Event> mEvents;
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
-    private String mAutoCorrection;
-    private String mAutoCorrectionDictionaryType;
+    private SuggestedWordInfo mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
     // A memory of the last rejected batch mode suggestion, if any. This goes like this: the user
@@ -418,23 +418,15 @@ public final class WordComposer {
     /**
      * Sets the auto-correction for this word.
      */
-    public void setAutoCorrection(final String correction, String dictType) {
-        mAutoCorrection = correction;
-        mAutoCorrectionDictionaryType = dictType;
+    public void setAutoCorrection(final SuggestedWordInfo autoCorrection) {
+        mAutoCorrection = autoCorrection;
     }
 
     /**
      * @return the auto-correction for this word, or null if none.
      */
-    public String getAutoCorrectionOrNull() {
+    public SuggestedWordInfo getAutoCorrectionOrNull() {
         return mAutoCorrection;
-    }
-
-    /**
-     * @return the auto-correction dictionary type or null if none.
-     */
-    public String getAutoCorrectionDictionaryTypeOrNull() {
-        return mAutoCorrectionDictionaryType;
     }
 
     /**

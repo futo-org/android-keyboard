@@ -607,25 +607,21 @@ public final class InputLogic {
 
     // TODO: on the long term, this method should become private, but it will be difficult.
     // Especially, how do we deal with InputMethodService.onDisplayCompletions?
-    public void setSuggestedWords(final SuggestedWords suggestedWords,
-            final SettingsValues settingsValues, final LatinIME.UIHandler handler) {
+    public void setSuggestedWords(final SuggestedWords suggestedWords) {
         if (!suggestedWords.isEmpty()) {
-            final String autoCorrection;
-            final String dictType;
+            final SuggestedWordInfo suggestedWordInfo;
             if (suggestedWords.mWillAutoCorrect) {
-                SuggestedWordInfo info = suggestedWords.getInfo(
-                        SuggestedWords.INDEX_OF_AUTO_CORRECTION);
-                autoCorrection = info.mWord;
-                dictType = info.mSourceDict.mDictType;
+                suggestedWordInfo = suggestedWords.getInfo(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
             } else {
                 // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
                 // because it may differ from mWordComposer.mTypedWord.
-                autoCorrection = suggestedWords.mTypedWord;
-                dictType = Dictionary.TYPE_USER_TYPED;
+                suggestedWordInfo = new SuggestedWordInfo(suggestedWords.mTypedWord,
+                        SuggestedWordInfo.MAX_SCORE,
+                        SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
+                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                        SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
             }
-            // TODO: Use the SuggestedWordInfo to set the auto correction when
-            // user typed word is available via SuggestedWordInfo.
-            mWordComposer.setAutoCorrection(autoCorrection, dictType);
+            mWordComposer.setAutoCorrection(suggestedWordInfo);
         }
         mSuggestedWords = suggestedWords;
         final boolean newAutoCorrectionIndicator = suggestedWords.mWillAutoCorrect;
@@ -2092,19 +2088,19 @@ public final class InputLogic {
             // INPUT_STYLE_TYPING.
             performUpdateSuggestionStripSync(settingsValues, SuggestedWords.INPUT_STYLE_TYPING);
         }
-        final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
+        final SuggestedWordInfo autoCorrectionOrNull = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
-        final String autoCorrection = (typedAutoCorrection != null)
-                ? typedAutoCorrection : typedWord;
-        if (autoCorrection != null) {
+        final String stringToCommit = (autoCorrectionOrNull != null)
+                ? autoCorrectionOrNull.mWord : typedWord;
+        if (stringToCommit != null) {
             if (TextUtils.isEmpty(typedWord)) {
                 throw new RuntimeException("We have an auto-correction but the typed word "
                         + "is empty? Impossible! I must commit suicide.");
             }
             final boolean isBatchMode = mWordComposer.isBatchMode();
-            commitChosenWord(settingsValues, autoCorrection,
+            commitChosenWord(settingsValues, stringToCommit,
                     LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator);
-            if (!typedWord.equals(autoCorrection)) {
+            if (!typedWord.equals(stringToCommit)) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened. It has no other effect; in particular
                 // note that this won't affect the text inside the text field AT ALL: it only makes
@@ -2112,13 +2108,14 @@ public final class InputLogic {
                 // of the auto-correction flash. At this moment, the "typedWord" argument is
                 // ignored by TextView.
                 mConnection.commitCorrection(new CorrectionInfo(
-                        mConnection.getExpectedSelectionEnd() - autoCorrection.length(),
-                        typedWord, autoCorrection));
-                StatsUtils.onAutoCorrection(typedWord, autoCorrection, isBatchMode,
-                        mWordComposer.getAutoCorrectionDictionaryTypeOrNull());
-                StatsUtils.onWordCommitAutoCorrect(autoCorrection, isBatchMode);
+                        mConnection.getExpectedSelectionEnd() - stringToCommit.length(),
+                        typedWord, stringToCommit));
+                StatsUtils.onAutoCorrection(typedWord, stringToCommit, isBatchMode,
+                        null == autoCorrectionOrNull
+                                ? null : autoCorrectionOrNull.mSourceDict.mDictType);
+                StatsUtils.onWordCommitAutoCorrect(stringToCommit, isBatchMode);
             } else {
-                StatsUtils.onWordCommitUserTyped(autoCorrection, isBatchMode);
+                StatsUtils.onWordCommitUserTyped(stringToCommit, isBatchMode);
             }
         }
     }
