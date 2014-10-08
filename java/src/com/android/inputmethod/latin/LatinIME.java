@@ -1627,7 +1627,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void showAddToDictionaryHint(final String word) {
+    public void suggestAddingToDictionary(final String word, final boolean isFromSuggestionStrip) {
         if (!hasSuggestionStripView()) {
             return;
         }
@@ -1637,7 +1637,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             wordToShow = word;
         }
-        mSuggestionStripView.showAddToDictionaryHint(wordToShow);
+        mSuggestionStripView.showAddToDictionaryHint(wordToShow,
+                isFromSuggestionStrip /* shouldShowWordToSave */);
     }
 
     // This will show either an empty suggestion strip (if prediction is enabled) or

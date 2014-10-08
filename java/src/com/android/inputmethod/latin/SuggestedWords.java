@@ -413,28 +413,6 @@ public class SuggestedWords {
         return isPrediction(mInputStyle);
     }
 
-    // SuggestedWords is an immutable object, as much as possible. We must not just remove
-    // words from the member ArrayList as some other parties may expect the object to never change.
-    // This is only ever called by recorrection at the moment, hence the ForRecorrection moniker.
-    public SuggestedWords getSuggestedWordsExcludingTypedWordForRecorrection() {
-        final ArrayList<SuggestedWordInfo> newSuggestions = new ArrayList<>();
-        String typedWord = null;
-        for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
-            final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
-            if (!info.isKindOf(SuggestedWordInfo.KIND_TYPED)) {
-                newSuggestions.add(info);
-            } else {
-                assert(null == typedWord);
-                typedWord = info.mWord;
-            }
-        }
-        // We should never autocorrect, so we say the typed word is valid. Also, in this case,
-        // no auto-correction should take place hence willAutoCorrect = false.
-        return new SuggestedWords(newSuggestions, null /* rawSuggestions */, typedWord,
-                true /* typedWordValid */, false /* willAutoCorrect */, mIsObsoleteSuggestions,
-                SuggestedWords.INPUT_STYLE_RECORRECTION, NOT_A_SEQUENCE_NUMBER);
-    }
-
     // Creates a new SuggestedWordInfo from the currently suggested words that removes all but the
     // last word of all suggestions, separated by a space. This is necessary because when we commit
     // a multiple-word suggestion, the IME only retains the last word as the composing word, and

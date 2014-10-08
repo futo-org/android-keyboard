@@ -553,12 +553,12 @@ final class SuggestionStripLayoutHelper {
         return countInStrip;
     }
 
-    public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip) {
-        final boolean shouldShowUiToAcceptTypedWord = Settings.getInstance().getCurrent()
-                .mShouldShowLxxSuggestionUi;
+    public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip,
+            final boolean shouldShowWordToSave) {
+        final boolean showsHintWithWord = shouldShowWordToSave
+                || !Settings.getInstance().getCurrent().mShouldShowLxxSuggestionUi;
         final int stripWidth = addToDictionaryStrip.getWidth();
-        final int width = shouldShowUiToAcceptTypedWord ? stripWidth
-                : stripWidth - mDividerWidth - mPadding * 2;
+        final int width = stripWidth - (showsHintWithWord ? mDividerWidth + mPadding * 2 : 0);
 
         final TextView wordView = (TextView)addToDictionaryStrip.findViewById(R.id.word_to_save);
         wordView.setTextColor(mColorTypedWord);
@@ -569,7 +569,7 @@ final class SuggestionStripLayoutHelper {
         wordView.setText(wordToSave);
         wordView.setTextScaleX(wordScaleX);
         setLayoutWeight(wordView, mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
-        final int wordVisibility = shouldShowUiToAcceptTypedWord ? View.GONE : View.VISIBLE;
+        final int wordVisibility = showsHintWithWord ? View.VISIBLE : View.GONE;
         wordView.setVisibility(wordVisibility);
         addToDictionaryStrip.findViewById(R.id.word_to_save_divider).setVisibility(wordVisibility);
 
@@ -579,12 +579,7 @@ final class SuggestionStripLayoutHelper {
         final float hintWeight;
         final TextView hintView = (TextView)addToDictionaryStrip.findViewById(
                 R.id.hint_add_to_dictionary);
-        if (shouldShowUiToAcceptTypedWord) {
-            hintText = res.getText(R.string.hint_add_to_dictionary_without_word);
-            hintWidth = width;
-            hintWeight = 1.0f;
-            hintView.setGravity(Gravity.CENTER);
-        } else {
+        if (showsHintWithWord) {
             final boolean isRtlLanguage = (ViewCompat.getLayoutDirection(addToDictionaryStrip)
                     == ViewCompat.LAYOUT_DIRECTION_RTL);
             final String arrow = isRtlLanguage ? RIGHTWARDS_ARROW : LEFTWARDS_ARROW;
@@ -595,6 +590,11 @@ final class SuggestionStripLayoutHelper {
             hintWidth = width - wordWidth;
             hintWeight = 1.0f - mCenterSuggestionWeight;
             hintView.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
+        } else {
+            hintText = res.getText(R.string.hint_add_to_dictionary_without_word);
+            hintWidth = width;
+            hintWeight = 1.0f;
+            hintView.setGravity(Gravity.CENTER);
         }
         hintView.setTextColor(mColorAutoCorrect);
         final float hintScaleX = getTextScaleX(hintText, hintWidth, hintView.getPaint());
