@@ -146,7 +146,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     // More keys keyboard
     private final Paint mBackgroundDimAlphaPaint = new Paint();
-    private boolean mNeedsToDimEntireKeyboard;
     private final View mMoreKeysKeyboardContainer;
     private final View mMoreKeysKeyboardForActionContainer;
     private final WeakHashMap<Key, Keyboard> mMoreKeysKeyboardCache = new WeakHashMap<>();
@@ -673,7 +672,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         locatePreviewPlacerView();
         panel.showInParent(mDrawingPreviewPlacerView);
         mMoreKeysPanel = panel;
-        dimEntireKeyboard(true /* dimmed */);
     }
 
     public boolean isShowingMoreKeysPanel() {
@@ -687,7 +685,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     @Override
     public void onDismissMoreKeysPanel() {
-        dimEntireKeyboard(false /* dimmed */);
         if (isShowingMoreKeysPanel()) {
             mMoreKeysPanel.removeFromParent();
             mMoreKeysPanel = null;
@@ -813,24 +810,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             }
         }
         invalidateKey(mSpaceKey);
-    }
-
-    private void dimEntireKeyboard(final boolean dimmed) {
-        final boolean needsRedrawing = mNeedsToDimEntireKeyboard != dimmed;
-        mNeedsToDimEntireKeyboard = dimmed;
-        if (needsRedrawing) {
-            invalidateAllKeys();
-        }
-    }
-
-    @Override
-    protected void onDraw(final Canvas canvas) {
-        super.onDraw(canvas);
-
-        // Overlay a dark rectangle to dim.
-        if (mNeedsToDimEntireKeyboard) {
-            canvas.drawRect(0.0f, 0.0f, getWidth(), getHeight(), mBackgroundDimAlphaPaint);
-        }
     }
 
     @Override
