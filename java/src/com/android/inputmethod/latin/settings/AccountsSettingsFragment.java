@@ -32,6 +32,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.define.ProductionFlags;
+import com.android.inputmethod.latin.sync.BeanstalkManager;
 
 import javax.annotation.Nullable;
 
@@ -42,14 +43,17 @@ import javax.annotation.Nullable;
  * <li> Account selection/management for IME
  * <li> TODO: Sync preferences
  * <li> TODO: Privacy preferences
+ * <li> Sync now
  */
 public final class AccountsSettingsFragment extends SubScreenFragment {
     static final String PREF_ACCCOUNT_SWITCHER = "account_switcher";
+    static final String PREF_SYNC_NOW = "pref_beanstalk";
 
     private final DialogInterface.OnClickListener mAccountSelectedListener =
             new AccountSelectedListener();
     private final DialogInterface.OnClickListener mAccountSignedOutListener =
             new AccountSignedOutListener();
+    private final Preference.OnPreferenceClickListener mSyncNowListener = new SyncNowListener();
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -75,21 +79,39 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         } else {
             removePreference(Settings.PREF_ENABLE_METRICS_LOGGING);
         }
+
+        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+            removePreference(PREF_SYNC_NOW);
+        } else {
+            final Preference syncNowPreference = findPreference(PREF_SYNC_NOW);
+            if (syncNowPreference != null) {
+                syncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
+            }
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        refreshAccountSelection();
+        refreshUi();
     }
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         // TODO: Look at the preference that changed before refreshing the view.
+        refreshUi();
+    }
+
+    private void refreshUi() {
         refreshAccountSelection();
+        refreshSyncNow();
     }
 
     private void refreshAccountSelection() {
+        if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
+            return;
+        }
+
         final String currentAccount = getCurrentlySelectedAccount();
         final Preference accountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
         if (currentAccount == null) {
@@ -117,6 +139,29 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
 
         // TODO: Depending on the account selection, enable/disable preferences that
         // depend on an account.
+    }
+
+    /**
+     * Refreshes the "Sync Now" feature
+     */
+    private void refreshSyncNow() {
+        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+            return;
+        }
+
+        final Preference syncNowPreference = findPreference(PREF_SYNC_NOW);
+        if (syncNowPreference == null) {
+            return;
+        }
+
+        final String currentAccount = getCurrentlySelectedAccount();
+        if (currentAccount == null) {
+            syncNowPreference.setEnabled(false);
+            syncNowPreference.setSummary(R.string.sync_now_summary);
+        } else {
+            syncNowPreference.setEnabled(true);
+            syncNowPreference.setSummary(R.string.sync_now_summary_disabled_signed_out);
+        }
     }
 
     @Nullable
@@ -188,6 +233,17 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                     .edit()
                     .remove(Settings.PREF_ACCOUNT_NAME)
                     .apply();
+        }
+    }
+
+    /**
+     * Listener that initates the process of sync in the background.
+     */
+    class SyncNowListener implements Preference.OnPreferenceClickListener {
+        @Override
+        public boolean onPreferenceClick(final Preference preference) {
+            BeanstalkManager.getInstance(getActivity() /* context */).requestSync();
+            return true;
         }
     }
 }
