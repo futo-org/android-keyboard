@@ -26,6 +26,8 @@ import com.android.inputmethod.latin.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.annotation.Nullable;
+
 /**
  * Utility class for a word with a probability.
  *
@@ -49,7 +51,7 @@ public final class WordProperty implements Comparable<WordProperty> {
     @UsedForTesting
     public WordProperty(final String word, final ProbabilityInfo probabilityInfo,
             final ArrayList<WeightedString> shortcutTargets,
-            final ArrayList<WeightedString> bigrams,
+            @Nullable final ArrayList<WeightedString> bigrams,
             final boolean isNotAWord, final boolean isBlacklistEntry) {
         mWord = word;
         mProbabilityInfo = probabilityInfo;
@@ -85,7 +87,9 @@ public final class WordProperty implements Comparable<WordProperty> {
     public WordProperty(final int[] codePoints, final boolean isNotAWord,
             final boolean isBlacklisted, final boolean hasBigram, final boolean hasShortcuts,
             final boolean isBeginningOfSentence, final int[] probabilityInfo,
-            final ArrayList<int[]> bigramTargets, final ArrayList<int[]> bigramProbabilityInfo,
+            final ArrayList<int[][]> ngramPrevWordsArray,
+            final ArrayList<boolean[]> outNgramPrevWordIsBeginningOfSentenceArray,
+            final ArrayList<int[]> ngramTargets, final ArrayList<int[]> ngramProbabilityInfo,
             final ArrayList<int[]> shortcutTargets,
             final ArrayList<Integer> shortcutProbabilities) {
         mWord = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
@@ -98,15 +102,15 @@ public final class WordProperty implements Comparable<WordProperty> {
         mHasShortcuts = hasShortcuts;
         mHasNgrams = hasBigram;
 
-        final int relatedNgramCount = bigramTargets.size();
+        final int relatedNgramCount = ngramTargets.size();
         final WordInfo currentWordInfo =
                 mIsBeginningOfSentence ? WordInfo.BEGINNING_OF_SENTENCE : new WordInfo(mWord);
         final NgramContext ngramContext = new NgramContext(currentWordInfo);
         for (int i = 0; i < relatedNgramCount; i++) {
             final String ngramTargetString =
-                    StringUtils.getStringFromNullTerminatedCodePointArray(bigramTargets.get(i));
+                    StringUtils.getStringFromNullTerminatedCodePointArray(ngramTargets.get(i));
             final WeightedString ngramTarget = new WeightedString(ngramTargetString,
-                    createProbabilityInfoFromArray(bigramProbabilityInfo.get(i)));
+                    createProbabilityInfoFromArray(ngramProbabilityInfo.get(i)));
             // TODO: Support n-gram.
             ngrams.add(new NgramProperty(ngramTarget, ngramContext));
         }
@@ -180,7 +184,8 @@ public final class WordProperty implements Comparable<WordProperty> {
                 && mHasNgrams == w.mHasNgrams && mHasShortcuts && w.mHasNgrams;
     }
 
-    private <T> boolean equals(final ArrayList<T> a, final ArrayList<T> b) {
+    // TDOO: Have a utility method like java.util.Objects.equals.
+    private static <T> boolean equals(final ArrayList<T> a, final ArrayList<T> b) {
         if (null == a) {
             return null == b;
         }

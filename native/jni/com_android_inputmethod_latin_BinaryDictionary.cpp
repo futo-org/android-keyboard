@@ -327,8 +327,9 @@ static jint latinime_BinaryDictionary_getNextWord(JNIEnv *env, jclass clazz,
 
 static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
         jlong dict, jintArray word, jboolean isBeginningOfSentence, jintArray outCodePoints,
-        jbooleanArray outFlags, jintArray outProbabilityInfo, jobject outBigramTargets,
-        jobject outBigramProbabilityInfo, jobject outShortcutTargets,
+        jbooleanArray outFlags, jintArray outProbabilityInfo, jobject /* outNgramPrevWordsArray */,
+        jobject /* outNgramPrevWordIsBeginningOfSentenceArray */, jobject outNgramTargets,
+        jobject outNgramProbabilityInfo, jobject outShortcutTargets,
         jobject outShortcutProbabilities) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
@@ -351,7 +352,7 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
     const WordProperty wordProperty = dictionary->getWordProperty(
             CodePointArrayView(wordCodePoints, codePointCount));
     wordProperty.outputProperties(env, outCodePoints, outFlags, outProbabilityInfo,
-            outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
+            outNgramTargets, outNgramProbabilityInfo, outShortcutTargets,
             outShortcutProbabilities);
 }
 
@@ -718,7 +719,8 @@ static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("getWordPropertyNative"),
         const_cast<char *>("(J[IZ[I[Z[ILjava/util/ArrayList;Ljava/util/ArrayList;"
-                "Ljava/util/ArrayList;Ljava/util/ArrayList;)V"),
+                "Ljava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;"
+                "Ljava/util/ArrayList;)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getWordProperty)
     },
     {
