@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
@@ -36,19 +37,19 @@ public abstract class Dictionary {
     // The following types do not actually come from real dictionary instances, so we create
     // corresponding instances.
     public static final String TYPE_USER_TYPED = "user_typed";
-    public static final Dictionary DICTIONARY_USER_TYPED = new PhonyDictionary(TYPE_USER_TYPED);
+    public static final PhonyDictionary DICTIONARY_USER_TYPED = new PhonyDictionary(TYPE_USER_TYPED);
 
     public static final String TYPE_APPLICATION_DEFINED = "application_defined";
-    public static final Dictionary DICTIONARY_APPLICATION_DEFINED =
+    public static final PhonyDictionary DICTIONARY_APPLICATION_DEFINED =
             new PhonyDictionary(TYPE_APPLICATION_DEFINED);
 
     public static final String TYPE_HARDCODED = "hardcoded"; // punctuation signs and such
-    public static final Dictionary DICTIONARY_HARDCODED =
+    public static final PhonyDictionary DICTIONARY_HARDCODED =
             new PhonyDictionary(TYPE_HARDCODED);
 
     // Spawned by resuming suggestions. Comes from a span that was in the TextView.
     public static final String TYPE_RESUMED = "resumed";
-    public static final Dictionary DICTIONARY_RESUMED =
+    public static final PhonyDictionary DICTIONARY_RESUMED =
             new PhonyDictionary(TYPE_RESUMED);
 
     // The following types of dictionary have actual functional instances. We don't need final
@@ -182,9 +183,10 @@ public abstract class Dictionary {
      * Not a true dictionary. A placeholder used to indicate suggestions that don't come from any
      * real dictionary.
      */
-    private static class PhonyDictionary extends Dictionary {
-        // This class is not publicly instantiable.
-        private PhonyDictionary(final String type) {
+    @UsedForTesting
+    static class PhonyDictionary extends Dictionary {
+        @UsedForTesting
+        PhonyDictionary(final String type) {
             super(type, null);
         }
 

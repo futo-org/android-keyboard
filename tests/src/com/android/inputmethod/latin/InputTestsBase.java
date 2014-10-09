@@ -39,6 +39,8 @@ import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.Dictionary.PhonyDictionary;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.settings.Settings;
@@ -60,6 +62,10 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     // The message that sets predictions is posted with a 200 ms delay
     protected static final int DELAY_TO_WAIT_FOR_PREDICTIONS = 200;
     private final int TIMEOUT_TO_WAIT_FOR_LOADING_MAIN_DICTIONARY_IN_SECONDS = 60;
+
+    // Type for a test phony dictionary
+    private static final String TYPE_TEST = "test";
+    private static final PhonyDictionary DICTIONARY_TEST = new PhonyDictionary(TYPE_TEST);
 
     protected LatinIME mLatinIME;
     protected Keyboard mKeyboard;
@@ -353,7 +359,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     protected void pickSuggestionManually(final String suggestion) {
         mLatinIME.pickSuggestionManually(new SuggestedWordInfo(suggestion, 1,
-                SuggestedWordInfo.KIND_CORRECTION, null /* sourceDict */,
+                SuggestedWordInfo.KIND_CORRECTION, DICTIONARY_TEST,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
     }
