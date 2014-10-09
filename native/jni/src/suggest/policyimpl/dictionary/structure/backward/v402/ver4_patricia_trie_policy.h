@@ -118,7 +118,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView wordCodePoints);
 
-    bool updateCounter(const PrevWordsInfo *const prevWordsInfo,
+    bool updateEntriesForWordWithNgramContext(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView wordCodePoints, const bool isValidWord,
             const HistoricalInfo historicalInfo);
 

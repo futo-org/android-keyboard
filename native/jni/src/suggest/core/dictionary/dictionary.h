@@ -91,7 +91,7 @@ class Dictionary {
     bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView codePoints);
 
-    bool updateCounter(const PrevWordsInfo *const prevWordsInfo,
+    bool updateEntriesForWordWithNgramContext(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView codePoints, const bool isValidWord,
             const HistoricalInfo historicalInfo);
 

@@ -89,7 +89,7 @@ class DictionaryStructureWithBufferPolicy {
             const CodePointArrayView wordCodePoints) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool updateCounter(const PrevWordsInfo *const prevWordsInfo,
+    virtual bool updateEntriesForWordWithNgramContext(const PrevWordsInfo *const prevWordsInfo,
             const CodePointArrayView wordCodePoints, const bool isValidWord,
             const HistoricalInfo historicalInfo) = 0;
 

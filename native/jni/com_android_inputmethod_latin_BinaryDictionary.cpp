@@ -431,9 +431,10 @@ static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz
             CodePointArrayView(wordCodePoints, codePointCount));
 }
 
-static bool latinime_BinaryDictionary_updateCounter(JNIEnv *env, jclass clazz, jlong dict,
-        jobjectArray prevWordCodePointArrays, jbooleanArray isBeginningOfSentenceArray,
-        jintArray word, jboolean isValidWord, jint count, jint timestamp) {
+static bool latinime_BinaryDictionary_updateEntriesForWordWithNgramContext(JNIEnv *env,
+        jclass clazz, jlong dict, jobjectArray prevWordCodePointArrays,
+        jbooleanArray isBeginningOfSentenceArray, jintArray word, jboolean isValidWord, jint count,
+        jint timestamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
         return false;
@@ -445,7 +446,7 @@ static bool latinime_BinaryDictionary_updateCounter(JNIEnv *env, jclass clazz, j
     int wordCodePoints[codePointCount];
     env->GetIntArrayRegion(word, 0, codePointCount, wordCodePoints);
     const HistoricalInfo historicalInfo(timestamp, 0 /* level */, count);
-    return dictionary->updateCounter(&prevWordsInfo,
+    return dictionary->updateEntriesForWordWithNgramContext(&prevWordsInfo,
             CodePointArrayView(wordCodePoints, codePointCount), isValidWord == JNI_TRUE,
             historicalInfo);
 }
@@ -749,9 +750,9 @@ static const JNINativeMethod sMethods[] = {
         reinterpret_cast<void *>(latinime_BinaryDictionary_removeNgramEntry)
     },
     {
-        const_cast<char *>("updateCounterNative"),
+        const_cast<char *>("updateEntriesForWordWithNgramContextNative"),
         const_cast<char *>("(J[[I[Z[IZII)Z"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_updateCounter)
+        reinterpret_cast<void *>(latinime_BinaryDictionary_updateEntriesForWordWithNgramContext)
     },
     {
         const_cast<char *>("addMultipleDictionaryEntriesNative"),

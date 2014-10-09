@@ -202,8 +202,7 @@ public final class BinaryDictionary extends Dictionary {
             int[] word, int probability, int timestamp);
     private static native boolean removeNgramEntryNative(long dict,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray, int[] word);
-    // TODO: Rename to updateEntriesForWordWithNgramContextNative.
-    private static native boolean updateCounterNative(long dict,
+    private static native boolean updateEntriesForWordWithNgramContextNative(long dict,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
             int[] word, boolean isValidWord, int count, int timestamp);
     private static native int addMultipleDictionaryEntriesNative(long dict,
@@ -512,7 +511,7 @@ public final class BinaryDictionary extends Dictionary {
         final boolean[] isBeginningOfSentenceArray = new boolean[ngramContext.getPrevWordCount()];
         ngramContext.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
-        if (!updateCounterNative(mNativeDict, prevWordCodePointArrays,
+        if (!updateEntriesForWordWithNgramContextNative(mNativeDict, prevWordCodePointArrays,
                 isBeginningOfSentenceArray, wordCodePoints, isValidWord, count, timestamp)) {
             return false;
         }
