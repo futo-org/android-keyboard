@@ -60,6 +60,8 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
+import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils;
+import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.HardwareEventDecoder;
@@ -154,6 +156,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO: Move these {@link View}s to {@link KeyboardSwitcher}.
     private View mInputView;
+    private InsetsUpdater mInsetsUpdater;
     private SuggestionStripView mSuggestionStripView;
     private TextView mExtractEditText;
 
@@ -754,6 +757,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setInputView(final View view) {
         super.setInputView(view);
         mInputView = view;
+        mInsetsUpdater = ViewOutlineProviderCompatUtils.setInsetsOutlineProvider(view);
         updateSoftInputWindowLayoutParameters();
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
         if (hasSuggestionStripView()) {
@@ -1191,6 +1195,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // no visual element will be shown on the screen.
             outInsets.touchableInsets = inputHeight;
             outInsets.visibleTopInsets = inputHeight;
+            mInsetsUpdater.setInsets(outInsets);
             return;
         }
         final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
@@ -1211,6 +1216,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         outInsets.contentTopInsets = visibleTopY;
         outInsets.visibleTopInsets = visibleTopY;
+        mInsetsUpdater.setInsets(outInsets);
     }
 
     public void startShowingInputView(final boolean needsToLoadKeyboard) {

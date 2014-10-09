@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2014, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,15 +18,11 @@
 */
 -->
 
-<com.android.inputmethod.latin.InputView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    style="?attr/inputViewStyle">
-    <include
-        android:id="@+id/main_keyboard_frame"
-        layout="@layout/main_keyboard_frame" />
-    <include
-        android:id="@+id/emoji_palettes_view"
-        layout="@layout/emoji_palettes_view" />
-</com.android.inputmethod.latin.InputView>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style
+        name="InputView.LXX"
+        parent="InputView"
+    >
+        <item name="android:elevation">8dp</item>
+    </style>
+</resources>

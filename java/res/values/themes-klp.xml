@@ -20,6 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="KeyboardTheme.KLP" parent="KeyboardIcons.Holo">
+        <item name="inputViewStyle">@style/InputView.Holo</item>
         <item name="keyboardStyle">@style/Keyboard.KLP</item>
         <item name="keyboardViewStyle">@style/KeyboardView.KLP</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.KLP</item>
