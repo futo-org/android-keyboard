@@ -30,6 +30,7 @@ import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A controller class of the add-to-dictionary indicator (a.k.a. TextDecorator). This class
@@ -56,6 +57,7 @@ public class TextDecorator {
     private String mWaitingWord = null;
     private int mWaitingCursorStart = INVALID_CURSOR_INDEX;
     private int mWaitingCursorEnd = INVALID_CURSOR_INDEX;
+    @Nullable
     private CursorAnchorInfoCompatWrapper mCursorAnchorInfoWrapper = null;
 
     @Nonnull
@@ -150,7 +152,7 @@ public class TextDecorator {
      * mode.</p>
      * @param info the compatibility wrapper object for the received {@link CursorAnchorInfo}.
      */
-    public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
+    public void onUpdateCursorAnchorInfo(@Nullable final CursorAnchorInfoCompatWrapper info) {
         mCursorAnchorInfoWrapper = info;
         // Do not use layoutLater() to minimize the latency.
         layoutImmediately();
@@ -182,7 +184,7 @@ public class TextDecorator {
     private void layoutMain() {
         final CursorAnchorInfoCompatWrapper info = mCursorAnchorInfoWrapper;
 
-        if (info == null || !info.isAvailable()) {
+        if (info == null) {
             cancelLayoutInternalExpectedly("CursorAnchorInfo isn't available.");
             return;
         }
