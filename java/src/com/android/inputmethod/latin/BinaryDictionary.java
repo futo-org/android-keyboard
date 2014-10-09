@@ -70,7 +70,7 @@ public final class BinaryDictionary extends Dictionary {
     private static final int FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT = 5;
     private static final int FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX = 0;
     private static final int FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX = 1;
-    private static final int FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX = 2;
+    private static final int FORMAT_WORD_PROPERTY_HAS_NGRAMS_INDEX = 2;
     private static final int FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX = 3;
     private static final int FORMAT_WORD_PROPERTY_IS_BEGINNING_OF_SENTENCE_INDEX = 4;
 
@@ -179,9 +179,10 @@ public final class BinaryDictionary extends Dictionary {
             boolean[] isBeginningOfSentenceArray, int[] word);
     private static native void getWordPropertyNative(long dict, int[] word,
             boolean isBeginningOfSentence, int[] outCodePoints, boolean[] outFlags,
-            int[] outProbabilityInfo, ArrayList<int[]> outBigramTargets,
-            ArrayList<int[]> outBigramProbabilityInfo, ArrayList<int[]> outShortcutTargets,
-            ArrayList<Integer> outShortcutProbabilities);
+            int[] outProbabilityInfo, ArrayList<int[][]> outNgramPrevWordsArray,
+            ArrayList<boolean[]> outNgramPrevWordIsBeginningOfSentenceArray,
+            ArrayList<int[]> outNgramTargets, ArrayList<int[]> outNgramProbabilityInfo,
+            ArrayList<int[]> outShortcutTargets, ArrayList<Integer> outShortcutProbabilities);
     private static native int getNextWordNative(long dict, int token, int[] outCodePoints,
             boolean[] outIsBeginningOfSentence);
     private static native void getSuggestionsNative(long dict, long proximityInfo,
@@ -388,20 +389,25 @@ public final class BinaryDictionary extends Dictionary {
         final boolean[] outFlags = new boolean[FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT];
         final int[] outProbabilityInfo =
                 new int[FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT];
-        final ArrayList<int[]> outBigramTargets = new ArrayList<>();
-        final ArrayList<int[]> outBigramProbabilityInfo = new ArrayList<>();
+        final ArrayList<int[][]> outNgramPrevWordsArray = new ArrayList<>();
+        final ArrayList<boolean[]> outNgramPrevWordIsBeginningOfSentenceArray =
+                new ArrayList<>();
+        final ArrayList<int[]> outNgramTargets = new ArrayList<>();
+        final ArrayList<int[]> outNgramProbabilityInfo = new ArrayList<>();
         final ArrayList<int[]> outShortcutTargets = new ArrayList<>();
         final ArrayList<Integer> outShortcutProbabilities = new ArrayList<>();
         getWordPropertyNative(mNativeDict, codePoints, isBeginningOfSentence, outCodePoints,
-                outFlags, outProbabilityInfo, outBigramTargets, outBigramProbabilityInfo,
-                outShortcutTargets, outShortcutProbabilities);
+                outFlags, outProbabilityInfo, outNgramPrevWordsArray,
+                outNgramPrevWordIsBeginningOfSentenceArray, outNgramTargets,
+                outNgramProbabilityInfo, outShortcutTargets, outShortcutProbabilities);
         return new WordProperty(codePoints,
                 outFlags[FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX],
-                outFlags[FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX],
+                outFlags[FORMAT_WORD_PROPERTY_HAS_NGRAMS_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_IS_BEGINNING_OF_SENTENCE_INDEX], outProbabilityInfo,
-                outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
+                outNgramPrevWordsArray, outNgramPrevWordIsBeginningOfSentenceArray,
+                outNgramTargets, outNgramProbabilityInfo, outShortcutTargets,
                 outShortcutProbabilities);
     }
 
