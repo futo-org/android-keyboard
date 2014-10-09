@@ -33,10 +33,10 @@ namespace latinime {
     std::vector<DicNode> current;
     std::vector<DicNode> next;
 
-    // No prev words information.
-    PrevWordsInfo emptyPrevWordsInfo;
+    // No ngram context.
+    NgramContext emptyNgramContext;
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
-    const WordIdArrayView prevWordIds = emptyPrevWordsInfo.getPrevWordIds(
+    const WordIdArrayView prevWordIds = emptyNgramContext.getPrevWordIds(
             dictionaryStructurePolicy, &prevWordIdArray, false /* tryLowerCaseSearch */);
     current.emplace_back();
     DicNodeUtils::initAsRoot(dictionaryStructurePolicy, prevWordIds, &current.front());

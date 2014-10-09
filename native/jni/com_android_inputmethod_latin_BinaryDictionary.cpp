@@ -242,15 +242,15 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
     env->GetFloatArrayRegion(inOutWeightOfLangModelVsSpatialModel, 0, 1 /* len */,
             &weightOfLangModelVsSpatialModel);
     SuggestionResults suggestionResults(MAX_RESULTS);
-    const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
+    const NgramContext ngramContext = JniDataUtils::constructNgramContext(env,
             prevWordCodePointArrays, isBeginningOfSentenceArray, prevWordCount);
     if (givenSuggestOptions.isGesture() || inputSize > 0) {
         // TODO: Use SuggestionResults to return suggestions.
         dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
-                times, pointerIds, inputCodePoints, inputSize, &prevWordsInfo,
+                times, pointerIds, inputCodePoints, inputSize, &ngramContext,
                 &givenSuggestOptions, weightOfLangModelVsSpatialModel, &suggestionResults);
     } else {
-        dictionary->getPredictions(&prevWordsInfo, &suggestionResults);
+        dictionary->getPredictions(&ngramContext, &suggestionResults);
     }
     if (DEBUG_DICT) {
         suggestionResults.dumpSuggestions();
@@ -289,10 +289,10 @@ static jint latinime_BinaryDictionary_getNgramProbability(JNIEnv *env, jclass cl
     const jsize wordLength = env->GetArrayLength(word);
     int wordCodePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
-    const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
+    const NgramContext ngramContext = JniDataUtils::constructNgramContext(env,
             prevWordCodePointArrays, isBeginningOfSentenceArray,
             env->GetArrayLength(prevWordCodePointArrays));
-    return dictionary->getNgramProbability(&prevWordsInfo,
+    return dictionary->getNgramProbability(&ngramContext,
             CodePointArrayView(wordCodePoints, wordLength));
 }
 
@@ -402,7 +402,7 @@ static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, j
     if (!dictionary) {
         return false;
     }
-    const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
+    const NgramContext ngramContext = JniDataUtils::constructNgramContext(env,
             prevWordCodePointArrays, isBeginningOfSentenceArray,
             env->GetArrayLength(prevWordCodePointArrays));
     jsize wordLength = env->GetArrayLength(word);
@@ -411,7 +411,7 @@ static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, j
     // Use 1 for count to indicate the ngram has inputted.
     const NgramProperty ngramProperty(CodePointArrayView(wordCodePoints, wordLength).toVector(),
             probability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
-    return dictionary->addNgramEntry(&prevWordsInfo, &ngramProperty);
+    return dictionary->addNgramEntry(&ngramContext, &ngramProperty);
 }
 
 static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz, jlong dict,
@@ -421,13 +421,13 @@ static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz
     if (!dictionary) {
         return false;
     }
-    const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
+    const NgramContext ngramContext = JniDataUtils::constructNgramContext(env,
             prevWordCodePointArrays, isBeginningOfSentenceArray,
             env->GetArrayLength(prevWordCodePointArrays));
     jsize codePointCount = env->GetArrayLength(word);
     int wordCodePoints[codePointCount];
     env->GetIntArrayRegion(word, 0, codePointCount, wordCodePoints);
-    return dictionary->removeNgramEntry(&prevWordsInfo,
+    return dictionary->removeNgramEntry(&ngramContext,
             CodePointArrayView(wordCodePoints, codePointCount));
 }
 
@@ -439,14 +439,14 @@ static bool latinime_BinaryDictionary_updateEntriesForWordWithNgramContext(JNIEn
     if (!dictionary) {
         return false;
     }
-    const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
+    const NgramContext ngramContext = JniDataUtils::constructNgramContext(env,
             prevWordCodePointArrays, isBeginningOfSentenceArray,
             env->GetArrayLength(prevWordCodePointArrays));
     jsize codePointCount = env->GetArrayLength(word);
     int wordCodePoints[codePointCount];
     env->GetIntArrayRegion(word, 0, codePointCount, wordCodePoints);
     const HistoricalInfo historicalInfo(timestamp, 0 /* level */, count);
-    return dictionary->updateEntriesForWordWithNgramContext(&prevWordsInfo,
+    return dictionary->updateEntriesForWordWithNgramContext(&ngramContext,
             CodePointArrayView(wordCodePoints, codePointCount), isValidWord == JNI_TRUE,
             historicalInfo);
 }
@@ -529,9 +529,9 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
             const NgramProperty ngramProperty(
                     CodePointArrayView(word1CodePoints, word1Length).toVector(),
                     bigramProbability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
-            const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length,
+            const NgramContext ngramContext(word0CodePoints, word0Length,
                     false /* isBeginningOfSentence */);
-            dictionary->addNgramEntry(&prevWordsInfo, &ngramProperty);
+            dictionary->addNgramEntry(&ngramContext, &ngramProperty);
         }
         if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
             return i + 1;
@@ -641,10 +641,10 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
-        const PrevWordsInfo prevWordsInfo(wordCodePoints, wordCodePointCount,
+        const NgramContext ngramContext(wordCodePoints, wordCodePointCount,
                 wordProperty.getUnigramProperty()->representsBeginningOfSentence());
         for (const NgramProperty &ngramProperty : *wordProperty.getNgramProperties()) {
-            if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&prevWordsInfo,
+            if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&ngramContext,
                     &ngramProperty)) {
                 LogUtils::logToJava(env, "Cannot add ngram to the new dict.");
                 return false;

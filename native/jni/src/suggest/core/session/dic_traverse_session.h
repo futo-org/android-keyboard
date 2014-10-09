@@ -30,7 +30,7 @@ namespace latinime {
 
 class Dictionary;
 class DictionaryStructureWithBufferPolicy;
-class PrevWordsInfo;
+class NgramContext;
 class ProximityInfo;
 class SuggestOptions;
 
@@ -61,7 +61,7 @@ class DicTraverseSession {
     // Non virtual inline destructor -- never inherit this class
     AK_FORCE_INLINE ~DicTraverseSession() {}
 
-    void init(const Dictionary *dictionary, const PrevWordsInfo *const prevWordsInfo,
+    void init(const Dictionary *dictionary, const NgramContext *const ngramContext,
             const SuggestOptions *const suggestOptions);
     // TODO: Remove and merge into init
     void setupForGetSuggestions(const ProximityInfo *pInfo, const int *inputCodePoints,

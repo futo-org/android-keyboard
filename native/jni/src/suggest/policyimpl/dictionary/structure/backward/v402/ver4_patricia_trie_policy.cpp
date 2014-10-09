@@ -338,7 +338,7 @@ bool Ver4PatriciaTriePolicy::removeUnigramEntry(const CodePointArrayView wordCod
     return mNodeWriter.suppressUnigramEntry(&ptNodeParams);
 }
 
-bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramContext *const ngramContext,
         const NgramProperty *const ngramProperty) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
@@ -349,8 +349,8 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
                 mDictBuffer->getTailPosition());
         return false;
     }
-    if (!prevWordsInfo->isValid()) {
-        AKLOGE("prev words info is not valid for adding n-gram entry to the dictionary.");
+    if (!ngramContext->isValid()) {
+        AKLOGE("Ngram context is not valid for adding n-gram entry to the dictionary.");
         return false;
     }
     if (ngramProperty->getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
@@ -359,23 +359,23 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
         return false;
     }
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
-    const WordIdArrayView prevWordIds = prevWordsInfo->getPrevWordIds(this, &prevWordIdArray,
+    const WordIdArrayView prevWordIds = ngramContext->getPrevWordIds(this, &prevWordIdArray,
             false /* tryLowerCaseSearch */);
     if (prevWordIds.empty()) {
         return false;
     }
     if (prevWordIds[0] == NOT_A_WORD_ID) {
-        if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)) {
+        if (ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */)) {
             const UnigramProperty beginningOfSentenceUnigramProperty(
                     true /* representsBeginningOfSentence */, true /* isNotAWord */,
                     false /* isBlacklisted */, MAX_PROBABILITY /* probability */, HistoricalInfo());
-            if (!addUnigramEntry(prevWordsInfo->getNthPrevWordCodePoints(1 /* n */),
+            if (!addUnigramEntry(ngramContext->getNthPrevWordCodePoints(1 /* n */),
                     &beginningOfSentenceUnigramProperty)) {
                 AKLOGE("Cannot add unigram entry for the beginning-of-sentence.");
                 return false;
             }
             // Refresh word ids.
-            prevWordsInfo->getPrevWordIds(this, &prevWordIdArray, false /* tryLowerCaseSearch */);
+            ngramContext->getPrevWordIds(this, &prevWordIdArray, false /* tryLowerCaseSearch */);
         } else {
             return false;
         }
@@ -399,7 +399,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
     }
 }
 
-bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+bool Ver4PatriciaTriePolicy::removeNgramEntry(const NgramContext *const ngramContext,
         const CodePointArrayView wordCodePoints) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: removeNgramEntry() is called for non-updatable dictionary.");
@@ -410,8 +410,8 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
                 mDictBuffer->getTailPosition());
         return false;
     }
-    if (!prevWordsInfo->isValid()) {
-        AKLOGE("prev words info is not valid for removing n-gram entry form the dictionary.");
+    if (!ngramContext->isValid()) {
+        AKLOGE("Ngram context is not valid for removing n-gram entry form the dictionary.");
         return false;
     }
     if (wordCodePoints.size() > MAX_WORD_LENGTH) {
@@ -419,7 +419,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
                 wordCodePoints.size());
     }
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
-    const WordIdArrayView prevWordIds = prevWordsInfo->getPrevWordIds(this, &prevWordIdArray,
+    const WordIdArrayView prevWordIds = ngramContext->getPrevWordIds(this, &prevWordIdArray,
             false /* tryLowerCaseSerch */);
     if (prevWordIds.firstOrDefault(NOT_A_WORD_ID) == NOT_A_WORD_ID) {
         return false;
@@ -441,7 +441,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
 
 
 bool Ver4PatriciaTriePolicy::updateEntriesForWordWithNgramContext(
-        const PrevWordsInfo *const prevWordsInfo, const CodePointArrayView wordCodePoints,
+        const NgramContext *const ngramContext, const CodePointArrayView wordCodePoints,
         const bool isValidWord, const HistoricalInfo historicalInfo) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: updateEntriesForWordWithNgramContext() is called for non-updatable "
@@ -455,11 +455,11 @@ bool Ver4PatriciaTriePolicy::updateEntriesForWordWithNgramContext(
         AKLOGE("Cannot update unigarm entry in updateEntriesForWordWithNgramContext().");
         return false;
     }
-    const int probabilityForNgram = prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
+    const int probabilityForNgram = ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */)
             ? NOT_A_PROBABILITY : probability;
     const NgramProperty ngramProperty(wordCodePoints.toVector(), probabilityForNgram,
             historicalInfo);
-    if (!addNgramEntry(prevWordsInfo, &ngramProperty)) {
+    if (!addNgramEntry(ngramContext, &ngramProperty)) {
         AKLOGE("Cannot update unigarm entry in updateEntriesForWordWithNgramContext().");
         return false;
     }

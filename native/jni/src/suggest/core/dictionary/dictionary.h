@@ -33,7 +33,7 @@ namespace latinime {
 
 class DictionaryStructureWithBufferPolicy;
 class DicTraverseSession;
-class PrevWordsInfo;
+class NgramContext;
 class ProximityInfo;
 class SuggestionResults;
 class SuggestOptions;
@@ -66,18 +66,18 @@ class Dictionary {
 
     void getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
-            int inputSize, const PrevWordsInfo *const prevWordsInfo,
+            int inputSize, const NgramContext *const ngramContext,
             const SuggestOptions *const suggestOptions, const float weightOfLangModelVsSpatialModel,
             SuggestionResults *const outSuggestionResults) const;
 
-    void getPredictions(const PrevWordsInfo *const prevWordsInfo,
+    void getPredictions(const NgramContext *const ngramContext,
             SuggestionResults *const outSuggestionResults) const;
 
     int getProbability(const CodePointArrayView codePoints) const;
 
     int getMaxProbabilityOfExactMatches(const CodePointArrayView codePoints) const;
 
-    int getNgramProbability(const PrevWordsInfo *const prevWordsInfo,
+    int getNgramProbability(const NgramContext *const ngramContext,
             const CodePointArrayView codePoints) const;
 
     bool addUnigramEntry(const CodePointArrayView codePoints,
@@ -85,13 +85,13 @@ class Dictionary {
 
     bool removeUnigramEntry(const CodePointArrayView codePoints);
 
-    bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+    bool addNgramEntry(const NgramContext *const ngramContext,
             const NgramProperty *const ngramProperty);
 
-    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+    bool removeNgramEntry(const NgramContext *const ngramContext,
             const CodePointArrayView codePoints);
 
-    bool updateEntriesForWordWithNgramContext(const PrevWordsInfo *const prevWordsInfo,
+    bool updateEntriesForWordWithNgramContext(const NgramContext *const ngramContext,
             const CodePointArrayView codePoints, const bool isValidWord,
             const HistoricalInfo historicalInfo);
 
@@ -123,7 +123,7 @@ class Dictionary {
 
     class NgramListenerForPrediction : public NgramListener {
      public:
-        NgramListenerForPrediction(const PrevWordsInfo *const prevWordsInfo,
+        NgramListenerForPrediction(const NgramContext *const ngramContext,
                 const WordIdArrayView prevWordIds, SuggestionResults *const suggestionResults,
                 const DictionaryStructureWithBufferPolicy *const dictStructurePolicy);
         virtual void onVisitEntry(const int ngramProbability, const int targetWordId);
@@ -131,7 +131,7 @@ class Dictionary {
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(NgramListenerForPrediction);
 
-        const PrevWordsInfo *const mPrevWordsInfo;
+        const NgramContext *const mNgramContext;
         const WordIdArrayView mPrevWordIds;
         SuggestionResults *const mSuggestionResults;
         const DictionaryStructureWithBufferPolicy *const mDictStructurePolicy;

@@ -33,7 +33,7 @@ class DicNodeVector;
 class DictionaryHeaderStructurePolicy;
 class MultiBigramMap;
 class NgramListener;
-class PrevWordsInfo;
+class NgramContext;
 class UnigramProperty;
 
 /*
@@ -81,15 +81,15 @@ class DictionaryStructureWithBufferPolicy {
     virtual bool removeUnigramEntry(const CodePointArrayView wordCodePoints) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+    virtual bool addNgramEntry(const NgramContext *const ngramContext,
             const NgramProperty *const ngramProperty) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+    virtual bool removeNgramEntry(const NgramContext *const ngramContext,
             const CodePointArrayView wordCodePoints) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool updateEntriesForWordWithNgramContext(const PrevWordsInfo *const prevWordsInfo,
+    virtual bool updateEntriesForWordWithNgramContext(const NgramContext *const ngramContext,
             const CodePointArrayView wordCodePoints, const bool isValidWord,
             const HistoricalInfo historicalInfo) = 0;
 
