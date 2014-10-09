@@ -16,13 +16,20 @@
 
 package com.android.inputmethod.compat;
 
+import android.annotation.TargetApi;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.os.Build;
+import android.view.inputmethod.CursorAnchorInfo;
 
-import com.android.inputmethod.annotations.UsedForTesting;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-@UsedForTesting
-public final class CursorAnchorInfoCompatWrapper {
+/**
+ * A wrapper for {@link CursorAnchorInfo}, which has been introduced in API Level 21. You can use
+ * this wrapper to avoid direct dependency on newly introduced types.
+ */
+public class CursorAnchorInfoCompatWrapper {
 
     /**
      * The insertion marker or character bounds have at least one visible region.
@@ -39,123 +46,138 @@ public final class CursorAnchorInfoCompatWrapper {
      */
     public static final int FLAG_IS_RTL = 0x04;
 
-    // Note that CursorAnchorInfo has been introduced in API level XX (Build.VERSION_CODE.LXX).
-    private static final CompatUtils.ClassWrapper sCursorAnchorInfoClass;
-    private static final CompatUtils.ToIntMethodWrapper sGetSelectionStartMethod;
-    private static final CompatUtils.ToIntMethodWrapper sGetSelectionEndMethod;
-    private static final CompatUtils.ToObjectMethodWrapper<RectF> sGetCharacterBoundsMethod;
-    private static final CompatUtils.ToIntMethodWrapper sGetCharacterBoundsFlagsMethod;
-    private static final CompatUtils.ToObjectMethodWrapper<CharSequence> sGetComposingTextMethod;
-    private static final CompatUtils.ToIntMethodWrapper sGetComposingTextStartMethod;
-    private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerBaselineMethod;
-    private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerBottomMethod;
-    private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerHorizontalMethod;
-    private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerTopMethod;
-    private static final CompatUtils.ToObjectMethodWrapper<Matrix> sGetMatrixMethod;
-    private static final CompatUtils.ToIntMethodWrapper sGetInsertionMarkerFlagsMethod;
-
-    private static int INVALID_TEXT_INDEX = -1;
-    static {
-        sCursorAnchorInfoClass = CompatUtils.getClassWrapper(
-                "android.view.inputmethod.CursorAnchorInfo");
-        sGetSelectionStartMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getSelectionStart", INVALID_TEXT_INDEX);
-        sGetSelectionEndMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getSelectionEnd", INVALID_TEXT_INDEX);
-        sGetCharacterBoundsMethod = sCursorAnchorInfoClass.getMethod(
-                "getCharacterBounds", (RectF)null, int.class);
-        sGetCharacterBoundsFlagsMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getCharacterBoundsFlags", 0, int.class);
-        sGetComposingTextMethod = sCursorAnchorInfoClass.getMethod(
-                "getComposingText", (CharSequence)null);
-        sGetComposingTextStartMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getComposingTextStart", INVALID_TEXT_INDEX);
-        sGetInsertionMarkerBaselineMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getInsertionMarkerBaseline", 0.0f);
-        sGetInsertionMarkerBottomMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getInsertionMarkerBottom", 0.0f);
-        sGetInsertionMarkerHorizontalMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getInsertionMarkerHorizontal", 0.0f);
-        sGetInsertionMarkerTopMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getInsertionMarkerTop", 0.0f);
-        sGetMatrixMethod = sCursorAnchorInfoClass.getMethod("getMatrix", (Matrix)null);
-        sGetInsertionMarkerFlagsMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
-                "getInsertionMarkerFlags", 0);
+    private CursorAnchorInfoCompatWrapper() {
+        // This class is not publicly instantiable.
     }
 
-    @UsedForTesting
-    public boolean isAvailable() {
-        return sCursorAnchorInfoClass.exists() && mInstance != null;
-    }
-
-    private Object mInstance;
-
-    private CursorAnchorInfoCompatWrapper(final Object instance) {
-        mInstance = instance;
-    }
-
-    @UsedForTesting
-    public static CursorAnchorInfoCompatWrapper fromObject(final Object instance) {
-        if (!sCursorAnchorInfoClass.exists()) {
-            return new CursorAnchorInfoCompatWrapper(null);
+    @TargetApi(BuildCompatUtils.VERSION_CODES_LXX)
+    @Nullable
+    public static CursorAnchorInfoCompatWrapper wrap(@Nullable final CursorAnchorInfo instance) {
+        if (Build.VERSION.SDK_INT < BuildCompatUtils.VERSION_CODES_LXX) {
+            return null;
         }
-        return new CursorAnchorInfoCompatWrapper(instance);
-    }
-
-    private static final class FakeHolder {
-        static CursorAnchorInfoCompatWrapper sInstance = new CursorAnchorInfoCompatWrapper(null);
-    }
-
-    @UsedForTesting
-    public static CursorAnchorInfoCompatWrapper getFake() {
-        return FakeHolder.sInstance;
+        if (instance == null) {
+            return null;
+        }
+        return new RealWrapper(instance);
     }
 
     public int getSelectionStart() {
-        return sGetSelectionStartMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public int getSelectionEnd() {
-        return sGetSelectionEndMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public CharSequence getComposingText() {
-        return sGetComposingTextMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public int getComposingTextStart() {
-        return sGetComposingTextStartMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public Matrix getMatrix() {
-        return sGetMatrixMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public RectF getCharacterBounds(final int index) {
-        return sGetCharacterBoundsMethod.invoke(mInstance, index);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public int getCharacterBoundsFlags(final int index) {
-        return sGetCharacterBoundsFlagsMethod.invoke(mInstance, index);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public float getInsertionMarkerBaseline() {
-        return sGetInsertionMarkerBaselineMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public float getInsertionMarkerBottom() {
-        return sGetInsertionMarkerBottomMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public float getInsertionMarkerHorizontal() {
-        return sGetInsertionMarkerHorizontalMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public float getInsertionMarkerTop() {
-        return sGetInsertionMarkerTopMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
     }
 
     public int getInsertionMarkerFlags() {
-        return sGetInsertionMarkerFlagsMethod.invoke(mInstance);
+        throw new UnsupportedOperationException("not supported.");
+    }
+
+    @TargetApi(BuildCompatUtils.VERSION_CODES_LXX)
+    private static final class RealWrapper extends CursorAnchorInfoCompatWrapper {
+
+        @Nonnull
+        private final CursorAnchorInfo mInstance;
+
+        public RealWrapper(@Nonnull final CursorAnchorInfo info) {
+            mInstance = info;
+        }
+
+        @Override
+        public int getSelectionStart() {
+            return mInstance.getSelectionStart();
+        }
+
+        @Override
+        public int getSelectionEnd() {
+            return mInstance.getSelectionEnd();
+        }
+
+        @Override
+        public CharSequence getComposingText() {
+            return mInstance.getComposingText();
+        }
+
+        @Override
+        public int getComposingTextStart() {
+            return mInstance.getComposingTextStart();
+        }
+
+        @Override
+        public Matrix getMatrix() {
+            return mInstance.getMatrix();
+        }
+
+        @Override
+        public RectF getCharacterBounds(final int index) {
+            return mInstance.getCharacterBounds(index);
+        }
+
+        @Override
+        public int getCharacterBoundsFlags(final int index) {
+            return mInstance.getCharacterBoundsFlags(index);
+        }
+
+        @Override
+        public float getInsertionMarkerBaseline() {
+            return mInstance.getInsertionMarkerBaseline();
+        }
+
+        @Override
+        public float getInsertionMarkerBottom() {
+            return mInstance.getInsertionMarkerBottom();
+        }
+
+        @Override
+        public float getInsertionMarkerHorizontal() {
+            return mInstance.getInsertionMarkerHorizontal();
+        }
+
+        @Override
+        public float getInsertionMarkerTop() {
+            return mInstance.getInsertionMarkerTop();
+        }
+
+        @Override
+        public int getInsertionMarkerFlags() {
+            return mInstance.getInsertionMarkerFlags();
+        }
     }
 }
