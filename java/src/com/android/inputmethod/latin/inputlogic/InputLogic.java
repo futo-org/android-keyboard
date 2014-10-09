@@ -349,7 +349,8 @@ public final class InputLogic {
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
 
         if (shouldShowAddToDictionaryHint) {
-            mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
+            mSuggestionStripViewAccessor.suggestAddingToDictionary(suggestion,
+                    true /* isFromSuggestionStrip */);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
             // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
@@ -1485,6 +1486,11 @@ public final class InputLogic {
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         final String typedWord = range.mWord.toString();
+        suggestions.add(new SuggestedWordInfo(typedWord,
+                SuggestedWords.MAX_SUGGESTIONS + 1,
+                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
         if (!isResumableWord(settingsValues, typedWord)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
@@ -1517,30 +1523,14 @@ public final class InputLogic {
         mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
-        if (suggestions.size() <= 0) {
+        if (suggestions.size() <= 1) {
             // If there weren't any suggestion spans on this word, suggestions#size() will be 1
             // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
             // have no useful suggestions, so we will try to compute some for it instead.
             mInputLogicHandler.getSuggestedWords(Suggest.SESSION_ID_TYPING,
                     SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
                         @Override
-                        public void onGetSuggestedWords(
-                                final SuggestedWords suggestedWordsIncludingTypedWord) {
-                            final SuggestedWords suggestedWords;
-                            if (suggestedWordsIncludingTypedWord.size() > 1) {
-                                // We were able to compute new suggestions for this word.
-                                // Remove the typed word, since we don't want to display it in this
-                                // case. The #getSuggestedWordsExcludingTypedWordForRecorrection()
-                                // method sets willAutoCorrect to false.
-                                suggestedWords = suggestedWordsIncludingTypedWord
-                                        .getSuggestedWordsExcludingTypedWordForRecorrection();
-                            } else {
-                                // No saved suggestions, and we were unable to compute any good one
-                                // either. Rather than displaying an empty suggestion strip, we'll
-                                // display the original word alone in the middle.
-                                // Since there is only one word, willAutoCorrect is false.
-                                suggestedWords = suggestedWordsIncludingTypedWord;
-                            }
+                        public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                             mIsAutoCorrectionIndicatorOn = false;
                             mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
                         }});
@@ -1684,7 +1674,8 @@ public final class InputLogic {
                         mConnection.getExpectedSelectionStart(),
                         mConnection.getExpectedSelectionEnd());
             }
-            mSuggestionStripViewAccessor.showAddToDictionaryHint(originallyTypedWordString);
+            mSuggestionStripViewAccessor.suggestAddingToDictionary(originallyTypedWordString,
+                    false /* isFromSuggestionStrip */);
         } else {
             // We have a separator between the word and the cursor: we should show predictions.
             inputTransaction.setRequiresUpdateSuggestions();

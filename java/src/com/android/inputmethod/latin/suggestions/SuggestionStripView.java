@@ -231,8 +231,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return mStripVisibilityGroup.isShowingAddToDictionaryStrip();
     }
 
-    public void showAddToDictionaryHint(final String word) {
-        mLayoutHelper.layoutAddToDictionaryHint(word, mAddToDictionaryStrip);
+    public void showAddToDictionaryHint(final String word, final boolean shouldShowWordToSave) {
+        mLayoutHelper.layoutAddToDictionaryHint(word, mAddToDictionaryStrip, shouldShowWordToSave);
         // {@link TextView#setTag()} is used to hold the word to be added to dictionary. The word
         // will be extracted at {@link #onClick(View)}.
         mAddToDictionaryStrip.setTag(word);
@@ -501,7 +501,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             return;
         }
         final Object tag = view.getTag();
-        // {@link String} tag is set at {@link #showAddToDictionaryHint(String,CharSequence)}.
+        // {@link String} tag is set at {@link #suggestAddingToDictionary(String,CharSequence)}.
         if (tag instanceof String) {
             final String wordToSave = (String)tag;
             mListener.addWordToUserDictionary(wordToSave);
