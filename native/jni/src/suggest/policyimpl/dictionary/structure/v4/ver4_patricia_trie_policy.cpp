@@ -363,19 +363,20 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     }
 }
 
-bool Ver4PatriciaTriePolicy::updateCounter(const PrevWordsInfo *const prevWordsInfo,
-        const CodePointArrayView wordCodePoints, const bool isValidWord,
-        const HistoricalInfo historicalInfo) {
+bool Ver4PatriciaTriePolicy::updateEntriesForWordWithNgramContext(
+        const PrevWordsInfo *const prevWordsInfo, const CodePointArrayView wordCodePoints,
+        const bool isValidWord, const HistoricalInfo historicalInfo) {
     if (!mBuffers->isUpdatable()) {
-        AKLOGI("Warning: updateCounter() is called for non-updatable dictionary.");
+        AKLOGI("Warning: updateEntriesForWordWithNgramContext() is called for non-updatable "
+                "dictionary.");
         return false;
     }
     // TODO: Have count up method in language model dict content.
     const int probability = isValidWord ? DUMMY_PROBABILITY_FOR_VALID_WORDS : NOT_A_PROBABILITY;
     const UnigramProperty unigramProperty(false /* representsBeginningOfSentence */,
-            false /* isNotAWord */, false /*isBlacklisted*/, probability, historicalInfo);
+            false /* isNotAWord */, false /* isBlacklisted */, probability, historicalInfo);
     if (!addUnigramEntry(wordCodePoints, &unigramProperty)) {
-        AKLOGE("Cannot update unigarm entry in updateCounter().");
+        AKLOGE("Cannot update unigarm entry in updateEntriesForWordWithNgramContext().");
         return false;
     }
     const int probabilityForNgram = prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
@@ -385,7 +386,7 @@ bool Ver4PatriciaTriePolicy::updateCounter(const PrevWordsInfo *const prevWordsI
     for (size_t i = 1; i <= prevWordsInfo->getPrevWordCount(); ++i) {
         const PrevWordsInfo trimmedPrevWordsInfo(prevWordsInfo->getTrimmedPrevWordsInfo(i));
         if (!addNgramEntry(&trimmedPrevWordsInfo, &ngramProperty)) {
-            AKLOGE("Cannot update ngram entry in updateCounter().");
+            AKLOGE("Cannot update ngram entry in updateEntriesForWordWithNgramContext().");
             return false;
         }
     }
