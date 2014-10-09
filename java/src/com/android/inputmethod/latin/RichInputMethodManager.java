@@ -29,6 +29,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -304,8 +305,7 @@ public class RichInputMethodManager {
         if (currentSubtype == null) {
             return defaultSubtype;
         }
-        // TODO: Determine locales to use for multi-lingual use.
-        return new RichInputMethodSubtype(currentSubtype);
+        return AdditionalFeaturesSettingUtils.getRichInputMethodSubtype(this, currentSubtype);
     }
 
     public boolean hasMultipleEnabledIMEsOrSubtypes(final boolean shouldIncludeAuxiliarySubtypes) {

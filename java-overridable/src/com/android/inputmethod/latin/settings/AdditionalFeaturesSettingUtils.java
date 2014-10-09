@@ -19,6 +19,12 @@ package com.android.inputmethod.latin.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceFragment;
+import android.view.inputmethod.InputMethodSubtype;
+
+import com.android.inputmethod.latin.RichInputMethodSubtype;
+import com.android.inputmethod.latin.RichInputMethodManager;
+
+import javax.annotation.Nonnull;
 
 /**
  * Utility class for managing additional features settings.
@@ -38,5 +44,11 @@ public class AdditionalFeaturesSettingUtils {
     public static void readAdditionalFeaturesPreferencesIntoArray(final Context context,
             final SharedPreferences prefs, final int[] additionalFeaturesPreferences) {
         // do nothing.
+    }
+
+    public static RichInputMethodSubtype getRichInputMethodSubtype(
+            @Nonnull final RichInputMethodManager imm,
+            @Nonnull final InputMethodSubtype subtype) {
+        return new RichInputMethodSubtype(subtype);
     }
 }
