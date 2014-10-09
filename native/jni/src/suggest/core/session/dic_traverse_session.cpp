@@ -30,12 +30,12 @@ const int DicTraverseSession::DICTIONARY_SIZE_THRESHOLD_TO_USE_LARGE_CACHE_FOR_S
         256 * 1024;
 
 void DicTraverseSession::init(const Dictionary *const dictionary,
-        const PrevWordsInfo *const prevWordsInfo, const SuggestOptions *const suggestOptions) {
+        const NgramContext *const ngramContext, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
     mMultiWordCostMultiplier = getDictionaryStructurePolicy()->getHeaderStructurePolicy()
             ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
-    mPrevWordIdCount = prevWordsInfo->getPrevWordIds(getDictionaryStructurePolicy(),
+    mPrevWordIdCount = ngramContext->getPrevWordIds(getDictionaryStructurePolicy(),
             &mPrevWordIdArray, true /* tryLowerCaseSearch */).size();
 }
 

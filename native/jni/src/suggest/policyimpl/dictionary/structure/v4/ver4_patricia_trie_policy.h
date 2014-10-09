@@ -92,13 +92,13 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     bool removeUnigramEntry(const CodePointArrayView wordCodePoints);
 
-    bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+    bool addNgramEntry(const NgramContext *const ngramContext,
             const NgramProperty *const ngramProperty);
 
-    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+    bool removeNgramEntry(const NgramContext *const ngramContext,
             const CodePointArrayView wordCodePoints);
 
-    bool updateEntriesForWordWithNgramContext(const PrevWordsInfo *const prevWordsInfo,
+    bool updateEntriesForWordWithNgramContext(const NgramContext *const ngramContext,
             const CodePointArrayView wordCodePoints, const bool isValidWord,
             const HistoricalInfo historicalInfo);
 

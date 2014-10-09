@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_PREV_WORDS_INFO_H
-#define LATINIME_PREV_WORDS_INFO_H
+#ifndef LATINIME_NGRAM_CONTEXT_H
+#define LATINIME_NGRAM_CONTEXT_H
 
 #include <array>
 
@@ -27,25 +27,25 @@
 namespace latinime {
 
 // Rename to NgramContext.
-class PrevWordsInfo {
+class NgramContext {
  public:
     // No prev word information.
-    PrevWordsInfo() : mPrevWordCount(0) {
+    NgramContext() : mPrevWordCount(0) {
         clear();
     }
 
-    PrevWordsInfo(const PrevWordsInfo &prevWordsInfo)
-            : mPrevWordCount(prevWordsInfo.mPrevWordCount) {
+    NgramContext(const NgramContext &ngramContext)
+            : mPrevWordCount(ngramContext.mPrevWordCount) {
         for (size_t i = 0; i < mPrevWordCount; ++i) {
-            mPrevWordCodePointCount[i] = prevWordsInfo.mPrevWordCodePointCount[i];
-            memmove(mPrevWordCodePoints[i], prevWordsInfo.mPrevWordCodePoints[i],
+            mPrevWordCodePointCount[i] = ngramContext.mPrevWordCodePointCount[i];
+            memmove(mPrevWordCodePoints[i], ngramContext.mPrevWordCodePoints[i],
                     sizeof(mPrevWordCodePoints[i][0]) * mPrevWordCodePointCount[i]);
-            mIsBeginningOfSentence[i] = prevWordsInfo.mIsBeginningOfSentence[i];
+            mIsBeginningOfSentence[i] = ngramContext.mIsBeginningOfSentence[i];
         }
     }
 
     // Construct from previous words.
-    PrevWordsInfo(const int prevWordCodePoints[][MAX_WORD_LENGTH],
+    NgramContext(const int prevWordCodePoints[][MAX_WORD_LENGTH],
             const int *const prevWordCodePointCount, const bool *const isBeginningOfSentence,
             const size_t prevWordCount)
             : mPrevWordCount(std::min(NELEMS(mPrevWordCodePoints), prevWordCount)) {
@@ -62,7 +62,7 @@ class PrevWordsInfo {
     }
 
     // Construct from a previous word.
-    PrevWordsInfo(const int *const prevWordCodePoints, const int prevWordCodePointCount,
+    NgramContext(const int *const prevWordCodePoints, const int prevWordCodePointCount,
             const bool isBeginningOfSentence) : mPrevWordCount(1) {
         clear();
         if (prevWordCodePointCount > MAX_WORD_LENGTH || !prevWordCodePoints) {
@@ -79,8 +79,8 @@ class PrevWordsInfo {
     }
 
     // TODO: Remove.
-    const PrevWordsInfo getTrimmedPrevWordsInfo(const size_t maxPrevWordCount) const {
-        return PrevWordsInfo(mPrevWordCodePoints, mPrevWordCodePointCount, mIsBeginningOfSentence,
+    const NgramContext getTrimmedNgramContext(const size_t maxPrevWordCount) const {
+        return NgramContext(mPrevWordCodePoints, mPrevWordCodePointCount, mIsBeginningOfSentence,
                 std::min(mPrevWordCount, maxPrevWordCount));
     }
 
@@ -123,7 +123,7 @@ class PrevWordsInfo {
     }
 
  private:
-    DISALLOW_ASSIGNMENT_OPERATOR(PrevWordsInfo);
+    DISALLOW_ASSIGNMENT_OPERATOR(NgramContext);
 
     static int getWordId(const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
             const int *const wordCodePoints, const int wordCodePointCount,
@@ -166,4 +166,4 @@ class PrevWordsInfo {
     bool mIsBeginningOfSentence[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
 };
 } // namespace latinime
-#endif // LATINIME_PREV_WORDS_INFO_H
+#endif // LATINIME_NGRAM_CONTEXT_H

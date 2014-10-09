@@ -96,7 +96,7 @@ class JniDataUtils {
         }
     }
 
-    static PrevWordsInfo constructPrevWordsInfo(JNIEnv *env, jobjectArray prevWordCodePointArrays,
+    static NgramContext constructNgramContext(JNIEnv *env, jobjectArray prevWordCodePointArrays,
             jbooleanArray isBeginningOfSentenceArray, const size_t prevWordCount) {
         int prevWordCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM][MAX_WORD_LENGTH];
         int prevWordCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
@@ -119,7 +119,7 @@ class JniDataUtils {
                     &isBeginningOfSentenceBoolean);
             isBeginningOfSentence[i] = isBeginningOfSentenceBoolean == JNI_TRUE;
         }
-        return PrevWordsInfo(prevWordCodePoints, prevWordCodePointCount, isBeginningOfSentence,
+        return NgramContext(prevWordCodePoints, prevWordCodePointCount, isBeginningOfSentence,
                 prevWordCount);
     }
 
