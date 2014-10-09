@@ -16,13 +16,19 @@
 
 package com.android.inputmethod.latin.settings;
 
+import static com.android.inputmethod.latin.settings.AccountsSettingsFragment.AUTHORITY;
+
+import android.accounts.Account;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.ListView;
+
+import com.android.inputmethod.latin.define.ProductionFlags;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +38,7 @@ public class AccountsSettingsFragmentTests
         extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
     private static final String FRAG_NAME = AccountsSettingsFragment.class.getName();
     private static final long TEST_TIMEOUT_MILLIS = 5000;
+    private static final Account TEST_ACCOUNT = new Account("account-for-test", "account-type");
 
     private AlertDialog mDialog;
 
@@ -45,6 +52,13 @@ public class AccountsSettingsFragmentTests
         Intent intent = new Intent();
         intent.putExtra(TestFragmentActivity.EXTRA_SHOW_FRAGMENT, FRAG_NAME);
         setActivityIntent(intent);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        // reset the syncable state to unknown
+        ContentResolver.setIsSyncable(TEST_ACCOUNT, AUTHORITY, -1);
     }
 
     public void testEmptyAccounts() {
@@ -128,5 +142,58 @@ public class AccountsSettingsFragmentTests
         assertEquals(View.VISIBLE, mDialog.getButton(Dialog.BUTTON_NEUTRAL).getVisibility());
         assertEquals(View.VISIBLE, mDialog.getButton(Dialog.BUTTON_NEGATIVE).getVisibility());
         assertEquals(View.VISIBLE, mDialog.getButton(Dialog.BUTTON_POSITIVE).getVisibility());
+    }
+
+    public void testUpdateSyncPolicy_enable() {
+        // This test is a no-op when ENABLE_PERSONAL_DICTIONARY_SYNC is not enabled
+        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+            return;
+        }
+        // Should be unknown by default.
+        assertTrue(ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY) < 0);
+
+        final AccountsSettingsFragment fragment =
+                (AccountsSettingsFragment) getActivity().mFragment;
+        fragment.updateSyncPolicy(true, TEST_ACCOUNT);
+
+        // Should be syncable now.
+        assertEquals(1, ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY));
+    }
+
+    public void testUpdateSyncPolicy_disable() {
+        // This test is a no-op when ENABLE_PERSONAL_DICTIONARY_SYNC is not enabled
+        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+            return;
+        }
+        // Should be unknown by default.
+        assertTrue(ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY) < 0);
+
+        final AccountsSettingsFragment fragment =
+                (AccountsSettingsFragment) getActivity().mFragment;
+        fragment.updateSyncPolicy(false, TEST_ACCOUNT);
+
+        // Should not be syncable now.
+        assertEquals(0, ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY));
+    }
+
+    public void testUpdateSyncPolicy_enableDisable() {
+        // This test is a no-op when ENABLE_PERSONAL_DICTIONARY_SYNC is not enabled
+        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+            return;
+        }
+        // Should be unknown by default.
+        assertTrue(ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY) < 0);
+
+        final AccountsSettingsFragment fragment =
+                (AccountsSettingsFragment) getActivity().mFragment;
+        fragment.updateSyncPolicy(true, TEST_ACCOUNT);
+
+        // Should be syncable now.
+        assertEquals(1, ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY));
+
+        fragment.updateSyncPolicy(false, TEST_ACCOUNT);
+
+        // Should not be syncable now.
+        assertEquals(0, ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY));
     }
 }

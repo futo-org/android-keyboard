@@ -27,6 +27,9 @@ public class LocalSettingsConstants {
     // Preference key for the current account.
     // Do not restore.
     public static final String PREF_ACCOUNT_NAME = "pref_account_name";
+    // Preference key for enabling cloud sync feature.
+    // Do not restore.
+    public static final String PREF_ENABLE_CLOUD_SYNC = "pref_enable_cloud_sync";
 
     // List of preference keys to skip from being restored by backup agent.
     // These preferences are tied to a device and hence should not be restored.
@@ -36,6 +39,7 @@ public class LocalSettingsConstants {
     // shared preferences which makes it non-trivial to move these out to
     // a different shared preferences file.
     public static final String[] PREFS_TO_SKIP_RESTORING = new String[] {
-        PREF_ACCOUNT_NAME
+        PREF_ACCOUNT_NAME,
+        PREF_ENABLE_CLOUD_SYNC
     };
 }
