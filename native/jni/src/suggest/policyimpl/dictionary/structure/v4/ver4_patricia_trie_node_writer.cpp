@@ -285,7 +285,7 @@ bool Ver4PatriciaTrieNodeWriter::addShortcutTarget(const PtNodeParams *const ptN
         const int shortcutProbability) {
     if (!mShortcutPolicy->addNewShortcut(ptNodeParams->getTerminalId(),
             targetCodePoints, targetCodePointCount, shortcutProbability)) {
-        AKLOGE("Cannot add new shortuct entry. terminalId: %d", ptNodeParams->getTerminalId());
+        AKLOGE("Cannot add new shortcut entry. terminalId: %d", ptNodeParams->getTerminalId());
         return false;
     }
     return true;
