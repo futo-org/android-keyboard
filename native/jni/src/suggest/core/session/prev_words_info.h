@@ -26,6 +26,7 @@
 
 namespace latinime {
 
+// Rename to NgramContext.
 class PrevWordsInfo {
  public:
     // No prev word information.

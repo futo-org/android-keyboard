@@ -152,12 +152,12 @@ bool Dictionary::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
     return mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo, codePoints);
 }
 
-bool Dictionary::updateCounter(const PrevWordsInfo *const prevWordsInfo,
+bool Dictionary::updateEntriesForWordWithNgramContext(const PrevWordsInfo *const prevWordsInfo,
         const CodePointArrayView codePoints, const bool isValidWord,
         const HistoricalInfo historicalInfo) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->updateCounter(prevWordsInfo, codePoints,
-            isValidWord, historicalInfo);
+    return mDictionaryStructureWithBufferPolicy->updateEntriesForWordWithNgramContext(prevWordsInfo,
+            codePoints, isValidWord, historicalInfo);
 }
 
 bool Dictionary::flush(const char *const filePath) {
