@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.network;
 
+import android.util.Log;
+
 import com.android.inputmethod.annotations.UsedForTesting;
 
 import java.io.BufferedOutputStream;
@@ -35,20 +37,15 @@ import javax.annotation.Nullable;
  */
 @UsedForTesting
 public class BlockingHttpClient {
+    private static final boolean DEBUG = false;
+    private static final String TAG = BlockingHttpClient.class.getSimpleName();
+
     private final HttpURLConnection mConnection;
 
     /**
      * Interface that handles processing the response for a request.
      */
-    public interface ResponseProcessor {
-        /**
-         * Called when the HTTP request fails with an error.
-         *
-         * @param httpStatusCode The status code of the HTTP response.
-         * @param message The HTTP response message, if any, or null.
-         */
-        void onError(int httpStatusCode, @Nullable String message);
-
+    public interface ResponseProcessor<T> {
         /**
          * Called when the HTTP request finishes successfully.
          * The {@link InputStream} is closed by the client after the method finishes,
@@ -56,7 +53,7 @@ public class BlockingHttpClient {
          *
          * @param response An input stream that can be used to read the HTTP response.
          */
-        void onSuccess(InputStream response);
+         T onSuccess(InputStream response) throws IOException;
     }
 
     /**
@@ -73,11 +70,11 @@ public class BlockingHttpClient {
      * TODO: Remove @UsedForTesting after this is actually used.
      *
      * @param request The request payload, if any, or null.
-     * @param responeProcessor A processor for the HTTP response.
+     * @param responseProcessor A processor for the HTTP response.
      */
     @UsedForTesting
-    public void execute(@Nullable byte[] request, @Nonnull ResponseProcessor responseProcessor)
-            throws IOException {
+    public <T> T execute(@Nullable byte[] request, @Nonnull ResponseProcessor<T> responseProcessor)
+            throws IOException, AuthException, HttpException {
         try {
             if (request != null) {
                 OutputStream out = new BufferedOutputStream(mConnection.getOutputStream());
@@ -88,9 +85,16 @@ public class BlockingHttpClient {
 
             final int responseCode = mConnection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                responseProcessor.onError(responseCode, mConnection.getResponseMessage());
+                if (DEBUG) {
+                    Log.d(TAG, "Response error: " +  responseCode + ", Message: "
+                            + mConnection.getResponseMessage());
+                }
+                if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                    throw new AuthException(mConnection.getResponseMessage());
+                }
+                throw new HttpException(responseCode);
             } else {
-                responseProcessor.onSuccess(mConnection.getInputStream());
+                return responseProcessor.onSuccess(mConnection.getInputStream());
             }
         } finally {
             mConnection.disconnect();

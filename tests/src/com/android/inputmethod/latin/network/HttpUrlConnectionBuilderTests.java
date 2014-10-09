@@ -142,4 +142,13 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertTrue(connection.getDoInput());
         assertTrue(connection.getDoOutput());
     }
+
+    public void testSetAuthToken() throws IOException {
+        HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
+        builder.setUrl("https://www.example.com");
+        builder.setAuthToken("some-random-auth-token");
+        HttpURLConnection connection = builder.build();
+        assertEquals("some-random-auth-token",
+                connection.getRequestProperty(HttpUrlConnectionBuilder.HTTP_HEADER_AUTHORIZATION));
+    }
 }
