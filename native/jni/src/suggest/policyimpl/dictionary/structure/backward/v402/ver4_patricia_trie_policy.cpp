@@ -33,7 +33,7 @@
 #include "suggest/core/dictionary/property/ngram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/core/dictionary/property/word_property.h"
-#include "suggest/core/session/prev_words_info.h"
+#include "suggest/core/session/ngram_context.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
