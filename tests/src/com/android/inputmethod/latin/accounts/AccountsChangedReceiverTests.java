@@ -23,7 +23,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 
-import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.LocalSettingsConstants;
 
 /**
  * Tests for {@link AccountsChangedReceiver}.
@@ -40,7 +40,7 @@ public class AccountsChangedReceiverTests extends AndroidTestCase {
         super.setUp();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         // Keep track of the current account so that we restore it when the test finishes.
-        mLastKnownAccount = mPrefs.getString(Settings.PREF_ACCOUNT_NAME, null);
+        mLastKnownAccount = mPrefs.getString(LocalSettingsConstants.PREF_ACCOUNT_NAME, null);
     }
 
     @Override
@@ -99,13 +99,14 @@ public class AccountsChangedReceiverTests extends AndroidTestCase {
 
     private void updateAccountName(String accountName) {
         if (accountName == null) {
-            mPrefs.edit().remove(Settings.PREF_ACCOUNT_NAME).apply();
+            mPrefs.edit().remove(LocalSettingsConstants.PREF_ACCOUNT_NAME).apply();
         } else {
-            mPrefs.edit().putString(Settings.PREF_ACCOUNT_NAME, accountName).apply();
+            mPrefs.edit().putString(LocalSettingsConstants.PREF_ACCOUNT_NAME, accountName).apply();
         }
     }
 
     private void assertAccountName(String expectedAccountName) {
-        assertEquals(expectedAccountName, mPrefs.getString(Settings.PREF_ACCOUNT_NAME, null));
+        assertEquals(expectedAccountName,
+                mPrefs.getString(LocalSettingsConstants.PREF_ACCOUNT_NAME, null));
     }
 }

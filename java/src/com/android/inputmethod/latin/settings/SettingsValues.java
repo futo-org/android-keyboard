@@ -64,7 +64,6 @@ public class SettingsValues {
     public final boolean mSoundOn;
     public final boolean mKeyPreviewPopupOn;
     public final boolean mShowsVoiceInputKey;
-    public final String mAccountName;
     public final boolean mIncludesOtherImesInLanguageSwitchList;
     public final boolean mShowsLanguageSwitchKey;
     public final boolean mUseContactsDict;
@@ -141,7 +140,6 @@ public class SettingsValues {
         mShowsVoiceInputKey = needsToShowVoiceInputKey(prefs, res)
                 && mInputAttributes.mShouldShowVoiceInputKey
                 && SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-        mAccountName = prefs.getString(Settings.PREF_ACCOUNT_NAME, null);
         final String autoCorrectionThresholdRawValue = prefs.getString(
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD,
                 res.getString(R.string.auto_correction_threshold_mode_index_modest));
@@ -385,8 +383,6 @@ public class SettingsValues {
         sb.append("" + mKeyPreviewPopupOn);
         sb.append("\n   mShowsVoiceInputKey = ");
         sb.append("" + mShowsVoiceInputKey);
-        sb.append("\n   mAccountName = ");
-        sb.append("" + mAccountName);
         sb.append("\n   mIncludesOtherImesInLanguageSwitchList = ");
         sb.append("" + mIncludesOtherImesInLanguageSwitchList);
         sb.append("\n   mShowsLanguageSwitchKey = ");

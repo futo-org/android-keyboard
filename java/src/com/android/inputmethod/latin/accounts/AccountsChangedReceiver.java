@@ -26,7 +26,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.LocalSettingsConstants;
 
 /**
  * {@link BroadcastReceiver} for {@link AccountManager#LOGIN_ACCOUNTS_CHANGED_ACTION}.
@@ -41,25 +41,14 @@ public class AccountsChangedReceiver extends BroadcastReceiver {
             return;
         }
 
+        // Ideally the account preference could live in a different preferences file
+        // that wasn't being backed up and restored, however the preference fragments
+        // currently only deal with the default shared preferences which is why
+        // separating this out into a different file is not trivial currently.
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        final String currentAccount = prefs.getString(Settings.PREF_ACCOUNT_NAME, null);
-        if (currentAccount != null) {
-            final String[] accounts = getAccountsForLogin(context);
-            boolean accountFound = false;
-            for (String account : accounts) {
-                if (TextUtils.equals(currentAccount, account)) {
-                    accountFound = true;
-                    break;
-                }
-            }
-            // The current account was not found in the list of accounts, remove it.
-            if (!accountFound) {
-                Log.i(TAG, "The current account was removed from the system: " + currentAccount);
-                prefs.edit()
-                        .remove(Settings.PREF_ACCOUNT_NAME)
-                        .apply();
-            }
-        }
+        final String currentAccount = prefs.getString(
+                LocalSettingsConstants.PREF_ACCOUNT_NAME, null);
+        removeUnknownAccountFromPreference(prefs, getAccountsForLogin(context), currentAccount);
     }
 
     /**
@@ -68,5 +57,25 @@ public class AccountsChangedReceiver extends BroadcastReceiver {
     @UsedForTesting
     protected String[] getAccountsForLogin(Context context) {
         return LoginAccountUtils.getAccountsForLogin(context);
+    }
+
+    /**
+     * Removes the currentAccount from preferences if it's not found
+     * in the list of current accounts.
+     */
+    private static void removeUnknownAccountFromPreference(final SharedPreferences prefs,
+            final String[] accounts, final String currentAccount) {
+        if (currentAccount == null) {
+            return;
+        }
+        for (final String account : accounts) {
+            if (TextUtils.equals(currentAccount, account)) {
+                return;
+            }
+        }
+        Log.i(TAG, "The current account was removed from the system: " + currentAccount);
+        prefs.edit()
+                .remove(LocalSettingsConstants.PREF_ACCOUNT_NAME)
+                .apply();
     }
 }

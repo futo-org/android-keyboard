@@ -167,7 +167,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
 
     @Nullable
     private String getCurrentlySelectedAccount() {
-        return getSharedPreferences().getString(Settings.PREF_ACCOUNT_NAME, null);
+        return getSharedPreferences().getString(LocalSettingsConstants.PREF_ACCOUNT_NAME, null);
     }
 
     /**
@@ -219,7 +219,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             final Object selectedItem = lv.getItemAtPosition(lv.getCheckedItemPosition());
             getSharedPreferences()
                     .edit()
-                    .putString(Settings.PREF_ACCOUNT_NAME, (String) selectedItem)
+                    .putString(LocalSettingsConstants.PREF_ACCOUNT_NAME, (String) selectedItem)
                     .apply();
         }
     }
@@ -233,7 +233,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         public void onClick(DialogInterface dialog, int which) {
             getSharedPreferences()
                     .edit()
-                    .remove(Settings.PREF_ACCOUNT_NAME)
+                    .remove(LocalSettingsConstants.PREF_ACCOUNT_NAME)
                     .apply();
         }
     }
