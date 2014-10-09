@@ -21,7 +21,7 @@
 
 #include "defines.h"
 #include "jni.h"
-#include "suggest/core/session/prev_words_info.h"
+#include "suggest/core/session/ngram_context.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 #include "utils/char_utils.h"

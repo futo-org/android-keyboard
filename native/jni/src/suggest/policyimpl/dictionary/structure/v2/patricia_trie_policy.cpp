@@ -23,7 +23,7 @@
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/ngram_listener.h"
-#include "suggest/core/session/prev_words_info.h"
+#include "suggest/core/session/ngram_context.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"

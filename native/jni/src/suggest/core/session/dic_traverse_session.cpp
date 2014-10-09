@@ -20,7 +20,7 @@
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "suggest/core/session/prev_words_info.h"
+#include "suggest/core/session/ngram_context.h"
 
 namespace latinime {
 

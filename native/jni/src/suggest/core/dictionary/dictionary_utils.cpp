@@ -21,7 +21,7 @@
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
-#include "suggest/core/session/prev_words_info.h"
+#include "suggest/core/session/ngram_context.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/int_array_view.h"
 

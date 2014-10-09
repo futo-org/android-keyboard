@@ -28,7 +28,7 @@
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/result/suggestion_results.h"
-#include "suggest/core/session/prev_words_info.h"
+#include "suggest/core/session/ngram_context.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/char_utils.h"
