@@ -30,6 +30,7 @@ class ScoringParams {
     static const float AUTOCORRECT_OUTPUT_THRESHOLD;
     static const int MAX_CACHE_DIC_NODE_SIZE;
     static const int MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT;
+    static const int MAX_CACHE_DIC_NODE_SIZE_FOR_LOW_PROBABILITY_LOCALE;
     static const int THRESHOLD_SHORT_WORD_LENGTH;
 
     static const float EXACT_MATCH_PROMOTION;
@@ -68,6 +69,9 @@ class ScoringParams {
     static const float TYPING_BASE_OUTPUT_SCORE;
     static const float TYPING_MAX_OUTPUT_SCORE_PER_INPUT;
     static const float NORMALIZED_SPATIAL_DISTANCE_THRESHOLD_FOR_EDIT;
+    static const float LOCALE_WEIGHT_THRESHOLD_FOR_SPACE_SUBSTITUTION;
+    static const float LOCALE_WEIGHT_THRESHOLD_FOR_SPACE_OMISSION;
+    static const float LOCALE_WEIGHT_THRESHOLD_FOR_SMALL_CACHE_SIZE;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ScoringParams);

@@ -31,6 +31,7 @@ const float ScoringParams::DIGRAPH_PENALTY_FOR_EXACT_MATCH = 0.03f;
 // TODO: Unlimit max cache dic node size
 const int ScoringParams::MAX_CACHE_DIC_NODE_SIZE = 170;
 const int ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT = 310;
+const int ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_LOW_PROBABILITY_LOCALE = 50;
 const int ScoringParams::THRESHOLD_SHORT_WORD_LENGTH = 4;
 
 const float ScoringParams::DISTANCE_WEIGHT_LENGTH = 0.1524f;
@@ -61,4 +62,7 @@ const float ScoringParams::HAS_MULTI_WORD_TERMINAL_COST = 0.4182f;
 const float ScoringParams::TYPING_BASE_OUTPUT_SCORE = 1.0f;
 const float ScoringParams::TYPING_MAX_OUTPUT_SCORE_PER_INPUT = 0.1f;
 const float ScoringParams::NORMALIZED_SPATIAL_DISTANCE_THRESHOLD_FOR_EDIT = 0.095f;
+const float ScoringParams::LOCALE_WEIGHT_THRESHOLD_FOR_SPACE_SUBSTITUTION = 0.99f;
+const float ScoringParams::LOCALE_WEIGHT_THRESHOLD_FOR_SPACE_OMISSION = 0.99f;
+const float ScoringParams::LOCALE_WEIGHT_THRESHOLD_FOR_SMALL_CACHE_SIZE = 0.99f;
 } // namespace latinime

@@ -292,6 +292,7 @@ public final class BinaryDictionary extends Dictionary {
                 settingsValuesForSuggestion.mSpaceAwareGestureEnabled);
         session.mNativeSuggestOptions.setAdditionalFeaturesOptions(
                 settingsValuesForSuggestion.mAdditionalFeaturesSettingValues);
+        session.mNativeSuggestOptions.setWeightForLocale(weightForLocale);
         if (inOutWeightOfLangModelVsSpatialModel != null) {
             session.mInputOutputWeightOfLangModelVsSpatialModel[0] =
                     inOutWeightOfLangModelVsSpatialModel[0];
