@@ -47,12 +47,12 @@ class HistoricalInfo {
     }
 
  private:
-    // Default copy constructor and assign operator are used for using in std::vector.
+    // Default copy constructor is used for using in std::vector.
+    DISALLOW_ASSIGNMENT_OPERATOR(HistoricalInfo);
 
-    // TODO: Make members const.
-    int mTimestamp;
-    int mLevel;
-    int mCount;
+    const int mTimestamp;
+    const int mLevel;
+    const int mCount;
 };
 } // namespace latinime
 #endif /* LATINIME_HISTORICAL_INFO_H */

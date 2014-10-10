@@ -41,12 +41,11 @@ class UnigramProperty {
         }
 
      private:
-        // Default copy constructor and assign operator are used for using in std::vector.
+        // Default copy constructor is used for using in std::vector.
         DISALLOW_DEFAULT_CONSTRUCTOR(ShortcutProperty);
 
-        // TODO: Make members const.
-        std::vector<int> mTargetCodePoints;
-        int mProbability;
+        const std::vector<int> mTargetCodePoints;
+        const int mProbability;
     };
 
     UnigramProperty()
@@ -104,13 +103,12 @@ class UnigramProperty {
     // Default copy constructor is used for using as a return value.
     DISALLOW_ASSIGNMENT_OPERATOR(UnigramProperty);
 
-    // TODO: Make members const.
-    bool mRepresentsBeginningOfSentence;
-    bool mIsNotAWord;
-    bool mIsBlacklisted;
-    int mProbability;
-    HistoricalInfo mHistoricalInfo;
-    std::vector<ShortcutProperty> mShortcuts;
+    const bool mRepresentsBeginningOfSentence;
+    const bool mIsNotAWord;
+    const bool mIsBlacklisted;
+    const int mProbability;
+    const HistoricalInfo mHistoricalInfo;
+    const std::vector<ShortcutProperty> mShortcuts;
 };
 } // namespace latinime
 #endif // LATINIME_UNIGRAM_PROPERTY_H
