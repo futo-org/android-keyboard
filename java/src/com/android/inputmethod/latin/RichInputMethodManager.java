@@ -20,6 +20,7 @@ import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -51,6 +52,7 @@ public class RichInputMethodManager {
 
     private static final RichInputMethodManager sInstance = new RichInputMethodManager();
 
+    private Resources mResources;
     private InputMethodManagerCompatWrapper mImmWrapper;
     private InputMethodInfoCache mInputMethodInfoCache;
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
@@ -84,6 +86,7 @@ public class RichInputMethodManager {
             return;
         }
         mImmWrapper = new InputMethodManagerCompatWrapper(context);
+        mResources = context.getResources();
         mInputMethodInfoCache = new InputMethodInfoCache(
                 mImmWrapper.mImm, context.getPackageName());
 
@@ -305,7 +308,8 @@ public class RichInputMethodManager {
 
     public RichInputMethodSubtype createCurrentRichInputMethodSubtype(
             final InputMethodSubtype rawSubtype) {
-        return AdditionalFeaturesSettingUtils.createRichInputMethodSubtype(this, rawSubtype);
+        return AdditionalFeaturesSettingUtils.createRichInputMethodSubtype(this, rawSubtype,
+                mResources);
     }
 
     public boolean hasMultipleEnabledIMEsOrSubtypes(final boolean shouldIncludeAuxiliarySubtypes) {

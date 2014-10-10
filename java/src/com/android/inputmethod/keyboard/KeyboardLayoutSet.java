@@ -28,6 +28,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
@@ -39,6 +40,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.define.DebugFlags;
+import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -313,21 +315,76 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
+        private final static HashMap<InputMethodSubtype, Integer> sScriptIdsForSubtypes =
+                new HashMap<>();
+        public static int getScriptId(final Resources resources, final InputMethodSubtype subtype) {
+            final Integer value = sScriptIdsForSubtypes.get(subtype);
+            if (null == value) {
+                final int scriptId = readScriptId(resources, subtype);
+                sScriptIdsForSubtypes.put(subtype, scriptId);
+                return scriptId;
+            }
+            return value;
+        }
+
+        // Super redux version of reading the script ID for some subtype from Xml.
+        private static int readScriptId(final Resources resources,
+                final InputMethodSubtype subtype) {
+            final String layoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX
+                    + SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
+            final int xmlId = getXmlId(resources, layoutSetName);
+            final XmlResourceParser parser = resources.getXml(xmlId);
+            try {
+                while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                    // Bovinate through the XML stupidly searching for TAG_FEATURE, and read
+                    // the script Id from it.
+                    parser.next();
+                    final String tag = parser.getName();
+                    if (TAG_FEATURE.equals(tag)) {
+                        return readScriptIdFromTagFeature(resources, parser);
+                    }
+                }
+            } catch (final IOException | XmlPullParserException e) {
+                throw new RuntimeException(e.getMessage() + " in " + layoutSetName, e);
+            } finally {
+                parser.close();
+            }
+            // If the tag is not found, then the default script is Latin.
+            return ScriptUtils.SCRIPT_LATIN;
+        }
+
+        private static int readScriptIdFromTagFeature(final Resources resources,
+                final XmlPullParser parser) throws IOException, XmlPullParserException {
+            final TypedArray featureAttr = resources.obtainAttributes(Xml.asAttributeSet(parser),
+                    R.styleable.KeyboardLayoutSet_Feature);
+            try {
+                final int scriptId =
+                        featureAttr.getInt(R.styleable.KeyboardLayoutSet_Feature_supportedScript,
+                        ScriptUtils.SCRIPT_UNKNOWN);
+                XmlParseUtils.checkEndTag(TAG_FEATURE, parser);
+                return scriptId;
+            } finally {
+                featureAttr.recycle();
+            }
+        }
+
         public KeyboardLayoutSet build() {
             if (mParams.mSubtype == null)
                 throw new RuntimeException("KeyboardLayoutSet subtype is not specified");
-            final String packageName = mResources.getResourcePackageName(
-                    R.xml.keyboard_layout_set_qwerty);
-            final String keyboardLayoutSetName = mParams.mKeyboardLayoutSetName;
-            final int xmlId = mResources.getIdentifier(keyboardLayoutSetName, "xml", packageName);
+            final int xmlId = getXmlId(mResources, mParams.mKeyboardLayoutSetName);
             try {
                 parseKeyboardLayoutSet(mResources, xmlId);
-            } catch (final IOException e) {
-                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName, e);
-            } catch (final XmlPullParserException e) {
-                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName, e);
+            } catch (final IOException | XmlPullParserException e) {
+                throw new RuntimeException(e.getMessage() + " in " + mParams.mKeyboardLayoutSetName,
+                        e);
             }
             return new KeyboardLayoutSet(mContext, mParams);
+        }
+
+        private static int getXmlId(final Resources resources, final String keyboardLayoutSetName) {
+            final String packageName = resources.getResourcePackageName(
+                    R.xml.keyboard_layout_set_qwerty);
+            return resources.getIdentifier(keyboardLayoutSetName, "xml", packageName);
         }
 
         private void parseKeyboardLayoutSet(final Resources res, final int resId)
@@ -407,17 +464,8 @@ public final class KeyboardLayoutSet {
 
         private void parseKeyboardLayoutSetFeature(final XmlPullParser parser)
                 throws XmlPullParserException, IOException {
-            final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                    R.styleable.KeyboardLayoutSet_Feature);
-            try {
-                final int scriptId = a.getInt(
-                        R.styleable.KeyboardLayoutSet_Feature_supportedScript,
-                        ScriptUtils.SCRIPT_LATIN);
-                XmlParseUtils.checkEndTag(TAG_FEATURE, parser);
-                setScriptId(scriptId);
-            } finally {
-                a.recycle();
-            }
+            final int scriptId = readScriptIdFromTagFeature(mResources, parser);
+            setScriptId(scriptId);
         }
 
         private static int getKeyboardMode(final EditorInfo editorInfo) {
