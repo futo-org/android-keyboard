@@ -46,5 +46,5 @@ public final class ProductionFlags {
     /**
      * When {@code true}, personal dictionary sync feature is ready to be enabled.
      */
-    public static final boolean ENABLE_PERSONAL_DICTIONARY_SYNC = false;
+    public static final boolean ENABLE_PERSONAL_DICTIONARY_SYNC = ENABLE_ACCOUNT_SIGN_IN && false;
 }

@@ -16,7 +16,12 @@
 
 package com.android.inputmethod.latin.settings;
 
+import static com.android.inputmethod.latin.settings.LocalSettingsConstants.PREF_ACCOUNT_NAME;
+import static com.android.inputmethod.latin.settings.LocalSettingsConstants.PREF_ENABLE_CLOUD_SYNC;
+
+import android.accounts.Account;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -33,7 +38,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.define.ProductionFlags;
-import com.android.inputmethod.latin.sync.BeanstalkManager;
 
 import javax.annotation.Nullable;
 
@@ -41,19 +45,18 @@ import javax.annotation.Nullable;
  * "Accounts & Privacy" settings sub screen.
  *
  * This settings sub screen handles the following preferences:
- * <li> Account selection/management for IME
- * <li> TODO: Sync preferences
- * <li> TODO: Privacy preferences
- * <li> Sync now
+ * <li> Account selection/management for IME </li>
+ * <li> Sync preferences </li>
+ * <li> Privacy preferences </li>
  */
 public final class AccountsSettingsFragment extends SubScreenFragment {
-    static final String PREF_ACCCOUNT_SWITCHER = "account_switcher";
-    static final String PREF_SYNC_NOW = "pref_beanstalk";
+    private static final String PREF_SYNC_NOW = "pref_beanstalk";
 
-    private final DialogInterface.OnClickListener mAccountSelectedListener =
-            new AccountSelectedListener();
-    private final DialogInterface.OnClickListener mAccountSignedOutListener =
-            new AccountSignedOutListener();
+    @UsedForTesting static final String AUTHORITY = "com.android.inputmethod.latin.provider";
+    static final String PREF_ACCCOUNT_SWITCHER = "account_switcher";
+
+    private final DialogInterface.OnClickListener mAccountChangedListener =
+            new AccountChangedListener();
     private final Preference.OnPreferenceClickListener mSyncNowListener = new SyncNowListener();
 
     @Override
@@ -81,47 +84,55 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             removePreference(Settings.PREF_ENABLE_METRICS_LOGGING);
         }
 
+        if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
+            removePreference(PREF_ACCCOUNT_SWITCHER);
+            removePreference(PREF_ENABLE_CLOUD_SYNC);
+            removePreference(PREF_SYNC_NOW);
+        }
         if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+            removePreference(PREF_ENABLE_CLOUD_SYNC);
             removePreference(PREF_SYNC_NOW);
         } else {
             final Preference syncNowPreference = findPreference(PREF_SYNC_NOW);
-            if (syncNowPreference != null) {
-                syncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
-            }
+            syncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        refreshUi();
+        refreshAccountAndDependentPreferences(getCurrentlySelectedAccount());
     }
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
-        // TODO: Look at the preference that changed before refreshing the view.
-        refreshUi();
+        if (TextUtils.equals(key, PREF_ACCOUNT_NAME)) {
+            refreshAccountAndDependentPreferences(
+                    prefs.getString(PREF_ACCOUNT_NAME, null));
+        } else if (TextUtils.equals(key, PREF_ENABLE_CLOUD_SYNC)) {
+            final boolean syncEnabled = prefs.getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
+            updateSyncPolicy(syncEnabled, LoginAccountUtils.getCurrentAccount(getActivity()));
+        }
     }
 
-    private void refreshUi() {
-        refreshAccountSelection();
-        refreshSyncNow();
-    }
-
-    private void refreshAccountSelection() {
+    private void refreshAccountAndDependentPreferences(@Nullable final String currentAccount) {
         if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
             return;
         }
 
-        final String currentAccount = getCurrentlySelectedAccount();
         final Preference accountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
         if (currentAccount == null) {
             // No account is currently selected.
             accountSwitcher.setSummary(getString(R.string.no_accounts_selected));
+            // Disable the sync preference UI.
+            disableSyncPreference();
         } else {
             // Set the currently selected account.
             accountSwitcher.setSummary(getString(R.string.account_selected, currentAccount));
+            // Enable the sync preference UI.
+            enableSyncPreference();
         }
+        // Set up onClick listener for the account picker preference.
         final Context context = getActivity();
         final String[] accountsForLogin = LoginAccountUtils.getAccountsForLogin(context);
         accountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -129,45 +140,74 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             public boolean onPreferenceClick(Preference preference) {
                 if (accountsForLogin.length == 0) {
                     // TODO: Handle account addition.
-                    Toast.makeText(getActivity(),
-                            getString(R.string.account_select_cancel), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.account_select_cancel),
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     createAccountPicker(accountsForLogin, currentAccount).show();
                 }
                 return true;
             }
         });
-
-        // TODO: Depending on the account selection, enable/disable preferences that
-        // depend on an account.
     }
 
     /**
-     * Refreshes the "Sync Now" feature
+     * Enables the Sync preference UI and updates its summary.
      */
-    private void refreshSyncNow() {
+    private void enableSyncPreference() {
         if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
             return;
         }
 
-        final Preference syncNowPreference = findPreference(PREF_SYNC_NOW);
-        if (syncNowPreference == null) {
+        final Preference syncPreference = findPreference(PREF_ENABLE_CLOUD_SYNC);
+        syncPreference.setEnabled(true);
+        syncPreference.setSummary(R.string.cloud_sync_summary);
+    }
+
+    /**
+     * Disables the Sync preference UI and updates its summary to indicate
+     * the fact that an account needs to be selected for sync.
+     */
+    private void disableSyncPreference() {
+        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
             return;
         }
 
-        final String currentAccount = getCurrentlySelectedAccount();
-        if (currentAccount == null) {
-            syncNowPreference.setEnabled(false);
-            syncNowPreference.setSummary(R.string.sync_now_summary_disabled_signed_out);
+        final Preference syncPreference = findPreference(PREF_ENABLE_CLOUD_SYNC);
+        syncPreference.setEnabled(false);
+        syncPreference.setSummary(R.string.cloud_sync_summary_disabled_signed_out);
+    }
+
+    /**
+     * Given a non-null accountToUse, this method looks at the enabled value to either
+     * set or unset the syncable property of the sync authority.
+     * If the account is null, this method is a no-op currently, but we may want
+     * to perform some cleanup in the future.
+     */
+    @UsedForTesting
+    void updateSyncPolicy(boolean enabled, Account accountToUse) {
+        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+            return;
+        }
+
+        if (accountToUse != null) {
+            final int syncable = enabled ? 1 : 0;
+            ContentResolver.setIsSyncable(accountToUse, AUTHORITY, syncable);
+            // TODO: Also add a periodic sync here.
+            // See ContentResolver.addPeriodicSync
         } else {
-            syncNowPreference.setEnabled(true);
-            syncNowPreference.setSummary(R.string.sync_now_summary);
+            // Without an account, we cannot really set the sync to off.
+            // Hopefully the account sign-out listener would have taken care of that for us.
+            // But cases such as clear data are still not handled cleanly.
         }
     }
 
     @Nullable
     private String getCurrentlySelectedAccount() {
         return getSharedPreferences().getString(LocalSettingsConstants.PREF_ACCOUNT_NAME, null);
+    }
+
+    private boolean isSyncEnabled() {
+        return getSharedPreferences().getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
     }
 
     /**
@@ -200,51 +240,55 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.account_select_title)
                 .setSingleChoiceItems(accounts, index, null)
-                .setPositiveButton(R.string.account_select_ok, mAccountSelectedListener)
+                .setPositiveButton(R.string.account_select_ok, mAccountChangedListener)
                 .setNegativeButton(R.string.account_select_cancel, null);
         if (isSignedIn) {
-            builder.setNeutralButton(R.string.account_select_sign_out, mAccountSignedOutListener);
+            builder.setNeutralButton(R.string.account_select_sign_out, mAccountChangedListener);
         }
         return builder.create();
     }
 
     /**
-     * Listener for an account being selected from the picker.
-     * Persists the account to shared preferences.
+     * Listener for a account selection changes from the picker.
+     * Persists/removes the account to/from shared preferences and sets up sync if required.
      */
-    class AccountSelectedListener implements DialogInterface.OnClickListener {
+    class AccountChangedListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            final ListView lv = ((AlertDialog)dialog).getListView();
-            final Object selectedItem = lv.getItemAtPosition(lv.getCheckedItemPosition());
-            getSharedPreferences()
-                    .edit()
-                    .putString(LocalSettingsConstants.PREF_ACCOUNT_NAME, (String) selectedItem)
-                    .apply();
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: // Signed in
+                    final ListView lv = ((AlertDialog)dialog).getListView();
+                    final Object selectedItem = lv.getItemAtPosition(lv.getCheckedItemPosition());
+                    getSharedPreferences()
+                            .edit()
+                            .putString(PREF_ACCOUNT_NAME, (String) selectedItem)
+                            .apply();
+                    // Attempt starting sync for the new account if sync was
+                    // previously enabled.
+                    // If not, stop it.
+                    updateSyncPolicy(isSyncEnabled(),
+                            LoginAccountUtils.getCurrentAccount(getActivity()));
+                    break;
+                case DialogInterface.BUTTON_NEUTRAL: // Signed out
+                    // Stop sync for the account that's being signed out of.
+                    updateSyncPolicy(false, LoginAccountUtils.getCurrentAccount(getActivity()));
+                    getSharedPreferences()
+                            .edit()
+                            .remove(PREF_ACCOUNT_NAME)
+                            .apply();
+                    break;
+            }
         }
     }
 
     /**
-     * Listener for sign-out being initiated from from the picker.
-     * Removed the account from shared preferences.
-     */
-    class AccountSignedOutListener implements DialogInterface.OnClickListener {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            getSharedPreferences()
-                    .edit()
-                    .remove(LocalSettingsConstants.PREF_ACCOUNT_NAME)
-                    .apply();
-        }
-    }
-
-    /**
-     * Listener that initates the process of sync in the background.
+     * Listener that initiates the process of sync in the background.
      */
     class SyncNowListener implements Preference.OnPreferenceClickListener {
         @Override
         public boolean onPreferenceClick(final Preference preference) {
-            BeanstalkManager.getInstance(getActivity() /* context */).requestSync();
+            ContentResolver.requestSync(
+                    LoginAccountUtils.getCurrentAccount(getActivity()), AUTHORITY, Bundle.EMPTY);
             return true;
         }
     }

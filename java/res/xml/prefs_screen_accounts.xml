@@ -28,7 +28,15 @@
         android:title="@string/switch_accounts"
         android:summary="@string/no_accounts_selected" />
 
-    <!-- title will be set programmatically to embed application name -->
+    <!-- Summary will be set programmatically to reflect the account status -->
+    <CheckBoxPreference
+        android:key="pref_enable_cloud_sync"
+        android:title="@string/cloud_sync_title"
+        android:defaultValue="false"
+        android:persistent="true"
+        android:disableDependentsState="false" />
+
+    <!-- Title will be set programmatically to embed application name -->
     <CheckBoxPreference
         android:key="pref_enable_metrics_logging"
         android:summary="@string/enable_metrics_logging_summary"
@@ -38,5 +46,6 @@
     <!-- This preference (acts like a button) enables the user to initiate an one time sync. -->
     <Preference android:key="pref_beanstalk"
         android:persistent="false"
-        android:title="@string/sync_now_title" />
+        android:title="@string/sync_now_title"
+        android:dependency="pref_enable_cloud_sync" />
 </PreferenceScreen>

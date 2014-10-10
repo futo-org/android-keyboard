@@ -56,9 +56,11 @@
     <!--  Option for enabling or disabling the split keyboard layout. [CHAR LIMIT=65]-->
     <string name="enable_split_keyboard">Enable split keyboard</string>
 
-    <string name="sync_now_title" translatable="false">Sync Now</string>
-    <string name="sync_now_summary" translatable="false">Sync your personal dictionary</string>
-    <string name="sync_now_summary_disabled_signed_out" translatable="false">Select an account to enable sync</string>
+    <!-- TODO: Enable translation for user-visible strings -->
+    <string name="cloud_sync_title" translatable="false">Enable sync</string>
+    <string name="cloud_sync_summary" translatable="false">Sync your personal dictionary across devices</string>
+    <string name="cloud_sync_summary_disabled_signed_out" translatable="false">Select an account to enable sync</string>
+    <string name="sync_now_title" translatable="false">[DEBUG] Sync Now</string>
 
     <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>
