@@ -20,7 +20,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_add_style"
-        android:icon="@drawable/ic_add_circle_wht_24dp"
+        android:icon="@drawable/ic_add_circle_white_24dp"
         android:title="@string/add_style"
         android:showAsAction="always" />
 </menu>
