@@ -28,6 +28,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,8 +58,10 @@ import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
+import java.util.Locale;
 import java.util.WeakHashMap;
 
 /**
@@ -855,8 +858,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private String layoutLanguageOnSpacebar(final Paint paint,
             final RichInputMethodSubtype subtype, final int width) {
         if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarHelper.FORMAT_TYPE_MULTIPLE) {
-            // TODO: return an appropriate string
-            return "";
+            final Locale[] locales = subtype.getLocales();
+            final String[] languages = new String[locales.length];
+            for (int i = 0; i < locales.length; ++i) {
+                languages[i] = StringUtils.toUpperCaseOfStringForLocale(
+                        locales[i].getLanguage(), true /* needsToUpperCase */, Locale.ROOT);
+            }
+            return TextUtils.join(" / ", languages);
         }
 
         // Choose appropriate language name to fit into the width.
