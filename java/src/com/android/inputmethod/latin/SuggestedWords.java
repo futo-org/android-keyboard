@@ -243,7 +243,8 @@ public class SuggestedWords {
         return candidate.isEligibleForAutoCommit() ? candidate : null;
     }
 
-    public static final class SuggestedWordInfo {
+    // non-final for testability.
+    public static class SuggestedWordInfo {
         public static final int NOT_AN_INDEX = -1;
         public static final int NOT_A_CONFIDENCE = -1;
         public static final int MAX_SCORE = Integer.MAX_VALUE;
