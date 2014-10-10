@@ -348,6 +348,31 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     /*
+     * Test that KeyboardTheme array should be sorted by descending order of
+     * {@link KeyboardTheme#mMinApiVersion}.
+     */
+    private static void assertSortedKeyboardThemeArray(final KeyboardTheme[] array) {
+        assertNotNull(array);
+        final int length = array.length;
+        assertTrue("array length=" + length, length > 0);
+        for (int index = 0; index < length - 1; index++) {
+            final KeyboardTheme theme = array[index];
+            final KeyboardTheme nextTheme = array[index + 1];
+            assertTrue("sorted MinApiVersion: "
+                    + theme.mThemeName + ": minApiVersion=" + theme.mMinApiVersion,
+                    theme.mMinApiVersion >= nextTheme.mMinApiVersion);
+        }
+    }
+
+    public void testSortedKeyboardTheme() {
+        assertSortedKeyboardThemeArray(KeyboardTheme.KEYBOARD_THEMES);
+    }
+
+    public void testSortedAvailableKeyboardTheme() {
+        assertSortedKeyboardThemeArray(KeyboardTheme.getAvailableThemeArray(getContext()));
+    }
+
+    /*
      * Test for missing selected theme.
      */
     private static KeyboardTheme[] LIMITED_THEMES = {
@@ -356,6 +381,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     };
     static {
         Arrays.sort(LIMITED_THEMES);
+        assertSortedKeyboardThemeArray(LIMITED_THEMES);
     }
 
     public void testMissingSelectedThemeIcs() {
