@@ -44,13 +44,13 @@ class NgramProperty {
     }
 
  private:
-    // Default copy constructor and assign operator are used for using in std::vector.
+    // Default copy constructor is used for using in std::vector.
     DISALLOW_DEFAULT_CONSTRUCTOR(NgramProperty);
+    DISALLOW_ASSIGNMENT_OPERATOR(NgramProperty);
 
-    // TODO: Make members const.
-    std::vector<int> mTargetCodePoints;
-    int mProbability;
-    HistoricalInfo mHistoricalInfo;
+    const std::vector<int> mTargetCodePoints;
+    const int mProbability;
+    const HistoricalInfo mHistoricalInfo;
 };
 } // namespace latinime
 #endif // LATINIME_NGRAM_PROPERTY_H
