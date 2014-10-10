@@ -22,7 +22,8 @@ public class NativeSuggestOptions {
     private static final int USE_FULL_EDIT_DISTANCE = 1;
     private static final int BLOCK_OFFENSIVE_WORDS = 2;
     private static final int SPACE_AWARE_GESTURE_ENABLED = 3;
-    private static final int OPTIONS_SIZE = 4;
+    private static final int WEIGHT_FOR_LOCALE_IN_THOUSANDS = 4;
+    private static final int OPTIONS_SIZE = 5;
 
     private final int[] mOptions = new int[OPTIONS_SIZE
             + AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE];
@@ -41,6 +42,12 @@ public class NativeSuggestOptions {
 
     public void setSpaceAwareGestureEnabled(final boolean value) {
         setBooleanOption(SPACE_AWARE_GESTURE_ENABLED, value);
+    }
+
+    public void setWeightForLocale(final float value) {
+        // We're passing this option as a fixed point value, in thousands. This is decoded in
+        // native code by SuggestOptions#weightForLocale().
+        setIntegerOption(WEIGHT_FOR_LOCALE_IN_THOUSANDS, (int) (value * 1000));
     }
 
     public void setAdditionalFeaturesOptions(final int[] additionalOptions) {

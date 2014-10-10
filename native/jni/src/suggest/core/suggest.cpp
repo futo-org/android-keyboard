@@ -28,6 +28,7 @@
 #include "suggest/core/policy/weighting.h"
 #include "suggest/core/result/suggestions_output_utils.h"
 #include "suggest/core/session/dic_traverse_session.h"
+#include "suggest/core/suggest_options.h"
 
 namespace latinime {
 
@@ -88,7 +89,8 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession) const {
         traverseSession->getDicTraverseCache()->continueSearch();
     } else {
         // Restart recognition at the root.
-        traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(traverseSession->getInputSize()),
+        traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(traverseSession->getInputSize(),
+                traverseSession->getSuggestOptions()->weightForLocale()),
                 TRAVERSAL->getTerminalCacheSize());
         // Create a new dic node here
         DicNode rootNode;

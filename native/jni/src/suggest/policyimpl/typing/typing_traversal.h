@@ -26,6 +26,7 @@
 #include "suggest/core/layout/proximity_info_utils.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/session/dic_traverse_session.h"
+#include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
 #include "utils/char_utils.h"
 
@@ -77,6 +78,13 @@ class TypingTraversal : public Traversal {
         if (!CORRECT_NEW_WORD_SPACE_SUBSTITUTION) {
             return false;
         }
+        if (traverseSession->getSuggestOptions()->weightForLocale()
+                < ScoringParams::LOCALE_WEIGHT_THRESHOLD_FOR_SPACE_SUBSTITUTION) {
+            // Space substitution is heavy, so we skip doing it if the weight for this language
+            // is low because we anticipate the suggestions out of this dictionary are not for
+            // the language the user intends to type in.
+            return false;
+        }
         if (!canDoLookAheadCorrection(traverseSession, dicNode)) {
             return false;
         }
@@ -89,6 +97,13 @@ class TypingTraversal : public Traversal {
     AK_FORCE_INLINE bool isSpaceOmissionTerminal(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
         if (!CORRECT_NEW_WORD_SPACE_OMISSION) {
+            return false;
+        }
+        if (traverseSession->getSuggestOptions()->weightForLocale()
+                < ScoringParams::LOCALE_WEIGHT_THRESHOLD_FOR_SPACE_OMISSION) {
+            // Space omission is heavy, so we skip doing it if the weight for this language
+            // is low because we anticipate the suggestions out of this dictionary are not for
+            // the language the user intends to type in.
             return false;
         }
         const int inputSize = traverseSession->getInputSize();
@@ -141,9 +156,14 @@ class TypingTraversal : public Traversal {
         return DicNodeVector::DEFAULT_NODES_SIZE_FOR_OPTIMIZATION;
     }
 
-    AK_FORCE_INLINE int getMaxCacheSize(const int inputSize) const {
-        return (inputSize <= 1) ? ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT
-                : ScoringParams::MAX_CACHE_DIC_NODE_SIZE;
+    AK_FORCE_INLINE int getMaxCacheSize(const int inputSize, const float weightForLocale) const {
+        if (inputSize <= 1) {
+            return ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT;
+        }
+        if (weightForLocale < ScoringParams::LOCALE_WEIGHT_THRESHOLD_FOR_SMALL_CACHE_SIZE) {
+            return ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_LOW_PROBABILITY_LOCALE;
+        }
+        return ScoringParams::MAX_CACHE_DIC_NODE_SIZE;
     }
 
     AK_FORCE_INLINE int getTerminalCacheSize() const {
