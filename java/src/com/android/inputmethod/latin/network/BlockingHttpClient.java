@@ -18,8 +18,6 @@ package com.android.inputmethod.latin.network;
 
 import android.util.Log;
 
-import com.android.inputmethod.annotations.UsedForTesting;
-
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,10 +30,7 @@ import javax.annotation.Nullable;
 /**
  * A client for executing HTTP requests synchronously.
  * This must never be called from the main thread.
- *
- * TODO: Remove @UsedForTesting after this is actually used.
  */
-@UsedForTesting
 public class BlockingHttpClient {
     private static final boolean DEBUG = false;
     private static final String TAG = BlockingHttpClient.class.getSimpleName();
@@ -56,10 +51,6 @@ public class BlockingHttpClient {
          T onSuccess(InputStream response) throws IOException;
     }
 
-    /**
-     * TODO: Remove @UsedForTesting after this is actually used.
-     */
-    @UsedForTesting
     public BlockingHttpClient(HttpURLConnection connection) {
         mConnection = connection;
     }
@@ -67,16 +58,19 @@ public class BlockingHttpClient {
     /**
      * Executes the request on the underlying {@link HttpURLConnection}.
      *
-     * TODO: Remove @UsedForTesting after this is actually used.
-     *
      * @param request The request payload, if any, or null.
      * @param responseProcessor A processor for the HTTP response.
      */
-    @UsedForTesting
     public <T> T execute(@Nullable byte[] request, @Nonnull ResponseProcessor<T> responseProcessor)
             throws IOException, AuthException, HttpException {
+        if (DEBUG) {
+            Log.d(TAG, "execute: " + mConnection.getURL());
+        }
         try {
             if (request != null) {
+                if (DEBUG) {
+                    Log.d(TAG, "request size: " + request.length);
+                }
                 OutputStream out = new BufferedOutputStream(mConnection.getOutputStream());
                 out.write(request);
                 out.flush();
@@ -85,15 +79,16 @@ public class BlockingHttpClient {
 
             final int responseCode = mConnection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                if (DEBUG) {
-                    Log.d(TAG, "Response error: " +  responseCode + ", Message: "
-                            + mConnection.getResponseMessage());
-                }
+                Log.w(TAG, "Response error: " +  responseCode + ", Message: "
+                        + mConnection.getResponseMessage());
                 if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     throw new AuthException(mConnection.getResponseMessage());
                 }
                 throw new HttpException(responseCode);
             } else {
+                if (DEBUG) {
+                    Log.d(TAG, "request executed successfully");
+                }
                 return responseProcessor.onSuccess(mConnection.getInputStream());
             }
         } finally {
