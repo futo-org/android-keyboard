@@ -16,16 +16,20 @@
 
 package com.android.inputmethod.latin.accounts;
 
-import android.accounts.Account;
 import android.content.Context;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Utility class for retrieving accounts that may be used for login.
  */
 public class LoginAccountUtils {
+    /**
+     * This defines the type of account this class deals with.
+     * This account type is used when listing the accounts available on the device for login.
+     */
+    public static final String ACCOUNT_TYPE = "";
+
     private LoginAccountUtils() {
         // This utility class is not publicly instantiable.
     }
@@ -38,10 +42,5 @@ public class LoginAccountUtils {
     @Nonnull
     public static String[] getAccountsForLogin(final Context context) {
         return new String[0];
-    }
-
-    @Nullable
-    public static Account getCurrentAccount(final Context context) {
-        return null;
     }
 }

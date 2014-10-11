@@ -101,7 +101,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     @Override
     public void onResume() {
         super.onResume();
-        refreshAccountAndDependentPreferences(getCurrentlySelectedAccount());
+        refreshAccountAndDependentPreferences(getSignedInAccountName());
     }
 
     @Override
@@ -111,7 +111,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                     prefs.getString(PREF_ACCOUNT_NAME, null));
         } else if (TextUtils.equals(key, PREF_ENABLE_CLOUD_SYNC)) {
             final boolean syncEnabled = prefs.getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
-            updateSyncPolicy(syncEnabled, LoginAccountUtils.getCurrentAccount(getActivity()));
+            updateSyncPolicy(syncEnabled, getSignedInAccountName());
         }
     }
 
@@ -182,16 +182,22 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      * set or unset the syncable property of the sync authority.
      * If the account is null, this method is a no-op currently, but we may want
      * to perform some cleanup in the future.
+     *
+     * @param enabled indicates whether the sync preference is enabled or not.
+     * @param accountToUse indicaes the account to be used for sync, or null if the user
+     *        is not logged in.
      */
     @UsedForTesting
-    void updateSyncPolicy(boolean enabled, Account accountToUse) {
+    void updateSyncPolicy(boolean enabled, @Nullable String accountToUse) {
         if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
             return;
         }
 
         if (accountToUse != null) {
             final int syncable = enabled ? 1 : 0;
-            ContentResolver.setIsSyncable(accountToUse, AUTHORITY, syncable);
+            ContentResolver.setIsSyncable(
+                    new Account(accountToUse, LoginAccountUtils.ACCOUNT_TYPE),
+                    AUTHORITY, syncable);
             // TODO: Also add a periodic sync here.
             // See ContentResolver.addPeriodicSync
         } else {
@@ -202,11 +208,11 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     }
 
     @Nullable
-    private String getCurrentlySelectedAccount() {
+    String getSignedInAccountName() {
         return getSharedPreferences().getString(LocalSettingsConstants.PREF_ACCOUNT_NAME, null);
     }
 
-    private boolean isSyncEnabled() {
+    boolean isSyncEnabled() {
         return getSharedPreferences().getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
     }
 
@@ -266,12 +272,11 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                     // Attempt starting sync for the new account if sync was
                     // previously enabled.
                     // If not, stop it.
-                    updateSyncPolicy(isSyncEnabled(),
-                            LoginAccountUtils.getCurrentAccount(getActivity()));
+                    updateSyncPolicy(isSyncEnabled(), getSignedInAccountName());
                     break;
                 case DialogInterface.BUTTON_NEUTRAL: // Signed out
                     // Stop sync for the account that's being signed out of.
-                    updateSyncPolicy(false, LoginAccountUtils.getCurrentAccount(getActivity()));
+                    updateSyncPolicy(false, getSignedInAccountName());
                     getSharedPreferences()
                             .edit()
                             .remove(PREF_ACCOUNT_NAME)
@@ -288,7 +293,8 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         @Override
         public boolean onPreferenceClick(final Preference preference) {
             ContentResolver.requestSync(
-                    LoginAccountUtils.getCurrentAccount(getActivity()), AUTHORITY, Bundle.EMPTY);
+                    new Account(getSignedInAccountName(), LoginAccountUtils.ACCOUNT_TYPE),
+                    AUTHORITY, Bundle.EMPTY);
             return true;
         }
     }
