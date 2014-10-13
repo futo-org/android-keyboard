@@ -186,7 +186,9 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordI
         if (bigramsIt.getBigramPos() == ptNodePos
                 && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
             const int bigramConditionalProbability = getBigramConditionalProbability(
-                    prevWordPtNodeParams.getProbability(), bigramsIt.getProbability());
+                    prevWordPtNodeParams.getProbability(),
+                    prevWordPtNodeParams.representsBeginningOfSentence(),
+                    bigramsIt.getProbability());
             return getProbability(ptNodeParams.getProbability(), bigramConditionalProbability);
         }
     }
@@ -209,15 +211,19 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordI
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         const int bigramConditionalProbability = getBigramConditionalProbability(
-                prevWordPtNodeParams.getProbability(), bigramsIt.getProbability());
+                prevWordPtNodeParams.getProbability(),
+                prevWordPtNodeParams.representsBeginningOfSentence(), bigramsIt.getProbability());
         listener->onVisitEntry(bigramConditionalProbability,
                 getWordIdFromTerminalPtNodePos(bigramsIt.getBigramPos()));
     }
 }
 
 int Ver4PatriciaTriePolicy::getBigramConditionalProbability(const int prevWordUnigramProbability,
-        const int bigramProbability) const {
+        const bool isInBeginningOfSentenceContext, const int bigramProbability) const {
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
+        if (isInBeginningOfSentenceContext) {
+            return bigramProbability;
+        }
         // Calculate conditional probability.
         return std::min(MAX_PROBABILITY - prevWordUnigramProbability + bigramProbability,
                 MAX_PROBABILITY);
