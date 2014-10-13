@@ -175,7 +175,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const WordAttributes getWordAttributes(const int probability,
             const PtNodeParams &ptNodeParams) const;
     int getBigramConditionalProbability(const int prevWordUnigramProbability,
-            const int bigramProbability) const;
+            const bool isInBeginningOfSentenceContext, const int bigramProbability) const;
 };
 } // namespace v402
 } // namespace backward
