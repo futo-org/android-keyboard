@@ -68,18 +68,6 @@ static jfloat latinime_BinaryDictionaryUtils_calcNormalizedScore(JNIEnv *env, jc
             afterCodePoints, afterLength, score);
 }
 
-static jint latinime_BinaryDictionaryUtils_editDistance(JNIEnv *env, jclass clazz, jintArray before,
-        jintArray after) {
-    jsize beforeLength = env->GetArrayLength(before);
-    jsize afterLength = env->GetArrayLength(after);
-    int beforeCodePoints[beforeLength];
-    int afterCodePoints[afterLength];
-    env->GetIntArrayRegion(before, 0, beforeLength, beforeCodePoints);
-    env->GetIntArrayRegion(after, 0, afterLength, afterCodePoints);
-    return AutocorrectionThresholdUtils::editDistance(beforeCodePoints, beforeLength,
-            afterCodePoints, afterLength);
-}
-
 static int latinime_BinaryDictionaryUtils_setCurrentTimeForTest(JNIEnv *env, jclass clazz,
         jint currentTime) {
     if (currentTime >= 0) {
@@ -102,11 +90,6 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("calcNormalizedScoreNative"),
         const_cast<char *>("([I[II)F"),
         reinterpret_cast<void *>(latinime_BinaryDictionaryUtils_calcNormalizedScore)
-    },
-    {
-        const_cast<char *>("editDistanceNative"),
-        const_cast<char *>("([I[I)I"),
-        reinterpret_cast<void *>(latinime_BinaryDictionaryUtils_editDistance)
     },
     {
         const_cast<char *>("setCurrentTimeForTestNative"),

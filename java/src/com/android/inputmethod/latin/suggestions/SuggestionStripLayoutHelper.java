@@ -321,18 +321,6 @@ final class SuggestionStripLayoutHelper {
         } else {
             color = mColorSuggested;
         }
-        if (DebugFlags.DEBUG_ENABLED && suggestedWords.size() > 1) {
-            // If we auto-correct, then the autocorrection is in slot 0 and the typed word
-            // is in slot 1.
-            if (indexInSuggestedWords == SuggestedWords.INDEX_OF_AUTO_CORRECTION
-                    && suggestedWords.mWillAutoCorrect
-                    && AutoCorrectionUtils.shouldBlockAutoCorrectionBySafetyNet(
-                            suggestedWords.getLabel(SuggestedWords.INDEX_OF_AUTO_CORRECTION),
-                            suggestedWords.getLabel(SuggestedWords.INDEX_OF_TYPED_WORD))) {
-                return 0xFFFF0000;
-            }
-        }
-
         if (suggestedWords.mIsObsoleteSuggestions && !isTypedWord) {
             return applyAlpha(color, mAlphaObsoleted);
         }
