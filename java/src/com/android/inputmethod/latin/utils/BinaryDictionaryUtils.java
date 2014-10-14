@@ -43,7 +43,6 @@ public final class BinaryDictionaryUtils {
     private static native boolean createEmptyDictFileNative(String filePath, long dictVersion,
             String locale, String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
-    private static native int editDistanceNative(int[] before, int[] after);
     private static native int setCurrentTimeForTestNative(int currentTime);
 
     public static DictionaryHeader getHeader(final File dictFile)
@@ -110,14 +109,6 @@ public final class BinaryDictionaryUtils {
             final int score) {
         return calcNormalizedScoreNative(StringUtils.toCodePointArray(before),
                 StringUtils.toCodePointArray(after), score);
-    }
-
-    public static int editDistance(final String before, final String after) {
-        if (before == null || after == null) {
-            throw new IllegalArgumentException();
-        }
-        return editDistanceNative(StringUtils.toCodePointArray(before),
-                StringUtils.toCodePointArray(after));
     }
 
     /**

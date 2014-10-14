@@ -52,41 +52,9 @@ public final class AutoCorrectionUtils {
                 if (DBG) {
                     Log.d(TAG, "Auto corrected by S-threshold.");
                 }
-                return !shouldBlockAutoCorrectionBySafetyNet(consideredWord, suggestion.mWord);
+                return true;
             }
         }
         return false;
-    }
-
-    // TODO: Resolve the inconsistencies between the native auto correction algorithms and
-    // this safety net
-    public static boolean shouldBlockAutoCorrectionBySafetyNet(final String typedWord,
-            final String suggestion) {
-        // Safety net for auto correction.
-        // Actually if we hit this safety net, it's a bug.
-        // If user selected aggressive auto correction mode, there is no need to use the safety
-        // net.
-        // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
-        // we should not use net because relatively edit distance can be big.
-        final int typedWordLength = typedWord.length();
-        if (typedWordLength < MINIMUM_SAFETY_NET_CHAR_LENGTH) {
-            return false;
-        }
-        final int maxEditDistanceOfNativeDictionary = (typedWordLength / 2) + 1;
-        final int distance = BinaryDictionaryUtils.editDistance(typedWord, suggestion);
-        if (DBG) {
-            Log.d(TAG, "Autocorrected edit distance = " + distance
-                    + ", " + maxEditDistanceOfNativeDictionary);
-        }
-        if (distance > maxEditDistanceOfNativeDictionary) {
-            if (DBG) {
-                Log.e(TAG, "Safety net: before = " + typedWord + ", after = " + suggestion);
-                Log.e(TAG, "(Error) The edit distance of this correction exceeds limit. "
-                        + "Turning off auto-correction.");
-            }
-            return true;
-        } else {
-            return false;
-        }
     }
 }
