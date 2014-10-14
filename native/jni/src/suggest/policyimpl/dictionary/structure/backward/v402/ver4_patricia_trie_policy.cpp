@@ -140,7 +140,7 @@ const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
 
 const WordAttributes Ver4PatriciaTriePolicy::getWordAttributes(const int probability,
         const PtNodeParams &ptNodeParams) const {
-    return WordAttributes(probability, ptNodeParams.isBlacklisted(), ptNodeParams.isNotAWord(),
+    return WordAttributes(probability, false /* isBlacklisted */, ptNodeParams.isNotAWord(),
             ptNodeParams.getProbability() == 0);
 }
 
@@ -164,7 +164,7 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordI
     }
     const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
     const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
-    if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
+    if (ptNodeParams.isDeleted() || ptNodeParams.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
     if (prevWordIds.empty()) {

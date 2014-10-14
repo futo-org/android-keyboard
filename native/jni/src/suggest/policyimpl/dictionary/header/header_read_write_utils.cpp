@@ -111,7 +111,8 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
     switch (version) {
         case FormatUtils::VERSION_2:
         case FormatUtils::VERSION_201:
-            // Version 2 or 201 dictionary writing is not supported.
+        case FormatUtils::VERSION_202:
+            // None of the static dictionaries (v2x) support writing
             return false;
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:

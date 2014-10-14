@@ -31,8 +31,12 @@ class FormatUtils {
  public:
     enum FORMAT_VERSION {
         // These MUST have the same values as the relevant constants in FormatSpec.java.
+        // TODO: Remove VERSION_2 and VERSION_201 when we:
+        // * Confirm that old versions of LatinIME download old-format dictionaries
+        // * We no longer need the corresponding constants on the Java side for dicttool
         VERSION_2 = 2,
         VERSION_201 = 201,
+        VERSION_202 = 202,
         VERSION_4_ONLY_FOR_TESTING = 399,
         VERSION_4 = 402,
         VERSION_4_DEV = 403,

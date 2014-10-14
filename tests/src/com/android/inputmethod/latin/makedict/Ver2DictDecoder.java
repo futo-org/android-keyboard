@@ -178,7 +178,8 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
             throw new IOException("Cannot read the dictionary header.");
         }
         if (header.mFormatOptions.mVersion != FormatSpec.VERSION2 &&
-                header.mFormatOptions.mVersion != FormatSpec.VERSION201) {
+                header.mFormatOptions.mVersion != FormatSpec.VERSION201 &&
+                header.mFormatOptions.mVersion != FormatSpec.VERSION202) {
             throw new UnsupportedFormatException("File header has a wrong version : "
                     + header.mFormatOptions.mVersion);
         }
