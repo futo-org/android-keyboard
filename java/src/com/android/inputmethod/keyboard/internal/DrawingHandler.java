@@ -23,6 +23,8 @@ import com.android.inputmethod.keyboard.internal.DrawingHandler.Callbacks;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
+import javax.annotation.Nonnull;
+
 // TODO: Separate this class into KeyPreviewHandler and BatchInputPreviewHandler or so.
 public class DrawingHandler extends LeakGuardHandlerWrapper<Callbacks> {
     public interface Callbacks {
@@ -34,7 +36,7 @@ public class DrawingHandler extends LeakGuardHandlerWrapper<Callbacks> {
     private static final int MSG_DISMISS_KEY_PREVIEW = 0;
     private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
 
-    public DrawingHandler(final Callbacks ownerInstance) {
+    public DrawingHandler(@Nonnull final Callbacks ownerInstance) {
         super(ownerInstance);
     }
 

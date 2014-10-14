@@ -21,21 +21,22 @@ import android.os.Looper;
 
 import java.lang.ref.WeakReference;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class LeakGuardHandlerWrapper<T> extends Handler {
     private final WeakReference<T> mOwnerInstanceRef;
 
-    public LeakGuardHandlerWrapper(final T ownerInstance) {
+    public LeakGuardHandlerWrapper(@Nonnull final T ownerInstance) {
         this(ownerInstance, Looper.myLooper());
     }
 
-    public LeakGuardHandlerWrapper(final T ownerInstance, final Looper looper) {
+    public LeakGuardHandlerWrapper(@Nonnull final T ownerInstance, final Looper looper) {
         super(looper);
-        if (ownerInstance == null) {
-            throw new NullPointerException("ownerInstance is null");
-        }
         mOwnerInstanceRef = new WeakReference<>(ownerInstance);
     }
 
+    @Nullable
     public T getOwnerInstance() {
         return mOwnerInstanceRef.get();
     }
