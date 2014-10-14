@@ -284,7 +284,6 @@ void Suggest::processDicNodeAsAdditionalProximityChar(DicTraverseSession *traver
     // not treat the node as a terminal. There is no need to pass the bigram map in these cases.
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_ADDITIONAL_PROXIMITY,
             traverseSession, dicNode, childDicNode, 0 /* multiBigramMap */);
-    weightChildNode(traverseSession, childDicNode);
     processExpandedDicNode(traverseSession, childDicNode);
 }
 
@@ -292,7 +291,6 @@ void Suggest::processDicNodeAsSubstitution(DicTraverseSession *traverseSession,
         DicNode *dicNode, DicNode *childDicNode) const {
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_SUBSTITUTION, traverseSession,
             dicNode, childDicNode, 0 /* multiBigramMap */);
-    weightChildNode(traverseSession, childDicNode);
     processExpandedDicNode(traverseSession, childDicNode);
 }
 
@@ -403,7 +401,7 @@ void Suggest::weightChildNode(DicTraverseSession *traverseSession, DicNode *dicN
     if (dicNode->isCompletion(inputSize)) {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_COMPLETION, traverseSession,
                 0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
-    } else { // completion
+    } else {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_MATCH, traverseSession,
                 0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
     }
