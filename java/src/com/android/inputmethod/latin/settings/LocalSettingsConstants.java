@@ -40,6 +40,22 @@ public class LocalSettingsConstants {
     // a different shared preferences file.
     public static final String[] PREFS_TO_SKIP_RESTORING = new String[] {
         PREF_ACCOUNT_NAME,
-        PREF_ENABLE_CLOUD_SYNC
+        PREF_ENABLE_CLOUD_SYNC,
+        // The debug settings are not restored on a new device.
+        // If a feature relies on these, it should ensure that the defaults are
+        // correctly set for it to work on a new device.
+        DebugSettings.PREF_DEBUG_MODE,
+        DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH,
+        DebugSettings.PREF_FORCE_PHYSICAL_KEYBOARD_SPECIAL_KEY,
+        DebugSettings.PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS,
+        DebugSettings.PREF_KEY_LONGPRESS_TIMEOUT,
+        DebugSettings.PREF_KEY_PREVIEW_DISMISS_DURATION,
+        DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_X_SCALE,
+        DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
+        DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_DURATION,
+        DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_X_SCALE,
+        DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_Y_SCALE,
+        DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI,
+        DebugSettings.PREF_SLIDING_KEY_INPUT_PREVIEW
     };
 }
