@@ -860,9 +860,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * than it really is.
      */
     public void tryFixLyingCursorPosition() {
+        mIC = mParent.getCurrentInputConnection();
         final CharSequence textBeforeCursor = getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
-        final CharSequence selectedText = mIC.getSelectedText(0 /* flags */);
+        final CharSequence selectedText = null == mIC ? null : mIC.getSelectedText(0 /* flags */);
         if (null == textBeforeCursor ||
                 (!TextUtils.isEmpty(selectedText) && mExpectedSelEnd == mExpectedSelStart)) {
             // If textBeforeCursor is null, we have no idea what kind of text field we have or if
