@@ -303,7 +303,7 @@ public class TextDecorator {
      */
     private static final class LayoutInvalidator {
         private final HandlerImpl mHandler;
-        public LayoutInvalidator(final TextDecorator ownerInstance) {
+        public LayoutInvalidator(@Nonnull final TextDecorator ownerInstance) {
             mHandler = new HandlerImpl(ownerInstance);
         }
 
@@ -311,7 +311,7 @@ public class TextDecorator {
 
         private static final class HandlerImpl
                 extends LeakGuardHandlerWrapper<TextDecorator> {
-            public HandlerImpl(final TextDecorator ownerInstance) {
+            public HandlerImpl(@Nonnull final TextDecorator ownerInstance) {
                 super(ownerInstance);
             }
 

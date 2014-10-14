@@ -27,6 +27,8 @@ import com.android.inputmethod.keyboard.internal.TimerHandler.Callbacks;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
+import javax.annotation.Nonnull;
+
 // TODO: Separate this class into KeyTimerHandler and BatchInputTimerHandler or so.
 public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> implements TimerProxy {
     public interface Callbacks {
@@ -45,7 +47,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
     private final int mIgnoreAltCodeKeyTimeout;
     private final int mGestureRecognitionUpdateTime;
 
-    public TimerHandler(final Callbacks ownerInstance, final int ignoreAltCodeKeyTimeout,
+    public TimerHandler(@Nonnull final Callbacks ownerInstance, final int ignoreAltCodeKeyTimeout,
             final int gestureRecognitionUpdateTime) {
         super(ownerInstance);
         mIgnoreAltCodeKeyTimeout = ignoreAltCodeKeyTimeout;
