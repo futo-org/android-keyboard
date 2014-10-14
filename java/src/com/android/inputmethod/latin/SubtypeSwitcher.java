@@ -58,6 +58,7 @@ public final class SubtypeSwitcher {
             new LanguageOnSpacebarHelper();
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
+    private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
     private RichInputMethodSubtype mNoLanguageSubtype;
     private RichInputMethodSubtype mEmojiSubtype;
     private boolean mIsNetworkConnected;
@@ -117,7 +118,7 @@ public final class SubtypeSwitcher {
         final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
 
-        onSubtypeChanged(getCurrentSubtype());
+        onSubtypeChanged(mRichImm.getCurrentRawSubtype());
         updateParametersOnStartInputView();
     }
 
@@ -165,12 +166,14 @@ public final class SubtypeSwitcher {
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
-    public void onSubtypeChanged(final RichInputMethodSubtype newSubtype) {
+    public void onSubtypeChanged(final InputMethodSubtype newSubtype) {
+        final RichInputMethodSubtype richSubtype =
+                mRichImm.createCurrentRichInputMethodSubtype(newSubtype);
         if (DBG) {
-            Log.w(TAG, "onSubtypeChanged: " + newSubtype.getNameForLogging());
+            Log.w(TAG, "onSubtypeChanged: " + richSubtype.getNameForLogging());
         }
-
-        final Locale[] newLocales = newSubtype.getLocales();
+        mCurrentRichInputMethodSubtype = richSubtype;
+        final Locale[] newLocales = richSubtype.getLocales();
         if (newLocales.length > 1) {
             // In multi-locales mode, the system language is never the same as the input language
             // because there is no single input language.
@@ -181,7 +184,7 @@ public final class SubtypeSwitcher {
             final boolean sameLocale = systemLocale.equals(newLocale);
             final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
             final boolean implicitlyEnabled = mRichImm
-                    .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype.getRawSubtype());
+                    .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype);
             mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(
                     sameLocale || (sameLanguage && implicitlyEnabled));
         }
@@ -301,7 +304,7 @@ public final class SubtypeSwitcher {
         if (null != sForcedSubtypeForTesting) {
             return sForcedSubtypeForTesting;
         }
-        return mRichImm.getCurrentInputMethodSubtype(getNoLanguageSubtype());
+        return mCurrentRichInputMethodSubtype;
     }
 
     public RichInputMethodSubtype getNoLanguageSubtype() {
