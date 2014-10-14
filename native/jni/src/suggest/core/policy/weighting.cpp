@@ -110,10 +110,14 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return weighting->getOmissionCost(parentDicNode, dicNode);
     case CT_ADDITIONAL_PROXIMITY:
         // only used for typing
-        return weighting->getAdditionalProximityCost();
+        // TODO: Quit calling getMatchedCost().
+        return weighting->getAdditionalProximityCost()
+                + weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
     case CT_SUBSTITUTION:
         // only used for typing
-        return weighting->getSubstitutionCost();
+        // TODO: Quit calling getMatchedCost().
+        return weighting->getSubstitutionCost()
+                + weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
     case CT_NEW_WORD_SPACE_OMISSION:
         return weighting->getNewWordSpatialCost(traverseSession, dicNode, inputStateG);
     case CT_MATCH:
@@ -176,9 +180,9 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         case CT_OMISSION:
             return 0;
         case CT_ADDITIONAL_PROXIMITY:
-            return 0; /* 0 because CT_MATCH will be called */
+            return 1;
         case CT_SUBSTITUTION:
-            return 0; /* 0 because CT_MATCH will be called */
+            return 1;
         case CT_NEW_WORD_SPACE_OMISSION:
             return 0;
         case CT_MATCH:

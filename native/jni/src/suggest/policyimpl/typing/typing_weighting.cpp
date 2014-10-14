@@ -68,7 +68,8 @@ ErrorTypeUtils::ErrorType TypingWeighting::getErrorType(const CorrectionType cor
             }
             break;
         case CT_ADDITIONAL_PROXIMITY:
-            return  ErrorTypeUtils::PROXIMITY_CORRECTION;
+            // TODO: Change to EDIT_CORRECTION.
+            return ErrorTypeUtils::PROXIMITY_CORRECTION;
         case CT_OMISSION:
             if (parentDicNode->canBeIntentionalOmission()) {
                 return ErrorTypeUtils::INTENTIONAL_OMISSION;
@@ -77,6 +78,8 @@ ErrorTypeUtils::ErrorType TypingWeighting::getErrorType(const CorrectionType cor
             }
             break;
         case CT_SUBSTITUTION:
+            // TODO: Quit settng PROXIMITY_CORRECTION.
+            return ErrorTypeUtils::EDIT_CORRECTION | ErrorTypeUtils::PROXIMITY_CORRECTION;
         case CT_INSERTION:
         case CT_TERMINAL_INSERTION:
         case CT_TRANSPOSITION:
