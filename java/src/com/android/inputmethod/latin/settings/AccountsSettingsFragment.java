@@ -19,9 +19,7 @@ package com.android.inputmethod.latin.settings;
 import static com.android.inputmethod.latin.settings.LocalSettingsConstants.PREF_ACCOUNT_NAME;
 import static com.android.inputmethod.latin.settings.LocalSettingsConstants.PREF_ENABLE_CLOUD_SYNC;
 
-import android.accounts.Account;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -37,6 +35,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.accounts.LoginAccountUtils;
+import com.android.inputmethod.latin.accounts.AccountStateChangedListener;
 import com.android.inputmethod.latin.define.ProductionFlags;
 
 import javax.annotation.Nullable;
@@ -52,7 +51,6 @@ import javax.annotation.Nullable;
 public final class AccountsSettingsFragment extends SubScreenFragment {
     private static final String PREF_SYNC_NOW = "pref_beanstalk";
 
-    @UsedForTesting static final String AUTHORITY = "com.android.inputmethod.latin.provider";
     static final String PREF_ACCCOUNT_SWITCHER = "account_switcher";
 
     private final DialogInterface.OnClickListener mAccountChangedListener =
@@ -111,7 +109,8 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                     prefs.getString(PREF_ACCOUNT_NAME, null));
         } else if (TextUtils.equals(key, PREF_ENABLE_CLOUD_SYNC)) {
             final boolean syncEnabled = prefs.getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
-            updateSyncPolicy(syncEnabled, getSignedInAccountName());
+            AccountStateChangedListener.onSyncPreferenceChanged(
+                    getSignedInAccountName(), syncEnabled);
         }
     }
 
@@ -177,36 +176,6 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         syncPreference.setSummary(R.string.cloud_sync_summary_disabled_signed_out);
     }
 
-    /**
-     * Given a non-null accountToUse, this method looks at the enabled value to either
-     * set or unset the syncable property of the sync authority.
-     * If the account is null, this method is a no-op currently, but we may want
-     * to perform some cleanup in the future.
-     *
-     * @param enabled indicates whether the sync preference is enabled or not.
-     * @param accountToUse indicaes the account to be used for sync, or null if the user
-     *        is not logged in.
-     */
-    @UsedForTesting
-    void updateSyncPolicy(boolean enabled, @Nullable String accountToUse) {
-        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
-            return;
-        }
-
-        if (accountToUse != null) {
-            final int syncable = enabled ? 1 : 0;
-            ContentResolver.setIsSyncable(
-                    new Account(accountToUse, LoginAccountUtils.ACCOUNT_TYPE),
-                    AUTHORITY, syncable);
-            // TODO: Also add a periodic sync here.
-            // See ContentResolver.addPeriodicSync
-        } else {
-            // Without an account, we cannot really set the sync to off.
-            // Hopefully the account sign-out listener would have taken care of that for us.
-            // But cases such as clear data are still not handled cleanly.
-        }
-    }
-
     @Nullable
     String getSignedInAccountName() {
         return getSharedPreferences().getString(LocalSettingsConstants.PREF_ACCOUNT_NAME, null);
@@ -261,22 +230,20 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     class AccountChangedListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            final String oldAccount = getSignedInAccountName();
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: // Signed in
                     final ListView lv = ((AlertDialog)dialog).getListView();
-                    final Object selectedItem = lv.getItemAtPosition(lv.getCheckedItemPosition());
+                    final String newAccount =
+                            (String) lv.getItemAtPosition(lv.getCheckedItemPosition());
                     getSharedPreferences()
                             .edit()
-                            .putString(PREF_ACCOUNT_NAME, (String) selectedItem)
+                            .putString(PREF_ACCOUNT_NAME, newAccount)
                             .apply();
-                    // Attempt starting sync for the new account if sync was
-                    // previously enabled.
-                    // If not, stop it.
-                    updateSyncPolicy(isSyncEnabled(), getSignedInAccountName());
+                    AccountStateChangedListener.onAccountSignedIn(oldAccount, newAccount);
                     break;
                 case DialogInterface.BUTTON_NEUTRAL: // Signed out
-                    // Stop sync for the account that's being signed out of.
-                    updateSyncPolicy(false, getSignedInAccountName());
+                    AccountStateChangedListener.onAccountSignedOut(oldAccount);
                     getSharedPreferences()
                             .edit()
                             .remove(PREF_ACCOUNT_NAME)
@@ -292,9 +259,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     class SyncNowListener implements Preference.OnPreferenceClickListener {
         @Override
         public boolean onPreferenceClick(final Preference preference) {
-            ContentResolver.requestSync(
-                    new Account(getSignedInAccountName(), LoginAccountUtils.ACCOUNT_TYPE),
-                    AUTHORITY, Bundle.EMPTY);
+            AccountStateChangedListener.forceSync(getSignedInAccountName());
             return true;
         }
     }
