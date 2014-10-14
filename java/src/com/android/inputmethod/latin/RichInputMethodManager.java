@@ -299,13 +299,13 @@ public class RichInputMethodManager {
         return INDEX_NOT_FOUND;
     }
 
-    public RichInputMethodSubtype getCurrentInputMethodSubtype(
-            final RichInputMethodSubtype defaultSubtype) {
-        final InputMethodSubtype currentSubtype = mImmWrapper.mImm.getCurrentInputMethodSubtype();
-        if (currentSubtype == null) {
-            return defaultSubtype;
-        }
-        return AdditionalFeaturesSettingUtils.getRichInputMethodSubtype(this, currentSubtype);
+    public InputMethodSubtype getCurrentRawSubtype() {
+        return mImmWrapper.mImm.getCurrentInputMethodSubtype();
+    }
+
+    public RichInputMethodSubtype createCurrentRichInputMethodSubtype(
+            final InputMethodSubtype rawSubtype) {
+        return AdditionalFeaturesSettingUtils.createRichInputMethodSubtype(this, rawSubtype);
     }
 
     public boolean hasMultipleEnabledIMEsOrSubtypes(final boolean shouldIncludeAuxiliarySubtypes) {

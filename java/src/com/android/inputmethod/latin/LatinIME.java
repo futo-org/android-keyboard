@@ -568,6 +568,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: Resolve mutual dependencies of {@link #loadSettings()} and
         // {@link #resetDictionaryFacilitatorIfNecessary()}.
         loadSettings();
+        mSubtypeSwitcher.onSubtypeChanged(mRichImm.getCurrentRawSubtype());
         resetDictionaryFacilitatorIfNecessary();
 
         // Register to receive ringer mode change and network state change.
@@ -837,8 +838,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onCurrentInputMethodSubtypeChanged(final InputMethodSubtype subtype) {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
-        final RichInputMethodSubtype richSubtype = new RichInputMethodSubtype(subtype);
-        mSubtypeSwitcher.onSubtypeChanged(richSubtype);
+        mSubtypeSwitcher.onSubtypeChanged(subtype);
         mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype),
                 mSettings.getCurrent());
         loadKeyboard();
