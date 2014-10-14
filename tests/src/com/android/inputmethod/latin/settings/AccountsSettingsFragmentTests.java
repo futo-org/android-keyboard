@@ -28,6 +28,7 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.ListView;
 
+import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.define.ProductionFlags;
 
 import java.util.concurrent.CountDownLatch;
@@ -38,7 +39,9 @@ public class AccountsSettingsFragmentTests
         extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
     private static final String FRAG_NAME = AccountsSettingsFragment.class.getName();
     private static final long TEST_TIMEOUT_MILLIS = 5000;
-    private static final Account TEST_ACCOUNT = new Account("account-for-test", "account-type");
+    private static final String TEST_ACCOUNT_NAME = "AccountsSettingsFragmentTests";
+    private static final Account TEST_ACCOUNT =
+            new Account(TEST_ACCOUNT_NAME, LoginAccountUtils.ACCOUNT_TYPE);
 
     private AlertDialog mDialog;
 
@@ -154,7 +157,7 @@ public class AccountsSettingsFragmentTests
 
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
-        fragment.updateSyncPolicy(true, TEST_ACCOUNT);
+        fragment.updateSyncPolicy(true, TEST_ACCOUNT_NAME);
 
         // Should be syncable now.
         assertEquals(1, ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY));
@@ -170,7 +173,7 @@ public class AccountsSettingsFragmentTests
 
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
-        fragment.updateSyncPolicy(false, TEST_ACCOUNT);
+        fragment.updateSyncPolicy(false, TEST_ACCOUNT_NAME);
 
         // Should not be syncable now.
         assertEquals(0, ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY));
@@ -186,12 +189,12 @@ public class AccountsSettingsFragmentTests
 
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
-        fragment.updateSyncPolicy(true, TEST_ACCOUNT);
+        fragment.updateSyncPolicy(true, TEST_ACCOUNT_NAME);
 
         // Should be syncable now.
         assertEquals(1, ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY));
 
-        fragment.updateSyncPolicy(false, TEST_ACCOUNT);
+        fragment.updateSyncPolicy(false, TEST_ACCOUNT_NAME);
 
         // Should not be syncable now.
         assertEquals(0, ContentResolver.getIsSyncable(TEST_ACCOUNT, AUTHORITY));
