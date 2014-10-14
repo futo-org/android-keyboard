@@ -145,7 +145,18 @@ class PtNodeParams {
     }
 
     AK_FORCE_INLINE bool isBlacklisted() const {
-        return PatriciaTrieReadingUtils::isBlacklisted(mFlags);
+        // Note: this method will be removed in the next change.
+        // It is used in getProbabilityOfWord and getWordAttributes for both v402 and v403.
+        // * getProbabilityOfWord will be changed to no longer return NOT_A_PROBABILITY
+        //   when isBlacklisted (i.e. to only check if isNotAWord or isDeleted)
+        // * getWordAttributes will be changed to always return blacklisted=false and
+        //   isPossiblyOffensive according to the function below (instead of the current
+        //   behaviour of checking if the probability is zero)
+        return PatriciaTrieReadingUtils::isPossiblyOffensive(mFlags);
+    }
+
+    AK_FORCE_INLINE bool isPossiblyOffensive() const {
+        return PatriciaTrieReadingUtils::isPossiblyOffensive(mFlags);
     }
 
     AK_FORCE_INLINE bool isNotAWord() const {

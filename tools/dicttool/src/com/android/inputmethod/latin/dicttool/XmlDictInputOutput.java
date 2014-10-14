@@ -90,7 +90,8 @@ public class XmlDictInputOutput {
             for (final String shortcutOnly : mShortcutsMap.keySet()) {
                 if (dict.hasWord(shortcutOnly)) continue;
                 dict.add(shortcutOnly, new ProbabilityInfo(SHORTCUT_ONLY_WORD_PROBABILITY),
-                        mShortcutsMap.get(shortcutOnly), true /* isNotAWord */);
+                        mShortcutsMap.get(shortcutOnly), true /* isNotAWord */,
+                        false /* isPossiblyOffensive */);
             }
             mDictionary = null;
             mShortcutsMap.clear();
@@ -138,7 +139,7 @@ public class XmlDictInputOutput {
         public void endElement(String uri, String localName, String qName) {
             if (WORD == mState) {
                 mDictionary.add(mWord, new ProbabilityInfo(mFreq), mShortcutsMap.get(mWord),
-                        false /* isNotAWord */);
+                        false /* isNotAWord */, false /* isPossiblyOffensive */);
                 mState = START;
             }
         }

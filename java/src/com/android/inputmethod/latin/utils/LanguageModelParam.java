@@ -54,7 +54,7 @@ public final class LanguageModelParam {
     public final int mBigramProbability;
     public final int mShortcutProbability;
     public final boolean mIsNotAWord;
-    public final boolean mIsBlacklisted;
+    public final boolean mIsPossiblyOffensive;
     // Time stamp in seconds.
     public final int mTimestamp;
 
@@ -78,7 +78,7 @@ public final class LanguageModelParam {
         mBigramProbability = bigramProbability;
         mShortcutProbability = Dictionary.NOT_A_PROBABILITY;
         mIsNotAWord = false;
-        mIsBlacklisted = false;
+        mIsPossiblyOffensive = false;
         mTimestamp = timestamp;
     }
 

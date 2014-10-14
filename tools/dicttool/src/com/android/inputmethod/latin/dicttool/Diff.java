@@ -128,10 +128,10 @@ public class Diff extends Dicttool.Command {
                             + word0Property.mIsNotAWord + " -> " + word1PtNode.getIsNotAWord());
                     hasDifferences = true;
                 }
-                if (word0Property.mIsBlacklistEntry != word1PtNode.getIsBlacklistEntry()) {
-                    System.out.println("Blacklist: " + word0Property.mWord + " "
-                            + word0Property.mIsBlacklistEntry + " -> "
-                            + word1PtNode.getIsBlacklistEntry());
+                if (word0Property.mIsPossiblyOffensive != word1PtNode.getIsPossiblyOffensive()) {
+                    System.out.println("Possibly-offensive: " + word0Property.mWord + " "
+                            + word0Property.mIsPossiblyOffensive + " -> "
+                            + word1PtNode.getIsPossiblyOffensive());
                     hasDifferences = true;
                 }
                 hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0Property.mWord,

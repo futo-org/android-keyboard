@@ -89,7 +89,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         int mTerminalId; // NOT_A_TERMINAL == mTerminalId indicates this is not a terminal.
         PtNodeArray mChildren;
         boolean mIsNotAWord; // Only a shortcut
-        boolean mIsBlacklistEntry;
+        boolean mIsPossiblyOffensive;
         // mCachedSize and mCachedAddressBefore/AfterUpdate are helpers for binary dictionary
         // generation. Before and After always hold the same value except during dictionary
         // address compression, where the update process needs to know about both values at the
@@ -102,7 +102,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
 
         public PtNode(final int[] chars, final ArrayList<WeightedString> shortcutTargets,
                 final ArrayList<WeightedString> bigrams, final ProbabilityInfo probabilityInfo,
-                final boolean isNotAWord, final boolean isBlacklistEntry) {
+                final boolean isNotAWord, final boolean isPossiblyOffensive) {
             mChars = chars;
             mProbabilityInfo = probabilityInfo;
             mTerminalId = probabilityInfo == null ? NOT_A_TERMINAL : probabilityInfo.mProbability;
@@ -110,12 +110,12 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             mBigrams = bigrams;
             mChildren = null;
             mIsNotAWord = isNotAWord;
-            mIsBlacklistEntry = isBlacklistEntry;
+            mIsPossiblyOffensive = isPossiblyOffensive;
         }
 
         public PtNode(final int[] chars, final ArrayList<WeightedString> shortcutTargets,
                 final ArrayList<WeightedString> bigrams, final ProbabilityInfo probabilityInfo,
-                final boolean isNotAWord, final boolean isBlacklistEntry,
+                final boolean isNotAWord, final boolean isPossiblyOffensive,
                 final PtNodeArray children) {
             mChars = chars;
             mProbabilityInfo = probabilityInfo;
@@ -123,7 +123,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             mBigrams = bigrams;
             mChildren = children;
             mIsNotAWord = isNotAWord;
-            mIsBlacklistEntry = isBlacklistEntry;
+            mIsPossiblyOffensive = isPossiblyOffensive;
         }
 
         public void addChild(PtNode n) {
@@ -153,8 +153,8 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             return mIsNotAWord;
         }
 
-        public boolean getIsBlacklistEntry() {
-            return mIsBlacklistEntry;
+        public boolean getIsPossiblyOffensive() {
+            return mIsPossiblyOffensive;
         }
 
         public ArrayList<WeightedString> getShortcutTargets() {
@@ -238,7 +238,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         private void update(final ProbabilityInfo probabilityInfo,
                 final ArrayList<WeightedString> shortcutTargets,
                 final ArrayList<WeightedString> bigrams,
-                final boolean isNotAWord, final boolean isBlacklistEntry) {
+                final boolean isNotAWord, final boolean isPossiblyOffensive) {
             mProbabilityInfo = ProbabilityInfo.max(mProbabilityInfo, probabilityInfo);
             if (shortcutTargets != null) {
                 if (mShortcutTargets == null) {
@@ -275,7 +275,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                 }
             }
             mIsNotAWord = isNotAWord;
-            mIsBlacklistEntry = isBlacklistEntry;
+            mIsPossiblyOffensive = isPossiblyOffensive;
         }
     }
 
@@ -323,24 +323,12 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      * @param probabilityInfo probability information of the word.
      * @param shortcutTargets a list of shortcut targets for this word, or null.
      * @param isNotAWord true if this should not be considered a word (e.g. shortcut only)
+     * @param isPossiblyOffensive true if this word is possibly offensive
      */
     public void add(final String word, final ProbabilityInfo probabilityInfo,
-            final ArrayList<WeightedString> shortcutTargets, final boolean isNotAWord) {
-        add(getCodePoints(word), probabilityInfo, shortcutTargets, isNotAWord,
-                false /* isBlacklistEntry */);
-    }
-
-    /**
-     * Helper method to add a blacklist entry as a string.
-     *
-     * @param word the word to add as a blacklist entry.
-     * @param shortcutTargets a list of shortcut targets for this word, or null.
-     * @param isNotAWord true if this is not a word for spellcheking purposes (shortcut only or so)
-     */
-    public void addBlacklistEntry(final String word,
-            final ArrayList<WeightedString> shortcutTargets, final boolean isNotAWord) {
-        add(getCodePoints(word), new ProbabilityInfo(0), shortcutTargets, isNotAWord,
-                true /* isBlacklistEntry */);
+            final ArrayList<WeightedString> shortcutTargets, final boolean isNotAWord,
+            final boolean isPossiblyOffensive) {
+        add(getCodePoints(word), probabilityInfo, shortcutTargets, isNotAWord, isPossiblyOffensive);
     }
 
     /**
@@ -375,7 +363,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             final PtNode ptNode1 = findWordInTree(mRootNodeArray, word1);
             if (ptNode1 == null) {
                 add(getCodePoints(word1), new ProbabilityInfo(0), null, false /* isNotAWord */,
-                        false /* isBlacklistEntry */);
+                        false /* isPossiblyOffensive */);
                 // The PtNode for the first word may have moved by the above insertion,
                 // if word1 and word2 share a common stem that happens not to have been
                 // a cutting point until now. In this case, we need to refresh ptNode.
@@ -397,11 +385,11 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      * @param probabilityInfo the probability information of the word.
      * @param shortcutTargets an optional list of shortcut targets for this word (null if none).
      * @param isNotAWord true if this is not a word for spellcheking purposes (shortcut only or so)
-     * @param isBlacklistEntry true if this is a blacklisted word, false otherwise
+     * @param isPossiblyOffensive true if this word is possibly offensive
      */
     private void add(final int[] word, final ProbabilityInfo probabilityInfo,
             final ArrayList<WeightedString> shortcutTargets,
-            final boolean isNotAWord, final boolean isBlacklistEntry) {
+            final boolean isNotAWord, final boolean isPossiblyOffensive) {
         assert(probabilityInfo.mProbability <= FormatSpec.MAX_TERMINAL_FREQUENCY);
         if (word.length >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
             MakedictLog.w("Ignoring a word that is too long: word.length = " + word.length);
@@ -431,7 +419,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             final int insertionIndex = findInsertionIndex(currentNodeArray, word[charIndex]);
             final PtNode newPtNode = new PtNode(Arrays.copyOfRange(word, charIndex, word.length),
                     shortcutTargets, null /* bigrams */, probabilityInfo, isNotAWord,
-                    isBlacklistEntry);
+                    isPossiblyOffensive);
             currentNodeArray.mData.add(insertionIndex, newPtNode);
             if (DBG) checkStack(currentNodeArray);
         } else {
@@ -442,14 +430,14 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                     // should end already exists as is. Since the old PtNode was not a terminal,
                     // make it one by filling in its frequency and other attributes
                     currentPtNode.update(probabilityInfo, shortcutTargets, null, isNotAWord,
-                            isBlacklistEntry);
+                            isPossiblyOffensive);
                 } else {
                     // The new word matches the full old word and extends past it.
                     // We only have to create a new node and add it to the end of this.
                     final PtNode newNode = new PtNode(
                             Arrays.copyOfRange(word, charIndex + differentCharIndex, word.length),
                                     shortcutTargets, null /* bigrams */, probabilityInfo,
-                                    isNotAWord, isBlacklistEntry);
+                                    isNotAWord, isPossiblyOffensive);
                     currentPtNode.mChildren = new PtNodeArray();
                     currentPtNode.mChildren.mData.add(newNode);
                 }
@@ -459,7 +447,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                     // new shortcuts to the existing shortcut list if it already exists.
                     currentPtNode.update(probabilityInfo, shortcutTargets, null,
                             currentPtNode.mIsNotAWord && isNotAWord,
-                            currentPtNode.mIsBlacklistEntry || isBlacklistEntry);
+                            currentPtNode.mIsPossiblyOffensive || isPossiblyOffensive);
                 } else {
                     // Partial prefix match only. We have to replace the current node with a node
                     // containing the current prefix and create two new ones for the tails.
@@ -468,7 +456,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                             Arrays.copyOfRange(currentPtNode.mChars, differentCharIndex,
                                     currentPtNode.mChars.length), currentPtNode.mShortcutTargets,
                             currentPtNode.mBigrams, currentPtNode.mProbabilityInfo,
-                            currentPtNode.mIsNotAWord, currentPtNode.mIsBlacklistEntry,
+                            currentPtNode.mIsNotAWord, currentPtNode.mIsPossiblyOffensive,
                             currentPtNode.mChildren);
                     newChildren.mData.add(newOldWord);
 
@@ -477,17 +465,17 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                         newParent = new PtNode(
                                 Arrays.copyOfRange(currentPtNode.mChars, 0, differentCharIndex),
                                 shortcutTargets, null /* bigrams */, probabilityInfo,
-                                isNotAWord, isBlacklistEntry, newChildren);
+                                isNotAWord, isPossiblyOffensive, newChildren);
                     } else {
                         newParent = new PtNode(
                                 Arrays.copyOfRange(currentPtNode.mChars, 0, differentCharIndex),
                                 null /* shortcutTargets */, null /* bigrams */,
                                 null /* probabilityInfo */, false /* isNotAWord */,
-                                false /* isBlacklistEntry */, newChildren);
+                                false /* isPossiblyOffensive */, newChildren);
                         final PtNode newWord = new PtNode(Arrays.copyOfRange(word,
                                 charIndex + differentCharIndex, word.length),
                                 shortcutTargets, null /* bigrams */, probabilityInfo,
-                                isNotAWord, isBlacklistEntry);
+                                isNotAWord, isPossiblyOffensive);
                         final int addIndex = word[charIndex + differentCharIndex]
                                 > currentPtNode.mChars[differentCharIndex] ? 1 : 0;
                         newChildren.mData.add(addIndex, newWord);
@@ -549,7 +537,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         final ArrayList<PtNode> data = nodeArray.mData;
         final PtNode reference = new PtNode(new int[] { character },
                 null /* shortcutTargets */, null /* bigrams */, null /* probabilityInfo */,
-                false /* isNotAWord */, false /* isBlacklistEntry */);
+                false /* isNotAWord */, false /* isPossiblyOffensive */);
         int result = Collections.binarySearch(data, reference, PTNODE_COMPARATOR);
         return result >= 0 ? result : -result - 1;
     }
@@ -686,7 +674,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                         return new WordProperty(mCurrentString.toString(),
                                 currentPtNode.mProbabilityInfo,
                                 currentPtNode.mShortcutTargets, currentPtNode.mBigrams,
-                                currentPtNode.mIsNotAWord, currentPtNode.mIsBlacklistEntry);
+                                currentPtNode.mIsNotAWord, currentPtNode.mIsPossiblyOffensive);
                     }
                 } else {
                     mPositions.removeLast();

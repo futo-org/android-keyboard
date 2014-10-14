@@ -283,13 +283,9 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
 
         // Insert unigrams into the fusion dictionary.
         for (final WordProperty wordProperty : wordProperties) {
-            if (wordProperty.mIsBlacklistEntry) {
-                fusionDict.addBlacklistEntry(wordProperty.mWord, wordProperty.mShortcutTargets,
-                        wordProperty.mIsNotAWord);
-            } else {
-                fusionDict.add(wordProperty.mWord, wordProperty.mProbabilityInfo,
-                        wordProperty.mShortcutTargets, wordProperty.mIsNotAWord);
-            }
+            fusionDict.add(wordProperty.mWord, wordProperty.mProbabilityInfo,
+                    wordProperty.mShortcutTargets, wordProperty.mIsNotAWord,
+                    wordProperty.mIsPossiblyOffensive);
         }
         // Insert bigrams into the fusion dictionary.
         for (final WordProperty wordProperty : wordProperties) {

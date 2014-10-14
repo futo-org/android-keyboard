@@ -43,6 +43,14 @@ class WordAttributes {
         return mIsNotAWord;
     }
 
+    // Whether or not a word is possibly offensive.
+    // * Static dictionaries <v202, as well as dynamic dictionaries <v403, will set this based on
+    //   whether or not the probability of the word is zero.
+    // * Static dictionaries >=v203 will set this based on the IS_POSSIBLY_OFFENSIVE PtNode flag.
+    // * Dynamic dictionaries >=v403 will set this based on the IS_POSSIBLY_OFFENSIVE language model
+    //   flag (the PtNode flag IS_BLACKLISTED is ignored and kept as zero)
+    //
+    // See the ::getWordAttributes function for each of these dictionary policies for more details.
     bool isPossiblyOffensive() const {
         return mIsPossiblyOffensive;
     }

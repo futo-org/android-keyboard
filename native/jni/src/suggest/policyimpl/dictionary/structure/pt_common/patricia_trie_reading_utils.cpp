@@ -41,8 +41,8 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_HAS_SHORTCUT_TARGETS = 0x08
 const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_HAS_BIGRAMS = 0x04;
 // Flag for non-words (typically, shortcut only entries)
 const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_NOT_A_WORD = 0x02;
-// Flag for blacklist
-const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
+// Flag for possibly offensive words
+const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_POSSIBLY_OFFENSIVE = 0x01;
 
 /* static */ int PtReadingUtils::getPtNodeArraySizeAndAdvancePosition(
         const uint8_t *const buffer, int *const pos) {

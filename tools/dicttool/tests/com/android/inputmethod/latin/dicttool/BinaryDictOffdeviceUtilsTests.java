@@ -54,11 +54,16 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, LOCALE);
         testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_ID_KEY, ID);
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(), testOptions);
-        dict.add("foo", new ProbabilityInfo(TEST_FREQ), null, false /* isNotAWord */);
-        dict.add("fta", new ProbabilityInfo(1), null, false /* isNotAWord */);
-        dict.add("ftb", new ProbabilityInfo(1), null, false /* isNotAWord */);
-        dict.add("bar", new ProbabilityInfo(1), null, false /* isNotAWord */);
-        dict.add("fool", new ProbabilityInfo(1), null, false /* isNotAWord */);
+        dict.add("foo", new ProbabilityInfo(TEST_FREQ), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
+        dict.add("fta", new ProbabilityInfo(1), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
+        dict.add("ftb", new ProbabilityInfo(1), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
+        dict.add("bar", new ProbabilityInfo(1), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
+        dict.add("fool", new ProbabilityInfo(1), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
 
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
         dst.deleteOnExit();

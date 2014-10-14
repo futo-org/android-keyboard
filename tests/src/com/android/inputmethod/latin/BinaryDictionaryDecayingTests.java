@@ -684,8 +684,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
         binaryDictionary.addUnigramEntry("", DUMMY_PROBABILITY, "" /* shortcutTarget */,
                 BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
-                true /* isBeginningOfSentence */, true /* isNotAWord */, false /* isBlacklisted */,
-                mCurrentTime);
+                true /* isBeginningOfSentence */, true /* isNotAWord */,
+                false /* isPossiblyOffensive */, mCurrentTime);
         final NgramContext beginningOfSentenceContext = NgramContext.BEGINNING_OF_SENTENCE;
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
         assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));

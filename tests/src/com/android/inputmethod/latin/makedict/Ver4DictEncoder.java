@@ -79,7 +79,7 @@ public class Ver4DictEncoder implements DictEncoder {
                 if (!binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
                         null /* shortcutTarget */, 0 /* shortcutProbability */,
                         wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
-                        wordProperty.mIsBlacklistEntry, 0 /* timestamp */)) {
+                        wordProperty.mIsPossiblyOffensive, 0 /* timestamp */)) {
                     MakedictLog.e("Cannot add unigram entry for " + wordProperty.mWord);
                 }
             } else {
@@ -88,7 +88,7 @@ public class Ver4DictEncoder implements DictEncoder {
                             wordProperty.getProbability(),
                             shortcutTarget.mWord, shortcutTarget.getProbability(),
                             wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
-                            wordProperty.mIsBlacklistEntry, 0 /* timestamp */)) {
+                            wordProperty.mIsPossiblyOffensive, 0 /* timestamp */)) {
                         MakedictLog.e("Cannot add unigram entry for " + wordProperty.mWord
                                 + ", shortcutTarget: " + shortcutTarget.mWord);
                         return;
