@@ -110,6 +110,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
@@ -208,7 +210,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private int mDelayInMillisecondsToUpdateSuggestions;
         private int mDelayInMillisecondsToUpdateShiftState;
 
-        public UIHandler(final LatinIME ownerInstance) {
+        public UIHandler(@Nonnull final LatinIME ownerInstance) {
             super(ownerInstance);
         }
 
