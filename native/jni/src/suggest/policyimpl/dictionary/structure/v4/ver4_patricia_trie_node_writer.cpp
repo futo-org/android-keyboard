@@ -142,14 +142,9 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeUnigramProperty(
     if (!toBeUpdatedPtNodeParams->isTerminal()) {
         return false;
     }
-    const ProbabilityEntry originalProbabilityEntry =
-            mBuffers->getLanguageModelDictContent()->getProbabilityEntry(
-                    toBeUpdatedPtNodeParams->getTerminalId());
     const ProbabilityEntry probabilityEntryOfUnigramProperty = ProbabilityEntry(unigramProperty);
-    const ProbabilityEntry updatedProbabilityEntry =
-            createUpdatedEntryFrom(&originalProbabilityEntry, &probabilityEntryOfUnigramProperty);
     return mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
-            toBeUpdatedPtNodeParams->getTerminalId(), &updatedProbabilityEntry);
+            toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntryOfUnigramProperty);
 }
 
 bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(
@@ -203,10 +198,8 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
     // Write probability.
     ProbabilityEntry newProbabilityEntry;
     const ProbabilityEntry probabilityEntryOfUnigramProperty = ProbabilityEntry(unigramProperty);
-    const ProbabilityEntry probabilityEntryToWrite = createUpdatedEntryFrom(
-            &newProbabilityEntry, &probabilityEntryOfUnigramProperty);
     return mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
-            terminalId, &probabilityEntryToWrite);
+            terminalId, &probabilityEntryOfUnigramProperty);
 }
 
 // TODO: Support counting ngram entries.
@@ -217,10 +210,8 @@ bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds
     const ProbabilityEntry probabilityEntry =
             languageModelDictContent->getNgramProbabilityEntry(prevWordIds, wordId);
     const ProbabilityEntry probabilityEntryOfNgramProperty(ngramProperty);
-    const ProbabilityEntry updatedProbabilityEntry = createUpdatedEntryFrom(
-            &probabilityEntry, &probabilityEntryOfNgramProperty);
     if (!languageModelDictContent->setNgramProbabilityEntry(
-            prevWordIds, wordId, &updatedProbabilityEntry)) {
+            prevWordIds, wordId, &probabilityEntryOfNgramProperty)) {
         AKLOGE("Cannot add new ngram entry. prevWordId[0]: %d, prevWordId.size(): %zd, wordId: %d",
                 prevWordIds[0], prevWordIds.size(), wordId);
         return false;
@@ -344,22 +335,6 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
     }
     return updatePtNodeFlags(nodePos, isTerminal,
             ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
-}
-
-// TODO: Move probability handling code to LanguageModelDictContent.
-const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
-        const ProbabilityEntry *const originalProbabilityEntry,
-        const ProbabilityEntry *const probabilityEntry) const {
-    if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
-        const HistoricalInfo updatedHistoricalInfo =
-                ForgettingCurveUtils::createUpdatedHistoricalInfo(
-                        originalProbabilityEntry->getHistoricalInfo(),
-                        probabilityEntry->getProbability(), probabilityEntry->getHistoricalInfo(),
-                        mHeaderPolicy);
-        return ProbabilityEntry(probabilityEntry->getFlags(), &updatedHistoricalInfo);
-    } else {
-        return *probabilityEntry;
-    }
 }
 
 bool Ver4PatriciaTrieNodeWriter::updatePtNodeFlags(const int ptNodePos, const bool isTerminal,

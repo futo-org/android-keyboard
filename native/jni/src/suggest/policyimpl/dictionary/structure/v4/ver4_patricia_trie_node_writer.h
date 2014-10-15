@@ -38,11 +38,10 @@ class Ver4ShortcutListPolicy;
 class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
  public:
     Ver4PatriciaTrieNodeWriter(BufferWithExtendableBuffer *const trieBuffer,
-            Ver4DictBuffers *const buffers, const HeaderPolicy *const headerPolicy,
-            const PtNodeReader *const ptNodeReader,
+            Ver4DictBuffers *const buffers, const PtNodeReader *const ptNodeReader,
             const PtNodeArrayReader *const ptNodeArrayReader,
             Ver4ShortcutListPolicy *const shortcutPolicy)
-            : mTrieBuffer(trieBuffer), mBuffers(buffers), mHeaderPolicy(headerPolicy),
+            : mTrieBuffer(trieBuffer), mBuffers(buffers),
               mReadingHelper(ptNodeReader, ptNodeArrayReader), mShortcutPolicy(shortcutPolicy) {}
 
     virtual ~Ver4PatriciaTrieNodeWriter() {}
@@ -96,20 +95,12 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const PtNodeParams *const ptNodeParams, int *const outTerminalId,
             int *const ptNodeWritingPos);
 
-    // Create updated probability entry using given probability property. In addition to the
-    // probability, this method updates historical information if needed.
-    // TODO: Update flags.
-    const ProbabilityEntry createUpdatedEntryFrom(
-            const ProbabilityEntry *const originalProbabilityEntry,
-            const ProbabilityEntry *const probabilityEntry) const;
-
     bool updatePtNodeFlags(const int ptNodePos, const bool isTerminal, const bool hasMultipleChars);
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
 
     BufferWithExtendableBuffer *const mTrieBuffer;
     Ver4DictBuffers *const mBuffers;
-    const HeaderPolicy *const mHeaderPolicy;
     DynamicPtReadingHelper mReadingHelper;
     Ver4ShortcutListPolicy *const mShortcutPolicy;
 };

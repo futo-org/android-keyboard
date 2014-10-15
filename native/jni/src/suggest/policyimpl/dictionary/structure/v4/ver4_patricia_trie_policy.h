@@ -47,8 +47,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mShortcutPolicy(mBuffers->getMutableShortcutDictContent(),
                       mBuffers->getTerminalPositionLookupTable()),
               mNodeReader(mDictBuffer), mPtNodeArrayReader(mDictBuffer),
-              mNodeWriter(mDictBuffer, mBuffers.get(), mHeaderPolicy, &mNodeReader,
-                      &mPtNodeArrayReader, &mShortcutPolicy),
+              mNodeWriter(mDictBuffer, mBuffers.get(), &mNodeReader, &mPtNodeArrayReader,
+                      &mShortcutPolicy),
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy->getUnigramCount()),
@@ -131,8 +131,6 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     // prevent the dictionary from overflowing.
     static const int MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
     static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
-    // TODO: Remove
-    static const int DUMMY_PROBABILITY_FOR_VALID_WORDS;
 
     const Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
     const HeaderPolicy *const mHeaderPolicy;
@@ -144,6 +142,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     DynamicPtUpdatingHelper mUpdatingHelper;
     Ver4PatriciaTrieWritingHelper mWritingHelper;
     int mUnigramCount;
+    // TODO: Support counting ngram entries.
     int mBigramCount;
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
