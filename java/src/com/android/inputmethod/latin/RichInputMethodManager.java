@@ -52,7 +52,7 @@ public class RichInputMethodManager {
 
     private static final RichInputMethodManager sInstance = new RichInputMethodManager();
 
-    private Resources mResources;
+    private Context mContext;
     private InputMethodManagerCompatWrapper mImmWrapper;
     private InputMethodInfoCache mInputMethodInfoCache;
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
@@ -86,7 +86,7 @@ public class RichInputMethodManager {
             return;
         }
         mImmWrapper = new InputMethodManagerCompatWrapper(context);
-        mResources = context.getResources();
+        mContext = context;
         mInputMethodInfoCache = new InputMethodInfoCache(
                 mImmWrapper.mImm, context.getPackageName());
 
@@ -309,7 +309,7 @@ public class RichInputMethodManager {
     public RichInputMethodSubtype createCurrentRichInputMethodSubtype(
             final InputMethodSubtype rawSubtype) {
         return AdditionalFeaturesSettingUtils.createRichInputMethodSubtype(this, rawSubtype,
-                mResources);
+                mContext);
     }
 
     public boolean hasMultipleEnabledIMEsOrSubtypes(final boolean shouldIncludeAuxiliarySubtypes) {

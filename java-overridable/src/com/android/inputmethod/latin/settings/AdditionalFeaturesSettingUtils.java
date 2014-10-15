@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.preference.PreferenceFragment;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -50,7 +49,7 @@ public class AdditionalFeaturesSettingUtils {
     public static RichInputMethodSubtype createRichInputMethodSubtype(
             @Nonnull final RichInputMethodManager imm,
             @Nonnull final InputMethodSubtype subtype,
-            final Resources resources) {
+            final Context context) {
         return new RichInputMethodSubtype(subtype);
     }
 }
