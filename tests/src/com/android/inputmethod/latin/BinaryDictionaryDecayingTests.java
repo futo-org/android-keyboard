@@ -75,6 +75,10 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         return formatVersion > FormatSpec.VERSION401;
     }
 
+    private static boolean supportsNgram(final int formatVersion) {
+        return formatVersion >= FormatSpec.VERSION4_DEV;
+    }
+
     private void onInputWord(final BinaryDictionary binaryDictionary, final String word,
             final boolean isValidWord) {
         binaryDictionary.updateEntriesForWordWithNgramContext(NgramContext.EMPTY_PREV_WORDS_INFO,
@@ -88,6 +92,14 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 mCurrentTime /* timestamp */);
     }
 
+    private void onInputWordWithPrevWords(final BinaryDictionary binaryDictionary,
+            final String word, final boolean isValidWord, final String prevWord,
+            final String prevPrevWord) {
+        binaryDictionary.updateEntriesForWordWithNgramContext(
+                new NgramContext(new WordInfo(prevWord), new WordInfo(prevPrevWord)), word,
+                isValidWord, 1 /* count */, mCurrentTime /* timestamp */);
+    }
+
     private void onInputWordWithBeginningOfSentenceContext(
             final BinaryDictionary binaryDictionary, final String word, final boolean isValidWord) {
         binaryDictionary.updateEntriesForWordWithNgramContext(NgramContext.BEGINNING_OF_SENTENCE,
@@ -97,6 +109,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private static boolean isValidBigram(final BinaryDictionary binaryDictionary,
             final String word0, final String word1) {
         return binaryDictionary.isValidNgram(new NgramContext(new WordInfo(word0)), word1);
+    }
+
+    private static boolean isValidTrigram(final BinaryDictionary binaryDictionary,
+            final String word0, final String word1, final String word2) {
+        return binaryDictionary.isValidNgram(
+                new NgramContext(new WordInfo(word1), new WordInfo(word0)), word2);
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {
@@ -256,7 +274,23 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         onInputWordWithPrevWord(binaryDictionary, "y", true /* isValidWord */, "x");
         assertFalse(isValidBigram(binaryDictionary, "x", "y"));
 
-        binaryDictionary.close();
+        if (!supportsNgram(formatVersion)) {
+            return;
+        }
+
+        onInputWordWithPrevWords(binaryDictionary, "c", false /* isValidWord */, "b", "a");
+        assertFalse(isValidTrigram(binaryDictionary, "a", "b", "c"));
+        assertFalse(isValidBigram(binaryDictionary, "b", "c"));
+        onInputWordWithPrevWords(binaryDictionary, "c", false /* isValidWord */, "b", "a");
+        assertTrue(isValidTrigram(binaryDictionary, "a", "b", "c"));
+        assertTrue(isValidBigram(binaryDictionary, "b", "c"));
+
+        onInputWordWithPrevWords(binaryDictionary, "d", true /* isValidWord */, "b", "a");
+        assertTrue(isValidTrigram(binaryDictionary, "a", "b", "d"));
+        assertTrue(isValidBigram(binaryDictionary, "b", "d"));
+
+        onInputWordWithPrevWords(binaryDictionary, "cd", true /* isValidWord */, "b", "a");
+        assertTrue(isValidTrigram(binaryDictionary, "a", "b", "cd"));
     }
 
     public void testDecayingProbability() {
@@ -300,6 +334,31 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertTrue(isValidBigram(binaryDictionary, "a", "b"));
         forcePassingLongTime(binaryDictionary);
         assertFalse(isValidBigram(binaryDictionary, "a", "b"));
+
+        if (!supportsNgram(formatVersion)) {
+            return;
+        }
+
+        onInputWord(binaryDictionary, "ab", true /* isValidWord */);
+        onInputWordWithPrevWord(binaryDictionary, "bc", true /* isValidWord */, "ab");
+        onInputWordWithPrevWords(binaryDictionary, "cd", true /* isValidWord */, "bc", "ab");
+        assertTrue(isValidTrigram(binaryDictionary, "ab", "bc", "cd"));
+        forcePassingShortTime(binaryDictionary);
+        assertFalse(isValidTrigram(binaryDictionary, "ab", "bc", "cd"));
+
+        onInputWord(binaryDictionary, "ab", true /* isValidWord */);
+        onInputWordWithPrevWord(binaryDictionary, "bc", true /* isValidWord */, "ab");
+        onInputWordWithPrevWords(binaryDictionary, "cd", true /* isValidWord */, "bc", "ab");
+        onInputWord(binaryDictionary, "ab", true /* isValidWord */);
+        onInputWordWithPrevWord(binaryDictionary, "bc", true /* isValidWord */, "ab");
+        onInputWordWithPrevWords(binaryDictionary, "cd", true /* isValidWord */, "bc", "ab");
+        onInputWord(binaryDictionary, "ab", true /* isValidWord */);
+        onInputWordWithPrevWord(binaryDictionary, "bc", true /* isValidWord */, "ab");
+        onInputWordWithPrevWords(binaryDictionary, "cd", true /* isValidWord */, "bc", "ab");
+        forcePassingShortTime(binaryDictionary);
+        assertTrue(isValidTrigram(binaryDictionary, "ab", "bc", "cd"));
+        forcePassingLongTime(binaryDictionary);
+        assertFalse(isValidTrigram(binaryDictionary, "ab", "bc", "cd"));
 
         binaryDictionary.close();
     }
