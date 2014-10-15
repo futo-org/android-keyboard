@@ -270,16 +270,26 @@ int LanguageModelDictContent::getBitmapEntryIndex(const WordIdArrayView prevWord
 }
 
 bool LanguageModelDictContent::updateAllProbabilityEntriesForGCInner(const int bitmapEntryIndex,
-        const int level, const HeaderPolicy *const headerPolicy, int *const outEntryCounts) {
+        const int prevWordCount, const HeaderPolicy *const headerPolicy,
+        int *const outEntryCounts) {
     for (const auto &entry : mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex)) {
-        if (level > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
-            AKLOGE("Invalid level. level: %d, MAX_PREV_WORD_COUNT_FOR_N_GRAM: %d.",
-                    level, MAX_PREV_WORD_COUNT_FOR_N_GRAM);
+        if (prevWordCount > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
+            AKLOGE("Invalid prevWordCount. prevWordCount: %d, MAX_PREV_WORD_COUNT_FOR_N_GRAM: %d.",
+                    prevWordCount, MAX_PREV_WORD_COUNT_FOR_N_GRAM);
             return false;
         }
         const ProbabilityEntry probabilityEntry =
                 ProbabilityEntry::decode(entry.value(), mHasHistoricalInfo);
-        if (mHasHistoricalInfo && !probabilityEntry.representsBeginningOfSentence()) {
+        if (prevWordCount > 0 && probabilityEntry.isValid()
+                && !mTrieMap.getRoot(entry.key()).mIsValid) {
+            // The entry is related to a word that has been removed. Remove the entry.
+            if (!mTrieMap.remove(entry.key(), bitmapEntryIndex)) {
+                return false;
+            }
+            continue;
+        }
+        if (mHasHistoricalInfo && !probabilityEntry.representsBeginningOfSentence()
+                && probabilityEntry.isValid()) {
             const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
                     probabilityEntry.getHistoricalInfo(), headerPolicy);
             if (ForgettingCurveUtils::needsToKeep(&historicalInfo, headerPolicy)) {
@@ -298,13 +308,13 @@ bool LanguageModelDictContent::updateAllProbabilityEntriesForGCInner(const int b
             }
         }
         if (!probabilityEntry.representsBeginningOfSentence()) {
-            outEntryCounts[level] += 1;
+            outEntryCounts[prevWordCount] += 1;
         }
         if (!entry.hasNextLevelMap()) {
             continue;
         }
-        if (!updateAllProbabilityEntriesForGCInner(entry.getNextLevelBitmapEntryIndex(), level + 1,
-                headerPolicy, outEntryCounts)) {
+        if (!updateAllProbabilityEntriesForGCInner(entry.getNextLevelBitmapEntryIndex(),
+                prevWordCount + 1, headerPolicy, outEntryCounts)) {
             return false;
         }
     }
@@ -332,7 +342,7 @@ bool LanguageModelDictContent::turncateEntriesInSpecifiedLevel(
     for (int i = 0; i < entryCountToRemove; ++i) {
         const EntryInfoToTurncate &entryInfo = entryInfoVector[i];
         if (!removeNgramProbabilityEntry(
-                WordIdArrayView(entryInfo.mPrevWordIds, entryInfo.mEntryLevel), entryInfo.mKey)) {
+                WordIdArrayView(entryInfo.mPrevWordIds, entryInfo.mPrevWordCount), entryInfo.mKey)) {
             return false;
         }
     }
@@ -342,9 +352,9 @@ bool LanguageModelDictContent::turncateEntriesInSpecifiedLevel(
 bool LanguageModelDictContent::getEntryInfo(const HeaderPolicy *const headerPolicy,
         const int targetLevel, const int bitmapEntryIndex,  std::vector<int> *const prevWordIds,
         std::vector<EntryInfoToTurncate> *const outEntryInfo) const {
-    const int currentLevel = prevWordIds->size();
+    const int prevWordCount = prevWordIds->size();
     for (const auto &entry : mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex)) {
-        if (currentLevel < targetLevel) {
+        if (prevWordCount < targetLevel) {
             if (!entry.hasNextLevelMap()) {
                 continue;
             }
@@ -379,10 +389,10 @@ bool LanguageModelDictContent::EntryInfoToTurncate::Comparator::operator()(
     if (left.mKey != right.mKey) {
         return left.mKey < right.mKey;
     }
-    if (left.mEntryLevel != right.mEntryLevel) {
-        return left.mEntryLevel > right.mEntryLevel;
+    if (left.mPrevWordCount != right.mPrevWordCount) {
+        return left.mPrevWordCount > right.mPrevWordCount;
     }
-    for (int i = 0; i < left.mEntryLevel; ++i) {
+    for (int i = 0; i < left.mPrevWordCount; ++i) {
         if (left.mPrevWordIds[i] != right.mPrevWordIds[i]) {
             return left.mPrevWordIds[i] < right.mPrevWordIds[i];
         }
@@ -392,9 +402,10 @@ bool LanguageModelDictContent::EntryInfoToTurncate::Comparator::operator()(
 }
 
 LanguageModelDictContent::EntryInfoToTurncate::EntryInfoToTurncate(const int probability,
-        const int timestamp, const int key, const int entryLevel, const int *const prevWordIds)
-        : mProbability(probability), mTimestamp(timestamp), mKey(key), mEntryLevel(entryLevel) {
-    memmove(mPrevWordIds, prevWordIds, mEntryLevel * sizeof(mPrevWordIds[0]));
+        const int timestamp, const int key, const int prevWordCount, const int *const prevWordIds)
+        : mProbability(probability), mTimestamp(timestamp), mKey(key),
+          mPrevWordCount(prevWordCount) {
+    memmove(mPrevWordIds, prevWordIds, mPrevWordCount * sizeof(mPrevWordIds[0]));
 }
 
 } // namespace latinime
