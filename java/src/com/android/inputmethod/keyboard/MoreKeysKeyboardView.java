@@ -105,7 +105,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
-        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
             if (mAccessibilityDelegate == null) {
                 mAccessibilityDelegate = new MoreKeysKeyboardAccessibilityDelegate(
                         this, mKeyDetector);
@@ -142,7 +142,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         mOriginY = y + container.getPaddingTop();
         controller.onShowMoreKeysPanel(this);
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
-        if (accessibilityDelegate != null) {
+        if (accessibilityDelegate != null
+                && AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
             accessibilityDelegate.onShowMoreKeysKeyboard();
         }
     }
@@ -239,7 +240,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             return;
         }
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
-        if (accessibilityDelegate != null) {
+        if (accessibilityDelegate != null
+                && AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
             accessibilityDelegate.onDismissMoreKeysKeyboard();
         }
         mController.onDismissMoreKeysPanel();
@@ -285,7 +287,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     public boolean onHoverEvent(final MotionEvent event) {
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
-        if (accessibilityDelegate != null) {
+        if (accessibilityDelegate != null
+                && AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
             return accessibilityDelegate.onHoverEvent(event);
         }
         return super.onHoverEvent(event);
