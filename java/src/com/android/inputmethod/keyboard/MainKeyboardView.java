@@ -756,7 +756,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public void onHideWindow() {
         onDismissMoreKeysPanel();
         final MainKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
-        if (accessibilityDelegate != null) {
+        if (accessibilityDelegate != null
+                && AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
             accessibilityDelegate.onHideWindow();
         }
     }
@@ -767,7 +768,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public boolean onHoverEvent(final MotionEvent event) {
         final MainKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
-        if (accessibilityDelegate != null) {
+        if (accessibilityDelegate != null
+                && AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
             return accessibilityDelegate.onHoverEvent(event);
         }
         return super.onHoverEvent(event);

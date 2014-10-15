@@ -104,7 +104,8 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     public boolean onHoverEvent(final MotionEvent event) {
         final KeyboardAccessibilityDelegate<EmojiPageKeyboardView> accessibilityDelegate =
                 mAccessibilityDelegate;
-        if (accessibilityDelegate != null) {
+        if (accessibilityDelegate != null
+                && AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
             return accessibilityDelegate.onHoverEvent(event);
         }
         return super.onHoverEvent(event);
