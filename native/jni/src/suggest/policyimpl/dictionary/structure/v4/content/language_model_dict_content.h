@@ -160,7 +160,7 @@ class LanguageModelDictContent {
             outEntryCounts[i] = 0;
         }
         return updateAllProbabilityEntriesForGCInner(mTrieMap.getRootBitmapEntryIndex(),
-                0 /* level */, headerPolicy, outEntryCounts);
+                0 /* prevWordCount */, headerPolicy, outEntryCounts);
     }
 
     // entryCounts should be created by updateAllProbabilityEntries.
@@ -185,12 +185,12 @@ class LanguageModelDictContent {
         };
 
         EntryInfoToTurncate(const int probability, const int timestamp, const int key,
-                const int entryLevel, const int *const prevWordIds);
+                const int prevWordCount, const int *const prevWordIds);
 
         int mProbability;
         int mTimestamp;
         int mKey;
-        int mEntryLevel;
+        int mPrevWordCount;
         int mPrevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
 
      private:
@@ -208,7 +208,7 @@ class LanguageModelDictContent {
             int *const outNgramCount);
     int createAndGetBitmapEntryIndex(const WordIdArrayView prevWordIds);
     int getBitmapEntryIndex(const WordIdArrayView prevWordIds) const;
-    bool updateAllProbabilityEntriesForGCInner(const int bitmapEntryIndex, const int level,
+    bool updateAllProbabilityEntriesForGCInner(const int bitmapEntryIndex, const int prevWordCount,
             const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
     bool turncateEntriesInSpecifiedLevel(const HeaderPolicy *const headerPolicy,
             const int maxEntryCount, const int targetLevel, int *const outEntryCount);
