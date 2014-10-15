@@ -371,10 +371,11 @@ public final class InputLogic {
      * @param oldSelEnd old selection end
      * @param newSelStart new selection start
      * @param newSelEnd new selection end
+     * @param settingsValues the current values of the settings.
      * @return whether the cursor has moved as a result of user interaction.
      */
     public boolean onUpdateSelection(final int oldSelStart, final int oldSelEnd,
-            final int newSelStart, final int newSelEnd) {
+            final int newSelStart, final int newSelEnd, final SettingsValues settingsValues) {
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
             return false;
         }
@@ -399,8 +400,9 @@ public final class InputLogic {
         // should be true, but that is if the framework had taken that wrong cursor position
         // into account, which means we have to reset the entire composing state whenever there
         // is or was a selection regardless of whether it changed or not.
-        if (hasOrHadSelection || (selectionChangedOrSafeToReset
-                && !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
+        if (hasOrHadSelection || !settingsValues.needsToLookupSuggestions()
+                || (selectionChangedOrSafeToReset
+                        && !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
             // If we are composing a word and moving the cursor, we would want to set a
             // suggestion span for recorrection to work correctly. Unfortunately, that
             // would involve the keyboard committing some new text, which would move the
