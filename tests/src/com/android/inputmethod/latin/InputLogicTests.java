@@ -37,7 +37,7 @@ public class InputLogicTests extends InputTestsBase {
         final String EXPECTED_RESULT = "thi";
         type(WORD_TO_TYPE);
         pickSuggestionManually(WORD_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
+        sendUpdateForCursorMoveTo(WORD_TO_TYPE.length());
         type(Constants.CODE_DELETE);
         assertEquals("press suggestion then backspace", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -50,7 +50,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         // Choose the auto-correction. For "tgis", the auto-correction should be "this".
         pickSuggestionManually(WORD_TO_PICK);
-        mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
+        sendUpdateForCursorMoveTo(WORD_TO_TYPE.length());
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_PICK,
                 mEditText.getText().toString());
         type(Constants.CODE_DELETE);
@@ -64,7 +64,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         // Choose the typed word.
         pickSuggestionManually(WORD_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
+        sendUpdateForCursorMoveTo(WORD_TO_TYPE.length());
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_TYPE,
                 mEditText.getText().toString());
         type(Constants.CODE_DELETE);
@@ -79,7 +79,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         // Choose the second suggestion, which should be "thus" when "tgis" is typed.
         pickSuggestionManually(WORD_TO_PICK);
-        mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
+        sendUpdateForCursorMoveTo(WORD_TO_TYPE.length());
         assertEquals("pick different suggestion then backspace", WORD_TO_PICK,
                 mEditText.getText().toString());
         type(Constants.CODE_DELETE);
@@ -94,7 +94,8 @@ public class InputLogicTests extends InputTestsBase {
         final int SELECTION_END = 19;
         final String EXPECTED_RESULT = "some text  some text";
         type(STRING_TO_TYPE);
-        // There is no IMF to call onUpdateSelection for us so we must do it by hand.
+        // Don't use the sendUpdateForCursorMove* family of methods here because they
+        // don't handle selections.
         // Send once to simulate the cursor actually responding to the move caused by typing.
         // This is necessary because LatinIME is bookkeeping to avoid confusing a real cursor
         // move with a move triggered by LatinIME inputting stuff.
@@ -114,7 +115,8 @@ public class InputLogicTests extends InputTestsBase {
         final int SELECTION_END = 19;
         final String EXPECTED_RESULT = "some text some text";
         type(STRING_TO_TYPE);
-        // There is no IMF to call onUpdateSelection for us so we must do it by hand.
+        // Don't use the sendUpdateForCursorMove* family of methods here because they
+        // don't handle selections.
         // Send once to simulate the cursor actually responding to the move caused by typing.
         // This is necessary because LatinIME is bookkeeping to avoid confusing a real cursor
         // move with a move triggered by LatinIME inputting stuff.
@@ -153,7 +155,7 @@ public class InputLogicTests extends InputTestsBase {
         final String STRING_TO_TYPE = "tgis.";
         final String EXPECTED_RESULT = "tgis.";
         type(STRING_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        sendUpdateForCursorMoveTo(STRING_TO_TYPE.length());
         type(Constants.CODE_DELETE);
         assertEquals("auto-correct with period then revert", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -166,7 +168,7 @@ public class InputLogicTests extends InputTestsBase {
         final String STRING_TO_TYPE = "tgis ";
         final String EXPECTED_RESULT = "tgis";
         type(STRING_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        sendUpdateForCursorMoveTo(STRING_TO_TYPE.length());
         type(Constants.CODE_DELETE);
         assertEquals("auto-correct with space then revert", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -177,15 +179,12 @@ public class InputLogicTests extends InputTestsBase {
         final String STRING_TO_TYPE_SECOND = "a";
         final String EXPECTED_RESULT = "tgis a";
         type(STRING_TO_TYPE_FIRST);
-        mLatinIME.onUpdateSelection(0, 0,
-                STRING_TO_TYPE_FIRST.length(), STRING_TO_TYPE_FIRST.length(), -1, -1);
+        sendUpdateForCursorMoveTo(STRING_TO_TYPE_FIRST.length());
         type(Constants.CODE_DELETE);
 
         type(STRING_TO_TYPE_SECOND);
-        mLatinIME.onUpdateSelection(STRING_TO_TYPE_FIRST.length(), STRING_TO_TYPE_FIRST.length(),
-                STRING_TO_TYPE_FIRST.length() - 1 + STRING_TO_TYPE_SECOND.length(),
-                STRING_TO_TYPE_FIRST.length() - 1 + STRING_TO_TYPE_SECOND.length(),
-                -1, -1);
+        sendUpdateForCursorMoveTo(STRING_TO_TYPE_FIRST.length() - 1
+                + STRING_TO_TYPE_SECOND.length());
         assertEquals("auto-correct with space then revert then type more", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
@@ -194,7 +193,7 @@ public class InputLogicTests extends InputTestsBase {
         final String STRING_TO_TYPE = "this ";
         final String EXPECTED_RESULT = "this";
         type(STRING_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        sendUpdateForCursorMoveTo(STRING_TO_TYPE.length());
         type(Constants.CODE_DELETE);
         assertEquals("auto-correct with space does not revert", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -298,10 +297,9 @@ public class InputLogicTests extends InputTestsBase {
         final String EXPECTED_RESULT = "this ";
         final int NEW_CURSOR_POSITION = 0;
         type(STRING_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
+        sendUpdateForCursorMoveTo(typedLength);
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
-        mLatinIME.onUpdateSelection(typedLength, typedLength,
-                NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
+        sendUpdateForCursorMoveTo(NEW_CURSOR_POSITION);
         type(Constants.CODE_DELETE);
         assertEquals("auto correct then move cursor to start of line then backspace",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -313,10 +311,9 @@ public class InputLogicTests extends InputTestsBase {
         final String EXPECTED_RESULT = "andthis ";
         final int NEW_CURSOR_POSITION = STRING_TO_TYPE.indexOf('t');
         type(STRING_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
+        sendUpdateForCursorMoveTo(typedLength);
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
-        mLatinIME.onUpdateSelection(typedLength, typedLength,
-                NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
+        sendUpdateForCursorMoveTo(NEW_CURSOR_POSITION);
         type(Constants.CODE_DELETE);
         assertEquals("auto correct then move cursor then backspace",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -416,7 +413,7 @@ public class InputLogicTests extends InputTestsBase {
                 BaseInputConnection.getComposingSpanStart(mEditText.getText()));
         assertEquals("resume suggestion on backspace", -1,
                 BaseInputConnection.getComposingSpanEnd(mEditText.getText()));
-        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
+        sendUpdateForCursorMoveTo(typedLength);
         type(Constants.CODE_DELETE);
         assertEquals("resume suggestion on backspace", 4,
                 BaseInputConnection.getComposingSpanStart(mEditText.getText()));
@@ -557,26 +554,22 @@ public class InputLogicTests extends InputTestsBase {
         final int endOfSuggestion = endOfPrefix + FIRST_NON_TYPED_SUGGESTION.length();
         final int indexForManualCursor = endOfPrefix + 3; // +3 because it's after "Bar" in "Barack"
         type(PREFIX);
-        mLatinIME.onUpdateSelection(0, 0, endOfPrefix, endOfPrefix, -1, -1);
+        sendUpdateForCursorMoveTo(endOfPrefix);
         type(WORD_TO_TYPE);
         pickSuggestionManually(FIRST_NON_TYPED_SUGGESTION);
-        mLatinIME.onUpdateSelection(endOfPrefix, endOfPrefix, endOfSuggestion, endOfSuggestion,
-                -1, -1);
+        sendUpdateForCursorMoveTo(endOfSuggestion);
         runMessages();
         type(" ");
-        mLatinIME.onUpdateSelection(endOfSuggestion, endOfSuggestion,
-                endOfSuggestion + 1, endOfSuggestion + 1, -1, -1);
+        sendUpdateForCursorMoveBy(1);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Simulate a manual cursor move
         mInputConnection.setSelection(indexForManualCursor, indexForManualCursor);
-        mLatinIME.onUpdateSelection(endOfSuggestion + 1, endOfSuggestion + 1,
-                indexForManualCursor, indexForManualCursor, -1, -1);
+        sendUpdateForCursorMoveTo(indexForManualCursor);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         pickSuggestionManually(WORD_TO_TYPE);
-        mLatinIME.onUpdateSelection(indexForManualCursor, indexForManualCursor,
-                endOfWord, endOfWord, -1, -1);
+        sendUpdateForCursorMoveTo(endOfWord);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Test the first prediction is displayed
@@ -678,5 +671,39 @@ public class InputLogicTests extends InputTestsBase {
         gesture("this");
         MoreAsserts.assertNotEqual("gesture twice the same thing", "this",
                 mEditText.getText().toString());
+    }
+
+    private void typeWordAndPutCursorInside(final String word, final int startPos) {
+        final int END_OF_WORD = startPos + word.length();
+        final int NEW_CURSOR_POSITION = startPos + word.length() / 2;
+        type(word);
+        sendUpdateForCursorMoveTo(END_OF_WORD);
+        runMessages();
+        sendUpdateForCursorMoveTo(NEW_CURSOR_POSITION);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
+        runMessages();
+        ensureComposingSpanPos("move cursor inside word leaves composing span in the right place",
+                startPos, END_OF_WORD);
+    }
+
+    private void ensureComposingSpanPos(final String message, final int from, final int to) {
+        assertEquals(message, from, BaseInputConnection.getComposingSpanStart(mEditText.getText()));
+        assertEquals(message, to, BaseInputConnection.getComposingSpanEnd(mEditText.getText()));
+    }
+
+    public void testTypeWithinComposing() {
+        final String WORD_TO_TYPE = "something";
+        final String EXPECTED_RESULT = "some thing";
+        typeWordAndPutCursorInside(WORD_TO_TYPE, 0 /* startPos */);
+        type(" ");
+        ensureComposingSpanPos("space while in the middle of a word cancels composition", -1, -1);
+        assertEquals("space in the middle of a composing word", EXPECTED_RESULT,
+                mEditText.getText().toString());
+        int cursorPos = sendUpdateForCursorMoveToEndOfLine();
+        runMessages();
+        type(" ");
+        typeWordAndPutCursorInside(WORD_TO_TYPE, cursorPos + 1 /* startPos */);
+        type(Constants.CODE_DELETE);
+        ensureComposingSpanPos("space while in the middle of a word cancels composition", -1, -1);
     }
 }
