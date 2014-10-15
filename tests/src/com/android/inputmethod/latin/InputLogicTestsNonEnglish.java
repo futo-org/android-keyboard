@@ -70,7 +70,7 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         try {
             changeLanguage("fr");
             type(WORD_TO_TYPE);
-            sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+            sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
             runMessages();
             assertTrue("type word then type space should display punctuation strip",
                     mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());
@@ -95,7 +95,7 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         try {
             changeLanguage("fr");
             type(WORD_TO_TYPE);
-            sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+            sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
             runMessages();
             final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
             assertEquals("type word then type space yields predictions for French",

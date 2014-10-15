@@ -38,7 +38,7 @@ public class PunctuationTests extends InputTestsBase {
         try {
             mLatinIME.loadSettings();
             type(WORD_TO_TYPE);
-            sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+            sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
             runMessages();
             assertTrue("type word then type space should display punctuation strip",
                     mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());

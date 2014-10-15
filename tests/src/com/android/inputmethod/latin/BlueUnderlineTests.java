@@ -28,7 +28,7 @@ public class BlueUnderlineTests extends InputTestsBase {
         final int EXPECTED_SPAN_START = 0;
         final int EXPECTED_SPAN_END = 4;
         type(STRING_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         final SpanGetter span = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
         assertEquals("show blue underline, span start", EXPECTED_SPAN_START, span.mStart);
@@ -42,7 +42,7 @@ public class BlueUnderlineTests extends InputTestsBase {
         final int EXPECTED_SPAN_START = 0;
         final int EXPECTED_SPAN_END = 5;
         type(STRING_1_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         type(STRING_2_TO_TYPE);
         // We haven't have time to look into the dictionary yet, so the line should still be
@@ -51,7 +51,7 @@ public class BlueUnderlineTests extends InputTestsBase {
         assertEquals("extend blue underline, span start", EXPECTED_SPAN_START, spanBefore.mStart);
         assertEquals("extend blue underline, span end", EXPECTED_SPAN_END, spanBefore.mEnd);
         assertTrue("extend blue underline, span color", spanBefore.isAutoCorrectionIndicator());
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         // Now we have been able to re-evaluate the word, there shouldn't be an auto-correction span
         final SpanGetter spanAfter = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
@@ -65,18 +65,18 @@ public class BlueUnderlineTests extends InputTestsBase {
         final int EXPECTED_UNDERLINE_SPAN_START = 0;
         final int EXPECTED_UNDERLINE_SPAN_END = 3;
         type(STRING_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         type(Constants.CODE_SPACE);
         // typedLength + 1 because we also typed a space
         mLatinIME.onUpdateSelection(0, 0, typedLength + 1, typedLength + 1, -1, -1);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         type(Constants.CODE_DELETE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         type(Constants.CODE_DELETE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         final SpanGetter suggestionSpan = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
         assertFalse("show no blue underline after backspace, span should not be the auto-"
@@ -93,7 +93,7 @@ public class BlueUnderlineTests extends InputTestsBase {
         final int typedLength = STRING_TO_TYPE.length();
         final int NEW_CURSOR_POSITION = 0;
         type(STRING_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         // Simulate the onUpdateSelection() event
         mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
         runMessages();
@@ -103,7 +103,7 @@ public class BlueUnderlineTests extends InputTestsBase {
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
         mLatinIME.onUpdateSelection(typedLength, typedLength,
                 NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         final SpanGetter span = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
         assertFalse("blue underline removed when cursor is moved",
@@ -113,7 +113,7 @@ public class BlueUnderlineTests extends InputTestsBase {
     public void testComposingStopsOnSpace() {
         final String STRING_TO_TYPE = "this ";
         type(STRING_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         // Simulate the onUpdateSelection() event
         mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
         runMessages();
