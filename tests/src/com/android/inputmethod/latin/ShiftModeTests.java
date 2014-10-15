@@ -75,7 +75,7 @@ public class ShiftModeTests extends InputTestsBase {
             repeatKey(Constants.CODE_DELETE);
         }
         assertFalse("Caps immediately after repeating Backspace a lot", isCapsModeAutoShifted());
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         assertTrue("Caps after a while after repeating Backspace a lot", isCapsModeAutoShifted());
     }

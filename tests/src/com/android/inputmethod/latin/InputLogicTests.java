@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.test.MoreAsserts;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.view.inputmethod.BaseInputConnection;
@@ -487,7 +488,7 @@ public class InputLogicTests extends InputTestsBase {
     public void testPredictionsAfterSpace() {
         final String WORD_TO_TYPE = "Barack ";
         type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Test the first prediction is displayed
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
@@ -499,17 +500,17 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.clearPersonalizedDictionariesForTest();
         final String WORD_TO_TYPE = "Barack ";
         type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // No need to test here, testPredictionsAfterSpace is testing it already
         type(" ");
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Test the predictions have been cleared
         SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("predictions cleared after double-space-to-period", suggestedWords.size(), 0);
         type(Constants.CODE_DELETE);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Test the first prediction is displayed
         suggestedWords = mLatinIME.getSuggestedWordsForTest();
@@ -522,7 +523,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         // Choose the auto-correction. For "Barack", the auto-correction should be "Barack".
         pickSuggestionManually(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Test the first prediction is displayed
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
@@ -534,13 +535,13 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.clearPersonalizedDictionariesForTest();
         final String WORD_TO_TYPE = "Barack. ";
         type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("No prediction after period after inputting once.", 0, suggestedWords.size());
 
         type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("Beginning-of-Sentence prediction after inputting 2 times.", "Barack",
@@ -565,18 +566,18 @@ public class InputLogicTests extends InputTestsBase {
         type(" ");
         mLatinIME.onUpdateSelection(endOfSuggestion, endOfSuggestion,
                 endOfSuggestion + 1, endOfSuggestion + 1, -1, -1);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Simulate a manual cursor move
         mInputConnection.setSelection(indexForManualCursor, indexForManualCursor);
         mLatinIME.onUpdateSelection(endOfSuggestion + 1, endOfSuggestion + 1,
                 indexForManualCursor, indexForManualCursor, -1, -1);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         pickSuggestionManually(WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(indexForManualCursor, indexForManualCursor,
                 endOfWord, endOfWord, -1, -1);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Test the first prediction is displayed
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
@@ -624,7 +625,7 @@ public class InputLogicTests extends InputTestsBase {
 
         for (int i = 0; i < WORD_TO_TYPE.length(); ++i) {
             type(WORD_TO_TYPE.substring(i, i+1));
-            sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+            sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
             runMessages();
         }
         assertEquals("type many trailing single quotes one by one", EXPECTED_RESULT,
@@ -636,7 +637,7 @@ public class InputLogicTests extends InputTestsBase {
         final String EXPECTED_RESULT = WORD_TO_TYPE;
         for (int i = 0; i < WORD_TO_TYPE.length(); ++i) {
             type(WORD_TO_TYPE.substring(i, i+1));
-            sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+            sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
             runMessages();
         }
         assertEquals("type words letter by letter", EXPECTED_RESULT,
@@ -652,10 +653,30 @@ public class InputLogicTests extends InputTestsBase {
         changeLanguage("fr");
         runMessages();
         type(WORD_TO_TYPE_SECOND_PART);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("Suggestions updated after switching languages",
                     EXPECTED_RESULT, suggestedWords.size() > 0 ? suggestedWords.getWord(1) : null);
+    }
+
+    public void testBasicGesture() {
+        gesture("this");
+        assertEquals("gesture \"this\"", "this", mEditText.getText().toString());
+    }
+
+    public void testGestureGesture() {
+        gesture("this");
+        gesture("is");
+        assertEquals("gesture \"this is\"", "this is", mEditText.getText().toString());
+    }
+
+    public void testGestureBackspaceGestureAgain() {
+        gesture("this");
+        type(Constants.CODE_DELETE);
+        assertEquals("gesture then backspace", "", mEditText.getText().toString());
+        gesture("this");
+        MoreAsserts.assertNotEqual("gesture twice the same thing", "this",
+                mEditText.getText().toString());
     }
 }

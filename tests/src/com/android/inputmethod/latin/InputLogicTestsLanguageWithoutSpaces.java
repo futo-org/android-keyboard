@@ -74,7 +74,7 @@ public class InputLogicTestsLanguageWithoutSpaces extends InputTestsBase {
         mInputConnection.setSelection(CURSOR_POS, CURSOR_POS);
         mLatinIME.onUpdateSelection(typedLength, typedLength,
                 CURSOR_POS, CURSOR_POS, -1, -1);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         assertEquals("start composing inside text", -1,
                 BaseInputConnection.getComposingSpanStart(mEditText.getText()));
@@ -91,7 +91,7 @@ public class InputLogicTestsLanguageWithoutSpaces extends InputTestsBase {
         final String WORD_TO_TYPE = "Barack ";
         changeKeyboardLocaleAndDictLocale("th", "en_US");
         type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         // Make sure there is no space
         assertEquals("predictions in lang without spaces", "Barack",
