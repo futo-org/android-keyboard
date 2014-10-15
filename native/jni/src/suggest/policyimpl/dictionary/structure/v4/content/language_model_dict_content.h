@@ -154,18 +154,22 @@ class LanguageModelDictContent {
 
     EntryRange getProbabilityEntries(const WordIdArrayView prevWordIds) const;
 
-    bool updateAllProbabilityEntries(const HeaderPolicy *const headerPolicy,
+    bool updateAllProbabilityEntriesForGC(const HeaderPolicy *const headerPolicy,
             int *const outEntryCounts) {
         for (int i = 0; i <= MAX_PREV_WORD_COUNT_FOR_N_GRAM; ++i) {
             outEntryCounts[i] = 0;
         }
-        return updateAllProbabilityEntriesInner(mTrieMap.getRootBitmapEntryIndex(), 0 /* level */,
-                headerPolicy, outEntryCounts);
+        return updateAllProbabilityEntriesForGCInner(mTrieMap.getRootBitmapEntryIndex(),
+                0 /* level */, headerPolicy, outEntryCounts);
     }
 
     // entryCounts should be created by updateAllProbabilityEntries.
     bool truncateEntries(const int *const entryCounts, const int *const maxEntryCounts,
             const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
+
+    bool updateAllEntriesOnInputWord(const WordIdArrayView prevWordIds, const int wordId,
+            const bool isValid, const HistoricalInfo historicalInfo,
+            const HeaderPolicy *const headerPolicy, int *const outAddedNewNgramEntryCount);
 
  private:
     DISALLOW_COPY_AND_ASSIGN(LanguageModelDictContent);
@@ -193,6 +197,9 @@ class LanguageModelDictContent {
         DISALLOW_DEFAULT_CONSTRUCTOR(EntryInfoToTurncate);
     };
 
+    // TODO: Remove
+    static const int DUMMY_PROBABILITY_FOR_VALID_WORDS;
+
     TrieMap mTrieMap;
     const bool mHasHistoricalInfo;
 
@@ -201,13 +208,16 @@ class LanguageModelDictContent {
             int *const outNgramCount);
     int createAndGetBitmapEntryIndex(const WordIdArrayView prevWordIds);
     int getBitmapEntryIndex(const WordIdArrayView prevWordIds) const;
-    bool updateAllProbabilityEntriesInner(const int bitmapEntryIndex, const int level,
+    bool updateAllProbabilityEntriesForGCInner(const int bitmapEntryIndex, const int level,
             const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
     bool turncateEntriesInSpecifiedLevel(const HeaderPolicy *const headerPolicy,
             const int maxEntryCount, const int targetLevel, int *const outEntryCount);
     bool getEntryInfo(const HeaderPolicy *const headerPolicy, const int targetLevel,
             const int bitmapEntryIndex, std::vector<int> *const prevWordIds,
             std::vector<EntryInfoToTurncate> *const outEntryInfo) const;
+    const ProbabilityEntry createUpdatedEntryFrom(const ProbabilityEntry &originalProbabilityEntry,
+            const bool isValid, const HistoricalInfo historicalInfo,
+            const HeaderPolicy *const headerPolicy) const;
 };
 } // namespace latinime
 #endif /* LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H */

@@ -43,7 +43,6 @@ const char *const Ver4PatriciaTriePolicy::MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_C
 const int Ver4PatriciaTriePolicy::MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS = 1024;
 const int Ver4PatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
         Ver4DictConstants::MAX_DICTIONARY_SIZE - MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
-const int Ver4PatriciaTriePolicy::DUMMY_PROBABILITY_FOR_VALID_WORDS = 1;
 
 void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
@@ -151,8 +150,7 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordI
             }
             const int probability = probabilityEntry.hasHistoricalInfo() ?
                     ForgettingCurveUtils::decodeProbability(
-                            probabilityEntry.getHistoricalInfo(), mHeaderPolicy)
-                            + ForgettingCurveUtils::getProbabilityBiasForNgram(i + 1 /* n */) :
+                            probabilityEntry.getHistoricalInfo(), mHeaderPolicy) :
                     probabilityEntry.getProbability();
             listener->onVisitEntry(probability, entry.getWordId());
         }
@@ -371,25 +369,44 @@ bool Ver4PatriciaTriePolicy::updateEntriesForWordWithNgramContext(
                 "dictionary.");
         return false;
     }
-    // TODO: Have count up method in language model dict content.
-    const int probability = isValidWord ? DUMMY_PROBABILITY_FOR_VALID_WORDS : NOT_A_PROBABILITY;
-    const UnigramProperty unigramProperty(false /* representsBeginningOfSentence */,
-            false /* isNotAWord */, false /* isBlacklisted */, probability, historicalInfo);
-    if (!addUnigramEntry(wordCodePoints, &unigramProperty)) {
-        AKLOGE("Cannot update unigarm entry in updateEntriesForWordWithNgramContext().");
-        return false;
-    }
-    const int probabilityForNgram = ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */)
-            ? NOT_A_PROBABILITY : probability;
-    const NgramProperty ngramProperty(wordCodePoints.toVector(), probabilityForNgram,
-            historicalInfo);
-    for (size_t i = 1; i <= ngramContext->getPrevWordCount(); ++i) {
-        const NgramContext trimmedNgramContext(ngramContext->getTrimmedNgramContext(i));
-        if (!addNgramEntry(&trimmedNgramContext, &ngramProperty)) {
-            AKLOGE("Cannot update ngram entry in updateEntriesForWordWithNgramContext().");
+    const bool updateAsAValidWord = ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */) ?
+            false : isValidWord;
+    int wordId = getWordId(wordCodePoints, false /* tryLowerCaseSearch */);
+    if (wordId == NOT_A_WORD_ID) {
+        // The word is not in the dictionary.
+        const UnigramProperty unigramProperty(false /* representsBeginningOfSentence */,
+                false /* isNotAWord */, false /* isBlacklisted */, NOT_A_PROBABILITY,
+                HistoricalInfo(historicalInfo.getTimestamp(), 0 /* level */, 0 /* count */));
+        if (!addUnigramEntry(wordCodePoints, &unigramProperty)) {
+            AKLOGE("Cannot add unigarm entry in updateEntriesForWordWithNgramContext().");
             return false;
         }
+        wordId = getWordId(wordCodePoints, false /* tryLowerCaseSearch */);
     }
+
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
+    const WordIdArrayView prevWordIds = ngramContext->getPrevWordIds(this, &prevWordIdArray,
+            false /* tryLowerCaseSearch */);
+    if (prevWordIds.firstOrDefault(NOT_A_WORD_ID) == NOT_A_WORD_ID
+            && ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */)) {
+        const UnigramProperty beginningOfSentenceUnigramProperty(
+                true /* representsBeginningOfSentence */,
+                true /* isNotAWord */, false /* isBlacklisted */, NOT_A_PROBABILITY,
+                HistoricalInfo(historicalInfo.getTimestamp(), 0 /* level */, 0 /* count */));
+        if (!addUnigramEntry(ngramContext->getNthPrevWordCodePoints(1 /* n */),
+                &beginningOfSentenceUnigramProperty)) {
+            AKLOGE("Cannot add BoS entry in updateEntriesForWordWithNgramContext().");
+            return false;
+        }
+        // Refresh word ids.
+        ngramContext->getPrevWordIds(this, &prevWordIdArray, false /* tryLowerCaseSearch */);
+    }
+    int addedNewNgramEntryCount = 0;
+    if (!mBuffers->getMutableLanguageModelDictContent()->updateAllEntriesOnInputWord(prevWordIds,
+            wordId, updateAsAValidWord, historicalInfo, mHeaderPolicy, &addedNewNgramEntryCount)) {
+        return false;
+    }
+    mBigramCount += addedNewNgramEntryCount;
     return true;
 }
 
