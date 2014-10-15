@@ -1033,7 +1033,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // with cursor movement when we have a hardware keyboard since we are not in charge.
         final SettingsValues settingsValues = mSettings.getCurrent();
         if ((!settingsValues.mHasHardwareKeyboard || ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED)
-                && mInputLogic.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd)) {
+                && mInputLogic.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
+                        settingsValues)) {
             mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
         }
