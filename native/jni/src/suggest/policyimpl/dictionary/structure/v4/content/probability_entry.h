@@ -98,17 +98,17 @@ class ProbabilityEntry {
     }
 
     uint64_t encode(const bool hasHistoricalInfo) const {
-        uint64_t encodedEntry = static_cast<uint64_t>(mFlags);
+        uint64_t encodedEntry = static_cast<uint8_t>(mFlags);
         if (hasHistoricalInfo) {
             encodedEntry = (encodedEntry << (Ver4DictConstants::TIME_STAMP_FIELD_SIZE * CHAR_BIT))
-                    ^ static_cast<uint64_t>(mHistoricalInfo.getTimestamp());
+                    | static_cast<uint32_t>(mHistoricalInfo.getTimestamp());
             encodedEntry = (encodedEntry << (Ver4DictConstants::WORD_LEVEL_FIELD_SIZE * CHAR_BIT))
-                    ^ static_cast<uint64_t>(mHistoricalInfo.getLevel());
+                    | static_cast<uint8_t>(mHistoricalInfo.getLevel());
             encodedEntry = (encodedEntry << (Ver4DictConstants::WORD_COUNT_FIELD_SIZE * CHAR_BIT))
-                    ^ static_cast<uint64_t>(mHistoricalInfo.getCount());
+                    | static_cast<uint8_t>(mHistoricalInfo.getCount());
         } else {
             encodedEntry = (encodedEntry << (Ver4DictConstants::PROBABILITY_SIZE * CHAR_BIT))
-                    ^ static_cast<uint64_t>(mProbability);
+                    | static_cast<uint8_t>(mProbability);
         }
         return encodedEntry;
     }
