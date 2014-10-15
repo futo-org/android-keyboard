@@ -408,8 +408,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             // Decided to be in the sliding suggestion mode only when the touch point has been moved
             // upward. Further {@link MotionEvent}s will be delivered to
             // {@link #onTouchEvent(MotionEvent)}.
-            mNeedsToTransformTouchEventToHoverEvent = AccessibilityUtils.getInstance()
-                    .isTouchExplorationEnabled();
+            mNeedsToTransformTouchEventToHoverEvent =
+                    AccessibilityUtils.getInstance().isTouchExplorationEnabled();
             mIsDispatchingHoverEventToMoreSuggestions = false;
             return true;
         }
