@@ -78,11 +78,11 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getMutableShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
-            mBuffers, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &shortcutPolicy);
+            mBuffers, &ptNodeReader, &ptNodeArrayReader, &shortcutPolicy);
 
     int entryCountTable[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
-    if (!mBuffers->getMutableLanguageModelDictContent()->updateAllProbabilityEntries(headerPolicy,
-            entryCountTable)) {
+    if (!mBuffers->getMutableLanguageModelDictContent()->updateAllProbabilityEntriesForGC(
+            headerPolicy, entryCountTable)) {
         AKLOGE("Failed to update probabilities in language model dict content.");
         return false;
     }
@@ -118,7 +118,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     Ver4PatriciaTrieNodeWriter ptNodeWriterForNewBuffers(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &shortcutPolicy);
+            buffersToWrite, &ptNodeReader, &ptNodeArrayReader, &shortcutPolicy);
     DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&ptNodeWriterForNewBuffers,
                     buffersToWrite->getWritableTrieBuffer(), &dictPositionRelocationMap);
@@ -133,7 +133,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getMutableShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, headerPolicy, &newPtNodeReader, &newPtNodeArrayreader,
+            buffersToWrite, &newPtNodeReader, &newPtNodeArrayreader,
             &newShortcutPolicy);
     // Re-assign terminal IDs for valid terminal PtNodes.
     TerminalPositionLookupTable::TerminalIdMap terminalIdMap;

@@ -25,6 +25,7 @@ namespace latinime {
 
 const int LanguageModelDictContent::UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE = 0;
 const int LanguageModelDictContent::BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE = 1;
+const int LanguageModelDictContent::DUMMY_PROBABILITY_FOR_VALID_WORDS = 1;
 
 bool LanguageModelDictContent::save(FILE *const file) const {
     return mTrieMap.save(file);
@@ -143,6 +144,56 @@ bool LanguageModelDictContent::truncateEntries(const int *const entryCounts,
     return true;
 }
 
+bool LanguageModelDictContent::updateAllEntriesOnInputWord(const WordIdArrayView prevWordIds,
+        const int wordId, const bool isValid, const HistoricalInfo historicalInfo,
+        const HeaderPolicy *const headerPolicy, int *const outAddedNewNgramEntryCount) {
+    if (outAddedNewNgramEntryCount) {
+        *outAddedNewNgramEntryCount = 0;
+    }
+    if (!mHasHistoricalInfo) {
+        AKLOGE("updateAllEntriesOnInputWord is called for dictionary without historical info.");
+        return false;
+    }
+    const ProbabilityEntry originalUnigramProbabilityEntry = getProbabilityEntry(wordId);
+    const ProbabilityEntry updatedUnigramProbabilityEntry = createUpdatedEntryFrom(
+            originalUnigramProbabilityEntry, isValid, historicalInfo, headerPolicy);
+    if (!setProbabilityEntry(wordId, &updatedUnigramProbabilityEntry)) {
+        return false;
+    }
+    for (size_t i = 0; i < prevWordIds.size(); ++i) {
+        if (prevWordIds[i] == NOT_A_WORD_ID) {
+            break;
+        }
+        // TODO: Optimize this code.
+        const WordIdArrayView limitedPrevWordIds = prevWordIds.limit(i + 1);
+        const ProbabilityEntry originalNgramProbabilityEntry = getNgramProbabilityEntry(
+                limitedPrevWordIds, wordId);
+        const ProbabilityEntry updatedNgramProbabilityEntry = createUpdatedEntryFrom(
+                originalNgramProbabilityEntry, isValid, historicalInfo, headerPolicy);
+        if (!setNgramProbabilityEntry(limitedPrevWordIds, wordId, &updatedNgramProbabilityEntry)) {
+            return false;
+        }
+        if (!originalNgramProbabilityEntry.isValid() && outAddedNewNgramEntryCount) {
+            *outAddedNewNgramEntryCount += 1;
+        }
+    }
+    return true;
+}
+
+const ProbabilityEntry LanguageModelDictContent::createUpdatedEntryFrom(
+        const ProbabilityEntry &originalProbabilityEntry, const bool isValid,
+        const HistoricalInfo historicalInfo, const HeaderPolicy *const headerPolicy) const {
+    const HistoricalInfo updatedHistoricalInfo = ForgettingCurveUtils::createUpdatedHistoricalInfo(
+            originalProbabilityEntry.getHistoricalInfo(), isValid ?
+                    DUMMY_PROBABILITY_FOR_VALID_WORDS : NOT_A_PROBABILITY,
+            &historicalInfo, headerPolicy);
+    if (originalProbabilityEntry.isValid()) {
+        return ProbabilityEntry(originalProbabilityEntry.getFlags(), &updatedHistoricalInfo);
+    } else {
+        return ProbabilityEntry(0 /* flags */, &updatedHistoricalInfo);
+    }
+}
+
 bool LanguageModelDictContent::runGCInner(
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
         const TrieMap::TrieMapRange trieMapRange,
@@ -203,7 +254,7 @@ int LanguageModelDictContent::getBitmapEntryIndex(const WordIdArrayView prevWord
     return bitmapEntryIndex;
 }
 
-bool LanguageModelDictContent::updateAllProbabilityEntriesInner(const int bitmapEntryIndex,
+bool LanguageModelDictContent::updateAllProbabilityEntriesForGCInner(const int bitmapEntryIndex,
         const int level, const HeaderPolicy *const headerPolicy, int *const outEntryCounts) {
     for (const auto &entry : mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex)) {
         if (level > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
@@ -237,7 +288,7 @@ bool LanguageModelDictContent::updateAllProbabilityEntriesInner(const int bitmap
         if (!entry.hasNextLevelMap()) {
             continue;
         }
-        if (!updateAllProbabilityEntriesInner(entry.getNextLevelBitmapEntryIndex(), level + 1,
+        if (!updateAllProbabilityEntriesForGCInner(entry.getNextLevelBitmapEntryIndex(), level + 1,
                 headerPolicy, outEntryCounts)) {
             return false;
         }
