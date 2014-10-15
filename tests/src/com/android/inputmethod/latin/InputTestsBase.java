@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.test.ServiceTestCase;
@@ -45,6 +46,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Locale;
@@ -58,9 +60,11 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     private static final String DEFAULT_AUTO_CORRECTION_THRESHOLD = "1";
 
     // The message that sets the underline is posted with a 500 ms delay
-    protected static final int DELAY_TO_WAIT_FOR_UNDERLINE = 500;
+    protected static final int DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS = 500;
     // The message that sets predictions is posted with a 200 ms delay
-    protected static final int DELAY_TO_WAIT_FOR_PREDICTIONS = 200;
+    protected static final int DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS = 200;
+    // We wait for gesture computation for this delay
+    protected static final int DELAY_TO_WAIT_FOR_GESTURE_MILLIS = 200;
     private final int TIMEOUT_TO_WAIT_FOR_LOADING_MAIN_DICTIONARY_IN_SECONDS = 60;
 
     // Type for a test phony dictionary
@@ -217,7 +221,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         // Run messages to avoid the messages enqueued by startInputView() and its friends
         // to run on a later call and ruin things. We need to wait first because some of them
         // can be posted with a delay (notably,  MSG_RESUME_SUGGESTIONS)
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
     }
 
@@ -299,6 +303,47 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         for (int i = 0; i < stringToType.length(); i = stringToType.offsetByCodePoints(i, 1)) {
             type(stringToType.codePointAt(i));
         }
+    }
+
+    protected Point getXY(final int codePoint) {
+        final Key key = mKeyboard.getKey(codePoint);
+        if (key == null) {
+            throw new RuntimeException("Code point not on the keyboard");
+        } else {
+            return new Point(key.getX() + key.getWidth() / 2, key.getY() + key.getHeight() / 2);
+        }
+    }
+
+    protected void gesture(final String stringToGesture) {
+        if (StringUtils.codePointCount(stringToGesture) < 2) {
+            throw new RuntimeException("Can't gesture strings less than 2 chars long");
+        }
+
+        mLatinIME.onStartBatchInput();
+        final int startCodePoint = stringToGesture.codePointAt(0);
+        Point oldPoint = getXY(startCodePoint);
+        int timestamp = 0; // In milliseconds since the start of the gesture
+        final InputPointers pointers = new InputPointers(Constants.DEFAULT_GESTURE_POINTS_CAPACITY);
+        pointers.addPointer(oldPoint.x, oldPoint.y, 0 /* pointerId */, timestamp);
+
+        for (int i = Character.charCount(startCodePoint); i < stringToGesture.length();
+                i = stringToGesture.offsetByCodePoints(i, 1)) {
+            final Point newPoint = getXY(stringToGesture.codePointAt(i));
+            // Arbitrarily 0.5s between letters and 0.1 between events. Refine this later if needed.
+            final int STEPS = 5;
+            for (int j = 0; j < STEPS; ++j) {
+                timestamp += 100;
+                pointers.addPointer(oldPoint.x + ((newPoint.x - oldPoint.x) * j) / STEPS,
+                        oldPoint.y + ((newPoint.y - oldPoint.y) * j) / STEPS,
+                        0 /* pointerId */, timestamp);
+            }
+            oldPoint.x = newPoint.x;
+            oldPoint.y = newPoint.y;
+            mLatinIME.onUpdateBatchInput(pointers);
+        }
+        mLatinIME.onEndBatchInput(pointers);
+        sleep(DELAY_TO_WAIT_FOR_GESTURE_MILLIS);
+        runMessages();
     }
 
     protected void waitForDictionariesToBeLoaded() {
