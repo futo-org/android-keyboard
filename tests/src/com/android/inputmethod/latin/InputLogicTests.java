@@ -674,10 +674,15 @@ public class InputLogicTests extends InputTestsBase {
                 mEditText.getText().toString());
     }
 
-    private void typeWordAndPutCursorInside(final String word, final int startPos) {
+    private void typeOrGestureWordAndPutCursorInside(final boolean gesture, final String word,
+            final int startPos) {
         final int END_OF_WORD = startPos + word.length();
         final int NEW_CURSOR_POSITION = startPos + word.length() / 2;
-        type(word);
+        if (gesture) {
+            gesture(word);
+        } else {
+            type(word);
+        }
         sendUpdateForCursorMoveTo(END_OF_WORD);
         runMessages();
         sendUpdateForCursorMoveTo(NEW_CURSOR_POSITION);
@@ -685,6 +690,14 @@ public class InputLogicTests extends InputTestsBase {
         runMessages();
         ensureComposingSpanPos("move cursor inside word leaves composing span in the right place",
                 startPos, END_OF_WORD);
+    }
+
+    private void typeWordAndPutCursorInside(final String word, final int startPos) {
+        typeOrGestureWordAndPutCursorInside(false /* gesture */, word, startPos);
+    }
+
+    private void gestureWordAndPutCursorInside(final String word, final int startPos) {
+        typeOrGestureWordAndPutCursorInside(true /* gesture */, word, startPos);
     }
 
     private void ensureComposingSpanPos(final String message, final int from, final int to) {
@@ -696,6 +709,23 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_TYPE = "something";
         final String EXPECTED_RESULT = "some thing";
         typeWordAndPutCursorInside(WORD_TO_TYPE, 0 /* startPos */);
+        type(" ");
+        ensureComposingSpanPos("space while in the middle of a word cancels composition", -1, -1);
+        assertEquals("space in the middle of a composing word", EXPECTED_RESULT,
+                mEditText.getText().toString());
+        int cursorPos = sendUpdateForCursorMoveToEndOfLine();
+        runMessages();
+        type(" ");
+        assertEquals("mbo", "some thing ", mEditText.getText().toString());
+        typeWordAndPutCursorInside(WORD_TO_TYPE, cursorPos + 1 /* startPos */);
+        type(Constants.CODE_DELETE);
+        ensureComposingSpanPos("space while in the middle of a word cancels composition", -1, -1);
+    }
+
+    public void testTypeWithinGestureComposing() {
+        final String WORD_TO_TYPE = "something";
+        final String EXPECTED_RESULT = "some thing";
+        gestureWordAndPutCursorInside(WORD_TO_TYPE, 0 /* startPos */);
         type(" ");
         ensureComposingSpanPos("space while in the middle of a word cancels composition", -1, -1);
         assertEquals("space in the middle of a composing word", EXPECTED_RESULT,
