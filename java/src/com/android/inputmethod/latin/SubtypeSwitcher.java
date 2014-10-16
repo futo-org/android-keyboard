@@ -117,8 +117,12 @@ public final class SubtypeSwitcher {
         final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
 
-        onSubtypeChanged(mRichImm.getCurrentRawSubtype());
+        refreshSubtypeInfo();
         updateParametersOnStartInputView();
+    }
+
+    public void refreshSubtypeInfo() {
+        onSubtypeChanged(mRichImm.getCurrentRawSubtype());
     }
 
     /**
