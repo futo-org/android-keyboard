@@ -38,5 +38,6 @@ public final class MultiLingualSettingsFragment extends SubScreenFragment {
             removePreference(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY);
             removePreference(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST);
         }
+        AdditionalFeaturesSettingUtils.addAdditionalFeaturesPreferences(getActivity(), this);
     }
 }
