@@ -230,6 +230,7 @@ public class DictionaryInfoUtils {
 
     /**
      * Helper method to return a dictionary res id for a locale, or 0 if none.
+     * @param res resources for the app
      * @param locale dictionary locale
      * @return main dictionary resource id
      */
@@ -258,6 +259,7 @@ public class DictionaryInfoUtils {
 
     /**
      * Returns a main dictionary resource id
+     * @param res resources for the app
      * @param locale dictionary locale
      * @return main dictionary resource id
      */
@@ -281,6 +283,25 @@ public class DictionaryInfoUtils {
         // like to use for word lists included in resources, and the following is okay.
         return BinaryDictionaryGetter.MAIN_DICTIONARY_CATEGORY +
                 BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR + locale.getLanguage().toString();
+    }
+
+    /**
+     * Returns whether a main dictionary is readily available for this locale.
+     *
+     * This does not query the content provider.
+     *
+     * @param context context to open files upon
+     * @param locale dictionary locale
+     * @return true if a dictionary is available right away, false otherwise
+     */
+    public static boolean hasReadilyAvailableMainDictionaryForLocale(final Context context,
+            final Locale locale) {
+        final Resources res = context.getResources();
+        if (0 != getMainDictionaryResourceIdIfAvailableForLocale(res, locale)) {
+            return true;
+        }
+        final String fileName = getCacheFileName(getMainDictId(locale), locale.toString(), context);
+        return new File(fileName).exists();
     }
 
     public static DictionaryHeader getDictionaryFileHeaderOrNull(final File file) {
