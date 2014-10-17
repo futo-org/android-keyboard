@@ -19,24 +19,28 @@
 -->
 
 <merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
-    <!-- U+0C46: "ె" TELUGU VOWEL SIGN E
+    <!-- U+0C4A: "ొ" TELUGU VOWEL SIGN O
          U+0C12: "ఒ" TELUGU LETTER O -->
     <Key
-        latin:keySpec="&#x0C46;"
+        latin:keySpec="&#x0C4A;"
         latin:moreKeys="&#x0C12;" />
-    <!-- U+0C02: "ం" TELUGU SIGN ANUSVARA
+    <!-- U+0C46: "ె" TELUGU VOWEL SIGN E
          U+0C0E: "ఎ" TELUGU LETTER E -->
     <Key
-        latin:keySpec="&#x0C02;"
+        latin:keySpec="&#x0C46;"
         latin:moreKeys="&#x0C0E;" />
-    <!-- U+0C2E: "మ" TELUGU LETTER MA -->
-    <Key latin:keySpec="&#x0C2E;" />
+    <!-- U+0C2E: "మ" TELUGU LETTER MA
+         U+0C02: "ం" TELUGU SIGN ANUSVARA
+         U+0C01: "ఁ" TELUGU SIGN CANDRABINDU -->
+    <Key latin:keySpec="&#x0C2E;"
+         latin:moreKeys="&#x0C02;,&#x0C01;" />
     <!-- U+0C28: "న" TELUGU LETTER NA
          U+0C23: "ణ" TELUGU LETTER NNA
-         U+0C19: "ఙ" TELUGU LETTER NGA -->
+         U+0C19: "ఙ" TELUGU LETTER NGA
+         U+0C1E: "ఞ" TELUGU LETTER NYA -->
     <Key
         latin:keySpec="&#x0C28;"
-        latin:moreKeys="&#x0C23;,&#x0C19;" />
+        latin:moreKeys="&#x0C23;,&#x0C19;,&#x0C1E;" />
     <!-- U+0C35: "వ" TELUGU LETTER VA -->
     <Key latin:keySpec="&#x0C35;" />
     <!-- U+0C32: "ల" TELUGU LETTER LA
@@ -50,10 +54,10 @@
         latin:keySpec="&#x0C38;"
         latin:moreKeys="&#x0C36;" />
     <!-- U+0C0B: "ఋ" TELUGU LETTER VOCALIC R
-         U+0C4D/U+0C30: "్ర" TELUGU SIGN VIRAMA/TELUGU LETTER RA -->
+         U+0C43: "ృ" TELUGU VOWEL SIGN VOCALIC R -->
     <Key
         latin:keySpec="&#x0C0B;"
-        latin:moreKeys="&#x0C4D;&#x0C30;" />
+        latin:moreKeys="&#x0C43;" />
     <!-- U+0C37: "ష" TELUGU LETTER SSA
          U+0C15/U+0C4D/U+0C37: "క్ష" TELUGU LETTER KA/TELUGU SIGN VIRAMA/TELUGU LETTER SSA -->
     <Key
