@@ -361,6 +361,8 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="prefs_keypress_vibration_duration_settings">Keypress vibration duration</string>
     <!-- Title of the settings for keypress sound volume [CHAR LIMIT=35] -->
     <string name="prefs_keypress_sound_volume_settings">Keypress sound volume</string>
+    <!-- Title of the settings for key long press delay [CHAR LIMIT=35] -->
+    <string name="prefs_key_longpress_timeout_settings">Key long press delay</string>
 
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>

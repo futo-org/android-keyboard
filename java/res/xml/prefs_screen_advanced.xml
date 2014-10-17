@@ -31,6 +31,12 @@
         android:key="pref_keypress_sound_volume"
         android:title="@string/prefs_keypress_sound_volume_settings"
         latin:maxValue="100" /> <!-- percent -->
+    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+        android:key="pref_key_longpress_timeout"
+        android:title="@string/prefs_key_longpress_timeout_settings"
+        latin:minValue="@integer/config_min_longpress_timeout"
+        latin:maxValue="@integer/config_max_longpress_timeout"
+        latin:stepValue="@integer/config_longpress_timeout_step" />
     <!-- The settings for showing setup wizard application icon shouldn't be persistent and
          the default value is added programmatically. -->
     <CheckBoxPreference

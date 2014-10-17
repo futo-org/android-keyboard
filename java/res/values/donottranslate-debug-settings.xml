@@ -28,8 +28,6 @@
     <string name="sliding_key_input_preview">Show slide indicator</string>
     <!-- Option summary to enable sliding key input indicator. The user can see a rubber band-like effect during sliding key input. [CHAR LIMIT=66]-->
     <string name="sliding_key_input_preview_summary">Display visual cue while sliding from Shift or Symbol keys</string>
-    <!-- Title of the settings for key long press delay [CHAR LIMIT=35] -->
-    <string name="prefs_key_longpress_timeout_settings">Key long press delay</string>
     <!-- Title of the settings for customize key popup animation parameters [CHAR LIMIT=35] -->
     <string name="prefs_customize_key_preview_animation">Customize key preview animation</string>
     <!-- Title of the settings for key popup show up animation duration (in milliseconds) [CHAR LIMIT=35] -->
