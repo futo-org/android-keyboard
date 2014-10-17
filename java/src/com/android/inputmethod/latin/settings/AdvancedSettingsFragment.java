@@ -113,6 +113,7 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
 
         setupKeypressVibrationDurationSettings();
         setupKeypressSoundVolumeSettings();
+        setupKeyLongpressTimeoutSettings();
         refreshEnablingsOfKeypressSoundAndVibrationSettings();
     }
 
@@ -247,6 +248,45 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
                 am.playSoundEffect(
                         AudioManager.FX_KEYPRESS_STANDARD, getValueFromPercentage(value));
             }
+        });
+    }
+
+    private void setupKeyLongpressTimeoutSettings() {
+        final SharedPreferences prefs = getSharedPreferences();
+        final Resources res = getResources();
+        final SeekBarDialogPreference pref = (SeekBarDialogPreference)findPreference(
+                Settings.PREF_KEY_LONGPRESS_TIMEOUT);
+        if (pref == null) {
+            return;
+        }
+        pref.setInterface(new SeekBarDialogPreference.ValueProxy() {
+            @Override
+            public void writeValue(final int value, final String key) {
+                prefs.edit().putInt(key, value).apply();
+            }
+
+            @Override
+            public void writeDefaultValue(final String key) {
+                prefs.edit().remove(key).apply();
+            }
+
+            @Override
+            public int readValue(final String key) {
+                return Settings.readKeyLongpressTimeout(prefs, res);
+            }
+
+            @Override
+            public int readDefaultValue(final String key) {
+                return Settings.readDefaultKeyLongpressTimeout(res);
+            }
+
+            @Override
+            public String getValueText(final int value) {
+                return res.getString(R.string.abbreviation_unit_milliseconds, value);
+            }
+
+            @Override
+            public void feedbackValue(final int value) {}
         });
     }
 }

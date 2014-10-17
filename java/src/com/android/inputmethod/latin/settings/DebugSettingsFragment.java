@@ -73,7 +73,6 @@ public final class DebugSettingsFragment extends SubScreenFragment
             dictDumpPreferenceGroup.addPreference(pref);
         }
         final Resources res = getResources();
-        setupKeyLongpressTimeoutSettings();
         setupKeyPreviewAnimationDuration(DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_DURATION,
                 res.getInteger(R.integer.config_key_preview_show_up_duration));
         setupKeyPreviewAnimationDuration(DebugSettings.PREF_KEY_PREVIEW_DISMISS_DURATION,
@@ -161,45 +160,6 @@ public final class DebugSettingsFragment extends SubScreenFragment
             mDebugMode.setTitle(getString(R.string.prefs_debug_mode));
             mDebugMode.setSummary(version);
         }
-    }
-
-    private void setupKeyLongpressTimeoutSettings() {
-        final SharedPreferences prefs = getSharedPreferences();
-        final Resources res = getResources();
-        final SeekBarDialogPreference pref = (SeekBarDialogPreference)findPreference(
-                DebugSettings.PREF_KEY_LONGPRESS_TIMEOUT);
-        if (pref == null) {
-            return;
-        }
-        pref.setInterface(new SeekBarDialogPreference.ValueProxy() {
-            @Override
-            public void writeValue(final int value, final String key) {
-                prefs.edit().putInt(key, value).apply();
-            }
-
-            @Override
-            public void writeDefaultValue(final String key) {
-                prefs.edit().remove(key).apply();
-            }
-
-            @Override
-            public int readValue(final String key) {
-                return Settings.readKeyLongpressTimeout(prefs, res);
-            }
-
-            @Override
-            public int readDefaultValue(final String key) {
-                return Settings.readDefaultKeyLongpressTimeout(res);
-            }
-
-            @Override
-            public String getValueText(final int value) {
-                return res.getString(R.string.abbreviation_unit_milliseconds, value);
-            }
-
-            @Override
-            public void feedbackValue(final int value) {}
-        });
     }
 
     private void setupKeyPreviewAnimationScale(final String prefKey, final float defaultValue) {

@@ -31,7 +31,6 @@ public final class DebugSettings {
             "force_physical_keyboard_special_key";
     public static final String PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS =
             "pref_has_custom_key_preview_animation_params";
-    public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
     public static final String PREF_KEY_PREVIEW_DISMISS_DURATION =
             "pref_key_preview_dismiss_duration";
     public static final String PREF_KEY_PREVIEW_DISMISS_END_X_SCALE =
