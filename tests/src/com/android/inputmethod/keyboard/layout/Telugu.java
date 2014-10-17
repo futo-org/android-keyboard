@@ -140,8 +140,8 @@ public final class Telugu extends LayoutBase {
                     key("\u0C2A", moreKey("\u0C2B")),
                     // U+0C30: "ర" TELUGU LETTER RA
                     // U+0C31: "ఱ" TELUGU LETTER RRA
-                    // U+0C43: "ృ" TELUGU VOWEL SIGN VOCALIC R
-                    key("\u0C30", joinMoreKeys("\u0C31", "\u0C43")),
+                    // U+0C4D/U+0C30: "్ర" TELUGU SIGN VIRAMA/TELUGU LETTER RA
+                    key("\u0C30", joinMoreKeys("\u0C31", "\u0C4D\u0C30")),
                     // U+0C15: "క" TELUGU LETTER KA
                     // U+0C16: "ఖ" TELUGU LETTER KHA
                     key("\u0C15", moreKey("\u0C16")),
@@ -155,18 +155,21 @@ public final class Telugu extends LayoutBase {
                     // U+0C20: "ఠ" TELUGU LETTER TTHA
                     key("\u0C1F", moreKey("\u0C20")))
             .setKeysOfRow(3,
-                    // U+0C46: "ె" TELUGU VOWEL SIGN E
+                    // U+0C4A: "ొ" TELUGU VOWEL SIGN O
                     // U+0C12: "ఒ" TELUGU LETTER O
-                    key("\u0C46", moreKey("\u0C12")),
-                    // U+0C02: "ం" TELUGU SIGN ANUSVARA
+                    key("\u0C4A", moreKey("\u0C12")),
+                    // U+0C46: "ె" TELUGU VOWEL SIGN E
                     // U+0C0E: "ఎ" TELUGU LETTER E
-                    key("\u0C02", moreKey("\u0C0E")),
+                    key("\u0C46", moreKey("\u0C0E")),
                     // U+0C2E: "మ" TELUGU LETTER MA
-                    "\u0C2E",
+                    // U+0C02: "ం" TELUGU SIGN ANUSVARA
+                    // U+0C01: "ఁ" TELUGU SIGN CANDRABINDU
+                    key("\u0C2E", joinMoreKeys("\u0C02", "\u0C01")),
                     // U+0C28: "న" TELUGU LETTER NA
                     // U+0C23: "ణ" TELUGU LETTER NNA
                     // U+0C19: "ఙ" TELUGU LETTER NGA
-                    key("\u0C28", joinMoreKeys("\u0C23", "\u0C19")),
+                    // U+0C1E: "ఞ" TELUGU LETTER NYA
+                    key("\u0C28", joinMoreKeys("\u0C23", "\u0C19", "\u0C1E")),
                     // U+0C35: "వ" TELUGU LETTER VA
                     "\u0C35",
                     // U+0C32: "ల" TELUGU LETTER LA
@@ -176,8 +179,8 @@ public final class Telugu extends LayoutBase {
                     // U+0C36: "శ" TELUGU LETTER SHA
                     key("\u0C38", moreKey("\u0C36")),
                     // U+0C0B: "ఋ" TELUGU LETTER VOCALIC R
-                    // U+0C4D/U+0C30: "్ర" TELUGU SIGN VIRAMA/TELUGU LETTER RA
-                    key("\u0C0B", moreKey("\u0C4D\u0C30")),
+                    // U+0C43: "ృ" TELUGU VOWEL SIGN VOCALIC R
+                    key("\u0C0B", moreKey("\u0C43")),
                     // U+0C37: "ష" TELUGU LETTER SSA
                     // U+0C15/U+0C4D/U+0C37:
                     //     "క్ష" TELUGU LETTER KA/TELUGU SIGN VIRAMA/TELUGU LETTER SSA

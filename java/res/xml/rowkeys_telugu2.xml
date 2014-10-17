@@ -51,10 +51,10 @@
         latin:moreKeys="&#x0C2B;" />
     <!-- U+0C30: "ర" TELUGU LETTER RA
          U+0C31: "ఱ" TELUGU LETTER RRA
-         U+0C43: "ృ" TELUGU VOWEL SIGN VOCALIC R -->
+         U+0C4D/U+0C30: "్ర" TELUGU SIGN VIRAMA/TELUGU LETTER RA -->
     <Key
         latin:keySpec="&#x0C30;"
-        latin:moreKeys="&#x0C31;,&#x0C43;" />
+        latin:moreKeys="&#x0C31;,&#x0C4D;&#x0C30;" />
     <!-- U+0C15: "క" TELUGU LETTER KA
          U+0C16: "ఖ" TELUGU LETTER KHA -->
     <Key
