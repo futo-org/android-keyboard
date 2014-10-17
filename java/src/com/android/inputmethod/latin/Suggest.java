@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -48,6 +49,16 @@ public final class Suggest {
 
     private static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private final DictionaryFacilitator mDictionaryFacilitator;
+
+    private static final int MAXIMUM_AUTO_CORRECT_LENGTH_FOR_GERMAN = 12;
+    private static final HashMap<String, Integer> sLanguageToMaximumAutoCorrectionWithSpaceLength =
+            new HashMap<>();
+    static {
+        // TODO: should we add Finnish here?
+        // TODO: This should not be hardcoded here but be written in the dictionary header
+        sLanguageToMaximumAutoCorrectionWithSpaceLength.put(Locale.GERMAN.getLanguage(),
+                MAXIMUM_AUTO_CORRECT_LENGTH_FOR_GERMAN);
+    }
 
     private float mAutoCorrectionThreshold;
 
@@ -168,8 +179,18 @@ public final class Suggest {
             // TODO: we may want to have shortcut-only entries auto-correct in the future.
             hasAutoCorrection = false;
         } else {
-            hasAutoCorrection = AutoCorrectionUtils.suggestionExceedsAutoCorrectionThreshold(
-                    suggestionResults.first(), consideredWord, mAutoCorrectionThreshold);
+            final SuggestedWordInfo firstSuggestion = suggestionResults.first();
+            if (!AutoCorrectionUtils.suggestionExceedsAutoCorrectionThreshold(
+                    firstSuggestion, consideredWord, mAutoCorrectionThreshold)) {
+                // Score is too low for autocorrect
+                hasAutoCorrection = false;
+            } else {
+                // We have a high score, so we need to check if this suggestion is in the correct
+                // form to allow auto-correcting to it in this language. For details of how this
+                // is determined, see #isAllowedByAutoCorrectionWithSpaceFilter.
+                // TODO: this should not have its own logic here but be handled by the dictionary.
+                hasAutoCorrection = isAllowedByAutoCorrectionWithSpaceFilter(firstSuggestion);
+            }
         }
 
         if (!TextUtils.isEmpty(typedWord)) {
@@ -285,6 +306,41 @@ public final class Suggest {
             suggestionsList.add(cur);
         }
         return suggestionsList;
+    }
+
+    /**
+     * Computes whether this suggestion should be blocked or not in this language
+     *
+     * This function implements a filter that avoids auto-correcting to suggestions that contain
+     * spaces that are above a certain language-dependent character limit. In languages like German
+     * where it's possible to concatenate many words, it often happens our dictionary does not
+     * have the longer words. In this case, we offer a lot of unhelpful suggestions that contain
+     * one or several spaces. Ideally we should understand what the user wants and display useful
+     * suggestions by improving the dictionary and possibly having some specific logic. Until
+     * that's possible we should avoid displaying unhelpful suggestions. But it's hard to tell
+     * whether a suggestion is useful or not. So at least for the time being we block
+     * auto-correction when the suggestion is long and contains a space, which should avoid the
+     * worst damage.
+     * This function is implementing that filter. If the language enforces no such limit, then it
+     * always returns true. If the suggestion contains no space, it also returns true. Otherwise,
+     * it checks the length against the language-specific limit.
+     *
+     * @param info the suggestion info
+     * @return whether it's fine to auto-correct to this.
+     */
+    private boolean isAllowedByAutoCorrectionWithSpaceFilter(final SuggestedWordInfo info) {
+        final Locale locale = info.mSourceDict.mLocale;
+        if (null == locale) {
+            return true;
+        }
+        final Integer maximumLengthForThisLanguage =
+                sLanguageToMaximumAutoCorrectionWithSpaceLength.get(locale.getLanguage());
+        if (null == maximumLengthForThisLanguage) {
+            // This language does not enforce a maximum length to auto-correction
+            return true;
+        }
+        return info.mWord.length() <= maximumLengthForThisLanguage
+                || -1 == info.mWord.indexOf(Constants.CODE_SPACE);
     }
 
     /* package for test */ static SuggestedWordInfo getTransformedSuggestedWordInfo(
