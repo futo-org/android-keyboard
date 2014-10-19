@@ -30,7 +30,7 @@
     <string name="settings_screen_appearance" msgid="9153102634339912029">"Aspect"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"Opțiuni multilingve"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Tastare gestuală"</string>
-    <string name="settings_screen_correction" msgid="1616818407747682955">"Corectare text"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Corectarea textului"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Setări avansate"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Temă"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Comut. alte metode de introd."</string>
