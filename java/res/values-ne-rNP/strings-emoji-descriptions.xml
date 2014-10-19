@@ -129,8 +129,8 @@
     <string name="spoken_emoji_27A1" msgid="3513434778263100580">"कालो दाँयातीर तीर"</string>
     <string name="spoken_emoji_27B0" msgid="203395646864662198">"घुम्रिएको फेरो"</string>
     <string name="spoken_emoji_27BF" msgid="4940514642375640510">"दोहोरो घुम्रिएको फेरो"</string>
-    <string name="spoken_emoji_2934" msgid="9062130477982973457">"दाँयातीर इशारा तीर त्यसपछि माथिको घुमाँइ"</string>
-    <string name="spoken_emoji_2935" msgid="6198710960720232074">"दाँयातीर इशारा तीर त्यसपछि तलको घुमाँइ"</string>
+    <string name="spoken_emoji_2934" msgid="9062130477982973457">"दाँया तिर  देखादने तीर त्यसपछि माथिको घुमाई"</string>
+    <string name="spoken_emoji_2935" msgid="6198710960720232074">"दाँया तिर देखाउने तीर त्यसपछि तलको घुमाँइ"</string>
     <string name="spoken_emoji_2B05" msgid="4813405635410707690">"कालोतीर बायाँतर्फ"</string>
     <string name="spoken_emoji_2B06" msgid="1223172079106250748">"कालो तीर माथि तर्फ"</string>
     <string name="spoken_emoji_2B07" msgid="1599124424746596150">"कालो तीर तल तर्फ"</string>
@@ -669,10 +669,10 @@
     <string name="spoken_emoji_1F537" msgid="3158915214347274626">"ठूलो नीलो हीरा"</string>
     <string name="spoken_emoji_1F538" msgid="4300084249474451991">"लघु सुन्तला हीरा"</string>
     <string name="spoken_emoji_1F539" msgid="6535159756325742275">"लघु नीलो हीरा"</string>
-    <string name="spoken_emoji_1F53A" msgid="3728196273988781389">"माथी-इशारा रातो त्रिकोण"</string>
-    <string name="spoken_emoji_1F53B" msgid="7182097039614128707">"तल-इशारा रातो त्रिकोण"</string>
+    <string name="spoken_emoji_1F53A" msgid="3728196273988781389">"माथि-देखाउने रातो त्रिकोण"</string>
+    <string name="spoken_emoji_1F53B" msgid="7182097039614128707">"तल-देखाउने रातो त्रिकोण"</string>
     <string name="spoken_emoji_1F53C" msgid="4077022046319615029">"माथी इशारा सानो रातो त्रिकोण"</string>
-    <string name="spoken_emoji_1F53D" msgid="3939112784894620713">"तल-इशारा सानो रातो त्रिकोण"</string>
+    <string name="spoken_emoji_1F53D" msgid="3939112784894620713">"तल-देखाउने सानो रातो त्रिकोण"</string>
     <string name="spoken_emoji_1F550" msgid="7761392621689986218">"घडी अनुहार एक बजे"</string>
     <string name="spoken_emoji_1F551" msgid="2699448504113431716">"घडी अनुहार दुई बजे"</string>
     <string name="spoken_emoji_1F552" msgid="5872107867411853750">"घडी अनुहार तीन बजे"</string>
