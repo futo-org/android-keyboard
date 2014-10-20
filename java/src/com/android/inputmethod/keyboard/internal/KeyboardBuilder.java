@@ -733,18 +733,18 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private boolean matchLocaleCodes(TypedArray caseAttr, final Locale[] locales) {
+    private static boolean matchLocaleCodes(TypedArray caseAttr, final Locale[] locales) {
         // TODO: adujst this for multilingual input
         return matchString(caseAttr, R.styleable.Keyboard_Case_localeCode, locales[0].toString());
     }
 
-    private boolean matchLanguageCodes(TypedArray caseAttr, Locale[] locales) {
+    private static boolean matchLanguageCodes(TypedArray caseAttr, Locale[] locales) {
         // TODO: adujst this for multilingual input
         return matchString(caseAttr, R.styleable.Keyboard_Case_languageCode,
                 locales[0].getLanguage());
     }
 
-    private boolean matchCountryCodes(TypedArray caseAttr, Locale[] locales) {
+    private static boolean matchCountryCodes(TypedArray caseAttr, Locale[] locales) {
         // TODO: adujst this for multilingual input
         return matchString(caseAttr, R.styleable.Keyboard_Case_countryCode,
                 locales[0].getCountry());

@@ -16,7 +16,6 @@
 
 package android.util;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Pair<T1, T2> {

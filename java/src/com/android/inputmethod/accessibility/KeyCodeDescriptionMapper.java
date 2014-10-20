@@ -346,7 +346,8 @@ final class KeyCodeDescriptionMapper {
     }
 
     // TODO: Remove this method once TTS supports emoticon verbalization.
-    private String getSpokenEmoticonDescription(final Context context, final String outputText) {
+    private static String getSpokenEmoticonDescription(final Context context,
+            final String outputText) {
         final StringBuilder sb = new StringBuilder(SPOKEN_EMOTICON_RESOURCE_NAME_PREFIX);
         final int textLength = outputText.length();
         for (int index = 0; index < textLength; index = outputText.offsetByCodePoints(index, 1)) {

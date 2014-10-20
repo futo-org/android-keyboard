@@ -121,12 +121,11 @@ final public class BinaryDictionaryGetter {
                 // reason some dictionaries have been installed BUT the dictionary pack can't be
                 // found anymore it's safer to actually supply installed dictionaries.
                 return true;
-            } else {
-                // The default is true here for the same reasons as above. We got the dictionary
-                // pack but if we don't have any settings for it it means the user has never been
-                // to the settings yet. So by default, the main dictionaries should be on.
-                return mDictPreferences.getBoolean(dictId, true);
             }
+            // The default is true here for the same reasons as above. We got the dictionary
+            // pack but if we don't have any settings for it it means the user has never been
+            // to the settings yet. So by default, the main dictionaries should be on.
+            return mDictPreferences.getBoolean(dictId, true);
         }
     }
 

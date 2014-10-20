@@ -36,17 +36,17 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     /**
      * A utility class for reading a PtNode.
      */
-    protected static class PtNodeReader {
-        private static ProbabilityInfo readProbabilityInfo(final DictBuffer dictBuffer) {
+    static class PtNodeReader {
+        static ProbabilityInfo readProbabilityInfo(final DictBuffer dictBuffer) {
             // Ver2 dicts don't contain historical information.
             return new ProbabilityInfo(dictBuffer.readUnsignedByte());
         }
 
-        protected static int readPtNodeOptionFlags(final DictBuffer dictBuffer) {
+        static int readPtNodeOptionFlags(final DictBuffer dictBuffer) {
             return dictBuffer.readUnsignedByte();
         }
 
-        protected static int readChildrenAddress(final DictBuffer dictBuffer,
+        static int readChildrenAddress(final DictBuffer dictBuffer,
                 final int ptNodeFlags) {
             switch (ptNodeFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
                 case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
@@ -62,7 +62,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         }
 
         // Reads shortcuts and returns the read length.
-        protected static int readShortcut(final DictBuffer dictBuffer,
+        static int readShortcut(final DictBuffer dictBuffer,
                 final ArrayList<WeightedString> shortcutTargets) {
             final int pointerBefore = dictBuffer.position();
             dictBuffer.readUnsignedShort(); // skip the size
@@ -76,7 +76,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
             return dictBuffer.position() - pointerBefore;
         }
 
-        protected static int readBigramAddresses(final DictBuffer dictBuffer,
+        static int readBigramAddresses(final DictBuffer dictBuffer,
                 final ArrayList<PendingAttribute> bigrams, final int baseAddress) {
             int readLength = 0;
             int bigramCount = 0;

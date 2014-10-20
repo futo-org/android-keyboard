@@ -147,7 +147,7 @@ final class EmojiCategory {
         mShownCategories.add(properties);
     }
 
-    public String getCategoryName(final int categoryId, final int categoryPageId) {
+    public static String getCategoryName(final int categoryId, final int categoryPageId) {
         return sCategoryName[categoryId] + "-" + categoryPageId;
     }
 

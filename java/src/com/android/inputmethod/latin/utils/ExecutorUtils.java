@@ -27,7 +27,7 @@ import java.util.concurrent.ThreadFactory;
  * Utilities to manage executors.
  */
 public class ExecutorUtils {
-    private static final ConcurrentHashMap<String, ExecutorService> sExecutorMap =
+    static final ConcurrentHashMap<String, ExecutorService> sExecutorMap =
             new ConcurrentHashMap<>();
 
     private static class ThreadFactoryWithId implements ThreadFactory {
@@ -49,7 +49,7 @@ public class ExecutorUtils {
     public static ExecutorService getExecutor(final String id) {
         ExecutorService executor = sExecutorMap.get(id);
         if (executor == null) {
-            synchronized(sExecutorMap) {
+            synchronized (sExecutorMap) {
                 executor = sExecutorMap.get(id);
                 if (executor == null) {
                     executor = Executors.newSingleThreadExecutor(new ThreadFactoryWithId(id));
@@ -65,7 +65,7 @@ public class ExecutorUtils {
      */
     @UsedForTesting
     public static void shutdownAllExecutors() {
-        synchronized(sExecutorMap) {
+        synchronized (sExecutorMap) {
             for (final ExecutorService executor : sExecutorMap.values()) {
                 executor.execute(new Runnable() {
                     @Override

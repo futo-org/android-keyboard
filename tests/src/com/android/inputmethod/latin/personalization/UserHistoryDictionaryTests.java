@@ -67,14 +67,14 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         FileUtils.deleteFilteredFiles(dictFile.getParentFile(), filenameFilter);
     }
 
-    private void printAllFiles(final File dir) {
+    private static void printAllFiles(final File dir) {
         Log.d(TAG, dir.getAbsolutePath());
         for (final File file : dir.listFiles()) {
             Log.d(TAG, "  " + file.getName());
         }
     }
 
-    private void checkExistenceAndRemoveDictFile(final UserHistoryDictionary dict,
+    private static void checkExistenceAndRemoveDictFile(final UserHistoryDictionary dict,
             final File dictFile) {
         Log.d(TAG, "waiting for writing ...");
         dict.waitAllTasksForTests();
@@ -193,7 +193,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
      * Clear all entries in the user history dictionary.
      * @param dict the user history dictionary.
      */
-    private void clearHistory(final UserHistoryDictionary dict) {
+    private static void clearHistory(final UserHistoryDictionary dict) {
         dict.waitAllTasksForTests();
         dict.clear();
         dict.close();

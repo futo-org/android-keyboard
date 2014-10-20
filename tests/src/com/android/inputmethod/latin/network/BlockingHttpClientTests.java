@@ -128,7 +128,7 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         assertTrue("ResponseProcessor was not invoked", processor.mInvoked);
     }
 
-    private static class FakeErrorResponseProcessor implements ResponseProcessor<Void> {
+    static class FakeErrorResponseProcessor implements ResponseProcessor<Void> {
         @Override
         public Void onSuccess(InputStream response) {
             fail("Expected an error but received success");

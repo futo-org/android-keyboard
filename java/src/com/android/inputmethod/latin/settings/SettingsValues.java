@@ -273,9 +273,8 @@ public class SettingsValues {
         final RichInputMethodManager imm = RichInputMethodManager.getInstance();
         if (mIncludesOtherImesInLanguageSwitchList) {
             return imm.hasMultipleEnabledIMEsOrSubtypes(false /* include aux subtypes */);
-        } else {
-            return imm.hasMultipleEnabledSubtypesInThisIme(false /* include aux subtypes */);
         }
+        return imm.hasMultipleEnabledSubtypesInThisIme(false /* include aux subtypes */);
     }
 
     public boolean isSameInputType(final EditorInfo editorInfo) {

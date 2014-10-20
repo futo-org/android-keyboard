@@ -51,7 +51,7 @@ public final class SpannableStringUtils {
             // of a word. But the spans have been split into two by the getText{Before,After}Cursor
             // methods, so after concatenation they may end in the middle of a word.
             // Since we don't use them, we can just remove them and avoid crashing.
-            fl &= ~Spannable.SPAN_PARAGRAPH;
+            fl &= ~Spanned.SPAN_PARAGRAPH;
 
             int st = source.getSpanStart(spans[i]);
             int en = source.getSpanEnd(spans[i]);

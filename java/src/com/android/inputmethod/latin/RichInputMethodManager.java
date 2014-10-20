@@ -20,7 +20,6 @@ import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;

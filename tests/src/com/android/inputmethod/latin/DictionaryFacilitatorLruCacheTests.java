@@ -47,7 +47,7 @@ public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
                 getContext(), MAX_CACHE_SIZE_LARGE, ""));
     }
 
-    private void testGetFacilitator(final DictionaryFacilitatorLruCache cache) {
+    private static void testGetFacilitator(final DictionaryFacilitatorLruCache cache) {
         final DictionaryFacilitator dictionaryFacilitatorEnUs = cache.get(Locale.US);
         assertNotNull(dictionaryFacilitatorEnUs);
         assertTrue(dictionaryFacilitatorEnUs.isForLocales(new Locale[] { Locale.US }));
@@ -68,7 +68,7 @@ public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
                 getContext(), MAX_CACHE_SIZE_LARGE, ""));
     }
 
-    private void testSetUseContactsDictionary(final DictionaryFacilitatorLruCache cache) {
+    private static void testSetUseContactsDictionary(final DictionaryFacilitatorLruCache cache) {
         assertNull(cache.get(Locale.US).getSubDictForTesting(Dictionary.TYPE_CONTACTS));
         cache.setUseContactsDictionary(true /* useContactsDictionary */);
         assertNotNull(cache.get(Locale.US).getSubDictForTesting(Dictionary.TYPE_CONTACTS));

@@ -138,6 +138,21 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         return mKeyDetector.detectHitKey(x, y);
     }
 
+    void callListenerOnReleaseKey(final Key releasedKey, final boolean withKeyRegistering) {
+        releasedKey.onReleased();
+        invalidateKey(releasedKey);
+        if (withKeyRegistering) {
+            mListener.onReleaseKey(releasedKey);
+        }
+    }
+
+    void callListenerOnPressKey(final Key pressedKey) {
+        mPendingKeyDown = null;
+        pressedKey.onReleased();
+        invalidateKey(pressedKey);
+        mListener.onPressKey(pressedKey);
+    }
+
     public void releaseCurrentKey(final boolean withKeyRegistering) {
         mHandler.removeCallbacks(mPendingKeyDown);
         mPendingKeyDown = null;
@@ -145,11 +160,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         if (currentKey == null) {
             return;
         }
-        currentKey.onReleased();
-        invalidateKey(currentKey);
-        if (withKeyRegistering) {
-            mListener.onReleaseKey(currentKey);
-        }
+        callListenerOnReleaseKey(currentKey, withKeyRegistering);
         mCurrentKey = null;
     }
 
@@ -165,10 +176,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         mPendingKeyDown = new Runnable() {
             @Override
             public void run() {
-                mPendingKeyDown = null;
-                key.onPressed();
-                invalidateKey(key);
-                mListener.onPressKey(key);
+                callListenerOnPressKey(key);
             }
         };
         mHandler.postDelayed(mPendingKeyDown, KEY_PRESS_DELAY_TIME);
@@ -195,15 +203,11 @@ final class EmojiPageKeyboardView extends KeyboardView implements
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    key.onReleased();
-                    invalidateKey(key);
-                    mListener.onReleaseKey(key);
+                    callListenerOnReleaseKey(key, true /* withRegistering */);
                 }
             }, KEY_RELEASE_DELAY_TIME);
         } else {
-            key.onReleased();
-            invalidateKey(key);
-            mListener.onReleaseKey(key);
+            callListenerOnReleaseKey(key, true /* withRegistering */);
         }
         return true;
     }

@@ -21,7 +21,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 import android.text.style.SuggestionSpan;
 import android.text.style.URLSpan;
 import android.text.SpannableStringBuilder;
-import android.text.Spannable;
 import android.text.Spanned;
 
 @SmallTest
@@ -34,8 +33,8 @@ public class SpannableStringUtilsTests extends AndroidTestCase {
         for (int i = 0; i < N; ++i) {
             // Put a PARAGRAPH-flagged span that should not be found in the result.
             s.setSpan(new SuggestionSpan(getContext(),
-                    new String[] {"" + i}, Spannable.SPAN_PARAGRAPH),
-                    i * 12, i * 12 + 12, Spannable.SPAN_PARAGRAPH);
+                    new String[] {"" + i}, Spanned.SPAN_PARAGRAPH),
+                    i * 12, i * 12 + 12, Spanned.SPAN_PARAGRAPH);
             // Put a normal suggestion span that should be found in the result.
             s.setSpan(new SuggestionSpan(getContext(), new String[] {"" + i}, 0), i, i * 2, 0);
             // Put a URL span than should not be found in the result.
@@ -51,7 +50,7 @@ public class SpannableStringUtilsTests extends AndroidTestCase {
         for (int i = 0; i < spans.length; i++) {
             final int flags = result.getSpanFlags(spans[i]);
             assertEquals("Should not find a span with PARAGRAPH flag",
-                    flags & Spannable.SPAN_PARAGRAPH, 0);
+                    flags & Spanned.SPAN_PARAGRAPH, 0);
             assertTrue("Should be a SuggestionSpan", spans[i] instanceof SuggestionSpan);
         }
     }

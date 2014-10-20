@@ -30,9 +30,6 @@ import java.util.List;
  * Helper class to easy up manipulation of dictionary pack metadata.
  */
 public class MetadataHandler {
-    @SuppressWarnings("unused")
-    private static final String TAG = "DictionaryProvider:" + MetadataHandler.class.getSimpleName();
-
     // The canonical file name for metadata. This is not the name of a real file on the
     // device, but a symbolic name used in the database and in metadata handling. It is never
     // tested against, only used for human-readability as the file name for the metadata.

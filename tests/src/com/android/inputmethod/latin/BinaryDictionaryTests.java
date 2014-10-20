@@ -111,13 +111,12 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), formatVersion,
                 Locale.ENGLISH, attributeMap)) {
             return file;
-        } else {
-            throw new IOException("Empty dictionary " + file.getAbsolutePath()
-                    + " cannot be created. Format version: " + formatVersion);
         }
+        throw new IOException("Empty dictionary " + file.getAbsolutePath()
+                + " cannot be created. Format version: " + formatVersion);
     }
 
-    private BinaryDictionary getBinaryDictionary(final File dictFile) {
+    private static BinaryDictionary getBinaryDictionary(final File dictFile) {
         return new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
@@ -211,15 +210,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         assertEquals(probability, binaryDictionary.getFrequency("aaa"));
         assertEquals(updatedProbability, binaryDictionary.getFrequency(validLongWord));
-        assertEquals(BinaryDictionary.NOT_A_PROBABILITY,
-                binaryDictionary.getFrequency(invalidLongWord));
+        assertEquals(Dictionary.NOT_A_PROBABILITY, binaryDictionary.getFrequency(invalidLongWord));
         assertEquals(updatedProbability, binaryDictionary.getFrequency("abc"));
     }
 
     private static void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
             final int probability) {
         binaryDictionary.addUnigramEntry(word, probability, "" /* shortcutTarget */,
-                BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
+                Dictionary.NOT_A_PROBABILITY /* shortcutProbability */,
                 false /* isBeginningOfSentence */, false /* isNotAWord */,
                 false /* isPossiblyOffensive */,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
@@ -975,7 +973,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             final boolean isPossiblyOffensive = random.nextBoolean();
             // TODO: Add tests for historical info.
             binaryDictionary.addUnigramEntry(word, unigramProbability,
-                    null /* shortcutTarget */, BinaryDictionary.NOT_A_PROBABILITY,
+                    null /* shortcutTarget */, Dictionary.NOT_A_PROBABILITY,
                     false /* isBeginningOfSentence */, isNotAWord, isPossiblyOffensive,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP);
             if (binaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
@@ -1264,7 +1262,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         WordProperty wordProperty = binaryDictionary.getWordProperty("ddd", false);
         assertEquals(true, wordProperty.mIsPossiblyOffensive);
     }
-    
+
     public void testDictMigration() {
         for (final int formatVersion : DICT_FORMAT_VERSIONS) {
             testDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, formatVersion);

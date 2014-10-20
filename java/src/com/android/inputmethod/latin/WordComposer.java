@@ -353,9 +353,8 @@ public final class WordComposer {
         if (size() <= 1) {
             return mCapitalizedMode == CAPS_MODE_AUTO_SHIFT_LOCKED
                     || mCapitalizedMode == CAPS_MODE_MANUAL_SHIFT_LOCKED;
-        } else {
-            return mCapsCount == size();
         }
+        return mCapsCount == size();
     }
 
     public boolean wasShiftedNoLock() {

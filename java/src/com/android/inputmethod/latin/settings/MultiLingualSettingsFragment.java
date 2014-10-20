@@ -20,8 +20,6 @@ import android.os.Bundle;
 
 import com.android.inputmethod.latin.R;
 
-import java.util.ArrayList;
-
 /**
  * "Multilingual options" settings sub screen.
  *

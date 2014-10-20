@@ -291,8 +291,9 @@ public final class SubtypeSwitcher {
     }
 
     private static RichInputMethodSubtype sForcedSubtypeForTesting = null;
+
     @UsedForTesting
-    void forceSubtype(final InputMethodSubtype subtype) {
+    static void forceSubtype(final InputMethodSubtype subtype) {
         sForcedSubtypeForTesting = new RichInputMethodSubtype(subtype);
     }
 

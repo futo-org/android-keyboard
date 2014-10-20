@@ -39,7 +39,7 @@ import java.util.Locale;
   */
 // TODO: consolidate this into RichInputMethodSubtype
 public final class SubtypeLocaleUtils {
-    private static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
+    static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
 
     // This reference class {@link Constants} must be located in the same package as LatinIME.java.
     private static final String RESOURCE_PACKAGE_NAME = Constants.class.getPackage().getName();
@@ -245,9 +245,8 @@ public final class SubtypeLocaleUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
                 && subtype.containsExtraValueKey(UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME)) {
             return subtype.getExtraValueOf(UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME);
-        } else {
-            return getSubtypeLocaleDisplayNameInternal(subtype.getLocale(), displayLocale);
         }
+        return getSubtypeLocaleDisplayNameInternal(subtype.getLocale(), displayLocale);
     }
 
     public static String getSubtypeDisplayNameInSystemLocale(final InputMethodSubtype subtype) {

@@ -23,7 +23,6 @@ import android.os.Message;
 import com.android.inputmethod.compat.LooperCompatUtils;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 
@@ -62,7 +61,7 @@ class InputLogicHandler implements Handler.Callback {
                 final OnGetSuggestedWordsCallback callback) {}
     };
 
-    private InputLogicHandler() {
+    InputLogicHandler() {
         mNonUIThreadHandler = null;
         mLatinIME = null;
         mInputLogic = null;
@@ -134,30 +133,38 @@ class InputLogicHandler implements Handler.Callback {
                 return;
             }
             mInputLogic.mWordComposer.setBatchInputPointers(batchPointers);
+            final OnGetSuggestedWordsCallback callback = new OnGetSuggestedWordsCallback() {
+                @Override
+                public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                    showGestureSuggestionsWithPreviewVisuals(suggestedWords, isTailBatchInput);
+                }
+            };
             getSuggestedWords(isTailBatchInput ? SuggestedWords.INPUT_STYLE_TAIL_BATCH
-                    : SuggestedWords.INPUT_STYLE_UPDATE_BATCH, sequenceNumber,
-                    new OnGetSuggestedWordsCallback() {
-                        @Override
-                        public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                            // We're now inside the callback. This always runs on the Non-UI thread,
-                            // no matter what thread updateBatchInput was originally called on.
-                            if (suggestedWords.isEmpty()) {
-                                // Use old suggestions if we don't have any new ones.
-                                // Previous suggestions are found in InputLogic#mSuggestedWords.
-                                // Since these are the most recent ones and we just recomputed
-                                // new ones to update them, then the previous ones are there.
-                                suggestedWords = mInputLogic.mSuggestedWords;
-                            }
-                            mLatinIME.mHandler.showGesturePreviewAndSuggestionStrip(suggestedWords,
-                                    isTailBatchInput /* dismissGestureFloatingPreviewText */);
-                            if (isTailBatchInput) {
-                                mInBatchInput = false;
-                                // The following call schedules onEndBatchInputInternal
-                                // to be called on the UI thread.
-                                mLatinIME.mHandler.showTailBatchInputResult(suggestedWords);
-                            }
-                        }
-                    });
+                    : SuggestedWords.INPUT_STYLE_UPDATE_BATCH, sequenceNumber, callback);
+        }
+    }
+
+    void showGestureSuggestionsWithPreviewVisuals(final SuggestedWords suggestedWordsForBatchInput,
+            final boolean isTailBatchInput) {
+        final SuggestedWords suggestedWordsToShowSuggestions;
+        // We're now inside the callback. This always runs on the Non-UI thread,
+        // no matter what thread updateBatchInput was originally called on.
+        if (suggestedWordsForBatchInput.isEmpty()) {
+            // Use old suggestions if we don't have any new ones.
+            // Previous suggestions are found in InputLogic#mSuggestedWords.
+            // Since these are the most recent ones and we just recomputed
+            // new ones to update them, then the previous ones are there.
+            suggestedWordsToShowSuggestions = mInputLogic.mSuggestedWords;
+        } else {
+            suggestedWordsToShowSuggestions = suggestedWordsForBatchInput;
+        }
+        mLatinIME.mHandler.showGesturePreviewAndSuggestionStrip(suggestedWordsToShowSuggestions,
+                isTailBatchInput /* dismissGestureFloatingPreviewText */);
+        if (isTailBatchInput) {
+            mInBatchInput = false;
+            // The following call schedules onEndBatchInputInternal
+            // to be called on the UI thread.
+            mLatinIME.mHandler.showTailBatchInputResult(suggestedWordsToShowSuggestions);
         }
     }
 

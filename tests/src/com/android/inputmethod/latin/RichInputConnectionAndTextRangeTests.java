@@ -136,7 +136,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         }
     }
 
-    private class MockInputMethodService extends InputMethodService {
+    static class MockInputMethodService extends InputMethodService {
         private MockConnection mMockConnection;
         public void setInputConnection(final MockConnection mockConnection) {
             mMockConnection = mockConnection;
@@ -221,7 +221,6 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
                 mSpacingAndPunctuations, new int[] { Constants.CODE_SPACE });
         final SpacingAndPunctuations TAB = new SpacingAndPunctuations(
                 mSpacingAndPunctuations, new int[] { Constants.CODE_TAB });
-        final int[] SPACE_TAB = StringUtils.toSortedCodePointArray(" \t");
         // A character that needs surrogate pair to represent its code point (U+2008A).
         final String SUPPLEMENTARY_CHAR_STRING = "\uD840\uDC8A";
         final SpacingAndPunctuations SUPPLEMENTARY_CHAR = new SpacingAndPunctuations(

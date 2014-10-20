@@ -149,7 +149,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     private void addTab(final TabHost host, final int categoryId) {
-        final String tabId = mEmojiCategory.getCategoryName(categoryId, 0 /* categoryPageId */);
+        final String tabId = EmojiCategory.getCategoryName(categoryId, 0 /* categoryPageId */);
         final TabHost.TabSpec tspec = host.newTabSpec(tabId);
         tspec.setContent(R.id.emoji_keyboard_dummy);
         final ImageView iconView = (ImageView)LayoutInflater.from(getContext()).inflate(

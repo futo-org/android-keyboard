@@ -113,15 +113,16 @@ public final class BinaryDictDecoderUtils {
         /**
          * Helper method to find out whether this code fits on one byte
          */
-        private static boolean fitsOnOneByte(int character,
+        private static boolean fitsOnOneByte(final int character,
                 final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+            int codePoint = character;
             if (codePointToOneByteCodeMap != null) {
                 if (codePointToOneByteCodeMap.containsKey(character)) {
-                    character = codePointToOneByteCodeMap.get(character);
+                    codePoint = codePointToOneByteCodeMap.get(character);
                 }
             }
-            return character >= FormatSpec.MINIMAL_ONE_BYTE_CHARACTER_VALUE
-                    && character <= FormatSpec.MAXIMAL_ONE_BYTE_CHARACTER_VALUE;
+            return codePoint >= FormatSpec.MINIMAL_ONE_BYTE_CHARACTER_VALUE
+                    && codePoint <= FormatSpec.MAXIMAL_ONE_BYTE_CHARACTER_VALUE;
         }
 
         /**
@@ -168,8 +169,9 @@ public final class BinaryDictDecoderUtils {
          * @param codePointToOneByteCodeMap the map to convert the code point.
          * @return the index after the last character.
          */
-        static int writeCharArray(final int[] codePoints, final byte[] buffer, int index,
+        static int writeCharArray(final int[] codePoints, final byte[] buffer, final int fromIndex,
                 final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
+            int index = fromIndex;
             for (int codePoint : codePoints) {
                 if (codePointToOneByteCodeMap != null) {
                     if (codePointToOneByteCodeMap.containsKey(codePoint)) {
@@ -293,10 +295,9 @@ public final class BinaryDictDecoderUtils {
         final int msb = dictBuffer.readUnsignedByte();
         if (FormatSpec.MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT >= msb) {
             return msb;
-        } else {
-            return ((FormatSpec.MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT & msb) << 8)
-                    + dictBuffer.readUnsignedByte();
         }
+        return ((FormatSpec.MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT & msb) << 8)
+                + dictBuffer.readUnsignedByte();
     }
 
     /**

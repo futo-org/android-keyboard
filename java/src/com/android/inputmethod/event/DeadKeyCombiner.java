@@ -18,7 +18,6 @@ package com.android.inputmethod.event;
 
 import android.text.TextUtils;
 import android.util.SparseIntArray;
-import android.view.KeyCharacterMap;
 
 import com.android.inputmethod.latin.Constants;
 
@@ -70,8 +69,8 @@ public class DeadKeyCombiner implements Combiner {
         /**
          * Maps Unicode combining diacritical to display-form dead key.
          */
-        private static final SparseIntArray sCombiningToAccent = new SparseIntArray();
-        private static final SparseIntArray sAccentToCombining = new SparseIntArray();
+        static final SparseIntArray sCombiningToAccent = new SparseIntArray();
+        static final SparseIntArray sAccentToCombining = new SparseIntArray();
         static {
             // U+0300: COMBINING GRAVE ACCENT
             addCombining('\u0300', ACCENT_GRAVE);
@@ -217,21 +216,20 @@ public class DeadKeyCombiner implements Combiner {
     final StringBuilder mDeadSequence = new StringBuilder();
 
     @Nonnull
-    private Event createEventChainFromSequence(final @Nonnull CharSequence text,
+    private static Event createEventChainFromSequence(final @Nonnull CharSequence text,
             final Event originalEvent) {
         if (text.length() <= 0) {
             return originalEvent;
-        } else {
-            Event lastEvent = null;
-            int codePoint = 0;
-            for (int i = text.length(); i > 0; i -= Character.charCount(codePoint)) {
-                codePoint = Character.codePointBefore(text, i);
-                final Event thisEvent = Event.createHardwareKeypressEvent(codePoint,
-                        originalEvent.mKeyCode, lastEvent, false /* isKeyRepeat */);
-                lastEvent = thisEvent;
-            }
-            return lastEvent;
         }
+        Event lastEvent = null;
+        int codePoint = 0;
+        for (int i = text.length(); i > 0; i -= Character.charCount(codePoint)) {
+            codePoint = Character.codePointBefore(text, i);
+            final Event thisEvent = Event.createHardwareKeypressEvent(codePoint,
+                    originalEvent.mKeyCode, lastEvent, false /* isKeyRepeat */);
+            lastEvent = thisEvent;
+        }
+        return lastEvent;
     }
 
     @Override
@@ -248,51 +246,49 @@ public class DeadKeyCombiner implements Combiner {
             // no dead keys at all in the current input, so this combiner has nothing to do and
             // simply returns the event as is. The majority of events will go through this path.
             return event;
-        } else {
-            if (Character.isWhitespace(event.mCodePoint)
-                    || event.mCodePoint == mDeadSequence.codePointBefore(mDeadSequence.length())) {
-                // When whitespace or twice the same dead key, we should output the dead sequence
-                // as is.
-                final Event resultEvent = createEventChainFromSequence(mDeadSequence.toString(),
-                        event);
-                mDeadSequence.setLength(0);
-                return resultEvent;
-            } else if (event.isFunctionalKeyEvent()) {
-                if (Constants.CODE_DELETE == event.mKeyCode) {
-                    // Remove the last code point
-                    final int trimIndex = mDeadSequence.length() - Character.charCount(
-                            mDeadSequence.codePointBefore(mDeadSequence.length()));
-                    mDeadSequence.setLength(trimIndex);
-                    return Event.createConsumedEvent(event);
-                } else {
-                    return event;
-                }
-            } else if (event.isDead()) {
-                mDeadSequence.appendCodePoint(event.mCodePoint);
-                return Event.createConsumedEvent(event);
-            } else {
-                // Combine normally.
-                final StringBuilder sb = new StringBuilder();
-                sb.appendCodePoint(event.mCodePoint);
-                int codePointIndex = 0;
-                while (codePointIndex < mDeadSequence.length()) {
-                    final int deadCodePoint = mDeadSequence.codePointAt(codePointIndex);
-                    final char replacementSpacingChar =
-                            Data.getNonstandardCombination(deadCodePoint, event.mCodePoint);
-                    if (Data.NOT_A_CHAR != replacementSpacingChar) {
-                        sb.setCharAt(0, replacementSpacingChar);
-                    } else {
-                        final int combining = Data.sAccentToCombining.get(deadCodePoint);
-                        sb.appendCodePoint(0 == combining ? deadCodePoint : combining);
-                    }
-                    codePointIndex += Character.isSupplementaryCodePoint(deadCodePoint) ? 2 : 1;
-                }
-                final String normalizedString = Normalizer.normalize(sb, Normalizer.Form.NFC);
-                final Event resultEvent = createEventChainFromSequence(normalizedString, event);
-                mDeadSequence.setLength(0);
-                return resultEvent;
-            }
         }
+        if (Character.isWhitespace(event.mCodePoint)
+                || event.mCodePoint == mDeadSequence.codePointBefore(mDeadSequence.length())) {
+            // When whitespace or twice the same dead key, we should output the dead sequence as is.
+            final Event resultEvent = createEventChainFromSequence(mDeadSequence.toString(),
+                    event);
+            mDeadSequence.setLength(0);
+            return resultEvent;
+        }
+        if (event.isFunctionalKeyEvent()) {
+            if (Constants.CODE_DELETE == event.mKeyCode) {
+                // Remove the last code point
+                final int trimIndex = mDeadSequence.length() - Character.charCount(
+                        mDeadSequence.codePointBefore(mDeadSequence.length()));
+                mDeadSequence.setLength(trimIndex);
+                return Event.createConsumedEvent(event);
+            }
+            return event;
+        }
+        if (event.isDead()) {
+            mDeadSequence.appendCodePoint(event.mCodePoint);
+            return Event.createConsumedEvent(event);
+        }
+        // Combine normally.
+        final StringBuilder sb = new StringBuilder();
+        sb.appendCodePoint(event.mCodePoint);
+        int codePointIndex = 0;
+        while (codePointIndex < mDeadSequence.length()) {
+            final int deadCodePoint = mDeadSequence.codePointAt(codePointIndex);
+            final char replacementSpacingChar =
+                    Data.getNonstandardCombination(deadCodePoint, event.mCodePoint);
+            if (Data.NOT_A_CHAR != replacementSpacingChar) {
+                sb.setCharAt(0, replacementSpacingChar);
+            } else {
+                final int combining = Data.sAccentToCombining.get(deadCodePoint);
+                sb.appendCodePoint(0 == combining ? deadCodePoint : combining);
+            }
+            codePointIndex += Character.isSupplementaryCodePoint(deadCodePoint) ? 2 : 1;
+        }
+        final String normalizedString = Normalizer.normalize(sb, Normalizer.Form.NFC);
+        final Event resultEvent = createEventChainFromSequence(normalizedString, event);
+        mDeadSequence.setLength(0);
+        return resultEvent;
     }
 
     @Override

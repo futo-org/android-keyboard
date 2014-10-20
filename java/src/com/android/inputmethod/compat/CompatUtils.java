@@ -144,7 +144,7 @@ public final class CompatUtils {
 
         public <T> ToObjectMethodWrapper<T> getMethod(final String name,
                 final T defaultValue, final Class<?>... parameterTypes) {
-            return new ToObjectMethodWrapper<T>(CompatUtils.getMethod(mClass, name, parameterTypes),
+            return new ToObjectMethodWrapper<>(CompatUtils.getMethod(mClass, name, parameterTypes),
                     defaultValue);
         }
 

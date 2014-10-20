@@ -16,13 +16,9 @@
 
 package com.android.inputmethod.latin;
 
-import android.os.Build;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
-
-import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.WordComposer;
 
 @LargeTest
 public class ShiftModeTests extends InputTestsBase {

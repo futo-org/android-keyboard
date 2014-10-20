@@ -60,7 +60,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
     }
 
     // Helper for testGetTransformedWordInfo
-    private SuggestedWordInfo transformWordInfo(final String info,
+    private static SuggestedWordInfo transformWordInfo(final String info,
             final int trailingSingleQuotesCount) {
         final SuggestedWordInfo suggestedWordInfo = createTypedWordInfo(info);
         final SuggestedWordInfo returnedWordInfo =

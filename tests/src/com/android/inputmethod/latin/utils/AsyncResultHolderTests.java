@@ -22,14 +22,14 @@ import android.util.Log;
 
 @MediumTest
 public class AsyncResultHolderTests extends AndroidTestCase {
-    private static final String TAG = AsyncResultHolderTests.class.getSimpleName();
+    static final String TAG = AsyncResultHolderTests.class.getSimpleName();
 
     private static final int TIMEOUT_IN_MILLISECONDS = 500;
     private static final int MARGIN_IN_MILLISECONDS = 250;
     private static final int DEFAULT_VALUE = 2;
     private static final int SET_VALUE = 1;
 
-    private <T> void setAfterGivenTime(final AsyncResultHolder<T> holder, final T value,
+    private static <T> void setAfterGivenTime(final AsyncResultHolder<T> holder, final T value,
             final long time) {
         new Thread(new Runnable() {
             @Override

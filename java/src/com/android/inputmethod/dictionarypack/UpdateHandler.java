@@ -59,6 +59,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.Nullable;
+
 /**
  * Handler for the update process.
  *
@@ -750,19 +752,22 @@ public final class UpdateHandler {
      * @return an ordered list of runnables to be called to upgrade.
      */
     private static ActionBatch compareMetadataForUpgrade(final Context context,
-            final String clientId, List<WordListMetadata> from, List<WordListMetadata> to) {
+            final String clientId, @Nullable final List<WordListMetadata> from,
+            @Nullable final List<WordListMetadata> to) {
         final ActionBatch actions = new ActionBatch();
         // Upgrade existing word lists
         DebugLogUtils.l("Comparing dictionaries");
         final Set<String> wordListIds = new TreeSet<>();
         // TODO: Can these be null?
-        if (null == from) from = new ArrayList<>();
-        if (null == to) to = new ArrayList<>();
-        for (WordListMetadata wlData : from) wordListIds.add(wlData.mId);
-        for (WordListMetadata wlData : to) wordListIds.add(wlData.mId);
+        final List<WordListMetadata> fromList = (from == null) ? new ArrayList<WordListMetadata>()
+                : from;
+        final List<WordListMetadata> toList = (to == null) ? new ArrayList<WordListMetadata>()
+                : to;
+        for (WordListMetadata wlData : fromList) wordListIds.add(wlData.mId);
+        for (WordListMetadata wlData : toList) wordListIds.add(wlData.mId);
         for (String id : wordListIds) {
-            final WordListMetadata currentInfo = MetadataHandler.findWordListById(from, id);
-            final WordListMetadata metadataInfo = MetadataHandler.findWordListById(to, id);
+            final WordListMetadata currentInfo = MetadataHandler.findWordListById(fromList, id);
+            final WordListMetadata metadataInfo = MetadataHandler.findWordListById(toList, id);
             // TODO: Remove the following unnecessary check, since we are now doing the filtering
             // inside findWordListById.
             final WordListMetadata newInfo = null == metadataInfo

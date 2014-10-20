@@ -67,17 +67,18 @@ public class FusionDictionaryTest extends TestCase {
         }
     }
 
-    private void checkDictionary(final FusionDictionary dict, final ArrayList<String> words,
-            int limit) {
+    private static void checkDictionary(final FusionDictionary dict, final ArrayList<String> words,
+            final int limit) {
         assertNotNull(dict);
+        int count = limit;
         for (final String word : words) {
-            if (--limit < 0) return;
+            if (--count < 0) return;
             final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
             assertNotNull(ptNode);
         }
     }
 
-    private String dumpWord(final String word) {
+    private static String dumpWord(final String word) {
         final StringBuilder sb = new StringBuilder("");
         for (int i = 0; i < word.length(); i = word.offsetByCodePoints(i, 1)) {
             sb.append(word.codePointAt(i));
@@ -86,7 +87,7 @@ public class FusionDictionaryTest extends TestCase {
         return sb.toString();
     }
 
-    private void dumpDict(final FusionDictionary dict) {
+    private static void dumpDict(final FusionDictionary dict) {
         for (WordProperty wordProperty : dict) {
             System.out.println("Word " + dumpWord(wordProperty.mWord));
         }

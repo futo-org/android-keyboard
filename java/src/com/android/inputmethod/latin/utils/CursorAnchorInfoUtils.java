@@ -24,6 +24,7 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.text.Layout;
 import android.text.Spannable;
+import android.text.Spanned;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.inputmethod.CursorAnchorInfo;
@@ -149,7 +150,7 @@ public final class CursorAnchorInfoUtils {
             final Object[] spans = spannable.getSpans(0, text.length(), Object.class);
             for (Object span : spans) {
                 final int spanFlag = spannable.getSpanFlags(span);
-                if ((spanFlag & Spannable.SPAN_COMPOSING) != 0) {
+                if ((spanFlag & Spanned.SPAN_COMPOSING) != 0) {
                     composingTextStart = Math.min(composingTextStart,
                             spannable.getSpanStart(span));
                     composingTextEnd = Math.max(composingTextEnd, spannable.getSpanEnd(span));

@@ -78,6 +78,7 @@ public final class MoreKeySpecTests extends KeySpecParserTestsBase {
         assertArrayEquals(message, expected, actual);
     }
 
+    @SuppressWarnings("static-method")
     public void testEmptyEntry() {
         assertInsertAdditionalMoreKeys("null more keys and null additons",
                 null,
@@ -106,6 +107,7 @@ public final class MoreKeySpecTests extends KeySpecParserTestsBase {
                 new String[] { "a", "A", "b", "B", "c", "d" });
     }
 
+    @SuppressWarnings("static-method")
     public void testInsertAdditionalMoreKeys() {
         // Escaped marker.
         assertInsertAdditionalMoreKeys("escaped marker",
@@ -306,6 +308,7 @@ public final class MoreKeySpecTests extends KeySpecParserTestsBase {
         assertArrayEquals(message, expected, actual);
     }
 
+    @SuppressWarnings("static-method")
     public void testGetBooleanValue() {
         assertGetBooleanValue("Has label", HAS_LABEL,
                 new String[] { HAS_LABEL, "a", "b", "c" },
@@ -345,6 +348,7 @@ public final class MoreKeySpecTests extends KeySpecParserTestsBase {
         assertArrayEquals(message, expected, actual);
     }
 
+    @SuppressWarnings("static-method")
     public void testGetIntValue() {
         assertGetIntValue("Fixed column order 3", FIXED_COLUMN_ORDER, -1,
                 new String[] { FIXED_COLUMN_ORDER + "3", "a", "b", "c" },
