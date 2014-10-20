@@ -40,8 +40,9 @@ public final class DictionaryHeader {
     public static final String USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
     public static final String FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY =
             "FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID";
-    public static final String MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_COUNT";
-    public static final String MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_COUNT";
+    public static final String MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_ENTRY_COUNT";
+    public static final String MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_ENTRY_COUNT";
+    public static final String MAX_TRIGRAM_COUNT_KEY = "MAX_TRIGRAM_ENTRY_COUNT";
     public static final String ATTRIBUTE_VALUE_TRUE = "1";
     public static final String CODE_POINT_TABLE_KEY = "codePointTable";
 

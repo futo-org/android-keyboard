@@ -23,6 +23,7 @@ import android.util.Pair;
 
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
@@ -78,11 +79,18 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     private File createEmptyDictionaryAndGetFile(final int formatVersion) {
+        return createEmptyDictionaryWithAttributesAndGetFile(formatVersion,
+                new HashMap<String, String>());
+    }
+
+    private File createEmptyDictionaryWithAttributesAndGetFile(final int formatVersion,
+            final HashMap<String, String> attributeMap) {
         if (formatVersion == FormatSpec.VERSION4
                 || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING
                 || formatVersion == FormatSpec.VERSION4_DEV) {
             try {
-                final File dictFile = createEmptyVer4DictionaryAndGetFile(formatVersion);
+                final File dictFile = createEmptyVer4DictionaryAndGetFile(formatVersion,
+                        attributeMap);
                 mDictFilesToBeDeleted.add(dictFile);
                 return dictFile;
             } catch (final IOException e) {
@@ -94,12 +102,12 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         return null;
     }
 
-    private File createEmptyVer4DictionaryAndGetFile(final int formatVersion) throws IOException {
+    private File createEmptyVer4DictionaryAndGetFile(final int formatVersion,
+            final HashMap<String, String> attributeMap) throws IOException {
         final File file = File.createTempFile(DICTIONARY_ID, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
         file.delete();
         file.mkdir();
-        Map<String, String> attributeMap = new HashMap<>();
         if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), formatVersion,
                 Locale.ENGLISH, attributeMap)) {
             return file;
@@ -669,6 +677,12 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     private void testRandomOperationsAndFlashWithGC(final int formatVersion) {
+        final int maxUnigramCount = 5000;
+        final int maxBigramCount = 10000;
+        final HashMap<String, String> attributeMap = new HashMap<>();
+        attributeMap.put(DictionaryHeader.MAX_UNIGRAM_COUNT_KEY, String.valueOf(maxUnigramCount));
+        attributeMap.put(DictionaryHeader.MAX_BIGRAM_COUNT_KEY, String.valueOf(maxBigramCount));
+
         final int flashWithGCIterationCount = 50;
         final int operationCountInEachIteration = 200;
         final int initialUnigramCount = 100;
@@ -679,7 +693,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
-        final File dictFile = createEmptyDictionaryAndGetFile(formatVersion);
+        final File dictFile = createEmptyDictionaryWithAttributesAndGetFile(formatVersion,
+                attributeMap);
         BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
 
         final ArrayList<String> words = new ArrayList<>();
@@ -815,13 +830,20 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     private void testUnigramAndBigramCount(final int formatVersion) {
+        final int maxUnigramCount = 5000;
+        final int maxBigramCount = 10000;
+        final HashMap<String, String> attributeMap = new HashMap<>();
+        attributeMap.put(DictionaryHeader.MAX_UNIGRAM_COUNT_KEY, String.valueOf(maxUnigramCount));
+        attributeMap.put(DictionaryHeader.MAX_BIGRAM_COUNT_KEY, String.valueOf(maxBigramCount));
+
         final int flashWithGCIterationCount = 10;
         final int codePointSetSize = 50;
         final int unigramCountPerIteration = 1000;
         final int bigramCountPerIteration = 2000;
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
-        final File dictFile = createEmptyDictionaryAndGetFile(formatVersion);
+        final File dictFile = createEmptyDictionaryWithAttributesAndGetFile(formatVersion,
+                attributeMap);
 
         final ArrayList<String> words = new ArrayList<>();
         final HashSet<Pair<String, String>> bigrams = new HashSet<>();

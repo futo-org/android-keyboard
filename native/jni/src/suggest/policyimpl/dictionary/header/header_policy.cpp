@@ -38,15 +38,17 @@ const char *const HeaderPolicy::LOCALE_KEY = "locale"; // match Java declaration
 const char *const HeaderPolicy::FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY =
         "FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID";
 
-const char *const HeaderPolicy::MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_COUNT";
-const char *const HeaderPolicy::MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_COUNT";
+const char *const HeaderPolicy::MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_ENTRY_COUNT";
+const char *const HeaderPolicy::MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_ENTRY_COUNT";
+const char *const HeaderPolicy::MAX_TRIGRAM_COUNT_KEY = "MAX_TRIGRAM_ENTRY_COUNT";
 
 const int HeaderPolicy::DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE = 100;
 const float HeaderPolicy::MULTIPLE_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 const int HeaderPolicy::DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID = 3;
 
 const int HeaderPolicy::DEFAULT_MAX_UNIGRAM_COUNT = 10000;
-const int HeaderPolicy::DEFAULT_MAX_BIGRAM_COUNT = 10000;
+const int HeaderPolicy::DEFAULT_MAX_BIGRAM_COUNT = 30000;
+const int HeaderPolicy::DEFAULT_MAX_TRIGRAM_COUNT = 30000;
 
 // Used for logging. Question mark is used to indicate that the key is not found.
 void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *outValue,
