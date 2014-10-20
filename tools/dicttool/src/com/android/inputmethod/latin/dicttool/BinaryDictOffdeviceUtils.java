@@ -65,7 +65,7 @@ public final class BinaryDictOffdeviceUtils {
         };
 
         private final int mDecoderSpecIndex;
-        T mResult;
+        public T mResult;
 
         public DecoderChainSpec() {
             mDecoderSpecIndex = 0;
@@ -174,12 +174,13 @@ public final class BinaryDictOffdeviceUtils {
             }
             final int version = ((tmpBuffer[VERSION_START_OFFSET] & 0xFF) << 8)
                     + (tmpBuffer[VERSION_START_OFFSET + 1] & 0xFF);
-            if (version != FormatSpec.VERSION2 && version != FormatSpec.VERSION201) {
-                throw new UnsupportedFormatException("Only versions 2 and 201 are supported");
+            if (version != FormatSpec.VERSION2 && version != FormatSpec.VERSION201
+                    && version != FormatSpec.VERSION202) {
+                throw new UnsupportedFormatException("Only versions 2, 201, 202 are supported");
             }
-            final int totalHeaderSize = ((tmpBuffer[HEADER_SIZE_OFFSET] & 0xFF) >> 24)
-                    + ((tmpBuffer[HEADER_SIZE_OFFSET + 1] & 0xFF) >> 16)
-                    + ((tmpBuffer[HEADER_SIZE_OFFSET + 2] & 0xFF) >> 8)
+            final int totalHeaderSize = ((tmpBuffer[HEADER_SIZE_OFFSET] & 0xFF) << 24)
+                    + ((tmpBuffer[HEADER_SIZE_OFFSET + 1] & 0xFF) << 16)
+                    + ((tmpBuffer[HEADER_SIZE_OFFSET + 2] & 0xFF) << 8)
                     + (tmpBuffer[HEADER_SIZE_OFFSET + 3] & 0xFF);
             if (totalHeaderSize > MAX_HEADER_LENGTH) {
                 throw new UnsupportedFormatException("Header too large");
@@ -215,11 +216,22 @@ public final class BinaryDictOffdeviceUtils {
         @Nonnull DecoderChainSpec spec = new DecoderChainSpec();
         while (null != spec) {
             try {
-                try (final InputStream input = spec.getStream(src)) {
-                    spec.mResult = processor.process(input);
-                    return spec;
+                final InputStream input = spec.getStream(src);
+                spec.mResult = processor.process(input);
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    // CipherInputStream doesn't like being closed without having read the
+                    // entire stream, for some reason. But we don't want to because it's a waste
+                    // of resources. We really, really don't care about this.
+                    // However on close() CipherInputStream does throw this exception, wrapped
+                    // in an IOException so we need to catch it.
+                    if (!(e.getCause() instanceof javax.crypto.BadPaddingException)) {
+                        throw e;
+                    }
                 }
-            } catch (IOException | UnsupportedFormatException e) {
+                return spec;
+            } catch (IOException | UnsupportedFormatException | ArrayIndexOutOfBoundsException e) {
                 // If the format is not the right one for this file, the processor will throw one
                 // of these exceptions. In our case, that means we should try the next spec,
                 // since it may still be at another format we haven't tried yet.
