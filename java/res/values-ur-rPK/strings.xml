@@ -124,6 +124,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ایسا ہی ان پٹ اسٹائل پہلے سے موجود ہے: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"کلید دبانے پر وائبریشن کا دورانیہ"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"کلید دبانے پر آواز کا والیوم"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"کلید کو دیر تک دبانے کی تاخیر"</string>
     <string name="button_default" msgid="3988017840431881491">"ڈیفالٹ"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> میں خوش آمدید"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"اشارہ ٹائپنگ کے ساتھ"</string>

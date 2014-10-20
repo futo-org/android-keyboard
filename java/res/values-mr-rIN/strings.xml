@@ -124,6 +124,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"समान इनपुट शैली आधीपासूनच अस्तित्वात आहे: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कीप्रेस कंपन कालावधी"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कीप्रेस ध्वनी तीव्रता"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"की जास्त दाबण्यात विलंब"</string>
     <string name="button_default" msgid="3988017840431881491">"डीफॉल्ट"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> वर स्वागत आहे"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"जेश्चर टायपिंग करून"</string>
@@ -168,9 +169,9 @@
     <string name="install_dict" msgid="180852772562189365">"स्‍थापित करा"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द करा"</string>
     <string name="delete_dict" msgid="756853268088330054">"हटवा"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"आपल्या मोबाईल डिव्हाइसवर निवडलेल्या भाषेमध्ये शब्दकोश उपलब्ध आहे.&lt;br/&gt; आम्ही आपला टायपिंग अनुभव सुधारण्यासाठी <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोश &lt;b&gt;डाउनलोड करण्याची&lt;/b&gt; शिफारस करतो.&lt;br/&gt; &lt;br/&gt; डाउनलोड कऱण्यास 3G वर एक किंवा दोन मिनिट लागू शकतात. आपल्याकडे &lt;b&gt;अमर्यादित डेटा योजना&lt;/b&gt; नसल्यास शुल्क लागू शकते. आपल्याकडे असलेल्या डेटा योजनेबद्दल आपण सुनिश्चित नसल्यास, डाउनलोड स्वयंचलितपणे प्रारंभ करण्यासाठी Wi-Fi कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टीप: आपण आपल्या मोबाईल डिव्हाइसच्या &lt;b&gt;सेटिंग्ज&lt;/b&gt;मेनूमधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन शब्दकोश डाउनलोड करू आणि काढू शकता."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"आपल्या मोबाईल डिव्हाइसवर निवडलेल्या भाषेमध्ये शब्दकोश उपलब्ध आहे.&lt;br/&gt; आम्ही आपला टायपिंग अनुभव सुधारण्यासाठी <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोश &lt;b&gt;डाउनलोड करण्याची&lt;/b&gt; शिफारस करतो.&lt;br/&gt; &lt;br/&gt; डाउनलोड कऱण्यास 3G वर एक किंवा दोन मिनिट लागू शकतात. आपल्याकडे &lt;b&gt;अमर्यादित डेटा योजना&lt;/b&gt; नसल्यास शुल्क लागू शकते. आपल्याकडे असलेल्या डेटा योजनेबद्दल आपण सुनिश्चित नसल्यास, डाउनलोड स्वयंचलितपणे प्रारंभ करण्यासाठी वाय-फाय कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टीप: आपण आपल्या मोबाईल डिव्हाइसच्या &lt;b&gt;सेटिंग्ज&lt;/b&gt;मेनूमधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन शब्दकोश डाउनलोड करू आणि काढू शकता."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"आता डाउनलोड करा (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi वर डाउनलोड करा"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाय-फाय वर डाउनलोड करा"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> साठी शब्दकोश उपलब्ध आहे"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"पुनरावलोकन करण्यासाठी आणि डाउनलोड करण्यासाठी दाबा"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"डाउनलोड करत आहे: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> साठी सूचना लवकरच तयार होतील."</string>

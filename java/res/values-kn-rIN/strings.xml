@@ -124,6 +124,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ಅದೇ ರೀತಿಯ ಇನ್‌ಪುಟ್ ಶೈಲಿಯು ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ಕೀಒತ್ತುವ ವೈಬ್ರೇಷನ್‌‌ ಅವಧಿ"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ಕೀಒತ್ತುವ ಶಬ್ದದ ವಾಲ್ಯೂಮ್"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ಕೀಯ ದೀರ್ಘ ಒತ್ತುವ ವಿಳಂಬ"</string>
     <string name="button_default" msgid="3988017840431881491">"ಡೀಫಾಲ್ಟ್"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಗೆ ಸುಸ್ವಾಗತ"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ಗೆಶ್ಚರ್ ಟೈಪಿಂಗ್‌ನೊಂದಿಗೆ"</string>
