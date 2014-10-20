@@ -124,6 +124,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"같은 입력 스타일이 다음과 같이 이미 존재합니다. <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"키를 누를 때 진동 시간"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"키를 누를 때 소리 볼륨"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"키 길게 누르기 지연"</string>
     <string name="button_default" msgid="3988017840431881491">"기본값"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>에 오신 것을 환영합니다."</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"제스처 타이핑 사용"</string>
