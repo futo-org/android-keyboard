@@ -124,6 +124,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Đã tồn tại kiểu nhập tương tự: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Thời gian rung khi nhấn phím"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Âm lượng khi nhấn phím"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tgian chờ cho nhấn và giữ phím"</string>
     <string name="button_default" msgid="3988017840431881491">"Mặc định"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Chào mừng bạn đến với <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"với Nhập bằng cử chỉ"</string>
