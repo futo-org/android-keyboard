@@ -253,11 +253,13 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS_KEY;
     static const char *const MAX_UNIGRAM_COUNT_KEY;
     static const char *const MAX_BIGRAM_COUNT_KEY;
+    static const char *const MAX_TRIGRAM_COUNT_KEY;
     static const int DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
     static const int DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID;
     static const int DEFAULT_MAX_UNIGRAM_COUNT;
     static const int DEFAULT_MAX_BIGRAM_COUNT;
+    static const int DEFAULT_MAX_TRIGRAM_COUNT;
 
     const FormatUtils::FORMAT_VERSION mDictFormatVersion;
     const HeaderReadWriteUtils::DictionaryFlags mDictionaryFlags;

@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -136,11 +135,18 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private HashSet<File> mDictFilesToBeDeleted = new HashSet<>();
 
     private File createEmptyDictionaryAndGetFile(final int formatVersion) {
+        return createEmptyDictionaryWithAttributeMapAndGetFile(formatVersion,
+                new HashMap<String, String>());
+    }
+
+    private File createEmptyDictionaryWithAttributeMapAndGetFile(final int formatVersion,
+            final HashMap<String, String> attributeMap) {
         if (formatVersion == FormatSpec.VERSION4
                 || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING
                 || formatVersion == FormatSpec.VERSION4_DEV) {
             try {
-                final File dictFile = createEmptyVer4DictionaryAndGetFile(formatVersion);
+                final File dictFile = createEmptyVer4DictionaryAndGetFile(formatVersion,
+                        attributeMap);
                 mDictFilesToBeDeleted.add(dictFile);
                 return dictFile;
             } catch (final IOException e) {
@@ -152,12 +158,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         return null;
     }
 
-    private File createEmptyVer4DictionaryAndGetFile(final int formatVersion)
+    private File createEmptyVer4DictionaryAndGetFile(final int formatVersion,
+            final HashMap<String, String> attributeMap)
             throws IOException {
         final File file = File.createTempFile(DICTIONARY_ID, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
         FileUtils.deleteRecursively(file);
-        Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, DICTIONARY_ID);
         attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
@@ -388,7 +394,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         }
 
         final int maxUnigramCount = Integer.parseInt(
-                binaryDictionary.getPropertyForGettingStats(BinaryDictionary.MAX_UNIGRAM_COUNT_QUERY));
+                binaryDictionary.getPropertyForGettingStats(
+                        BinaryDictionary.MAX_UNIGRAM_COUNT_QUERY));
         for (int i = 0; i < unigramTypedCount; i++) {
             final String word = words.get(random.nextInt(words.size()));
             onInputWord(binaryDictionary, word, true /* isValidWord */);
@@ -476,6 +483,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private void testAddManyBigramsToDecayingDict(final int formatVersion) {
+        final int maxUnigramCount = 5000;
+        final int maxBigramCount = 10000;
+        final HashMap<String, String> attributeMap = new HashMap<>();
+        attributeMap.put(DictionaryHeader.MAX_UNIGRAM_COUNT_KEY, String.valueOf(maxUnigramCount));
+        attributeMap.put(DictionaryHeader.MAX_BIGRAM_COUNT_KEY, String.valueOf(maxBigramCount));
+
         final int unigramCount = 5000;
         final int bigramCount = 30000;
         final int bigramTypedCount = 100000;
@@ -484,7 +497,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final Random random = new Random(seed);
 
         setCurrentTimeForTestMode(mCurrentTime);
-        final File dictFile = createEmptyDictionaryAndGetFile(formatVersion);
+        final File dictFile = createEmptyDictionaryWithAttributeMapAndGetFile(formatVersion,
+                attributeMap);
         final BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
 
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
@@ -507,9 +521,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             bigrams.add(bigram);
         }
 
-        final int maxBigramCount = Integer.parseInt(
-                binaryDictionary.getPropertyForGettingStats(
-                        BinaryDictionary.MAX_BIGRAM_COUNT_QUERY));
         for (int i = 0; i < bigramTypedCount; ++i) {
             final Pair<String, String> bigram = bigrams.get(random.nextInt(bigrams.size()));
             onInputWord(binaryDictionary, bigram.first, true /* isValidWord */);
@@ -546,6 +557,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private void testOverflowBigrams(final int formatVersion) {
+        final int maxUnigramCount = 5000;
+        final int maxBigramCount = 10000;
+        final HashMap<String, String> attributeMap = new HashMap<>();
+        attributeMap.put(DictionaryHeader.MAX_UNIGRAM_COUNT_KEY, String.valueOf(maxUnigramCount));
+        attributeMap.put(DictionaryHeader.MAX_BIGRAM_COUNT_KEY, String.valueOf(maxBigramCount));
+
         final int bigramCount = 20000;
         final int unigramCount = 1000;
         final int unigramTypedCount = 20;
@@ -556,7 +573,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
         setCurrentTimeForTestMode(mCurrentTime);
-        final File dictFile = createEmptyDictionaryAndGetFile(formatVersion);
+        final File dictFile = createEmptyDictionaryWithAttributeMapAndGetFile(formatVersion,
+                attributeMap);
         final BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
 
