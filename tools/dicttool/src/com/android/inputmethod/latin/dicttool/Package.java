@@ -77,16 +77,16 @@ public class Package {
             if (mArgs.length != 2) {
                 throw new RuntimeException("Too many/too few arguments for command " + COMMAND);
             }
-            final BinaryDictOffdeviceUtils.DecoderChainSpec decodedSpec =
+            final BinaryDictOffdeviceUtils.DecoderChainSpec<File> decodedSpec =
                     BinaryDictOffdeviceUtils.getRawDictionaryOrNull(new File(mArgs[0]));
             if (null == decodedSpec) {
                 System.out.println(mArgs[0] + " does not seem to be a dictionary");
                 return;
             }
             System.out.println("Packaging : " + decodedSpec.describeChain());
-            System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
+            System.out.println("Uncompressed size : " + decodedSpec.mResult.length());
             try (
-                final InputStream input = getFileInputStream(decodedSpec.mFile);
+                final InputStream input = getFileInputStream(decodedSpec.mResult);
                 final OutputStream output = new BufferedOutputStream(
                         getFileOutputStreamOrStdOut(mArgs[1]))
             ) {
