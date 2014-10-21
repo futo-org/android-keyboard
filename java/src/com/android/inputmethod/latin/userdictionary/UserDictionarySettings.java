@@ -177,12 +177,11 @@ public class UserDictionarySettings extends ListFragment {
             return getActivity().managedQuery(UserDictionary.Words.CONTENT_URI, QUERY_PROJECTION,
                     QUERY_SELECTION_ALL_LOCALES, null,
                     "UPPER(" + UserDictionary.Words.WORD + ")");
-        } else {
-            final String queryLocale = null != locale ? locale : Locale.getDefault().toString();
-            return getActivity().managedQuery(UserDictionary.Words.CONTENT_URI, QUERY_PROJECTION,
-                    QUERY_SELECTION, new String[] { queryLocale },
-                    "UPPER(" + UserDictionary.Words.WORD + ")");
         }
+        final String queryLocale = null != locale ? locale : Locale.getDefault().toString();
+        return getActivity().managedQuery(UserDictionary.Words.CONTENT_URI, QUERY_PROJECTION,
+                QUERY_SELECTION, new String[] { queryLocale },
+                "UPPER(" + UserDictionary.Words.WORD + ")");
     }
 
     private ListAdapter createAdapter() {

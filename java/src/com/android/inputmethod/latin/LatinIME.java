@@ -119,15 +119,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         SuggestionStripView.Listener, SuggestionStripViewAccessor,
         DictionaryFacilitator.DictionaryInitializationListener,
         ImportantNoticeDialog.ImportantNoticeDialogListener {
-    private static final String TAG = LatinIME.class.getSimpleName();
+    static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
     private static boolean DEBUG = false;
 
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
     private static final int PENDING_IMS_CALLBACK_DURATION_MILLIS = 800;
-    private static final long DELAY_WAIT_FOR_DICTIONARY_LOAD_MILLIS = TimeUnit.SECONDS.toMillis(2);
-    private static final long DELAY_DEALLOCATE_MEMORY_MILLIS = TimeUnit.SECONDS.toMillis(10);
+    static final long DELAY_WAIT_FOR_DICTIONARY_LOAD_MILLIS = TimeUnit.SECONDS.toMillis(2);
+    static final long DELAY_DEALLOCATE_MEMORY_MILLIS = TimeUnit.SECONDS.toMillis(10);
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -135,7 +135,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     private static final String SCHEME_PACKAGE = "package";
 
-    private final Settings mSettings;
+    final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator =
             new DictionaryFacilitator(this /* context */);
     // TODO: Move from LatinIME.
@@ -149,7 +149,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                             mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
                         }
                     });
-    private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
+    final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
     // If it turns out we need several, it will get grown seamlessly.
@@ -163,7 +163,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
-    private final SubtypeSwitcher mSubtypeSwitcher;
+    final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
     private final SpecialKeyDetector mSpecialKeyDetector;
     private StatsUtilsManager mStatsUtilsManager;
@@ -204,7 +204,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
         private static final int ARG1_SHOW_GESTURE_FLOATING_PREVIEW_TEXT = 2;
         private static final int ARG2_UNUSED = 0;
-        private static final int ARG1_FALSE = 0;
         private static final int ARG1_TRUE = 1;
 
         private int mDelayInMillisecondsToUpdateSuggestions;
@@ -654,7 +653,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void resetDictionaryFacilitatorIfNecessary() {
+    void resetDictionaryFacilitatorIfNecessary() {
         final Locale[] subtypeSwitcherLocales = mSubtypeSwitcher.getCurrentSubtypeLocales();
         if (mDictionaryFacilitator.isForLocales(subtypeSwitcherLocales)) {
             return;
@@ -791,17 +790,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    void updateCursorAnchorInfo() {
+        // CursorAnchorInfo is used on L and later.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (isFullscreenMode() && mExtractEditText != null) {
+                mInputLogic.onUpdateCursorAnchorInfo(
+                        CursorAnchorInfoUtils.extractFromTextView(mExtractEditText));
+            }
+        }
+    }
+
     private final ViewTreeObserver.OnPreDrawListener mExtractTextViewPreDrawListener =
             new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
-                    // CursorAnchorInfo is used on L and later.
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if (isFullscreenMode() && mExtractEditText != null) {
-                            mInputLogic.onUpdateCursorAnchorInfo(
-                                    CursorAnchorInfoUtils.extractFromTextView(mExtractEditText));
-                        }
-                    }
+                    updateCursorAnchorInfo();
                     return true;
                 }
             };
@@ -846,12 +849,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         loadKeyboard();
     }
 
-    private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
+    void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
     }
 
     @SuppressWarnings("deprecation")
-    private void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
+    void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
         // Switch to the null consumer to handle cases leading to early exit below, for which we
         // also wouldn't be consuming gesture data.
@@ -1034,7 +1037,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void onFinishInputInternal() {
+    void onFinishInputInternal() {
         super.onFinishInput();
 
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
@@ -1043,7 +1046,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void onFinishInputViewInternal(final boolean finishingInput) {
+    void onFinishInputViewInternal(final boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         cleanupInternalStateForFinishInput();
     }
@@ -1295,11 +1298,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private int getCurrentAutoCapsState() {
+    int getCurrentAutoCapsState() {
         return mInputLogic.getCurrentAutoCapsState(mSettings.getCurrent());
     }
 
-    private int getCurrentRecapitalizeState() {
+    int getCurrentRecapitalizeState() {
         return mInputLogic.getCurrentRecapitalizeState();
     }
 
@@ -1389,12 +1392,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final Keyboard currentKeyboard = mKeyboardSwitcher.getKeyboard();
             if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
                 return codePoint;
-            } else {
-                return Constants.CODE_SYMBOL_SHIFT;
             }
-        } else {
-            return codePoint;
+            return Constants.CODE_SYMBOL_SHIFT;
         }
+        return codePoint;
     }
 
     // Implementation of {@link KeyboardActionListener}.
@@ -1496,7 +1497,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // This method must run on the UI Thread.
-    private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
+    void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
         showSuggestionStrip(suggestedWords);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
@@ -1812,7 +1813,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     };
 
-    private void launchSettings() {
+    void launchSettings() {
         mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
@@ -1836,6 +1837,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 languageSelectionTitle,
                 getString(ApplicationUtils.getActivityTitleResId(this, SettingsActivity.class))
         };
+        final String imeId = mRichImm.getInputMethodIdOfThisIme();
         final OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(DialogInterface di, int position) {
@@ -1843,7 +1845,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 switch (position) {
                 case 0:
                     final Intent intent = IntentUtils.getInputLanguageSelectionIntent(
-                            mRichImm.getInputMethodIdOfThisIme(),
+                            imeId,
                             Intent.FLAG_ACTIVITY_NEW_TASK
                                     | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);

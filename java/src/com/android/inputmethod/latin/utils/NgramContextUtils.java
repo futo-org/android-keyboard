@@ -74,20 +74,20 @@ public final class NgramContextUtils {
             }
             // If we can't find (n + i) words, the context is beginning-of-sentence.
             if (focusedWordIndex < 0) {
-                prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE;
+                prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO;
                 break;
             }
             final String focusedWord = w[focusedWordIndex];
             // If the word is, the context is beginning-of-sentence.
             final int length = focusedWord.length();
             if (length <= 0) {
-                prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE;
+                prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO;
                 break;
             }
             // If ends in a sentence separator, the context is beginning-of-sentence.
             final char lastChar = focusedWord.charAt(length - 1);
             if (spacingAndPunctuations.isSentenceSeparator(lastChar)) {
-                prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE;
+                prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO;
                 break;
             }
             // If ends in a word separator or connector, the context is unclear.

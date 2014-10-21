@@ -71,13 +71,13 @@ public class NotificationCompatUtils {
         CompatUtils.invoke(builder, null, METHOD_setPriority, PRIORITY_LOW);
     }
 
+    @SuppressWarnings("deprecation")
     public static Notification build(final Notification.Builder builder) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             // #build was added in API level 16, JELLY_BEAN
             return (Notification) CompatUtils.invoke(builder, null, METHOD_build);
-        } else {
-            // #getNotification was deprecated in API level 16, JELLY_BEAN
-            return builder.getNotification();
         }
+        // #getNotification was deprecated in API level 16, JELLY_BEAN
+        return builder.getNotification();
     }
 }

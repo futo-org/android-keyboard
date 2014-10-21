@@ -41,10 +41,9 @@ public class DistracterFilterCheckingIsInDictionary implements DistracterFilter 
             // This filter treats entries that are already in the dictionary as non-distracters
             // because they have passed the filtering in the past.
             return false;
-        } else {
-            return mDistracterFilter.isDistracterToWordsInDictionaries(
-                    ngramContext, testedWord, locale);
         }
+        return mDistracterFilter.isDistracterToWordsInDictionaries(
+                ngramContext, testedWord, locale);
     }
 
     @Override

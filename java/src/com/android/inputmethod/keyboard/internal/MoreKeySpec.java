@@ -108,9 +108,8 @@ public final class MoreKeySpec {
                 : Constants.printableCode(mCode));
         if (StringUtils.codePointCount(label) == 1 && label.codePointAt(0) == mCode) {
             return output;
-        } else {
-            return label + "|" + output;
         }
+        return label + "|" + output;
     }
 
     public static class LettersOnBaseLayout {

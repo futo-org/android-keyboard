@@ -172,9 +172,8 @@ public class DictionaryFacilitator {
         public Dictionary getDict(final String dictType) {
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 return mMainDict;
-            } else {
-                return getSubDict(dictType);
             }
+            return getSubDict(dictType);
         }
 
         public ExpandableBinaryDictionary getSubDict(final String dictType) {
@@ -184,9 +183,8 @@ public class DictionaryFacilitator {
         public boolean hasDict(final String dictType) {
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 return mMainDict != null;
-            } else {
-                return mSubDictMap.containsKey(dictType);
             }
+            return mSubDictMap.containsKey(dictType);
         }
 
         public void closeDict(final String dictType) {
@@ -305,7 +303,7 @@ public class DictionaryFacilitator {
                 usePersonalizedDicts, forceReloadMainDictionary, listener, "" /* dictNamePrefix */);
     }
 
-    private DictionaryGroup findDictionaryGroupWithLocale(final DictionaryGroup[] dictionaryGroups,
+    static DictionaryGroup findDictionaryGroupWithLocale(final DictionaryGroup[] dictionaryGroups,
             final Locale locale) {
         for (int i = 0; i < dictionaryGroups.length; ++i) {
             if (locale.equals(dictionaryGroups[i].mLocale)) {
@@ -422,32 +420,39 @@ public class DictionaryFacilitator {
         ExecutorUtils.getExecutor("InitializeBinaryDictionary").execute(new Runnable() {
             @Override
             public void run() {
-                for (final Locale locale : locales) {
-                    final DictionaryGroup dictionaryGroup =
-                            findDictionaryGroupWithLocale(mDictionaryGroups, locale);
-                    if (null == dictionaryGroup) {
-                        // This should never happen, but better safe than crashy
-                        Log.w(TAG, "Expected a dictionary group for " + locale + " but none found");
-                        continue;
-                    }
-                    final Dictionary mainDict =
-                            DictionaryFactory.createMainDictionaryFromManager(context, locale);
-                    synchronized (mLock) {
-                        if (locale.equals(dictionaryGroup.mLocale)) {
-                            dictionaryGroup.setMainDict(mainDict);
-                        } else {
-                            // Dictionary facilitator has been reset for another locale.
-                            mainDict.close();
-                        }
-                    }
-                }
-                if (listener != null) {
-                    listener.onUpdateMainDictionaryAvailability(
-                            hasAtLeastOneInitializedMainDictionary());
-                }
-                latchForWaitingLoadingMainDictionary.countDown();
+                doReloadUninitializedMainDictionaries(
+                        context, locales, listener, latchForWaitingLoadingMainDictionary);
             }
         });
+    }
+
+    void doReloadUninitializedMainDictionaries(final Context context, final Locale[] locales,
+            final DictionaryInitializationListener listener,
+            final CountDownLatch latchForWaitingLoadingMainDictionary) {
+        for (final Locale locale : locales) {
+            final DictionaryGroup dictionaryGroup =
+                    findDictionaryGroupWithLocale(mDictionaryGroups, locale);
+            if (null == dictionaryGroup) {
+                // This should never happen, but better safe than crashy
+                Log.w(TAG, "Expected a dictionary group for " + locale + " but none found");
+                continue;
+            }
+            final Dictionary mainDict =
+                    DictionaryFactory.createMainDictionaryFromManager(context, locale);
+            synchronized (mLock) {
+                if (locale.equals(dictionaryGroup.mLocale)) {
+                    dictionaryGroup.setMainDict(mainDict);
+                } else {
+                    // Dictionary facilitator has been reset for another locale.
+                    mainDict.close();
+                }
+            }
+        }
+        if (listener != null) {
+            listener.onUpdateMainDictionaryAvailability(
+                    hasAtLeastOneInitializedMainDictionary());
+        }
+        latchForWaitingLoadingMainDictionary.countDown();
     }
 
     @UsedForTesting

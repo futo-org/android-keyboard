@@ -174,13 +174,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), formatVersion,
                 LocaleUtils.constructLocaleFromString(TEST_LOCALE), attributeMap)) {
             return file;
-        } else {
-            throw new IOException("Empty dictionary " + file.getAbsolutePath()
-                    + " cannot be created. Foramt version: " + formatVersion);
         }
+        throw new IOException("Empty dictionary " + file.getAbsolutePath()
+                + " cannot be created. Foramt version: " + formatVersion);
     }
 
-    private BinaryDictionary getBinaryDictionary(final File dictFile) {
+    private static BinaryDictionary getBinaryDictionary(final File dictFile) {
         return new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
@@ -683,7 +682,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
 
         binaryDictionary.addUnigramEntry("", DUMMY_PROBABILITY, "" /* shortcutTarget */,
-                BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
+                Dictionary.NOT_A_PROBABILITY /* shortcutProbability */,
                 true /* isBeginningOfSentence */, true /* isNotAWord */,
                 false /* isPossiblyOffensive */, mCurrentTime);
         final NgramContext beginningOfSentenceContext = NgramContext.BEGINNING_OF_SENTENCE;

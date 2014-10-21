@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.settings;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.android.inputmethod.latin.R;

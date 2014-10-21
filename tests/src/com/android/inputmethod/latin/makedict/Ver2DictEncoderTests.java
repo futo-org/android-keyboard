@@ -27,14 +27,12 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.util.Log;
 
 /**
  * Unit tests for Ver2DictEncoder
  */
 @LargeTest
 public class Ver2DictEncoderTests extends AndroidTestCase {
-    private static final String TAG = Ver2DictEncoderTests.class.getSimpleName();
     private static final int UNIGRAM_FREQ = 10;
 
     public void testCodePointTable() {
@@ -75,7 +73,7 @@ public class Ver2DictEncoderTests extends AndroidTestCase {
     /**
      * Adds unigrams to the dictionary.
      */
-    private void addUnigrams(final FusionDictionary dict, final List<String> words,
+    private static void addUnigrams(final FusionDictionary dict, final List<String> words,
             final HashMap<String, List<String>> shortcutMap) {
         for (final String word : words) {
             final ArrayList<WeightedString> shortcuts = new ArrayList<>();

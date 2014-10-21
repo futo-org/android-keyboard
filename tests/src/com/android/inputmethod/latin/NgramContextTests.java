@@ -25,8 +25,8 @@ import android.test.suitebuilder.annotation.SmallTest;
 public class NgramContextTests extends AndroidTestCase {
     public void testConstruct() {
         assertEquals(new NgramContext(new WordInfo("a")), new NgramContext(new WordInfo("a")));
-        assertEquals(new NgramContext(WordInfo.BEGINNING_OF_SENTENCE),
-                new NgramContext(WordInfo.BEGINNING_OF_SENTENCE));
+        assertEquals(new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO),
+                new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO));
         assertEquals(new NgramContext(WordInfo.EMPTY_WORD_INFO),
                 new NgramContext(WordInfo.EMPTY_WORD_INFO));
         assertEquals(new NgramContext(WordInfo.EMPTY_WORD_INFO),
@@ -35,17 +35,18 @@ public class NgramContextTests extends AndroidTestCase {
 
     public void testIsBeginningOfSentenceContext() {
         assertFalse(new NgramContext().isBeginningOfSentenceContext());
-        assertTrue(new NgramContext(WordInfo.BEGINNING_OF_SENTENCE)
+        assertTrue(new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO)
                 .isBeginningOfSentenceContext());
         assertTrue(NgramContext.BEGINNING_OF_SENTENCE.isBeginningOfSentenceContext());
         assertFalse(new NgramContext(new WordInfo("a")).isBeginningOfSentenceContext());
         assertFalse(new NgramContext(new WordInfo("")).isBeginningOfSentenceContext());
         assertFalse(new NgramContext(WordInfo.EMPTY_WORD_INFO).isBeginningOfSentenceContext());
-        assertTrue(new NgramContext(WordInfo.BEGINNING_OF_SENTENCE, new WordInfo("a"))
+        assertTrue(new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO, new WordInfo("a"))
                 .isBeginningOfSentenceContext());
-        assertFalse(new NgramContext(new WordInfo("a"), WordInfo.BEGINNING_OF_SENTENCE)
+        assertFalse(new NgramContext(new WordInfo("a"), WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO)
                 .isBeginningOfSentenceContext());
-        assertFalse(new NgramContext(WordInfo.EMPTY_WORD_INFO, WordInfo.BEGINNING_OF_SENTENCE)
+        assertFalse(new NgramContext(
+                WordInfo.EMPTY_WORD_INFO, WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO)
                 .isBeginningOfSentenceContext());
     }
 
@@ -56,7 +57,7 @@ public class NgramContextTests extends AndroidTestCase {
         assertEquals("b", ngramContext_b_a.getNthPrevWord(1));
         assertEquals("a", ngramContext_b_a.getNthPrevWord(2));
         final NgramContext ngramContext_bos_b =
-                ngramContext_b_a.getNextNgramContext(WordInfo.BEGINNING_OF_SENTENCE);
+                ngramContext_b_a.getNextNgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
         assertTrue(ngramContext_bos_b.isBeginningOfSentenceContext());
         assertEquals("b", ngramContext_bos_b.getNthPrevWord(2));
         final NgramContext ngramContext_c_bos =

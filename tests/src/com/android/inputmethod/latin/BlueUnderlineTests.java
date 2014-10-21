@@ -61,7 +61,6 @@ public class BlueUnderlineTests extends InputTestsBase {
     public void testBlueUnderlineOnBackspace() {
         final String STRING_TO_TYPE = "tgis";
         final int typedLength = STRING_TO_TYPE.length();
-        final int EXPECTED_SUGGESTION_SPAN_START = -1;
         final int EXPECTED_UNDERLINE_SPAN_START = 0;
         final int EXPECTED_UNDERLINE_SPAN_END = 3;
         type(STRING_TO_TYPE);

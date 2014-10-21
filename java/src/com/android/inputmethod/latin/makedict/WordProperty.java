@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
@@ -61,10 +62,8 @@ public final class WordProperty implements Comparable<WordProperty> {
         } else {
             mNgrams = new ArrayList<>();
             final NgramContext ngramContext = new NgramContext(new WordInfo(mWord));
-            if (bigrams != null) {
-                for (final WeightedString bigramTarget : bigrams) {
-                    mNgrams.add(new NgramProperty(bigramTarget, ngramContext));
-                }
+            for (final WeightedString bigramTarget : bigrams) {
+                mNgrams.add(new NgramProperty(bigramTarget, ngramContext));
             }
         }
         mIsBeginningOfSentence = false;
@@ -104,7 +103,8 @@ public final class WordProperty implements Comparable<WordProperty> {
 
         final int relatedNgramCount = ngramTargets.size();
         final WordInfo currentWordInfo =
-                mIsBeginningOfSentence ? WordInfo.BEGINNING_OF_SENTENCE : new WordInfo(mWord);
+                mIsBeginningOfSentence ? WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO
+                        : new WordInfo(mWord);
         final NgramContext ngramContext = new NgramContext(currentWordInfo);
         for (int i = 0; i < relatedNgramCount; i++) {
             final String ngramTargetString =
@@ -202,7 +202,7 @@ public final class WordProperty implements Comparable<WordProperty> {
 
     @UsedForTesting
     public boolean isValid() {
-        return getProbability() != BinaryDictionary.NOT_A_PROBABILITY;
+        return getProbability() != Dictionary.NOT_A_PROBABILITY;
     }
 
     @Override

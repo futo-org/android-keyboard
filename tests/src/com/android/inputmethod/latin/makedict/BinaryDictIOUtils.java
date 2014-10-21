@@ -206,11 +206,7 @@ public final class BinaryDictIOUtils {
                     if (same) {
                         // found the PtNode matches the word.
                         if (wordPos + currentInfo.mCharacters.length == wordLen) {
-                            if (!currentInfo.isTerminal()) {
-                                return FormatSpec.NOT_VALID_WORD;
-                            } else {
-                                return ptNodePos;
-                            }
+                            return currentInfo.isTerminal() ? ptNodePos : FormatSpec.NOT_VALID_WORD;
                         }
                         wordPos += currentInfo.mCharacters.length;
                         if (currentInfo.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS) {

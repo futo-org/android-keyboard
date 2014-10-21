@@ -40,7 +40,6 @@ import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Dictionary.PhonyDictionary;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.DebugSettings;
@@ -250,7 +249,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     // Now, Looper#loop() never exits in normal operation unless the Looper#quit() method
     // is called, which has a lot of bad side effects. We can however just throw an exception
     // in the runnable which will unwind the stack and allow us to exit.
-    private final class InterruptRunMessagesException extends RuntimeException {
+    final class InterruptRunMessagesException extends RuntimeException {
         // Empty class
     }
     protected void runMessages() {
@@ -284,7 +283,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         } else {
             final int x = key.getX() + key.getWidth() / 2;
             final int y = key.getY() + key.getHeight() / 2;
-            event = mLatinIME.createSoftwareKeypressEvent(codePoint, x, y, isKeyRepeat);
+            event = LatinIME.createSoftwareKeypressEvent(codePoint, x, y, isKeyRepeat);
         }
         mLatinIME.onEvent(event);
         // Also see the comment at the top of this function about onReleaseKey
@@ -309,9 +308,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         final Key key = mKeyboard.getKey(codePoint);
         if (key == null) {
             throw new RuntimeException("Code point not on the keyboard");
-        } else {
-            return new Point(key.getX() + key.getWidth() / 2, key.getY() + key.getHeight() / 2);
         }
+        return new Point(key.getX() + key.getWidth() / 2, key.getY() + key.getHeight() / 2);
     }
 
     protected void gesture(final String stringToGesture) {
@@ -386,7 +384,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 false /* isAuxiliary */,
                 false /* overridesImplicitlyEnabledSubtype */,
                 0 /* id */);
-        SubtypeSwitcher.getInstance().forceSubtype(subtype);
+        SubtypeSwitcher.forceSubtype(subtype);
         mLatinIME.onCurrentInputMethodSubtypeChanged(subtype);
         runMessages();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();

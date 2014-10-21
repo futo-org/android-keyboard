@@ -122,19 +122,23 @@ public class ButtonSwitcher extends FrameLayout {
         mDeleteButton.setTranslationX(STATUS_DELETE == status ? 0 : width);
     }
 
+    // The helper method for {@link AnimatorListenerAdapter}.
+    void animateButtonIfStatusIsEqual(final View newButton, final int newStatus) {
+        if (newStatus != mStatus) return;
+        animateButton(newButton, ANIMATION_IN);
+    }
+
     private void animateButtonPosition(final int oldStatus, final int newStatus) {
         final View oldButton = getButton(oldStatus);
         final View newButton = getButton(newStatus);
         if (null != oldButton && null != newButton) {
             // Transition between two buttons : animate out, then in
-            animateButton(oldButton, ANIMATION_OUT).setListener(
-                    new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(final Animator animation) {
-                            if (newStatus != mStatus) return;
-                            animateButton(newButton, ANIMATION_IN);
-                        }
-                    });
+            animateButton(oldButton, ANIMATION_OUT).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(final Animator animation) {
+                    animateButtonIfStatusIsEqual(newButton, newStatus);
+                }
+            });
         } else if (null != oldButton) {
             animateButton(oldButton, ANIMATION_OUT);
         } else if (null != newButton) {
@@ -159,9 +163,8 @@ public class ButtonSwitcher extends FrameLayout {
         if (ANIMATION_IN == direction) {
             button.setClickable(true);
             return button.animate().translationX(0);
-        } else {
-            button.setClickable(false);
-            return button.animate().translationX(outerX - innerX);
         }
+        button.setClickable(false);
+        return button.animate().translationX(outerX - innerX);
     }
 }

@@ -34,8 +34,6 @@ import android.test.suitebuilder.annotation.LargeTest;
  */
 @LargeTest
 public class ContextualDictionaryTests extends AndroidTestCase {
-    private static final String TAG = ContextualDictionaryTests.class.getSimpleName();
-
     private static final Locale LOCALE_EN_US = new Locale("en", "US");
 
     private DictionaryFacilitator getDictionaryFacilitator() {

@@ -59,11 +59,7 @@ public class AsyncResultHolder<E> {
      */
     public E get(final E defaultValue, final long timeOut) {
         try {
-            if (mLatch.await(timeOut, TimeUnit.MILLISECONDS)) {
-                return mResult;
-            } else {
-                return defaultValue;
-            }
+            return mLatch.await(timeOut, TimeUnit.MILLISECONDS) ? mResult : defaultValue;
         } catch (InterruptedException e) {
             return defaultValue;
         }

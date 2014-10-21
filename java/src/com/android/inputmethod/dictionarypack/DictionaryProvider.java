@@ -255,10 +255,9 @@ public final class DictionaryProvider extends ContentProvider {
                 if (null != dictFiles && dictFiles.size() > 0) {
                     PrivateLog.log("Returned " + dictFiles.size() + " files");
                     return new ResourcePathCursor(dictFiles);
-                } else {
-                    PrivateLog.log("No dictionary files for this URL");
-                    return new ResourcePathCursor(Collections.<WordListInfo>emptyList());
                 }
+                PrivateLog.log("No dictionary files for this URL");
+                return new ResourcePathCursor(Collections.<WordListInfo>emptyList());
             // V2_METADATA and V2_DATAFILE are not supported for query()
             default:
                 return null;
@@ -319,14 +318,13 @@ public final class DictionaryProvider extends ContentProvider {
                 final AssetFileDescriptor afd = getContext().getResources().openRawResourceFd(
                         R.raw.empty);
                 return afd;
-            } else {
-                final String localFilename =
-                        wordList.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN);
-                final File f = getContext().getFileStreamPath(localFilename);
-                final ParcelFileDescriptor pfd =
-                        ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY);
-                return new AssetFileDescriptor(pfd, 0, pfd.getStatSize());
             }
+            final String localFilename =
+                    wordList.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN);
+            final File f = getContext().getFileStreamPath(localFilename);
+            final ParcelFileDescriptor pfd =
+                    ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY);
+            return new AssetFileDescriptor(pfd, 0, pfd.getStatSize());
         } catch (FileNotFoundException e) {
             // No file : fall through and return null
         }
@@ -461,13 +459,16 @@ public final class DictionaryProvider extends ContentProvider {
         final String wordlistId = uri.getLastPathSegment();
         final String clientId = getClientId(uri);
         final ContentValues wordList = getWordlistMetadataForWordlistId(clientId, wordlistId);
-        if (null == wordList) return 0;
+        if (null == wordList) {
+            return 0;
+        }
         final int status = wordList.getAsInteger(MetadataDbHelper.STATUS_COLUMN);
         final int version = wordList.getAsInteger(MetadataDbHelper.VERSION_COLUMN);
         if (MetadataDbHelper.STATUS_DELETING == status) {
             UpdateHandler.markAsDeleted(getContext(), clientId, wordlistId, version, status);
             return 1;
-        } else if (MetadataDbHelper.STATUS_INSTALLED == status) {
+        }
+        if (MetadataDbHelper.STATUS_INSTALLED == status) {
             final String result = uri.getQueryParameter(QUERY_PARAMETER_DELETE_RESULT);
             if (QUERY_PARAMETER_FAILURE.equals(result)) {
                 if (DEBUG) {
@@ -480,15 +481,10 @@ public final class DictionaryProvider extends ContentProvider {
                     wordList.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN);
             final File f = getContext().getFileStreamPath(localFilename);
             // f.delete() returns true if the file was successfully deleted, false otherwise
-            if (f.delete()) {
-                return 1;
-            } else {
-                return 0;
-            }
-        } else {
-            Log.e(TAG, "Attempt to delete a file whose status is " + status);
-            return 0;
+            return f.delete() ? 1 : 0;
         }
+        Log.e(TAG, "Attempt to delete a file whose status is " + status);
+        return 0;
     }
 
     /**

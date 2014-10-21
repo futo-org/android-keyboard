@@ -16,6 +16,7 @@
 
 package android.view.inputmethod;
 
+@SuppressWarnings("static-method")
 public class CompletionInfo {
     public final String getText() { return ""; }
 }

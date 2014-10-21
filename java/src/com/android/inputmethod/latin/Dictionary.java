@@ -72,9 +72,13 @@ public abstract class Dictionary {
      * Set out of the dictionary types listed above that are based on data specific to the user,
      * e.g., the user's contacts.
      */
-    private static final HashSet<String> sUserSpecificDictionaryTypes =
-            new HashSet(Arrays.asList(new String[] { TYPE_USER_TYPED, TYPE_USER, TYPE_CONTACTS,
-                    TYPE_USER_HISTORY, TYPE_PERSONALIZATION, TYPE_CONTEXTUAL }));
+    private static final HashSet<String> sUserSpecificDictionaryTypes = new HashSet<>(Arrays.asList(
+            TYPE_USER_TYPED,
+            TYPE_USER,
+            TYPE_CONTACTS,
+            TYPE_USER_HISTORY,
+            TYPE_PERSONALIZATION,
+            TYPE_CONTEXTUAL));
 
     public Dictionary(final String dictType, final Locale locale) {
         mDictType = dictType;

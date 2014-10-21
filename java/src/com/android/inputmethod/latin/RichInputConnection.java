@@ -44,8 +44,6 @@ import com.android.inputmethod.latin.utils.SpannableStringUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
-import java.util.Arrays;
-
 /**
  * Enrichment class for InputConnection to simplify interaction and add functionality.
  *
@@ -91,7 +89,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     /**
      * This variable is a temporary object used in
-     * {@link #commitTextWithBackgroundColor(CharSequence, int, int)} to avoid object creation.
+     * {@link #commitTextWithBackgroundColor(CharSequence,int,int,int)} to avoid object creation.
      */
     private SpannableStringBuilder mTempObjectForCommitText = new SpannableStringBuilder();
     /**
@@ -151,9 +149,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         } else {
             if (DBG) {
                 throw new RuntimeException("Nest level too deep");
-            } else {
-                Log.e(TAG, "Nest level too deep : " + mNestLevel);
             }
+            Log.e(TAG, "Nest level too deep : " + mNestLevel);
         }
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
@@ -351,10 +348,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 // If we have some composing text and a space before, then we should have
                 // MODE_CHARACTERS and MODE_WORDS on.
                 return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & inputType;
-            } else {
-                // We have some composing text - we should be in MODE_CHARACTERS only.
-                return TextUtils.CAP_MODE_CHARACTERS & inputType;
             }
+            // We have some composing text - we should be in MODE_CHARACTERS only.
+            return TextUtils.CAP_MODE_CHARACTERS & inputType;
         }
         // TODO: this will generally work, but there may be cases where the buffer contains SOME
         // information but not enough to determine the caps mode accurately. This may happen after
@@ -622,10 +618,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         return NgramContextUtils.getNgramContextFromNthPreviousWord(
                 prev, spacingAndPunctuations, n);
-    }
-
-    private static boolean isSeparator(final int code, final int[] sortedSeparators) {
-        return Arrays.binarySearch(sortedSeparators, code) >= 0;
     }
 
     private static boolean isPartOfCompositionForScript(final int codePoint,
@@ -977,7 +969,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     /**
      * @return {@code true} if the application reported that the monitor mode of
-     * {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} is currently enabled.
+     * {@link InputMethodService#onUpdateCursorAnchorInfo(android.view.inputmethod.CursorAnchorInfo)}
+     * is currently enabled.
      */
     public boolean isCursorAnchorInfoMonitorEnabled() {
         return mCursorAnchorInfoMonitorEnabled;

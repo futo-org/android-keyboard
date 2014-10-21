@@ -44,7 +44,7 @@ import java.util.Locale;
  * A class to read a local file as a dictionary for debugging purposes.
  */
 public class ExternalDictionaryGetterForDebug {
-    private static final String SOURCE_FOLDER = Environment.getExternalStorageDirectory().getPath()
+    static final String SOURCE_FOLDER = Environment.getExternalStorageDirectory().getPath()
             + "/Download";
 
     private static String[] findDictionariesInTheDownloadedFolder() {
@@ -142,8 +142,7 @@ public class ExternalDictionaryGetterForDebug {
                 }).create().show();
     }
 
-    private static void installFile(final Context context, final File file,
-            final DictionaryHeader header) {
+    static void installFile(final Context context, final File file, final DictionaryHeader header) {
         BufferedOutputStream outputStream = null;
         File tempFile = null;
         try {

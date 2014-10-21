@@ -312,11 +312,10 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             // Don't kill the keyboard if there is a bug in the spell checker
             if (DBG) {
                 throw e;
-            } else {
-                Log.e(TAG, "Exception while spellcheking", e);
-                return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
-                        false /* reportAsTypo */);
             }
+            Log.e(TAG, "Exception while spellcheking", e);
+            return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                    false /* reportAsTypo */);
         }
     }
 

@@ -17,6 +17,7 @@
 package com.android.inputmethod.compat;
 
 import android.text.Spannable;
+import android.text.Spanned;
 import android.text.style.LocaleSpan;
 import android.util.Log;
 
@@ -127,13 +128,13 @@ public final class LocaleSpanCompatUtils {
             final int spanFlag = spannable.getSpanFlags(existingLocaleSpan);
             if (spanStart < newStart) {
                 newStart = spanStart;
-                isStartExclusive = ((spanFlag & Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) ==
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                isStartExclusive = ((spanFlag & Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) ==
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             if (newEnd < spanEnd) {
                 newEnd = spanEnd;
-                isEndExclusive = ((spanFlag & Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) ==
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                isEndExclusive = ((spanFlag & Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) ==
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             existingLocaleSpansToBeMerged.add(existingLocaleSpan);
         }
@@ -201,24 +202,17 @@ public final class LocaleSpanCompatUtils {
 
     private static int getSpanFlag(final int originalFlag,
             final boolean isStartExclusive, final boolean isEndExclusive) {
-        return (originalFlag & ~Spannable.SPAN_POINT_MARK_MASK) |
+        return (originalFlag & ~Spanned.SPAN_POINT_MARK_MASK) |
                 getSpanPointMarkFlag(isStartExclusive, isEndExclusive);
     }
 
     private static int getSpanPointMarkFlag(final boolean isStartExclusive,
             final boolean isEndExclusive) {
         if (isStartExclusive) {
-            if (isEndExclusive) {
-                return Spannable.SPAN_EXCLUSIVE_EXCLUSIVE;
-            } else {
-                return Spannable.SPAN_EXCLUSIVE_INCLUSIVE;
-            }
-        } else {
-            if (isEndExclusive) {
-                return Spannable.SPAN_INCLUSIVE_EXCLUSIVE;
-            } else {
-                return Spannable.SPAN_INCLUSIVE_INCLUSIVE;
-            }
+            return isEndExclusive ? Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    : Spanned.SPAN_EXCLUSIVE_INCLUSIVE;
         }
+        return isEndExclusive ? Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                : Spanned.SPAN_INCLUSIVE_INCLUSIVE;
     }
 }

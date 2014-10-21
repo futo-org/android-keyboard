@@ -31,7 +31,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -203,24 +202,18 @@ public final class DictionarySettingsFragment extends PreferenceFragment
     @Override
     public void updateCycleCompleted() {}
 
-    private void refreshNetworkState() {
+    void refreshNetworkState() {
         NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         boolean isConnected = null == info ? false : info.isConnected();
         if (null != mUpdateNowMenu) mUpdateNowMenu.setEnabled(isConnected);
     }
 
-    private void refreshInterface() {
+    void refreshInterface() {
         final Activity activity = getActivity();
         if (null == activity) return;
-        final long lastUpdateDate =
-                MetadataDbHelper.getLastUpdateDateForClient(getActivity(), mClientId);
         final PreferenceGroup prefScreen = getPreferenceScreen();
         final Collection<? extends Preference> prefList =
                 createInstalledDictSettingsCollection(mClientId);
-
-        final String updateNowSummary = getString(R.string.last_update) + " "
-                + DateUtils.formatDateTime(activity, lastUpdateDate,
-                        DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME);
 
         activity.runOnUiThread(new Runnable() {
                 @Override
@@ -239,14 +232,14 @@ public final class DictionarySettingsFragment extends PreferenceFragment
             });
     }
 
-    private Preference createErrorMessage(final Activity activity, final int messageResource) {
+    private static Preference createErrorMessage(final Activity activity, final int messageResource) {
         final Preference message = new Preference(activity);
         message.setTitle(messageResource);
         message.setEnabled(false);
         return message;
     }
 
-    private void removeAnyDictSettings(final PreferenceGroup prefGroup) {
+    static void removeAnyDictSettings(final PreferenceGroup prefGroup) {
         for (int i = prefGroup.getPreferenceCount() - 1; i >= 0; --i) {
             prefGroup.removePreference(prefGroup.getPreference(i));
         }
@@ -276,7 +269,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 .appendQueryParameter(DictionaryProvider.QUERY_PARAMETER_PROTOCOL_VERSION, "2")
                 .build();
         final Activity activity = getActivity();
-        final Cursor cursor = null == activity ? null
+        final Cursor cursor = (null == activity) ? null
                 : activity.getContentResolver().query(contentUri, null, null, null, null);
 
         if (null == cursor) {
@@ -289,61 +282,57 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 final ArrayList<Preference> result = new ArrayList<>();
                 result.add(createErrorMessage(activity, R.string.no_dictionaries_available));
                 return result;
-            } else {
-                final String systemLocaleString = Locale.getDefault().toString();
-                final TreeMap<String, WordListPreference> prefMap = new TreeMap<>();
-                final int idIndex = cursor.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
-                final int versionIndex = cursor.getColumnIndex(MetadataDbHelper.VERSION_COLUMN);
-                final int localeIndex = cursor.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
-                final int descriptionIndex =
-                        cursor.getColumnIndex(MetadataDbHelper.DESCRIPTION_COLUMN);
-                final int statusIndex = cursor.getColumnIndex(MetadataDbHelper.STATUS_COLUMN);
-                final int filesizeIndex = cursor.getColumnIndex(MetadataDbHelper.FILESIZE_COLUMN);
-                do {
-                    final String wordlistId = cursor.getString(idIndex);
-                    final int version = cursor.getInt(versionIndex);
-                    final String localeString = cursor.getString(localeIndex);
-                    final Locale locale = new Locale(localeString);
-                    final String description = cursor.getString(descriptionIndex);
-                    final int status = cursor.getInt(statusIndex);
-                    final int matchLevel =
-                            LocaleUtils.getMatchLevel(systemLocaleString, localeString);
-                    final String matchLevelString =
-                            LocaleUtils.getMatchLevelSortedString(matchLevel);
-                    final int filesize = cursor.getInt(filesizeIndex);
-                    // The key is sorted in lexicographic order, according to the match level, then
-                    // the description.
-                    final String key = matchLevelString + "." + description + "." + wordlistId;
-                    final WordListPreference existingPref = prefMap.get(key);
-                    if (null == existingPref || existingPref.hasPriorityOver(status)) {
-                        final WordListPreference oldPreference = mCurrentPreferenceMap.get(key);
-                        final WordListPreference pref;
-                        if (null != oldPreference
-                                && oldPreference.mVersion == version
-                                && oldPreference.hasStatus(status)
-                                && oldPreference.mLocale.equals(locale)) {
-                            // If the old preference has all the new attributes, reuse it. Ideally,
-                            // we should reuse the old pref even if its status is different and call
-                            // setStatus here, but setStatus calls Preference#setSummary() which
-                            // needs to be done on the UI thread and we're not on the UI thread
-                            // here. We could do all this work on the UI thread, but in this case
-                            // it's probably lighter to stay on a background thread and throw this
-                            // old preference out.
-                            pref = oldPreference;
-                        } else {
-                            // Otherwise, discard it and create a new one instead.
-                            // TODO: when the status is different from the old one, we need to
-                            // animate the old one out before animating the new one in.
-                            pref = new WordListPreference(activity, mDictionaryListInterfaceState,
-                                    mClientId, wordlistId, version, locale, description, status,
-                                    filesize);
-                        }
-                        prefMap.put(key, pref);
-                    }
-                } while (cursor.moveToNext());
-                mCurrentPreferenceMap = prefMap;
-                return prefMap.values();
             }
+            final String systemLocaleString = Locale.getDefault().toString();
+            final TreeMap<String, WordListPreference> prefMap = new TreeMap<>();
+            final int idIndex = cursor.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
+            final int versionIndex = cursor.getColumnIndex(MetadataDbHelper.VERSION_COLUMN);
+            final int localeIndex = cursor.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
+            final int descriptionIndex = cursor.getColumnIndex(MetadataDbHelper.DESCRIPTION_COLUMN);
+            final int statusIndex = cursor.getColumnIndex(MetadataDbHelper.STATUS_COLUMN);
+            final int filesizeIndex = cursor.getColumnIndex(MetadataDbHelper.FILESIZE_COLUMN);
+            do {
+                final String wordlistId = cursor.getString(idIndex);
+                final int version = cursor.getInt(versionIndex);
+                final String localeString = cursor.getString(localeIndex);
+                final Locale locale = new Locale(localeString);
+                final String description = cursor.getString(descriptionIndex);
+                final int status = cursor.getInt(statusIndex);
+                final int matchLevel = LocaleUtils.getMatchLevel(systemLocaleString, localeString);
+                final String matchLevelString = LocaleUtils.getMatchLevelSortedString(matchLevel);
+                final int filesize = cursor.getInt(filesizeIndex);
+                // The key is sorted in lexicographic order, according to the match level, then
+                // the description.
+                final String key = matchLevelString + "." + description + "." + wordlistId;
+                final WordListPreference existingPref = prefMap.get(key);
+                if (null == existingPref || existingPref.hasPriorityOver(status)) {
+                    final WordListPreference oldPreference = mCurrentPreferenceMap.get(key);
+                    final WordListPreference pref;
+                    if (null != oldPreference
+                            && oldPreference.mVersion == version
+                            && oldPreference.hasStatus(status)
+                            && oldPreference.mLocale.equals(locale)) {
+                        // If the old preference has all the new attributes, reuse it. Ideally,
+                        // we should reuse the old pref even if its status is different and call
+                        // setStatus here, but setStatus calls Preference#setSummary() which
+                        // needs to be done on the UI thread and we're not on the UI thread
+                        // here. We could do all this work on the UI thread, but in this case
+                        // it's probably lighter to stay on a background thread and throw this
+                        // old preference out.
+                        pref = oldPreference;
+                    } else {
+                        // Otherwise, discard it and create a new one instead.
+                        // TODO: when the status is different from the old one, we need to
+                        // animate the old one out before animating the new one in.
+                        pref = new WordListPreference(activity, mDictionaryListInterfaceState,
+                                mClientId, wordlistId, version, locale, description, status,
+                                filesize);
+                    }
+                    prefMap.put(key, pref);
+                }
+            } while (cursor.moveToNext());
+            mCurrentPreferenceMap = prefMap;
+            return prefMap.values();
         } finally {
             cursor.close();
         }
@@ -396,26 +385,28 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         if (null != mUpdateNowMenu) mUpdateNowMenu.setTitle(R.string.cancel);
     }
 
-    private void stopLoadingAnimation() {
+    void stopLoadingAnimation() {
         final View preferenceView = getView();
         final Activity activity = getActivity();
         if (null == activity) return;
+        final View loadingView = mLoadingView;
+        final MenuItem updateNowMenu = mUpdateNowMenu;
         activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLoadingView.setVisibility(View.GONE);
-                    preferenceView.setVisibility(View.VISIBLE);
-                    mLoadingView.startAnimation(AnimationUtils.loadAnimation(
-                            getActivity(), android.R.anim.fade_out));
-                    preferenceView.startAnimation(AnimationUtils.loadAnimation(
-                            getActivity(), android.R.anim.fade_in));
-                    // The menu is created by the framework asynchronously after the activity,
-                    // which means it's possible to have the activity running but the menu not
-                    // created yet - hence the necessity for a null check here.
-                    if (null != mUpdateNowMenu) {
-                        mUpdateNowMenu.setTitle(R.string.check_for_updates_now);
-                    }
+            @Override
+            public void run() {
+                loadingView.setVisibility(View.GONE);
+                preferenceView.setVisibility(View.VISIBLE);
+                loadingView.startAnimation(AnimationUtils.loadAnimation(
+                        activity, android.R.anim.fade_out));
+                preferenceView.startAnimation(AnimationUtils.loadAnimation(
+                        activity, android.R.anim.fade_in));
+                // The menu is created by the framework asynchronously after the activity,
+                // which means it's possible to have the activity running but the menu not
+                // created yet - hence the necessity for a null check here.
+                if (null != updateNowMenu) {
+                    updateNowMenu.setTitle(R.string.check_for_updates_now);
                 }
-            });
+            }
+        });
     }
 }

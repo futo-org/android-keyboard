@@ -115,6 +115,7 @@ public class MyanmarReordering implements Combiner {
      * @param newEvent the new event to add to the stream. null if none.
      * @return the resulting software text event. Never null.
      */
+    @Nonnull
     private Event clearAndGetResultingEvent(final Event newEvent) {
         final CharSequence combinedText;
         if (mCurrentEvents.size() > 0) {
@@ -139,7 +140,8 @@ public class MyanmarReordering implements Combiner {
             if (null == lastEvent) {
                 mCurrentEvents.add(newEvent);
                 return Event.createConsumedEvent(newEvent);
-            } else if (isConsonantOrMedial(lastEvent.mCodePoint)) {
+            }
+            if (isConsonantOrMedial(lastEvent.mCodePoint)) {
                 final Event resultingEvent = clearAndGetResultingEvent(null);
                 mCurrentEvents.add(Event.createSoftwareKeypressEvent(ZERO_WIDTH_NON_JOINER,
                         Event.NOT_A_KEY_CODE,
@@ -147,15 +149,17 @@ public class MyanmarReordering implements Combiner {
                         false /* isKeyRepeat */));
                 mCurrentEvents.add(newEvent);
                 return resultingEvent;
-            } else { // VOWEL_E == lastCodePoint. But if that was anything else this is correct too.
-                return clearAndGetResultingEvent(newEvent);
             }
-        } if (isConsonant(codePoint)) {
+            // VOWEL_E == lastCodePoint. But if that was anything else this is correct too.
+            return clearAndGetResultingEvent(newEvent);
+        }
+        if (isConsonant(codePoint)) {
             final Event lastEvent = getLastEvent();
             if (null == lastEvent) {
                 mCurrentEvents.add(newEvent);
                 return Event.createConsumedEvent(newEvent);
-            } else if (VOWEL_E == lastEvent.mCodePoint) {
+            }
+            if (VOWEL_E == lastEvent.mCodePoint) {
                 final int eventSize = mCurrentEvents.size();
                 if (eventSize >= 2
                         && mCurrentEvents.get(eventSize - 2).mCodePoint == ZERO_WIDTH_NON_JOINER) {
@@ -178,15 +182,17 @@ public class MyanmarReordering implements Combiner {
                 mCurrentEvents.add(newEvent);
                 mCurrentEvents.add(lastEvent);
                 return Event.createConsumedEvent(newEvent);
-            } else { // lastCodePoint is a consonant/medial. But if it's something else it's fine
-                return clearAndGetResultingEvent(newEvent);
             }
-        } else if (isMedial(codePoint)) {
+            // lastCodePoint is a consonant/medial. But if it's something else it's fine
+            return clearAndGetResultingEvent(newEvent);
+        }
+        if (isMedial(codePoint)) {
             final Event lastEvent = getLastEvent();
             if (null == lastEvent) {
                 mCurrentEvents.add(newEvent);
                 return Event.createConsumedEvent(newEvent);
-            } else if (VOWEL_E == lastEvent.mCodePoint) {
+            }
+            if (VOWEL_E == lastEvent.mCodePoint) {
                 final int eventSize = mCurrentEvents.size();
                 // If there is already a consonant, then we are in the middle of a syllable, and we
                 // need to reorder.
@@ -205,37 +211,36 @@ public class MyanmarReordering implements Combiner {
                 }
                 // Otherwise, we just commit everything.
                 return clearAndGetResultingEvent(null);
-            } else { // lastCodePoint is a consonant/medial. But if it's something else it's fine
-                return clearAndGetResultingEvent(newEvent);
             }
-        } else if (Constants.CODE_DELETE == newEvent.mKeyCode) {
-            final Event lastEvent = getLastEvent();
+            // lastCodePoint is a consonant/medial. But if it's something else it's fine
+            return clearAndGetResultingEvent(newEvent);
+        }
+        final Event lastEvent = getLastEvent();
+        if (Constants.CODE_DELETE == newEvent.mKeyCode && null != lastEvent) {
             final int eventSize = mCurrentEvents.size();
-            if (null != lastEvent) {
-                if (VOWEL_E == lastEvent.mCodePoint) {
-                    // We have a VOWEL_E at the end. There are four cases.
-                    // - The vowel is the only code point in the buffer. Remove it.
-                    // - The vowel is preceded by a ZWNJ. Remove both vowel E and ZWNJ.
-                    // - The vowel is preceded by a consonant/medial, remove the consonant/medial.
-                    // - In all other cases, it's strange, so just remove the last code point.
-                    if (eventSize <= 1) {
-                        mCurrentEvents.clear();
-                    } else { // eventSize >= 2
-                        final int previousCodePoint = mCurrentEvents.get(eventSize - 2).mCodePoint;
-                        if (previousCodePoint == ZERO_WIDTH_NON_JOINER) {
-                            mCurrentEvents.remove(eventSize - 1);
-                            mCurrentEvents.remove(eventSize - 2);
-                        } else if (isConsonantOrMedial(previousCodePoint)) {
-                            mCurrentEvents.remove(eventSize - 2);
-                        } else {
-                            mCurrentEvents.remove(eventSize - 1);
-                        }
+            if (VOWEL_E == lastEvent.mCodePoint) {
+                // We have a VOWEL_E at the end. There are four cases.
+                // - The vowel is the only code point in the buffer. Remove it.
+                // - The vowel is preceded by a ZWNJ. Remove both vowel E and ZWNJ.
+                // - The vowel is preceded by a consonant/medial, remove the consonant/medial.
+                // - In all other cases, it's strange, so just remove the last code point.
+                if (eventSize <= 1) {
+                    mCurrentEvents.clear();
+                } else { // eventSize >= 2
+                    final int previousCodePoint = mCurrentEvents.get(eventSize - 2).mCodePoint;
+                    if (previousCodePoint == ZERO_WIDTH_NON_JOINER) {
+                        mCurrentEvents.remove(eventSize - 1);
+                        mCurrentEvents.remove(eventSize - 2);
+                    } else if (isConsonantOrMedial(previousCodePoint)) {
+                        mCurrentEvents.remove(eventSize - 2);
+                    } else {
+                        mCurrentEvents.remove(eventSize - 1);
                     }
-                    return Event.createConsumedEvent(newEvent);
-                } else if (eventSize > 0) {
-                    mCurrentEvents.remove(eventSize - 1);
-                    return Event.createConsumedEvent(newEvent);
                 }
+                return Event.createConsumedEvent(newEvent);
+            } else if (eventSize > 0) {
+                mCurrentEvents.remove(eventSize - 1);
+                return Event.createConsumedEvent(newEvent);
             }
         }
         // This character is not part of the combining scheme, so we should reset everything.
@@ -243,10 +248,9 @@ public class MyanmarReordering implements Combiner {
             // If we have events in flight, then add the new event and return the resulting event.
             mCurrentEvents.add(newEvent);
             return clearAndGetResultingEvent(null);
-        } else {
-            // If we don't have any events in flight, then just pass this one through.
-            return newEvent;
         }
+        // If we don't have any events in flight, then just pass this one through.
+        return newEvent;
     }
 
     @Override

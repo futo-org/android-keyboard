@@ -46,7 +46,7 @@ public class CursorAnchorInfoCompatWrapper {
      */
     public static final int FLAG_IS_RTL = 0x04;
 
-    private CursorAnchorInfoCompatWrapper() {
+    CursorAnchorInfoCompatWrapper() {
         // This class is not publicly instantiable.
     }
 

@@ -179,7 +179,7 @@ public final class DictionaryService extends Service {
         return Service.START_REDELIVER_INTENT;
     }
 
-    private static void dispatchBroadcast(final Context context, final Intent intent) {
+    static void dispatchBroadcast(final Context context, final Intent intent) {
         if (DATE_CHANGED_INTENT_ACTION.equals(intent.getAction())) {
             // This happens when the date of the device changes. This normally happens
             // at midnight local time, but it may happen if the user changes the date

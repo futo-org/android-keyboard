@@ -25,7 +25,6 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
-import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Arrays;
 import java.util.Locale;

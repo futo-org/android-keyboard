@@ -328,7 +328,7 @@ public final class Suggest {
      * @param info the suggestion info
      * @return whether it's fine to auto-correct to this.
      */
-    private boolean isAllowedByAutoCorrectionWithSpaceFilter(final SuggestedWordInfo info) {
+    private static boolean isAllowedByAutoCorrectionWithSpaceFilter(final SuggestedWordInfo info) {
         final Locale locale = info.mSourceDict.mLocale;
         if (null == locale) {
             return true;

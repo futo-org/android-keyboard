@@ -273,6 +273,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     // Future method for requesting an updating to the shift state.
+    @Override
     public void requestUpdatingShiftState(final int currentAutoCapsState,
             final int currentRecapitalizeState) {
         mState.onUpdateShiftState(currentAutoCapsState, currentRecapitalizeState);

@@ -26,7 +26,6 @@ import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -164,7 +163,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    private boolean useFirstLastBigramsForLocale(final Locale locale) {
+    private static boolean useFirstLastBigramsForLocale(final Locale locale) {
         // TODO: Add firstname/lastname bigram rules for other languages.
         if (locale != null && locale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
             return true;
@@ -269,7 +268,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         return end;
     }
 
-    private boolean haveContentsChanged() {
+    boolean haveContentsChanged() {
         final long startTime = SystemClock.uptimeMillis();
         final int contactCount = getContactCount();
         if (contactCount > MAX_CONTACT_COUNT) {
