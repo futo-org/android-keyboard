@@ -26,6 +26,7 @@ import android.util.TypedValue;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.settings.SettingsValues;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,6 +185,15 @@ public final class ResourceUtils {
     public static int getDefaultKeyboardWidth(final Resources res) {
         final DisplayMetrics dm = res.getDisplayMetrics();
         return dm.widthPixels;
+    }
+
+    public static int getKeyboardHeight(final Resources res, final SettingsValues settingsValues) {
+        final int defaultKeyboardHeight = getDefaultKeyboardHeight(res);
+        if (settingsValues.mHasKeyboardResize) {
+            // mKeyboardHeightScale Ranges from [.5,1.2], from xml/prefs_screen_debug.xml
+            return (int)(defaultKeyboardHeight * settingsValues.mKeyboardHeightScale);
+        }
+        return defaultKeyboardHeight;
     }
 
     public static int getDefaultKeyboardHeight(final Resources res) {

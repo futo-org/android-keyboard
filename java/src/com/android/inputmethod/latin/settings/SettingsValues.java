@@ -50,6 +50,7 @@ public class SettingsValues {
     private static final String FLOAT_MAX_VALUE_MARKER_STRING = "floatMaxValue";
     private static final String FLOAT_NEGATIVE_INFINITY_MARKER_STRING = "floatNegativeInfinity";
     private static final int TIMEOUT_TO_GET_TARGET_PACKAGE = 5; // seconds
+    public static final float DEFAULT_SIZE_SCALE = 1.0f; // 100%
 
     // From resources:
     public final SpacingAndPunctuations mSpacingAndPunctuations;
@@ -110,6 +111,8 @@ public class SettingsValues {
     // Debug settings
     public final boolean mIsInternal;
     public final boolean mHasCustomKeyPreviewAnimationParams;
+    public final boolean mHasKeyboardResize;
+    public final float mKeyboardHeightScale;
     public final int mKeyPreviewShowUpDuration;
     public final int mKeyPreviewDismissDuration;
     public final float mKeyPreviewShowUpStartXScale;
@@ -185,6 +188,9 @@ public class SettingsValues {
         mIsInternal = Settings.isInternal(prefs);
         mHasCustomKeyPreviewAnimationParams = prefs.getBoolean(
                 DebugSettings.PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS, false);
+        mHasKeyboardResize = prefs.getBoolean(DebugSettings.PREF_RESIZE_KEYBOARD, false);
+        mKeyboardHeightScale = Settings.readKeyboardHeight(
+                prefs, DebugSettings.PREF_KEYBOARD_HEIGHT_SCALE, DEFAULT_SIZE_SCALE);
         mKeyPreviewShowUpDuration = Settings.readKeyPreviewAnimationDuration(
                 prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_DURATION,
                 res.getInteger(R.integer.config_key_preview_show_up_duration));

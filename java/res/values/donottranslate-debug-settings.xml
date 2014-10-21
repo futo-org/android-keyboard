@@ -43,6 +43,10 @@
     <string name="prefs_key_popup_dismiss_end_y_scale_settings">Key popup dismiss end Y scale</string>
     <!-- Title of the settings for reading an external dictionary file -->
     <string name="prefs_read_external_dictionary">Read external dictionary file</string>
+    <!-- Title of the settings to enable keyboard resizing -->
+    <string name="prefs_resize_keyboard">Enable keyboard resizing</string>
+    <!-- Title of the settings for setting keyboard height -->
+    <string name="prefs_keyboard_height_scale">Keyboard height scale</string>
     <!-- Message to show when there are no files to install as an external dictionary [CHAR LIMIT=100] -->
     <string name="read_external_dictionary_no_files_message">No dictionary files in the Downloads folder</string>
     <!-- Title of the dialog that selects a file to install as an external dictionary [CHAR LIMIT=50] -->

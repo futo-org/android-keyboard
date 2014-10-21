@@ -76,6 +76,17 @@
         android:key="pref_key_preview_dismiss_duration"
         android:title="@string/prefs_key_popup_dismiss_duration_settings"
         latin:maxValue="100" /> <!-- milliseconds -->
+    <CheckBoxPreference
+        android:key="pref_resize_keyboard"
+        android:title="@string/prefs_resize_keyboard"
+        android:defaultValue="false"
+        android:persistent="true" />
+    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+        android:dependency="pref_resize_keyboard"
+        android:key="pref_keyboard_height_scale"
+        android:title="@string/prefs_keyboard_height_scale"
+        latin:minValue="50"
+        latin:maxValue="120" /> <!-- percentage -->
     <PreferenceScreen
         android:key="read_external_dictionary"
         android:title="@string/prefs_read_external_dictionary" />
