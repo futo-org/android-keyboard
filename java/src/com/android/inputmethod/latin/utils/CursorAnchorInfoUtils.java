@@ -96,7 +96,7 @@ public final class CursorAnchorInfoUtils {
     @Nullable
     public static CursorAnchorInfoCompatWrapper extractFromTextView(
             @Nonnull final TextView textView) {
-        if (Build.VERSION.SDK_INT < BuildCompatUtils.VERSION_CODES_LXX) {
+        if (BuildCompatUtils.EFFECTIVE_SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return null;
         }
         return CursorAnchorInfoCompatWrapper.wrap(extractFromTextViewInternal(textView));
@@ -108,7 +108,7 @@ public final class CursorAnchorInfoUtils {
      * @return the {@link CursorAnchorInfo} object based on the current layout. {@code null} if it
      * is not feasible.
      */
-    @TargetApi(BuildCompatUtils.VERSION_CODES_LXX)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     private static CursorAnchorInfo extractFromTextViewInternal(@Nonnull final TextView textView) {
         final Layout layout = textView.getLayout();
