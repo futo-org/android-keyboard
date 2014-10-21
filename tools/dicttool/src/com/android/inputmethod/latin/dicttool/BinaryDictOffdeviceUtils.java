@@ -45,26 +45,37 @@ public final class BinaryDictOffdeviceUtils {
     private final static String PREFIX = "dicttool";
     private final static String SUFFIX = ".tmp";
 
-    public final static String COMPRESSION = "compressed";
-    public final static String ENCRYPTION = "encrypted";
-
-    private final static int MAX_DECODE_DEPTH = 8;
     private final static int COPY_BUFFER_SIZE = 8192;
 
     public static class DecoderChainSpec {
-        ArrayList<String> mDecoderSpec = new ArrayList<>();
+        public final static int COMPRESSION = 1;
+        public final static int ENCRYPTION = 2;
+        private final static int MAX_DECODE_DEPTH = 4;
+
+        ArrayList<Integer> mDecoderSpec = new ArrayList<>();
         File mFile;
 
-        public DecoderChainSpec addStep(final String stepDescription) {
+        public DecoderChainSpec addStep(final int stepDescription) {
             mDecoderSpec.add(stepDescription);
             return this;
         }
 
+        private String getStepDescription(final int step) {
+            switch (step) {
+            case COMPRESSION:
+                return "compression";
+            case ENCRYPTION:
+                return "encryption";
+            default:
+                return "unknown";
+            }
+        }
+
         public String describeChain() {
             final StringBuilder s = new StringBuilder("raw");
-            for (final String step : mDecoderSpec) {
+            for (final int step : mDecoderSpec) {
                 s.append(" > ");
-                s.append(step);
+                s.append(getStepDescription(step));
             }
             return s.toString();
         }
@@ -91,11 +102,13 @@ public final class BinaryDictOffdeviceUtils {
     private static DecoderChainSpec getRawDictionaryOrNullInternal(
             final DecoderChainSpec spec, final File src, final int depth) {
         // Unfortunately the decoding scheme we use can consider any data to be encrypted
-        // and will product some output, meaning it's not possible to reliably detect encrypted
+        // and will produce some output, meaning it's not possible to reliably detect encrypted
         // data. Thus, some non-dictionary files (especially small) ones may successfully decrypt
         // over and over, ending in a stack overflow. Hence we limit the depth at which we try
         // decoding the file.
-        if (depth > MAX_DECODE_DEPTH) return null;
+        if (depth > DecoderChainSpec.MAX_DECODE_DEPTH) {
+            return null;
+        }
         if (BinaryDictDecoderUtils.isBinaryDictionary(src)
                 || CombinedInputOutput.isCombinedDictionary(src.getAbsolutePath())) {
             spec.mFile = src;
@@ -107,7 +120,7 @@ public final class BinaryDictOffdeviceUtils {
             final DecoderChainSpec newSpec =
                     getRawDictionaryOrNullInternal(spec, uncompressedFile, depth + 1);
             if (null == newSpec) return null;
-            return newSpec.addStep(COMPRESSION);
+            return newSpec.addStep(DecoderChainSpec.COMPRESSION);
         }
         // It's not a compressed either - try to see if it's crypted.
         final File decryptedFile = tryGetDecryptedFile(src);
@@ -115,7 +128,7 @@ public final class BinaryDictOffdeviceUtils {
             final DecoderChainSpec newSpec =
                     getRawDictionaryOrNullInternal(spec, decryptedFile, depth + 1);
             if (null == newSpec) return null;
-            return newSpec.addStep(ENCRYPTION);
+            return newSpec.addStep(DecoderChainSpec.ENCRYPTION);
         }
         return null;
     }
