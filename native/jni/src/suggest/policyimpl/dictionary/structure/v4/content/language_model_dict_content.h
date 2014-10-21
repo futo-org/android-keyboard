@@ -25,6 +25,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
+#include "suggest/policyimpl/dictionary/utils/entry_counters.h"
 #include "suggest/policyimpl/dictionary/utils/trie_map.h"
 #include "utils/byte_array_view.h"
 #include "utils/int_array_view.h"
@@ -169,7 +170,8 @@ class LanguageModelDictContent {
 
     bool updateAllEntriesOnInputWord(const WordIdArrayView prevWordIds, const int wordId,
             const bool isValid, const HistoricalInfo historicalInfo,
-            const HeaderPolicy *const headerPolicy, int *const outAddedNewNgramEntryCount);
+            const HeaderPolicy *const headerPolicy,
+            MutableEntryCounters *const entryCountersToUpdate);
 
  private:
     DISALLOW_COPY_AND_ASSIGN(LanguageModelDictContent);

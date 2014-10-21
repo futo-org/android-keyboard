@@ -33,17 +33,18 @@
 namespace latinime {
 
 bool Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPath,
-        const int unigramCount, const int bigramCount) const {
+        const EntryCounts &entryCounts) const {
     const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
     BufferWithExtendableBuffer headerBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     const int extendedRegionSize = headerPolicy->getExtendedRegionSize()
             + mBuffers->getTrieBuffer()->getUsedAdditionalBufferSize();
     if (!headerPolicy->fillInAndWriteHeaderToBuffer(false /* updatesLastDecayedTime */,
-            unigramCount, bigramCount, extendedRegionSize, &headerBuffer)) {
+            entryCounts, extendedRegionSize, &headerBuffer)) {
         AKLOGE("Cannot write header structure to buffer. "
-                "updatesLastDecayedTime: %d, unigramCount: %d, bigramCount: %d, "
-                "extendedRegionSize: %d", false, unigramCount, bigramCount,
+                "updatesLastDecayedTime: %d, unigramCount: %d, bigramCount: %d, trigramCount: %d,"
+                "extendedRegionSize: %d", false, entryCounters.getUnigramCount(),
+                entryCounters.getBigramCount(), entryCounters.getTrigramCount(),
                 extendedRegionSize);
         return false;
     }
@@ -64,7 +65,8 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
     BufferWithExtendableBuffer headerBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     if (!headerPolicy->fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
-            unigramCount, bigramCount, 0 /* extendedRegionSize */, &headerBuffer)) {
+            EntryCounts(unigramCount, bigramCount, 0 /* trigramCount */),
+            0 /* extendedRegionSize */, &headerBuffer)) {
         return false;
     }
     return dictBuffers->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);

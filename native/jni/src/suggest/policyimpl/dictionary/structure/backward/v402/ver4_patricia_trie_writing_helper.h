@@ -27,6 +27,7 @@
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_gc_event_listeners.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v402/content/terminal_position_lookup_table.h"
+#include "suggest/policyimpl/dictionary/utils/entry_counters.h"
 
 namespace latinime {
 namespace backward {
@@ -46,8 +47,7 @@ class Ver4PatriciaTrieWritingHelper {
     Ver4PatriciaTrieWritingHelper(Ver4DictBuffers *const buffers)
             : mBuffers(buffers) {}
 
-    bool writeToDictFile(const char *const dictDirPath, const int unigramCount,
-            const int bigramCount) const;
+    bool writeToDictFile(const char *const dictDirPath, const EntryCounts &entryCounts) const;
 
     // This method cannot be const because the original dictionary buffer will be updated to detect
     // useless PtNodes during GC.

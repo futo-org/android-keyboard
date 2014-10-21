@@ -27,6 +27,7 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/entry_counters.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "utils/time_keeper.h"
@@ -69,8 +70,7 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr>
     DictBuffersPtr dictBuffers = DictBuffers::createVer4DictBuffers(&headerPolicy,
             DictConstants::MAX_DICT_EXTENDED_REGION_SIZE);
     headerPolicy.fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
-            0 /* unigramCount */, 0 /* bigramCount */,
-            0 /* extendedRegionSize */, dictBuffers->getWritableHeaderBuffer());
+            EntryCounts(), 0 /* extendedRegionSize */, dictBuffers->getWritableHeaderBuffer());
     if (!DynamicPtWritingUtils::writeEmptyDictionary(
             dictBuffers->getWritableTrieBuffer(), 0 /* rootPos */)) {
         AKLOGE("Empty ver4 dictionary structure cannot be created on memory.");

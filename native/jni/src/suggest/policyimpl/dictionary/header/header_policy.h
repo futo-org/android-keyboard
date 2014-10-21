@@ -22,6 +22,7 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/utils/entry_counters.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "utils/char_utils.h"
 #include "utils/time_keeper.h"
@@ -49,6 +50,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       UNIGRAM_COUNT_KEY, 0 /* defaultValue */)),
               mBigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       BIGRAM_COUNT_KEY, 0 /* defaultValue */)),
+              mTrigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      TRIGRAM_COUNT_KEY, 0 /* defaultValue */)),
               mExtendedRegionSize(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       EXTENDED_REGION_SIZE_KEY, 0 /* defaultValue */)),
               mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
@@ -60,6 +63,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       &mAttributeMap, MAX_UNIGRAM_COUNT_KEY, DEFAULT_MAX_UNIGRAM_COUNT)),
               mMaxBigramCount(HeaderReadWriteUtils::readIntAttributeValue(
                       &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)),
+              mMaxTrigramCount(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, MAX_TRIGRAM_COUNT_KEY, DEFAULT_MAX_TRIGRAM_COUNT)),
               mCodePointTable(HeaderReadWriteUtils::readCodePointTable(&mAttributeMap)) {}
 
     // Constructs header information using an attribute map.
@@ -77,7 +82,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       DATE_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mLastDecayedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       DATE_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
-              mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0),
+              mUnigramCount(0), mBigramCount(0), mTrigramCount(0), mExtendedRegionSize(0),
               mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
                       &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)),
               mForgettingCurveProbabilityValuesTableId(HeaderReadWriteUtils::readIntAttributeValue(
@@ -87,6 +92,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       &mAttributeMap, MAX_UNIGRAM_COUNT_KEY, DEFAULT_MAX_UNIGRAM_COUNT)),
               mMaxBigramCount(HeaderReadWriteUtils::readIntAttributeValue(
                       &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)),
+              mMaxTrigramCount(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, MAX_TRIGRAM_COUNT_KEY, DEFAULT_MAX_TRIGRAM_COUNT)),
               mCodePointTable(HeaderReadWriteUtils::readCodePointTable(&mAttributeMap)) {}
 
     // Copy header information
@@ -99,12 +106,14 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mIsDecayingDict(headerPolicy->mIsDecayingDict),
               mDate(headerPolicy->mDate), mLastDecayedTime(headerPolicy->mLastDecayedTime),
               mUnigramCount(headerPolicy->mUnigramCount), mBigramCount(headerPolicy->mBigramCount),
+              mTrigramCount(headerPolicy->mTrigramCount),
               mExtendedRegionSize(headerPolicy->mExtendedRegionSize),
               mHasHistoricalInfoOfWords(headerPolicy->mHasHistoricalInfoOfWords),
               mForgettingCurveProbabilityValuesTableId(
                       headerPolicy->mForgettingCurveProbabilityValuesTableId),
               mMaxUnigramCount(headerPolicy->mMaxUnigramCount),
               mMaxBigramCount(headerPolicy->mMaxBigramCount),
+              mMaxTrigramCount(headerPolicy->mMaxTrigramCount),
               mCodePointTable(headerPolicy->mCodePointTable) {}
 
     // Temporary dummy header.
@@ -112,10 +121,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
             : mDictFormatVersion(FormatUtils::UNKNOWN_VERSION), mDictionaryFlags(0), mSize(0),
               mAttributeMap(), mLocale(CharUtils::EMPTY_STRING), mMultiWordCostMultiplier(0.0f),
               mRequiresGermanUmlautProcessing(false), mIsDecayingDict(false),
-              mDate(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
+              mDate(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0), mTrigramCount(0),
               mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false),
               mForgettingCurveProbabilityValuesTableId(0), mMaxUnigramCount(0), mMaxBigramCount(0),
-              mCodePointTable(nullptr) {}
+              mMaxTrigramCount(0), mCodePointTable(nullptr) {}
 
     ~HeaderPolicy() {}
 
@@ -183,6 +192,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mBigramCount;
     }
 
+    AK_FORCE_INLINE int getTrigramCount() const {
+        return mTrigramCount;
+    }
+
     AK_FORCE_INLINE int getExtendedRegionSize() const {
         return mExtendedRegionSize;
     }
@@ -212,15 +225,19 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mMaxBigramCount;
     }
 
+    AK_FORCE_INLINE int getMaxTrigramCount() const {
+        return mMaxTrigramCount;
+    }
+
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
     bool fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTime,
-            const int unigramCount, const int bigramCount,
-            const int extendedRegionSize, BufferWithExtendableBuffer *const outBuffer) const;
+            const EntryCounts &entryCounts, const int extendedRegionSize,
+            BufferWithExtendableBuffer *const outBuffer) const;
 
-    void fillInHeader(const bool updatesLastDecayedTime,
-            const int unigramCount, const int bigramCount, const int extendedRegionSize,
+    void fillInHeader(const bool updatesLastDecayedTime, const EntryCounts &entryCounts,
+            const int extendedRegionSize,
             DictionaryHeaderStructurePolicy::AttributeMap *outAttributeMap) const;
 
     AK_FORCE_INLINE const std::vector<int> *getLocale() const {
@@ -245,6 +262,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const LAST_DECAYED_TIME_KEY;
     static const char *const UNIGRAM_COUNT_KEY;
     static const char *const BIGRAM_COUNT_KEY;
+    static const char *const TRIGRAM_COUNT_KEY;
     static const char *const EXTENDED_REGION_SIZE_KEY;
     static const char *const HAS_HISTORICAL_INFO_KEY;
     static const char *const LOCALE_KEY;
@@ -273,11 +291,13 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const int mLastDecayedTime;
     const int mUnigramCount;
     const int mBigramCount;
+    const int mTrigramCount;
     const int mExtendedRegionSize;
     const bool mHasHistoricalInfoOfWords;
     const int mForgettingCurveProbabilityValuesTableId;
     const int mMaxUnigramCount;
     const int mMaxBigramCount;
+    const int mMaxTrigramCount;
     const int *const mCodePointTable;
 
     const std::vector<int> readLocale() const;
