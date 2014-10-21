@@ -82,7 +82,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
             assertEquals("Wrong decode spec",
                     BinaryDictOffdeviceUtils.DecoderChainSpec.COMPRESSION, step);
         }
-        assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.size());
+        assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.length);
         final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(decodeSpec.mFile, 0,
                 decodeSpec.mFile.length());
         final FusionDictionary resultDict =
