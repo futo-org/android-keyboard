@@ -344,8 +344,7 @@ bool Ver4PatriciaTriePolicy::removeUnigramEntry(const CodePointArrayView wordCod
     return mNodeWriter.suppressUnigramEntry(&ptNodeParams);
 }
 
-bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramContext *const ngramContext,
-        const NgramProperty *const ngramProperty) {
+bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramProperty *const ngramProperty) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;
@@ -355,6 +354,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramContext *const ngramContex
                 mDictBuffer->getTailPosition());
         return false;
     }
+    const NgramContext *const ngramContext = ngramProperty->getNgramContext();
     if (!ngramContext->isValid()) {
         AKLOGE("Ngram context is not valid for adding n-gram entry to the dictionary.");
         return false;
@@ -463,9 +463,9 @@ bool Ver4PatriciaTriePolicy::updateEntriesForWordWithNgramContext(
     }
     const int probabilityForNgram = ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */)
             ? NOT_A_PROBABILITY : probability;
-    const NgramProperty ngramProperty(wordCodePoints.toVector(), probabilityForNgram,
+    const NgramProperty ngramProperty(*ngramContext, wordCodePoints.toVector(), probabilityForNgram,
             historicalInfo);
-    if (!addNgramEntry(ngramContext, &ngramProperty)) {
+    if (!addNgramEntry(&ngramProperty)) {
         AKLOGE("Cannot update unigarm entry in updateEntriesForWordWithNgramContext().");
         return false;
     }
@@ -585,6 +585,8 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
                             bigramEntry.getHistoricalInfo(), mHeaderPolicy) :
                     bigramEntry.getProbability();
             ngrams.emplace_back(
+                    NgramContext(wordCodePoints.data(), wordCodePoints.size(),
+                            ptNodeParams.representsBeginningOfSentence()),
                     CodePointArrayView(bigramWord1CodePoints, codePointCount).toVector(),
                     probability, *historicalInfo);
         }

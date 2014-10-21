@@ -93,8 +93,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return false;
     }
 
-    bool addNgramEntry(const NgramContext *const ngramContext,
-            const NgramProperty *const ngramProperty) {
+    bool addNgramEntry(const NgramProperty *const ngramProperty) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;

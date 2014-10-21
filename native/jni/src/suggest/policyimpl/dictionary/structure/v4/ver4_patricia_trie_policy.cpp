@@ -264,8 +264,7 @@ bool Ver4PatriciaTriePolicy::removeUnigramEntry(const CodePointArrayView wordCod
     return true;
 }
 
-bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramContext *const ngramContext,
-        const NgramProperty *const ngramProperty) {
+bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramProperty *const ngramProperty) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;
@@ -275,6 +274,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramContext *const ngramContex
                 mDictBuffer->getTailPosition());
         return false;
     }
+    const NgramContext *const ngramContext = ngramProperty->getNgramContext();
     if (!ngramContext->isValid()) {
         AKLOGE("Ngram context is not valid for adding n-gram entry to the dictionary.");
         return false;
@@ -451,7 +451,8 @@ bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
         // Needs to reduce dictionary size.
         return true;
     } else if (mHeaderPolicy->isDecayingDict()) {
-        return ForgettingCurveUtils::needsToDecay(mindsBlockByGC, mEntryCounters.getEntryCounts(), mHeaderPolicy);
+        return ForgettingCurveUtils::needsToDecay(mindsBlockByGC, mEntryCounters.getEntryCounts(),
+                mHeaderPolicy);
     }
     return false;
 }
@@ -501,12 +502,16 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
             prevWordIds)) {
         const int codePointCount = getCodePointsAndReturnCodePointCount(entry.getWordId(),
                 MAX_WORD_LENGTH, bigramWord1CodePoints);
-        const ProbabilityEntry probabilityEntry = entry.getProbabilityEntry();
-        const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
-        const int probability = probabilityEntry.hasHistoricalInfo() ?
+        const ProbabilityEntry ngramProbabilityEntry = entry.getProbabilityEntry();
+        const HistoricalInfo *const historicalInfo = ngramProbabilityEntry.getHistoricalInfo();
+        const int probability = ngramProbabilityEntry.hasHistoricalInfo() ?
                 ForgettingCurveUtils::decodeProbability(historicalInfo, mHeaderPolicy) :
-                probabilityEntry.getProbability();
-        ngrams.emplace_back(CodePointArrayView(bigramWord1CodePoints, codePointCount).toVector(),
+                ngramProbabilityEntry.getProbability();
+        ngrams.emplace_back(
+                NgramContext(
+                        wordCodePoints.data(), wordCodePoints.size(),
+                        probabilityEntry.representsBeginningOfSentence()),
+                CodePointArrayView(bigramWord1CodePoints, codePointCount).toVector(),
                 probability, *historicalInfo);
     }
     // Fetch shortcut information.

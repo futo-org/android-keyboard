@@ -34,9 +34,9 @@ class WordProperty {
             : mCodePoints(), mUnigramProperty(), mNgrams() {}
 
     WordProperty(const std::vector<int> &&codePoints, const UnigramProperty *const unigramProperty,
-            const std::vector<NgramProperty> *const bigrams)
+            const std::vector<NgramProperty> *const ngrams)
             : mCodePoints(std::move(codePoints)), mUnigramProperty(*unigramProperty),
-              mNgrams(*bigrams) {}
+              mNgrams(*ngrams) {}
 
     void outputProperties(JNIEnv *const env, jintArray outCodePoints, jbooleanArray outFlags,
             jintArray outProbabilityInfo, jobject outBigramTargets, jobject outBigramProbabilities,

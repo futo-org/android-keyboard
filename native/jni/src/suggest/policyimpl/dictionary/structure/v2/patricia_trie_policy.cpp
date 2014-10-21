@@ -451,6 +451,8 @@ const WordProperty PatriciaTriePolicy::getWordProperty(
                     bigramWord1CodePoints, &word1Probability);
             const int probability = getProbability(word1Probability, bigramsIt.getProbability());
             ngrams.emplace_back(
+                    NgramContext(wordCodePoints.data(), wordCodePoints.size(),
+                            ptNodeParams.representsBeginningOfSentence()),
                     CodePointArrayView(bigramWord1CodePoints, word1CodePointCount).toVector(),
                     probability, HistoricalInfo());
         }

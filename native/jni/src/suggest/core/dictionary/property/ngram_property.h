@@ -21,15 +21,20 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/property/historical_info.h"
+#include "suggest/core/session/ngram_context.h"
 
 namespace latinime {
 
 class NgramProperty {
  public:
-    NgramProperty(const std::vector<int> &&targetCodePoints, const int probability,
-            const HistoricalInfo historicalInfo)
-            : mTargetCodePoints(std::move(targetCodePoints)), mProbability(probability),
-              mHistoricalInfo(historicalInfo) {}
+    NgramProperty(const NgramContext &ngramContext, const std::vector<int> &&targetCodePoints,
+            const int probability, const HistoricalInfo historicalInfo)
+            : mNgramContext(ngramContext), mTargetCodePoints(std::move(targetCodePoints)),
+              mProbability(probability), mHistoricalInfo(historicalInfo) {}
+
+    const NgramContext *getNgramContext() const {
+        return &mNgramContext;
+    }
 
     const std::vector<int> *getTargetCodePoints() const {
         return &mTargetCodePoints;
@@ -48,6 +53,7 @@ class NgramProperty {
     DISALLOW_DEFAULT_CONSTRUCTOR(NgramProperty);
     DISALLOW_ASSIGNMENT_OPERATOR(NgramProperty);
 
+    const NgramContext mNgramContext;
     const std::vector<int> mTargetCodePoints;
     const int mProbability;
     const HistoricalInfo mHistoricalInfo;
