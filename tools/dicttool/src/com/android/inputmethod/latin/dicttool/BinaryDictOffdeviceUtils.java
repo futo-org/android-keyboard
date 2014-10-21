@@ -19,6 +19,10 @@ package com.android.inputmethod.latin.dicttool;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
+import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
+import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
@@ -34,6 +38,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -139,6 +145,53 @@ public final class BinaryDictOffdeviceUtils {
                 }
             }
             throw new UnsupportedFormatException("Input stream not at the expected format");
+        }
+    }
+
+    public static class HeaderReaderProcessor implements InputProcessor<DictionaryHeader> {
+        // Arbitrarily limit the header length to 32k. Sounds like it would never be larger
+        // than this. Revisit this if needed later.
+        private final int MAX_HEADER_LENGTH = 32 * 1024;
+        @Override @Nonnull
+        public DictionaryHeader process(final InputStream input) throws IOException,
+                UnsupportedFormatException {
+            // Do everything as curtly and ad-hoc as possible for performance.
+            final byte[] tmpBuffer = new byte[12];
+            if (tmpBuffer.length != input.read(tmpBuffer)) {
+                throw new UnsupportedFormatException("File too short, not a dictionary");
+            }
+            // Ad-hoc check for the magic number. See FormatSpec.java as well as
+            // byte_array_utils.h and BinaryDictEncoderUtils#writeDictionaryHeader().
+            final int MAGIC_NUMBER_START_OFFSET = 0;
+            final int VERSION_START_OFFSET = 4;
+            final int HEADER_SIZE_OFFSET = 8;
+            final int magicNumber = ((tmpBuffer[MAGIC_NUMBER_START_OFFSET] & 0xFF) << 24)
+                    + ((tmpBuffer[MAGIC_NUMBER_START_OFFSET + 1] & 0xFF) << 16)
+                    + ((tmpBuffer[MAGIC_NUMBER_START_OFFSET + 2] & 0xFF) << 8)
+                    + (tmpBuffer[MAGIC_NUMBER_START_OFFSET + 3] & 0xFF);
+            if (magicNumber != FormatSpec.MAGIC_NUMBER) {
+                throw new UnsupportedFormatException("Wrong magic number");
+            }
+            final int version = ((tmpBuffer[VERSION_START_OFFSET] & 0xFF) << 8)
+                    + (tmpBuffer[VERSION_START_OFFSET + 1] & 0xFF);
+            if (version != FormatSpec.VERSION2 && version != FormatSpec.VERSION201) {
+                throw new UnsupportedFormatException("Only versions 2 and 201 are supported");
+            }
+            final int totalHeaderSize = ((tmpBuffer[HEADER_SIZE_OFFSET] & 0xFF) >> 24)
+                    + ((tmpBuffer[HEADER_SIZE_OFFSET + 1] & 0xFF) >> 16)
+                    + ((tmpBuffer[HEADER_SIZE_OFFSET + 2] & 0xFF) >> 8)
+                    + (tmpBuffer[HEADER_SIZE_OFFSET + 3] & 0xFF);
+            if (totalHeaderSize > MAX_HEADER_LENGTH) {
+                throw new UnsupportedFormatException("Header too large");
+            }
+            final byte[] headerBuffer = new byte[totalHeaderSize - tmpBuffer.length];
+            if (headerBuffer.length != input.read(headerBuffer)) {
+                throw new UnsupportedFormatException("File shorter than specified in the header");
+            }
+            final HashMap<String, String> attributes =
+                    BinaryDictDecoderUtils.decodeHeaderAttributes(headerBuffer);
+            return new DictionaryHeader(totalHeaderSize, new DictionaryOptions(attributes),
+                    new FormatOptions(version, false /* hasTimestamp */));
         }
     }
 
