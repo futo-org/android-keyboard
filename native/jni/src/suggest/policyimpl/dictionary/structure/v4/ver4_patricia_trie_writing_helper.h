@@ -67,8 +67,7 @@ class Ver4PatriciaTrieWritingHelper {
     };
 
     bool runGC(const int rootPtNodeArrayPos, const HeaderPolicy *const headerPolicy,
-            Ver4DictBuffers *const buffersToWrite, int *const outUnigramCount,
-            int *const outBigramCount);
+            Ver4DictBuffers *const buffersToWrite, MutableEntryCounters *const outEntryCounters);
 
     Ver4DictBuffers *const mBuffers;
 };
