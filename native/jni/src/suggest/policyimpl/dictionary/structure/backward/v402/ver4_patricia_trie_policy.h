@@ -41,6 +41,7 @@
 #include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_pt_node_array_reader.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/entry_counters.h"
 #include "utils/int_array_view.h"
 
 namespace latinime {
@@ -75,8 +76,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       &mPtNodeArrayReader, &mBigramPolicy, &mShortcutPolicy),
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
-              mUnigramCount(mHeaderPolicy->getUnigramCount()),
-              mBigramCount(mHeaderPolicy->getBigramCount()),
+              mEntryCounters(mHeaderPolicy->getUnigramCount(), mHeaderPolicy->getBigramCount(),
+                      mHeaderPolicy->getTrigramCount()),
               mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {};
 
     virtual int getRootPosition() const {
@@ -163,8 +164,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4PatriciaTrieNodeWriter mNodeWriter;
     DynamicPtUpdatingHelper mUpdatingHelper;
     Ver4PatriciaTrieWritingHelper mWritingHelper;
-    int mUnigramCount;
-    int mBigramCount;
+    MutableEntryCounters mEntryCounters;
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
 

@@ -161,10 +161,7 @@ bool LanguageModelDictContent::truncateEntries(const int *const entryCounts,
 
 bool LanguageModelDictContent::updateAllEntriesOnInputWord(const WordIdArrayView prevWordIds,
         const int wordId, const bool isValid, const HistoricalInfo historicalInfo,
-        const HeaderPolicy *const headerPolicy, int *const outAddedNewNgramEntryCount) {
-    if (outAddedNewNgramEntryCount) {
-        *outAddedNewNgramEntryCount = 0;
-    }
+        const HeaderPolicy *const headerPolicy, MutableEntryCounters *const entryCountersToUpdate) {
     if (!mHasHistoricalInfo) {
         AKLOGE("updateAllEntriesOnInputWord is called for dictionary without historical info.");
         return false;
@@ -188,8 +185,8 @@ bool LanguageModelDictContent::updateAllEntriesOnInputWord(const WordIdArrayView
         if (!setNgramProbabilityEntry(limitedPrevWordIds, wordId, &updatedNgramProbabilityEntry)) {
             return false;
         }
-        if (!originalNgramProbabilityEntry.isValid() && outAddedNewNgramEntryCount) {
-            *outAddedNewNgramEntryCount += 1;
+        if (!originalNgramProbabilityEntry.isValid()) {
+            entryCountersToUpdate->incrementNgramCount(i + 2);
         }
     }
     return true;

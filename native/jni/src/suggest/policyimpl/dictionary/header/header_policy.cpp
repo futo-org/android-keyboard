@@ -30,6 +30,7 @@ const char *const HeaderPolicy::DATE_KEY = "date";
 const char *const HeaderPolicy::LAST_DECAYED_TIME_KEY = "LAST_DECAYED_TIME";
 const char *const HeaderPolicy::UNIGRAM_COUNT_KEY = "UNIGRAM_COUNT";
 const char *const HeaderPolicy::BIGRAM_COUNT_KEY = "BIGRAM_COUNT";
+const char *const HeaderPolicy::TRIGRAM_COUNT_KEY = "TRIGRAM_COUNT";
 const char *const HeaderPolicy::EXTENDED_REGION_SIZE_KEY = "EXTENDED_REGION_SIZE";
 // Historical info is information that is needed to support decaying such as timestamp, level and
 // count.
@@ -94,12 +95,11 @@ bool HeaderPolicy::readRequiresGermanUmlautProcessing() const {
 }
 
 bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTime,
-        const int unigramCount, const int bigramCount,
-        const int extendedRegionSize, BufferWithExtendableBuffer *const outBuffer) const {
+        const EntryCounts &entryCounts, const int extendedRegionSize,
+        BufferWithExtendableBuffer *const outBuffer) const {
     int writingPos = 0;
     DictionaryHeaderStructurePolicy::AttributeMap attributeMapToWrite(mAttributeMap);
-    fillInHeader(updatesLastDecayedTime, unigramCount, bigramCount,
-            extendedRegionSize, &attributeMapToWrite);
+    fillInHeader(updatesLastDecayedTime, entryCounts, extendedRegionSize, &attributeMapToWrite);
     if (!HeaderReadWriteUtils::writeDictionaryVersion(outBuffer, mDictFormatVersion,
             &writingPos)) {
         return false;
@@ -126,11 +126,15 @@ bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTim
     return true;
 }
 
-void HeaderPolicy::fillInHeader(const bool updatesLastDecayedTime, const int unigramCount,
-        const int bigramCount, const int extendedRegionSize,
+void HeaderPolicy::fillInHeader(const bool updatesLastDecayedTime,
+        const EntryCounts &entryCounts, const int extendedRegionSize,
         DictionaryHeaderStructurePolicy::AttributeMap *outAttributeMap) const {
-    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, UNIGRAM_COUNT_KEY, unigramCount);
-    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, BIGRAM_COUNT_KEY, bigramCount);
+    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, UNIGRAM_COUNT_KEY,
+            entryCounts.getUnigramCount());
+    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, BIGRAM_COUNT_KEY,
+            entryCounts.getBigramCount());
+    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, TRIGRAM_COUNT_KEY,
+            entryCounts.getTrigramCount());
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, EXTENDED_REGION_SIZE_KEY,
             extendedRegionSize);
     // Set the current time as the generation time.
