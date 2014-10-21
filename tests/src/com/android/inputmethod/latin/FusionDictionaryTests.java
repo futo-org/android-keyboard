@@ -35,16 +35,20 @@ public class FusionDictionaryTests extends AndroidTestCase {
         FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new DictionaryOptions(new HashMap<String,String>()));
 
-        dict.add("abc", new ProbabilityInfo(10), null, false /* isNotAWord */);
+        dict.add("abc", new ProbabilityInfo(10), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
         assertNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "aaa"));
         assertNotNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "abc"));
 
-        dict.add("aa", new ProbabilityInfo(10), null, false /* isNotAWord */);
+        dict.add("aa", new ProbabilityInfo(10), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
         assertNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "aaa"));
         assertNotNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "aa"));
 
-        dict.add("babcd", new ProbabilityInfo(10), null, false /* isNotAWord */);
-        dict.add("bacde", new ProbabilityInfo(10), null, false /* isNotAWord */);
+        dict.add("babcd", new ProbabilityInfo(10), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
+        dict.add("bacde", new ProbabilityInfo(10), null, false /* isNotAWord */,
+                false /* isPossiblyOffensive */);
         assertNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "ba"));
         assertNotNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "babcd"));
         assertNotNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "bacde"));

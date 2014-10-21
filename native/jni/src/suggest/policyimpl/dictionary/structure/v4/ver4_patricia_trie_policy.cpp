@@ -299,7 +299,8 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramContext *const ngramContex
         }
         const UnigramProperty beginningOfSentenceUnigramProperty(
                 true /* representsBeginningOfSentence */, true /* isNotAWord */,
-                false /* isBlacklisted */, MAX_PROBABILITY /* probability */, HistoricalInfo());
+                false /* isBlacklisted */, false /* isPossiblyOffensive */,
+                MAX_PROBABILITY /* probability */, HistoricalInfo());
         if (!addUnigramEntry(ngramContext->getNthPrevWordCodePoints(1 /* n */),
                 &beginningOfSentenceUnigramProperty)) {
             AKLOGE("Cannot add unigram entry for the beginning-of-sentence.");
@@ -375,8 +376,9 @@ bool Ver4PatriciaTriePolicy::updateEntriesForWordWithNgramContext(
     if (wordId == NOT_A_WORD_ID) {
         // The word is not in the dictionary.
         const UnigramProperty unigramProperty(false /* representsBeginningOfSentence */,
-                false /* isNotAWord */, false /* isBlacklisted */, NOT_A_PROBABILITY,
-                HistoricalInfo(historicalInfo.getTimestamp(), 0 /* level */, 0 /* count */));
+                false /* isNotAWord */, false /* isBlacklisted */, false /* isPossiblyOffensive */,
+                NOT_A_PROBABILITY, HistoricalInfo(historicalInfo.getTimestamp(), 0 /* level */,
+                0 /* count */));
         if (!addUnigramEntry(wordCodePoints, &unigramProperty)) {
             AKLOGE("Cannot add unigarm entry in updateEntriesForWordWithNgramContext().");
             return false;
@@ -391,7 +393,7 @@ bool Ver4PatriciaTriePolicy::updateEntriesForWordWithNgramContext(
             && ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */)) {
         const UnigramProperty beginningOfSentenceUnigramProperty(
                 true /* representsBeginningOfSentence */,
-                true /* isNotAWord */, false /* isBlacklisted */, NOT_A_PROBABILITY,
+                true /* isNotAWord */, false /* isPossiblyOffensive */, NOT_A_PROBABILITY,
                 HistoricalInfo(historicalInfo.getTimestamp(), 0 /* level */, 0 /* count */));
         if (!addUnigramEntry(ngramContext->getNthPrevWordCodePoints(1 /* n */),
                 &beginningOfSentenceUnigramProperty)) {
@@ -529,7 +531,8 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     }
     const UnigramProperty unigramProperty(probabilityEntry.representsBeginningOfSentence(),
             probabilityEntry.isNotAWord(), probabilityEntry.isBlacklisted(),
-            probabilityEntry.getProbability(), *historicalInfo, std::move(shortcuts));
+            probabilityEntry.isPossiblyOffensive(), probabilityEntry.getProbability(),
+            *historicalInfo, std::move(shortcuts));
     return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }
 

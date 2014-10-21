@@ -28,7 +28,7 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     JniDataUtils::outputCodePoints(env, outCodePoints, 0 /* start */,
             MAX_WORD_LENGTH /* maxLength */, mCodePoints.data(), mCodePoints.size(),
             false /* needsNullTermination */);
-    jboolean flags[] = {mUnigramProperty.isNotAWord(), mUnigramProperty.isBlacklisted(),
+    jboolean flags[] = {mUnigramProperty.isNotAWord(), mUnigramProperty.isPossiblyOffensive(),
             !mNgrams.empty(), mUnigramProperty.hasShortcuts(),
             mUnigramProperty.representsBeginningOfSentence()};
     env->SetBooleanArrayRegion(outFlags, 0 /* start */, NELEMS(flags), flags);

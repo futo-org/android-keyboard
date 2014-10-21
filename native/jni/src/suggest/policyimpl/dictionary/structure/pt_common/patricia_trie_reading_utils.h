@@ -54,8 +54,8 @@ class PatriciaTrieReadingUtils {
     /**
      * Node Flags
      */
-    static AK_FORCE_INLINE bool isBlacklisted(const NodeFlags flags) {
-        return (flags & FLAG_IS_BLACKLISTED) != 0;
+    static AK_FORCE_INLINE bool isPossiblyOffensive(const NodeFlags flags) {
+        return (flags & FLAG_IS_POSSIBLY_OFFENSIVE) != 0;
     }
 
     static AK_FORCE_INLINE bool isNotAWord(const NodeFlags flags) {
@@ -82,12 +82,12 @@ class PatriciaTrieReadingUtils {
         return FLAG_CHILDREN_POSITION_TYPE_NOPOSITION != (MASK_CHILDREN_POSITION_TYPE & flags);
     }
 
-    static AK_FORCE_INLINE NodeFlags createAndGetFlags(const bool isBlacklisted,
+    static AK_FORCE_INLINE NodeFlags createAndGetFlags(const bool isPossiblyOffensive,
             const bool isNotAWord, const bool isTerminal, const bool hasShortcutTargets,
             const bool hasBigrams, const bool hasMultipleChars,
             const int childrenPositionFieldSize) {
         NodeFlags nodeFlags = 0;
-        nodeFlags = isBlacklisted ? (nodeFlags | FLAG_IS_BLACKLISTED) : nodeFlags;
+        nodeFlags = isPossiblyOffensive ? (nodeFlags | FLAG_IS_POSSIBLY_OFFENSIVE) : nodeFlags;
         nodeFlags = isNotAWord ? (nodeFlags | FLAG_IS_NOT_A_WORD) : nodeFlags;
         nodeFlags = isTerminal ? (nodeFlags | FLAG_IS_TERMINAL) : nodeFlags;
         nodeFlags = hasShortcutTargets ? (nodeFlags | FLAG_HAS_SHORTCUT_TARGETS) : nodeFlags;
@@ -127,7 +127,7 @@ class PatriciaTrieReadingUtils {
     static const NodeFlags FLAG_HAS_SHORTCUT_TARGETS;
     static const NodeFlags FLAG_HAS_BIGRAMS;
     static const NodeFlags FLAG_IS_NOT_A_WORD;
-    static const NodeFlags FLAG_IS_BLACKLISTED;
+    static const NodeFlags FLAG_IS_POSSIBLY_OFFENSIVE;
 };
 } // namespace latinime
 #endif /* LATINIME_PATRICIA_TRIE_NODE_READING_UTILS_H */

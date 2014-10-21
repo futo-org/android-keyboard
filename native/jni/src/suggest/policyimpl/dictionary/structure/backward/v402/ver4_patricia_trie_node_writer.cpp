@@ -245,7 +245,7 @@ bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds
     if (!sourcePtNodeParams.hasBigrams()) {
         // Update has bigrams flag.
         return updatePtNodeFlags(sourcePtNodeParams.getHeadPos(),
-                sourcePtNodeParams.isBlacklisted(), sourcePtNodeParams.isNotAWord(),
+                sourcePtNodeParams.isPossiblyOffensive(), sourcePtNodeParams.isNotAWord(),
                 sourcePtNodeParams.isTerminal(), sourcePtNodeParams.hasShortcutTargets(),
                 true /* hasBigrams */,
                 sourcePtNodeParams.getCodePointCount() > 1 /* hasMultipleChars */);
@@ -316,7 +316,7 @@ bool Ver4PatriciaTrieNodeWriter::addShortcutTarget(const PtNodeParams *const ptN
     if (!ptNodeParams->hasShortcutTargets()) {
         // Update has shortcut targets flag.
         return updatePtNodeFlags(ptNodeParams->getHeadPos(),
-                ptNodeParams->isBlacklisted(), ptNodeParams->isNotAWord(),
+                ptNodeParams->isPossiblyOffensive(), ptNodeParams->isNotAWord(),
                 ptNodeParams->isTerminal(), true /* hasShortcutTargets */,
                 ptNodeParams->hasBigrams(),
                 ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
@@ -330,7 +330,7 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeHasBigramsAndShortcutTargetsFlags(
             ptNodeParams->getTerminalId()) != NOT_A_DICT_POS;
     const bool hasShortcutTargets = mBuffers->getShortcutDictContent()->getShortcutListHeadPos(
             ptNodeParams->getTerminalId()) != NOT_A_DICT_POS;
-    return updatePtNodeFlags(ptNodeParams->getHeadPos(), ptNodeParams->isBlacklisted(),
+    return updatePtNodeFlags(ptNodeParams->getHeadPos(), ptNodeParams->isPossiblyOffensive(),
             ptNodeParams->isNotAWord(), ptNodeParams->isTerminal(), hasShortcutTargets,
             hasBigrams, ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
 }
@@ -386,8 +386,9 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
             ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
         return false;
     }
-    return updatePtNodeFlags(nodePos, ptNodeParams->isBlacklisted(), ptNodeParams->isNotAWord(),
-            isTerminal, ptNodeParams->hasShortcutTargets(), ptNodeParams->hasBigrams(),
+    return updatePtNodeFlags(nodePos, ptNodeParams->isPossiblyOffensive(),
+            ptNodeParams->isNotAWord(), isTerminal, ptNodeParams->hasShortcutTargets(),
+            ptNodeParams->hasBigrams(),
             ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
 }
 

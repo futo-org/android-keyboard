@@ -316,22 +316,22 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     public void addUnigramEntryWithCheckingDistracter(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
-            final boolean isBlacklisted, final int timestamp,
+            final boolean isPossiblyOffensive, final int timestamp,
             @Nonnull final DistracterFilter distracterFilter) {
         updateDictionaryWithWriteLockIfWordIsNotADistracter(new Runnable() {
             @Override
             public void run() {
                 addUnigramLocked(word, frequency, shortcutTarget, shortcutFreq,
-                        isNotAWord, isBlacklisted, timestamp);
+                        isNotAWord, isPossiblyOffensive, timestamp);
             }
         }, word, distracterFilter);
     }
 
     protected void addUnigramLocked(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
-            final boolean isBlacklisted, final int timestamp) {
+            final boolean isPossiblyOffensive, final int timestamp) {
         if (!mBinaryDictionary.addUnigramEntry(word, frequency, shortcutTarget, shortcutFreq,
-                false /* isBeginningOfSentence */, isNotAWord, isBlacklisted, timestamp)) {
+                false /* isBeginningOfSentence */, isNotAWord, isPossiblyOffensive, timestamp)) {
             Log.e(TAG, "Cannot add unigram entry. word: " + word);
         }
     }

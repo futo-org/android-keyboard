@@ -149,7 +149,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 }
             }
             dict.add(word, new ProbabilityInfo(UNIGRAM_FREQ),
-                    (shortcutMap == null) ? null : shortcuts, false /* isNotAWord */);
+                    (shortcutMap == null) ? null : shortcuts, false /* isNotAWord */,
+                    false /* isPossiblyOffensive */);
         }
     }
 

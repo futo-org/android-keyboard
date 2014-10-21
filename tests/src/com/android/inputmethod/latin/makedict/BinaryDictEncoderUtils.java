@@ -572,12 +572,12 @@ public class BinaryDictEncoderUtils {
      * @param hasShortcuts whether the PtNode has shortcuts.
      * @param hasBigrams whether the PtNode has bigrams.
      * @param isNotAWord whether the PtNode is not a word.
-     * @param isBlackListEntry whether the PtNode is a blacklist entry.
+     * @param isPossiblyOffensive whether the PtNode is a possibly offensive entry.
      * @return the flags
      */
     static int makePtNodeFlags(final boolean hasMultipleChars, final boolean isTerminal,
             final int childrenAddressSize, final boolean hasShortcuts, final boolean hasBigrams,
-            final boolean isNotAWord, final boolean isBlackListEntry) {
+            final boolean isNotAWord, final boolean isPossiblyOffensive) {
         byte flags = 0;
         if (hasMultipleChars) flags |= FormatSpec.FLAG_HAS_MULTIPLE_CHARS;
         if (isTerminal) flags |= FormatSpec.FLAG_IS_TERMINAL;
@@ -600,7 +600,7 @@ public class BinaryDictEncoderUtils {
         if (hasShortcuts) flags |= FormatSpec.FLAG_HAS_SHORTCUT_TARGETS;
         if (hasBigrams) flags |= FormatSpec.FLAG_HAS_BIGRAMS;
         if (isNotAWord) flags |= FormatSpec.FLAG_IS_NOT_A_WORD;
-        if (isBlackListEntry) flags |= FormatSpec.FLAG_IS_BLACKLISTED;
+        if (isPossiblyOffensive) flags |= FormatSpec.FLAG_IS_POSSIBLY_OFFENSIVE;
         return flags;
     }
 
@@ -609,7 +609,7 @@ public class BinaryDictEncoderUtils {
                 getByteSize(childrenOffset),
                 node.mShortcutTargets != null && !node.mShortcutTargets.isEmpty(),
                 node.mBigrams != null && !node.mBigrams.isEmpty(),
-                node.mIsNotAWord, node.mIsBlacklistEntry);
+                node.mIsNotAWord, node.mIsPossiblyOffensive);
     }
 
     /**

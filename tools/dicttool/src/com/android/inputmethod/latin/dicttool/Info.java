@@ -76,8 +76,8 @@ public class Info extends Dicttool.Command {
         if (ptNode.getIsNotAWord()) {
             System.out.println("  Is not a word");
         }
-        if (ptNode.getIsBlacklistEntry()) {
-            System.out.println("  Is a blacklist entry");
+        if (ptNode.getIsPossiblyOffensive()) {
+            System.out.println("  Is possibly offensive");
         }
         final ArrayList<WeightedString> shortcutTargets = ptNode.getShortcutTargets();
         if (null == shortcutTargets || shortcutTargets.isEmpty()) {

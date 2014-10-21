@@ -41,7 +41,7 @@ public final class WordProperty implements Comparable<WordProperty> {
     // TODO: Support mIsBeginningOfSentence.
     public final boolean mIsBeginningOfSentence;
     public final boolean mIsNotAWord;
-    public final boolean mIsBlacklistEntry;
+    public final boolean mIsPossiblyOffensive;
     public final boolean mHasShortcuts;
     public final boolean mHasNgrams;
 
@@ -52,7 +52,7 @@ public final class WordProperty implements Comparable<WordProperty> {
     public WordProperty(final String word, final ProbabilityInfo probabilityInfo,
             final ArrayList<WeightedString> shortcutTargets,
             @Nullable final ArrayList<WeightedString> bigrams,
-            final boolean isNotAWord, final boolean isBlacklistEntry) {
+            final boolean isNotAWord, final boolean isPossiblyOffensive) {
         mWord = word;
         mProbabilityInfo = probabilityInfo;
         mShortcutTargets = shortcutTargets;
@@ -69,7 +69,7 @@ public final class WordProperty implements Comparable<WordProperty> {
         }
         mIsBeginningOfSentence = false;
         mIsNotAWord = isNotAWord;
-        mIsBlacklistEntry = isBlacklistEntry;
+        mIsPossiblyOffensive = isPossiblyOffensive;
         mHasNgrams = bigrams != null && !bigrams.isEmpty();
         mHasShortcuts = shortcutTargets != null && !shortcutTargets.isEmpty();
     }
@@ -85,7 +85,7 @@ public final class WordProperty implements Comparable<WordProperty> {
     // Construct word property using information from native code.
     // This represents invalid word when the probability is BinaryDictionary.NOT_A_PROBABILITY.
     public WordProperty(final int[] codePoints, final boolean isNotAWord,
-            final boolean isBlacklisted, final boolean hasBigram, final boolean hasShortcuts,
+            final boolean isPossiblyOffensive, final boolean hasBigram, final boolean hasShortcuts,
             final boolean isBeginningOfSentence, final int[] probabilityInfo,
             final ArrayList<int[][]> ngramPrevWordsArray,
             final ArrayList<boolean[]> outNgramPrevWordIsBeginningOfSentenceArray,
@@ -98,7 +98,7 @@ public final class WordProperty implements Comparable<WordProperty> {
         final ArrayList<NgramProperty> ngrams = new ArrayList<>();
         mIsBeginningOfSentence = isBeginningOfSentence;
         mIsNotAWord = isNotAWord;
-        mIsBlacklistEntry = isBlacklisted;
+        mIsPossiblyOffensive = isPossiblyOffensive;
         mHasShortcuts = hasShortcuts;
         mHasNgrams = hasBigram;
 
@@ -150,7 +150,7 @@ public final class WordProperty implements Comparable<WordProperty> {
                 word.mShortcutTargets,
                 word.mNgrams,
                 word.mIsNotAWord,
-                word.mIsBlacklistEntry
+                word.mIsPossiblyOffensive
         });
     }
 
@@ -180,7 +180,7 @@ public final class WordProperty implements Comparable<WordProperty> {
         WordProperty w = (WordProperty)o;
         return mProbabilityInfo.equals(w.mProbabilityInfo) && mWord.equals(w.mWord)
                 && mShortcutTargets.equals(w.mShortcutTargets) && equals(mNgrams, w.mNgrams)
-                && mIsNotAWord == w.mIsNotAWord && mIsBlacklistEntry == w.mIsBlacklistEntry
+                && mIsNotAWord == w.mIsNotAWord && mIsPossiblyOffensive == w.mIsPossiblyOffensive
                 && mHasNgrams == w.mHasNgrams && mHasShortcuts && w.mHasNgrams;
     }
 

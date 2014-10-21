@@ -49,21 +49,44 @@ class UnigramProperty {
     };
 
     UnigramProperty()
-            : mRepresentsBeginningOfSentence(false), mIsNotAWord(false), mIsBlacklisted(false),
-              mProbability(NOT_A_PROBABILITY), mHistoricalInfo(), mShortcuts() {}
+            : mRepresentsBeginningOfSentence(false), mIsNotAWord(false),
+              mIsBlacklisted(false), mIsPossiblyOffensive(false), mProbability(NOT_A_PROBABILITY),
+              mHistoricalInfo(), mShortcuts() {}
 
+    // In contexts which do not support the Blacklisted flag (v2, v4<403)
     UnigramProperty(const bool representsBeginningOfSentence, const bool isNotAWord,
-            const bool isBlacklisted, const int probability, const HistoricalInfo historicalInfo,
-            const std::vector<ShortcutProperty> &&shortcuts)
+            const bool isPossiblyOffensive, const int probability,
+            const HistoricalInfo historicalInfo, const std::vector<ShortcutProperty> &&shortcuts)
             : mRepresentsBeginningOfSentence(representsBeginningOfSentence),
-              mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted), mProbability(probability),
+              mIsNotAWord(isNotAWord), mIsBlacklisted(false),
+              mIsPossiblyOffensive(isPossiblyOffensive), mProbability(probability),
               mHistoricalInfo(historicalInfo), mShortcuts(std::move(shortcuts)) {}
 
-    // Without shortcuts.
+    // Without shortcuts, in contexts which do not support the Blacklisted flag (v2, v4<403)
     UnigramProperty(const bool representsBeginningOfSentence, const bool isNotAWord,
-            const bool isBlacklisted, const int probability, const HistoricalInfo historicalInfo)
+            const bool isPossiblyOffensive, const int probability,
+            const HistoricalInfo historicalInfo)
             : mRepresentsBeginningOfSentence(representsBeginningOfSentence),
-              mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted), mProbability(probability),
+              mIsNotAWord(isNotAWord), mIsBlacklisted(false),
+              mIsPossiblyOffensive(isPossiblyOffensive), mProbability(probability),
+              mHistoricalInfo(historicalInfo), mShortcuts() {}
+
+    // In contexts which DO support the Blacklisted flag (v403)
+    UnigramProperty(const bool representsBeginningOfSentence, const bool isNotAWord,
+            const bool isBlacklisted, const bool isPossiblyOffensive, const int probability,
+            const HistoricalInfo historicalInfo, const std::vector<ShortcutProperty> &&shortcuts)
+            : mRepresentsBeginningOfSentence(representsBeginningOfSentence),
+              mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted),
+              mIsPossiblyOffensive(isPossiblyOffensive), mProbability(probability),
+              mHistoricalInfo(historicalInfo), mShortcuts(std::move(shortcuts)) {}
+
+    // Without shortcuts, in contexts which DO support the Blacklisted flag (v403)
+    UnigramProperty(const bool representsBeginningOfSentence, const bool isNotAWord,
+            const bool isBlacklisted, const bool isPossiblyOffensive, const int probability,
+            const HistoricalInfo historicalInfo)
+            : mRepresentsBeginningOfSentence(representsBeginningOfSentence),
+              mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted),
+              mIsPossiblyOffensive(isPossiblyOffensive), mProbability(probability),
               mHistoricalInfo(historicalInfo), mShortcuts() {}
 
     bool representsBeginningOfSentence() const {
@@ -74,13 +97,12 @@ class UnigramProperty {
         return mIsNotAWord;
     }
 
-    bool isBlacklisted() const {
-        return mIsBlacklisted;
+    bool isPossiblyOffensive() const {
+        return mIsPossiblyOffensive;
     }
 
-    bool isPossiblyOffensive() const {
-        // TODO: Have dedicated flag.
-        return mProbability == 0;
+    bool isBlacklisted() const {
+        return mIsBlacklisted;
     }
 
     bool hasShortcuts() const {
@@ -106,6 +128,7 @@ class UnigramProperty {
     const bool mRepresentsBeginningOfSentence;
     const bool mIsNotAWord;
     const bool mIsBlacklisted;
+    const bool mIsPossiblyOffensive;
     const int mProbability;
     const HistoricalInfo mHistoricalInfo;
     const std::vector<ShortcutProperty> mShortcuts;

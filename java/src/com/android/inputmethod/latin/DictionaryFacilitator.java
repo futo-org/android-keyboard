@@ -809,7 +809,7 @@ public class DictionaryFacilitator {
             contextualDict.addUnigramEntryWithCheckingDistracter(
                     subPhraseStr, probability, null /* shortcutTarget */,
                     Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
-                    false /* isNotAWord */, false /* isBlacklisted */,
+                    false /* isNotAWord */, false /* isPossiblyOffensive */,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP,
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
             contextualDict.addNgramEntry(ngramContext, subPhraseStr,
@@ -819,7 +819,7 @@ public class DictionaryFacilitator {
                 contextualDict.addUnigramEntryWithCheckingDistracter(
                         phrase[i], probability, null /* shortcutTarget */,
                         Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
-                        false /* isNotAWord */, false /* isBlacklisted */,
+                        false /* isNotAWord */, false /* isPossiblyOffensive */,
                         BinaryDictionary.NOT_A_VALID_TIMESTAMP,
                         DistracterFilter.EMPTY_DISTRACTER_FILTER);
                 contextualDict.addNgramEntry(ngramContext, phrase[i],

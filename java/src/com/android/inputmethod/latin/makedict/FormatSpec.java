@@ -93,7 +93,7 @@ public final class FormatSpec {
      * s | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
      *   | is not a word ?             1 bit, 1 = yes, 0 = no   : FLAG_IS_NOT_A_WORD
-     *   | is blacklisted ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_BLACKLISTED
+     *   | is possibly offensive ?     1 bit, 1 = yes, 0 = no   : FLAG_IS_POSSIBLY_OFFENSIVE
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use PtNodeInfo for i/o helpers
@@ -197,7 +197,7 @@ public final class FormatSpec {
     static final int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
     static final int FLAG_HAS_BIGRAMS = 0x04;
     static final int FLAG_IS_NOT_A_WORD = 0x02;
-    static final int FLAG_IS_BLACKLISTED = 0x01;
+    static final int FLAG_IS_POSSIBLY_OFFENSIVE = 0x01;
 
     static final int FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT = 0x80;
     static final int FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE = 0x40;
