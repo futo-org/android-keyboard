@@ -27,6 +27,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,19 +51,21 @@ public final class BinaryDictOffdeviceUtils {
     public static class DecoderChainSpec {
         public final static int COMPRESSION = 1;
         public final static int ENCRYPTION = 2;
-        private final static int MAX_DECODE_DEPTH = 4;
 
-        final int[] mDecoderSpec;
+        private final static int[][] VALID_DECODER_CHAINS = {
+            { }, { COMPRESSION }, { ENCRYPTION, COMPRESSION }
+        };
+
+        private final int mDecoderSpecIndex;
         File mFile;
 
         public DecoderChainSpec() {
-            mDecoderSpec = new int[0];
+            mDecoderSpecIndex = 0;
             mFile = null;
         }
 
-        public DecoderChainSpec(final DecoderChainSpec src, final int newStep) {
-            mDecoderSpec = Arrays.copyOf(src.mDecoderSpec, src.mDecoderSpec.length + 1);
-            mDecoderSpec[src.mDecoderSpec.length] = newStep;
+        private DecoderChainSpec(final DecoderChainSpec src) {
+            mDecoderSpecIndex = src.mDecoderSpecIndex + 1;
             mFile = src.mFile;
         }
 
@@ -79,11 +82,36 @@ public final class BinaryDictOffdeviceUtils {
 
         public String describeChain() {
             final StringBuilder s = new StringBuilder("raw");
-            for (final int step : mDecoderSpec) {
+            for (final int step : VALID_DECODER_CHAINS[mDecoderSpecIndex]) {
                 s.append(" > ");
                 s.append(getStepDescription(step));
             }
             return s.toString();
+        }
+
+        /**
+         * Returns the next sequential spec. If exhausted, return null.
+         */
+        public DecoderChainSpec next() {
+            if (mDecoderSpecIndex + 1 >= VALID_DECODER_CHAINS.length) {
+                return null;
+            }
+            return new DecoderChainSpec(this);
+        }
+
+        public InputStream getStream(final File src) throws FileNotFoundException, IOException {
+            InputStream input = new BufferedInputStream(new FileInputStream(src));
+            for (final int step : VALID_DECODER_CHAINS[mDecoderSpecIndex]) {
+                switch (step) {
+                case COMPRESSION:
+                    input = Compress.getUncompressedStream(input);
+                    break;
+                case ENCRYPTION:
+                    input = Crypt.getDecryptedStream(input);
+                    break;
+                }
+            }
+            return input;
         }
     }
 
@@ -102,87 +130,37 @@ public final class BinaryDictOffdeviceUtils {
      * If this is not a dictionary, the method returns null.
      */
     public static DecoderChainSpec getRawDictionaryOrNull(final File src) {
-        return getRawDictionaryOrNullInternal(new DecoderChainSpec(), src, 0);
-    }
-
-    private static DecoderChainSpec getRawDictionaryOrNullInternal(
-            final DecoderChainSpec spec, final File src, final int depth) {
-        // Unfortunately the decoding scheme we use can consider any data to be encrypted
-        // and will produce some output, meaning it's not possible to reliably detect encrypted
-        // data. Thus, some non-dictionary files (especially small) ones may successfully decrypt
-        // over and over, ending in a stack overflow. Hence we limit the depth at which we try
-        // decoding the file.
-        if (depth > DecoderChainSpec.MAX_DECODE_DEPTH) {
-            return null;
-        }
+        DecoderChainSpec spec = new DecoderChainSpec();
         if (BinaryDictDecoderUtils.isBinaryDictionary(src)
                 || CombinedInputOutput.isCombinedDictionary(src.getAbsolutePath())) {
             spec.mFile = src;
             return spec;
         }
-        // It's not a raw dictionary - try to see if it's compressed.
-        final File uncompressedFile = tryGetUncompressedFile(src);
-        if (null != uncompressedFile) {
-            final DecoderChainSpec newSpec =
-                    getRawDictionaryOrNullInternal(spec, uncompressedFile, depth + 1);
-            if (null == newSpec) return null;
-            return new DecoderChainSpec(newSpec, DecoderChainSpec.COMPRESSION);
-        }
-        // It's not a compressed either - try to see if it's crypted.
-        final File decryptedFile = tryGetDecryptedFile(src);
-        if (null != decryptedFile) {
-            final DecoderChainSpec newSpec =
-                    getRawDictionaryOrNullInternal(spec, decryptedFile, depth + 1);
-            if (null == newSpec) return null;
-            return new DecoderChainSpec(newSpec, DecoderChainSpec.ENCRYPTION);
+        while (null != spec) {
+            try {
+                final File dst = File.createTempFile(PREFIX, SUFFIX);
+                dst.deleteOnExit();
+                try (final InputStream input = spec.getStream(src);
+                        final OutputStream output =
+                                new BufferedOutputStream(new FileOutputStream(dst))) {
+                        copy(input, output);
+                        output.flush();
+                        output.close();
+                        if (BinaryDictDecoderUtils.isBinaryDictionary(dst)
+                                || CombinedInputOutput.isCombinedDictionary(
+                                        dst.getAbsolutePath())) {
+                            spec.mFile = dst;
+                            return spec;
+                        }
+                    }
+            } catch (IOException e) {
+                // This was not the right format, fall through and try the next
+                System.out.println("Rejecting " + spec.describeChain() + " : " + e);
+                System.out.println(e.getStackTrace()[0].toString());
+            }
+            spec = spec.next();
         }
         return null;
-    }
-
-    /* Try to uncompress the file passed as an argument.
-     *
-     * If the file can be uncompressed, the uncompressed version is returned. Otherwise, null
-     * is returned.
-     */
-    private static File tryGetUncompressedFile(final File src) {
-        try {
-            final File dst = File.createTempFile(PREFIX, SUFFIX);
-            dst.deleteOnExit();
-            try (
-                final InputStream input = Compress.getUncompressedStream(
-                        new BufferedInputStream(new FileInputStream(src)));
-                final OutputStream output = new BufferedOutputStream(new FileOutputStream(dst))
-            ) {
-                copy(input, output);
-                return dst;
-            }
-        } catch (final IOException e) {
-            // Could not uncompress the file: presumably the file is simply not a compressed file
-            return null;
-        }
-    }
-
-    /* Try to decrypt the file passed as an argument.
-     *
-     * If the file can be decrypted, the decrypted version is returned. Otherwise, null
-     * is returned.
-     */
-    private static File tryGetDecryptedFile(final File src) {
-        try {
-            final File dst = File.createTempFile(PREFIX, SUFFIX);
-            dst.deleteOnExit();
-            try (
-                final InputStream input = Crypt.getDecryptedStream(
-                        new BufferedInputStream(new FileInputStream(src)));
-                final OutputStream output = new BufferedOutputStream(new FileOutputStream(dst))
-            ) {
-                copy(input, output);
-                return dst;
-            }
-        } catch (final IOException e) {
-            // Could not decrypt the file: presumably the file is simply not a crypted file
-            return null;
-        }
     }
 
     static FusionDictionary getDictionary(final String filename, final boolean report) {
