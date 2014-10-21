@@ -76,6 +76,52 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             weightOfLangModelVsSpatialModelToOutputSuggestions, outSuggestionResults);
 }
 
+/* static */ bool SuggestionsOutputUtils::shouldBlockWord(
+        const SuggestOptions *const suggestOptions, const DicNode *const terminalDicNode,
+        const WordAttributes wordAttributes, const bool isLastWord) {
+    const bool currentWordExactMatch =
+            ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
+    // When we have to block offensive words, non-exact matched offensive words should not be
+    // output.
+    const bool shouldBlockOffensiveWords = suggestOptions->blockOffensiveWords();
+
+    const bool isBlockedOffensiveWord = shouldBlockOffensiveWords &&
+            wordAttributes.isPossiblyOffensive();
+
+    // This function is called in two situations:
+    //
+    // 1) At the end of a search, in which case terminalDicNode will point to the last DicNode
+    //    of the search, and isLastWord will be true.
+    //                    "fuck"
+    //                        |
+    //                        \ terminalDicNode (isLastWord=true, currentWordExactMatch=true)
+    //    In this case, if the current word is an exact match, we will always let the word
+    //    through, even if the user is blocking offensive words (it's exactly what they typed!)
+    //
+    // 2) In the middle of the search, when we hit a terminal node, to decide whether or not
+    //    to start a new search at root, to try to match the rest of the input. In this case,
+    //    terminalDicNode will point to the terminal node we just hit, and isLastWord will be
+    //    false.
+    //                    "fuckvthis"
+    //                        |
+    //                        \ terminalDicNode (isLastWord=false, currentWordExactMatch=true)
+    //
+    // In this case, we should NOT allow the match through (correcting "fuckthis" to "fuck this"
+    // when offensive words are blocked would be a bad idea).
+    //
+    // In the case of a multi-word correction where the offensive word is typed last (eg.
+    // for the input "allfuck"), this function will be called with isLastWord==true, but
+    // currentWordExactMatch==false. So we are OK in this case as well.
+    //                    "allfuck"
+    //                           |
+    //                           \ terminalDicNode (isLastWord=true, currentWordExactMatch=false)
+    if (isLastWord && currentWordExactMatch) {
+        return false;
+    } else {
+        return isBlockedOffensiveWord;
+    }
+}
+
 /* static */ void SuggestionsOutputUtils::outputSuggestionsOfDicNode(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
         const DicNode *const terminalDicNode, const float weightOfLangModelVsSpatialModel,
@@ -98,24 +144,16 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     const bool isExactMatchWithIntentionalOmission =
             ErrorTypeUtils::isExactMatchWithIntentionalOmission(
                     terminalDicNode->getContainedErrorTypes());
-    const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
-    // Heuristic: We exclude probability=0 first-char-uppercase words from exact match.
-    // (e.g. "AMD" and "and")
-    const bool isSafeExactMatch = isExactMatch
-            && !(wordAttributes.isPossiblyOffensive() && isFirstCharUppercase);
     const int outputTypeFlags =
             (wordAttributes.isPossiblyOffensive() ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
-            | ((isSafeExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0)
+            | ((isExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0)
             | (isExactMatchWithIntentionalOmission ?
                     Dictionary::KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION : 0);
-
     // Entries that are blacklisted or do not represent a word should not be output.
     const bool isValidWord = !(wordAttributes.isBlacklisted() || wordAttributes.isNotAWord());
-    // When we have to block offensive words, non-exact matched offensive words should not be
-    // output.
-    const bool blockOffensiveWords = traverseSession->getSuggestOptions()->blockOffensiveWords();
-    const bool isBlockedOffensiveWord = blockOffensiveWords && wordAttributes.isPossiblyOffensive()
-            && !isSafeExactMatch;
+
+    const bool shouldBlockThisWord = shouldBlockWord(traverseSession->getSuggestOptions(),
+            terminalDicNode, wordAttributes, true /* isLastWord */);
 
     // Increase output score of top typing suggestion to ensure autocorrection.
     // TODO: Better integration with java side autocorrection logic.
@@ -127,7 +165,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 
     // Don't output invalid or blocked offensive words. However, we still need to submit their
     // shortcuts if any.
-    if (isValidWord && !isBlockedOffensiveWord) {
+    if (isValidWord && !shouldBlockThisWord) {
         int codePoints[MAX_WORD_LENGTH];
         terminalDicNode->outputResult(codePoints);
         const int indexToPartialCommit = outputSecondWordFirstLetterInputIndex ?
