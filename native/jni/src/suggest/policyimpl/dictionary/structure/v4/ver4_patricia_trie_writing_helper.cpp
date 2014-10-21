@@ -57,16 +57,14 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
             Ver4DictBuffers::createVer4DictBuffers(headerPolicy,
                     Ver4DictConstants::MAX_DICTIONARY_SIZE));
-    int unigramCount = 0;
-    int bigramCount = 0;
-    if (!runGC(rootPtNodeArrayPos, headerPolicy, dictBuffers.get(), &unigramCount, &bigramCount)) {
+    MutableEntryCounters entryCounters;
+    if (!runGC(rootPtNodeArrayPos, headerPolicy, dictBuffers.get(), &entryCounters)) {
         return false;
     }
     BufferWithExtendableBuffer headerBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     if (!headerPolicy->fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
-            EntryCounts(unigramCount, bigramCount, 0 /* trigramCount */),
-            0 /* extendedRegionSize */, &headerBuffer)) {
+            entryCounters.getEntryCounts(), 0 /* extendedRegionSize */, &headerBuffer)) {
         return false;
     }
     return dictBuffers->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
@@ -74,7 +72,7 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
 
 bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         const HeaderPolicy *const headerPolicy, Ver4DictBuffers *const buffersToWrite,
-        int *const outUnigramCount, int *const outBigramCount) {
+        MutableEntryCounters *const outEntryCounters) {
     Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer());
     Ver4PtNodeArrayReader ptNodeArrayReader(mBuffers->getTrieBuffer());
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getMutableShortcutDictContent(),
@@ -82,24 +80,17 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
             mBuffers, &ptNodeReader, &ptNodeArrayReader, &shortcutPolicy);
 
-    int entryCountTable[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
     if (!mBuffers->getMutableLanguageModelDictContent()->updateAllProbabilityEntriesForGC(
-            headerPolicy, entryCountTable)) {
+            headerPolicy, outEntryCounters)) {
         AKLOGE("Failed to update probabilities in language model dict content.");
         return false;
     }
     if (headerPolicy->isDecayingDict()) {
-        int maxEntryCountTable[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
-        maxEntryCountTable[LanguageModelDictContent::UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE] =
-                headerPolicy->getMaxUnigramCount();
-        maxEntryCountTable[LanguageModelDictContent::BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE] =
-                headerPolicy->getMaxBigramCount();
-        for (size_t i = 2; i < NELEMS(maxEntryCountTable); ++i) {
-            // TODO: Have max n-gram count.
-            maxEntryCountTable[i] = headerPolicy->getMaxBigramCount();
-        }
-        if (!mBuffers->getMutableLanguageModelDictContent()->truncateEntries(entryCountTable,
-                maxEntryCountTable, headerPolicy, entryCountTable)) {
+        const EntryCounts maxEntryCounts(headerPolicy->getMaxUnigramCount(),
+                headerPolicy->getMaxBigramCount(), headerPolicy->getMaxTrigramCount());
+        if (!mBuffers->getMutableLanguageModelDictContent()->truncateEntries(
+                outEntryCounters->getEntryCounts(), maxEntryCounts, headerPolicy,
+                outEntryCounters)) {
             AKLOGE("Failed to truncate entries in language model dict content.");
             return false;
         }
@@ -143,9 +134,9 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &terminalIdMap)) {
         return false;
     }
-    // Run GC for probability dict content.
+    // Run GC for language model dict content.
     if (!buffersToWrite->getMutableLanguageModelDictContent()->runGC(&terminalIdMap,
-            mBuffers->getLanguageModelDictContent(), nullptr /* outNgramCount */)) {
+            mBuffers->getLanguageModelDictContent())) {
         return false;
     }
     // Run GC for shortcut dict content.
@@ -168,10 +159,6 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &traversePolicyToUpdateAllPtNodeFlagsAndTerminalIds)) {
         return false;
     }
-    *outUnigramCount =
-            entryCountTable[LanguageModelDictContent::UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE];
-    *outBigramCount =
-            entryCountTable[LanguageModelDictContent::BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE];
     return true;
 }
 

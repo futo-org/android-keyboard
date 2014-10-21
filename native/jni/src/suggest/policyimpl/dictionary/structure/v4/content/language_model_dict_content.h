@@ -41,9 +41,6 @@ class HeaderPolicy;
  */
 class LanguageModelDictContent {
  public:
-    static const int UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE;
-    static const int BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE;
-
     // Pair of word id and probability entry used for iteration.
     class WordIdAndProbabilityEntry {
      public:
@@ -127,8 +124,7 @@ class LanguageModelDictContent {
     bool save(FILE *const file) const;
 
     bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
-            const LanguageModelDictContent *const originalContent,
-            int *const outNgramCount);
+            const LanguageModelDictContent *const originalContent);
 
     const WordAttributes getWordAttributes(const WordIdArrayView prevWordIds, const int wordId,
             const HeaderPolicy *const headerPolicy) const;
@@ -156,17 +152,14 @@ class LanguageModelDictContent {
     EntryRange getProbabilityEntries(const WordIdArrayView prevWordIds) const;
 
     bool updateAllProbabilityEntriesForGC(const HeaderPolicy *const headerPolicy,
-            int *const outEntryCounts) {
-        for (int i = 0; i <= MAX_PREV_WORD_COUNT_FOR_N_GRAM; ++i) {
-            outEntryCounts[i] = 0;
-        }
+            MutableEntryCounters *const outEntryCounters) {
         return updateAllProbabilityEntriesForGCInner(mTrieMap.getRootBitmapEntryIndex(),
-                0 /* prevWordCount */, headerPolicy, outEntryCounts);
+                0 /* prevWordCount */, headerPolicy, outEntryCounters);
     }
 
     // entryCounts should be created by updateAllProbabilityEntries.
-    bool truncateEntries(const int *const entryCounts, const int *const maxEntryCounts,
-            const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
+    bool truncateEntries(const EntryCounts &currentEntryCounts, const EntryCounts &maxEntryCounts,
+            const HeaderPolicy *const headerPolicy, MutableEntryCounters *const outEntryCounters);
 
     bool updateAllEntriesOnInputWord(const WordIdArrayView prevWordIds, const int wordId,
             const bool isValid, const HistoricalInfo historicalInfo,
@@ -206,12 +199,11 @@ class LanguageModelDictContent {
     const bool mHasHistoricalInfo;
 
     bool runGCInner(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
-            const TrieMap::TrieMapRange trieMapRange, const int nextLevelBitmapEntryIndex,
-            int *const outNgramCount);
+            const TrieMap::TrieMapRange trieMapRange, const int nextLevelBitmapEntryIndex);
     int createAndGetBitmapEntryIndex(const WordIdArrayView prevWordIds);
     int getBitmapEntryIndex(const WordIdArrayView prevWordIds) const;
     bool updateAllProbabilityEntriesForGCInner(const int bitmapEntryIndex, const int prevWordCount,
-            const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
+            const HeaderPolicy *const headerPolicy, MutableEntryCounters *const outEntryCounters);
     bool turncateEntriesInSpecifiedLevel(const HeaderPolicy *const headerPolicy,
             const int maxEntryCount, const int targetLevel, int *const outEntryCount);
     bool getEntryInfo(const HeaderPolicy *const headerPolicy, const int targetLevel,

@@ -23,8 +23,6 @@
 
 namespace latinime {
 
-const int LanguageModelDictContent::UNIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE = 0;
-const int LanguageModelDictContent::BIGRAM_COUNT_INDEX_IN_ENTRY_COUNT_TABLE = 1;
 const int LanguageModelDictContent::DUMMY_PROBABILITY_FOR_VALID_WORDS = 1;
 
 bool LanguageModelDictContent::save(FILE *const file) const {
@@ -33,10 +31,9 @@ bool LanguageModelDictContent::save(FILE *const file) const {
 
 bool LanguageModelDictContent::runGC(
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
-        const LanguageModelDictContent *const originalContent,
-        int *const outNgramCount) {
+        const LanguageModelDictContent *const originalContent) {
     return runGCInner(terminalIdMap, originalContent->mTrieMap.getEntriesInRootLevel(),
-            0 /* nextLevelBitmapEntryIndex */, outNgramCount);
+            0 /* nextLevelBitmapEntryIndex */);
 }
 
 const WordAttributes LanguageModelDictContent::getWordAttributes(const WordIdArrayView prevWordIds,
@@ -143,18 +140,23 @@ LanguageModelDictContent::EntryRange LanguageModelDictContent::getProbabilityEnt
     return EntryRange(mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex), mHasHistoricalInfo);
 }
 
-bool LanguageModelDictContent::truncateEntries(const int *const entryCounts,
-        const int *const maxEntryCounts, const HeaderPolicy *const headerPolicy,
-        int *const outEntryCounts) {
-    for (int i = 0; i <= MAX_PREV_WORD_COUNT_FOR_N_GRAM; ++i) {
-        if (entryCounts[i] <= maxEntryCounts[i]) {
-            outEntryCounts[i] = entryCounts[i];
+bool LanguageModelDictContent::truncateEntries(const EntryCounts &currentEntryCounts,
+        const EntryCounts &maxEntryCounts, const HeaderPolicy *const headerPolicy,
+        MutableEntryCounters *const outEntryCounters) {
+    for (int prevWordCount = 0; prevWordCount <= MAX_PREV_WORD_COUNT_FOR_N_GRAM; ++prevWordCount) {
+        const int totalWordCount = prevWordCount + 1;
+        if (currentEntryCounts.getNgramCount(totalWordCount)
+                <= maxEntryCounts.getNgramCount(totalWordCount)) {
+            outEntryCounters->setNgramCount(totalWordCount,
+                    currentEntryCounts.getNgramCount(totalWordCount));
             continue;
         }
-        if (!turncateEntriesInSpecifiedLevel(headerPolicy, maxEntryCounts[i], i,
-                &outEntryCounts[i])) {
+        int entryCount = 0;
+        if (!turncateEntriesInSpecifiedLevel(headerPolicy,
+                maxEntryCounts.getNgramCount(totalWordCount), prevWordCount, &entryCount)) {
             return false;
         }
+        outEntryCounters->setNgramCount(totalWordCount, entryCount);
     }
     return true;
 }
@@ -208,8 +210,7 @@ const ProbabilityEntry LanguageModelDictContent::createUpdatedEntryFrom(
 
 bool LanguageModelDictContent::runGCInner(
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
-        const TrieMap::TrieMapRange trieMapRange,
-        const int nextLevelBitmapEntryIndex, int *const outNgramCount) {
+        const TrieMap::TrieMapRange trieMapRange, const int nextLevelBitmapEntryIndex) {
     for (auto &entry : trieMapRange) {
         const auto it = terminalIdMap->find(entry.key());
         if (it == terminalIdMap->end() || it->second == Ver4DictConstants::NOT_A_TERMINAL_ID) {
@@ -219,13 +220,9 @@ bool LanguageModelDictContent::runGCInner(
         if (!mTrieMap.put(it->second, entry.value(), nextLevelBitmapEntryIndex)) {
             return false;
         }
-        if (outNgramCount) {
-            *outNgramCount += 1;
-        }
         if (entry.hasNextLevelMap()) {
             if (!runGCInner(terminalIdMap, entry.getEntriesInNextLevel(),
-                    mTrieMap.getNextLevelBitmapEntryIndex(it->second, nextLevelBitmapEntryIndex),
-                    outNgramCount)) {
+                    mTrieMap.getNextLevelBitmapEntryIndex(it->second, nextLevelBitmapEntryIndex))) {
                 return false;
             }
         }
@@ -268,7 +265,7 @@ int LanguageModelDictContent::getBitmapEntryIndex(const WordIdArrayView prevWord
 
 bool LanguageModelDictContent::updateAllProbabilityEntriesForGCInner(const int bitmapEntryIndex,
         const int prevWordCount, const HeaderPolicy *const headerPolicy,
-        int *const outEntryCounts) {
+        MutableEntryCounters *const outEntryCounters) {
     for (const auto &entry : mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex)) {
         if (prevWordCount > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
             AKLOGE("Invalid prevWordCount. prevWordCount: %d, MAX_PREV_WORD_COUNT_FOR_N_GRAM: %d.",
@@ -305,13 +302,13 @@ bool LanguageModelDictContent::updateAllProbabilityEntriesForGCInner(const int b
             }
         }
         if (!probabilityEntry.representsBeginningOfSentence()) {
-            outEntryCounts[prevWordCount] += 1;
+            outEntryCounters->incrementNgramCount(prevWordCount + 1);
         }
         if (!entry.hasNextLevelMap()) {
             continue;
         }
         if (!updateAllProbabilityEntriesForGCInner(entry.getNextLevelBitmapEntryIndex(),
-                prevWordCount + 1, headerPolicy, outEntryCounts)) {
+                prevWordCount + 1, headerPolicy, outEntryCounters)) {
             return false;
         }
     }
