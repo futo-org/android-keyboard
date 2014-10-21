@@ -342,7 +342,7 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeFlags(const int ptNodePos, const bo
     // Create node flags and write them.
     PatriciaTrieReadingUtils::NodeFlags nodeFlags =
             PatriciaTrieReadingUtils::createAndGetFlags(false /* isNotAWord */,
-                    false /* isBlacklisted */, isTerminal, false /* hasShortcutTargets */,
+                    false /* isPossiblyOffensive */, isTerminal, false /* hasShortcutTargets */,
                     false /* hasBigrams */, hasMultipleChars, CHILDREN_POSITION_FIELD_SIZE);
     if (!DynamicPtWritingUtils::writeFlags(mTrieBuffer, nodeFlags, ptNodePos)) {
         AKLOGE("Cannot write PtNode flags. flags: %x, pos: %d", nodeFlags, ptNodePos);

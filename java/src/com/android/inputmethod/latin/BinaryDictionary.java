@@ -69,7 +69,7 @@ public final class BinaryDictionary extends Dictionary {
     // Format to get unigram flags from native side via getWordPropertyNative().
     private static final int FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT = 5;
     private static final int FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX = 0;
-    private static final int FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX = 1;
+    private static final int FORMAT_WORD_PROPERTY_IS_POSSIBLY_OFFENSIVE_INDEX = 1;
     private static final int FORMAT_WORD_PROPERTY_HAS_NGRAMS_INDEX = 2;
     private static final int FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX = 3;
     private static final int FORMAT_WORD_PROPERTY_IS_BEGINNING_OF_SENTENCE_INDEX = 4;
@@ -195,7 +195,7 @@ public final class BinaryDictionary extends Dictionary {
             float[] inOutWeightOfLangModelVsSpatialModel);
     private static native boolean addUnigramEntryNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isBeginningOfSentence,
-            boolean isNotAWord, boolean isBlacklisted, int timestamp);
+            boolean isNotAWord, boolean isPossiblyOffensive, int timestamp);
     private static native boolean removeUnigramEntryNative(long dict, int[] word);
     private static native boolean addNgramEntryNative(long dict,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
@@ -402,7 +402,7 @@ public final class BinaryDictionary extends Dictionary {
                 outNgramProbabilityInfo, outShortcutTargets, outShortcutProbabilities);
         return new WordProperty(codePoints,
                 outFlags[FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX],
-                outFlags[FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX],
+                outFlags[FORMAT_WORD_PROPERTY_IS_POSSIBLY_OFFENSIVE_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_HAS_NGRAMS_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_IS_BEGINNING_OF_SENTENCE_INDEX], outProbabilityInfo,
@@ -439,7 +439,7 @@ public final class BinaryDictionary extends Dictionary {
     public boolean addUnigramEntry(final String word, final int probability,
             final String shortcutTarget, final int shortcutProbability,
             final boolean isBeginningOfSentence, final boolean isNotAWord,
-            final boolean isBlacklisted, final int timestamp) {
+            final boolean isPossiblyOffensive, final int timestamp) {
         if (word == null || (word.isEmpty() && !isBeginningOfSentence)) {
             return false;
         }
@@ -447,7 +447,8 @@ public final class BinaryDictionary extends Dictionary {
         final int[] shortcutTargetCodePoints = (shortcutTarget != null) ?
                 StringUtils.toCodePointArray(shortcutTarget) : null;
         if (!addUnigramEntryNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
-                shortcutProbability, isBeginningOfSentence, isNotAWord, isBlacklisted, timestamp)) {
+                shortcutProbability, isBeginningOfSentence, isNotAWord, isPossiblyOffensive,
+                timestamp)) {
             return false;
         }
         mHasUpdated = true;

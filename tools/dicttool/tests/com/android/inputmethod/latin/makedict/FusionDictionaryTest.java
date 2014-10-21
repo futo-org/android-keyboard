@@ -101,7 +101,8 @@ public class FusionDictionaryTest extends TestCase {
         prepare(time);
         for (int i = 0; i < sWords.size(); ++i) {
             System.out.println("Adding in pos " + i + " : " + dumpWord(sWords.get(i)));
-            dict.add(sWords.get(i), new ProbabilityInfo(180), null, false);
+            dict.add(sWords.get(i), new ProbabilityInfo(180), null, false,
+                    false /* isPossiblyOffensive */);
             dumpDict(dict);
             checkDictionary(dict, sWords, i);
         }

@@ -608,8 +608,8 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
         }
     }
     const UnigramProperty unigramProperty(ptNodeParams.representsBeginningOfSentence(),
-            ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
-            *historicalInfo, std::move(shortcuts));
+            ptNodeParams.isNotAWord(), ptNodeParams.isPossiblyOffensive(),
+            ptNodeParams.getProbability(), *historicalInfo, std::move(shortcuts));
     return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }
 

@@ -63,7 +63,7 @@ public class CombinedFormatUtils {
         if (wordProperty.mIsNotAWord) {
             builder.append("," + NOT_A_WORD_TAG + "=true");
         }
-        if (wordProperty.mIsBlacklistEntry) {
+        if (wordProperty.mIsPossiblyOffensive) {
             builder.append("," + BLACKLISTED_TAG + "=true");
         }
         builder.append("\n");

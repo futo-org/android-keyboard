@@ -358,7 +358,7 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
 
 static bool latinime_BinaryDictionary_addUnigramEntry(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word, jint probability, jintArray shortcutTarget, jint shortcutProbability,
-        jboolean isBeginningOfSentence, jboolean isNotAWord, jboolean isBlacklisted,
+        jboolean isBeginningOfSentence, jboolean isNotAWord, jboolean isPossiblyOffensive,
         jint timestamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
@@ -377,8 +377,8 @@ static bool latinime_BinaryDictionary_addUnigramEntry(JNIEnv *env, jclass clazz,
     }
     // Use 1 for count to indicate the word has inputted.
     const UnigramProperty unigramProperty(isBeginningOfSentence, isNotAWord,
-            isBlacklisted, probability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */),
-            std::move(shortcuts));
+            isPossiblyOffensive, probability, HistoricalInfo(timestamp, 0 /* level */,
+            1 /* count */), std::move(shortcuts));
     return dictionary->addUnigramEntry(CodePointArrayView(codePoints, codePointCount),
             &unigramProperty);
 }
@@ -480,8 +480,8 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
             env->GetFieldID(languageModelParamClass, "mShortcutProbability", "I");
     jfieldID isNotAWordFieldId =
             env->GetFieldID(languageModelParamClass, "mIsNotAWord", "Z");
-    jfieldID isBlacklistedFieldId =
-            env->GetFieldID(languageModelParamClass, "mIsBlacklisted", "Z");
+    jfieldID isPossiblyOffensiveFieldId =
+            env->GetFieldID(languageModelParamClass, "mIsPossiblyOffensive", "Z");
     env->DeleteLocalRef(languageModelParamClass);
 
     for (int i = startIndex; i < languageModelParamCount; ++i) {
@@ -504,7 +504,8 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         jint unigramProbability = env->GetIntField(languageModelParam, unigramProbabilityFieldId);
         jint timestamp = env->GetIntField(languageModelParam, timestampFieldId);
         jboolean isNotAWord = env->GetBooleanField(languageModelParam, isNotAWordFieldId);
-        jboolean isBlacklisted = env->GetBooleanField(languageModelParam, isBlacklistedFieldId);
+        jboolean isPossiblyOffensive = env->GetBooleanField(languageModelParam,
+                isPossiblyOffensiveFieldId);
         jintArray shortcutTarget = static_cast<jintArray>(
                 env->GetObjectField(languageModelParam, shortcutTargetFieldId));
         std::vector<UnigramProperty::ShortcutProperty> shortcuts;
@@ -519,7 +520,7 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         }
         // Use 1 for count to indicate the word has inputted.
         const UnigramProperty unigramProperty(false /* isBeginningOfSentence */, isNotAWord,
-                isBlacklisted, unigramProbability,
+                isPossiblyOffensive, unigramProbability,
                 HistoricalInfo(timestamp, 0 /* level */, 1 /* count */), std::move(shortcuts));
         dictionary->addUnigramEntry(CodePointArrayView(word1CodePoints, word1Length),
                 &unigramProperty);

@@ -85,12 +85,12 @@ class DynamicPtUpdatingHelper {
             const CodePointArrayView newPtNodeCodePoints);
 
     const PtNodeParams getUpdatedPtNodeParams(const PtNodeParams *const originalPtNodeParams,
-            const bool isNotAWord, const bool isBlacklisted, const bool isTerminal,
+            const bool isNotAWord, const bool isPossiblyOffensive, const bool isTerminal,
             const int parentPos, const CodePointArrayView codePoints, const int probability) const;
 
-    const PtNodeParams getPtNodeParamsForNewPtNode(const bool isNotAWord, const bool isBlacklisted,
-            const bool isTerminal, const int parentPos, const CodePointArrayView codePoints,
-            const int probability) const;
+    const PtNodeParams getPtNodeParamsForNewPtNode(const bool isNotAWord,
+            const bool isPossiblyOffensive, const bool isTerminal, const int parentPos,
+            const CodePointArrayView codePoints, const int probability) const;
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_UPDATING_HELPER_H */
