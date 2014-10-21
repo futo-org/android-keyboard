@@ -46,6 +46,13 @@ class EntryCounts final {
         return mEntryCounts[2];
     }
 
+    int getNgramCount(const size_t n) const {
+        if (n < 1 || n > mEntryCounts.size()) {
+            return 0;
+        }
+        return mEntryCounts[n - 1];
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(EntryCounts);
 
@@ -108,6 +115,13 @@ class MutableEntryCounters final {
         }
         ASSERT(mEntryCounters[n - 1] != 0);
         --mEntryCounters[n - 1];
+    }
+
+    void setNgramCount(const size_t n, const int count) {
+        if (n < 1 || n > mEntryCounters.size()) {
+            return;
+        }
+        mEntryCounters[n - 1] = count;
     }
 
  private:
