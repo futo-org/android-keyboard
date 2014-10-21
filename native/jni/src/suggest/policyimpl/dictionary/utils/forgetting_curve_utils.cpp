@@ -38,8 +38,7 @@ const int ForgettingCurveUtils::OCCURRENCES_TO_RAISE_THE_LEVEL = 1;
 // 15 days
 const int ForgettingCurveUtils::DURATION_TO_LOWER_THE_LEVEL_IN_SECONDS = 15 * 24 * 60 * 60;
 
-const float ForgettingCurveUtils::UNIGRAM_COUNT_HARD_LIMIT_WEIGHT = 1.2;
-const float ForgettingCurveUtils::BIGRAM_COUNT_HARD_LIMIT_WEIGHT = 1.2;
+const float ForgettingCurveUtils::ENTRY_COUNT_HARD_LIMIT_WEIGHT = 1.2;
 
 const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityTable;
 
@@ -126,12 +125,20 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 }
 
 /* static */ bool ForgettingCurveUtils::needsToDecay(const bool mindsBlockByDecay,
-        const int unigramCount, const int bigramCount, const HeaderPolicy *const headerPolicy) {
-    if (unigramCount >= getUnigramCountHardLimit(headerPolicy->getMaxUnigramCount())) {
+        const EntryCounts &entryCounts, const HeaderPolicy *const headerPolicy) {
+    if (entryCounts.getUnigramCount()
+            >= getEntryCountHardLimit(headerPolicy->getMaxUnigramCount())) {
         // Unigram count exceeds the limit.
         return true;
-    } else if (bigramCount >= getBigramCountHardLimit(headerPolicy->getMaxBigramCount())) {
+    }
+    if (entryCounts.getBigramCount()
+            >= getEntryCountHardLimit(headerPolicy->getMaxBigramCount())) {
         // Bigram count exceeds the limit.
+        return true;
+    }
+    if (entryCounts.getTrigramCount()
+            >= getEntryCountHardLimit(headerPolicy->getMaxTrigramCount())) {
+        // Trigram count exceeds the limit.
         return true;
     }
     if (mindsBlockByDecay) {

@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/property/historical_info.h"
+#include "suggest/policyimpl/dictionary/utils/entry_counters.h"
 
 namespace latinime {
 
@@ -42,22 +43,17 @@ class ForgettingCurveUtils {
     static bool needsToKeep(const HistoricalInfo *const historicalInfo,
             const HeaderPolicy *const headerPolicy);
 
-    static bool needsToDecay(const bool mindsBlockByDecay, const int unigramCount,
-            const int bigramCount, const HeaderPolicy *const headerPolicy);
+    static bool needsToDecay(const bool mindsBlockByDecay, const EntryCounts &entryCounters,
+            const HeaderPolicy *const headerPolicy);
 
     // TODO: Improve probability computation method and remove this.
     static int getProbabilityBiasForNgram(const int n) {
         return (n - 1) * MULTIPLIER_TWO_IN_PROBABILITY_SCALE;
     }
 
-    AK_FORCE_INLINE static int getUnigramCountHardLimit(const int maxUnigramCount) {
-        return static_cast<int>(static_cast<float>(maxUnigramCount)
-                * UNIGRAM_COUNT_HARD_LIMIT_WEIGHT);
-    }
-
-    AK_FORCE_INLINE static int getBigramCountHardLimit(const int maxBigramCount) {
-        return static_cast<int>(static_cast<float>(maxBigramCount)
-                * BIGRAM_COUNT_HARD_LIMIT_WEIGHT);
+    AK_FORCE_INLINE static int getEntryCountHardLimit(const int maxEntryCount) {
+        return static_cast<int>(static_cast<float>(maxEntryCount)
+                * ENTRY_COUNT_HARD_LIMIT_WEIGHT);
     }
 
  private:
@@ -101,8 +97,7 @@ class ForgettingCurveUtils {
     static const int OCCURRENCES_TO_RAISE_THE_LEVEL;
     static const int DURATION_TO_LOWER_THE_LEVEL_IN_SECONDS;
 
-    static const float UNIGRAM_COUNT_HARD_LIMIT_WEIGHT;
-    static const float BIGRAM_COUNT_HARD_LIMIT_WEIGHT;
+    static const float ENTRY_COUNT_HARD_LIMIT_WEIGHT;
 
     static const ProbabilityTable sProbabilityTable;
 
