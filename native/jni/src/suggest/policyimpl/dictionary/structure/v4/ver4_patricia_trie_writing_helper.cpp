@@ -43,8 +43,8 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPat
             entryCounts, extendedRegionSize, &headerBuffer)) {
         AKLOGE("Cannot write header structure to buffer. "
                 "updatesLastDecayedTime: %d, unigramCount: %d, bigramCount: %d, trigramCount: %d,"
-                "extendedRegionSize: %d", false, entryCounters.getUnigramCount(),
-                entryCounters.getBigramCount(), entryCounters.getTrigramCount(),
+                "extendedRegionSize: %d", false, entryCounts.getUnigramCount(),
+                entryCounts.getBigramCount(), entryCounts.getTrigramCount(),
                 extendedRegionSize);
         return false;
     }
