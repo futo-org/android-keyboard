@@ -409,9 +409,10 @@ static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, j
     int wordCodePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
     // Use 1 for count to indicate the ngram has inputted.
-    const NgramProperty ngramProperty(CodePointArrayView(wordCodePoints, wordLength).toVector(),
+    const NgramProperty ngramProperty(ngramContext,
+            CodePointArrayView(wordCodePoints, wordLength).toVector(),
             probability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
-    return dictionary->addNgramEntry(&ngramContext, &ngramProperty);
+    return dictionary->addNgramEntry(&ngramProperty);
 }
 
 static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz, jlong dict,
@@ -527,12 +528,12 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
             // Use 1 for count to indicate the bigram has inputted.
-            const NgramProperty ngramProperty(
-                    CodePointArrayView(word1CodePoints, word1Length).toVector(),
-                    bigramProbability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
             const NgramContext ngramContext(word0CodePoints, word0Length,
                     false /* isBeginningOfSentence */);
-            dictionary->addNgramEntry(&ngramContext, &ngramProperty);
+            const NgramProperty ngramProperty(ngramContext,
+                    CodePointArrayView(word1CodePoints, word1Length).toVector(),
+                    bigramProbability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
+            dictionary->addNgramEntry(&ngramProperty);
         }
         if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
             return i + 1;
@@ -642,11 +643,8 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
-        const NgramContext ngramContext(wordCodePoints, wordCodePointCount,
-                wordProperty.getUnigramProperty()->representsBeginningOfSentence());
         for (const NgramProperty &ngramProperty : *wordProperty.getNgramProperties()) {
-            if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&ngramContext,
-                    &ngramProperty)) {
+            if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&ngramProperty)) {
                 LogUtils::logToJava(env, "Cannot add ngram to the new dict.");
                 return false;
             }

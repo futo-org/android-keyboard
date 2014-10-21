@@ -113,8 +113,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     bool removeUnigramEntry(const CodePointArrayView wordCodePoints);
 
-    bool addNgramEntry(const NgramContext *const ngramContext,
-            const NgramProperty *const ngramProperty);
+    bool addNgramEntry(const NgramProperty *const ngramProperty);
 
     bool removeNgramEntry(const NgramContext *const ngramContext,
             const CodePointArrayView wordCodePoints);

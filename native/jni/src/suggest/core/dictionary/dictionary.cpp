@@ -140,10 +140,9 @@ bool Dictionary::removeUnigramEntry(const CodePointArrayView codePoints) {
     return mDictionaryStructureWithBufferPolicy->removeUnigramEntry(codePoints);
 }
 
-bool Dictionary::addNgramEntry(const NgramContext *const ngramContext,
-        const NgramProperty *const ngramProperty) {
+bool Dictionary::addNgramEntry(const NgramProperty *const ngramProperty) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->addNgramEntry(ngramContext, ngramProperty);
+    return mDictionaryStructureWithBufferPolicy->addNgramEntry(ngramProperty);
 }
 
 bool Dictionary::removeNgramEntry(const NgramContext *const ngramContext,

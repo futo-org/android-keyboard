@@ -40,7 +40,6 @@ class UnigramProperty;
  * This class abstracts the structure of dictionaries.
  * Implement this policy to support additional dictionaries.
  */
-// TODO: Use word id instead of terminal PtNode position.
 class DictionaryStructureWithBufferPolicy {
  public:
     typedef std::unique_ptr<DictionaryStructureWithBufferPolicy> StructurePolicyPtr;
@@ -81,8 +80,7 @@ class DictionaryStructureWithBufferPolicy {
     virtual bool removeUnigramEntry(const CodePointArrayView wordCodePoints) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool addNgramEntry(const NgramContext *const ngramContext,
-            const NgramProperty *const ngramProperty) = 0;
+    virtual bool addNgramEntry(const NgramProperty *const ngramProperty) = 0;
 
     // Returns whether the update was success or not.
     virtual bool removeNgramEntry(const NgramContext *const ngramContext,
@@ -106,7 +104,6 @@ class DictionaryStructureWithBufferPolicy {
     virtual void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength) = 0;
 
-    // Used for testing.
     virtual const WordProperty getWordProperty(const CodePointArrayView wordCodePoints) const = 0;
 
     // Method to iterate all words in the dictionary.

@@ -85,8 +85,7 @@ class Dictionary {
 
     bool removeUnigramEntry(const CodePointArrayView codePoints);
 
-    bool addNgramEntry(const NgramContext *const ngramContext,
-            const NgramProperty *const ngramProperty);
+    bool addNgramEntry(const NgramProperty *const ngramProperty);
 
     bool removeNgramEntry(const NgramContext *const ngramContext,
             const CodePointArrayView codePoints);
