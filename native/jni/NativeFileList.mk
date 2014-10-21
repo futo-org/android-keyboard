@@ -40,6 +40,7 @@ LATIN_IME_CORE_SRC_FILES := \
         proximity_info_state_utils.cpp) \
     suggest/core/policy/weighting.cpp \
     suggest/core/session/dic_traverse_session.cpp \
+    suggest/core/session/ngram_context.cpp \
     $(addprefix suggest/core/result/, \
         suggestion_results.cpp \
         suggestions_output_utils.cpp) \
@@ -55,7 +56,7 @@ LATIN_IME_CORE_SRC_FILES := \
         dynamic_pt_updating_helper.cpp \
         dynamic_pt_writing_utils.cpp \
         patricia_trie_reading_utils.cpp \
-        shortcut/shortcut_list_reading_utils.cpp ) \
+        shortcut/shortcut_list_reading_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
         patricia_trie_policy.cpp \
         ver2_patricia_trie_node_reader.cpp \
