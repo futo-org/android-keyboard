@@ -20,6 +20,7 @@ import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -1086,8 +1087,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // We cannot mark this method as @Override until new SDK becomes publicly available.
-    // @Override
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
     public void onUpdateCursorAnchorInfo(final CursorAnchorInfo info) {
         if (isFullscreenMode()) {
             return;
