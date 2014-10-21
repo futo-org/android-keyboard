@@ -57,7 +57,7 @@ public final class ViewLayoutUtils {
 
     public static void updateLayoutHeightOf(final Window window, final int layoutHeight) {
         final WindowManager.LayoutParams params = window.getAttributes();
-        if (params.height != layoutHeight) {
+        if (params != null && params.height != layoutHeight) {
             params.height = layoutHeight;
             window.setAttributes(params);
         }
@@ -65,7 +65,7 @@ public final class ViewLayoutUtils {
 
     public static void updateLayoutHeightOf(final View view, final int layoutHeight) {
         final ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (params.height != layoutHeight) {
+        if (params != null && params.height != layoutHeight) {
             params.height = layoutHeight;
             view.setLayoutParams(params);
         }
