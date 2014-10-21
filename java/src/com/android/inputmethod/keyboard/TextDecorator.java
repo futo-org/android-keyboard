@@ -181,7 +181,7 @@ public class TextDecorator {
         layoutMain();
     }
 
-    private void layoutMain() {
+    void layoutMain() {
         final CursorAnchorInfoCompatWrapper info = mCursorAnchorInfoWrapper;
 
         if (info == null) {
@@ -289,7 +289,7 @@ public class TextDecorator {
                 mHasRtlCharsInLastComposingText);
     }
 
-    private void onClickIndicator() {
+    void onClickIndicator() {
         if (mMode != MODE_SHOWING_INDICATOR) {
             return;
         }

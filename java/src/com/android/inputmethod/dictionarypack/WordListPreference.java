@@ -38,45 +38,39 @@ import java.util.Locale;
  * enable or delete it as appropriate for the current state of the word list.
  */
 public final class WordListPreference extends Preference {
-    static final private String TAG = WordListPreference.class.getSimpleName();
+    private static final String TAG = WordListPreference.class.getSimpleName();
 
     // What to display in the "status" field when we receive unknown data as a status from
     // the content provider. Empty string sounds sensible.
-    static final private String NO_STATUS_MESSAGE = "";
+    private static final String NO_STATUS_MESSAGE = "";
 
     /// Actions
-    static final private int ACTION_UNKNOWN = 0;
-    static final private int ACTION_ENABLE_DICT = 1;
-    static final private int ACTION_DISABLE_DICT = 2;
-    static final private int ACTION_DELETE_DICT = 3;
+    private static final int ACTION_UNKNOWN = 0;
+    private static final int ACTION_ENABLE_DICT = 1;
+    private static final int ACTION_DISABLE_DICT = 2;
+    private static final int ACTION_DELETE_DICT = 3;
 
     // Members
-    // The context to get resources
-    final Context mContext;
-    // The id of the client for which this preference is.
-    final String mClientId;
     // The metadata word list id and version of this word list.
     public final String mWordlistId;
     public final int mVersion;
     public final Locale mLocale;
     public final String mDescription;
+
+    // The id of the client for which this preference is.
+    private final String mClientId;
     // The status
     private int mStatus;
     // The size of the dictionary file
     private final int mFilesize;
 
     private final DictionaryListInterfaceState mInterfaceState;
-    private final OnWordListPreferenceClick mPreferenceClickHandler =
-            new OnWordListPreferenceClick();
-    private final OnActionButtonClick mActionButtonClickHandler =
-            new OnActionButtonClick();
 
     public WordListPreference(final Context context,
             final DictionaryListInterfaceState dictionaryListInterfaceState, final String clientId,
             final String wordlistId, final int version, final Locale locale,
             final String description, final int status, final int filesize) {
         super(context, null);
-        mContext = context;
         mInterfaceState = dictionaryListInterfaceState;
         mClientId = clientId;
         mVersion = version;
@@ -116,22 +110,23 @@ public final class WordListPreference extends Preference {
     }
 
     private String getSummary(final int status) {
+        final Context context = getContext();
         switch (status) {
-            // If we are deleting the word list, for the user it's like it's already deleted.
-            // It should be reinstallable. Exposing to the user the whole complexity of
-            // the delayed deletion process between the dictionary pack and Android Keyboard
-            // would only be confusing.
-            case MetadataDbHelper.STATUS_DELETING:
-            case MetadataDbHelper.STATUS_AVAILABLE:
-                return mContext.getString(R.string.dictionary_available);
-            case MetadataDbHelper.STATUS_DOWNLOADING:
-                return mContext.getString(R.string.dictionary_downloading);
-            case MetadataDbHelper.STATUS_INSTALLED:
-                return mContext.getString(R.string.dictionary_installed);
-            case MetadataDbHelper.STATUS_DISABLED:
-                return mContext.getString(R.string.dictionary_disabled);
-            default:
-                return NO_STATUS_MESSAGE;
+        // If we are deleting the word list, for the user it's like it's already deleted.
+        // It should be reinstallable. Exposing to the user the whole complexity of
+        // the delayed deletion process between the dictionary pack and Android Keyboard
+        // would only be confusing.
+        case MetadataDbHelper.STATUS_DELETING:
+        case MetadataDbHelper.STATUS_AVAILABLE:
+            return context.getString(R.string.dictionary_available);
+        case MetadataDbHelper.STATUS_DOWNLOADING:
+            return context.getString(R.string.dictionary_downloading);
+        case MetadataDbHelper.STATUS_INSTALLED:
+            return context.getString(R.string.dictionary_installed);
+        case MetadataDbHelper.STATUS_DISABLED:
+            return context.getString(R.string.dictionary_disabled);
+        default:
+            return NO_STATUS_MESSAGE;
         }
     }
 
@@ -154,7 +149,7 @@ public final class WordListPreference extends Preference {
         { ButtonSwitcher.STATUS_INSTALL, ACTION_ENABLE_DICT }
     };
 
-    private int getButtonSwitcherStatus(final int status) {
+    static int getButtonSwitcherStatus(final int status) {
         if (status >= sStatusActionList.length) {
             Log.e(TAG, "Unknown status " + status);
             return ButtonSwitcher.STATUS_NO_BUTTON;
@@ -162,7 +157,7 @@ public final class WordListPreference extends Preference {
         return sStatusActionList[status][0];
     }
 
-    private static int getActionIdFromStatusAndMenuEntry(final int status) {
+    static int getActionIdFromStatusAndMenuEntry(final int status) {
         if (status >= sStatusActionList.length) {
             Log.e(TAG, "Unknown status " + status);
             return ACTION_UNKNOWN;
@@ -171,9 +166,10 @@ public final class WordListPreference extends Preference {
     }
 
     private void disableDict() {
-        SharedPreferences prefs = CommonPreferences.getCommonPreferences(mContext);
+        final Context context = getContext();
+        final SharedPreferences prefs = CommonPreferences.getCommonPreferences(context);
         CommonPreferences.disable(prefs, mWordlistId);
-        UpdateHandler.markAsUnused(mContext, mClientId, mWordlistId, mVersion, mStatus);
+        UpdateHandler.markAsUnused(context, mClientId, mWordlistId, mVersion, mStatus);
         if (MetadataDbHelper.STATUS_DOWNLOADING == mStatus) {
             setStatus(MetadataDbHelper.STATUS_AVAILABLE);
         } else if (MetadataDbHelper.STATUS_INSTALLED == mStatus) {
@@ -184,11 +180,13 @@ public final class WordListPreference extends Preference {
             Log.e(TAG, "Unexpected state of the word list for disabling " + mStatus);
         }
     }
+
     private void enableDict() {
-        SharedPreferences prefs = CommonPreferences.getCommonPreferences(mContext);
+        final Context context = getContext();
+        final SharedPreferences prefs = CommonPreferences.getCommonPreferences(context);
         CommonPreferences.enable(prefs, mWordlistId);
         // Explicit enabling by the user : allow downloading on metered data connection.
-        UpdateHandler.markAsUsed(mContext, mClientId, mWordlistId, mVersion, mStatus, true);
+        UpdateHandler.markAsUsed(context, mClientId, mWordlistId, mVersion, mStatus, true);
         if (MetadataDbHelper.STATUS_AVAILABLE == mStatus) {
             setStatus(MetadataDbHelper.STATUS_DOWNLOADING);
         } else if (MetadataDbHelper.STATUS_DISABLED == mStatus
@@ -203,11 +201,13 @@ public final class WordListPreference extends Preference {
             Log.e(TAG, "Unexpected state of the word list for enabling " + mStatus);
         }
     }
+
     private void deleteDict() {
-        SharedPreferences prefs = CommonPreferences.getCommonPreferences(mContext);
+        final Context context = getContext();
+        final SharedPreferences prefs = CommonPreferences.getCommonPreferences(context);
         CommonPreferences.disable(prefs, mWordlistId);
         setStatus(MetadataDbHelper.STATUS_DELETING);
-        UpdateHandler.markAsDeleting(mContext, mClientId, mWordlistId, mVersion, mStatus);
+        UpdateHandler.markAsDeleting(context, mClientId, mWordlistId, mVersion, mStatus);
     }
 
     @Override
@@ -225,8 +225,8 @@ public final class WordListPreference extends Preference {
         status.setVisibility(showProgressBar ? View.INVISIBLE : View.VISIBLE);
         progressBar.setVisibility(showProgressBar ? View.VISIBLE : View.INVISIBLE);
 
-        final ButtonSwitcher buttonSwitcher =
-                (ButtonSwitcher)view.findViewById(R.id.wordlist_button_switcher);
+        final ButtonSwitcher buttonSwitcher = (ButtonSwitcher)view.findViewById(
+                R.id.wordlist_button_switcher);
         // We need to clear the state of the button switcher, because we reuse views; if we didn't
         // reset it would animate from whatever its old state was.
         buttonSwitcher.reset(mInterfaceState);
@@ -244,63 +244,67 @@ public final class WordListPreference extends Preference {
             // The button is closed.
             buttonSwitcher.setStatusAndUpdateVisuals(ButtonSwitcher.STATUS_NO_BUTTON);
         }
-        buttonSwitcher.setInternalOnClickListener(mActionButtonClickHandler);
-        view.setOnClickListener(mPreferenceClickHandler);
+        buttonSwitcher.setInternalOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                onActionButtonClicked();
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                onWordListClicked(v);
+            }
+        });
     }
 
-    private class OnWordListPreferenceClick implements View.OnClickListener {
-        @Override
-        public void onClick(final View v) {
-            // Note : v is the preference view
-            final ViewParent parent = v.getParent();
-            // Just in case something changed in the framework, test for the concrete class
-            if (!(parent instanceof ListView)) return;
-            final ListView listView = (ListView)parent;
-            final int indexToOpen;
-            // Close all first, we'll open back any item that needs to be open.
-            final boolean wasOpen = mInterfaceState.isOpen(mWordlistId);
-            mInterfaceState.closeAll();
-            if (wasOpen) {
-                // This button being shown. Take note that we don't want to open any button in the
-                // loop below.
-                indexToOpen = -1;
+    void onWordListClicked(final View v) {
+        // Note : v is the preference view
+        final ViewParent parent = v.getParent();
+        // Just in case something changed in the framework, test for the concrete class
+        if (!(parent instanceof ListView)) return;
+        final ListView listView = (ListView)parent;
+        final int indexToOpen;
+        // Close all first, we'll open back any item that needs to be open.
+        final boolean wasOpen = mInterfaceState.isOpen(mWordlistId);
+        mInterfaceState.closeAll();
+        if (wasOpen) {
+            // This button being shown. Take note that we don't want to open any button in the
+            // loop below.
+            indexToOpen = -1;
+        } else {
+            // This button was not being shown. Open it, and remember the index of this
+            // child as the one to open in the following loop.
+            mInterfaceState.setOpen(mWordlistId, mStatus);
+            indexToOpen = listView.indexOfChild(v);
+        }
+        final int lastDisplayedIndex =
+                listView.getLastVisiblePosition() - listView.getFirstVisiblePosition();
+        // The "lastDisplayedIndex" is actually displayed, hence the <=
+        for (int i = 0; i <= lastDisplayedIndex; ++i) {
+            final ButtonSwitcher buttonSwitcher = (ButtonSwitcher)listView.getChildAt(i)
+                    .findViewById(R.id.wordlist_button_switcher);
+            if (i == indexToOpen) {
+                buttonSwitcher.setStatusAndUpdateVisuals(getButtonSwitcherStatus(mStatus));
             } else {
-                // This button was not being shown. Open it, and remember the index of this
-                // child as the one to open in the following loop.
-                mInterfaceState.setOpen(mWordlistId, mStatus);
-                indexToOpen = listView.indexOfChild(v);
-            }
-            final int lastDisplayedIndex =
-                    listView.getLastVisiblePosition() - listView.getFirstVisiblePosition();
-            // The "lastDisplayedIndex" is actually displayed, hence the <=
-            for (int i = 0; i <= lastDisplayedIndex; ++i) {
-                final ButtonSwitcher buttonSwitcher = (ButtonSwitcher)listView.getChildAt(i)
-                        .findViewById(R.id.wordlist_button_switcher);
-                if (i == indexToOpen) {
-                    buttonSwitcher.setStatusAndUpdateVisuals(getButtonSwitcherStatus(mStatus));
-                } else {
-                    buttonSwitcher.setStatusAndUpdateVisuals(ButtonSwitcher.STATUS_NO_BUTTON);
-                }
+                buttonSwitcher.setStatusAndUpdateVisuals(ButtonSwitcher.STATUS_NO_BUTTON);
             }
         }
     }
 
-    private class OnActionButtonClick implements View.OnClickListener {
-        @Override
-        public void onClick(final View v) {
-            switch (getActionIdFromStatusAndMenuEntry(mStatus)) {
-            case ACTION_ENABLE_DICT:
-                enableDict();
-                break;
-            case ACTION_DISABLE_DICT:
-                disableDict();
-                break;
-            case ACTION_DELETE_DICT:
-                deleteDict();
-                break;
-            default:
-                Log.e(TAG, "Unknown menu item pressed");
-            }
+    void onActionButtonClicked() {
+        switch (getActionIdFromStatusAndMenuEntry(mStatus)) {
+        case ACTION_ENABLE_DICT:
+            enableDict();
+            break;
+        case ACTION_DISABLE_DICT:
+            disableDict();
+            break;
+        case ACTION_DELETE_DICT:
+            deleteDict();
+            break;
+        default:
+            Log.e(TAG, "Unknown menu item pressed");
         }
     }
 }

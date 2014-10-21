@@ -148,7 +148,7 @@ public class DictionaryDownloadProgressBar extends ProgressBar {
             }
         }
 
-        private class UpdateHelper implements Runnable {
+        class UpdateHelper implements Runnable {
             private int mProgress;
             @Override
             public void run() {

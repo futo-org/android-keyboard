@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.settings;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.MediumTest;
@@ -32,8 +32,6 @@ public class AccountsSettingsFragmentTests
         extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
     private static final String FRAG_NAME = AccountsSettingsFragment.class.getName();
     private static final long TEST_TIMEOUT_MILLIS = 5000;
-
-    private AlertDialog mDialog;
 
     public AccountsSettingsFragmentTests() {
         super(TestFragmentActivity.class);
@@ -58,21 +56,29 @@ public class AccountsSettingsFragmentTests
         }
     }
 
+    private static class DialogHolder {
+        AlertDialog mDialog;
+        DialogHolder() {}
+    }
+
     public void testMultipleAccounts_noCurrentAccount() {
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
+        final DialogHolder dialogHolder = new DialogHolder();
         final CountDownLatch latch = new CountDownLatch(1);
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mDialog = fragment.createAccountPicker(
+                final AlertDialog dialog = fragment.createAccountPicker(
                         new String[] {
                                 "1@example.com",
                                 "2@example.com",
                                 "3@example.com",
                                 "4@example.com"},
                         null);
-                mDialog.show();
+                dialog.show();
+                dialogHolder.mDialog = dialog;
                 latch.countDown();
             }
         });
@@ -83,32 +89,38 @@ public class AccountsSettingsFragmentTests
             fail();
         }
         getInstrumentation().waitForIdleSync();
-        final ListView lv = mDialog.getListView();
+        final AlertDialog dialog = dialogHolder.mDialog;
+        final ListView lv = dialog.getListView();
         // The 1st account should be checked by default.
         assertEquals("checked-item", 0, lv.getCheckedItemPosition());
         // There should be 4 accounts in the list.
         assertEquals("count", 4, lv.getCount());
         // The sign-out button shouldn't exist
-        assertEquals(View.GONE, mDialog.getButton(Dialog.BUTTON_NEUTRAL).getVisibility());
-        assertEquals(View.VISIBLE, mDialog.getButton(Dialog.BUTTON_NEGATIVE).getVisibility());
-        assertEquals(View.VISIBLE, mDialog.getButton(Dialog.BUTTON_POSITIVE).getVisibility());
+        assertEquals(View.GONE,
+                dialog.getButton(DialogInterface.BUTTON_NEUTRAL).getVisibility());
+        assertEquals(View.VISIBLE,
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).getVisibility());
+        assertEquals(View.VISIBLE,
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).getVisibility());
     }
 
     public void testMultipleAccounts_currentAccount() {
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
+        final DialogHolder dialogHolder = new DialogHolder();
         final CountDownLatch latch = new CountDownLatch(1);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mDialog = fragment.createAccountPicker(
+                final AlertDialog dialog = fragment.createAccountPicker(
                         new String[] {
                                 "1@example.com",
                                 "2@example.com",
                                 "3@example.com",
                                 "4@example.com"},
                         "3@example.com");
-                mDialog.show();
+                dialog.show();
+                dialogHolder.mDialog = dialog;
                 latch.countDown();
             }
         });
@@ -119,14 +131,18 @@ public class AccountsSettingsFragmentTests
             fail();
         }
         getInstrumentation().waitForIdleSync();
-        final ListView lv = mDialog.getListView();
+        final AlertDialog dialog = dialogHolder.mDialog;
+        final ListView lv = dialog.getListView();
         // The 3rd account should be checked by default.
         assertEquals("checked-item", 2, lv.getCheckedItemPosition());
         // There should be 4 accounts in the list.
         assertEquals("count", 4, lv.getCount());
         // The sign-out button should be shown
-        assertEquals(View.VISIBLE, mDialog.getButton(Dialog.BUTTON_NEUTRAL).getVisibility());
-        assertEquals(View.VISIBLE, mDialog.getButton(Dialog.BUTTON_NEGATIVE).getVisibility());
-        assertEquals(View.VISIBLE, mDialog.getButton(Dialog.BUTTON_POSITIVE).getVisibility());
+        assertEquals(View.VISIBLE,
+                dialog.getButton(DialogInterface.BUTTON_NEUTRAL).getVisibility());
+        assertEquals(View.VISIBLE,
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).getVisibility());
+        assertEquals(View.VISIBLE,
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).getVisibility());
     }
 }

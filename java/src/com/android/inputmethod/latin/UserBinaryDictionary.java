@@ -64,7 +64,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     private static final String NAME = "userunigram";
 
     private ContentObserver mObserver;
-    final private String mLocale;
+    final private String mLocaleString;
     final private boolean mAlsoUseMoreRestrictiveLocales;
 
     protected UserBinaryDictionary(final Context context, final Locale locale,
@@ -74,9 +74,9 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         final String localeStr = locale.toString();
         if (SubtypeLocaleUtils.NO_LANGUAGE.equals(localeStr)) {
             // If we don't have a locale, insert into the "all locales" user dictionary.
-            mLocale = USER_DICTIONARY_ALL_LANGUAGES;
+            mLocaleString = USER_DICTIONARY_ALL_LANGUAGES;
         } else {
-            mLocale = localeStr;
+            mLocaleString = localeStr;
         }
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
         ContentResolver cres = context.getContentResolver();
@@ -124,7 +124,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         // This is correct for locale processing.
         // For this example, we'll look at the "en_US_POSIX" case.
         final String[] localeElements =
-                TextUtils.isEmpty(mLocale) ? new String[] {} : mLocale.split("_", 3);
+                TextUtils.isEmpty(mLocaleString) ? new String[] {} : mLocaleString.split("_", 3);
         final int length = localeElements.length;
 
         final StringBuilder request = new StringBuilder("(locale is NULL)");
@@ -207,9 +207,8 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         if (client != null) {
             client.release();
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -227,17 +226,16 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY, null, locale);
     }
 
-    private int scaleFrequencyFromDefaultToLatinIme(final int defaultFrequency) {
+    private static int scaleFrequencyFromDefaultToLatinIme(final int defaultFrequency) {
         // The default frequency for the user dictionary is 250 for historical reasons.
         // Latin IME considers a good value for the default user dictionary frequency
         // is about 160 considering the scale we use. So we are scaling down the values.
         if (defaultFrequency > Integer.MAX_VALUE / LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY) {
             return (defaultFrequency / HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY)
                     * LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY;
-        } else {
-            return (defaultFrequency * LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY)
-                    / HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY;
         }
+        return (defaultFrequency * LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY)
+                / HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY;
     }
 
     private void addWordsLocked(final Cursor cursor) {

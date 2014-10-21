@@ -37,7 +37,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -126,7 +125,7 @@ public class DictionaryMaker {
             }
         }
 
-        private void displayHelp() {
+        private static void displayHelp() {
             MakedictLog.i(getHelp());
         }
 

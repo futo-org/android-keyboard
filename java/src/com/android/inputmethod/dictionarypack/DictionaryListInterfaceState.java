@@ -32,7 +32,7 @@ import java.util.HashMap;
  * in case some dictionaries appeared, disappeared, changed states etc.
  */
 public class DictionaryListInterfaceState {
-    private static class State {
+    static class State {
         public boolean mOpen = false;
         public int mStatus = MetadataDbHelper.STATUS_UNKNOWN;
     }

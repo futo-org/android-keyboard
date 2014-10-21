@@ -40,7 +40,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -424,9 +423,8 @@ public final class KeyboardLayoutSet {
                     final String tag = parser.getName();
                     if (TAG_KEYBOARD_SET.equals(tag)) {
                         break;
-                    } else {
-                        throw new XmlParseUtils.IllegalEndTag(parser, tag, TAG_KEYBOARD_SET);
                     }
+                    throw new XmlParseUtils.IllegalEndTag(parser, tag, TAG_KEYBOARD_SET);
                 }
             }
         }

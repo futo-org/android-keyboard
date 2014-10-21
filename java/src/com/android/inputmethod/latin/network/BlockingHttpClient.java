@@ -85,12 +85,11 @@ public class BlockingHttpClient {
                     throw new AuthException(mConnection.getResponseMessage());
                 }
                 throw new HttpException(responseCode);
-            } else {
-                if (DEBUG) {
-                    Log.d(TAG, "request executed successfully");
-                }
-                return responseProcessor.onSuccess(mConnection.getInputStream());
             }
+            if (DEBUG) {
+                Log.d(TAG, "request executed successfully");
+            }
+            return responseProcessor.onSuccess(mConnection.getInputStream());
         } finally {
             mConnection.disconnect();
         }

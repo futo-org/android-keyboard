@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+@SuppressWarnings("static-method")
 public class Key {
     public final int getX() { return 0; }
     public final int getY() { return 0; }

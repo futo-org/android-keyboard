@@ -259,6 +259,7 @@ final class CustomInputStylePreference extends DialogPreference
             mSubtype = (InputMethodSubtype)source.readParcelable(null);
         }
 
+        @SuppressWarnings("hiding")
         public static final Parcelable.Creator<SavedState> CREATOR =
                 new Parcelable.Creator<SavedState>() {
                     @Override

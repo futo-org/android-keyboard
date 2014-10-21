@@ -117,7 +117,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         super.tearDown();
     }
 
-    private void generateWords(final int number, final Random random) {
+    private static void generateWords(final int number, final Random random) {
         final int[] codePointSet = CodePointUtils.generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE,
                 random);
         final Set<String> wordSet = new HashSet<>();
@@ -138,7 +138,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     /**
      * Adds unigrams to the dictionary.
      */
-    private void addUnigrams(final int number, final FusionDictionary dict,
+    private static void addUnigrams(final int number, final FusionDictionary dict,
             final List<String> words, final HashMap<String, List<String>> shortcutMap) {
         for (int i = 0; i < number; ++i) {
             final String word = words.get(i);
@@ -154,7 +154,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
     }
 
-    private void addBigrams(final FusionDictionary dict,
+    private static void addBigrams(final FusionDictionary dict,
             final List<String> words,
             final SparseArray<List<Integer>> bigrams) {
         for (int i = 0; i < bigrams.size(); ++i) {
@@ -173,7 +173,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 //                new java.io.FileWriter(new File(filename)), dict);
 //    }
 
-    private long timeWritingDictToFile(final File file, final FusionDictionary dict,
+    private static long timeWritingDictToFile(final File file, final FusionDictionary dict,
             final FormatSpec.FormatOptions formatOptions) {
 
         long now = -1, diff = -1;
@@ -196,7 +196,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         return diff;
     }
 
-    private void checkDictionary(final FusionDictionary dict, final List<String> words,
+    private static void checkDictionary(final FusionDictionary dict, final List<String> words,
             final SparseArray<List<Integer>> bigrams,
             final HashMap<String, List<String>> shortcutMap) {
         assertNotNull(dict);
@@ -231,16 +231,16 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
     }
 
-    private String outputOptions(final int bufferType,
+    private static String outputOptions(final int bufferType,
             final FormatSpec.FormatOptions formatOptions) {
-        String result = " : buffer type = "
+        final String result = " : buffer type = "
                 + ((bufferType == BinaryDictUtils.USE_BYTE_BUFFER) ? "byte buffer" : "byte array");
         return result + " : version = " + formatOptions.mVersion;
     }
 
     // Tests for readDictionaryBinary and writeDictionaryBinary
 
-    private long timeReadingAndCheckDict(final File file, final List<String> words,
+    private static long timeReadingAndCheckDict(final File file, final List<String> words,
             final SparseArray<List<Integer>> bigrams,
             final HashMap<String, List<String>> shortcutMap, final int bufferType) {
         long now, diff = -1;
@@ -385,7 +385,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     // Tests for readUnigramsAndBigramsBinary
 
-    private void checkWordMap(final List<String> expectedWords,
+    private static void checkWordMap(final List<String> expectedWords,
             final SparseArray<List<Integer>> expectedBigrams,
             final TreeMap<Integer, String> resultWords,
             final TreeMap<Integer, Integer> resultFrequencies,
@@ -434,9 +434,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         assertEquals(actBigrams, expBigrams);
     }
 
-    private long timeAndCheckReadUnigramsAndBigramsBinary(final File file, final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final int bufferType,
-            final boolean checkProbability) {
+    private static long timeAndCheckReadUnigramsAndBigramsBinary(final File file,
+            final List<String> words, final SparseArray<List<Integer>> bigrams,
+            final int bufferType, final boolean checkProbability) {
         final TreeMap<Integer, String> resultWords = new TreeMap<>();
         final TreeMap<Integer, ArrayList<PendingAttribute>> resultBigrams = new TreeMap<>();
         final TreeMap<Integer, Integer> resultFreqs = new TreeMap<>();
@@ -519,7 +519,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     // Tests for getTerminalPosition
-    private String getWordFromBinary(final DictDecoder dictDecoder, final int address) {
+    private static String getWordFromBinary(final DictDecoder dictDecoder, final int address) {
         if (dictDecoder.getPosition() != 0) dictDecoder.setPosition(0);
 
         DictionaryHeader fileHeader = null;
@@ -535,7 +535,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 address).mWord;
     }
 
-    private long checkGetTerminalPosition(final DictDecoder dictDecoder, final String word,
+    private static long checkGetTerminalPosition(final DictDecoder dictDecoder, final String word,
             final boolean contained) {
         long diff = -1;
         int position = -1;

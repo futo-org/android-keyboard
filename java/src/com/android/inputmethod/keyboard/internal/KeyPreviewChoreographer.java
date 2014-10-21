@@ -148,7 +148,7 @@ public final class KeyPreviewChoreographer {
         keyPreviewView.setPivotY(previewHeight);
     }
 
-    private void showKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
+    void showKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
             final boolean withAnimation) {
         if (!withAnimation) {
             keyPreviewView.setVisibility(View.VISIBLE);
@@ -166,25 +166,25 @@ public final class KeyPreviewChoreographer {
     }
 
     public Animator createShowUpAnimator(final Key key, final KeyPreviewView keyPreviewView) {
-        final Animator animator = mParams.createShowUpAnimator(keyPreviewView);
-        animator.addListener(new AnimatorListenerAdapter() {
+        final Animator showUpAnimator = mParams.createShowUpAnimator(keyPreviewView);
+        showUpAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(final Animator animator) {
                 showKeyPreview(key, keyPreviewView, false /* withAnimation */);
             }
         });
-        return animator;
+        return showUpAnimator;
     }
 
     private Animator createDismissAnimator(final Key key, final KeyPreviewView keyPreviewView) {
-        final Animator animator = mParams.createDismissAnimator(keyPreviewView);
-        animator.addListener(new AnimatorListenerAdapter() {
+        final Animator dismissAnimator = mParams.createDismissAnimator(keyPreviewView);
+        dismissAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(final Animator animator) {
                 dismissKeyPreview(key, false /* withAnimation */);
             }
         });
-        return animator;
+        return dismissAnimator;
     }
 
     private static class KeyPreviewAnimators extends AnimatorListenerAdapter {

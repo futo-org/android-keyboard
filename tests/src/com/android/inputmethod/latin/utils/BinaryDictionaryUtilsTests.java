@@ -39,10 +39,8 @@ public class BinaryDictionaryUtilsTests extends AndroidTestCase {
             final int formatVersion) throws IOException {
         if (formatVersion == FormatSpec.VERSION4) {
             return createEmptyVer4DictionaryAndGetFile(dictId);
-        } else {
-            throw new IOException("Dictionary format version " + formatVersion
-                    + " is not supported.");
         }
+        throw new IOException("Dictionary format version " + formatVersion + " is not supported.");
     }
 
     private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
@@ -59,10 +57,8 @@ public class BinaryDictionaryUtilsTests extends AndroidTestCase {
         if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
                 LocaleUtils.constructLocaleFromString(TEST_LOCALE), attributeMap)) {
             return file;
-        } else {
-            throw new IOException("Empty dictionary " + file.getAbsolutePath()
-                    + " cannot be created.");
         }
+        throw new IOException("Empty dictionary " + file.getAbsolutePath() + " cannot be created.");
     }
 
     private File getDictFile(final String dictId) {

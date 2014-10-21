@@ -75,7 +75,7 @@ public final class InputLogic {
     private static final String TAG = InputLogic.class.getSimpleName();
 
     // TODO : Remove this member when we can.
-    private final LatinIME mLatinIME;
+    final LatinIME mLatinIME;
     private final SuggestionStripViewAccessor mSuggestionStripViewAccessor;
 
     // Never null.
@@ -1512,12 +1512,6 @@ public final class InputLogic {
             }
         }
         final int[] codePoints = StringUtils.toCodePointArray(typedWord);
-        // We want the context of preceding words for suggestion. If we have chars in the word
-        // before the cursor, then we want the word before that, hence 2; otherwise,
-        // we want the word immediately before the cursor, hence 1.
-        final NgramContext ngramContext = getNgramContextFromNthPreviousWordForSuggestion(
-                settingsValues.mSpacingAndPunctuations,
-                0 == numberOfCharsInWordBeforeCursor ? 1 : 2);
         mWordComposer.setComposingWord(codePoints,
                 mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
         mWordComposer.setCursorPositionWithinWord(
@@ -1533,8 +1527,7 @@ public final class InputLogic {
                     SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
                         @Override
                         public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                            mIsAutoCorrectionIndicatorOn = false;
-                            mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
+                            doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
                         }});
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
@@ -1545,9 +1538,13 @@ public final class InputLogic {
                     null /* rawSuggestions */, typedWord, false /* typedWordValid */,
                     false /* willAutoCorrect */, false /* isObsoleteSuggestions */,
                     SuggestedWords.INPUT_STYLE_RECORRECTION, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
-            mIsAutoCorrectionIndicatorOn = false;
-            mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
+            doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
         }
+    }
+
+    void doShowSuggestionsAndClearAutoCorrectionIndicator(final SuggestedWords suggestedWords) {
+        mIsAutoCorrectionIndicatorOn = false;
+        mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
     }
 
     /**
@@ -1761,12 +1758,12 @@ public final class InputLogic {
             // word information from textview.
             return mConnection.getNgramContextFromNthPreviousWord(
                     spacingAndPunctuations, nthPreviousWord);
-        } else {
-            return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ?
-                    NgramContext.BEGINNING_OF_SENTENCE :
-                            new NgramContext(new NgramContext.WordInfo(
-                                    mLastComposedWord.mCommittedWord.toString()));
         }
+        if (LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord) {
+            return NgramContext.BEGINNING_OF_SENTENCE;
+        }
+        return new NgramContext(new NgramContext.WordInfo(
+                mLastComposedWord.mCommittedWord.toString()));
     }
 
     /**
@@ -1819,9 +1816,8 @@ public final class InputLogic {
         // If no code point, #getCodePointBeforeCursor returns NOT_A_CODE_POINT.
         if (Constants.CODE_PERIOD == codePointBeforeCursor) {
             return text.substring(1);
-        } else {
-            return text;
         }
+        return text;
     }
 
     /**
@@ -1877,7 +1873,7 @@ public final class InputLogic {
      * @param previousSuggestedWords The previously suggested words.
      * @return Obsolete suggestions with the newly typed word.
      */
-    private SuggestedWords retrieveOlderSuggestions(final String typedWord,
+    static SuggestedWords retrieveOlderSuggestions(final String typedWord,
             final SuggestedWords previousSuggestedWords) {
         final SuggestedWords oldSuggestedWords = previousSuggestedWords.isPunctuationSuggestions()
                 ? SuggestedWords.getEmptyInstance() : previousSuggestedWords;

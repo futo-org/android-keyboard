@@ -20,7 +20,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
@@ -72,141 +71,141 @@ public class LocaleSpanCompatUtilsTests extends AndroidTestCase {
             final SpannableString text = new SpannableString("0123456789");
             LocaleSpanCompatUtils.updateLocaleSpan(text, 1, 5, Locale.JAPANESE);
             assertSpanCount(1, text);
-            assertLocaleSpan(text, 0, 1, 5, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 1, 5, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if only LocaleSpans are updated.
         {
             final SpannableString text = new SpannableString("0123456789");
             final StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
-            text.setSpan(styleSpan, 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            text.setSpan(styleSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 1, 5, Locale.JAPANESE);
             assertSpanCount(2, text);
             assertSpanEquals(styleSpan, text, 0);
-            assertLocaleSpan(text, 1, 1, 5, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 1, 1, 5, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if two jointed spans are merged into one span.
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 1, 3,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 3, 5, Locale.JAPANESE);
             assertSpanCount(1, text);
-            assertLocaleSpan(text, 0, 1, 5, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 1, 5, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if two overlapped spans are merged into one span.
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 1, 4,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 3, 5, Locale.JAPANESE);
             assertSpanCount(1, text);
-            assertLocaleSpan(text, 0, 1, 5, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 1, 5, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if three overlapped spans are merged into one span.
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 1, 4,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 5, 6,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 2, 8, Locale.JAPANESE);
             assertSpanCount(1, text);
-            assertLocaleSpan(text, 0, 1, 8, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 1, 8, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if disjoint spans remain disjoint.
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 1, 3,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 5, 6,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 8, 9, Locale.JAPANESE);
             assertSpanCount(3, text);
-            assertLocaleSpan(text, 0, 1, 3, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            assertLocaleSpan(text, 1, 5, 6, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            assertLocaleSpan(text, 2, 8, 9, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 1, 3, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 1, 5, 6, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 2, 8, 9, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if existing span flags are preserved during merge.
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 1, 5,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE | Spannable.SPAN_INTERMEDIATE);
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE | Spanned.SPAN_INTERMEDIATE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 3, 4, Locale.JAPANESE);
             assertSpanCount(1, text);
             assertLocaleSpan(text, 0, 1, 5, Locale.JAPANESE,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE | Spannable.SPAN_INTERMEDIATE);
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE | Spanned.SPAN_INTERMEDIATE);
         }
 
         // Test if existing span flags are preserved even when partially overlapped (leading edge).
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 1, 5,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE | Spannable.SPAN_INTERMEDIATE);
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE | Spanned.SPAN_INTERMEDIATE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 3, 7, Locale.JAPANESE);
             assertSpanCount(1, text);
             assertLocaleSpan(text, 0, 1, 7, Locale.JAPANESE,
-                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE | Spannable.SPAN_INTERMEDIATE);
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE | Spanned.SPAN_INTERMEDIATE);
         }
 
         // Test if existing span flags are preserved even when partially overlapped (trailing edge).
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.JAPANESE), 3, 7,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE | Spannable.SPAN_INTERMEDIATE);
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE | Spanned.SPAN_INTERMEDIATE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 1, 5, Locale.JAPANESE);
             assertSpanCount(1, text);
             assertLocaleSpan(text, 0, 1, 7, Locale.JAPANESE,
-                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE | Spannable.SPAN_INTERMEDIATE);
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE | Spanned.SPAN_INTERMEDIATE);
         }
 
         // Test if existing locale span will be removed when the locale doesn't match.
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.ENGLISH), 3, 5,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 1, 7, Locale.JAPANESE);
             assertSpanCount(1, text);
-            assertLocaleSpan(text, 0, 1, 7, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 1, 7, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if existing locale span will be removed when the locale doesn't match. (case 2)
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.ENGLISH), 3, 7,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 5, 6, Locale.JAPANESE);
             assertSpanCount(3, text);
-            assertLocaleSpan(text, 0, 3, 5, Locale.ENGLISH, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            assertLocaleSpan(text, 1, 6, 7, Locale.ENGLISH, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            assertLocaleSpan(text, 2, 5, 6, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 3, 5, Locale.ENGLISH, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 1, 6, 7, Locale.ENGLISH, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 2, 5, 6, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if existing locale span will be removed when the locale doesn't match. (case 3)
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.ENGLISH), 3, 7,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 2, 5, Locale.JAPANESE);
             assertSpanCount(2, text);
-            assertLocaleSpan(text, 0, 5, 7, Locale.ENGLISH, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            assertLocaleSpan(text, 1, 2, 5, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 5, 7, Locale.ENGLISH, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 1, 2, 5, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // Test if existing locale span will be removed when the locale doesn't match. (case 3)
         {
             final SpannableString text = new SpannableString("0123456789");
             text.setSpan(LocaleSpanCompatUtils.newLocaleSpan(Locale.ENGLISH), 3, 7,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             LocaleSpanCompatUtils.updateLocaleSpan(text, 5, 8, Locale.JAPANESE);
             assertSpanCount(2, text);
-            assertLocaleSpan(text, 0, 3, 5, Locale.ENGLISH, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            assertLocaleSpan(text, 1, 5, 8, Locale.JAPANESE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 0, 3, 5, Locale.ENGLISH, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            assertLocaleSpan(text, 1, 5, 8, Locale.JAPANESE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
 }

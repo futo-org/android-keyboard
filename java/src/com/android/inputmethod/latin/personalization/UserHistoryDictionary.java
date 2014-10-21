@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
@@ -35,7 +34,6 @@ import java.util.Locale;
  */
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package */ static final String NAME = UserHistoryDictionary.class.getSimpleName();
-    private final static int SUPPORTED_NGRAM = 2; // TODO: 3
 
     // TODO: Make this constructor private
     /* package */ UserHistoryDictionary(final Context context, final Locale locale) {

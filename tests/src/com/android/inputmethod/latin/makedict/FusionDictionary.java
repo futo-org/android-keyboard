@@ -142,11 +142,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         }
 
         public int getProbability() {
-            if (isTerminal()) {
-                return mProbabilityInfo.mProbability;
-            } else {
-                return NOT_A_TERMINAL;
-            }
+            return isTerminal() ? mProbabilityInfo.mProbability : NOT_A_TERMINAL;
         }
 
         public boolean getIsNotAWord() {
@@ -235,7 +231,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
          * the existing ones if any. Note: unigram, bigram, and shortcut frequencies are only
          * updated if they are higher than the existing ones.
          */
-        private void update(final ProbabilityInfo probabilityInfo,
+        void update(final ProbabilityInfo probabilityInfo,
                 final ArrayList<WeightedString> shortcutTargets,
                 final ArrayList<WeightedString> bigrams,
                 final boolean isNotAWord, final boolean isPossiblyOffensive) {
@@ -337,15 +333,15 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      * This method checks that all PtNodes in a node array are ordered as expected.
      * If they are, nothing happens. If they aren't, an exception is thrown.
      */
-    private void checkStack(PtNodeArray ptNodeArray) {
+    private static void checkStack(PtNodeArray ptNodeArray) {
         ArrayList<PtNode> stack = ptNodeArray.mData;
         int lastValue = -1;
         for (int i = 0; i < stack.size(); ++i) {
             int currentValue = stack.get(i).mChars[0];
-            if (currentValue <= lastValue)
+            if (currentValue <= lastValue) {
                 throw new RuntimeException("Invalid stack");
-            else
-                lastValue = currentValue;
+            }
+            lastValue = currentValue;
         }
     }
 
@@ -521,14 +517,14 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      * is ignored.
      * This comparator imposes orderings that are inconsistent with equals.
      */
-    static private final class PtNodeComparator implements java.util.Comparator<PtNode> {
+    static final class PtNodeComparator implements java.util.Comparator<PtNode> {
         @Override
         public int compare(PtNode p1, PtNode p2) {
             if (p1.mChars[0] == p2.mChars[0]) return 0;
             return p1.mChars[0] < p2.mChars[0] ? -1 : 1;
         }
     }
-    final static private PtNodeComparator PTNODE_COMPARATOR = new PtNodeComparator();
+    final static PtNodeComparator PTNODE_COMPARATOR = new PtNodeComparator();
 
     /**
      * Finds the insertion index of a character within a node array.
@@ -559,7 +555,8 @@ public final class FusionDictionary implements Iterable<WordProperty> {
     /**
      * Helper method to find a word in a given branch.
      */
-    public static PtNode findWordInTree(PtNodeArray nodeArray, final String string) {
+    public static PtNode findWordInTree(final PtNodeArray rootNodeArray, final String string) {
+        PtNodeArray nodeArray = rootNodeArray;
         int index = 0;
         final StringBuilder checker = DBG ? new StringBuilder() : null;
         final int[] codePoints = getCodePoints(string);

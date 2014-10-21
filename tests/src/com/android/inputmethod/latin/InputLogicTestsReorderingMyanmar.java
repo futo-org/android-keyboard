@@ -80,7 +80,6 @@ import android.util.Pair;
 @LargeTest
 // These tests are inactive until the combining code for Myanmar Reordering is sorted out.
 @Suppress
-@SuppressWarnings("rawtypes")
 public class InputLogicTestsReorderingMyanmar extends InputTestsBase {
     // The tests are formatted as follows.
     // Each test is an entry in the array of Pair arrays.
@@ -90,7 +89,7 @@ public class InputLogicTestsReorderingMyanmar extends InputTestsBase {
     // member is stored the string that should be in the text view after this
     // key press.
 
-    private static final Pair[][] TESTS = {
+    private static final Pair<?, ?>[][] TESTS = {
 
         // Tests for U+1031 MYANMAR VOWEL SIGN E : ေ
         new Pair[] { // Type : U+1031 U+1000 U+101F ေ က ဟ
@@ -206,13 +205,12 @@ public class InputLogicTestsReorderingMyanmar extends InputTestsBase {
         */
     };
 
-    @SuppressWarnings("unchecked")
-    private void doMyanmarTest(final int testNumber, final Pair[] test) {
+    private void doMyanmarTest(final int testNumber, final Pair<?, ?>[] test) {
         int stepNumber = 0;
-        for (final Pair<int[], String> step : test) {
+        for (final Pair<?, ?> step : test) {
             ++stepNumber;
-            final int[] input = step.first;
-            final String expectedResult = step.second;
+            final int[] input = (int[]) step.first;
+            final String expectedResult = (String) step.second;
             if (input.length > 1) {
                 mLatinIME.onTextInput(new String(input, 0, input.length));
             } else {
@@ -226,7 +224,7 @@ public class InputLogicTestsReorderingMyanmar extends InputTestsBase {
     public void testMyanmarReordering() {
         int testNumber = 0;
         changeLanguage("my_MM", "CombiningRules=MyanmarReordering");
-        for (final Pair[] test : TESTS) {
+        for (final Pair<?, ?>[] test : TESTS) {
             // Small trick to reset LatinIME : setText("") and send updateSelection with values
             // LatinIME has never seen, and cursor pos 0,0.
             mEditText.setText("");

@@ -50,9 +50,6 @@ import java.util.concurrent.Semaphore;
  */
 public final class AndroidSpellCheckerService extends SpellCheckerService
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = AndroidSpellCheckerService.class.getSimpleName();
-    private static final boolean DBG = false;
-
     public static final String PREF_USE_CONTACTS_KEY = "pref_spellcheck_use_contacts";
 
     private static final int SPELLCHECKER_DUMMY_KEYBOARD_WIDTH = 480;

@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import android.graphics.Rect;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;

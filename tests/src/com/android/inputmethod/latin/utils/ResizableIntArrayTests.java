@@ -79,13 +79,13 @@ public class ResizableIntArrayTests extends AndroidTestCase {
     public void testGet() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         try {
-            final int value = src.get(0);
+            src.get(0);
             fail("get(0) shouldn't succeed");
         } catch (ArrayIndexOutOfBoundsException e) {
             // success
         }
         try {
-            final int value = src.get(DEFAULT_CAPACITY);
+            src.get(DEFAULT_CAPACITY);
             fail("get(DEFAULT_CAPACITY) shouldn't succeed");
         } catch (ArrayIndexOutOfBoundsException e) {
             // success
@@ -98,7 +98,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertEquals("value after add at " + index, valueAddAt, src.get(index));
         assertEquals("value after add at 0", 0, src.get(0));
         try {
-            final int value = src.get(src.getLength());
+            src.get(src.getLength());
             fail("get(length) shouldn't succeed");
         } catch (ArrayIndexOutOfBoundsException e) {
             // success

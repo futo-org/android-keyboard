@@ -365,9 +365,8 @@ public class SuggestedWords {
         public String toString() {
             if (TextUtils.isEmpty(mDebugString)) {
                 return mWord;
-            } else {
-                return mWord + " (" + mDebugString + ")";
             }
+            return mWord + " (" + mDebugString + ")";
         }
 
         // This will always remove the higher index if a duplicate is found.

@@ -67,10 +67,9 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
                 if (keyEvent.isShiftPressed()) {
                     return Event.createHardwareKeypressEvent(Event.NOT_A_CODE_POINT,
                             Constants.CODE_SHIFT_ENTER, null /* next */, isKeyRepeat);
-                } else {
-                    return Event.createHardwareKeypressEvent(Constants.CODE_ENTER, keyCode,
-                            null /* next */, isKeyRepeat);
                 }
+                return Event.createHardwareKeypressEvent(Constants.CODE_ENTER, keyCode,
+                        null /* next */, isKeyRepeat);
             }
             // If not Enter, then this is just a regular keypress event for a normal character
             // that can be committed right away, taking into account the current state.

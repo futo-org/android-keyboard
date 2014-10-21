@@ -39,14 +39,10 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     public static final int FREQUENCY_FOR_WORDS_IN_DICTS = FREQUENCY_FOR_TYPED;
     public static final int FREQUENCY_FOR_WORDS_NOT_IN_DICTS = Dictionary.NOT_A_PROBABILITY;
 
-    /** The locale for this dictionary. */
-    public final Locale mLocale;
-
     protected DecayingExpandableBinaryDictionaryBase(final Context context,
             final String dictName, final Locale locale, final String dictionaryType,
             final File dictFile) {
         super(context, dictName, locale, dictionaryType, dictFile);
-        mLocale = locale;
         if (mLocale != null && mLocale.toString().length() > 1) {
             reloadDictionaryIfRequired();
         }

@@ -31,14 +31,14 @@ public class NgramContext {
     public static final NgramContext EMPTY_PREV_WORDS_INFO =
             new NgramContext(WordInfo.EMPTY_WORD_INFO);
     public static final NgramContext BEGINNING_OF_SENTENCE =
-            new NgramContext(WordInfo.BEGINNING_OF_SENTENCE);
+            new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
 
     /**
      * Word information used to represent previous words information.
      */
     public static class WordInfo {
         public static final WordInfo EMPTY_WORD_INFO = new WordInfo(null);
-        public static final WordInfo BEGINNING_OF_SENTENCE = new WordInfo();
+        public static final WordInfo BEGINNING_OF_SENTENCE_WORD_INFO = new WordInfo();
 
         // This is an empty char sequence when mIsBeginningOfSentence is true.
         public final CharSequence mWord;
@@ -48,7 +48,7 @@ public class NgramContext {
         public final boolean mIsBeginningOfSentence;
 
         // Beginning of sentence.
-        public WordInfo() {
+        private WordInfo() {
             mWord = "";
             mIsBeginningOfSentence = true;
         }
@@ -94,18 +94,6 @@ public class NgramContext {
     public NgramContext(final WordInfo... prevWordsInfo) {
         mPrevWordsInfo = prevWordsInfo;
         mPrevWordsCount = prevWordsInfo.length;
-    }
-
-    // Construct from WordInfo array and size. The caller shouldn't change prevWordsInfo after
-    // calling this method.
-    private NgramContext(final NgramContext ngramContext, final int prevWordsCount) {
-        if (ngramContext.mPrevWordsCount < prevWordsCount) {
-            throw new IndexOutOfBoundsException("ngramContext.mPrevWordsCount ("
-                    + ngramContext.mPrevWordsCount + ") is smaller than prevWordsCount ("
-                    + prevWordsCount + ")");
-        }
-        mPrevWordsInfo = ngramContext.mPrevWordsInfo;
-        mPrevWordsCount = prevWordsCount;
     }
 
     // Create next prevWordsInfo using current prevWordsInfo.

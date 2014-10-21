@@ -21,6 +21,8 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.StringUtils;
 
+import javax.annotation.Nonnull;
+
 /**
  * Class representing a generic input event as handled by Latin IME.
  *
@@ -134,12 +136,14 @@ public class Event {
         }
     }
 
+    @Nonnull
     public static Event createSoftwareKeypressEvent(final int codePoint, final int keyCode,
             final int x, final int y, final boolean isKeyRepeat) {
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, keyCode, x, y,
                 null /* suggestedWordInfo */, isKeyRepeat ? FLAG_REPEAT : FLAG_NONE, null);
     }
 
+    @Nonnull
     public static Event createHardwareKeypressEvent(final int codePoint, final int keyCode,
             final Event next, final boolean isKeyRepeat) {
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, keyCode,
@@ -149,6 +153,7 @@ public class Event {
 
     // This creates an input event for a dead character. @see {@link #FLAG_DEAD}
     @ExternallyReferenced
+    @Nonnull
     public static Event createDeadEvent(final int codePoint, final int keyCode, final Event next) {
         // TODO: add an argument or something if we ever create a software layout with dead keys.
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, keyCode,
@@ -163,6 +168,7 @@ public class Event {
      * @param codePoint the code point.
      * @return an event for this code point.
      */
+    @Nonnull
     public static Event createEventForCodePointFromUnknownSource(final int codePoint) {
         // TODO: should we have a different type of event for this? After all, it's not a key press.
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, NOT_A_KEY_CODE,
@@ -178,6 +184,7 @@ public class Event {
      * @param y the Y coordinate.
      * @return an event for this code point and coordinates.
      */
+    @Nonnull
     public static Event createEventForCodePointFromAlreadyTypedText(final int codePoint,
             final int x, final int y) {
         // TODO: should we have a different type of event for this? After all, it's not a key press.
@@ -189,6 +196,7 @@ public class Event {
      * Creates an input event representing the manual pick of a suggestion.
      * @return an event for this suggestion pick.
      */
+    @Nonnull
     public static Event createSuggestionPickedEvent(final SuggestedWordInfo suggestedWordInfo) {
         return new Event(EVENT_TYPE_SUGGESTION_PICKED, suggestedWordInfo.mWord,
                 NOT_A_CODE_POINT, NOT_A_KEY_CODE,
@@ -204,6 +212,7 @@ public class Event {
      * @param keyCode the key code, or NOT_A_KEYCODE if not applicable.
      * @return an event for this text.
      */
+    @Nonnull
     public static Event createSoftwareTextEvent(final CharSequence text, final int keyCode) {
         return new Event(EVENT_TYPE_SOFTWARE_GENERATED_STRING, text, NOT_A_CODE_POINT, keyCode,
                 Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
@@ -228,6 +237,7 @@ public class Event {
      * @param source the event to copy the properties of.
      * @return an identical event marked as consumed.
      */
+    @Nonnull
     public static Event createConsumedEvent(final Event source) {
         // A consumed event should not input any text at all, so we pass the empty string as text.
         return new Event(source.mEventType, source.mText, source.mCodePoint, source.mKeyCode,
@@ -235,6 +245,7 @@ public class Event {
                 source.mNextEvent);
     }
 
+    @Nonnull
     public static Event createNotHandledEvent() {
         return new Event(EVENT_TYPE_NOT_HANDLED, null /* text */, NOT_A_CODE_POINT, NOT_A_KEY_CODE,
                 Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,

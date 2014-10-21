@@ -329,9 +329,8 @@ final class KeyboardAccessibilityNodeProvider<KV extends KeyboardView>
         if (currentSettings.isWordSeparator(key.getCode())) {
             return mAccessibilityUtils.getAutoCorrectionDescription(
                     keyCodeDescription, shouldObscure);
-        } else {
-            return keyCodeDescription;
         }
+        return keyCodeDescription;
     }
 
     /**

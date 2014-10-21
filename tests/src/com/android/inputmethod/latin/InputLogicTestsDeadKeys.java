@@ -25,7 +25,7 @@ import java.util.ArrayList;
 @LargeTest
 public class InputLogicTestsDeadKeys extends InputTestsBase {
     // A helper class for readability
-    private static class EventList extends ArrayList<Event> {
+    static class EventList extends ArrayList<Event> {
         public EventList addCodePoint(final int codePoint, final boolean isDead) {
             final Event event;
             if (isDead) {

@@ -199,8 +199,9 @@ public class BinaryDictEncoderUtils {
         }
     }
 
-    static int writeUIntToBuffer(final byte[] buffer, int position, final int value,
+    static int writeUIntToBuffer(final byte[] buffer, final int fromPosition, final int value,
             final int size) {
+        int position = fromPosition;
         switch(size) {
             case 4:
                 buffer[position++] = (byte) ((value >> 24) & 0xFF);
@@ -324,11 +325,9 @@ public class BinaryDictEncoderUtils {
             return targetNodeArray.mCachedAddressAfterUpdate
                     - (currentNodeArray.mCachedAddressAfterUpdate
                             + offsetFromStartOfCurrentNodeArray);
-        } else {
-            return targetNodeArray.mCachedAddressBeforeUpdate
-                    - (currentNodeArray.mCachedAddressBeforeUpdate
-                            + offsetFromStartOfCurrentNodeArray);
         }
+        return targetNodeArray.mCachedAddressBeforeUpdate
+                - (currentNodeArray.mCachedAddressBeforeUpdate + offsetFromStartOfCurrentNodeArray);
     }
 
     /**
@@ -356,9 +355,8 @@ public class BinaryDictEncoderUtils {
             final int newOffsetBasePoint = currentNodeArray.mCachedAddressAfterUpdate
                     + offsetFromStartOfCurrentNodeArray;
             return targetPtNode.mCachedAddressAfterUpdate - newOffsetBasePoint;
-        } else {
-            return targetPtNode.mCachedAddressBeforeUpdate - oldOffsetBasePoint;
         }
+        return targetPtNode.mCachedAddressBeforeUpdate - oldOffsetBasePoint;
     }
 
     /**
@@ -541,8 +539,9 @@ public class BinaryDictEncoderUtils {
      * @param position the position to write.
      * @return the size in bytes the address actually took.
      */
-    /* package */ static int writeChildrenPosition(final byte[] buffer, int index,
+    /* package */ static int writeChildrenPosition(final byte[] buffer, final int fromIndex,
             final int position) {
+        int index = fromIndex;
         switch (getByteSize(position)) {
         case 1:
             buffer[index++] = (byte)position;
@@ -623,7 +622,7 @@ public class BinaryDictEncoderUtils {
      * @return the flags
      */
     /* package */ static final int makeBigramFlags(final boolean more, final int offset,
-            int bigramFrequency, final int unigramFrequency, final String word) {
+            final int bigramFrequency, final int unigramFrequency, final String word) {
         int bigramFlags = (more ? FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT : 0)
                 + (offset < 0 ? FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE : 0);
         switch (getByteSize(offset)) {
@@ -639,13 +638,16 @@ public class BinaryDictEncoderUtils {
         default:
             throw new RuntimeException("Strange offset size");
         }
+        final int frequency;
         if (unigramFrequency > bigramFrequency) {
             MakedictLog.e("Unigram freq is superior to bigram freq for \"" + word
                     + "\". Bigram freq is " + bigramFrequency + ", unigram freq for "
                     + word + " is " + unigramFrequency);
-            bigramFrequency = unigramFrequency;
+            frequency = unigramFrequency;
+        } else {
+            frequency = bigramFrequency;
         }
-        bigramFlags += getBigramFrequencyDiff(unigramFrequency, bigramFrequency)
+        bigramFlags += getBigramFrequencyDiff(unigramFrequency, frequency)
                 & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
         return bigramFlags;
     }
@@ -722,7 +724,6 @@ public class BinaryDictEncoderUtils {
      * @param ptNodeArray the node array to write.
      * @param codePointToOneByteCodeMap the map to convert the code points.
      */
-    @SuppressWarnings("unused")
     /* package */ static void writePlacedPtNodeArray(final FusionDictionary dict,
             final DictEncoder dictEncoder, final PtNodeArray ptNodeArray,
             final HashMap<Integer, Integer> codePointToOneByteCodeMap) {

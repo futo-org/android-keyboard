@@ -80,6 +80,7 @@ public final class TouchPositionCorrection {
         return mRadii.length;
     }
 
+    @SuppressWarnings("static-method")
     public float getX(final int row) {
         return 0.0f;
         // Touch position correction data for X coordinate is obsolete.

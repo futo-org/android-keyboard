@@ -43,8 +43,8 @@ public class PrivateLog {
             + COLUMN_DATE + " TEXT,"
             + COLUMN_EVENT + " TEXT);";
 
-    private static final SimpleDateFormat sDateFormat =
-            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US);
+    static final SimpleDateFormat sDateFormat = new SimpleDateFormat(
+            "yyyy/MM/dd HH:mm:ss", Locale.ROOT);
 
     private static PrivateLog sInstance = new PrivateLog();
     private static DebugHelper sDebugHelper = null;
@@ -62,9 +62,9 @@ public class PrivateLog {
         }
     }
 
-    private static class DebugHelper extends SQLiteOpenHelper {
+    static class DebugHelper extends SQLiteOpenHelper {
 
-        private DebugHelper(final Context context) {
+        DebugHelper(final Context context) {
             super(context, LOG_DATABASE_NAME, null, LOG_DATABASE_VERSION);
         }
 
@@ -84,7 +84,7 @@ public class PrivateLog {
             insert(db, "Upgrade finished");
         }
 
-        private static void insert(SQLiteDatabase db, String event) {
+        static void insert(SQLiteDatabase db, String event) {
             if (!DEBUG) return;
             final ContentValues c = new ContentValues(2);
             c.put(COLUMN_DATE, sDateFormat.format(new Date(System.currentTimeMillis())));

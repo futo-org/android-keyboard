@@ -31,7 +31,7 @@ import android.util.LruCache;
  * This class automatically creates and releases facilitator instances using LRU policy.
  */
 public class DictionaryFacilitatorLruCache {
-    private static final String TAG = DictionaryFacilitatorLruCache.class.getSimpleName();
+    static final String TAG = DictionaryFacilitatorLruCache.class.getSimpleName();
     private static final int WAIT_FOR_LOADING_MAIN_DICT_IN_MILLISECONDS = 1000;
     private static final int MAX_RETRY_COUNT_FOR_WAITING_FOR_LOADING_DICT = 5;
 
@@ -81,7 +81,8 @@ public class DictionaryFacilitatorLruCache {
         mDictionaryNamePrefix = dictionaryNamePrefix;
     }
 
-    private void waitForLoadingMainDictionary(final DictionaryFacilitator dictionaryFacilitator) {
+    private static void waitForLoadingMainDictionary(
+            final DictionaryFacilitator dictionaryFacilitator) {
         for (int i = 0; i < MAX_RETRY_COUNT_FOR_WAITING_FOR_LOADING_DICT; i++) {
             try {
                 dictionaryFacilitator.waitForLoadingMainDictionaries(

@@ -226,7 +226,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         createClientTable(db);
     }
 
-    private void addRawChecksumColumnUnlessPresent(final SQLiteDatabase db) {
+    private static void addRawChecksumColumnUnlessPresent(final SQLiteDatabase db) {
         try {
             db.execSQL("SELECT " + RAW_CHECKSUM_COLUMN + " FROM "
                     + METADATA_TABLE_NAME + " LIMIT 0;");
@@ -237,7 +237,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    private void addRetryCountColumnUnlessPresent(final SQLiteDatabase db) {
+    private static void addRetryCountColumnUnlessPresent(final SQLiteDatabase db) {
         try {
             db.execSQL("SELECT " + RETRY_COUNT_COLUMN + " FROM "
                     + METADATA_TABLE_NAME + " LIMIT 0;");
