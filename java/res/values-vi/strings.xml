@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Trình kiểm tra chính tả sử dụng các mục nhập từ danh sách liên hệ của bạn"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rung khi nhấn phím"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Âm thanh khi nhấn phím"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Cửa sổ bật lên khi nhấn phím"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Bật lên khi nhấn phím"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Tùy chọn"</string>
     <string name="settings_screen_accounts" msgid="7570397912370223287">"Tài khoản và bảo mật"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"Giao diện và bố cục"</string>
@@ -48,8 +48,8 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Sử dụng tên từ Danh bạ cho các đề xuất và chỉnh sửa"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Đề xuất được cá nhân hóa"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Cải thiện <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Dấu cách đôi"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Nhấn đúp vào phím cách sẽ chèn thêm một dấu sau dấu cách"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Nhấn đúp phím cách chèn dấu chấm câu"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Nhấn đúp phím cách sẽ chèn thêm một dấu chấm câu, theo sau là dấu cách"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Tự động viết hoa"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Viết hoa chữ đầu tiên của mỗi câu"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Từ điển cá nhân"</string>

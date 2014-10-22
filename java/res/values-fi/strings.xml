@@ -74,7 +74,7 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Näytä ehdotettu sana piirron aikana"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Ilmausele"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Lisää välilyöntejä eleiden aikana liukumalla välilyöntinäppäim."</string>
-    <string name="voice_input" msgid="3583258583521397548">"Äänisyöteavain"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Äänisyötenäppäin"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Äänen syöttötapoja ei ole otettu käyttöön. Tarkista Kieli ja syöttötapa -asetukset."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Määritä syöttötavat"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Kielet"</string>
