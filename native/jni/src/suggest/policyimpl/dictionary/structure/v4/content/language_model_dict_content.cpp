@@ -90,8 +90,8 @@ const WordAttributes LanguageModelDictContent::getWordAttributes(const WordIdArr
         // TODO: Some flags in unigramProbabilityEntry should be overwritten by flags in
         // probabilityEntry.
         const ProbabilityEntry unigramProbabilityEntry = getProbabilityEntry(wordId);
-        return WordAttributes(probability, unigramProbabilityEntry.isNotAWord(),
-                unigramProbabilityEntry.isBlacklisted(),
+        return WordAttributes(probability, unigramProbabilityEntry.isBlacklisted(),
+                unigramProbabilityEntry.isNotAWord(),
                 unigramProbabilityEntry.isPossiblyOffensive());
     }
     // Cannot find the word.
