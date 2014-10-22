@@ -22,8 +22,9 @@
 namespace latinime {
 
 void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
-        jbooleanArray outFlags, jintArray outProbabilityInfo, jobject outBigramTargets,
-        jobject outBigramProbabilities, jobject outShortcutTargets,
+        jbooleanArray outFlags, jintArray outProbabilityInfo,
+        jobject outNgramPrevWordsArray, jobject outNgramPrevWordIsBeginningOfSentenceArray,
+        jobject outNgramTargets, jobject outNgramProbabilities, jobject outShortcutTargets,
         jobject outShortcutProbabilities) const {
     JniDataUtils::outputCodePoints(env, outCodePoints, 0 /* start */,
             MAX_WORD_LENGTH /* maxLength */, mCodePoints.data(), mCodePoints.size(),
@@ -43,16 +44,39 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     jclass arrayListClass = env->FindClass("java/util/ArrayList");
     jmethodID addMethodId = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
 
-    // Output bigrams.
-    // TODO: Support n-gram
+    // Output ngrams.
+    jclass intArrayClass = env->FindClass("[I");
     for (const auto &ngramProperty : mNgrams) {
-        const std::vector<int> *const word1CodePoints = ngramProperty.getTargetCodePoints();
-        jintArray bigramWord1CodePointArray = env->NewIntArray(word1CodePoints->size());
-        JniDataUtils::outputCodePoints(env, bigramWord1CodePointArray, 0 /* start */,
-                word1CodePoints->size(), word1CodePoints->data(), word1CodePoints->size(),
-                false /* needsNullTermination */);
-        env->CallBooleanMethod(outBigramTargets, addMethodId, bigramWord1CodePointArray);
-        env->DeleteLocalRef(bigramWord1CodePointArray);
+        const NgramContext *const ngramContext = ngramProperty.getNgramContext();
+        jobjectArray prevWordWordCodePointsArray = env->NewObjectArray(
+                ngramContext->getPrevWordCount(), intArrayClass, nullptr);
+        jbooleanArray prevWordIsBeginningOfSentenceArray =
+                env->NewBooleanArray(ngramContext->getPrevWordCount());
+        for (size_t i = 0; i < ngramContext->getPrevWordCount(); ++i) {
+            const CodePointArrayView codePoints = ngramContext->getNthPrevWordCodePoints(i + 1);
+            jintArray prevWordCodePoints = env->NewIntArray(codePoints.size());
+            JniDataUtils::outputCodePoints(env, prevWordCodePoints, 0 /* start */,
+                    codePoints.size(), codePoints.data(), codePoints.size(),
+                    false /* needsNullTermination */);
+            env->SetObjectArrayElement(prevWordWordCodePointsArray, i, prevWordCodePoints);
+            env->DeleteLocalRef(prevWordCodePoints);
+            JniDataUtils::putBooleanToArray(env, prevWordIsBeginningOfSentenceArray, i,
+                    ngramContext->isNthPrevWordBeginningOfSentence(i + 1));
+        }
+        env->CallBooleanMethod(outNgramPrevWordsArray, addMethodId, prevWordWordCodePointsArray);
+        env->CallBooleanMethod(outNgramPrevWordIsBeginningOfSentenceArray, addMethodId,
+                prevWordIsBeginningOfSentenceArray);
+        env->DeleteLocalRef(prevWordWordCodePointsArray);
+        env->DeleteLocalRef(prevWordIsBeginningOfSentenceArray);
+
+        const std::vector<int> *const targetWordCodePoints = ngramProperty.getTargetCodePoints();
+        jintArray targetWordCodePointArray = env->NewIntArray(targetWordCodePoints->size());
+        JniDataUtils::outputCodePoints(env, targetWordCodePointArray, 0 /* start */,
+                targetWordCodePoints->size(), targetWordCodePoints->data(),
+                targetWordCodePoints->size(), false /* needsNullTermination */);
+        env->CallBooleanMethod(outNgramTargets, addMethodId, targetWordCodePointArray);
+        env->DeleteLocalRef(targetWordCodePointArray);
+
         const HistoricalInfo &ngramHistoricalInfo = ngramProperty.getHistoricalInfo();
         int bigramProbabilityInfo[] = {ngramProperty.getProbability(),
                 ngramHistoricalInfo.getTimestamp(), ngramHistoricalInfo.getLevel(),
@@ -60,7 +84,7 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jintArray bigramProbabilityInfoArray = env->NewIntArray(NELEMS(bigramProbabilityInfo));
         env->SetIntArrayRegion(bigramProbabilityInfoArray, 0 /* start */,
                 NELEMS(bigramProbabilityInfo), bigramProbabilityInfo);
-        env->CallBooleanMethod(outBigramProbabilities, addMethodId, bigramProbabilityInfoArray);
+        env->CallBooleanMethod(outNgramProbabilities, addMethodId, bigramProbabilityInfoArray);
         env->DeleteLocalRef(bigramProbabilityInfoArray);
     }
 
