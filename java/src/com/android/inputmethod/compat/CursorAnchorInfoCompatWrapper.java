@@ -50,10 +50,10 @@ public class CursorAnchorInfoCompatWrapper {
         // This class is not publicly instantiable.
     }
 
-    @TargetApi(BuildCompatUtils.VERSION_CODES_LXX)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     public static CursorAnchorInfoCompatWrapper wrap(@Nullable final CursorAnchorInfo instance) {
-        if (Build.VERSION.SDK_INT < BuildCompatUtils.VERSION_CODES_LXX) {
+        if (BuildCompatUtils.EFFECTIVE_SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return null;
         }
         if (instance == null) {
@@ -110,7 +110,7 @@ public class CursorAnchorInfoCompatWrapper {
         throw new UnsupportedOperationException("not supported.");
     }
 
-    @TargetApi(BuildCompatUtils.VERSION_CODES_LXX)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static final class RealWrapper extends CursorAnchorInfoCompatWrapper {
 
         @Nonnull
