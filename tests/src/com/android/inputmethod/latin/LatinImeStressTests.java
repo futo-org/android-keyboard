@@ -18,7 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.android.inputmethod.latin.makedict.CodePointUtils;
+import com.android.inputmethod.latin.common.CodePointUtils;
 
 import java.util.Random;
 

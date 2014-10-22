@@ -22,7 +22,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.android.inputmethod.latin.NgramContext.WordInfo;
-import com.android.inputmethod.latin.makedict.CodePointUtils;
+import com.android.inputmethod.latin.common.CodePointUtils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.WeightedString;

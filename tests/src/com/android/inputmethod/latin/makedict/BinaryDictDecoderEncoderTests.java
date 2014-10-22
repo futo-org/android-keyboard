@@ -23,6 +23,7 @@ import android.util.Pair;
 import android.util.SparseArray;
 
 import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.common.CodePointUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;

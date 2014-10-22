@@ -21,8 +21,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Pair;
 
 import com.android.inputmethod.latin.NgramContext.WordInfo;
+import com.android.inputmethod.latin.common.CodePointUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
-import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
