@@ -110,6 +110,27 @@ class LanguageModelDictContent {
         const bool mHasHistoricalInfo;
     };
 
+    class DumppedFullEntryInfo {
+     public:
+        DumppedFullEntryInfo(std::vector<int> &prevWordIds, const int targetWordId,
+                const WordAttributes &wordAttributes, const ProbabilityEntry &probabilityEntry)
+                : mPrevWordIds(prevWordIds), mTargetWordId(targetWordId),
+                  mWordAttributes(wordAttributes), mProbabilityEntry(probabilityEntry) {}
+
+        const WordIdArrayView getPrevWordIds() const { return WordIdArrayView(mPrevWordIds); }
+        int getTargetWordId() const { return mTargetWordId; }
+        const WordAttributes &getWordAttributes() const { return mWordAttributes; }
+        const ProbabilityEntry &getProbabilityEntry() const { return mProbabilityEntry; }
+
+     private:
+        DISALLOW_ASSIGNMENT_OPERATOR(DumppedFullEntryInfo);
+
+        const std::vector<int> mPrevWordIds;
+        const int mTargetWordId;
+        const WordAttributes mWordAttributes;
+        const ProbabilityEntry mProbabilityEntry;
+    };
+
     LanguageModelDictContent(const ReadWriteByteArrayView trieMapBuffer,
             const bool hasHistoricalInfo)
             : mTrieMap(trieMapBuffer), mHasHistoricalInfo(hasHistoricalInfo) {}
@@ -150,6 +171,9 @@ class LanguageModelDictContent {
     bool removeNgramProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId);
 
     EntryRange getProbabilityEntries(const WordIdArrayView prevWordIds) const;
+
+    std::vector<DumppedFullEntryInfo> exportAllNgramEntriesRelatedToWord(
+            const HeaderPolicy *const headerPolicy, const int wordId) const;
 
     bool updateAllProbabilityEntriesForGC(const HeaderPolicy *const headerPolicy,
             MutableEntryCounters *const outEntryCounters) {
@@ -212,6 +236,9 @@ class LanguageModelDictContent {
     const ProbabilityEntry createUpdatedEntryFrom(const ProbabilityEntry &originalProbabilityEntry,
             const bool isValid, const HistoricalInfo historicalInfo,
             const HeaderPolicy *const headerPolicy) const;
+    void exportAllNgramEntriesRelatedToWordInner(const HeaderPolicy *const headerPolicy,
+            const int bitmapEntryIndex, std::vector<int> *const prevWordIds,
+            std::vector<DumppedFullEntryInfo> *const outBummpedFullEntryInfo) const;
 };
 } // namespace latinime
 #endif /* LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H */

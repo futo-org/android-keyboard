@@ -140,6 +140,44 @@ LanguageModelDictContent::EntryRange LanguageModelDictContent::getProbabilityEnt
     return EntryRange(mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex), mHasHistoricalInfo);
 }
 
+std::vector<LanguageModelDictContent::DumppedFullEntryInfo>
+        LanguageModelDictContent::exportAllNgramEntriesRelatedToWord(
+                const HeaderPolicy *const headerPolicy, const int wordId) const {
+    const TrieMap::Result result = mTrieMap.getRoot(wordId);
+    if (!result.mIsValid || result.mNextLevelBitmapEntryIndex == TrieMap::INVALID_INDEX) {
+        // The word doesn't have any related ngram entries.
+        return std::vector<DumppedFullEntryInfo>();
+    }
+    std::vector<int> prevWordIds = { wordId };
+    std::vector<DumppedFullEntryInfo> entries;
+    exportAllNgramEntriesRelatedToWordInner(headerPolicy, result.mNextLevelBitmapEntryIndex,
+            &prevWordIds, &entries);
+    return entries;
+}
+
+void LanguageModelDictContent::exportAllNgramEntriesRelatedToWordInner(
+        const HeaderPolicy *const headerPolicy, const int bitmapEntryIndex,
+        std::vector<int> *const prevWordIds,
+        std::vector<DumppedFullEntryInfo> *const outBummpedFullEntryInfo) const {
+    for (const auto &entry : mTrieMap.getEntriesInSpecifiedLevel(bitmapEntryIndex)) {
+        const int wordId = entry.key();
+        const ProbabilityEntry probabilityEntry =
+                ProbabilityEntry::decode(entry.value(), mHasHistoricalInfo);
+        if (probabilityEntry.isValid()) {
+            const WordAttributes wordAttributes = getWordAttributes(
+                    WordIdArrayView(*prevWordIds), wordId, headerPolicy);
+            outBummpedFullEntryInfo->emplace_back(*prevWordIds, wordId,
+                    wordAttributes, probabilityEntry);
+        }
+        if (entry.hasNextLevelMap()) {
+            prevWordIds->push_back(wordId);
+            exportAllNgramEntriesRelatedToWordInner(headerPolicy,
+                    entry.getNextLevelBitmapEntryIndex(), prevWordIds, outBummpedFullEntryInfo);
+            prevWordIds->pop_back();
+        }
+    }
+}
+
 bool LanguageModelDictContent::truncateEntries(const EntryCounts &currentEntryCounts,
         const EntryCounts &maxEntryCounts, const HeaderPolicy *const headerPolicy,
         MutableEntryCounters *const outEntryCounters) {
@@ -231,24 +269,25 @@ bool LanguageModelDictContent::runGCInner(
 }
 
 int LanguageModelDictContent::createAndGetBitmapEntryIndex(const WordIdArrayView prevWordIds) {
-    if (prevWordIds.empty()) {
-        return mTrieMap.getRootBitmapEntryIndex();
-    }
-    const int lastBitmapEntryIndex =
-            getBitmapEntryIndex(prevWordIds.limit(prevWordIds.size() - 1));
-    if (lastBitmapEntryIndex == TrieMap::INVALID_INDEX) {
-        return TrieMap::INVALID_INDEX;
-    }
-    const int oldestPrevWordId = prevWordIds.lastOrDefault(NOT_A_WORD_ID);
-    const TrieMap::Result result = mTrieMap.get(oldestPrevWordId, lastBitmapEntryIndex);
-    if (!result.mIsValid) {
-        if (!mTrieMap.put(oldestPrevWordId,
-                ProbabilityEntry().encode(mHasHistoricalInfo), lastBitmapEntryIndex)) {
-            return TrieMap::INVALID_INDEX;
+    int lastBitmapEntryIndex = mTrieMap.getRootBitmapEntryIndex();
+    for (const int wordId : prevWordIds) {
+        const TrieMap::Result result = mTrieMap.get(wordId, lastBitmapEntryIndex);
+        if (result.mIsValid && result.mNextLevelBitmapEntryIndex != TrieMap::INVALID_INDEX) {
+            lastBitmapEntryIndex = result.mNextLevelBitmapEntryIndex;
+            continue;
         }
+        if (!result.mIsValid) {
+            if (!mTrieMap.put(wordId, ProbabilityEntry().encode(mHasHistoricalInfo),
+                    lastBitmapEntryIndex)) {
+                AKLOGE("Failed to update trie map. wordId: %d, lastBitmapEntryIndex %d", wordId,
+                        lastBitmapEntryIndex);
+                return TrieMap::INVALID_INDEX;
+            }
+        }
+        lastBitmapEntryIndex = mTrieMap.getNextLevelBitmapEntryIndex(wordId,
+                lastBitmapEntryIndex);
     }
-    return mTrieMap.getNextLevelBitmapEntryIndex(prevWordIds.lastOrDefault(NOT_A_WORD_ID),
-            lastBitmapEntryIndex);
+    return lastBitmapEntryIndex;
 }
 
 int LanguageModelDictContent::getBitmapEntryIndex(const WordIdArrayView prevWordIds) const {
