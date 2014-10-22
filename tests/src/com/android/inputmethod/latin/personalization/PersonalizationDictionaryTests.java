@@ -31,7 +31,7 @@ import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback;
-import com.android.inputmethod.latin.makedict.CodePointUtils;
+import com.android.inputmethod.latin.common.CodePointUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import android.test.AndroidTestCase;
