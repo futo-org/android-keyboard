@@ -327,8 +327,8 @@ static jint latinime_BinaryDictionary_getNextWord(JNIEnv *env, jclass clazz,
 
 static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
         jlong dict, jintArray word, jboolean isBeginningOfSentence, jintArray outCodePoints,
-        jbooleanArray outFlags, jintArray outProbabilityInfo, jobject /* outNgramPrevWordsArray */,
-        jobject /* outNgramPrevWordIsBeginningOfSentenceArray */, jobject outNgramTargets,
+        jbooleanArray outFlags, jintArray outProbabilityInfo, jobject outNgramPrevWordsArray,
+        jobject outNgramPrevWordIsBeginningOfSentenceArray, jobject outNgramTargets,
         jobject outNgramProbabilityInfo, jobject outShortcutTargets,
         jobject outShortcutProbabilities) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
@@ -352,6 +352,7 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
     const WordProperty wordProperty = dictionary->getWordProperty(
             CodePointArrayView(wordCodePoints, codePointCount));
     wordProperty.outputProperties(env, outCodePoints, outFlags, outProbabilityInfo,
+            outNgramPrevWordsArray, outNgramPrevWordIsBeginningOfSentenceArray,
             outNgramTargets, outNgramProbabilityInfo, outShortcutTargets,
             outShortcutProbabilities);
 }

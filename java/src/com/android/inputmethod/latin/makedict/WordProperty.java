@@ -87,7 +87,7 @@ public final class WordProperty implements Comparable<WordProperty> {
             final boolean isPossiblyOffensive, final boolean hasBigram, final boolean hasShortcuts,
             final boolean isBeginningOfSentence, final int[] probabilityInfo,
             final ArrayList<int[][]> ngramPrevWordsArray,
-            final ArrayList<boolean[]> outNgramPrevWordIsBeginningOfSentenceArray,
+            final ArrayList<boolean[]> ngramPrevWordIsBeginningOfSentenceArray,
             final ArrayList<int[]> ngramTargets, final ArrayList<int[]> ngramProbabilityInfo,
             final ArrayList<int[]> shortcutTargets,
             final ArrayList<Integer> shortcutProbabilities) {
@@ -102,16 +102,22 @@ public final class WordProperty implements Comparable<WordProperty> {
         mHasNgrams = hasBigram;
 
         final int relatedNgramCount = ngramTargets.size();
-        final WordInfo currentWordInfo =
-                mIsBeginningOfSentence ? WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO
-                        : new WordInfo(mWord);
-        final NgramContext ngramContext = new NgramContext(currentWordInfo);
         for (int i = 0; i < relatedNgramCount; i++) {
             final String ngramTargetString =
                     StringUtils.getStringFromNullTerminatedCodePointArray(ngramTargets.get(i));
             final WeightedString ngramTarget = new WeightedString(ngramTargetString,
                     createProbabilityInfoFromArray(ngramProbabilityInfo.get(i)));
-            // TODO: Support n-gram.
+            final int[][] prevWords = ngramPrevWordsArray.get(i);
+            final boolean[] isBeginningOfSentenceArray =
+                    ngramPrevWordIsBeginningOfSentenceArray.get(i);
+            final WordInfo[] wordInfoArray = new WordInfo[prevWords.length];
+            for (int j = 0; j < prevWords.length; j++) {
+                wordInfoArray[j] = isBeginningOfSentenceArray[j]
+                        ? WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO
+                        : new WordInfo(StringUtils.getStringFromNullTerminatedCodePointArray(
+                                prevWords[j]));
+            }
+            final NgramContext ngramContext = new NgramContext(wordInfoArray);
             ngrams.add(new NgramProperty(ngramTarget, ngramContext));
         }
         mNgrams = ngrams.isEmpty() ? null : ngrams;
@@ -126,6 +132,7 @@ public final class WordProperty implements Comparable<WordProperty> {
     }
 
     // TODO: Remove
+    @UsedForTesting
     public ArrayList<WeightedString> getBigrams() {
         if (null == mNgrams) {
             return null;

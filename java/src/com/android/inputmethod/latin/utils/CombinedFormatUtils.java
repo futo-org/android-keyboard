@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
+import com.android.inputmethod.latin.makedict.NgramProperty;
 import com.android.inputmethod.latin.makedict.ProbabilityInfo;
 import com.android.inputmethod.latin.makedict.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
@@ -26,6 +27,8 @@ import java.util.HashMap;
 public class CombinedFormatUtils {
     public static final String DICTIONARY_TAG = "dictionary";
     public static final String BIGRAM_TAG = "bigram";
+    public static final String NGRAM_TAG = "ngram";
+    public static final String NGRAM_PREV_WORD_TAG = "prev_word";
     public static final String SHORTCUT_TAG = "shortcut";
     public static final String PROBABILITY_TAG = "f";
     public static final String HISTORICAL_INFO_TAG = "historicalInfo";
@@ -76,12 +79,19 @@ public class CombinedFormatUtils {
             }
         }
         if (wordProperty.mHasNgrams) {
-            // TODO: Support ngram.
-            for (final WeightedString bigram : wordProperty.getBigrams()) {
-                builder.append("  " + BIGRAM_TAG + "=" + bigram.mWord);
+            for (final NgramProperty ngramProperty : wordProperty.mNgrams) {
+                builder.append(" " + NGRAM_TAG + "=" + ngramProperty.mTargetWord.mWord);
                 builder.append(",");
-                builder.append(formatProbabilityInfo(bigram.mProbabilityInfo));
+                builder.append(formatProbabilityInfo(ngramProperty.mTargetWord.mProbabilityInfo));
                 builder.append("\n");
+                for (int i = 0; i < ngramProperty.mNgramContext.getPrevWordCount(); i++) {
+                    builder.append("  " + NGRAM_PREV_WORD_TAG + "[" + i + "]="
+                            + ngramProperty.mNgramContext.getNthPrevWord(i + 1));
+                    if (ngramProperty.mNgramContext.isNthPrevWordBeginningOfSontence(i + 1)) {
+                        builder.append("," + BEGINNING_OF_SENTENCE_TAG + "=true");
+                    }
+                    builder.append("\n");
+                }
             }
         }
         return builder.toString();

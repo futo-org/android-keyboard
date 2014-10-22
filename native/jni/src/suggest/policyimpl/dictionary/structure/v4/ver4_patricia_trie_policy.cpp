@@ -488,9 +488,6 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
         AKLOGE("getWordProperty is called for invalid word.");
         return WordProperty();
     }
-    const int ptNodePos =
-            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
-    const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     const LanguageModelDictContent *const languageModelDictContent =
             mBuffers->getLanguageModelDictContent();
     // Fetch ngram information.
@@ -541,12 +538,13 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
                     shortcutProbability);
         }
     }
-    const ProbabilityEntry probabilityEntry = languageModelDictContent->getProbabilityEntry(
-            ptNodeParams.getTerminalId());
+    const WordAttributes wordAttributes = languageModelDictContent->getWordAttributes(
+            WordIdArrayView(), wordId, mHeaderPolicy);
+    const ProbabilityEntry probabilityEntry = languageModelDictContent->getProbabilityEntry(wordId);
     const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
     const UnigramProperty unigramProperty(probabilityEntry.representsBeginningOfSentence(),
-            probabilityEntry.isNotAWord(), probabilityEntry.isBlacklisted(),
-            probabilityEntry.isPossiblyOffensive(), probabilityEntry.getProbability(),
+            wordAttributes.isNotAWord(), wordAttributes.isBlacklisted(),
+            wordAttributes.isPossiblyOffensive(), wordAttributes.getProbability(),
             *historicalInfo, std::move(shortcuts));
     return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
 }

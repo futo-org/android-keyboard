@@ -39,8 +39,10 @@ class WordProperty {
               mNgrams(*ngrams) {}
 
     void outputProperties(JNIEnv *const env, jintArray outCodePoints, jbooleanArray outFlags,
-            jintArray outProbabilityInfo, jobject outBigramTargets, jobject outBigramProbabilities,
-            jobject outShortcutTargets, jobject outShortcutProbabilities) const;
+            jintArray outProbabilityInfo, jobject outNgramPrevWordsArray,
+            jobject outNgramPrevWordIsBeginningOfSentenceArray, jobject outNgramTargets,
+            jobject outNgramProbabilities, jobject outShortcutTargets,
+            jobject outShortcutProbabilities) const;
 
     const UnigramProperty *getUnigramProperty() const {
         return &mUnigramProperty;
