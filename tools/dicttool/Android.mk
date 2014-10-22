@@ -35,7 +35,6 @@ LATINIME_LOCAL_DIR := ../..
 LATINIME_BASE_SRC_DIR := $(LATINIME_LOCAL_DIR)/java/src/com/android/inputmethod
 LATINIME_BASE_OVERRIDABLE_SRC_DIR := \
         $(LATINIME_LOCAL_DIR)/java-overridable/src/com/android/inputmethod
-LATINIME_ANNOTATIONS_SRC_DIR := $(LATINIME_BASE_SRC_DIR)/annotations
 MAKEDICT_CORE_SRC_DIR := $(LATINIME_BASE_SRC_DIR)/latin/makedict
 LATINIME_TESTS_SRC_DIR := $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin
 
@@ -82,15 +81,12 @@ DICTTOOL_COMPAT_TESTS_DIR := compat
 
 LOCAL_MAIN_SRC_FILES := $(call all-java-files-under, $(MAKEDICT_CORE_SRC_DIR))
 LOCAL_TOOL_SRC_FILES := $(call all-java-files-under, src)
-LOCAL_ANNOTATIONS_SRC_FILES := $(call all-java-files-under, $(LATINIME_ANNOTATIONS_SRC_DIR))
 
 LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
-        $(call all-java-files-under, $(DICTTOOL_COMPAT_TESTS_DIR)) \
-        $(LOCAL_ANNOTATIONS_SRC_FILES) $(USED_TARGETED_SRC_FILES) \
-        $(LATINIME_BASE_SRC_DIR)/latin/Constants.java \
-        $(call all-java-files-under, tests) \
-        $(call all-java-files-under, $(DICTTOOL_ONDEVICE_TESTS_DIR))
+        $(USED_TARGETED_SRC_FILES) \
+        $(call all-java-files-under, \
+                tests $(DICTTOOL_COMPAT_TESTS_DIR) $(DICTTOOL_ONDEVICE_TESTS_DIR))
 
 LOCAL_JAVA_LIBRARIES := junit
 LOCAL_STATIC_JAVA_LIBRARIES := jsr305lib latinime-common-host
