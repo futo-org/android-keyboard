@@ -629,8 +629,7 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
         }
     } while (token != 0);
 
-    // Add bigrams.
-    // TODO: Support ngrams.
+    // Add ngrams.
     do {
         token = dictionary->getNextWordAndNextToken(token, wordCodePoints, &wordCodePointCount);
         const WordProperty wordProperty = dictionary->getWordProperty(

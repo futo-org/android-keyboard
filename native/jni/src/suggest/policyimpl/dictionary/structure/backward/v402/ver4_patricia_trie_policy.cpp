@@ -580,10 +580,12 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
                     getWordIdFromTerminalPtNodePos(word1TerminalPtNodePos), MAX_WORD_LENGTH,
                     bigramWord1CodePoints);
             const HistoricalInfo *const historicalInfo = bigramEntry.getHistoricalInfo();
-            const int probability = bigramEntry.hasHistoricalInfo() ?
-                    ForgettingCurveUtils::decodeProbability(
-                            bigramEntry.getHistoricalInfo(), mHeaderPolicy) :
-                    bigramEntry.getProbability();
+            const int rawBigramProbability = bigramEntry.hasHistoricalInfo()
+                    ? ForgettingCurveUtils::decodeProbability(
+                            bigramEntry.getHistoricalInfo(), mHeaderPolicy)
+                    : bigramEntry.getProbability();
+            const int probability = getBigramConditionalProbability(ptNodeParams.getProbability(),
+                    ptNodeParams.representsBeginningOfSentence(), rawBigramProbability);
             ngrams.emplace_back(
                     NgramContext(wordCodePoints.data(), wordCodePoints.size(),
                             ptNodeParams.representsBeginningOfSentence()),

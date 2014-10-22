@@ -491,30 +491,37 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     const int ptNodePos =
             mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(wordId);
     const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
-    const ProbabilityEntry probabilityEntry =
-            mBuffers->getLanguageModelDictContent()->getProbabilityEntry(
-                    ptNodeParams.getTerminalId());
-    const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
-    // Fetch bigram information.
-    // TODO: Support n-gram.
+    const LanguageModelDictContent *const languageModelDictContent =
+            mBuffers->getLanguageModelDictContent();
+    // Fetch ngram information.
     std::vector<NgramProperty> ngrams;
-    const WordIdArrayView prevWordIds = WordIdArrayView::singleElementView(&wordId);
-    int bigramWord1CodePoints[MAX_WORD_LENGTH];
-    for (const auto entry : mBuffers->getLanguageModelDictContent()->getProbabilityEntries(
-            prevWordIds)) {
-        const int codePointCount = getCodePointsAndReturnCodePointCount(entry.getWordId(),
-                MAX_WORD_LENGTH, bigramWord1CodePoints);
+    int ngramTargetCodePoints[MAX_WORD_LENGTH];
+    int ngramPrevWordsCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM][MAX_WORD_LENGTH];
+    int ngramPrevWordsCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    bool ngramPrevWordIsBeginningOfSentense[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    for (const auto entry : languageModelDictContent->exportAllNgramEntriesRelatedToWord(
+            mHeaderPolicy, wordId)) {
+        const int codePointCount = getCodePointsAndReturnCodePointCount(entry.getTargetWordId(),
+                MAX_WORD_LENGTH, ngramTargetCodePoints);
+        const WordIdArrayView prevWordIds = entry.getPrevWordIds();
+        for (size_t i = 0; i < prevWordIds.size(); ++i) {
+            ngramPrevWordsCodePointCount[i] = getCodePointsAndReturnCodePointCount(prevWordIds[i],
+                       MAX_WORD_LENGTH, ngramPrevWordsCodePoints[i]);
+            ngramPrevWordIsBeginningOfSentense[i] = languageModelDictContent->getProbabilityEntry(
+                    prevWordIds[i]).representsBeginningOfSentence();
+            if (ngramPrevWordIsBeginningOfSentense[i]) {
+                ngramPrevWordsCodePointCount[i] = CharUtils::removeBeginningOfSentenceMarker(
+                        ngramPrevWordsCodePoints[i], ngramPrevWordsCodePointCount[i]);
+            }
+        }
+        const NgramContext ngramContext(ngramPrevWordsCodePoints, ngramPrevWordsCodePointCount,
+                ngramPrevWordIsBeginningOfSentense, prevWordIds.size());
         const ProbabilityEntry ngramProbabilityEntry = entry.getProbabilityEntry();
         const HistoricalInfo *const historicalInfo = ngramProbabilityEntry.getHistoricalInfo();
-        const int probability = ngramProbabilityEntry.hasHistoricalInfo() ?
-                ForgettingCurveUtils::decodeProbability(historicalInfo, mHeaderPolicy) :
-                ngramProbabilityEntry.getProbability();
-        ngrams.emplace_back(
-                NgramContext(
-                        wordCodePoints.data(), wordCodePoints.size(),
-                        probabilityEntry.representsBeginningOfSentence()),
-                CodePointArrayView(bigramWord1CodePoints, codePointCount).toVector(),
-                probability, *historicalInfo);
+        // TODO: Output flags in WordAttributes.
+        ngrams.emplace_back(ngramContext,
+                CodePointArrayView(ngramTargetCodePoints, codePointCount).toVector(),
+                entry.getWordAttributes().getProbability(), *historicalInfo);
     }
     // Fetch shortcut information.
     std::vector<UnigramProperty::ShortcutProperty> shortcuts;
@@ -534,6 +541,9 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
                     shortcutProbability);
         }
     }
+    const ProbabilityEntry probabilityEntry = languageModelDictContent->getProbabilityEntry(
+            ptNodeParams.getTerminalId());
+    const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
     const UnigramProperty unigramProperty(probabilityEntry.representsBeginningOfSentence(),
             probabilityEntry.isNotAWord(), probabilityEntry.isBlacklisted(),
             probabilityEntry.isPossiblyOffensive(), probabilityEntry.getProbability(),

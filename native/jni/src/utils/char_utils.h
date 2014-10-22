@@ -101,6 +101,17 @@ class CharUtils {
         return codePointCount + 1;
     }
 
+    // Returns updated code point count.
+    static AK_FORCE_INLINE int removeBeginningOfSentenceMarker(int *const codePoints,
+            const int codePointCount) {
+        if (codePointCount <= 0 || codePoints[0] != CODE_POINT_BEGINNING_OF_SENTENCE) {
+            return codePointCount;
+        }
+        const int newCodePointCount = codePointCount - 1;
+        memmove(codePoints, codePoints + 1, sizeof(int) * newCodePointCount);
+        return newCodePointCount;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(CharUtils);
 
