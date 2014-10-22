@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -54,7 +55,7 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
                 VERSION_CODES.ICE_CREAM_SANDWICH),
         new KeyboardTheme(THEME_ID_LXX_LIGHT, "LXXLight", R.style.KeyboardTheme_LXX_Light,
                 // Default theme for LXX.
-                BuildCompatUtils.VERSION_CODES_LXX),
+                Build.VERSION_CODES.LOLLIPOP),
         new KeyboardTheme(THEME_ID_LXX_DARK, "LXXDark", R.style.KeyboardTheme_LXX_Dark,
                 // This has never been selected as default theme.
                 VERSION_CODES.BASE),

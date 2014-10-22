@@ -16,13 +16,13 @@
 
 package com.android.inputmethod.keyboard;
 
-import static com.android.inputmethod.compat.BuildCompatUtils.VERSION_CODES_LXX;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_ICS;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_KLP;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_DARK;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_LIGHT;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
@@ -131,7 +131,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     public void testKeyboardThemePreferenceOnLxx() {
-        assertKeyboardThemePreferenceOnLxx(VERSION_CODES_LXX);
+        assertKeyboardThemePreferenceOnLxx(Build.VERSION_CODES.LOLLIPOP);
     }
 
     /*
@@ -184,7 +184,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     public void testDefaultKeyboardThemeOnLxx() {
-        assertDefaultKeyboardThemeOnLxx(VERSION_CODES_LXX);
+        assertDefaultKeyboardThemeOnLxx(Build.VERSION_CODES.LOLLIPOP);
     }
 
     /*
@@ -251,7 +251,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
 
     // Upgrading keyboard on L.
     public void testUpgradeKeyboardToLxxOnLxx() {
-        assertUpgradeKeyboardToLxxOnLxx(VERSION_CODES_LXX);
+        assertUpgradeKeyboardToLxxOnLxx(Build.VERSION_CODES.LOLLIPOP);
     }
 
     /*
@@ -304,7 +304,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
 
     private void assertUpgradePlatformToLxxFrom(final int oldSdkVersion) {
         // Forced to switch to LXX theme.
-        final int newSdkVersion = VERSION_CODES_LXX;
+        final int newSdkVersion = Build.VERSION_CODES.LOLLIPOP;
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
@@ -329,8 +329,8 @@ public class KeyboardThemeTests extends AndroidTestCase {
 
     // Update platform from L to L.
     public void testUpgradePlatformToLxxFromLxx() {
-        final int oldSdkVersion = VERSION_CODES_LXX;
-        final int newSdkVersion = VERSION_CODES_LXX;
+        final int oldSdkVersion = Build.VERSION_CODES.LOLLIPOP;
+        final int newSdkVersion = Build.VERSION_CODES.LOLLIPOP;
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
@@ -419,7 +419,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);
         setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
 
-        final int sdkVersion = VERSION_CODES_LXX;
+        final int sdkVersion = Build.VERSION_CODES.LOLLIPOP;
         final String oldPrefKey = KeyboardTheme.getPreferenceKey(sdkVersion);
         setKeyboardThemePreference(oldPrefKey, THEME_ID_LXX_DARK);
 
