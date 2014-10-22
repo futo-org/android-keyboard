@@ -110,7 +110,6 @@ public final class ResourceUtils {
      * are true for the specified key value pairs.
      *
      * For example, "condition,constant" has the following format.
-     * (See {@link ResourceUtilsTests#testFindConstantForKeyValuePairsRegexp()})
      *  - HARDWARE=mako,constantForNexus4
      *  - MODEL=Nexus 4:MANUFACTURER=LGE,constantForNexus4
      *  - ,defaultConstant
@@ -119,6 +118,7 @@ public final class ResourceUtils {
      * @param conditionConstantArray an array of "condition,constant" elements to be searched.
      * @return the constant part of the matched "condition,constant" element. Returns null if no
      * condition matches.
+     * @see com.android.inputmethod.latin.utils.ResourceUtilsTests#testFindConstantForKeyValuePairsRegexp()
      */
     @UsedForTesting
     static String findConstantForKeyValuePairs(final HashMap<String, String> keyValuePairs,

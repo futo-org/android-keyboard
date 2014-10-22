@@ -53,6 +53,10 @@ import javax.annotation.Nullable;
  * Abstract base class for an expandable dictionary that can be created and updated dynamically
  * during runtime. When updated it automatically generates a new binary dictionary to handle future
  * queries in native code. This binary dictionary is written to internal storage.
+ *
+ * A class that extends this abstract class must have a static factory method named
+ *   getDictionary(Context context, Locale locale, File dictFile, String dictNamePrefix)
+ * @see DictionaryFacilitator#getSubDict(String,Context,Locale,File,String)
  */
 abstract public class ExpandableBinaryDictionary extends Dictionary {
     private static final boolean DEBUG = false;

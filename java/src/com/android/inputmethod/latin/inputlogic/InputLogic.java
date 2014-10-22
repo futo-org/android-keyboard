@@ -68,6 +68,8 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+
 /**
  * This class manages the input logic.
  */
@@ -454,8 +456,8 @@ public final class InputLogic {
      *     {@link com.android.inputmethod.keyboard.KeyboardSwitcher#getKeyboardShiftMode()}
      * @return the complete transaction object
      */
-    public InputTransaction onCodeInput(final SettingsValues settingsValues, final Event event,
-            final int keyboardShiftMode,
+    public InputTransaction onCodeInput(final SettingsValues settingsValues,
+            @Nonnull final Event event, final int keyboardShiftMode,
             // TODO: remove these arguments
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         final Event processedEvent = mWordComposer.processEvent(event);
@@ -1373,7 +1375,7 @@ public final class InputLogic {
     }
 
     private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
-            final String suggestion, final NgramContext ngramContext) {
+            final String suggestion, @Nonnull final NgramContext ngramContext) {
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
@@ -2301,7 +2303,7 @@ public final class InputLogic {
      * Sets the UI operator for {@link TextDecorator}.
      * @param uiOperator the UI operator which should be associated with {@link TextDecorator}.
      */
-    public void setTextDecoratorUi(final TextDecoratorUiOperator uiOperator) {
+    public void setTextDecoratorUi(@Nonnull final TextDecoratorUiOperator uiOperator) {
         mTextDecorator.setUiOperator(uiOperator);
     }
 

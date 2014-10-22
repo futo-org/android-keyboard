@@ -20,6 +20,7 @@ import android.content.Context;
 
 import com.android.inputmethod.latin.DictionaryFacilitator;
 
+@SuppressWarnings("unused")
 public class PersonalizationDictionaryUpdater {
     final Context mContext;
     final DictionaryFacilitator mDictionaryFacilitator;

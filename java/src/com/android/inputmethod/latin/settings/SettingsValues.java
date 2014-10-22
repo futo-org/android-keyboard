@@ -37,6 +37,8 @@ import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 import java.util.Arrays;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
 /**
  * When you call the constructor of this class, you may want to change the current system locale by
  * using {@link com.android.inputmethod.latin.utils.RunInLocale}.
@@ -85,6 +87,7 @@ public class SettingsValues {
     public final int mScreenMetrics;
 
     // From the input box
+    @Nonnull
     public final InputAttributes mInputAttributes;
 
     // Deduced settings
@@ -115,7 +118,7 @@ public class SettingsValues {
     public final float mKeyPreviewDismissEndYScale;
 
     public SettingsValues(final Context context, final SharedPreferences prefs, final Resources res,
-            final InputAttributes inputAttributes) {
+            @Nonnull final InputAttributes inputAttributes) {
         mLocale = res.getConfiguration().locale;
         // Get the resources
         mDelayInMillisecondsToUpdateOldSuggestions =
@@ -123,12 +126,7 @@ public class SettingsValues {
         mSpacingAndPunctuations = new SpacingAndPunctuations(res);
 
         // Store the input attributes
-        if (null == inputAttributes) {
-            mInputAttributes = new InputAttributes(
-                    null, false /* isFullscreenMode */, context.getPackageName());
-        } else {
-            mInputAttributes = inputAttributes;
-        }
+        mInputAttributes = inputAttributes;
 
         // Get the settings preferences
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);

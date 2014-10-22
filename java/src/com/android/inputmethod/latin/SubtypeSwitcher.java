@@ -44,6 +44,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 public final class SubtypeSwitcher {
     private static boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
@@ -169,7 +171,7 @@ public final class SubtypeSwitcher {
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
-    public void onSubtypeChanged(final InputMethodSubtype newSubtype) {
+    public void onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
         final RichInputMethodSubtype richSubtype =
                 mRichImm.createCurrentRichInputMethodSubtype(newSubtype);
         if (DBG) {

@@ -29,7 +29,7 @@ import java.util.Collections;
 @SmallTest
 public class CollectionUtilsTests extends AndroidTestCase {
     /**
-     * Tests that {@link CollectionUtils#arrayAsList(E[],int,int)} gives the expected
+     * Tests that {@link CollectionUtils#arrayAsList(Object[],int,int)} gives the expected
      * results for a few valid inputs.
      */
     public void testArrayAsList() {
@@ -42,7 +42,7 @@ public class CollectionUtilsTests extends AndroidTestCase {
     }
 
     /**
-     * Tests that {@link CollectionUtils#isEmpty(java.util.Collection)} gives the expected
+     * Tests that {@link CollectionUtils#isNullOrEmpty(java.util.Collection)} gives the expected
      * results for a few cases.
      */
     public void testIsNullOrEmpty() {

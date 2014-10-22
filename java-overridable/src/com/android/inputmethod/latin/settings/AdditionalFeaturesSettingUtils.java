@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 /**
  * Utility class for managing additional features settings.
  */
+@SuppressWarnings("unused")
 public class AdditionalFeaturesSettingUtils {
     public static final int ADDITIONAL_FEATURES_SETTINGS_SIZE = 0;
 

@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.graphics.Canvas;
 import android.view.View;
 
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
 
 /**
@@ -51,11 +52,11 @@ public abstract class AbstractDrawingPreview {
     }
 
     /**
-     * Set {@link MainKeyboardView} geometry and position in the {@link SoftInputWindow}.
+     * Set {@link MainKeyboardView} geometry and position in the window of input method.
      * The class that is overriding this method must call this super implementation.
      *
      * @param originCoords the top-left coordinates of the {@link MainKeyboardView} in
-     *        {@link SoftInputWindow} coordinate-system. This is unused but has a point in an
+     *        the input method window coordinate-system. This is unused but has a point in an
      *        extended class, such as {@link GestureTrailsDrawingPreview}.
      * @param width the width of {@link MainKeyboardView}.
      * @param height the height of {@link MainKeyboardView}.

@@ -24,7 +24,8 @@ public final class ProductionFlags {
     public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = false;
 
     /**
-     * Include all suggestions from all dictionaries in {@link SuggestedWords#mRawSuggestions}.
+     * Include all suggestions from all dictionaries in
+     * {@link com.android.inputmethod.latin.SuggestedWords#mRawSuggestions}.
      */
     public static final boolean INCLUDE_RAW_SUGGESTIONS = false;
 

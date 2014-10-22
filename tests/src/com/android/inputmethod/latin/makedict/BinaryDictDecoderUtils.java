@@ -165,7 +165,7 @@ public final class BinaryDictDecoderUtils {
          *
          * @param codePoints the code point array to write.
          * @param buffer the byte buffer to write to.
-         * @param index the index in buffer to write the character array to.
+         * @param fromIndex the index in buffer to write the character array to.
          * @param codePointToOneByteCodeMap the map to convert the code point.
          * @return the index after the last character.
          */

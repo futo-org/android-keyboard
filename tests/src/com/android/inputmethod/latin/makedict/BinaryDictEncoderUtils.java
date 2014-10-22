@@ -535,7 +535,7 @@ public class BinaryDictEncoderUtils {
      * Helper method to write a children position to a file.
      *
      * @param buffer the buffer to write to.
-     * @param index the index in the buffer to write the address to.
+     * @param fromIndex the index in the buffer to write the address to.
      * @param position the position to write.
      * @return the size in bytes the address actually took.
      */

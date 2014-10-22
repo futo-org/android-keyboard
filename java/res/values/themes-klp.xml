@@ -73,8 +73,10 @@
         <item name="languageOnSpacebarTextShadowRadius">1.0</item>
         <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
     </style>
-    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
-         for instance delete button, need themed {@link KeyboardView} attributes. -->
+    <!-- Though {@link com.android.inputmethod.keyboard.emoji.EmojiPalettesView} doesn't extend
+         {@link com.android.inputmethod.keyboard.KeyboardView}, some views inside it, for instance
+         delete button, need themed {@link com.android.inputmethod.keyboard.KeyboardView}
+         attributes. -->
     <style
         name="EmojiPalettesView.KLP"
         parent="MainKeyboardView.KLP"

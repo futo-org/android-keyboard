@@ -18,7 +18,9 @@ package com.android.inputmethod.dictionarypack;
 
 import com.android.inputmethod.latin.utils.FragmentUtils;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
@@ -44,8 +46,8 @@ public final class DictionarySettingsActivity extends PreferenceActivity {
         return modIntent;
     }
 
-    // TODO: Uncomment the override annotation once we start using SDK version 19.
-    // @Override
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    @Override
     public boolean isValidFragment(String fragmentName) {
         return FragmentUtils.isValidFragment(fragmentName);
     }

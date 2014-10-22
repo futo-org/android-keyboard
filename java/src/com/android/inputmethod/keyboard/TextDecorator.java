@@ -74,7 +74,7 @@ public class TextDecorator {
         void onClickComposingTextToAddToDictionary(final String word);
     }
 
-    public TextDecorator(final Listener listener) {
+    public TextDecorator(@Nullable final Listener listener) {
         mListener = (listener != null) ? listener : EMPTY_LISTENER;
     }
 
@@ -83,7 +83,7 @@ public class TextDecorator {
      * delegated to the associated UI operator.
      * @param uiOperator the UI operator to be associated.
      */
-    public void setUiOperator(final TextDecoratorUiOperator uiOperator) {
+    public void setUiOperator(@Nonnull final TextDecoratorUiOperator uiOperator) {
         mUiOperator.disposeUi();
         mUiOperator = uiOperator;
         mUiOperator.setOnClickListener(getOnClickHandler());
@@ -347,12 +347,14 @@ public class TextDecorator {
         }
     }
 
+    @Nonnull
     private final static Listener EMPTY_LISTENER = new Listener() {
         @Override
         public void onClickComposingTextToAddToDictionary(final String word) {
         }
     };
 
+    @Nonnull
     private final static TextDecoratorUiOperator EMPTY_UI_OPERATOR = new TextDecoratorUiOperator() {
         @Override
         public void disposeUi() {

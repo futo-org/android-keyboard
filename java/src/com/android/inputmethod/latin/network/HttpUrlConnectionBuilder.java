@@ -95,7 +95,7 @@ public class HttpUrlConnectionBuilder {
     }
 
     /**
-     * Sets the connect timeout. Defaults to {@value #DEFAULT_TIMEOUT} milliseconds.
+     * Sets the connect timeout. Defaults to {@value #DEFAULT_TIMEOUT_MILLIS} milliseconds.
      *
      * TODO: Remove @UsedForTesting after this method is actually used.
      */
@@ -110,7 +110,7 @@ public class HttpUrlConnectionBuilder {
     }
 
     /**
-     * Sets the read timeout. Defaults to {@value #DEFAULT_TIMEOUT} milliseconds.
+     * Sets the read timeout. Defaults to {@value #DEFAULT_TIMEOUT_MILLIS} milliseconds.
      *
      * TODO: Remove @UsedForTesting after this method is actually used.
      */

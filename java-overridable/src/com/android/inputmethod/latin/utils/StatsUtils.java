@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.settings.SettingsValues;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings("unused")
 public final class StatsUtils {
 
     private StatsUtils() {

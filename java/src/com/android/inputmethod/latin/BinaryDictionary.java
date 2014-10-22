@@ -351,15 +351,19 @@ public final class BinaryDictionary extends Dictionary {
 
     @Override
     public int getFrequency(final String word) {
-        if (TextUtils.isEmpty(word)) return NOT_A_PROBABILITY;
-        int[] codePoints = StringUtils.toCodePointArray(word);
+        if (TextUtils.isEmpty(word)) {
+            return NOT_A_PROBABILITY;
+        }
+        final int[] codePoints = StringUtils.toCodePointArray(word);
         return getProbabilityNative(mNativeDict, codePoints);
     }
 
     @Override
     public int getMaxFrequencyOfExactMatches(final String word) {
-        if (TextUtils.isEmpty(word)) return NOT_A_PROBABILITY;
-        int[] codePoints = StringUtils.toCodePointArray(word);
+        if (TextUtils.isEmpty(word)) {
+            return NOT_A_PROBABILITY;
+        }
+        final int[] codePoints = StringUtils.toCodePointArray(word);
         return getMaxProbabilityOfExactMatchesNative(mNativeDict, codePoints);
     }
 
@@ -523,7 +527,9 @@ public final class BinaryDictionary extends Dictionary {
 
     @UsedForTesting
     public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
-        if (!isValidDictionary()) return;
+        if (!isValidDictionary()) {
+            return;
+        }
         int processedParamCount = 0;
         while (processedParamCount < languageModelParams.length) {
             if (needsToRunGC(true /* mindsBlockByGC */)) {
@@ -550,7 +556,9 @@ public final class BinaryDictionary extends Dictionary {
 
     // Flush to dict file if the dictionary has been updated.
     public boolean flush() {
-        if (!isValidDictionary()) return false;
+        if (!isValidDictionary()) {
+            return false;
+        }
         if (mHasUpdated) {
             if (!flushNative(mNativeDict, mDictFilePath)) {
                 return false;
@@ -570,7 +578,9 @@ public final class BinaryDictionary extends Dictionary {
 
     // Run GC and flush to dict file.
     public boolean flushWithGC() {
-        if (!isValidDictionary()) return false;
+        if (!isValidDictionary()) {
+            return false;
+        }
         if (!flushWithGCNative(mNativeDict, mDictFilePath)) {
             return false;
         }
@@ -585,7 +595,9 @@ public final class BinaryDictionary extends Dictionary {
      * @return whether GC is needed to run or not.
      */
     public boolean needsToRunGC(final boolean mindsBlockByGC) {
-        if (!isValidDictionary()) return false;
+        if (!isValidDictionary()) {
+            return false;
+        }
         return needsToRunGCNative(mNativeDict, mindsBlockByGC);
     }
 
@@ -630,7 +642,9 @@ public final class BinaryDictionary extends Dictionary {
 
     @UsedForTesting
     public String getPropertyForGettingStats(final String query) {
-        if (!isValidDictionary()) return "";
+        if (!isValidDictionary()) {
+            return "";
+        }
         return getPropertyNative(mNativeDict, query);
     }
 

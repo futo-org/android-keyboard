@@ -233,8 +233,8 @@ public final class Constants {
 
     /**
      * Special keys code. Must be negative.
-     * These should be aligned with {@link KeyboardCodesSet#ID_TO_NAME},
-     * {@link KeyboardCodesSet#DEFAULT}, and {@link KeyboardCodesSet#RTL}.
+     * These should be aligned with constants in
+     * {@link com.android.inputmethod.keyboard.internal.KeyboardCodesSet}.
      */
     public static final int CODE_SHIFT = -1;
     public static final int CODE_CAPSLOCK = -2;
@@ -309,8 +309,8 @@ public final class Constants {
 
     /**
      * Default capacity of gesture points container.
-     * This constant is used by {@link BatchInputArbiter} and etc. to preallocate regions that
-     * contain gesture event points.
+     * This constant is used by {@link com.android.inputmethod.keyboard.internal.BatchInputArbiter}
+     * and etc. to preallocate regions that contain gesture event points.
      */
     public static final int DEFAULT_GESTURE_POINTS_CAPACITY = 128;
 

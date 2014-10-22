@@ -18,7 +18,7 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
-import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
@@ -27,6 +27,8 @@ import com.android.inputmethod.latin.utils.DistracterFilter;
 
 import java.io.File;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 /**
  * Locally gathers stats about the words user types and various other signals like auto-correction
@@ -41,7 +43,9 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
                 Dictionary.TYPE_USER_HISTORY, null /* dictFile */);
     }
 
-    @UsedForTesting
+    // Note: This method is called by {@link DictionaryFacilitator} using Java reflection.
+    @SuppressWarnings("unused")
+    @ExternallyReferenced
     public static UserHistoryDictionary getDictionary(final Context context, final Locale locale,
             final File dictFile, final String dictNamePrefix) {
         return PersonalizationHelper.getUserHistoryDictionary(context, locale);
@@ -58,8 +62,8 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
      * @param distracterFilter the filter to check whether the word is a distracter
      */
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
-            final NgramContext ngramContext, final String word, final boolean isValid,
-            final int timestamp, final DistracterFilter distracterFilter) {
+            @Nonnull final NgramContext ngramContext, final String word, final boolean isValid,
+            final int timestamp, @Nonnull final DistracterFilter distracterFilter) {
         if (word.length() > Constants.DICTIONARY_MAX_WORD_LENGTH) {
             return;
         }

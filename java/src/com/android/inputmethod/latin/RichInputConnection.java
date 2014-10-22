@@ -44,6 +44,8 @@ import com.android.inputmethod.latin.utils.SpannableStringUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
+import javax.annotation.Nonnull;
+
 /**
  * Enrichment class for InputConnection to simplify interaction and add functionality.
  *
@@ -591,6 +593,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     @SuppressWarnings("unused")
+    @Nonnull
     public NgramContext getNgramContextFromNthPreviousWord(
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
         mIC = mParent.getCurrentInputConnection();

@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.touchinputconsumer;
 
 import android.view.inputmethod.EditorInfo;
+
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.SuggestedWords;
@@ -31,6 +32,7 @@ import java.util.Locale;
  * The methods of this class should only be called from a single thread, e.g.,
  * the UI Thread.
  */
+@SuppressWarnings("unused")
 public class GestureConsumer {
     public static final GestureConsumer NULL_GESTURE_CONSUMER =
             new GestureConsumer();
