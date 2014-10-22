@@ -22,8 +22,6 @@ import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
-import org.xml.sax.SAXException;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -35,8 +33,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Class grouping utilities for offline dictionary making.
@@ -177,14 +173,6 @@ public final class BinaryDictOffdeviceUtils {
             System.out.println("Size : " + file.length() + " bytes");
         }
         try {
-            if (XmlDictInputOutput.isXmlUnigramDictionary(filename)) {
-                if (report) {
-                    System.out.println("Format : XML unigram list");
-                }
-                return XmlDictInputOutput.readDictionaryXml(
-                        new BufferedInputStream(new FileInputStream(file)),
-                        null /* shortcuts */, null /* bigrams */);
-            }
             final DecoderChainSpec decodedSpec = getRawDictionaryOrNull(file);
             if (null == decodedSpec) {
                 throw new RuntimeException("Does not seem to be a dictionary file " + filename);
@@ -209,8 +197,7 @@ public final class BinaryDictOffdeviceUtils {
                 System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
             }
             return dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);
-        } catch (final IOException | SAXException | ParserConfigurationException |
-                UnsupportedFormatException e) {
+        } catch (final IOException | UnsupportedFormatException e) {
             throw new RuntimeException("Can't read file " + filename, e);
         }
     }

@@ -20,8 +20,6 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
 public class Makedict extends Dicttool.Command {
     public static final String COMMAND = "makedict";
@@ -35,8 +33,7 @@ public class Makedict extends Dicttool.Command {
     }
 
     @Override
-    public void run() throws FileNotFoundException, IOException, ParserConfigurationException,
-            SAXException, UnsupportedFormatException {
+    public void run() throws FileNotFoundException, IOException, UnsupportedFormatException {
         DictionaryMaker.main(mArgs);
     }
 }

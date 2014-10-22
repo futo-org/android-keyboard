@@ -27,8 +27,6 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 import com.android.inputmethod.latin.makedict.Ver4DictEncoder;
 
-import org.xml.sax.SAXException;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -41,8 +39,6 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 /**
  * Main class/method for DictionaryMaker.
  */
@@ -52,10 +48,7 @@ public class DictionaryMaker {
         private static final String OPTION_VERSION_2 = "-2";
         private static final String OPTION_VERSION_4 = "-4";
         private static final String OPTION_INPUT_SOURCE = "-s";
-        private static final String OPTION_INPUT_BIGRAM_XML = "-b";
-        private static final String OPTION_INPUT_SHORTCUT_XML = "-c";
         private static final String OPTION_OUTPUT_BINARY = "-d";
-        private static final String OPTION_OUTPUT_XML = "-x";
         private static final String OPTION_OUTPUT_COMBINED = "-o";
         private static final String OPTION_HELP = "-h";
         private static final String OPTION_CODE_POINT_TABLE = "-t";
@@ -63,11 +56,7 @@ public class DictionaryMaker {
         private static final String OPTION_CODE_POINT_TABLE_ON = "on";
         public final String mInputBinary;
         public final String mInputCombined;
-        public final String mInputUnigramXml;
-        public final String mInputShortcutXml;
-        public final String mInputBigramXml;
         public final String mOutputBinary;
-        public final String mOutputXml;
         public final String mOutputCombined;
         public final int mOutputBinaryFormatVersion;
         public final int mCodePointTableMode;
@@ -76,39 +65,20 @@ public class DictionaryMaker {
             checkHasExactlyOneInput();
             checkHasAtLeastOneOutput();
             checkNotSameFile(mInputBinary, mOutputBinary);
-            checkNotSameFile(mInputBinary, mOutputXml);
             checkNotSameFile(mInputCombined, mOutputBinary);
-            checkNotSameFile(mInputCombined, mOutputXml);
-            checkNotSameFile(mInputUnigramXml, mOutputBinary);
-            checkNotSameFile(mInputUnigramXml, mOutputXml);
-            checkNotSameFile(mInputUnigramXml, mOutputCombined);
-            checkNotSameFile(mInputShortcutXml, mOutputBinary);
-            checkNotSameFile(mInputShortcutXml, mOutputXml);
-            checkNotSameFile(mInputShortcutXml, mOutputCombined);
-            checkNotSameFile(mInputBigramXml, mOutputBinary);
-            checkNotSameFile(mInputBigramXml, mOutputXml);
-            checkNotSameFile(mInputBigramXml, mOutputCombined);
-            checkNotSameFile(mOutputBinary, mOutputXml);
             checkNotSameFile(mOutputBinary, mOutputCombined);
-            checkNotSameFile(mOutputXml, mOutputCombined);
         }
 
         private void checkHasExactlyOneInput() {
-            if (null == mInputUnigramXml && null == mInputBinary && null == mInputCombined) {
+            if (null == mInputBinary && null == mInputCombined) {
                 throw new RuntimeException("No input file specified");
-            } else if ((null != mInputUnigramXml && null != mInputBinary)
-                    || (null != mInputUnigramXml && null != mInputCombined)
-                    || (null != mInputBinary && null != mInputCombined)) {
+            } else if (null != mInputBinary && null != mInputCombined) {
                 throw new RuntimeException("Several input files specified");
-            } else if ((null != mInputBinary || null != mInputCombined)
-                    && (null != mInputBigramXml || null != mInputShortcutXml)) {
-                throw new RuntimeException("Separate bigrams/shortcut files are only supported"
-                        + " with XML input (other formats include bigrams and shortcuts already)");
             }
         }
 
         private void checkHasAtLeastOneOutput() {
-            if (null == mOutputBinary && null == mOutputXml && null == mOutputCombined) {
+            if (null == mOutputBinary && null == mOutputCombined) {
                 throw new RuntimeException("No output specified");
             }
         }
@@ -131,16 +101,14 @@ public class DictionaryMaker {
 
         public static String getHelp() {
             return "Usage: makedict "
-                    + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts_and_whitelist.xml>] "
                     + "| [-s <combined format input]"
-                    + "| [-s <binary input>] [-d <binary output>] [-x <xml output>] "
+                    + "| [-s <binary input>] [-d <binary output>]"
                     + " [-o <combined output>] [-t <code point table switch: on/off/auto>]"
                     + "[-2] [-3] [-4]\n"
                     + "\n"
                     + "  Converts a source dictionary file to one or several outputs.\n"
-                    + "  Source can be an XML file, with an optional XML bigrams file, or a\n"
-                    + "  binary dictionary file.\n"
-                    + "  Binary version 2 (Jelly Bean), 3, 4, XML and\n"
+                    + "  Source can be a binary dictionary file or a combined format file.\n"
+                    + "  Binary version 2 (Jelly Bean), 3, 4, and\n"
                     + "  combined format outputs are supported.";
         }
 
@@ -151,11 +119,7 @@ public class DictionaryMaker {
             }
             String inputBinary = null;
             String inputCombined = null;
-            String inputUnigramXml = null;
-            String inputShortcutXml = null;
-            String inputBigramXml = null;
             String outputBinary = null;
-            String outputXml = null;
             String outputCombined = null;
             int outputBinaryFormatVersion = FormatSpec.VERSION201; // the default version is 201.
             // Don't use code point table by default.
@@ -180,9 +144,7 @@ public class DictionaryMaker {
                         String argValue = args.get(0);
                         args.remove(0);
                         if (OPTION_INPUT_SOURCE.equals(arg)) {
-                            if (XmlDictInputOutput.isXmlUnigramDictionary(argValue)) {
-                                inputUnigramXml = argValue;
-                            } else if (CombinedInputOutput.isCombinedDictionary(argValue)) {
+                            if (CombinedInputOutput.isCombinedDictionary(argValue)) {
                                 inputCombined = argValue;
                             } else if (BinaryDictDecoderUtils.isBinaryDictionary(argValue)) {
                                 inputBinary = argValue;
@@ -190,14 +152,8 @@ public class DictionaryMaker {
                                 throw new IllegalArgumentException(
                                         "Unknown format for file " + argValue);
                             }
-                        } else if (OPTION_INPUT_SHORTCUT_XML.equals(arg)) {
-                            inputShortcutXml = argValue;
-                        } else if (OPTION_INPUT_BIGRAM_XML.equals(arg)) {
-                            inputBigramXml = argValue;
                         } else if (OPTION_OUTPUT_BINARY.equals(arg)) {
                             outputBinary = argValue;
-                        } else if (OPTION_OUTPUT_XML.equals(arg)) {
-                            outputXml = argValue;
                         } else if (OPTION_OUTPUT_COMBINED.equals(arg)) {
                             outputCombined = argValue;
                         } else if (OPTION_CODE_POINT_TABLE.equals(arg)) {
@@ -214,13 +170,13 @@ public class DictionaryMaker {
                         }
                     }
                 } else {
-                    if (null == inputBinary && null == inputUnigramXml) {
+                    if (null == inputBinary) {
                         if (BinaryDictDecoderUtils.isBinaryDictionary(arg)) {
                             inputBinary = arg;
                         } else if (CombinedInputOutput.isCombinedDictionary(arg)) {
                             inputCombined = arg;
                         } else {
-                            inputUnigramXml = arg;
+                            throw new IllegalArgumentException("Unknown format for file " + arg);
                         }
                     } else if (null == outputBinary) {
                         outputBinary = arg;
@@ -232,11 +188,7 @@ public class DictionaryMaker {
 
             mInputBinary = inputBinary;
             mInputCombined = inputCombined;
-            mInputUnigramXml = inputUnigramXml;
-            mInputShortcutXml = inputShortcutXml;
-            mInputBigramXml = inputBigramXml;
             mOutputBinary = outputBinary;
-            mOutputXml = outputXml;
             mOutputCombined = outputCombined;
             mOutputBinaryFormatVersion = outputBinaryFormatVersion;
             mCodePointTableMode = codePointTableMode;
@@ -245,8 +197,7 @@ public class DictionaryMaker {
     }
 
     public static void main(String[] args)
-            throws FileNotFoundException, ParserConfigurationException, SAXException, IOException,
-            UnsupportedFormatException {
+            throws FileNotFoundException, IOException, UnsupportedFormatException {
         final Arguments parsedArgs = new Arguments(args);
         FusionDictionary dictionary = readInputFromParsedArgs(parsedArgs);
         writeOutputToParsedArgs(parsedArgs, dictionary);
@@ -259,14 +210,11 @@ public class DictionaryMaker {
      * @return the read dictionary.
      */
     private static FusionDictionary readInputFromParsedArgs(final Arguments args)
-            throws IOException, UnsupportedFormatException, ParserConfigurationException,
-            SAXException, FileNotFoundException {
+            throws IOException, UnsupportedFormatException, FileNotFoundException {
         if (null != args.mInputBinary) {
             return readBinaryFile(args.mInputBinary);
         } else if (null != args.mInputCombined) {
             return readCombinedFile(args.mInputCombined);
-        } else if (null != args.mInputUnigramXml) {
-            return readXmlFile(args.mInputUnigramXml, args.mInputShortcutXml, args.mInputBigramXml);
         } else {
             throw new RuntimeException("No input file specified");
         }
@@ -314,30 +262,6 @@ public class DictionaryMaker {
     }
 
     /**
-     * Read a dictionary from a unigram XML file, and optionally a bigram XML file.
-     *
-     * @param unigramXmlFilename the name of the unigram XML file. May not be null.
-     * @param shortcutXmlFilename the name of the shortcut/whitelist XML file, or null if none.
-     * @param bigramXmlFilename the name of the bigram XML file. Pass null if there are no bigrams.
-     * @return the read dictionary.
-     * @throws FileNotFoundException if one of the files can't be found
-     * @throws SAXException if one or more of the XML files is not well-formed
-     * @throws IOException if one the input files can't be read
-     * @throws ParserConfigurationException if the system can't create a SAX parser
-     */
-    private static FusionDictionary readXmlFile(final String unigramXmlFilename,
-            final String shortcutXmlFilename, final String bigramXmlFilename)
-            throws FileNotFoundException, SAXException, IOException, ParserConfigurationException {
-        try (
-            final BufferedInputStream unigrams = getBufferedFileInputStream(unigramXmlFilename);
-            final BufferedInputStream shortcuts = getBufferedFileInputStream(shortcutXmlFilename);
-            final BufferedInputStream bigrams = getBufferedFileInputStream(bigramXmlFilename);
-        ) {
-            return XmlDictInputOutput.readDictionaryXml(unigrams, shortcuts, bigrams);
-        }
-    }
-
-    /**
      * Invoke the right output method according to args.
      *
      * This will write the passed dictionary to the file(s) passed in the command line arguments.
@@ -352,9 +276,6 @@ public class DictionaryMaker {
         if (null != args.mOutputBinary) {
             writeBinaryDictionary(args.mOutputBinary, dict, args.mOutputBinaryFormatVersion,
                     args.mCodePointTableMode);
-        }
-        if (null != args.mOutputXml) {
-            writeXmlDictionary(args.mOutputXml, dict);
         }
         if (null != args.mOutputCombined) {
             writeCombinedDictionary(args.mOutputCombined, dict);
@@ -384,21 +305,6 @@ public class DictionaryMaker {
             dictEncoder = new Ver2DictEncoder(outputFile, codePointTableMode);
         }
         dictEncoder.writeDictionary(dict, formatOptions);
-    }
-
-    /**
-     * Write the dictionary in XML format to the specified filename.
-     *
-     * @param outputFilename the name of the file to write to.
-     * @param dict the dictionary to write.
-     * @throws FileNotFoundException if the output file can't be created.
-     * @throws IOException if the output file can't be written to.
-     */
-    private static void writeXmlDictionary(final String outputFilename,
-            final FusionDictionary dict) throws FileNotFoundException, IOException {
-        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename))) {
-            XmlDictInputOutput.writeDictionaryXml(writer, dict);
-        }
     }
 
     /**
