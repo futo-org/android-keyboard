@@ -32,7 +32,7 @@ import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
-import com.android.inputmethod.latin.utils.LanguageModelParam;
+import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -447,16 +447,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }, word, distracterFilter);
     }
 
-    public interface AddMultipleDictionaryEntriesCallback {
+    public interface UpdateEntriesForInputEventsCallback {
         public void onFinished();
     }
 
     /**
-     * Dynamically add multiple entries to the dictionary.
+     * Dynamically update entries according to input events.
      */
-    public void addMultipleDictionaryEntriesDynamically(
-            @Nonnull final ArrayList<LanguageModelParam> languageModelParams,
-            final AddMultipleDictionaryEntriesCallback callback) {
+    public void updateEntriesForInputEvents(
+            @Nonnull final ArrayList<WordInputEventForPersonalization> inputEvents,
+            final UpdateEntriesForInputEventsCallback callback) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
@@ -466,9 +466,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     if (binaryDictionary == null) {
                         return;
                     }
-                    binaryDictionary.addMultipleDictionaryEntries(
-                            languageModelParams.toArray(
-                                    new LanguageModelParam[languageModelParams.size()]));
+                    binaryDictionary.updateEntriesForInputEvents(
+                            inputEvents.toArray(
+                                    new WordInputEventForPersonalization[inputEvents.size()]));
                 } finally {
                     if (callback != null) {
                         callback.onFinished();

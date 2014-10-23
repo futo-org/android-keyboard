@@ -26,14 +26,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import android.content.Context;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary.UpdateEntriesForInputEventsCallback;
 import com.android.inputmethod.latin.personalization.PersonalizationDataChunk;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingIsInDictionary;
-import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
+import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;
 
 /**
  * Class for managing and updating personalization dictionaries.
@@ -119,10 +119,10 @@ public class PersonalizationHelperForDictionaryFacilitator {
         return personalizationDict;
     }
 
-    private void addEntriesToPersonalizationDictionariesForLocale(final Locale locale,
+    private void updateEntriesOfPersonalizationDictionariesForLocale(final Locale locale,
             final PersonalizationDataChunk personalizationDataChunk,
             final SpacingAndPunctuations spacingAndPunctuations,
-            final AddMultipleDictionaryEntriesCallback callback) {
+            final UpdateEntriesForInputEventsCallback callback) {
         final ExpandableBinaryDictionary personalizationDict =
                 getPersonalizationDictToUpdate(mContext, locale);
         if (personalizationDict == null) {
@@ -131,25 +131,25 @@ public class PersonalizationHelperForDictionaryFacilitator {
             }
             return;
         }
-        final ArrayList<LanguageModelParam> languageModelParams =
-                LanguageModelParam.createLanguageModelParamsFrom(
+        final ArrayList<WordInputEventForPersonalization> inputEvents =
+                WordInputEventForPersonalization.createInputEventFrom(
                         personalizationDataChunk.mTokens,
                         personalizationDataChunk.mTimestampInSeconds, spacingAndPunctuations,
                         locale, new DistracterFilterCheckingIsInDictionary(
                                 mDistracterFilter, personalizationDict));
-        if (languageModelParams == null || languageModelParams.isEmpty()) {
+        if (inputEvents == null || inputEvents.isEmpty()) {
             if (callback != null) {
                 callback.onFinished();
             }
             return;
         }
-        personalizationDict.addMultipleDictionaryEntriesDynamically(languageModelParams, callback);
+        personalizationDict.updateEntriesForInputEvents(inputEvents, callback);
     }
 
-    public void addEntriesToPersonalizationDictionariesToUpdate(final Locale defaultLocale,
+    public void updateEntriesOfPersonalizationDictionaries(final Locale defaultLocale,
             final PersonalizationDataChunk personalizationDataChunk,
             final SpacingAndPunctuations spacingAndPunctuations,
-            final AddMultipleDictionaryEntriesCallback callback) {
+            final UpdateEntriesForInputEventsCallback callback) {
         final String language = personalizationDataChunk.mDetectedLanguage;
         final HashSet<Locale> locales;
         if (mIsMonolingualUser && PersonalizationDataChunk.LANGUAGE_UNKNOWN.equals(language)
@@ -165,8 +165,8 @@ public class PersonalizationHelperForDictionaryFacilitator {
             return;
         }
         final AtomicInteger remainingTaskCount = new AtomicInteger(locales.size());
-        final AddMultipleDictionaryEntriesCallback callbackForLocales =
-                new AddMultipleDictionaryEntriesCallback() {
+        final UpdateEntriesForInputEventsCallback callbackForLocales =
+                new UpdateEntriesForInputEventsCallback() {
                     @Override
                     public void onFinished() {
                         if (remainingTaskCount.decrementAndGet() == 0) {
@@ -178,7 +178,7 @@ public class PersonalizationHelperForDictionaryFacilitator {
                     }
                 };
         for (final Locale locale : locales) {
-            addEntriesToPersonalizationDictionariesForLocale(locale, personalizationDataChunk,
+            updateEntriesOfPersonalizationDictionariesForLocale(locale, personalizationDataChunk,
                     spacingAndPunctuations, callbackForLocales);
         }
     }

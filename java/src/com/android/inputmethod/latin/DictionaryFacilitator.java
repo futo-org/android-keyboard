@@ -24,7 +24,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.latin.ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary.UpdateEntriesForInputEventsCallback;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.ContextualDictionary;
@@ -796,8 +796,8 @@ public class DictionaryFacilitator {
     public void addEntriesToPersonalizationDictionary(
             final PersonalizationDataChunk personalizationDataChunk,
             final SpacingAndPunctuations spacingAndPunctuations,
-            final AddMultipleDictionaryEntriesCallback callback) {
-        mPersonalizationHelper.addEntriesToPersonalizationDictionariesToUpdate(
+            final UpdateEntriesForInputEventsCallback callback) {
+        mPersonalizationHelper.updateEntriesOfPersonalizationDictionaries(
                 getMostProbableLocale(), personalizationDataChunk, spacingAndPunctuations,
                 callback);
     }

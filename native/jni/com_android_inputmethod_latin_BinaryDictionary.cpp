@@ -453,98 +453,60 @@ static bool latinime_BinaryDictionary_updateEntriesForWordWithNgramContext(JNIEn
             historicalInfo);
 }
 
-// Returns how many language model params are processed.
-static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, jclass clazz,
-        jlong dict, jobjectArray languageModelParams, jint startIndex) {
+// Returns how many input events are processed.
+static int latinime_BinaryDictionary_updateEntriesForInputEvents(JNIEnv *env, jclass clazz,
+        jlong dict, jobjectArray inputEvents, jint startIndex) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
         return 0;
     }
-    jsize languageModelParamCount = env->GetArrayLength(languageModelParams);
-    if (languageModelParamCount == 0 || startIndex >= languageModelParamCount) {
+    jsize inputEventCount = env->GetArrayLength(inputEvents);
+    if (inputEventCount == 0 || startIndex >= inputEventCount) {
         return 0;
     }
-    jobject languageModelParam = env->GetObjectArrayElement(languageModelParams, 0);
-    jclass languageModelParamClass = env->GetObjectClass(languageModelParam);
-    env->DeleteLocalRef(languageModelParam);
+    jobject inputEvent = env->GetObjectArrayElement(inputEvents, 0);
+    jclass wordInputEventClass = env->GetObjectClass(inputEvent);
+    env->DeleteLocalRef(inputEvent);
 
-    jfieldID word0FieldId = env->GetFieldID(languageModelParamClass, "mWord0", "[I");
-    jfieldID word1FieldId = env->GetFieldID(languageModelParamClass, "mWord1", "[I");
-    jfieldID unigramProbabilityFieldId =
-            env->GetFieldID(languageModelParamClass, "mUnigramProbability", "I");
-    jfieldID bigramProbabilityFieldId =
-            env->GetFieldID(languageModelParamClass, "mBigramProbability", "I");
-    jfieldID timestampFieldId =
-            env->GetFieldID(languageModelParamClass, "mTimestamp", "I");
-    jfieldID shortcutTargetFieldId =
-            env->GetFieldID(languageModelParamClass, "mShortcutTarget", "[I");
-    jfieldID shortcutProbabilityFieldId =
-            env->GetFieldID(languageModelParamClass, "mShortcutProbability", "I");
-    jfieldID isNotAWordFieldId =
-            env->GetFieldID(languageModelParamClass, "mIsNotAWord", "Z");
-    jfieldID isPossiblyOffensiveFieldId =
-            env->GetFieldID(languageModelParamClass, "mIsPossiblyOffensive", "Z");
-    env->DeleteLocalRef(languageModelParamClass);
+    jfieldID targetWordFieldId = env->GetFieldID(wordInputEventClass, "mTargetWord", "[I");
+    jfieldID prevWordCountFieldId = env->GetFieldID(wordInputEventClass, "mPrevWordsCount", "I");
+    jfieldID prevWordArrayFieldId = env->GetFieldID(wordInputEventClass, "mPrevWordArray", "[[I");
+    jfieldID isPrevWordBoSArrayFieldId =
+            env->GetFieldID(wordInputEventClass, "mIsPrevWordBeginningOfSentenceArray", "[Z");
+    jfieldID isValidFieldId = env->GetFieldID(wordInputEventClass, "mIsValid", "Z");
+    jfieldID timestampFieldId = env->GetFieldID(wordInputEventClass, "mTimestamp", "I");
+    env->DeleteLocalRef(wordInputEventClass);
 
-    for (int i = startIndex; i < languageModelParamCount; ++i) {
-        jobject languageModelParam = env->GetObjectArrayElement(languageModelParams, i);
-        // languageModelParam is a set of params for word1; thus, word1 cannot be null. On the
-        // other hand, word0 can be null and then it means the set of params doesn't contain bigram
-        // information.
-        jintArray word0 = static_cast<jintArray>(
-                env->GetObjectField(languageModelParam, word0FieldId));
-        jsize word0Length = word0 ? env->GetArrayLength(word0) : 0;
-        int word0CodePoints[word0Length];
-        if (word0) {
-            env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
-        }
-        jintArray word1 = static_cast<jintArray>(
-                env->GetObjectField(languageModelParam, word1FieldId));
-        jsize word1Length = env->GetArrayLength(word1);
-        int word1CodePoints[word1Length];
-        env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
-        jint unigramProbability = env->GetIntField(languageModelParam, unigramProbabilityFieldId);
-        jint timestamp = env->GetIntField(languageModelParam, timestampFieldId);
-        jboolean isNotAWord = env->GetBooleanField(languageModelParam, isNotAWordFieldId);
-        jboolean isPossiblyOffensive = env->GetBooleanField(languageModelParam,
-                isPossiblyOffensiveFieldId);
-        jintArray shortcutTarget = static_cast<jintArray>(
-                env->GetObjectField(languageModelParam, shortcutTargetFieldId));
-        std::vector<UnigramProperty::ShortcutProperty> shortcuts;
-        {
-            std::vector<int> shortcutTargetCodePoints;
-            JniDataUtils::jintarrayToVector(env, shortcutTarget, &shortcutTargetCodePoints);
-            if (!shortcutTargetCodePoints.empty()) {
-                jint shortcutProbability =
-                        env->GetIntField(languageModelParam, shortcutProbabilityFieldId);
-                shortcuts.emplace_back(std::move(shortcutTargetCodePoints), shortcutProbability);
-            }
-        }
+    for (int i = startIndex; i < inputEventCount; ++i) {
+        jobject inputEvent = env->GetObjectArrayElement(inputEvents, i);
+        jintArray targetWord = static_cast<jintArray>(
+                env->GetObjectField(inputEvent, targetWordFieldId));
+        jsize wordLength = env->GetArrayLength(targetWord);
+        int wordCodePoints[wordLength];
+        env->GetIntArrayRegion(targetWord, 0, wordLength, wordCodePoints);
+        env->DeleteLocalRef(targetWord);
+
+        jint prevWordCount = env->GetIntField(inputEvent, prevWordCountFieldId);
+        jobjectArray prevWordArray =
+                static_cast<jobjectArray>(env->GetObjectField(inputEvent, prevWordArrayFieldId));
+        jbooleanArray isPrevWordBeginningOfSentenceArray = static_cast<jbooleanArray>(
+                env->GetObjectField(inputEvent, isPrevWordBoSArrayFieldId));
+        jboolean isValid = env->GetBooleanField(inputEvent, isValidFieldId);
+        jint timestamp = env->GetIntField(inputEvent, timestampFieldId);
+        const NgramContext ngramContext = JniDataUtils::constructNgramContext(env,
+                prevWordArray, isPrevWordBeginningOfSentenceArray, prevWordCount);
         // Use 1 for count to indicate the word has inputted.
-        const UnigramProperty unigramProperty(false /* isBeginningOfSentence */, isNotAWord,
-                isPossiblyOffensive, unigramProbability,
-                HistoricalInfo(timestamp, 0 /* level */, 1 /* count */), std::move(shortcuts));
-        dictionary->addUnigramEntry(CodePointArrayView(word1CodePoints, word1Length),
-                &unigramProperty);
-        if (word0) {
-            jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
-            // Use 1 for count to indicate the bigram has inputted.
-            const NgramContext ngramContext(word0CodePoints, word0Length,
-                    false /* isBeginningOfSentence */);
-            const NgramProperty ngramProperty(ngramContext,
-                    CodePointArrayView(word1CodePoints, word1Length).toVector(),
-                    bigramProbability, HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
-            dictionary->addNgramEntry(&ngramProperty);
-        }
+        dictionary->updateEntriesForWordWithNgramContext(&ngramContext,
+                CodePointArrayView(wordCodePoints, wordLength), isValid,
+                HistoricalInfo(timestamp, 0 /* level */, 1 /* count */));
         if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
             return i + 1;
         }
-        env->DeleteLocalRef(word0);
-        env->DeleteLocalRef(word1);
-        env->DeleteLocalRef(shortcutTarget);
-        env->DeleteLocalRef(languageModelParam);
+        env->DeleteLocalRef(prevWordArray);
+        env->DeleteLocalRef(isPrevWordBeginningOfSentenceArray);
+        env->DeleteLocalRef(inputEvent);
     }
-    return languageModelParamCount;
+    return inputEventCount;
 }
 
 static jstring latinime_BinaryDictionary_getProperty(JNIEnv *env, jclass clazz, jlong dict,
@@ -754,10 +716,10 @@ static const JNINativeMethod sMethods[] = {
         reinterpret_cast<void *>(latinime_BinaryDictionary_updateEntriesForWordWithNgramContext)
     },
     {
-        const_cast<char *>("addMultipleDictionaryEntriesNative"),
+        const_cast<char *>("updateEntriesForInputEventsNative"),
         const_cast<char *>(
-                "(J[Lcom/android/inputmethod/latin/utils/LanguageModelParam;I)I"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_addMultipleDictionaryEntries)
+                "(J[Lcom/android/inputmethod/latin/utils/WordInputEventForPersonalization;I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_updateEntriesForInputEvents)
     },
     {
         const_cast<char *>("getPropertyNative"),
