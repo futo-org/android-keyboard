@@ -32,8 +32,8 @@ import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
-import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -205,8 +205,8 @@ public final class BinaryDictionary extends Dictionary {
     private static native boolean updateEntriesForWordWithNgramContextNative(long dict,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
             int[] word, boolean isValidWord, int count, int timestamp);
-    private static native int addMultipleDictionaryEntriesNative(long dict,
-            LanguageModelParam[] languageModelParams, int startIndex);
+    private static native int updateEntriesForInputEventsNative(long dict,
+            WordInputEventForPersonalization[] inputEvents, int startIndex);
     private static native String getPropertyNative(long dict, String query);
     private static native boolean isCorruptedNative(long dict);
     private static native boolean migrateNative(long dict, String dictFilePath,
@@ -526,19 +526,19 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
-    public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
+    public void updateEntriesForInputEvents(final WordInputEventForPersonalization[] inputEvents) {
         if (!isValidDictionary()) {
             return;
         }
-        int processedParamCount = 0;
-        while (processedParamCount < languageModelParams.length) {
+        int processedEventCount = 0;
+        while (processedEventCount < inputEvents.length) {
             if (needsToRunGC(true /* mindsBlockByGC */)) {
                 flushWithGC();
             }
-            processedParamCount = addMultipleDictionaryEntriesNative(mNativeDict,
-                    languageModelParams, processedParamCount);
+            processedEventCount = updateEntriesForInputEventsNative(mNativeDict, inputEvents,
+                    processedEventCount);
             mHasUpdated = true;
-            if (processedParamCount <= 0) {
+            if (processedEventCount <= 0) {
                 return;
             }
         }

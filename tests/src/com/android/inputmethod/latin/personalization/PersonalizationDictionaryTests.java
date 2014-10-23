@@ -30,7 +30,7 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary.UpdateEntriesForInputEventsCallback;
 import com.android.inputmethod.latin.common.CodePointUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
@@ -96,8 +96,8 @@ public class PersonalizationDictionaryTests extends AndroidTestCase {
                     true /* inputByUser */, tokens, timeStampInSeconds, DUMMY_PACKAGE_NAME,
                     LOCALE_EN_US.getLanguage());
             final CountDownLatch countDownLatch = new CountDownLatch(1);
-            final AddMultipleDictionaryEntriesCallback callback =
-                    new AddMultipleDictionaryEntriesCallback() {
+            final UpdateEntriesForInputEventsCallback callback =
+                    new UpdateEntriesForInputEventsCallback() {
                         @Override
                         public void onFinished() {
                             countDownLatch.countDown();

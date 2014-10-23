@@ -29,7 +29,6 @@ import com.android.inputmethod.latin.makedict.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
-import com.android.inputmethod.latin.utils.LanguageModelParam;
 
 import java.io.File;
 import java.io.IOException;
@@ -881,63 +880,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                     binaryDictionary.getPropertyForGettingStats(
                             BinaryDictionary.BIGRAM_COUNT_QUERY)));
             binaryDictionary.close();
-        }
-    }
-
-    public void testAddMultipleDictionaryEntries() {
-        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
-            testAddMultipleDictionaryEntries(formatVersion);
-        }
-    }
-
-    private void testAddMultipleDictionaryEntries(final int formatVersion) {
-        final int codePointSetSize = 20;
-        final int lmParamCount = 1000;
-        final double bigramContinueRate = 0.9;
-        final long seed = System.currentTimeMillis();
-        final Random random = new Random(seed);
-        final File dictFile = createEmptyDictionaryAndGetFile(formatVersion);
-
-        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<>();
-        final HashMap<Pair<String, String>, Integer> bigramProbabilities = new HashMap<>();
-
-        final LanguageModelParam[] languageModelParams = new LanguageModelParam[lmParamCount];
-        String prevWord = null;
-        for (int i = 0; i < languageModelParams.length; i++) {
-            final String word = CodePointUtils.generateWord(random, codePointSet);
-            final int probability = random.nextInt(0xFF);
-            final int bigramProbability = probability + random.nextInt(0xFF - probability);
-            unigramProbabilities.put(word, probability);
-            if (prevWord == null) {
-                languageModelParams[i] = new LanguageModelParam(word, probability,
-                        BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-            } else {
-                languageModelParams[i] = new LanguageModelParam(prevWord, word, probability,
-                        bigramProbability, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-                bigramProbabilities.put(new Pair<>(prevWord, word),
-                        bigramProbability);
-            }
-            prevWord = (random.nextDouble() < bigramContinueRate) ? word : null;
-        }
-
-        final BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
-        binaryDictionary.addMultipleDictionaryEntries(languageModelParams);
-
-        for (Map.Entry<String, Integer> entry : unigramProbabilities.entrySet()) {
-            assertEquals((int)entry.getValue(), binaryDictionary.getFrequency(entry.getKey()));
-        }
-
-        for (Map.Entry<Pair<String, String>, Integer> entry : bigramProbabilities.entrySet()) {
-            final String word0 = entry.getKey().first;
-            final String word1 = entry.getKey().second;
-            final int bigramProbability = entry.getValue();
-            assertEquals(bigramProbability != Dictionary.NOT_A_PROBABILITY,
-                    isValidBigram(binaryDictionary, word0, word1));
-            if (canCheckBigramProbability(formatVersion)) {
-                assertEquals(bigramProbability,
-                        getBigramProbability(binaryDictionary, word0, word1));
-            }
         }
     }
 
