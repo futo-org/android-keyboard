@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Host build is never supported in unbundled (NDK/tapas) build
+ifeq (,$(TARGET_BUILD_APPS))
+
 # HACK: Temporarily disable host tool build on Mac until the build system is ready for C++11.
 LATINIME_HOST_OSNAME := $(shell uname -s)
 ifneq ($(LATINIME_HOST_OSNAME), Darwin) # TODO: Remove this
@@ -47,10 +50,13 @@ LOCAL_SRC_FILES := $(addprefix $(LATIN_IME_TEST_SRC_DIR)/, $(LATIN_IME_CORE_TEST
 LOCAL_STATIC_LIBRARIES += liblatinime_host_static_for_unittests
 include $(BUILD_HOST_NATIVE_TEST)
 
+include $(LOCAL_PATH)/CleanupNativeFileList.mk
+
 endif # Darwin - TODO: Remove this
+
+endif # TARGET_BUILD_APPS
 
 #################### Clean up the tmp vars
 LATINIME_HOST_OSNAME :=
 LATIN_IME_SRC_DIR :=
 LATIN_IME_TEST_SRC_DIR :=
-include $(LOCAL_PATH)/CleanupNativeFileList.mk
