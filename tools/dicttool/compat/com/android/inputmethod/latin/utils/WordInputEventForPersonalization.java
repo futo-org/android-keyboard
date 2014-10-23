@@ -16,5 +16,5 @@
 
 package com.android.inputmethod.latin.utils;
 
-public final class LanguageModelParam {
+public final class WordInputEventForPersonalization {
 }
