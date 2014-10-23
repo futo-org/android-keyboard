@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 import com.android.inputmethod.latin.makedict.Ver4DictEncoder;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -251,14 +250,6 @@ public class DictionaryMaker {
         ) {
             return CombinedInputOutput.readDictionaryCombined(reader);
         }
-    }
-
-    private static BufferedInputStream getBufferedFileInputStream(final String filename)
-            throws FileNotFoundException {
-        if (filename == null) {
-            return null;
-        }
-        return new BufferedInputStream(new FileInputStream(filename));
     }
 
     /**
