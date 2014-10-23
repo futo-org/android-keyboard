@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.android.inputmethod.event.Event;
+import com.android.inputmethod.latin.common.Constants;
 
 import java.util.ArrayList;
 

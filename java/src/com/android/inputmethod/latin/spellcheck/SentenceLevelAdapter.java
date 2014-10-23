@@ -24,7 +24,7 @@ import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.TextInfoCompatUtils;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.RunInLocale;
 

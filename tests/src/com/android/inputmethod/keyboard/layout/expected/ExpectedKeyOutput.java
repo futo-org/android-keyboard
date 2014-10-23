@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.layout.expected;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.Locale;

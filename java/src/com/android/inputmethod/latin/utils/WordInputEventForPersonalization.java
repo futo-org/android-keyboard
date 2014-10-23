@@ -19,8 +19,8 @@ package com.android.inputmethod.latin.utils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.NgramContext;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.DistracterFilter.HandlingType;
 

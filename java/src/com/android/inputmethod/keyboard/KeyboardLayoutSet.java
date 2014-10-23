@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
-import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
-import static com.android.inputmethod.latin.Constants.ImeOption.NO_SETTINGS_KEY;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASCII;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_SETTINGS_KEY;
 
 import android.content.Context;
 import android.content.res.Resources;

@@ -29,6 +29,7 @@ import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.ExternallyReferenced;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.personalization.AccountUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.StringUtils;

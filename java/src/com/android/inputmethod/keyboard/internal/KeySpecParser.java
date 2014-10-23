@@ -16,10 +16,10 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
-import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
+import static com.android.inputmethod.latin.common.Constants.CODE_OUTPUT_TEXT;
+import static com.android.inputmethod.latin.common.Constants.CODE_UNSPECIFIED;
 
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 /**

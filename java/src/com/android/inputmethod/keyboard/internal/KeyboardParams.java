@@ -20,7 +20,7 @@ import android.util.SparseIntArray;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 
 import java.util.ArrayList;
 import java.util.Comparator;

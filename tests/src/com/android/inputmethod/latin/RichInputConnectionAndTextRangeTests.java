@@ -30,6 +30,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.NgramContextUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;

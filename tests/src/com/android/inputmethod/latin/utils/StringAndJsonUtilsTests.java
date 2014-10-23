@@ -22,7 +22,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.SpannedString;
 
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 
 import java.util.Arrays;
 import java.util.List;

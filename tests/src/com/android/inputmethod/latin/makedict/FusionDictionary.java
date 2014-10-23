@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 
 import java.util.ArrayList;

@@ -19,7 +19,7 @@ package com.android.inputmethod.event;
 import android.text.TextUtils;
 import android.util.SparseIntArray;
 
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
