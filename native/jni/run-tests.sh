@@ -48,6 +48,13 @@ if [[ $show_usage == yes ]]; then
   if [[ ${BASH_SOURCE[0]} != $0 ]]; then return; else exit 1; fi
 fi
 
+# Host build is never supported in unbundled (NDK/tapas) build
+if [[ $enable_host_test == yes && -n $TARGET_BUILD_APPS ]]; then
+  echo "Host build is never supported in tapas build."  1>&2
+  echo "Use lunch command instead."  1>&2
+  if [[ ${BASH_SOURCE[0]} != $0 ]]; then return; else exit 1; fi
+fi
+
 target_test_name=liblatinime_target_unittests
 host_test_name=liblatinime_host_unittests
 
