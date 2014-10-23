@@ -367,7 +367,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
         // never blocks or initiates IPC.
-        return CapsModeUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType,
+        // TODO: don't call #toString() here. Instead, all accesses to
+        // mCommittedTextBeforeComposingText should be done on the main thread.
+        return CapsModeUtils.getCapsMode(mCommittedTextBeforeComposingText.toString(), inputType,
                 spacingAndPunctuations, hasSpaceBefore);
     }
 
