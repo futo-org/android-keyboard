@@ -50,6 +50,7 @@ class JniDataUtils {
             const jsize keyUtf8Length = env->GetStringUTFLength(keyString);
             char keyChars[keyUtf8Length + 1];
             env->GetStringUTFRegion(keyString, 0, env->GetStringLength(keyString), keyChars);
+            env->DeleteLocalRef(keyString);
             keyChars[keyUtf8Length] = '\0';
             DictionaryHeaderStructurePolicy::AttributeMap::key_type key;
             HeaderReadWriteUtils::insertCharactersIntoVector(keyChars, &key);
@@ -59,6 +60,7 @@ class JniDataUtils {
             const jsize valueUtf8Length = env->GetStringUTFLength(valueString);
             char valueChars[valueUtf8Length + 1];
             env->GetStringUTFRegion(valueString, 0, env->GetStringLength(valueString), valueChars);
+            env->DeleteLocalRef(valueString);
             valueChars[valueUtf8Length] = '\0';
             DictionaryHeaderStructurePolicy::AttributeMap::mapped_type value;
             HeaderReadWriteUtils::insertCharactersIntoVector(valueChars, &value);
@@ -113,6 +115,7 @@ class JniDataUtils {
                 continue;
             }
             env->GetIntArrayRegion(prevWord, 0, prevWordLength, prevWordCodePoints[i]);
+            env->DeleteLocalRef(prevWord);
             prevWordCodePointCount[i] = prevWordLength;
             jboolean isBeginningOfSentenceBoolean = JNI_FALSE;
             env->GetBooleanArrayRegion(isBeginningOfSentenceArray, i, 1 /* len */,

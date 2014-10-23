@@ -32,6 +32,7 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -747,5 +749,67 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertFalse(binaryDictionary.isValidWord("aaa"));
 
         binaryDictionary.close();
+    }
+
+    public void testUpdateEntriesForInputEvents() {
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testUpdateEntriesForInputEvents(formatVersion);
+        }
+    }
+
+    private void testUpdateEntriesForInputEvents(final int formatVersion) {
+        setCurrentTimeForTestMode(mCurrentTime);
+        final int codePointSetSize = 20;
+        final int EVENT_COUNT = 1000;
+        final double CONTINUE_RATE = 0.9;
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+        final File dictFile = createEmptyDictionaryAndGetFile(formatVersion);
+
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+        final ArrayList<String> unigrams = new ArrayList<>();
+        final ArrayList<Pair<String, String>> bigrams = new ArrayList<>();
+        final ArrayList<Pair<Pair<String, String>, String>> trigrams = new ArrayList<>();
+
+        final WordInputEventForPersonalization[] inputEvents =
+                new WordInputEventForPersonalization[EVENT_COUNT];
+        NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
+        int prevWordCount = 0;
+        for (int i = 0; i < inputEvents.length; i++) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            inputEvents[i] = new WordInputEventForPersonalization(word, ngramContext,
+                    true /* isValid */, mCurrentTime);
+            unigrams.add(word);
+            if (prevWordCount >= 2) {
+                final Pair<String, String> prevWordsPair = bigrams.get(bigrams.size() - 1);
+                trigrams.add(new Pair<>(prevWordsPair, word));
+            }
+            if (prevWordCount >= 1) {
+                bigrams.add(new Pair<>(ngramContext.getNthPrevWord(1 /* n */).toString(), word));
+            }
+            if (random.nextDouble() > CONTINUE_RATE) {
+                ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
+                prevWordCount = 0;
+            } else {
+                ngramContext = ngramContext.getNextNgramContext(new WordInfo(word));
+                prevWordCount++;
+            }
+        }
+        final BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
+        binaryDictionary.updateEntriesForInputEvents(inputEvents);
+
+        for (final String word : unigrams) {
+            assertTrue(binaryDictionary.isInDictionary(word));
+        }
+        for (final Pair<String, String> bigram : bigrams) {
+            assertTrue(isValidBigram(binaryDictionary, bigram.first, bigram.second));
+        }
+        if (!supportsNgram(formatVersion)) {
+            return;
+        }
+        for (final Pair<Pair<String, String>, String> trigram : trigrams) {
+            assertTrue(isValidTrigram(binaryDictionary, trigram.first.first, trigram.first.second,
+                    trigram.second));
+        }
     }
 }
