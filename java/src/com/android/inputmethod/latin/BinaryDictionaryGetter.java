@@ -223,7 +223,7 @@ final public class BinaryDictionaryGetter {
     // ## HACK ## we prevent usage of a dictionary before version 18. The reason for this is, since
     // those do not include whitelist entries, the new code with an old version of the dictionary
     // would lose whitelist functionality.
-    private static boolean hackCanUseDictionaryFile(final Locale locale, final File file) {
+    private static boolean hackCanUseDictionaryFile(final File file) {
         try {
             // Read the version of the file
             final DictionaryHeader header = BinaryDictionaryUtils.getHeader(file);
@@ -275,7 +275,7 @@ final public class BinaryDictionaryGetter {
         // cachedWordLists may not be null, see doc for getCachedDictionaryList
         for (final File f : cachedWordLists) {
             final String wordListId = DictionaryInfoUtils.getWordListIdFromFileName(f.getName());
-            final boolean canUse = f.canRead() && hackCanUseDictionaryFile(locale, f);
+            final boolean canUse = f.canRead() && hackCanUseDictionaryFile(f);
             if (canUse && DictionaryInfoUtils.isMainWordListId(wordListId)) {
                 foundMainDict = true;
             }

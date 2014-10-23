@@ -16,13 +16,15 @@
 
 package com.android.inputmethod.latin.utils;
 
-import java.util.List;
-import java.util.Locale;
-
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.NgramContext;
+
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 public interface DistracterFilter {
     /**
@@ -68,8 +70,9 @@ public interface DistracterFilter {
         public static boolean shouldBeHandledAsOov(final int handlingType) {
             return (handlingType & SHOULD_BE_HANDLED_AS_OOV) != 0;
         }
-    };
+    }
 
+    @Nonnull
     public static final DistracterFilter EMPTY_DISTRACTER_FILTER = new DistracterFilter() {
         @Override
         public boolean isDistracterToWordsInDictionaries(NgramContext ngramContext,

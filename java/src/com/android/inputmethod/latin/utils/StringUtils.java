@@ -521,12 +521,12 @@ public final class StringUtils {
      * {@code charSequence.toString().split(regex, preserveTrailingEmptySegments ? -1 : 0)}
      * except that the spans are preserved in the result array.
      * </p>
-     * @param input the character sequence to be split.
+     * @param charSequence the character sequence to be split.
      * @param regex the regex pattern to be used as the separator.
      * @param preserveTrailingEmptySegments {@code true} to preserve the trailing empty
      * segments. Otherwise, trailing empty segments will be removed before being returned.
-     * @return the array which contains the result. All the spans in the {@param input} is
-     * preserved.
+     * @return the array which contains the result. All the spans in the <code>charSequence</code>
+     * is preserved.
      */
     @UsedForTesting
     public static CharSequence[] split(final CharSequence charSequence, final String regex,

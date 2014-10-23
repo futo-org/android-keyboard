@@ -18,7 +18,7 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
-import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.Dictionary;
 
 import java.io.File;
@@ -33,7 +33,9 @@ public class PersonalizationDictionary extends DecayingExpandableBinaryDictionar
                 Dictionary.TYPE_PERSONALIZATION, null /* dictFile */);
     }
 
-    @UsedForTesting
+    // Note: This method is called by {@link DictionaryFacilitator} using Java reflection.
+    @SuppressWarnings("unused")
+    @ExternallyReferenced
     public static PersonalizationDictionary getDictionary(final Context context,
             final Locale locale, final File dictFile, final String dictNamePrefix) {
         return PersonalizationHelper.getPersonalizationDictionary(context, locale);

@@ -82,10 +82,12 @@ public class CursorAnchorInfoCompatWrapper {
         throw new UnsupportedOperationException("not supported.");
     }
 
+    @SuppressWarnings("unused")
     public RectF getCharacterBounds(final int index) {
         throw new UnsupportedOperationException("not supported.");
     }
 
+    @SuppressWarnings("unused")
     public int getCharacterBoundsFlags(final int index) {
         throw new UnsupportedOperationException("not supported.");
     }

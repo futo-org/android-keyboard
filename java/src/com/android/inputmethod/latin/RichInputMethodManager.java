@@ -38,6 +38,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 /**
  * Enrichment class for InputMethodManager to simplify interaction and add functionality.
  */
@@ -301,12 +303,13 @@ public class RichInputMethodManager {
         return INDEX_NOT_FOUND;
     }
 
+    @Nonnull
     public InputMethodSubtype getCurrentRawSubtype() {
         return mImmWrapper.mImm.getCurrentInputMethodSubtype();
     }
 
     public RichInputMethodSubtype createCurrentRichInputMethodSubtype(
-            final InputMethodSubtype rawSubtype) {
+            @Nonnull final InputMethodSubtype rawSubtype) {
         return AdditionalFeaturesSettingUtils.createRichInputMethodSubtype(this, rawSubtype,
                 mContext);
     }

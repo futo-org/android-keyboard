@@ -105,8 +105,10 @@
     <style
         name="MainKeyboardView"
         parent="KeyboardView" />
-    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
-         for instance delete button, need themed {@link KeyboardView} attributes. -->
+    <!-- Though {@link com.android.inputmethod.keyboard.emoji.EmojiPalettesView} doesn't extend
+         {@link com.android.inputmethod.keyboard.KeyboardView}, some views inside it, for instance
+         delete button, need themed {@link com.android.inputmethod.keyboard.KeyboardView}
+         attributes. -->
     <style name="EmojiPalettesView" />
     <style name="MoreKeysKeyboard" />
     <style name="MoreKeysKeyboardView" />

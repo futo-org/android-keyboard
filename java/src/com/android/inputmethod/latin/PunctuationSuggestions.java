@@ -56,7 +56,7 @@ public final class PunctuationSuggestions extends SuggestedWords {
 
     /**
      * {@inheritDoc}
-     * Note that {@link super#getWord(int)} returns a punctuation key specification text.
+     * Note that {@link SuggestedWords#getWord(int)} returns a punctuation key specification text.
      * The suggested punctuation should be gotten by parsing the key specification.
      */
     @Override
@@ -70,7 +70,7 @@ public final class PunctuationSuggestions extends SuggestedWords {
 
     /**
      * {@inheritDoc}
-     * Note that {@link super#getWord(int)} returns a punctuation key specification text.
+     * Note that {@link SuggestedWords#getWord(int)} returns a punctuation key specification text.
      * The displayed text should be gotten by parsing the key specification.
      */
     @Override
@@ -82,7 +82,7 @@ public final class PunctuationSuggestions extends SuggestedWords {
     /**
      * {@inheritDoc}
      * Note that {@link #getWord(int)} returns a suggested punctuation. We should create a
-     * {@link SuggestedWordInfo} object that represents a hard coded word.
+     * {@link SuggestedWords.SuggestedWordInfo} object that represents a hard coded word.
      */
     @Override
     public SuggestedWordInfo getInfo(final int index) {

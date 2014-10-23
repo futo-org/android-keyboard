@@ -53,6 +53,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 // TODO: Consolidate dictionaries in native code.
 public class DictionaryFacilitator {
     public static final String TAG = DictionaryFacilitator.class.getSimpleName();
@@ -274,6 +277,7 @@ public class DictionaryFacilitator {
         mMostProbableDictionaryGroup = newMostProbableDictionaryGroup;
     }
 
+    @Nullable
     private static ExpandableBinaryDictionary getSubDict(final String dictType,
             final Context context, final Locale locale, final File dictFile,
             final String dictNamePrefix) {
@@ -303,6 +307,7 @@ public class DictionaryFacilitator {
                 usePersonalizedDicts, forceReloadMainDictionary, listener, "" /* dictNamePrefix */);
     }
 
+    @Nullable
     static DictionaryGroup findDictionaryGroupWithLocale(final DictionaryGroup[] dictionaryGroups,
             final Locale locale) {
         for (int i = 0; i < dictionaryGroups.length; ++i) {
@@ -317,7 +322,7 @@ public class DictionaryFacilitator {
             final Locale[] newLocales,
             final boolean useContactsDict, final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
-            final DictionaryInitializationListener listener,
+            @Nullable final DictionaryInitializationListener listener,
             final String dictNamePrefix) {
         final HashMap<Locale, ArrayList<String>> existingDictsToCleanup = new HashMap<>();
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
@@ -593,7 +598,7 @@ public class DictionaryFacilitator {
     }
 
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
-            final NgramContext ngramContext, final int timeStampInSeconds,
+            @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
             final boolean blockPotentiallyOffensive) {
         final DictionaryGroup dictionaryGroup = getDictionaryGroupForMostProbableLanguage();
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);

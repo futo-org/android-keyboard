@@ -223,6 +223,7 @@ public class Event {
      * Creates an input event representing the manual pick of a punctuation suggestion.
      * @return an event for this suggestion pick.
      */
+    @Nonnull
     public static Event createPunctuationSuggestionPickedEvent(
             final SuggestedWordInfo suggestedWordInfo) {
         final int primaryCode = suggestedWordInfo.mWord.charAt(0);

@@ -16,8 +16,10 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
+import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.os.Binder;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.textservice.SentenceSuggestionsInfo;
@@ -42,6 +44,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
         mResources = service.getResources();
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private SentenceSuggestionsInfo fixWronglyInvalidatedWordWithSingleQuote(TextInfo ti,
             SentenceSuggestionsInfo ssi) {
         final CharSequence typedText = TextInfoCompatUtils.getCharSequenceOrString(ti);
@@ -149,7 +152,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
      * @param textInfos an array of the text metadata
      * @param suggestionsLimit the maximum number of suggestions to be returned
      * @return an array of {@link SentenceSuggestionsInfo} returned by
-     * {@link SpellCheckerService.Session#onGetSuggestions(TextInfo, int)}
+     * {@link android.service.textservice.SpellCheckerService.Session#onGetSuggestions(TextInfo, int)}
      */
     private SentenceSuggestionsInfo[] splitAndSuggest(TextInfo[] textInfos, int suggestionsLimit) {
         if (textInfos == null || textInfos.length == 0) {

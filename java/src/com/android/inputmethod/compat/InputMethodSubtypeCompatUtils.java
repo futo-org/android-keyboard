@@ -52,6 +52,7 @@ public final class InputMethodSubtypeCompatUtils {
         // This utility class is not publicly instantiable.
     }
 
+    @SuppressWarnings("deprecation")
     public static InputMethodSubtype newInputMethodSubtype(int nameId, int iconId, String locale,
             String mode, String extraValue, boolean isAuxiliary,
             boolean overridesImplicitlyEnabledSubtype, int id) {

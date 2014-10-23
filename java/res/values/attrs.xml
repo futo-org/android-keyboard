@@ -43,15 +43,18 @@
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">
-        <!-- Background image for the key. This image needs to be a {@link StateListDrawable},
-             with the following possible states: normal, pressed, checkable, checkable+pressed,
-             checkable+checked, checkable+checked+pressed. -->
+        <!-- Background image for the key. This image needs to be a
+            {@link android.graphics.drawable.StateListDrawable}, with the following possible states:
+             normal, pressed, checkable, checkable+pressed, checkable+checked,
+             checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
         <!-- Background image for the functional key. This image needs to be a
-             {@link StateListDrawable}, with the following possible states: normal, pressed. -->
+             {@link android.graphics.drawable.StateListDrawable}, with the following possible
+             states: normal, pressed. -->
         <attr name="functionalKeyBackground" format="reference" />
         <!-- Background image for the spacebar.  This image needs to be a
-             {@link StateListDrawable}, with the following possible states: normal, pressed. -->
+             {@link android.graphics.drawable.StateListDrawable}, with the following possible
+             states: normal, pressed. -->
         <attr name="spacebarBackground" format="reference" />
         <attr name="spacebarIconWidthRatio" format="float" />
         <!-- Right padding of hint letter to the edge of the key.-->
@@ -200,7 +203,8 @@
 
     <declare-styleable name="SuggestionStripView">
         <attr name="suggestionStripOptions" format="integer">
-            <!-- This should be aligned with SuggestionStripLayoutHelper.AUTO_CORRECT_* and etc. -->
+            <!-- This should be aligned with
+                 {@link com.android.inputmethod.latin.suggestions.SuggestionStripLayoutHelper.AUTO_CORRECT_BOLD} etc. -->
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />
             <flag name="validTypedWordBold" value="0x04" />
@@ -218,7 +222,8 @@
 
     <declare-styleable name="Keyboard">
         <attr name="themeId" format="enum">
-            <!-- This should be aligned with KeyboardTheme.THEME_ID_*. -->
+            <!-- This should be aligned with
+                 {@link com.android.inputmethod.keyboard.KeyboardTheme#THEME_ID_ICS} etc. -->
             <enum name="ICS" value="0" />
             <enum name="KLP" value="2" />
             <enum name="LXXLight" value="3" />
@@ -240,8 +245,8 @@
         <attr name="verticalGap" format="fraction" />
         <!-- More keys keyboard layout template -->
         <attr name="moreKeysTemplate" format="reference" />
-        <!-- Icon set for key top and key preview.
-             These should be aligned with KeyboardIconsSet.NAMES_AND_ATTR_IDS[] -->
+        <!-- Icon set for key top and key preview. These should be aligned with
+             {@link com.android.inputmethod.keyboard.internal.KeyboardIconsSet#NAMES_AND_ATTR_IDS} -->
         <attr name="iconShiftKey" format="reference" />
         <attr name="iconDeleteKey" format="reference" />
         <attr name="iconSettingsKey" format="reference" />
@@ -287,7 +292,8 @@
         <!-- Maximum column of more keys keyboard -->
         <attr name="maxMoreKeysColumn" format="integer" />
         <attr name="backgroundType" format="enum">
-            <!-- This should be aligned with Key.BACKGROUND_TYPE_* -->
+            <!-- This should be aligned with
+                 {@link com.android.inputmethod.keyboard.Key#BACKGROUND_TYPE_NORMAL} etc. -->
             <enum name="empty" value="0" />
             <enum name="normal" value="1" />
             <enum name="functional" value="2" />
@@ -298,7 +304,8 @@
         </attr>
         <!-- The key action flags. -->
         <attr name="keyActionFlags" format="integer">
-            <!-- This should be aligned with Key.ACTION_FLAGS_* -->
+            <!-- This should be aligned with
+                 {@link com.android.inputmethod.keyboard.Key#ACTION_FLAGS_IS_REPEATABLE} etc. -->
             <flag name="isRepeatable" value="0x01" />
             <flag name="noKeyPreview" value="0x02" />
             <flag name="altCodeWhileTyping" value="0x04" />
@@ -312,7 +319,8 @@
         <attr name="keyHintLabelVerticalAdjustment" format="fraction" />
         <!-- The key label flags. -->
         <attr name="keyLabelFlags" format="integer">
-            <!-- This should be aligned with Key.LABEL_FLAGS__* -->
+            <!-- This should be aligned with
+                 {@link com.android.inputmethod.keyboard.Key#LABEL_FLAGS_FONT_NORMAL} etc. -->
             <flag name="alignHintLabelToBottom" value="0x02" />
             <flag name="alignIconToBottom" value="0x04" />
             <flag name="alignLabelOffCenter" value="0x08" />
@@ -357,7 +365,8 @@
         <!-- Width of the key, in the proportion of keyboard width.
              If the value is fillRight, the actual key width will be determined to fill out the
              area up to the right edge of the keyboard. -->
-        <!-- This should be aligned with KeyboardBuilder.Row.KEYWIDTH_* -->
+        <!-- This should be aligned with
+             {@link com.android.inputmethod.keyboard.internal.KeyboardRow#KEYWIDTH_FILL_RIGHT}. -->
         <attr name="keyWidth" format="fraction|enum">
             <enum name="fillRight" value="-1" />
         </attr>
@@ -368,7 +377,7 @@
 
         <!-- Key top visual attributes -->
         <attr name="keyTypeface" format="enum">
-            <!-- This should be aligned with Typeface.NORMAL etc. -->
+            <!-- This should be aligned with {@link android.graphics.Typeface#NORMAL} etc. -->
             <enum name="normal" value="0" />
             <enum name="bold" value="1" />
             <enum name="italic" value="2" />
@@ -391,11 +400,11 @@
         <attr name="keyShiftedLetterHintRatio" format="fraction" />
         <!-- The label's horizontal offset to the center of the key. Negative is to left and
              positive is to right. The value is in proportion of the width of
-             TypefaceUtils.KEY_LABEL_REFERENCE_CHAR. -->
+             {@link com.android.inputmethod.latin.utils.TypefaceUtils#KEY_LABEL_REFERENCE_CHAR}. -->
         <attr name="keyLabelOffCenterRatio" format="fraction" />
         <!-- The hint label's horizontal offset to the center of the key. Negative is to left and
              positive is to right. The value is in proportion of the width of
-             TypefaceUtils.KEY_LABEL_REFERENCE_CHAR. -->
+             {@link com.android.inputmethod.latin.utils.TypefaceUtils#KEY_LABEL_REFERENCE_CHAR}. -->
         <attr name="keyHintLabelOffCenterRatio" format="fraction" />
         <!-- Color to use for the label in a key. -->
         <attr name="keyTextColor" format="color" />
@@ -425,7 +434,8 @@
 
     <declare-styleable name="Keyboard_Case">
         <attr name="keyboardLayoutSet" format="string" />
-        <!-- This should be aligned with KeyboardLayoutSet_Element's elementName. -->
+        <!-- This should be aligned with
+             {@link com.android.inputmethod.keyboard.KeyboardId#ELEMENT_ALPHABET} etc. -->
         <attr name="keyboardLayoutSetElement" format="enum|string">
             <enum name="alphabet" value="0" />
             <enum name="alphabetManualShifted" value="1" />
@@ -445,14 +455,16 @@
             <enum name="emojiCategory5" value="15" />
             <enum name="emojiCategory6" value="16" />
         </attr>
-        <!-- This should be aligned with Keyboard.themeId and KeyboardTheme.THEME_ID_* -->
+        <!-- This should be aligned with Keyboard.themeId and
+             {@link com.android.inputmethod.keyboard.KeyboardTheme#THEME_ID_ICS} etc. -->
         <attr name="keyboardTheme" format="enum|string">
             <enum name="ICS" value="0" />
             <enum name="KLP" value="2" />
             <enum name="LXXLight" value="3" />
             <enum name="LXXDark" value="4" />
         </attr>
-        <!-- This should be aligned with KeyboardId.MODE_* -->
+        <!-- This should be aligned with
+             {@link com.android.inputmethod.keyboard.KeyboardId#MODE_TEXT} etc. -->
         <attr name="mode" format="enum|string">
             <enum name="text" value="0" />
             <enum name="url" value="1" />
@@ -469,7 +481,8 @@
         <attr name="languageSwitchKeyEnabled" format="boolean" />
         <attr name="isMultiLine" format="boolean" />
         <attr name="imeAction" format="enum">
-            <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
+            <!-- This should be aligned with
+                 {@link android.view.inputmethod.EditorInfo#IME_ACTION_GO} etc. -->
             <enum name="actionUnspecified" value="0" />
             <enum name="actionNone" value="1" />
             <enum name="actionGo" value="2" />
@@ -478,7 +491,8 @@
             <enum name="actionNext" value="5" />
             <enum name="actionDone" value="6" />
             <enum name="actionPrevious" value="7" />
-            <!--  This should be aligned with KeyboardId.IME_ACTION_* -->
+            <!-- This should be aligned with
+                 {@link com.android.inputmethod.latin.utils.InputTypeUtils#IME_ACTION_CUSTOM_LABEL}. -->
             <enum name="actionCustomLabel" value="0x100" />
         </attr>
         <attr name="isIconDefined" format="string" />
@@ -495,7 +509,8 @@
     </declare-styleable>
 
     <declare-styleable name="KeyboardLayoutSet_Element">
-        <!-- This should be aligned with KeyboardId.ELEMENT_* -->
+        <!-- This should be aligned with
+             {@link com.android.inputmethod.keyboard.KeyboardId#ELEMENT_ALPHABET} etc. -->
         <attr name="elementName" format="enum">
             <enum name="alphabet" value="0" />
             <enum name="alphabetManualShifted" value="1" />
@@ -525,7 +540,8 @@
     </declare-styleable>
 
     <declare-styleable name="KeyboardLayoutSet_Feature">
-        <!-- This should be aligned with ScriptUtils.SCRIPT_* -->
+        <!-- This should be aligned with
+             {@link com.android.inputmethod.latin.utils.ScriptUtils#SCRIPT_ARABIC} etc. -->
         <attr name="supportedScript" format="enum">
             <enum name="arabic" value="0" />
             <enum name="armenian" value="1" />

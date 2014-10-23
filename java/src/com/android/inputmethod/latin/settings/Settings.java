@@ -40,6 +40,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.annotation.Nonnull;
+
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Settings.class.getSimpleName();
     // Settings screens
@@ -175,7 +177,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void loadSettings(final Context context, final Locale locale,
-            final InputAttributes inputAttributes) {
+            @Nonnull final InputAttributes inputAttributes) {
         mSettingsValuesLock.lock();
         mContext = context;
         try {

@@ -47,12 +47,12 @@ public class UserDictionaryList extends PreferenceFragment {
             "android.settings.USER_DICTIONARY_SETTINGS";
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setPreferenceScreen(getPreferenceManager().createPreferenceScreen(getActivity()));
     }
 
-    public static TreeSet<String> getUserDictionaryLocalesSet(Activity activity) {
+    public static TreeSet<String> getUserDictionaryLocalesSet(final Activity activity) {
         final Cursor cursor = activity.getContentResolver().query(UserDictionary.Words.CONTENT_URI,
                 new String[] { UserDictionary.Words.LOCALE },
                 null, null, null);
@@ -108,7 +108,7 @@ public class UserDictionaryList extends PreferenceFragment {
      * Creates the entries that allow the user to go into the user dictionary for each locale.
      * @param userDictGroup The group to put the settings in.
      */
-    protected void createUserDictSettings(PreferenceGroup userDictGroup) {
+    protected void createUserDictSettings(final PreferenceGroup userDictGroup) {
         final Activity activity = getActivity();
         userDictGroup.removeAll();
         final TreeSet<String> localeSet =
@@ -121,10 +121,10 @@ public class UserDictionaryList extends PreferenceFragment {
         }
 
         if (localeSet.isEmpty()) {
-            userDictGroup.addPreference(createUserDictionaryPreference(null, activity));
+            userDictGroup.addPreference(createUserDictionaryPreference(null));
         } else {
             for (String locale : localeSet) {
-                userDictGroup.addPreference(createUserDictionaryPreference(locale, activity));
+                userDictGroup.addPreference(createUserDictionaryPreference(locale));
             }
         }
     }
@@ -134,7 +134,7 @@ public class UserDictionaryList extends PreferenceFragment {
      * @param locale The locale for which this user dictionary is for.
      * @return The corresponding preference.
      */
-    protected Preference createUserDictionaryPreference(String locale, Activity activity) {
+    protected Preference createUserDictionaryPreference(final String locale) {
         final Preference newPref = new Preference(getActivity());
         final Intent intent = new Intent(USER_DICTIONARY_SETTINGS_INTENT_ACTION);
         if (null == locale) {

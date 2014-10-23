@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.utils;
 import android.content.Context;
 import android.content.Intent;
 
+@SuppressWarnings("unused")
 public class FeedbackUtils {
     public static boolean isHelpAndFeedbackFormSupported() {
         return false;

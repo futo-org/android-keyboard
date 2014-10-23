@@ -120,10 +120,18 @@ public abstract class Dictionary {
      */
     abstract public boolean isInDictionary(final String word);
 
+    /**
+     * Get the frequency of the word.
+     * @param word the word to get the frequency of.
+     */
     public int getFrequency(final String word) {
         return NOT_A_PROBABILITY;
     }
 
+    /**
+     * Get the maximum frequency of the word.
+     * @param word the word to get the maximum frequency of.
+     */
     public int getMaxFrequencyOfExactMatches(final String word) {
         return NOT_A_PROBABILITY;
     }

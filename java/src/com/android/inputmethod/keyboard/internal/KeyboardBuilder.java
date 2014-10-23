@@ -47,6 +47,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
 /**
  * Keyboard Building helper.
  *
@@ -859,7 +861,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         mTopEdge = false;
     }
 
-    private void endKey(final Key key) {
+    private void endKey(@Nonnull final Key key) {
         mParams.onAddKey(key);
         if (mLeftEdge) {
             key.markAsLeftEdge(mParams);

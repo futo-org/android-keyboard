@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.R;
 
 import java.util.Locale;
@@ -63,11 +64,19 @@ public final class DownloadOverMeteredDialog extends Activity {
         allowButton.setText(String.format(allowButtonFormat, ((float)size)/(1024*1024)));
     }
 
+    // This method is externally referenced from layout/download_over_metered.xml using onClick
+    // attribute of Button.
+    @ExternallyReferenced
+    @SuppressWarnings("unused")
     public void onClickDeny(final View v) {
         UpdateHandler.setDownloadOverMeteredSetting(this, false);
         finish();
     }
 
+    // This method is externally referenced from layout/download_over_metered.xml using onClick
+    // attribute of Button.
+    @ExternallyReferenced
+    @SuppressWarnings("unused")
     public void onClickAllow(final View v) {
         UpdateHandler.setDownloadOverMeteredSetting(this, true);
         UpdateHandler.installIfNeverRequested(this, mClientId, mWordListToDownload,

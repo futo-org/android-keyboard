@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+@SuppressWarnings("unused")
 public class Keyboard {
     private final Key KEY = new Key();
     public final Key getKey(final int i) { return KEY; }

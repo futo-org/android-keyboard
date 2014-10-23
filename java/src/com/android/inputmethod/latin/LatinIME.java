@@ -1419,7 +1419,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // This method is public for testability of LatinIME, but also in the future it should
     // completely replace #onCodeInput.
-    public void onEvent(final Event event) {
+    public void onEvent(@Nonnull final Event event) {
         if (Constants.CODE_SHORTCUT == event.mKeyCode) {
             mSubtypeSwitcher.switchToShortcutIME(this);
         }
@@ -1434,6 +1434,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // A helper method to split the code point and the key code. Ultimately, they should not be
     // squashed into the same variable, and this method should be removed.
     // public for testing, as we don't want to copy the same logic into test code
+    @Nonnull
     public static Event createSoftwareKeypressEvent(final int keyCodeOrCodePoint, final int keyX,
              final int keyY, final boolean isKeyRepeat) {
         final int keyCode;

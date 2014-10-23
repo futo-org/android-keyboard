@@ -18,7 +18,7 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
-import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
@@ -36,7 +36,9 @@ public class ContextualDictionary extends ExpandableBinaryDictionary {
         clear();
     }
 
-    @UsedForTesting
+    // Note: This method is called by {@link DictionaryFacilitator} using Java reflection.
+    @SuppressWarnings("unused")
+    @ExternallyReferenced
     public static ContextualDictionary getDictionary(final Context context, final Locale locale,
             final File dictFile, final String dictNamePrefix) {
         return new ContextualDictionary(context, locale, dictFile);

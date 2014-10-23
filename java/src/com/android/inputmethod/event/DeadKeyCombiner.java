@@ -217,11 +217,8 @@ public class DeadKeyCombiner implements Combiner {
 
     @Nonnull
     private static Event createEventChainFromSequence(final @Nonnull CharSequence text,
-            final Event originalEvent) {
-        if (text.length() <= 0) {
-            return originalEvent;
-        }
-        Event lastEvent = null;
+            @Nonnull final Event originalEvent) {
+        Event lastEvent = originalEvent;
         int codePoint = 0;
         for (int i = text.length(); i > 0; i -= Character.charCount(codePoint)) {
             codePoint = Character.codePointBefore(text, i);

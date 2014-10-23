@@ -21,6 +21,7 @@ import android.content.Context;
 
 import com.android.inputmethod.latin.settings.SettingsValues;
 
+@SuppressWarnings("unused")
 public class StatsUtilsManager {
 
     private static final StatsUtilsManager sInstance = new StatsUtilsManager();

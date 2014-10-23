@@ -33,12 +33,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     final File mDictDirectory;
 
     @UsedForTesting
-    /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
-        this(dictDirectory, null /* factory */);
-    }
-
-    @UsedForTesting
-    /* package */ Ver4DictDecoder(final File dictDirectory, final DictionaryBufferFactory factory) {
+    /* package */ Ver4DictDecoder(final File dictDirectory) {
         mDictDirectory = dictDirectory;
 
     }

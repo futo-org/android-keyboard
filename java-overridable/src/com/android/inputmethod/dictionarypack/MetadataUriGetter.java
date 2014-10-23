@@ -21,6 +21,7 @@ import android.content.Context;
 /**
  * Helper to get the metadata URI from its base URI and the additional ID, if any.
  */
+@SuppressWarnings("unused")
 public class MetadataUriGetter {
     private MetadataUriGetter() {
         // This helper class is not instantiable.

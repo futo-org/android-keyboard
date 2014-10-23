@@ -23,6 +23,7 @@ import android.content.Context;
 /**
  * Helper class to get the metadata URI and the additional ID.
  */
+@SuppressWarnings("unused")
 public class MetadataFileUriGetter {
     private MetadataFileUriGetter() {
         // This helper class is not instantiable.

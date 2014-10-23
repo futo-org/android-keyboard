@@ -31,6 +31,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
 /**
  * The more key specification object. The more keys are an array of {@link MoreKeySpec}.
  *
@@ -70,6 +72,7 @@ public final class MoreKeySpec {
         mIconId = KeySpecParser.getIconId(moreKeySpec);
     }
 
+    @Nonnull
     public Key buildKey(final int x, final int y, final int labelFlags,
             final KeyboardParams params) {
         return new Key(mLabel, mIconId, mCode, mOutputText, null /* hintLabel */, labelFlags,

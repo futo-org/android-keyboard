@@ -139,7 +139,10 @@ public final class InputView extends FrameLayout {
             return y - mEventReceivingRect.top;
         }
 
-        // Callback when a {@link MotionEvent} is forwarded.
+        /**
+         * Callback when a {@link MotionEvent} is forwarded.
+         * @param me the motion event to be forwarded.
+         */
         protected void onForwardingEvent(final MotionEvent me) {}
 
         // Returns true if a {@link MotionEvent} is needed to be forwarded to
