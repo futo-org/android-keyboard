@@ -16,9 +16,13 @@
 
 package com.android.inputmethod.latin.common;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 import java.util.Random;
 
 // Utility methods related with code points used for tests.
+// TODO: Figure out where this class should be.
+@UsedForTesting
 public class CodePointUtils {
     private CodePointUtils() {
         // This utility class is not publicly instantiable.
@@ -60,6 +64,7 @@ public class CodePointUtils {
         0x00FF /* LATIN SMALL LETTER Y WITH DIAERESIS */
     };
 
+    @UsedForTesting
     public static int[] generateCodePointSet(final int codePointSetSize, final Random random) {
         final int[] codePointSet = new int[codePointSetSize];
         for (int i = codePointSet.length - 1; i >= 0; ) {
@@ -80,6 +85,7 @@ public class CodePointUtils {
     /**
      * Generates a random word.
      */
+    @UsedForTesting
     public static String generateWord(final Random random, final int[] codePointSet) {
         StringBuilder builder = new StringBuilder();
         // 8 * 4 = 32 chars max, but we do it the following way so as to bias the random toward
