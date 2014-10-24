@@ -218,17 +218,17 @@ public class DeadKeyCombiner implements Combiner {
     @Nonnull
     private static Event createEventChainFromSequence(final @Nonnull CharSequence text,
             @Nonnull final Event originalEvent) {
-        if (text.length() <= 0) {
+        int index = text.length();
+        if (index <= 0) {
             return originalEvent;
         }
         Event lastEvent = null;
-        int codePoint = 0;
-        for (int i = text.length(); i > 0; i -= Character.charCount(codePoint)) {
-            codePoint = Character.codePointBefore(text, i);
-            final Event thisEvent = Event.createHardwareKeypressEvent(codePoint,
+        do {
+            final int codePoint = Character.codePointBefore(text, index);
+            lastEvent = Event.createHardwareKeypressEvent(codePoint,
                     originalEvent.mKeyCode, lastEvent, false /* isKeyRepeat */);
-            lastEvent = thisEvent;
-        }
+            index -= Character.charCount(codePoint);
+        } while (index > 0);
         return lastEvent;
     }
 
