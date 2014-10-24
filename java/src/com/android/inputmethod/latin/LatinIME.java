@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.latin;
 
-import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
-import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
-import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASCII;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -76,6 +76,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.TextDecoratorUi;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.inputlogic.InputLogic;

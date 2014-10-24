@@ -20,6 +20,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;

@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.emoji;
 
-import static com.android.inputmethod.latin.Constants.NOT_A_COORDINATE;
+import static com.android.inputmethod.latin.common.Constants.NOT_A_COORDINATE;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -47,9 +47,9 @@ import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.concurrent.TimeUnit;

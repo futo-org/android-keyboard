@@ -19,8 +19,8 @@ package com.android.inputmethod.latin.utils;
 import android.text.InputType;
 import android.text.TextUtils;
 
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.Locale;

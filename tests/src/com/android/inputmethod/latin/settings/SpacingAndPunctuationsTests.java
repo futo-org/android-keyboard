@@ -20,9 +20,9 @@ import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.RunInLocale;
 
 import junit.framework.AssertionFailedError;

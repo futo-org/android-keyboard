@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
+import static com.android.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MODE;
 
 import android.content.Context;
 import android.content.SharedPreferences;

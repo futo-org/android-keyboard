@@ -20,6 +20,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.text.style.SuggestionSpan;
 import android.text.style.UnderlineSpan;
 
+import com.android.inputmethod.latin.common.Constants;
+
 @LargeTest
 public class BlueUnderlineTests extends InputTestsBase {
 

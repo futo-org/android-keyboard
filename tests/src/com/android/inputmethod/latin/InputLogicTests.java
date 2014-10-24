@@ -21,6 +21,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.view.inputmethod.BaseInputConnection;
 
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.settings.Settings;
 
 @LargeTest

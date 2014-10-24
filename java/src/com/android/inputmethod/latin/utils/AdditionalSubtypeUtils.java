@@ -16,12 +16,12 @@
 
 package com.android.inputmethod.latin.utils;
 
-import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
-import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
-import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
-import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.IS_ADDITIONAL_SUBTYPE;
-import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
-import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
+import static com.android.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MODE;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.IS_ADDITIONAL_SUBTYPE;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
 
 import android.os.Build;
 import android.text.TextUtils;

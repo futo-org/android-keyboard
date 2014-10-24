@@ -18,7 +18,7 @@
 package com.android.inputmethod.keyboard.layout.customizer;
 
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 
 import java.util.Locale;
 
