@@ -47,10 +47,8 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/BinaryDictionary.java \
         latin/DicTraverseSession.java \
         latin/Dictionary.java \
-        latin/LastComposedWord.java \
         latin/NgramContext.java \
         latin/SuggestedWords.java \
-        latin/WordComposer.java \
         latin/settings/NativeSuggestOptions.java \
         latin/settings/SettingsValuesForSuggestion.java \
         latin/utils/BinaryDictionaryUtils.java \

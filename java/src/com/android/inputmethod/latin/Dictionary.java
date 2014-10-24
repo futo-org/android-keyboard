@@ -17,8 +17,8 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
@@ -87,9 +87,9 @@ public abstract class Dictionary {
 
     /**
      * Searches for suggestions for a given context.
-     * @param composer the key sequence to match with coordinate info, as a WordComposer
+     * @param composedData the key sequence to match with coordinate info
      * @param ngramContext the context for n-gram.
-     * @param proximityInfo the object for key proximity. May be ignored by some implementations.
+     * @param proximityInfoHandle the handle for key proximity. Is ignored by some implementations.
      * @param settingsValuesForSuggestion the settings values used for the suggestion.
      * @param sessionId the session id.
      * @param weightForLocale the weight given to this locale, to multiply the output scores for
@@ -99,8 +99,8 @@ public abstract class Dictionary {
      * a float array that has only one element. This can be updated when a different value is used.
      * @return the list of suggestions (possibly null if none)
      */
-    abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+    abstract public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
+            final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float weightForLocale,
             final float[] inOutWeightOfLangModelVsSpatialModel);
@@ -203,8 +203,8 @@ public abstract class Dictionary {
         }
 
         @Override
-        public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-                final NgramContext ngramContext, final ProximityInfo proximityInfo,
+        public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
+                final NgramContext ngramContext, final long proximityInfoHandle,
                 final SettingsValuesForSuggestion settingsValuesForSuggestion,
                 final int sessionId, final float weightForLocale,
                 final float[] inOutWeightOfLangModelVsSpatialModel) {

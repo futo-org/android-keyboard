@@ -20,8 +20,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
@@ -480,8 +480,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+    public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
+            final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
             final float weightForLocale, final float[] inOutWeightOfLangModelVsSpatialModel) {
         reloadDictionaryIfRequired();
@@ -494,9 +494,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return null;
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =
-                        mBinaryDictionary.getSuggestions(composer, ngramContext, proximityInfo,
-                                settingsValuesForSuggestion, sessionId, weightForLocale,
-                                inOutWeightOfLangModelVsSpatialModel);
+                        mBinaryDictionary.getSuggestions(composedData, ngramContext,
+                                proximityInfoHandle, settingsValuesForSuggestion, sessionId,
+                                weightForLocale, inOutWeightOfLangModelVsSpatialModel);
                 if (mBinaryDictionary.isCorrupted()) {
                     Log.i(TAG, "Dictionary (" + mDictName +") is corrupted. "
                             + "Remove and regenerate it.");
