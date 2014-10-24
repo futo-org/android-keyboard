@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.event;
 
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;

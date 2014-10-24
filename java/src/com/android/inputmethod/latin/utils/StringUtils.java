@@ -16,13 +16,11 @@
 
 package com.android.inputmethod.latin.utils;
 
-import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
-
 import android.text.Spanned;
 import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -502,7 +500,7 @@ public final class StringUtils {
         final String casedText = toUpperCaseOfStringForLocale(
                 text, needsToUpperCase, locale);
         return codePointCount(casedText) == 1
-                ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
+                ? casedText.codePointAt(0) : Constants.CODE_UNSPECIFIED;
     }
 
     public static int getTrailingSingleQuotesCount(final CharSequence charSequence) {

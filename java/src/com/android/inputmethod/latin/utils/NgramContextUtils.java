@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.latin.utils;
 
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.Arrays;

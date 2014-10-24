@@ -20,7 +20,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.JniUtils;
 
 import java.util.ArrayList;

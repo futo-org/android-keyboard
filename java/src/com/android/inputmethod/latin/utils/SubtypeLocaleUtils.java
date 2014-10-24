@@ -16,8 +16,9 @@
 
 package com.android.inputmethod.latin.utils;
 
-import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
-import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.COMBINING_RULES;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -25,7 +26,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 
@@ -41,8 +41,8 @@ import java.util.Locale;
 public final class SubtypeLocaleUtils {
     static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
 
-    // This reference class {@link Constants} must be located in the same package as LatinIME.java.
-    private static final String RESOURCE_PACKAGE_NAME = Constants.class.getPackage().getName();
+    // This reference class {@link R} must be located in the same package as LatinIME.java.
+    private static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
 
     // Special language code to represent "no language".
     public static final String NO_LANGUAGE = "zz";
@@ -341,6 +341,6 @@ public final class SubtypeLocaleUtils {
     }
 
     public static String getCombiningRulesExtraValue(final InputMethodSubtype subtype) {
-        return subtype.getExtraValueOf(Constants.Subtype.ExtraValue.COMBINING_RULES);
+        return subtype.getExtraValueOf(COMBINING_RULES);
     }
 }

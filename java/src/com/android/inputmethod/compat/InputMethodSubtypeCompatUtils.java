@@ -20,8 +20,8 @@ import android.os.Build;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
+import com.android.inputmethod.latin.common.Constants;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

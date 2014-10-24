@@ -20,8 +20,8 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.define.DebugFlags;
 
 // This hack is applied to certain classes of tablets.

@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.latin;
 
-import static com.android.inputmethod.latin.Constants.ImeOption.NO_FLOATING_GESTURE_PREVIEW;
-import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
-import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_FLOATING_GESTURE_PREVIEW;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
 import android.text.InputType;
 import android.util.Log;
