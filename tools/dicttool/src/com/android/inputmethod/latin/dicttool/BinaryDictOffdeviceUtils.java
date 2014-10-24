@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.ArrayList;
 
 /**
@@ -52,12 +53,18 @@ public final class BinaryDictOffdeviceUtils {
         public final static int ENCRYPTION = 2;
         private final static int MAX_DECODE_DEPTH = 4;
 
-        ArrayList<Integer> mDecoderSpec = new ArrayList<>();
+        final int[] mDecoderSpec;
         File mFile;
 
-        public DecoderChainSpec addStep(final int stepDescription) {
-            mDecoderSpec.add(stepDescription);
-            return this;
+        public DecoderChainSpec() {
+            mDecoderSpec = new int[0];
+            mFile = null;
+        }
+
+        public DecoderChainSpec(final DecoderChainSpec src, final int newStep) {
+            mDecoderSpec = Arrays.copyOf(src.mDecoderSpec, src.mDecoderSpec.length + 1);
+            mDecoderSpec[src.mDecoderSpec.length] = newStep;
+            mFile = src.mFile;
         }
 
         private String getStepDescription(final int step) {
@@ -120,7 +127,7 @@ public final class BinaryDictOffdeviceUtils {
             final DecoderChainSpec newSpec =
                     getRawDictionaryOrNullInternal(spec, uncompressedFile, depth + 1);
             if (null == newSpec) return null;
-            return newSpec.addStep(DecoderChainSpec.COMPRESSION);
+            return new DecoderChainSpec(newSpec, DecoderChainSpec.COMPRESSION);
         }
         // It's not a compressed either - try to see if it's crypted.
         final File decryptedFile = tryGetDecryptedFile(src);
@@ -128,7 +135,7 @@ public final class BinaryDictOffdeviceUtils {
             final DecoderChainSpec newSpec =
                     getRawDictionaryOrNullInternal(spec, decryptedFile, depth + 1);
             if (null == newSpec) return null;
-            return newSpec.addStep(DecoderChainSpec.ENCRYPTION);
+            return new DecoderChainSpec(newSpec, DecoderChainSpec.ENCRYPTION);
         }
         return null;
     }
