@@ -78,8 +78,9 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         // Test for an actually compressed dictionary and its contents
         final BinaryDictOffdeviceUtils.DecoderChainSpec decodeSpec =
                 BinaryDictOffdeviceUtils.getRawDictionaryOrNull(dst);
-        for (final String step : decodeSpec.mDecoderSpec) {
-            assertEquals("Wrong decode spec", BinaryDictOffdeviceUtils.COMPRESSION, step);
+        for (final int step : decodeSpec.mDecoderSpec) {
+            assertEquals("Wrong decode spec",
+                    BinaryDictOffdeviceUtils.DecoderChainSpec.COMPRESSION, step);
         }
         assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.size());
         final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(decodeSpec.mFile, 0,
