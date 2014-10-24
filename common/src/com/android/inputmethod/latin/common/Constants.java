@@ -296,8 +296,6 @@ public final class Constants {
         return "[" + sb + "]";
     }
 
-    public static final int MAX_INT_BIT_COUNT = 32;
-
     /**
      * Screen metrics (a.k.a. Device form factor) constants of
      * {@link com.android.inputmethod.latin.R.integer#config_screen_metrics}.

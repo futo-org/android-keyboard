@@ -271,7 +271,7 @@ final class EmojiCategory {
     }
 
     private static final Long getCategoryKeyboardMapKey(final int categoryId, final int id) {
-        return (((long) categoryId) << Constants.MAX_INT_BIT_COUNT) | id;
+        return (((long) categoryId) << Integer.SIZE) | id;
     }
 
     public DynamicGridKeyboard getKeyboard(final int categoryId, final int id) {
