@@ -193,6 +193,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 | InputType.TYPE_TEXT_FLAG_MULTI_LINE;
         mEditText.setInputType(inputType);
         mEditText.setEnabled(true);
+        mLastCursorPos = 0;
         if (null == Looper.myLooper()) {
             Looper.prepare();
         }
@@ -413,5 +414,41 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {}
+    }
+
+    // Some helper methods to manage the mock cursor position
+    // DO NOT CALL LatinIME#onUpdateSelection IF YOU WANT TO USE THOSE
+    int mLastCursorPos = 0;
+    /**
+     * Move the cached cursor position to the passed position and send onUpdateSelection to LatinIME
+     */
+    protected int sendUpdateForCursorMoveTo(final int position) {
+        mInputConnection.setSelection(position, position);
+        mLatinIME.onUpdateSelection(mLastCursorPos, mLastCursorPos, position, position, -1, -1);
+        mLastCursorPos = position;
+        return position;
+    }
+
+    /**
+     * Move the cached cursor position by the passed amount and send onUpdateSelection to LatinIME
+     */
+    protected int sendUpdateForCursorMoveBy(final int offset) {
+        final int lastPos = mEditText.getText().length();
+        final int requestedPosition = mLastCursorPos + offset;
+        if (requestedPosition < 0) {
+            return sendUpdateForCursorMoveTo(0);
+        } else if (requestedPosition > lastPos) {
+            return sendUpdateForCursorMoveTo(lastPos);
+        } else {
+            return sendUpdateForCursorMoveTo(requestedPosition);
+        }
+    }
+
+    /**
+     * Move the cached cursor position to the end of the line and send onUpdateSelection to LatinIME
+     */
+    protected int sendUpdateForCursorMoveToEndOfLine() {
+        final int lastPos = mEditText.getText().length();
+        return sendUpdateForCursorMoveTo(lastPos);
     }
 }
