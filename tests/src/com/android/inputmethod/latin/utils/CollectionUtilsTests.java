@@ -51,5 +51,4 @@ public class CollectionUtilsTests extends AndroidTestCase {
         assertTrue(CollectionUtils.isNullOrEmpty(Collections.EMPTY_SET));
         assertFalse(CollectionUtils.isNullOrEmpty(Collections.singleton("Not empty")));
     }
-
 }
