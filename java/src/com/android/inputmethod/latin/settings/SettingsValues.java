@@ -80,6 +80,7 @@ public class SettingsValues {
     public final boolean mSlidingKeyInputPreviewEnabled;
     public final boolean mPhraseGestureEnabled;
     public final int mKeyLongpressTimeout;
+    public final boolean mEnableEmojiAltPhysicalKey;
     public final boolean mEnableMetricsLogging;
     public final boolean mShouldShowLxxSuggestionUi;
     // Use split layout for keyboard.
@@ -166,6 +167,8 @@ public class SettingsValues {
         mKeypressVibrationDuration = Settings.readKeypressVibrationDuration(prefs, res);
         mKeypressSoundVolume = Settings.readKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = Settings.readKeyPreviewPopupDismissDelay(prefs, res);
+        mEnableEmojiAltPhysicalKey = prefs.getBoolean(
+                Settings.PREF_ENABLE_EMOJI_ALT_PHYSICAL_KEY, true);
         mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,
                 autoCorrectionThresholdRawValue);
         mGestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);

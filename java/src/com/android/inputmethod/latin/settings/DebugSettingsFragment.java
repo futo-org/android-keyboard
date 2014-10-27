@@ -142,8 +142,7 @@ public final class DebugSettingsFragment extends SubScreenFragment
             mServiceNeedsRestart = true;
             return;
         }
-        if (key.equals(DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH)
-                || key.equals(DebugSettings.PREF_FORCE_PHYSICAL_KEYBOARD_SPECIAL_KEY)) {
+        if (key.equals(DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH)) {
             mServiceNeedsRestart = true;
             return;
         }
