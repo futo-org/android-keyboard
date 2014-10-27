@@ -97,6 +97,9 @@ int Ver4PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
         return NOT_A_WORD_ID;
     }
     const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
+    if (ptNodeParams.isDeleted()) {
+        return NOT_A_WORD_ID;
+    }
     return ptNodeParams.getTerminalId();
 }
 

@@ -746,7 +746,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertTrue(binaryDictionary.isValidWord("aaa"));
         assertTrue(binaryDictionary.removeUnigramEntry("aaa"));
         assertFalse(binaryDictionary.isValidWord("aaa"));
-
+        onInputWord(binaryDictionary, "aaa", false /* isValidWord */);
+        assertFalse(binaryDictionary.isValidWord("aaa"));
+        onInputWord(binaryDictionary, "aaa", false /* isValidWord */);
+        assertTrue(binaryDictionary.isValidWord("aaa"));
+        assertTrue(binaryDictionary.removeUnigramEntry("aaa"));
+        assertFalse(binaryDictionary.isValidWord("aaa"));
         binaryDictionary.close();
     }
 
