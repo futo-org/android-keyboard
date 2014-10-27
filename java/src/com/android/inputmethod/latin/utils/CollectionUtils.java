@@ -19,15 +19,17 @@ package com.android.inputmethod.latin.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class CollectionUtils {
     private CollectionUtils() {
         // This utility class is not publicly instantiable.
     }
 
-    public static <E> ArrayList<E> arrayAsList(final E[] array, final int start, final int end) {
-        if (array == null) {
-            throw new NullPointerException();
-        }
+    @Nonnull
+    public static <E> ArrayList<E> arrayAsList(@Nonnull final E[] array, final int start,
+            final int end) {
         if (start < 0 || start > end || end > array.length) {
             throw new IllegalArgumentException();
         }
@@ -44,7 +46,7 @@ public final class CollectionUtils {
      * @param c Collection to test.
      * @return Whether c contains no elements.
      */
-    public static boolean isNullOrEmpty(final Collection<?> c) {
+    public static boolean isNullOrEmpty(@Nullable final Collection<?> c) {
         return c == null || c.isEmpty();
     }
 }
