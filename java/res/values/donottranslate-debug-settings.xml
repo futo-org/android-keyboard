@@ -22,7 +22,6 @@
     <string name="english_ime_debug_settings">Android Keyboard Debug settings</string>
     <string name="prefs_debug_mode">Debug Mode</string>
     <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
-    <string name="prefs_force_physical_keyboard_special_key">Force physical keyboard special key</string>
     <string name="prefs_should_show_lxx_suggestion_ui">Show LXX suggestion UI</string>
     <!-- Option to enable sliding key input indicator. The user can see a rubber band-like effect during sliding key input. [CHAR LIMIT=30]-->
     <string name="sliding_key_input_preview">Show slide indicator</string>

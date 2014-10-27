@@ -37,6 +37,12 @@
         latin:minValue="@integer/config_min_longpress_timeout"
         latin:maxValue="@integer/config_max_longpress_timeout"
         latin:stepValue="@integer/config_longpress_timeout_step" />
+    <CheckBoxPreference
+        android:key="pref_enable_emoji_alt_physical_key"
+        android:title="@string/prefs_enable_emoji_alt_physical_key"
+        android:summary="@string/prefs_enable_emoji_alt_physical_key_summary"
+        android:defaultValue="true"
+        android:persistent="true" />
     <!-- The settings for showing setup wizard application icon shouldn't be persistent and
          the default value is added programmatically. -->
     <CheckBoxPreference

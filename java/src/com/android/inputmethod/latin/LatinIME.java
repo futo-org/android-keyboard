@@ -167,7 +167,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
-    private final SpecialKeyDetector mSpecialKeyDetector;
+    private final EmojiAltPhysicalKeyDetector mEmojiAltPhysicalKeyDetector =
+            new EmojiAltPhysicalKeyDetector();
     private StatsUtilsManager mStatsUtilsManager;
     // Working variable for {@link #startShowingInputView()} and
     // {@link #onEvaluateInputViewShown()}.
@@ -545,7 +546,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSettings = Settings.getInstance();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
-        mSpecialKeyDetector = new SpecialKeyDetector(this);
         mStatsUtilsManager = StatsUtilsManager.getInstance();
         mIsHardwareAcceleratedDrawingEnabled =
                 InputMethodServiceCompatUtils.enableHardwareAcceleration(this);
@@ -1765,7 +1765,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Hooks for hardware keyboard
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
-        mSpecialKeyDetector.onKeyDown(keyEvent);
+        // TODO: This should be processed in {@link InputLogic}.
+        mEmojiAltPhysicalKeyDetector.onKeyDown(keyEvent);
         if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
             return super.onKeyDown(keyCode, keyEvent);
         }
@@ -1786,7 +1787,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onKeyUp(final int keyCode, final KeyEvent keyEvent) {
-        mSpecialKeyDetector.onKeyUp(keyEvent);
+        // TODO: This should be processed in {@link InputLogic}.
+        mEmojiAltPhysicalKeyDetector.onKeyUp(keyEvent);
         if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
             return super.onKeyUp(keyCode, keyEvent);
         }

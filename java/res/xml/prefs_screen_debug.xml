@@ -31,11 +31,6 @@
         android:defaultValue="false"
         android:persistent="true" />
     <CheckBoxPreference
-        android:key="force_physical_keyboard_special_key"
-        android:title="@string/prefs_force_physical_keyboard_special_key"
-        android:defaultValue="false"
-        android:persistent="true" />
-    <CheckBoxPreference
         android:key="pref_should_show_lxx_suggestion_ui"
         android:title="@string/prefs_should_show_lxx_suggestion_ui"
         android:defaultValue="true"
