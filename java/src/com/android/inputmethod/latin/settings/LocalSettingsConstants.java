@@ -46,7 +46,6 @@ public class LocalSettingsConstants {
         // correctly set for it to work on a new device.
         DebugSettings.PREF_DEBUG_MODE,
         DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH,
-        DebugSettings.PREF_FORCE_PHYSICAL_KEYBOARD_SPECIAL_KEY,
         DebugSettings.PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS,
         DebugSettings.PREF_KEY_PREVIEW_DISMISS_DURATION,
         DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_X_SCALE,
