@@ -29,14 +29,45 @@ import java.util.Collections;
 @SmallTest
 public class CollectionUtilsTests extends AndroidTestCase {
     /**
+     * Tests that {@link CollectionUtils#arrayAsList(Object[],int,int)} fails as expected
+     * with some invalid inputs.
+     */
+    public void testArrayAsListFailure() {
+        final String[] array = { "0", "1" };
+        // Negative start
+        try {
+            CollectionUtils.arrayAsList(array, -1, 1);
+            fail("Failed to catch start < 0");
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Invalid start: -1 end: 1 with array.length: 2", e.getMessage());
+        }
+        // start > end
+        try {
+            CollectionUtils.arrayAsList(array, 1, -1);
+            fail("Failed to catch start > end");
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Invalid start: 1 end: -1 with array.length: 2", e.getMessage());
+        }
+        // end > array.length
+        try {
+            CollectionUtils.arrayAsList(array, 1, 3);
+            fail("Failed to catch end > array.length");
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Invalid start: 1 end: 3 with array.length: 2", e.getMessage());
+        }
+    }
+
+    /**
      * Tests that {@link CollectionUtils#arrayAsList(Object[],int,int)} gives the expected
      * results for a few valid inputs.
      */
     public void testArrayAsList() {
-        final String[] array = { "0", "1", "2", "3", "4" };
         final ArrayList<String> empty = new ArrayList<>();
+        assertEquals(empty, CollectionUtils.arrayAsList(new String[] { }, 0, 0));
+        final String[] array = { "0", "1", "2", "3", "4" };
         assertEquals(empty, CollectionUtils.arrayAsList(array, 0, 0));
         assertEquals(empty, CollectionUtils.arrayAsList(array, 1, 1));
+        assertEquals(empty, CollectionUtils.arrayAsList(array, array.length, array.length));
         final ArrayList<String> expected123 = new ArrayList<>(Arrays.asList("1", "2", "3"));
         assertEquals(expected123, CollectionUtils.arrayAsList(array, 1, 4));
     }
