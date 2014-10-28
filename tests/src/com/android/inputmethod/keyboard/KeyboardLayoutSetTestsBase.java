@@ -87,7 +87,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         setContext(new ContextThemeWrapper(getContext(), keyboardTheme.mStyleId));
         KeyboardLayoutSet.onKeyboardThemeChanged();
 
-        mScreenMetrics = res.getInteger(R.integer.config_screen_metrics);
+        mScreenMetrics = Settings.readScreenMetrics(res);
         RichInputMethodManager.init(context);
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
 
@@ -121,8 +121,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     }
 
     protected final boolean isPhone() {
-        return mScreenMetrics == Constants.SCREEN_METRICS_SMALL_PHONE
-                || mScreenMetrics == Constants.SCREEN_METRICS_LARGE_PHONE;
+        return Constants.isPhone(mScreenMetrics);
     }
 
     protected final InputMethodSubtype getSubtype(final Locale locale,

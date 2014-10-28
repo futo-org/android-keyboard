@@ -213,6 +213,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return mSettingsValues.mBlockPotentiallyOffensive;
     }
 
+    public static int readScreenMetrics(final Resources res) {
+        return res.getInteger(R.integer.config_screen_metrics);
+    }
+
     // Accessed from the settings interface, hence public
     public static boolean readKeypressSoundEnabled(final SharedPreferences prefs,
             final Resources res) {
