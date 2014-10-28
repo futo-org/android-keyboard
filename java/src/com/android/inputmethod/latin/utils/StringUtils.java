@@ -16,17 +16,12 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.text.Spanned;
-import android.text.TextUtils;
-
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.common.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class StringUtils {
     public static final int CAPITALIZE_NONE = 0;  // No caps, or mixed case
@@ -47,8 +42,67 @@ public final class StringUtils {
         // This utility class is not publicly instantiable.
     }
 
+    // Taken from android.text.TextUtils. We are extensively using this method in many places,
+    // some of which don't have the android libraries available.
+    /**
+     * Returns true if the string is null or 0-length.
+     * @param str the string to be examined
+     * @return true if str is null or zero length
+     */
+    public static boolean isEmpty(CharSequence str) {
+        if (str == null || str.length() == 0)
+            return true;
+        else
+            return false;
+    }
+
+    // Taken from android.text.TextUtils to cut the dependency to the Android framework.
+    /**
+     * Returns a string containing the tokens joined by delimiters.
+     * @param tokens an array objects to be joined. Strings will be formed from
+     *     the objects by calling object.toString().
+     */
+    public static String join(CharSequence delimiter, Iterable tokens) {
+        StringBuilder sb = new StringBuilder();
+        boolean firstTime = true;
+        for (Object token: tokens) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                sb.append(delimiter);
+            }
+            sb.append(token);
+        }
+        return sb.toString();
+    }
+
+    // Taken from android.text.TextUtils to cut the dependency to the Android framework.
+    /**
+     * Returns true if a and b are equal, including if they are both null.
+     * <p><i>Note: In platform versions 1.1 and earlier, this method only worked well if
+     * both the arguments were instances of String.</i></p>
+     * @param a first CharSequence to check
+     * @param b second CharSequence to check
+     * @return true if a and b are equal
+     */
+    public static boolean equals(CharSequence a, CharSequence b) {
+        if (a == b) return true;
+        int length;
+        if (a != null && b != null && (length = a.length()) == b.length()) {
+            if (a instanceof String && b instanceof String) {
+                return a.equals(b);
+            } else {
+                for (int i = 0; i < length; i++) {
+                    if (a.charAt(i) != b.charAt(i)) return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static int codePointCount(final CharSequence text) {
-        if (TextUtils.isEmpty(text)) return 0;
+        if (isEmpty(text)) return 0;
         return Character.codePointCount(text, 0, text.length());
     }
 
@@ -78,7 +132,7 @@ public final class StringUtils {
 
     public static boolean containsInCommaSplittableText(final String text,
             final String extraValues) {
-        if (TextUtils.isEmpty(extraValues)) {
+        if (isEmpty(extraValues)) {
             return false;
         }
         return containsInArray(text, extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT));
@@ -86,7 +140,7 @@ public final class StringUtils {
 
     public static String removeFromCommaSplittableTextIfExists(final String text,
             final String extraValues) {
-        if (TextUtils.isEmpty(extraValues)) {
+        if (isEmpty(extraValues)) {
             return EMPTY_STRING;
         }
         final String[] elements = extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT);
@@ -99,7 +153,7 @@ public final class StringUtils {
                 result.add(element);
             }
         }
-        return TextUtils.join(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT, result);
+        return join(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT, result);
     }
 
     /**
@@ -117,7 +171,7 @@ public final class StringUtils {
             // Compare each suggestion with each previous suggestion
             for (int j = 0; j < i; j++) {
                 final String previous = suggestions.get(j);
-                if (TextUtils.equals(cur, previous)) {
+                if (equals(cur, previous)) {
                     suggestions.remove(i);
                     i--;
                     break;
@@ -471,7 +525,7 @@ public final class StringUtils {
      */
     @UsedForTesting
     public static byte[] hexStringToByteArray(final String hexString) {
-        if (TextUtils.isEmpty(hexString)) {
+        if (isEmpty(hexString)) {
             return null;
         }
         final int N = hexString.length();
@@ -512,67 +566,15 @@ public final class StringUtils {
         return lastIndex - i;
     }
 
-    /**
-     * Splits the given {@code charSequence} with at occurrences of the given {@code regex}.
-     * <p>
-     * This is equivalent to
-     * {@code charSequence.toString().split(regex, preserveTrailingEmptySegments ? -1 : 0)}
-     * except that the spans are preserved in the result array.
-     * </p>
-     * @param charSequence the character sequence to be split.
-     * @param regex the regex pattern to be used as the separator.
-     * @param preserveTrailingEmptySegments {@code true} to preserve the trailing empty
-     * segments. Otherwise, trailing empty segments will be removed before being returned.
-     * @return the array which contains the result. All the spans in the <code>charSequence</code>
-     * is preserved.
-     */
-    @UsedForTesting
-    public static CharSequence[] split(final CharSequence charSequence, final String regex,
-            final boolean preserveTrailingEmptySegments) {
-        // A short-cut for non-spanned strings.
-        if (!(charSequence instanceof Spanned)) {
-            // -1 means that trailing empty segments will be preserved.
-            return charSequence.toString().split(regex, preserveTrailingEmptySegments ? -1 : 0);
-        }
-
-        // Hereafter, emulate String.split for CharSequence.
-        final ArrayList<CharSequence> sequences = new ArrayList<>();
-        final Matcher matcher = Pattern.compile(regex).matcher(charSequence);
-        int nextStart = 0;
-        boolean matched = false;
-        while (matcher.find()) {
-            sequences.add(charSequence.subSequence(nextStart, matcher.start()));
-            nextStart = matcher.end();
-            matched = true;
-        }
-        if (!matched) {
-            // never matched. preserveTrailingEmptySegments is ignored in this case.
-            return new CharSequence[] { charSequence };
-        }
-        sequences.add(charSequence.subSequence(nextStart, charSequence.length()));
-        if (!preserveTrailingEmptySegments) {
-            for (int i = sequences.size() - 1; i >= 0; --i) {
-                if (!TextUtils.isEmpty(sequences.get(i))) {
-                    break;
-                }
-                sequences.remove(i);
-            }
-        }
-        return sequences.toArray(new CharSequence[sequences.size()]);
-    }
-
-    @UsedForTesting
     public static class Stringizer<E> {
         public String stringize(final E element) {
             return element != null ? element.toString() : "null";
         }
 
-        @UsedForTesting
         public final String join(final E[] array) {
             return joinStringArray(toStringArray(array), null /* delimiter */);
         }
 
-        @UsedForTesting
         public final String join(final E[] array, final String delimiter) {
             return joinStringArray(toStringArray(array), delimiter);
         }
@@ -606,9 +608,8 @@ public final class StringUtils {
      * @param text the text to be examined.
      * @return {@code true} if the last composed word contains line-breaking separator.
      */
-    @UsedForTesting
     public static boolean hasLineBreakCharacter(final String text) {
-        if (TextUtils.isEmpty(text)) {
+        if (isEmpty(text)) {
             return false;
         }
         for (int i = text.length() - 1; i >= 0; --i) {

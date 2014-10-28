@@ -28,7 +28,7 @@ import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.TextInfoCompatUtils;
 import com.android.inputmethod.latin.NgramContext;
-import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.SpannableStringUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -71,9 +71,10 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
             if (!subText.toString().contains(AndroidSpellCheckerService.SINGLE_QUOTE)) {
                 continue;
             }
-            final CharSequence[] splitTexts = StringUtils.split(subText,
+            // Split preserving spans.
+            final CharSequence[] splitTexts = SpannableStringUtils.split(subText,
                     AndroidSpellCheckerService.SINGLE_QUOTE,
-                    true /* preserveTrailingEmptySegments */ );
+                    true /* preserveTrailingEmptySegments */);
             if (splitTexts == null || splitTexts.length <= 1) {
                 continue;
             }
