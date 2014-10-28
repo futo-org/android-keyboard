@@ -119,7 +119,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return weighting->getSubstitutionCost()
                 + weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
     case CT_NEW_WORD_SPACE_OMISSION:
-        return weighting->getNewWordSpatialCost(traverseSession, dicNode, inputStateG);
+        return weighting->getSpaceOmissionCost(traverseSession, dicNode, inputStateG);
     case CT_MATCH:
         return weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
     case CT_COMPLETION:

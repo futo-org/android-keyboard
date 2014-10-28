@@ -57,7 +57,7 @@ class Weighting {
             const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode) const = 0;
 
-    virtual float getNewWordSpatialCost(const DicTraverseSession *const traverseSession,
+    virtual float getSpaceOmissionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, DicNode_InputStateG *const inputStateG) const = 0;
 
     virtual float getNewWordBigramLanguageCost(

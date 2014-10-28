@@ -150,9 +150,10 @@ class TypingWeighting : public Weighting {
         return cost + weightedDistance;
     }
 
-    float getNewWordSpatialCost(const DicTraverseSession *const traverseSession,
+    float getSpaceOmissionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, DicNode_InputStateG *inputStateG) const {
-        return ScoringParams::COST_NEW_WORD * traverseSession->getMultiWordCostMultiplier();
+        const float cost = ScoringParams::SPACE_OMISSION_COST;
+        return cost * traverseSession->getMultiWordCostMultiplier();
     }
 
     float getNewWordBigramLanguageCost(const DicTraverseSession *const traverseSession,
@@ -202,7 +203,10 @@ class TypingWeighting : public Weighting {
 
     AK_FORCE_INLINE float getSpaceSubstitutionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const {
-        const float cost = ScoringParams::SPACE_SUBSTITUTION_COST + ScoringParams::COST_NEW_WORD;
+        const int inputIndex = dicNode->getInputIndex(0);
+        const float distanceToSpaceKey = traverseSession->getProximityInfoState(0)
+                ->getPointToKeyLength(inputIndex, KEYCODE_SPACE);
+        const float cost = ScoringParams::SPACE_SUBSTITUTION_COST * distanceToSpaceKey;
         return cost * traverseSession->getMultiWordCostMultiplier();
     }
 
