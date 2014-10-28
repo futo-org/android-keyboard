@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.utils;
 
+import com.android.inputmethod.latin.common.StringUtils;
+
 import java.util.Locale;
 
 /**

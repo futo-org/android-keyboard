@@ -38,7 +38,7 @@ import com.android.inputmethod.keyboard.internal.KeyboardRow;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.Constants;
-import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.common.StringUtils;
 
 import java.util.Arrays;
 import java.util.Locale;

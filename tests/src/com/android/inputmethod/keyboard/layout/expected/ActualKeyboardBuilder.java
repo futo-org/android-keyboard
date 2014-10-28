@@ -20,7 +20,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.common.Constants;
-import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.common.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
