@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.common;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 public final class Constants {
     public static final class Color {
         /**
@@ -305,11 +307,13 @@ public final class Constants {
     public static final int SCREEN_METRICS_LARGE_TABLET = 2;
     public static final int SCREEN_METRICS_SMALL_TABLET = 3;
 
+    @UsedForTesting
     public static boolean isPhone(final int screenMetrics) {
         return screenMetrics == SCREEN_METRICS_SMALL_PHONE
                 || screenMetrics == SCREEN_METRICS_LARGE_PHONE;
     }
 
+    @UsedForTesting
     public static boolean isTablet(final int screenMetrics) {
         return screenMetrics == SCREEN_METRICS_SMALL_TABLET
                 || screenMetrics == SCREEN_METRICS_LARGE_TABLET;
