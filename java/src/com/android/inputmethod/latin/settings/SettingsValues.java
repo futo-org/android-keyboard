@@ -29,7 +29,6 @@ import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
@@ -158,7 +157,7 @@ public class SettingsValues {
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
         mIsSplitKeyboardEnabled = prefs.getBoolean(Settings.PREF_ENABLE_SPLIT_KEYBOARD, false);
-        mScreenMetrics = res.getInteger(R.integer.config_screen_metrics);
+        mScreenMetrics = Settings.readScreenMetrics(res);
 
         mShouldShowLxxSuggestionUi = Settings.SHOULD_SHOW_LXX_SUGGESTION_UI
                 && prefs.getBoolean(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI, true);
@@ -222,11 +221,6 @@ public class SettingsValues {
 
     public boolean isMetricsLoggingEnabled() {
         return mEnableMetricsLogging;
-    }
-
-    public boolean isTablet() {
-        return mScreenMetrics == Constants.SCREEN_METRICS_SMALL_TABLET
-                || mScreenMetrics == Constants.SCREEN_METRICS_LARGE_TABLET;
     }
 
     public boolean isApplicationSpecifiedCompletionsOn() {

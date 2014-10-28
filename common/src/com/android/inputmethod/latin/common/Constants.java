@@ -305,6 +305,16 @@ public final class Constants {
     public static final int SCREEN_METRICS_LARGE_TABLET = 2;
     public static final int SCREEN_METRICS_SMALL_TABLET = 3;
 
+    public static boolean isPhone(final int screenMetrics) {
+        return screenMetrics == SCREEN_METRICS_SMALL_PHONE
+                || screenMetrics == SCREEN_METRICS_LARGE_PHONE;
+    }
+
+    public static boolean isTablet(final int screenMetrics) {
+        return screenMetrics == SCREEN_METRICS_SMALL_TABLET
+                || screenMetrics == SCREEN_METRICS_LARGE_TABLET;
+    }
+
     /**
      * Default capacity of gesture points container.
      * This constant is used by {@link com.android.inputmethod.keyboard.internal.BatchInputArbiter}
