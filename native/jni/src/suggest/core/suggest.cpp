@@ -160,8 +160,7 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
             // TODO: Remove. Do not prune node here.
             const bool allowsErrorCorrections = TRAVERSAL->allowsErrorCorrections(&dicNode);
             // Process for handling space substitution (e.g., hevis => he is)
-            if (allowsErrorCorrections
-                    && TRAVERSAL->isSpaceSubstitutionTerminal(traverseSession, &dicNode)) {
+            if (TRAVERSAL->isSpaceSubstitutionTerminal(traverseSession, &dicNode)) {
                 createNextWordDicNode(traverseSession, &dicNode, true /* spaceSubstitution */);
             }
 
