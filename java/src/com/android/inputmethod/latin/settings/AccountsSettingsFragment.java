@@ -50,12 +50,15 @@ import javax.annotation.Nullable;
  */
 public final class AccountsSettingsFragment extends SubScreenFragment {
     private static final String PREF_SYNC_NOW = "pref_beanstalk";
+    private static final String PREF_CLEAR_SYNC_DATA = "pref_beanstalk_clear_data";
 
     static final String PREF_ACCCOUNT_SWITCHER = "account_switcher";
 
     private final DialogInterface.OnClickListener mAccountChangedListener =
             new AccountChangedListener();
     private final Preference.OnPreferenceClickListener mSyncNowListener = new SyncNowListener();
+    private final Preference.OnPreferenceClickListener mClearSyncDataListener =
+            new ClearSyncDataListener();
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -86,13 +89,18 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             removePreference(PREF_ACCCOUNT_SWITCHER);
             removePreference(PREF_ENABLE_CLOUD_SYNC);
             removePreference(PREF_SYNC_NOW);
+            removePreference(PREF_CLEAR_SYNC_DATA);
         }
         if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
             removePreference(PREF_ENABLE_CLOUD_SYNC);
             removePreference(PREF_SYNC_NOW);
+            removePreference(PREF_CLEAR_SYNC_DATA);
         } else {
             final Preference syncNowPreference = findPreference(PREF_SYNC_NOW);
             syncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
+
+            final Preference clearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
+            clearSyncDataPreference.setOnPreferenceClickListener(mClearSyncDataListener);
         }
     }
 
@@ -136,7 +144,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         final String[] accountsForLogin = LoginAccountUtils.getAccountsForLogin(context);
         accountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
-            public boolean onPreferenceClick(Preference preference) {
+            public boolean onPreferenceClick(final Preference preference) {
                 if (accountsForLogin.length == 0) {
                     // TODO: Handle account addition.
                     Toast.makeText(getActivity(), getString(R.string.account_select_cancel),
@@ -229,7 +237,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      */
     class AccountChangedListener implements DialogInterface.OnClickListener {
         @Override
-        public void onClick(DialogInterface dialog, int which) {
+        public void onClick(final DialogInterface dialog, final int which) {
             final String oldAccount = getSignedInAccountName();
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: // Signed in
@@ -260,6 +268,32 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         @Override
         public boolean onPreferenceClick(final Preference preference) {
             AccountStateChangedListener.forceSync(getSignedInAccountName());
+            return true;
+        }
+    }
+
+    /**
+     * Listener that initiates the process of deleting user's data from the cloud.
+     */
+    class ClearSyncDataListener implements Preference.OnPreferenceClickListener {
+        @Override
+        public boolean onPreferenceClick(final Preference preference) {
+            final AlertDialog confirmationDialog = new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.clear_sync_data_title)
+                    .setMessage(R.string.clear_sync_data_confirmation)
+                    .setPositiveButton(R.string.clear_sync_data_ok,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(final DialogInterface dialog, final int which) {
+                                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                                        AccountStateChangedListener.forceDelete(
+                                                getSignedInAccountName());
+                                    }
+                                }
+                             })
+                    .setNegativeButton(R.string.clear_sync_data_cancel, null /* OnClickListener */)
+                    .create();
+            confirmationDialog.show();
             return true;
         }
     }
