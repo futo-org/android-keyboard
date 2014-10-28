@@ -23,6 +23,8 @@ import android.text.Spanned;
 import android.text.SpannedString;
 
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.utils.SpannableStringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -375,9 +377,9 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
         spannableString.setSpan(span1, 0, 7, SPAN1_FLAGS);
         spannableString.setSpan(span2, 0, 5, SPAN2_FLAGS);
         spannableString.setSpan(span3, 12, 13, SPAN3_FLAGS);
-        final CharSequence[] charSequencesFromSpanned = StringUtils.split(
+        final CharSequence[] charSequencesFromSpanned = SpannableStringUtils.split(
                 spannableString, " ", true /* preserveTrailingEmptySegmengs */);
-        final CharSequence[] charSequencesFromString = StringUtils.split(
+        final CharSequence[] charSequencesFromString = SpannableStringUtils.split(
                 spannableString.toString(), " ", true /* preserveTrailingEmptySegmengs */);
 
 
@@ -456,44 +458,44 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
     }
 
     public void testSplitCharSequencePreserveTrailingEmptySegmengs() {
-        assertEquals(1, StringUtils.split("", " ",
+        assertEquals(1, SpannableStringUtils.split("", " ",
                 false /* preserveTrailingEmptySegmengs */).length);
-        assertEquals(1, StringUtils.split(new SpannedString(""), " ",
-                false /* preserveTrailingEmptySegmengs */).length);
-
-        assertEquals(1, StringUtils.split("", " ",
-                true /* preserveTrailingEmptySegmengs */).length);
-        assertEquals(1, StringUtils.split(new SpannedString(""), " ",
-                true /* preserveTrailingEmptySegmengs */).length);
-
-        assertEquals(0, StringUtils.split(" ", " ",
-                false /* preserveTrailingEmptySegmengs */).length);
-        assertEquals(0, StringUtils.split(new SpannedString(" "), " ",
+        assertEquals(1, SpannableStringUtils.split(new SpannedString(""), " ",
                 false /* preserveTrailingEmptySegmengs */).length);
 
-        assertEquals(2, StringUtils.split(" ", " ",
+        assertEquals(1, SpannableStringUtils.split("", " ",
                 true /* preserveTrailingEmptySegmengs */).length);
-        assertEquals(2, StringUtils.split(new SpannedString(" "), " ",
-                true /* preserveTrailingEmptySegmengs */).length);
-
-        assertEquals(3, StringUtils.split("a b c  ", " ",
-                false /* preserveTrailingEmptySegmengs */).length);
-        assertEquals(3, StringUtils.split(new SpannedString("a b c  "), " ",
-                false /* preserveTrailingEmptySegmengs */).length);
-
-        assertEquals(5, StringUtils.split("a b c  ", " ",
-                true /* preserveTrailingEmptySegmengs */).length);
-        assertEquals(5, StringUtils.split(new SpannedString("a b c  "), " ",
+        assertEquals(1, SpannableStringUtils.split(new SpannedString(""), " ",
                 true /* preserveTrailingEmptySegmengs */).length);
 
-        assertEquals(6, StringUtils.split("a     b ", " ",
+        assertEquals(0, SpannableStringUtils.split(" ", " ",
                 false /* preserveTrailingEmptySegmengs */).length);
-        assertEquals(6, StringUtils.split(new SpannedString("a     b "), " ",
+        assertEquals(0, SpannableStringUtils.split(new SpannedString(" "), " ",
                 false /* preserveTrailingEmptySegmengs */).length);
 
-        assertEquals(7, StringUtils.split("a     b ", " ",
+        assertEquals(2, SpannableStringUtils.split(" ", " ",
                 true /* preserveTrailingEmptySegmengs */).length);
-        assertEquals(7, StringUtils.split(new SpannedString("a     b "), " ",
+        assertEquals(2, SpannableStringUtils.split(new SpannedString(" "), " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(3, SpannableStringUtils.split("a b c  ", " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(3, SpannableStringUtils.split(new SpannedString("a b c  "), " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(5, SpannableStringUtils.split("a b c  ", " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(5, SpannableStringUtils.split(new SpannedString("a b c  "), " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(6, SpannableStringUtils.split("a     b ", " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(6, SpannableStringUtils.split(new SpannedString("a     b "), " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(7, SpannableStringUtils.split("a     b ", " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(7, SpannableStringUtils.split(new SpannedString("a     b "), " ",
                 true /* preserveTrailingEmptySegmengs */).length);
     }
 }
