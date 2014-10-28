@@ -40,6 +40,7 @@ import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 /**

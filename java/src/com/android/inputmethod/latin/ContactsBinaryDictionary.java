@@ -30,9 +30,9 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.personalization.AccountUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
-import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;

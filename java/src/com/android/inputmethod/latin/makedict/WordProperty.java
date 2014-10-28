@@ -21,8 +21,8 @@ import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
-import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -20,7 +20,7 @@ import static com.android.inputmethod.latin.common.Constants.CODE_OUTPUT_TEXT;
 import static com.android.inputmethod.latin.common.Constants.CODE_UNSPECIFIED;
 
 import com.android.inputmethod.latin.common.Constants;
-import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.common.StringUtils;
 
 /**
  * The string parser of the key specification.

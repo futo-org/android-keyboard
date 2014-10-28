@@ -60,8 +60,7 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/utils/FileUtils.java \
         latin/utils/JniUtils.java \
         latin/utils/LocaleUtils.java \
-        latin/utils/ResizableIntArray.java \
-        latin/utils/StringUtils.java
+        latin/utils/ResizableIntArray.java
 
 LATINIME_OVERRIDABLE_SRC_FILES_FOR_DICTTOOL := \
         latin/define/DebugFlags.java

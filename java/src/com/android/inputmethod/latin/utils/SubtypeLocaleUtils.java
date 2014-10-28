@@ -28,6 +28,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
+import com.android.inputmethod.latin.common.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;

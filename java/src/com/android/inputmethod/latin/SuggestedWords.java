@@ -21,8 +21,8 @@ import android.view.inputmethod.CompletionInfo;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

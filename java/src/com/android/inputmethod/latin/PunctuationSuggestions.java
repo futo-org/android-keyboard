@@ -18,7 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.common.Constants;
-import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.common.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
