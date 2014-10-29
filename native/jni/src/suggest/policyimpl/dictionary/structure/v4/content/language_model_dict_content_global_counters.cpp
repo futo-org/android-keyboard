@@ -16,6 +16,8 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content_global_counters.h"
 
+#include <climits>
+
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 
 namespace latinime {
