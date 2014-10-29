@@ -30,7 +30,7 @@ class Scoring {
  public:
     virtual int calculateFinalScore(const float compoundDistance, const int inputSize,
             const ErrorTypeUtils::ErrorType containedErrorTypes, const bool forceCommit,
-            const bool boostExactMatches) const = 0;
+            const bool boostExactMatches, const bool hasProbabilityZero) const = 0;
     virtual void getMostProbableString(const DicTraverseSession *const traverseSession,
             const float weightOfLangModelVsSpatialModel,
             SuggestionResults *const outSuggestionResults) const = 0;

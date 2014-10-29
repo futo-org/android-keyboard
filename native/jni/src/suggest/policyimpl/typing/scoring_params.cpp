@@ -24,6 +24,7 @@ const int ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY_FOR_CAPPED = 120;
 const float ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD = 1.0f;
 
 const float ScoringParams::EXACT_MATCH_PROMOTION = 1.1f;
+const float ScoringParams::PERFECT_MATCH_PROMOTION = 1.1f;
 const float ScoringParams::CASE_ERROR_PENALTY_FOR_EXACT_MATCH = 0.01f;
 const float ScoringParams::ACCENT_ERROR_PENALTY_FOR_EXACT_MATCH = 0.02f;
 const float ScoringParams::DIGRAPH_PENALTY_FOR_EXACT_MATCH = 0.03f;
