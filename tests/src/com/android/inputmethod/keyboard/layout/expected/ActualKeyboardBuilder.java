@@ -25,6 +25,9 @@ import com.android.inputmethod.latin.common.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This class builds an actual keyboard for unit test.
  *
@@ -98,9 +101,13 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
 
         @Override
         public String stringize(final MoreKeySpec spec) {
+            if (spec == null) {
+                return "null";
+            }
             return toString(spec.mLabel, spec.mIconId, spec.mOutputText, spec.mCode);
         }
 
+        @Nonnull
         static String toString(final String label, final int iconId, final String outputText,
                 final int code) {
             final String visual = (iconId != KeyboardIconsSet.ICON_UNDEFINED)
@@ -125,7 +132,7 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
         static final KeyStringizer STRINGIZER = new KeyStringizer();
 
         @Override
-        public String stringize(final Key key) {
+        public String stringize(@Nullable final Key key) {
             if (key == null) {
                 return "NULL";
             }
@@ -150,7 +157,8 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
      * @param key the key to be converted to string.
      * @return the human readable representation of <code>key</code>.
      */
-    public static String toString(final Key key) {
+    @Nonnull
+    public static String toString(@Nullable final Key key) {
         return KeyStringizer.STRINGIZER.stringize(key);
     }
 
@@ -159,7 +167,8 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
      * @param keys the keyboard row to be converted to string.
      * @return the human readable representation of <code>keys</code>.
      */
-    public static String toString(final Key[] keys) {
+    @Nonnull
+    public static String toString(@Nullable final Key[] keys) {
         return KeyStringizer.STRINGIZER.join(keys);
     }
 
@@ -168,7 +177,7 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
         static final KeyArrayStringizer STRINGIZER = new KeyArrayStringizer();
 
         @Override
-        public String stringize(final Key[] keyArray) {
+        public String stringize(@Nullable final Key[] keyArray) {
             return KeyStringizer.STRINGIZER.join(keyArray);
         }
     }
@@ -178,7 +187,8 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
      * @param rows the keyboard to be converted to string.
      * @return the human readable representation of <code>rows</code>.
      */
-    public static String toString(final Key[][] rows) {
+    @Nonnull
+    public static String toString(@Nullable final Key[][] rows) {
         return KeyArrayStringizer.STRINGIZER.join(rows, "\n" /* delimiter */);
     }
 }

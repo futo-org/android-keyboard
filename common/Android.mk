@@ -14,8 +14,9 @@
 
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_MODULE := latinime-common
+LOCAL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_STATIC_JAVA_LIBRARIES := jsr305
 LOCAL_SDK_VERSION := 21
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
@@ -23,4 +24,5 @@ include $(BUILD_STATIC_JAVA_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := latinime-common-host
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_STATIC_JAVA_LIBRARIES := jsr305lib
 include $(BUILD_HOST_JAVA_LIBRARY)
