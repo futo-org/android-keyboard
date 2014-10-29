@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
-
-import android.util.Log;
-import android.util.SparseIntArray;
+package com.android.inputmethod.latin.common;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.utils.ResizableIntArray;
 
 // TODO: This class is not thread-safe.
 public final class InputPointers {
-    private static final String TAG = InputPointers.class.getSimpleName();
     private static final boolean DEBUG_TIME = false;
 
     private final int mDefaultCapacity;
@@ -61,14 +55,14 @@ public final class InputPointers {
         mXCoordinates.addAt(index, x);
         mYCoordinates.addAt(index, y);
         mPointerIds.addAt(index, pointerId);
-        if (DebugFlags.DEBUG_ENABLED || DEBUG_TIME) {
+        if (DEBUG_TIME) {
             fillWithLastTimeUntil(index);
         }
         mTimes.addAt(index, time);
     }
 
     @UsedForTesting
-    void addPointer(int x, int y, int pointerId, int time) {
+    public void addPointer(int x, int y, int pointerId, int time) {
         mXCoordinates.add(x);
         mYCoordinates.add(y);
         mPointerIds.add(pointerId);
@@ -152,11 +146,6 @@ public final class InputPointers {
      * the sequence.
      */
     public int[] getTimes() {
-        if (DebugFlags.DEBUG_ENABLED || DEBUG_TIME) {
-            if (!isValidTimeStamps()) {
-                throw new RuntimeException("Time stamps are invalid.");
-            }
-        }
         return mTimes.getPrimitiveArray();
     }
 
@@ -164,26 +153,5 @@ public final class InputPointers {
     public String toString() {
         return "size=" + getPointerSize() + " id=" + mPointerIds + " time=" + mTimes
                 + " x=" + mXCoordinates + " y=" + mYCoordinates;
-    }
-
-    private boolean isValidTimeStamps() {
-        final int[] times = mTimes.getPrimitiveArray();
-        final int[] pointerIds = mPointerIds.getPrimitiveArray();
-        final SparseIntArray lastTimeOfPointers = new SparseIntArray();
-        final int size = getPointerSize();
-        for (int i = 0; i < size; ++i) {
-            final int pointerId = pointerIds[i];
-            final int time = times[i];
-            final int lastTime = lastTimeOfPointers.get(pointerId, time);
-            if (time < lastTime) {
-                // dump
-                for (int j = 0; j < size; ++j) {
-                    Log.d(TAG, "--- (" + j + ") " + times[j]);
-                }
-                return false;
-            }
-            lastTimeOfPointers.put(pointerId, time);
-        }
-        return true;
     }
 }

@@ -43,6 +43,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Dictionary.PhonyDictionary;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.settings.Settings;

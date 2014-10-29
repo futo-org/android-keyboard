@@ -47,7 +47,6 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/BinaryDictionary.java \
         latin/DicTraverseSession.java \
         latin/Dictionary.java \
-        latin/InputPointers.java \
         latin/LastComposedWord.java \
         latin/NgramContext.java \
         latin/SuggestedWords.java \
@@ -59,8 +58,7 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/utils/CoordinateUtils.java \
         latin/utils/FileUtils.java \
         latin/utils/JniUtils.java \
-        latin/utils/LocaleUtils.java \
-        latin/utils/ResizableIntArray.java
+        latin/utils/LocaleUtils.java
 
 LATINIME_OVERRIDABLE_SRC_FILES_FOR_DICTTOOL := \
         latin/define/DebugFlags.java

@@ -19,8 +19,8 @@ package com.android.inputmethod.latin.touchinputconsumer;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.inputlogic.PrivateCommandPerformer;
 
 import java.util.List;
