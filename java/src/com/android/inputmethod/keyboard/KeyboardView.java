@@ -41,6 +41,8 @@ import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.HashSet;
 
+import javax.annotation.Nullable;
+
 /**
  * A view that renders a virtual {@link Keyboard}.
  *
@@ -557,9 +559,10 @@ public class KeyboardView extends View {
      * @param key key in the attached {@link Keyboard}.
      * @see #invalidateAllKeys
      */
-    public void invalidateKey(final Key key) {
-        if (mInvalidateAllKeys) return;
-        if (key == null) return;
+    public void invalidateKey(@Nullable final Key key) {
+        if (key == null || mInvalidateAllKeys) {
+            return;
+        }
         mInvalidatedKeys.add(key);
         final int x = key.getX() + getPaddingLeft();
         final int y = key.getY() + getPaddingTop();
