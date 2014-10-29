@@ -344,12 +344,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (mSuggestedWords.size() <= mStartIndexOfMoreSuggestions) {
             return false;
         }
-        // Dismiss another {@link MoreKeysPanel} that may be being showed, for example
-        // {@link MoreKeysKeyboardView}.
-        mMainKeyboardView.onDismissMoreKeysPanel();
-        // Dismiss all key previews and sliding key input preview that may be being showed.
-        mMainKeyboardView.dismissAllKeyPreviews();
-        mMainKeyboardView.dismissSlidingKeyInputPreview();
         final int stripWidth = getWidth();
         final View container = mMoreSuggestionsContainer;
         final int maxWidth = stripWidth - container.getPaddingLeft() - container.getPaddingRight();
