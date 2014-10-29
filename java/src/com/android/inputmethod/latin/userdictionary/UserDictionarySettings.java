@@ -282,7 +282,6 @@ public class UserDictionarySettings extends ListFragment {
     }
 
     private static class MyAdapter extends SimpleCursorAdapter implements SectionIndexer {
-
         private AlphabetIndexer mIndexer;
 
         private ViewBinder mViewBinder = new ViewBinder() {

@@ -32,9 +32,10 @@ import javax.annotation.Nonnull;
 // TODO: Separate this class into KeyTimerHandler and BatchInputTimerHandler or so.
 public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> implements TimerProxy {
     public interface Callbacks {
-        public void startWhileTypingFadeinAnimation();
-        public void startWhileTypingFadeoutAnimation();
-        public void onLongPress(PointerTracker tracker);
+        public static final int FADE_IN = 0;
+        public static final int FADE_OUT = 1;
+        public void startWhileTypingAnimation(final int fadeInOrOut);
+        public void onLongPress(@Nonnull PointerTracker tracker);
         public void dismissKeyPreviewWithoutDelay(@Nonnull Key key);
         public void dismissGestureFloatingPreviewTextWithoutDelay();
     }
@@ -66,7 +67,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         }
         switch (msg.what) {
         case MSG_TYPING_STATE_EXPIRED:
-            callbacks.startWhileTypingFadeinAnimation();
+            callbacks.startWhileTypingAnimation(Callbacks.FADE_IN);
             break;
         case MSG_REPEAT_KEY:
             final PointerTracker tracker1 = (PointerTracker) msg.obj;
@@ -163,7 +164,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         final int typedCode = typedKey.getCode();
         if (typedCode == Constants.CODE_SPACE || typedCode == Constants.CODE_ENTER) {
             if (isTyping) {
-                callbacks.startWhileTypingFadeinAnimation();
+                callbacks.startWhileTypingAnimation(Callbacks.FADE_IN);
             }
             return;
         }
@@ -173,7 +174,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         if (isTyping) {
             return;
         }
-        callbacks.startWhileTypingFadeoutAnimation();
+        callbacks.startWhileTypingAnimation(Callbacks.FADE_OUT);
     }
 
     @Override

@@ -64,6 +64,7 @@ import java.util.Locale;
 import java.util.WeakHashMap;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A view that is responsible for detecting key presses and touch movements.
@@ -306,17 +307,24 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         animatorToStart.setCurrentPlayTime(startTime);
     }
 
-    // Implements {@link TimerHander.Callbacks} method.
+    // Implements {@link TimerHander.Callbacks#startWhileTypingAnimation(int)}.
+    /**
+     * Called when a while-typing-animation should be started.
+     * @param fadeInOrOut {@link TimerHandler.Callbacks#FADE_IN} starts while-typing-fade-in
+     * animation. {@link TimerHandler.Callbacks#FADE_OUT} starts while-typing-fade-out animation.
+     */
     @Override
-    public void startWhileTypingFadeinAnimation() {
-        cancelAndStartAnimators(
-                mAltCodeKeyWhileTypingFadeoutAnimator, mAltCodeKeyWhileTypingFadeinAnimator);
-    }
-
-    @Override
-    public void startWhileTypingFadeoutAnimation() {
-        cancelAndStartAnimators(
-                mAltCodeKeyWhileTypingFadeinAnimator, mAltCodeKeyWhileTypingFadeoutAnimator);
+    public void startWhileTypingAnimation(final int fadeInOrOut) {
+        switch (fadeInOrOut) {
+        case TimerHandler.Callbacks.FADE_IN:
+            cancelAndStartAnimators(
+                    mAltCodeKeyWhileTypingFadeoutAnimator, mAltCodeKeyWhileTypingFadeinAnimator);
+            break;
+        case TimerHandler.Callbacks.FADE_OUT:
+            cancelAndStartAnimators(
+                    mAltCodeKeyWhileTypingFadeinAnimator, mAltCodeKeyWhileTypingFadeoutAnimator);
+            break;
+        }
     }
 
     @ExternallyReferenced
@@ -474,7 +482,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     // Implements {@link TimerHandler.Callbacks#dismissKeyPreviewWithoutDelay(Key)}.
     @Override
-    public void dismissKeyPreviewWithoutDelay(final Key key) {
+    public void dismissKeyPreviewWithoutDelay(@Nonnull final Key key) {
         mKeyPreviewChoreographer.dismissKeyPreview(key, false /* withAnimation */);
         invalidateKey(key);
     }
@@ -496,12 +504,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void showSlidingKeyInputPreview(final PointerTracker tracker) {
         locatePreviewPlacerView();
-        mSlidingKeyInputDrawingPreview.setPreviewPosition(tracker);
-    }
-
-    @Override
-    public void dismissSlidingKeyInputPreview() {
-        mSlidingKeyInputDrawingPreview.dismissSlidingKeyInputPreview();
+        if (tracker != null) {
+            mSlidingKeyInputDrawingPreview.setPreviewPosition(tracker);
+        } else {
+            mSlidingKeyInputDrawingPreview.dismissSlidingKeyInputPreview();
+        }
     }
 
     private void setGesturePreviewMode(final boolean isGestureTrailEnabled,
@@ -596,13 +603,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return moreKeysKeyboardView;
     }
 
-    // Implements {@link TimerHandler.Callbacks} method.
+    // Implements {@link TimerHandler.Callbacks#onLongPress(PointerTracker)}.
     /**
      * Called when a key is long pressed.
      * @param tracker the pointer tracker which pressed the parent key
      */
     @Override
-    public void onLongPress(final PointerTracker tracker) {
+    public void onLongPress(@Nonnull final PointerTracker tracker) {
         if (isShowingMoreKeysPanel()) {
             return;
         }
@@ -674,8 +681,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         onDismissMoreKeysPanel();
         // Dismiss all key previews that may be being showed.
         PointerTracker.setReleasedKeyGraphicsToAllKeys();
-        // Dismiss  sliding key input preview that may be being showed.
-        dismissSlidingKeyInputPreview();
+        // Dismiss sliding key input preview that may be being showed.
+        mSlidingKeyInputDrawingPreview.dismissSlidingKeyInputPreview();
         panel.showInParent(mDrawingPreviewPlacerView);
         mMoreKeysPanel = panel;
     }
@@ -744,7 +751,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mTimerHandler.cancelAllMessages();
         PointerTracker.setReleasedKeyGraphicsToAllKeys();
         mGestureFloatingTextDrawingPreview.dismissGestureFloatingPreviewText();
-        dismissSlidingKeyInputPreview();
+        mSlidingKeyInputDrawingPreview.dismissSlidingKeyInputPreview();
         PointerTracker.dismissAllMoreKeysPanels();
         PointerTracker.cancelAllPointerTrackers();
     }
