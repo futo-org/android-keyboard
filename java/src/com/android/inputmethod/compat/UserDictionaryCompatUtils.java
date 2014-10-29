@@ -16,42 +16,33 @@
 
 package com.android.inputmethod.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.provider.UserDictionary.Words;
+import android.os.Build;
+import android.provider.UserDictionary;
 
-import java.lang.reflect.Method;
 import java.util.Locale;
 
 public final class UserDictionaryCompatUtils {
-    // UserDictionary.Words#addWord(Context, String, int, String, Locale) was introduced
-    // in API level 16 (Build.VERSION_CODES.JELLY_BEAN).
-    private static final Method METHOD_addWord = CompatUtils.getMethod(Words.class, "addWord",
-            Context.class, String.class, int.class, String.class, Locale.class);
-
     @SuppressWarnings("deprecation")
     public static void addWord(final Context context, final String word,
             final int freq, final String shortcut, final Locale locale) {
-        if (hasNewerAddWord()) {
-            CompatUtils.invoke(Words.class, null, METHOD_addWord, context, word, freq, shortcut,
-                    locale);
-        } else {
-            // Fall back to the pre-JellyBean method.
-            final int localeType;
-            if (null == locale) {
-                localeType = Words.LOCALE_TYPE_ALL;
-            } else {
-                final Locale currentLocale = context.getResources().getConfiguration().locale;
-                if (locale.equals(currentLocale)) {
-                    localeType = Words.LOCALE_TYPE_CURRENT;
-                } else {
-                    localeType = Words.LOCALE_TYPE_ALL;
-                }
-            }
-            Words.addWord(context, word, freq, localeType);
+        if (BuildCompatUtils.EFFECTIVE_SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            addWordWithShortcut(context, word, freq, shortcut, locale);
+            return;
         }
+        // Fall back to the pre-JellyBean method.
+        final Locale currentLocale = context.getResources().getConfiguration().locale;
+        final int localeType = currentLocale.equals(locale)
+                ? UserDictionary.Words.LOCALE_TYPE_CURRENT : UserDictionary.Words.LOCALE_TYPE_ALL;
+        UserDictionary.Words.addWord(context, word, freq, localeType);
     }
 
-    public static final boolean hasNewerAddWord() {
-        return null != METHOD_addWord;
+    // {@link UserDictionary.Words#addWord(Context,String,int,String,Locale)} was introduced
+    // in API level 16 (Build.VERSION_CODES.JELLY_BEAN).
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private static void addWordWithShortcut(final Context context, final String word,
+            final int freq, final String shortcut, final Locale locale) {
+        UserDictionary.Words.addWord(context, word, freq, shortcut, locale);
     }
 }
