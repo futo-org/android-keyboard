@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import javax.annotation.Nonnull;
+
 public class SuggestedWords {
     public static final int INDEX_OF_TYPED_WORD = 0;
     public static final int INDEX_OF_AUTO_CORRECTION = 1;
@@ -46,6 +48,7 @@ public class SuggestedWords {
     public static final int MAX_SUGGESTIONS = 18;
 
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST = new ArrayList<>(0);
+    @Nonnull
     private static final SuggestedWords EMPTY = new SuggestedWords(
             EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false /* typedWordValid */,
             false /* willAutoCorrect */, false /* isObsoleteSuggestions */, INPUT_STYLE_NONE);
@@ -210,6 +213,7 @@ public class SuggestedWords {
         return result;
     }
 
+    @Nonnull
     public static final SuggestedWords getEmptyInstance() {
         return SuggestedWords.EMPTY;
     }

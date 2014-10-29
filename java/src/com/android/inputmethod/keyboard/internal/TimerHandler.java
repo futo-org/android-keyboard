@@ -35,6 +35,8 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         public void startWhileTypingFadeinAnimation();
         public void startWhileTypingFadeoutAnimation();
         public void onLongPress(PointerTracker tracker);
+        public void dismissKeyPreviewWithoutDelay(@Nonnull Key key);
+        public void dismissGestureFloatingPreviewTextWithoutDelay();
     }
 
     private static final int MSG_TYPING_STATE_EXPIRED = 0;
@@ -43,6 +45,8 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
     private static final int MSG_LONGPRESS_SHIFT_KEY = 3;
     private static final int MSG_DOUBLE_TAP_SHIFT_KEY = 4;
     private static final int MSG_UPDATE_BATCH_INPUT = 5;
+    private static final int MSG_DISMISS_KEY_PREVIEW = 6;
+    private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 7;
 
     private final int mIgnoreAltCodeKeyTimeout;
     private final int mGestureRecognitionUpdateTime;
@@ -60,22 +64,31 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         if (callbacks == null) {
             return;
         }
-        final PointerTracker tracker = (PointerTracker) msg.obj;
         switch (msg.what) {
         case MSG_TYPING_STATE_EXPIRED:
             callbacks.startWhileTypingFadeinAnimation();
             break;
         case MSG_REPEAT_KEY:
-            tracker.onKeyRepeat(msg.arg1 /* code */, msg.arg2 /* repeatCount */);
+            final PointerTracker tracker1 = (PointerTracker) msg.obj;
+            tracker1.onKeyRepeat(msg.arg1 /* code */, msg.arg2 /* repeatCount */);
             break;
         case MSG_LONGPRESS_KEY:
         case MSG_LONGPRESS_SHIFT_KEY:
             cancelLongPressTimers();
-            callbacks.onLongPress(tracker);
+            final PointerTracker tracker2 = (PointerTracker) msg.obj;
+            callbacks.onLongPress(tracker2);
             break;
         case MSG_UPDATE_BATCH_INPUT:
-            tracker.updateBatchInputByTimer(SystemClock.uptimeMillis());
-            startUpdateBatchInputTimer(tracker);
+            final PointerTracker tracker3 = (PointerTracker) msg.obj;
+            tracker3.updateBatchInputByTimer(SystemClock.uptimeMillis());
+            startUpdateBatchInputTimer(tracker3);
+            break;
+        case MSG_DISMISS_KEY_PREVIEW:
+            final Key key = (Key) msg.obj;
+            callbacks.dismissKeyPreviewWithoutDelay(key);
+            break;
+        case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
+            callbacks.dismissGestureFloatingPreviewTextWithoutDelay();
             break;
         }
     }
@@ -215,8 +228,18 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         removeMessages(MSG_UPDATE_BATCH_INPUT);
     }
 
+    public void postDismissKeyPreview(@Nonnull final Key key, final long delay) {
+        sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, key), delay);
+    }
+
+    public void postDismissGestureFloatingPreviewText(final long delay) {
+        sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT), delay);
+    }
+
     public void cancelAllMessages() {
         cancelAllKeyTimers();
         cancelAllUpdateBatchInputTimers();
+        removeMessages(MSG_DISMISS_KEY_PREVIEW);
+        removeMessages(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
     }
 }
