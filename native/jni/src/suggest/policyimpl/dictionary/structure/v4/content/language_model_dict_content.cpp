@@ -24,9 +24,11 @@
 namespace latinime {
 
 const int LanguageModelDictContent::DUMMY_PROBABILITY_FOR_VALID_WORDS = 1;
+const int LanguageModelDictContent::TRIE_MAP_BUFFER_INDEX = 0;
+const int LanguageModelDictContent::GLOBAL_COUNTERS_BUFFER_INDEX = 1;
 
 bool LanguageModelDictContent::save(FILE *const file) const {
-    return mTrieMap.save(file);
+    return mTrieMap.save(file) && mGlobalCounters.save(file);
 }
 
 bool LanguageModelDictContent::runGC(
@@ -212,6 +214,9 @@ bool LanguageModelDictContent::updateAllEntriesOnInputWord(const WordIdArrayView
     if (!setProbabilityEntry(wordId, &updatedUnigramProbabilityEntry)) {
         return false;
     }
+    mGlobalCounters.incrementTotalCount();
+    mGlobalCounters.updateMaxValueOfCounters(
+            updatedUnigramProbabilityEntry.getHistoricalInfo()->getCount());
     for (size_t i = 0; i < prevWordIds.size(); ++i) {
         if (prevWordIds[i] == NOT_A_WORD_ID) {
             break;
@@ -225,6 +230,8 @@ bool LanguageModelDictContent::updateAllEntriesOnInputWord(const WordIdArrayView
         if (!setNgramProbabilityEntry(limitedPrevWordIds, wordId, &updatedNgramProbabilityEntry)) {
             return false;
         }
+        mGlobalCounters.updateMaxValueOfCounters(
+                updatedUnigramProbabilityEntry.getHistoricalInfo()->getCount());
         if (!originalNgramProbabilityEntry.isValid()) {
             entryCountersToUpdate->incrementNgramCount(i + 2);
         }

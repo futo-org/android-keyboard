@@ -22,6 +22,7 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/word_attributes.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content_global_counters.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -131,15 +132,17 @@ class LanguageModelDictContent {
         const ProbabilityEntry mProbabilityEntry;
     };
 
-    LanguageModelDictContent(const ReadWriteByteArrayView trieMapBuffer,
+    LanguageModelDictContent(const ReadWriteByteArrayView *const buffers,
             const bool hasHistoricalInfo)
-            : mTrieMap(trieMapBuffer), mHasHistoricalInfo(hasHistoricalInfo) {}
+            : mTrieMap(buffers[TRIE_MAP_BUFFER_INDEX]),
+              mGlobalCounters(buffers[GLOBAL_COUNTERS_BUFFER_INDEX]),
+              mHasHistoricalInfo(hasHistoricalInfo) {}
 
     explicit LanguageModelDictContent(const bool hasHistoricalInfo)
-            : mTrieMap(), mHasHistoricalInfo(hasHistoricalInfo) {}
+            : mTrieMap(), mGlobalCounters(), mHasHistoricalInfo(hasHistoricalInfo) {}
 
     bool isNearSizeLimit() const {
-        return mTrieMap.isNearSizeLimit();
+        return mTrieMap.isNearSizeLimit() || mGlobalCounters.needsToHalveCounters();
     }
 
     bool save(FILE *const file) const;
@@ -218,8 +221,11 @@ class LanguageModelDictContent {
 
     // TODO: Remove
     static const int DUMMY_PROBABILITY_FOR_VALID_WORDS;
+    static const int TRIE_MAP_BUFFER_INDEX;
+    static const int GLOBAL_COUNTERS_BUFFER_INDEX;
 
     TrieMap mTrieMap;
+    LanguageModelDictContentGlobalCounters mGlobalCounters;
     const bool mHasHistoricalInfo;
 
     bool runGCInner(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
