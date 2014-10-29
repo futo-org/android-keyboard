@@ -1501,14 +1501,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // This method must run on the UI Thread.
-    void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
+    void showGesturePreviewAndSuggestionStrip(@Nonnull final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
         showSuggestionStrip(suggestedWords);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        mainKeyboardView.showGestureFloatingPreviewText(suggestedWords);
-        if (dismissGestureFloatingPreviewText) {
-            mainKeyboardView.dismissGestureFloatingPreviewText();
-        }
+        mainKeyboardView.showGestureFloatingPreviewText(suggestedWords,
+                dismissGestureFloatingPreviewText /* dismissDelayed */);
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface

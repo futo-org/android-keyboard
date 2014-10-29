@@ -29,6 +29,8 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 
+import javax.annotation.Nonnull;
+
 /**
  * The class for single gesture preview text. The class for multiple gesture preview text will be
  * derived from it.
@@ -110,7 +112,11 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
         // Nothing to do here.
     }
 
-    public void setSuggetedWords(final SuggestedWords suggestedWords) {
+    public void dismissGestureFloatingPreviewText() {
+        setSuggetedWords(SuggestedWords.getEmptyInstance());
+    }
+
+    public void setSuggetedWords(@Nonnull final SuggestedWords suggestedWords) {
         if (!isPreviewEnabled()) {
             return;
         }

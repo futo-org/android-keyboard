@@ -39,7 +39,6 @@ import android.view.ViewGroup;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
 import com.android.inputmethod.annotations.ExternallyReferenced;
-import com.android.inputmethod.keyboard.internal.DrawingHandler;
 import com.android.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.GestureFloatingTextDrawingPreview;
 import com.android.inputmethod.keyboard.internal.GestureTrailsDrawingPreview;
@@ -63,6 +62,8 @@ import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.Locale;
 import java.util.WeakHashMap;
+
+import javax.annotation.Nonnull;
 
 /**
  * A view that is responsible for detecting key presses and touch movements.
@@ -108,7 +109,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_suppressKeyPreviewAfterBatchInputDuration
  */
 public final class MainKeyboardView extends KeyboardView implements PointerTracker.DrawingProxy,
-        MoreKeysPanel.Controller, DrawingHandler.Callbacks, TimerHandler.Callbacks {
+        MoreKeysPanel.Controller, TimerHandler.Callbacks {
     private static final String TAG = MainKeyboardView.class.getSimpleName();
 
     /** Listener for {@link KeyboardActionListener}. */
@@ -164,10 +165,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final KeyDetector mKeyDetector;
     private final NonDistinctMultitouchHelper mNonDistinctMultitouchHelper;
 
-    private final TimerHandler mKeyTimerHandler;
+    private final TimerHandler mTimerHandler;
     private final int mLanguageOnSpacebarHorizontalMargin;
-
-    private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
 
     private MainKeyboardAccessibilityDelegate mAccessibilityDelegate;
 
@@ -186,7 +185,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
         final int gestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0);
-        mKeyTimerHandler = new TimerHandler(
+        mTimerHandler = new TimerHandler(
                 this, ignoreAltCodeKeyTimeout, gestureRecognitionUpdateTime);
 
         final float keyHysteresisDistance = mainKeyboardViewAttr.getDimension(
@@ -196,7 +195,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyDetector = new KeyDetector(
                 keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
 
-        PointerTracker.init(mainKeyboardViewAttr, mKeyTimerHandler, this /* DrawingProxy */);
+        PointerTracker.init(mainKeyboardViewAttr, mTimerHandler, this /* DrawingProxy */);
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean forceNonDistinctMultitouch = prefs.getBoolean(
@@ -379,7 +378,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void setKeyboard(final Keyboard keyboard) {
         // Remove any pending messages, except dismissing preview and key repeat.
-        mKeyTimerHandler.cancelLongPressTimers();
+        mTimerHandler.cancelLongPressTimers();
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
@@ -473,22 +472,21 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 getWidth(), mOriginCoords, mDrawingPreviewPlacerView, isHardwareAccelerated());
     }
 
-    // Implements {@link TimerHandler.Callbacks} method.
+    // Implements {@link TimerHandler.Callbacks#dismissKeyPreviewWithoutDelay(Key)}.
     @Override
     public void dismissKeyPreviewWithoutDelay(final Key key) {
         mKeyPreviewChoreographer.dismissKeyPreview(key, false /* withAnimation */);
-        // To redraw key top letter.
         invalidateKey(key);
     }
 
     @Override
     public void dismissKeyPreview(final Key key) {
-        if (!isHardwareAccelerated()) {
-            // TODO: Implement preference option to control key preview method and duration.
-            mDrawingHandler.dismissKeyPreview(mKeyPreviewDrawParams.getLingerTimeout(), key);
-            return;
+        final KeyPreviewChoreographer keyPreviewChoreographer = mKeyPreviewChoreographer;
+        if (isHardwareAccelerated()) {
+            keyPreviewChoreographer.dismissKeyPreview(key, true /* withAnimation */);
         }
-        mKeyPreviewChoreographer.dismissKeyPreview(key, true /* withAnimation */);
+        // TODO: Implement preference option to control key preview method and duration.
+        mTimerHandler.postDismissKeyPreview(key, mKeyPreviewDrawParams.getLingerTimeout());
     }
 
     public void setSlidingKeyInputPreviewEnabled(final boolean enabled) {
@@ -512,16 +510,22 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mGestureTrailsDrawingPreview.setPreviewEnabled(isGestureTrailEnabled);
     }
 
-    // Implements {@link DrawingHandler.Callbacks} method.
-    @Override
-    public void showGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
+    public void showGestureFloatingPreviewText(@Nonnull final SuggestedWords suggestedWords,
+            final boolean dismissDelayed) {
         locatePreviewPlacerView();
-        mGestureFloatingTextDrawingPreview.setSuggetedWords(suggestedWords);
+        final GestureFloatingTextDrawingPreview gestureFloatingTextDrawingPreview =
+                mGestureFloatingTextDrawingPreview;
+        gestureFloatingTextDrawingPreview.setSuggetedWords(suggestedWords);
+        if (dismissDelayed) {
+            mTimerHandler.postDismissGestureFloatingPreviewText(
+                    mGestureFloatingPreviewTextLingerTimeout);
+        }
     }
 
-    public void dismissGestureFloatingPreviewText() {
-        locatePreviewPlacerView();
-        mDrawingHandler.dismissGestureFloatingPreviewText(mGestureFloatingPreviewTextLingerTimeout);
+    // Implements {@link TimerHandler.Callbacks#dismissGestureFloatingPreviewTextWithoutDelay()}.
+    @Override
+    public void dismissGestureFloatingPreviewTextWithoutDelay() {
+        mGestureFloatingTextDrawingPreview.dismissGestureFloatingPreviewText();
     }
 
     @Override
@@ -653,7 +657,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         moreKeysPanel.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
         tracker.onShowMoreKeysPanel(moreKeysPanel);
         // TODO: Implement zoom in animation of more keys panel.
-        dismissKeyPreviewWithoutDelay(key);
+        mKeyPreviewChoreographer.dismissKeyPreview(key, false /* withAnimation */);
     }
 
     public boolean isInDraggingFinger() {
@@ -694,15 +698,15 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public void startDoubleTapShiftKeyTimer() {
-        mKeyTimerHandler.startDoubleTapShiftKeyTimer();
+        mTimerHandler.startDoubleTapShiftKeyTimer();
     }
 
     public void cancelDoubleTapShiftKeyTimer() {
-        mKeyTimerHandler.cancelDoubleTapShiftKeyTimer();
+        mTimerHandler.cancelDoubleTapShiftKeyTimer();
     }
 
     public boolean isInDoubleTapShiftKeyTimeout() {
-        return mKeyTimerHandler.isInDoubleTapShiftKeyTimeout();
+        return mTimerHandler.isInDoubleTapShiftKeyTimeout();
     }
 
     @Override
@@ -711,9 +715,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             return false;
         }
         if (mNonDistinctMultitouchHelper != null) {
-            if (me.getPointerCount() > 1 && mKeyTimerHandler.isInKeyRepeat()) {
+            if (me.getPointerCount() > 1 && mTimerHandler.isInKeyRepeat()) {
                 // Key repeating timer will be canceled if 2 or more keys are in action.
-                mKeyTimerHandler.cancelKeyRepeatTimers();
+                mTimerHandler.cancelKeyRepeatTimers();
             }
             // Non distinct multitouch screen support
             mNonDistinctMultitouchHelper.processMotionEvent(me, mKeyDetector);
@@ -737,10 +741,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public void cancelAllOngoingEvents() {
-        mKeyTimerHandler.cancelAllMessages();
-        mDrawingHandler.cancelAllMessages();
+        mTimerHandler.cancelAllMessages();
         PointerTracker.setReleasedKeyGraphicsToAllKeys();
-        dismissGestureFloatingPreviewText();
+        mGestureFloatingTextDrawingPreview.dismissGestureFloatingPreviewText();
         dismissSlidingKeyInputPreview();
         PointerTracker.dismissAllMoreKeysPanels();
         PointerTracker.cancelAllPointerTrackers();
