@@ -28,7 +28,6 @@ import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * This class controls pop up key previews. This class decides:
@@ -67,12 +66,6 @@ public final class KeyPreviewChoreographer {
 
     public boolean isShowingKeyPreview(final Key key) {
         return mShowingKeyPreviewViews.containsKey(key);
-    }
-
-    public void dismissAllKeyPreviews() {
-        for (final Key key : new HashSet<>(mShowingKeyPreviewViews.keySet())) {
-            dismissKeyPreview(key, false /* withAnimation */);
-        }
     }
 
     public void dismissKeyPreview(final Key key, final boolean withAnimation) {

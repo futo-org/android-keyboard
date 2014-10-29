@@ -451,13 +451,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         windowContentView.addView(mDrawingPreviewPlacerView);
     }
 
-    // Implements {@link DrawingHandler.Callbacks} method.
-    @Override
-    public void dismissAllKeyPreviews() {
-        mKeyPreviewChoreographer.dismissAllKeyPreviews();
-        PointerTracker.setReleasedKeyGraphicsToAllKeys();
-    }
-
     @Override
     public void showKeyPreview(final Key key) {
         // If the key is invalid or has no key preview, we must not show key preview.
@@ -673,6 +666,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
         locatePreviewPlacerView();
+        // Dismiss another {@link MoreKeysPanel} that may be being showed.
+        onDismissMoreKeysPanel();
+        // Dismiss all key previews that may be being showed.
+        PointerTracker.setReleasedKeyGraphicsToAllKeys();
+        // Dismiss  sliding key input preview that may be being showed.
+        dismissSlidingKeyInputPreview();
         panel.showInParent(mDrawingPreviewPlacerView);
         mMoreKeysPanel = panel;
     }
@@ -740,7 +739,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public void cancelAllOngoingEvents() {
         mKeyTimerHandler.cancelAllMessages();
         mDrawingHandler.cancelAllMessages();
-        dismissAllKeyPreviews();
+        PointerTracker.setReleasedKeyGraphicsToAllKeys();
         dismissGestureFloatingPreviewText();
         dismissSlidingKeyInputPreview();
         PointerTracker.dismissAllMoreKeysPanels();

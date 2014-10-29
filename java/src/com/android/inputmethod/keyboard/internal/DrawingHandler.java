@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 public class DrawingHandler extends LeakGuardHandlerWrapper<Callbacks> {
     public interface Callbacks {
         public void dismissKeyPreviewWithoutDelay(Key key);
-        public void dismissAllKeyPreviews();
         public void showGestureFloatingPreviewText(SuggestedWords suggestedWords);
     }
 
@@ -60,20 +59,11 @@ public class DrawingHandler extends LeakGuardHandlerWrapper<Callbacks> {
         sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, key), delay);
     }
 
-    private void cancelAllDismissKeyPreviews() {
-        removeMessages(MSG_DISMISS_KEY_PREVIEW);
-        final Callbacks callbacks = getOwnerInstance();
-        if (callbacks == null) {
-            return;
-        }
-        callbacks.dismissAllKeyPreviews();
-    }
-
     public void dismissGestureFloatingPreviewText(final long delay) {
         sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT), delay);
     }
 
     public void cancelAllMessages() {
-        cancelAllDismissKeyPreviews();
+        removeMessages(MSG_DISMISS_KEY_PREVIEW);
     }
 }
