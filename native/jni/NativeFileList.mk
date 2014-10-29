@@ -72,6 +72,7 @@ LATIN_IME_CORE_SRC_FILES := \
         ver4_pt_node_array_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
         language_model_dict_content.cpp \
+        language_model_dict_content_global_counters.cpp \
         shortcut_dict_content.cpp \
         sparse_table_dict_content.cpp \
         terminal_position_lookup_table.cpp) \
@@ -128,6 +129,7 @@ LATIN_IME_CORE_TEST_FILES := \
     suggest/core/layout/normal_distribution_2d_test.cpp \
     suggest/policyimpl/dictionary/header/header_read_write_utils_test.cpp \
     suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content_test.cpp \
+    suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content_global_counters_test.cpp \
     suggest/policyimpl/dictionary/structure/v4/content/probability_entry_test.cpp \
     suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table_test.cpp \
     suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer_test.cpp \
