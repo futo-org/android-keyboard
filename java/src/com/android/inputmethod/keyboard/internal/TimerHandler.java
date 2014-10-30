@@ -22,24 +22,15 @@ import android.view.ViewConfiguration;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
-import com.android.inputmethod.keyboard.internal.TimerHandler.Callbacks;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 import javax.annotation.Nonnull;
 
-// TODO: Separate this class into KeyTimerHandler and BatchInputTimerHandler or so.
-public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> implements TimerProxy {
-    public interface Callbacks {
-        public static final int FADE_IN = 0;
-        public static final int FADE_OUT = 1;
-        public void startWhileTypingAnimation(final int fadeInOrOut);
-        public void onLongPress(@Nonnull PointerTracker tracker);
-        public void dismissKeyPreviewWithoutDelay(@Nonnull Key key);
-        public void dismissGestureFloatingPreviewTextWithoutDelay();
-    }
-
+public final class TimerHandler extends LeakGuardHandlerWrapper<DrawingProxy>
+        implements TimerProxy {
     private static final int MSG_TYPING_STATE_EXPIRED = 0;
     private static final int MSG_REPEAT_KEY = 1;
     private static final int MSG_LONGPRESS_KEY = 2;
@@ -52,8 +43,8 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
     private final int mIgnoreAltCodeKeyTimeout;
     private final int mGestureRecognitionUpdateTime;
 
-    public TimerHandler(@Nonnull final Callbacks ownerInstance, final int ignoreAltCodeKeyTimeout,
-            final int gestureRecognitionUpdateTime) {
+    public TimerHandler(@Nonnull final DrawingProxy ownerInstance,
+            final int ignoreAltCodeKeyTimeout, final int gestureRecognitionUpdateTime) {
         super(ownerInstance);
         mIgnoreAltCodeKeyTimeout = ignoreAltCodeKeyTimeout;
         mGestureRecognitionUpdateTime = gestureRecognitionUpdateTime;
@@ -61,13 +52,13 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
 
     @Override
     public void handleMessage(final Message msg) {
-        final Callbacks callbacks = getOwnerInstance();
-        if (callbacks == null) {
+        final DrawingProxy drawingProxy = getOwnerInstance();
+        if (drawingProxy == null) {
             return;
         }
         switch (msg.what) {
         case MSG_TYPING_STATE_EXPIRED:
-            callbacks.startWhileTypingAnimation(Callbacks.FADE_IN);
+            drawingProxy.startWhileTypingAnimation(DrawingProxy.FADE_IN);
             break;
         case MSG_REPEAT_KEY:
             final PointerTracker tracker1 = (PointerTracker) msg.obj;
@@ -77,7 +68,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         case MSG_LONGPRESS_SHIFT_KEY:
             cancelLongPressTimers();
             final PointerTracker tracker2 = (PointerTracker) msg.obj;
-            callbacks.onLongPress(tracker2);
+            drawingProxy.onLongPress(tracker2);
             break;
         case MSG_UPDATE_BATCH_INPUT:
             final PointerTracker tracker3 = (PointerTracker) msg.obj;
@@ -86,10 +77,10 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
             break;
         case MSG_DISMISS_KEY_PREVIEW:
             final Key key = (Key) msg.obj;
-            callbacks.dismissKeyPreviewWithoutDelay(key);
+            drawingProxy.dismissKeyPreviewWithoutDelay(key);
             break;
         case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
-            callbacks.dismissGestureFloatingPreviewTextWithoutDelay();
+            drawingProxy.dismissGestureFloatingPreviewTextWithoutDelay();
             break;
         }
     }
@@ -155,8 +146,8 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
 
         final boolean isTyping = isTypingState();
         removeMessages(MSG_TYPING_STATE_EXPIRED);
-        final Callbacks callbacks = getOwnerInstance();
-        if (callbacks == null) {
+        final DrawingProxy drawingProxy = getOwnerInstance();
+        if (drawingProxy == null) {
             return;
         }
 
@@ -164,7 +155,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         final int typedCode = typedKey.getCode();
         if (typedCode == Constants.CODE_SPACE || typedCode == Constants.CODE_ENTER) {
             if (isTyping) {
-                callbacks.startWhileTypingAnimation(Callbacks.FADE_IN);
+                drawingProxy.startWhileTypingAnimation(DrawingProxy.FADE_IN);
             }
             return;
         }
@@ -174,7 +165,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         if (isTyping) {
             return;
         }
-        callbacks.startWhileTypingAnimation(Callbacks.FADE_OUT);
+        drawingProxy.startWhileTypingAnimation(DrawingProxy.FADE_OUT);
     }
 
     @Override
