@@ -71,6 +71,7 @@ LATIN_IME_CORE_SRC_FILES := \
         ver4_patricia_trie_writing_helper.cpp \
         ver4_pt_node_array_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
+        dynamic_language_model_probability_utils.cpp \
         language_model_dict_content.cpp \
         language_model_dict_content_global_counters.cpp \
         shortcut_dict_content.cpp \
