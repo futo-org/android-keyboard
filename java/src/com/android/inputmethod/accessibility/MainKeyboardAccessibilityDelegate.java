@@ -269,13 +269,9 @@ public final class MainKeyboardAccessibilityDelegate
                 eventTime, eventTime, MotionEvent.ACTION_DOWN, x, y, 0 /* metaState */);
         // Inject a fake down event to {@link PointerTracker} to handle a long press correctly.
         tracker.processMotionEvent(downEvent, mKeyDetector);
-        // The above fake down event triggers an unnecessary long press timer that should be
-        // canceled.
-        tracker.cancelLongPressTimer();
         downEvent.recycle();
-        // Invoke {@link MainKeyboardView#onLongPress(PointerTracker)} as if a long press timeout
-        // has passed.
-        mKeyboardView.onLongPress(tracker);
+        // Invoke {@link PointerTracker#onLongPressed()} as if a long press timeout has passed.
+        tracker.onLongPressed();
         // If {@link Key#hasNoPanelAutoMoreKeys()} is true (such as "0 +" key on the phone layout)
         // or a key invokes IME switcher dialog, we should just ignore the next
         // {@link #onRegisterHoverKey(Key,MotionEvent)}. It can be determined by whether

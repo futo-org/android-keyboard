@@ -222,7 +222,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
-            tracker.setReleasedKeyGraphics(tracker.getKey());
+            tracker.setReleasedKeyGraphics(tracker.getKey(), true /* withAnimation */);
         }
     }
 
@@ -382,19 +382,18 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return mKeyDetector.detectHitKey(x, y);
     }
 
-    private void setReleasedKeyGraphics(@Nullable final Key key) {
+    private void setReleasedKeyGraphics(@Nullable final Key key, final boolean withAnimation) {
         if (key == null) {
             return;
         }
 
-        sDrawingProxy.dismissKeyPreview(key);
         // Even if the key is disabled, update the key release graphics just in case.
-        updateReleaseKeyGraphics(key);
+        sDrawingProxy.onKeyReleased(key, withAnimation);
 
         if (key.isShift()) {
             for (final Key shiftKey : mKeyboard.mShiftKeys) {
                 if (shiftKey != key) {
-                    updateReleaseKeyGraphics(shiftKey);
+                    sDrawingProxy.onKeyReleased(shiftKey, false /* withAnimation */);
                 }
             }
         }
@@ -403,11 +402,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
-                updateReleaseKeyGraphics(altKey);
+                sDrawingProxy.onKeyReleased(altKey, false /* withAnimation */);
             }
             for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
                 if (k != key && k.getAltCode() == altCode) {
-                    updateReleaseKeyGraphics(k);
+                    sDrawingProxy.onKeyReleased(k, false /* withAnimation */);
                 }
             }
         }
@@ -418,7 +417,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return sTypingTimeRecorder.needsToSuppressKeyPreviewPopup(eventTime);
     }
 
-    private void setPressedKeyGraphics(final Key key, final long eventTime) {
+    private void setPressedKeyGraphics(@Nullable final Key key, final long eventTime) {
         if (key == null) {
             return;
         }
@@ -430,15 +429,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
 
-        if (!key.noKeyPreview() && !sInGesture && !needsToSuppressKeyPreviewPopup(eventTime)) {
-            sDrawingProxy.showKeyPreview(key);
-        }
-        updatePressKeyGraphics(key);
+        final boolean noKeyPreview = sInGesture || needsToSuppressKeyPreviewPopup(eventTime);
+        sDrawingProxy.onKeyPressed(key, !noKeyPreview);
 
         if (key.isShift()) {
             for (final Key shiftKey : mKeyboard.mShiftKeys) {
                 if (shiftKey != key) {
-                    updatePressKeyGraphics(shiftKey);
+                    sDrawingProxy.onKeyPressed(shiftKey, false /* withPreview */);
                 }
             }
         }
@@ -447,24 +444,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
-                updatePressKeyGraphics(altKey);
+                sDrawingProxy.onKeyPressed(altKey, false /* withPreview */);
             }
             for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
                 if (k != key && k.getAltCode() == altCode) {
-                    updatePressKeyGraphics(k);
+                    sDrawingProxy.onKeyPressed(k, false /* withPreview */);
                 }
             }
         }
-    }
-
-    private static void updateReleaseKeyGraphics(final Key key) {
-        key.onReleased();
-        sDrawingProxy.invalidateKey(key);
-    }
-
-    private static void updatePressKeyGraphics(final Key key) {
-        key.onPressed();
-        sDrawingProxy.invalidateKey(key);
     }
 
     public GestureStrokeDrawingPoints getGestureStrokeDrawingPoints() {
@@ -837,7 +824,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private void processDraggingFingerOutFromOldKey(final Key oldKey) {
-        setReleasedKeyGraphics(oldKey);
+        setReleasedKeyGraphics(oldKey, true /* withAnimation */);
         callListenerOnRelease(oldKey, oldKey.getCode(), true /* withSliding */);
         startKeySelectionByDraggingFinger(oldKey);
         sTimerProxy.cancelKeyTimersOf(this);
@@ -880,12 +867,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             }
             onUpEvent(x, y, eventTime);
             cancelTrackingForAction();
-            setReleasedKeyGraphics(oldKey);
+            setReleasedKeyGraphics(oldKey, true /* withAnimation */);
         } else {
             if (!mIsDetectingGesture) {
                 cancelTrackingForAction();
             }
-            setReleasedKeyGraphics(oldKey);
+            setReleasedKeyGraphics(oldKey, true /* withAnimation */);
         }
     }
 
@@ -913,7 +900,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             onGestureMoveEvent(x, y, eventTime, true /* isMajorEvent */, newKey);
             if (sInGesture) {
                 mCurrentKey = null;
-                setReleasedKeyGraphics(oldKey);
+                setReleasedKeyGraphics(oldKey, true /* withAnimation */);
                 return;
             }
         }
@@ -978,7 +965,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int currentRepeatingKeyCode = mCurrentRepeatingKeyCode;
         mCurrentRepeatingKeyCode = Constants.NOT_A_CODE;
         // Release the last pressed key.
-        setReleasedKeyGraphics(currentKey);
+        setReleasedKeyGraphics(currentKey, true /* withAnimation */);
 
         if (isShowingMoreKeysPanel()) {
             if (!mIsTrackingForActionDisabled) {
@@ -1015,14 +1002,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
     }
 
-    public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
-        setReleasedKeyGraphics(mCurrentKey);
-        final int translatedX = panel.translateX(mLastX);
-        final int translatedY = panel.translateY(mLastY);
-        panel.onDownEvent(translatedX, translatedY, mPointerId, SystemClock.uptimeMillis());
-        mMoreKeysPanel = panel;
-    }
-
     @Override
     public void cancelTrackingForAction() {
         if (isShowingMoreKeysPanel()) {
@@ -1035,14 +1014,49 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return !mIsTrackingForActionDisabled;
     }
 
-    public void cancelLongPressTimer() {
+    public void onLongPressed() {
         sTimerProxy.cancelLongPressTimersOf(this);
+        if (isShowingMoreKeysPanel()) {
+            return;
+        }
+        final Key key = getKey();
+        if (key == null) {
+            return;
+        }
+        if (key.hasNoPanelAutoMoreKey()) {
+            cancelKeyTracking();
+            final int moreKeyCode = key.getMoreKeys()[0].mCode;
+            sListener.onPressKey(moreKeyCode, 0 /* repeatCont */, true /* isSinglePointer */);
+            sListener.onCodeInput(moreKeyCode, Constants.NOT_A_COORDINATE,
+                    Constants.NOT_A_COORDINATE, false /* isKeyRepeat */);
+            sListener.onReleaseKey(moreKeyCode, false /* withSliding */);
+            return;
+        }
+        final int code = key.getCode();
+        if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
+            // Long pressing the space key invokes IME switcher dialog.
+            if (sListener.onCustomRequest(Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER)) {
+                cancelKeyTracking();
+                sListener.onReleaseKey(code, false /* withSliding */);
+                return;
+            }
+        }
+
+        setReleasedKeyGraphics(key, false /* withAnimation */);
+        final MoreKeysPanel moreKeysPanel = sDrawingProxy.showMoreKeysKeyboard(key, this);
+        if (moreKeysPanel == null) {
+            return;
+        }
+        final int translatedX = moreKeysPanel.translateX(mLastX);
+        final int translatedY = moreKeysPanel.translateY(mLastY);
+        moreKeysPanel.onDownEvent(translatedX, translatedY, mPointerId, SystemClock.uptimeMillis());
+        mMoreKeysPanel = moreKeysPanel;
     }
 
-    public void onLongPressed() {
+    private void cancelKeyTracking() {
         resetKeySelectionByDraggingFinger();
         cancelTrackingForAction();
-        setReleasedKeyGraphics(mCurrentKey);
+        setReleasedKeyGraphics(mCurrentKey, true /* withAnimation */);
         sPointerTrackerQueue.remove(this);
     }
 
@@ -1059,7 +1073,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     private void onCancelEventInternal() {
         sTimerProxy.cancelKeyTimersOf(this);
-        setReleasedKeyGraphics(mCurrentKey);
+        setReleasedKeyGraphics(mCurrentKey, true /* withAnimation */);
         resetKeySelectionByDraggingFinger();
         dismissMoreKeysPanel();
     }

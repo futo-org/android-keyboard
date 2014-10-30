@@ -461,12 +461,17 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         windowContentView.addView(mDrawingPreviewPlacerView);
     }
 
+    // Implements {@link DrawingProxy#onKeyPressed(Key,boolean)}.
     @Override
-    public void showKeyPreview(@Nonnull final Key key) {
-        // If the key is invalid or has no key preview, we must not show key preview.
-        if (key.noKeyPreview()) {
-            return;
+    public void onKeyPressed(@Nonnull final Key key, final boolean withPreview) {
+        key.onPressed();
+        invalidateKey(key);
+        if (withPreview && !key.noKeyPreview()) {
+            showKeyPreview(key);
         }
+    }
+
+    private void showKeyPreview(@Nonnull final Key key) {
         final Keyboard keyboard = getKeyboard();
         if (keyboard == null) {
             return;
@@ -483,15 +488,26 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
                 getWidth(), mOriginCoords, mDrawingPreviewPlacerView, isHardwareAccelerated());
     }
 
-    // Implements {@link DrawingProxy#dismissKeyPreviewWithoutDelay(Key)}.
-    @Override
-    public void dismissKeyPreviewWithoutDelay(@Nonnull final Key key) {
+    private void dismissKeyPreviewWithoutDelay(@Nonnull final Key key) {
         mKeyPreviewChoreographer.dismissKeyPreview(key, false /* withAnimation */);
         invalidateKey(key);
     }
 
+    // Implements {@link DrawingProxy#onKeyReleased(Key,boolean)}.
     @Override
-    public void dismissKeyPreview(@Nonnull final Key key) {
+    public void onKeyReleased(@Nonnull final Key key, final boolean withAnimation) {
+        key.onReleased();
+        invalidateKey(key);
+        if (!key.noKeyPreview()) {
+            if (withAnimation) {
+                dismissKeyPreview(key);
+            } else {
+                dismissKeyPreviewWithoutDelay(key);
+            }
+        }
+    }
+
+    private void dismissKeyPreview(@Nonnull final Key key) {
         if (isHardwareAccelerated()) {
             mKeyPreviewChoreographer.dismissKeyPreview(key, true /* withAnimation */);
             return;
@@ -574,7 +590,11 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         mDrawingPreviewPlacerView.removeAllViews();
     }
 
-    private MoreKeysPanel onCreateMoreKeysPanel(final Key key, final Context context) {
+    // Implements {@link DrawingProxy@showMoreKeysKeyboard(Key,PointerTracker)}.
+    @Override
+    @Nullable
+    public MoreKeysPanel showMoreKeysKeyboard(@Nonnull final Key key,
+            @Nonnull final PointerTracker tracker) {
         final MoreKeySpec[] moreKeys = key.getMoreKeys();
         if (moreKeys == null) {
             return null;
@@ -590,7 +610,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
                     && !key.noKeyPreview() && moreKeys.length == 1
                     && mKeyPreviewDrawParams.getVisibleWidth() > 0;
             final MoreKeysKeyboard.Builder builder = new MoreKeysKeyboard.Builder(
-                    context, key, getKeyboard(), isSingleMoreKeyWithPreview,
+                    getContext(), key, getKeyboard(), isSingleMoreKeyWithPreview,
                     mKeyPreviewDrawParams.getVisibleWidth(),
                     mKeyPreviewDrawParams.getVisibleHeight(), newLabelPaint(key));
             moreKeysKeyboard = builder.build();
@@ -603,50 +623,6 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
                 (MoreKeysKeyboardView)container.findViewById(R.id.more_keys_keyboard_view);
         moreKeysKeyboardView.setKeyboard(moreKeysKeyboard);
         container.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        return moreKeysKeyboardView;
-    }
-
-    // Implements {@link DrawingProxy@onLongPress(PointerTracker)}.
-    /**
-     * Called when a key is long pressed.
-     * @param tracker the pointer tracker which pressed the parent key
-     */
-    @Override
-    public void onLongPress(@Nonnull final PointerTracker tracker) {
-        if (isShowingMoreKeysPanel()) {
-            return;
-        }
-        final Key key = tracker.getKey();
-        if (key == null) {
-            return;
-        }
-        final KeyboardActionListener listener = mKeyboardActionListener;
-        if (key.hasNoPanelAutoMoreKey()) {
-            final int moreKeyCode = key.getMoreKeys()[0].mCode;
-            tracker.onLongPressed();
-            listener.onPressKey(moreKeyCode, 0 /* repeatCount */, true /* isSinglePointer */);
-            listener.onCodeInput(moreKeyCode, Constants.NOT_A_COORDINATE,
-                    Constants.NOT_A_COORDINATE, false /* isKeyRepeat */);
-            listener.onReleaseKey(moreKeyCode, false /* withSliding */);
-            return;
-        }
-        final int code = key.getCode();
-        if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
-            // Long pressing the space key invokes IME switcher dialog.
-            if (listener.onCustomRequest(Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER)) {
-                tracker.onLongPressed();
-                listener.onReleaseKey(code, false /* withSliding */);
-                return;
-            }
-        }
-        openMoreKeysPanel(key, tracker);
-    }
-
-    private void openMoreKeysPanel(final Key key, final PointerTracker tracker) {
-        final MoreKeysPanel moreKeysPanel = onCreateMoreKeysPanel(key, getContext());
-        if (moreKeysPanel == null) {
-            return;
-        }
 
         final int[] lastCoords = CoordinateUtils.newInstance();
         tracker.getLastCoordinates(lastCoords);
@@ -664,10 +640,8 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         // {@code mPreviewVisibleOffset} has been set appropriately in
         // {@link KeyboardView#showKeyPreview(PointerTracker)}.
         final int pointY = key.getY() + mKeyPreviewDrawParams.getVisibleOffset();
-        moreKeysPanel.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
-        tracker.onShowMoreKeysPanel(moreKeysPanel);
-        // TODO: Implement zoom in animation of more keys panel.
-        mKeyPreviewChoreographer.dismissKeyPreview(key, false /* withAnimation */);
+        moreKeysKeyboardView.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
+        return moreKeysKeyboardView;
     }
 
     public boolean isInDraggingFinger() {
