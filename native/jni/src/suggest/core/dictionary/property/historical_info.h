@@ -38,6 +38,7 @@ class HistoricalInfo {
         return mTimestamp;
     }
 
+    // TODO: Remove
     int getLevel() const {
         return mLevel;
     }

@@ -105,7 +105,7 @@ class ProbabilityEntry {
             encodedEntry = (encodedEntry << (Ver4DictConstants::WORD_LEVEL_FIELD_SIZE * CHAR_BIT))
                     | static_cast<uint8_t>(mHistoricalInfo.getLevel());
             encodedEntry = (encodedEntry << (Ver4DictConstants::WORD_COUNT_FIELD_SIZE * CHAR_BIT))
-                    | static_cast<uint8_t>(mHistoricalInfo.getCount());
+                    | static_cast<uint16_t>(mHistoricalInfo.getCount());
         } else {
             encodedEntry = (encodedEntry << (Ver4DictConstants::PROBABILITY_SIZE * CHAR_BIT))
                     | static_cast<uint8_t>(mProbability);
