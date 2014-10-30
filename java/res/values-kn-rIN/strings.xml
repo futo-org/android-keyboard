@@ -26,24 +26,17 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ಕೀಲಿಯನ್ನು ಒತ್ತಿದಾಗ ವೈಬ್ರೇಷನ್‌"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀಲಿಯನ್ನು ಒತ್ತಿದಾಗ ಶಬ್ದಮಾಡು"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ಕೀ ಒತ್ತಿದಾಗ ಪಾಪ್ ಅಪ್‌ ಮಾಡು"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"ಆದ್ಯತೆಗಳು"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"ಗೋಚರತೆ &amp; ಲೇಔಟ್‌ಗಳು"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"ಬಹುಭಾಷೆ ಆಯ್ಕೆಗಳು"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"ಗೆಸ್ಚರ್ ಟೈಪಿಂಗ್"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"ಪಠ್ಯ ತಿದ್ದುಪಡಿ"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"ಸುಧಾರಿತ"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"ಥೀಮ್"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ಇತರೆ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳಿಗೆ ಬದಲಾಯಿಸು"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ಭಾಷಾ ಬದಲಾವಣೆ ಕೀಯು ಇತರೆ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಕೂಡ ಒಳಗೊಂಡಿರುತ್ತದೆ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ಭಾಷೆ ಬದಲಾವಣೆ ಕೀ"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"ಬಹು ಇನ್‌ಪುಟ್ ಭಾಷೆಗಳು ಸಕ್ರಿಯಗೊಂಡಾಗ ತೋರಿಸು"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"ಸ್ಲೈಡ್ ಸೂಚಕ ತೋರಿಸು"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Shift ಅಥವಾ ಚಿಹ್ನೆ ಕೀಗಳಿಂದ ಸ್ಲೈಡ್ ಮಾಡುವಾಗ ದೃಶ್ಯ ಕ್ಯೂ ಪ್ರದರ್ಶಿಸು"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"ಕೀ ಪಾಪ್‌ಅಪ್‌ನ ವಜಾ ವಿಳಂಬ"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ಯಾವುದೇ ವಿಳಂಬವಿಲ್ಲ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ಡೀಫಾಲ್ಟ್"</string>
@@ -62,9 +55,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"ಮುಖ್ಯ ನಿಘಂಟು"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ತಿದ್ದುಪಡಿ ಸಲಹೆಗಳನ್ನು ತೋರಿಸು"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ಟೈಪ್ ಮಾಡುವಾಗ ಸಲಹೆ ನೀಡಿದ ಪದಗಳನ್ನು ಪ್ರದರ್ಶಿಸು"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ಯಾವಾಗಲೂ ತೋರಿಸು"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"ಪೋಟ್ರೇಟ್ ಮೋಡ್‌ನಲ್ಲಿ ತೋರಿಸು"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ಯಾವಾಗಲೂ ಮರೆಮಾಡು"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ಅಕ್ಷೇಪಾರ್ಹ ಪದಗಳನ್ನು ನಿರ್ಬಂಧಿಸು"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"ಸಂಭಾವ್ಯ ಆಕ್ಷೇಪಾರ್ಹ ಪದಗಳ ಸಲಹೆ ನೀಡದಿರು"</string>
     <string name="auto_correction" msgid="7630720885194996950">"ಸ್ವಯಂ-ತಿದ್ದುಪಡಿ"</string>
@@ -85,10 +75,11 @@
     <string name="voice_input" msgid="3583258583521397548">"ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಕೀ"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ಯಾವುದೇ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ. ಭಾಷೆ &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"ಇನ್‌ಪುಟ್ ಭಾಷೆಗಳು"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"</string>
-    <string name="select_language" msgid="3693815588777926848">"ಇನ್‌ಪುಟ್ ಭಾಷೆಗಳು"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"ಭಾಷೆಗಳು"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"ಸಹಾಯ &amp; ಪ್ರತಿಕ್ರಿಯೆ"</string>
+    <string name="select_language" msgid="5709487854987078367">"ಭಾಷೆಗಳು"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"ಉಳಿಸಲು ಮತ್ತೆ ಸ್ಪರ್ಶಿಸಿ"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"ಉಳಿಸಲು ಇಲ್ಲಿ ಸ್ಪರ್ಶಿಸಿ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ನಿಘಂಟು ಲಭ್ಯವಿದೆ"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"ಕೀಬೋರ್ಡ್ ಥೀಮ್"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ಇಂಗ್ಲಿಷ್ (UK)"</string>
@@ -108,16 +99,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"ವರ್ಣಮಾಲೆ (ಕೋಲ್‌ಮ್ಯಾಕ್)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"ವರ್ಣಮಾಲೆ (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"ಎಮೋಜಿ"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"ಕೀಬೋರ್ಡ್ ಥೀಮ್"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"ಕಸ್ಟಮ್ ಇನ್‌ಪುಟ್ ಶೈಲಿಗಳು"</string>
     <string name="add_style" msgid="6163126614514489951">"ಶೈಲಿ ಸೇರಿಸು"</string>
     <string name="add" msgid="8299699805688017798">"ಸೇರಿಸು"</string>
@@ -129,14 +111,8 @@
     <string name="enable" msgid="5031294444630523247">"ಸಕ್ರಿಯಗೊಳಿಸು"</string>
     <string name="not_now" msgid="6172462888202790482">"ಸದ್ಯಕ್ಕೆ ಬೇಡ"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ಅದೇ ರೀತಿಯ ಇನ್‌ಪುಟ್ ಶೈಲಿಯು ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ಕೀಯ ದೀರ್ಘ ಒತ್ತುವ ವಿಳಂಬ"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ಕೀಒತ್ತುವ ವೈಬ್ರೇಷನ್‌‌ ಅವಧಿ"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ಕೀಒತ್ತುವ ಶಬ್ದದ ವಾಲ್ಯೂಮ್"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ಬಾಹ್ಯ ನಿಘಂಟು ಫೈಲ್ ಓದಿ"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ಡೌನ್‌ಲೋಡ್ ಫೋಲ್ಡರ್‌ನಲ್ಲಿ ಯಾವುದೇ ನಿಘಂಟು ಫೈಲ್‌ಗಳಿಲ್ಲ"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ಸ್ಥಾಪಿಸಬೇಕಾದ ನಿಘಂಟು ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> ಗಾಗಿ ಈ ಫೈಲ್‌ ಅನ್ನು ನಿಜಕ್ಕೂ ಸ್ಥಾಪಿಸುವುದೇ?"</string>
-    <string name="error" msgid="8940763624668513648">"ದೋಷ ಉಂಟಾಗಿದೆ"</string>
     <string name="button_default" msgid="3988017840431881491">"ಡೀಫಾಲ್ಟ್"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಗೆ ಸುಸ್ವಾಗತ"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ಗೆಶ್ಚರ್ ಟೈಪಿಂಗ್‌ನೊಂದಿಗೆ"</string>
