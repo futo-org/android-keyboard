@@ -63,6 +63,10 @@ class LanguageModelDictContentGlobalCounters {
         mTotalCount += 1;
     }
 
+    void addToTotalCount(const int count) {
+        mTotalCount += count;
+    }
+
     void updateMaxValueOfCounters(const int count) {
         mMaxValueOfCounters = std::max(count, mMaxValueOfCounters);
     }
