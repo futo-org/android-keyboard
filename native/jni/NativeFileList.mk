@@ -84,6 +84,7 @@ LATIN_IME_CORE_SRC_FILES := \
         forgetting_curve_utils.cpp \
         format_utils.cpp \
         mmapped_buffer.cpp \
+        probability_utils.cpp \
         sparse_table.cpp \
         trie_map.cpp ) \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
@@ -135,6 +136,7 @@ LATIN_IME_CORE_TEST_FILES := \
     suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer_test.cpp \
     suggest/policyimpl/dictionary/utils/byte_array_utils_test.cpp \
     suggest/policyimpl/dictionary/utils/format_utils_test.cpp \
+    suggest/policyimpl/dictionary/utils/probability_utils_test.cpp \
     suggest/policyimpl/dictionary/utils/sparse_table_test.cpp \
     suggest/policyimpl/dictionary/utils/trie_map_test.cpp \
     suggest/policyimpl/utils/damerau_levenshtein_edit_distance_policy_test.cpp \
