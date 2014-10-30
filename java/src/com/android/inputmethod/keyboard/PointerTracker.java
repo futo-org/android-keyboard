@@ -41,6 +41,9 @@ import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class PointerTracker implements PointerTrackerQueue.Element,
         BatchInputArbiterListener {
     private static final String TAG = PointerTracker.class.getSimpleName();
@@ -53,9 +56,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         public void invalidateKey(Key key);
         public void showKeyPreview(Key key);
         public void dismissKeyPreview(Key key);
-        public void showSlidingKeyInputPreview(PointerTracker tracker);
-        public void dismissSlidingKeyInputPreview();
-        public void showGestureTrail(PointerTracker tracker, boolean showsFloatingPreviewText);
+        public void showSlidingKeyInputPreview(@Nullable PointerTracker tracker);
+        public void showGestureTrail(@Nonnull PointerTracker tracker,
+                boolean showsFloatingPreviewText);
     }
 
     public interface TimerProxy {
@@ -416,6 +419,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return mIsInDraggingFinger;
     }
 
+    @Nullable
     public Key getKey() {
         return mCurrentKey;
     }
@@ -765,7 +769,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private void resetKeySelectionByDraggingFinger() {
         mIsInDraggingFinger = false;
         mIsInSlidingKeyInput = false;
-        sDrawingProxy.dismissSlidingKeyInputPreview();
+        sDrawingProxy.showSlidingKeyInputPreview(null /* tracker */);
     }
 
     private void onGestureMoveEvent(final int x, final int y, final long eventTime,
