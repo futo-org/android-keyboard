@@ -363,6 +363,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) ? milliseconds : defaultValue;
     }
 
+    public static float readKeyboardHeight(final SharedPreferences prefs,
+            final String prefKey, final float defaultValue) {
+        final float percentage = prefs.getFloat(prefKey, UNDEFINED_PREFERENCE_VALUE_FLOAT);
+        return (percentage != UNDEFINED_PREFERENCE_VALUE_FLOAT) ? percentage : defaultValue;
+    }
+
     public static boolean readUseFullscreenMode(final Resources res) {
         return res.getBoolean(R.bool.config_use_fullscreen_mode);
     }
