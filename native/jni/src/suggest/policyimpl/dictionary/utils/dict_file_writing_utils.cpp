@@ -44,13 +44,13 @@ const int DictFileWritingUtils::SIZE_OF_BUFFER_SIZE_FIELD = 4;
     TimeKeeper::setCurrentTime();
     const FormatUtils::FORMAT_VERSION formatVersion = FormatUtils::getFormatVersion(dictVersion);
     switch (formatVersion) {
-        case FormatUtils::VERSION_4:
+        case FormatUtils::VERSION_402:
             return createEmptyV4DictFile<backward::v402::Ver4DictConstants,
                     backward::v402::Ver4DictBuffers,
                     backward::v402::Ver4DictBuffers::Ver4DictBuffersPtr>(
                             filePath, localeAsCodePointVector, attributeMap, formatVersion);
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
-        case FormatUtils::VERSION_4_DEV:
+        case FormatUtils::VERSION_403:
             return createEmptyV4DictFile<Ver4DictConstants, Ver4DictBuffers,
                     Ver4DictBuffers::Ver4DictBuffersPtr>(
                             filePath, localeAsCodePointVector, attributeMap, formatVersion);

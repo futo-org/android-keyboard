@@ -49,7 +49,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private static final String TEST_LOCALE = "test";
     private static final int DUMMY_PROBABILITY = 0;
     private static final int[] DICT_FORMAT_VERSIONS =
-            new int[] { FormatSpec.VERSION4, FormatSpec.VERSION4_DEV };
+            new int[] { FormatSpec.VERSION402, FormatSpec.VERSION403, FormatSpec.VERSION4_DEV };
     private static final String DICTIONARY_ID = "TestDecayingBinaryDictionary";
 
     private int mCurrentTime = 0;
@@ -73,11 +73,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private static boolean supportsCountBasedNgram(final int formatVersion) {
-        return formatVersion >= FormatSpec.VERSION4_DEV;
+        return formatVersion >= FormatSpec.VERSION403;
     }
 
     private static boolean supportsNgram(final int formatVersion) {
-        return formatVersion >= FormatSpec.VERSION4_DEV;
+        return formatVersion >= FormatSpec.VERSION403;
     }
 
     private void onInputWord(final BinaryDictionary binaryDictionary, final String word,
