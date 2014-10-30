@@ -35,7 +35,7 @@
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"சின்னங்கள்"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"எழுத்துகள்"</string>
     <string name="spoken_description_to_numeric" msgid="4560261331530795682">"எண்கள்"</string>
-    <string name="spoken_description_settings" msgid="7281251004003143204">"அமைப்புகள்"</string>
+    <string name="spoken_description_settings" msgid="7281251004003143204">"அமைப்பு"</string>
     <string name="spoken_description_tab" msgid="8210782459446866716">"டேப்"</string>
     <string name="spoken_description_space" msgid="5908716896642059145">"ஸ்பேஸ்"</string>
     <string name="spoken_description_mic" msgid="6153138783813452464">"குரல் உள்ளீடு"</string>
@@ -58,7 +58,7 @@
     <string name="keyboard_mode_date" msgid="6597407244976713364">"தேதி"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"தேதி மற்றும் நேரம்"</string>
     <string name="keyboard_mode_email" msgid="1239682082047693644">"மின்னஞ்சல்"</string>
-    <string name="keyboard_mode_im" msgid="3812086215529493501">"செய்தியிடல்"</string>
+    <string name="keyboard_mode_im" msgid="3812086215529493501">"மெசேஜ்"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"எண்"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"ஃபோன்"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"உரை"</string>
