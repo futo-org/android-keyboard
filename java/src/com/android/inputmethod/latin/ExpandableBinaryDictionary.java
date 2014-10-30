@@ -77,6 +77,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     private static final int DICTIONARY_FORMAT_VERSION = FormatSpec.VERSION4;
 
+    private static final WordProperty[] DEFAULT_WORD_PROPERTIES_FOR_SYNC =
+            new WordProperty[0] /* default */;
+
     /** The application context. */
     protected final Context mContext;
 
@@ -801,5 +804,39 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 } while (token != 0);
             }
         });
+    }
+
+    /**
+     * Returns dictionary content required for syncing.
+     */
+    public WordProperty[] getWordPropertiesForSyncing() {
+        reloadDictionaryIfRequired();
+        final AsyncResultHolder<WordProperty[]> result = new AsyncResultHolder<>();
+        asyncExecuteTaskWithLock(mLock.readLock(), "sync-read", new Runnable() {
+            @Override
+            public void run() {
+                final ArrayList<WordProperty> wordPropertyList = new ArrayList<>();
+                final BinaryDictionary binaryDictionary = getBinaryDictionary();
+                if (binaryDictionary == null) {
+                    return;
+                }
+                int token = 0;
+                do {
+                    // TODO: We need a new API that returns *new* un-synced data.
+                    final BinaryDictionary.GetNextWordPropertyResult result =
+                            binaryDictionary.getNextWordProperty(token);
+                    final WordProperty wordProperty = result.mWordProperty;
+                    if (wordProperty == null) {
+                        break;
+                    }
+                    wordPropertyList.add(wordProperty);
+                    token = result.mNextToken;
+                } while (token != 0);
+                result.set(wordPropertyList.toArray(new WordProperty[wordPropertyList.size()]));
+            }
+        });
+        // TODO: Figure out the best timeout duration for this API.
+        return result.get(DEFAULT_WORD_PROPERTIES_FOR_SYNC,
+                TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
     }
 }
