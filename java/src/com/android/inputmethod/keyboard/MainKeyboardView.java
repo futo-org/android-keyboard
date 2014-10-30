@@ -481,9 +481,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     @Override
     public void dismissKeyPreview(final Key key) {
-        final KeyPreviewChoreographer keyPreviewChoreographer = mKeyPreviewChoreographer;
         if (isHardwareAccelerated()) {
-            keyPreviewChoreographer.dismissKeyPreview(key, true /* withAnimation */);
+            mKeyPreviewChoreographer.dismissKeyPreview(key, true /* withAnimation */);
+            return;
         }
         // TODO: Implement preference option to control key preview method and duration.
         mTimerHandler.postDismissKeyPreview(key, mKeyPreviewDrawParams.getLingerTimeout());
