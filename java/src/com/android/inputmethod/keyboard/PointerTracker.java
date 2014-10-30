@@ -53,12 +53,18 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static boolean DEBUG_MODE = DebugFlags.DEBUG_ENABLED || DEBUG_EVENT;
 
     public interface DrawingProxy {
-        public void invalidateKey(Key key);
-        public void showKeyPreview(Key key);
-        public void dismissKeyPreview(Key key);
+        public void invalidateKey(@Nullable Key key);
+        public void showKeyPreview(@Nonnull Key key);
+        public void dismissKeyPreview(@Nonnull Key key);
+        public void dismissKeyPreviewWithoutDelay(@Nonnull Key key);
+        public void onLongPress(@Nonnull PointerTracker tracker);
+        public static final int FADE_IN = 0;
+        public static final int FADE_OUT = 1;
+        public void startWhileTypingAnimation(final int fadeInOrOut);
         public void showSlidingKeyInputPreview(@Nullable PointerTracker tracker);
         public void showGestureTrail(@Nonnull PointerTracker tracker,
                 boolean showsFloatingPreviewText);
+        public void dismissGestureFloatingPreviewTextWithoutDelay();
     }
 
     public interface TimerProxy {
@@ -166,6 +172,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     // The position and time at which first down event occurred.
     private long mDownTime;
+    @Nonnull
     private int[] mDownCoordinates = CoordinateUtils.newInstance();
     private long mUpTime;
 
@@ -433,12 +440,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return mKeyDetector.detectHitKey(x, y);
     }
 
-    private void setReleasedKeyGraphics(final Key key) {
-        sDrawingProxy.dismissKeyPreview(key);
+    private void setReleasedKeyGraphics(@Nullable final Key key) {
         if (key == null) {
             return;
         }
 
+        sDrawingProxy.dismissKeyPreview(key);
         // Even if the key is disabled, update the key release graphics just in case.
         updateReleaseKeyGraphics(key);
 
@@ -522,7 +529,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return mGestureStrokeDrawingPoints;
     }
 
-    public void getLastCoordinates(final int[] outCoords) {
+    public void getLastCoordinates(@Nonnull final int[] outCoords) {
         CoordinateUtils.set(outCoords, mLastX, mLastY);
     }
 
@@ -530,7 +537,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return mDownTime;
     }
 
-    public void getDownCoordinates(final int[] outCoords) {
+    public void getDownCoordinates(@Nonnull final int[] outCoords) {
         CoordinateUtils.copy(outCoords, mDownCoordinates);
     }
 
