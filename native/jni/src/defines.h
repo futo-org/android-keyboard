@@ -23,10 +23,10 @@
 #define AK_FORCE_INLINE inline
 #endif // __GNUC__
 
-#if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
+#if defined(FLAG_DBG)
 #undef AK_FORCE_INLINE
 #define AK_FORCE_INLINE inline
-#endif // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
+#endif // defined(FLAG_DBG)
 
 // Must be equal to Constants.Dictionary.MAX_WORD_LENGTH in Java
 #define MAX_WORD_LENGTH 48
@@ -171,69 +171,6 @@ static inline void showStackTrace() {
 #define SHOW_STACK_TRACE
 #define INTS_TO_CHARS(input, length, output)
 #endif // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
-
-#ifdef FLAG_DO_PROFILE
-// Profiler
-#include <time.h>
-
-#define PROF_BUF_SIZE 100
-static float profile_buf[PROF_BUF_SIZE];
-static float profile_old[PROF_BUF_SIZE];
-static unsigned int profile_counter[PROF_BUF_SIZE];
-
-#define PROF_RESET               prof_reset()
-#define PROF_COUNT(prof_buf_id)  ++profile_counter[prof_buf_id]
-#define PROF_OPEN                do { PROF_RESET; PROF_START(PROF_BUF_SIZE - 1); } while (0)
-#define PROF_START(prof_buf_id)  do { \
-        PROF_COUNT(prof_buf_id); profile_old[prof_buf_id] = (clock()); } while (0)
-#define PROF_CLOSE               do { PROF_END(PROF_BUF_SIZE - 1); PROF_OUTALL; } while (0)
-#define PROF_END(prof_buf_id)    profile_buf[prof_buf_id] += ((clock()) - profile_old[prof_buf_id])
-#define PROF_CLOCKOUT(prof_buf_id) \
-        AKLOGI("%s : clock is %f", __FUNCTION__, (clock() - profile_old[prof_buf_id]))
-#define PROF_OUTALL              do { AKLOGI("--- %s ---", __FUNCTION__); prof_out(); } while (0)
-
-static inline void prof_reset(void) {
-    for (int i = 0; i < PROF_BUF_SIZE; ++i) {
-        profile_buf[i] = 0;
-        profile_old[i] = 0;
-        profile_counter[i] = 0;
-    }
-}
-
-static inline void prof_out(void) {
-    if (profile_counter[PROF_BUF_SIZE - 1] != 1) {
-        AKLOGI("Error: You must call PROF_OPEN before PROF_CLOSE.");
-    }
-    AKLOGI("Total time is %6.3f ms.",
-            profile_buf[PROF_BUF_SIZE - 1] * 1000.0f / static_cast<float>(CLOCKS_PER_SEC));
-    float all = 0.0f;
-    for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
-        all += profile_buf[i];
-    }
-    if (all < 1.0f) all = 1.0f;
-    for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
-        if (profile_buf[i] > 0.0f) {
-            AKLOGI("(%d): Used %4.2f%%, %8.4f ms. Called %d times.",
-                    i, (profile_buf[i] * 100.0f / all),
-                    profile_buf[i] * 1000.0f / static_cast<float>(CLOCKS_PER_SEC),
-                    profile_counter[i]);
-        }
-    }
-}
-
-#else // FLAG_DO_PROFILE
-#define PROF_BUF_SIZE 0
-#define PROF_RESET
-#define PROF_COUNT(prof_buf_id)
-#define PROF_OPEN
-#define PROF_START(prof_buf_id)
-#define PROF_CLOSE
-#define PROF_END(prof_buf_id)
-#define PROF_CLOCK_OUT(prof_buf_id)
-#define PROF_CLOCKOUT(prof_buf_id)
-#define PROF_OUTALL
-
-#endif // FLAG_DO_PROFILE
 
 #ifdef FLAG_DBG
 #define DEBUG_DICT true
