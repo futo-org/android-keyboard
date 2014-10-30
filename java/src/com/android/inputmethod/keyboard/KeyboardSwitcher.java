@@ -110,7 +110,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
-        final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
+        final int keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
         builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
         builder.setVoiceInputKeyEnabled(settingsValues.mShowsVoiceInputKey);
