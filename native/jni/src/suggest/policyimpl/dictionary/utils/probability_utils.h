@@ -17,6 +17,9 @@
 #ifndef LATINIME_PROBABILITY_UTILS_H
 #define LATINIME_PROBABILITY_UTILS_H
 
+#include <algorithm>
+#include <cmath>
+
 #include "defines.h"
 
 namespace latinime {
@@ -47,8 +50,20 @@ class ProbabilityUtils {
                 + static_cast<int>(static_cast<float>(bigramProbability + 1) * stepSize);
     }
 
+    // Encode probability using the same way as we are doing for main dictionaries.
+    static AK_FORCE_INLINE int encodeRawProbability(const float rawProbability) {
+        const float probability = static_cast<float>(MAX_PROBABILITY)
+                + log2f(rawProbability) * PROBABILITY_ENCODING_SCALER;
+        if (probability < 0.0f) {
+            return 0;
+        }
+        return std::min(static_cast<int>(probability + 0.5f), MAX_PROBABILITY);
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProbabilityUtils);
+
+    static const float PROBABILITY_ENCODING_SCALER;
 };
 }
 #endif /* LATINIME_PROBABILITY_UTILS_H */
