@@ -42,8 +42,6 @@ LATINIME_TESTS_SRC_DIR := $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmetho
 # a significant part of the dependencies are mocked in the compat/ directory, with empty or
 # nearly-empty implementations, for parts that we don't use in Dicttool.
 LATINIME_SRC_FILES_FOR_DICTTOOL := \
-        event/Combiner.java \
-        event/Event.java \
         latin/BinaryDictionary.java \
         latin/DicTraverseSession.java \
         latin/Dictionary.java \
