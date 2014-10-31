@@ -141,10 +141,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                 return FormatUtils::VERSION_202;
             case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
                 return FormatUtils::VERSION_4_ONLY_FOR_TESTING;
-            case FormatUtils::VERSION_4:
-                return FormatUtils::VERSION_4;
-            case FormatUtils::VERSION_4_DEV:
-                return FormatUtils::VERSION_4_DEV;
+            case FormatUtils::VERSION_402:
+                return FormatUtils::VERSION_402;
+            case FormatUtils::VERSION_403:
+                return FormatUtils::VERSION_403;
             default:
                 return FormatUtils::UNKNOWN_VERSION;
         }
@@ -247,7 +247,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     }
 
     bool supportsBeginningOfSentence() const {
-        return mDictFormatVersion >= FormatUtils::VERSION_4;
+        return mDictFormatVersion >= FormatUtils::VERSION_402;
     }
 
     const int *getCodePointTable() const {

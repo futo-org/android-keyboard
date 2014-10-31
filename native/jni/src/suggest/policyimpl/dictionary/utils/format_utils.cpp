@@ -35,10 +35,10 @@ const size_t FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
             return VERSION_202;
         case VERSION_4_ONLY_FOR_TESTING:
             return VERSION_4_ONLY_FOR_TESTING;
-        case VERSION_4:
-            return VERSION_4;
-        case VERSION_4_DEV:
-            return VERSION_4_DEV;
+        case VERSION_402:
+            return VERSION_402;
+        case VERSION_403:
+            return VERSION_403;
         default:
             return UNKNOWN_VERSION;
     }
