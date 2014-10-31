@@ -26,18 +26,17 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrare la apăsarea tastei"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sunet la apăsarea tastei"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up la apăsarea tastei"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"Preferințe pentru intrare"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"Aspect"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Opțiuni pt. diverse limbi"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"Prefer. tastare gestuală"</string>
-    <string name="settings_screen_correction" msgid="1616818407747682955">"Corectare text"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferinţe"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Aspect"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Opțiuni multilingve"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Tastare gestuală"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Corectarea textului"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Setări avansate"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"Temă"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Comut. alte metode de introd."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasta de comutare între limbi include şi alte metode de introd."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tastă comutare limbi"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Afişaţi când sunt activate mai multe limbi de intrare"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Afișați indicator glisare"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Afișați un indicator în timpul glisării de la Shift sau tasta de simboluri"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Închidere pop-up taste"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Fără întârziere"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Prestabilit"</string>
@@ -56,9 +55,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Dicţionar principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Afişaţi sugestii de corectare"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Afişaţi sugestii de cuvinte în timpul introducerii textului"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Afişaţi întotdeauna"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Afişaţi în modul Portret"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ascundeţi întotdeauna"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blocați cuvintele jignitoare"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Nu se sugerează cuvinte potențial jignitoare"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorectare"</string>
@@ -79,10 +75,11 @@
     <string name="voice_input" msgid="3583258583521397548">"Tastă pentru intrarea vocală"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nicio metodă de intrare vocală activată. Verificați setările pentru limbă și introducere de text."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configuraţi metodele de intrare"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"Trimiteți feedback"</string>
-    <string name="select_language" msgid="3693815588777926848">"Limbi de introducere de text"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"Limbi"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Ajutor și feedback"</string>
+    <string name="select_language" msgid="5709487854987078367">"Limbi"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Atingeţi din nou pentru a salva"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Atingeți aici pentru a salva"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Temă pentru tastatură"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"engleză (Regatul Unit)"</string>
@@ -103,10 +100,6 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabet (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Temă pentru tastatură"</string>
-    <string name="keyboard_theme_holo_white" msgid="8506588144096428751">"Holo White"</string>
-    <string name="keyboard_theme_holo_blue" msgid="192400518003397418">"Holo Blue"</string>
-    <string name="keyboard_theme_material_dark" msgid="2701178578784760596">"Material Dark"</string>
-    <string name="keyboard_theme_material_light" msgid="3479400901818790331">"Material Light"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Stiluri personalizate"</string>
     <string name="add_style" msgid="6163126614514489951">"Stil"</string>
     <string name="add" msgid="8299699805688017798">"Adăugaţi"</string>
@@ -118,14 +111,8 @@
     <string name="enable" msgid="5031294444630523247">"Activaţi"</string>
     <string name="not_now" msgid="6172462888202790482">"Nu acum"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Acelaşi stil de introducere există deja: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Timpul apăsării lungi a tastei"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrare după apăsarea tastei"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Sunet la apăsarea tastelor"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Citiți fișierul de dicționar extern"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Nu există fișiere dicționar în dosarul Descărcări"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Selectați un fișier dicționar de instalat"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Doriți să instalați acest fișier pentru <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
-    <string name="error" msgid="8940763624668513648">"A apărut o eroare"</string>
     <string name="button_default" msgid="3988017840431881491">"Prestabilit"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Bun venit la <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"cu Tastarea gestuală"</string>
