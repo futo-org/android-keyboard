@@ -39,20 +39,18 @@ TEST(ProbabilityEntryTest, TestEncodeDecode) {
 TEST(ProbabilityEntryTest, TestEncodeDecodeWithHistoricalInfo) {
     const int flag = 0xF0;
     const int timestamp = 0x3FFFFFFF;
-    const int level = 3;
-    const int count = 10;
+    const int count = 0xABCD;
 
-    const HistoricalInfo historicalInfo(timestamp, level, count);
+    const HistoricalInfo historicalInfo(timestamp, 0 /* level */, count);
     const ProbabilityEntry entry(flag, &historicalInfo);
 
     const uint64_t encodedEntry = entry.encode(true /* hasHistoricalInfo */);
-    EXPECT_EQ(0xF03FFFFFFF030Aull, encodedEntry);
+    EXPECT_EQ(0xF03FFFFFFFABCDull, encodedEntry);
     const ProbabilityEntry decodedEntry =
             ProbabilityEntry::decode(encodedEntry, true /* hasHistoricalInfo */);
 
     EXPECT_EQ(flag, decodedEntry.getFlags());
     EXPECT_EQ(timestamp, decodedEntry.getHistoricalInfo()->getTimestamp());
-    EXPECT_EQ(level, decodedEntry.getHistoricalInfo()->getLevel());
     EXPECT_EQ(count, decodedEntry.getHistoricalInfo()->getCount());
 }
 
