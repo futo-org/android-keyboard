@@ -34,6 +34,7 @@ class ScoringParams {
     static const int THRESHOLD_SHORT_WORD_LENGTH;
 
     static const float EXACT_MATCH_PROMOTION;
+    static const float PERFECT_MATCH_PROMOTION;
     static const float CASE_ERROR_PENALTY_FOR_EXACT_MATCH;
     static const float ACCENT_ERROR_PENALTY_FOR_EXACT_MATCH;
     static const float DIGRAPH_PENALTY_FOR_EXACT_MATCH;

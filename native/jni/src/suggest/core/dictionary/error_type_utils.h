@@ -52,6 +52,10 @@ class ErrorTypeUtils {
         return (containedErrorTypes & ~ERRORS_TREATED_AS_AN_EXACT_MATCH) == 0;
     }
 
+    static bool isPerfectMatch(const ErrorType containedErrorTypes) {
+        return (containedErrorTypes & ~ERRORS_TREATED_AS_A_PERFECT_MATCH) == 0;
+    }
+
     static bool isExactMatchWithIntentionalOmission(const ErrorType containedErrorTypes) {
         return (containedErrorTypes
                 & ~ERRORS_TREATED_AS_AN_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) == 0;
@@ -73,6 +77,7 @@ class ErrorTypeUtils {
     DISALLOW_IMPLICIT_CONSTRUCTORS(ErrorTypeUtils);
 
     static const ErrorType ERRORS_TREATED_AS_AN_EXACT_MATCH;
+    static const ErrorType ERRORS_TREATED_AS_A_PERFECT_MATCH;
     static const ErrorType ERRORS_TREATED_AS_AN_EXACT_MATCH_WITH_INTENTIONAL_OMISSION;
 };
 } // namespace latinime
