@@ -23,7 +23,6 @@ import android.util.Pair;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary.UpdateEntriesForInputEventsCallback;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -683,7 +682,7 @@ public class DictionaryFacilitator {
 
     // TODO: Revise the way to fusion suggestion results.
     public SuggestionResults getSuggestionResults(final WordComposer composer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId) {
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
         final SuggestionResults suggestionResults = new SuggestionResults(
@@ -698,8 +697,8 @@ public class DictionaryFacilitator {
                         ? dictionaryGroup.mWeightForGesturingInLocale
                         : dictionaryGroup.mWeightForTypingInLocale;
                 final ArrayList<SuggestedWordInfo> dictionarySuggestions =
-                        dictionary.getSuggestions(composer, ngramContext, proximityInfo,
-                                settingsValuesForSuggestion, sessionId,
+                        dictionary.getSuggestions(composer.getComposedDataSnapshot(), ngramContext,
+                                proximityInfoHandle, settingsValuesForSuggestion, sessionId,
                                 weightForLocale, weightOfLangModelVsSpatialModel);
                 if (null == dictionarySuggestions) continue;
                 suggestionResults.addAll(dictionarySuggestions);

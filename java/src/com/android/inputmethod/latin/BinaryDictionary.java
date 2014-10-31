@@ -21,8 +21,8 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.StringUtils;
@@ -262,8 +262,8 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+    public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
+            final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float weightForLocale,
             final float[] inOutWeightOfLangModelVsSpatialModel) {
@@ -274,12 +274,13 @@ public final class BinaryDictionary extends Dictionary {
         Arrays.fill(session.mInputCodePoints, Constants.NOT_A_CODE);
         ngramContext.outputToArray(session.mPrevWordCodePointArrays,
                 session.mIsBeginningOfSentenceArray);
-        final InputPointers inputPointers = composer.getInputPointers();
-        final boolean isGesture = composer.isBatchMode();
+        final InputPointers inputPointers = composedData.mInputPointers;
+        final boolean isGesture = composedData.mIsBatchMode;
         final int inputSize;
         if (!isGesture) {
-            inputSize = composer.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
-                    session.mInputCodePoints);
+            inputSize =
+                    composedData.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
+                        session.mInputCodePoints);
             if (inputSize < 0) {
                 return null;
             }
@@ -303,7 +304,7 @@ public final class BinaryDictionary extends Dictionary {
                     Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL;
         }
         // TOOD: Pass multiple previous words information for n-gram.
-        getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
+        getSuggestionsNative(mNativeDict, proximityInfoHandle,
                 getTraverseSession(sessionId).getSession(), inputPointers.getXCoordinates(),
                 inputPointers.getYCoordinates(), inputPointers.getTimes(),
                 inputPointers.getPointerIds(), session.mInputCodePoints, inputSize,

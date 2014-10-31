@@ -18,8 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
@@ -59,8 +59,8 @@ public final class DictionaryCollection extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+    public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
+            final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float weightForLocale,
             final float[] inOutWeightOfLangModelVsSpatialModel) {
@@ -68,15 +68,15 @@ public final class DictionaryCollection extends Dictionary {
         if (dictionaries.isEmpty()) return null;
         // To avoid creating unnecessary objects, we get the list out of the first
         // dictionary and add the rest to it if not null, hence the get(0)
-        ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getSuggestions(composer,
-                ngramContext, proximityInfo, settingsValuesForSuggestion, sessionId,
+        ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getSuggestions(composedData,
+                ngramContext, proximityInfoHandle, settingsValuesForSuggestion, sessionId,
                 weightForLocale, inOutWeightOfLangModelVsSpatialModel);
         if (null == suggestions) suggestions = new ArrayList<>();
         final int length = dictionaries.size();
         for (int i = 1; i < length; ++ i) {
-            final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getSuggestions(composer,
-                    ngramContext, proximityInfo, settingsValuesForSuggestion, sessionId,
-                    weightForLocale, inOutWeightOfLangModelVsSpatialModel);
+            final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getSuggestions(
+                    composedData, ngramContext, proximityInfoHandle, settingsValuesForSuggestion,
+                    sessionId, weightForLocale, inOutWeightOfLangModelVsSpatialModel);
             if (null != sugg) suggestions.addAll(sugg);
         }
         return suggestions;

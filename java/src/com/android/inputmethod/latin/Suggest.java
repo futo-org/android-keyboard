@@ -140,8 +140,8 @@ public final class Suggest {
                 : typedWord;
 
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, ngramContext, proximityInfo, settingsValuesForSuggestion,
-                SESSION_ID_TYPING);
+                wordComposer, ngramContext, proximityInfo.getNativeProximityInfo(),
+                settingsValuesForSuggestion, SESSION_ID_TYPING);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
                         trailingSingleQuotesCount,
@@ -247,8 +247,8 @@ public final class Suggest {
             final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, ngramContext, proximityInfo, settingsValuesForSuggestion,
-                SESSION_ID_GESTURE);
+                wordComposer, ngramContext, proximityInfo.getNativeProximityInfo(),
+                settingsValuesForSuggestion, SESSION_ID_GESTURE);
         // For transforming words that don't come from a dictionary, because it's our best bet
         final Locale defaultLocale = mDictionaryFacilitator.getMostProbableLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
