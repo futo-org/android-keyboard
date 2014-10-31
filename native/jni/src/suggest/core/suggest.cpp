@@ -416,6 +416,11 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
             traverseSession->getDictionaryStructurePolicy()->getWordAttributesInContext(
                     dicNode->getPrevWordIds(), dicNode->getWordId(),
                     traverseSession->getMultiBigramMap());
+    if (SuggestionsOutputUtils::shouldBlockWord(traverseSession->getSuggestOptions(),
+            dicNode, wordAttributes, false /* isLastWord */)) {
+        return;
+    }
+
     if (!TRAVERSAL->isGoodToTraverseNextWord(dicNode, wordAttributes.getProbability())) {
         return;
     }

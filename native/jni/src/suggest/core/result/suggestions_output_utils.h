@@ -18,6 +18,7 @@
 #define LATINIME_SUGGESTIONS_OUTPUT_UTILS
 
 #include "defines.h"
+#include "suggest/core/dictionary/word_attributes.h"
 
 namespace latinime {
 
@@ -25,10 +26,18 @@ class BinaryDictionaryShortcutIterator;
 class DicNode;
 class DicTraverseSession;
 class Scoring;
+class SuggestOptions;
 class SuggestionResults;
 
 class SuggestionsOutputUtils {
  public:
+    /**
+     * Returns true if we should block the incoming word, in the context of the user's
+     * preferences to include or not include possibly offensive words
+     */
+    static bool shouldBlockWord(const SuggestOptions *const suggestOptions,
+            const DicNode *const terminalDicNode, const WordAttributes wordAttributes,
+            const bool isLastWord);
     /**
      * Outputs the final list of suggestions (i.e., terminal nodes).
      */
