@@ -62,14 +62,14 @@ TEST(FormatUtilsTest, TestDetectFormatVersion) {
     }
     {
         const std::vector<uint8_t> buffer =
-                getBuffer(FormatUtils::MAGIC_NUMBER, FormatUtils::VERSION_4, 0, 0);
-        EXPECT_EQ(FormatUtils::VERSION_4, FormatUtils::detectFormatVersion(
+                getBuffer(FormatUtils::MAGIC_NUMBER, FormatUtils::VERSION_402, 0, 0);
+        EXPECT_EQ(FormatUtils::VERSION_402, FormatUtils::detectFormatVersion(
                 ReadOnlyByteArrayView(buffer.data(), buffer.size())));
     }
     {
         const std::vector<uint8_t> buffer =
-                getBuffer(FormatUtils::MAGIC_NUMBER, FormatUtils::VERSION_4_DEV, 0, 0);
-        EXPECT_EQ(FormatUtils::VERSION_4_DEV, FormatUtils::detectFormatVersion(
+                getBuffer(FormatUtils::MAGIC_NUMBER, FormatUtils::VERSION_403, 0, 0);
+        EXPECT_EQ(FormatUtils::VERSION_403, FormatUtils::detectFormatVersion(
                 ReadOnlyByteArrayView(buffer.data(), buffer.size())));
     }
 

@@ -38,8 +38,8 @@ class FormatUtils {
         VERSION_201 = 201,
         VERSION_202 = 202,
         VERSION_4_ONLY_FOR_TESTING = 399,
-        VERSION_4 = 402,
-        VERSION_4_DEV = 403,
+        VERSION_402 = 402,
+        VERSION_403 = 403,
         UNKNOWN_VERSION = -1
     };
 
