@@ -314,14 +314,14 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final String dictVersion = Long.toString(System.currentTimeMillis());
         final String codePointTableAttribute = DictionaryHeader.CODE_POINT_TABLE_KEY;
         final File file = BinaryDictUtils.getDictFile(dictName, dictVersion,
-                BinaryDictUtils.VERSION201_OPTIONS, getContext().getCacheDir());
+                BinaryDictUtils.STATIC_OPTIONS, getContext().getCacheDir());
 
         // Write a test dictionary
         final DictEncoder dictEncoder = new Ver2DictEncoder(file,
                 Ver2DictEncoder.CODE_POINT_TABLE_ON);
         final FormatSpec.FormatOptions formatOptions =
                 new FormatSpec.FormatOptions(
-                        FormatSpec.MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE);
+                        FormatSpec.MINIMUM_SUPPORTED_STATIC_VERSION);
         final FusionDictionary sourcedict = new FusionDictionary(new PtNodeArray(),
                 BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
         addUnigrams(words.size(), sourcedict, words, null /* shortcutMap */);
@@ -359,11 +359,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final List<String> results = new ArrayList<>();
 
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION2_OPTIONS);
+                BinaryDictUtils.STATIC_OPTIONS);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
+                BinaryDictUtils.DYNAMIC_OPTIONS_WITHOUT_TIMESTAMP);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
+                BinaryDictUtils.DYNAMIC_OPTIONS_WITH_TIMESTAMP);
         for (final String result : results) {
             Log.d(TAG, result);
         }
@@ -373,11 +373,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final List<String> results = new ArrayList<>();
 
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION2_OPTIONS);
+                BinaryDictUtils.STATIC_OPTIONS);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
+                BinaryDictUtils.DYNAMIC_OPTIONS_WITHOUT_TIMESTAMP);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
+                BinaryDictUtils.DYNAMIC_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -501,7 +501,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final ArrayList<String> results = new ArrayList<>();
 
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION2_OPTIONS);
+                BinaryDictUtils.STATIC_OPTIONS);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -512,7 +512,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final ArrayList<String> results = new ArrayList<>();
 
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION2_OPTIONS);
+                BinaryDictUtils.STATIC_OPTIONS);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -623,9 +623,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final ArrayList<String> results = new ArrayList<>();
 
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION2_OPTIONS);
+                BinaryDictUtils.STATIC_OPTIONS);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION2_OPTIONS);
+                BinaryDictUtils.STATIC_OPTIONS);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -633,7 +633,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     public void testVer2DictGetWordProperty() {
-        final FormatOptions formatOptions = BinaryDictUtils.VERSION2_OPTIONS;
+        final FormatOptions formatOptions = BinaryDictUtils.STATIC_OPTIONS;
         final ArrayList<String> words = sWords;
         final HashMap<String, List<String>> shortcuts = sShortcuts;
         final String dictName = "testGetWordProperty";
@@ -669,7 +669,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     public void testVer2DictIteration() {
-        final FormatOptions formatOptions = BinaryDictUtils.VERSION2_OPTIONS;
+        final FormatOptions formatOptions = BinaryDictUtils.STATIC_OPTIONS;
         final ArrayList<String> words = sWords;
         final HashMap<String, List<String>> shortcuts = sShortcuts;
         final SparseArray<List<Integer>> bigrams = sEmptyBigrams;

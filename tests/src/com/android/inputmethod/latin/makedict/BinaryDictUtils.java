@@ -28,13 +28,11 @@ public class BinaryDictUtils {
 
     public static final String TEST_DICT_FILE_EXTENSION = ".testDict";
 
-    public static final FormatSpec.FormatOptions VERSION2_OPTIONS =
-            new FormatSpec.FormatOptions(FormatSpec.VERSION2);
-    public static final FormatSpec.FormatOptions VERSION201_OPTIONS =
-            new FormatSpec.FormatOptions(FormatSpec.VERSION201);
-    public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITHOUT_TIMESTAMP =
+    public static final FormatSpec.FormatOptions STATIC_OPTIONS =
+            new FormatSpec.FormatOptions(FormatSpec.VERSION202);
+    public static final FormatSpec.FormatOptions DYNAMIC_OPTIONS_WITHOUT_TIMESTAMP =
             new FormatSpec.FormatOptions(FormatSpec.VERSION4, false /* hasTimestamp */);
-    public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITH_TIMESTAMP =
+    public static final FormatSpec.FormatOptions DYNAMIC_OPTIONS_WITH_TIMESTAMP =
             new FormatSpec.FormatOptions(FormatSpec.VERSION4, true /* hasTimestamp */);
 
     public static DictionaryOptions makeDictionaryOptions(final String id, final String version,
@@ -55,7 +53,8 @@ public class BinaryDictUtils {
     public static File getDictFile(final String name, final String version,
             final FormatOptions formatOptions, final File directory) {
         if (formatOptions.mVersion == FormatSpec.VERSION2
-                || formatOptions.mVersion == FormatSpec.VERSION201) {
+                || formatOptions.mVersion == FormatSpec.VERSION201
+                || formatOptions.mVersion == FormatSpec.VERSION202) {
             return new File(directory, name + "." + version + TEST_DICT_FILE_EXTENSION);
         } else if (formatOptions.mVersion == FormatSpec.VERSION4) {
             return new File(directory, name + "." + version);
@@ -71,7 +70,7 @@ public class BinaryDictUtils {
                 file.mkdir();
             }
             return new Ver4DictEncoder(file);
-        } else if (formatOptions.mVersion == FormatSpec.VERSION2) {
+        } else if (formatOptions.mVersion == FormatSpec.VERSION202) {
             return new Ver2DictEncoder(file, Ver2DictEncoder.CODE_POINT_TABLE_OFF);
         } else {
             throw new RuntimeException("The format option has a wrong version : "
