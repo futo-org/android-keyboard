@@ -161,7 +161,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             compoundDistance, traverseSession->getInputSize(),
             terminalDicNode->getContainedErrorTypes(),
             (forceCommitMultiWords && terminalDicNode->hasMultipleWords()),
-            boostExactMatches);
+            boostExactMatches, wordAttributes.getProbability() == 0);
 
     // Don't output invalid or blocked offensive words. However, we still need to submit their
     // shortcuts if any.
