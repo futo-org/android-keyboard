@@ -168,7 +168,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
             DictionaryFacilitator dictionaryFacilitatorForLocale =
                     mDictionaryFacilitatorCache.get(locale);
             return dictionaryFacilitatorForLocale.getSuggestionResults(composer, ngramContext,
-                    proximityInfo, mSettingsValuesForSuggestion, sessionId);
+                    proximityInfo.getNativeProximityInfo(), mSettingsValuesForSuggestion,
+                    sessionId);
         } finally {
             if (sessionId != null) {
                 mSessionIdPool.add(sessionId);

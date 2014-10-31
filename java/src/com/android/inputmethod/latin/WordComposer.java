@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.event.CombinerChain;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.StringUtils;
@@ -90,6 +91,10 @@ public final class WordComposer {
         refreshTypedWordCache();
     }
 
+    public ComposedData getComposedDataSnapshot() {
+        return new ComposedData(getInputPointers(), isBatchMode(), mTypedWordCache.toString());
+    }
+
     /**
      * Restart the combiners, possibly with a new spec.
      * @param combiningSpec The spec string for combining. This is found in the extra value.
@@ -132,38 +137,6 @@ public final class WordComposer {
      */
     public int size() {
         return mCodePointSize;
-    }
-
-    /**
-     * Copy the code points in the typed word to a destination array of ints.
-     *
-     * If the array is too small to hold the code points in the typed word, nothing is copied and
-     * -1 is returned.
-     *
-     * @param destination the array of ints.
-     * @return the number of copied code points.
-     */
-    public int copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
-            final int[] destination) {
-        // This method can be called on a separate thread and mTypedWordCache can change while we
-        // are executing this method.
-        final String typedWord = mTypedWordCache.toString();
-        // lastIndex is exclusive
-        final int lastIndex = typedWord.length()
-                - StringUtils.getTrailingSingleQuotesCount(typedWord);
-        if (lastIndex <= 0) {
-            // The string is empty or contains only single quotes.
-            return 0;
-        }
-
-        // The following function counts the number of code points in the text range which begins
-        // at index 0 and extends to the character at lastIndex.
-        final int codePointSize = Character.codePointCount(typedWord, 0, lastIndex);
-        if (codePointSize > destination.length) {
-            return -1;
-        }
-        return StringUtils.copyCodePointsAndReturnCodePointCount(destination, typedWord, 0,
-                lastIndex, true /* downCase */);
     }
 
     public boolean isSingleLetter() {

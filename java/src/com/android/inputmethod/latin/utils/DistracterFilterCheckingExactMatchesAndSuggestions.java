@@ -250,8 +250,9 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         composer.setComposingWord(codePoints, coordinates);
         final SuggestionResults suggestionResults;
         synchronized (mLock) {
-            suggestionResults = dictionaryFacilitator.getSuggestionResults(
-                    composer, NgramContext.EMPTY_PREV_WORDS_INFO, keyboard.getProximityInfo(),
+            suggestionResults = dictionaryFacilitator.getSuggestionResults(composer,
+                    NgramContext.EMPTY_PREV_WORDS_INFO,
+                    keyboard.getProximityInfo().getNativeProximityInfo(),
                     settingsValuesForSuggestion, 0 /* sessionId */);
         }
         if (suggestionResults.isEmpty()) {
