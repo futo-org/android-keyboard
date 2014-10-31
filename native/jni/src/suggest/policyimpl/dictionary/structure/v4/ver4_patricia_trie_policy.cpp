@@ -110,7 +110,7 @@ const WordAttributes Ver4PatriciaTriePolicy::getWordAttributesInContext(
         return WordAttributes();
     }
     return mBuffers->getLanguageModelDictContent()->getWordAttributes(prevWordIds, wordId,
-            mHeaderPolicy);
+            false /* mustMatchAllPrevWords */, mHeaderPolicy);
 }
 
 int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,
@@ -118,18 +118,13 @@ int Ver4PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordI
     if (wordId == NOT_A_WORD_ID || prevWordIds.contains(NOT_A_WORD_ID)) {
         return NOT_A_PROBABILITY;
     }
-    const ProbabilityEntry probabilityEntry =
-            mBuffers->getLanguageModelDictContent()->getNgramProbabilityEntry(prevWordIds, wordId);
-    if (!probabilityEntry.isValid() || probabilityEntry.isBlacklisted()
-            || probabilityEntry.isNotAWord()) {
+    const WordAttributes wordAttributes =
+            mBuffers->getLanguageModelDictContent()->getWordAttributes(prevWordIds, wordId,
+                    true /* mustMatchAllPrevWords */, mHeaderPolicy);
+    if (wordAttributes.isBlacklisted() || wordAttributes.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
-    if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
-        return ForgettingCurveUtils::decodeProbability(probabilityEntry.getHistoricalInfo(),
-                mHeaderPolicy);
-    } else {
-        return probabilityEntry.getProbability();
-    }
+    return wordAttributes.getProbability();
 }
 
 BinaryDictionaryShortcutIterator Ver4PatriciaTriePolicy::getShortcutIterator(
@@ -152,9 +147,7 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordI
                 continue;
             }
             const int probability = probabilityEntry.hasHistoricalInfo() ?
-                    ForgettingCurveUtils::decodeProbability(
-                            probabilityEntry.getHistoricalInfo(), mHeaderPolicy) :
-                    probabilityEntry.getProbability();
+                    0 : probabilityEntry.getProbability();
             listener->onVisitEntry(probability, entry.getWordId());
         }
     }
@@ -386,25 +379,35 @@ bool Ver4PatriciaTriePolicy::updateEntriesForWordWithNgramContext(
             AKLOGE("Cannot add unigarm entry in updateEntriesForWordWithNgramContext().");
             return false;
         }
+        if (!isValidWord) {
+            return true;
+        }
         wordId = getWordId(wordCodePoints, false /* tryLowerCaseSearch */);
     }
 
     WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
     const WordIdArrayView prevWordIds = ngramContext->getPrevWordIds(this, &prevWordIdArray,
             false /* tryLowerCaseSearch */);
-    if (prevWordIds.firstOrDefault(NOT_A_WORD_ID) == NOT_A_WORD_ID
-            && ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */)) {
-        const UnigramProperty beginningOfSentenceUnigramProperty(
-                true /* representsBeginningOfSentence */,
-                true /* isNotAWord */, false /* isPossiblyOffensive */, NOT_A_PROBABILITY,
-                HistoricalInfo(historicalInfo.getTimestamp(), 0 /* level */, 0 /* count */));
-        if (!addUnigramEntry(ngramContext->getNthPrevWordCodePoints(1 /* n */),
-                &beginningOfSentenceUnigramProperty)) {
-            AKLOGE("Cannot add BoS entry in updateEntriesForWordWithNgramContext().");
+    if (ngramContext->isNthPrevWordBeginningOfSentence(1 /* n */)) {
+        if (prevWordIds.firstOrDefault(NOT_A_WORD_ID) == NOT_A_WORD_ID) {
+            const UnigramProperty beginningOfSentenceUnigramProperty(
+                    true /* representsBeginningOfSentence */,
+                    true /* isNotAWord */, false /* isPossiblyOffensive */, NOT_A_PROBABILITY,
+                    HistoricalInfo(historicalInfo.getTimestamp(), 0 /* level */, 0 /* count */));
+            if (!addUnigramEntry(ngramContext->getNthPrevWordCodePoints(1 /* n */),
+                    &beginningOfSentenceUnigramProperty)) {
+                AKLOGE("Cannot add BoS entry in updateEntriesForWordWithNgramContext().");
+                return false;
+            }
+            // Refresh word ids.
+            ngramContext->getPrevWordIds(this, &prevWordIdArray, false /* tryLowerCaseSearch */);
+        }
+        // Update entries for beginning of sentence.
+        if (!mBuffers->getMutableLanguageModelDictContent()->updateAllEntriesOnInputWord(
+                prevWordIds.skip(1 /* n */), prevWordIds[0], true /* isVaild */, historicalInfo,
+                mHeaderPolicy, &mEntryCounters)) {
             return false;
         }
-        // Refresh word ids.
-        ngramContext->getPrevWordIds(this, &prevWordIdArray, false /* tryLowerCaseSearch */);
     }
     if (!mBuffers->getMutableLanguageModelDictContent()->updateAllEntriesOnInputWord(prevWordIds,
             wordId, updateAsAValidWord, historicalInfo, mHeaderPolicy, &mEntryCounters)) {
@@ -542,7 +545,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
         }
     }
     const WordAttributes wordAttributes = languageModelDictContent->getWordAttributes(
-            WordIdArrayView(), wordId, mHeaderPolicy);
+            WordIdArrayView(), wordId, true /* mustMatchAllPrevWords */, mHeaderPolicy);
     const ProbabilityEntry probabilityEntry = languageModelDictContent->getProbabilityEntry(wordId);
     const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
     const UnigramProperty unigramProperty(probabilityEntry.representsBeginningOfSentence(),
