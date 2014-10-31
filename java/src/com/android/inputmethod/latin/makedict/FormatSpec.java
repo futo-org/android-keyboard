@@ -171,6 +171,7 @@ public final class FormatSpec {
     // ExpandableDictionary.matchesExpectedBinaryDictFormatVersionForThisType().
     public static final int VERSION2 = 2;
     public static final int VERSION201 = 201;
+    public static final int VERSION202 = 202;
     public static final int MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE = VERSION201;
     // Dictionary version used for testing.
     public static final int VERSION4_ONLY_FOR_TESTING = 399;

@@ -134,9 +134,11 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         // same so we use them for both here.
         switch (mDictFormatVersion) {
             case FormatUtils::VERSION_2:
-                return FormatUtils::VERSION_2;
             case FormatUtils::VERSION_201:
-                return FormatUtils::VERSION_201;
+                AKLOGE("Dictionary versions 2 and 201 are incompatible with this version");
+                return FormatUtils::UNKNOWN_VERSION;
+            case FormatUtils::VERSION_202:
+                return FormatUtils::VERSION_202;
             case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
                 return FormatUtils::VERSION_4_ONLY_FOR_TESTING;
             case FormatUtils::VERSION_4:

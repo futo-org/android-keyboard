@@ -98,6 +98,7 @@ public class CombinedInputOutput {
         String word = null;
         ProbabilityInfo probabilityInfo = new ProbabilityInfo(0);
         boolean isNotAWord = false;
+        boolean isPossiblyOffensive = false;
         ArrayList<WeightedString> bigrams = new ArrayList<>();
         ArrayList<WeightedString> shortcuts = new ArrayList<>();
         while (null != (line = reader.readLine())) {
@@ -106,7 +107,7 @@ public class CombinedInputOutput {
             if (args[0].matches(CombinedFormatUtils.WORD_TAG + "=.*")) {
                 if (null != word) {
                     dict.add(word, probabilityInfo, shortcuts.isEmpty() ? null : shortcuts,
-                            isNotAWord, false /* isPossiblyOffensive */);
+                            isNotAWord, isPossiblyOffensive);
                     for (WeightedString s : bigrams) {
                         dict.setBigram(word, s.mWord, s.mProbabilityInfo);
                     }
@@ -114,27 +115,37 @@ public class CombinedInputOutput {
                 if (!shortcuts.isEmpty()) shortcuts = new ArrayList<>();
                 if (!bigrams.isEmpty()) bigrams = new ArrayList<>();
                 isNotAWord = false;
+                isPossiblyOffensive = false;
                 for (String param : args) {
                     final String params[] = param.split("=", 2);
                     if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
-                    if (CombinedFormatUtils.WORD_TAG.equals(params[0])) {
-                        word = params[1];
-                    } else if (CombinedFormatUtils.PROBABILITY_TAG.equals(params[0])) {
-                        probabilityInfo = new ProbabilityInfo(Integer.parseInt(params[1]),
-                                probabilityInfo.mTimestamp, probabilityInfo.mLevel,
-                                probabilityInfo.mCount);
-                    } else if (CombinedFormatUtils.HISTORICAL_INFO_TAG.equals(params[0])) {
-                        final String[] historicalInfoParams =
-                                params[1].split(CombinedFormatUtils.HISTORICAL_INFO_SEPARATOR);
-                        if (historicalInfoParams.length != HISTORICAL_INFO_ELEMENT_COUNT) {
-                            throw new RuntimeException("Wrong format (historical info) : " + line);
-                        }
-                        probabilityInfo = new ProbabilityInfo(probabilityInfo.mProbability,
-                                Integer.parseInt(historicalInfoParams[0]),
-                                Integer.parseInt(historicalInfoParams[1]),
-                                Integer.parseInt(historicalInfoParams[2]));
-                    } else if (CombinedFormatUtils.NOT_A_WORD_TAG.equals(params[0])) {
-                        isNotAWord = "true".equals(params[1]);
+                    switch (params[0]) {
+                        case CombinedFormatUtils.WORD_TAG:
+                            word = params[1];
+                            break;
+                        case CombinedFormatUtils.PROBABILITY_TAG:
+                            probabilityInfo = new ProbabilityInfo(Integer.parseInt(params[1]),
+                                    probabilityInfo.mTimestamp, probabilityInfo.mLevel,
+                                    probabilityInfo.mCount);
+                            break;
+                        case CombinedFormatUtils.HISTORICAL_INFO_TAG:
+                            final String[] historicalInfoParams = params[1].split(
+                                    CombinedFormatUtils.HISTORICAL_INFO_SEPARATOR);
+                            if (historicalInfoParams.length != HISTORICAL_INFO_ELEMENT_COUNT) {
+                                throw new RuntimeException("Wrong format (historical info) : "
+                                        + line);
+                            }
+                            probabilityInfo = new ProbabilityInfo(probabilityInfo.mProbability,
+                                    Integer.parseInt(historicalInfoParams[0]),
+                                    Integer.parseInt(historicalInfoParams[1]),
+                                    Integer.parseInt(historicalInfoParams[2]));
+                            break;
+                        case CombinedFormatUtils.NOT_A_WORD_TAG:
+                            isNotAWord = CombinedFormatUtils.isLiteralTrue(params[1]);
+                            break;
+                        case CombinedFormatUtils.POSSIBLY_OFFENSIVE_TAG:
+                            isPossiblyOffensive = CombinedFormatUtils.isLiteralTrue(params[1]);
+                            break;
                     }
                 }
             } else if (args[0].matches(CombinedFormatUtils.SHORTCUT_TAG + "=.*")) {
@@ -190,7 +201,7 @@ public class CombinedInputOutput {
         }
         if (null != word) {
             dict.add(word, probabilityInfo, shortcuts.isEmpty() ? null : shortcuts, isNotAWord,
-                    false /* isPossiblyOffensive */);
+                    isPossiblyOffensive);
             for (WeightedString s : bigrams) {
                 dict.setBigram(word, s.mWord, s.mProbabilityInfo);
             }

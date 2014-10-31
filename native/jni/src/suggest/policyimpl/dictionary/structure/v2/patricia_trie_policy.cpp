@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
 
 #include "defines.h"
@@ -317,8 +316,8 @@ const WordAttributes PatriciaTriePolicy::getWordAttributesInContext(
 
 const WordAttributes PatriciaTriePolicy::getWordAttributes(const int probability,
         const PtNodeParams &ptNodeParams) const {
-    return WordAttributes(probability, ptNodeParams.isBlacklisted(), ptNodeParams.isNotAWord(),
-            ptNodeParams.getProbability() == 0);
+    return WordAttributes(probability, false /* isBlacklisted */, ptNodeParams.isNotAWord(),
+            ptNodeParams.isPossiblyOffensive());
 }
 
 int PatriciaTriePolicy::getProbability(const int unigramProbability,
@@ -345,10 +344,9 @@ int PatriciaTriePolicy::getProbabilityOfWord(const WordIdArrayView prevWordIds,
     const int ptNodePos = getTerminalPtNodePosFromWordId(wordId);
     const PtNodeParams ptNodeParams =
             mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
-    if (ptNodeParams.isNotAWord() || ptNodeParams.isBlacklisted()) {
-        // If this is not a word, or if it's a blacklisted entry, it should behave as
-        // having no probability outside of the suggestion process (where it should be used
-        // for shortcuts).
+    if (ptNodeParams.isNotAWord()) {
+        // If this is not a word, it should behave as having no probability outside of the
+        // suggestion process (where it should be used for shortcuts).
         return NOT_A_PROBABILITY;
     }
     if (!prevWordIds.empty()) {

@@ -36,7 +36,8 @@ public class CombinedFormatUtils {
     public static final String WORD_TAG = "word";
     public static final String BEGINNING_OF_SENTENCE_TAG = "beginning_of_sentence";
     public static final String NOT_A_WORD_TAG = "not_a_word";
-    public static final String BLACKLISTED_TAG = "blacklisted";
+    public static final String POSSIBLY_OFFENSIVE_TAG = "possibly_offensive";
+    public static final String TRUE_VALUE = "true";
 
     public static String formatAttributeMap(final HashMap<String, String> attributeMap) {
         final StringBuilder builder = new StringBuilder();
@@ -61,13 +62,13 @@ public class CombinedFormatUtils {
         builder.append(",");
         builder.append(formatProbabilityInfo(wordProperty.mProbabilityInfo));
         if (wordProperty.mIsBeginningOfSentence) {
-            builder.append("," + BEGINNING_OF_SENTENCE_TAG + "=true");
+            builder.append("," + BEGINNING_OF_SENTENCE_TAG + "=" + TRUE_VALUE);
         }
         if (wordProperty.mIsNotAWord) {
-            builder.append("," + NOT_A_WORD_TAG + "=true");
+            builder.append("," + NOT_A_WORD_TAG + "=" + TRUE_VALUE);
         }
         if (wordProperty.mIsPossiblyOffensive) {
-            builder.append("," + BLACKLISTED_TAG + "=true");
+            builder.append("," + POSSIBLY_OFFENSIVE_TAG + "=" + TRUE_VALUE);
         }
         builder.append("\n");
         if (wordProperty.mHasShortcuts) {
@@ -110,5 +111,9 @@ public class CombinedFormatUtils {
             builder.append(probabilityInfo.mCount);
         }
         return builder.toString();
+    }
+
+    public static boolean isLiteralTrue(final String value) {
+        return TRUE_VALUE.equalsIgnoreCase(value);
     }
 }
