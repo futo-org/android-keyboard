@@ -39,6 +39,8 @@ import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.utils.CapsModeUtils;
+import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 
@@ -204,36 +206,54 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetKeyboard");
+        }
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetManualShiftedKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetManualShiftedKeyboard");
+        }
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetAutomaticShiftedKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetAutomaticShiftedKeyboard");
+        }
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetShiftLockedKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetShiftLockedKeyboard");
+        }
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetShiftLockShiftedKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetShiftLockShiftedKeyboard");
+        }
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setSymbolsKeyboard");
+        }
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS));
     }
 
@@ -247,6 +267,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setEmojiKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setEmojiKeyboard");
+        }
         final Keyboard keyboard = mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
         mMainKeyboardFrame.setVisibility(View.GONE);
         mEmojiPalettesView.startEmojiPalettes(
@@ -269,19 +292,29 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsShiftedKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setSymbolsShiftedKeyboard");
+        }
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS_SHIFTED));
     }
 
     // Future method for requesting an updating to the shift state.
     @Override
-    public void requestUpdatingShiftState(final int currentAutoCapsState,
-            final int currentRecapitalizeState) {
-        mState.onUpdateShiftState(currentAutoCapsState, currentRecapitalizeState);
+    public void requestUpdatingShiftState(final int autoCapsFlags, final int recapitalizeMode) {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "requestUpdatingShiftState: "
+                    + " autoCapsFlags=" + CapsModeUtils.flagsToString(autoCapsFlags)
+                    + " recapitalizeMode=" + RecapitalizeStatus.modeToString(recapitalizeMode));
+        }
+        mState.onUpdateShiftState(autoCapsFlags, recapitalizeMode);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void startDoubleTapShiftKeyTimer() {
+        if (DEBUG_TIMER_ACTION) {
+            Log.d(TAG, "startDoubleTapShiftKeyTimer");
+        }
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             keyboardView.startDoubleTapShiftKeyTimer();
@@ -291,6 +324,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void cancelDoubleTapShiftKeyTimer() {
+        if (DEBUG_TIMER_ACTION) {
+            Log.d(TAG, "setAlphabetKeyboard");
+        }
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             keyboardView.cancelDoubleTapShiftKeyTimer();
@@ -300,6 +336,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public boolean isInDoubleTapShiftKeyTimeout() {
+        if (DEBUG_TIMER_ACTION) {
+            Log.d(TAG, "isInDoubleTapShiftKeyTimeout");
+        }
         final MainKeyboardView keyboardView = getMainKeyboardView();
         return keyboardView != null && keyboardView.isInDoubleTapShiftKeyTimeout();
     }
