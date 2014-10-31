@@ -52,16 +52,14 @@ TEST(LanguageModelDictContentTest, TestUnigramProbabilityWithHistoricalInfo) {
 
     const int flag = 0xF0;
     const int timestamp = 0x3FFFFFFF;
-    const int level = 3;
     const int count = 10;
     const int wordId = 100;
-    const HistoricalInfo historicalInfo(timestamp, level, count);
+    const HistoricalInfo historicalInfo(timestamp, 0 /* level */, count);
     const ProbabilityEntry probabilityEntry(flag, &historicalInfo);
     languageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
     const ProbabilityEntry entry = languageModelDictContent.getProbabilityEntry(wordId);
     EXPECT_EQ(flag, entry.getFlags());
     EXPECT_EQ(timestamp, entry.getHistoricalInfo()->getTimestamp());
-    EXPECT_EQ(level, entry.getHistoricalInfo()->getLevel());
     EXPECT_EQ(count, entry.getHistoricalInfo()->getCount());
 
     // Remove

@@ -47,6 +47,7 @@ class Ver4DictConstants {
     static const int NOT_A_TERMINAL_ADDRESS;
     static const int TERMINAL_ID_FIELD_SIZE;
     static const int TIME_STAMP_FIELD_SIZE;
+    // TODO: Remove
     static const int WORD_LEVEL_FIELD_SIZE;
     static const int WORD_COUNT_FIELD_SIZE;
     // Flags in probability entry.
