@@ -819,12 +819,18 @@ public class BinaryDictEncoderUtils {
             final ArrayList<Entry<Integer, Integer>> codePointOccurrenceArray)
                     throws IOException, UnsupportedFormatException {
         final int version = formatOptions.mVersion;
-        if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
-                || version > FormatSpec.MAXIMUM_SUPPORTED_VERSION) {
+        if ((version >= FormatSpec.MINIMUM_SUPPORTED_STATIC_VERSION &&
+                version <= FormatSpec.MAXIMUM_SUPPORTED_STATIC_VERSION) || (
+                version >= FormatSpec.MINIMUM_SUPPORTED_DYNAMIC_VERSION &&
+                version <= FormatSpec.MAXIMUM_SUPPORTED_DYNAMIC_VERSION)) {
+            // Dictionary is valid
+        } else {
             throw new UnsupportedFormatException("Requested file format version " + version
-                    + ", but this implementation only supports versions "
-                    + FormatSpec.MINIMUM_SUPPORTED_VERSION + " through "
-                    + FormatSpec.MAXIMUM_SUPPORTED_VERSION);
+                    + ", but this implementation only supports static versions "
+                    + FormatSpec.MINIMUM_SUPPORTED_STATIC_VERSION + " through "
+                    + FormatSpec.MAXIMUM_SUPPORTED_STATIC_VERSION + " and dynamic versions "
+                    + FormatSpec.MINIMUM_SUPPORTED_DYNAMIC_VERSION + " through "
+                    + FormatSpec.MAXIMUM_SUPPORTED_DYNAMIC_VERSION);
         }
 
         ByteArrayOutputStream headerBuffer = new ByteArrayOutputStream(256);

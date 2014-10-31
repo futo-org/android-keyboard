@@ -178,8 +178,10 @@ public final class FormatSpec {
     public static final int VERSION401 = 401;
     public static final int VERSION4 = 402;
     public static final int VERSION4_DEV = 403;
-    static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
-    static final int MAXIMUM_SUPPORTED_VERSION = VERSION4_DEV;
+    static final int MINIMUM_SUPPORTED_STATIC_VERSION = VERSION202;
+    static final int MAXIMUM_SUPPORTED_STATIC_VERSION = VERSION202;
+    static final int MINIMUM_SUPPORTED_DYNAMIC_VERSION = VERSION4;
+    static final int MAXIMUM_SUPPORTED_DYNAMIC_VERSION = VERSION4_DEV;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
