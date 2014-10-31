@@ -50,7 +50,8 @@ const ProbabilityEntry ProbabilityDictContent::getProbabilityEntry(const int ter
                 Ver4DictConstants::WORD_LEVEL_FIELD_SIZE, &entryPos);
         const int count = buffer->readUintAndAdvancePosition(
                 Ver4DictConstants::WORD_COUNT_FIELD_SIZE, &entryPos);
-        const HistoricalInfo historicalInfo(timestamp, level, count);
+        // Hack for better migration.
+        const HistoricalInfo historicalInfo(timestamp, level, count + level);
         return ProbabilityEntry(flags, probability, &historicalInfo);
     } else {
         return ProbabilityEntry(flags, probability);
