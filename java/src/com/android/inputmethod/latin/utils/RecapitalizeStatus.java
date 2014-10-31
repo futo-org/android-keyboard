@@ -51,6 +51,17 @@ public class RecapitalizeStatus {
         }
     }
 
+    public static String modeToString(final int recapitalizeMode) {
+        switch (recapitalizeMode) {
+        case NOT_A_RECAPITALIZE_MODE: return "undefined";
+        case CAPS_MODE_ORIGINAL_MIXED_CASE: return "mixedCase";
+        case CAPS_MODE_ALL_LOWER: return "allLower";
+        case CAPS_MODE_FIRST_WORD_UPPER: return "firstWordUpper";
+        case CAPS_MODE_ALL_UPPER: return "allUpper";
+        default: return "unknown<" + recapitalizeMode + ">";
+        }
+    }
+
     /**
      * We store the location of the cursor and the string that was there before the recapitalize
      * action was done, and the location of the cursor and the string that was there after.

@@ -24,6 +24,7 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public final class CapsModeUtils {
@@ -325,5 +326,32 @@ public final class CapsModeUtils {
         }
         // Here we arrived at the start of the line. This should behave exactly like whitespace.
         return (START == state || LETTER == state) ? noCaps : caps;
+    }
+
+    /**
+     * Convert capitalize mode flags into human readable text.
+     *
+     * @param capsFlags The modes flags to be converted. It may be any combination of
+     * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
+     * {@link TextUtils#CAP_MODE_SENTENCES}.
+     * @return the text that describe the <code>capsMode</code>.
+     */
+    public static String flagsToString(final int capsFlags) {
+        final int capsFlagsMask = TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
+                | TextUtils.CAP_MODE_SENTENCES;
+        if ((capsFlags & ~capsFlagsMask) != 0) {
+            return "unknown<0x" + Integer.toHexString(capsFlags) + ">";
+        }
+        final ArrayList<String> builder = new ArrayList<>();
+        if ((capsFlags & android.text.TextUtils.CAP_MODE_CHARACTERS) != 0) {
+            builder.add("characters");
+        }
+        if ((capsFlags & android.text.TextUtils.CAP_MODE_WORDS) != 0) {
+            builder.add("words");
+        }
+        if ((capsFlags & android.text.TextUtils.CAP_MODE_SENTENCES) != 0) {
+            builder.add("sentences");
+        }
+        return builder.isEmpty() ? "none" : TextUtils.join("|", builder);
     }
 }
