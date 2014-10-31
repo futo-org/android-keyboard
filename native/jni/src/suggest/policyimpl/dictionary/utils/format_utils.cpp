@@ -28,9 +28,11 @@ const size_t FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
 /* static */ FormatUtils::FORMAT_VERSION FormatUtils::getFormatVersion(const int formatVersion) {
     switch (formatVersion) {
         case VERSION_2:
-            return VERSION_2;
         case VERSION_201:
-            return VERSION_201;
+            AKLOGE("Dictionary versions 2 and 201 are incompatible with this version");
+            return UNKNOWN_VERSION;
+        case VERSION_202:
+            return VERSION_202;
         case VERSION_4_ONLY_FOR_TESTING:
             return VERSION_4_ONLY_FOR_TESTING;
         case VERSION_4:
