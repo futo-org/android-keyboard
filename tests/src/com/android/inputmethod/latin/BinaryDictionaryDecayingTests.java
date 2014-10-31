@@ -59,6 +59,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         super.setUp();
         mCurrentTime = 0;
         mDictFilesToBeDeleted.clear();
+        setCurrentTimeForTestMode(mCurrentTime);
     }
 
     @Override
@@ -71,8 +72,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         super.tearDown();
     }
 
-    private static boolean supportsBeginningOfSentence(final int formatVersion) {
-        return formatVersion > FormatSpec.VERSION401;
+    private static boolean supportsCountBasedNgram(final int formatVersion) {
+        return formatVersion >= FormatSpec.VERSION4_DEV;
     }
 
     private static boolean supportsNgram(final int formatVersion) {
@@ -142,19 +143,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private File createEmptyDictionaryWithAttributeMapAndGetFile(final int formatVersion,
             final HashMap<String, String> attributeMap) {
-        if (formatVersion == FormatSpec.VERSION4
-                || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING
-                || formatVersion == FormatSpec.VERSION4_DEV) {
-            try {
-                final File dictFile = createEmptyVer4DictionaryAndGetFile(formatVersion,
-                        attributeMap);
-                mDictFilesToBeDeleted.add(dictFile);
-                return dictFile;
-            } catch (final IOException e) {
-                fail(e.toString());
-            }
-        } else {
-            fail("Dictionary format version " + formatVersion + " is not supported.");
+        try {
+            final File dictFile = createEmptyVer4DictionaryAndGetFile(formatVersion,
+                    attributeMap);
+            mDictFilesToBeDeleted.add(dictFile);
+            return dictFile;
+        } catch (final IOException e) {
+            fail(e.toString());
         }
         return null;
     }
@@ -263,12 +258,10 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         onInputWord(binaryDictionary, "a", false /* isValidWord */);
         assertTrue(binaryDictionary.isValidWord("a"));
 
-        onInputWord(binaryDictionary, "b", true /* isValidWord */);
-        assertTrue(binaryDictionary.isValidWord("b"));
-
         onInputWordWithPrevWord(binaryDictionary, "b", false /* isValidWord */, "a");
         assertFalse(isValidBigram(binaryDictionary, "a", "b"));
         onInputWordWithPrevWord(binaryDictionary, "b", false /* isValidWord */, "a");
+        assertTrue(binaryDictionary.isValidWord("b"));
         assertTrue(isValidBigram(binaryDictionary, "a", "b"));
 
         onInputWordWithPrevWord(binaryDictionary, "c", true /* isValidWord */, "a");
@@ -284,16 +277,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             return;
         }
 
-        onInputWordWithPrevWords(binaryDictionary, "c", false /* isValidWord */, "b", "a");
-        assertFalse(isValidTrigram(binaryDictionary, "a", "b", "c"));
-        assertFalse(isValidBigram(binaryDictionary, "b", "c"));
-        onInputWordWithPrevWords(binaryDictionary, "c", false /* isValidWord */, "b", "a");
+        onInputWordWithPrevWords(binaryDictionary, "c", true /* isValidWord */, "b", "a");
         assertTrue(isValidTrigram(binaryDictionary, "a", "b", "c"));
         assertTrue(isValidBigram(binaryDictionary, "b", "c"));
-
-        onInputWordWithPrevWords(binaryDictionary, "d", true /* isValidWord */, "b", "a");
-        assertTrue(isValidTrigram(binaryDictionary, "a", "b", "d"));
-        assertTrue(isValidBigram(binaryDictionary, "b", "d"));
+        onInputWordWithPrevWords(binaryDictionary, "d", false /* isValidWord */, "c", "b");
+        assertFalse(isValidTrigram(binaryDictionary, "b", "c", "d"));
+        assertFalse(isValidBigram(binaryDictionary, "c", "d"));
 
         onInputWordWithPrevWords(binaryDictionary, "cd", true /* isValidWord */, "b", "a");
         assertTrue(isValidTrigram(binaryDictionary, "a", "b", "cd"));
@@ -312,6 +301,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         onInputWord(binaryDictionary, "a", true /* isValidWord */);
         assertTrue(binaryDictionary.isValidWord("a"));
         forcePassingShortTime(binaryDictionary);
+        if (supportsCountBasedNgram(formatVersion)) {
+            // Count based ngram language model doesn't support decaying based on the elapsed time.
+            assertTrue(binaryDictionary.isValidWord("a"));
+        } else {
+            assertFalse(binaryDictionary.isValidWord("a"));
+        }
+        forcePassingLongTime(binaryDictionary);
         assertFalse(binaryDictionary.isValidWord("a"));
 
         onInputWord(binaryDictionary, "a", true /* isValidWord */);
@@ -327,6 +323,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         onInputWordWithPrevWord(binaryDictionary, "b", true /* isValidWord */, "a");
         assertTrue(isValidBigram(binaryDictionary, "a", "b"));
         forcePassingShortTime(binaryDictionary);
+        if (supportsCountBasedNgram(formatVersion)) {
+            assertTrue(isValidBigram(binaryDictionary, "a", "b"));
+        } else {
+            assertFalse(isValidBigram(binaryDictionary, "a", "b"));
+        }
+        forcePassingLongTime(binaryDictionary);
         assertFalse(isValidBigram(binaryDictionary, "a", "b"));
 
         onInputWord(binaryDictionary, "a", true /* isValidWord */);
@@ -349,7 +351,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         onInputWordWithPrevWord(binaryDictionary, "bc", true /* isValidWord */, "ab");
         onInputWordWithPrevWords(binaryDictionary, "cd", true /* isValidWord */, "bc", "ab");
         assertTrue(isValidTrigram(binaryDictionary, "ab", "bc", "cd"));
-        forcePassingShortTime(binaryDictionary);
+        forcePassingLongTime(binaryDictionary);
         assertFalse(isValidTrigram(binaryDictionary, "ab", "bc", "cd"));
 
         onInputWord(binaryDictionary, "ab", true /* isValidWord */);
@@ -540,7 +542,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 assertTrue(bigramCountBeforeGC > bigramCountAfterGC);
             }
         }
-
+        forcePassingShortTime(binaryDictionary);
         assertTrue(Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)) > 0);
         assertTrue(Integer.parseInt(binaryDictionary.getPropertyForGettingStats(
@@ -666,14 +668,17 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertEquals(toFormatVersion, binaryDictionary.getFormatVersion());
         assertTrue(binaryDictionary.isValidWord("aaa"));
         assertFalse(binaryDictionary.isValidWord("bbb"));
-        assertTrue(binaryDictionary.getFrequency("aaa") < binaryDictionary.getFrequency("ccc"));
-        onInputWord(binaryDictionary, "bbb", false /* isValidWord */);
-        assertTrue(binaryDictionary.isValidWord("bbb"));
+        if (supportsCountBasedNgram(toFormatVersion)) {
+            assertTrue(binaryDictionary.getFrequency("aaa") < binaryDictionary.getFrequency("ccc"));
+            onInputWord(binaryDictionary, "bbb", false /* isValidWord */);
+            assertTrue(binaryDictionary.isValidWord("bbb"));
+        }
         assertTrue(isValidBigram(binaryDictionary, "aaa", "abc"));
         assertFalse(isValidBigram(binaryDictionary, "aaa", "bbb"));
-        onInputWordWithPrevWord(binaryDictionary, "bbb", false /* isValidWord */, "aaa");
-        assertTrue(isValidBigram(binaryDictionary, "aaa", "bbb"));
-
+        if (supportsCountBasedNgram(toFormatVersion)) {
+            onInputWordWithPrevWord(binaryDictionary, "bbb", false /* isValidWord */, "aaa");
+            assertTrue(isValidBigram(binaryDictionary, "aaa", "bbb"));
+        }
         if (supportsNgram(toFormatVersion)) {
             assertTrue(isValidTrigram(binaryDictionary, "aaa", "abc", "xyz"));
             assertFalse(isValidTrigram(binaryDictionary, "aaa", "abc", "def"));
@@ -686,9 +691,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     public void testBeginningOfSentence() {
         for (final int formatVersion : DICT_FORMAT_VERSIONS) {
-            if (supportsBeginningOfSentence(formatVersion)) {
-                testBeginningOfSentence(formatVersion);
-            }
+            testBeginningOfSentence(formatVersion);
         }
     }
 
@@ -716,10 +719,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
-        assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "aaa", true /* isValidWord */);
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
-        assertFalse(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));
         onInputWordWithBeginningOfSentenceContext(binaryDictionary, "bbb", true /* isValidWord */);
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "aaa"));
         assertTrue(binaryDictionary.isValidNgram(beginningOfSentenceContext, "bbb"));

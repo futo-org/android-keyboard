@@ -151,13 +151,14 @@ class LanguageModelDictContent {
             const LanguageModelDictContent *const originalContent);
 
     const WordAttributes getWordAttributes(const WordIdArrayView prevWordIds, const int wordId,
-            const HeaderPolicy *const headerPolicy) const;
+            const bool mustMatchAllPrevWords, const HeaderPolicy *const headerPolicy) const;
 
     ProbabilityEntry getProbabilityEntry(const int wordId) const {
         return getNgramProbabilityEntry(WordIdArrayView(), wordId);
     }
 
     bool setProbabilityEntry(const int wordId, const ProbabilityEntry *const probabilityEntry) {
+        mGlobalCounters.addToTotalCount(probabilityEntry->getHistoricalInfo()->getCount());
         return setNgramProbabilityEntry(WordIdArrayView(), wordId, probabilityEntry);
     }
 
@@ -180,8 +181,15 @@ class LanguageModelDictContent {
 
     bool updateAllProbabilityEntriesForGC(const HeaderPolicy *const headerPolicy,
             MutableEntryCounters *const outEntryCounters) {
-        return updateAllProbabilityEntriesForGCInner(mTrieMap.getRootBitmapEntryIndex(),
-                0 /* prevWordCount */, headerPolicy, outEntryCounters);
+        if (!updateAllProbabilityEntriesForGCInner(mTrieMap.getRootBitmapEntryIndex(),
+                0 /* prevWordCount */, headerPolicy, mGlobalCounters.needsToHalveCounters(),
+                outEntryCounters)) {
+            return false;
+        }
+        if (mGlobalCounters.needsToHalveCounters()) {
+            mGlobalCounters.halveCounters();
+        }
+        return true;
     }
 
     // entryCounts should be created by updateAllProbabilityEntries.
@@ -206,11 +214,12 @@ class LanguageModelDictContent {
             DISALLOW_ASSIGNMENT_OPERATOR(Comparator);
         };
 
-        EntryInfoToTurncate(const int probability, const int timestamp, const int key,
+        EntryInfoToTurncate(const int priority, const int count, const int key,
                 const int prevWordCount, const int *const prevWordIds);
 
-        int mProbability;
-        int mTimestamp;
+        int mPriority;
+        // TODO: Remove.
+        int mCount;
         int mKey;
         int mPrevWordCount;
         int mPrevWordIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
@@ -219,8 +228,6 @@ class LanguageModelDictContent {
         DISALLOW_DEFAULT_CONSTRUCTOR(EntryInfoToTurncate);
     };
 
-    // TODO: Remove
-    static const int DUMMY_PROBABILITY_FOR_VALID_WORDS;
     static const int TRIE_MAP_BUFFER_INDEX;
     static const int GLOBAL_COUNTERS_BUFFER_INDEX;
 
@@ -233,7 +240,8 @@ class LanguageModelDictContent {
     int createAndGetBitmapEntryIndex(const WordIdArrayView prevWordIds);
     int getBitmapEntryIndex(const WordIdArrayView prevWordIds) const;
     bool updateAllProbabilityEntriesForGCInner(const int bitmapEntryIndex, const int prevWordCount,
-            const HeaderPolicy *const headerPolicy, MutableEntryCounters *const outEntryCounters);
+            const HeaderPolicy *const headerPolicy, const bool needsToHalveCounters,
+            MutableEntryCounters *const outEntryCounters);
     bool turncateEntriesInSpecifiedLevel(const HeaderPolicy *const headerPolicy,
             const int maxEntryCount, const int targetLevel, int *const outEntryCount);
     bool getEntryInfo(const HeaderPolicy *const headerPolicy, const int targetLevel,

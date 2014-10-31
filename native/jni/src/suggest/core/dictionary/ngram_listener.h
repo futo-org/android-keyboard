@@ -26,6 +26,8 @@ namespace latinime {
  */
 class NgramListener {
  public:
+    // ngramProbability is always 0 for v403 decaying dictionary.
+    // TODO: Remove ngramProbability.
     virtual void onVisitEntry(const int ngramProbability, const int targetWordId) = 0;
     virtual ~NgramListener() {};
 

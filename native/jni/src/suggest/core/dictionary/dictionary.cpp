@@ -81,6 +81,9 @@ void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbabi
     }
     const WordAttributes wordAttributes = mDictStructurePolicy->getWordAttributesInContext(
             mPrevWordIds, targetWordId, nullptr /* multiBigramMap */);
+    if (wordAttributes.getProbability() == NOT_A_PROBABILITY) {
+        return;
+    }
     mSuggestionResults->addPrediction(targetWordCodePoints, codePointCount,
             wordAttributes.getProbability());
 }
