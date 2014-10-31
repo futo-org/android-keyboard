@@ -65,6 +65,8 @@ const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
             (encodedTargetTerminalId == Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID) ?
                     Ver4DictConstants::NOT_A_TERMINAL_ID : encodedTargetTerminalId;
     if (mHasHistoricalInfo) {
+        // Hack for better migration.
+        count += level;
         const HistoricalInfo historicalInfo(timestamp, level, count);
         return BigramEntry(hasNext, probability, &historicalInfo, targetTerminalId);
     } else {
