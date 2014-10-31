@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.dicttool;
 
 public class CommandList {
     public static void populate() {
+        // TODO: Move some commands to native code.
         Dicttool.addCommand("info", Info.class);
         Dicttool.addCommand("diff", Diff.class);
         Dicttool.addCommand("compress", Compress.Compressor.class);
