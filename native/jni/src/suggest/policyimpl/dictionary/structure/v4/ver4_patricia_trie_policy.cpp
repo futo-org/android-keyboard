@@ -146,8 +146,16 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordI
             if (!probabilityEntry.isValid()) {
                 continue;
             }
-            const int probability = probabilityEntry.hasHistoricalInfo() ?
-                    0 : probabilityEntry.getProbability();
+            int probability = NOT_A_PROBABILITY;
+            if (probabilityEntry.hasHistoricalInfo()) {
+                // TODO: Quit checking count here.
+                // If count <= 1, the word can be an invaild word. The actual probability should
+                // be checked using getWordAttributesInContext() in onVisitEntry().
+                probability = probabilityEntry.getHistoricalInfo()->getCount() <= 1 ?
+                        NOT_A_PROBABILITY : 0;
+            } else {
+                probability = probabilityEntry.getProbability();
+            }
             listener->onVisitEntry(probability, entry.getWordId());
         }
     }
