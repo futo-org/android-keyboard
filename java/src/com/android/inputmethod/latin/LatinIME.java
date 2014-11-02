@@ -1489,11 +1489,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     /**
-     * To be called after the InputLogic has gotten a chance to act on the on-device decoding
-     * for the full gesture, possibly updating the TextView to reflect the first decoding.
+     * To be called after the InputLogic has gotten a chance to act on the suggested words by the
+     * IME for the full gesture, possibly updating the TextView to reflect the first suggestion.
      * <p>
      * This method must be run on the UI Thread.
-     * @param suggestedWords On-device decoding for the full gesture.
+     * @param suggestedWords suggested words by the IME for the full gesture.
      */
     public void onTailBatchInputResultShown(final SuggestedWords suggestedWords) {
         mGestureConsumer.onImeSuggestionsProcessed(suggestedWords,
