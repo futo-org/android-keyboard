@@ -16,15 +16,20 @@
 
 package com.android.inputmethod.latin.common;
 
+import javax.annotation.Nonnull;
+
 /**
  * An immutable class that encapsulates a snapshot of word composition data.
  */
 public class ComposedData {
+    @Nonnull
     public final InputPointers mInputPointers;
     public final boolean mIsBatchMode;
+    @Nonnull
     public final String mTypedWord;
-    public ComposedData(final InputPointers inputPointers, final boolean isBatchMode,
-            final String typedWord) {
+
+    public ComposedData(@Nonnull final InputPointers inputPointers, final boolean isBatchMode,
+            @Nonnull final String typedWord) {
         mInputPointers = inputPointers;
         mIsBatchMode = isBatchMode;
         mTypedWord = typedWord;
@@ -40,7 +45,7 @@ public class ComposedData {
      * @return the number of copied code points.
      */
     public int copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
-            final int[] destination) {
+            @Nonnull final int[] destination) {
         // lastIndex is exclusive
         final int lastIndex = mTypedWord.length()
                 - StringUtils.getTrailingSingleQuotesCount(mTypedWord);

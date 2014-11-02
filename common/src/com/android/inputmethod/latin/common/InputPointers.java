@@ -18,6 +18,8 @@ package com.android.inputmethod.latin.common;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 
+import javax.annotation.Nonnull;
+
 // TODO: This class is not thread-safe.
 public final class InputPointers {
     private static final boolean DEBUG_TIME = false;
@@ -28,7 +30,7 @@ public final class InputPointers {
     private final ResizableIntArray mPointerIds;
     private final ResizableIntArray mTimes;
 
-    public InputPointers(int defaultCapacity) {
+    public InputPointers(final int defaultCapacity) {
         mDefaultCapacity = defaultCapacity;
         mXCoordinates = new ResizableIntArray(defaultCapacity);
         mYCoordinates = new ResizableIntArray(defaultCapacity);
@@ -51,7 +53,8 @@ public final class InputPointers {
         mTimes.fill(lastTime, fromIndex, fillLength);
     }
 
-    public void addPointerAt(int index, int x, int y, int pointerId, int time) {
+    public void addPointerAt(final int index, final int x, final int y, final int pointerId,
+            final int time) {
         mXCoordinates.addAt(index, x);
         mYCoordinates.addAt(index, y);
         mPointerIds.addAt(index, pointerId);
@@ -62,21 +65,21 @@ public final class InputPointers {
     }
 
     @UsedForTesting
-    public void addPointer(int x, int y, int pointerId, int time) {
+    public void addPointer(final int x, final int y, final int pointerId, final int time) {
         mXCoordinates.add(x);
         mYCoordinates.add(y);
         mPointerIds.add(pointerId);
         mTimes.add(time);
     }
 
-    public void set(InputPointers ip) {
+    public void set(@Nonnull final InputPointers ip) {
         mXCoordinates.set(ip.mXCoordinates);
         mYCoordinates.set(ip.mYCoordinates);
         mPointerIds.set(ip.mPointerIds);
         mTimes.set(ip.mTimes);
     }
 
-    public void copy(InputPointers ip) {
+    public void copy(@Nonnull final InputPointers ip) {
         mXCoordinates.copy(ip.mXCoordinates);
         mYCoordinates.copy(ip.mYCoordinates);
         mPointerIds.copy(ip.mPointerIds);
@@ -93,8 +96,9 @@ public final class InputPointers {
      * @param startPos the starting index of the data in {@code times} and etc.
      * @param length the number of data to be appended.
      */
-    public void append(int pointerId, ResizableIntArray times, ResizableIntArray xCoordinates,
-            ResizableIntArray yCoordinates, int startPos, int length) {
+    public void append(final int pointerId, @Nonnull final ResizableIntArray times,
+            @Nonnull final ResizableIntArray xCoordinates,
+            @Nonnull final ResizableIntArray yCoordinates, final int startPos, final int length) {
         if (length == 0) {
             return;
         }
@@ -127,14 +131,17 @@ public final class InputPointers {
         return mXCoordinates.getLength();
     }
 
+    @Nonnull
     public int[] getXCoordinates() {
         return mXCoordinates.getPrimitiveArray();
     }
 
+    @Nonnull
     public int[] getYCoordinates() {
         return mYCoordinates.getPrimitiveArray();
     }
 
+    @Nonnull
     public int[] getPointerIds() {
         return mPointerIds.getPrimitiveArray();
     }
@@ -145,6 +152,7 @@ public final class InputPointers {
      * @return The time each point was registered, in milliseconds, relative to the first event in
      * the sequence.
      */
+    @Nonnull
     public int[] getTimes() {
         return mTimes.getPrimitiveArray();
     }
