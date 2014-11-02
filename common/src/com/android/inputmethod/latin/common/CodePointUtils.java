@@ -20,6 +20,8 @@ import com.android.inputmethod.annotations.UsedForTesting;
 
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 // Utility methods related with code points used for tests.
 // TODO: Figure out where this class should be.
 @UsedForTesting
@@ -65,17 +67,23 @@ public class CodePointUtils {
     };
 
     @UsedForTesting
-    public static int[] generateCodePointSet(final int codePointSetSize, final Random random) {
+    @Nonnull
+    public static int[] generateCodePointSet(final int codePointSetSize,
+            @Nonnull final Random random) {
         final int[] codePointSet = new int[codePointSetSize];
         for (int i = codePointSet.length - 1; i >= 0; ) {
             final int r = Math.abs(random.nextInt());
-            if (r < 0) continue;
+            if (r < 0) {
+                continue;
+            }
             // Don't insert 0~0x20, but insert any other code point.
             // Code points are in the range 0~0x10FFFF.
             final int candidateCodePoint = 0x20 + r % (Character.MAX_CODE_POINT - 0x20);
             // Code points between MIN_ and MAX_SURROGATE are not valid on their own.
             if (candidateCodePoint >= Character.MIN_SURROGATE
-                    && candidateCodePoint <= Character.MAX_SURROGATE) continue;
+                    && candidateCodePoint <= Character.MAX_SURROGATE) {
+                continue;
+            }
             codePointSet[i] = candidateCodePoint;
             --i;
         }
@@ -86,8 +94,10 @@ public class CodePointUtils {
      * Generates a random word.
      */
     @UsedForTesting
-    public static String generateWord(final Random random, final int[] codePointSet) {
-        StringBuilder builder = new StringBuilder();
+    @Nonnull
+    public static String generateWord(@Nonnull final Random random,
+            @Nonnull final int[] codePointSet) {
+        final StringBuilder builder = new StringBuilder();
         // 8 * 4 = 32 chars max, but we do it the following way so as to bias the random toward
         // longer words. This should be closer to natural language, and more importantly, it will
         // exercise the algorithms in dicttool much more.
