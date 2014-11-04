@@ -44,7 +44,6 @@
     <key-style
         latin:styleName="num0KeyStyle"
         latin:keySpec="0"
-        latin:keyHintLabel="+"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num1KeyStyle"
@@ -107,12 +106,12 @@
     <key-style
         latin:styleName="numPauseKeyStyle"
         latin:keySpec="!text/label_pause_key|,"
-        latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
+        latin:keyLabelFlags="followKeyLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numWaitKeyStyle"
         latin:keySpec="!text/label_wait_key|;"
-        latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
+        latin:keyLabelFlags="followKeyLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numTabKeyStyle"
