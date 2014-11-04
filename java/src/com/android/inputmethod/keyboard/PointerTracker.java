@@ -25,11 +25,13 @@ import android.view.MotionEvent;
 import com.android.inputmethod.keyboard.internal.BatchInputArbiter;
 import com.android.inputmethod.keyboard.internal.BatchInputArbiter.BatchInputArbiterListener;
 import com.android.inputmethod.keyboard.internal.BogusMoveEventDetector;
+import com.android.inputmethod.keyboard.internal.DrawingProxy;
 import com.android.inputmethod.keyboard.internal.GestureEnabler;
 import com.android.inputmethod.keyboard.internal.GestureStrokeDrawingParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeDrawingPoints;
 import com.android.inputmethod.keyboard.internal.GestureStrokeRecognitionParams;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
+import com.android.inputmethod.keyboard.internal.TimerProxy;
 import com.android.inputmethod.keyboard.internal.TypingTimeRecorder;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.Constants;
@@ -51,66 +53,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static final boolean DEBUG_MOVE_EVENT = false;
     private static final boolean DEBUG_LISTENER = false;
     private static boolean DEBUG_MODE = DebugFlags.DEBUG_ENABLED || DEBUG_EVENT;
-
-    public interface DrawingProxy {
-        public void invalidateKey(@Nullable Key key);
-        public void showKeyPreview(@Nonnull Key key);
-        public void dismissKeyPreview(@Nonnull Key key);
-        public void dismissKeyPreviewWithoutDelay(@Nonnull Key key);
-        public void onLongPress(@Nonnull PointerTracker tracker);
-        public static final int FADE_IN = 0;
-        public static final int FADE_OUT = 1;
-        public void startWhileTypingAnimation(final int fadeInOrOut);
-        public void showSlidingKeyInputPreview(@Nullable PointerTracker tracker);
-        public void showGestureTrail(@Nonnull PointerTracker tracker,
-                boolean showsFloatingPreviewText);
-        public void dismissGestureFloatingPreviewTextWithoutDelay();
-    }
-
-    public interface TimerProxy {
-        public void startTypingStateTimer(Key typedKey);
-        public boolean isTypingState();
-        public void startKeyRepeatTimerOf(PointerTracker tracker, int repeatCount, int delay);
-        public void startLongPressTimerOf(PointerTracker tracker, int delay);
-        public void cancelLongPressTimerOf(PointerTracker tracker);
-        public void cancelLongPressShiftKeyTimers();
-        public void cancelKeyTimersOf(PointerTracker tracker);
-        public void startDoubleTapShiftKeyTimer();
-        public void cancelDoubleTapShiftKeyTimer();
-        public boolean isInDoubleTapShiftKeyTimeout();
-        public void startUpdateBatchInputTimer(PointerTracker tracker);
-        public void cancelUpdateBatchInputTimer(PointerTracker tracker);
-        public void cancelAllUpdateBatchInputTimers();
-
-        public static class Adapter implements TimerProxy {
-            @Override
-            public void startTypingStateTimer(Key typedKey) {}
-            @Override
-            public boolean isTypingState() { return false; }
-            @Override
-            public void startKeyRepeatTimerOf(PointerTracker tracker, int repeatCount, int delay) {}
-            @Override
-            public void startLongPressTimerOf(PointerTracker tracker, int delay) {}
-            @Override
-            public void cancelLongPressTimerOf(PointerTracker tracker) {}
-            @Override
-            public void cancelLongPressShiftKeyTimers() {}
-            @Override
-            public void cancelKeyTimersOf(PointerTracker tracker) {}
-            @Override
-            public void startDoubleTapShiftKeyTimer() {}
-            @Override
-            public void cancelDoubleTapShiftKeyTimer() {}
-            @Override
-            public boolean isInDoubleTapShiftKeyTimeout() { return false; }
-            @Override
-            public void startUpdateBatchInputTimer(PointerTracker tracker) {}
-            @Override
-            public void cancelUpdateBatchInputTimer(PointerTracker tracker) {}
-            @Override
-            public void cancelAllUpdateBatchInputTimers() {}
-        }
-    }
 
     static final class PointerTrackerParams {
         public final boolean mKeySelectionByDraggingFinger;
@@ -586,7 +528,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
         sListener.onStartBatchInput();
         dismissAllMoreKeysPanels();
-        sTimerProxy.cancelLongPressTimerOf(this);
+        sTimerProxy.cancelLongPressTimersOf(this);
     }
 
     private void showGestureTrail() {
@@ -1094,7 +1036,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     public void cancelLongPressTimer() {
-        sTimerProxy.cancelLongPressTimerOf(this);
+        sTimerProxy.cancelLongPressTimersOf(this);
     }
 
     public void onLongPressed() {
@@ -1163,7 +1105,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private void startLongPressTimer(final Key key) {
         // Note that we need to cancel all active long press shift key timers if any whenever we
         // start a new long press timer for both non-shift and shift keys.
-        sTimerProxy.cancelLongPressShiftKeyTimers();
+        sTimerProxy.cancelLongPressShiftKeyTimer();
         if (sInGesture) return;
         if (key == null) return;
         if (!key.isLongPressEnabled()) return;

@@ -39,8 +39,8 @@ import android.view.ViewGroup;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
 import com.android.inputmethod.annotations.ExternallyReferenced;
-import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
+import com.android.inputmethod.keyboard.internal.DrawingProxy;
 import com.android.inputmethod.keyboard.internal.GestureFloatingTextDrawingPreview;
 import com.android.inputmethod.keyboard.internal.GestureTrailsDrawingPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
@@ -110,7 +110,7 @@ import javax.annotation.Nullable;
  * @attr ref R.styleable#MainKeyboardView_gestureRecognitionSpeedThreshold
  * @attr ref R.styleable#MainKeyboardView_suppressKeyPreviewAfterBatchInputDuration
  */
-public final class MainKeyboardView extends KeyboardView implements PointerTracker.DrawingProxy,
+public final class MainKeyboardView extends KeyboardView implements DrawingProxy,
         MoreKeysPanel.Controller {
     private static final String TAG = MainKeyboardView.class.getSimpleName();
 
