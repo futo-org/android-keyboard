@@ -33,9 +33,7 @@
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio|followFunctionalTextColor"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
-        latin:styleName="numFunctionalKeyStyle"
-        latin:keyLabelFlags="followKeyLargeLetterRatio"
-        latin:backgroundType="functional"
+        latin:styleName="numSymbolKeyStyle"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numberKeyStyle"
@@ -89,11 +87,6 @@
         latin:keySpec="9"
         latin:keyHintLabel="WXYZ"
         latin:parentStyle="numberKeyStyle" />
-    <!-- U+FF0A: "＊" FULLWIDTH ASTERISK -->
-    <key-style
-        latin:styleName="numStarKeyStyle"
-        latin:keySpec="&#xFF0A;|*"
-        latin:parentStyle="numKeyStyle" />
     <!-- Only for non-tablet device -->
     <key-style
         latin:styleName="numPhoneToSymbolKeyStyle"
@@ -103,16 +96,6 @@
         latin:styleName="numPhoneToNumericKeyStyle"
         latin:keySpec="!text/keylabel_to_phone_numeric|!code/key_switch_alpha_symbol"
         latin:parentStyle="numModeKeyStyle" />
-    <key-style
-        latin:styleName="numPauseKeyStyle"
-        latin:keySpec="!text/label_pause_key|,"
-        latin:keyLabelFlags="followKeyLabelRatio|autoXScale"
-        latin:parentStyle="numKeyBaseStyle" />
-    <key-style
-        latin:styleName="numWaitKeyStyle"
-        latin:keySpec="!text/label_wait_key|;"
-        latin:keyLabelFlags="followKeyLabelRatio|autoXScale"
-        latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numTabKeyStyle"
         latin:keyActionFlags="noKeyPreview"

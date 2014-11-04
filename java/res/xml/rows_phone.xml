@@ -36,7 +36,8 @@
             latin:keySpec="-"
             latin:moreKeys="+"
             latin:keyLabelFlags="hasPopupHint"
-            latin:keyStyle="numFunctionalKeyStyle"
+            latin:keyStyle="numKeyStyle"
+            latin:backgroundType="functional"
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
@@ -48,7 +49,8 @@
             latin:keyStyle="num6KeyStyle" />
         <Key
             latin:keySpec="."
-            latin:keyStyle="numFunctionalKeyStyle"
+            latin:keyStyle="numKeyStyle"
+            latin:backgroundType="functional"
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
