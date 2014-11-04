@@ -113,7 +113,8 @@
             latin:keyStyle="numStarKeyStyle"
             latin:keyXPos="31%p" />
         <Key
-            latin:keyStyle="num0KeyStyle" />
+            latin:keyStyle="num0KeyStyle"
+            latin:keyHintLabel="+" />
         <Key
             latin:keySpec="\#"
             latin:keyStyle="numKeyStyle" />
