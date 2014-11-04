@@ -24,17 +24,17 @@
     <Row>
         <Key
             latin:keySpec="-"
-            latin:keyStyle="numKeyStyle"
+            latin:keyStyle="numSymbolKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
             latin:keySpec="+"
-            latin:keyStyle="numKeyStyle"
+            latin:keyStyle="numSymbolKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
             latin:keySpec="."
-            latin:keyStyle="numKeyStyle"
+            latin:keyStyle="numSymbolKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
@@ -53,13 +53,15 @@
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
+        <!-- U+FF0A: "＊" FULLWIDTH ASTERISK -->
         <Key
-            latin:keyStyle="numStarKeyStyle"
+            latin:keySpec="&#xFF0A;|*"
+            latin:keyStyle="numSymbolKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
             latin:keySpec="/"
-            latin:keyStyle="numKeyStyle"
+            latin:keyStyle="numSymbolKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <switch>
@@ -70,14 +72,14 @@
                     latin:keySpec=","
                     latin:keyLabelFlags="hasPopupHint"
                     latin:moreKeys="!text/morekeys_am_pm"
-                    latin:keyStyle="numKeyStyle"
+                    latin:keyStyle="numSymbolKeyStyle"
                     latin:keyWidth="10%p"
                     latin:backgroundType="functional" />
             </case>
             <default>
                 <Key
                     latin:keySpec=","
-                    latin:keyStyle="numKeyStyle"
+                    latin:keyStyle="numSymbolKeyStyle"
                     latin:keyWidth="10%p"
                     latin:backgroundType="functional" />
             </default>
@@ -100,12 +102,12 @@
     <Row>
         <Key
             latin:keySpec="("
-            latin:keyStyle="numKeyStyle"
+            latin:keyStyle="numSymbolKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
             latin:keySpec=")"
-            latin:keyStyle="numKeyStyle"
+            latin:keyStyle="numSymbolKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <switch>
@@ -114,14 +116,14 @@
             >
                 <Key
                     latin:keySpec=":"
-                    latin:keyStyle="numKeyStyle"
+                    latin:keyStyle="numSymbolKeyStyle"
                     latin:keyWidth="10%p"
                     latin:backgroundType="functional" />
             </case>
             <default>
                 <Key
                     latin:keySpec="="
-                    latin:keyStyle="numKeyStyle"
+                    latin:keyStyle="numSymbolKeyStyle"
                     latin:keyWidth="10%p"
                     latin:backgroundType="functional" />
             </default>
@@ -143,8 +145,10 @@
         <Key
             latin:keyStyle="tabletNumSpaceKeyStyle"
             latin:keyWidth="30%p" />
+        <!-- U+FF0A: "＊" FULLWIDTH ASTERISK -->
         <Key
-            latin:keyStyle="numStarKeyStyle"
+            latin:keySpec="&#xFF0A;|*"
+            latin:keyStyle="numSymbolKeyStyle"
             latin:keyXPos="31%p" />
         <Key
             latin:keySpec="0"
