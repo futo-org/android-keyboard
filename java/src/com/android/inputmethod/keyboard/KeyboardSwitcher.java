@@ -258,8 +258,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     private void setMainKeyboardFrame(final SettingsValues settingsValues) {
-        mMainKeyboardFrame.setVisibility(
-                settingsValues.mHasHardwareKeyboard ? View.GONE : View.VISIBLE);
+        final int visibility = settingsValues.mHasHardwareKeyboard ? View.GONE : View.VISIBLE;
+        mKeyboardView.setVisibility(visibility);
+        // The visibility of {@link #mKeyboardView} must be aligned with {@link #MainKeyboardFrame}.
+        // @see #getVisibleKeyboardView() and
+        // @see LatinIME#onComputeInset(android.inputmethodservice.InputMethodService.Insets)
+        mMainKeyboardFrame.setVisibility(visibility);
         mEmojiPalettesView.setVisibility(View.GONE);
         mEmojiPalettesView.stopEmojiPalettes();
     }
@@ -272,6 +276,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
         final Keyboard keyboard = mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
         mMainKeyboardFrame.setVisibility(View.GONE);
+        // The visibility of {@link #mKeyboardView} must be aligned with {@link #MainKeyboardFrame}.
+        // @see #getVisibleKeyboardView() and
+        // @see LatinIME#onComputeInset(android.inputmethodservice.InputMethodService.Insets)
+        mKeyboardView.setVisibility(View.GONE);
         mEmojiPalettesView.startEmojiPalettes(
                 mKeyboardTextsSet.getText(KeyboardTextsSet.SWITCH_TO_ALPHA_KEY_LABEL),
                 mKeyboardView.getKeyVisualAttribute(), keyboard.mIconsSet);
