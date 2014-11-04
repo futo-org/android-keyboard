@@ -1194,7 +1194,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (hasHardwareKeyboard && visibleKeyboardView.getVisibility() == View.GONE) {
             // If there is a hardware keyboard and a visible software keyboard view has been hidden,
             // no visual element will be shown on the screen.
-            outInsets.touchableInsets = inputHeight;
+            outInsets.contentTopInsets = inputHeight;
             outInsets.visibleTopInsets = inputHeight;
             mInsetsUpdater.setInsets(outInsets);
             return;
@@ -1204,7 +1204,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 ? mSuggestionStripView.getHeight() : 0;
         final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
-        // Need to set touchable region only if a keyboard view is being shown.
+        // Need to set expanded touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {
             final int touchLeft = 0;
             final int touchTop = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
