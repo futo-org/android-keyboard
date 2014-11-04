@@ -46,6 +46,11 @@ public final class TestsBengaliBD extends LayoutTestsBase {
         }
 
         @Override
+        public ExpectedKey[] getSpaceKeys(final boolean isPhone) {
+            return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
+        }
+
+        @Override
         public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
 
         // U+09F3: "৳" BENGALI RUPEE SIGN

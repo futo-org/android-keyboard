@@ -22,12 +22,8 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <switch>
-        <!-- fa: Perisan
-             kn: Kannada
-             ne: Nepali
-             te: Telugu -->
         <case
-            latin:languageCode="fa|kn|ne|te"
+            latin:keyboardLayoutSet="bengali_akkhor|farsi|kannada|nepali_romanized|nepali_traditional|telugu"
             latin:languageSwitchKeyEnabled="true"
         >
             <Key
@@ -39,7 +35,7 @@
                 latin:keyStyle="zwnjKeyStyle" />
         </case>
         <case
-            latin:languageCode="fa|kn|ne|te"
+            latin:keyboardLayoutSet="bengali_akkhor|farsi|kannada|nepali_romanized|nepali_traditional|telugu"
             latin:languageSwitchKeyEnabled="false"
         >
             <Key
