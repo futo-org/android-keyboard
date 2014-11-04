@@ -28,5 +28,5 @@
     <GridRows
         latin:codesArray="@array/emoji_recents"
         latin:keyLabelFlags="fontNormal"
-        latin:backgroundType="normal" />
+        latin:backgroundType="empty" />
 </Keyboard>
