@@ -359,7 +359,7 @@ public final class KeyboardLayoutSet {
             try {
                 final int scriptId =
                         featureAttr.getInt(R.styleable.KeyboardLayoutSet_Feature_supportedScript,
-                        ScriptUtils.SCRIPT_UNKNOWN);
+                                ScriptUtils.SCRIPT_UNKNOWN);
                 XmlParseUtils.checkEndTag(TAG_FEATURE, parser);
                 return scriptId;
             } finally {
