@@ -148,7 +148,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
 
     void callListenerOnPressKey(final Key pressedKey) {
         mPendingKeyDown = null;
-        pressedKey.onPressed();
+        pressedKey.onReleased();
         invalidateKey(pressedKey);
         mListener.onPressKey(pressedKey);
     }
