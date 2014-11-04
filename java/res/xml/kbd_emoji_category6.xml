@@ -28,5 +28,5 @@
     <GridRows
         latin:textsArray="@array/emoji_emoticons"
         latin:keyLabelFlags="fontNormal"
-        latin:backgroundType="empty" />
+        latin:backgroundType="normal" />
 </Keyboard>
