@@ -68,9 +68,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
         dst.deleteOnExit();
         try (final OutputStream out = Compress.getCompressedStream(
-                Compress.getCompressedStream(
-                        Compress.getCompressedStream(
-                                new BufferedOutputStream(new FileOutputStream(dst)))))) {
+                new BufferedOutputStream(new FileOutputStream(dst)))) {
             final DictEncoder dictEncoder = new Ver2DictEncoder(out);
             dictEncoder.writeDictionary(dict, new FormatOptions(2, false));
         }
@@ -78,11 +76,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         // Test for an actually compressed dictionary and its contents
         final BinaryDictOffdeviceUtils.DecoderChainSpec decodeSpec =
                 BinaryDictOffdeviceUtils.getRawDictionaryOrNull(dst);
-        for (final int step : decodeSpec.mDecoderSpec) {
-            assertEquals("Wrong decode spec",
-                    BinaryDictOffdeviceUtils.DecoderChainSpec.COMPRESSION, step);
-        }
-        assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.length);
+        assertEquals("Wrong decode spec", "raw > compression", decodeSpec.describeChain());
         final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(decodeSpec.mFile, 0,
                 decodeSpec.mFile.length());
         final FusionDictionary resultDict =
