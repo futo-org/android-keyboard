@@ -24,10 +24,6 @@ import android.util.SparseArray;
 
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.common.CodePointUtils;
-import com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils;
-import com.android.inputmethod.latin.dicttool.Compress;
-import com.android.inputmethod.latin.dicttool.Crypt;
-import com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils.DecoderChainSpec;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
@@ -736,62 +732,5 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         } while (token != 0);
         assertTrue(wordSet.isEmpty());
         assertTrue(bigramSet.isEmpty());
-    }
-
-    public void runTestHeaderReaderProcessorWithOneSpec(final boolean compress, final boolean crypt)
-                throws IOException {
-        final String dictName = "testHeaderReaderProcessor";
-        final String dictVersion = Long.toString(System.currentTimeMillis());
-        final FormatOptions formatOptions = BinaryDictUtils.STATIC_OPTIONS;
-        final int MAX_NUMBER_OF_OPTIONS_TO_ADD = 5;
-        final HashMap<String, String> options = new HashMap<>();
-        // Required attributes
-        options.put("dictionary", "main:en_US");
-        options.put("locale", "en_US");
-        options.put("version", Integer.toString(mRandom.nextInt()));
-        // Add some random options for test
-        final int numberOfOptionsToAdd = mRandom.nextInt() % (MAX_NUMBER_OF_OPTIONS_TO_ADD + 1);
-        for (int i = 0; i < numberOfOptionsToAdd; ++i) {
-            options.put(sWordsWithVariousCodePoints.get(2 * i),
-                    sWordsWithVariousCodePoints.get(2 * 1 + 1));
-        }
-        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new DictionaryOptions(options));
-        addUnigrams(sWords.size(), dict, sWords, null);
-        File file = BinaryDictUtils.getDictFile(dictName, dictVersion, formatOptions,
-                getContext().getCacheDir());
-        timeWritingDictToFile(file, dict, formatOptions);
-
-        if (compress) {
-            final File rawFile = file;
-            file = BinaryDictUtils.getDictFile(dictName + "compress", dictVersion, formatOptions,
-                    getContext().getCacheDir());
-            final Compress.Compressor compressCommand = new Compress.Compressor();
-            compressCommand.setArgs(new String[] { rawFile.getPath(), file.getPath() });
-            compressCommand.run();
-        }
-        if (crypt) {
-            final File rawFile = file;
-            file = BinaryDictUtils.getDictFile(dictName + "crypt", dictVersion, formatOptions,
-                    getContext().getCacheDir());
-            final Crypt.Encrypter cryptCommand = new Crypt.Encrypter();
-            cryptCommand.setArgs(new String[] { rawFile.getPath(), file.getPath() });
-            cryptCommand.run();
-        }
-
-        final DecoderChainSpec<DictionaryHeader> spec =
-                BinaryDictOffdeviceUtils.decodeDictionaryForProcess(file,
-                        new BinaryDictOffdeviceUtils.HeaderReaderProcessor());
-        assertNotNull("Can't decode a dictionary we just wrote : " + file, spec);
-        final DictionaryHeader header = spec.mResult;
-        assertEquals("raw" + (crypt ? " > encryption" : "") + (compress ? " > compression" : ""),
-                spec.describeChain());
-        assertEquals(header.mDictionaryOptions.mAttributes, options);
-    }
-
-    public void testHeaderReaderProcessor() throws IOException {
-        runTestHeaderReaderProcessorWithOneSpec(false /* compress */, false /* crypt */);
-        runTestHeaderReaderProcessorWithOneSpec(true /* compress */, false /* crypt */);
-        runTestHeaderReaderProcessorWithOneSpec(true /* compress */, true /* crypt */);
     }
 }
