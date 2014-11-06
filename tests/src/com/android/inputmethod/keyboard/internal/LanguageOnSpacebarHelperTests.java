@@ -30,9 +30,10 @@ import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 @SmallTest
 public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
@@ -48,6 +49,7 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
     RichInputMethodSubtype FR_CH_SWISS;
     RichInputMethodSubtype FR_CH_QWERTY;
     RichInputMethodSubtype FR_CH_QWERTZ;
+    RichInputMethodSubtype IW_HEBREW;
     RichInputMethodSubtype ZZ_QWERTY;
 
     @Override
@@ -56,116 +58,164 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
         final Context context = getContext();
         RichInputMethodManager.init(context);
         mRichImm = RichInputMethodManager.getInstance();
-        SubtypeLocaleUtils.init(context);
 
-        EN_US_QWERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                Locale.US.toString(), "qwerty"));
-        EN_GB_QWERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                Locale.UK.toString(), "qwerty"));
-        FR_AZERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                Locale.FRENCH.toString(), "azerty"));
-        FR_CA_QWERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                Locale.CANADA_FRENCH.toString(), "qwerty"));
-        FR_CH_SWISS = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                "fr_CH", "swiss"));
+        EN_US_QWERTY = findSubtypeOf(Locale.US.toString(), "qwerty");
+        EN_GB_QWERTY = findSubtypeOf(Locale.UK.toString(), "qwerty");
+        FR_AZERTY = findSubtypeOf(Locale.FRENCH.toString(), "azerty");
+        FR_CA_QWERTY = findSubtypeOf(Locale.CANADA_FRENCH.toString(), "qwerty");
+        FR_CH_SWISS = findSubtypeOf("fr_CH", "swiss");
         FR_CH_QWERTZ = new RichInputMethodSubtype(
                 AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype("fr_CH", "qwertz"));
         FR_CH_QWERTY = new RichInputMethodSubtype(
                 AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype("fr_CH", "qwerty"));
-        ZZ_QWERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                SubtypeLocaleUtils.NO_LANGUAGE, "qwerty"));
+        IW_HEBREW = findSubtypeOf("iw", "hebrew");
+        ZZ_QWERTY = findSubtypeOf(SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
     }
 
-    private static List<InputMethodSubtype> asList(final InputMethodSubtype ... subtypes) {
-        return Arrays.asList(subtypes);
+    @Nonnull
+    private RichInputMethodSubtype findSubtypeOf(final String localeString,
+            final String keyboardLayoutSetName) {
+        final InputMethodSubtype subtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                localeString, keyboardLayoutSetName);
+        if (subtype == null) {
+            throw new RuntimeException("Can't find subtype of " + localeString + " with "
+                    + keyboardLayoutSetName);
+        }
+        return new RichInputMethodSubtype(subtype);
     }
 
-    public void testOneSubtype() {
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(EN_US_QWERTY.getRawSubtype()));
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(true /* isSame */);
-        assertEquals("one same English (US)", FORMAT_TYPE_NONE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
-        assertEquals("one same NoLanguage", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(ZZ_QWERTY));
-
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(FR_AZERTY.getRawSubtype()));
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(false /* isSame */);
-        assertEquals("one diff English (US)", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
-        assertEquals("one diff NoLanguage", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(ZZ_QWERTY));
+    private void enableSubtypes(final RichInputMethodSubtype ... subtypes) {
+        final ArrayList<InputMethodSubtype> enabledSubtypes = new ArrayList<>();
+        for (final RichInputMethodSubtype subtype : subtypes) {
+            enabledSubtypes.add(subtype.getRawSubtype());
+        }
+        mLanguageOnSpacebarHelper.updateEnabledSubtypes(enabledSubtypes);
     }
 
-    public void testTwoSubtypes() {
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(EN_US_QWERTY.getRawSubtype(),
-                FR_AZERTY.getRawSubtype()));
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(true /* isSame */);
-        assertEquals("two same English (US)", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
-        assertEquals("two same French)", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_AZERTY));
-        assertEquals("two same NoLanguage", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(ZZ_QWERTY));
-
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(false /* isSame */);
-        assertEquals("two diff English (US)", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
-        assertEquals("two diff French", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_AZERTY));
-        assertEquals("two diff NoLanguage", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(ZZ_QWERTY));
+    private void assertFormatType(final RichInputMethodSubtype subtype,
+            final boolean implicitlyEnabledSubtype, final Locale systemLocale,
+            final int expectedFormat) {
+        final Locale newLocale = subtype.getLocales()[0];
+        final boolean sameLocale = systemLocale.equals(newLocale);
+        final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
+        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(
+                sameLocale || (sameLanguage && implicitlyEnabledSubtype));
+        assertEquals(newLocale + " implicitly=" + implicitlyEnabledSubtype + " in " + systemLocale,
+                expectedFormat,
+                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype));
     }
 
-    public void testSameLanuageSubtypes() {
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(
-                asList(EN_US_QWERTY.getRawSubtype(), EN_GB_QWERTY.getRawSubtype(),
-                        FR_AZERTY.getRawSubtype(), ZZ_QWERTY.getRawSubtype()));
+    public void testOneSubtypeImplicitlyEnabled() {
+        enableSubtypes(EN_US_QWERTY);
+        assertFormatType(EN_US_QWERTY, true, Locale.US,            FORMAT_TYPE_NONE);
 
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(true /* isSame */);
-        assertEquals("two same English (US)", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
-        assertEquals("two same English (UK)", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_GB_QWERTY));
-        assertEquals("two same NoLanguage", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(ZZ_QWERTY));
+        enableSubtypes(EN_GB_QWERTY);
+        assertFormatType(EN_GB_QWERTY, true, Locale.UK,            FORMAT_TYPE_NONE);
 
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(false /* isSame */);
-        assertEquals("two diff English (US)", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
-        assertEquals("two diff English (UK)", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_GB_QWERTY));
-        assertEquals("two diff NoLanguage", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(ZZ_QWERTY));
+        enableSubtypes(FR_AZERTY);
+        assertFormatType(FR_AZERTY,    true, Locale.FRANCE,        FORMAT_TYPE_NONE);
+
+        enableSubtypes(FR_CA_QWERTY);
+        assertFormatType(FR_CA_QWERTY, true, Locale.CANADA_FRENCH, FORMAT_TYPE_NONE);
     }
 
-    public void testMultiSameLanuageSubtypes() {
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(
-                asList(FR_AZERTY.getRawSubtype(), FR_CA_QWERTY.getRawSubtype(),
-                        FR_CH_SWISS.getRawSubtype(), FR_CH_QWERTY.getRawSubtype(),
-                        FR_CH_QWERTZ.getRawSubtype()));
+    public void testOneSubtypeExplicitlyEnabled() {
+        enableSubtypes(EN_US_QWERTY);
+        assertFormatType(EN_US_QWERTY, false, Locale.UK,     FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(EN_US_QWERTY, false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
 
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(true /* isSame */);
-        assertEquals("multi same French", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_AZERTY));
-        assertEquals("multi same French (CA)", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_CA_QWERTY));
-        assertEquals("multi same French (CH)", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_CH_SWISS));
-        assertEquals("multi same French (CH) (QWERTY)", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_CH_QWERTY));
-        assertEquals("multi same French (CH) (QWERTZ)", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_CH_QWERTZ));
+        enableSubtypes(EN_GB_QWERTY);
+        assertFormatType(EN_GB_QWERTY, false, Locale.US,     FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(EN_GB_QWERTY, false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
 
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(false /* isSame */);
-        assertEquals("multi diff French", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_AZERTY));
-        assertEquals("multi diff French (CA)", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_CA_QWERTY));
-        assertEquals("multi diff French (CH)", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_CH_SWISS));
-        assertEquals("multi diff French (CH) (QWERTY)", FORMAT_TYPE_FULL_LOCALE,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_CH_QWERTY));
-        assertEquals("multi diff French (CH) (QWERTZ)", FORMAT_TYPE_LANGUAGE_ONLY,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(FR_CH_QWERTZ));
+        enableSubtypes(FR_AZERTY);
+        assertFormatType(FR_AZERTY,    false, Locale.US,            FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_AZERTY,    false, Locale.CANADA_FRENCH, FORMAT_TYPE_LANGUAGE_ONLY);
+
+        enableSubtypes(FR_CA_QWERTY);
+        assertFormatType(FR_CA_QWERTY, false, Locale.US,            FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CA_QWERTY, false, Locale.FRANCE,        FORMAT_TYPE_LANGUAGE_ONLY);
+    }
+
+    public void testOneSubtypeImplicitlyEnabledWithNoLanguageSubtype() {
+        final Locale Locale_IW = new Locale("iw");
+        enableSubtypes(IW_HEBREW, ZZ_QWERTY);
+        // TODO: Should this be FORMAT_TYPE_NONE?
+        assertFormatType(IW_HEBREW,    true, Locale_IW, FORMAT_TYPE_LANGUAGE_ONLY);
+        // TODO: Should this be FORMAT_TYPE_NONE?
+        assertFormatType(ZZ_QWERTY,    true, Locale_IW, FORMAT_TYPE_FULL_LOCALE);
+    }
+
+    public void testTwoSubtypesExplicitlyEnabled() {
+        enableSubtypes(EN_US_QWERTY, FR_AZERTY);
+        assertFormatType(EN_US_QWERTY, false, Locale.US,     FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_AZERTY,    false, Locale.US,     FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(EN_US_QWERTY, false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_AZERTY,    false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(EN_US_QWERTY, false, Locale.JAPAN,  FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_AZERTY,    false, Locale.JAPAN,  FORMAT_TYPE_LANGUAGE_ONLY);
+
+        enableSubtypes(EN_US_QWERTY, ZZ_QWERTY);
+        assertFormatType(EN_US_QWERTY, false, Locale.US,     FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(ZZ_QWERTY,    false, Locale.US,     FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(EN_US_QWERTY, false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(ZZ_QWERTY,    false, Locale.FRANCE, FORMAT_TYPE_FULL_LOCALE);
+
+    }
+
+    public void testMultiSubtypeWithSameLanuageAndSameLayout() {
+        // Explicitly enable en_US, en_GB, fr_FR, and no language keyboards.
+        enableSubtypes(EN_US_QWERTY, EN_GB_QWERTY, FR_CA_QWERTY, ZZ_QWERTY);
+
+        assertFormatType(EN_US_QWERTY, false, Locale.US,    FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(EN_GB_QWERTY, false, Locale.US,    FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(FR_CA_QWERTY, false, Locale.US,    FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(ZZ_QWERTY,    false, Locale.US,    FORMAT_TYPE_FULL_LOCALE);
+
+        assertFormatType(EN_US_QWERTY, false, Locale.JAPAN, FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(EN_GB_QWERTY, false, Locale.JAPAN, FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(FR_CA_QWERTY, false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(ZZ_QWERTY,    false, Locale.JAPAN, FORMAT_TYPE_FULL_LOCALE);
+    }
+
+    public void testMultiSubtypesWithSameLanguageButHaveDifferentLayout() {
+        enableSubtypes(FR_AZERTY, FR_CA_QWERTY, FR_CH_SWISS, FR_CH_QWERTZ);
+
+        assertFormatType(FR_AZERTY,    false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CA_QWERTY, false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_SWISS,  false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_QWERTZ, false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+
+        assertFormatType(FR_AZERTY,    false, Locale.CANADA_FRENCH, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CA_QWERTY, false, Locale.CANADA_FRENCH, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_SWISS,  false, Locale.CANADA_FRENCH, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_QWERTZ, false, Locale.CANADA_FRENCH, FORMAT_TYPE_LANGUAGE_ONLY);
+
+        assertFormatType(FR_AZERTY,    false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CA_QWERTY, false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_SWISS,  false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_QWERTZ, false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
+    }
+
+    public void testMultiSubtypesWithSameLanguageAndMayHaveSameLayout() {
+        enableSubtypes(FR_AZERTY, FR_CA_QWERTY, FR_CH_SWISS, FR_CH_QWERTY, FR_CH_QWERTZ);
+
+        assertFormatType(FR_AZERTY,    false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CA_QWERTY, false, Locale.FRANCE, FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(FR_CH_SWISS,  false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_QWERTY, false, Locale.FRANCE, FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(FR_CH_QWERTZ, false, Locale.FRANCE, FORMAT_TYPE_LANGUAGE_ONLY);
+
+        assertFormatType(FR_AZERTY,    false, Locale.CANADA_FRENCH, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CA_QWERTY, false, Locale.CANADA_FRENCH, FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(FR_CH_SWISS,  false, Locale.CANADA_FRENCH, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_QWERTY, false, Locale.CANADA_FRENCH, FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(FR_CH_QWERTZ, false, Locale.CANADA_FRENCH, FORMAT_TYPE_LANGUAGE_ONLY);
+
+        assertFormatType(FR_AZERTY,    false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CA_QWERTY, false, Locale.JAPAN, FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(FR_CH_SWISS,  false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
+        assertFormatType(FR_CH_QWERTY, false, Locale.JAPAN, FORMAT_TYPE_FULL_LOCALE);
+        assertFormatType(FR_CH_QWERTZ, false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
     }
 }
