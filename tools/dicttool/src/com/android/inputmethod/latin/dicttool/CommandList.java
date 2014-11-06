@@ -20,6 +20,7 @@ public class CommandList {
     public static void populate() {
         // TODO: Move some commands to native code.
         Dicttool.addCommand("info", Info.class);
+        Dicttool.addCommand("header", Header.class);
         Dicttool.addCommand("diff", Diff.class);
         Dicttool.addCommand("compress", Compress.Compressor.class);
         Dicttool.addCommand("uncompress", Compress.Uncompressor.class);

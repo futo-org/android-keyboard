@@ -24,8 +24,13 @@ import android.util.SparseArray;
 
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.common.CodePointUtils;
+import com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils;
+import com.android.inputmethod.latin.dicttool.Compress;
+import com.android.inputmethod.latin.dicttool.Crypt;
+import com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils.DecoderChainSpec;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
+import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -67,6 +72,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private static final SparseArray<List<Integer>> sChainBigrams = new SparseArray<>();
     private static final HashMap<String, List<String>> sShortcuts = new HashMap<>();
 
+    final Random mRandom;
+
     public BinaryDictDecoderEncoderTests() {
         this(System.currentTimeMillis(), DEFAULT_MAX_UNIGRAMS);
     }
@@ -75,10 +82,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         super();
         BinaryDictionaryUtils.setCurrentTimeForTest(0);
         Log.e(TAG, "Testing dictionary: seed is " + seed);
-        final Random random = new Random(seed);
+        mRandom = new Random(seed);
         sWords.clear();
         sWordsWithVariousCodePoints.clear();
-        generateWords(maxUnigrams, random);
+        generateWords(maxUnigrams, mRandom);
 
         for (int i = 0; i < sWords.size(); ++i) {
             sChainBigrams.put(i, new ArrayList<Integer>());
@@ -96,10 +103,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         sShortcuts.clear();
         for (int i = 0; i < NUM_OF_NODES_HAVING_SHORTCUTS; ++i) {
-            final int from = Math.abs(random.nextInt()) % sWords.size();
+            final int from = Math.abs(mRandom.nextInt()) % sWords.size();
             sShortcuts.put(sWords.get(from), new ArrayList<String>());
             for (int j = 0; j < NUM_OF_SHORTCUTS; ++j) {
-                final int to = Math.abs(random.nextInt()) % sWords.size();
+                final int to = Math.abs(mRandom.nextInt()) % sWords.size();
                 sShortcuts.get(sWords.get(from)).add(sWords.get(to));
             }
         }
@@ -604,11 +611,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 + " : " + outputOptions(bufferType, formatOptions));
 
         // Test a word that isn't contained within the dictionary.
-        final Random random = new Random((int)System.currentTimeMillis());
         final int[] codePointSet = CodePointUtils.generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE,
-                random);
+                mRandom);
         for (int i = 0; i < 1000; ++i) {
-            final String word = CodePointUtils.generateWord(random, codePointSet);
+            final String word = CodePointUtils.generateWord(mRandom, codePointSet);
             if (sWords.indexOf(word) != -1) continue;
             checkGetTerminalPosition(dictDecoder, word, false);
         }
@@ -730,5 +736,62 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         } while (token != 0);
         assertTrue(wordSet.isEmpty());
         assertTrue(bigramSet.isEmpty());
+    }
+
+    public void runTestHeaderReaderProcessorWithOneSpec(final boolean compress, final boolean crypt)
+                throws IOException {
+        final String dictName = "testHeaderReaderProcessor";
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final FormatOptions formatOptions = BinaryDictUtils.STATIC_OPTIONS;
+        final int MAX_NUMBER_OF_OPTIONS_TO_ADD = 5;
+        final HashMap<String, String> options = new HashMap<>();
+        // Required attributes
+        options.put("dictionary", "main:en_US");
+        options.put("locale", "en_US");
+        options.put("version", Integer.toString(mRandom.nextInt()));
+        // Add some random options for test
+        final int numberOfOptionsToAdd = mRandom.nextInt() % (MAX_NUMBER_OF_OPTIONS_TO_ADD + 1);
+        for (int i = 0; i < numberOfOptionsToAdd; ++i) {
+            options.put(sWordsWithVariousCodePoints.get(2 * i),
+                    sWordsWithVariousCodePoints.get(2 * 1 + 1));
+        }
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                new DictionaryOptions(options));
+        addUnigrams(sWords.size(), dict, sWords, null);
+        File file = BinaryDictUtils.getDictFile(dictName, dictVersion, formatOptions,
+                getContext().getCacheDir());
+        timeWritingDictToFile(file, dict, formatOptions);
+
+        if (compress) {
+            final File rawFile = file;
+            file = BinaryDictUtils.getDictFile(dictName + "compress", dictVersion, formatOptions,
+                    getContext().getCacheDir());
+            final Compress.Compressor compressCommand = new Compress.Compressor();
+            compressCommand.setArgs(new String[] { rawFile.getPath(), file.getPath() });
+            compressCommand.run();
+        }
+        if (crypt) {
+            final File rawFile = file;
+            file = BinaryDictUtils.getDictFile(dictName + "crypt", dictVersion, formatOptions,
+                    getContext().getCacheDir());
+            final Crypt.Encrypter cryptCommand = new Crypt.Encrypter();
+            cryptCommand.setArgs(new String[] { rawFile.getPath(), file.getPath() });
+            cryptCommand.run();
+        }
+
+        final DecoderChainSpec<DictionaryHeader> spec =
+                BinaryDictOffdeviceUtils.decodeDictionaryForProcess(file,
+                        new BinaryDictOffdeviceUtils.HeaderReaderProcessor());
+        assertNotNull("Can't decode a dictionary we just wrote : " + file, spec);
+        final DictionaryHeader header = spec.mResult;
+        assertEquals("raw" + (crypt ? " > encryption" : "") + (compress ? " > compression" : ""),
+                spec.describeChain());
+        assertEquals(header.mDictionaryOptions.mAttributes, options);
+    }
+
+    public void testHeaderReaderProcessor() throws IOException {
+        runTestHeaderReaderProcessorWithOneSpec(false /* compress */, false /* crypt */);
+        runTestHeaderReaderProcessorWithOneSpec(true /* compress */, false /* crypt */);
+        runTestHeaderReaderProcessorWithOneSpec(true /* compress */, true /* crypt */);
     }
 }
