@@ -603,7 +603,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Has to be package-visible for unit tests
     @UsedForTesting
     void loadSettings() {
-        final Locale[] locales = mSubtypeSwitcher.getCurrentSubtypeLocales();
+        final Locale[] locales = mRichImm.getCurrentSubtypeLocales();
         final EditorInfo editorInfo = getCurrentInputEditorInfo();
         final InputAttributes inputAttributes = new InputAttributes(
                 editorInfo, isFullscreenMode(), getPackageName());
@@ -657,7 +657,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     void resetDictionaryFacilitatorIfNecessary() {
-        final Locale[] subtypeSwitcherLocales = mSubtypeSwitcher.getCurrentSubtypeLocales();
+        final Locale[] subtypeSwitcherLocales = mRichImm.getCurrentSubtypeLocales();
         if (mDictionaryFacilitator.isForLocales(subtypeSwitcherLocales)) {
             return;
         }
@@ -909,7 +909,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Update to a gesture consumer with the current editor and IME state.
         mGestureConsumer = GestureConsumer.newInstance(editorInfo,
                 mInputLogic.getPrivateCommandPerformer(),
-                Arrays.asList(mSubtypeSwitcher.getCurrentSubtypeLocales()),
+                Arrays.asList(mRichImm.getCurrentSubtypeLocales()),
                 switcher.getKeyboard());
 
         // Forward this event to the accessibility utilities, if enabled.
@@ -947,7 +947,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // span, so we should reset our state unconditionally, even if restarting is true.
             // We also tell the input logic about the combining rules for the current subtype, so
             // it can adjust its combiners if needed.
-            mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype(),
+            mInputLogic.startInput(mRichImm.getCombiningRulesExtraValueOfCurrentSubtype(),
                     currentSettingsValues);
 
             resetDictionaryFacilitatorIfNecessary();
@@ -1468,7 +1468,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onStartBatchInput() {
         mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
         mGestureConsumer.onGestureStarted(
-                Arrays.asList(mSubtypeSwitcher.getCurrentSubtypeLocales()),
+                Arrays.asList(mRichImm.getCurrentSubtypeLocales()),
                 mKeyboardSwitcher.getKeyboard());
     }
 
@@ -1590,7 +1590,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // We should clear the contextual strip if there is no suggestion from dictionaries.
                 || noSuggestionsFromDictionaries) {
             mSuggestionStripView.setSuggestions(suggestedWords,
-                    mSubtypeSwitcher.getCurrentSubtype().isRtlSubtype());
+                    mRichImm.getCurrentSubtype().isRtlSubtype());
         }
     }
 

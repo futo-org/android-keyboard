@@ -47,6 +47,7 @@ public class AdditionalFeaturesSettingUtils {
         // do nothing.
     }
 
+    @Nonnull
     public static RichInputMethodSubtype createRichInputMethodSubtype(
             @Nonnull final RichInputMethodManager imm,
             @Nonnull final InputMethodSubtype subtype,

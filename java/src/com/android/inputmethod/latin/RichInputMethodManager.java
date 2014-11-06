@@ -34,6 +34,7 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
@@ -68,6 +69,7 @@ public class RichInputMethodManager {
     private Context mContext;
     private InputMethodManagerCompatWrapper mImmWrapper;
     private InputMethodInfoCache mInputMethodInfoCache;
+    private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private boolean mIsNetworkConnected;
@@ -324,10 +326,47 @@ public class RichInputMethodManager {
     }
 
     @Nonnull
+    public RichInputMethodSubtype onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
+        final RichInputMethodSubtype richSubtype = createCurrentRichInputMethodSubtype(newSubtype);
+        if (DEBUG) {
+            Log.w(TAG, "onSubtypeChanged: " + richSubtype.getNameForLogging());
+        }
+        mCurrentRichInputMethodSubtype = richSubtype;
+        return richSubtype;
+    }
+
+    private static RichInputMethodSubtype sForcedSubtypeForTesting = null;
+
+    @UsedForTesting
+    static void forceSubtype(final InputMethodSubtype subtype) {
+        sForcedSubtypeForTesting = new RichInputMethodSubtype(subtype);
+    }
+
+    public Locale[] getCurrentSubtypeLocales() {
+        if (null != sForcedSubtypeForTesting) {
+            return sForcedSubtypeForTesting.getLocales();
+        }
+        return getCurrentSubtype().getLocales();
+    }
+
+    public RichInputMethodSubtype getCurrentSubtype() {
+        if (null != sForcedSubtypeForTesting) {
+            return sForcedSubtypeForTesting;
+        }
+        return mCurrentRichInputMethodSubtype;
+    }
+
+
+    public String getCombiningRulesExtraValueOfCurrentSubtype() {
+        return SubtypeLocaleUtils.getCombiningRulesExtraValue(getCurrentSubtype().getRawSubtype());
+    }
+
+    @Nonnull
     public InputMethodSubtype getCurrentRawSubtype() {
         return mImmWrapper.mImm.getCurrentInputMethodSubtype();
     }
 
+    @Nonnull
     public RichInputMethodSubtype createCurrentRichInputMethodSubtype(
             @Nonnull final InputMethodSubtype rawSubtype) {
         return AdditionalFeaturesSettingUtils.createRichInputMethodSubtype(this, rawSubtype,
