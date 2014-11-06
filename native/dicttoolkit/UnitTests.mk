@@ -46,6 +46,7 @@ include $(BUILD_HOST_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 
 # TODO: Remove -std=c++11 once it is set by default on host build.
+LOCAL_ADDRESS_SANITIZER := true
 LOCAL_CFLAGS += -std=c++11 -Wno-unused-parameter -Wno-unused-function
 LOCAL_CLANG := true
 LOCAL_CXX_STL := libc++
