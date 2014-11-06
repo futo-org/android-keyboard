@@ -48,7 +48,7 @@ import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
@@ -113,7 +113,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                 context, null /* editorInfo */);
         final Resources res = context.getResources();
         mEmojiLayoutParams = new EmojiLayoutParams(res);
-        builder.setSubtype(SubtypeSwitcher.getInstance().getEmojiSubtype());
+        builder.setSubtype(RichInputMethodSubtype.getEmojiSubtype());
         builder.setKeyboardGeometry(ResourceUtils.getDefaultKeyboardWidth(res),
                 mEmojiLayoutParams.mEmojiKeyboardHeight);
         final KeyboardLayoutSet layoutSet = builder.build();

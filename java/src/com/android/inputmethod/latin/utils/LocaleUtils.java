@@ -21,6 +21,8 @@ import android.text.TextUtils;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 /**
  * A class to help with handling Locales in string form.
  *
@@ -164,8 +166,10 @@ public final class LocaleUtils {
     /**
      * Creates a locale from a string specification.
      */
-    public static Locale constructLocaleFromString(final String localeStr) {
+    @Nullable
+    public static Locale constructLocaleFromString(@Nullable final String localeStr) {
         if (localeStr == null) {
+            // TODO: Should this be Locale.ROOT?
             return null;
         }
         synchronized (sLocaleCache) {
@@ -173,7 +177,7 @@ public final class LocaleUtils {
             if (retval != null) {
                 return retval;
             }
-            String[] localeParams = localeStr.split("_", 3);
+            final String[] localeParams = localeStr.split("_", 3);
             if (localeParams.length == 1) {
                 retval = new Locale(localeParams[0]);
             } else if (localeParams.length == 2) {
@@ -184,6 +188,7 @@ public final class LocaleUtils {
             if (retval != null) {
                 sLocaleCache.put(localeStr, retval);
             }
+            // TODO: Should return Locale.ROOT instead of null?
             return retval;
         }
     }
