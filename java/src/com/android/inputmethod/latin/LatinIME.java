@@ -626,7 +626,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void refreshPersonalizationDictionarySession(
             final SettingsValues currentSettingsValues) {
         mDictionaryFacilitator.setIsMonolingualUser(
-                mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
+                mRichImm.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
         mPersonalizationDictionaryUpdater.onLoadSettings(
                 currentSettingsValues.mUsePersonalizedDicts);
         mContextualDictionaryUpdater.onLoadSettings(currentSettingsValues.mUsePersonalizedDicts);
@@ -863,7 +863,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // also wouldn't be consuming gesture data.
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
         mRichImm.clearSubtypeCaches();
-        mSubtypeSwitcher.refreshSubtypeInfo();
+        mSubtypeSwitcher.onSubtypeChanged(mRichImm.getCurrentRawSubtype());
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme();
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
