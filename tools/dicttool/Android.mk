@@ -50,10 +50,7 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/settings/SettingsValuesForSuggestion.java \
         latin/utils/BinaryDictionaryUtils.java \
         latin/utils/CombinedFormatUtils.java \
-        latin/utils/CoordinateUtils.java \
-        latin/utils/FileUtils.java \
-        latin/utils/JniUtils.java \
-        latin/utils/LocaleUtils.java
+        latin/utils/JniUtils.java
 
 LATINIME_OVERRIDABLE_SRC_FILES_FOR_DICTTOOL := \
         latin/define/DebugFlags.java

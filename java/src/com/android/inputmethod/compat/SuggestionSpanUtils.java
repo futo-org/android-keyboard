@@ -27,8 +27,8 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

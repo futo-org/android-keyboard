@@ -39,6 +39,7 @@ import com.android.inputmethod.compat.ConnectivityManagerCompatUtils;
 import com.android.inputmethod.compat.DownloadManagerCompatUtils;
 import com.android.inputmethod.compat.NotificationCompatUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
 

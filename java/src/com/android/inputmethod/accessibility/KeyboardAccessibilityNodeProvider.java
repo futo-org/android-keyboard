@@ -31,9 +31,9 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
-import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 import java.util.List;
 

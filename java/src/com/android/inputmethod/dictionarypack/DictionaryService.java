@@ -25,6 +25,7 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.LocaleUtils;
 
 import java.util.Locale;
 import java.util.Random;

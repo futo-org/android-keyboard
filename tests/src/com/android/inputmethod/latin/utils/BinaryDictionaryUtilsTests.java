@@ -20,6 +20,8 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.common.FileUtils;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 
