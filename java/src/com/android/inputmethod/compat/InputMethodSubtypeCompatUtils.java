@@ -26,6 +26,8 @@ import com.android.inputmethod.latin.common.Constants;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import javax.annotation.Nonnull;
+
 public final class InputMethodSubtypeCompatUtils {
     private static final String TAG = InputMethodSubtypeCompatUtils.class.getSimpleName();
     // Note that InputMethodSubtype(int nameId, int iconId, String locale, String mode,
@@ -53,6 +55,7 @@ public final class InputMethodSubtypeCompatUtils {
     }
 
     @SuppressWarnings("deprecation")
+    @Nonnull
     public static InputMethodSubtype newInputMethodSubtype(int nameId, int iconId, String locale,
             String mode, String extraValue, boolean isAuxiliary,
             boolean overridesImplicitlyEnabledSubtype, int id) {

@@ -38,7 +38,6 @@ import com.android.inputmethod.keyboard.internal.KeysCache;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
@@ -276,7 +275,7 @@ public final class KeyboardLayoutSet {
                     mParams.mEditorInfo.imeOptions)
                     || deprecatedForceAscii;
             final RichInputMethodSubtype keyboardSubtype = (forceAscii && !asciiCapable)
-                    ? SubtypeSwitcher.getInstance().getNoLanguageSubtype()
+                    ? RichInputMethodSubtype.getNoLanguageSubtype()
                     : subtype;
             mParams.mSubtype = keyboardSubtype;
             mParams.mKeyboardLayoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX

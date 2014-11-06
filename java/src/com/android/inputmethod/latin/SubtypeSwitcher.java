@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.REQ_NETWORK_CONNECTIVITY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -31,18 +32,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -60,38 +57,7 @@ public final class SubtypeSwitcher {
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
-    private RichInputMethodSubtype mNoLanguageSubtype;
-    private RichInputMethodSubtype mEmojiSubtype;
     private boolean mIsNetworkConnected;
-
-    private static final String KEYBOARD_MODE = "keyboard";
-    // Dummy no language QWERTY subtype. See {@link R.xml.method}.
-    private static final int SUBTYPE_ID_OF_DUMMY_NO_LANGUAGE_SUBTYPE = 0xdde0bfd3;
-    private static final String EXTRA_VALUE_OF_DUMMY_NO_LANGUAGE_SUBTYPE =
-            "KeyboardLayoutSet=" + SubtypeLocaleUtils.QWERTY
-            + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
-            + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
-            + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
-    private static final RichInputMethodSubtype DUMMY_NO_LANGUAGE_SUBTYPE =
-            new RichInputMethodSubtype(InputMethodSubtypeCompatUtils.newInputMethodSubtype(
-                    R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher_dark,
-                    SubtypeLocaleUtils.NO_LANGUAGE, KEYBOARD_MODE,
-                    EXTRA_VALUE_OF_DUMMY_NO_LANGUAGE_SUBTYPE,
-                    false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */,
-                    SUBTYPE_ID_OF_DUMMY_NO_LANGUAGE_SUBTYPE));
-    // Caveat: We probably should remove this when we add an Emoji subtype in {@link R.xml.method}.
-    // Dummy Emoji subtype. See {@link R.xml.method}.
-    private static final int SUBTYPE_ID_OF_DUMMY_EMOJI_SUBTYPE = 0xd78b2ed0;
-    private static final String EXTRA_VALUE_OF_DUMMY_EMOJI_SUBTYPE =
-            "KeyboardLayoutSet=" + SubtypeLocaleUtils.EMOJI
-            + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
-    private static final RichInputMethodSubtype DUMMY_EMOJI_SUBTYPE = new RichInputMethodSubtype(
-            InputMethodSubtypeCompatUtils.newInputMethodSubtype(
-                    R.string.subtype_emoji, R.drawable.ic_ime_switcher_dark,
-                    SubtypeLocaleUtils.NO_LANGUAGE, KEYBOARD_MODE,
-                    EXTRA_VALUE_OF_DUMMY_EMOJI_SUBTYPE,
-                    false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */,
-                    SUBTYPE_ID_OF_DUMMY_EMOJI_SUBTYPE));
 
     public static SubtypeSwitcher getInstance() {
         return sInstance;
@@ -119,12 +85,8 @@ public final class SubtypeSwitcher {
         final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
 
-        refreshSubtypeInfo();
-        updateParametersOnStartInputView();
-    }
-
-    public void refreshSubtypeInfo() {
         onSubtypeChanged(mRichImm.getCurrentRawSubtype());
+        updateParametersOnStartInputView();
     }
 
     /**
@@ -267,31 +229,6 @@ public final class SubtypeSwitcher {
         return mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype);
     }
 
-    public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes() {
-        final Locale systemLocale = mResources.getConfiguration().locale;
-        final Set<InputMethodSubtype> enabledSubtypesOfEnabledImes = new HashSet<>();
-        final InputMethodManager inputMethodManager = mRichImm.getInputMethodManager();
-        final List<InputMethodInfo> enabledInputMethodInfoList =
-                inputMethodManager.getEnabledInputMethodList();
-        for (final InputMethodInfo info : enabledInputMethodInfoList) {
-            final List<InputMethodSubtype> enabledSubtypes =
-                    inputMethodManager.getEnabledInputMethodSubtypeList(
-                            info, true /* allowsImplicitlySelectedSubtypes */);
-            if (enabledSubtypes.isEmpty()) {
-                // An IME with no subtypes is found.
-                return false;
-            }
-            enabledSubtypesOfEnabledImes.addAll(enabledSubtypes);
-        }
-        for (final InputMethodSubtype subtype : enabledSubtypesOfEnabledImes) {
-            if (!subtype.isAuxiliary() && !subtype.getLocale().isEmpty()
-                    && !systemLocale.equals(SubtypeLocaleUtils.getSubtypeLocale(subtype))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private static RichInputMethodSubtype sForcedSubtypeForTesting = null;
 
     @UsedForTesting
@@ -311,39 +248,6 @@ public final class SubtypeSwitcher {
             return sForcedSubtypeForTesting;
         }
         return mCurrentRichInputMethodSubtype;
-    }
-
-    public RichInputMethodSubtype getNoLanguageSubtype() {
-        if (mNoLanguageSubtype == null) {
-            mNoLanguageSubtype = new RichInputMethodSubtype(
-                    mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                            SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.QWERTY));
-        }
-        if (mNoLanguageSubtype != null) {
-            return mNoLanguageSubtype;
-        }
-        Log.w(TAG, "Can't find any language with QWERTY subtype");
-        Log.w(TAG, "No input method subtype found; returning dummy subtype: "
-                + DUMMY_NO_LANGUAGE_SUBTYPE);
-        return DUMMY_NO_LANGUAGE_SUBTYPE;
-    }
-
-    public RichInputMethodSubtype getEmojiSubtype() {
-        if (mEmojiSubtype == null) {
-            final InputMethodSubtype rawEmojiSubtype =
-                    mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                        SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.EMOJI);
-            if (null != rawEmojiSubtype) {
-                mEmojiSubtype = new RichInputMethodSubtype(rawEmojiSubtype);
-            }
-        }
-        if (mEmojiSubtype != null) {
-            return mEmojiSubtype;
-        }
-        Log.w(TAG, "Can't find emoji subtype");
-        Log.w(TAG, "No input method subtype found; returning dummy subtype: "
-                + DUMMY_EMOJI_SUBTYPE);
-        return DUMMY_EMOJI_SUBTYPE;
     }
 
     public String getCombiningRulesExtraValueOfCurrentSubtype() {

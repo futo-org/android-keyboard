@@ -29,6 +29,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
@@ -36,7 +38,10 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -431,5 +436,30 @@ public class RichInputMethodManager {
             return defaultValue;
         }
         return mImmWrapper.shouldOfferSwitchingToNextInputMethod(binder);
+    }
+
+    public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes() {
+        final Locale systemLocale = mContext.getResources().getConfiguration().locale;
+        final Set<InputMethodSubtype> enabledSubtypesOfEnabledImes = new HashSet<>();
+        final InputMethodManager inputMethodManager = getInputMethodManager();
+        final List<InputMethodInfo> enabledInputMethodInfoList =
+                inputMethodManager.getEnabledInputMethodList();
+        for (final InputMethodInfo info : enabledInputMethodInfoList) {
+            final List<InputMethodSubtype> enabledSubtypes =
+                    inputMethodManager.getEnabledInputMethodSubtypeList(
+                            info, true /* allowsImplicitlySelectedSubtypes */);
+            if (enabledSubtypes.isEmpty()) {
+                // An IME with no subtypes is found.
+                return false;
+            }
+            enabledSubtypesOfEnabledImes.addAll(enabledSubtypes);
+        }
+        for (final InputMethodSubtype subtype : enabledSubtypesOfEnabledImes) {
+            if (!subtype.isAuxiliary() && !subtype.getLocale().isEmpty()
+                    && !systemLocale.equals(SubtypeLocaleUtils.getSubtypeLocale(subtype))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
