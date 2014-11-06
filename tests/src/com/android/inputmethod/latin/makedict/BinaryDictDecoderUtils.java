@@ -17,11 +17,16 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.LinkedList;
+
+import javax.annotation.Nonnull;
 
 /**
  * Decodes binary files for a FusionDictionary.
@@ -358,6 +363,43 @@ public final class BinaryDictDecoderUtils {
             }
         }
         return result;
+    }
+
+    /**
+     * Helper method that brutally decodes a header from a byte array.
+     *
+     * @param headerBuffer a buffer containing the bytes of the header.
+     * @return a hashmap of the attributes stored in the header
+     */
+    @Nonnull
+    public static HashMap<String, String> decodeHeaderAttributes(@Nonnull final byte[] headerBuffer)
+            throws UnsupportedFormatException {
+        final StringBuilder sb = new StringBuilder();
+        final LinkedList<String> keyValues = new LinkedList<>();
+        int index = 0;
+        while (index < headerBuffer.length) {
+            if (headerBuffer[index] == FormatSpec.PTNODE_CHARACTERS_TERMINATOR) {
+                keyValues.add(sb.toString());
+                sb.setLength(0);
+            } else if (CharEncoding.fitsOnOneByte(headerBuffer[index] & 0xFF,
+                    null /* codePointTable */)) {
+                sb.appendCodePoint(headerBuffer[index] & 0xFF);
+            } else {
+                sb.appendCodePoint(((headerBuffer[index] & 0xFF) << 16)
+                        + ((headerBuffer[index + 1] & 0xFF) << 8)
+                        + (headerBuffer[index + 2] & 0xFF));
+                index += 2;
+            }
+            index += 1;
+        }
+        if ((keyValues.size() & 1) != 0) {
+            throw new UnsupportedFormatException("Odd number of attributes");
+        }
+        final HashMap<String, String> attributes = new HashMap<>();
+        for (int i = 0; i < keyValues.size(); i += 2) {
+            attributes.put(keyValues.get(i), keyValues.get(i + 1));
+        }
+        return attributes;
     }
 
     /**
