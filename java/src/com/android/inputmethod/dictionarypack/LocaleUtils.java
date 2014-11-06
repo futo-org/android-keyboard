@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.dictionarypack;
 
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.text.TextUtils;
 
 import java.util.HashMap;
@@ -158,21 +156,6 @@ public final class LocaleUtils {
      */
     public static boolean isMatch(final int level) {
         return LOCALE_MATCH <= level;
-    }
-
-    /**
-     * Sets the system locale for this process.
-     *
-     * @param res the resources to use. Pass current resources.
-     * @param newLocale the locale to change to.
-     * @return the old locale.
-     */
-    public static Locale setSystemLocale(final Resources res, final Locale newLocale) {
-        final Configuration conf = res.getConfiguration();
-        final Locale saveLocale = conf.locale;
-        conf.locale = newLocale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
-        return saveLocale;
     }
 
     private static final HashMap<String, Locale> sLocaleCache = new HashMap<>();
