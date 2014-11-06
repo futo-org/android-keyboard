@@ -74,11 +74,11 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         }
 
         // Test for an actually compressed dictionary and its contents
-        final BinaryDictOffdeviceUtils.DecoderChainSpec decodeSpec =
+        final BinaryDictOffdeviceUtils.DecoderChainSpec<File> decodeSpec =
                 BinaryDictOffdeviceUtils.getRawDictionaryOrNull(dst);
         assertEquals("Wrong decode spec", "raw > compression", decodeSpec.describeChain());
-        final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(decodeSpec.mFile, 0,
-                decodeSpec.mFile.length());
+        final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(decodeSpec.mResult, 0,
+                decodeSpec.mResult.length());
         final FusionDictionary resultDict =
                 dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);
         assertEquals("Wrong version attribute", VERSION, resultDict.mOptions.mAttributes.get(

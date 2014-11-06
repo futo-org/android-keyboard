@@ -35,6 +35,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Class grouping utilities for offline dictionary making.
  *
@@ -45,10 +48,9 @@ public final class BinaryDictOffdeviceUtils {
     // Prefix and suffix are arbitrary, the values do not really matter
     private final static String PREFIX = "dicttool";
     private final static String SUFFIX = ".tmp";
-
     private final static int COPY_BUFFER_SIZE = 8192;
 
-    public static class DecoderChainSpec {
+    public static class DecoderChainSpec<T> {
         public final static int COMPRESSION = 1;
         public final static int ENCRYPTION = 2;
 
@@ -57,16 +59,16 @@ public final class BinaryDictOffdeviceUtils {
         };
 
         private final int mDecoderSpecIndex;
-        File mFile;
+        T mResult;
 
         public DecoderChainSpec() {
             mDecoderSpecIndex = 0;
-            mFile = null;
+            mResult = null;
         }
 
-        private DecoderChainSpec(final DecoderChainSpec src) {
+        private DecoderChainSpec(final DecoderChainSpec<T> src) {
             mDecoderSpecIndex = src.mDecoderSpecIndex + 1;
-            mFile = src.mFile;
+            mResult = src.mResult;
         }
 
         private String getStepDescription(final int step) {
@@ -115,6 +117,31 @@ public final class BinaryDictOffdeviceUtils {
         }
     }
 
+    public interface InputProcessor<T> {
+        @Nonnull
+        public T process(@Nonnull final InputStream input)
+                throws IOException, UnsupportedFormatException;
+    }
+
+    public static class CopyProcessor implements InputProcessor<File> {
+        @Override @Nonnull
+        public File process(@Nonnull final InputStream input) throws IOException,
+                UnsupportedFormatException {
+            final File dst = File.createTempFile(PREFIX, SUFFIX);
+            dst.deleteOnExit();
+            try (final OutputStream output = new BufferedOutputStream(new FileOutputStream(dst))) {
+                copy(input, output);
+                output.flush();
+                output.close();
+                if (BinaryDictDecoderUtils.isBinaryDictionary(dst)
+                        || CombinedInputOutput.isCombinedDictionary(dst.getAbsolutePath())) {
+                    return dst;
+                }
+            }
+            throw new UnsupportedFormatException("Input stream not at the expected format");
+        }
+    }
+
     public static void copy(final InputStream input, final OutputStream output) throws IOException {
         final byte[] buffer = new byte[COPY_BUFFER_SIZE];
         for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer)) {
@@ -123,44 +150,40 @@ public final class BinaryDictOffdeviceUtils {
     }
 
     /**
-     * Returns a decrypted/uncompressed dictionary.
+     * Process a dictionary, decrypting/uncompressing it on the fly as necessary.
      *
-     * This will decrypt/uncompress any number of times as necessary until it finds the
-     * dictionary signature, and copy the decoded file to a temporary place.
-     * If this is not a dictionary, the method returns null.
+     * This will execute the given processor repeatedly with the possible alternatives
+     * for dictionary format until the processor does not throw an exception.
+     * If the processor succeeds for none of the possible formats, the method returns null.
      */
-    public static DecoderChainSpec getRawDictionaryOrNull(final File src) {
-        DecoderChainSpec spec = new DecoderChainSpec();
-        if (BinaryDictDecoderUtils.isBinaryDictionary(src)
-                || CombinedInputOutput.isCombinedDictionary(src.getAbsolutePath())) {
-            spec.mFile = src;
-            return spec;
-        }
+    @Nullable
+    public static <T> DecoderChainSpec<T> decodeDictionaryForProcess(@Nonnull final File src,
+            @Nonnull final InputProcessor<T> processor) {
+        @Nonnull DecoderChainSpec spec = new DecoderChainSpec();
         while (null != spec) {
             try {
-                final File dst = File.createTempFile(PREFIX, SUFFIX);
-                dst.deleteOnExit();
-                try (final InputStream input = spec.getStream(src);
-                        final OutputStream output =
-                                new BufferedOutputStream(new FileOutputStream(dst))) {
-                        copy(input, output);
-                        output.flush();
-                        output.close();
-                        if (BinaryDictDecoderUtils.isBinaryDictionary(dst)
-                                || CombinedInputOutput.isCombinedDictionary(
-                                        dst.getAbsolutePath())) {
-                            spec.mFile = dst;
-                            return spec;
-                        }
-                    }
-            } catch (IOException e) {
-                // This was not the right format, fall through and try the next
-                System.out.println("Rejecting " + spec.describeChain() + " : " + e);
-                System.out.println(e.getStackTrace()[0].toString());
+                try (final InputStream input = spec.getStream(src)) {
+                    spec.mResult = processor.process(input);
+                    return spec;
+                }
+            } catch (IOException | UnsupportedFormatException e) {
+                // If the format is not the right one for this file, the processor will throw one
+                // of these exceptions. In our case, that means we should try the next spec,
+                // since it may still be at another format we haven't tried yet.
+                // TODO: stop using exceptions for this non-exceptional case.
             }
             spec = spec.next();
         }
         return null;
+    }
+
+    /**
+     * Get a decoder chain spec with a raw dictionary file. This makes a new file on the
+     * disk ready for any treatment the client wants.
+     */
+    @Nullable
+    public static DecoderChainSpec<File> getRawDictionaryOrNull(@Nonnull final File src) {
+        return decodeDictionaryForProcess(src, new CopyProcessor());
     }
 
     static FusionDictionary getDictionary(final String filename, final boolean report) {
@@ -170,28 +193,28 @@ public final class BinaryDictOffdeviceUtils {
             System.out.println("Size : " + file.length() + " bytes");
         }
         try {
-            final DecoderChainSpec decodedSpec = getRawDictionaryOrNull(file);
+            final DecoderChainSpec<File> decodedSpec = getRawDictionaryOrNull(file);
             if (null == decodedSpec) {
                 throw new RuntimeException("Does not seem to be a dictionary file " + filename);
             }
-            if (CombinedInputOutput.isCombinedDictionary(decodedSpec.mFile.getAbsolutePath())) {
+            if (CombinedInputOutput.isCombinedDictionary(decodedSpec.mResult.getAbsolutePath())) {
                 if (report) {
                     System.out.println("Format : Combined format");
                     System.out.println("Packaging : " + decodedSpec.describeChain());
-                    System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
+                    System.out.println("Uncompressed size : " + decodedSpec.mResult.length());
                 }
                 try (final BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(new FileInputStream(decodedSpec.mFile), "UTF-8"))) {
+                        new InputStreamReader(new FileInputStream(decodedSpec.mResult), "UTF-8"))) {
                     return CombinedInputOutput.readDictionaryCombined(reader);
                 }
             }
             final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(
-                    decodedSpec.mFile, 0, decodedSpec.mFile.length(),
+                    decodedSpec.mResult, 0, decodedSpec.mResult.length(),
                     DictDecoder.USE_BYTEARRAY);
             if (report) {
                 System.out.println("Format : Binary dictionary format");
                 System.out.println("Packaging : " + decodedSpec.describeChain());
-                System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
+                System.out.println("Uncompressed size : " + decodedSpec.mResult.length());
             }
             return dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);
         } catch (final IOException | UnsupportedFormatException e) {
