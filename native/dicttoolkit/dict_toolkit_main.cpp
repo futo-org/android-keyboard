@@ -26,15 +26,14 @@ void usage(int argc, char **argv) {
 int main(int argc, char **argv) {
     if (argc < MIN_ARG_COUNT) {
         usage(argc, argv);
-        return 0;
+        return 1;
     }
     using namespace latinime::dicttoolkit;
     const CommandType commandType = CommandUtils::getCommandType(argv[1]);
     if (commandType == CommandType::Unknown) {
         CommandUtils::printCommandUnknownMessage(argv[0], argv[1]);
-        return 0;
+        return 1;
     }
-    // TODO: Implement.
-    fprintf(stderr, "Command '%s' has not been implemented yet.\n", argv[1]);
-    return 0;
+    const auto executor = CommandUtils::getCommandExecutor(commandType);
+    return executor(argc - 1, argv + 1);
 }

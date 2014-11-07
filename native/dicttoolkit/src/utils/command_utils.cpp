@@ -16,28 +16,57 @@
 
 #include "utils/command_utils.h"
 
+#include <cstdio>
+
+#include "command_executors/diff_executor.h"
+#include "command_executors/header_executor.h"
+#include "command_executors/help_executor.h"
+#include "command_executors/info_executor.h"
+#include "command_executors/makedict_executor.h"
+
 namespace latinime {
 namespace dicttoolkit {
 
-const char *const CommandUtils::COMMAND_NAME_INFO = "info";
-const char *const CommandUtils::COMMAND_NAME_DIFF = "diff";
-const char *const CommandUtils::COMMAND_NAME_MAKEDICT = "makedict";
-const char *const CommandUtils::COMMAND_NAME_HEADER = "header";
-const char *const CommandUtils::COMMAND_NAME_HELP = "help";
-
 /* static */ CommandType CommandUtils::getCommandType(const std::string &commandName) {
-    if (commandName == COMMAND_NAME_INFO) {
+    if (commandName == InfoExecutor::COMMAND_NAME) {
         return CommandType::Info;
-    } else if (commandName == COMMAND_NAME_DIFF) {
+    } else if (commandName == DiffExecutor::COMMAND_NAME) {
         return CommandType::Diff;
-    } else if (commandName == COMMAND_NAME_MAKEDICT) {
+    } else if (commandName == MakedictExecutor::COMMAND_NAME) {
         return CommandType::Makedict;
-    } else if (commandName == COMMAND_NAME_HEADER) {
+    } else if (commandName == HeaderExecutor::COMMAND_NAME) {
         return CommandType::Header;
-    } else if (commandName == COMMAND_NAME_HELP) {
+    } else if (commandName == HelpExecutor::COMMAND_NAME) {
         return CommandType::Help;
     } else {
         return CommandType::Unknown;
+    }
+}
+
+/* static */ void CommandUtils::printCommandUnknownMessage(const std::string &programName,
+        const std::string &commandName) {
+    fprintf(stderr, "Command '%s' is unknown. Try '%s %s' for more information.\n",
+            commandName.c_str(), programName.c_str(), HelpExecutor::COMMAND_NAME);
+}
+
+/* static */ std::function<int(int, char **)> CommandUtils::getCommandExecutor(
+        const CommandType commandType) {
+    switch (commandType) {
+        case CommandType::Info:
+            return InfoExecutor::run;
+        case CommandType::Diff:
+            return DiffExecutor::run;
+        case CommandType::Makedict:
+            return MakedictExecutor::run;
+        case CommandType::Header:
+            return HeaderExecutor::run;
+        case CommandType::Help:
+            return HelpExecutor::run;
+        default:
+            return [] (int, char **) -> int {
+                printf("Command executor not found.");
+                return 1;
+            };
     }
 }
 
