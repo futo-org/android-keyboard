@@ -17,9 +17,15 @@
 package com.android.inputmethod.latin;
 
 import static com.android.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MODE;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.REQ_NETWORK_CONNECTIVITY;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.inputmethodservice.InputMethodService;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -29,8 +35,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
-import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
@@ -41,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -51,6 +57,7 @@ import javax.annotation.Nonnull;
 // non final for easy mocking.
 public class RichInputMethodManager {
     private static final String TAG = RichInputMethodManager.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     private RichInputMethodManager() {
         // This utility class is not publicly instantiable.
@@ -61,6 +68,9 @@ public class RichInputMethodManager {
     private Context mContext;
     private InputMethodManagerCompatWrapper mImmWrapper;
     private InputMethodInfoCache mInputMethodInfoCache;
+    private InputMethodInfo mShortcutInputMethodInfo;
+    private InputMethodSubtype mShortcutSubtype;
+    private boolean mIsNetworkConnected;
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
             mSubtypeListCacheWithImplicitlySelectedSubtypes = new HashMap<>();
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
@@ -100,6 +110,11 @@ public class RichInputMethodManager {
         SubtypeLocaleUtils.init(context);
         final InputMethodSubtype[] additionalSubtypes = getAdditionalSubtypes(context);
         setAdditionalInputMethodSubtypes(additionalSubtypes);
+
+        final ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        mIsNetworkConnected = (info != null && info.isConnected());
     }
 
     public InputMethodSubtype[] getAdditionalSubtypes(final Context context) {
@@ -461,5 +476,97 @@ public class RichInputMethodManager {
             }
         }
         return true;
+    }
+
+    // TODO: Make this private
+    void updateShortcutIME() {
+        if (DEBUG) {
+            Log.d(TAG, "Update shortcut IME from : "
+                    + (mShortcutInputMethodInfo == null
+                            ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
+                    + (mShortcutSubtype == null ? "<null>" : (
+                            mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
+        }
+        // TODO: Update an icon for shortcut IME
+        final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
+                getInputMethodManager().getShortcutInputMethodsAndSubtypes();
+        mShortcutInputMethodInfo = null;
+        mShortcutSubtype = null;
+        for (final InputMethodInfo imi : shortcuts.keySet()) {
+            final List<InputMethodSubtype> subtypes = shortcuts.get(imi);
+            // TODO: Returns the first found IMI for now. Should handle all shortcuts as
+            // appropriate.
+            mShortcutInputMethodInfo = imi;
+            // TODO: Pick up the first found subtype for now. Should handle all subtypes
+            // as appropriate.
+            mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
+            break;
+        }
+        if (DEBUG) {
+            Log.d(TAG, "Update shortcut IME to : "
+                    + (mShortcutInputMethodInfo == null
+                            ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
+                    + (mShortcutSubtype == null ? "<null>" : (
+                            mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
+        }
+    }
+
+    public void switchToShortcutIME(final InputMethodService context) {
+        if (mShortcutInputMethodInfo == null) {
+            return;
+        }
+
+        final String imiId = mShortcutInputMethodInfo.getId();
+        switchToTargetIME(imiId, mShortcutSubtype, context);
+    }
+
+    private void switchToTargetIME(final String imiId, final InputMethodSubtype subtype,
+            final InputMethodService context) {
+        final IBinder token = context.getWindow().getWindow().getAttributes().token;
+        if (token == null) {
+            return;
+        }
+        final InputMethodManager imm = getInputMethodManager();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                imm.setInputMethodAndSubtype(token, imiId, subtype);
+                return null;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public boolean isShortcutImeEnabled() {
+        updateShortcutIME();
+        if (mShortcutInputMethodInfo == null) {
+            return false;
+        }
+        if (mShortcutSubtype == null) {
+            return true;
+        }
+        return checkIfSubtypeBelongsToImeAndEnabled(
+                mShortcutInputMethodInfo, mShortcutSubtype);
+    }
+
+    public boolean isShortcutImeReady() {
+        updateShortcutIME();
+        if (mShortcutInputMethodInfo == null) {
+            return false;
+        }
+        if (mShortcutSubtype == null) {
+            return true;
+        }
+        if (mShortcutSubtype.containsExtraValueKey(REQ_NETWORK_CONNECTIVITY)) {
+            return mIsNetworkConnected;
+        }
+        return true;
+    }
+
+    public void onNetworkStateChanged(final Intent intent) {
+        final boolean noConnection = intent.getBooleanExtra(
+                ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+        mIsNetworkConnected = !noConnection;
+
+        KeyboardSwitcher.getInstance().onNetworkStateChanged();
     }
 }
