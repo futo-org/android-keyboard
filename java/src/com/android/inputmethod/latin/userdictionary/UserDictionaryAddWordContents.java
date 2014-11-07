@@ -28,7 +28,7 @@ import android.widget.EditText;
 
 import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.common.LocaleUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;

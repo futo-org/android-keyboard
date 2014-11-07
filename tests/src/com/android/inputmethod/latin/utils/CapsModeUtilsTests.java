@@ -21,8 +21,8 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.text.TextUtils;
 
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
-import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.util.Locale;
 

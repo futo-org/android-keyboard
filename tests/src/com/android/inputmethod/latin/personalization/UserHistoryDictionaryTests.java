@@ -23,9 +23,9 @@ import android.util.Log;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
+import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
-import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;

@@ -1,35 +1,30 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
-package com.android.inputmethod.latin.utils;
-
-import android.text.TextUtils;
+package com.android.inputmethod.latin.common;
 
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.annotation.Nullable;
-
 /**
  * A class to help with handling Locales in string form.
  *
- * This file has the same meaning and features (and shares all of its code) with
- * the one in the dictionary pack. They need to be kept synchronized; for any
- * update/bugfix to this file, consider also updating/fixing the version in the
- * dictionary pack.
+ * This file has the same meaning and features (and shares all of its code) with the one with the
+ * same name in Latin IME. They need to be kept synchronized; for any update/bugfix to
+ * this file, consider also updating/fixing the version in Latin IME.
  */
 public final class LocaleUtils {
     private LocaleUtils() {
@@ -105,13 +100,13 @@ public final class LocaleUtils {
      * @param testedLocale the locale to test.
      * @return a constant that measures how well the tested locale matches the reference locale.
      */
-    public static int getMatchLevel(String referenceLocale, String testedLocale) {
-        if (TextUtils.isEmpty(referenceLocale)) {
-            return TextUtils.isEmpty(testedLocale) ? LOCALE_FULL_MATCH : LOCALE_ANY_MATCH;
+    public static int getMatchLevel(final String referenceLocale, final String testedLocale) {
+        if (StringUtils.isEmpty(referenceLocale)) {
+            return StringUtils.isEmpty(testedLocale) ? LOCALE_FULL_MATCH : LOCALE_ANY_MATCH;
         }
         if (null == testedLocale) return LOCALE_NO_MATCH;
-        String[] referenceParams = referenceLocale.split("_", 3);
-        String[] testedParams = testedLocale.split("_", 3);
+        final String[] referenceParams = referenceLocale.split("_", 3);
+        final String[] testedParams = testedLocale.split("_", 3);
         // By spec of String#split, [0] cannot be null and length cannot be 0.
         if (!referenceParams[0].equals(testedParams[0])) return LOCALE_NO_MATCH;
         switch (referenceParams.length) {
@@ -142,7 +137,7 @@ public final class LocaleUtils {
      * The strings are sorted in lexicographic order: a better match will always be less than
      * a worse match when compared together.
      */
-    public static String getMatchLevelSortedString(int matchLevel) {
+    public static String getMatchLevelSortedString(final int matchLevel) {
         // This works because the match levels are 0~99 (actually 0~30)
         // Ideally this should use a number of digits equals to the 1og10 of the greater matchLevel
         return String.format(Locale.ROOT, "%02d", MATCH_LEVEL_MAX - matchLevel);
@@ -157,7 +152,7 @@ public final class LocaleUtils {
      * @param level the match level, as returned by getMatchLevel.
      * @return whether this is a match or not.
      */
-    public static boolean isMatch(int level) {
+    public static boolean isMatch(final int level) {
         return LOCALE_MATCH <= level;
     }
 
@@ -166,18 +161,14 @@ public final class LocaleUtils {
     /**
      * Creates a locale from a string specification.
      */
-    @Nullable
-    public static Locale constructLocaleFromString(@Nullable final String localeStr) {
-        if (localeStr == null) {
-            // TODO: Should this be Locale.ROOT?
+    public static Locale constructLocaleFromString(final String localeStr) {
+        if (localeStr == null)
             return null;
-        }
         synchronized (sLocaleCache) {
-            Locale retval = sLocaleCache.get(localeStr);
-            if (retval != null) {
-                return retval;
-            }
-            final String[] localeParams = localeStr.split("_", 3);
+            if (sLocaleCache.containsKey(localeStr))
+                return sLocaleCache.get(localeStr);
+            Locale retval = null;
+            String[] localeParams = localeStr.split("_", 3);
             if (localeParams.length == 1) {
                 retval = new Locale(localeParams[0]);
             } else if (localeParams.length == 2) {
@@ -188,7 +179,6 @@ public final class LocaleUtils {
             if (retval != null) {
                 sLocaleCache.put(localeStr, retval);
             }
-            // TODO: Should return Locale.ROOT instead of null?
             return retval;
         }
     }

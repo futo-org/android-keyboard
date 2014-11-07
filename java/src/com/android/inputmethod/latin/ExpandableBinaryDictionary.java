@@ -23,6 +23,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
@@ -32,7 +33,6 @@ import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
-import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;
 
 import java.io.File;

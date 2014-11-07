@@ -22,6 +22,8 @@ import android.util.Pair;
 
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.common.CodePointUtils;
+import com.android.inputmethod.latin.common.FileUtils;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
@@ -30,8 +32,6 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
-import com.android.inputmethod.latin.utils.FileUtils;
-import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;
 
 import java.io.File;

@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.utils.FileUtils;
+import com.android.inputmethod.latin.common.FileUtils;
 
 import java.io.File;
 

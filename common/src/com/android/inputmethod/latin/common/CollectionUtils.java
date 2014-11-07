@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.utils;
+package com.android.inputmethod.latin.common;
 
 import java.util.ArrayList;
 import java.util.Collection;

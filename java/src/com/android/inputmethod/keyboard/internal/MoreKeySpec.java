@@ -21,10 +21,10 @@ import android.util.SparseIntArray;
 
 import com.android.inputmethod.compat.CharacterCompat;
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.latin.common.CollectionUtils;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -22,7 +22,7 @@ import android.view.MotionEvent;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.PointerTracker;
-import com.android.inputmethod.latin.utils.CoordinateUtils;
+import com.android.inputmethod.latin.common.CoordinateUtils;
 
 public final class NonDistinctMultitouchHelper {
     private static final String TAG = NonDistinctMultitouchHelper.class.getSimpleName();

@@ -24,12 +24,12 @@ import android.util.Pair;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.common.CodePointUtils;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
-import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

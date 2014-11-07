@@ -26,10 +26,10 @@ import android.os.Environment;
 import com.android.inputmethod.latin.BinaryDictionaryFileDumper;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
-import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

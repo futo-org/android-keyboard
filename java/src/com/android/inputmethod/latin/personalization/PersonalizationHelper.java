@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.personalization;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.inputmethod.latin.utils.FileUtils;
+import com.android.inputmethod.latin.common.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;

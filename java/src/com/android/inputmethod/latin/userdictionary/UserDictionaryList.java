@@ -31,7 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.common.LocaleUtils;
 
 import java.util.List;
 import java.util.Locale;
