@@ -19,6 +19,8 @@ package com.android.inputmethod.latin.utils;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.common.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

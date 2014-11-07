@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
 
 import java.io.File;

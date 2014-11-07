@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.utils;
+package com.android.inputmethod.latin.common;
 
 import java.io.File;
 import java.io.FilenameFilter;

@@ -35,10 +35,10 @@ import com.android.inputmethod.keyboard.internal.TimerProxy;
 import com.android.inputmethod.keyboard.internal.TypingTimeRecorder;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.settings.Settings;
-import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.ArrayList;

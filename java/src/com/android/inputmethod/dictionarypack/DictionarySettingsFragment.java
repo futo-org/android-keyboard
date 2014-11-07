@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.dictionarypack;
 
+import com.android.inputmethod.latin.common.LocaleUtils;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
