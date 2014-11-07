@@ -28,7 +28,7 @@ public class NativeSuggestOptions {
     private final int[] mOptions;
 
     public NativeSuggestOptions(final int additionalFeaturesSettingsSize) {
-        mOptions = new int[additionalFeaturesSettingsSize];
+        mOptions = new int[OPTIONS_SIZE + additionalFeaturesSettingsSize];
     }
 
     public void setIsGesture(final boolean value) {
