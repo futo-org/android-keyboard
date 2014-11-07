@@ -36,6 +36,7 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
+import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.NetworkConnectivityUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -513,6 +514,15 @@ public class RichInputMethodManager {
                     + (mShortcutSubtype == null ? "<null>" : (
                             mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
         }
+        final RichInputMethodSubtype richSubtype = mCurrentRichInputMethodSubtype;
+        final boolean implicitlyEnabledSubtype = checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(
+                richSubtype.getRawSubtype());
+        final Locale systemLocale = mContext.getResources().getConfiguration().locale;
+        LanguageOnSpacebarUtils.onSubtypeChanged(
+                richSubtype, implicitlyEnabledSubtype, systemLocale);
+        LanguageOnSpacebarUtils.setEnabledSubtypes(getMyEnabledInputMethodSubtypeList(
+                true /* allowsImplicitlySelectedSubtypes */));
+
         // TODO: Update an icon for shortcut IME
         final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
                 getInputMethodManager().getShortcutInputMethodsAndSubtypes();

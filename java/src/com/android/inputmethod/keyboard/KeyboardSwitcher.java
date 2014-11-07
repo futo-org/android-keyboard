@@ -34,7 +34,6 @@ import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.Settings;
@@ -49,8 +48,6 @@ import com.android.inputmethod.latin.utils.ScriptUtils;
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
         NetworkConnectivityUtils.NetworkStateChangeListener {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
-
-    private SubtypeSwitcher mSubtypeSwitcher;
 
     private InputView mCurrentInputView;
     private View mMainKeyboardFrame;
@@ -86,7 +83,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private void initInternal(final LatinIME latinIme) {
         mLatinIME = latinIme;
         mRichImm = RichInputMethodManager.getInstance();
-        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
         mIsHardwareAcceleratedDrawingEnabled =
                 InputMethodServiceCompatUtils.enableHardwareAcceleration(mLatinIME);

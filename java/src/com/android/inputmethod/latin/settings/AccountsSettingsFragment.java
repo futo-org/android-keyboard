@@ -33,9 +33,8 @@ import android.widget.Toast;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.accounts.AccountStateChangedListener;
+import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.define.ProductionFlags;
 
 import javax.annotation.Nullable;
@@ -63,12 +62,6 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         addPreferencesFromResource(R.xml.prefs_screen_accounts);
 
         final Resources res = getResources();
-        final Context context = getActivity();
-
-        // When we are called from the Settings application but we are not already running, some
-        // singleton and utility classes may not have been initialized.  We have to call
-        // initialization method of these classes here. See {@link LatinIME#onCreate()}.
-        SubtypeSwitcher.init(context);
 
         if (ProductionFlags.IS_METRICS_LOGGING_SUPPORTED) {
             final Preference enableMetricsLogging =
