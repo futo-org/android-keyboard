@@ -387,7 +387,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 false /* isAuxiliary */,
                 false /* overridesImplicitlyEnabledSubtype */,
                 0 /* id */);
-        SubtypeSwitcher.forceSubtype(subtype);
+        RichInputMethodManager.forceSubtype(subtype);
         mLatinIME.onCurrentInputMethodSubtypeChanged(subtype);
         runMessages();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();

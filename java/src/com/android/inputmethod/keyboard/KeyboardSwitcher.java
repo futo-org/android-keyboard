@@ -114,7 +114,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         final int keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
-        builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
+        builder.setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype());
         builder.setVoiceInputKeyEnabled(settingsValues.mShowsVoiceInputKey);
         builder.setLanguageSwitchKeyEnabled(mLatinIME.shouldShowLanguageSwitchKey());
         builder.setSplitLayoutEnabledByUser(ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED
@@ -123,7 +123,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         try {
             mState.onLoadKeyboard(currentAutoCapsState, currentRecapitalizeState);
             // TODO: revisit this for multi-lingual input
-            mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocales()[0],
+            mKeyboardTextsSet.setLocale(
+                    RichInputMethodManager.getInstance().getCurrentSubtypeLocales()[0],
                     mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
