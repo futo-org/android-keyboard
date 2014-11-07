@@ -16,30 +16,18 @@
 
 package com.android.inputmethod.latin;
 
-import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.REQ_NETWORK_CONNECTIVITY;
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.inputmethodservice.InputMethodService;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.IBinder;
 import android.util.Log;
-import android.view.inputmethod.InputMethodInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -54,10 +42,7 @@ public final class SubtypeSwitcher {
 
     private final LanguageOnSpacebarHelper mLanguageOnSpacebarHelper =
             new LanguageOnSpacebarHelper();
-    private InputMethodInfo mShortcutInputMethodInfo;
-    private InputMethodSubtype mShortcutSubtype;
     private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
-    private boolean mIsNetworkConnected;
 
     public static SubtypeSwitcher getInstance() {
         return sInstance;
@@ -79,11 +64,6 @@ public final class SubtypeSwitcher {
         }
         mResources = context.getResources();
         mRichImm = RichInputMethodManager.getInstance();
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
-
-        final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        mIsNetworkConnected = (info != null && info.isConnected());
 
         onSubtypeChanged(mRichImm.getCurrentRawSubtype());
         updateParametersOnStartInputView();
@@ -97,39 +77,7 @@ public final class SubtypeSwitcher {
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
                 mRichImm.getMyEnabledInputMethodSubtypeList(true);
         mLanguageOnSpacebarHelper.updateEnabledSubtypes(enabledSubtypesOfThisIme);
-        updateShortcutIME();
-    }
-
-    private void updateShortcutIME() {
-        if (DBG) {
-            Log.d(TAG, "Update shortcut IME from : "
-                    + (mShortcutInputMethodInfo == null
-                            ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
-                    + (mShortcutSubtype == null ? "<null>" : (
-                            mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
-        }
-        // TODO: Update an icon for shortcut IME
-        final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
-                mRichImm.getInputMethodManager().getShortcutInputMethodsAndSubtypes();
-        mShortcutInputMethodInfo = null;
-        mShortcutSubtype = null;
-        for (final InputMethodInfo imi : shortcuts.keySet()) {
-            final List<InputMethodSubtype> subtypes = shortcuts.get(imi);
-            // TODO: Returns the first found IMI for now. Should handle all shortcuts as
-            // appropriate.
-            mShortcutInputMethodInfo = imi;
-            // TODO: Pick up the first found subtype for now. Should handle all subtypes
-            // as appropriate.
-            mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
-            break;
-        }
-        if (DBG) {
-            Log.d(TAG, "Update shortcut IME to : "
-                    + (mShortcutInputMethodInfo == null
-                            ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
-                    + (mShortcutSubtype == null ? "<null>" : (
-                            mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
-        }
+        mRichImm.updateShortcutIME();
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
@@ -155,75 +103,8 @@ public final class SubtypeSwitcher {
             mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(
                     sameLocale || (sameLanguage && implicitlyEnabled));
         }
-        updateShortcutIME();
+        mRichImm.updateShortcutIME();
     }
-
-    ////////////////////////////
-    // Shortcut IME functions //
-    ////////////////////////////
-
-    public void switchToShortcutIME(final InputMethodService context) {
-        if (mShortcutInputMethodInfo == null) {
-            return;
-        }
-
-        final String imiId = mShortcutInputMethodInfo.getId();
-        switchToTargetIME(imiId, mShortcutSubtype, context);
-    }
-
-    private void switchToTargetIME(final String imiId, final InputMethodSubtype subtype,
-            final InputMethodService context) {
-        final IBinder token = context.getWindow().getWindow().getAttributes().token;
-        if (token == null) {
-            return;
-        }
-        final InputMethodManager imm = mRichImm.getInputMethodManager();
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                imm.setInputMethodAndSubtype(token, imiId, subtype);
-                return null;
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    public boolean isShortcutImeEnabled() {
-        updateShortcutIME();
-        if (mShortcutInputMethodInfo == null) {
-            return false;
-        }
-        if (mShortcutSubtype == null) {
-            return true;
-        }
-        return mRichImm.checkIfSubtypeBelongsToImeAndEnabled(
-                mShortcutInputMethodInfo, mShortcutSubtype);
-    }
-
-    public boolean isShortcutImeReady() {
-        updateShortcutIME();
-        if (mShortcutInputMethodInfo == null) {
-            return false;
-        }
-        if (mShortcutSubtype == null) {
-            return true;
-        }
-        if (mShortcutSubtype.containsExtraValueKey(REQ_NETWORK_CONNECTIVITY)) {
-            return mIsNetworkConnected;
-        }
-        return true;
-    }
-
-    public void onNetworkStateChanged(final Intent intent) {
-        final boolean noConnection = intent.getBooleanExtra(
-                ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-        mIsNetworkConnected = !noConnection;
-
-        KeyboardSwitcher.getInstance().onNetworkStateChanged();
-    }
-
-    //////////////////////////////////
-    // Subtype Switching functions //
-    //////////////////////////////////
 
     public int getLanguageOnSpacebarFormatType(final RichInputMethodSubtype subtype) {
         return mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype);

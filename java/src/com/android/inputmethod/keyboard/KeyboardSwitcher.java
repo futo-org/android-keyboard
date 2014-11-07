@@ -163,7 +163,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 currentSettingsValues.mKeyPreviewDismissEndXScale,
                 currentSettingsValues.mKeyPreviewDismissEndYScale,
                 currentSettingsValues.mKeyPreviewDismissDuration);
-        keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
+        keyboardView.updateShortcutKey(RichInputMethodManager.getInstance().isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mSubtype.equals(oldKeyboard.mId.mSubtype);
         final int languageOnSpacebarFormatType = mSubtypeSwitcher.getLanguageOnSpacebarFormatType(
@@ -414,9 +414,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onNetworkStateChanged() {
-        if (mKeyboardView != null) {
-            mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
+        if (mKeyboardView == null) {
+            return;
         }
+        mKeyboardView.updateShortcutKey(RichInputMethodManager.getInstance().isShortcutImeReady());
     }
 
     public int getKeyboardShiftMode() {

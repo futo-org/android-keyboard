@@ -1424,7 +1424,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // completely replace #onCodeInput.
     public void onEvent(@Nonnull final Event event) {
         if (Constants.CODE_SHORTCUT == event.mKeyCode) {
-            mSubtypeSwitcher.switchToShortcutIME(this);
+            mRichImm.switchToShortcutIME(this);
         }
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
@@ -1811,7 +1811,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                mSubtypeSwitcher.onNetworkStateChanged(intent);
+                mRichImm.onNetworkStateChanged(intent);
             } else if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
                 AudioAndHapticFeedbackManager.getInstance().onRingerModeChanged();
             }
