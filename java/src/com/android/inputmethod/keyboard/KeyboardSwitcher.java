@@ -40,6 +40,7 @@ import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
+import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.NetworkConnectivityUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -56,6 +57,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private MainKeyboardView mKeyboardView;
     private EmojiPalettesView mEmojiPalettesView;
     private LatinIME mLatinIME;
+    private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
 
     private KeyboardState mState;
@@ -83,6 +85,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
     private void initInternal(final LatinIME latinIme) {
         mLatinIME = latinIme;
+        mRichImm = RichInputMethodManager.getInstance();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
         mIsHardwareAcceleratedDrawingEnabled =
@@ -116,7 +119,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         final int keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
-        builder.setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype());
+        builder.setSubtype(mRichImm.getCurrentSubtype());
         builder.setVoiceInputKeyEnabled(settingsValues.mShowsVoiceInputKey);
         builder.setLanguageSwitchKeyEnabled(mLatinIME.shouldShowLanguageSwitchKey());
         builder.setSplitLayoutEnabledByUser(ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED
@@ -125,9 +128,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
         try {
             mState.onLoadKeyboard(currentAutoCapsState, currentRecapitalizeState);
             // TODO: revisit this for multi-lingual input
-            mKeyboardTextsSet.setLocale(
-                    RichInputMethodManager.getInstance().getCurrentSubtypeLocales()[0],
-                    mThemeContext);
+            mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocales()[0], mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
             return;
@@ -166,12 +167,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 currentSettingsValues.mKeyPreviewDismissEndXScale,
                 currentSettingsValues.mKeyPreviewDismissEndYScale,
                 currentSettingsValues.mKeyPreviewDismissDuration);
-        keyboardView.updateShortcutKey(RichInputMethodManager.getInstance().isShortcutImeReady());
+        keyboardView.updateShortcutKey(mRichImm.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mSubtype.equals(oldKeyboard.mId.mSubtype);
-        final int languageOnSpacebarFormatType = mSubtypeSwitcher.getLanguageOnSpacebarFormatType(
-                keyboard.mId.mSubtype);
-        final boolean hasMultipleEnabledIMEsOrSubtypes = RichInputMethodManager.getInstance()
+        final int languageOnSpacebarFormatType = LanguageOnSpacebarUtils
+                .getLanguageOnSpacebarFormatType(keyboard.mId.mSubtype);
+        final boolean hasMultipleEnabledIMEsOrSubtypes = mRichImm
                 .hasMultipleEnabledIMEsOrSubtypes(true /* shouldIncludeAuxiliarySubtypes */);
         keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, languageOnSpacebarFormatType,
                 hasMultipleEnabledIMEsOrSubtypes);
@@ -422,7 +423,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (mKeyboardView == null) {
             return;
         }
-        mKeyboardView.updateShortcutKey(RichInputMethodManager.getInstance().isShortcutImeReady());
+        mKeyboardView.updateShortcutKey(mRichImm.isShortcutImeReady());
     }
 
     public int getKeyboardShiftMode() {

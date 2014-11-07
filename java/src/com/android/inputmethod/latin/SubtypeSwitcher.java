@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
+import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.List;
@@ -32,9 +32,6 @@ public final class SubtypeSwitcher {
 
     private /* final */ RichInputMethodManager mRichImm;
     private /* final */ Resources mResources;
-
-    private final LanguageOnSpacebarHelper mLanguageOnSpacebarHelper =
-            new LanguageOnSpacebarHelper();
 
     public static SubtypeSwitcher getInstance() {
         return sInstance;
@@ -68,18 +65,14 @@ public final class SubtypeSwitcher {
     public void updateParametersOnStartInputView() {
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
                 mRichImm.getMyEnabledInputMethodSubtypeList(true);
-        mLanguageOnSpacebarHelper.onUpdateEnabledSubtypes(enabledSubtypesOfThisIme);
+        LanguageOnSpacebarUtils.setEnabledSubtypes(enabledSubtypesOfThisIme);
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void onSubtypeChanged(@Nonnull final RichInputMethodSubtype richSubtype) {
         final boolean implicitlyEnabledSubtype = mRichImm
                 .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(richSubtype.getRawSubtype());
-        mLanguageOnSpacebarHelper.onSubtypeChanged(
+        LanguageOnSpacebarUtils.onSubtypeChanged(
                 richSubtype, implicitlyEnabledSubtype, mResources.getConfiguration().locale);
-    }
-
-    public int getLanguageOnSpacebarFormatType(final RichInputMethodSubtype subtype) {
-        return mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype);
     }
 }

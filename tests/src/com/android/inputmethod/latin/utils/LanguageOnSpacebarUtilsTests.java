@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.internal;
+package com.android.inputmethod.latin.utils;
 
-import static com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper.FORMAT_TYPE_FULL_LOCALE;
-import static com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper.FORMAT_TYPE_LANGUAGE_ONLY;
-import static com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper.FORMAT_TYPE_NONE;
+import static com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils.FORMAT_TYPE_FULL_LOCALE;
+import static com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils.FORMAT_TYPE_LANGUAGE_ONLY;
+import static com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils.FORMAT_TYPE_NONE;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
@@ -28,6 +28,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
+import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.ArrayList;
@@ -36,10 +37,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 @SmallTest
-public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
-    private final LanguageOnSpacebarHelper mLanguageOnSpacebarHelper =
-            new LanguageOnSpacebarHelper();
-
+public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
     private RichInputMethodManager mRichImm;
 
     RichInputMethodSubtype EN_US_QWERTY;
@@ -84,21 +82,21 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
         return new RichInputMethodSubtype(subtype);
     }
 
-    private void enableSubtypes(final RichInputMethodSubtype ... subtypes) {
+    private static void enableSubtypes(final RichInputMethodSubtype ... subtypes) {
         final ArrayList<InputMethodSubtype> enabledSubtypes = new ArrayList<>();
         for (final RichInputMethodSubtype subtype : subtypes) {
             enabledSubtypes.add(subtype.getRawSubtype());
         }
-        mLanguageOnSpacebarHelper.onUpdateEnabledSubtypes(enabledSubtypes);
+        LanguageOnSpacebarUtils.setEnabledSubtypes(enabledSubtypes);
     }
 
-    private void assertFormatType(final RichInputMethodSubtype subtype,
+    private static void assertFormatType(final RichInputMethodSubtype subtype,
             final boolean implicitlyEnabledSubtype, final Locale systemLocale,
             final int expectedFormat) {
-        mLanguageOnSpacebarHelper.onSubtypeChanged(subtype, implicitlyEnabledSubtype, systemLocale);
+        LanguageOnSpacebarUtils.onSubtypeChanged(subtype, implicitlyEnabledSubtype, systemLocale);
         assertEquals(subtype.getLocales()[0] + " implicitly=" + implicitlyEnabledSubtype
                 + " in " + systemLocale, expectedFormat,
-                mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype));
+                LanguageOnSpacebarUtils.getLanguageOnSpacebarFormatType(subtype));
     }
 
     public void testOneSubtypeImplicitlyEnabled() {
