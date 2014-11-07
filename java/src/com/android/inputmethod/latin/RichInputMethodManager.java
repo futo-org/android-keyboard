@@ -20,11 +20,8 @@ import static com.android.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MO
 import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.REQ_NETWORK_CONNECTIVITY;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
@@ -36,10 +33,10 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
+import com.android.inputmethod.latin.utils.NetworkConnectivityUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;
@@ -72,7 +69,6 @@ public class RichInputMethodManager {
     private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
-    private boolean mIsNetworkConnected;
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
             mSubtypeListCacheWithImplicitlySelectedSubtypes = new HashMap<>();
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
@@ -116,11 +112,6 @@ public class RichInputMethodManager {
 
         // Initialize the current input method subtype and the shortcut IME.
         refreshSubtypeCaches();
-
-        final ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        mIsNetworkConnected = (info != null && info.isConnected());
     }
 
     public InputMethodSubtype[] getAdditionalSubtypes() {
@@ -591,16 +582,8 @@ public class RichInputMethodManager {
             return true;
         }
         if (mShortcutSubtype.containsExtraValueKey(REQ_NETWORK_CONNECTIVITY)) {
-            return mIsNetworkConnected;
+            return NetworkConnectivityUtils.isNetworkConnected();
         }
         return true;
-    }
-
-    public void onNetworkStateChanged(final Intent intent) {
-        final boolean noConnection = intent.getBooleanExtra(
-                ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-        mIsNetworkConnected = !noConnection;
-
-        KeyboardSwitcher.getInstance().onNetworkStateChanged();
     }
 }
