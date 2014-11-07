@@ -18,12 +18,9 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
-import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.List;
@@ -32,9 +29,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 public final class SubtypeSwitcher {
-    private static boolean DBG = DebugFlags.DEBUG_ENABLED;
-    private static final String TAG = SubtypeSwitcher.class.getSimpleName();
-
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
 
     private /* final */ RichInputMethodManager mRichImm;
@@ -42,7 +36,6 @@ public final class SubtypeSwitcher {
 
     private final LanguageOnSpacebarHelper mLanguageOnSpacebarHelper =
             new LanguageOnSpacebarHelper();
-    private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
 
     public static SubtypeSwitcher getInstance() {
         return sInstance;
@@ -82,12 +75,7 @@ public final class SubtypeSwitcher {
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
-        final RichInputMethodSubtype richSubtype =
-                mRichImm.createCurrentRichInputMethodSubtype(newSubtype);
-        if (DBG) {
-            Log.w(TAG, "onSubtypeChanged: " + richSubtype.getNameForLogging());
-        }
-        mCurrentRichInputMethodSubtype = richSubtype;
+        final RichInputMethodSubtype richSubtype = mRichImm.onSubtypeChanged(newSubtype);
         final Locale[] newLocales = richSubtype.getLocales();
         if (newLocales.length > 1) {
             // In multi-locales mode, the system language is never the same as the input language
@@ -108,30 +96,5 @@ public final class SubtypeSwitcher {
 
     public int getLanguageOnSpacebarFormatType(final RichInputMethodSubtype subtype) {
         return mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype);
-    }
-
-    private static RichInputMethodSubtype sForcedSubtypeForTesting = null;
-
-    @UsedForTesting
-    static void forceSubtype(final InputMethodSubtype subtype) {
-        sForcedSubtypeForTesting = new RichInputMethodSubtype(subtype);
-    }
-
-    public Locale[] getCurrentSubtypeLocales() {
-        if (null != sForcedSubtypeForTesting) {
-            return sForcedSubtypeForTesting.getLocales();
-        }
-        return getCurrentSubtype().getLocales();
-    }
-
-    public RichInputMethodSubtype getCurrentSubtype() {
-        if (null != sForcedSubtypeForTesting) {
-            return sForcedSubtypeForTesting;
-        }
-        return mCurrentRichInputMethodSubtype;
-    }
-
-    public String getCombiningRulesExtraValueOfCurrentSubtype() {
-        return SubtypeLocaleUtils.getCombiningRulesExtraValue(getCurrentSubtype().getRawSubtype());
     }
 }
