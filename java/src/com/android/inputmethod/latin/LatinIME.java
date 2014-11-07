@@ -590,7 +590,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: Resolve mutual dependencies of {@link #loadSettings()} and
         // {@link #resetDictionaryFacilitatorIfNecessary()}.
         loadSettings();
-        mSubtypeSwitcher.onSubtypeChanged(mRichImm.getCurrentRawSubtype());
         resetDictionaryFacilitatorIfNecessary();
 
         // Register to receive ringer mode change and network state change.
@@ -865,7 +864,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onCurrentInputMethodSubtypeChanged(final InputMethodSubtype subtype) {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
-        mSubtypeSwitcher.onSubtypeChanged(subtype);
+        mRichImm.onSubtypeChanged(subtype);
+        mSubtypeSwitcher.onSubtypeChanged(mRichImm.getCurrentSubtype());
         mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype),
                 mSettings.getCurrent());
         loadKeyboard();
@@ -881,8 +881,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Switch to the null consumer to handle cases leading to early exit below, for which we
         // also wouldn't be consuming gesture data.
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
-        mRichImm.clearSubtypeCaches();
-        mSubtypeSwitcher.onSubtypeChanged(mRichImm.getCurrentRawSubtype());
+        mRichImm.refreshSubtypeCaches();
+        mSubtypeSwitcher.onSubtypeChanged(mRichImm.getCurrentSubtype());
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme();
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
@@ -1448,7 +1448,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // completely replace #onCodeInput.
     public void onEvent(@Nonnull final Event event) {
         if (Constants.CODE_SHORTCUT == event.mKeyCode) {
-            mRichImm.switchToShortcutIME(this);
+            mRichImm.switchToShortcutIme(this);
         }
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,

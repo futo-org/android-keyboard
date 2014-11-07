@@ -71,6 +71,7 @@ public final class PreferencesSettingsFragment extends SubScreenFragment {
         super.onResume();
         final Preference voiceInputKeyOption = findPreference(Settings.PREF_VOICE_INPUT_KEY);
         if (voiceInputKeyOption != null) {
+            RichInputMethodManager.getInstance().refreshSubtypeCaches();
             final boolean isShortcutImeEnabled = RichInputMethodManager.getInstance()
                     .isShortcutImeEnabled();
             voiceInputKeyOption.setEnabled(isShortcutImeEnabled);
