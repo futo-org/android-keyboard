@@ -28,5 +28,13 @@ const char *const MakedictExecutor::COMMAND_NAME = "makedict";
     return 0;
 }
 
+/* static */ void MakedictExecutor::printUsage() {
+    printf("*** %s\n", COMMAND_NAME);
+    printf("Usage: %s\n", COMMAND_NAME);
+    printf("Converts a source dictionary file to one or several outputs.\n"
+            "Source can be a binary dictionary file or a combined format file.\n"
+            "Binary version 2 (Jelly Bean), 4, and combined format outputs are supported.\n\n");
+}
+
 } // namespace dicttoolkit
 } // namespace latinime

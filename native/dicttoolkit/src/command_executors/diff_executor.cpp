@@ -28,5 +28,11 @@ const char *const DiffExecutor::COMMAND_NAME = "diff";
     return 0;
 }
 
+/* static */ void DiffExecutor::printUsage() {
+    printf("*** %s\n", COMMAND_NAME);
+    printf("Usage: %s\n", COMMAND_NAME);
+    printf("Shows differences between two dictionaries.\n\n");
+}
+
 } // namespace dicttoolkit
 } // namespace latinime

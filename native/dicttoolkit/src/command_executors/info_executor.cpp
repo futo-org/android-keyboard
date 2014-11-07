@@ -28,5 +28,11 @@ const char *const InfoExecutor::COMMAND_NAME = "info";
     return 0;
 }
 
+/* static */ void InfoExecutor::printUsage() {
+    printf("*** %s\n", COMMAND_NAME);
+    printf("Usage: %s\n", COMMAND_NAME);
+    printf("Prints various information about a dictionary file.\n\n");
+}
+
 } // namespace dicttoolkit
 } // namespace latinime
