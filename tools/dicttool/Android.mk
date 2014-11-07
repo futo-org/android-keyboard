@@ -47,7 +47,6 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/Dictionary.java \
         latin/NgramContext.java \
         latin/SuggestedWords.java \
-        latin/settings/NativeSuggestOptions.java \
         latin/settings/SettingsValuesForSuggestion.java \
         latin/utils/BinaryDictionaryUtils.java \
         latin/utils/CombinedFormatUtils.java \

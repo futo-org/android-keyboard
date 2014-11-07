@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.settings;
+package com.android.inputmethod.latin.common;
 
 public class NativeSuggestOptions {
     // Need to update suggest_options.h when you add, remove or reorder options.
@@ -25,8 +25,11 @@ public class NativeSuggestOptions {
     private static final int WEIGHT_FOR_LOCALE_IN_THOUSANDS = 4;
     private static final int OPTIONS_SIZE = 5;
 
-    private final int[] mOptions = new int[OPTIONS_SIZE
-            + AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE];
+    private final int[] mOptions;
+
+    public NativeSuggestOptions(final int additionalFeaturesSettingsSize) {
+        mOptions = new int[additionalFeaturesSettingsSize];
+    }
 
     public void setIsGesture(final boolean value) {
         setBooleanOption(IS_GESTURE, value);
