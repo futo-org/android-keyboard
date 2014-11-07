@@ -73,21 +73,11 @@ public class SuggestedWords {
             final boolean willAutoCorrect,
             final boolean isObsoleteSuggestions,
             final int inputStyle) {
-        this(suggestedWordInfoList, rawSuggestions, typedWordValid, willAutoCorrect,
-                isObsoleteSuggestions, inputStyle, NOT_A_SEQUENCE_NUMBER);
-    }
-
-    public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
-            final ArrayList<SuggestedWordInfo> rawSuggestions,
-            final boolean typedWordValid,
-            final boolean willAutoCorrect,
-            final boolean isObsoleteSuggestions,
-            final int inputStyle,
-            final int sequenceNumber) {
         this(suggestedWordInfoList, rawSuggestions,
                 (suggestedWordInfoList.isEmpty() || isPrediction(inputStyle)) ? null
                         : suggestedWordInfoList.get(INDEX_OF_TYPED_WORD).mWord,
-                typedWordValid, willAutoCorrect, isObsoleteSuggestions, inputStyle, sequenceNumber);
+                typedWordValid, willAutoCorrect,
+                isObsoleteSuggestions, inputStyle, NOT_A_SEQUENCE_NUMBER);
     }
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,

@@ -230,7 +230,7 @@ public final class Suggest {
             inputStyle = inputStyleIfNotPrediction;
         }
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
-                suggestionResults.mRawSuggestions,
+                suggestionResults.mRawSuggestions, typedWord,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
@@ -286,8 +286,12 @@ public final class Suggest {
         // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
         // Note that because this method is never used to get predictions, there is no need to
         // modify inputType such in getSuggestedWordsForNonBatchInput.
+        final String pseudoTypedWord = suggestionsContainer.isEmpty() ? null
+                : suggestionsContainer.get(0).mWord;
+
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer,
                 suggestionResults.mRawSuggestions,
+                pseudoTypedWord,
                 true /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
