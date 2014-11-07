@@ -51,6 +51,9 @@ import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This class represents a set of keyboard layouts. Each of them represents a different keyboard
  * specific to a keyboard state, such as alphabet, symbols, and so on.  Layouts in the same
@@ -82,6 +85,8 @@ public final class KeyboardLayoutSet {
     private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
             new HashMap<>();
     private static final KeysCache sKeysCache = new KeysCache();
+    private final static HashMap<InputMethodSubtype, Integer> sScriptIdsForSubtypes =
+            new HashMap<>();
 
     @SuppressWarnings("serial")
     public static final class KeyboardLayoutSetException extends RuntimeException {
@@ -138,6 +143,16 @@ public final class KeyboardLayoutSet {
     private static void clearKeyboardCache() {
         sKeyboardCache.clear();
         sKeysCache.clear();
+    }
+
+    public static int getScriptId(final Resources resources, final InputMethodSubtype subtype) {
+        final Integer value = sScriptIdsForSubtypes.get(subtype);
+        if (null == value) {
+            final int scriptId = Builder.readScriptId(resources, subtype);
+            sScriptIdsForSubtypes.put(subtype, scriptId);
+            return scriptId;
+        }
+        return value;
     }
 
     KeyboardLayoutSet(final Context context, final Params params) {
@@ -244,7 +259,7 @@ public final class KeyboardLayoutSet {
 
         private static final EditorInfo EMPTY_EDITOR_INFO = new EditorInfo();
 
-        public Builder(final Context context, final EditorInfo ei) {
+        public Builder(final Context context, @Nullable final EditorInfo ei) {
             mContext = context;
             mPackageName = context.getPackageName();
             mResources = context.getResources();
@@ -265,7 +280,7 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        public Builder setSubtype(final RichInputMethodSubtype subtype) {
+        public Builder setSubtype(@Nonnull final RichInputMethodSubtype subtype) {
             final boolean asciiCapable = InputMethodSubtypeCompatUtils.isAsciiCapable(subtype);
             // TODO: Consolidate with {@link InputAttributes}.
             @SuppressWarnings("deprecation")
@@ -303,31 +318,13 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        public Builder setScriptId(final int scriptId) {
-            mParams.mScriptId = scriptId;
-            return this;
-        }
-
         public Builder setSplitLayoutEnabledByUser(final boolean enabled) {
             mParams.mIsSplitLayoutEnabledByUser = enabled;
             return this;
         }
 
-        private final static HashMap<InputMethodSubtype, Integer> sScriptIdsForSubtypes =
-                new HashMap<>();
-        public static int getScriptId(final Resources resources, final InputMethodSubtype subtype) {
-            final Integer value = sScriptIdsForSubtypes.get(subtype);
-            if (null == value) {
-                final int scriptId = readScriptId(resources, subtype);
-                sScriptIdsForSubtypes.put(subtype, scriptId);
-                return scriptId;
-            }
-            return value;
-        }
-
         // Super redux version of reading the script ID for some subtype from Xml.
-        private static int readScriptId(final Resources resources,
-                final InputMethodSubtype subtype) {
+        static int readScriptId(final Resources resources, final InputMethodSubtype subtype) {
             final String layoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX
                     + SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
             final int xmlId = getXmlId(resources, layoutSetName);
@@ -414,7 +411,7 @@ public final class KeyboardLayoutSet {
                     if (TAG_ELEMENT.equals(tag)) {
                         parseKeyboardLayoutSetElement(parser);
                     } else if (TAG_FEATURE.equals(tag)) {
-                        parseKeyboardLayoutSetFeature(parser);
+                        mParams.mScriptId = readScriptIdFromTagFeature(mResources, parser);
                     } else {
                         throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_KEYBOARD_SET);
                     }
@@ -457,12 +454,6 @@ public final class KeyboardLayoutSet {
             } finally {
                 a.recycle();
             }
-        }
-
-        private void parseKeyboardLayoutSetFeature(final XmlPullParser parser)
-                throws XmlPullParserException, IOException {
-            final int scriptId = readScriptIdFromTagFeature(mResources, parser);
-            setScriptId(scriptId);
         }
 
         private static int getKeyboardMode(final EditorInfo editorInfo) {
