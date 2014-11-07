@@ -102,11 +102,11 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
     }
 
     public void testGetTextWithSuggestionSpan() {
-        final SuggestedWordInfo predicition1 =
+        final SuggestedWordInfo prediction1 =
                 createWordInfo("Quality", SuggestedWordInfo.KIND_PREDICTION);
-        final SuggestedWordInfo predicition2 =
+        final SuggestedWordInfo prediction2 =
                 createWordInfo("Speed", SuggestedWordInfo.KIND_PREDICTION);
-        final SuggestedWordInfo predicition3 =
+        final SuggestedWordInfo prediction3 =
                 createWordInfo("Price", SuggestedWordInfo.KIND_PREDICTION);
 
         final SuggestedWordInfo typed =
@@ -122,13 +122,15 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
         // is specified.
         {
             final SuggestedWords predictedWords = new SuggestedWords(
-                    new ArrayList<>(Arrays.asList(predicition1, predicition2, predicition3)),
+                    new ArrayList<>(Arrays.asList(prediction1, prediction2, prediction3)),
                     null /* rawSuggestions */,
+                    null /* typedWord */,
                     false /* typedWordValid */,
                     false /* willAutoCorrect */,
                     false /* isObsoleteSuggestions */,
-                    SuggestedWords.INPUT_STYLE_PREDICTION);
-            final String PICKED_WORD = predicition2.mWord;
+                    SuggestedWords.INPUT_STYLE_PREDICTION,
+                    SuggestedWords.NOT_A_SEQUENCE_NUMBER);
+            final String PICKED_WORD = prediction2.mWord;
             assertNotSuggestionSpan(
                     PICKED_WORD,
                     SuggestionSpanUtils.getTextWithSuggestionSpan(getContext(), PICKED_WORD,
@@ -137,17 +139,19 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
 
         final ArrayList<SuggestedWordInfo> suggestedWordList = new ArrayList<>();
         suggestedWordList.add(typed);
-        suggestedWordList.add(predicition1);
-        suggestedWordList.add(predicition2);
-        suggestedWordList.add(predicition3);
+        suggestedWordList.add(prediction1);
+        suggestedWordList.add(prediction2);
+        suggestedWordList.add(prediction3);
         suggestedWordList.addAll(Arrays.asList(corrections));
         final SuggestedWords typedAndCollectedWords = new SuggestedWords(
                 suggestedWordList,
                 null /* rawSuggestions */,
+                null /* typedWord */,
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                SuggestedWords.INPUT_STYLE_TYPING);
+                SuggestedWords.INPUT_STYLE_TYPING,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
 
         for (final SuggestedWordInfo pickedWord : suggestedWordList) {
             final String PICKED_WORD = pickedWord.mWord;

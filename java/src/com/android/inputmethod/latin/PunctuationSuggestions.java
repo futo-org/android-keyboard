@@ -33,10 +33,12 @@ public final class PunctuationSuggestions extends SuggestedWords {
     private PunctuationSuggestions(final ArrayList<SuggestedWordInfo> punctuationsList) {
         super(punctuationsList,
                 null /* rawSuggestions */,
+                null /* typedWord */,
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* isObsoleteSuggestions */,
-                INPUT_STYLE_NONE /* inputStyle */);
+                INPUT_STYLE_NONE /* inputStyle */,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
     }
 
     /**

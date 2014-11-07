@@ -1882,8 +1882,9 @@ public final class InputLogic {
         final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
                 SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
         return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
-                false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
-                true /* isObsoleteSuggestions */, oldSuggestedWords.mInputStyle);
+                typedWord, false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
+                true /* isObsoleteSuggestions */, oldSuggestedWords.mInputStyle,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
     }
 
     /**

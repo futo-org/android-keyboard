@@ -99,10 +99,12 @@ public class SuggestedWordsTests extends AndroidTestCase {
         // Make sure getTypedWordInfoOrNull() returns non-null object.
         final SuggestedWords wordsWithTypedWord = new SuggestedWords(
                 list, null /* rawSuggestions */,
+                TYPED_WORD,
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                SuggestedWords.INPUT_STYLE_NONE);
+                SuggestedWords.INPUT_STYLE_NONE,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
         final SuggestedWordInfo typedWord = wordsWithTypedWord.getTypedWordInfoOrNull();
         assertNotNull(typedWord);
         assertEquals(TYPED_WORD, typedWord.mWord);
@@ -111,10 +113,12 @@ public class SuggestedWordsTests extends AndroidTestCase {
         list.remove(0);
         final SuggestedWords wordsWithoutTypedWord = new SuggestedWords(
                 list, null /* rawSuggestions */,
+                null /* typedWord */,
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                SuggestedWords.INPUT_STYLE_NONE);
+                SuggestedWords.INPUT_STYLE_NONE,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
         assertNull(wordsWithoutTypedWord.getTypedWordInfoOrNull());
 
         // Make sure getTypedWordInfoOrNull() returns null.
@@ -122,10 +126,12 @@ public class SuggestedWordsTests extends AndroidTestCase {
 
         final SuggestedWords emptySuggestedWords = new SuggestedWords(
                 new ArrayList<SuggestedWordInfo>(), null /* rawSuggestions */,
+                null /* typedWord */,
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                SuggestedWords.INPUT_STYLE_NONE);
+                SuggestedWords.INPUT_STYLE_NONE,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
         assertNull(emptySuggestedWords.getTypedWordInfoOrNull());
 
         assertNull(SuggestedWords.getEmptyInstance().getTypedWordInfoOrNull());
