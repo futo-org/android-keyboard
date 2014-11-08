@@ -14,37 +14,24 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DICT_TOOLKIT_COMMAND_UTILS_H
-#define LATINIME_DICT_TOOLKIT_COMMAND_UTILS_H
-
-#include <functional>
-#include <memory>
-#include <string>
+#ifndef LATINIME_DICT_TOOLKIT_MAKEDICT_EXECUTOR_H
+#define LATINIME_DICT_TOOLKIT_MAKEDICT_EXECUTOR_H
 
 #include "dict_toolkit_defines.h"
 
 namespace latinime {
 namespace dicttoolkit {
 
-enum class CommandType : int {
-    Info,
-    Diff,
-    Makedict,
-    Header,
-    Help,
-    Unknown
+class MakedictExecutor final {
+ public:
+    static const char *const COMMAND_NAME;
+
+    static int run(const int argc, char **argv);
+
+ private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(MakedictExecutor);
 };
 
-class CommandUtils {
-public:
-    static CommandType getCommandType(const std::string &commandName);
-    static void printCommandUnknownMessage(const std::string &programName,
-            const std::string &commandName);
-    static std::function<int(int, char **)> getCommandExecutor(const CommandType commandType);
-
-private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(CommandUtils);
-};
 } // namespace dicttoolkit
-} // namespace latinime
-#endif // LATINIME_DICT_TOOLKIT_COMMAND_UTILS_H
+} // namepsace latinime
+#endif // LATINIME_DICT_TOOLKIT_MAKEDICT_EXECUTOR_H

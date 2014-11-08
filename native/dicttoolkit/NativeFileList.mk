@@ -16,6 +16,12 @@ LATIN_IME_DICT_TOOLKIT_MAIN_SRC_FILES := \
     dict_toolkit_main.cpp
 
 LATIN_IME_DICT_TOOLKIT_SRC_FILES := \
+    $(addprefix command_executors/, \
+        diff_executor.cpp \
+        header_executor.cpp \
+        help_executor.cpp \
+        info_executor.cpp \
+        makedict_executor.cpp) \
     utils/command_utils.cpp
 
 LATIN_IME_DICT_TOOLKIT_TEST_FILES := \
