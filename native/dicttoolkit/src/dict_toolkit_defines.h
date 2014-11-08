@@ -19,4 +19,6 @@
 
 #include "defines.h"
 
+#define MIN_ARG_COUNT 2
+
 #endif // LATINIME_DICT_TOOLKIT_DEFINES_H

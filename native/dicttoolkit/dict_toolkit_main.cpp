@@ -16,8 +16,25 @@
 
 #include <cstdio>
 
+#include "dict_toolkit_defines.h"
+#include "utils/command_utils.h"
+
+void usage(int argc, char **argv) {
+    fprintf(stderr, "Usage: %s <command> [arguments]\n", argc > 0 ? argv[0] : "dicttoolkit");
+}
+
 int main(int argc, char **argv) {
+    if (argc < MIN_ARG_COUNT) {
+        usage(argc, argv);
+        return 0;
+    }
+    using namespace latinime::dicttoolkit;
+    const CommandType commandType = CommandUtils::getCommandType(argv[1]);
+    if (commandType == CommandType::Unknown) {
+        CommandUtils::printCommandUnknownMessage(argv[0], argv[1]);
+        return 0;
+    }
     // TODO: Implement.
-    printf("%s\n", argv[0]);
+    fprintf(stderr, "Command '%s' has not been implemented yet.\n", argv[1]);
     return 0;
 }
