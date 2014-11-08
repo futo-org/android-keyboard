@@ -15,7 +15,9 @@
 LATIN_IME_DICT_TOOLKIT_MAIN_SRC_FILES := \
     dict_toolkit_main.cpp
 
-LATIN_IME_DICT_TOOLKIT_SRC_FILES :=
+LATIN_IME_DICT_TOOLKIT_SRC_FILES := \
+    utils/command_utils.cpp
 
 LATIN_IME_DICT_TOOLKIT_TEST_FILES := \
-    dict_toolkit_defines_test.cpp
+    dict_toolkit_defines_test.cpp \
+    utils/command_utils_test.cpp
