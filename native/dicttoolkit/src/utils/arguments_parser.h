@@ -35,29 +35,29 @@ class OptionSpec {
 
     static OptionSpec keyValueOption(const std::string &valueName, const std::string &defaultValue,
             const std::string &description) {
-        return OptionSpec(true /* takeValue */, valueName, defaultValue, description);
+        return OptionSpec(true /* needsValue */, valueName, defaultValue, description);
     }
 
     static OptionSpec switchOption(const std::string &description) {
-        return OptionSpec(false /* takeValue */, "" /* valueName */, "" /* defaultValue */,
+        return OptionSpec(false /* needsValue */, "" /* valueName */, "" /* defaultValue */,
                 description);
     }
 
-    bool takeValue() const { return mTakeValue; }
+    bool needsValue() const { return mNeedsValue; }
     const std::string &getValueName() const { return mValueName; }
     const std::string &getDefaultValue() const { return mDefaultValue; }
     const std::string &getDescription() const { return mDescription; }
 
  private:
-    OptionSpec(const bool takeValue, const std::string &valueName, const std::string &defaultValue,
+    OptionSpec(const bool needsValue, const std::string &valueName, const std::string &defaultValue,
             const std::string &description)
-            : mTakeValue(takeValue), mValueName(valueName), mDefaultValue(defaultValue),
+            : mNeedsValue(needsValue), mValueName(valueName), mDefaultValue(defaultValue),
               mDescription(description) {}
 
     // Whether the option have to be used with a value or just a switch.
-    // e.g. 'f' in "command -f /path/to/file" is mTakeValue == true.
-    //      'f' in "command -f -t" is mTakeValue == false.
-    bool mTakeValue;
+    // e.g. 'f' in "command -f /path/to/file" is mNeedsValue == true.
+    //      'f' in "command -f -t" is mNeedsValue == false.
+    bool mNeedsValue;
     // Name of the value used to show usage.
     std::string mValueName;
     std::string mDefaultValue;
@@ -66,32 +66,32 @@ class OptionSpec {
 
 class ArgumentSpec {
  public:
-    static const int UNLIMITED_COUNT;
+    static const size_t UNLIMITED_COUNT;
 
     static ArgumentSpec singleArgument(const std::string &name, const std::string &description) {
         return ArgumentSpec(name, 1 /* minCount */, 1 /* maxCount */, description);
     }
 
-    static ArgumentSpec variableLengthArguments(const std::string &name, const int minCount,
-            const int maxCount, const std::string &description) {
+    static ArgumentSpec variableLengthArguments(const std::string &name, const size_t minCount,
+            const size_t maxCount, const std::string &description) {
         return ArgumentSpec(name, minCount, maxCount, description);
     }
 
     const std::string &getName() const { return mName; }
-    int getMinCount() const { return mMinCount; }
-    int getMaxCount() const { return mMaxCount; }
+    size_t getMinCount() const { return mMinCount; }
+    size_t getMaxCount() const { return mMaxCount; }
     const std::string &getDescription() const { return mDescription; }
 
  private:
     DISALLOW_DEFAULT_CONSTRUCTOR(ArgumentSpec);
 
-    ArgumentSpec(const std::string &name, const int minCount, const int maxCount,
+    ArgumentSpec(const std::string &name, const size_t minCount, const size_t maxCount,
             const std::string &description)
             : mName(name), mMinCount(minCount), mMaxCount(maxCount), mDescription(description) {}
 
     const std::string mName;
-    const int mMinCount;
-    const int mMaxCount;
+    const size_t mMinCount;
+    const size_t mMaxCount;
     const std::string mDescription;
 };
 
@@ -101,7 +101,8 @@ class ArgumentsParser {
             const std::vector<ArgumentSpec> &&argumentSpecs)
             : mOptionSpecs(std::move(optionSpecs)), mArgumentSpecs(std::move(argumentSpecs)) {}
 
-    const ArgumentsAndOptions parseArguments(const int argc, char **argv) const;
+    const ArgumentsAndOptions parseArguments(const int argc, char **argv,
+            const bool printErrorMessage) const;
     bool validateSpecs() const;
     void printUsage(const std::string &commandName, const std::string &description) const;
 

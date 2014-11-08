@@ -42,6 +42,29 @@ class ArgumentsAndOptions {
         return mOptions.find(optionName) != mOptions.end();
     }
 
+    const std::string &getOptionValue(const std::string &optionName) const {
+        const auto &it = mOptions.find(optionName);
+        ASSERT(it != mOptions.end());
+        return it->second;
+    }
+
+    bool hasArgument(const std::string &name) const {
+        const auto &it = mArguments.find(name);
+        return it != mArguments.end() && !it->second.empty();
+    }
+
+    const std::string &getSingleArgument(const std::string &name) const {
+        const auto &it = mArguments.find(name);
+        ASSERT(it != mArguments.end() && !it->second.empty());
+        return it->second.front();
+    }
+
+    const std::vector<std::string> &getVariableLengthArguments(const std::string &name) const {
+        const auto &it = mArguments.find(name);
+        ASSERT(it != mArguments.end());
+        return it->second;
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(ArgumentsAndOptions);
 
