@@ -62,6 +62,7 @@ public class Header extends Dicttool.Command {
         System.out.println("Dictionary : " + dictFile.getAbsolutePath());
         System.out.println("Size : " + dictFile.length() + " bytes");
         System.out.println("Format : Binary dictionary format");
+        System.out.println("Format version : " + header.mFormatOptions.mVersion);
         System.out.println("Packaging : " + spec.describeChain());
         System.out.println("Header attributes :");
         System.out.print(header.mDictionaryOptions.toString(2 /* indentCount */, plumbing));
