@@ -30,8 +30,19 @@ const char *const DiffExecutor::COMMAND_NAME = "diff";
 
 /* static */ void DiffExecutor::printUsage() {
     printf("*** %s\n", COMMAND_NAME);
-    printf("Usage: %s\n", COMMAND_NAME);
-    printf("Shows differences between two dictionaries.\n\n");
+    getArgumentsParser().printUsage(COMMAND_NAME, "Shows differences between two dictionaries.");
+}
+
+/* static */ const ArgumentsParser DiffExecutor::getArgumentsParser() {
+    std::unordered_map<std::string, OptionSpec> optionSpecs;
+    optionSpecs["p"] = OptionSpec::switchOption("(plumbing) produce output suitable for a script");
+
+    const std::vector<ArgumentSpec> argumentSpecs = {
+        ArgumentSpec::singleArgument("dict1", "dictionary file"),
+        ArgumentSpec::singleArgument("dict2", "dictionary file")
+    };
+
+    return ArgumentsParser(std::move(optionSpecs), std::move(argumentSpecs));
 }
 
 } // namespace dicttoolkit

@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DICT_TOOLKIT_HEADER_EXECUTOR_H
-#define LATINIME_DICT_TOOLKIT_HEADER_EXECUTOR_H
+#include "command_executors/info_executor.h"
 
-#include "dict_toolkit_defines.h"
-#include "utils/arguments_parser.h"
+#include <gtest/gtest.h>
 
 namespace latinime {
 namespace dicttoolkit {
+namespace {
 
-class HeaderExecutor final {
- public:
-    static const char *const COMMAND_NAME;
+TEST(InfoExecutorTests, TestArguemntSpecs) {
+    EXPECT_TRUE(InfoExecutor::getArgumentsParser().validateSpecs());
+}
 
-    static int run(const int argc, char **argv);
-    static void printUsage();
-    static const ArgumentsParser getArgumentsParser();
-
- private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderExecutor);
-};
-
+} // namespace
 } // namespace dicttoolkit
-} // namepsace latinime
-#endif // LATINIME_DICT_TOOLKIT_HEADER_EXECUTOR_H
+} // namespace latinime

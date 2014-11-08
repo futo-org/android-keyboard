@@ -30,9 +30,19 @@ const char *const HeaderExecutor::COMMAND_NAME = "header";
 
 /* static */ void HeaderExecutor::printUsage() {
     printf("*** %s\n", COMMAND_NAME);
-    printf("Usage: %s\n", COMMAND_NAME);
-    printf("Prints the header contents of a dictionary file.\n\n");
+    getArgumentsParser().printUsage(COMMAND_NAME,
+            "Prints the header contents of a dictionary file.");
 }
 
+/* static */ const ArgumentsParser HeaderExecutor::getArgumentsParser() {
+    std::unordered_map<std::string, OptionSpec> optionSpecs;
+    optionSpecs["p"] = OptionSpec::switchOption("(plumbing) produce output suitable for a script");
+
+    const std::vector<ArgumentSpec> argumentSpecs = {
+        ArgumentSpec::singleArgument("dict", "prints the header contents of a dictionary file")
+    };
+
+    return ArgumentsParser(std::move(optionSpecs), std::move(argumentSpecs));
+}
 } // namespace dicttoolkit
 } // namespace latinime
