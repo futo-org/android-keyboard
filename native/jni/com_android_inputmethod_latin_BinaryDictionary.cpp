@@ -586,7 +586,7 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
         }
         if (!dictionaryStructureWithBufferPolicy->addUnigramEntry(
                 CodePointArrayView(wordCodePoints, wordCodePointCount),
-                wordProperty.getUnigramProperty())) {
+                &wordProperty.getUnigramProperty())) {
             LogUtils::logToJava(env, "Cannot add unigram to the new dict.");
             return false;
         }
@@ -605,7 +605,7 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
-        for (const NgramProperty &ngramProperty : *wordProperty.getNgramProperties()) {
+        for (const NgramProperty &ngramProperty : wordProperty.getNgramProperties()) {
             if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&ngramProperty)) {
                 LogUtils::logToJava(env, "Cannot add ngram to the new dict.");
                 return false;
