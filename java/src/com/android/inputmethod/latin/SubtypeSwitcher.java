@@ -24,7 +24,6 @@ import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -69,28 +68,17 @@ public final class SubtypeSwitcher {
     public void updateParametersOnStartInputView() {
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
                 mRichImm.getMyEnabledInputMethodSubtypeList(true);
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(enabledSubtypesOfThisIme);
+        mLanguageOnSpacebarHelper.onUpdateEnabledSubtypes(enabledSubtypesOfThisIme);
         mRichImm.updateShortcutIME();
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
         final RichInputMethodSubtype richSubtype = mRichImm.onSubtypeChanged(newSubtype);
-        final Locale[] newLocales = richSubtype.getLocales();
-        if (newLocales.length > 1) {
-            // In multi-locales mode, the system language is never the same as the input language
-            // because there is no single input language.
-            mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(false);
-        } else {
-            final Locale newLocale = newLocales[0];
-            final Locale systemLocale = mResources.getConfiguration().locale;
-            final boolean sameLocale = systemLocale.equals(newLocale);
-            final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
-            final boolean implicitlyEnabled = mRichImm
-                    .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype);
-            mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(
-                    sameLocale || (sameLanguage && implicitlyEnabled));
-        }
+        final boolean implicitlyEnabledSubtype = mRichImm
+                .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype);
+        mLanguageOnSpacebarHelper.onSubtypeChanged(
+                richSubtype, implicitlyEnabledSubtype, mResources.getConfiguration().locale);
         mRichImm.updateShortcutIME();
     }
 
