@@ -41,7 +41,8 @@ const WordProperty getDummpWordProperty(const std::vector<int> &&codePoints) {
 }
 
 TEST(OffdeviceIntermediateDictTest, TestAddWordProperties) {
-    OffdeviceIntermediateDict dict;
+    OffdeviceIntermediateDict dict = OffdeviceIntermediateDict(
+            OffdeviceIntermediateDictHeader(OffdeviceIntermediateDictHeader::AttributeMap()));
     EXPECT_EQ(nullptr, dict.getWordProperty(CodePointArrayView()));
 
     const WordProperty wordProperty0 = getDummpWordProperty(getCodePointVector("abcd"));
