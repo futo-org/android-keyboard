@@ -24,11 +24,14 @@ LATIN_IME_DICT_TOOLKIT_SRC_FILES := \
         makedict_executor.cpp) \
     $(addprefix offdevice_intermediate_dict/, \
         offdevice_intermediate_dict.cpp) \
-    utils/command_utils.cpp
+    $(addprefix utils/, \
+        command_utils.cpp \
+        utf8_utils.cpp)
 
 LATIN_IME_DICT_TOOLKIT_TEST_FILES := \
     dict_toolkit_defines_test.cpp \
     $(addprefix offdevice_intermediate_dict/, \
         offdevice_intermediate_dict_test.cpp) \
     $(addprefix utils/, \
-        command_utils_test.cpp)
+        command_utils_test.cpp \
+        utf8_utils_test.cpp)
