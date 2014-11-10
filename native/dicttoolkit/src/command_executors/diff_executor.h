@@ -27,6 +27,7 @@ class DiffExecutor final {
     static const char *const COMMAND_NAME;
 
     static int run(const int argc, char **argv);
+    static void printUsage();
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DiffExecutor);

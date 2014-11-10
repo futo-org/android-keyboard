@@ -28,5 +28,11 @@ const char *const HeaderExecutor::COMMAND_NAME = "header";
     return 0;
 }
 
+/* static */ void HeaderExecutor::printUsage() {
+    printf("*** %s\n", COMMAND_NAME);
+    printf("Usage: %s\n", COMMAND_NAME);
+    printf("Prints the header contents of a dictionary file.\n\n");
+}
+
 } // namespace dicttoolkit
 } // namespace latinime
