@@ -133,6 +133,29 @@ class IntArrayView {
         return std::vector<int>(begin(), end());
     }
 
+    std::vector<IntArrayView> split(const int separator, const int limit = S_INT_MAX) const {
+        if (limit <= 0) {
+            return std::vector<IntArrayView>();
+        }
+        std::vector<IntArrayView> result;
+        if (limit == 1) {
+            result.emplace_back(mPtr, mSize);
+            return result;
+        }
+        size_t startIndex = 0;
+        for (size_t i = 0; i < mSize; ++i) {
+            if (mPtr[i] == separator) {
+                result.emplace_back(mPtr + startIndex, i - startIndex);
+                startIndex = i + 1;
+                if (result.size() >= static_cast<size_t>(limit - 1)) {
+                    break;
+                }
+            }
+        }
+        result.emplace_back(mPtr + startIndex, mSize - startIndex);
+        return result;
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(IntArrayView);
 
