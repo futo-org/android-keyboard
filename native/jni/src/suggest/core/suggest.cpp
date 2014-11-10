@@ -29,6 +29,7 @@
 #include "suggest/core/result/suggestions_output_utils.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/core/suggest_options.h"
+#include "utils/profiler.h"
 
 namespace latinime {
 
@@ -48,8 +49,8 @@ void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
         int inputSize, const float weightOfLangModelVsSpatialModel,
         SuggestionResults *const outSuggestionResults) const {
-    PROF_OPEN;
-    PROF_START(0);
+    PROF_INIT;
+    PROF_TIMER_START(0);
     const float maxSpatialDistance = TRAVERSAL->getMaxSpatialDistance();
     DicTraverseSession *tSession = static_cast<DicTraverseSession *>(traverseSession);
     tSession->setupForGetSuggestions(pInfo, inputCodePoints, inputSize, inputXs, inputYs, times,
@@ -57,8 +58,8 @@ void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
     // TODO: Add the way to evaluate cache
 
     initializeSearch(tSession);
-    PROF_END(0);
-    PROF_START(1);
+    PROF_TIMER_END(0);
+    PROF_TIMER_START(1);
 
     // keep expanding search dicNodes until all have terminated.
     while (tSession->getDicTraverseCache()->activeSize() > 0) {
@@ -66,12 +67,11 @@ void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         tSession->getDicTraverseCache()->advanceActiveDicNodes();
         tSession->getDicTraverseCache()->advanceInputIndex(inputSize);
     }
-    PROF_END(1);
-    PROF_START(2);
+    PROF_TIMER_END(1);
+    PROF_TIMER_START(2);
     SuggestionsOutputUtils::outputSuggestions(
             SCORING, tSession, weightOfLangModelVsSpatialModel, outSuggestionResults);
-    PROF_END(2);
-    PROF_CLOSE;
+    PROF_TIMER_END(2);
 }
 
 /**

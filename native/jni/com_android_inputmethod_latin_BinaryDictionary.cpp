@@ -35,6 +35,7 @@
 #include "utils/int_array_view.h"
 #include "utils/jni_data_utils.h"
 #include "utils/log_utils.h"
+#include "utils/profiler.h"
 #include "utils/time_keeper.h"
 
 namespace latinime {
@@ -43,8 +44,8 @@ class ProximityInfo;
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring sourceDir,
         jlong dictOffset, jlong dictSize, jboolean isUpdatable) {
-    PROF_OPEN;
-    PROF_START(66);
+    PROF_INIT;
+    PROF_TIMER_START(66);
     const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
     if (sourceDirUtf8Length <= 0) {
         AKLOGE("DICT: Can't get sourceDir string");
@@ -63,8 +64,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
 
     Dictionary *const dictionary =
             new Dictionary(env, std::move(dictionaryStructureWithBufferPolicy));
-    PROF_END(66);
-    PROF_CLOSE;
+    PROF_TIMER_END(66);
     return reinterpret_cast<jlong>(dictionary);
 }
 
