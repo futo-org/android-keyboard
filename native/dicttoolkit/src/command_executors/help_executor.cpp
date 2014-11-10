@@ -17,6 +17,14 @@
 #include "command_executors/help_executor.h"
 
 #include <cstdio>
+#include <functional>
+#include <vector>
+
+#include "command_executors/diff_executor.h"
+#include "command_executors/header_executor.h"
+#include "command_executors/info_executor.h"
+#include "command_executors/makedict_executor.h"
+#include "utils/command_utils.h"
 
 namespace latinime {
 namespace dicttoolkit {
@@ -24,8 +32,20 @@ namespace dicttoolkit {
 const char *const HelpExecutor::COMMAND_NAME = "help";
 
 /* static */ int HelpExecutor::run(const int argc, char **argv) {
-    fprintf(stderr, "Command '%s' has not been implemented yet.\n", COMMAND_NAME);
+    printf("Available commands:\n\n");
+    const std::vector<std::function<void(void)>> printUsageMethods = {DiffExecutor::printUsage,
+            HeaderExecutor::printUsage, InfoExecutor::printUsage, MakedictExecutor::printUsage,
+            printUsage};
+    for (const auto &printUsageMethod : printUsageMethods) {
+        printUsageMethod();
+    }
     return 0;
+}
+
+/* static */ void HelpExecutor::printUsage() {
+    printf("*** %s\n", COMMAND_NAME);
+    printf("Usage: %s\n", COMMAND_NAME);
+    printf("Show this help list.\n\n");
 }
 
 } // namespace dicttoolkit
