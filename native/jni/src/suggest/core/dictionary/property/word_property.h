@@ -23,6 +23,7 @@
 #include "jni.h"
 #include "suggest/core/dictionary/property/ngram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -33,10 +34,10 @@ class WordProperty {
     WordProperty()
             : mCodePoints(), mUnigramProperty(), mNgrams() {}
 
-    WordProperty(const std::vector<int> &&codePoints, const UnigramProperty *const unigramProperty,
-            const std::vector<NgramProperty> *const ngrams)
-            : mCodePoints(std::move(codePoints)), mUnigramProperty(*unigramProperty),
-              mNgrams(*ngrams) {}
+    WordProperty(const std::vector<int> &&codePoints, const UnigramProperty &unigramProperty,
+            const std::vector<NgramProperty> &ngrams)
+            : mCodePoints(std::move(codePoints)), mUnigramProperty(unigramProperty),
+              mNgrams(ngrams) {}
 
     void outputProperties(JNIEnv *const env, jintArray outCodePoints, jbooleanArray outFlags,
             jintArray outProbabilityInfo, jobject outNgramPrevWordsArray,
@@ -44,12 +45,16 @@ class WordProperty {
             jobject outNgramProbabilities, jobject outShortcutTargets,
             jobject outShortcutProbabilities) const;
 
-    const UnigramProperty *getUnigramProperty() const {
-        return &mUnigramProperty;
+    const CodePointArrayView getCodePoints() const {
+        return CodePointArrayView(mCodePoints);
     }
 
-    const std::vector<NgramProperty> *getNgramProperties() const {
-        return &mNgrams;
+    const UnigramProperty &getUnigramProperty() const {
+        return mUnigramProperty;
+    }
+
+    const std::vector<NgramProperty> &getNgramProperties() const {
+        return mNgrams;
     }
 
  private:

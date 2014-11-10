@@ -560,7 +560,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
             wordAttributes.isNotAWord(), wordAttributes.isBlacklisted(),
             wordAttributes.isPossiblyOffensive(), wordAttributes.getProbability(),
             *historicalInfo, std::move(shortcuts));
-    return WordProperty(wordCodePoints.toVector(), &unigramProperty, &ngrams);
+    return WordProperty(wordCodePoints.toVector(), unigramProperty, ngrams);
 }
 
 int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints,
