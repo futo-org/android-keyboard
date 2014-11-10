@@ -89,19 +89,15 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
         for (final RichInputMethodSubtype subtype : subtypes) {
             enabledSubtypes.add(subtype.getRawSubtype());
         }
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(enabledSubtypes);
+        mLanguageOnSpacebarHelper.onUpdateEnabledSubtypes(enabledSubtypes);
     }
 
     private void assertFormatType(final RichInputMethodSubtype subtype,
             final boolean implicitlyEnabledSubtype, final Locale systemLocale,
             final int expectedFormat) {
-        final Locale newLocale = subtype.getLocales()[0];
-        final boolean sameLocale = systemLocale.equals(newLocale);
-        final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
-        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(
-                sameLocale || (sameLanguage && implicitlyEnabledSubtype));
-        assertEquals(newLocale + " implicitly=" + implicitlyEnabledSubtype + " in " + systemLocale,
-                expectedFormat,
+        mLanguageOnSpacebarHelper.onSubtypeChanged(subtype, implicitlyEnabledSubtype, systemLocale);
+        assertEquals(subtype.getLocales()[0] + " implicitly=" + implicitlyEnabledSubtype
+                + " in " + systemLocale, expectedFormat,
                 mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype));
     }
 
