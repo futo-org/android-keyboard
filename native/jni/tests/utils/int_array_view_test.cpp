@@ -151,5 +151,52 @@ TEST(IntArrayViewTest, TestToVector) {
     EXPECT_EQ(std::vector<int>(), CodePointArrayView().toVector());
 }
 
+TEST(IntArrayViewTest, TestSplit) {
+    EXPECT_TRUE(IntArrayView().split(0, 0).empty());
+    {
+        const auto intArrayViews = IntArrayView().split(0, 1);
+        EXPECT_EQ(1u, intArrayViews.size());
+        EXPECT_TRUE(intArrayViews[0].empty());
+    }
+    {
+        const auto intArrayViews = IntArrayView().split(0, 100);
+        EXPECT_EQ(1u, intArrayViews.size());
+        EXPECT_TRUE(intArrayViews[0].empty());
+    }
+
+    const std::vector<int> intVector = {1, 2, 3, 3, 2, 3};
+    const IntArrayView intArrayView(intVector);
+    {
+        const auto intArrayViews = intArrayView.split(2);
+        EXPECT_EQ(3u, intArrayViews.size());
+        EXPECT_EQ(std::vector<int>({1}), intArrayViews[0].toVector());
+        EXPECT_EQ(std::vector<int>({3, 3}), intArrayViews[1].toVector());
+        EXPECT_EQ(std::vector<int>({3}), intArrayViews[2].toVector());
+    }
+    {
+        const auto intArrayViews = intArrayView.split(2, 2);
+        EXPECT_EQ(2u, intArrayViews.size());
+        EXPECT_EQ(std::vector<int>({1}), intArrayViews[0].toVector());
+        EXPECT_EQ(std::vector<int>({3, 3, 2, 3}), intArrayViews[1].toVector());
+    }
+    {
+        const auto intArrayViews = intArrayView.split(2, 1);
+        EXPECT_EQ(1u, intArrayViews.size());
+        EXPECT_EQ(intVector, intArrayViews[0].toVector());
+    }
+    {
+        const auto intArrayViews = intArrayView.split(2, 0);
+        EXPECT_EQ(0u, intArrayViews.size());
+    }
+    {
+        const auto intArrayViews = intArrayView.split(3);
+        EXPECT_EQ(4u, intArrayViews.size());
+        EXPECT_EQ(std::vector<int>({1, 2}), intArrayViews[0].toVector());
+        EXPECT_EQ(std::vector<int>(), intArrayViews[1].toVector());
+        EXPECT_EQ(std::vector<int>({2}), intArrayViews[2].toVector());
+        EXPECT_EQ(std::vector<int>(), intArrayViews[3].toVector());
+    }
+}
+
 }  // namespace
 }  // namespace latinime
