@@ -40,6 +40,7 @@ import com.android.inputmethod.compat.DownloadManagerCompatUtils;
 import com.android.inputmethod.compat.NotificationCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.LocaleUtils;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
 
@@ -79,7 +80,8 @@ public final class UpdateHandler {
     // DownloadManager uses as an ID numbers returned out of an AUTOINCREMENT column
     // in SQLite, so it should never return anything < 0.
     public static final int NOT_AN_ID = -1;
-    public static final int MAXIMUM_SUPPORTED_FORMAT_VERSION = 2;
+    public static final int MAXIMUM_SUPPORTED_FORMAT_VERSION =
+            FormatSpec.MAXIMUM_SUPPORTED_STATIC_VERSION;
 
     // Arbitrary. Probably good if it's a power of 2, and a couple thousand bytes long.
     private static final int FILE_COPY_BUFFER_SIZE = 8192;
