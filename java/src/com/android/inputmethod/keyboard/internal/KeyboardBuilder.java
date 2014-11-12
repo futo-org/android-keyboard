@@ -648,7 +648,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         try {
             final boolean keyboardLayoutSetMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSet,
-                    SubtypeLocaleUtils.getKeyboardLayoutSetName(id.mSubtype));
+                    id.mSubtype.getKeyboardLayoutSetName());
             final boolean keyboardLayoutSetElementMatched = matchTypedValue(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSetElement, id.mElementId,
                     KeyboardId.elementIdToName(id.mElementId));

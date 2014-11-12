@@ -334,10 +334,6 @@ public final class SubtypeLocaleUtils {
     }
 
     @Nonnull
-    public static String getKeyboardLayoutSetName(@Nonnull final RichInputMethodSubtype subtype) {
-        return getKeyboardLayoutSetName(subtype.getRawSubtype());
-    }
-
     public static String getKeyboardLayoutSetName(final InputMethodSubtype subtype) {
         String keyboardLayoutSet = subtype.getExtraValueOf(KEYBOARD_LAYOUT_SET);
         if (keyboardLayoutSet == null) {
