@@ -434,8 +434,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     // locale layout         |  display name
     // ------ -------------- - ----------------------
     //  sr    south_slavic   F  Српски
-    //  sr_ZZ serbian_qwertz F  српски (латиница)
-    //  sr_ZZ qwerty         T  српски (QWERTY)
+    //  sr_ZZ serbian_qwertz F  Српски (латиница)
+    //  sr_ZZ qwerty         T  Српски (QWERTY)
 
     public void testSerbianLatinSubtypesInSerbianSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
@@ -445,12 +445,10 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(SR));
                 // These are preliminary subtypes and may not exist.
                 if (SR_LATN != null) {
-                    // TODO: Uncommented because of the current translation of these strings
-                    // in Seriban are described in Latin script.
-//                    assertEquals("sr_ZZ", "српски (латиница)",
-//                            SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(SR_LATN));
-//                    assertEquals("sr_ZZ", "српски (QWERTY)",
-//                            SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(SR_LATN_QWERTY));
+                    assertEquals("sr_ZZ", "Српски (латиница)",
+                            SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(SR_LATN));
+                    assertEquals("sr_ZZ", "Српски (QWERTY)",
+                            SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(SR_LATN_QWERTY));
                 }
                 return null;
             }
