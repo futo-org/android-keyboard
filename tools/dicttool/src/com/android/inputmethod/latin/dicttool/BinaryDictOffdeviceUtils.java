@@ -186,13 +186,25 @@ public final class BinaryDictOffdeviceUtils {
                 throw new UnsupportedFormatException("Header too large");
             }
             final byte[] headerBuffer = new byte[totalHeaderSize - tmpBuffer.length];
-            if (headerBuffer.length != input.read(headerBuffer)) {
-                throw new UnsupportedFormatException("File shorter than specified in the header");
-            }
+            readStreamExhaustively(input, headerBuffer);
             final HashMap<String, String> attributes =
                     BinaryDictDecoderUtils.decodeHeaderAttributes(headerBuffer);
             return new DictionaryHeader(totalHeaderSize, new DictionaryOptions(attributes),
                     new FormatOptions(version, false /* hasTimestamp */));
+        }
+    }
+
+    private static void readStreamExhaustively(final InputStream inputStream,
+            final byte[] outBuffer) throws IOException, UnsupportedFormatException {
+        int readBytes = 0;
+        int readBytesLastCycle = -1;
+        while (readBytes != outBuffer.length) {
+            readBytesLastCycle = inputStream.read(outBuffer, readBytes,
+                    outBuffer.length - readBytes);
+            if (readBytesLastCycle == -1)
+                throw new UnsupportedFormatException("File shorter than specified in the header"
+                        + " (expected " + outBuffer.length + ", read " + readBytes + ")");
+            readBytes += readBytesLastCycle;
         }
     }
 
