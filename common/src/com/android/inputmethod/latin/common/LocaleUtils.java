@@ -17,7 +17,11 @@
 package com.android.inputmethod.latin.common;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A class to help with handling Locales in string form.
@@ -160,26 +164,49 @@ public final class LocaleUtils {
 
     /**
      * Creates a locale from a string specification.
+     * @param localeString a string specification of a locale, in a format of "ll_cc_variant" where
+     * "ll" is a language code, "cc" is a country code.
      */
-    public static Locale constructLocaleFromString(final String localeStr) {
-        if (localeStr == null)
+    @Nullable
+    public static Locale constructLocaleFromString(@Nullable final String localeString) {
+        if (localeString == null) {
             return null;
-        synchronized (sLocaleCache) {
-            if (sLocaleCache.containsKey(localeStr))
-                return sLocaleCache.get(localeStr);
-            Locale retval = null;
-            String[] localeParams = localeStr.split("_", 3);
-            if (localeParams.length == 1) {
-                retval = new Locale(localeParams[0]);
-            } else if (localeParams.length == 2) {
-                retval = new Locale(localeParams[0], localeParams[1]);
-            } else if (localeParams.length == 3) {
-                retval = new Locale(localeParams[0], localeParams[1], localeParams[2]);
-            }
-            if (retval != null) {
-                sLocaleCache.put(localeStr, retval);
-            }
-            return retval;
         }
+        synchronized (sLocaleCache) {
+            if (sLocaleCache.containsKey(localeString)) {
+                return sLocaleCache.get(localeString);
+            }
+            final String[] elements = localeString.split("_", 3);
+            final Locale locale;
+            if (elements.length == 1) {
+                locale = new Locale(elements[0] /* language */);
+            } else if (elements.length == 2) {
+                locale = new Locale(elements[0] /* language */, elements[1] /* country */);
+            } else { // localeParams.length == 3
+                locale = new Locale(elements[0] /* language */, elements[1] /* country */,
+                        elements[2] /* variant */);
+            }
+            sLocaleCache.put(localeString, locale);
+            return locale;
+        }
+    }
+
+    // TODO: Get this information from the framework instead of maintaining here by ourselves.
+    private static final HashSet<String> sRtlLanguageCodes = new HashSet<>();
+    static {
+        // List of known Right-To-Left language codes.
+        sRtlLanguageCodes.add("ar"); // Arabic
+        sRtlLanguageCodes.add("fa"); // Persian
+        sRtlLanguageCodes.add("iw"); // Hebrew
+        sRtlLanguageCodes.add("ku"); // Kurdish
+        sRtlLanguageCodes.add("ps"); // Pashto
+        sRtlLanguageCodes.add("sd"); // Sindhi
+        sRtlLanguageCodes.add("ug"); // Uyghur
+        sRtlLanguageCodes.add("ur"); // Urdu
+        sRtlLanguageCodes.add("yi"); // Yiddish
+    }
+
+    public static boolean isRtlLanguage(@Nonnull final Locale locale) {
+        return sRtlLanguageCodes.contains(locale.getLanguage());
     }
 }

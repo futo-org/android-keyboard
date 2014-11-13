@@ -135,7 +135,7 @@ public final class RichInputMethodSubtype {
 
     public boolean isRtlSubtype() {
         // The subtype is considered RTL if the language of the main subtype is RTL.
-        return SubtypeLocaleUtils.isRtlLanguage(mLocales[0]);
+        return LocaleUtils.isRtlLanguage(mLocales[0]);
     }
 
     // TODO: remove this method

@@ -50,10 +50,10 @@ import com.android.inputmethod.latin.PunctuationSuggestions;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.ResourceUtils;
-import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.util.ArrayList;
@@ -570,8 +570,7 @@ final class SuggestionStripLayoutHelper {
             final boolean isRtlLanguage = (ViewCompat.getLayoutDirection(addToDictionaryStrip)
                     == ViewCompat.LAYOUT_DIRECTION_RTL);
             final String arrow = isRtlLanguage ? RIGHTWARDS_ARROW : LEFTWARDS_ARROW;
-            final boolean isRtlSystem = SubtypeLocaleUtils.isRtlLanguage(
-                    res.getConfiguration().locale);
+            final boolean isRtlSystem = LocaleUtils.isRtlLanguage(res.getConfiguration().locale);
             final CharSequence hint = res.getText(R.string.hint_add_to_dictionary);
             hintText = (isRtlLanguage == isRtlSystem) ? (arrow + hint) : (hint + arrow);
             hintWidth = width - wordWidth;

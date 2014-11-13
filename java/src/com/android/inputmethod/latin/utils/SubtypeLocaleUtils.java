@@ -27,11 +27,9 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.common.StringUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -345,22 +343,6 @@ public final class SubtypeLocaleUtils {
             return QWERTY;
         }
         return keyboardLayoutSet;
-    }
-
-    // TODO: Get this information from the framework instead of maintaining here by ourselves.
-    // Sorted list of known Right-To-Left language codes.
-    private static final String[] SORTED_RTL_LANGUAGES = {
-        "ar", // Arabic
-        "fa", // Persian
-        "iw", // Hebrew
-    };
-    static {
-        Arrays.sort(SORTED_RTL_LANGUAGES);
-    }
-
-    public static boolean isRtlLanguage(final Locale locale) {
-        final String language = locale.getLanguage();
-        return Arrays.binarySearch(SORTED_RTL_LANGUAGES, language) >= 0;
     }
 
     public static String getCombiningRulesExtraValue(final InputMethodSubtype subtype) {
