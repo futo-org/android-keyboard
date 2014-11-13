@@ -52,7 +52,7 @@ public final class LanguageOnSpacebarHelper {
             return FORMAT_TYPE_MULTIPLE;
         }
         final String keyboardLanguage = locales[0].getLanguage();
-        final String keyboardLayout = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
+        final String keyboardLayout = subtype.getKeyboardLayoutSetName();
         int sameLanguageAndLayoutCount = 0;
         for (final InputMethodSubtype ims : mEnabledSubtypes) {
             final String language = SubtypeLocaleUtils.getSubtypeLocale(ims).getLanguage();
