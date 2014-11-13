@@ -26,7 +26,6 @@ import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.common.CodePointUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
