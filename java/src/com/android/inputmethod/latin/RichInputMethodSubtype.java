@@ -142,6 +142,11 @@ public final class RichInputMethodSubtype {
     @Nonnull
     public InputMethodSubtype getRawSubtype() { return mSubtype; }
 
+    @Nonnull
+    public String getKeyboardLayoutSetName() {
+        return SubtypeLocaleUtils.getKeyboardLayoutSetName(mSubtype);
+    }
+
     // Dummy no language QWERTY subtype. See {@link R.xml.method}.
     private static final int SUBTYPE_ID_OF_DUMMY_NO_LANGUAGE_SUBTYPE = 0xdde0bfd3;
     private static final String EXTRA_VALUE_OF_DUMMY_NO_LANGUAGE_SUBTYPE =

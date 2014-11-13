@@ -294,7 +294,7 @@ public final class KeyboardLayoutSet {
                     : subtype;
             mParams.mSubtype = keyboardSubtype;
             mParams.mKeyboardLayoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX
-                    + SubtypeLocaleUtils.getKeyboardLayoutSetName(keyboardSubtype);
+                    + keyboardSubtype.getKeyboardLayoutSetName();
             return this;
         }
 
