@@ -56,7 +56,6 @@ public final class SubtypeLocaleUtils {
     private static volatile boolean sInitialized = false;
     private static final Object sInitializeLock = new Object();
     private static Resources sResources;
-    private static String[] sPredefinedKeyboardLayoutSet;
     // Keyboard layout to its display name map.
     private static final HashMap<String, String> sKeyboardLayoutToDisplayNameMap = new HashMap<>();
     // Keyboard layout to subtype name resource id map.
@@ -103,7 +102,6 @@ public final class SubtypeLocaleUtils {
         sResources = res;
 
         final String[] predefinedLayoutSet = res.getStringArray(R.array.predefined_layouts);
-        sPredefinedKeyboardLayoutSet = predefinedLayoutSet;
         final String[] layoutDisplayNames = res.getStringArray(
                 R.array.predefined_layout_display_names);
         for (int i = 0; i < predefinedLayoutSet.length; i++) {
@@ -150,10 +148,6 @@ public final class SubtypeLocaleUtils {
             final String keyboardLayoutSet = keyboardLayoutSetMap[i + 1];
             sLocaleAndExtraValueToKeyboardLayoutSetMap.put(key, keyboardLayoutSet);
         }
-    }
-
-    public static String[] getPredefinedKeyboardLayoutSet() {
-        return sPredefinedKeyboardLayoutSet;
     }
 
     public static boolean isExceptionalLocale(final String localeString) {
