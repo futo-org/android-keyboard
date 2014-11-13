@@ -18,6 +18,7 @@
 #define LATINIME_DICT_TOOLKIT_OFFDEVICE_INTERMEDIATE_DICT_H
 
 #include "dict_toolkit_defines.h"
+#include "offdevice_intermediate_dict/offdevice_intermediate_dict_header.h"
 #include "offdevice_intermediate_dict/offdevice_intermediate_dict_pt_node_array.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "utils/int_array_view.h"
@@ -30,13 +31,18 @@ namespace dicttoolkit {
  */
 class OffdeviceIntermediateDict final {
  public:
+    OffdeviceIntermediateDict(const OffdeviceIntermediateDictHeader &header)
+            : mHeader(header), mRootPtNodeArray() {}
+
     bool addWord(const WordProperty &wordProperty);
     // The returned value will be invalid after modifying the dictionary. e.g. calling addWord().
     const WordProperty *getWordProperty(const CodePointArrayView codePoints) const;
+    const OffdeviceIntermediateDictHeader &getHeader() const { return mHeader; }
 
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(OffdeviceIntermediateDict);
 
+    const OffdeviceIntermediateDictHeader mHeader;
     OffdeviceIntermediateDictPtNodeArray mRootPtNodeArray;
 
     bool addWordInner(const CodePointArrayView codePoints, const WordProperty &wordProperty,
