@@ -346,8 +346,10 @@ final class CustomInputStylePreference extends DialogPreference
             super(context, android.R.layout.simple_spinner_item);
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+            final String[] predefinedKeyboardLayoutSet = context.getResources().getStringArray(
+                    R.array.predefined_layouts);
             // TODO: Should filter out already existing combinations of locale and layout.
-            for (final String layout : SubtypeLocaleUtils.getPredefinedKeyboardLayoutSet()) {
+            for (final String layout : predefinedKeyboardLayoutSet) {
                 // This is a dummy subtype with NO_LANGUAGE, only for display.
                 final InputMethodSubtype subtype =
                         AdditionalSubtypeUtils.createDummyAdditionalSubtype(
