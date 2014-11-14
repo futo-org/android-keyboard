@@ -47,7 +47,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     // used to identify the versions for upgrades. This should never change going forward.
     private static final int METADATA_DATABASE_VERSION_WITH_CLIENTID = 6;
     // The current database version.
-    private static final int CURRENT_METADATA_DATABASE_VERSION = 10;
+    // This MUST be increased every time the dictionary pack metadata URL changes.
+    private static final int CURRENT_METADATA_DATABASE_VERSION = 11;
 
     private final static long NOT_A_DOWNLOAD_ID = -1;
 
