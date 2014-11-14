@@ -62,4 +62,9 @@ public final class AssetFileAddress {
     public void deleteUnderlyingFile() {
         FileUtils.deleteRecursively(new File(mFilename));
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (offset=%d, length=%d)", mFilename, mOffset, mLength);
+    }
 }

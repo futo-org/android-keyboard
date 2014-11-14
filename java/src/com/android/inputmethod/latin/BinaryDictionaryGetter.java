@@ -284,7 +284,8 @@ final public class BinaryDictionaryGetter {
                 final AssetFileAddress afa = AssetFileAddress.makeFromFileName(f.getPath());
                 if (null != afa) fileList.add(afa);
             } else {
-                Log.e(TAG, "Found a cached dictionary file but cannot read or use it");
+                Log.e(TAG, "Found a cached dictionary file for " + locale.toString()
+                        + " but cannot read or use it");
             }
         }
 
