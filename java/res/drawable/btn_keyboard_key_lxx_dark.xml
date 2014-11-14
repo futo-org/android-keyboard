@@ -32,8 +32,10 @@
           android:drawable="@drawable/btn_keyboard_key_normal_off_lxx_dark" />
 
     <!-- Empty background keys. -->
+    <item android:state_empty="true" android:state_pressed="true"
+          android:drawable="@color/key_background_pressed_lxx_dark" />
     <item android:state_empty="true"
-          android:drawable="@color/key_background_lxx_dark" />
+          android:drawable="@android:color/transparent" />
 
     <!-- Normal keys. -->
     <item android:state_pressed="true"
