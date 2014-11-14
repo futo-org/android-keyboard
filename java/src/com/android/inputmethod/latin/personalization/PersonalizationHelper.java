@@ -28,32 +28,45 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+/**
+ * Helps handle and manage personalized dictionaries such as {@link UserHistoryDictionary} and
+ * {@link PersonalizationDictionary}.
+ */
 public class PersonalizationHelper {
     private static final String TAG = PersonalizationHelper.class.getSimpleName();
     private static final boolean DEBUG = false;
+
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
             sLangUserHistoryDictCache = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, SoftReference<PersonalizationDictionary>>
             sLangPersonalizationDictCache = new ConcurrentHashMap<>();
 
+    @Nonnull
     public static UserHistoryDictionary getUserHistoryDictionary(
-            final Context context, final Locale locale) {
-        final String localeStr = locale.toString();
+            final Context context, final Locale locale, @Nullable final String accountName) {
+        String lookupStr = locale.toString();
+        if (accountName != null) {
+            lookupStr += "." + accountName;
+        }
         synchronized (sLangUserHistoryDictCache) {
-            if (sLangUserHistoryDictCache.containsKey(localeStr)) {
+            if (sLangUserHistoryDictCache.containsKey(lookupStr)) {
                 final SoftReference<UserHistoryDictionary> ref =
-                        sLangUserHistoryDictCache.get(localeStr);
+                        sLangUserHistoryDictCache.get(lookupStr);
                 final UserHistoryDictionary dict = ref == null ? null : ref.get();
                 if (dict != null) {
                     if (DEBUG) {
-                        Log.w(TAG, "Use cached UserHistoryDictionary for " + locale);
+                        Log.d(TAG, "Use cached UserHistoryDictionary for " + locale +
+                                " & account" + accountName);
                     }
                     dict.reloadDictionaryIfRequired();
                     return dict;
                 }
             }
             final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale);
-            sLangUserHistoryDictCache.put(localeStr, new SoftReference<>(dict));
+            sLangUserHistoryDictCache.put(lookupStr, new SoftReference<>(dict));
             return dict;
         }
     }
