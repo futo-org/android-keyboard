@@ -17,6 +17,9 @@
 #include "command_executors/info_executor.h"
 
 #include <cstdio>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace latinime {
 namespace dicttoolkit {
@@ -30,8 +33,21 @@ const char *const InfoExecutor::COMMAND_NAME = "info";
 
 /* static */ void InfoExecutor::printUsage() {
     printf("*** %s\n", COMMAND_NAME);
-    printf("Usage: %s\n", COMMAND_NAME);
-    printf("Prints various information about a dictionary file.\n\n");
+    getArgumentsParser().printUsage(COMMAND_NAME,
+            "Prints various information about a dictionary file.");
+}
+
+/* static */const ArgumentsParser InfoExecutor::getArgumentsParser() {
+    std::unordered_map<std::string, OptionSpec> optionSpecs;
+    optionSpecs["p"] = OptionSpec::switchOption("(plumbing) produce output suitable for a script");
+
+    const std::vector<ArgumentSpec> argumentSpecs = {
+        ArgumentSpec::singleArgument("dict", "dictionary file name"),
+        ArgumentSpec::variableLengthArguments("word", 0 /* minCount */,
+                ArgumentSpec::UNLIMITED_COUNT, "word to show information")
+    };
+
+    return ArgumentsParser(std::move(optionSpecs), std::move(argumentSpecs));
 }
 
 } // namespace dicttoolkit
