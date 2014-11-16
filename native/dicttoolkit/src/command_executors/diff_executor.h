@@ -18,6 +18,7 @@
 #define LATINIME_DICT_TOOLKIT_DIFF_EXECUTOR_H
 
 #include "dict_toolkit_defines.h"
+#include "utils/arguments_parser.h"
 
 namespace latinime {
 namespace dicttoolkit {
@@ -28,6 +29,7 @@ class DiffExecutor final {
 
     static int run(const int argc, char **argv);
     static void printUsage();
+    static const ArgumentsParser getArgumentsParser();
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DiffExecutor);

@@ -30,10 +30,25 @@ const char *const MakedictExecutor::COMMAND_NAME = "makedict";
 
 /* static */ void MakedictExecutor::printUsage() {
     printf("*** %s\n", COMMAND_NAME);
-    printf("Usage: %s\n", COMMAND_NAME);
-    printf("Converts a source dictionary file to one or several outputs.\n"
+    getArgumentsParser().printUsage(COMMAND_NAME,
+            "Converts a source dictionary file to one or several outputs.\n"
             "Source can be a binary dictionary file or a combined format file.\n"
-            "Binary version 2 (Jelly Bean), 4, and combined format outputs are supported.\n\n");
+            "Binary version 2 (Jelly Bean), 4, and combined format outputs are supported.");
+}
+
+/* static */const ArgumentsParser MakedictExecutor::getArgumentsParser() {
+    std::unordered_map<std::string, OptionSpec> optionSpecs;
+    optionSpecs["o"] = OptionSpec::keyValueOption("format", "2",
+            "output format version: 2/4/combined");
+    optionSpecs["t"] = OptionSpec::keyValueOption("mode", "off",
+            "code point table switch: on/off/auto");
+
+    const std::vector<ArgumentSpec> argumentSpecs = {
+        ArgumentSpec::singleArgument("src_dict", "source dictionary file"),
+        ArgumentSpec::singleArgument("dest_dict", "output dictionary file")
+    };
+
+    return ArgumentsParser(std::move(optionSpecs), std::move(argumentSpecs));
 }
 
 } // namespace dicttoolkit

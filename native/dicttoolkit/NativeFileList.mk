@@ -25,10 +25,16 @@ LATIN_IME_DICT_TOOLKIT_SRC_FILES := \
     $(addprefix offdevice_intermediate_dict/, \
         offdevice_intermediate_dict.cpp) \
     $(addprefix utils/, \
+        arguments_parser.cpp \
         command_utils.cpp \
         utf8_utils.cpp)
 
 LATIN_IME_DICT_TOOLKIT_TEST_FILES := \
+    $(addprefix command_executors/, \
+        diff_executor_test.cpp \
+        header_executor_test.cpp \
+        info_executor_test.cpp \
+        makedict_executor_test.cpp) \
     dict_toolkit_defines_test.cpp \
     $(addprefix offdevice_intermediate_dict/, \
         offdevice_intermediate_dict_test.cpp) \
