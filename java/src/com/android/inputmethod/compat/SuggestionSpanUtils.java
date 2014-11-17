@@ -118,11 +118,7 @@ public final class SuggestionSpanUtils {
             if (TextUtils.isEmpty(localeString)) {
                 continue;
             }
-            final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
-            if (locale == null) {
-                continue;
-            }
-            return locale;
+            return LocaleUtils.constructLocaleFromString(localeString);
         }
         return null;
     }

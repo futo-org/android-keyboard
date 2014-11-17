@@ -22,6 +22,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.inputmethod.latin.R;
@@ -32,6 +33,8 @@ import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
 
 /**
  * Service that handles background tasks for the dictionary provider.
@@ -51,6 +54,8 @@ import java.util.concurrent.TimeUnit;
  *     to access, and mark the current state as such.
  */
 public final class DictionaryService extends Service {
+    private static final String TAG = DictionaryService.class.getSimpleName();
+
     /**
      * The package name, to use in the intent actions.
      */
@@ -156,9 +161,14 @@ public final class DictionaryService extends Service {
             final int startId) {
         final DictionaryService self = this;
         if (SHOW_DOWNLOAD_TOAST_INTENT_ACTION.equals(intent.getAction())) {
-            // This is a UI action, it can't be run in another thread
-            showStartDownloadingToast(this, LocaleUtils.constructLocaleFromString(
-                    intent.getStringExtra(LOCALE_INTENT_ARGUMENT)));
+            final String localeString = intent.getStringExtra(LOCALE_INTENT_ARGUMENT);
+            if (localeString == null) {
+                Log.e(TAG, "Received " + intent.getAction() + " without locale; skipped");
+            } else {
+                // This is a UI action, it can't be run in another thread
+                showStartDownloadingToast(
+                        this, LocaleUtils.constructLocaleFromString(localeString));
+            }
         } else {
             // If it's a command that does not require UI, arrange for the work to be done on a
             // separate thread, so that we can return right away. The executor will spawn a thread
@@ -245,7 +255,8 @@ public final class DictionaryService extends Service {
     /**
      * Shows a toast informing the user that an automatic dictionary download is starting.
      */
-    private static void showStartDownloadingToast(final Context context, final Locale locale) {
+    private static void showStartDownloadingToast(final Context context,
+            @Nonnull final Locale locale) {
         final String toastText = String.format(
                 context.getString(R.string.toast_downloading_suggestions),
                 locale.getDisplayName());

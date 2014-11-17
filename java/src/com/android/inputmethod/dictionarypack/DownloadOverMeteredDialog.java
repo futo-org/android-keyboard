@@ -28,7 +28,7 @@ import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.LocaleUtils;
 
-import java.util.Locale;
+import javax.annotation.Nullable;
 
 /**
  * This implements the dialog for asking the user whether it's okay to download dictionaries over
@@ -54,11 +54,11 @@ public final class DownloadOverMeteredDialog extends Activity {
         setTexts(localeString, size);
     }
 
-    private void setTexts(final String localeString, final long size) {
+    private void setTexts(@Nullable final String localeString, final long size) {
         final String promptFormat = getString(R.string.should_download_over_metered_prompt);
         final String allowButtonFormat = getString(R.string.download_over_metered);
-        final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
-        final String language = (null == locale ? "" : locale.getDisplayLanguage());
+        final String language = (null == localeString) ? ""
+                : LocaleUtils.constructLocaleFromString(localeString).getDisplayLanguage();
         final TextView prompt = (TextView)findViewById(R.id.download_over_metered_prompt);
         prompt.setText(Html.fromHtml(String.format(promptFormat, language)));
         final Button allowButton = (Button)findViewById(R.id.allow_button);

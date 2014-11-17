@@ -40,6 +40,9 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This class encapsulates the logic for the Latin-IME side of dictionary information management.
  */
@@ -59,19 +62,26 @@ public class DictionaryInfoUtils {
         private static final String DATE_COLUMN = "date";
         private static final String FILESIZE_COLUMN = "filesize";
         private static final String VERSION_COLUMN = "version";
+        @Nonnull
         public final String mId;
+        @Nonnull
         public final Locale mLocale;
+        @Nullable
         public final String mDescription;
+        @Nonnull
         public final AssetFileAddress mFileAddress;
         public final int mVersion;
-        public DictionaryInfo(final String id, final Locale locale, final String description,
-                final AssetFileAddress fileAddress, final int version) {
+
+        public DictionaryInfo(@Nonnull final String id, @Nonnull final Locale locale,
+                @Nullable final String description, @Nonnull final AssetFileAddress fileAddress,
+                final int version) {
             mId = id;
             mLocale = locale;
             mDescription = description;
             mFileAddress = fileAddress;
             mVersion = version;
         }
+
         public ContentValues toContentValues() {
             final ContentValues values = new ContentValues();
             values.put(WORDLISTID_COLUMN, mId);
@@ -144,7 +154,8 @@ public class DictionaryInfoUtils {
     /**
      * Reverse escaping done by replaceFileNameDangerousCharacters.
      */
-    public static String getWordListIdFromFileName(final String fname) {
+    @Nonnull
+    public static String getWordListIdFromFileName(@Nonnull final String fname) {
         final StringBuilder sb = new StringBuilder();
         final int fnameLength = fname.length();
         for (int i = 0; i < fnameLength; i = fname.offsetByCodePoints(i, 1)) {
@@ -176,12 +187,15 @@ public class DictionaryInfoUtils {
      * {@link #getMainDictId(Locale)} and {@link #isMainWordListId(String)}.
      * @return The category as a string or null if it can't be found in the file name.
      */
-    public static String getCategoryFromFileName(final String fileName) {
+    @Nullable
+    public static String getCategoryFromFileName(@Nonnull final String fileName) {
         final String id = getWordListIdFromFileName(fileName);
         final String[] idArray = id.split(BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR);
         // An id is supposed to be in format category:locale, so splitting on the separator
         // should yield a 2-elements array
-        if (2 != idArray.length) return null;
+        if (2 != idArray.length) {
+            return null;
+        }
         return idArray[0];
     }
 
@@ -225,7 +239,9 @@ public class DictionaryInfoUtils {
         final String[] idArray = id.split(BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR);
         // An id is supposed to be in format category:locale, so splitting on the separator
         // should yield a 2-elements array
-        if (2 != idArray.length) return false;
+        if (2 != idArray.length) {
+            return false;
+        }
         return BinaryDictionaryGetter.MAIN_DICTIONARY_CATEGORY.equals(idArray[0]);
     }
 
@@ -266,7 +282,9 @@ public class DictionaryInfoUtils {
      */
     public static int getMainDictionaryResourceId(final Resources res, final Locale locale) {
         int resourceId = getMainDictionaryResourceIdIfAvailableForLocale(res, locale);
-        if (0 != resourceId) return resourceId;
+        if (0 != resourceId) {
+            return resourceId;
+        }
         return res.getIdentifier(DEFAULT_MAIN_DICT, "raw", RESOURCE_PACKAGE_NAME);
     }
 
@@ -335,10 +353,10 @@ public class DictionaryInfoUtils {
         if (header == null) {
             return null;
         }
-        final String id = header.getId();
-        final Locale locale = LocaleUtils.constructLocaleFromString(header.getLocaleString());
+        final String id = header.mIdString;
+        final Locale locale = LocaleUtils.constructLocaleFromString(header.mLocaleString);
         final String description = header.getDescription();
-        final String version = header.getVersion();
+        final String version = header.mVersionString;
         return new DictionaryInfo(id, locale, description, fileAddress, Integer.parseInt(version));
     }
 
@@ -366,10 +384,13 @@ public class DictionaryInfoUtils {
         if (null != directoryList) {
             for (final File directory : directoryList) {
                 final String localeString = getWordListIdFromFileName(directory.getName());
-                File[] dicts = BinaryDictionaryGetter.getCachedWordLists(localeString, context);
+                final File[] dicts = BinaryDictionaryGetter.getCachedWordLists(
+                        localeString, context);
                 for (final File dict : dicts) {
                     final String wordListId = getWordListIdFromFileName(dict.getName());
-                    if (!DictionaryInfoUtils.isMainWordListId(wordListId)) continue;
+                    if (!DictionaryInfoUtils.isMainWordListId(wordListId)) {
+                        continue;
+                    }
                     final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
                     final AssetFileAddress fileAddress = AssetFileAddress.makeFromFile(dict);
                     final DictionaryInfo dictionaryInfo =
@@ -377,7 +398,9 @@ public class DictionaryInfoUtils {
                     // Protect against cases of a less-specific dictionary being found, like an
                     // en dictionary being used for an en_US locale. In this case, the en dictionary
                     // should be used for en_US but discounted for listing purposes.
-                    if (dictionaryInfo == null || !dictionaryInfo.mLocale.equals(locale)) continue;
+                    if (dictionaryInfo == null || !dictionaryInfo.mLocale.equals(locale)) {
+                        continue;
+                    }
                     addOrUpdateDictInfo(dictList, dictionaryInfo);
                 }
             }
@@ -391,14 +414,18 @@ public class DictionaryInfoUtils {
             final int resourceId =
                     DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
                             context.getResources(), locale);
-            if (0 == resourceId) continue;
+            if (0 == resourceId) {
+                continue;
+            }
             final AssetFileAddress fileAddress =
                     BinaryDictionaryGetter.loadFallbackResource(context, resourceId);
             final DictionaryInfo dictionaryInfo = createDictionaryInfoFromFileAddress(fileAddress);
             // Protect against cases of a less-specific dictionary being found, like an
             // en dictionary being used for an en_US locale. In this case, the en dictionary
             // should be used for en_US but discounted for listing purposes.
-            if (!dictionaryInfo.mLocale.equals(locale)) continue;
+            if (!dictionaryInfo.mLocale.equals(locale)) {
+                continue;
+            }
             addOrUpdateDictInfo(dictList, dictionaryInfo);
         }
 
@@ -408,7 +435,9 @@ public class DictionaryInfoUtils {
     @UsedForTesting
     public static boolean looksValidForDictionaryInsertion(final CharSequence text,
             final SpacingAndPunctuations spacingAndPunctuations) {
-        if (TextUtils.isEmpty(text)) return false;
+        if (TextUtils.isEmpty(text)) {
+            return false;
+        }
         final int length = text.length();
         if (length > Constants.DICTIONARY_MAX_WORD_LENGTH) {
             return false;
@@ -424,7 +453,9 @@ public class DictionaryInfoUtils {
                 digitCount += charCount;
                 continue;
             }
-            if (!spacingAndPunctuations.isWordCodePoint(codePoint)) return false;
+            if (!spacingAndPunctuations.isWordCodePoint(codePoint)) {
+                return false;
+            }
         }
         // We reject strings entirely comprised of digits to avoid using PIN codes or credit
         // card numbers. It would come in handy for word prediction though; a good example is
