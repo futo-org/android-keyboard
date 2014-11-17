@@ -97,8 +97,8 @@ class ArgumentSpec {
 
 class ArgumentsParser {
  public:
-    ArgumentsParser(std::unordered_map<std::string, OptionSpec> &&optionSpecs,
-            std::vector<ArgumentSpec> &&argumentSpecs)
+    ArgumentsParser(const std::unordered_map<std::string, OptionSpec> &&optionSpecs,
+            const std::vector<ArgumentSpec> &&argumentSpecs)
             : mOptionSpecs(std::move(optionSpecs)), mArgumentSpecs(std::move(argumentSpecs)) {}
 
     const ArgumentsAndOptions parseArguments(const int argc, char **argv) const;
