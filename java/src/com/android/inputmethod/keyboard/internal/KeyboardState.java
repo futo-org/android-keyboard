@@ -106,15 +106,17 @@ public final class KeyboardState {
 
         @Override
         public String toString() {
-            if (!mIsValid) return "INVALID";
-            if (mIsAlphabetMode) {
-                if (mIsAlphabetShiftLocked) return "ALPHABET_SHIFT_LOCKED";
-                return "ALPHABET_" + shiftModeToString(mShiftMode);
-            } else if (mIsEmojiMode) {
-                return "EMOJI";
-            } else {
-                return "SYMBOLS_" + shiftModeToString(mShiftMode);
+            if (!mIsValid) {
+                return "INVALID";
             }
+            if (mIsAlphabetMode) {
+                return mIsAlphabetShiftLocked ? "ALPHABET_SHIFT_LOCKED"
+                        : "ALPHABET_" + shiftModeToString(mShiftMode);
+            }
+            if (mIsEmojiMode) {
+                return "EMOJI";
+            }
+            return "SYMBOLS_" + shiftModeToString(mShiftMode);
         }
     }
 
@@ -133,9 +135,16 @@ public final class KeyboardState {
         mPrevSymbolsKeyboardWasShifted = false;
         mShiftKeyState.onRelease();
         mSymbolKeyState.onRelease();
-        onRestoreKeyboardState(autoCapsFlags, recapitalizeMode);
+        if (mSavedKeyboardState.mIsValid) {
+            onRestoreKeyboardState(autoCapsFlags, recapitalizeMode);
+            mSavedKeyboardState.mIsValid = false;
+        } else {
+            // Reset keyboard to alphabet mode.
+            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
+        }
     }
 
+    // Constants for {@link SavedKeyboardState#mShiftMode} and {@link #setShifted(int)}.
     private static final int UNSHIFT = 0;
     private static final int MANUAL_SHIFT = 1;
     private static final int AUTOMATIC_SHIFT = 2;
@@ -165,28 +174,24 @@ public final class KeyboardState {
             Log.d(TAG, "onRestoreKeyboardState: saved=" + state
                     + " " + stateToString(autoCapsFlags, recapitalizeMode));
         }
-        if (!state.mIsValid || state.mIsAlphabetMode) {
-            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
-        } else if (state.mIsEmojiMode) {
-            setEmojiKeyboard();
-        } else {
-            if (state.mShiftMode == MANUAL_SHIFT) {
-                setSymbolsShiftedKeyboard();
-            } else {
-                setSymbolsKeyboard();
-            }
-        }
-
-        if (!state.mIsValid) return;
-        state.mIsValid = false;
-
+        mPrevMainKeyboardWasShiftLocked = state.mIsAlphabetShiftLocked;
         if (state.mIsAlphabetMode) {
+            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
             setShiftLocked(state.mIsAlphabetShiftLocked);
             if (!state.mIsAlphabetShiftLocked) {
                 setShifted(state.mShiftMode);
             }
+            return;
+        }
+        if (state.mIsEmojiMode) {
+            setEmojiKeyboard();
+            return;
+        }
+        // Symbol mode
+        if (state.mShiftMode == MANUAL_SHIFT) {
+            setSymbolsShiftedKeyboard();
         } else {
-            mPrevMainKeyboardWasShiftLocked = state.mIsAlphabetShiftLocked;
+            setSymbolsKeyboard();
         }
     }
 
