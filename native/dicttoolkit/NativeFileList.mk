@@ -39,5 +39,6 @@ LATIN_IME_DICT_TOOLKIT_TEST_FILES := \
     $(addprefix offdevice_intermediate_dict/, \
         offdevice_intermediate_dict_test.cpp) \
     $(addprefix utils/, \
+        arguments_parser_test.cpp \
         command_utils_test.cpp \
         utf8_utils_test.cpp)

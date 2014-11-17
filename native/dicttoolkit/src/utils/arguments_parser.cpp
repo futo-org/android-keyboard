@@ -16,18 +16,32 @@
 
 #include "utils/arguments_parser.h"
 
+#include <unordered_set>
+
 namespace latinime {
 namespace dicttoolkit {
 
 const int ArgumentSpec::UNLIMITED_COUNT = -1;
 
 bool ArgumentsParser::validateSpecs() const {
+    std::unordered_set<std::string> argumentNameSet;
     for (size_t i = 0; i < mArgumentSpecs.size() ; ++i) {
-        if (mArgumentSpecs[i].getMinCount() != mArgumentSpecs[i].getMaxCount()
-                && i != mArgumentSpecs.size() - 1) {
-            AKLOGE("Variable length argument must be at the end.");
+        if (mArgumentSpecs[i].getMinCount() == 0 && mArgumentSpecs[i].getMaxCount() == 0) {
+            AKLOGE("minCount = maxCount = 0 for %s.", mArgumentSpecs[i].getName().c_str());
             return false;
         }
+        if (mArgumentSpecs[i].getMinCount() != mArgumentSpecs[i].getMaxCount()
+                && i != mArgumentSpecs.size() - 1) {
+            AKLOGE("Variable length argument must be at the end.",
+                    mArgumentSpecs[i].getName().c_str()v  );
+            return false;
+        }
+        if (argumentNameSet.count(mArgumentSpecs[i].getName()) > 0) {
+            AKLOGE("Multiple arguments have the same name \"%s\".",
+                    mArgumentSpecs[i].getName().c_str());
+            return false;
+        }
+        argumentNameSet.insert(mArgumentSpecs[i].getName());
     }
     return true;
 }
