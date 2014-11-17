@@ -92,9 +92,6 @@ LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := c++_static
 LOCAL_LDFLAGS += -ldl
 
-# TODO: Figure out what we should do with --hash-style=gnu for unbundled builds
-LOCAL_LDFLAGS += -Wl,--hash-style=sysv
-
 include $(BUILD_SHARED_LIBRARY)
 #################### Clean up the tmp vars
 include $(LOCAL_PATH)/CleanupNativeFileList.mk
