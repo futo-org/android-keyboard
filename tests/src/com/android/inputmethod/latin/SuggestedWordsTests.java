@@ -89,9 +89,10 @@ public class SuggestedWordsTests extends AndroidTestCase {
 
     public void testGetTypedWordInfoOrNull() {
         final String TYPED_WORD = "typed";
+        final SuggestedWordInfo TYPED_WORD_INFO = createTypedWordInfo(TYPED_WORD);
         final int NUMBER_OF_ADDED_SUGGESTIONS = 5;
         final ArrayList<SuggestedWordInfo> list = new ArrayList<>();
-        list.add(createTypedWordInfo(TYPED_WORD));
+        list.add(TYPED_WORD_INFO);
         for (int i = 0; i < NUMBER_OF_ADDED_SUGGESTIONS; ++i) {
             list.add(createCorrectionWordInfo(Integer.toString(i)));
         }
@@ -99,7 +100,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
         // Make sure getTypedWordInfoOrNull() returns non-null object.
         final SuggestedWords wordsWithTypedWord = new SuggestedWords(
                 list, null /* rawSuggestions */,
-                TYPED_WORD,
+                TYPED_WORD_INFO,
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,

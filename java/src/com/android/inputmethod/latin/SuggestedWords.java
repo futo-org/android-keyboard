@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class SuggestedWords {
     public static final int INDEX_OF_TYPED_WORD = 0;
@@ -54,7 +55,8 @@ public class SuggestedWords {
             false /* typedWordValid */, false /* willAutoCorrect */,
             false /* isObsoleteSuggestions */, INPUT_STYLE_NONE, NOT_A_SEQUENCE_NUMBER);
 
-    public final String mTypedWord;
+    @Nullable
+    public final SuggestedWordInfo mTypedWordInfo;
     public final boolean mTypedWordValid;
     // Note: this INCLUDES cases where the word will auto-correct to itself. A good definition
     // of what this flag means would be "the top suggestion is strong enough to auto-correct",
@@ -65,12 +67,14 @@ public class SuggestedWords {
     // INPUT_STYLE_* constants above.
     public final int mInputStyle;
     public final int mSequenceNumber; // Sequence number for auto-commit.
+    @Nonnull
     protected final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
+    @Nullable
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
 
-    public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
-            final ArrayList<SuggestedWordInfo> rawSuggestions,
-            final String typedWord,
+    public SuggestedWords(@Nonnull final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+            @Nullable final ArrayList<SuggestedWordInfo> rawSuggestions,
+            @Nullable final SuggestedWordInfo typedWordInfo,
             final boolean typedWordValid,
             final boolean willAutoCorrect,
             final boolean isObsoleteSuggestions,
@@ -83,7 +87,7 @@ public class SuggestedWords {
         mIsObsoleteSuggestions = isObsoleteSuggestions;
         mInputStyle = inputStyle;
         mSequenceNumber = sequenceNumber;
-        mTypedWord = typedWord;
+        mTypedWordInfo = typedWordInfo;
     }
 
     public boolean isEmpty() {
@@ -199,14 +203,12 @@ public class SuggestedWords {
     // Should get rid of the first one (what the user typed previously) from suggestions
     // and replace it with what the user currently typed.
     public static ArrayList<SuggestedWordInfo> getTypedWordAndPreviousSuggestions(
-            final String typedWord, final SuggestedWords previousSuggestions) {
+            @Nonnull final SuggestedWordInfo typedWordInfo,
+            @Nonnull final SuggestedWords previousSuggestions) {
         final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<>();
         final HashSet<String> alreadySeen = new HashSet<>();
-        suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
-                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
-        alreadySeen.add(typedWord.toString());
+        suggestionsList.add(typedWordInfo);
+        alreadySeen.add(typedWordInfo.mWord);
         final int previousSize = previousSuggestions.size();
         for (int index = 1; index < previousSize; index++) {
             final SuggestedWordInfo prevWordInfo = previousSuggestions.getInfo(index);
@@ -412,7 +414,7 @@ public class SuggestedWords {
                     SuggestedWordInfo.NOT_A_CONFIDENCE));
         }
         return new SuggestedWords(newSuggestions, null /* rawSuggestions */,
-                newSuggestions.isEmpty() ? null : newSuggestions.get(0).mWord /* typedWord */,
+                newSuggestions.isEmpty() ? null : newSuggestions.get(0) /* typedWordInfo */,
                 mTypedWordValid, mWillAutoCorrect, mIsObsoleteSuggestions, INPUT_STYLE_TAIL_BATCH,
                 NOT_A_SEQUENCE_NUMBER);
     }

@@ -623,11 +623,7 @@ public final class InputLogic {
             } else {
                 // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
                 // because it may differ from mWordComposer.mTypedWord.
-                suggestedWordInfo = new SuggestedWordInfo(suggestedWords.mTypedWord,
-                        SuggestedWordInfo.MAX_SCORE,
-                        SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                        SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
+                suggestedWordInfo = suggestedWords.mTypedWordInfo;
             }
             mWordComposer.setAutoCorrection(suggestedWordInfo);
         }
@@ -1414,14 +1410,19 @@ public final class InputLogic {
                 new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        final String typedWord = mWordComposer.getTypedWord();
+                        final String typedWordString = mWordComposer.getTypedWord();
+                        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                                typedWordString, SuggestedWordInfo.MAX_SCORE,
+                                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
+                                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                                SuggestedWordInfo.NOT_A_CONFIDENCE);
                         // Show new suggestions if we have at least one. Otherwise keep the old
                         // suggestions with the new typed word. Exception: if the length of the
                         // typed word is <= 1 (after a deletion typically) we clear old suggestions.
-                        if (suggestedWords.size() > 1 || typedWord.length() <= 1) {
+                        if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
                             holder.set(suggestedWords);
                         } else {
-                            holder.set(retrieveOlderSuggestions(typedWord, mSuggestedWords));
+                            holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
                         }
                     }
                 }
@@ -1493,13 +1494,14 @@ public final class InputLogic {
         final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
-        final String typedWord = range.mWord.toString();
-        suggestions.add(new SuggestedWordInfo(typedWord,
+        final String typedWordString = range.mWord.toString();
+        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
                 SuggestedWords.MAX_SUGGESTIONS + 1,
                 SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
-        if (!isResumableWord(settingsValues, typedWord)) {
+                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
+        suggestions.add(typedWordInfo);
+        if (!isResumableWord(settingsValues, typedWordString)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
@@ -1507,7 +1509,7 @@ public final class InputLogic {
         for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
             for (final String s : span.getSuggestions()) {
                 ++i;
-                if (!TextUtils.equals(s, typedWord)) {
+                if (!TextUtils.equals(s, typedWordString)) {
                     suggestions.add(new SuggestedWordInfo(s,
                             SuggestedWords.MAX_SUGGESTIONS - i,
                             SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
@@ -1517,11 +1519,11 @@ public final class InputLogic {
                 }
             }
         }
-        final int[] codePoints = StringUtils.toCodePointArray(typedWord);
+        final int[] codePoints = StringUtils.toCodePointArray(typedWordString);
         mWordComposer.setComposingWord(codePoints,
                 mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
         mWordComposer.setCursorPositionWithinWord(
-                typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
+        typedWordString.codePointCount(0, numberOfCharsInWordBeforeCursor));
         if (forStartInput) {
             mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
         }
@@ -1543,7 +1545,7 @@ public final class InputLogic {
             // color of the word in the suggestion strip changes according to this parameter,
             // and false gives the correct color.
             final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
-                    null /* rawSuggestions */, typedWord, false /* typedWordValid */,
+                    null /* rawSuggestions */, typedWordInfo, false /* typedWordValid */,
                     false /* willAutoCorrect */, false /* isObsoleteSuggestions */,
                     SuggestedWords.INPUT_STYLE_RECORRECTION, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
             doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
@@ -1876,19 +1878,19 @@ public final class InputLogic {
      * Make a {@link com.android.inputmethod.latin.SuggestedWords} object containing a typed word
      * and obsolete suggestions.
      * See {@link com.android.inputmethod.latin.SuggestedWords#getTypedWordAndPreviousSuggestions(
-     *      String, com.android.inputmethod.latin.SuggestedWords)}.
-     * @param typedWord The typed word as a string.
+     *      SuggestedWordInfo, com.android.inputmethod.latin.SuggestedWords)}.
+     * @param typedWordInfo The typed word as a SuggestedWordInfo.
      * @param previousSuggestedWords The previously suggested words.
      * @return Obsolete suggestions with the newly typed word.
      */
-    static SuggestedWords retrieveOlderSuggestions(final String typedWord,
+    static SuggestedWords retrieveOlderSuggestions(final SuggestedWordInfo typedWordInfo,
             final SuggestedWords previousSuggestedWords) {
         final SuggestedWords oldSuggestedWords = previousSuggestedWords.isPunctuationSuggestions()
                 ? SuggestedWords.getEmptyInstance() : previousSuggestedWords;
         final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
-                SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
+                SuggestedWords.getTypedWordAndPreviousSuggestions(typedWordInfo, oldSuggestedWords);
         return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
-                typedWord, false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
+                typedWordInfo, false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
                 true /* isObsoleteSuggestions */, oldSuggestedWords.mInputStyle,
                 SuggestedWords.NOT_A_SEQUENCE_NUMBER);
     }
