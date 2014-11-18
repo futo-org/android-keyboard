@@ -201,8 +201,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_RESET_CACHES = 7;
         private static final int MSG_WAIT_FOR_DICTIONARY_LOAD = 8;
         private static final int MSG_DEALLOCATE_MEMORY = 9;
+        private static final int MSG_RESUME_SUGGESTIONS_FOR_START_INPUT = 10;
         // Update this when adding new messages
-        private static final int MSG_LAST = MSG_DEALLOCATE_MEMORY;
+        private static final int MSG_LAST = MSG_RESUME_SUGGESTIONS_FOR_START_INPUT;
 
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
@@ -257,7 +258,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             case MSG_RESUME_SUGGESTIONS:
                 latinIme.mInputLogic.restartSuggestionsOnWordTouchedByCursor(
-                        latinIme.mSettings.getCurrent(),
+                        latinIme.mSettings.getCurrent(), false /* forStartInput */,
+                        latinIme.mKeyboardSwitcher.getCurrentKeyboardScriptId());
+                break;
+            case MSG_RESUME_SUGGESTIONS_FOR_START_INPUT:
+                latinIme.mInputLogic.restartSuggestionsOnWordTouchedByCursor(
+                        latinIme.mSettings.getCurrent(), true /* forStartInput */,
                         latinIme.mKeyboardSwitcher.getCurrentKeyboardScriptId());
                 break;
             case MSG_REOPEN_DICTIONARIES:
@@ -303,7 +309,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             sendMessage(obtainMessage(MSG_REOPEN_DICTIONARIES));
         }
 
-        public void postResumeSuggestions(final boolean shouldDelay) {
+        private void postResumeSuggestionsInternal(final boolean shouldDelay,
+                final boolean forStartInput) {
             final LatinIME latinIme = getOwnerInstance();
             if (latinIme == null) {
                 return;
@@ -312,12 +319,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return;
             }
             removeMessages(MSG_RESUME_SUGGESTIONS);
+            removeMessages(MSG_RESUME_SUGGESTIONS_FOR_START_INPUT);
+            final int message = forStartInput ? MSG_RESUME_SUGGESTIONS_FOR_START_INPUT
+                    : MSG_RESUME_SUGGESTIONS;
             if (shouldDelay) {
-                sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS),
+                sendMessageDelayed(obtainMessage(message),
                         mDelayInMillisecondsToUpdateSuggestions);
             } else {
-                sendMessage(obtainMessage(MSG_RESUME_SUGGESTIONS));
+                sendMessage(obtainMessage(message));
             }
+        }
+
+        public void postResumeSuggestions(final boolean shouldDelay) {
+            postResumeSuggestionsInternal(shouldDelay, false /* forStartInput */);
+        }
+
+        public void postResumeSuggestionsForStartInput(final boolean shouldDelay) {
+            postResumeSuggestionsInternal(shouldDelay, true /* forStartInput */);
         }
 
         public void postResetCaches(final boolean tryResumeSuggestions, final int remainingTries) {
@@ -969,7 +987,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // initialSelStart and initialSelEnd sometimes are lying. Make a best effort to
                 // work around this bug.
                 mInputLogic.mConnection.tryFixLyingCursorPosition();
-                mHandler.postResumeSuggestions(true /* shouldDelay */);
+                mHandler.postResumeSuggestionsForStartInput(true /* shouldDelay */);
                 needToCallLoadKeyboardLater = false;
             }
         } else {
