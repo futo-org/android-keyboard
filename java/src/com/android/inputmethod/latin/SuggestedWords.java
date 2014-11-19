@@ -50,8 +50,9 @@ public class SuggestedWords {
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST = new ArrayList<>(0);
     @Nonnull
     private static final SuggestedWords EMPTY = new SuggestedWords(
-            EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false /* typedWordValid */,
-            false /* willAutoCorrect */, false /* isObsoleteSuggestions */, INPUT_STYLE_NONE);
+            EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, null /* typedWord */,
+            false /* typedWordValid */, false /* willAutoCorrect */,
+            false /* isObsoleteSuggestions */, INPUT_STYLE_NONE, NOT_A_SEQUENCE_NUMBER);
 
     public final String mTypedWord;
     public final boolean mTypedWordValid;
@@ -66,19 +67,6 @@ public class SuggestedWords {
     public final int mSequenceNumber; // Sequence number for auto-commit.
     protected final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
-
-    public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
-            final ArrayList<SuggestedWordInfo> rawSuggestions,
-            final boolean typedWordValid,
-            final boolean willAutoCorrect,
-            final boolean isObsoleteSuggestions,
-            final int inputStyle) {
-        this(suggestedWordInfoList, rawSuggestions,
-                (suggestedWordInfoList.isEmpty() || isPrediction(inputStyle)) ? null
-                        : suggestedWordInfoList.get(INDEX_OF_TYPED_WORD).mWord,
-                typedWordValid, willAutoCorrect,
-                isObsoleteSuggestions, inputStyle, NOT_A_SEQUENCE_NUMBER);
-    }
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
             final ArrayList<SuggestedWordInfo> rawSuggestions,
@@ -423,8 +411,10 @@ public class SuggestedWords {
                     info.mSourceDict, SuggestedWordInfo.NOT_AN_INDEX,
                     SuggestedWordInfo.NOT_A_CONFIDENCE));
         }
-        return new SuggestedWords(newSuggestions, null /* rawSuggestions */, mTypedWordValid,
-                mWillAutoCorrect, mIsObsoleteSuggestions, INPUT_STYLE_TAIL_BATCH);
+        return new SuggestedWords(newSuggestions, null /* rawSuggestions */,
+                newSuggestions.isEmpty() ? null : newSuggestions.get(0).mWord /* typedWord */,
+                mTypedWordValid, mWillAutoCorrect, mIsObsoleteSuggestions, INPUT_STYLE_TAIL_BATCH,
+                NOT_A_SEQUENCE_NUMBER);
     }
 
     /**
