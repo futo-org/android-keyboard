@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A helper class to deal with subtype locales.
@@ -273,7 +274,7 @@ public final class SubtypeLocaleUtils {
     }
 
     @Nonnull
-    public static String getSubtypeNameForLogging(@Nonnull final InputMethodSubtype subtype) {
+    public static String getSubtypeNameForLogging(@Nullable final InputMethodSubtype subtype) {
         if (subtype == null) {
             return "<null subtype>";
         }
