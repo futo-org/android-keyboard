@@ -1178,14 +1178,13 @@ public final class InputLogic {
                     StatsUtils.onBackspacePressed(totalDeletedLength);
                 }
             }
-            if (inputTransaction.mSettingsValues
-                    .isSuggestionsEnabledPerUserSettings()
+            if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
                             .mCurrentLanguageHasSpaces
                     && !mConnection.isCursorFollowedByWordCharacter(
                             inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
                 restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
-                        currentKeyboardScriptId);
+                        false /* forStartInput */, currentKeyboardScriptId);
             }
         }
     }
@@ -1441,10 +1440,13 @@ public final class InputLogic {
      * do nothing.
      *
      * @param settingsValues the current values of the settings.
-     *   suggestions in the suggestion list.
+     * @param forStartInput whether we're doing this in answer to starting the input (as opposed
+     *   to a cursor move, for example). In ICS, there is a platform bug that we need to work
+     *   around only when we come here at input start time.
      */
     // TODO: make this private.
     public void restartSuggestionsOnWordTouchedByCursor(final SettingsValues settingsValues,
+            final boolean forStartInput,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
@@ -1520,7 +1522,9 @@ public final class InputLogic {
                 mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
-        mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
+        if (forStartInput) {
+            mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
+        }
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
         if (suggestions.size() <= 1) {
