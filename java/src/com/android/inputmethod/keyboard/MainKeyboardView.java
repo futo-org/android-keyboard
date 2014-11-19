@@ -57,7 +57,6 @@ import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
-import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
@@ -874,8 +873,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             final Locale[] locales = subtype.getLocales();
             final String[] languages = new String[locales.length];
             for (int i = 0; i < locales.length; ++i) {
-                languages[i] = StringUtils.toUpperCaseOfStringForLocale(
-                        locales[i].getLanguage(), true /* needsToUpperCase */, Locale.ROOT);
+                languages[i] = locales[i].getLanguage().toUpperCase(Locale.ROOT);
             }
             return TextUtils.join(" / ", languages);
         }

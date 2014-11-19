@@ -135,8 +135,7 @@ public abstract class ExpectedKeyVisual {
 
         @Override
         ExpectedKeyVisual toUpperCase(final Locale locale) {
-            return new Label(StringUtils.toUpperCaseOfStringForLocale(
-                    mLabel, true /* needsToUpperCase */, locale));
+            return new Label(StringUtils.toTitleCaseOfKeyLabel(mLabel, locale));
         }
 
         @Override

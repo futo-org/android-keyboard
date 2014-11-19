@@ -201,20 +201,20 @@ public final class StringUtils {
     public static String capitalizeFirstCodePoint(@Nonnull final String s,
             @Nonnull final Locale locale) {
         if (s.length() <= 1) {
-            return toUpperCaseOfStringForLocale(s, true /* needsToUpperCase */, locale);
+            return s.toUpperCase(getLocaleUsedForToTitleCase(locale));
         }
         // Please refer to the comment below in
         // {@link #capitalizeFirstAndDowncaseRest(String,Locale)} as this has the same shortcomings
         final int cutoff = s.offsetByCodePoints(0, 1);
-        return toUpperCaseOfStringForLocale(
-                s.substring(0, cutoff), true /* needsToUpperCase */, locale) + s.substring(cutoff);
+        return s.substring(0, cutoff).toUpperCase(getLocaleUsedForToTitleCase(locale))
+                + s.substring(cutoff);
     }
 
     @Nonnull
     public static String capitalizeFirstAndDowncaseRest(@Nonnull final String s,
             @Nonnull final Locale locale) {
         if (s.length() <= 1) {
-            return toUpperCaseOfStringForLocale(s, true /* needsToUpperCase */, locale);
+            return s.toUpperCase(getLocaleUsedForToTitleCase(locale));
         }
         // TODO: fix the bugs below
         // - It does not work for Serbian, because it fails to account for the "lj" character,
@@ -224,9 +224,8 @@ public final class StringUtils {
         // be capitalized as "IJ" as if they were a single letter in most words (not all). If the
         // unicode char for the ligature is used however, it works.
         final int cutoff = s.offsetByCodePoints(0, 1);
-        final String titleCaseFirstLetter = toUpperCaseOfStringForLocale(
-                s.substring(0, cutoff), true /* needsToUpperCase */, locale);
-        return titleCaseFirstLetter + s.substring(cutoff).toLowerCase(locale);
+        return s.substring(0, cutoff).toUpperCase(getLocaleUsedForToTitleCase(locale))
+                + s.substring(cutoff).toLowerCase(locale);
     }
 
     @Nonnull
@@ -599,24 +598,22 @@ public final class StringUtils {
     }
 
     @Nullable
-    public static String toUpperCaseOfStringForLocale(@Nullable final String text,
-            final boolean needsToUpperCase, @Nonnull final Locale locale) {
-        if (text == null || !needsToUpperCase) {
-            return text;
+    public static String toTitleCaseOfKeyLabel(@Nullable final String label,
+            @Nonnull final Locale locale) {
+        if (label == null) {
+            return label;
         }
-        return text.toUpperCase(getLocaleUsedForToTitleCase(locale));
+        return label.toUpperCase(getLocaleUsedForToTitleCase(locale));
     }
 
-    public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
-            @Nonnull final Locale locale) {
-        if (!Constants.isLetterCode(code) || !needsToUpperCase) {
+    public static int toTitleCaseOfKeyCode(final int code, @Nonnull final Locale locale) {
+        if (!Constants.isLetterCode(code)) {
             return code;
         }
-        final String text = newSingleCodePointString(code);
-        final String casedText = toUpperCaseOfStringForLocale(
-                text, needsToUpperCase, locale);
-        return codePointCount(casedText) == 1
-                ? casedText.codePointAt(0) : Constants.CODE_UNSPECIFIED;
+        final String label = newSingleCodePointString(code);
+        final String titleCaseLabel = toTitleCaseOfKeyLabel(label, locale);
+        return codePointCount(titleCaseLabel) == 1
+                ? titleCaseLabel.codePointAt(0) : Constants.CODE_UNSPECIFIED;
     }
 
     public static int getTrailingSingleQuotesCount(@Nonnull final CharSequence charSequence) {

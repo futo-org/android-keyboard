@@ -30,17 +30,16 @@ public class StringUtilsTests extends AndroidTestCase {
     private static final Locale TURKEY = new Locale("tr", "TR");
     private static final Locale GREECE = new Locale("el", "GR");
 
-    private static void assert_toUpperCaseOfStringForLocale(final Locale locale,
+    private static void assert_toTitleCaseOfKeyLabel(final Locale locale,
             final String lowerCase, final String expected) {
         assertEquals(lowerCase + " in " + locale, expected,
-                StringUtils.toUpperCaseOfStringForLocale(
-                        lowerCase, true /* needsToUpperCase */, locale));
+                StringUtils.toTitleCaseOfKeyLabel(lowerCase, locale));
     }
 
-    public void test_toUpperCaseOfStringForLocale() {
-        assert_toUpperCaseOfStringForLocale(US, null, null);
-        assert_toUpperCaseOfStringForLocale(US, "", "");
-        assert_toUpperCaseOfStringForLocale(US, "aeiou", "AEIOU");
+    public void test_toTitleCaseOfKeyLabel() {
+        assert_toTitleCaseOfKeyLabel(US, null, null);
+        assert_toTitleCaseOfKeyLabel(US, "", "");
+        assert_toTitleCaseOfKeyLabel(US, "aeiou", "AEIOU");
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
         // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
@@ -55,7 +54,7 @@ public class StringUtilsTests extends AndroidTestCase {
         // U+016A: "Ū" LATIN CAPITAL LETTER U WITH MACRON
         // U+00D1: "Ñ" LATIN CAPITAL LETTER N WITH TILDE
         // U+00C7: "Ç" LATIN CAPITAL LETTER C WITH CEDILLA
-        assert_toUpperCaseOfStringForLocale(US,
+        assert_toTitleCaseOfKeyLabel(US,
                 "\u00E0\u00E8\u00EE\u00F6\u016B\u00F1\u00E7",
                 "\u00C0\u00C8\u00CE\u00D6\u016A\u00D1\u00C7");
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
@@ -63,7 +62,7 @@ public class StringUtilsTests extends AndroidTestCase {
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         // U+015A: "Ś" LATIN CAPITAL LETTER S WITH ACUTE
         // U+0160: "Š" LATIN CAPITAL LETTER S WITH CARONZ
-        assert_toUpperCaseOfStringForLocale(GERMAN,
+        assert_toTitleCaseOfKeyLabel(GERMAN,
                 "\u00DF\u015B\u0161",
                 "SS\u015A\u0160");
         // U+0259: "ə" LATIN SMALL LETTER SCHWA
@@ -72,13 +71,13 @@ public class StringUtilsTests extends AndroidTestCase {
         // U+018F: "Ə" LATIN SMALL LETTER SCHWA
         // U+0130: "İ" LATIN SMALL LETTER I WITH DOT ABOVE
         // U+0049: "I" LATIN SMALL LETTER I
-        assert_toUpperCaseOfStringForLocale(TURKEY,
+        assert_toTitleCaseOfKeyLabel(TURKEY,
                 "\u0259\u0069\u0131",
                 "\u018F\u0130\u0049");
         // U+03C3: "σ" GREEK SMALL LETTER SIGMA
         // U+03C2: "ς" GREEK SMALL LETTER FINAL SIGMA
         // U+03A3: "Σ" GREEK CAPITAL LETTER SIGMA
-        assert_toUpperCaseOfStringForLocale(GREECE,
+        assert_toTitleCaseOfKeyLabel(GREECE,
                 "\u03C3\u03C2",
                 "\u03A3\u03A3");
         // U+03AC: "ά" GREEK SMALL LETTER ALPHA WITH TONOS
@@ -95,7 +94,7 @@ public class StringUtilsTests extends AndroidTestCase {
         // U+038C: "Ό" GREEK CAPITAL LETTER OMICRON WITH TONOS
         // U+038E: "Ύ" GREEK CAPITAL LETTER UPSILON WITH TONOS
         // U+038F: "Ώ" GREEK CAPITAL LETTER OMEGA WITH TONOS
-        assert_toUpperCaseOfStringForLocale(GREECE,
+        assert_toTitleCaseOfKeyLabel(GREECE,
                 "\u03AC\u03AD\u03AE\u03AF\u03CC\u03CD\u03CE",
                 "\u0386\u0388\u0389\u038A\u038C\u038E\u038F");
         // U+03CA: "ϊ" GREEK SMALL LETTER IOTA WITH DIALYTIKA
@@ -108,42 +107,41 @@ public class StringUtilsTests extends AndroidTestCase {
         // U+03A5: "Υ" GREEK CAPITAL LETTER UPSILON
         // U+0308: COMBINING DIAERESIS
         // U+0301: COMBINING GRAVE ACCENT
-        assert_toUpperCaseOfStringForLocale(GREECE,
+        assert_toTitleCaseOfKeyLabel(GREECE,
                 "\u03CA\u03CB\u0390\u03B0",
                 "\u03AA\u03AB\u0399\u0308\u0301\u03A5\u0308\u0301");
     }
 
-    private static void assert_toUpperCaseOfCodeForLocale(final Locale locale, final int lowerCase,
+    private static void assert_toTitleCaseOfKeyCode(final Locale locale, final int lowerCase,
             final int expected) {
         assertEquals(lowerCase + " in " + locale, expected,
-                StringUtils.toUpperCaseOfCodeForLocale(
-                        lowerCase, true /* needsToUpperCase */, locale));
+                StringUtils.toTitleCaseOfKeyCode(lowerCase, locale));
     }
 
-    public void test_toUpperCaseOfCodeForLocale() {
-        assert_toUpperCaseOfCodeForLocale(US, Constants.CODE_ENTER, Constants.CODE_ENTER);
-        assert_toUpperCaseOfCodeForLocale(US, Constants.CODE_SPACE, Constants.CODE_SPACE);
-        assert_toUpperCaseOfCodeForLocale(US, Constants.CODE_COMMA, Constants.CODE_COMMA);
+    public void test_toTitleCaseOfKeyCode() {
+        assert_toTitleCaseOfKeyCode(US, Constants.CODE_ENTER, Constants.CODE_ENTER);
+        assert_toTitleCaseOfKeyCode(US, Constants.CODE_SPACE, Constants.CODE_SPACE);
+        assert_toTitleCaseOfKeyCode(US, Constants.CODE_COMMA, Constants.CODE_COMMA);
         // U+0069: "i" LATIN SMALL LETTER I
         // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
         // U+0130: "İ" LATIN SMALL LETTER I WITH DOT ABOVE
         // U+0049: "I" LATIN SMALL LETTER I
-        assert_toUpperCaseOfCodeForLocale(US, 0x0069, 0x0049); // i -> I
-        assert_toUpperCaseOfCodeForLocale(US, 0x0131, 0x0049); // ı -> I
-        assert_toUpperCaseOfCodeForLocale(TURKEY, 0x0069, 0x0130); // i -> İ
-        assert_toUpperCaseOfCodeForLocale(TURKEY, 0x0131, 0x0049); // ı -> I
+        assert_toTitleCaseOfKeyCode(US, 0x0069, 0x0049); // i -> I
+        assert_toTitleCaseOfKeyCode(US, 0x0131, 0x0049); // ı -> I
+        assert_toTitleCaseOfKeyCode(TURKEY, 0x0069, 0x0130); // i -> İ
+        assert_toTitleCaseOfKeyCode(TURKEY, 0x0131, 0x0049); // ı -> I
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         // The title case of "ß" is "SS".
-        assert_toUpperCaseOfCodeForLocale(US, 0x00DF, Constants.CODE_UNSPECIFIED);
+        assert_toTitleCaseOfKeyCode(US, 0x00DF, Constants.CODE_UNSPECIFIED);
         // U+03AC: "ά" GREEK SMALL LETTER ALPHA WITH TONOS
         // U+0386: "Ά" GREEK CAPITAL LETTER ALPHA WITH TONOS
-        assert_toUpperCaseOfCodeForLocale(GREECE, 0x03AC, 0x0386);
+        assert_toTitleCaseOfKeyCode(GREECE, 0x03AC, 0x0386);
         // U+03CA: "ϊ" GREEK SMALL LETTER IOTA WITH DIALYTIKA
         // U+03AA: "Ϊ" GREEK CAPITAL LETTER IOTA WITH DIALYTIKA
-        assert_toUpperCaseOfCodeForLocale(GREECE, 0x03CA, 0x03AA);
+        assert_toTitleCaseOfKeyCode(GREECE, 0x03CA, 0x03AA);
         // U+03B0: "ΰ" GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS
         // The title case of "ΰ" is "\u03A5\u0308\u0301".
-        assert_toUpperCaseOfCodeForLocale(GREECE, 0x03B0, Constants.CODE_UNSPECIFIED);
+        assert_toTitleCaseOfKeyCode(GREECE, 0x03B0, Constants.CODE_UNSPECIFIED);
     }
 
     private static void assert_capitalizeFirstCodePoint(final Locale locale, final String text,

@@ -341,17 +341,24 @@ public class Key implements Comparable<Key> {
             // code point nor as a surrogate pair.
             mLabel = new StringBuilder().appendCodePoint(code).toString();
         } else {
-            mLabel = StringUtils.toUpperCaseOfStringForLocale(
-                    KeySpecParser.getLabel(keySpec), needsToUpcase, localeForUpcasing);
+            final String label = KeySpecParser.getLabel(keySpec);
+            mLabel = needsToUpcase
+                    ? StringUtils.toTitleCaseOfKeyLabel(label, localeForUpcasing)
+                    : label;
         }
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
             mHintLabel = null;
         } else {
-            mHintLabel = StringUtils.toUpperCaseOfStringForLocale(style.getString(keyAttr,
-                    R.styleable.Keyboard_Key_keyHintLabel), needsToUpcase, localeForUpcasing);
+            final String hintLabel = style.getString(
+                    keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
+            mHintLabel = needsToUpcase
+                    ? StringUtils.toTitleCaseOfKeyLabel(hintLabel, localeForUpcasing)
+                    : hintLabel;
         }
-        String outputText = StringUtils.toUpperCaseOfStringForLocale(
-                KeySpecParser.getOutputText(keySpec), needsToUpcase, localeForUpcasing);
+        String outputText = KeySpecParser.getOutputText(keySpec);
+        if (needsToUpcase) {
+            outputText = StringUtils.toTitleCaseOfKeyLabel(outputText, localeForUpcasing);
+        }
         // Choose the first letter of the label as primary code if not specified.
         if (code == CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
@@ -377,12 +384,14 @@ public class Key implements Comparable<Key> {
                 mCode = CODE_OUTPUT_TEXT;
             }
         } else {
-            mCode = StringUtils.toUpperCaseOfCodeForLocale(code, needsToUpcase, localeForUpcasing);
+            mCode = needsToUpcase ? StringUtils.toTitleCaseOfKeyCode(code, localeForUpcasing)
+                    : code;
         }
         final int altCodeInAttr = KeySpecParser.parseCode(
                 style.getString(keyAttr, R.styleable.Keyboard_Key_altCode), CODE_UNSPECIFIED);
-        final int altCode = StringUtils.toUpperCaseOfCodeForLocale(
-                altCodeInAttr, needsToUpcase, localeForUpcasing);
+        final int altCode = needsToUpcase
+                ? StringUtils.toTitleCaseOfKeyCode(altCodeInAttr, localeForUpcasing)
+                : altCodeInAttr;
         mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode,
                 disabledIconId, visualInsetsLeft, visualInsetsRight);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
