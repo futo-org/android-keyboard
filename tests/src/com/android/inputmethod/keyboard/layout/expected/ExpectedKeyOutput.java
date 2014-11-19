@@ -63,7 +63,8 @@ abstract class ExpectedKeyOutput {
                 final String codeString = StringUtils.newSingleCodePointString(mCode);
                 // A letter may have an upper case counterpart that consists of multiple code
                 // points, for instance the upper case of "ß" is "SS".
-                return newInstance(codeString.toUpperCase(locale));
+                return newInstance(StringUtils.toUpperCaseOfStringForLocale(
+                        codeString, true /* needsToUpperCase */, locale));
             }
             // A special negative value has no upper case.
             return this;
