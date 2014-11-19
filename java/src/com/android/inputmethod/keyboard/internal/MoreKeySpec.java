@@ -55,10 +55,11 @@ public final class MoreKeySpec {
         if (TextUtils.isEmpty(moreKeySpec)) {
             throw new KeySpecParser.KeySpecParserError("Empty more key spec");
         }
-        mLabel = StringUtils.toUpperCaseOfStringForLocale(
-                KeySpecParser.getLabel(moreKeySpec), needsToUpperCase, locale);
-        final int code = StringUtils.toUpperCaseOfCodeForLocale(
-                KeySpecParser.getCode(moreKeySpec), needsToUpperCase, locale);
+        final String label = KeySpecParser.getLabel(moreKeySpec);
+        mLabel = needsToUpperCase ? StringUtils.toTitleCaseOfKeyLabel(label, locale) : label;
+        final int codeInSpec = KeySpecParser.getCode(moreKeySpec);
+        final int code = needsToUpperCase ? StringUtils.toTitleCaseOfKeyCode(codeInSpec, locale)
+                : codeInSpec;
         if (code == Constants.CODE_UNSPECIFIED) {
             // Some letter, for example German Eszett (U+00DF: "ß"), has multiple characters
             // upper case representation ("SS").
@@ -66,8 +67,9 @@ public final class MoreKeySpec {
             mOutputText = mLabel;
         } else {
             mCode = code;
-            mOutputText = StringUtils.toUpperCaseOfStringForLocale(
-                    KeySpecParser.getOutputText(moreKeySpec), needsToUpperCase, locale);
+            final String outputText = KeySpecParser.getOutputText(moreKeySpec);
+            mOutputText = needsToUpperCase
+                    ? StringUtils.toTitleCaseOfKeyLabel(outputText, locale) : outputText;
         }
         mIconId = KeySpecParser.getIconId(moreKeySpec);
     }
