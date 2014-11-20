@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.define.DebugFlags;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -355,37 +356,53 @@ public class SuggestedWords {
         }
 
         // This will always remove the higher index if a duplicate is found.
-        public static boolean removeDups(final String typedWord,
-                ArrayList<SuggestedWordInfo> candidates) {
+        // Returns null if the typed word is not found. Always return the dictionary for the
+        // highest suggestion matching the locale if found, otherwise return the dictionary for
+        // the highest suggestion.
+        @Nullable
+        public static Dictionary removeDupsAndReturnSourceOfTypedWord(
+                @Nullable final String typedWord,
+                @Nullable final Locale preferredLocale,
+                @Nonnull ArrayList<SuggestedWordInfo> candidates) {
             if (candidates.isEmpty()) {
-                return false;
+                return null;
             }
-            final boolean didRemoveTypedWord;
+            final Dictionary sourceDictionaryOfTypedWord;
             if (!TextUtils.isEmpty(typedWord)) {
-                didRemoveTypedWord = removeSuggestedWordInfoFrom(typedWord, candidates,
-                        -1 /* startIndexExclusive */);
+                sourceDictionaryOfTypedWord =
+                        removeSuggestedWordInfoFromListAndReturnSourceDictionary(typedWord,
+                                preferredLocale, candidates, -1 /* startIndexExclusive */);
             } else {
-                didRemoveTypedWord = false;
+                sourceDictionaryOfTypedWord = null;
             }
             for (int i = 0; i < candidates.size(); ++i) {
-                removeSuggestedWordInfoFrom(candidates.get(i).mWord, candidates,
-                        i /* startIndexExclusive */);
+                removeSuggestedWordInfoFromListAndReturnSourceDictionary(candidates.get(i).mWord,
+                        null /* preferredLocale */, candidates, i /* startIndexExclusive */);
             }
-            return didRemoveTypedWord;
+            return sourceDictionaryOfTypedWord;
         }
 
-        private static boolean removeSuggestedWordInfoFrom(final String word,
-                final ArrayList<SuggestedWordInfo> candidates, final int startIndexExclusive) {
-            boolean didRemove = false;
+        @Nullable
+        private static Dictionary removeSuggestedWordInfoFromListAndReturnSourceDictionary(
+                @Nonnull final String word, @Nullable final Locale preferredLocale,
+                @Nonnull final ArrayList<SuggestedWordInfo> candidates,
+                final int startIndexExclusive) {
+            Dictionary sourceDictionaryOfTypedWord = null;
             for (int i = startIndexExclusive + 1; i < candidates.size(); ++i) {
                 final SuggestedWordInfo previous = candidates.get(i);
                 if (word.equals(previous.mWord)) {
-                    didRemove = true;
+                    if (null == sourceDictionaryOfTypedWord
+                            || (null != preferredLocale
+                                    && preferredLocale.equals(previous.mSourceDict.mLocale))) {
+                        if (Dictionary.TYPE_USER_HISTORY != previous.mSourceDict.mDictType) {
+                            sourceDictionaryOfTypedWord = previous.mSourceDict;
+                        }
+                    }
                     candidates.remove(i);
                     --i;
                 }
             }
-            return didRemove;
+            return sourceDictionaryOfTypedWord;
         }
     }
 
