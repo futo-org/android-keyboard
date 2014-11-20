@@ -133,11 +133,12 @@ public final class Suggest {
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int inputStyleIfNotPrediction, final boolean isCorrectionEnabled,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
-        final String typedWord = wordComposer.getTypedWord();
-        final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(typedWord);
+        final String typedWordString = wordComposer.getTypedWord();
+        final int trailingSingleQuotesCount =
+                StringUtils.getTrailingSingleQuotesCount(typedWordString);
         final String consideredWord = trailingSingleQuotesCount > 0
-                ? typedWord.substring(0, typedWord.length() - trailingSingleQuotesCount)
-                : typedWord;
+                ? typedWordString.substring(0, typedWordString.length() - trailingSingleQuotesCount)
+                : typedWordString;
 
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, ngramContext, proximityInfo.getNativeProximityInfo(),
@@ -206,17 +207,19 @@ public final class Suggest {
             }
         }
 
-        if (!TextUtils.isEmpty(typedWord)) {
-            suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
-                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
-                    Dictionary.DICTIONARY_USER_TYPED,
-                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                    SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
+        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
+                SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
+                Dictionary.DICTIONARY_USER_TYPED,
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
+        if (!TextUtils.isEmpty(typedWordString)) {
+            suggestionsContainer.add(0, typedWordInfo);
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsList;
         if (DBG && !suggestionsContainer.isEmpty()) {
-            suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWord, suggestionsContainer);
+            suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWordString,
+                    suggestionsContainer);
         } else {
             suggestionsList = suggestionsContainer;
         }
@@ -230,7 +233,7 @@ public final class Suggest {
             inputStyle = inputStyleIfNotPrediction;
         }
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
-                suggestionResults.mRawSuggestions, typedWord,
+                suggestionResults.mRawSuggestions, typedWordInfo,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
@@ -286,12 +289,12 @@ public final class Suggest {
         // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
         // Note that because this method is never used to get predictions, there is no need to
         // modify inputType such in getSuggestedWordsForNonBatchInput.
-        final String pseudoTypedWord = suggestionsContainer.isEmpty() ? null
-                : suggestionsContainer.get(0).mWord;
+        final SuggestedWordInfo pseudoTypedWordInfo = suggestionsContainer.isEmpty() ? null
+                : suggestionsContainer.get(0);
 
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer,
                 suggestionResults.mRawSuggestions,
-                pseudoTypedWord,
+                pseudoTypedWordInfo,
                 true /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
