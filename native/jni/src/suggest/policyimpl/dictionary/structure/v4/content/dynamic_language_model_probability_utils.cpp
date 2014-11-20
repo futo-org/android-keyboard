@@ -19,12 +19,13 @@
 namespace latinime {
 
 // Used to provide stable probabilities even if the user's input count is small.
-const int DynamicLanguageModelProbabilityUtils::ASSUMED_MIN_COUNTS[] = {8192, 2, 2};
+const int DynamicLanguageModelProbabilityUtils::ASSUMED_MIN_COUNTS[] = {8192, 2, 2, 1};
 
 // Encoded backoff weights.
-// Note that we give positive value for trigrams that means the weight is more than 1.
+// Note that we give positive values for trigrams and quadgrams that means the weight is more than
+// 1.
 // TODO: Apply backoff for main dictionaries and quit giving a positive backoff weight.
-const int DynamicLanguageModelProbabilityUtils::ENCODED_BACKOFF_WEIGHTS[] = {-32, 0, 8};
+const int DynamicLanguageModelProbabilityUtils::ENCODED_BACKOFF_WEIGHTS[] = {-32, -4, 2, 8};
 
 // This value is used to remove too old entries from the dictionary.
 const int DynamicLanguageModelProbabilityUtils::DURATION_TO_DISCARD_ENTRY_IN_SECONDS =

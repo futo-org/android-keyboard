@@ -25,6 +25,7 @@ enum class NgramType : int {
     Unigram = 0,
     Bigram = 1,
     Trigram = 2,
+    Quadgram = 3,
     NotANgramType = -1,
 };
 
