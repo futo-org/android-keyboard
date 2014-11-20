@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
  * characters. This includes corrections and completions.
@@ -143,14 +145,16 @@ public final class Suggest {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, ngramContext, proximityInfo.getNativeProximityInfo(),
                 settingsValuesForSuggestion, SESSION_ID_TYPING);
+        final Locale mostProbableLocale = mDictionaryFacilitator.getMostProbableLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
                         trailingSingleQuotesCount,
                         // For transforming suggestions that don't come for any dictionary, we
                         // use the currently most probable locale as it's our best bet.
-                        mDictionaryFacilitator.getMostProbableLocale());
-        final boolean didRemoveTypedWord =
-                SuggestedWordInfo.removeDups(wordComposer.getTypedWord(), suggestionsContainer);
+                        mostProbableLocale);
+        @Nullable final Dictionary sourceDictionaryOfRemovedWord =
+                SuggestedWordInfo.removeDupsAndReturnSourceOfTypedWord(wordComposer.getTypedWord(),
+                        mostProbableLocale /* preferredLocale */, suggestionsContainer);
 
         final String whitelistedWord = getWhitelistedWordOrNull(suggestionsContainer);
         final boolean resultsArePredictions = !wordComposer.isComposingWord();
@@ -158,7 +162,7 @@ public final class Suggest {
         // We allow auto-correction if we have a whitelisted word, or if the word had more than
         // one char and was not suggested.
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord)
-                || (consideredWord.length() > 1 && !didRemoveTypedWord);
+                || (consideredWord.length() > 1 && (null == sourceDictionaryOfRemovedWord));
 
         final boolean hasAutoCorrection;
         // If correction is not enabled, we never auto-correct. This is for example for when
@@ -209,7 +213,8 @@ public final class Suggest {
 
         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
                 SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
-                Dictionary.DICTIONARY_USER_TYPED,
+                null == sourceDictionaryOfRemovedWord ? Dictionary.DICTIONARY_USER_TYPED
+                        : sourceDictionaryOfRemovedWord,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
         if (!TextUtils.isEmpty(typedWordString)) {
@@ -275,7 +280,8 @@ public final class Suggest {
             final SuggestedWordInfo rejected = suggestionsContainer.remove(0);
             suggestionsContainer.add(1, rejected);
         }
-        SuggestedWordInfo.removeDups(null /* typedWord */, suggestionsContainer);
+        SuggestedWordInfo.removeDupsAndReturnSourceOfTypedWord(null /* typedWord */,
+                null /* preferredLocale */, suggestionsContainer);
 
         // For some reason some suggestions with MIN_VALUE are making their way here.
         // TODO: Find a more robust way to detect distracters.
