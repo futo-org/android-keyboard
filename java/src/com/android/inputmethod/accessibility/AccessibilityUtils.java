@@ -152,12 +152,16 @@ public final class AccessibilityUtils {
      * will occur when a key is typed.
      *
      * @param suggestedWords the list of suggested auto-correction words
-     * @param typedWord the currently typed word
      */
-    public void setAutoCorrection(final SuggestedWords suggestedWords, final String typedWord) {
+    public void setAutoCorrection(final SuggestedWords suggestedWords) {
         if (suggestedWords.mWillAutoCorrect) {
             mAutoCorrectionWord = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
-            mTypedWord = typedWord;
+            final SuggestedWords.SuggestedWordInfo typedWordInfo = suggestedWords.mTypedWordInfo;
+            if (null == typedWordInfo) {
+                mTypedWord = null;
+            } else {
+                mTypedWord = typedWordInfo.mWord;
+            }
         } else {
             mAutoCorrectionWord = null;
             mTypedWord = null;
