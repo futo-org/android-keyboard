@@ -484,7 +484,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
         locatePreviewPlacerView();
         getLocationInWindow(mOriginCoords);
-        mKeyPreviewChoreographer.placeAndShowKeyPreview(key, keyboard.mIconsSet, mKeyDrawParams,
+        mKeyPreviewChoreographer.placeAndShowKeyPreview(key, keyboard.mIconsSet, getKeyDrawParams(),
                 getWidth(), mOriginCoords, mDrawingPreviewPlacerView, isHardwareAccelerated());
     }
 

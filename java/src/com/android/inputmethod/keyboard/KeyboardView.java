@@ -103,7 +103,8 @@ public class KeyboardView extends View {
     // TODO: Consider having a dummy keyboard object to make this @Nonnull
     @Nullable
     private Keyboard mKeyboard;
-    protected final KeyDrawParams mKeyDrawParams = new KeyDrawParams();
+    @Nonnull
+    private final KeyDrawParams mKeyDrawParams = new KeyDrawParams();
 
     // Drawing
     /** True if all keys should be drawn */
@@ -120,6 +121,7 @@ public class KeyboardView extends View {
     @Nonnull
     private final Paint mPaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
+
     public KeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
@@ -208,6 +210,11 @@ public class KeyboardView extends View {
 
     protected float getVerticalCorrection() {
         return mVerticalCorrection;
+    }
+
+    @Nonnull
+    protected KeyDrawParams getKeyDrawParams() {
+        return mKeyDrawParams;
     }
 
     protected void updateKeyDrawParams(final int keyHeight) {

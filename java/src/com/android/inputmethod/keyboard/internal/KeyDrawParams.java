@@ -20,8 +20,12 @@ import android.graphics.Typeface;
 
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class KeyDrawParams {
-    public Typeface mTypeface;
+    @Nonnull
+    public Typeface mTypeface = Typeface.DEFAULT;
 
     public int mLetterSize;
     public int mLabelSize;
@@ -49,7 +53,7 @@ public final class KeyDrawParams {
 
     public KeyDrawParams() {}
 
-    private KeyDrawParams(final KeyDrawParams copyFrom) {
+    private KeyDrawParams(@Nonnull final KeyDrawParams copyFrom) {
         mTypeface = copyFrom.mTypeface;
 
         mLetterSize = copyFrom.mLetterSize;
@@ -77,7 +81,7 @@ public final class KeyDrawParams {
         mAnimAlpha = copyFrom.mAnimAlpha;
     }
 
-    public void updateParams(final int keyHeight, final KeyVisualAttributes attr) {
+    public void updateParams(final int keyHeight, @Nullable final KeyVisualAttributes attr) {
         if (attr == null) {
             return;
         }
@@ -117,8 +121,9 @@ public final class KeyDrawParams {
                 attr.mHintLabelOffCenterRatio, mHintLabelOffCenterRatio);
     }
 
+    @Nonnull
     public KeyDrawParams mayCloneAndUpdateParams(final int keyHeight,
-            final KeyVisualAttributes attr) {
+            @Nullable final KeyVisualAttributes attr) {
         if (attr == null) {
             return this;
         }
