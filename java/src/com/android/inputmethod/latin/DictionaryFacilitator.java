@@ -266,6 +266,12 @@ public class DictionaryFacilitator {
         }
         final DictionaryGroup newMostProbableDictionaryGroup =
                 findDictionaryGroupWithLocale(mDictionaryGroups, locale);
+        if (null == newMostProbableDictionaryGroup) {
+            // It seems this may happen as a race condition; pressing the globe key and space
+            // in quick succession could commit a word out of a dictionary that's not in the
+            // facilitator any more. In this case, just not changing things is fine.
+            return;
+        }
         mMostProbableDictionaryGroup.mWeightForTypingInLocale =
                 DictionaryGroup.WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE;
         mMostProbableDictionaryGroup.mWeightForGesturingInLocale =
