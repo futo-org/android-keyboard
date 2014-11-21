@@ -96,6 +96,7 @@ public class SettingsValues {
     public final int mKeyPreviewPopupDismissDelay;
     private final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
+    public final float mPlausibilityThreshold;
     public final boolean mAutoCorrectionEnabledPerUserSettings;
     private final boolean mSuggestionsEnabledPerUserSettings;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
@@ -172,6 +173,7 @@ public class SettingsValues {
                 Settings.PREF_ENABLE_EMOJI_ALT_PHYSICAL_KEY, true);
         mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,
                 autoCorrectionThresholdRawValue);
+        mPlausibilityThreshold = Settings.readPlausibilityThreshold(res);
         mGestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);
         mGestureTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mGestureFloatingPreviewTextEnabled = !mInputAttributes.mDisableGestureFloatingPreviewText

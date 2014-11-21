@@ -65,13 +65,28 @@ public final class Suggest {
     }
 
     private float mAutoCorrectionThreshold;
+    private float mPlausibilityThreshold;
 
     public Suggest(final DictionaryFacilitator dictionaryFacilitator) {
         mDictionaryFacilitator = dictionaryFacilitator;
     }
 
+    /**
+     * Set the normalized-score threshold for a suggestion to be considered strong enough that we
+     * will auto-correct to this.
+     * @param threshold the threshold
+     */
     public void setAutoCorrectionThreshold(final float threshold) {
         mAutoCorrectionThreshold = threshold;
+    }
+
+    /**
+     * Set the normalized-score threshold for what we consider a "plausible" suggestion, in
+     * the same dimension as the auto-correction threshold.
+     * @param threshold the threshold
+     */
+    public void setPlausibilityThreshold(final float threshold) {
+        mPlausibilityThreshold = threshold;
     }
 
     public interface OnGetSuggestedWordsCallback {
@@ -130,6 +145,18 @@ public final class Suggest {
         return firstSuggestedWordInfo;
     }
 
+    // Quality constants for dictionary match
+    // In increasing order of quality
+    // This source dictionary does not match the typed word.
+    private static final int QUALITY_NO_MATCH = 0;
+    // This source dictionary has a null locale, and the preferred locale is also null.
+    private static final int QUALITY_MATCH_NULL = 1;
+    // This source dictionary has a non-null locale different from the preferred locale. The
+    // preferred locale may be null : this is still better than MATCH_NULL.
+    private static final int QUALITY_MATCH_OTHER_LOCALE = 2;
+    // This source dictionary matches the preferred locale.
+    private static final int QUALITY_MATCH_PREFERRED_LOCALE = 3;
+
     // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForNonBatchInput(final WordComposer wordComposer,
@@ -154,20 +181,52 @@ public final class Suggest {
                         // For transforming suggestions that don't come for any dictionary, we
                         // use the currently most probable locale as it's our best bet.
                         mostProbableLocale);
-        @Nullable final Dictionary sourceDictionaryOfRemovedWord =
-                SuggestedWordInfo.removeDupsAndReturnSourceOfTypedWord(wordComposer.getTypedWord(),
-                        mostProbableLocale /* preferredLocale */, suggestionsContainer);
+
+        boolean typedWordExistsInAnotherLanguage = false;
+        int qualityOfFoundSourceDictionary = QUALITY_NO_MATCH;
+        @Nullable Dictionary sourceDictionaryOfRemovedWord = null;
+        for (final SuggestedWordInfo info : suggestionsContainer) {
+            // Search for the best dictionary, defined as the first one with the highest match
+            // quality we can find.
+            if (typedWordString.equals(info.mWord)) {
+                if (mostProbableLocale.equals(info.mSourceDict.mLocale)) {
+                    if (qualityOfFoundSourceDictionary < QUALITY_MATCH_PREFERRED_LOCALE) {
+                        // Use this source if the old match had lower quality than this match
+                        sourceDictionaryOfRemovedWord = info.mSourceDict;
+                        qualityOfFoundSourceDictionary = QUALITY_MATCH_PREFERRED_LOCALE;
+                    }
+                } else {
+                    final int matchQuality = (null == info.mSourceDict.mLocale)
+                            ? QUALITY_MATCH_NULL : QUALITY_MATCH_OTHER_LOCALE;
+                    if (qualityOfFoundSourceDictionary < matchQuality) {
+                        // Use this source if the old match had lower quality than this match
+                        sourceDictionaryOfRemovedWord = info.mSourceDict;
+                        qualityOfFoundSourceDictionary = matchQuality;
+                    }
+                    typedWordExistsInAnotherLanguage = true;
+                }
+            }
+        }
+
+        SuggestedWordInfo.removeDups(typedWordString, suggestionsContainer);
 
         final SuggestedWordInfo whitelistedWordInfo =
                 getWhitelistedWordInfoOrNull(suggestionsContainer);
         final String whitelistedWord;
         if (null != whitelistedWordInfo &&
-                mDictionaryFacilitator.isConfidentAboutCurrentLanguageBeing(
-                        whitelistedWordInfo.mSourceDict.mLocale)) {
+                (mDictionaryFacilitator.isConfidentAboutCurrentLanguageBeing(
+                        whitelistedWordInfo.mSourceDict.mLocale)
+                || (!typedWordExistsInAnotherLanguage
+                        && !hasPlausibleCandidateInAnyOtherLanguage(suggestionsContainer,
+                                consideredWord, whitelistedWordInfo)))) {
+            // We'll use the whitelist candidate if we are confident the user is typing in the
+            // language of the dictionary it's coming from, or if there is no plausible candidate
+            // coming from another language.
             whitelistedWord = whitelistedWordInfo.mWord;
         } else {
-            // Even if we have a whitelist candidate, we don't use it unless we are confident
-            // the user is typing in the language this whitelist candidate comes from.
+            // If on the contrary we are not confident in the current language and we have
+            // at least a plausible candidate in any other language, then we don't use this
+            // whitelist candidate.
             whitelistedWord = null;
         }
         final boolean resultsArePredictions = !wordComposer.isComposingWord();
@@ -211,7 +270,7 @@ public final class Suggest {
             hasAutoCorrection = false;
         } else {
             final SuggestedWordInfo firstSuggestion = suggestionResults.first();
-            if (!AutoCorrectionUtils.suggestionExceedsAutoCorrectionThreshold(
+            if (!AutoCorrectionUtils.suggestionExceedsThreshold(
                     firstSuggestion, consideredWord, mAutoCorrectionThreshold)) {
                 // Score is too low for autocorrect
                 hasAutoCorrection = false;
@@ -260,6 +319,20 @@ public final class Suggest {
                 false /* isObsoleteSuggestions */, inputStyle, sequenceNumber));
     }
 
+    private boolean hasPlausibleCandidateInAnyOtherLanguage(
+            final ArrayList<SuggestedWordInfo> suggestionsContainer, final String consideredWord,
+            final SuggestedWordInfo whitelistedWordInfo) {
+        for (final SuggestedWordInfo info : suggestionsContainer) {
+            if (whitelistedWordInfo.mSourceDict.mLocale.equals(info.mSourceDict.mLocale)) {
+                continue;
+            }
+            return AutoCorrectionUtils.suggestionExceedsThreshold(info, consideredWord,
+                    mPlausibilityThreshold);
+        }
+        // No candidate in another language
+        return false;
+    }
+
     // Retrieves suggestions for the batch input
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForBatchInput(final WordComposer wordComposer,
@@ -293,8 +366,7 @@ public final class Suggest {
             final SuggestedWordInfo rejected = suggestionsContainer.remove(0);
             suggestionsContainer.add(1, rejected);
         }
-        SuggestedWordInfo.removeDupsAndReturnSourceOfTypedWord(null /* typedWord */,
-                null /* preferredLocale */, suggestionsContainer);
+        SuggestedWordInfo.removeDups(null /* typedWord */, suggestionsContainer);
 
         // For some reason some suggestions with MIN_VALUE are making their way here.
         // TODO: Find a more robust way to detect distracters.

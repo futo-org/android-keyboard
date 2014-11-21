@@ -238,6 +238,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
     }
 
+    public static float readPlausibilityThreshold(final Resources res) {
+        return Float.parseFloat(res.getString(R.string.plausibility_threshold));
+    }
+
     public static boolean readBlockPotentiallyOffensive(final SharedPreferences prefs,
             final Resources res) {
         return prefs.getBoolean(PREF_BLOCK_POTENTIALLY_OFFENSIVE,
