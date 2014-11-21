@@ -230,6 +230,17 @@ public class DictionaryInfoUtils {
     }
 
     /**
+     * Find out whether a dictionary is available for this locale.
+     * @param context the context on which to check resources.
+     * @param locale the locale to check for.
+     * @return whether a (non-placeholder) dictionary is available or not.
+     */
+    public static boolean isDictionaryAvailable(final Context context, final Locale locale) {
+        final Resources res = context.getResources();
+        return 0 != getMainDictionaryResourceIdIfAvailableForLocale(res, locale);
+    }
+
+    /**
      * Helper method to return a dictionary res id for a locale, or 0 if none.
      * @param res resources for the app
      * @param locale dictionary locale
