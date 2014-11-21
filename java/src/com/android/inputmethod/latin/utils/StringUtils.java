@@ -131,20 +131,20 @@ public final class StringUtils {
 
     public static String capitalizeFirstCodePoint(final String s, final Locale locale) {
         if (s.length() <= 1) {
-            return s.toUpperCase(locale);
+            return toUpperCaseOfStringForLocale(s, true /* needsToUpperCase */, locale);
         }
         // Please refer to the comment below in
         // {@link #capitalizeFirstAndDowncaseRest(String,Locale)} as this has the same shortcomings
         final int cutoff = s.offsetByCodePoints(0, 1);
-        return s.substring(0, cutoff).toUpperCase(locale) + s.substring(cutoff);
+        return toUpperCaseOfStringForLocale(
+                s.substring(0, cutoff), true /* needsToUpperCase */, locale) + s.substring(cutoff);
     }
 
     public static String capitalizeFirstAndDowncaseRest(final String s, final Locale locale) {
         if (s.length() <= 1) {
-            return s.toUpperCase(locale);
+            return toUpperCaseOfStringForLocale(s, true /* needsToUpperCase */, locale);
         }
         // TODO: fix the bugs below
-        // - This does not work for Greek, because it returns upper case instead of title case.
         // - It does not work for Serbian, because it fails to account for the "lj" character,
         // which should be "Lj" in title case and "LJ" in upper case.
         // - It does not work for Dutch, because it fails to account for the "ij" digraph when it's
@@ -152,7 +152,9 @@ public final class StringUtils {
         // be capitalized as "IJ" as if they were a single letter in most words (not all). If the
         // unicode char for the ligature is used however, it works.
         final int cutoff = s.offsetByCodePoints(0, 1);
-        return s.substring(0, cutoff).toUpperCase(locale) + s.substring(cutoff).toLowerCase(locale);
+        final String titleCaseFirstLetter = toUpperCaseOfStringForLocale(
+                s.substring(0, cutoff), true /* needsToUpperCase */, locale);
+        return titleCaseFirstLetter + s.substring(cutoff).toLowerCase(locale);
     }
 
     private static final int[] EMPTY_CODEPOINTS = {};
@@ -489,10 +491,23 @@ public final class StringUtils {
         return bytes;
     }
 
+    private static final String LANGUAGE_GREEK = "el";
+
+    private static Locale getLocaleUsedForToTitleCase(final Locale locale) {
+        // In Greek locale {@link String#toUpperCase(Locale)} eliminates accents from its result.
+        // In order to get accented upper case letter, {@link Locale#ROOT} should be used.
+        if (LANGUAGE_GREEK.equals(locale.getLanguage())) {
+            return Locale.ROOT;
+        }
+        return locale;
+    }
+
     public static String toUpperCaseOfStringForLocale(final String text,
             final boolean needsToUpperCase, final Locale locale) {
-        if (text == null || !needsToUpperCase) return text;
-        return text.toUpperCase(locale);
+        if (text == null || !needsToUpperCase) {
+            return text;
+        }
+        return text.toUpperCase(getLocaleUsedForToTitleCase(locale));
     }
 
     public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
