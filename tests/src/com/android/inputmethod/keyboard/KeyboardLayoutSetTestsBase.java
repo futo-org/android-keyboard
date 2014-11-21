@@ -75,7 +75,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         mRichImm = RichInputMethodManager.getInstance();
 
         // Save and reset additional subtypes preference.
-        mSavedAdditionalSubtypes = mRichImm.getAdditionalSubtypes(context);
+        mSavedAdditionalSubtypes = mRichImm.getAdditionalSubtypes();
         final InputMethodSubtype[] predefinedAdditionalSubtypes =
                 AdditionalSubtypeUtils.createAdditionalSubtypesArray(
                         AdditionalSubtypeUtils.createPrefSubtypes(

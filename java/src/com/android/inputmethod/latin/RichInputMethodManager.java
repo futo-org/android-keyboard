@@ -110,7 +110,7 @@ public class RichInputMethodManager {
 
         // Initialize additional subtypes.
         SubtypeLocaleUtils.init(context);
-        final InputMethodSubtype[] additionalSubtypes = getAdditionalSubtypes(context);
+        final InputMethodSubtype[] additionalSubtypes = getAdditionalSubtypes();
         setAdditionalInputMethodSubtypes(additionalSubtypes);
 
         final ConnectivityManager connectivityManager =
@@ -119,11 +119,10 @@ public class RichInputMethodManager {
         mIsNetworkConnected = (info != null && info.isConnected());
     }
 
-    public InputMethodSubtype[] getAdditionalSubtypes(final Context context) {
-        SubtypeLocaleUtils.init(context);
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    public InputMethodSubtype[] getAdditionalSubtypes() {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         final String prefAdditionalSubtypes = Settings.readPrefAdditionalSubtypes(
-                prefs, context.getResources());
+                prefs, mContext.getResources());
         return AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefAdditionalSubtypes);
     }
 

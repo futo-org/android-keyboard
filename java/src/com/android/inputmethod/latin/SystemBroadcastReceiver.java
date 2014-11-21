@@ -69,7 +69,7 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             // subtypes when the package is replaced.
             RichInputMethodManager.init(context);
             final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
-            final InputMethodSubtype[] additionalSubtypes = richImm.getAdditionalSubtypes(context);
+            final InputMethodSubtype[] additionalSubtypes = richImm.getAdditionalSubtypes();
             richImm.setAdditionalInputMethodSubtypes(additionalSubtypes);
             LauncherIconVisibilityManager.updateSetupWizardIconVisibility(context);
         } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
