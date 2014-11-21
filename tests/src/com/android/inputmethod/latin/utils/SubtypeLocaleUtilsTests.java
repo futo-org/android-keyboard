@@ -73,7 +73,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         mRichImm = RichInputMethodManager.getInstance();
 
         // Save and reset additional subtypes
-        mSavedAddtionalSubtypes = mRichImm.getAdditionalSubtypes(context);
+        mSavedAddtionalSubtypes = mRichImm.getAdditionalSubtypes();
         final InputMethodSubtype[] predefinedAddtionalSubtypes =
                 AdditionalSubtypeUtils.createAdditionalSubtypesArray(
                         AdditionalSubtypeUtils.createPrefSubtypes(
