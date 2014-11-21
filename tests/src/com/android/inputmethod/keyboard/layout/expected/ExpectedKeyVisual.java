@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.layout.expected;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.Locale;
 
@@ -105,7 +106,8 @@ abstract class ExpectedKeyVisual {
 
         @Override
         ExpectedKeyVisual toUpperCase(final Locale locale) {
-            return new Label(mLabel.toUpperCase(locale));
+            return new Label(StringUtils.toUpperCaseOfStringForLocale(
+                    mLabel, true /* needsToUpperCase */, locale));
         }
 
         @Override
