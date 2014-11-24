@@ -36,6 +36,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 /**
  * An expandable dictionary that stores the words in the user dictionary provider into a binary
  * dictionary file to use it from native code.
@@ -104,7 +106,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     // Note: This method is called by {@link DictionaryFacilitator} using Java reflection.
     @ExternallyReferenced
     public static UserBinaryDictionary getDictionary(final Context context, final Locale locale,
-            final File dictFile, final String dictNamePrefix) {
+            final File dictFile, final String dictNamePrefix, @Nullable final String account) {
         return new UserBinaryDictionary(context, locale, false /* alsoUseMoreRestrictiveLocales */,
                 dictFile, dictNamePrefix + NAME);
     }

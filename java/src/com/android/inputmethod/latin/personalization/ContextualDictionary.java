@@ -25,6 +25,8 @@ import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import java.io.File;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 public class ContextualDictionary extends ExpandableBinaryDictionary {
     /* package */ static final String NAME = ContextualDictionary.class.getSimpleName();
 
@@ -40,7 +42,7 @@ public class ContextualDictionary extends ExpandableBinaryDictionary {
     @SuppressWarnings("unused")
     @ExternallyReferenced
     public static ContextualDictionary getDictionary(final Context context, final Locale locale,
-            final File dictFile, final String dictNamePrefix) {
+            final File dictFile, final String dictNamePrefix, @Nullable final String account) {
         return new ContextualDictionary(context, locale, dictFile);
     }
 

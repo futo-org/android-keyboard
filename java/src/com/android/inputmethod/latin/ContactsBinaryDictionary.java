@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     private static final String[] PROJECTION = {BaseColumns._ID, Contacts.DISPLAY_NAME};
@@ -86,7 +88,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     // Note: This method is called by {@link DictionaryFacilitator} using Java reflection.
     @ExternallyReferenced
     public static ContactsBinaryDictionary getDictionary(final Context context, final Locale locale,
-            final File dictFile, final String dictNamePrefix) {
+            final File dictFile, final String dictNamePrefix, @Nullable final String account) {
         return new ContactsBinaryDictionary(context, locale, dictFile, dictNamePrefix + NAME);
     }
 

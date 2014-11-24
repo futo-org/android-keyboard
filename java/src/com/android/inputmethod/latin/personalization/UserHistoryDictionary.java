@@ -37,20 +37,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Locally gathers stats about the words user types and various other signals like auto-correction
- * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
+ * Locally gathers statistics about the words user types and various other signals like
+ * auto-correction cancellation or manual picks. This allows the keyboard to adapt to the
+ * typist over time.
  */
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
     static final String NAME = UserHistoryDictionary.class.getSimpleName();
 
     // TODO: Make this constructor private
-    UserHistoryDictionary(final Context context, final Locale locale) {
+    UserHistoryDictionary(final Context context, final Locale locale,
+            @Nullable final String account) {
         super(context,
-                getUserHistoryDictName(
-                        NAME,
-                        locale,
-                        null /* dictFile */,
-                        context),
+                getUserHistoryDictName(NAME, locale, null /* dictFile */, account),
                 locale,
                 Dictionary.TYPE_USER_HISTORY,
                 null /* dictFile */);
@@ -61,24 +59,21 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
      */
     @UsedForTesting
     static String getUserHistoryDictName(final String name, final Locale locale,
-            @Nullable final File dictFile, final Context context) {
+            @Nullable final File dictFile, @Nullable final String account) {
         if (!ProductionFlags.ENABLE_PER_ACCOUNT_USER_HISTORY_DICTIONARY) {
             return getDictName(name, locale, dictFile);
         }
-        return getUserHistoryDictNamePerAccount(name, locale, dictFile, context);
+        return getUserHistoryDictNamePerAccount(name, locale, dictFile, account);
     }
 
     /**
      * Uses the currently signed in account to determine the dictionary name.
      */
     private static String getUserHistoryDictNamePerAccount(final String name, final Locale locale,
-            @Nullable final File dictFile, final Context context) {
+            @Nullable final File dictFile, @Nullable final String account) {
         if (dictFile != null) {
             return dictFile.getName();
         }
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        final String account = prefs.getString(LocalSettingsConstants.PREF_ACCOUNT_NAME,
-                null /* default */);
         String dictName = name + "." + locale.toString();
         if (account != null) {
             dictName += "." + account;
@@ -90,14 +85,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
     @SuppressWarnings("unused")
     @ExternallyReferenced
     public static UserHistoryDictionary getDictionary(final Context context, final Locale locale,
-            final File dictFile, final String dictNamePrefix) {
-        final String account;
-        if (ProductionFlags.ENABLE_PER_ACCOUNT_USER_HISTORY_DICTIONARY) {
-            account = PreferenceManager.getDefaultSharedPreferences(context)
-                    .getString(LocalSettingsConstants.PREF_ACCOUNT_NAME, null /* default */);
-        } else {
-            account = null;
-        }
+            final File dictFile, final String dictNamePrefix, @Nullable final String account) {
         return PersonalizationHelper.getUserHistoryDictionary(context, locale, account);
     }
 
