@@ -29,6 +29,7 @@
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
+#include "utils/ngram_utils.h"
 
 namespace latinime {
 
@@ -43,8 +44,9 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPat
             entryCounts, extendedRegionSize, &headerBuffer)) {
         AKLOGE("Cannot write header structure to buffer. "
                 "updatesLastDecayedTime: %d, unigramCount: %d, bigramCount: %d, trigramCount: %d,"
-                "extendedRegionSize: %d", false, entryCounts.getUnigramCount(),
-                entryCounts.getBigramCount(), entryCounts.getTrigramCount(),
+                "extendedRegionSize: %d", false, entryCounts.getNgramCount(NgramType::Unigram),
+                entryCounts.getNgramCount(NgramType::Bigram),
+                entryCounts.getNgramCount(NgramType::Trigram),
                 extendedRegionSize);
         return false;
     }
@@ -86,8 +88,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
     if (headerPolicy->isDecayingDict()) {
-        const EntryCounts maxEntryCounts(headerPolicy->getMaxUnigramCount(),
-                headerPolicy->getMaxBigramCount(), headerPolicy->getMaxTrigramCount());
+        const EntryCounts &maxEntryCounts = headerPolicy->getMaxNgramCounts();
         if (!mBuffers->getMutableLanguageModelDictContent()->truncateEntries(
                 outEntryCounters->getEntryCounts(), maxEntryCounts, headerPolicy,
                 outEntryCounters)) {

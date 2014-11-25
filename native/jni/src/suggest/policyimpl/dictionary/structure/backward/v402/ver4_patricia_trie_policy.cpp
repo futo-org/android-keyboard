@@ -303,7 +303,7 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const CodePointArrayView wordCodePo
     if (mUpdatingHelper.addUnigramWord(&readingHelper, codePointArrayView, unigramProperty,
             &addedNewUnigram)) {
         if (addedNewUnigram && !unigramProperty->representsBeginningOfSentence()) {
-            mEntryCounters.incrementUnigramCount();
+            mEntryCounters.incrementNgramCount(NgramType::Unigram);
         }
         if (unigramProperty->getShortcuts().size() > 0) {
             // Add shortcut target.
@@ -397,7 +397,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const NgramProperty *const ngramPrope
     if (mUpdatingHelper.addNgramEntry(PtNodePosArrayView::singleElementView(&prevWordPtNodePos),
             wordPos, ngramProperty, &addedNewBigram)) {
         if (addedNewBigram) {
-            mEntryCounters.incrementBigramCount();
+            mEntryCounters.incrementNgramCount(NgramType::Bigram);
         }
         return true;
     } else {
@@ -438,7 +438,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const NgramContext *const ngramCon
     const int prevWordPtNodePos = getTerminalPtNodePosFromWordId(prevWordIds[0]);
     if (mUpdatingHelper.removeNgramEntry(
             PtNodePosArrayView::singleElementView(&prevWordPtNodePos), wordPos)) {
-        mEntryCounters.decrementBigramCount();
+        mEntryCounters.decrementNgramCount(NgramType::Bigram);
         return true;
     } else {
         return false;
@@ -525,20 +525,23 @@ void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int quer
         char *const outResult, const int maxResultLength) {
     const int compareLength = queryLength + 1 /* terminator */;
     if (strncmp(query, UNIGRAM_COUNT_QUERY, compareLength) == 0) {
-        snprintf(outResult, maxResultLength, "%d", mEntryCounters.getUnigramCount());
+        snprintf(outResult, maxResultLength, "%d",
+                mEntryCounters.getNgramCount(NgramType::Unigram));
     } else if (strncmp(query, BIGRAM_COUNT_QUERY, compareLength) == 0) {
-        snprintf(outResult, maxResultLength, "%d", mEntryCounters.getBigramCount());
+        snprintf(outResult, maxResultLength, "%d", mEntryCounters.getNgramCount(NgramType::Bigram));
     } else if (strncmp(query, MAX_UNIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
                 mHeaderPolicy->isDecayingDict() ?
                         ForgettingCurveUtils::getEntryCountHardLimit(
-                                mHeaderPolicy->getMaxUnigramCount()) :
+                                mHeaderPolicy->getMaxNgramCounts().getNgramCount(
+                                        NgramType::Unigram)) :
                         static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
     } else if (strncmp(query, MAX_BIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
                 mHeaderPolicy->isDecayingDict() ?
                         ForgettingCurveUtils::getEntryCountHardLimit(
-                                mHeaderPolicy->getMaxBigramCount()) :
+                                mHeaderPolicy->getMaxNgramCounts().getNgramCount(
+                                        NgramType::Bigram)) :
                         static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
     }
 }

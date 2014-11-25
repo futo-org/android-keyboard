@@ -126,20 +126,13 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 
 /* static */ bool ForgettingCurveUtils::needsToDecay(const bool mindsBlockByDecay,
         const EntryCounts &entryCounts, const HeaderPolicy *const headerPolicy) {
-    if (entryCounts.getUnigramCount()
-            >= getEntryCountHardLimit(headerPolicy->getMaxUnigramCount())) {
-        // Unigram count exceeds the limit.
-        return true;
-    }
-    if (entryCounts.getBigramCount()
-            >= getEntryCountHardLimit(headerPolicy->getMaxBigramCount())) {
-        // Bigram count exceeds the limit.
-        return true;
-    }
-    if (entryCounts.getTrigramCount()
-            >= getEntryCountHardLimit(headerPolicy->getMaxTrigramCount())) {
-        // Trigram count exceeds the limit.
-        return true;
+    const EntryCounts &maxNgramCounts = headerPolicy->getMaxNgramCounts();
+    for (const auto ngramType : AllNgramTypes::ASCENDING) {
+        if (entryCounts.getNgramCount(ngramType)
+                >= getEntryCountHardLimit(maxNgramCounts.getNgramCount(ngramType))) {
+            // Unigram count exceeds the limit.
+            return true;
+        }
     }
     if (mindsBlockByDecay) {
         return false;

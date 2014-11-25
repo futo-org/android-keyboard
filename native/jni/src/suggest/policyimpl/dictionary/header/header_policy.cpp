@@ -18,6 +18,8 @@
 
 #include <algorithm>
 
+#include "utils/ngram_utils.h"
+
 namespace latinime {
 
 // Note that these are corresponding definitions in Java side in DictionaryHeader.
@@ -28,9 +30,11 @@ const char *const HeaderPolicy::REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY =
 const char *const HeaderPolicy::IS_DECAYING_DICT_KEY = "USES_FORGETTING_CURVE";
 const char *const HeaderPolicy::DATE_KEY = "date";
 const char *const HeaderPolicy::LAST_DECAYED_TIME_KEY = "LAST_DECAYED_TIME";
-const char *const HeaderPolicy::UNIGRAM_COUNT_KEY = "UNIGRAM_COUNT";
-const char *const HeaderPolicy::BIGRAM_COUNT_KEY = "BIGRAM_COUNT";
-const char *const HeaderPolicy::TRIGRAM_COUNT_KEY = "TRIGRAM_COUNT";
+const char *const HeaderPolicy::NGRAM_COUNT_KEYS[] =
+        {"UNIGRAM_COUNT", "BIGRAM_COUNT", "TRIGRAM_COUNT"};
+const char *const HeaderPolicy::MAX_NGRAM_COUNT_KEYS[] =
+        {"MAX_UNIGRAM_ENTRY_COUNT", "MAX_BIGRAM_ENTRY_COUNT", "MAX_TRIGRAM_ENTRY_COUNT"};
+const int HeaderPolicy::DEFAULT_MAX_NGRAM_COUNTS[] = {10000, 30000, 30000};
 const char *const HeaderPolicy::EXTENDED_REGION_SIZE_KEY = "EXTENDED_REGION_SIZE";
 // Historical info is information that is needed to support decaying such as timestamp, level and
 // count.
@@ -39,17 +43,9 @@ const char *const HeaderPolicy::LOCALE_KEY = "locale"; // match Java declaration
 const char *const HeaderPolicy::FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY =
         "FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID";
 
-const char *const HeaderPolicy::MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_ENTRY_COUNT";
-const char *const HeaderPolicy::MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_ENTRY_COUNT";
-const char *const HeaderPolicy::MAX_TRIGRAM_COUNT_KEY = "MAX_TRIGRAM_ENTRY_COUNT";
-
 const int HeaderPolicy::DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE = 100;
 const float HeaderPolicy::MULTIPLE_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 const int HeaderPolicy::DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID = 3;
-
-const int HeaderPolicy::DEFAULT_MAX_UNIGRAM_COUNT = 10000;
-const int HeaderPolicy::DEFAULT_MAX_BIGRAM_COUNT = 30000;
-const int HeaderPolicy::DEFAULT_MAX_TRIGRAM_COUNT = 30000;
 
 // Used for logging. Question mark is used to indicate that the key is not found.
 void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *outValue,
@@ -126,15 +122,22 @@ bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTim
     return true;
 }
 
+namespace {
+
+int getIndexFromNgramType(const NgramType ngramType) {
+    return static_cast<int>(ngramType);
+}
+
+} // namespace
+
 void HeaderPolicy::fillInHeader(const bool updatesLastDecayedTime,
         const EntryCounts &entryCounts, const int extendedRegionSize,
         DictionaryHeaderStructurePolicy::AttributeMap *outAttributeMap) const {
-    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, UNIGRAM_COUNT_KEY,
-            entryCounts.getUnigramCount());
-    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, BIGRAM_COUNT_KEY,
-            entryCounts.getBigramCount());
-    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, TRIGRAM_COUNT_KEY,
-            entryCounts.getTrigramCount());
+    for (const auto ngramType : AllNgramTypes::ASCENDING) {
+        HeaderReadWriteUtils::setIntAttribute(outAttributeMap,
+                NGRAM_COUNT_KEYS[getIndexFromNgramType(ngramType)],
+                entryCounts.getNgramCount(ngramType));
+    }
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, EXTENDED_REGION_SIZE_KEY,
             extendedRegionSize);
     // Set the current time as the generation time.
@@ -153,6 +156,27 @@ void HeaderPolicy::fillInHeader(const bool updatesLastDecayedTime,
     DictionaryHeaderStructurePolicy::AttributeMap attributeMap;
     HeaderReadWriteUtils::fetchAllHeaderAttributes(dictBuf, &attributeMap);
     return attributeMap;
+}
+
+/* static */ const EntryCounts HeaderPolicy::readNgramCounts() const {
+    MutableEntryCounters entryCounters;
+    for (const auto ngramType : AllNgramTypes::ASCENDING) {
+        const int entryCount = HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                NGRAM_COUNT_KEYS[getIndexFromNgramType(ngramType)], 0 /* defaultValue */);
+        entryCounters.setNgramCount(ngramType, entryCount);
+    }
+    return entryCounters.getEntryCounts();
+}
+
+/* static */ const EntryCounts HeaderPolicy::readMaxNgramCounts() const {
+    MutableEntryCounters entryCounters;
+    for (const auto ngramType : AllNgramTypes::ASCENDING) {
+        const int index = getIndexFromNgramType(ngramType);
+        const int maxEntryCount = HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                MAX_NGRAM_COUNT_KEYS[index], DEFAULT_MAX_NGRAM_COUNTS[index]);
+        entryCounters.setNgramCount(ngramType, maxEntryCount);
+    }
+    return entryCounters.getEntryCounts();
 }
 
 } // namespace latinime

@@ -53,8 +53,8 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPat
             entryCounts, extendedRegionSize, &headerBuffer)) {
         AKLOGE("Cannot write header structure to buffer. "
                 "updatesLastDecayedTime: %d, unigramCount: %d, bigramCount: %d, "
-                "extendedRegionSize: %d", false, entryCounts.getUnigramCount(),
-                entryCounts.getBigramCount(), extendedRegionSize);
+                "extendedRegionSize: %d", false, entryCounts.getNgramCount(NgramType::Unigram),
+                entryCounts.getNgramCount(NgramType::Bigram), extendedRegionSize);
         return false;
     }
     return mBuffers->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
@@ -73,9 +73,11 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
     }
     BufferWithExtendableBuffer headerBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
+    MutableEntryCounters entryCounters;
+    entryCounters.setNgramCount(NgramType::Unigram, unigramCount);
+    entryCounters.setNgramCount(NgramType::Bigram, bigramCount);
     if (!headerPolicy->fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
-            EntryCounts(unigramCount, bigramCount, 0 /* trigramCount */),
-            0 /* extendedRegionSize */, &headerBuffer)) {
+            entryCounters.getEntryCounts(), 0 /* extendedRegionSize */, &headerBuffer)) {
         return false;
     }
     return dictBuffers->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
@@ -107,7 +109,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     }
     const int unigramCount = traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
             .getValidUnigramCount();
-    const int maxUnigramCount = headerPolicy->getMaxUnigramCount();
+    const int maxUnigramCount = headerPolicy->getMaxNgramCounts().getNgramCount(NgramType::Unigram);
     if (headerPolicy->isDecayingDict() && unigramCount > maxUnigramCount) {
         if (!truncateUnigrams(&ptNodeReader, &ptNodeWriter, maxUnigramCount)) {
             AKLOGE("Cannot remove unigrams. current: %d, max: %d", unigramCount,
@@ -124,7 +126,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
     const int bigramCount = traversePolicyToUpdateBigramProbability.getValidBigramEntryCount();
-    const int maxBigramCount = headerPolicy->getMaxBigramCount();
+    const int maxBigramCount = headerPolicy->getMaxNgramCounts().getNgramCount(NgramType::Bigram);
     if (headerPolicy->isDecayingDict() && bigramCount > maxBigramCount) {
         if (!truncateBigrams(maxBigramCount)) {
             AKLOGE("Cannot remove bigrams. current: %d, max: %d", bigramCount, maxBigramCount);

@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/property/historical_info.h"
+#include "utils/ngram_utils.h"
 #include "utils/time_keeper.h"
 
 namespace latinime {
@@ -28,46 +29,14 @@ namespace latinime {
 class DynamicLanguageModelProbabilityUtils {
  public:
     static float computeRawProbabilityFromCounts(const int count, const int contextCount,
-            const int matchedWordCountInContext) {
-        int minCount = 0;
-        switch (matchedWordCountInContext) {
-            case 1:
-                minCount = ASSUMED_MIN_COUNT_FOR_UNIGRAMS;
-                break;
-            case 2:
-                minCount = ASSUMED_MIN_COUNT_FOR_BIGRAMS;
-                break;
-            case 3:
-                minCount = ASSUMED_MIN_COUNT_FOR_TRIGRAMS;
-                break;
-            default:
-                AKLOGE("computeRawProbabilityFromCounts is called with invalid "
-                        "matchedWordCountInContext (%d).", matchedWordCountInContext);
-                ASSERT(false);
-                return 0.0f;
-        }
+            const NgramType ngramType) {
+        const int minCount = ASSUMED_MIN_COUNTS[static_cast<int>(ngramType)];
         return static_cast<float>(count) / static_cast<float>(std::max(contextCount, minCount));
     }
 
-    static float backoff(const int ngramProbability, const int matchedWordCountInContext) {
-        int probability = NOT_A_PROBABILITY;
-
-        switch (matchedWordCountInContext) {
-            case 1:
-                probability = ngramProbability + ENCODED_BACKOFF_WEIGHT_FOR_UNIGRAMS;
-                break;
-            case 2:
-                probability = ngramProbability + ENCODED_BACKOFF_WEIGHT_FOR_BIGRAMS;
-                break;
-            case 3:
-                probability = ngramProbability + ENCODED_BACKOFF_WEIGHT_FOR_TRIGRAMS;
-                break;
-            default:
-                AKLOGE("backoff is called with invalid matchedWordCountInContext (%d).",
-                        matchedWordCountInContext);
-                ASSERT(false);
-                return NOT_A_PROBABILITY;
-        }
+    static float backoff(const int ngramProbability, const NgramType ngramType) {
+        const int probability =
+                ngramProbability + ENCODED_BACKOFF_WEIGHTS[static_cast<int>(ngramType)];
         return std::min(std::max(probability, NOT_A_PROBABILITY), MAX_PROBABILITY);
     }
 
@@ -99,14 +68,8 @@ private:
 
     static_assert(MAX_PREV_WORD_COUNT_FOR_N_GRAM <= 2, "Max supported Ngram is Trigram.");
 
-    static const int ASSUMED_MIN_COUNT_FOR_UNIGRAMS;
-    static const int ASSUMED_MIN_COUNT_FOR_BIGRAMS;
-    static const int ASSUMED_MIN_COUNT_FOR_TRIGRAMS;
-
-    static const int ENCODED_BACKOFF_WEIGHT_FOR_UNIGRAMS;
-    static const int ENCODED_BACKOFF_WEIGHT_FOR_BIGRAMS;
-    static const int ENCODED_BACKOFF_WEIGHT_FOR_TRIGRAMS;
-
+    static const int ASSUMED_MIN_COUNTS[];
+    static const int ENCODED_BACKOFF_WEIGHTS[];
     static const int DURATION_TO_DISCARD_ENTRY_IN_SECONDS;
 };
 
