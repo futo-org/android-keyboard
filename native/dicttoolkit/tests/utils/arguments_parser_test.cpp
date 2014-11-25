@@ -68,6 +68,80 @@ TEST(ArgumentsParserTests, TestValitadeSpecs) {
     }
 }
 
+int initArgv(char *mutableCommandLine, char **argv) {
+    bool readingSeparator = false;
+    int argc = 1;
+    argv[0] = mutableCommandLine;
+    const size_t length = strlen(mutableCommandLine);
+    for (size_t i = 0; i < length; ++i) {
+        if (mutableCommandLine[i] != ' ' && readingSeparator) {
+            readingSeparator = false;
+            argv[argc] = mutableCommandLine + i;
+            ++argc;
+        } else if (mutableCommandLine[i] == ' ' && !readingSeparator) {
+            readingSeparator = true;
+            mutableCommandLine[i] = '\0';
+        }
+    }
+    argv[argc] = nullptr;
+    return argc;
+}
+
+TEST(ArgumentsParserTests, TestParseArguments) {
+    std::unordered_map<std::string, OptionSpec> optionSpecs;
+    optionSpecs["a"] = OptionSpec::switchOption("description");
+    optionSpecs["b"] = OptionSpec::keyValueOption("valueName", "default", "description");
+    const std::vector<ArgumentSpec> argumentSpecs = {
+        ArgumentSpec::singleArgument("arg0", "description"),
+        ArgumentSpec::variableLengthArguments("arg1", 0 /* minCount */,  2 /* maxCount */,
+                "description"),
+    };
+    const ArgumentsParser parser =
+            ArgumentsParser(std::move(optionSpecs), std::move(argumentSpecs));
+
+    {
+        char kMutableCommandLine[1024] = "command arg";
+        char *argv[128] = {};
+        const int argc = initArgv(kMutableCommandLine, argv);
+        ASSERT_EQ(2, argc);
+        const ArgumentsAndOptions argumentsAndOptions = parser.parseArguments(
+                argc, argv, false /* printErrorMessages */);
+        EXPECT_FALSE(argumentsAndOptions.hasOption("a"));
+        EXPECT_EQ("default", argumentsAndOptions.getOptionValue("b"));
+        EXPECT_EQ("arg", argumentsAndOptions.getSingleArgument("arg0"));
+        EXPECT_FALSE(argumentsAndOptions.hasArgument("arg1"));
+    }
+    {
+        char kArgumentBuffer[1024] = "command -a arg arg";
+        char *argv[128] = {};
+        const int argc = initArgv(kArgumentBuffer, argv);
+        ASSERT_EQ(4, argc);
+        const ArgumentsAndOptions argumentsAndOptions = parser.parseArguments(
+                argc, argv, false /* printErrorMessages */);
+        EXPECT_TRUE(argumentsAndOptions.hasOption("a"));
+        EXPECT_EQ("default", argumentsAndOptions.getOptionValue("b"));
+        EXPECT_EQ("arg", argumentsAndOptions.getSingleArgument("arg0"));
+        EXPECT_TRUE(argumentsAndOptions.hasArgument("arg1"));
+        EXPECT_EQ(1u, argumentsAndOptions.getVariableLengthArguments("arg1").size());
+    }
+    {
+        char kArgumentBuffer[1024] = "command -b value arg arg1 arg2";
+        char *argv[128] = {};
+        const int argc = initArgv(kArgumentBuffer, argv);
+        ASSERT_EQ(6, argc);
+        const ArgumentsAndOptions argumentsAndOptions = parser.parseArguments(
+                argc, argv, false /* printErrorMessages */);
+        EXPECT_FALSE(argumentsAndOptions.hasOption("a"));
+        EXPECT_EQ("value", argumentsAndOptions.getOptionValue("b"));
+        EXPECT_EQ("arg", argumentsAndOptions.getSingleArgument("arg0"));
+        const std::vector<std::string> &arg1 =
+                argumentsAndOptions.getVariableLengthArguments("arg1");
+        EXPECT_EQ(2u, arg1.size());
+        EXPECT_EQ("arg1", arg1[0]);
+        EXPECT_EQ("arg2", arg1[1]);
+    }
+}
+
 } // namespace
 } // namespace dicttoolkit
 } // namespace latinime

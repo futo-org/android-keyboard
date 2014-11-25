@@ -21,7 +21,7 @@
 namespace latinime {
 namespace dicttoolkit {
 
-const int ArgumentSpec::UNLIMITED_COUNT = -1;
+const size_t ArgumentSpec::UNLIMITED_COUNT = S_INT_MAX;
 
 bool ArgumentsParser::validateSpecs() const {
     std::unordered_set<std::string> argumentNameSet;
@@ -53,7 +53,7 @@ void ArgumentsParser::printUsage(const std::string &commandName,
         const std::string &optionName = option.first;
         const OptionSpec &spec = option.second;
         printf(" [-%s", optionName.c_str());
-        if (spec.takeValue()) {
+        if (spec.needsValue()) {
             printf(" <%s>", spec.getValueName().c_str());
         }
         printf("]");
@@ -74,11 +74,11 @@ void ArgumentsParser::printUsage(const std::string &commandName,
         const std::string &optionName = option.first;
         const OptionSpec &spec = option.second;
         printf(" -%s", optionName.c_str());
-        if (spec.takeValue()) {
+        if (spec.needsValue()) {
             printf(" <%s>", spec.getValueName().c_str());
         }
         printf("\t\t\t%s", spec.getDescription().c_str());
-        if (spec.takeValue() && !spec.getDefaultValue().empty()) {
+        if (spec.needsValue() && !spec.getDefaultValue().empty()) {
             printf("\tdefault: %s", spec.getDefaultValue().c_str());
         }
         printf("\n");
@@ -89,9 +89,76 @@ void ArgumentsParser::printUsage(const std::string &commandName,
     printf("\n\n");
 }
 
-const ArgumentsAndOptions ArgumentsParser::parseArguments(const int argc, char **argv) const {
-    // TODO: Implement
-    return ArgumentsAndOptions();
+const ArgumentsAndOptions ArgumentsParser::parseArguments(const int argc, char **argv,
+        const bool printErrorMessage) const {
+    if (argc <= 0) {
+        AKLOGE("Invalid argc (%d).", argc);
+        ASSERT(false);
+        return ArgumentsAndOptions();
+    }
+    std::unordered_map<std::string, std::string> options;
+    for (const auto &entry : mOptionSpecs) {
+        const std::string &optionName = entry.first;
+        const OptionSpec &optionSpec = entry.second;
+        if (optionSpec.needsValue() && !optionSpec.getDefaultValue().empty()) {
+            // Set default value.
+            options[optionName] = optionSpec.getDefaultValue();
+        }
+    }
+    std::unordered_map<std::string, std::vector<std::string>> arguments;
+    auto argumentSpecIt = mArgumentSpecs.cbegin();
+    for (int i = 1; i < argc; ++i) {
+        const std::string arg = argv[i];
+        if (arg.length() > 1 && arg[0] == '-') {
+            // option
+            const std::string optionName = arg.substr(1);
+            const auto it = mOptionSpecs.find(optionName);
+            if (it == mOptionSpecs.end()) {
+                if (printErrorMessage) {
+                    fprintf(stderr, "Unknown option: '%s'\n", optionName.c_str());
+                }
+                return ArgumentsAndOptions();
+            }
+            std::string optionValue;
+            if (it->second.needsValue()) {
+                ++i;
+                if (i >= argc) {
+                    if (printErrorMessage) {
+                        fprintf(stderr, "Missing argument for option '%s'\n", optionName.c_str());
+                    }
+                    return ArgumentsAndOptions();
+                }
+                optionValue = argv[i];
+            }
+            options[optionName] = optionValue;
+        } else {
+            // argument
+            if (argumentSpecIt == mArgumentSpecs.end()) {
+                if (printErrorMessage) {
+                    fprintf(stderr, "Too many arguments.\n");
+                }
+                return ArgumentsAndOptions();
+            }
+            arguments[argumentSpecIt->getName()].push_back(arg);
+            if (arguments[argumentSpecIt->getName()].size() >= argumentSpecIt->getMaxCount()) {
+                ++argumentSpecIt;
+            }
+        }
+    }
+
+    if (argumentSpecIt != mArgumentSpecs.end()) {
+        const auto &it = arguments.find(argumentSpecIt->getName());
+        const size_t minCount = argumentSpecIt->getMinCount();
+        const size_t actualcount = it == arguments.end() ? 0 : it->second.size();
+        if (minCount > actualcount) {
+            if (printErrorMessage) {
+                fprintf(stderr, "Not enough arguments. %zd argumant(s) required for <%s>\n",
+                        minCount, argumentSpecIt->getName().c_str());
+            }
+            return ArgumentsAndOptions();
+        }
+    }
+    return ArgumentsAndOptions(std::move(options), std::move(arguments));
 }
 
 } // namespace dicttoolkit
