@@ -138,6 +138,10 @@ public class DictionaryFacilitator {
 
         public final Locale mLocale;
         private Dictionary mMainDict;
+        // Confidence that the most probable language is actually the language the user is
+        // typing in. For now, this is simply the number of times a word from this language
+        // has been committed in a row.
+        private int mConfidence = 0;
         public float mWeightForTypingInLocale = WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
         public float mWeightForGesturingInLocale = WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
         public final ConcurrentHashMap<String, ExpandableBinaryDictionary> mSubDictMap =
@@ -260,8 +264,9 @@ public class DictionaryFacilitator {
     public void switchMostProbableLanguage(final Locale locale) {
         if (null == locale) {
             // In many cases, there is no locale to a committed word. For example, a typed word
-            // that does not auto-correct has no locale. In this case we simply do not change
-            // the most probable language.
+            // that is in none of the currently active dictionaries but still does not
+            // auto-correct to anything has no locale. In this case we simply do not change
+            // the most probable language and do not touch confidence.
             return;
         }
         final DictionaryGroup newMostProbableDictionaryGroup =
@@ -272,15 +277,20 @@ public class DictionaryFacilitator {
             // facilitator any more. In this case, just not changing things is fine.
             return;
         }
-        mMostProbableDictionaryGroup.mWeightForTypingInLocale =
-                DictionaryGroup.WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE;
-        mMostProbableDictionaryGroup.mWeightForGesturingInLocale =
-                DictionaryGroup.WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE;
-        newMostProbableDictionaryGroup.mWeightForTypingInLocale =
-                DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
-        newMostProbableDictionaryGroup.mWeightForGesturingInLocale =
-                DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
-        mMostProbableDictionaryGroup = newMostProbableDictionaryGroup;
+        if (newMostProbableDictionaryGroup == mMostProbableDictionaryGroup) {
+            ++newMostProbableDictionaryGroup.mConfidence;
+        } else {
+            mMostProbableDictionaryGroup.mWeightForTypingInLocale =
+                    DictionaryGroup.WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE;
+            mMostProbableDictionaryGroup.mWeightForGesturingInLocale =
+                    DictionaryGroup.WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE;
+            mMostProbableDictionaryGroup.mConfidence = 0;
+            newMostProbableDictionaryGroup.mWeightForTypingInLocale =
+                    DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
+            newMostProbableDictionaryGroup.mWeightForGesturingInLocale =
+                    DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
+            mMostProbableDictionaryGroup = newMostProbableDictionaryGroup;
+        }
     }
 
     @Nullable
