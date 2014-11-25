@@ -24,6 +24,12 @@ namespace dicttoolkit {
 const char *const MakedictExecutor::COMMAND_NAME = "makedict";
 
 /* static */ int MakedictExecutor::run(const int argc, char **argv) {
+    const ArgumentsAndOptions argumentsAndOptions =
+            getArgumentsParser().parseArguments(argc, argv, true /* printErrorMessages */);
+    if (!argumentsAndOptions.isValid()) {
+        printUsage();
+        return 1;
+    }
     fprintf(stderr, "Command '%s' has not been implemented yet.\n", COMMAND_NAME);
     return 0;
 }
