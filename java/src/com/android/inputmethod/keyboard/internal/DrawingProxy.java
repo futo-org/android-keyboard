@@ -17,29 +17,36 @@
 package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.PointerTracker;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface DrawingProxy {
-    // TODO: Remove this method.
-    public void invalidateKey(@Nullable Key key);
-
-    // TODO: Rename this method to onKeyPressed.
-    public void showKeyPreview(@Nonnull Key key);
-
-    // TODO: Rename this method to onKeyReleased.
-    public void dismissKeyPreview(@Nonnull Key key);
+    /**
+     * Called when a key is being pressed.
+     * @param key the {@link Key} that is being pressed.
+     * @param withPreview true if key popup preview should be displayed.
+     */
+    public void onKeyPressed(@Nonnull Key key, boolean withPreview);
 
     /**
-     * Dismiss a key preview visual without delay.
-     * @param key the key whose preview visual should be dismissed.
+     * Called when a key is being released.
+     * @param key the {@link Key} that is being released.
+     * @param withAnimation when true, key popup preview should be dismissed with animation.
      */
-    public void dismissKeyPreviewWithoutDelay(@Nonnull Key key);
+    public void onKeyReleased(@Nonnull Key key, boolean withAnimation);
 
-    // TODO: Rename this method to onKeyLongPressed.
-    public void onLongPress(@Nonnull PointerTracker tracker);
+    /**
+     * Start showing more keys keyboard of a key that is being long pressed.
+     * @param key the {@link Key} that is being long pressed and showing more keys keyboard.
+     * @param tracker the {@link PointerTracker} that detects this long pressing.
+     * @return {@link MoreKeysPanel} that is being shown. null if there is no need to show more keys
+     *     keyboard.
+     */
+    @Nullable
+    public MoreKeysPanel showMoreKeysKeyboard(@Nonnull Key key, @Nonnull PointerTracker tracker);
 
     /**
      * Start a while-typing-animation.
