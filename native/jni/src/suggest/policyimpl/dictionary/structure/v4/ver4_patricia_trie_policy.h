@@ -51,8 +51,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       &mShortcutPolicy),
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
-              mEntryCounters(mHeaderPolicy->getUnigramCount(), mHeaderPolicy->getBigramCount(),
-                      mHeaderPolicy->getTrigramCount()),
+              mEntryCounters(mHeaderPolicy->getNgramCounts().getCountArray()),
               mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {};
 
     AK_FORCE_INLINE int getRootPosition() const {

@@ -20,6 +20,7 @@
 #include <array>
 
 #include "defines.h"
+#include "utils/ngram_utils.h"
 
 namespace latinime {
 
@@ -28,34 +29,22 @@ class EntryCounts final {
  public:
     EntryCounts() : mEntryCounts({{0, 0, 0}}) {}
 
-    EntryCounts(const int unigramCount, const int bigramCount, const int trigramCount)
-            : mEntryCounts({{unigramCount, bigramCount, trigramCount}}) {}
-
     explicit EntryCounts(const std::array<int, MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1> &counters)
             : mEntryCounts(counters) {}
 
-    int getUnigramCount() const {
-        return mEntryCounts[0];
+    int getNgramCount(const NgramType ngramType) const {
+        return mEntryCounts[static_cast<int>(ngramType)];
     }
 
-    int getBigramCount() const {
-        return mEntryCounts[1];
-    }
-
-    int getTrigramCount() const {
-        return mEntryCounts[2];
-    }
-
-    int getNgramCount(const size_t n) const {
-        if (n < 1 || n > mEntryCounts.size()) {
-            return 0;
-        }
-        return mEntryCounts[n - 1];
+    const std::array<int, MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1> &getCountArray() const {
+        return mEntryCounts;
     }
 
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(EntryCounts);
 
+    // Counts from Unigram (0-th element) to (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram
+    // (MAX_PREV_WORD_COUNT_FOR_N_GRAM-th element)
     const std::array<int, MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1> mEntryCounts;
 };
 
@@ -65,68 +54,35 @@ class MutableEntryCounters final {
         mEntryCounters.fill(0);
     }
 
-    MutableEntryCounters(const int unigramCount, const int bigramCount, const int trigramCount)
-            : mEntryCounters({{unigramCount, bigramCount, trigramCount}}) {}
+    explicit MutableEntryCounters(
+            const std::array<int, MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1> &counters)
+            : mEntryCounters(counters) {}
 
     const EntryCounts getEntryCounts() const {
         return EntryCounts(mEntryCounters);
     }
 
-    int getUnigramCount() const {
-        return mEntryCounters[0];
+    void incrementNgramCount(const NgramType ngramType) {
+        ++mEntryCounters[static_cast<int>(ngramType)];
     }
 
-    int getBigramCount() const {
-        return mEntryCounters[1];
+    void decrementNgramCount(const NgramType ngramType) {
+        --mEntryCounters[static_cast<int>(ngramType)];
     }
 
-    int getTrigramCount() const {
-        return mEntryCounters[2];
+    int getNgramCount(const NgramType ngramType) const {
+        return mEntryCounters[static_cast<int>(ngramType)];
     }
 
-    void incrementUnigramCount() {
-        ++mEntryCounters[0];
-    }
-
-    void decrementUnigramCount() {
-        ASSERT(mEntryCounters[0] != 0);
-        --mEntryCounters[0];
-    }
-
-    void incrementBigramCount() {
-        ++mEntryCounters[1];
-    }
-
-    void decrementBigramCount() {
-        ASSERT(mEntryCounters[1] != 0);
-        --mEntryCounters[1];
-    }
-
-    void incrementNgramCount(const size_t n) {
-        if (n < 1 || n > mEntryCounters.size()) {
-            return;
-        }
-        ++mEntryCounters[n - 1];
-    }
-
-    void decrementNgramCount(const size_t n) {
-        if (n < 1 || n > mEntryCounters.size()) {
-            return;
-        }
-        ASSERT(mEntryCounters[n - 1] != 0);
-        --mEntryCounters[n - 1];
-    }
-
-    void setNgramCount(const size_t n, const int count) {
-        if (n < 1 || n > mEntryCounters.size()) {
-            return;
-        }
-        mEntryCounters[n - 1] = count;
+    void setNgramCount(const NgramType ngramType, const int count) {
+        mEntryCounters[static_cast<int>(ngramType)] = count;
     }
 
  private:
     DISALLOW_COPY_AND_ASSIGN(MutableEntryCounters);
 
+    // Counters from Unigram (0-th element) to (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram
+    // (MAX_PREV_WORD_COUNT_FOR_N_GRAM-th element)
     std::array<int, MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1> mEntryCounters;
 };
 } // namespace latinime
