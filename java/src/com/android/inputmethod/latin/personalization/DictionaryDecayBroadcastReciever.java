@@ -43,17 +43,40 @@ public class DictionaryDecayBroadcastReciever extends BroadcastReceiver {
     /**
      * Interval to update for decaying dictionaries.
      */
-    /* package */ static final long DICTIONARY_DECAY_INTERVAL = TimeUnit.MINUTES.toMillis(60);
+    static final long DICTIONARY_DECAY_INTERVAL_IN_MILLIS = TimeUnit.MINUTES.toMillis(60);
 
-    public static void setUpIntervalAlarmForDictionaryDecaying(Context context) {
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+    private static PendingIntent getPendingIntentForDictionaryDecay(final Context context) {
         final Intent updateIntent = new Intent(DICTIONARY_DECAY_INTENT_ACTION);
         updateIntent.setClass(context, DictionaryDecayBroadcastReciever.class);
-        final long alarmTime =  System.currentTimeMillis() + DICTIONARY_DECAY_INTERVAL;
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0 /* requestCode */,
+        return PendingIntent.getBroadcast(context, 0 /* requestCode */,
                 updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        if (null != alarmManager) alarmManager.setInexactRepeating(AlarmManager.RTC,
-                alarmTime, DICTIONARY_DECAY_INTERVAL, pendingIntent);
+    }
+
+    /**
+     * Set up interval alarm for dynamic dictionaries.
+     */
+    public static void setUpIntervalAlarmForDictionaryDecaying(final Context context) {
+        final AlarmManager alarmManager =
+                (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        if (null == alarmManager) {
+            return;
+        }
+        final long alarmTriggerTimeInMillis =
+                System.currentTimeMillis() + DICTIONARY_DECAY_INTERVAL_IN_MILLIS;
+        alarmManager.setInexactRepeating(AlarmManager.RTC, alarmTriggerTimeInMillis,
+                DICTIONARY_DECAY_INTERVAL_IN_MILLIS, getPendingIntentForDictionaryDecay(context));
+    }
+
+    /**
+     * Cancel interval alarm that has been set up.
+     */
+    public static void cancelIntervalAlarmForDictionaryDecaying(final Context context) {
+        final AlarmManager alarmManager =
+                (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        if (null == alarmManager) {
+            return;
+        }
+        alarmManager.cancel(getPendingIntentForDictionaryDecay(context));
     }
 
     @Override

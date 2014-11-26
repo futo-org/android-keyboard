@@ -730,6 +730,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         mStatsUtilsManager.onDestroy();
+        DictionaryDecayBroadcastReciever.cancelIntervalAlarmForDictionaryDecaying(this);
         super.onDestroy();
     }
 
