@@ -29,9 +29,8 @@ public final class AutoCorrectionUtils {
         // Purely static class: can't instantiate.
     }
 
-    public static boolean suggestionExceedsAutoCorrectionThreshold(
-            final SuggestedWordInfo suggestion, final String consideredWord,
-            final float autoCorrectionThreshold) {
+    public static boolean suggestionExceedsThreshold(final SuggestedWordInfo suggestion,
+            final String consideredWord, final float threshold) {
         if (null != suggestion) {
             // Shortlist a whitelisted word
             if (suggestion.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
@@ -45,11 +44,11 @@ public final class AutoCorrectionUtils {
             if (DBG) {
                 Log.d(TAG, "Normalized " + consideredWord + "," + suggestion + ","
                         + autoCorrectionSuggestionScore + ", " + normalizedScore
-                        + "(" + autoCorrectionThreshold + ")");
+                        + "(" + threshold + ")");
             }
-            if (normalizedScore >= autoCorrectionThreshold) {
+            if (normalizedScore >= threshold) {
                 if (DBG) {
-                    Log.d(TAG, "Auto corrected by S-threshold.");
+                    Log.d(TAG, "Exceeds threshold.");
                 }
                 return true;
             }

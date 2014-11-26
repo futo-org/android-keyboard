@@ -708,6 +708,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mInputLogic.mSuggest.setAutoCorrectionThreshold(
                     settingsValues.mAutoCorrectionThreshold);
         }
+        mInputLogic.mSuggest.setPlausibilityThreshold(settingsValues.mPlausibilityThreshold);
     }
 
     /**
@@ -1007,6 +1008,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 suggest.setAutoCorrectionThreshold(
                         currentSettingsValues.mAutoCorrectionThreshold);
             }
+            suggest.setPlausibilityThreshold(currentSettingsValues.mPlausibilityThreshold);
 
             switcher.loadKeyboard(editorInfo, currentSettingsValues, getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
