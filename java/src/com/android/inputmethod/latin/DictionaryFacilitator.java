@@ -63,6 +63,9 @@ public class DictionaryFacilitator {
     // HACK: This threshold is being used when adding a capitalized entry in the User History
     // dictionary.
     private static final int CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT = 140;
+    // How many words we need to type in a row ({@see mConfidenceInMostProbableLanguage}) to
+    // declare we are confident the user is typing in the most probable language.
+    private static final int CONFIDENCE_THRESHOLD = 3;
 
     private DictionaryGroup[] mDictionaryGroups = new DictionaryGroup[] { new DictionaryGroup() };
     private DictionaryGroup mMostProbableDictionaryGroup = mDictionaryGroups[0];
@@ -291,6 +294,14 @@ public class DictionaryFacilitator {
                     DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
             mMostProbableDictionaryGroup = newMostProbableDictionaryGroup;
         }
+    }
+
+    public boolean isConfidentAboutCurrentLanguageBeing(final Locale mLocale) {
+        final DictionaryGroup mostProbableDictionaryGroup = mMostProbableDictionaryGroup;
+        if (!mostProbableDictionaryGroup.mLocale.equals(mLocale)) {
+            return false;
+        }
+        return mostProbableDictionaryGroup.mConfidence >= CONFIDENCE_THRESHOLD;
     }
 
     @Nullable
@@ -634,7 +645,8 @@ public class DictionaryFacilitator {
             final int timeStampInSeconds, final boolean blockPotentiallyOffensive) {
         final ExpandableBinaryDictionary userHistoryDictionary =
                 dictionaryGroup.getSubDict(Dictionary.TYPE_USER_HISTORY);
-        if (userHistoryDictionary == null) {
+        if (userHistoryDictionary == null
+                || !isConfidentAboutCurrentLanguageBeing(userHistoryDictionary.mLocale)) {
             return;
         }
         final int maxFreq = getFrequency(word);

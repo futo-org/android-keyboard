@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -117,7 +118,8 @@ public final class Suggest {
         return suggestionsContainer;
     }
 
-    private static String getWhitelistedWordOrNull(final ArrayList<SuggestedWordInfo> suggestions) {
+    private static SuggestedWordInfo getWhitelistedWordInfoOrNull(
+            @Nonnull final ArrayList<SuggestedWordInfo> suggestions) {
         if (suggestions.isEmpty()) {
             return null;
         }
@@ -125,7 +127,7 @@ public final class Suggest {
         if (!firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
             return null;
         }
-        return firstSuggestedWordInfo.mWord;
+        return firstSuggestedWordInfo;
     }
 
     // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
@@ -156,7 +158,18 @@ public final class Suggest {
                 SuggestedWordInfo.removeDupsAndReturnSourceOfTypedWord(wordComposer.getTypedWord(),
                         mostProbableLocale /* preferredLocale */, suggestionsContainer);
 
-        final String whitelistedWord = getWhitelistedWordOrNull(suggestionsContainer);
+        final SuggestedWordInfo whitelistedWordInfo =
+                getWhitelistedWordInfoOrNull(suggestionsContainer);
+        final String whitelistedWord;
+        if (null != whitelistedWordInfo &&
+                mDictionaryFacilitator.isConfidentAboutCurrentLanguageBeing(
+                        whitelistedWordInfo.mSourceDict.mLocale)) {
+            whitelistedWord = whitelistedWordInfo.mWord;
+        } else {
+            // Even if we have a whitelist candidate, we don't use it unless we are confident
+            // the user is typing in the language this whitelist candidate comes from.
+            whitelistedWord = null;
+        }
         final boolean resultsArePredictions = !wordComposer.isComposingWord();
 
         // We allow auto-correction if we have a whitelisted word, or if the word had more than
