@@ -196,16 +196,6 @@ final class CustomInputStylePreference extends DialogPreference
         }
     }
 
-    private static int getSpinnerPosition(final Spinner spinner) {
-        if (spinner == null) return -1;
-        return spinner.getSelectedItemPosition();
-    }
-
-    private static void setSpinnerPosition(final Spinner spinner, final int position) {
-        if (spinner == null || position < 0) return;
-        spinner.setSelection(position);
-    }
-
     @Override
     protected Parcelable onSaveInstanceState() {
         final Parcelable superState = super.onSaveInstanceState();
@@ -216,8 +206,6 @@ final class CustomInputStylePreference extends DialogPreference
 
         final SavedState myState = new SavedState(superState);
         myState.mSubtype = mSubtype;
-        myState.mSubtypeLocaleSelectedPos = getSpinnerPosition(mSubtypeLocaleSpinner);
-        myState.mKeyboardLayoutSetSelectedPos = getSpinnerPosition(mKeyboardLayoutSetSpinner);
         return myState;
     }
 
@@ -230,15 +218,11 @@ final class CustomInputStylePreference extends DialogPreference
 
         final SavedState myState = (SavedState) state;
         super.onRestoreInstanceState(myState.getSuperState());
-        setSpinnerPosition(mSubtypeLocaleSpinner, myState.mSubtypeLocaleSelectedPos);
-        setSpinnerPosition(mKeyboardLayoutSetSpinner, myState.mKeyboardLayoutSetSelectedPos);
         setSubtype(myState.mSubtype);
     }
 
     static final class SavedState extends Preference.BaseSavedState {
         InputMethodSubtype mSubtype;
-        int mSubtypeLocaleSelectedPos;
-        int mKeyboardLayoutSetSelectedPos;
 
         public SavedState(final Parcelable superState) {
             super(superState);
@@ -247,15 +231,11 @@ final class CustomInputStylePreference extends DialogPreference
         @Override
         public void writeToParcel(final Parcel dest, final int flags) {
             super.writeToParcel(dest, flags);
-            dest.writeInt(mSubtypeLocaleSelectedPos);
-            dest.writeInt(mKeyboardLayoutSetSelectedPos);
             dest.writeParcelable(mSubtype, 0);
         }
 
         public SavedState(final Parcel source) {
             super(source);
-            mSubtypeLocaleSelectedPos = source.readInt();
-            mKeyboardLayoutSetSelectedPos = source.readInt();
             mSubtype = (InputMethodSubtype)source.readParcelable(null);
         }
 
