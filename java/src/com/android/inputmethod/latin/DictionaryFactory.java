@@ -19,10 +19,8 @@ package com.android.inputmethod.latin;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.util.Log;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 
 import java.io.File;
@@ -43,11 +41,10 @@ public final class DictionaryFactory {
      * locale. If none is found, it falls back to the built-in dictionary - if any.
      * @param context application context for reading resources
      * @param locale the locale for which to create the dictionary
-     * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @return an initialized instance of DictionaryCollection
      */
     public static DictionaryCollection createMainDictionaryFromManager(final Context context,
-            final Locale locale, final boolean useFullEditDistance) {
+            final Locale locale) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
             return new DictionaryCollection(Dictionary.TYPE_MAIN, locale,
@@ -61,7 +58,7 @@ public final class DictionaryFactory {
             for (final AssetFileAddress f : assetFileList) {
                 final ReadOnlyBinaryDictionary readOnlyBinaryDictionary =
                         new ReadOnlyBinaryDictionary(f.mFilename, f.mOffset, f.mLength,
-                                useFullEditDistance, locale, Dictionary.TYPE_MAIN);
+                                false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN);
                 if (readOnlyBinaryDictionary.isValidDictionary()) {
                     dictList.add(readOnlyBinaryDictionary);
                 } else {
@@ -124,26 +121,12 @@ public final class DictionaryFactory {
     }
 
     /**
-     * Initializes a main dictionary collection from a dictionary pack, with default flags.
-     *
-     * This searches for a content provider providing a dictionary pack for the specified
-     * locale. If none is found, it falls back to the built-in dictionary, if any.
-     * @param context application context for reading resources
-     * @param locale the locale for which to create the dictionary
-     * @return an initialized instance of DictionaryCollection
-     */
-    public static DictionaryCollection createMainDictionaryFromManager(final Context context,
-            final Locale locale) {
-        return createMainDictionaryFromManager(context, locale, false /* useFullEditDistance */);
-    }
-
-    /**
      * Initializes a read-only binary dictionary from a raw resource file
      * @param context application context for reading resources
      * @param locale the locale to use for the resource
      * @return an initialized instance of ReadOnlyBinaryDictionary
      */
-    protected static ReadOnlyBinaryDictionary createReadOnlyBinaryDictionary(final Context context,
+    private static ReadOnlyBinaryDictionary createReadOnlyBinaryDictionary(final Context context,
             final Locale locale) {
         AssetFileDescriptor afd = null;
         try {
@@ -176,37 +159,5 @@ public final class DictionaryFactory {
                 }
             }
         }
-    }
-
-    /**
-     * Create a dictionary from passed data. This is intended for unit tests only.
-     * @param dictionaryList the list of files to read, with their offsets and lengths
-     * @param useFullEditDistance whether to use the full edit distance in suggestions
-     * @return the created dictionary, or null.
-     */
-    @UsedForTesting
-    public static Dictionary createDictionaryForTest(final AssetFileAddress[] dictionaryList,
-            final boolean useFullEditDistance, Locale locale) {
-        final DictionaryCollection dictionaryCollection =
-                new DictionaryCollection(Dictionary.TYPE_MAIN, locale);
-        for (final AssetFileAddress address : dictionaryList) {
-            final ReadOnlyBinaryDictionary readOnlyBinaryDictionary = new ReadOnlyBinaryDictionary(
-                    address.mFilename, address.mOffset, address.mLength, useFullEditDistance,
-                    locale, Dictionary.TYPE_MAIN);
-            dictionaryCollection.addDictionary(readOnlyBinaryDictionary);
-        }
-        return dictionaryCollection;
-    }
-
-    /**
-     * Find out whether a dictionary is available for this locale.
-     * @param context the context on which to check resources.
-     * @param locale the locale to check for.
-     * @return whether a (non-placeholder) dictionary is available or not.
-     */
-    public static boolean isDictionaryAvailable(Context context, Locale locale) {
-        final Resources res = context.getResources();
-        return 0 != DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
-                res, locale);
     }
 }
