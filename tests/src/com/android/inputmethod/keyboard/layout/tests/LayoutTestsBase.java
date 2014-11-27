@@ -120,31 +120,13 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
 
     // TODO: Add phone, phone symbols, number, number password layout tests.
 
-    public final void testAlphabet() {
+    public final void testLayouts() {
         doKeyboardTests(KeyboardId.ELEMENT_ALPHABET);
-    }
-
-    public final void testAlphabetAutomaticShifted() {
         doKeyboardTests(KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED);
-    }
-
-    public final void testAlphabetManualShifted() {
         doKeyboardTests(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED);
-    }
-
-    public final void testAlphabetShiftLocked() {
         doKeyboardTests(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED);
-    }
-
-    public final void testAlphabetShiftLockShifted() {
         doKeyboardTests(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED);
-    }
-
-    public final void testSymbols() {
         doKeyboardTests(KeyboardId.ELEMENT_SYMBOLS);
-    }
-
-    public final void testSymbolsShifted() {
         doKeyboardTests(KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
     }
 
