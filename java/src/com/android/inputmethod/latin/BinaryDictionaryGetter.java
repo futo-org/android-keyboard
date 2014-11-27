@@ -263,7 +263,8 @@ final public class BinaryDictionaryGetter {
     public static ArrayList<AssetFileAddress> getDictionaryFiles(final Locale locale,
             final Context context) {
 
-        final boolean hasDefaultWordList = DictionaryFactory.isDictionaryAvailable(context, locale);
+        final boolean hasDefaultWordList = DictionaryInfoUtils.isDictionaryAvailable(
+                context, locale);
         BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
                 hasDefaultWordList);
         final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
