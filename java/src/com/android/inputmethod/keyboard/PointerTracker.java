@@ -387,7 +387,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
 
-        // Even if the key is disabled, update the key release graphics just in case.
         sDrawingProxy.onKeyReleased(key, withAnimation);
 
         if (key.isShift()) {
