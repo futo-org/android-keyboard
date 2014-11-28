@@ -38,7 +38,6 @@
             android:text="@string/subtype_locale" />
         <Spinner
             android:id="@+id/subtype_locale_spinner"
-            android:spinnerMode="dialog"
             android:layout_width="0dp"
             android:layout_weight="70"
             android:layout_height="wrap_content"
@@ -47,7 +46,8 @@
             android:layout_marginTop="8dip"
             android:layout_gravity="fill_horizontal|center_vertical"
             android:gravity="start|left"
-            android:prompt="@string/subtype_locale" />
+            android:prompt="@string/subtype_locale"
+            style="@style/additionalSubtypeSpinnerStyle" />
         </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -63,7 +63,6 @@
             android:text="@string/keyboard_layout_set" />
         <Spinner
             android:id="@+id/keyboard_layout_set_spinner"
-            android:spinnerMode="dialog"
             android:layout_width="0dp"
             android:layout_weight="70"
             android:layout_height="wrap_content"
@@ -72,6 +71,7 @@
             android:layout_marginTop="8dip"
             android:layout_gravity="fill_horizontal|center_vertical"
             android:gravity="start|left"
-            android:prompt="@string/keyboard_layout_set" />
+            android:prompt="@string/keyboard_layout_set"
+            style="@style/additionalSubtypeSpinnerStyle" />
     </LinearLayout>
 </LinearLayout>
