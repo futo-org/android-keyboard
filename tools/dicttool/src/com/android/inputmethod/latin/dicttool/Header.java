@@ -16,14 +16,12 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils.DecoderChainSpec;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Locale;
 
 public class Header extends Dicttool.Command {
     public static final String COMMAND = "header";
