@@ -154,7 +154,6 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
     public void runTestHeaderReaderProcessorWithOneSpec(final boolean compress, final boolean crypt)
             throws IOException, UnsupportedFormatException {
         final String dictName = "testHeaderReaderProcessor";
-        final String dictVersion = Long.toString(System.currentTimeMillis());
         final FormatOptions formatOptions = BinaryDictUtils.STATIC_OPTIONS;
         final int MAX_NUMBER_OF_OPTIONS_TO_ADD = 5;
         final HashMap<String, String> options = new HashMap<>();

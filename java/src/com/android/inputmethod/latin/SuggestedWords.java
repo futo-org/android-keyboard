@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.define.DebugFlags;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
