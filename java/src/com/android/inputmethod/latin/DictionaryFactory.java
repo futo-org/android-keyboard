@@ -98,25 +98,23 @@ public final class DictionaryFactory {
             }
             final String wordlistId =
                     DictionaryInfoUtils.getWordListIdFromFileName(new File(f.mFilename).getName());
-            if (null != wordlistId) {
-                // TODO: this is a reasonable last resort, but it is suboptimal.
-                // The following will remove the entry for this dictionary with the dictionary
-                // provider. When the metadata is downloaded again, we will try downloading it
-                // again.
-                // However, in the practice that will mean the user will find themselves without
-                // the new dictionary. That's fine for languages where it's included in the APK,
-                // but for other languages it will leave the user without a dictionary at all until
-                // the next update, which may be a few days away.
-                // Ideally, we would trigger a new download right away, and use increasing retry
-                // delays for this particular id/version combination.
-                // Then again, this is expected to only ever happen in case of human mistake. If
-                // the wrong file is on the server, the following is still doing the right thing.
-                // If it's a file left over from the last version however, it's not great.
-                BinaryDictionaryFileDumper.reportBrokenFileToDictionaryProvider(
-                        providerClient,
-                        context.getString(R.string.dictionary_pack_client_id),
-                        wordlistId);
-            }
+            // TODO: this is a reasonable last resort, but it is suboptimal.
+            // The following will remove the entry for this dictionary with the dictionary
+            // provider. When the metadata is downloaded again, we will try downloading it
+            // again.
+            // However, in the practice that will mean the user will find themselves without
+            // the new dictionary. That's fine for languages where it's included in the APK,
+            // but for other languages it will leave the user without a dictionary at all until
+            // the next update, which may be a few days away.
+            // Ideally, we would trigger a new download right away, and use increasing retry
+            // delays for this particular id/version combination.
+            // Then again, this is expected to only ever happen in case of human mistake. If
+            // the wrong file is on the server, the following is still doing the right thing.
+            // If it's a file left over from the last version however, it's not great.
+            BinaryDictionaryFileDumper.reportBrokenFileToDictionaryProvider(
+                    providerClient,
+                    context.getString(R.string.dictionary_pack_client_id),
+                    wordlistId);
         }
     }
 

@@ -264,7 +264,7 @@ public class DictionaryFacilitator {
         return mMostProbableDictionaryGroup;
     }
 
-    public void switchMostProbableLanguage(final Locale locale) {
+    public void switchMostProbableLanguage(@Nullable final Locale locale) {
         if (null == locale) {
             // In many cases, there is no locale to a committed word. For example, a typed word
             // that is in none of the currently active dictionaries but still does not

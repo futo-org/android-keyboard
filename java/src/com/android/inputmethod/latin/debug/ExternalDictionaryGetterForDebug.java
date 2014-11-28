@@ -101,12 +101,12 @@ public class ExternalDictionaryGetterForDebug {
         final File file = new File(dirPath, fileName.toString());
         final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
         final StringBuilder message = new StringBuilder();
-        final String locale = header.getLocaleString();
-        for (String key : header.mDictionaryOptions.mAttributes.keySet()) {
+        final String localeString = header.mLocaleString;
+        for (final String key : header.mDictionaryOptions.mAttributes.keySet()) {
             message.append(key + " = " + header.mDictionaryOptions.mAttributes.get(key));
             message.append("\n");
         }
-        final String languageName = LocaleUtils.constructLocaleFromString(locale)
+        final String languageName = LocaleUtils.constructLocaleFromString(localeString)
                 .getDisplayName(Locale.getDefault());
         final String title = String.format(
                 context.getString(R.string.read_external_dictionary_confirm_install_message),
@@ -146,11 +146,12 @@ public class ExternalDictionaryGetterForDebug {
         BufferedOutputStream outputStream = null;
         File tempFile = null;
         try {
-            final String locale = header.getLocaleString();
+            final String localeString = header.mLocaleString;
             // Create the id for a main dictionary for this locale
             final String id = BinaryDictionaryGetter.MAIN_DICTIONARY_CATEGORY
-                    + BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR + locale;
-            final String finalFileName = DictionaryInfoUtils.getCacheFileName(id, locale, context);
+                    + BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR + localeString;
+            final String finalFileName = DictionaryInfoUtils.getCacheFileName(
+                    id, localeString, context);
             final String tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
             tempFile = new File(tempFileName);
             tempFile.delete();

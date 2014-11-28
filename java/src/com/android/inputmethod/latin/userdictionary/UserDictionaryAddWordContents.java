@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
 
+import javax.annotation.Nullable;
+
 // Caveat: This class is basically taken from
 // packages/apps/Settings/src/com/android/settings/inputmethod/UserDictionaryAddWordContents.java
 // in order to deal with some devices that have issues with the user dictionary handling
@@ -218,8 +220,8 @@ public class UserDictionaryAddWordContents {
     public static class LocaleRenderer {
         private final String mLocaleString;
         private final String mDescription;
-        // LocaleString may NOT be null.
-        public LocaleRenderer(final Context context, final String localeString) {
+
+        public LocaleRenderer(final Context context, @Nullable final String localeString) {
             mLocaleString = localeString;
             if (null == localeString) {
                 mDescription = context.getString(R.string.user_dict_settings_more_languages);
