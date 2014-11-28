@@ -57,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -880,8 +879,8 @@ public final class UpdateHandler {
         // None of those are expected to happen, but just in case...
         if (null == notificationIntent || null == notificationManager) return;
 
-        final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
-        final String language = (null == locale ? "" : locale.getDisplayLanguage());
+        final String language = (null == localeString) ? ""
+                : LocaleUtils.constructLocaleFromString(localeString).getDisplayLanguage();
         final String titleFormat = context.getString(R.string.dict_available_notification_title);
         final String notificationTitle = String.format(titleFormat, language);
         final Notification.Builder builder = new Notification.Builder(context)

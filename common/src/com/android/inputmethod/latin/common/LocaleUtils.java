@@ -104,7 +104,8 @@ public final class LocaleUtils {
      * @param testedLocale the locale to test.
      * @return a constant that measures how well the tested locale matches the reference locale.
      */
-    public static int getMatchLevel(final String referenceLocale, final String testedLocale) {
+    public static int getMatchLevel(@Nullable final String referenceLocale,
+            @Nullable final String testedLocale) {
         if (StringUtils.isEmpty(referenceLocale)) {
             return StringUtils.isEmpty(testedLocale) ? LOCALE_FULL_MATCH : LOCALE_ANY_MATCH;
         }
@@ -167,11 +168,8 @@ public final class LocaleUtils {
      * @param localeString a string specification of a locale, in a format of "ll_cc_variant" where
      * "ll" is a language code, "cc" is a country code.
      */
-    @Nullable
-    public static Locale constructLocaleFromString(@Nullable final String localeString) {
-        if (localeString == null) {
-            return null;
-        }
+    @Nonnull
+    public static Locale constructLocaleFromString(@Nonnull final String localeString) {
         synchronized (sLocaleCache) {
             if (sLocaleCache.containsKey(localeString)) {
                 return sLocaleCache.get(localeString);

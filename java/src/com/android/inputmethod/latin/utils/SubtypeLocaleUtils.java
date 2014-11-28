@@ -199,8 +199,7 @@ public final class SubtypeLocaleUtils {
         if (sExceptionalLocaleDisplayedInRootLocale.containsKey(localeString)) {
             languageString = localeString;
         } else {
-            final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
-            languageString = locale.getLanguage();
+            languageString = LocaleUtils.constructLocaleFromString(localeString).getLanguage();
         }
         return getSubtypeLocaleDisplayNameInternal(languageString, displayLocale);
     }
@@ -232,8 +231,8 @@ public final class SubtypeLocaleUtils {
             };
             displayName = getExceptionalName.runInLocale(sResources, displayLocale);
         } else {
-            final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
-            displayName = locale.getDisplayName(displayLocale);
+            displayName = LocaleUtils.constructLocaleFromString(localeString)
+                    .getDisplayName(displayLocale);
         }
         return StringUtils.capitalizeFirstCodePoint(displayName, displayLocale);
     }

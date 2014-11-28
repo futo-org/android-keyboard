@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 
+import javax.annotation.Nullable;
+
 // Caveat: This class is basically taken from
 // packages/apps/Settings/src/com/android/settings/inputmethod/UserDictionaryList.java
 // in order to deal with some devices that have issues with the user dictionary handling
@@ -131,21 +133,23 @@ public class UserDictionaryList extends PreferenceFragment {
 
     /**
      * Create a single User Dictionary Preference object, with its parameters set.
-     * @param locale The locale for which this user dictionary is for.
+     * @param localeString The locale for which this user dictionary is for.
      * @return The corresponding preference.
      */
-    protected Preference createUserDictionaryPreference(final String locale) {
+    protected Preference createUserDictionaryPreference(@Nullable final String localeString) {
         final Preference newPref = new Preference(getActivity());
         final Intent intent = new Intent(USER_DICTIONARY_SETTINGS_INTENT_ACTION);
-        if (null == locale) {
+        if (null == localeString) {
             newPref.setTitle(Locale.getDefault().getDisplayName());
         } else {
-            if ("".equals(locale))
+            if (localeString.isEmpty()) {
                 newPref.setTitle(getString(R.string.user_dict_settings_all_languages));
-            else
-                newPref.setTitle(LocaleUtils.constructLocaleFromString(locale).getDisplayName());
-            intent.putExtra("locale", locale);
-            newPref.getExtras().putString("locale", locale);
+            } else {
+                newPref.setTitle(
+                        LocaleUtils.constructLocaleFromString(localeString).getDisplayName());
+            }
+            intent.putExtra("locale", localeString);
+            newPref.getExtras().putString("locale", localeString);
         }
         newPref.setIntent(intent);
         newPref.setFragment(UserDictionarySettings.class.getName());
