@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Until KitKat (API 19), {@link android.widget.Spinner} of dialog mode in a Dialog can't
          handle orientation change correctly. Using dropdown mode avoids the issue.
-         This file is overrode by values-v19/spinner-style.xml on KitKat and newer device. -->
+         This file is overridden by values-v19/spinner-style.xml on KitKat and newer device. -->
     <style name="additionalSubtypeSpinnerStyle">
         <item name="android:spinnerMode">dropdown</item>
     </style>
