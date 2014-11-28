@@ -21,16 +21,14 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- Base key style for the key which may have settings key as more keys. -->
-    <!-- Kept as a separate file for cleaner overriding by an overlay.  -->
+    <!-- Key style for the key which may have settings key as more keys. -->
     <switch>
         <case
             latin:clobberSettingsKey="true"
         >
             <key-style
                 latin:styleName="settingsMoreKeysStyle"
-                latin:backgroundType="functional"
-                latin:parentStyle="baseSettingsMoreKeysStyle" />
+                latin:backgroundType="functional" />
         </case>
         <!-- clobberSettingsKey="false" -->
         <default>
@@ -38,8 +36,7 @@
                 latin:styleName="settingsMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:additionalMoreKeys="!text/keyspec_settings"
-                latin:backgroundType="functional"
-                latin:parentStyle="baseSettingsMoreKeysStyle" />
+                latin:backgroundType="functional" />
         </default>
     </switch>
 </merge>
