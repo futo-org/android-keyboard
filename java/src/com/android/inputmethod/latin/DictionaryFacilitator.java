@@ -301,6 +301,9 @@ public class DictionaryFacilitator {
         if (!mostProbableDictionaryGroup.mLocale.equals(mLocale)) {
             return false;
         }
+        if (mDictionaryGroups.length <= 1) {
+            return true;
+        }
         return mostProbableDictionaryGroup.mConfidence >= CONFIDENCE_THRESHOLD;
     }
 
