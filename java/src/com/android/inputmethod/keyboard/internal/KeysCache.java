@@ -20,6 +20,7 @@ import com.android.inputmethod.keyboard.Key;
 
 import java.util.HashMap;
 
+// TODO: Rename more appropriate name.
 public final class KeysCache {
     private final HashMap<Key, Key> mMap = new HashMap<>();
 
@@ -27,6 +28,7 @@ public final class KeysCache {
         mMap.clear();
     }
 
+    // TODO: Rename more descriptive name.
     public Key get(final Key key) {
         final Key existingKey = mMap.get(key);
         if (existingKey != null) {
@@ -37,6 +39,7 @@ public final class KeysCache {
         return key;
     }
 
+    // TODO: Rename more descriptive name.
     public Key replace(final Key oldKey, final Key newKey) {
         if (oldKey.equals(newKey)) {
             return oldKey;

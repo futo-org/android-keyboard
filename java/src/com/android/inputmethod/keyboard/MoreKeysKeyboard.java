@@ -27,6 +27,8 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
+import javax.annotation.Nonnull;
+
 public final class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
 
@@ -328,6 +330,7 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
 
         @Override
+        @Nonnull
         public MoreKeysKeyboard build() {
             final MoreKeysKeyboardParams params = mParams;
             final int moreKeyFlags = mParentKey.getMoreKeyLabelFlags();
