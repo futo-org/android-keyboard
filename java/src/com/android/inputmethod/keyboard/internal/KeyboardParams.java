@@ -49,6 +49,7 @@ public class KeyboardParams {
     public int mLeftPadding;
     public int mRightPadding;
 
+    @Nullable
     public KeyVisualAttributes mKeyVisualAttributes;
 
     public int mDefaultRowHeight;
@@ -63,14 +64,22 @@ public class KeyboardParams {
     public int GRID_HEIGHT;
 
     // Keys are sorted from top-left to bottom-right order.
+    @Nonnull
     public final SortedSet<Key> mSortedKeys = new TreeSet<>(ROW_COLUMN_COMPARATOR);
+    @Nonnull
     public final ArrayList<Key> mShiftKeys = new ArrayList<>();
+    @Nonnull
     public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<>();
+    @Nonnull
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
+    @Nonnull
     public final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
+    @Nonnull
     public final KeyStylesSet mKeyStyles = new KeyStylesSet(mTextsSet);
 
-    @Nullable public KeysCache mKeysCache;
+    // TODO: Make this @Nonnull
+    @Nullable
+    public KeysCache mKeysCache;
     public boolean mAllowRedundantMoreKeys;
 
     public int mMostCommonKeyHeight = 0;
@@ -78,6 +87,7 @@ public class KeyboardParams {
 
     public boolean mProximityCharsCorrectionEnabled;
 
+    @Nonnull
     public final TouchPositionCorrection mTouchPositionCorrection =
             new TouchPositionCorrection();
 
@@ -100,7 +110,9 @@ public class KeyboardParams {
     }
 
     public void onAddKey(@Nonnull final Key newKey) {
-        final Key key = (mKeysCache != null) ? mKeysCache.get(newKey) : newKey;
+        // To avoid possible null pointer access.
+        final KeysCache keysCache = mKeysCache;
+        final Key key = (keysCache != null) ? keysCache.get(newKey) : newKey;
         final boolean isSpacer = key.isSpacer();
         if (isSpacer && key.getWidth() == 0) {
             // Ignore zero width {@link Spacer}.
@@ -128,12 +140,14 @@ public class KeyboardParams {
         for (final Key key : mSortedKeys) {
             lettersOnBaseLayout.addLetter(key);
         }
+        // To avoid possible null pointer access.
+        final KeysCache keysCache = mKeysCache;
         final ArrayList<Key> allKeys = new ArrayList<>(mSortedKeys);
         mSortedKeys.clear();
         for (final Key key : allKeys) {
             final Key filteredKey = Key.removeRedundantMoreKeys(key, lettersOnBaseLayout);
-            if (mKeysCache != null) {
-                mKeysCache.replace(key, filteredKey);
+            if (keysCache != null) {
+                keysCache.replace(key, filteredKey);
             }
             mSortedKeys.add(filteredKey);
         }
