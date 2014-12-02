@@ -88,7 +88,7 @@ public class CombinedFormatUtils {
                 for (int i = 0; i < ngramProperty.mNgramContext.getPrevWordCount(); i++) {
                     builder.append("  " + NGRAM_PREV_WORD_TAG + "[" + i + "]="
                             + ngramProperty.mNgramContext.getNthPrevWord(i + 1));
-                    if (ngramProperty.mNgramContext.isNthPrevWordBeginningOfSontence(i + 1)) {
+                    if (ngramProperty.mNgramContext.isNthPrevWordBeginningOfSentence(i + 1)) {
                         builder.append("," + BEGINNING_OF_SENTENCE_TAG + "=true");
                     }
                     builder.append("\n");

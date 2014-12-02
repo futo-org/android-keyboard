@@ -176,7 +176,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 1).getNthPrevWord(2), "abc");
         assertTrue(NgramContextUtils.getNgramContextFromNthPreviousWord(
-                "abc def", mSpacingAndPunctuations, 2).isNthPrevWordBeginningOfSontence(2));
+                "abc def", mSpacingAndPunctuations, 2).isNthPrevWordBeginningOfSentence(2));
 
         // The following tests reflect the current behavior of the function
         // RichInputConnection#getNthPreviousWord.
