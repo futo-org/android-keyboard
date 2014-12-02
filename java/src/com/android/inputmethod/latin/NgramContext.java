@@ -133,7 +133,7 @@ public class NgramContext {
 
     // n is 1-indexed.
     @UsedForTesting
-    public boolean isNthPrevWordBeginningOfSontence(final int n) {
+    public boolean isNthPrevWordBeginningOfSentence(final int n) {
         if (n <= 0 || n > mPrevWordsCount) {
             return false;
         }
