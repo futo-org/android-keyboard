@@ -281,8 +281,7 @@ public final class DebugSettingsFragment extends SubScreenFragment
 
             @Override
             public int readValue(final String key) {
-                return getPercentageFromValue(
-                        Settings.readKeyboardHeight(prefs, key, defaultValue));
+                return getPercentageFromValue(Settings.readKeyboardHeight(prefs, defaultValue));
             }
 
             @Override
