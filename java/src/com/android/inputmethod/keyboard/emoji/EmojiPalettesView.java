@@ -50,6 +50,8 @@ import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -113,9 +115,10 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                 context, null /* editorInfo */);
         final Resources res = context.getResources();
         mEmojiLayoutParams = new EmojiLayoutParams(res);
+        final SettingsValues s = Settings.getInstance().getCurrent();
         builder.setSubtype(RichInputMethodSubtype.getEmojiSubtype());
-        builder.setKeyboardGeometry(ResourceUtils.getDefaultKeyboardWidth(res),
-                mEmojiLayoutParams.mEmojiKeyboardHeight);
+        builder.setKeyboardGeometry(ResourceUtils.getKeyboardWidth(res, s),
+                ResourceUtils.getKeyboardHeight(res, s));
         final KeyboardLayoutSet layoutSet = builder.build();
         final TypedArray emojiPalettesViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.EmojiPalettesView, defStyle, R.style.EmojiPalettesView);
@@ -140,7 +143,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         final Resources res = getContext().getResources();
         // The main keyboard expands to the entire this {@link KeyboardView}.
-        final int width = ResourceUtils.getDefaultKeyboardWidth(res)
+        final int width = ResourceUtils.getKeyboardFrameWidth(res)
                 + getPaddingLeft() + getPaddingRight();
         final int height = ResourceUtils.getDefaultKeyboardHeight(res)
                 + res.getDimensionPixelSize(R.dimen.config_suggestions_strip_height)

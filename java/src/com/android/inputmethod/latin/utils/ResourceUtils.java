@@ -182,18 +182,63 @@ public final class ResourceUtils {
         return matchedAll;
     }
 
-    public static int getDefaultKeyboardWidth(final Resources res) {
+    public static int getKeyboardFrameWidth(final Resources res) {
         final DisplayMetrics dm = res.getDisplayMetrics();
         return dm.widthPixels;
     }
 
-    public static int getKeyboardHeight(final Resources res, final SettingsValues settingsValues) {
-        final int defaultKeyboardHeight = getDefaultKeyboardHeight(res);
+    public static int getKeyboardWidth(final Resources res, final SettingsValues settingsValues) {
+        final int frameWidth = getKeyboardFrameWidth(res);
         if (settingsValues.mHasKeyboardResize) {
-            // mKeyboardHeightScale Ranges from [.5,1.2], from xml/prefs_screen_debug.xml
-            return (int)(defaultKeyboardHeight * settingsValues.mKeyboardHeightScale);
+            final float widthFraction = 1f - settingsValues.mKeyboardLeftMarginScale
+                    - settingsValues.mKeyboardRightMarginScale;
+            return (int)(frameWidth * widthFraction);
         }
-        return defaultKeyboardHeight;
+        return frameWidth;
+    }
+
+    public static int getKeyboardFrameHeight(final Resources res,
+            final SettingsValues settingsValues) {
+        if (settingsValues.mHasKeyboardResize) {
+            return getKeyboardHeight(res, settingsValues)
+                    + getKeyboardBottomMargin(res, settingsValues);
+        }
+        return getDefaultKeyboardHeight(res);
+    }
+
+    public static int getKeyboardHeight(final Resources res, final SettingsValues settingsValues) {
+        final int keyboardHeight = getDefaultKeyboardHeight(res);
+        if (settingsValues.mHasKeyboardResize) {
+            return (int)(keyboardHeight * settingsValues.mKeyboardHeightScale);
+        }
+        return keyboardHeight;
+    }
+
+    public static int getKeyboardLeftMargin(
+            final Resources res, final SettingsValues settingsValues) {
+        if (settingsValues.mHasKeyboardResize) {
+          final int frameWidth = getKeyboardFrameWidth(res);
+            return (int)(frameWidth * settingsValues.mKeyboardLeftMarginScale);
+        }
+        return 0;
+    }
+
+    public static int getKeyboardRightMargin(
+            final Resources res, final SettingsValues settingsValues) {
+        if (settingsValues.mHasKeyboardResize) {
+            final int frameWidth = getKeyboardFrameWidth(res);
+            return (int)(frameWidth * settingsValues.mKeyboardRightMarginScale);
+        }
+        return 0;
+    }
+
+    public static int getKeyboardBottomMargin(
+            final Resources res, final SettingsValues settingsValues) {
+        if (settingsValues.mHasKeyboardResize) {
+            final int defaultHeight = getDefaultKeyboardHeight(res);
+            return (int)(defaultHeight * settingsValues.mKeyboardBottomMarginScale);
+        }
+        return 0;
     }
 
     public static int getDefaultKeyboardHeight(final Resources res) {

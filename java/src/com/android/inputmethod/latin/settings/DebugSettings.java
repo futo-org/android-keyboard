@@ -31,6 +31,9 @@ public final class DebugSettings {
             "pref_has_custom_key_preview_animation_params";
     public static final String PREF_RESIZE_KEYBOARD = "pref_resize_keyboard";
     public static final String PREF_KEYBOARD_HEIGHT_SCALE = "pref_keyboard_height_scale";
+    public static final String PREF_KEYBOARD_BOTTOM_MARGIN = "pref_keyboard_bottom_margin";
+    public static final String PREF_KEYBOARD_LEFT_MARGIN = "pref_keyboard_left_margin";
+    public static final String PREF_KEYBOARD_RIGHT_MARGIN = "pref_keyboard_right_margin";
     public static final String PREF_KEY_PREVIEW_DISMISS_DURATION =
             "pref_key_preview_dismiss_duration";
     public static final String PREF_KEY_PREVIEW_DISMISS_END_X_SCALE =

@@ -87,6 +87,24 @@
         android:title="@string/prefs_keyboard_height_scale"
         latin:minValue="50"
         latin:maxValue="120" /> <!-- percentage -->
+    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+        android:dependency="pref_resize_keyboard"
+        android:key="pref_keyboard_bottom_margin"
+        android:title="@string/prefs_keyboard_bottom_margin"
+        latin:minValue="0"
+        latin:maxValue="50" /> <!-- percentage -->
+    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+        android:dependency="pref_resize_keyboard"
+        android:key="pref_keyboard_left_margin"
+        android:title="@string/prefs_keyboard_left_margin"
+        latin:minValue="0"
+        latin:maxValue="50" /> <!-- percentage -->
+    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+        android:dependency="pref_resize_keyboard"
+        android:key="pref_keyboard_right_margin"
+        android:title="@string/prefs_keyboard_right_margin"
+        latin:minValue="0"
+        latin:maxValue="50" /> <!-- percentage -->
     <PreferenceScreen
         android:key="read_external_dictionary"
         android:title="@string/prefs_read_external_dictionary" />
