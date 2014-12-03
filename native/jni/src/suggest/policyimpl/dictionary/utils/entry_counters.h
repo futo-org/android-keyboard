@@ -27,7 +27,7 @@ namespace latinime {
 // Copyable but immutable
 class EntryCounts final {
  public:
-    EntryCounts() : mEntryCounts({{0, 0, 0}}) {}
+    EntryCounts() : mEntryCounts({{0, 0, 0, 0}}) {}
 
     explicit EntryCounts(const std::array<int, MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1> &counters)
             : mEntryCounts(counters) {}
