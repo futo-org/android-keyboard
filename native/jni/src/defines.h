@@ -275,7 +275,7 @@ static inline void showStackTrace() {
 #define MAX_POINTER_COUNT_G 2
 
 // (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram is supported.
-#define MAX_PREV_WORD_COUNT_FOR_N_GRAM 2
+#define MAX_PREV_WORD_COUNT_FOR_N_GRAM 3
 
 #define DISALLOW_DEFAULT_CONSTRUCTOR(TypeName) \
   TypeName() = delete

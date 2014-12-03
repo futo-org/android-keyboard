@@ -66,7 +66,7 @@ class DynamicLanguageModelProbabilityUtils {
 private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicLanguageModelProbabilityUtils);
 
-    static_assert(MAX_PREV_WORD_COUNT_FOR_N_GRAM <= 2, "Max supported Ngram is Trigram.");
+    static_assert(MAX_PREV_WORD_COUNT_FOR_N_GRAM <= 3, "Max supported Ngram is Quadgram.");
 
     static const int ASSUMED_MIN_COUNTS[];
     static const int ENCODED_BACKOFF_WEIGHTS[];

@@ -179,7 +179,7 @@ public final class Constants {
 
     // (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram is supported in Java side. Needs to modify
     // MAX_PREV_WORD_COUNT_FOR_N_GRAM in native/jni/src/defines.h for suggestions.
-    public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 2;
+    public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 3;
 
     // Key events coming any faster than this are long-presses.
     public static final int LONG_PRESS_MILLISECONDS = 200;

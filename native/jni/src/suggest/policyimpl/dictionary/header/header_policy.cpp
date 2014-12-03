@@ -31,10 +31,11 @@ const char *const HeaderPolicy::IS_DECAYING_DICT_KEY = "USES_FORGETTING_CURVE";
 const char *const HeaderPolicy::DATE_KEY = "date";
 const char *const HeaderPolicy::LAST_DECAYED_TIME_KEY = "LAST_DECAYED_TIME";
 const char *const HeaderPolicy::NGRAM_COUNT_KEYS[] =
-        {"UNIGRAM_COUNT", "BIGRAM_COUNT", "TRIGRAM_COUNT"};
+        {"UNIGRAM_COUNT", "BIGRAM_COUNT", "TRIGRAM_COUNT", "QUADGRAM_COUNT"};
 const char *const HeaderPolicy::MAX_NGRAM_COUNT_KEYS[] =
-        {"MAX_UNIGRAM_ENTRY_COUNT", "MAX_BIGRAM_ENTRY_COUNT", "MAX_TRIGRAM_ENTRY_COUNT"};
-const int HeaderPolicy::DEFAULT_MAX_NGRAM_COUNTS[] = {10000, 30000, 30000};
+        {"MAX_UNIGRAM_ENTRY_COUNT", "MAX_BIGRAM_ENTRY_COUNT", "MAX_TRIGRAM_ENTRY_COUNT",
+                "MAX_QUADGRAM_ENTRY_COUNT"};
+const int HeaderPolicy::DEFAULT_MAX_NGRAM_COUNTS[] = {10000, 30000, 30000, 30000};
 const char *const HeaderPolicy::EXTENDED_REGION_SIZE_KEY = "EXTENDED_REGION_SIZE";
 // Historical info is information that is needed to support decaying such as timestamp, level and
 // count.
