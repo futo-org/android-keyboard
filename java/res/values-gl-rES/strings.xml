@@ -30,9 +30,9 @@
     <string name="settings_screen_accounts" msgid="7570397912370223287">"Contas e privacidade"</string>
     <string name="settings_screen_appearance" msgid="9153102634339912029">"Aparencia e deseños"</string>
     <string name="settings_screen_multilingual" msgid="1391301621464509659">"Opcións multilingües"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"Escritura mediante xestos"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Escritura xestual"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Corrección de texto"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"Avanzada"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Opcións avanzadas"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Activar teclado dividido"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Outros métodos de entrada"</string>
