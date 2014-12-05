@@ -100,6 +100,7 @@ import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -1211,6 +1212,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         final SettingsValues settingsValues = mSettings.getCurrent();
+        final Resources res = getResources();
         final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
         if (visibleKeyboardView == null || !hasSuggestionStripView()) {
             return;
@@ -1228,13 +1230,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
                 && mSuggestionStripView.getVisibility() == View.VISIBLE)
                 ? mSuggestionStripView.getHeight() : 0;
-        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight;
+        final int visibleTopY = inputHeight
+                - ResourceUtils.getKeyboardFrameHeight(res, settingsValues)
+                - suggestionsHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
         // Need to set expanded touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {
             final int touchLeft = 0;
             final int touchTop = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
-            final int touchRight = visibleKeyboardView.getWidth();
+            final int touchRight = ResourceUtils.getKeyboardFrameWidth(res);
             final int touchBottom = inputHeight
                     // Extend touchable region below the keyboard.
                     + EXTENDED_TOUCHABLE_REGION_HEIGHT;

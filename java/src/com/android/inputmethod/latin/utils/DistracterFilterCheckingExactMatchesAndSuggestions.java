@@ -143,7 +143,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mContext, editorInfo);
         final Resources res = mContext.getResources();
-        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+        final int keyboardWidth = ResourceUtils.getKeyboardFrameWidth(res);
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
         builder.setSubtype(new RichInputMethodSubtype(subtype));

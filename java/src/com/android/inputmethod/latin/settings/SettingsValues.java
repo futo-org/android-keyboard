@@ -50,6 +50,7 @@ public class SettingsValues {
     private static final String FLOAT_NEGATIVE_INFINITY_MARKER_STRING = "floatNegativeInfinity";
     private static final int TIMEOUT_TO_GET_TARGET_PACKAGE = 5; // seconds
     public static final float DEFAULT_SIZE_SCALE = 1.0f; // 100%
+    public static final float DEFAULT_MARGIN_SCALE = 0.0f; // 0%
 
     // From resources:
     public final SpacingAndPunctuations mSpacingAndPunctuations;
@@ -113,6 +114,9 @@ public class SettingsValues {
     public final boolean mHasCustomKeyPreviewAnimationParams;
     public final boolean mHasKeyboardResize;
     public final float mKeyboardHeightScale;
+    public final float mKeyboardBottomMarginScale;
+    public final float mKeyboardLeftMarginScale;
+    public final float mKeyboardRightMarginScale;
     public final int mKeyPreviewShowUpDuration;
     public final int mKeyPreviewDismissDuration;
     public final float mKeyPreviewShowUpStartXScale;
@@ -190,7 +194,14 @@ public class SettingsValues {
         mHasCustomKeyPreviewAnimationParams = prefs.getBoolean(
                 DebugSettings.PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS, false);
         mHasKeyboardResize = prefs.getBoolean(DebugSettings.PREF_RESIZE_KEYBOARD, false);
-        mKeyboardHeightScale = Settings.readKeyboardHeight(prefs, DEFAULT_SIZE_SCALE);
+        mKeyboardHeightScale = Settings.readKeyboardScale(
+                prefs, DebugSettings.PREF_KEYBOARD_HEIGHT_SCALE, DEFAULT_SIZE_SCALE);
+        mKeyboardBottomMarginScale = Settings.readKeyboardScale(
+                prefs, DebugSettings.PREF_KEYBOARD_BOTTOM_MARGIN, DEFAULT_MARGIN_SCALE);
+        mKeyboardLeftMarginScale = Settings.readKeyboardScale(
+                prefs, DebugSettings.PREF_KEYBOARD_LEFT_MARGIN, DEFAULT_MARGIN_SCALE);
+        mKeyboardRightMarginScale = Settings.readKeyboardScale(
+                prefs, DebugSettings.PREF_KEYBOARD_RIGHT_MARGIN, DEFAULT_MARGIN_SCALE);
         mKeyPreviewShowUpDuration = Settings.readKeyPreviewAnimationDuration(
                 prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_DURATION,
                 res.getInteger(R.integer.config_key_preview_show_up_duration));
