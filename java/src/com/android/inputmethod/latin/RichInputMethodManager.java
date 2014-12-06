@@ -111,7 +111,11 @@ public class RichInputMethodManager {
         // Initialize additional subtypes.
         SubtypeLocaleUtils.init(context);
         final InputMethodSubtype[] additionalSubtypes = getAdditionalSubtypes();
-        setAdditionalInputMethodSubtypes(additionalSubtypes);
+        mImmWrapper.mImm.setAdditionalInputMethodSubtypes(
+                getInputMethodIdOfThisIme(), additionalSubtypes);
+
+        // Initialize the current input method subtype and the shortcut IME.
+        refreshSubtypeCaches();
 
         final ConnectivityManager connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -324,23 +328,22 @@ public class RichInputMethodManager {
         return INDEX_NOT_FOUND;
     }
 
-    @Nonnull
-    public RichInputMethodSubtype onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
-        final RichInputMethodSubtype richSubtype = createCurrentRichInputMethodSubtype(newSubtype);
+    public void onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
+        updateCurrentSubtype(newSubtype);
+        updateShortcutIme();
         if (DEBUG) {
-            Log.w(TAG, "onSubtypeChanged: " + richSubtype.getNameForLogging());
+            Log.w(TAG, "onSubtypeChanged: " + mCurrentRichInputMethodSubtype.getNameForLogging());
         }
-        mCurrentRichInputMethodSubtype = richSubtype;
-        return richSubtype;
     }
 
     private static RichInputMethodSubtype sForcedSubtypeForTesting = null;
 
     @UsedForTesting
-    static void forceSubtype(final InputMethodSubtype subtype) {
+    static void forceSubtype(@Nonnull final InputMethodSubtype subtype) {
         sForcedSubtypeForTesting = new RichInputMethodSubtype(subtype);
     }
 
+    @Nonnull
     public Locale[] getCurrentSubtypeLocales() {
         if (null != sForcedSubtypeForTesting) {
             return sForcedSubtypeForTesting.getLocales();
@@ -348,6 +351,7 @@ public class RichInputMethodManager {
         return getCurrentSubtype().getLocales();
     }
 
+    @Nonnull
     public RichInputMethodSubtype getCurrentSubtype() {
         if (null != sForcedSubtypeForTesting) {
             return sForcedSubtypeForTesting;
@@ -358,18 +362,6 @@ public class RichInputMethodManager {
 
     public String getCombiningRulesExtraValueOfCurrentSubtype() {
         return SubtypeLocaleUtils.getCombiningRulesExtraValue(getCurrentSubtype().getRawSubtype());
-    }
-
-    @Nonnull
-    public InputMethodSubtype getCurrentRawSubtype() {
-        return mImmWrapper.mImm.getCurrentInputMethodSubtype();
-    }
-
-    @Nonnull
-    public RichInputMethodSubtype createCurrentRichInputMethodSubtype(
-            @Nonnull final InputMethodSubtype rawSubtype) {
-        return AdditionalFeaturesSettingUtils.createRichInputMethodSubtype(this, rawSubtype,
-                mContext);
     }
 
     public boolean hasMultipleEnabledIMEsOrSubtypes(final boolean shouldIncludeAuxiliarySubtypes) {
@@ -457,7 +449,7 @@ public class RichInputMethodManager {
                 getInputMethodIdOfThisIme(), subtypes);
         // Clear the cache so that we go read the {@link InputMethodInfo} of this IME and list of
         // subtypes again next time.
-        clearSubtypeCaches();
+        refreshSubtypeCaches();
     }
 
     private List<InputMethodSubtype> getEnabledInputMethodSubtypeList(final InputMethodInfo imi,
@@ -474,10 +466,12 @@ public class RichInputMethodManager {
         return result;
     }
 
-    public void clearSubtypeCaches() {
+    public void refreshSubtypeCaches() {
         mSubtypeListCacheWithImplicitlySelectedSubtypes.clear();
         mSubtypeListCacheWithoutImplicitlySelectedSubtypes.clear();
         mInputMethodInfoCache.clear();
+        updateCurrentSubtype(mImmWrapper.mImm.getCurrentInputMethodSubtype());
+        updateShortcutIme();
     }
 
     public boolean shouldOfferSwitchingToNextInputMethod(final IBinder binder,
@@ -516,8 +510,13 @@ public class RichInputMethodManager {
         return true;
     }
 
-    // TODO: Make this private
-    void updateShortcutIME() {
+    private void updateCurrentSubtype(@Nonnull final InputMethodSubtype subtype) {
+        final RichInputMethodSubtype richSubtype = AdditionalFeaturesSettingUtils
+                .createRichInputMethodSubtype(this, subtype, mContext);
+        mCurrentRichInputMethodSubtype = richSubtype;
+    }
+
+    private void updateShortcutIme() {
         if (DEBUG) {
             Log.d(TAG, "Update shortcut IME from : "
                     + (mShortcutInputMethodInfo == null
@@ -549,7 +548,7 @@ public class RichInputMethodManager {
         }
     }
 
-    public void switchToShortcutIME(final InputMethodService context) {
+    public void switchToShortcutIme(final InputMethodService context) {
         if (mShortcutInputMethodInfo == null) {
             return;
         }
@@ -575,19 +574,16 @@ public class RichInputMethodManager {
     }
 
     public boolean isShortcutImeEnabled() {
-        updateShortcutIME();
         if (mShortcutInputMethodInfo == null) {
             return false;
         }
         if (mShortcutSubtype == null) {
             return true;
         }
-        return checkIfSubtypeBelongsToImeAndEnabled(
-                mShortcutInputMethodInfo, mShortcutSubtype);
+        return checkIfSubtypeBelongsToImeAndEnabled(mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
     public boolean isShortcutImeReady() {
-        updateShortcutIME();
         if (mShortcutInputMethodInfo == null) {
             return false;
         }
