@@ -57,7 +57,7 @@ public final class SubtypeSwitcher {
         mResources = context.getResources();
         mRichImm = RichInputMethodManager.getInstance();
 
-        onSubtypeChanged(mRichImm.getCurrentRawSubtype());
+        onSubtypeChanged(mRichImm.getCurrentSubtype());
         updateParametersOnStartInputView();
     }
 
@@ -69,17 +69,14 @@ public final class SubtypeSwitcher {
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
                 mRichImm.getMyEnabledInputMethodSubtypeList(true);
         mLanguageOnSpacebarHelper.onUpdateEnabledSubtypes(enabledSubtypesOfThisIme);
-        mRichImm.updateShortcutIME();
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
-    public void onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
-        final RichInputMethodSubtype richSubtype = mRichImm.onSubtypeChanged(newSubtype);
+    public void onSubtypeChanged(@Nonnull final RichInputMethodSubtype richSubtype) {
         final boolean implicitlyEnabledSubtype = mRichImm
-                .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype);
+                .checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(richSubtype.getRawSubtype());
         mLanguageOnSpacebarHelper.onSubtypeChanged(
                 richSubtype, implicitlyEnabledSubtype, mResources.getConfiguration().locale);
-        mRichImm.updateShortcutIME();
     }
 
     public int getLanguageOnSpacebarFormatType(final RichInputMethodSubtype subtype) {
