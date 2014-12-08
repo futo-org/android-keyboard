@@ -77,9 +77,8 @@ public class KeyboardParams {
     @Nonnull
     public final KeyStylesSet mKeyStyles = new KeyStylesSet(mTextsSet);
 
-    // TODO: Make this @Nonnull
-    @Nullable
-    public KeysCache mKeysCache;
+    @Nonnull
+    private final UniqueKeysCache mUniqueKeysCache;
     public boolean mAllowRedundantMoreKeys;
 
     public int mMostCommonKeyHeight = 0;
@@ -103,6 +102,14 @@ public class KeyboardParams {
         }
     };
 
+    public KeyboardParams() {
+        this(UniqueKeysCache.NO_CACHE);
+    }
+
+    public KeyboardParams(@Nonnull final UniqueKeysCache keysCache) {
+        mUniqueKeysCache = keysCache;
+    }
+
     protected void clearKeys() {
         mSortedKeys.clear();
         mShiftKeys.clear();
@@ -110,9 +117,7 @@ public class KeyboardParams {
     }
 
     public void onAddKey(@Nonnull final Key newKey) {
-        // To avoid possible null pointer access.
-        final KeysCache keysCache = mKeysCache;
-        final Key key = (keysCache != null) ? keysCache.get(newKey) : newKey;
+        final Key key = mUniqueKeysCache.getUniqueKey(newKey);
         final boolean isSpacer = key.isSpacer();
         if (isSpacer && key.getWidth() == 0) {
             // Ignore zero width {@link Spacer}.
@@ -140,16 +145,11 @@ public class KeyboardParams {
         for (final Key key : mSortedKeys) {
             lettersOnBaseLayout.addLetter(key);
         }
-        // To avoid possible null pointer access.
-        final KeysCache keysCache = mKeysCache;
         final ArrayList<Key> allKeys = new ArrayList<>(mSortedKeys);
         mSortedKeys.clear();
         for (final Key key : allKeys) {
             final Key filteredKey = Key.removeRedundantMoreKeys(key, lettersOnBaseLayout);
-            if (keysCache != null) {
-                keysCache.replace(key, filteredKey);
-            }
-            mSortedKeys.add(filteredKey);
+            mSortedKeys.add(mUniqueKeysCache.getUniqueKey(filteredKey));
         }
     }
 
