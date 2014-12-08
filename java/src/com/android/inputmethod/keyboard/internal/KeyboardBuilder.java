@@ -161,10 +161,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         params.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
     }
 
-    public void setAutoGenerate(final KeysCache keysCache) {
-        mParams.mKeysCache = keysCache;
-    }
-
     public void setAllowRedundantMoreKes(final boolean enabled) {
         mParams.mAllowRedundantMoreKeys = enabled;
     }

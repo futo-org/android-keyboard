@@ -34,7 +34,7 @@ import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
-import com.android.inputmethod.keyboard.internal.KeysCache;
+import com.android.inputmethod.keyboard.internal.UniqueKeysCache;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
@@ -86,7 +86,7 @@ public final class KeyboardLayoutSet {
     private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
             new HashMap<>();
     @Nonnull
-    private static final KeysCache sKeysCache = new KeysCache();
+    private static final UniqueKeysCache sUniqueKeysCache = UniqueKeysCache.newInstance();
     private final static HashMap<InputMethodSubtype, Integer> sScriptIdsForSubtypes =
             new HashMap<>();
 
@@ -144,7 +144,7 @@ public final class KeyboardLayoutSet {
 
     private static void clearKeyboardCache() {
         sKeyboardCache.clear();
-        sKeysCache.clear();
+        sUniqueKeysCache.clear();
     }
 
     public static int getScriptId(final Resources resources,
@@ -219,10 +219,8 @@ public final class KeyboardLayoutSet {
         }
 
         final KeyboardBuilder<KeyboardParams> builder =
-                new KeyboardBuilder<>(mContext, new KeyboardParams());
-        if (id.isAlphabetKeyboard()) {
-            builder.setAutoGenerate(sKeysCache);
-        }
+                new KeyboardBuilder<>(mContext, new KeyboardParams(sUniqueKeysCache));
+        sUniqueKeysCache.setEnabled(id.isAlphabetKeyboard());
         builder.setAllowRedundantMoreKes(elementParams.mAllowRedundantMoreKeys);
         final int keyboardXmlId = elementParams.mKeyboardXmlId;
         builder.load(keyboardXmlId, id);
