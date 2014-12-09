@@ -58,8 +58,7 @@ public class PersonalizationHelper {
                 final UserHistoryDictionary dict = ref == null ? null : ref.get();
                 if (dict != null) {
                     if (DEBUG) {
-                        Log.d(TAG, "Use cached UserHistoryDictionary for " + locale +
-                                " & account" + accountName);
+                        Log.d(TAG, "Use cached UserHistoryDictionary with lookup: " + lookupStr);
                     }
                     dict.reloadDictionaryIfRequired();
                     return dict;
