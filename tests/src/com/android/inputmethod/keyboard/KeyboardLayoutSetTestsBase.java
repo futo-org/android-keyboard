@@ -155,7 +155,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
             final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
         final Context context = getContext();
         final Resources res = context.getResources();
-        final int keyboardWidth = ResourceUtils.getKeyboardFrameWidth(res);
+        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
         final Builder builder = new Builder(context, editorInfo);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight)
