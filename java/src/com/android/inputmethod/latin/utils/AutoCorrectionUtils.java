@@ -36,6 +36,10 @@ public final class AutoCorrectionUtils {
             if (suggestion.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
                 return true;
             }
+            // TODO: return suggestion.isAprapreateForAutoCorrection();
+            if (!suggestion.isAprapreateForAutoCorrection()) {
+                return false;
+            }
             final int autoCorrectionSuggestionScore = suggestion.mScore;
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.

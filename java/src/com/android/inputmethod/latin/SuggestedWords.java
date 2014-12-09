@@ -252,6 +252,7 @@ public class SuggestedWords {
         public static final int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
         public static final int KIND_FLAG_EXACT_MATCH = 0x40000000;
         public static final int KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION = 0x20000000;
+        public static final int KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION = 0x10000000;
 
         public final String mWord;
         // The completion info from the application. Null for suggestions that don't come from
@@ -331,6 +332,10 @@ public class SuggestedWords {
 
         public boolean isExactMatchWithIntentionalOmission() {
             return (mKindAndFlags & KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) != 0;
+        }
+
+        public boolean isAprapreateForAutoCorrection() {
+            return (mKindAndFlags & KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION) != 0;
         }
 
         public void setDebugString(final String str) {
