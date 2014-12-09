@@ -89,14 +89,8 @@ public final class DebugSettingsFragment extends SubScreenFragment
                 defaultKeyPreviewDismissEndScale);
         setupKeyPreviewAnimationScale(DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
                 defaultKeyPreviewDismissEndScale);
-        setupKeyboardScale(
+        setupKeyboardHeight(
                 DebugSettings.PREF_KEYBOARD_HEIGHT_SCALE, SettingsValues.DEFAULT_SIZE_SCALE);
-        setupKeyboardScale(
-            DebugSettings.PREF_KEYBOARD_BOTTOM_MARGIN, SettingsValues.DEFAULT_MARGIN_SCALE);
-        setupKeyboardScale(
-            DebugSettings.PREF_KEYBOARD_LEFT_MARGIN, SettingsValues.DEFAULT_MARGIN_SCALE);
-        setupKeyboardScale(
-            DebugSettings.PREF_KEYBOARD_RIGHT_MARGIN, SettingsValues.DEFAULT_MARGIN_SCALE);
 
         mServiceNeedsRestart = false;
         mDebugMode = (TwoStatePreference) findPreference(DebugSettings.PREF_DEBUG_MODE);
@@ -259,7 +253,7 @@ public final class DebugSettingsFragment extends SubScreenFragment
         });
     }
 
-    private void setupKeyboardScale(final String prefKey, final float defaultValue) {
+    private void setupKeyboardHeight(final String prefKey, final float defaultValue) {
         final SharedPreferences prefs = getSharedPreferences();
         final SeekBarDialogPreference pref = (SeekBarDialogPreference)findPreference(prefKey);
         if (pref == null) {
@@ -287,8 +281,7 @@ public final class DebugSettingsFragment extends SubScreenFragment
 
             @Override
             public int readValue(final String key) {
-                return getPercentageFromValue(
-                        Settings.readKeyboardScale(prefs, key, defaultValue));
+                return getPercentageFromValue(Settings.readKeyboardHeight(prefs, defaultValue));
             }
 
             @Override
