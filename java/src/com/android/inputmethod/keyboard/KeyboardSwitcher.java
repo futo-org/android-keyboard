@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.LinearLayout;
 
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.event.Event;
@@ -421,8 +420,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mEmojiPalettesView.setHardwareAcceleratedDrawingEnabled(
                 isHardwareAcceleratedDrawingEnabled);
         mEmojiPalettesView.setKeyboardActionListener(mLatinIME);
-        mHorizontalKeyboardFrame = (LinearLayout)mCurrentInputView.findViewById(
-                R.id.horizontal_keyboard_frame);
+        mHorizontalKeyboardFrame = mCurrentInputView.findViewById(R.id.horizontal_keyboard_frame);
         return mCurrentInputView;
     }
 
