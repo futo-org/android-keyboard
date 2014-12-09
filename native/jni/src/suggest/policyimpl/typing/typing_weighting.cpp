@@ -17,6 +17,7 @@
 #include "suggest/policyimpl/typing/typing_weighting.h"
 
 #include "suggest/core/dicnode/dic_node.h"
+#include "suggest/core/layout/proximity_info.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
 
 namespace latinime {
@@ -39,6 +40,8 @@ ErrorTypeUtils::ErrorType TypingWeighting::getErrorType(const CorrectionType cor
                 const int primaryCodePoint = pInfoState->getPrimaryCodePointAt(
                         dicNode->getInputIndex(0));
                 const int nodeCodePoint = dicNode->getNodeCodePoint();
+                const int keyIndex = traverseSession->getProximityInfo()->getKeyIndexOf(
+                        primaryCodePoint);
                 // TODO: Check whether the input code point is on the keyboard.
                 if (primaryCodePoint == nodeCodePoint) {
                     // Node code point is same as original code point on the keyboard.
@@ -53,6 +56,9 @@ ErrorTypeUtils::ErrorType TypingWeighting::getErrorType(const CorrectionType cor
                 } else if (CharUtils::toBaseCodePoint(primaryCodePoint)
                         == CharUtils::toBaseCodePoint(nodeCodePoint)) {
                     // Base code points are the same but the code point is intentionally input.
+                    if (keyIndex == NOT_AN_INDEX) {
+                        return ErrorTypeUtils::MATCH_WITH_MISSING_EXPLICIT_ACCENT;
+                    }
                     return ErrorTypeUtils::MATCH_WITH_WRONG_ACCENT;
                 } else if (CharUtils::toLowerCase(primaryCodePoint)
                         == CharUtils::toBaseLowerCase(nodeCodePoint)) {
@@ -61,6 +67,10 @@ ErrorTypeUtils::ErrorType TypingWeighting::getErrorType(const CorrectionType cor
                     return ErrorTypeUtils::MATCH_WITH_MISSING_ACCENT
                             | ErrorTypeUtils::MATCH_WITH_WRONG_CASE;
                 } else {
+                    if (keyIndex == NOT_AN_INDEX) {
+                        return ErrorTypeUtils::MATCH_WITH_MISSING_EXPLICIT_ACCENT
+                                | ErrorTypeUtils::MATCH_WITH_WRONG_CASE;
+                    }
                     // Base code points are the same and the cases are different.
                     return ErrorTypeUtils::MATCH_WITH_WRONG_ACCENT
                             | ErrorTypeUtils::MATCH_WITH_WRONG_CASE;

@@ -32,6 +32,7 @@ class ErrorTypeUtils {
     static const ErrorType NOT_AN_ERROR;
     static const ErrorType MATCH_WITH_WRONG_CASE;
     static const ErrorType MATCH_WITH_MISSING_ACCENT;
+    static const ErrorType MATCH_WITH_MISSING_EXPLICIT_ACCENT;
     static const ErrorType MATCH_WITH_WRONG_ACCENT;
     static const ErrorType MATCH_WITH_DIGRAPH;
     // Treat error as an intentional omission when the CorrectionType is omission and the node can
@@ -59,6 +60,10 @@ class ErrorTypeUtils {
     static bool isExactMatchWithIntentionalOmission(const ErrorType containedErrorTypes) {
         return (containedErrorTypes
                 & ~ERRORS_TREATED_AS_AN_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) == 0;
+    }
+
+    static bool isMissingExplicitAccent(const ErrorType errorType) {
+        return (errorType & MATCH_WITH_MISSING_EXPLICIT_ACCENT) != 0;
     }
 
     static bool isEditCorrectionError(const ErrorType errorType) {

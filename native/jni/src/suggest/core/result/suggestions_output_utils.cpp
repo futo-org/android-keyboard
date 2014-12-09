@@ -144,11 +144,16 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     const bool isExactMatchWithIntentionalOmission =
             ErrorTypeUtils::isExactMatchWithIntentionalOmission(
                     terminalDicNode->getContainedErrorTypes());
+    // TODO: Decide whether the word should be auto-corrected or not here.
+    const bool isAppropriateForAutoCorrection = !ErrorTypeUtils::isMissingExplicitAccent(
+            terminalDicNode->getContainedErrorTypes());
     const int outputTypeFlags =
             (wordAttributes.isPossiblyOffensive() ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
             | ((isExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0)
             | (isExactMatchWithIntentionalOmission ?
-                    Dictionary::KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION : 0);
+                    Dictionary::KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION : 0)
+            | (isAppropriateForAutoCorrection ?
+                    Dictionary::KIND_FLAG_APPROPRIATE_FOR_AUTOCORRECTION : 0);
     // Entries that are blacklisted or do not represent a word should not be output.
     const bool isValidWord = !(wordAttributes.isBlacklisted() || wordAttributes.isNotAWord());
 
