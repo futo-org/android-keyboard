@@ -823,14 +823,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 int token = 0;
                 do {
                     // TODO: We need a new API that returns *new* un-synced data.
-                    final BinaryDictionary.GetNextWordPropertyResult result =
+                    final BinaryDictionary.GetNextWordPropertyResult nextWordPropertyResult =
                             binaryDictionary.getNextWordProperty(token);
-                    final WordProperty wordProperty = result.mWordProperty;
+                    final WordProperty wordProperty = nextWordPropertyResult.mWordProperty;
                     if (wordProperty == null) {
                         break;
                     }
                     wordPropertyList.add(wordProperty);
-                    token = result.mNextToken;
+                    token = nextWordPropertyResult.mNextToken;
                 } while (token != 0);
                 result.set(wordPropertyList.toArray(new WordProperty[wordPropertyList.size()]));
             }
