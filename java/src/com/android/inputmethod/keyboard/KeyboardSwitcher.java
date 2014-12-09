@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
@@ -65,7 +64,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private KeyboardTheme mKeyboardTheme;
     private Context mThemeContext;
-    private View mHorizontalKeyboardFrame;
+
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
 
     public static KeyboardSwitcher getInstance() {
@@ -112,16 +111,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
-        final ViewGroup.MarginLayoutParams p =
-                (ViewGroup.MarginLayoutParams) mHorizontalKeyboardFrame.getLayoutParams();
-
-        final int keyboardLeftMargin = ResourceUtils.getKeyboardLeftMargin(res, settingsValues);
-        final int keyboardRightMargin = ResourceUtils.getKeyboardRightMargin(res, settingsValues);
-        final int keyboardBottomMargin = ResourceUtils.getKeyboardBottomMargin(res, settingsValues);
-        p.setMargins(keyboardLeftMargin, 0, keyboardRightMargin, keyboardBottomMargin);
-
+        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         final int keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues);
-        final int keyboardWidth = ResourceUtils.getKeyboardWidth(res, settingsValues);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
         builder.setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype());
         builder.setVoiceInputKeyEnabled(settingsValues.mShowsVoiceInputKey);
@@ -420,7 +411,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mEmojiPalettesView.setHardwareAcceleratedDrawingEnabled(
                 isHardwareAcceleratedDrawingEnabled);
         mEmojiPalettesView.setKeyboardActionListener(mLatinIME);
-        mHorizontalKeyboardFrame = mCurrentInputView.findViewById(R.id.horizontal_keyboard_frame);
         return mCurrentInputView;
     }
 

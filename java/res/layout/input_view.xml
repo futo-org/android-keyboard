@@ -23,18 +23,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="?attr/inputViewStyle">
-    <LinearLayout
-        android:id="@+id/horizontal_keyboard_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:orientation="horizontal">
-        <include
-            android:id="@+id/main_keyboard_frame"
-            layout="@layout/main_keyboard_frame" />
-        <include
-            android:id="@+id/emoji_palettes_view"
-            layout="@layout/emoji_palettes_view" />
-    </LinearLayout>
+    <include
+        android:id="@+id/main_keyboard_frame"
+        layout="@layout/main_keyboard_frame" />
+    <include
+        android:id="@+id/emoji_palettes_view"
+        layout="@layout/emoji_palettes_view" />
 </com.android.inputmethod.latin.InputView>
