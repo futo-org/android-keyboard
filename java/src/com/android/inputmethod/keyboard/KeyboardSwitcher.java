@@ -40,11 +40,13 @@ import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
+import com.android.inputmethod.latin.utils.NetworkConnectivityUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 
-public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
+public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
+        NetworkConnectivityUtils.NetworkStateChangeListener {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
 
     private SubtypeSwitcher mSubtypeSwitcher;
@@ -414,6 +416,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return mCurrentInputView;
     }
 
+    // {@link NetworkConnectivityUtils.NetworkStateChangeListener#onNetworkStateChanged(boolean)}.
+    @Override
     public void onNetworkStateChanged() {
         if (mKeyboardView == null) {
             return;

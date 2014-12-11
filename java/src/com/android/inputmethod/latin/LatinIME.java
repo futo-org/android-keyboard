@@ -32,7 +32,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Debug;
 import android.os.IBinder;
@@ -100,6 +99,7 @@ import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.android.inputmethod.latin.utils.NetworkConnectivityUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -592,13 +592,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         loadSettings();
         resetDictionaryFacilitatorIfNecessary();
 
-        // Register to receive ringer mode change and network state change.
-        // Also receive installation and removal of a dictionary pack.
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
-        registerReceiver(mConnectivityAndRingerModeChangeReceiver, filter);
+        NetworkConnectivityUtils.onCreate(this /* context */, mKeyboardSwitcher /* listener */);
 
+        // Register to receive ringer mode change.
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        registerReceiver(mRingerModeChangeReceiver, filter);
+
+        // Register to receive installation and removal of a dictionary pack.
         final IntentFilter packageFilter = new IntentFilter();
         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
         packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
@@ -726,7 +727,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mPersonalizationDictionaryUpdater.onDestroy();
         mContextualDictionaryUpdater.onDestroy();
         mSettings.onDestroy();
-        unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
+        NetworkConnectivityUtils.onDestroy(this /* context */);
+        unregisterReceiver(mRingerModeChangeReceiver);
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         mStatsUtilsManager.onDestroy();
@@ -738,7 +740,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void recycle() {
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
-        unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
+        unregisterReceiver(mRingerModeChangeReceiver);
+        NetworkConnectivityUtils.onDestroy(this /* context */);
         mInputLogic.recycle();
     }
 
@@ -1828,15 +1831,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // boolean onKeyLongPress(final int keyCode, final KeyEvent event);
     // boolean onKeyMultiple(final int keyCode, final int count, final KeyEvent event);
 
-    // receive ringer mode change and network state change.
-    private final BroadcastReceiver mConnectivityAndRingerModeChangeReceiver =
-            new BroadcastReceiver() {
+    // receive ringer mode change.
+    private final BroadcastReceiver mRingerModeChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
-            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                mRichImm.onNetworkStateChanged(intent);
-            } else if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
+            if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
                 AudioAndHapticFeedbackManager.getInstance().onRingerModeChanged();
             }
         }
