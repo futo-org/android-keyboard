@@ -502,9 +502,7 @@ public class RichInputMethodManager {
     }
 
     private void updateCurrentSubtype(@Nonnull final InputMethodSubtype subtype) {
-        final RichInputMethodSubtype richSubtype = AdditionalFeaturesSettingUtils
-                .createRichInputMethodSubtype(this, subtype, mContext);
-        mCurrentRichInputMethodSubtype = richSubtype;
+        mCurrentRichInputMethodSubtype = new RichInputMethodSubtype(subtype);
     }
 
     private void updateShortcutIme() {
