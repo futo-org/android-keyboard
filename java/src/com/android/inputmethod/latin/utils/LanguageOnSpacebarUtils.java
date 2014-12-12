@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.internal;
+package com.android.inputmethod.latin.utils;
 
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.RichInputMethodSubtype;
-import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,21 +29,26 @@ import javax.annotation.Nonnull;
 /**
  * This class determines that the language name on the spacebar should be displayed in what format.
  */
-public final class LanguageOnSpacebarHelper {
+public final class LanguageOnSpacebarUtils {
     public static final int FORMAT_TYPE_NONE = 0;
     public static final int FORMAT_TYPE_LANGUAGE_ONLY = 1;
     public static final int FORMAT_TYPE_FULL_LOCALE = 2;
     public static final int FORMAT_TYPE_MULTIPLE = 3;
 
-    private List<InputMethodSubtype> mEnabledSubtypes = Collections.emptyList();
-    private boolean mIsSystemLanguageSameAsInputLanguage;
+    private static List<InputMethodSubtype> sEnabledSubtypes = Collections.emptyList();
+    private static boolean sIsSystemLanguageSameAsInputLanguage;
 
-    public int getLanguageOnSpacebarFormatType(@Nonnull final RichInputMethodSubtype subtype) {
+    private LanguageOnSpacebarUtils() {
+        // This utility class is not publicly instantiable.
+    }
+
+    public static int getLanguageOnSpacebarFormatType(
+            @Nonnull final RichInputMethodSubtype subtype) {
         if (subtype.isNoLanguage()) {
             return FORMAT_TYPE_FULL_LOCALE;
         }
         // Only this subtype is enabled and equals to the system locale.
-        if (mEnabledSubtypes.size() < 2 && mIsSystemLanguageSameAsInputLanguage) {
+        if (sEnabledSubtypes.size() < 2 && sIsSystemLanguageSameAsInputLanguage) {
             return FORMAT_TYPE_NONE;
         }
         final Locale[] locales = subtype.getLocales();
@@ -54,7 +58,7 @@ public final class LanguageOnSpacebarHelper {
         final String keyboardLanguage = locales[0].getLanguage();
         final String keyboardLayout = subtype.getKeyboardLayoutSetName();
         int sameLanguageAndLayoutCount = 0;
-        for (final InputMethodSubtype ims : mEnabledSubtypes) {
+        for (final InputMethodSubtype ims : sEnabledSubtypes) {
             final String language = SubtypeLocaleUtils.getSubtypeLocale(ims).getLanguage();
             if (keyboardLanguage.equals(language) && keyboardLayout.equals(
                     SubtypeLocaleUtils.getKeyboardLayoutSetName(ims))) {
@@ -67,30 +71,30 @@ public final class LanguageOnSpacebarHelper {
                 : FORMAT_TYPE_LANGUAGE_ONLY;
     }
 
-    public void onUpdateEnabledSubtypes(@Nonnull final List<InputMethodSubtype> enabledSubtypes) {
-        mEnabledSubtypes = enabledSubtypes;
+    public static void setEnabledSubtypes(@Nonnull final List<InputMethodSubtype> enabledSubtypes) {
+        sEnabledSubtypes = enabledSubtypes;
     }
 
-    public void onSubtypeChanged(@Nonnull final RichInputMethodSubtype subtype,
+    public static void onSubtypeChanged(@Nonnull final RichInputMethodSubtype subtype,
            final boolean implicitlyEnabledSubtype, @Nonnull final Locale systemLocale) {
         final Locale[] newLocales = subtype.getLocales();
         if (newLocales.length > 1) {
             // In multi-locales mode, the system language is never the same as the input language
             // because there is no single input language.
-            mIsSystemLanguageSameAsInputLanguage = false;
+            sIsSystemLanguageSameAsInputLanguage = false;
             return;
         }
         final Locale newLocale = newLocales[0];
         if (systemLocale.equals(newLocale)) {
-            mIsSystemLanguageSameAsInputLanguage = true;
+            sIsSystemLanguageSameAsInputLanguage = true;
             return;
         }
         if (!systemLocale.getLanguage().equals(newLocale.getLanguage())) {
-            mIsSystemLanguageSameAsInputLanguage = false;
+            sIsSystemLanguageSameAsInputLanguage = false;
             return;
         }
         // If the subtype is enabled explicitly, the language name should be displayed even when
         // the keyboard language and the system language are equal.
-        mIsSystemLanguageSameAsInputLanguage = implicitlyEnabledSubtype;
+        sIsSystemLanguageSameAsInputLanguage = implicitlyEnabledSubtype;
     }
 }
