@@ -61,6 +61,11 @@
     <string name="cloud_sync_summary" translatable="false">Sync your personal dictionary across devices</string>
     <string name="cloud_sync_summary_disabled_signed_out" translatable="false">Select an account to enable sync</string>
     <string name="sync_now_title" translatable="false">[DEBUG] Sync Now</string>
+    <string name="clear_sync_data_title" translatable="false">[DEBUG] Delete Google Keyboard cloud data</string>
+    <string name="clear_sync_data_summary" translable="false">Deletes your synced data from Google</string>
+    <string name="clear_sync_data_confirmation" translable="false">Your synced data will be deleted. Are you sure?</string>
+    <string name="clear_sync_data_ok" translable="false">Delete</string>
+    <string name="clear_sync_data_cancel" translable="false">Cancel</string>
 
     <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>

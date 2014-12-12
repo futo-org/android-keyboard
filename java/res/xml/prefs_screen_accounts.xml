@@ -48,4 +48,11 @@
         android:persistent="false"
         android:title="@string/sync_now_title"
         android:dependency="pref_enable_cloud_sync" />
+
+    <!-- This preference (acts like a button) enables the user to clear data from the cloud. -->
+    <Preference android:key="pref_beanstalk_clear_data"
+        android:persistent="false"
+        android:title="@string/clear_sync_data_title"
+        android:summary="@string/clear_sync_data_summary"
+        android:dependency="pref_enable_cloud_sync" />
 </PreferenceScreen>
