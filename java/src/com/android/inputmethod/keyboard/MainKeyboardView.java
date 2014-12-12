@@ -47,7 +47,6 @@ import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewChoreographer;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewView;
-import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
@@ -58,6 +57,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.settings.DebugSettings;
+import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.Locale;
@@ -783,10 +783,10 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         mHasMultipleEnabledIMEsOrSubtypes = hasMultipleEnabledIMEsOrSubtypes;
         final ObjectAnimator animator = mLanguageOnSpacebarFadeoutAnimator;
         if (animator == null) {
-            mLanguageOnSpacebarFormatType = LanguageOnSpacebarHelper.FORMAT_TYPE_NONE;
+            mLanguageOnSpacebarFormatType = LanguageOnSpacebarUtils.FORMAT_TYPE_NONE;
         } else {
             if (subtypeChanged
-                    && languageOnSpacebarFormatType != LanguageOnSpacebarHelper.FORMAT_TYPE_NONE) {
+                    && languageOnSpacebarFormatType != LanguageOnSpacebarUtils.FORMAT_TYPE_NONE) {
                 setLanguageOnSpacebarAnimAlpha(Constants.Color.ALPHA_OPAQUE);
                 if (animator.isStarted()) {
                     animator.cancel();
@@ -811,7 +811,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE) {
             // If input language are explicitly selected.
-            if (mLanguageOnSpacebarFormatType != LanguageOnSpacebarHelper.FORMAT_TYPE_NONE) {
+            if (mLanguageOnSpacebarFormatType != LanguageOnSpacebarUtils.FORMAT_TYPE_NONE) {
                 drawLanguageOnSpacebar(key, canvas, paint);
             }
             // Whether space key needs to show the "..." popup hint for special purposes
@@ -843,7 +843,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     // Layout language name on spacebar.
     private String layoutLanguageOnSpacebar(final Paint paint,
             final RichInputMethodSubtype subtype, final int width) {
-        if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarHelper.FORMAT_TYPE_MULTIPLE) {
+        if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_MULTIPLE) {
             final Locale[] locales = subtype.getLocales();
             final String[] languages = new String[locales.length];
             for (int i = 0; i < locales.length; ++i) {
@@ -853,7 +853,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         }
 
         // Choose appropriate language name to fit into the width.
-        if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarHelper.FORMAT_TYPE_FULL_LOCALE) {
+        if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_FULL_LOCALE) {
             final String fullText = subtype.getFullDisplayName();
             if (fitsTextIntoWidth(width, fullText, paint)) {
                 return fullText;
