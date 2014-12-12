@@ -63,4 +63,13 @@ public class AccountStateChangedListener {
      */
     public static void forceSync(@Nullable String account) {
     }
+
+    /**
+     * Forces an immediate deletion of user's data.
+     * This should only be used for debugging purposes.
+     *
+     * @param account the account to use for sync.
+     */
+    public static void forceDelete(@Nullable String account) {
+    }
 }
