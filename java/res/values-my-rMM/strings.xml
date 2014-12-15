@@ -35,6 +35,10 @@
     <string name="settings_screen_advanced" msgid="7472408607625972994">"အဆင့်မြင့်"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"အပြင်အဆင်"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"ကီးဘုတ် ခွဲခြမ်းမှု ဖွင့်ထားရန်"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"သင်၏ စင့်က် လုပ်ပြီးသား ဒေတာ Google ထဲမှ ဖျက်ခံရမည်။"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"သင်၏ စင့်က် လုပ်ပြီးသား ဒေတာ ဖျက်ခံရမည်။ သင် သေချာသလား?"</string>
+    <string name="clear_sync_data_ok" msgid="613104067705915132">"ဖျက်ရန်"</string>
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"ဖျက်သိမ်းရန်"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"အခြားထည့်သွင်းမည့် နည်းလမ်းများသို့ ပြောင်းရန်"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ဘာသာပြောင်းသည့် ကီးသည် အခြားထည့်သွင်းရန် နည်းလမ်းများလည်း ပါဝင်သည်"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ဘာသာစကား ပြောင်းခလုတ်"</string>
