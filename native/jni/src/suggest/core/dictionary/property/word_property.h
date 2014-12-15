@@ -20,7 +20,6 @@
 #include <vector>
 
 #include "defines.h"
-#include "jni.h"
 #include "suggest/core/dictionary/property/ngram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "utils/int_array_view.h"
@@ -38,12 +37,6 @@ class WordProperty {
             const std::vector<NgramProperty> &ngrams)
             : mCodePoints(std::move(codePoints)), mUnigramProperty(unigramProperty),
               mNgrams(ngrams) {}
-
-    void outputProperties(JNIEnv *const env, jintArray outCodePoints, jbooleanArray outFlags,
-            jintArray outProbabilityInfo, jobject outNgramPrevWordsArray,
-            jobject outNgramPrevWordIsBeginningOfSentenceArray, jobject outNgramTargets,
-            jobject outNgramProbabilities, jobject outShortcutTargets,
-            jobject outShortcutProbabilities) const;
 
     const CodePointArrayView getCodePoints() const {
         return CodePointArrayView(mCodePoints);

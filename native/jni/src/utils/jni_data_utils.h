@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "jni.h"
+#include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/session/ngram_context.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
@@ -139,6 +140,12 @@ class JniDataUtils {
             const float value) {
         env->SetFloatArrayRegion(array, index, 1 /* len */, &value);
     }
+
+    static void outputWordProperty(JNIEnv *const env, const WordProperty &wordProperty,
+            jintArray outCodePoints, jbooleanArray outFlags, jintArray outProbabilityInfo,
+            jobject outNgramPrevWordsArray, jobject outNgramPrevWordIsBeginningOfSentenceArray,
+            jobject outNgramTargets, jobject outNgramProbabilities, jobject outShortcutTargets,
+            jobject outShortcutProbabilities);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(JniDataUtils);
