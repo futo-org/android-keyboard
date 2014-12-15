@@ -79,6 +79,9 @@ int TrieMap::getNextLevelBitmapEntryIndex(const int key, const int bitmapEntryIn
     }
     // Create a value entry and a bitmap entry.
     const int valueEntryIndex = allocateTable(TERMINAL_LINKED_ENTRY_COUNT);
+    if (valueEntryIndex == INVALID_INDEX) {
+        return INVALID_INDEX;
+    }
     if (!writeEntry(Entry(0, terminalEntry.getValue()), valueEntryIndex)) {
         return INVALID_INDEX;
     }
@@ -195,6 +198,9 @@ bool TrieMap::writeValue(const uint64_t value, const int terminalEntryIndex) {
     }
     // Create value entry and write value.
     const int valueEntryIndex = allocateTable(TERMINAL_LINKED_ENTRY_COUNT);
+    if (valueEntryIndex == INVALID_INDEX) {
+        return false;
+    }
     if (!writeEntry(Entry(value >> (FIELD1_SIZE * CHAR_BIT), value), valueEntryIndex)) {
         return false;
     }
