@@ -35,6 +35,14 @@
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Geavanceerd"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Thema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Gesplitst toetsenbord inschakelen"</string>
+    <!-- no translation found for clear_sync_data_summary (993477139012576584) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_confirmation (6415032621884042784) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_ok (613104067705915132) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_cancel (8543925137765830060) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Invoermeth. overschakelen"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Schakelknop voor taal ook van toepassing op andere invoermethoden"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Schakelknop voor taal"</string>

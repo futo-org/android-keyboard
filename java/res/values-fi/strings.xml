@@ -35,6 +35,14 @@
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Lisäasetukset"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Teema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Ota jaettu näppäimistö käyttöön"</string>
+    <!-- no translation found for clear_sync_data_summary (993477139012576584) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_confirmation (6415032621884042784) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_ok (613104067705915132) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_cancel (8543925137765830060) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Käytä toista syöttötapaa"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kielenvaihtonäppäin kattaa myös muut syöttötavat"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Kielenvaihtonäppäin"</string>
@@ -170,9 +178,9 @@
     <string name="install_dict" msgid="180852772562189365">"Asenna"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Peruuta"</string>
     <string name="delete_dict" msgid="756853268088330054">"Poista"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Laitteesi käyttökielelle on saatavilla sanakirja.&lt;br/&gt; Suosittelemme <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-sanakirjan &lt;b&gt;lataamista&lt;/b&gt;, sillä se helpottaa laitteella kirjoittamista.&lt;br/&gt; &lt;br/&gt; Lataus kestää useimmiten muutaman minuutin 3G-yhteydellä. Latauksesta saatetaan periä maksu, ellei käytössäsi ole &lt;b&gt;rajoittamatonta tiedonsiirtopakettia&lt;/b&gt;.&lt;br/&gt; Jos et ole varma tiedonsiirtosopimuksesi tyypistä, etsi käyttöösi wifi-yhteys, niin lataus alkaa automaattisesti.&lt;br/&gt; &lt;br/&gt; Vinkki: voit ladata ja poistaa sanakirjoja mobiililaitteesi &lt;b&gt;Asetukset&lt;/b&gt;-valikon &lt;b&gt;Kieli ja syöttötapa&lt;/b&gt; -osiossa."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Laitteesi käyttökielelle on saatavilla sanakirja.&lt;br/&gt; Suosittelemme <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-sanakirjan &lt;b&gt;lataamista&lt;/b&gt;, sillä se helpottaa laitteella kirjoittamista.&lt;br/&gt; &lt;br/&gt; Lataus kestää useimmiten muutaman minuutin 3G-yhteydellä. Latauksesta saatetaan periä maksu, ellei käytössäsi ole &lt;b&gt;rajoittamatonta tiedonsiirtopakettia&lt;/b&gt;.&lt;br/&gt; Jos et ole varma tiedonsiirtosopimuksesi tyypistä, etsi käyttöösi Wi-Fi-yhteys, niin lataus alkaa automaattisesti.&lt;br/&gt; &lt;br/&gt; Vinkki: voit ladata ja poistaa sanakirjoja mobiililaitteesi &lt;b&gt;Asetukset&lt;/b&gt;-valikon &lt;b&gt;Kieli ja syöttötapa&lt;/b&gt; -osiossa."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Lataa nyt (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> Mt)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Lataa wifi-yhteydellä"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Lataa Wi-Fi-yhteydellä"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Sanakirja on saatavilla kielelle <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Paina tätä, jos haluat tarkastella kohdetta ja ladata sen"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Ladataan: kielen <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ehdotukset ovat pian käytettävissä."</string>
