@@ -30,8 +30,7 @@ LATIN_IME_CORE_SRC_FILES := \
         dictionary_utils.cpp \
         digraph_utils.cpp \
         error_type_utils.cpp \
-        multi_bigram_map.cpp \
-        property/word_property.cpp) \
+        multi_bigram_map.cpp) \
     $(addprefix suggest/core/layout/, \
         additional_proximity_chars.cpp \
         proximity_info.cpp \

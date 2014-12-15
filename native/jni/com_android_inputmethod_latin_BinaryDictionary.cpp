@@ -351,10 +351,9 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
     }
     const WordProperty wordProperty = dictionary->getWordProperty(
             CodePointArrayView(wordCodePoints, codePointCount));
-    wordProperty.outputProperties(env, outCodePoints, outFlags, outProbabilityInfo,
+    JniDataUtils::outputWordProperty(env, wordProperty, outCodePoints, outFlags, outProbabilityInfo,
             outNgramPrevWordsArray, outNgramPrevWordIsBeginningOfSentenceArray,
-            outNgramTargets, outNgramProbabilityInfo, outShortcutTargets,
-            outShortcutProbabilities);
+            outNgramTargets, outNgramProbabilityInfo, outShortcutTargets, outShortcutProbabilities);
 }
 
 static bool latinime_BinaryDictionary_addUnigramEntry(JNIEnv *env, jclass clazz, jlong dict,
