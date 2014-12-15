@@ -16,7 +16,6 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 
-#include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
