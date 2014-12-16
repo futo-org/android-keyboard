@@ -35,14 +35,10 @@
     <string name="settings_screen_advanced" msgid="7472408607625972994">"అధునాతనం"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"థీమ్"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"విభజన కీబోర్డ్‌ను ప్రారంభించు"</string>
-    <!-- no translation found for clear_sync_data_summary (993477139012576584) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_confirmation (6415032621884042784) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_ok (613104067705915132) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_cancel (8543925137765830060) -->
-    <skip />
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"మీ సమకాలీకృత డేటాను Google నుండి తొలగిస్తుంది"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"మీ సమకాలీకృత డేటా తొలగించబడుతుంది. మీరు ఖచ్చితంగా చేయాలనుకుంటున్నారా?"</string>
+    <string name="clear_sync_data_ok" msgid="613104067705915132">"తొలగించు"</string>
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"రద్దు చేయి"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ఇతర ఇన్‌పుట్ పద్ధతులకు మారండి"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"భాష మార్పు కీ ఇతర ఇన్‌పుట్ పద్ధతులను కూడా కవర్ చేస్తుంది"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"భాష మార్పు కీ"</string>
