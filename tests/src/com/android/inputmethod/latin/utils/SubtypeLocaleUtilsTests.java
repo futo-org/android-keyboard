@@ -418,17 +418,9 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI));
                 // These are preliminary subtypes and may not exist.
                 if (HI_LATN != null) {
-                    // TODO: Uncommented because of the current translation of these strings
-                    // in Hindi are described in Latin script.
-                    // assertEquals("hi_ZZ", "हिंग्लिश",
-                    //      SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_LATN));
-                    // assertEquals("hi_ZZ", "हिंग्लिश (Dvorak)",
-                    //      SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_LATN_DVORAK));
-                    // TODO: Remove these tests once the translation of these strings in Hindi
-                    // are described in Devanagari script.
-                    assertEquals("hi_ZZ", "Hinglish",
+                    assertEquals("hi_ZZ", "हिंग्लिश",
                             SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_LATN));
-                    assertEquals("hi_ZZ", "Hinglish (Dvorak)",
+                    assertEquals("hi_ZZ", "हिंग्लिश (Dvorak)",
                             SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_LATN_DVORAK));
                 }
                 return null;
