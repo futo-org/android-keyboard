@@ -20,11 +20,11 @@
 #include <vector>
 
 #include "defines.h"
+#include "dictionary/header/header_read_write_utils.h"
+#include "dictionary/interface/dictionary_header_structure_policy.h"
+#include "dictionary/property/ngram_context.h"
+#include "dictionary/property/word_property.h"
 #include "jni.h"
-#include "suggest/core/dictionary/property/word_property.h"
-#include "suggest/core/session/ngram_context.h"
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
-#include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 #include "utils/char_utils.h"
 
 namespace latinime {

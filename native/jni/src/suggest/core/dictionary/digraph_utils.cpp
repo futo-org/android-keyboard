@@ -19,7 +19,7 @@
 #include <cstdlib>
 
 #include "defines.h"
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
+#include "dictionary/interface/dictionary_header_structure_policy.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
