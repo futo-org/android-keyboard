@@ -166,7 +166,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
-    final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
     private final EmojiAltPhysicalKeyDetector mEmojiAltPhysicalKeyDetector =
             new EmojiAltPhysicalKeyDetector();
@@ -563,7 +562,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public LatinIME() {
         super();
         mSettings = Settings.getInstance();
-        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mStatsUtilsManager = StatsUtilsManager.getInstance();
         mIsHardwareAcceleratedDrawingEnabled =
@@ -577,7 +575,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         DebugFlags.init(PreferenceManager.getDefaultSharedPreferences(this));
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
-        SubtypeSwitcher.init(this);
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
@@ -877,7 +874,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mRichImm.onSubtypeChanged(subtype);
-        mSubtypeSwitcher.onSubtypeChanged(mRichImm.getCurrentSubtype());
         mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype),
                 mSettings.getCurrent());
         loadKeyboard();
@@ -894,7 +890,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // also wouldn't be consuming gesture data.
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
         mRichImm.refreshSubtypeCaches();
-        mSubtypeSwitcher.onSubtypeChanged(mRichImm.getCurrentSubtype());
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme();
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
@@ -955,10 +950,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         StatsUtils.onStartInputView(editorInfo.inputType,
                 Settings.getInstance().getCurrent().mDisplayOrientation,
                 !isDifferentTextField);
-
-        if (isDifferentTextField) {
-            mSubtypeSwitcher.updateParametersOnStartInputView();
-        }
 
         // The EditorInfo might have a flag that affects fullscreen mode.
         // Note: This call should be done by InputMethodService?
