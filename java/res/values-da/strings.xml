@@ -35,14 +35,10 @@
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Avanceret"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Aktivér delt tastatur"</string>
-    <!-- no translation found for clear_sync_data_summary (993477139012576584) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_confirmation (6415032621884042784) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_ok (613104067705915132) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_cancel (8543925137765830060) -->
-    <skip />
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Sletter dine synkroniserede data fra Google"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"Dine synkroniserede data bliver slettet. Er du sikker?"</string>
+    <string name="clear_sync_data_ok" msgid="613104067705915132">"Slet"</string>
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Annuller"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skift inputmetode"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten til sprogskift gælder også for andre inputmetoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Knap til sprogskift"</string>
@@ -71,8 +67,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Mellemrumstast og tegnsætning retter automatisk forkerte ord"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Fra"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderat"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Aggressiv"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Meget aggressiv"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Middel"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Maksimal"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Forslag til næste ord"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Brug det forrige ord til at give forslag"</string>
     <string name="gesture_input" msgid="826951152254563827">"Aktivér glidende indtastning"</string>
