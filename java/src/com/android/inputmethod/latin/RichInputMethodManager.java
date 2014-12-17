@@ -70,10 +70,6 @@ public class RichInputMethodManager {
     private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
-    final HashMap<InputMethodInfo, List<InputMethodSubtype>>
-            mSubtypeListCacheWithImplicitlySelectedSubtypes = new HashMap<>();
-    final HashMap<InputMethodInfo, List<InputMethodSubtype>>
-            mSubtypeListCacheWithoutImplicitlySelectedSubtypes = new HashMap<>();
 
     private static final int INDEX_NOT_FOUND = -1;
 
@@ -235,33 +231,57 @@ public class RichInputMethodManager {
         private final InputMethodManager mImm;
         private final String mImePackageName;
 
-        private InputMethodInfo mCachedValue;
+        private InputMethodInfo mCachedThisImeInfo;
+        private final HashMap<InputMethodInfo, List<InputMethodSubtype>>
+                mCachedSubtypeListWithImplicitlySelected;
+        private final HashMap<InputMethodInfo, List<InputMethodSubtype>>
+                mCachedSubtypeListOnlyExplicitlySelected;
 
         public InputMethodInfoCache(final InputMethodManager imm, final String imePackageName) {
             mImm = imm;
             mImePackageName = imePackageName;
+            mCachedSubtypeListWithImplicitlySelected = new HashMap<>();
+            mCachedSubtypeListOnlyExplicitlySelected = new HashMap<>();
         }
 
-        public synchronized InputMethodInfo get() {
-            if (mCachedValue != null) {
-                return mCachedValue;
+        public synchronized InputMethodInfo getInputMethodOfThisIme() {
+            if (mCachedThisImeInfo != null) {
+                return mCachedThisImeInfo;
             }
             for (final InputMethodInfo imi : mImm.getInputMethodList()) {
                 if (imi.getPackageName().equals(mImePackageName)) {
-                    mCachedValue = imi;
+                    mCachedThisImeInfo = imi;
                     return imi;
                 }
             }
             throw new RuntimeException("Input method id for " + mImePackageName + " not found.");
         }
 
+        public synchronized List<InputMethodSubtype> getEnabledInputMethodSubtypeList(
+                final InputMethodInfo imi, final boolean allowsImplicitlySelectedSubtypes) {
+            final HashMap<InputMethodInfo, List<InputMethodSubtype>> cache =
+                    allowsImplicitlySelectedSubtypes
+                    ? mCachedSubtypeListWithImplicitlySelected
+                    : mCachedSubtypeListOnlyExplicitlySelected;
+            final List<InputMethodSubtype> cachedList = cache.get(imi);
+            if (cachedList != null) {
+                return cachedList;
+            }
+            final List<InputMethodSubtype> result = mImm.getEnabledInputMethodSubtypeList(
+                    imi, allowsImplicitlySelectedSubtypes);
+            cache.put(imi, result);
+            return result;
+        }
+
         public synchronized void clear() {
-            mCachedValue = null;
+            mCachedThisImeInfo = null;
+            mCachedSubtypeListWithImplicitlySelected.clear();
+            mCachedSubtypeListOnlyExplicitlySelected.clear();
         }
     }
 
     public InputMethodInfo getInputMethodInfoOfThisIme() {
-        return mInputMethodInfoCache.get();
+        return mInputMethodInfoCache.getInputMethodOfThisIme();
     }
 
     public String getInputMethodIdOfThisIme() {
@@ -446,21 +466,11 @@ public class RichInputMethodManager {
 
     private List<InputMethodSubtype> getEnabledInputMethodSubtypeList(final InputMethodInfo imi,
             final boolean allowsImplicitlySelectedSubtypes) {
-        final HashMap<InputMethodInfo, List<InputMethodSubtype>> cache =
-                allowsImplicitlySelectedSubtypes
-                ? mSubtypeListCacheWithImplicitlySelectedSubtypes
-                : mSubtypeListCacheWithoutImplicitlySelectedSubtypes;
-        final List<InputMethodSubtype> cachedList = cache.get(imi);
-        if (null != cachedList) return cachedList;
-        final List<InputMethodSubtype> result = mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
+        return mInputMethodInfoCache.getEnabledInputMethodSubtypeList(
                 imi, allowsImplicitlySelectedSubtypes);
-        cache.put(imi, result);
-        return result;
     }
 
     public void refreshSubtypeCaches() {
-        mSubtypeListCacheWithImplicitlySelectedSubtypes.clear();
-        mSubtypeListCacheWithoutImplicitlySelectedSubtypes.clear();
         mInputMethodInfoCache.clear();
         updateCurrentSubtype(mImmWrapper.mImm.getCurrentInputMethodSubtype());
         updateShortcutIme();
