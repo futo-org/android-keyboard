@@ -16,9 +16,9 @@
 
 #include "suggest/core/dicnode/dic_node_utils.h"
 
+#include "dictionary/interface/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
 

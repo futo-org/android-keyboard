@@ -19,10 +19,10 @@
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
 
 #include "defines.h"
+#include "dictionary/property/ngram_context.h"
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest/core/session/dic_traverse_session.h"
-#include "suggest/core/session/ngram_context.h"
 
 namespace latinime {
 class Dictionary;

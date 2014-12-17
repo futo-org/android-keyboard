@@ -16,14 +16,14 @@
 
 #include "suggest/core/suggest.h"
 
+#include "dictionary/interface/dictionary_structure_with_buffer_policy.h"
+#include "dictionary/property/word_attributes.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
-#include "suggest/core/dictionary/word_attributes.h"
 #include "suggest/core/layout/proximity_info.h"
-#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/policy/weighting.h"
 #include "suggest/core/result/suggestions_output_utils.h"

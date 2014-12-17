@@ -20,9 +20,9 @@
 #include <vector>
 
 #include "defines.h"
+#include "dictionary/utils/multi_bigram_map.h"
 #include "jni.h"
 #include "suggest/core/dicnode/dic_nodes_cache.h"
-#include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "utils/int_array_view.h"
 
