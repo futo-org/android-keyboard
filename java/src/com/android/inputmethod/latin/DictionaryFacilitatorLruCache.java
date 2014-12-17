@@ -102,10 +102,12 @@ public class DictionaryFacilitatorLruCache {
 
     private void resetDictionariesForLocaleLocked(final DictionaryFacilitator dictionaryFacilitator,
             final Locale locale) {
+        // Note: Given that personalized dictionaries are not used here; we can pass null account.
         dictionaryFacilitator.resetDictionariesWithDictNamePrefix(mContext, new Locale[] { locale },
                 mUseContactsDictionary, false /* usePersonalizedDicts */,
                 false /* forceReloadMainDictionary */, null /* listener */,
-                mDictionaryNamePrefix);
+                mDictionaryNamePrefix,
+                null /* account */);
     }
 
     public void setUseContactsDictionary(final boolean useContectsDictionary) {

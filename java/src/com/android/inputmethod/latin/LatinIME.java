@@ -633,12 +633,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // been displayed. Opening dictionaries never affects responsivity as dictionaries are
         // asynchronously loaded.
         if (!mHandler.hasPendingReopenDictionaries()) {
-            resetDictionaryFacilitatorForLocale(locales);
+            resetDictionaryFacilitator(locales);
         }
         mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
                 true /* allowsImplicitlySelectedSubtypes */));
         refreshPersonalizationDictionarySession(currentSettingsValues);
         mStatsUtilsManager.onLoadSettings(currentSettingsValues);
+        resetDictionaryFacilitatorIfNecessary();
     }
 
     private void refreshPersonalizationDictionarySession(
@@ -676,7 +677,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     void resetDictionaryFacilitatorIfNecessary() {
         final Locale[] subtypeSwitcherLocales = mRichImm.getCurrentSubtypeLocales();
-        if (mDictionaryFacilitator.isForLocales(subtypeSwitcherLocales)) {
+        if (mDictionaryFacilitator.isForLocales(subtypeSwitcherLocales)
+                && mDictionaryFacilitator.isForAccount(mSettings.getCurrent().mAccount)) {
             return;
         }
         final Locale[] subtypeLocales;
@@ -690,20 +692,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             subtypeLocales = subtypeSwitcherLocales;
         }
-        resetDictionaryFacilitatorForLocale(subtypeLocales);
+        resetDictionaryFacilitator(subtypeLocales);
     }
 
     /**
-     * Reset the facilitator by loading dictionaries for the locales and the current settings values
+     * Reset the facilitator by loading dictionaries for the locales and
+     * the current settings values.
      *
      * @param locales the locales
      */
-    // TODO: make sure the current settings always have the right locales, and read from them
-    private void resetDictionaryFacilitatorForLocale(final Locale[] locales) {
+    // TODO: make sure the current settings always have the right locales, and read from them.
+    private void resetDictionaryFacilitator(final Locale[] locales) {
         final SettingsValues settingsValues = mSettings.getCurrent();
         mDictionaryFacilitator.resetDictionaries(this /* context */, locales,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
-                false /* forceReloadMainDictionary */, this);
+                false /* forceReloadMainDictionary */,
+                settingsValues.mAccount,
+                this /* DictionaryInitializationListener */);
         if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
             mInputLogic.mSuggest.setAutoCorrectionThreshold(
                     settingsValues.mAutoCorrectionThreshold);
@@ -718,7 +723,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues settingsValues = mSettings.getCurrent();
         mDictionaryFacilitator.resetDictionaries(this /* context */,
                 mDictionaryFacilitator.getLocales(), settingsValues.mUseContactsDict,
-                settingsValues.mUsePersonalizedDicts, true /* forceReloadMainDictionary */, this);
+                settingsValues.mUsePersonalizedDicts,
+                true /* forceReloadMainDictionary */,
+                settingsValues.mAccount,
+                this /* DictionaryInitializationListener */);
     }
 
     @Override
@@ -1934,7 +1942,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues settingsValues = mSettings.getCurrent();
         mDictionaryFacilitator.resetDictionaries(this, new Locale[] { locale },
             settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
-            false /* forceReloadMainDictionary */, this /* listener */);
+            false /* forceReloadMainDictionary */,
+            settingsValues.mAccount,
+            this /* DictionaryInitializationListener */);
     }
 
     // DO NOT USE THIS for any other purpose than testing.

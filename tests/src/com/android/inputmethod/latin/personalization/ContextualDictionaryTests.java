@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.personalization;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class ContextualDictionaryTests extends AndroidTestCase {
         final DictionaryFacilitator dictionaryFacilitator = new DictionaryFacilitator();
         dictionaryFacilitator.resetDictionariesForTesting(getContext(),
                 new Locale[] { LOCALE_EN_US }, dictTypes, new HashMap<String, File>(),
-                new HashMap<String, Map<String, String>>());
+                Collections.<String, Map<String, String>>emptyMap(), null /* account */);
         return dictionaryFacilitator;
     }
 

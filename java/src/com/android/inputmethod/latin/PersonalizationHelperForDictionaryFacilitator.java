@@ -114,7 +114,7 @@ public class PersonalizationHelperForDictionaryFacilitator {
             return personalizationDict;
         }
         personalizationDict = PersonalizationDictionary.getDictionary(context, locale,
-                null /* dictFile */, "" /* dictNamePrefix */);
+                null /* dictFile */, "" /* dictNamePrefix */, null /* account */);
         mPersonalizationDictsToUpdate.put(locale, personalizationDict);
         return personalizationDict;
     }

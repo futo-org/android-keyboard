@@ -24,6 +24,8 @@ import com.android.inputmethod.latin.Dictionary;
 import java.io.File;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 public class PersonalizationDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package */ static final String NAME = PersonalizationDictionary.class.getSimpleName();
 
@@ -37,7 +39,8 @@ public class PersonalizationDictionary extends DecayingExpandableBinaryDictionar
     @SuppressWarnings("unused")
     @ExternallyReferenced
     public static PersonalizationDictionary getDictionary(final Context context,
-            final Locale locale, final File dictFile, final String dictNamePrefix) {
+            final Locale locale, final File dictFile, final String dictNamePrefix,
+            @Nullable final String account) {
         return PersonalizationHelper.getPersonalizationDictionary(context, locale);
     }
 }

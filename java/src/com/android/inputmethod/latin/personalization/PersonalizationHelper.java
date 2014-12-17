@@ -64,7 +64,8 @@ public class PersonalizationHelper {
                     return dict;
                 }
             }
-            final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale);
+            final UserHistoryDictionary dict = new UserHistoryDictionary(
+                    context, locale, accountName);
             sLangUserHistoryDictCache.put(lookupStr, new SoftReference<>(dict));
             return dict;
         }
