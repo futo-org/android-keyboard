@@ -19,9 +19,9 @@
 #include <algorithm>
 #include <vector>
 
+#include "dictionary/utils/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
-#include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/policy/scoring.h"
 #include "suggest/core/result/suggestion_results.h"

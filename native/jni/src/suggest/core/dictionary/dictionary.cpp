@@ -19,11 +19,11 @@
 #include "suggest/core/dictionary/dictionary.h"
 
 #include "defines.h"
+#include "dictionary/interface/dictionary_header_structure_policy.h"
+#include "dictionary/property/ngram_context.h"
 #include "suggest/core/dictionary/dictionary_utils.h"
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/session/dic_traverse_session.h"
-#include "suggest/core/session/ngram_context.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"

@@ -17,10 +17,10 @@
 #include "suggest/core/session/dic_traverse_session.h"
 
 #include "defines.h"
+#include "dictionary/interface/dictionary_header_structure_policy.h"
+#include "dictionary/interface/dictionary_structure_with_buffer_policy.h"
+#include "dictionary/property/ngram_context.h"
 #include "suggest/core/dictionary/dictionary.h"
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
-#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "suggest/core/session/ngram_context.h"
 
 namespace latinime {
 

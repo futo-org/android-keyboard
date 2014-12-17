@@ -19,9 +19,9 @@
 #include "com_android_inputmethod_latin_BinaryDictionaryUtils.h"
 
 #include "defines.h"
+#include "dictionary/utils/dict_file_writing_utils.h"
 #include "jni.h"
 #include "jni_common.h"
-#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/autocorrection_threshold_utils.h"
 #include "utils/char_utils.h"
 #include "utils/jni_data_utils.h"

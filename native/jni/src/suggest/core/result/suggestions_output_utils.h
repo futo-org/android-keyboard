@@ -18,7 +18,7 @@
 #define LATINIME_SUGGESTIONS_OUTPUT_UTILS
 
 #include "defines.h"
-#include "suggest/core/dictionary/word_attributes.h"
+#include "dictionary/property/word_attributes.h"
 
 namespace latinime {
 
