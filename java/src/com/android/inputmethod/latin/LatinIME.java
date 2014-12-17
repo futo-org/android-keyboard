@@ -636,7 +636,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 true /* allowsImplicitlySelectedSubtypes */));
         refreshPersonalizationDictionarySession(currentSettingsValues);
         resetDictionaryFacilitatorIfNecessary();
-        mStatsUtilsManager.onLoadSettings(this /* context */, currentSettingsValues);
+        mStatsUtilsManager.onLoadSettings(this /* context */, currentSettingsValues,
+                mDictionaryFacilitator);
     }
 
     private void refreshPersonalizationDictionarySession(

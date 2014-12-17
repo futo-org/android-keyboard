@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.utils;
 
 import android.content.Context;
 
+import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.settings.SettingsValues;
 
 @SuppressWarnings("unused")
@@ -36,7 +37,8 @@ public class StatsUtilsManager {
     public void onCreate(final Context context) {
     }
 
-    public void onLoadSettings(final Context context, final SettingsValues settingsValues) {
+    public void onLoadSettings(final Context context, final SettingsValues settingsValues,
+            final DictionaryFacilitator dictionaryFacilitator) {
     }
 
     public void onStartInputView() {
