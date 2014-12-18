@@ -36,7 +36,7 @@ public class StatsUtilsManager {
     public void onCreate(final Context context) {
     }
 
-    public void onLoadSettings(final SettingsValues settingsValues) {
+    public void onLoadSettings(final Context context, final SettingsValues settingsValues) {
     }
 
     public void onStartInputView() {
@@ -45,6 +45,6 @@ public class StatsUtilsManager {
     public void onFinishInputView() {
     }
 
-    public void onDestroy() {
+    public void onDestroy(final Context context) {
     }
 }

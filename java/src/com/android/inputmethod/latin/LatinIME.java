@@ -635,8 +635,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
                 true /* allowsImplicitlySelectedSubtypes */));
         refreshPersonalizationDictionarySession(currentSettingsValues);
-        mStatsUtilsManager.onLoadSettings(currentSettingsValues);
         resetDictionaryFacilitatorIfNecessary();
+        mStatsUtilsManager.onLoadSettings(this /* context */, currentSettingsValues);
     }
 
     private void refreshPersonalizationDictionarySession(
@@ -736,7 +736,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         unregisterReceiver(mRingerModeChangeReceiver);
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
-        mStatsUtilsManager.onDestroy();
+        mStatsUtilsManager.onDestroy(this /* context */);
         DictionaryDecayBroadcastReciever.cancelIntervalAlarmForDictionaryDecaying(this);
         super.onDestroy();
     }
