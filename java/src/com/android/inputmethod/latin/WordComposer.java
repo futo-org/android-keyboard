@@ -231,8 +231,6 @@ public final class WordComposer {
      * @return true if the cursor is still inside the composing word, false otherwise.
      */
     public boolean moveCursorByAndReturnIfInsideComposingWord(final int expectedMoveAmount) {
-        // TODO: should uncommit the composing feedback
-        mCombinerChain.reset();
         int actualMoveAmountWithinWord = 0;
         int cursorPos = mCursorPositionWithinWord;
         // TODO: Don't make that copy. We can do this directly from mTypedWordCache.
@@ -256,6 +254,8 @@ public final class WordComposer {
         // so the result would not be inside the composing word.
         if (actualMoveAmountWithinWord != expectedMoveAmount) return false;
         mCursorPositionWithinWord = cursorPos;
+        mCombinerChain.applyProcessedEvent(mCombinerChain.processEvent(mEvents,
+                Event.createCursorMovedEvent(cursorPos)));
         return true;
     }
 
