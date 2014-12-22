@@ -36,7 +36,7 @@
     <string name="settings_screen_theme" msgid="2137262503543943871">"主題背景"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"啟用分離式鍵盤"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"刪除您來自 Google 的同步處理資料"</string>
-    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"您的同步處理資料將被刪除，確定嗎？"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"您的同步處理資料將被刪除，要確定嗎？"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"刪除"</string>
     <string name="clear_sync_data_cancel" msgid="8543925137765830060">"取消"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切換至其他輸入法"</string>
