@@ -84,7 +84,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             removePreference(PREF_SYNC_NOW);
             removePreference(PREF_CLEAR_SYNC_DATA);
         }
-        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             removePreference(PREF_ENABLE_CLOUD_SYNC);
             removePreference(PREF_SYNC_NOW);
             removePreference(PREF_CLEAR_SYNC_DATA);
@@ -154,7 +154,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      * Enables the Sync preference UI and updates its summary.
      */
     private void enableSyncPreference() {
-        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             return;
         }
 
@@ -168,7 +168,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      * the fact that an account needs to be selected for sync.
      */
     private void disableSyncPreference() {
-        if (!ProductionFlags.ENABLE_PERSONAL_DICTIONARY_SYNC) {
+        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             return;
         }
 

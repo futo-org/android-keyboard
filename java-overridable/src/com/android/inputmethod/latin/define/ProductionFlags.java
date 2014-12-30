@@ -45,9 +45,10 @@ public final class ProductionFlags {
     public static final boolean ENABLE_ACCOUNT_SIGN_IN = false;
 
     /**
-     * When {@code true}, personal dictionary sync feature is ready to be enabled.
+     * When {@code true}, user history dictionary sync feature is ready to be enabled.
      */
-    public static final boolean ENABLE_PERSONAL_DICTIONARY_SYNC = ENABLE_ACCOUNT_SIGN_IN && false;
+    public static final boolean ENABLE_USER_HISTORY_DICTIONARY_SYNC =
+            ENABLE_ACCOUNT_SIGN_IN && false;
 
     /**
      * When {@code true}, the IME maintains per account {@link UserHistoryDictionary}.
