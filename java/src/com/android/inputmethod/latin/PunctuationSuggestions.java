@@ -23,6 +23,8 @@ import com.android.inputmethod.latin.common.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.annotation.Nullable;
+
 /**
  * The extended {@link SuggestedWords} class to represent punctuation suggestions.
  *
@@ -49,12 +51,16 @@ public final class PunctuationSuggestions extends SuggestedWords {
      * @return The {@link PunctuationSuggestions} object.
      */
     public static PunctuationSuggestions newPunctuationSuggestions(
-            final String[] punctuationSpecs) {
-        final ArrayList<SuggestedWordInfo> puncuationsList = new ArrayList<>();
-        for (final String puncSpec : punctuationSpecs) {
-            puncuationsList.add(newHardCodedWordInfo(puncSpec));
+            @Nullable final String[] punctuationSpecs) {
+        if (punctuationSpecs == null || punctuationSpecs.length == 0) {
+            return new PunctuationSuggestions(new ArrayList<SuggestedWordInfo>(0));
         }
-        return new PunctuationSuggestions(puncuationsList);
+        final ArrayList<SuggestedWordInfo> punctuationList =
+                new ArrayList<>(punctuationSpecs.length);
+        for (String spec : punctuationSpecs) {
+            punctuationList.add(newHardCodedWordInfo(spec));
+        }
+        return new PunctuationSuggestions(punctuationList);
     }
 
     /**
