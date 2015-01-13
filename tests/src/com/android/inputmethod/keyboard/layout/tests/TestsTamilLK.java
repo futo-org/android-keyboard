@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Symbols;
@@ -30,7 +30,7 @@ import java.util.Locale;
 /**
  * ta_LK: Tamil (Sri Lanka)/tamil
  */
-@SmallTest
+@Suppress
 public final class TestsTamilLK extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("ta", "LK");
     private static final LayoutBase LAYOUT = new Tamil(new TamilLKCustomizer(LOCALE));
