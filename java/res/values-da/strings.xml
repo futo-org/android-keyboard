@@ -78,8 +78,8 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Se ordforslag ved glidende indtastning"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Glidende mellemrum"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Tilføj mellemrum ved at glide til mellemrumstasten"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Knap til taleinput"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Der er ingen aktiverede stemmeinputmetoder. Kontrollér Indstillinger for sprog og input."</string>
+    <string name="voice_input" msgid="3583258583521397548">"Knap til indtaling"</string>
+    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Der er ingen aktiverede indtalingsmetoder. Kontrollér Indstillinger for sprog og input."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inputmetoder"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Sprog"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Hjælp og feedback"</string>
