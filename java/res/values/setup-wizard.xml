@@ -18,5 +18,4 @@
 */
 -->
 <resources>
-    <bool name="config_setup_wizard_available">false</bool>
 </resources>
