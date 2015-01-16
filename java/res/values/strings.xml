@@ -413,10 +413,6 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="setup_step3_action">Configure additional languages</string>
     <!-- The label of the button that finishes the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_finish_action">Finished</string>
-    <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
-    <string name="show_setup_wizard_icon">Show app icon</string>
-    <!-- Description for the option to show setup wizard application icon of this IME in the laucher. [CHAR_LIMIT=65] -->
-    <string name="show_setup_wizard_icon_summary">Display application icon in the launcher</string>
 
     <!-- The dictionary provider application name. Visible in Settings/Applications/Manage applications. -->
     <string name="app_name">Dictionary Provider</string>
