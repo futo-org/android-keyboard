@@ -23,12 +23,10 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.TwoStatePreference;
 
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.define.ProductionFlags;
-import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 
 /**
  * "Advanced" settings sub screen.
@@ -89,10 +87,6 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
                     Settings.readKeyPreviewPopupEnabled(prefs, res));
         }
 
-        if (!res.getBoolean(R.bool.config_setup_wizard_available)) {
-            removePreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
-        }
-
         // If metrics logging isn't supported, or account sign in is enabled
         // don't show the logging preference.
         // TODO: Eventually when we enable account sign in by default,
@@ -121,11 +115,6 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
     public void onResume() {
         super.onResume();
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        final TwoStatePreference showSetupWizardIcon =
-                (TwoStatePreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
-        if (showSetupWizardIcon != null) {
-            showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, getActivity()));
-        }
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
     }
 
@@ -135,8 +124,6 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
         if (key.equals(Settings.PREF_POPUP_ON)) {
             setPreferenceEnabled(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                     Settings.readKeyPreviewPopupEnabled(prefs, res));
-        } else if (key.equals(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
-            LauncherIconVisibilityManager.updateSetupWizardIconVisibility(getActivity());
         }
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
         refreshEnablingsOfKeypressSoundAndVibrationSettings();
