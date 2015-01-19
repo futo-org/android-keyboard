@@ -147,8 +147,6 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"अब तपाईँ <xliff:g id="APPLICATION_NAME">%s</xliff:g>का साथ तपाईँका सम्पूर्ण मनपर्ने अनुप्रयोगहरू टाइप गर्न सक्नुहुन्छ।"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"थप भाषाहरू कन्फिगर गर्नुहोस्"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त भयो"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"अनुप्रयोग आइकन देखाउनुहोस्"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लन्चरमा अनुप्रयोग आइकन देखाउनुहोस्"</string>
     <string name="app_name" msgid="6320102637491234792">"शब्दकोश प्रदायक"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"शब्दकोश प्रदायक"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"शब्दकोश सेवा"</string>

@@ -147,8 +147,6 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Πλέον μπορείτε να πληκτρολογήσετε όλες τις αγαπημένες σας εφαρμογές με το <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Διαμόρφωση πρόσθετων γλωσσών"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Ολοκληρώθηκε"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Εμφάνιση εικονιδίου εφαρμογής"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Εμφάνιση εικονιδίου εφαρμογής στο πρόγραμμα εκκίνησης"</string>
     <string name="app_name" msgid="6320102637491234792">"Παροχέας λεξικού"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Παροχέας λεξικού"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Υπηρεσία λεξικού"</string>

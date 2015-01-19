@@ -147,8 +147,6 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"এখন <xliff:g id="APPLICATION_NAME">%s</xliff:g> এর সাহায্যে আপনার সব পছন্দসই অ্যাপ্লিকেশানে লিখতে পারবেন।"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"অতিরিক্ত ভাষাগুলি কনফিগার করুন"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"শেষ হয়েছে"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"অ্যাপ্লিকেশান আইকন দেখান"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"লঞ্চারে অ্যাপ্লিকেশান আইকন প্রদর্শন"</string>
     <string name="app_name" msgid="6320102637491234792">"অভিধান প্রদানকারী"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"অভিধান প্রদানকারী"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"অভিধান পরিষেবা"</string>
