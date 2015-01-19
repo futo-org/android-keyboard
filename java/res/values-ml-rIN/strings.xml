@@ -147,8 +147,6 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ഉപയോഗിച്ച് നിങ്ങളുടെ പ്രിയപ്പെട്ട എല്ലാ അപ്ലിക്കേഷനുകളിലും ഇപ്പോൾ ടൈപ്പുചെയ്യാനാകും."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"കൂടുതൽ ഭാഷകൾ കോൺഫിഗർ ചെയ്യുക"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"പൂർത്തിയായി"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"അപ്ലിക്കേഷൻ ഐക്കൺ കാണിക്കുക"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"ലോഞ്ചറിൽ അപ്ലിക്കേഷൻ ഐക്കൺ പ്രദർശിപ്പിക്കുക"</string>
     <string name="app_name" msgid="6320102637491234792">"നിഘണ്ടു ദാതാവ്"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"നിഘണ്ടു ദാതാവ്"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"നിഘണ്ടു സേവനം"</string>

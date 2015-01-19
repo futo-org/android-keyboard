@@ -147,8 +147,6 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Gogokoen dituzun aplikazioetan idatz dezakezu dagoeneko <xliff:g id="APPLICATION_NAME">%s</xliff:g> erabilita."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Konfiguratu hizkuntza gehigarriak"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Amaituta"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Erakutsi aplikazioaren ikonoa"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Bistaratu aplikazioaren ikonoa abiarazlean"</string>
     <string name="app_name" msgid="6320102637491234792">"Hiztegi-hornitzailea"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Hiztegi-hornitzailea"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Hiztegi-zerbitzua"</string>
