@@ -61,7 +61,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Основний словник"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показувати пропозиції виправлень"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Відображати пропоновані слова під час вводу"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Блокувати образливі слова"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Блокувати нецензурні слова"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Не пропонувати потенційно образливі слова"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Автовиправлення"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Пробіл і пунктуація автоматично виправляють слова з помилками"</string>
@@ -147,8 +147,6 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Тепер ви можете вводити текст у всіх своїх улюблених програмах за допомогою <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Налаштувати додаткові мови"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Завершено"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Показувати піктограму програми"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Відображати піктограму програми на панелі запуску"</string>
     <string name="app_name" msgid="6320102637491234792">"Постачальник словника"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Постачальник словника"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Служба словника"</string>

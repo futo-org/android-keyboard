@@ -78,8 +78,8 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Se ordforslag ved glidende indtastning"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Glidende mellemrum"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Tilføj mellemrum ved at glide til mellemrumstasten"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Knap til taleinput"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Der er ingen aktiverede stemmeinputmetoder. Kontrollér Indstillinger for sprog og input."</string>
+    <string name="voice_input" msgid="3583258583521397548">"Knap til indtaling"</string>
+    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Der er ingen aktiverede indtalingsmetoder. Kontrollér Indstillinger for sprog og input."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inputmetoder"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Sprog"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Hjælp og feedback"</string>
@@ -147,8 +147,6 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Nu kan du skrive i alle dine favoritapps med <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Konfigurer flere sprog"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Afslut"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Vis appikon"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Vis appikon på applisten"</string>
     <string name="app_name" msgid="6320102637491234792">"Dictionary Provider"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Dictionary Provider"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Ordbogstjeneste"</string>
