@@ -53,7 +53,7 @@
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Kişisel öneriler"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını iyileştir"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Çift boşlukla nokta ekleme"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Boşluk çubuğuna iki kez vurmak nokta ve ardından bir boşluk ekler"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Boşluk çubuğuna iki kez dokunmak nokta ve ardından bir boşluk ekler"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük harf yap"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Her cümlenin ilk kelimesini büyük harf yap"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Kişisel sözlük"</string>
