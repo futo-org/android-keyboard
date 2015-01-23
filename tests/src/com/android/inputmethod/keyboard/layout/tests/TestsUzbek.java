@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.Suppress;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Uzbek;
@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * uz_UZ: Uzbek (Uzbekistan)/uzbek
  */
-@Suppress
+@SmallTest
 public final class TestsUzbek extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("uz", "UZ");
     private static final LayoutBase LAYOUT = new Uzbek(new UzbekCustomizer(LOCALE));
