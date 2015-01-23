@@ -83,4 +83,7 @@ public final class StatsUtils {
 
     public static void onLoadSettings(SettingsValues settingsValues) {
     }
+
+    public static void onInvalidWordIdentification(final String invalidWord) {
+    }
 }
