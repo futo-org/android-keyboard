@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
+import com.android.inputmethod.latin.DictionaryFacilitatorProvider;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
 import android.test.AndroidTestCase;
@@ -40,7 +41,8 @@ public class ContextualDictionaryTests extends AndroidTestCase {
     private DictionaryFacilitator getDictionaryFacilitator() {
         final ArrayList<String> dictTypes = new ArrayList<>();
         dictTypes.add(Dictionary.TYPE_CONTEXTUAL);
-        final DictionaryFacilitator dictionaryFacilitator = new DictionaryFacilitator();
+        final DictionaryFacilitator dictionaryFacilitator =
+            DictionaryFacilitatorProvider.newDictionaryFacilitator();
         dictionaryFacilitator.resetDictionariesForTesting(getContext(),
                 new Locale[] { LOCALE_EN_US }, dictTypes, new HashMap<String, File>(),
                 Collections.<String, Map<String, String>>emptyMap(), null /* account */);

@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
+import com.android.inputmethod.latin.DictionaryFacilitatorProvider;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary.UpdateEntriesForInputEventsCallback;
@@ -55,7 +56,8 @@ public class PersonalizationDictionaryTests extends AndroidTestCase {
         final ArrayList<String> dictTypes = new ArrayList<>();
         dictTypes.add(Dictionary.TYPE_MAIN);
         dictTypes.add(Dictionary.TYPE_PERSONALIZATION);
-        final DictionaryFacilitator dictionaryFacilitator = new DictionaryFacilitator(getContext());
+        final DictionaryFacilitator dictionaryFacilitator =
+                DictionaryFacilitatorProvider.newDictionaryFacilitator(getContext());
         dictionaryFacilitator.resetDictionariesForTesting(getContext(),
                 new Locale[] { LOCALE_EN_US }, dictTypes, new HashMap<String, File>(),
                 Collections.<String, Map<String, String>>emptyMap(), null /* account */);

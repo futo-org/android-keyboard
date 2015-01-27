@@ -28,7 +28,7 @@ import android.preference.PreferenceGroup;
 import android.preference.TwoStatePreference;
 
 import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
-import com.android.inputmethod.latin.DictionaryFacilitator;
+import com.android.inputmethod.latin.DictionaryFacilitatorImpl;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.debug.ExternalDictionaryGetterForDebug;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
@@ -67,7 +67,7 @@ public final class DebugSettingsFragment extends SubScreenFragment
 
         final PreferenceGroup dictDumpPreferenceGroup =
                 (PreferenceGroup)findPreference(PREF_KEY_DUMP_DICTS);
-        for (final String dictName : DictionaryFacilitator.DICT_TYPE_TO_CLASS.keySet()) {
+        for (final String dictName : DictionaryFacilitatorImpl.DICT_TYPE_TO_CLASS.keySet()) {
             final Preference pref = new DictDumpPreference(getActivity(), dictName);
             pref.setOnPreferenceClickListener(this);
             dictDumpPreferenceGroup.addPreference(pref);
