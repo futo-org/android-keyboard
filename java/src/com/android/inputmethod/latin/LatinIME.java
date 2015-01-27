@@ -139,8 +139,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final String SCHEME_PACKAGE = "package";
 
     final Settings mSettings;
-    private final DictionaryFacilitator mDictionaryFacilitator =
-            new DictionaryFacilitator(this /* context */);
+  private final DictionaryFacilitator mDictionaryFacilitator =
+      DictionaryFacilitatorProvider.newDictionaryFacilitator(this /* context */);
     // TODO: Move from LatinIME.
     private final PersonalizationDictionaryUpdater mPersonalizationDictionaryUpdater =
             new PersonalizationDictionaryUpdater(this /* context */, mDictionaryFacilitator);

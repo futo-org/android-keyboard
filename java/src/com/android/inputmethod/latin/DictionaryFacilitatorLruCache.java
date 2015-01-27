@@ -136,7 +136,7 @@ public class DictionaryFacilitatorLruCache {
             if (dictionaryFacilitator != null) {
                 return dictionaryFacilitator;
             }
-            dictionaryFacilitator = new DictionaryFacilitator();
+            dictionaryFacilitator = DictionaryFacilitatorProvider.newDictionaryFacilitator();
             resetDictionariesForLocaleLocked(dictionaryFacilitator, locale);
             waitForLoadingMainDictionary(dictionaryFacilitator);
             mLruCache.put(locale, dictionaryFacilitator);
