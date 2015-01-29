@@ -63,7 +63,7 @@
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"telefón"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"text"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"čas"</string>
-    <string name="keyboard_mode_url" msgid="8072011652949962550">"Adresa URL"</string>
+    <string name="keyboard_mode_url" msgid="8072011652949962550">"Webová adresa"</string>
     <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Nedávne"</string>
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"Ľudia"</string>
     <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"Predmety"</string>
