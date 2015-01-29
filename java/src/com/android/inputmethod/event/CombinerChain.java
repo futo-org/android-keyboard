@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import com.android.inputmethod.latin.common.Constants;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.annotation.Nonnull;
 
@@ -45,13 +44,6 @@ public class CombinerChain {
     private SpannableStringBuilder mStateFeedback;
     private final ArrayList<Combiner> mCombiners;
 
-    private static final HashMap<String, Class<? extends Combiner>> IMPLEMENTED_COMBINERS =
-            new HashMap<>();
-    static {
-        IMPLEMENTED_COMBINERS.put("MyanmarReordering", MyanmarReordering.class);
-    }
-    private static final String COMBINER_SPEC_SEPARATOR = ";";
-
     /**
      * Create an combiner chain.
      *
@@ -61,15 +53,11 @@ public class CombinerChain {
      * cursor: we'll start after this.
      *
      * @param initialText The text that has already been combined so far.
-     * @param combinerList A list of combiners to be applied in order.
      */
-    public CombinerChain(final String initialText, final Combiner... combinerList) {
+    public CombinerChain(final String initialText) {
         mCombiners = new ArrayList<>();
         // The dead key combiner is always active, and always first
         mCombiners.add(new DeadKeyCombiner());
-        for (final Combiner combiner : combinerList) {
-            mCombiners.add(combiner);
-        }
         mCombinedText = new StringBuilder(initialText);
         mStateFeedback = new SpannableStringBuilder();
     }
@@ -145,31 +133,5 @@ public class CombinerChain {
     public CharSequence getComposingWordWithCombiningFeedback() {
         final SpannableStringBuilder s = new SpannableStringBuilder(mCombinedText);
         return s.append(mStateFeedback);
-    }
-
-    public static Combiner[] createCombiners(final String spec) {
-        if (TextUtils.isEmpty(spec)) {
-            return new Combiner[0];
-        }
-        final String[] combinerDescriptors = spec.split(COMBINER_SPEC_SEPARATOR);
-        final Combiner[] combiners = new Combiner[combinerDescriptors.length];
-        int i = 0;
-        for (final String combinerDescriptor : combinerDescriptors) {
-            final Class<? extends Combiner> combinerClass =
-                    IMPLEMENTED_COMBINERS.get(combinerDescriptor);
-            if (null == combinerClass) {
-                throw new RuntimeException("Unknown combiner descriptor: " + combinerDescriptor);
-            }
-            try {
-                combiners[i++] = combinerClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Unable to instantiate combiner: " + combinerDescriptor,
-                        e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Unable to instantiate combiner: " + combinerDescriptor,
-                        e);
-            }
-        }
-        return combiners;
     }
 }
