@@ -57,7 +57,7 @@
     <string name="announce_keyboard_mode" msgid="6698257917367823205">"מציג מקלדת <xliff:g id="KEYBOARD_MODE">%s</xliff:g>"</string>
     <string name="keyboard_mode_date" msgid="6597407244976713364">"תאריך"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"תאריך ושעה"</string>
-    <string name="keyboard_mode_email" msgid="1239682082047693644">"דוא\"ל"</string>
+    <string name="keyboard_mode_email" msgid="1239682082047693644">"אימייל"</string>
     <string name="keyboard_mode_im" msgid="3812086215529493501">"העברת הודעות"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"מספרים"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"מספרי טלפון"</string>
