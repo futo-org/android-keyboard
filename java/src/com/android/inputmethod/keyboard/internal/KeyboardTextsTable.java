@@ -2781,41 +2781,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_0 */ "0",
     };
 
-    /* Locale my_MM: Burmese (Myanmar) */
-    private static final String[] TEXTS_my_MM = {
-        /* morekeys_a ~ */
-        null, null, null, null,
-        /* ~ morekeys_u */
-        // Label for "switch to alphabetic" key.
-        // U+1000: "က" MYANMAR LETTER KA
-        // U+1001: "ခ" MYANMAR LETTER KHA
-        // U+1002: "ဂ" MYANMAR LETTER GA
-        /* keylabel_to_alpha */ "\u1000\u1001\u1002",
-        /* morekeys_i ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null,
-        /* ~ morekeys_nordic_row2_11 */
-        /* morekeys_punctuation */ "!autoColumnOrder!9,\u104A,.,?,!,#,),(,/,;,...,',@,:,-,\",+,\\%,&",
-        // U+104A: "၊" MYANMAR SIGN LITTLE SECTION
-        // U+104B: "။" MYANMAR SIGN SECTION
-        /* keyspec_tablet_comma */ "\u104A",
-        /* keyspec_period */ "\u104B",
-        /* morekeys_period */ null,
-        /* keyspec_tablet_period */ "\u104B",
-        /* keyspec_swiss_row1_11 ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null,
-        /* ~ keyspec_comma */
-        /* morekeys_tablet_comma */ "\\,",
-        /* keyhintlabel_period */ "\u104A",
-        /* morekeys_question ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null,
-        /* ~ keyspec_south_slavic_row3_8 */
-        /* morekeys_tablet_punctuation */ "!autoColumnOrder!8,.,',#,),(,/,;,@,...,:,-,\",+,\\%,&",
-    };
-
     /* Locale nb: Norwegian Bokmål */
     private static final String[] TEXTS_nb = {
         // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
@@ -4189,7 +4154,6 @@ public final class KeyboardTextsTable {
         "ml_IN"  , TEXTS_ml_IN, /*   2/ 12 Malayalam (India) */
         "mn_MN"  , TEXTS_mn_MN, /*   2/ 12 Mongolian (Mongolia) */
         "mr_IN"  , TEXTS_mr_IN, /*  23/ 53 Marathi (India) */
-        "my_MM"  , TEXTS_my_MM, /*   8/ 98 Burmese (Myanmar) */
         "nb"     , TEXTS_nb,    /*  11/ 55 Norwegian Bokmål */
         "ne_NP"  , TEXTS_ne_NP, /*  27/ 60 Nepali (Nepal) */
         "nl"     , TEXTS_nl,    /*   9/ 13 Dutch */
