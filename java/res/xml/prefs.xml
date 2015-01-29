@@ -31,10 +31,6 @@
         android:title="@string/settings_screen_appearance"
         android:key="screen_appearance" />
     <PreferenceScreen
-        android:fragment="com.android.inputmethod.latin.settings.MultiLingualSettingsFragment"
-        android:title="@string/settings_screen_multilingual"
-        android:key="screen_multilingual" />
-    <PreferenceScreen
         android:fragment="com.android.inputmethod.latin.settings.GestureSettingsFragment"
         android:title="@string/settings_screen_gesture"
         android:key="screen_gesture" />

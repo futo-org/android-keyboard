@@ -2204,8 +2204,7 @@ public final class InputLogic {
                         mWordComposer.isComposingWord() ? 2 : 1),
                 proximityInfo,
                 new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive,
-                        settingsValues.mPhraseGestureEnabled,
-                        settingsValues.mAdditionalFeaturesSettingValues),
+                        settingsValues.mPhraseGestureEnabled),
                 settingsValues.mAutoCorrectionEnabledPerUserSettings,
                 inputStyle, sequenceNumber, callback);
     }

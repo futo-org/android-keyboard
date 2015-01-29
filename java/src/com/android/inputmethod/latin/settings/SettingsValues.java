@@ -102,10 +102,6 @@ public class SettingsValues {
     private final boolean mSuggestionsEnabledPerUserSettings;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
-    // Setting values for additional features
-    public final int[] mAdditionalFeaturesSettingValues =
-            new int[AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE];
-
     // TextDecorator
     public final int mTextHighlightColorForAddToDictionaryIndicator;
 
@@ -187,8 +183,6 @@ public class SettingsValues {
         mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
                 && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
-        AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(context,
-                prefs, mAdditionalFeaturesSettingValues);
         mTextHighlightColorForAddToDictionaryIndicator = res.getColor(
                 R.color.text_decorator_add_to_dictionary_indicator_text_highlight_color);
         mIsInternal = Settings.isInternal(prefs);
@@ -437,8 +431,6 @@ public class SettingsValues {
         sb.append("\n   mAppWorkarounds = ");
         final AppWorkaroundsUtils awu = mAppWorkarounds.get(null, 0);
         sb.append("" + (null == awu ? "null" : awu.toString()));
-        sb.append("\n   mAdditionalFeaturesSettingValues = ");
-        sb.append("" + Arrays.toString(mAdditionalFeaturesSettingValues));
         sb.append("\n   mTextHighlightColorForAddToDictionaryIndicator = ");
         sb.append("" + mTextHighlightColorForAddToDictionaryIndicator);
         sb.append("\n   mIsInternal = ");

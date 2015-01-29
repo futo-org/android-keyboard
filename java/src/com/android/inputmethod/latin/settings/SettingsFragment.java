@@ -48,15 +48,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         preferenceScreen.setTitle(
                 ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
-        if (!Settings.SHOW_MULTILINGUAL_SETTINGS) {
-            final Preference multilingualOptions = findPreference(Settings.SCREEN_MULTILINGUAL);
-            preferenceScreen.removePreference(multilingualOptions);
-        }
         if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
             final Preference accountsPreference = findPreference(Settings.SCREEN_ACCOUNTS);
             preferenceScreen.removePreference(accountsPreference);
         }
-        AdditionalFeaturesSettingUtils.addAdditionalFeaturesPreferences(getActivity(), this);
     }
 
     @Override
