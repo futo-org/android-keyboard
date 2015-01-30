@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.NativeSuggestOptions;
-import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 
 import java.util.Locale;
@@ -44,8 +43,7 @@ public final class DicTraverseSession {
     public final int[] mOutputAutoCommitFirstWordConfidence = new int[1];
     public final float[] mInputOutputWeightOfLangModelVsSpatialModel = new float[1];
 
-    public final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions(
-            AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE);
+    public final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions();
 
     private static native long setDicTraverseSessionNative(String locale, long dictSize);
     private static native void initDicTraverseSessionNative(long nativeDicTraverseSession,

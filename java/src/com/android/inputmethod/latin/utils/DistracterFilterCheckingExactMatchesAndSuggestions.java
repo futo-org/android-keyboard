@@ -238,8 +238,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         }
         final SettingsValuesForSuggestion settingsValuesForSuggestion =
                 new SettingsValuesForSuggestion(false /* blockPotentiallyOffensive */,
-                        false /* spaceAwareGestureEnabled */,
-                        null /* additionalFeaturesSettingValues */);
+                        false /* spaceAwareGestureEnabled */);
         final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(testedWord);
         final String consideredWord = trailingSingleQuotesCount > 0 ?
                 testedWord.substring(0, testedWord.length() - trailingSingleQuotesCount) :

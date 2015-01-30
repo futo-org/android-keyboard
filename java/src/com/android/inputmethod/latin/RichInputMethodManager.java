@@ -33,7 +33,6 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
@@ -324,22 +323,6 @@ public class RichInputMethodManager {
         return INDEX_NOT_FOUND;
     }
 
-    public boolean checkIfSubtypeBelongsToThisIme(final InputMethodSubtype subtype) {
-        return getSubtypeIndexInIme(subtype, getInputMethodInfoOfThisIme()) != INDEX_NOT_FOUND;
-    }
-
-    private static int getSubtypeIndexInIme(final InputMethodSubtype subtype,
-            final InputMethodInfo imi) {
-        final int count = imi.getSubtypeCount();
-        for (int index = 0; index < count; index++) {
-            final InputMethodSubtype ims = imi.getSubtypeAt(index);
-            if (ims.equals(subtype)) {
-                return index;
-            }
-        }
-        return INDEX_NOT_FOUND;
-    }
-
     public void onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
         updateCurrentSubtype(newSubtype);
         updateShortcutIme();
@@ -416,7 +399,6 @@ public class RichInputMethodManager {
             // subtypes should be counted as well.
             if (nonAuxCount > 0 || (shouldIncludeAuxiliarySubtypes && auxCount > 1)) {
                 ++filteredImisCount;
-                continue;
             }
         }
 

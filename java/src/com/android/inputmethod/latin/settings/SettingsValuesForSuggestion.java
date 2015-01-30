@@ -19,12 +19,10 @@ package com.android.inputmethod.latin.settings;
 public class SettingsValuesForSuggestion {
     public final boolean mBlockPotentiallyOffensive;
     public final boolean mSpaceAwareGestureEnabled;
-    public final int[] mAdditionalFeaturesSettingValues;
 
     public SettingsValuesForSuggestion(final boolean blockPotentiallyOffensive,
-            final boolean spaceAwareGestureEnabled, final int[] additionalFeaturesSettingValues) {
+            final boolean spaceAwareGestureEnabled) {
         mBlockPotentiallyOffensive = blockPotentiallyOffensive;
         mSpaceAwareGestureEnabled = spaceAwareGestureEnabled;
-        mAdditionalFeaturesSettingValues = additionalFeaturesSettingValues;
     }
 }

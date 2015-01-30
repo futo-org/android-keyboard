@@ -44,14 +44,8 @@ import javax.annotation.Nonnull;
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Settings.class.getSimpleName();
     // Settings screens
-    public static final String SCREEN_PREFERENCES = "screen_preferences";
     public static final String SCREEN_ACCOUNTS = "screen_accounts";
-    public static final String SCREEN_APPEARANCE = "screen_appearance";
     public static final String SCREEN_THEME = "screen_theme";
-    public static final String SCREEN_MULTILINGUAL = "screen_multilingual";
-    public static final String SCREEN_GESTURE = "screen_gesture";
-    public static final String SCREEN_CORRECTION = "screen_correction";
-    public static final String SCREEN_ADVANCED = "screen_advanced";
     public static final String SCREEN_DEBUG = "screen_debug";
     // In the same order as xml/prefs.xml
     public static final String PREF_AUTO_CAP = "auto_cap";
@@ -73,9 +67,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_key_use_double_space_period";
     public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =
             "pref_key_block_potentially_offensive";
-    // No multilingual options in Android L and above for now.
-    public static final boolean SHOW_MULTILINGUAL_SETTINGS =
-            BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
     public static final boolean ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS =
             BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
     public static final boolean SHOULD_SHOW_LXX_SUGGESTION_UI =
@@ -84,7 +75,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_show_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
-    public static final String PREF_KEYBOARD_THEME = "pref_keyboard_theme";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
     public static final String PREF_ENABLE_SPLIT_KEYBOARD = "pref_split_keyboard";
     // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
@@ -103,8 +93,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_gesture_floating_preview_text";
     public static final String PREF_PHRASE_GESTURE_ENABLED = "pref_gesture_space_aware";
 
-    public static final String PREF_INPUT_LANGUAGE = "input_language";
-    public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
 
     public static final String PREF_ENABLE_METRICS_LOGGING = "pref_enable_metrics_logging";
@@ -201,14 +189,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public boolean isInternal() {
         return mSettingsValues.mIsInternal;
-    }
-
-    public boolean isWordSeparator(final int code) {
-        return mSettingsValues.isWordSeparator(code);
-    }
-
-    public boolean getBlockPotentiallyOffensive() {
-        return mSettingsValues.mBlockPotentiallyOffensive;
     }
 
     public static int readScreenMetrics(final Resources res) {

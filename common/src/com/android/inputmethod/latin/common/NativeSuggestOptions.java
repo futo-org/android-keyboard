@@ -27,8 +27,8 @@ public class NativeSuggestOptions {
 
     private final int[] mOptions;
 
-    public NativeSuggestOptions(final int additionalFeaturesSettingsSize) {
-        mOptions = new int[OPTIONS_SIZE + additionalFeaturesSettingsSize];
+    public NativeSuggestOptions() {
+        mOptions = new int[OPTIONS_SIZE];
     }
 
     public void setIsGesture(final boolean value) {
@@ -51,15 +51,6 @@ public class NativeSuggestOptions {
         // We're passing this option as a fixed point value, in thousands. This is decoded in
         // native code by SuggestOptions#weightForLocale().
         setIntegerOption(WEIGHT_FOR_LOCALE_IN_THOUSANDS, (int) (value * 1000));
-    }
-
-    public void setAdditionalFeaturesOptions(final int[] additionalOptions) {
-        if (additionalOptions == null) {
-            return;
-        }
-        for (int i = 0; i < additionalOptions.length; i++) {
-            setIntegerOption(OPTIONS_SIZE + i, additionalOptions[i]);
-        }
     }
 
     public int[] getOptions() {
