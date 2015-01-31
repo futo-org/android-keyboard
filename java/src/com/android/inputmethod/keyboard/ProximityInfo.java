@@ -95,7 +95,7 @@ public class ProximityInfo {
 
     private static native void releaseProximityInfoNative(long nativeProximityInfo);
 
-    private static boolean needsProximityInfo(final Key key) {
+    static boolean needsProximityInfo(final Key key) {
         // Don't include special keys into ProximityInfo.
         return key.getCode() >= Constants.CODE_SPACE;
     }

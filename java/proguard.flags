@@ -22,3 +22,7 @@
 -keep class com.android.inputmethod.latin.NgramContext
 -keep class com.android.inputmethod.latin.makedict.ProbabilityInfo
 -keep class com.android.inputmethod.latin.utils.LanguageModelParam
+
+# TODO: remove once used in code.
+-keep class com.android.inputmethod.keyboard.KeyboardLayout { *; }
+
