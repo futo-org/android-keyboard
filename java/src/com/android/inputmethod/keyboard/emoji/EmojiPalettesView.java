@@ -21,8 +21,6 @@ import static com.android.inputmethod.latin.common.Constants.NOT_A_COORDINATE;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -52,8 +50,6 @@ import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * View class to implement Emoji palettes.
  * The Emoji keyboard consists of group of views layout/emoji_palettes_view.
@@ -75,7 +71,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private final int mCategoryIndicatorBackgroundResId;
     private final int mCategoryPageIndicatorColor;
     private final int mCategoryPageIndicatorBackground;
-    private final DeleteKeyOnTouchListener mDeleteKeyOnTouchListener;
     private EmojiPalettesAdapter mEmojiPalettesAdapter;
     private final EmojiLayoutParams mEmojiLayoutParams;
 
@@ -132,7 +127,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mCategoryPageIndicatorBackground = emojiPalettesViewAttr.getColor(
                 R.styleable.EmojiPalettesView_categoryPageIndicatorBackground, 0);
         emojiPalettesViewAttr.recycle();
-        mDeleteKeyOnTouchListener = new DeleteKeyOnTouchListener(context);
     }
 
     @Override
@@ -203,7 +197,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mDeleteKey = (ImageButton)findViewById(R.id.emoji_keyboard_delete);
         mDeleteKey.setBackgroundResource(mFunctionalKeyBackgroundId);
         mDeleteKey.setTag(Constants.CODE_DELETE);
-        mDeleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
+        mDeleteKey.setOnTouchListener(this);
 
         // {@link #mAlphabetKeyLeft}, {@link #mAlphabetKeyRight, and spaceKey depend on
         // {@link View.OnClickListener} as well as {@link View.OnTouchListener}.
@@ -398,7 +392,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     public void setKeyboardActionListener(final KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
-        mDeleteKeyOnTouchListener.setKeyboardActionListener(mKeyboardActionListener);
     }
 
     private void updateEmojiCategoryPageIdView() {
@@ -432,129 +425,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
         if (force || mTabHost.getCurrentTab() != newTabId) {
             mTabHost.setCurrentTab(newTabId);
-        }
-    }
-
-    private static class DeleteKeyOnTouchListener implements OnTouchListener {
-        static final long MAX_REPEAT_COUNT_TIME = TimeUnit.SECONDS.toMillis(30);
-        final long mKeyRepeatStartTimeout;
-        final long mKeyRepeatInterval;
-
-        public DeleteKeyOnTouchListener(Context context) {
-            final Resources res = context.getResources();
-            mKeyRepeatStartTimeout = res.getInteger(R.integer.config_key_repeat_start_timeout);
-            mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
-            mTimer = new CountDownTimer(MAX_REPEAT_COUNT_TIME, mKeyRepeatInterval) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    final long elapsed = MAX_REPEAT_COUNT_TIME - millisUntilFinished;
-                    if (elapsed < mKeyRepeatStartTimeout) {
-                        return;
-                    }
-                    onKeyRepeat();
-                }
-                @Override
-                public void onFinish() {
-                    onKeyRepeat();
-                }
-            };
-        }
-
-        /** Key-repeat state. */
-        private static final int KEY_REPEAT_STATE_INITIALIZED = 0;
-        // The key is touched but auto key-repeat is not started yet.
-        private static final int KEY_REPEAT_STATE_KEY_DOWN = 1;
-        // At least one key-repeat event has already been triggered and the key is not released.
-        private static final int KEY_REPEAT_STATE_KEY_REPEAT = 2;
-
-        private KeyboardActionListener mKeyboardActionListener =
-                KeyboardActionListener.EMPTY_LISTENER;
-
-        // TODO: Do the same things done in PointerTracker
-        private final CountDownTimer mTimer;
-        private int mState = KEY_REPEAT_STATE_INITIALIZED;
-        private int mRepeatCount = 0;
-
-        public void setKeyboardActionListener(final KeyboardActionListener listener) {
-            mKeyboardActionListener = listener;
-        }
-
-        @Override
-        public boolean onTouch(final View v, final MotionEvent event) {
-            switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                onTouchDown(v);
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                final float x = event.getX();
-                final float y = event.getY();
-                if (x < 0.0f || v.getWidth() < x || y < 0.0f || v.getHeight() < y) {
-                    // Stop generating key events once the finger moves away from the view area.
-                    onTouchCanceled(v);
-                }
-                return true;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                onTouchUp(v);
-                return true;
-            }
-            return false;
-        }
-
-        private void handleKeyDown() {
-            mKeyboardActionListener.onPressKey(
-                    Constants.CODE_DELETE, mRepeatCount, true /* isSinglePointer */);
-        }
-
-        private void handleKeyUp() {
-            mKeyboardActionListener.onCodeInput(Constants.CODE_DELETE,
-                    NOT_A_COORDINATE, NOT_A_COORDINATE, false /* isKeyRepeat */);
-            mKeyboardActionListener.onReleaseKey(
-                    Constants.CODE_DELETE, false /* withSliding */);
-            ++mRepeatCount;
-        }
-
-        private void onTouchDown(final View v) {
-            mTimer.cancel();
-            mRepeatCount = 0;
-            handleKeyDown();
-            v.setPressed(true /* pressed */);
-            mState = KEY_REPEAT_STATE_KEY_DOWN;
-            mTimer.start();
-        }
-
-        private void onTouchUp(final View v) {
-            mTimer.cancel();
-            if (mState == KEY_REPEAT_STATE_KEY_DOWN) {
-                handleKeyUp();
-            }
-            v.setPressed(false /* pressed */);
-            mState = KEY_REPEAT_STATE_INITIALIZED;
-        }
-
-        private void onTouchCanceled(final View v) {
-            mTimer.cancel();
-            v.setBackgroundColor(Color.TRANSPARENT);
-            mState = KEY_REPEAT_STATE_INITIALIZED;
-        }
-
-        // Called by {@link #mTimer} in the UI thread as an auto key-repeat signal.
-        void onKeyRepeat() {
-            switch (mState) {
-            case KEY_REPEAT_STATE_INITIALIZED:
-                // Basically this should not happen.
-                break;
-            case KEY_REPEAT_STATE_KEY_DOWN:
-                // Do not call {@link #handleKeyDown} here because it has already been called
-                // in {@link #onTouchDown}.
-                handleKeyUp();
-                mState = KEY_REPEAT_STATE_KEY_REPEAT;
-                break;
-            case KEY_REPEAT_STATE_KEY_REPEAT:
-                handleKeyDown();
-                handleKeyUp();
-                break;
-            }
         }
     }
 }
