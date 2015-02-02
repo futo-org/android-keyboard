@@ -173,7 +173,7 @@
     <string name="cancel_download_dict" msgid="7843340278507019303">"Չեղարկել"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ջնջել"</string>
     <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ձեր բջջային սարքում ընտրված լեզվով առկա է բառարան:<br/> Խորհուրդ ենք տալիս &lt;b&gt;ներբեռնել&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> բառարանը՝ ձեր մուտքագրման հմտությունների բարելավման համար:&lt;br/&gt; &lt;br/&gt; Ներբեռնումը կարող է խլել մեկ կամ երկու րոպե 3G-ի դեպքում: Հնարավոր է գանձում կատարվի, եթե դուք չունեք &lt;b&gt;տվյալների անսահմանափակ փաթեթ&lt;/b&gt;.&lt;br/&gt; Եթե դուք վստահ չեք, թե տվյալների որ փաթեթն ունեք, խորհուրդ ենք տալիս գտնել Wi-Fi կապ՝ ներբեռնումն ավտոմատ սկսելու համար:&lt;br/&gt; &lt;br/&gt; Հուշում. դուք կարող եք ներբեռնել և հեռացնել բառարաններ՝ անցնելով ձեր բջջային սարքի &lt;b&gt;Կարգավորումներ ցանկի Լեզու և մուտքագրում&lt;/b&gt; բաժինը:"</string>
-    <string name="download_over_metered" msgid="1643065851159409546">"Ներբեռնել հիմա (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>Մբ)"</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Ներբեռնել հիմա (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>ՄԲ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Ներբեռնել Wi-Fi-ով"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> լեզվի համար առկա է բառարան"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Սեղմեք՝ վերանայելու և ներբեռնելու համար"</string>
