@@ -102,9 +102,6 @@ public class SettingsValues {
     private final boolean mSuggestionsEnabledPerUserSettings;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
-    // TextDecorator
-    public final int mTextHighlightColorForAddToDictionaryIndicator;
-
     // Debug settings
     public final boolean mIsInternal;
     public final boolean mHasCustomKeyPreviewAnimationParams;
@@ -183,8 +180,6 @@ public class SettingsValues {
         mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
                 && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
-        mTextHighlightColorForAddToDictionaryIndicator = res.getColor(
-                R.color.text_decorator_add_to_dictionary_indicator_text_highlight_color);
         mIsInternal = Settings.isInternal(prefs);
         mHasCustomKeyPreviewAnimationParams = prefs.getBoolean(
                 DebugSettings.PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS, false);
@@ -431,8 +426,6 @@ public class SettingsValues {
         sb.append("\n   mAppWorkarounds = ");
         final AppWorkaroundsUtils awu = mAppWorkarounds.get(null, 0);
         sb.append("" + (null == awu ? "null" : awu.toString()));
-        sb.append("\n   mTextHighlightColorForAddToDictionaryIndicator = ");
-        sb.append("" + mTextHighlightColorForAddToDictionaryIndicator);
         sb.append("\n   mIsInternal = ");
         sb.append("" + mIsInternal);
         sb.append("\n   mKeyPreviewShowUpDuration = ");

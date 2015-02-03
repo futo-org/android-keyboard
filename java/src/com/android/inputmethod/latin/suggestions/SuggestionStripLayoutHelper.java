@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -50,7 +49,6 @@ import com.android.inputmethod.latin.PunctuationSuggestions;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -95,8 +93,6 @@ final class SuggestionStripLayoutHelper {
     private final int mTypedWordPositionWhenAutocorrect;
     private final Drawable mMoreSuggestionsHint;
     private static final String MORE_SUGGESTIONS_HINT = "\u2026";
-    private static final String LEFTWARDS_ARROW = "\u2190";
-    private static final String RIGHTWARDS_ARROW = "\u2192";
 
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
@@ -538,55 +534,6 @@ final class SuggestionStripLayoutHelper {
         }
         mMoreSuggestionsAvailable = (punctuationSuggestions.size() > countInStrip);
         return countInStrip;
-    }
-
-    public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip,
-            final boolean shouldShowWordToSave) {
-        final boolean showsHintWithWord = shouldShowWordToSave
-                || !Settings.getInstance().getCurrent().mShouldShowLxxSuggestionUi;
-        final int stripWidth = addToDictionaryStrip.getWidth();
-        final int width = stripWidth - (showsHintWithWord ? mDividerWidth + mPadding * 2 : 0);
-
-        final TextView wordView = (TextView)addToDictionaryStrip.findViewById(R.id.word_to_save);
-        wordView.setTextColor(mColorTypedWord);
-        final int wordWidth = (int)(width * mCenterSuggestionWeight);
-        final CharSequence wordToSave = getEllipsizedTextWithSettingScaleX(
-                word, wordWidth, wordView.getPaint());
-        final float wordScaleX = wordView.getTextScaleX();
-        wordView.setText(wordToSave);
-        wordView.setTextScaleX(wordScaleX);
-        setLayoutWeight(wordView, mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
-        final int wordVisibility = showsHintWithWord ? View.VISIBLE : View.GONE;
-        wordView.setVisibility(wordVisibility);
-        addToDictionaryStrip.findViewById(R.id.word_to_save_divider).setVisibility(wordVisibility);
-
-        final Resources res = addToDictionaryStrip.getResources();
-        final CharSequence hintText;
-        final int hintWidth;
-        final float hintWeight;
-        final TextView hintView = (TextView)addToDictionaryStrip.findViewById(
-                R.id.hint_add_to_dictionary);
-        if (showsHintWithWord) {
-            final boolean isRtlLanguage = (ViewCompat.getLayoutDirection(addToDictionaryStrip)
-                    == ViewCompat.LAYOUT_DIRECTION_RTL);
-            final String arrow = isRtlLanguage ? RIGHTWARDS_ARROW : LEFTWARDS_ARROW;
-            final boolean isRtlSystem = LocaleUtils.isRtlLanguage(res.getConfiguration().locale);
-            final CharSequence hint = res.getText(R.string.hint_add_to_dictionary);
-            hintText = (isRtlLanguage == isRtlSystem) ? (arrow + hint) : (hint + arrow);
-            hintWidth = width - wordWidth;
-            hintWeight = 1.0f - mCenterSuggestionWeight;
-            hintView.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
-        } else {
-            hintText = res.getText(R.string.hint_add_to_dictionary_without_word);
-            hintWidth = width;
-            hintWeight = 1.0f;
-            hintView.setGravity(Gravity.CENTER);
-        }
-        hintView.setTextColor(mColorAutoCorrect);
-        final float hintScaleX = getTextScaleX(hintText, hintWidth, hintView.getPaint());
-        hintView.setText(hintText); // TextView.setText() resets text scale x to 1.0.
-        hintView.setTextScaleX(hintScaleX);
-        setLayoutWeight(hintView, hintWeight, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     public void layoutImportantNotice(final View importantNoticeStrip,

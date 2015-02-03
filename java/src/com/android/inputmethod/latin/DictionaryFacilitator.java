@@ -124,10 +124,6 @@ public interface DictionaryFacilitator {
     void waitForLoadingDictionariesForTesting(final long timeout, final TimeUnit unit)
             throws InterruptedException;
 
-    boolean isUserDictionaryEnabled();
-
-    void addWordToUserDictionary(final Context context, final String word);
-
     void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
             @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
             final boolean blockPotentiallyOffensive);

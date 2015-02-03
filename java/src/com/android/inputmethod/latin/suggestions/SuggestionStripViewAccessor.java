@@ -22,9 +22,6 @@ import com.android.inputmethod.latin.SuggestedWords;
  * An object that gives basic control of a suggestion strip and some info on it.
  */
 public interface SuggestionStripViewAccessor {
-    public void suggestAddingToDictionary(final String word, final boolean isFromSuggestionStrip);
-    public boolean isShowingAddToDictionaryHint();
-    public void dismissAddToDictionaryHint();
     public void setNeutralSuggestionStrip();
     public void showSuggestionStrip(final SuggestedWords suggestedWords);
 }

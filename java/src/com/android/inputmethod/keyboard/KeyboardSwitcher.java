@@ -127,7 +127,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions,
             mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocales()[0], mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
-            return;
         }
     }
 

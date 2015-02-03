@@ -33,30 +33,6 @@
         android:soundEffectsEnabled="false" />
     <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
          We just need to ignore the system's audio and haptic feedback settings. -->
-    <LinearLayout
-        android:id="@+id/add_to_dictionary_strip"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
-        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
-        android:hapticFeedbackEnabled="false"
-        android:soundEffectsEnabled="false">
-        <TextView
-            android:id="@+id/word_to_save"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="?attr/suggestionWordStyle" />
-        <include
-            android:id="@+id/word_to_save_divider"
-            layout="@layout/suggestion_divider" />
-        <TextView
-            android:id="@+id/hint_add_to_dictionary"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical|start"
-            style="?attr/suggestionWordStyle" />
-    </LinearLayout>
     <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
          We just need to ignore the system's audio and haptic feedback settings. -->
     <LinearLayout
