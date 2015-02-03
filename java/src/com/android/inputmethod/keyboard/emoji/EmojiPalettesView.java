@@ -21,6 +21,7 @@ import static com.android.inputmethod.latin.common.Constants.NOT_A_COORDINATE;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -73,6 +74,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private final int mCategoryPageIndicatorBackground;
     private EmojiPalettesAdapter mEmojiPalettesAdapter;
     private final EmojiLayoutParams mEmojiLayoutParams;
+    private final DeleteKeyOnTouchListener mDeleteKeyOnTouchListener;
 
     private ImageButton mDeleteKey;
     private TextView mAlphabetKeyLeft;
@@ -127,6 +129,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mCategoryPageIndicatorBackground = emojiPalettesViewAttr.getColor(
                 R.styleable.EmojiPalettesView_categoryPageIndicatorBackground, 0);
         emojiPalettesViewAttr.recycle();
+        mDeleteKeyOnTouchListener = new DeleteKeyOnTouchListener();
     }
 
     @Override
@@ -197,7 +200,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mDeleteKey = (ImageButton)findViewById(R.id.emoji_keyboard_delete);
         mDeleteKey.setBackgroundResource(mFunctionalKeyBackgroundId);
         mDeleteKey.setTag(Constants.CODE_DELETE);
-        mDeleteKey.setOnTouchListener(this);
+        mDeleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
 
         // {@link #mAlphabetKeyLeft}, {@link #mAlphabetKeyRight, and spaceKey depend on
         // {@link View.OnClickListener} as well as {@link View.OnTouchListener}.
@@ -366,7 +369,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     public void startEmojiPalettes(final String switchToAlphaLabel,
-                                   final KeyVisualAttributes keyVisualAttr, final KeyboardIconsSet iconSet) {
+                                   final KeyVisualAttributes keyVisualAttr,
+                                   final KeyboardIconsSet iconSet) {
         final int deleteIconResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_DELETE_KEY);
         if (deleteIconResId != 0) {
             mDeleteKey.setImageResource(deleteIconResId);
@@ -392,6 +396,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     public void setKeyboardActionListener(final KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
+        mDeleteKeyOnTouchListener.setKeyboardActionListener(listener);
     }
 
     private void updateEmojiCategoryPageIdView() {
@@ -425,6 +430,54 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
         if (force || mTabHost.getCurrentTab() != newTabId) {
             mTabHost.setCurrentTab(newTabId);
+        }
+    }
+
+    private static class DeleteKeyOnTouchListener implements OnTouchListener {
+        private KeyboardActionListener mKeyboardActionListener =
+                KeyboardActionListener.EMPTY_LISTENER;
+
+        public void setKeyboardActionListener(final KeyboardActionListener listener) {
+            mKeyboardActionListener = listener;
+        }
+
+        @Override
+        public boolean onTouch(final View v, final MotionEvent event) {
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    onTouchDown(v);
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    final float x = event.getX();
+                    final float y = event.getY();
+                    if (x < 0.0f || v.getWidth() < x || y < 0.0f || v.getHeight() < y) {
+                        // Stop generating key events once the finger moves away from the view area.
+                        onTouchCanceled(v);
+                    }
+                    return true;
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP:
+                    onTouchUp(v);
+                    return true;
+            }
+            return false;
+        }
+
+        private void onTouchDown(final View v) {
+            mKeyboardActionListener.onPressKey(Constants.CODE_DELETE,
+                    0 /* repeatCount */, true /* isSinglePointer */);
+            v.setPressed(true /* pressed */);
+        }
+
+        private void onTouchUp(final View v) {
+            mKeyboardActionListener.onCodeInput(Constants.CODE_DELETE,
+                    NOT_A_COORDINATE, NOT_A_COORDINATE, false /* isKeyRepeat */);
+            mKeyboardActionListener.onReleaseKey(Constants.CODE_DELETE, false /* withSliding */);
+            v.setPressed(false /* pressed */);
+        }
+
+        private void onTouchCanceled(final View v) {
+            v.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 }
