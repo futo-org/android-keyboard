@@ -81,9 +81,7 @@ import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
-import com.android.inputmethod.latin.personalization.ContextualDictionaryUpdater;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionaryUpdater;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
@@ -139,19 +137,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final String SCHEME_PACKAGE = "package";
 
     final Settings mSettings;
-  private final DictionaryFacilitator mDictionaryFacilitator =
+    private final DictionaryFacilitator mDictionaryFacilitator =
       DictionaryFacilitatorProvider.newDictionaryFacilitator(this /* context */);
-    // TODO: Move from LatinIME.
-    private final PersonalizationDictionaryUpdater mPersonalizationDictionaryUpdater =
-            new PersonalizationDictionaryUpdater(this /* context */, mDictionaryFacilitator);
-    private final ContextualDictionaryUpdater mContextualDictionaryUpdater =
-            new ContextualDictionaryUpdater(this /* context */, mDictionaryFacilitator,
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
-                        }
-                    });
     final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
@@ -642,11 +629,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void refreshPersonalizationDictionarySession(
             final SettingsValues currentSettingsValues) {
+        // TODO: Remove all existing personalized dictionaries.
         mDictionaryFacilitator.setIsMonolingualUser(
                 mRichImm.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
-        mPersonalizationDictionaryUpdater.onLoadSettings(
-                currentSettingsValues.mUsePersonalizedDicts);
-        mContextualDictionaryUpdater.onLoadSettings(currentSettingsValues.mUsePersonalizedDicts);
         final boolean shouldKeepUserHistoryDictionaries;
         if (currentSettingsValues.mUsePersonalizedDicts) {
             shouldKeepUserHistoryDictionaries = true;
@@ -730,8 +715,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onDestroy() {
         mDictionaryFacilitator.closeDictionaries();
-        mPersonalizationDictionaryUpdater.onDestroy();
-        mContextualDictionaryUpdater.onDestroy();
         mSettings.onDestroy();
         NetworkConnectivityUtils.onDestroy(this /* context */);
         unregisterReceiver(mRingerModeChangeReceiver);
@@ -1050,8 +1033,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 currentSettingsValues.mGestureTrailEnabled,
                 currentSettingsValues.mGestureFloatingPreviewTextEnabled);
 
-        // Contextual dictionary should be updated for the current application.
-        mContextualDictionaryUpdater.onStartInputView(editorInfo.packageName);
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
@@ -1943,7 +1924,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting
     /* package for test */ void clearPersonalizedDictionariesForTest() {
         mDictionaryFacilitator.clearUserHistoryDictionary();
-        mDictionaryFacilitator.clearPersonalizationDictionary();
     }
 
     @UsedForTesting

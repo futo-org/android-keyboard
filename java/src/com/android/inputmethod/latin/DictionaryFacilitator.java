@@ -17,21 +17,18 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.view.inputmethod.InputMethodSubtype;
 import android.util.Pair;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.ExpandableBinaryDictionary.UpdateEntriesForInputEventsCallback;
-import com.android.inputmethod.latin.personalization.PersonalizationDataChunk;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
-import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -120,8 +117,6 @@ public interface DictionaryFacilitator {
 
     boolean hasPersonalizationDictionary();
 
-    void flushPersonalizationDictionary();
-
     void waitForLoadingMainDictionaries(final long timeout, final TimeUnit unit)
             throws InterruptedException;
 
@@ -151,21 +146,6 @@ public interface DictionaryFacilitator {
     int getMaxFrequencyOfExactMatches(final String word);
 
     void clearUserHistoryDictionary();
-
-    // This method gets called only when the IME receives a notification to remove the
-    // personalization dictionary.
-    void clearPersonalizationDictionary();
-
-    void clearContextualDictionary();
-
-    void addEntriesToPersonalizationDictionary(
-            final PersonalizationDataChunk personalizationDataChunk,
-            final SpacingAndPunctuations spacingAndPunctuations,
-            final UpdateEntriesForInputEventsCallback callback);
-
-    @UsedForTesting
-    void addPhraseToContextualDictionary(final String[] phrase, final int probability,
-            final int bigramProbabilityForWords, final int bigramProbabilityForPhrases);
 
     void dumpDictionaryForDebug(final String dictName);
 
