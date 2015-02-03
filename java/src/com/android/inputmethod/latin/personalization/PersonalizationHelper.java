@@ -32,8 +32,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Helps handle and manage personalized dictionaries such as {@link UserHistoryDictionary} and
- * {@link PersonalizationDictionary}.
+ * Helps handle and manage personalized dictionaries such as {@link UserHistoryDictionary}.
  */
 public class PersonalizationHelper {
     private static final String TAG = PersonalizationHelper.class.getSimpleName();
@@ -41,8 +40,6 @@ public class PersonalizationHelper {
 
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
             sLangUserHistoryDictCache = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, SoftReference<PersonalizationDictionary>>
-            sLangPersonalizationDictCache = new ConcurrentHashMap<>();
 
     @Nonnull
     public static UserHistoryDictionary getUserHistoryDictionary(
@@ -77,16 +74,11 @@ public class PersonalizationHelper {
                 DictionaryDecayBroadcastReciever.DICTIONARY_DECAY_INTERVAL_IN_MILLIS)
                         < currentTimestamp - sCurrentTimestampForTesting) {
             runGCOnAllOpenedUserHistoryDictionaries();
-            runGCOnAllOpenedPersonalizationDictionaries();
         }
     }
 
     public static void runGCOnAllOpenedUserHistoryDictionaries() {
         runGCOnAllDictionariesIfRequired(sLangUserHistoryDictCache);
-    }
-
-    public static void runGCOnAllOpenedPersonalizationDictionaries() {
-        runGCOnAllDictionariesIfRequired(sLangPersonalizationDictCache);
     }
 
     private static <T extends DecayingExpandableBinaryDictionaryBase>
@@ -101,32 +93,6 @@ public class PersonalizationHelper {
                 dictionaryMap.remove(entry.getKey());
             }
         }
-    }
-
-    public static PersonalizationDictionary getPersonalizationDictionary(
-            final Context context, final Locale locale) {
-        final String localeStr = locale.toString();
-        synchronized (sLangPersonalizationDictCache) {
-            if (sLangPersonalizationDictCache.containsKey(localeStr)) {
-                final SoftReference<PersonalizationDictionary> ref =
-                        sLangPersonalizationDictCache.get(localeStr);
-                final PersonalizationDictionary dict = ref == null ? null : ref.get();
-                if (dict != null) {
-                    if (DEBUG) {
-                        Log.w(TAG, "Use cached PersonalizationDictionary for " + locale);
-                    }
-                    return dict;
-                }
-            }
-            final PersonalizationDictionary dict = new PersonalizationDictionary(context, locale);
-            sLangPersonalizationDictCache.put(localeStr, new SoftReference<>(dict));
-            return dict;
-        }
-    }
-
-    public static void removeAllPersonalizationDictionaries(final Context context) {
-        removeAllDictionaries(context, sLangPersonalizationDictCache,
-                PersonalizationDictionary.NAME);
     }
 
     public static void removeAllUserHistoryDictionaries(final Context context) {
