@@ -23,16 +23,11 @@ import android.util.Pair;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.ExpandableBinaryDictionary.UpdateEntriesForInputEventsCallback;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.Constants;
-import com.android.inputmethod.latin.personalization.ContextualDictionary;
-import com.android.inputmethod.latin.personalization.PersonalizationDataChunk;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
-import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingIsInDictionary;
@@ -83,16 +78,13 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     // To synchronize assigning mDictionaryGroup to ensure closing dictionaries.
     private final Object mLock = new Object();
     private final DistracterFilter mDistracterFilter;
-    private final PersonalizationHelperForDictionaryFacilitator mPersonalizationHelper;
 
     private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS =
             new String[] {
                 Dictionary.TYPE_MAIN,
                 Dictionary.TYPE_USER_HISTORY,
-                Dictionary.TYPE_PERSONALIZATION,
                 Dictionary.TYPE_USER,
                 Dictionary.TYPE_CONTACTS,
-                Dictionary.TYPE_CONTEXTUAL
             };
 
     public static final Map<String, Class<? extends ExpandableBinaryDictionary>>
@@ -100,10 +92,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     static {
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER_HISTORY, UserHistoryDictionary.class);
-        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_PERSONALIZATION, PersonalizationDictionary.class);
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER, UserBinaryDictionary.class);
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_CONTACTS, ContactsBinaryDictionary.class);
-        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_CONTEXTUAL, ContextualDictionary.class);
     }
 
     private static final String DICT_FACTORY_METHOD_NAME = "getDictionary";
@@ -257,23 +247,18 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     public DictionaryFacilitatorImpl() {
         mDistracterFilter = DistracterFilter.EMPTY_DISTRACTER_FILTER;
-        mPersonalizationHelper = null;
     }
 
     public DictionaryFacilitatorImpl(final Context context) {
         mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context);
-        mPersonalizationHelper =
-                new PersonalizationHelperForDictionaryFacilitator(context, mDistracterFilter);
     }
 
     public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes) {
         mDistracterFilter.updateEnabledSubtypes(enabledSubtypes);
-        mPersonalizationHelper.updateEnabledSubtypes(enabledSubtypes);
     }
 
     // TODO: remove this, it's confusing with seamless multiple language switching
     public void setIsMonolingualUser(final boolean isMonolingualUser) {
-        mPersonalizationHelper.setIsMonolingualUser(isMonolingualUser);
     }
 
     public boolean isActive() {
@@ -586,9 +571,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
         mDistracterFilter.close();
-        if (mPersonalizationHelper != null) {
-            mPersonalizationHelper.close();
-        }
     }
 
     @UsedForTesting
@@ -628,20 +610,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
         return false;
-    }
-
-    public void flushPersonalizationDictionary() {
-        final HashSet<ExpandableBinaryDictionary> personalizationDictsUsedForSuggestion =
-                new HashSet<>();
-        final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
-        for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
-            final ExpandableBinaryDictionary personalizationDictUsedForSuggestion =
-                    dictionaryGroup.getSubDict(Dictionary.TYPE_PERSONALIZATION);
-            personalizationDictsUsedForSuggestion.add(personalizationDictUsedForSuggestion);
-        }
-        mPersonalizationHelper.flushPersonalizationDictionariesToUpdate(
-                personalizationDictsUsedForSuggestion);
-        mDistracterFilter.close();
     }
 
     public void waitForLoadingMainDictionaries(final long timeout, final TimeUnit unit)
@@ -861,62 +829,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
     }
 
-    // This method gets called only when the IME receives a notification to remove the
-    // personalization dictionary.
-    public void clearPersonalizationDictionary() {
-        clearSubDictionary(Dictionary.TYPE_PERSONALIZATION);
-        mPersonalizationHelper.clearDictionariesToUpdate();
-    }
-
     public void clearContextualDictionary() {
         clearSubDictionary(Dictionary.TYPE_CONTEXTUAL);
-    }
-
-    public void addEntriesToPersonalizationDictionary(
-            final PersonalizationDataChunk personalizationDataChunk,
-            final SpacingAndPunctuations spacingAndPunctuations,
-            final UpdateEntriesForInputEventsCallback callback) {
-        mPersonalizationHelper.updateEntriesOfPersonalizationDictionaries(
-                getMostProbableLocale(), personalizationDataChunk, spacingAndPunctuations,
-                callback);
-    }
-
-    @UsedForTesting
-    public void addPhraseToContextualDictionary(final String[] phrase, final int probability,
-            final int bigramProbabilityForWords, final int bigramProbabilityForPhrases) {
-        // TODO: we're inserting the phrase into the dictionary for the active language. Rethink
-        // this a bit from a theoretical point of view.
-        final ExpandableBinaryDictionary contextualDict =
-                getDictionaryGroupForMostProbableLanguage().getSubDict(Dictionary.TYPE_CONTEXTUAL);
-        if (contextualDict == null) {
-            return;
-        }
-        NgramContext ngramContext = NgramContext.BEGINNING_OF_SENTENCE;
-        for (int i = 0; i < phrase.length; i++) {
-            final String[] subPhrase = Arrays.copyOfRange(phrase, i /* start */, phrase.length);
-            final String subPhraseStr = TextUtils.join(Constants.WORD_SEPARATOR, subPhrase);
-            contextualDict.addUnigramEntryWithCheckingDistracter(
-                    subPhraseStr, probability, null /* shortcutTarget */,
-                    Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
-                    false /* isNotAWord */, false /* isPossiblyOffensive */,
-                    BinaryDictionary.NOT_A_VALID_TIMESTAMP,
-                    DistracterFilter.EMPTY_DISTRACTER_FILTER);
-            contextualDict.addNgramEntry(ngramContext, subPhraseStr,
-                    bigramProbabilityForPhrases, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-
-            if (i < phrase.length - 1) {
-                contextualDict.addUnigramEntryWithCheckingDistracter(
-                        phrase[i], probability, null /* shortcutTarget */,
-                        Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
-                        false /* isNotAWord */, false /* isPossiblyOffensive */,
-                        BinaryDictionary.NOT_A_VALID_TIMESTAMP,
-                        DistracterFilter.EMPTY_DISTRACTER_FILTER);
-                contextualDict.addNgramEntry(ngramContext, phrase[i],
-                        bigramProbabilityForWords, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-            }
-            ngramContext =
-                    ngramContext.getNextNgramContext(new NgramContext.WordInfo(phrase[i]));
-        }
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
