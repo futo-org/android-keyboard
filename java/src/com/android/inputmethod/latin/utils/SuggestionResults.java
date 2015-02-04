@@ -33,14 +33,21 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
     // TODO: Instead of a boolean , we may want to include the context of this suggestion results,
     // such as {@link NgramContext}.
     public final boolean mIsBeginningOfSentence;
+    public final boolean mAutocorrectRecommendation;
     private final int mCapacity;
 
     public SuggestionResults(final int capacity, final boolean isBeginningOfSentence) {
-        this(sSuggestedWordInfoComparator, capacity, isBeginningOfSentence);
+        this(sSuggestedWordInfoComparator, capacity, isBeginningOfSentence, false);
     }
 
-    private SuggestionResults(final Comparator<SuggestedWordInfo> comparator,
-            final int capacity, final boolean isBeginningOfSentence) {
+    public SuggestionResults(final int capacity, final boolean isBeginningOfSentence,
+            final boolean autocorrectRecommendation) {
+        this(sSuggestedWordInfoComparator, capacity, isBeginningOfSentence,
+                autocorrectRecommendation);
+    }
+
+    private SuggestionResults(final Comparator<SuggestedWordInfo> comparator, final int capacity,
+            final boolean isBeginningOfSentence, final boolean autocorrectRecommendation) {
         super(comparator);
         mCapacity = capacity;
         if (ProductionFlags.INCLUDE_RAW_SUGGESTIONS) {
@@ -49,6 +56,7 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
             mRawSuggestions = null;
         }
         mIsBeginningOfSentence = isBeginningOfSentence;
+        mAutocorrectRecommendation = autocorrectRecommendation;
     }
 
     @Override

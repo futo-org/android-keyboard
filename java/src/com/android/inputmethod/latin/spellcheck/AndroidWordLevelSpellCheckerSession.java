@@ -29,6 +29,7 @@ import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardLayout;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -271,18 +272,21 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             final int[] codePoints = StringUtils.toCodePointArray(text);
             final int[] coordinates;
             final ProximityInfo proximityInfo;
+            final KeyboardLayout keyboardLayout;
             if (null == keyboard) {
                 coordinates = CoordinateUtils.newCoordinateArray(codePoints.length,
                         Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
                 proximityInfo = null;
+                keyboardLayout = null;
             } else {
                 coordinates = keyboard.getCoordinates(codePoints);
                 proximityInfo = keyboard.getProximityInfo();
+                keyboardLayout = keyboard.getKeyboardLayout();
             }
             composer.setComposingWord(codePoints, coordinates);
             // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
             final SuggestionResults suggestionResults = mService.getSuggestionResults(
-                    mLocale, composer, ngramContext, proximityInfo);
+                    mLocale, composer, ngramContext, proximityInfo, keyboardLayout);
             final Result result = getResult(capitalizeType, mLocale, suggestionsLimit,
                     mService.getRecommendedThreshold(), text, suggestionResults);
             isInDict = isInDictForAnyCapitalization(text, capitalizeType);

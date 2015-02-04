@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.event.CombinerChain;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -463,5 +464,15 @@ public final class WordComposer {
 
     public String getRejectedBatchModeSuggestion() {
         return mRejectedBatchModeSuggestion;
+    }
+
+    @UsedForTesting
+    void addInputPointerForTest(int index, int keyX, int keyY) {
+        mInputPointers.addPointerAt(index, keyX, keyY, 0, 0);
+    }
+
+    @UsedForTesting
+    void setTypedWordCacheForTests(String typedWordCacheForTests) {
+        mTypedWordCache = typedWordCacheForTests;
     }
 }

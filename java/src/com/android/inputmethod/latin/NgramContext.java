@@ -22,6 +22,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
@@ -37,6 +38,10 @@ public class NgramContext {
     @Nonnull
     public static final NgramContext BEGINNING_OF_SENTENCE =
             new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
+
+    public static final String BEGINNING_OF_SENTENCE_TAG = "<S>";
+
+    public static final String CONTEXT_SEPARATOR = " ";
 
     /**
      * Word information used to represent previous words information.
@@ -112,6 +117,31 @@ public class NgramContext {
         prevWordsInfo[0] = wordInfo;
         System.arraycopy(mPrevWordsInfo, 0, prevWordsInfo, 1, nextPrevWordCount - 1);
         return new NgramContext(prevWordsInfo);
+    }
+
+
+    /**
+     * Extracts the previous words context.
+     *
+     * @return a String with the previous words separated by white space.
+     */
+    public String extractPrevWordsContext() {
+        final ArrayList<String> terms = new ArrayList<>();
+        for (int i = mPrevWordsInfo.length - 1; i >= 0; --i) {
+            if (mPrevWordsInfo[i] != null && mPrevWordsInfo[i].isValid()) {
+                final NgramContext.WordInfo wordInfo = mPrevWordsInfo[i];
+                if (wordInfo.mIsBeginningOfSentence) {
+                    terms.add(BEGINNING_OF_SENTENCE_TAG);
+                } else {
+                    final String term = wordInfo.mWord.toString();
+                    if (!term.isEmpty()) {
+                        terms.add(term);
+                    }
+                }
+            }
+        }
+        return terms.size() == 0 ? BEGINNING_OF_SENTENCE_TAG
+                : TextUtils.join(CONTEXT_SEPARATOR, terms);
     }
 
     public boolean isValid() {

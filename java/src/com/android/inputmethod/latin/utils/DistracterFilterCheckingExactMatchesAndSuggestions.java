@@ -38,6 +38,7 @@ import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.DictionaryFacilitatorLruCache;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.common.StringUtils;
@@ -252,7 +253,9 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             suggestionResults = dictionaryFacilitator.getSuggestionResults(composer,
                     NgramContext.EMPTY_PREV_WORDS_INFO,
                     keyboard.getProximityInfo().getNativeProximityInfo(),
-                    settingsValuesForSuggestion, 0 /* sessionId */);
+                    settingsValuesForSuggestion, 0 /* sessionId */,
+                    SuggestedWords.INPUT_STYLE_TYPING,
+                    keyboard.getKeyboardLayout());
         }
         if (suggestionResults.isEmpty()) {
             return false;

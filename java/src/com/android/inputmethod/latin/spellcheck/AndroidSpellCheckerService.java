@@ -27,6 +27,7 @@ import android.view.textservice.SuggestionsInfo;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardLayout;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.DictionaryFacilitator;
@@ -34,6 +35,7 @@ import com.android.inputmethod.latin.DictionaryFacilitatorLruCache;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
@@ -159,7 +161,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     public SuggestionResults getSuggestionResults(final Locale locale, final WordComposer composer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo) {
+            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+            final KeyboardLayout keyboardLayout) {
         Integer sessionId = null;
         mSemaphore.acquireUninterruptibly();
         try {
@@ -168,7 +171,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                     mDictionaryFacilitatorCache.get(locale);
             return dictionaryFacilitatorForLocale.getSuggestionResults(composer, ngramContext,
                     proximityInfo.getNativeProximityInfo(), mSettingsValuesForSuggestion,
-                    sessionId);
+                    sessionId, SuggestedWords.INPUT_STYLE_TYPING, keyboardLayout);
         } finally {
             if (sessionId != null) {
                 mSessionIdPool.add(sessionId);
