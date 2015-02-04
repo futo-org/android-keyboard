@@ -392,8 +392,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
         if (usePersonalizedDicts) {
             subDictTypesToUse.add(Dictionary.TYPE_USER_HISTORY);
-            subDictTypesToUse.add(Dictionary.TYPE_PERSONALIZATION);
-            subDictTypesToUse.add(Dictionary.TYPE_CONTEXTUAL);
         }
 
         // Gather all dictionaries. We'll remove them from the list to clean up later.
@@ -600,16 +598,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return false;
     }
 
-    public boolean hasPersonalizationDictionary() {
-        final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
-        for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
-            if (dictionaryGroup.hasDict(Dictionary.TYPE_PERSONALIZATION, null /* account */)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void waitForLoadingMainDictionaries(final long timeout, final TimeUnit unit)
             throws InterruptedException {
         mLatchForWaitingLoadingMainDictionaries.await(timeout, unit);
@@ -708,8 +696,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     public void removeWordFromPersonalizedDicts(final String word) {
         removeWord(Dictionary.TYPE_USER_HISTORY, word);
-        removeWord(Dictionary.TYPE_PERSONALIZATION, word);
-        removeWord(Dictionary.TYPE_CONTEXTUAL, word);
     }
 
     // TODO: Revise the way to fusion suggestion results.
@@ -812,10 +798,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     public void clearUserHistoryDictionary() {
         clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
-    }
-
-    public void clearContextualDictionary() {
-        clearSubDictionary(Dictionary.TYPE_CONTEXTUAL);
     }
 
     public void dumpDictionaryForDebug(final String dictName) {

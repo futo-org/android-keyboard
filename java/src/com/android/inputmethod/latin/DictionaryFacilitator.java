@@ -115,8 +115,6 @@ public interface DictionaryFacilitator {
 
     boolean hasAtLeastOneUninitializedMainDictionary();
 
-    boolean hasPersonalizationDictionary();
-
     void waitForLoadingMainDictionaries(final long timeout, final TimeUnit unit)
             throws InterruptedException;
 
