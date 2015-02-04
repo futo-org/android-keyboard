@@ -20,7 +20,6 @@ import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASC
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,13 +31,11 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Debug;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -47,18 +44,14 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
-import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
-import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
@@ -72,7 +65,6 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
-import com.android.inputmethod.keyboard.TextDecoratorUi;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.Constants;
@@ -90,8 +82,6 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.touchinputconsumer.GestureConsumer;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
-import com.android.inputmethod.latin.utils.CapsModeUtils;
-import com.android.inputmethod.latin.utils.CursorAnchorInfoUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
@@ -149,7 +139,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private View mInputView;
     private InsetsUpdater mInsetsUpdater;
     private SuggestionStripView mSuggestionStripView;
-    private TextView mExtractEditText;
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
@@ -776,57 +765,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
         }
-        mInputLogic.setTextDecoratorUi(new TextDecoratorUi(this, view));
     }
-
-    @Override
-    public void setExtractView(final View view) {
-        final TextView prevExtractEditText = mExtractEditText;
-        super.setExtractView(view);
-        TextView nextExtractEditText = null;
-        if (view != null) {
-            final View extractEditText = view.findViewById(android.R.id.inputExtractEditText);
-            if (extractEditText instanceof TextView) {
-                nextExtractEditText = (TextView)extractEditText;
-            }
-        }
-        if (prevExtractEditText == nextExtractEditText) {
-            return;
-        }
-        if (prevExtractEditText != null) {
-            prevExtractEditText.getViewTreeObserver().removeOnPreDrawListener(
-                    mExtractTextViewPreDrawListener);
-        }
-        mExtractEditText = nextExtractEditText;
-        if (mExtractEditText != null) {
-            mExtractEditText.getViewTreeObserver().addOnPreDrawListener(
-                    mExtractTextViewPreDrawListener);
-        }
-    }
-
-    void updateCursorAnchorInfo() {
-        // CursorAnchorInfo is used on L and later.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (isFullscreenMode() && mExtractEditText != null) {
-                mInputLogic.onUpdateCursorAnchorInfo(
-                        CursorAnchorInfoUtils.extractFromTextView(mExtractEditText));
-            }
-        }
-    }
-
-    private final ViewTreeObserver.OnPreDrawListener mExtractTextViewPreDrawListener =
-            new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    updateCursorAnchorInfo();
-                    return true;
-                }
-            };
 
     @Override
     public void setCandidatesView(final View view) {
         // To ensure that CandidatesView will never be set.
-        return;
     }
 
     @Override
@@ -1095,15 +1038,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public void onUpdateCursorAnchorInfo(final CursorAnchorInfo info) {
-        if (isFullscreenMode()) {
-            return;
-        }
-        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.wrap(info));
-    }
-
     /**
      * This is called when the user has clicked on the extracted text view,
      * when running in fullscreen mode.  The default implementation hides
@@ -1284,7 +1218,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void updateFullscreenMode() {
         super.updateFullscreenMode();
-        mInputLogic.onUpdateFullscreenMode(isFullscreenMode());
         updateSoftInputWindowLayoutParameters();
     }
 
@@ -1330,18 +1263,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
         return keyboard.getCoordinates(codePoints);
-    }
-
-    // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
-    // pressed.
-    @Override
-    public void addWordToUserDictionary(final String word) {
-        if (TextUtils.isEmpty(word)) {
-            // Probably never supposed to happen, but just in case.
-            return;
-        }
-        mDictionaryFacilitator.addWordToUserDictionary(this /* context */, word);
-        mInputLogic.onAddWordToUserDictionary();
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
@@ -1538,19 +1459,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return null != mSuggestionStripView;
     }
 
-    @Override
-    public boolean isShowingAddToDictionaryHint() {
-        return hasSuggestionStripView() && mSuggestionStripView.isShowingAddToDictionaryHint();
-    }
-
-    @Override
-    public void dismissAddToDictionaryHint() {
-        if (!hasSuggestionStripView()) {
-            return;
-        }
-        mSuggestionStripView.dismissAddToDictionaryHint();
-    }
-
     private void setSuggestedWords(final SuggestedWords suggestedWords) {
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         mInputLogic.setSuggestedWords(suggestedWords);
@@ -1637,21 +1545,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mKeyboardSwitcher.getCurrentKeyboardScriptId(),
                 mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
-    }
-
-    @Override
-    public void suggestAddingToDictionary(final String word, final boolean isFromSuggestionStrip) {
-        if (!hasSuggestionStripView()) {
-            return;
-        }
-        final String wordToShow;
-        if (CapsModeUtils.isAutoCapsMode(mInputLogic.mLastComposedWord.mCapitalizedMode)) {
-            wordToShow = word.toLowerCase(mDictionaryFacilitator.getMostProbableLocale());
-        } else {
-            wordToShow = word;
-        }
-        mSuggestionStripView.showAddToDictionaryHint(wordToShow,
-                isFromSuggestionStrip /* shouldShowWordToSave */);
     }
 
     // This will show either an empty suggestion strip (if prediction is enabled) or

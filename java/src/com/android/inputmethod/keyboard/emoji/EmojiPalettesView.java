@@ -259,7 +259,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     @Override
     public void onPageScrolled(final int position, final float positionOffset,
-            final int positionOffsetPixels) {
+                               final int positionOffsetPixels) {
         mEmojiPalettesAdapter.onPageScrolled();
         final Pair<Integer, Integer> newPos =
                 mEmojiCategory.getCategoryIdAndPageIdFromPagePosition(position);
@@ -358,7 +358,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     private static void setupAlphabetKey(final TextView alphabetKey, final String label,
-            final KeyDrawParams params) {
+                                         final KeyDrawParams params) {
         alphabetKey.setText(label);
         alphabetKey.setTextColor(params.mFunctionalTextColor);
         alphabetKey.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mLabelSize);
@@ -366,7 +366,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     public void startEmojiPalettes(final String switchToAlphaLabel,
-            final KeyVisualAttributes keyVisualAttr, final KeyboardIconsSet iconSet) {
+                                   final KeyVisualAttributes keyVisualAttr, final KeyboardIconsSet iconSet) {
         final int deleteIconResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_DELETE_KEY);
         if (deleteIconResId != 0) {
             mDeleteKey.setImageResource(deleteIconResId);

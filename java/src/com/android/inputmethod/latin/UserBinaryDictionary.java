@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -29,7 +28,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.ExternallyReferenced;
-import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.io.File;
@@ -54,13 +52,13 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     private static final int USER_DICT_SHORTCUT_FREQUENCY = 14;
 
     private static final String[] PROJECTION_QUERY_WITH_SHORTCUT = new String[] {
-        Words.WORD,
-        Words.SHORTCUT,
-        Words.FREQUENCY,
+            Words.WORD,
+            Words.SHORTCUT,
+            Words.FREQUENCY,
     };
     private static final String[] PROJECTION_QUERY_WITHOUT_SHORTCUT = new String[] {
-        Words.WORD,
-        Words.FREQUENCY,
+            Words.WORD,
+            Words.FREQUENCY,
     };
 
     private static final String NAME = "userunigram";
@@ -70,7 +68,8 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     final private boolean mAlsoUseMoreRestrictiveLocales;
 
     protected UserBinaryDictionary(final Context context, final Locale locale,
-            final boolean alsoUseMoreRestrictiveLocales, final File dictFile, final String name) {
+                                   final boolean alsoUseMoreRestrictiveLocales,
+                                   final File dictFile, final String name) {
         super(context, getDictName(name, locale, dictFile), locale, Dictionary.TYPE_USER, dictFile);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         final String localeStr = locale.toString();
@@ -105,9 +104,11 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     // Note: This method is called by {@link DictionaryFacilitator} using Java reflection.
     @ExternallyReferenced
-    public static UserBinaryDictionary getDictionary(final Context context, final Locale locale,
-            final File dictFile, final String dictNamePrefix, @Nullable final String account) {
-        return new UserBinaryDictionary(context, locale, false /* alsoUseMoreRestrictiveLocales */,
+    public static UserBinaryDictionary getDictionary(
+            final Context context, final Locale locale, final File dictFile,
+            final String dictNamePrefix, @Nullable final String account) {
+        return new UserBinaryDictionary(
+                context, locale, false /* alsoUseMoreRestrictiveLocales */,
                 dictFile, dictNamePrefix + NAME);
     }
 
@@ -187,7 +188,8 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     private void addWordsFromProjectionLocked(final String[] query, String request,
-            final String[] requestArguments) throws IllegalArgumentException {
+                                              final String[] requestArguments)
+            throws IllegalArgumentException {
         Cursor cursor = null;
         try {
             cursor = mContext.getContentResolver().query(
@@ -202,31 +204,6 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 Log.e(TAG, "SQLiteException in the remote User dictionary process.", e);
             }
         }
-    }
-
-    public static boolean isEnabled(final Context context) {
-        final ContentResolver cr = context.getContentResolver();
-        final ContentProviderClient client = cr.acquireContentProviderClient(Words.CONTENT_URI);
-        if (client != null) {
-            client.release();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Adds a word to the user dictionary and makes it persistent.
-     *
-     * @param context the context
-     * @param locale the locale
-     * @param word the word to add. If the word is capitalized, then the dictionary will
-     * recognize it as a capitalized word when searched.
-     */
-    public static void addWordToUserDictionary(final Context context, final Locale locale,
-            final String word) {
-        // Update the user dictionary provider
-        UserDictionaryCompatUtils.addWord(context, word,
-                HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY, null, locale);
     }
 
     private static int scaleFrequencyFromDefaultToLatinIme(final int defaultFrequency) {

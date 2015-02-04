@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin.inputlogic;
 
 import android.graphics.Color;
-import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -28,17 +27,13 @@ import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.inputmethod.CorrectionInfo;
-import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.keyboard.TextDecorator;
-import com.android.inputmethod.keyboard.TextDecoratorUiOperator;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.LastComposedWord;
@@ -90,14 +85,6 @@ public final class InputLogic {
     public SuggestedWords mSuggestedWords = SuggestedWords.getEmptyInstance();
     public final Suggest mSuggest;
     private final DictionaryFacilitator mDictionaryFacilitator;
-
-    private final TextDecorator mTextDecorator = new TextDecorator(new TextDecorator.Listener() {
-        @Override
-        public void onClickComposingTextToAddToDictionary(final String word) {
-            mLatinIME.addWordToUserDictionary(word);
-            mLatinIME.dismissAddToDictionaryHint();
-        }
-    });
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     // This has package visibility so it can be accessed from InputLogicHandler.
@@ -174,7 +161,6 @@ public final class InputLogic {
             mConnection.requestCursorUpdates(true /* enableMonitor */,
                     true /* requestImmediateCallback */);
         }
-        mTextDecorator.reset();
     }
 
     /**
@@ -269,20 +255,6 @@ public final class InputLogic {
     }
 
     /**
-     * Determines whether "Touch again to save" should be shown or not.
-     * @param suggestionInfo the suggested word chosen by the user.
-     * @return {@code true} if we should show the "Touch again to save" hint.
-     */
-    private boolean shouldShowAddToDictionaryHint(final SuggestedWordInfo suggestionInfo) {
-        // We should show the "Touch again to save" hint if the user pressed the first entry
-        // AND it's in none of our current dictionaries (main, user or otherwise).
-        return (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_TYPED)
-                || suggestionInfo.isKindOf(SuggestedWordInfo.KIND_OOV_CORRECTION))
-                && !mDictionaryFacilitator.isValidWord(suggestionInfo.mWord, true /* ignoreCase */)
-                && mDictionaryFacilitator.isUserDictionaryEnabled();
-    }
-
-    /**
      * A suggestion was picked from the suggestion strip.
      * @param settingsValues the current values of the settings.
      * @param suggestionInfo the suggestion info.
@@ -340,7 +312,6 @@ public final class InputLogic {
             return inputTransaction;
         }
 
-        final boolean shouldShowAddToDictionaryHint = shouldShowAddToDictionaryHint(suggestionInfo);
         commitChosenWord(settingsValues, suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
         mConnection.endBatchEdit();
@@ -350,14 +321,9 @@ public final class InputLogic {
         mSpaceState = SpaceState.PHANTOM;
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
 
-        if (shouldShowAddToDictionaryHint) {
-            mSuggestionStripViewAccessor.suggestAddingToDictionary(suggestion,
-                    true /* isFromSuggestionStrip */);
-        } else {
-            // If we're not showing the "Touch again to save", then update the suggestion strip.
-            // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
-            handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
-        }
+        // If we're not showing the "Touch again to save", then update the suggestion strip.
+        // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
+        handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
 
         StatsUtils.onPickSuggestionManually(mSuggestedWords, suggestionInfo);
         StatsUtils.onWordCommitSuggestionPickedManually(
@@ -431,11 +397,6 @@ public final class InputLogic {
 
         // The cursor has been moved : we now accept to perform recapitalization
         mRecapitalizeStatus.enable();
-        // We moved the cursor and need to invalidate the indicator right now.
-        mTextDecorator.reset();
-        // Remaining background color that was used for the add-to-dictionary indicator should be
-        // removed.
-        mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
         mLatinIME.mHandler.postResumeSuggestions(true /* shouldDelay */);
         // Stop the last recapitalization, if started.
@@ -808,12 +769,6 @@ public final class InputLogic {
             final LatinIME.UIHandler handler) {
         if (!mWordComposer.isComposingWord()) {
             mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
-            // In case the "add to dictionary" hint was still displayed.
-            // TODO: Do we really need to check if we have composing text here?
-            if (mSuggestionStripViewAccessor.isShowingAddToDictionaryHint()) {
-                mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
-                mTextDecorator.reset();
-            }
         }
 
         final int codePoint = event.mCodePoint;
@@ -1639,20 +1594,8 @@ public final class InputLogic {
                     0 /* start */, lastCharIndex /* end */, 0 /* flags */);
         }
 
-        final boolean shouldShowAddToDictionaryForTypedWord =
-                shouldShowAddToDictionaryForTypedWord(mLastComposedWord, settingsValues);
-
         if (inputTransaction.mSettingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
-            // For languages with spaces, we revert to the typed string, but the cursor is still
-            // after the separator so we don't resume suggestions. If the user wants to correct
-            // the word, they have to press backspace again.
-            if (shouldShowAddToDictionaryForTypedWord) {
-                mConnection.commitTextWithBackgroundColor(textToCommit, 1,
-                        settingsValues.mTextHighlightColorForAddToDictionaryIndicator,
-                        originallyTypedWordString.length());
-            } else {
-                mConnection.commitText(textToCommit, 1);
-            }
+            mConnection.commitText(textToCommit, 1);
             if (usePhantomSpace) {
                 mSpaceState = SpaceState.PHANTOM;
             }
@@ -1662,33 +1605,13 @@ public final class InputLogic {
             final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
             mWordComposer.setComposingWord(codePoints,
                     mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
-            if (shouldShowAddToDictionaryForTypedWord) {
-                setComposingTextInternalWithBackgroundColor(textToCommit, 1,
-                        settingsValues.mTextHighlightColorForAddToDictionaryIndicator,
-                        originallyTypedWordString.length());
-            } else {
-                setComposingTextInternal(textToCommit, 1);
-            }
+            setComposingTextInternal(textToCommit, 1);
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
 
-        if (shouldShowAddToDictionaryForTypedWord) {
-            // Due to the API limitation as of L, we cannot reliably retrieve the reverted text
-            // when the separator causes line breaking. Until this API limitation is addressed in
-            // the framework, show the indicator only when the separator doesn't contain
-            // line-breaking characters.
-            if (!StringUtils.hasLineBreakCharacter(separatorString)) {
-                mTextDecorator.showAddToDictionaryIndicator(originallyTypedWordString,
-                        mConnection.getExpectedSelectionStart(),
-                        mConnection.getExpectedSelectionEnd());
-            }
-            mSuggestionStripViewAccessor.suggestAddingToDictionary(originallyTypedWordString,
-                    false /* isFromSuggestionStrip */);
-        } else {
-            // We have a separator between the word and the cursor: we should show predictions.
-            inputTransaction.setRequiresUpdateSuggestions();
-        }
+        // We have a separator between the word and the cursor: we should show predictions.
+        inputTransaction.setRequiresUpdateSuggestions();
     }
 
     /**
@@ -2215,7 +2138,7 @@ public final class InputLogic {
      *
      * <p>Currently using this method is optional and you can still directly call
      * {@link RichInputConnection#setComposingText(CharSequence, int)}, but it is recommended to
-     * use this method whenever possible to optimize the behavior of {@link TextDecorator}.<p>
+     * use this method whenever possible.<p>
      * <p>TODO: Should we move this mechanism to {@link RichInputConnection}?</p>
      *
      * @param newComposingText the composing text to be set
@@ -2299,72 +2222,5 @@ public final class InputLogic {
     // never need to know this.
     public int getComposingLength() {
         return mWordComposer.size();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // Following methods are tentatively placed in this class for the integration with
-    // TextDecorator.
-    // TODO: Decouple things that are not related to the input logic.
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Sets the UI operator for {@link TextDecorator}.
-     * @param uiOperator the UI operator which should be associated with {@link TextDecorator}.
-     */
-    public void setTextDecoratorUi(@Nonnull final TextDecoratorUiOperator uiOperator) {
-        mTextDecorator.setUiOperator(uiOperator);
-    }
-
-    /**
-     * Must be called from {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} is
-     * called.
-     * @param info The wrapper object with which we can access cursor/anchor info.
-     */
-    public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
-        mTextDecorator.onUpdateCursorAnchorInfo(info);
-    }
-
-    /**
-     * Must be called when {@link InputMethodService#updateFullscreenMode} is called.
-     * @param isFullscreen {@code true} if the input method is in full-screen mode.
-     */
-    public void onUpdateFullscreenMode(final boolean isFullscreen) {
-        mTextDecorator.notifyFullScreenMode(isFullscreen);
-    }
-
-    /**
-     * Must be called from {@link LatinIME#addWordToUserDictionary(String)}.
-     */
-    public void onAddWordToUserDictionary() {
-        mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
-        mTextDecorator.reset();
-    }
-
-    /**
-     * Returns whether the add to dictionary indicator should be shown or not.
-     * @param lastComposedWord the last composed word information.
-     * @param settingsValues the current settings value.
-     * @return {@code true} if the commit indicator should be shown.
-     */
-    private boolean shouldShowAddToDictionaryForTypedWord(final LastComposedWord lastComposedWord,
-            final SettingsValues settingsValues) {
-        if (!mConnection.isCursorAnchorInfoMonitorEnabled()) {
-            // We cannot help in this case because we are heavily relying on this new API.
-            return false;
-        }
-        if (!settingsValues.mShouldShowLxxSuggestionUi) {
-            return false;
-        }
-        if (TextUtils.isEmpty(lastComposedWord.mTypedWord)) {
-            return false;
-        }
-        if (TextUtils.equals(lastComposedWord.mTypedWord, lastComposedWord.mCommittedWord)) {
-            return false;
-        }
-        if (!mDictionaryFacilitator.isUserDictionaryEnabled()) {
-            return false;
-        }
-        return !mDictionaryFacilitator.isValidWord(lastComposedWord.mTypedWord,
-                true /* ignoreCase */);
     }
 }

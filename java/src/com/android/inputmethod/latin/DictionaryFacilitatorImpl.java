@@ -73,7 +73,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     private DictionaryGroup[] mDictionaryGroups = new DictionaryGroup[] { new DictionaryGroup() };
     private DictionaryGroup mMostProbableDictionaryGroup = mDictionaryGroups[0];
-    private boolean mIsUserDictEnabled = false;
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionaries = new CountDownLatch(0);
     // To synchronize assigning mDictionaryGroup to ensure closing dictionaries.
     private final Object mLock = new Object();
@@ -458,7 +457,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             oldDictionaryGroups = mDictionaryGroups;
             mDictionaryGroups = newDictionaryGroups;
             mMostProbableDictionaryGroup = newDictionaryGroups[0];
-            mIsUserDictEnabled = UserBinaryDictionary.isEnabled(context);
             if (hasAtLeastOneUninitializedMainDictionary()) {
                 asyncReloadUninitializedMainDictionaries(context, newLocales, listener);
             }
@@ -627,19 +625,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 dict.waitAllTasksForTests();
             }
         }
-    }
-
-    public boolean isUserDictionaryEnabled() {
-        return mIsUserDictEnabled;
-    }
-
-    public void addWordToUserDictionary(final Context context, final String word) {
-        final Locale locale = getMostProbableLocale();
-        if (locale == null) {
-            return;
-        }
-        // TODO: add a toast telling what language this is being added to?
-        UserBinaryDictionary.addWordToUserDictionary(context, locale, word);
     }
 
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
