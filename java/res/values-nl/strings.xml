@@ -61,7 +61,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Algemeen woordenboek"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Correctievoorstellen weergeven"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Voorgestelde woorden weergeven tijdens typen"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Aanstootgevende woorden blokk."</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Grof taalgebruik blokkeren"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Geen potentieel aanstootgevende woorden voorstellen"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrectie"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Met spatiebalk en interpunctie worden verkeerd gespelde woorden automatisch gecorrigeerd"</string>
