@@ -49,8 +49,7 @@ public abstract class Dictionary {
 
     // Spawned by resuming suggestions. Comes from a span that was in the TextView.
     public static final String TYPE_RESUMED = "resumed";
-    public static final PhonyDictionary DICTIONARY_RESUMED =
-            new PhonyDictionary(TYPE_RESUMED);
+    public static final PhonyDictionary DICTIONARY_RESUMED = new PhonyDictionary(TYPE_RESUMED);
 
     // The following types of dictionary have actual functional instances. We don't need final
     // phony dictionary instances for them.
@@ -60,10 +59,6 @@ public abstract class Dictionary {
     public static final String TYPE_USER = "user";
     // User history dictionary internal to LatinIME.
     public static final String TYPE_USER_HISTORY = "history";
-    // Personalization dictionary.
-    public static final String TYPE_PERSONALIZATION = "personalization";
-    // Contextual dictionary.
-    public static final String TYPE_CONTEXTUAL = "contextual";
     public final String mDictType;
     // The locale for this dictionary. May be null if unknown (phony dictionary for example).
     public final Locale mLocale;
@@ -76,9 +71,7 @@ public abstract class Dictionary {
             TYPE_USER_TYPED,
             TYPE_USER,
             TYPE_CONTACTS,
-            TYPE_USER_HISTORY,
-            TYPE_PERSONALIZATION,
-            TYPE_CONTEXTUAL));
+            TYPE_USER_HISTORY));
 
     public Dictionary(final String dictType, final Locale locale) {
         mDictType = dictType;
