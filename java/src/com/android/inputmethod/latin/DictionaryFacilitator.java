@@ -43,6 +43,35 @@ import javax.annotation.Nullable;
  * DictionaryFacilitator as a client for interacting with dictionaries.
  */
 public interface DictionaryFacilitator {
+
+    public static final String[] ALL_DICTIONARY_TYPES = new String[] {
+            Dictionary.TYPE_MAIN,
+            Dictionary.TYPE_USER_HISTORY,
+            Dictionary.TYPE_USER,
+            Dictionary.TYPE_CONTACTS};
+
+    public static final String[] DYNAMIC_DICTIONARY_TYPES = new String[] {
+            Dictionary.TYPE_USER_HISTORY,
+            Dictionary.TYPE_USER,
+            Dictionary.TYPE_CONTACTS};
+
+    /**
+     * {@link Dictionary#TYPE_USER} is deprecated, except for the spelling service.
+     */
+    public static final String[] DICTIONARY_TYPES_FOR_SPELLING = new String[] {
+            Dictionary.TYPE_MAIN,
+            Dictionary.TYPE_USER_HISTORY,
+            Dictionary.TYPE_USER,
+            Dictionary.TYPE_CONTACTS};
+
+    /**
+     * {@link Dictionary#TYPE_USER} is deprecated, except for the spelling service.
+     */
+    public static final String[] DICTIONARY_TYPES_FOR_SUGGESTIONS = new String[] {
+            Dictionary.TYPE_MAIN,
+            Dictionary.TYPE_USER_HISTORY,
+            Dictionary.TYPE_CONTACTS};
+
     /**
      * Returns whether this facilitator is exactly for this list of locales.
      *

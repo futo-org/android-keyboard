@@ -78,34 +78,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private final Object mLock = new Object();
     private final DistracterFilter mDistracterFilter;
 
-    private static final String[] ALL_DICTIONARY_TYPES = new String[] {
-        Dictionary.TYPE_MAIN,
-        Dictionary.TYPE_USER_HISTORY,
-        Dictionary.TYPE_USER,
-        Dictionary.TYPE_CONTACTS};
-
-    private static final String[] SUB_DICTIONARY_TYPES = new String[] {
-        Dictionary.TYPE_USER_HISTORY,
-        Dictionary.TYPE_USER,
-        Dictionary.TYPE_CONTACTS};
-
-    /**
-     * {@link Dictionary#TYPE_USER} is deprecated, except for the spelling service.
-     */
-    private static final String[] DICTIONARY_TYPES_FOR_SPELLING = new String[] {
-        Dictionary.TYPE_MAIN,
-        Dictionary.TYPE_USER_HISTORY,
-        Dictionary.TYPE_USER,
-        Dictionary.TYPE_CONTACTS};
-
-    /**
-     * {@link Dictionary#TYPE_USER} is deprecated, except for the spelling service.
-     */
-    private static final String[] DICTIONARY_TYPES_FOR_SUGGESTIONS = new String[] {
-        Dictionary.TYPE_MAIN,
-        Dictionary.TYPE_USER_HISTORY,
-        Dictionary.TYPE_CONTACTS};
-
     public static final Map<String, Class<? extends ExpandableBinaryDictionary>>
             DICT_TYPE_TO_CLASS = new HashMap<>();
 
@@ -419,7 +391,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             if (null == currentDictionaryGroupForLocale) {
                 continue;
             }
-            for (final String dictType : SUB_DICTIONARY_TYPES) {
+            for (final String dictType : DYNAMIC_DICTIONARY_TYPES) {
                 if (currentDictionaryGroupForLocale.hasDict(dictType, account)) {
                     dictTypeForLocale.add(dictType);
                 }
@@ -840,7 +812,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         final ArrayList<Pair<String, DictionaryStats>> statsOfEnabledSubDicts = new ArrayList<>();
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
-            for (final String dictType : SUB_DICTIONARY_TYPES) {
+            for (final String dictType : DYNAMIC_DICTIONARY_TYPES) {
                 final ExpandableBinaryDictionary dictionary = dictionaryGroup.getSubDict(dictType);
                 if (dictionary == null) continue;
                 statsOfEnabledSubDicts.add(new Pair<>(dictType, dictionary.getDictionaryStats()));
