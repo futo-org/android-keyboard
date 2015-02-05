@@ -112,6 +112,14 @@ public class SuggestedWords {
     }
 
     /**
+     * Get {@link SuggestedWordInfo} object for the typed word.
+     * @return The {@link SuggestedWordInfo} object for the typed word.
+     */
+    public SuggestedWordInfo getTypedWordInfo() {
+        return mTypedWordInfo;
+    }
+
+    /**
      * Get suggested word at <code>index</code>.
      * @param index The index of the suggested word.
      * @return The suggested word.
@@ -345,6 +353,14 @@ public class SuggestedWords {
 
         public String getDebugString() {
             return mDebugString;
+        }
+
+        public String getWord() {
+            return mWord;
+        }
+
+        public Dictionary getSourceDictionary() {
+            return mSourceDict;
         }
 
         public int codePointAt(int i) {
