@@ -32,6 +32,7 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.InputTransaction;
+import com.android.inputmethod.keyboard.KeyboardLayout;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Dictionary;
@@ -2115,7 +2116,8 @@ public final class InputLogic {
 
     public void getSuggestedWords(final SettingsValues settingsValues,
             final ProximityInfo proximityInfo, final int keyboardShiftMode, final int inputStyle,
-            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
+            final int sequenceNumber, final OnGetSuggestedWordsCallback callback,
+            final KeyboardLayout keyboardLayout) {
         mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                 getActualCapsMode(settingsValues, keyboardShiftMode));
         mSuggest.getSuggestedWords(mWordComposer,
@@ -2129,7 +2131,7 @@ public final class InputLogic {
                 new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive,
                         settingsValues.mPhraseGestureEnabled),
                 settingsValues.mAutoCorrectionEnabledPerUserSettings,
-                inputStyle, sequenceNumber, callback);
+                inputStyle, sequenceNumber, callback, keyboardLayout);
     }
 
     /**
