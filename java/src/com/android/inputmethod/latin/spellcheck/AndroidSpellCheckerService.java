@@ -154,7 +154,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         try {
             DictionaryFacilitator dictionaryFacilitatorForLocale =
                     mDictionaryFacilitatorCache.get(locale);
-            return dictionaryFacilitatorForLocale.isValidWord(word, false /* igroreCase */);
+            return dictionaryFacilitatorForLocale.isValidSpellingWord(word);
         } finally {
             mSemaphore.release();
         }

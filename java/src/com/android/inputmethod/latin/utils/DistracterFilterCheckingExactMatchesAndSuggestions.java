@@ -196,8 +196,7 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             mDistractersCache.put(cacheKey, Boolean.TRUE);
             return true;
         }
-        final boolean Word = dictionaryFacilitator.isValidWord(testedWord, false /* ignoreCase */);
-        if (Word) {
+        if (dictionaryFacilitator.isValidSuggestionWord(testedWord)) {
             // Valid word is not a distracter.
             if (DEBUG) {
                 Log.d(TAG, "isDistracter: false (valid word)");
@@ -291,14 +290,14 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             final Locale locale) {
         final DictionaryFacilitator dictionaryFacilitator =
                 mDictionaryFacilitatorLruCache.get(locale);
-        if (dictionaryFacilitator.isValidWord(testedWord, false /* ignoreCase */)) {
+        if (dictionaryFacilitator.isValidSuggestionWord(testedWord)) {
             return false;
         }
-        final String lowerCaseTargetWord = testedWord.toLowerCase(locale);
-        if (testedWord.equals(lowerCaseTargetWord)) {
+        final String lowerCaseWord = testedWord.toLowerCase(locale);
+        if (testedWord.equals(lowerCaseWord)) {
             return false;
         }
-        if (dictionaryFacilitator.isValidWord(lowerCaseTargetWord, false /* ignoreCase */)) {
+        if (dictionaryFacilitator.isValidSuggestionWord(lowerCaseWord)) {
             return true;
         }
         if (StringUtils.getCapitalizationType(testedWord) == StringUtils.CAPITALIZE_FIRST
@@ -317,10 +316,10 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             return HandlingType.getHandlingType(false /* shouldBeLowerCased */, false /* isOov */);
         }
         final boolean shouldBeLowerCased = shouldBeLowerCased(ngramContext, testedWord, locale);
-        final String caseModifiedWord =
-                shouldBeLowerCased ? testedWord.toLowerCase(locale) : testedWord;
-        final boolean isOov = !mDictionaryFacilitatorLruCache.get(locale).isValidWord(
-                caseModifiedWord, false /* ignoreCase */);
+        final String caseModifiedWord = shouldBeLowerCased
+                ? testedWord.toLowerCase(locale) : testedWord;
+        final boolean isOov = !mDictionaryFacilitatorLruCache.get(locale).isValidSuggestionWord(
+                caseModifiedWord);
         return HandlingType.getHandlingType(shouldBeLowerCased, isOov);
     }
 }
