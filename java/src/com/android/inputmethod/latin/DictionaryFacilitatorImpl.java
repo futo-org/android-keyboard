@@ -39,7 +39,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,13 +78,33 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private final Object mLock = new Object();
     private final DistracterFilter mDistracterFilter;
 
-    private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS =
-            new String[] {
-                Dictionary.TYPE_MAIN,
-                Dictionary.TYPE_USER_HISTORY,
-                Dictionary.TYPE_USER,
-                Dictionary.TYPE_CONTACTS,
-            };
+    private static final String[] ALL_DICTIONARY_TYPES = new String[] {
+        Dictionary.TYPE_MAIN,
+        Dictionary.TYPE_USER_HISTORY,
+        Dictionary.TYPE_USER,
+        Dictionary.TYPE_CONTACTS};
+
+    private static final String[] SUB_DICTIONARY_TYPES = new String[] {
+        Dictionary.TYPE_USER_HISTORY,
+        Dictionary.TYPE_USER,
+        Dictionary.TYPE_CONTACTS};
+
+    /**
+     * {@link Dictionary#TYPE_USER} is deprecated, except for the spelling service.
+     */
+    private static final String[] DICTIONARY_TYPES_FOR_SPELLING = new String[] {
+        Dictionary.TYPE_MAIN,
+        Dictionary.TYPE_USER_HISTORY,
+        Dictionary.TYPE_USER,
+        Dictionary.TYPE_CONTACTS};
+
+    /**
+     * {@link Dictionary#TYPE_USER} is deprecated, except for the spelling service.
+     */
+    private static final String[] DICTIONARY_TYPES_FOR_SUGGESTIONS = new String[] {
+        Dictionary.TYPE_MAIN,
+        Dictionary.TYPE_USER_HISTORY,
+        Dictionary.TYPE_CONTACTS};
 
     public static final Map<String, Class<? extends ExpandableBinaryDictionary>>
             DICT_TYPE_TO_CLASS = new HashMap<>();
@@ -99,10 +118,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private static final String DICT_FACTORY_METHOD_NAME = "getDictionary";
     private static final Class<?>[] DICT_FACTORY_METHOD_ARG_TYPES =
             new Class[] { Context.class, Locale.class, File.class, String.class, String.class };
-
-    private static final String[] SUB_DICT_TYPES =
-            Arrays.copyOfRange(DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS, 1 /* start */,
-                    DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS.length);
 
     /**
      * Returns whether this facilitator is exactly for this list of locales.
@@ -404,7 +419,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             if (null == currentDictionaryGroupForLocale) {
                 continue;
             }
-            for (final String dictType : SUB_DICT_TYPES) {
+            for (final String dictType : SUB_DICTIONARY_TYPES) {
                 if (currentDictionaryGroupForLocale.hasDict(dictType, account)) {
                     dictTypeForLocale.add(dictType);
                 }
@@ -563,7 +578,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             mDictionaryGroups = new DictionaryGroup[] { mMostProbableDictionaryGroup };
         }
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
-            for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
+            for (final String dictType : ALL_DICTIONARY_TYPES) {
                 dictionaryGroup.closeDict(dictType);
             }
         }
@@ -648,8 +663,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         final String lowerCasedWord = word.toLowerCase(dictionaryGroup.mLocale);
         final String secondWord;
         if (wasAutoCapitalized) {
-            if (isValidWord(word, false /* ignoreCase */)
-                    && !isValidWord(lowerCasedWord, false /* ignoreCase */)) {
+            if (isValidSuggestionWord(word) && !isValidSuggestionWord(lowerCasedWord)) {
                 // If the word was auto-capitalized and exists only as a capitalized word in the
                 // dictionary, then we must not downcase it before registering it. For example,
                 // the name of the contacts in start-of-sentence position would come here with the
@@ -711,7 +725,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         final float[] weightOfLangModelVsSpatialModel =
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
-            for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
+            for (final String dictType : DICTIONARY_TYPES_FOR_SUGGESTIONS) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
                 if (null == dictionary) continue;
                 final float weightForLocale = composer.isBatchMode()
@@ -731,7 +745,15 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return suggestionResults;
     }
 
-    public boolean isValidWord(final String word, final boolean ignoreCase) {
+    public boolean isValidSpellingWord(final String word) {
+        return isValidWord(word, DICTIONARY_TYPES_FOR_SPELLING);
+    }
+
+    public boolean isValidSuggestionWord(final String word) {
+        return isValidWord(word, DICTIONARY_TYPES_FOR_SUGGESTIONS);
+    }
+
+    private boolean isValidWord(final String word, final String[] dictionariesToCheck) {
         if (TextUtils.isEmpty(word)) {
             return false;
         }
@@ -740,15 +762,13 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             if (dictionaryGroup.mLocale == null) {
                 continue;
             }
-            final String lowerCasedWord = word.toLowerCase(dictionaryGroup.mLocale);
-            for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
+            for (final String dictType : dictionariesToCheck) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
                 // Ideally the passed map would come out of a {@link java.util.concurrent.Future} and
                 // would be immutable once it's finished initializing, but concretely a null test is
                 // probably good enough for the time being.
                 if (null == dictionary) continue;
-                if (dictionary.isValidWord(word)
-                        || (ignoreCase && dictionary.isValidWord(lowerCasedWord))) {
+                if (dictionary.isValidWord(word)) {
                     return true;
                 }
             }
@@ -764,7 +784,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         int maxFreq = Dictionary.NOT_A_PROBABILITY;
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
-            for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
+            for (final String dictType : ALL_DICTIONARY_TYPES) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
                 if (dictionary == null) continue;
                 final int tempFreq;
@@ -820,7 +840,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         final ArrayList<Pair<String, DictionaryStats>> statsOfEnabledSubDicts = new ArrayList<>();
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
-            for (final String dictType : SUB_DICT_TYPES) {
+            for (final String dictType : SUB_DICTIONARY_TYPES) {
                 final ExpandableBinaryDictionary dictionary = dictionaryGroup.getSubDict(dictType);
                 if (dictionary == null) continue;
                 statsOfEnabledSubDicts.add(new Pair<>(dictType, dictionary.getDictionaryStats()));

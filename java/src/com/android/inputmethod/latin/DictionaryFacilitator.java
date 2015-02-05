@@ -135,7 +135,9 @@ public interface DictionaryFacilitator {
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
             final int inputStyle, final KeyboardLayout keyboardLayout);
 
-    boolean isValidWord(final String word, final boolean ignoreCase);
+    boolean isValidSpellingWord(final String word);
+
+    boolean isValidSuggestionWord(final String word);
 
     int getFrequency(final String word);
 
