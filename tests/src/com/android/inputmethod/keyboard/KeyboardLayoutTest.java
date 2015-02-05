@@ -45,8 +45,10 @@ public class KeyboardLayoutTest {
         assertEquals(0, keyboardLayout.getKeyXCoordinates().length);
         assertEquals(0, keyboardLayout.getKeyYCoordinates().length);
 
-        Key key1 = new Key("label1", 101, 102, "101", "101hint", 103, 104, 105, 106, 1100, 1101, 2, 2);
-        Key key2 = new Key("label2", 201, 202, "201", "201hint", 203, 204, 205, 206, 2100, 2201, 2, 2);
+        Key key1 = new Key("label1", 101, 102, "101", "101hint", 103, 104, 105, 106, 1100, 1101,
+                10, 10);
+        Key key2 = new Key("label2", 201, 103, "201", "201hint", 203, 204, 205, 206, 2100, 2101,
+                10, 10);
 
         ArrayList<Key> sortedKeys = new ArrayList<>(2);
         sortedKeys.add(key1);
@@ -57,5 +59,23 @@ public class KeyboardLayoutTest {
         assertEquals(2, keyboardLayout.getKeyHeights().length);
         assertEquals(2, keyboardLayout.getKeyXCoordinates().length);
         assertEquals(2, keyboardLayout.getKeyYCoordinates().length);
+
+        assertEquals(102, keyboardLayout.getKeyCodes()[0]);
+        // xCo + horizontalGap/2
+        assertEquals(105 + 5, keyboardLayout.getKeyXCoordinates()[0]);
+        assertEquals(106, keyboardLayout.getKeyYCoordinates()[0]);
+        // width - horizontalGap
+        assertEquals(1100 - 10, keyboardLayout.getKeyWidths()[0]);
+        // height - verticalGap
+        assertEquals(1101 - 10, keyboardLayout.getKeyHeights()[0]);
+
+        assertEquals(103, keyboardLayout.getKeyCodes()[1]);
+        // xCo + horizontalGap/2
+        assertEquals(205 + 5, keyboardLayout.getKeyXCoordinates()[1]);
+        assertEquals(206, keyboardLayout.getKeyYCoordinates()[1]);
+        // width - horizontalGap
+        assertEquals(2100 - 10, keyboardLayout.getKeyWidths()[1]);
+        // height - verticalGap
+        assertEquals(2101 - 10, keyboardLayout.getKeyHeights()[1]);
     }
 }

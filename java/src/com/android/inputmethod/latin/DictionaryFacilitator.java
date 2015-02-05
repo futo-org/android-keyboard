@@ -21,6 +21,7 @@ import android.util.Pair;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.keyboard.KeyboardLayout;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
@@ -131,7 +132,8 @@ public interface DictionaryFacilitator {
     // TODO: Revise the way to fusion suggestion results.
     SuggestionResults getSuggestionResults(final WordComposer composer,
             final NgramContext ngramContext, final long proximityInfoHandle,
-            final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId);
+            final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
+            final int inputStyle, final KeyboardLayout keyboardLayout);
 
     boolean isValidWord(final String word, final boolean ignoreCase);
 

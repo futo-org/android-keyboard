@@ -1520,7 +1520,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         mInputLogic.getSuggestedWords(mSettings.getCurrent(), keyboard.getProximityInfo(),
-                mKeyboardSwitcher.getKeyboardShiftMode(), inputStyle, sequenceNumber, callback);
+                mKeyboardSwitcher.getKeyboardShiftMode(), inputStyle, sequenceNumber, callback,
+                keyboard.getKeyboardLayout());
     }
 
     @Override

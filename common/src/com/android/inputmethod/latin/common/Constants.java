@@ -175,10 +175,12 @@ public final class Constants {
     public static final int MAX_CHARACTERS_FOR_RECAPITALIZATION = 1024 * 100;
 
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
+    // TODO: create a overlay and update the value appropriately for the new decoder.
     public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
 
     // (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram is supported in Java side. Needs to modify
     // MAX_PREV_WORD_COUNT_FOR_N_GRAM in native/jni/src/defines.h for suggestions.
+    // TODO: create a overlay and update the value appropriately for the new decoder.
     public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 3;
 
     // Key events coming any faster than this are long-presses.
@@ -329,6 +331,10 @@ public final class Constants {
      * and etc. to preallocate regions that contain gesture event points.
      */
     public static final int DEFAULT_GESTURE_POINTS_CAPACITY = 128;
+
+    public static final int MAX_IME_DECODER_RESULTS = 20;
+    public static final int DECODER_SCORE_SCALAR = 1000000;
+    public static final int DECODER_MAX_SCORE = 1000000000;
 
     private Constants() {
         // This utility class is not publicly instantiable.
