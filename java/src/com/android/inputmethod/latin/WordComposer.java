@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.define.DebugFlags;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,7 @@ import javax.annotation.Nonnull;
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
 public final class WordComposer {
-    private static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
+    private static final int MAX_WORD_LENGTH = DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH;
     private static final boolean DBG = DebugFlags.DEBUG_ENABLED;
 
     public static final int CAPS_MODE_OFF = 0;

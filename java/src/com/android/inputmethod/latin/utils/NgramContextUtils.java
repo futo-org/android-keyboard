@@ -18,7 +18,7 @@ package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
-import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.Arrays;
@@ -59,7 +59,8 @@ public final class NgramContextUtils {
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
         if (prev == null) return NgramContext.EMPTY_PREV_WORDS_INFO;
         final String[] w = SPACE_REGEX.split(prev);
-        final WordInfo[] prevWordsInfo = new WordInfo[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        final WordInfo[] prevWordsInfo =
+                new WordInfo[DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
         Arrays.fill(prevWordsInfo, WordInfo.EMPTY_WORD_INFO);
         for (int i = 0; i < prevWordsInfo.length; i++) {
             final int focusedWordIndex = w.length - n - i;

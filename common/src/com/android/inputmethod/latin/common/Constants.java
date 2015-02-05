@@ -173,15 +173,6 @@ public final class Constants {
     // right for this.
     public static final int MAX_CHARACTERS_FOR_RECAPITALIZATION = 1024 * 100;
 
-    // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
-    // TODO: create a overlay and update the value appropriately for the new decoder.
-    public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
-
-    // (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram is supported in Java side. Needs to modify
-    // MAX_PREV_WORD_COUNT_FOR_N_GRAM in native/jni/src/defines.h for suggestions.
-    // TODO: create a overlay and update the value appropriately for the new decoder.
-    public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 3;
-
     // Key events coming any faster than this are long-presses.
     public static final int LONG_PRESS_MILLISECONDS = 200;
     // TODO: Set this value appropriately.

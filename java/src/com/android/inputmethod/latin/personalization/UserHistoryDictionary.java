@@ -17,17 +17,14 @@
 package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.NgramContext;
-import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.define.ProductionFlags;
-import com.android.inputmethod.latin.settings.LocalSettingsConstants;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 
 import java.io.File;
@@ -102,7 +99,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
             @Nonnull final NgramContext ngramContext, final String word, final boolean isValid,
             final int timestamp, @Nonnull final DistracterFilter distracterFilter) {
-        if (word.length() > Constants.DICTIONARY_MAX_WORD_LENGTH) {
+        if (word.length() > DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH) {
             return;
         }
         userHistoryDictionary.updateEntriesForWordWithCheckingDistracter(ngramContext, word,
