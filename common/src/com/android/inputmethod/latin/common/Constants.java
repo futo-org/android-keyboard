@@ -163,7 +163,6 @@ public final class Constants {
     // TODO: replace the following constants with state in InputTransaction?
     public static final int NOT_A_COORDINATE = -1;
     public static final int SUGGESTION_STRIP_COORDINATE = -2;
-    public static final int SPELL_CHECKER_COORDINATE = -3;
     public static final int EXTERNAL_KEYBOARD_COORDINATE = -4;
 
     // A hint on how many characters to cache from the TextView. A good value of this is given by
@@ -214,8 +213,6 @@ public final class Constants {
     public static final int CODE_DASH = '-';
     public static final int CODE_SINGLE_QUOTE = '\'';
     public static final int CODE_DOUBLE_QUOTE = '"';
-    public static final int CODE_QUESTION_MARK = '?';
-    public static final int CODE_EXCLAMATION_MARK = '!';
     public static final int CODE_SLASH = '/';
     public static final int CODE_BACKSLASH = '\\';
     public static final int CODE_VERTICAL_BAR = '|';
