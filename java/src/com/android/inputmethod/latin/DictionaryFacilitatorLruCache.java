@@ -128,7 +128,7 @@ public class DictionaryFacilitatorLruCache {
     public DictionaryFacilitator get(final Locale locale) {
         DictionaryFacilitator dictionaryFacilitator = mLruCache.get(locale);
         if (dictionaryFacilitator != null) {
-            // dictionary falicitator for the locale is in the cache.
+            // dictionary facilitator for the locale is in the cache.
             return dictionaryFacilitator;
         }
         synchronized (mLock) {
