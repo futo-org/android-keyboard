@@ -475,7 +475,7 @@ public final class InputLogic {
         handler.cancelUpdateSuggestionStrip();
         ++mAutoCommitSequenceNumber;
         mConnection.beginBatchEdit();
-        if (!mWordComposer.isComposingWord()) {
+        if (mWordComposer.isComposingWord()) {
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
