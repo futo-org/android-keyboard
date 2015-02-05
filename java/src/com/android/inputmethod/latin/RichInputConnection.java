@@ -16,14 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import android.graphics.Color;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -91,8 +88,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private final StringBuilder mComposingText = new StringBuilder();
 
     /**
-     * This variable is a temporary object used in
-     * {@link #commitTextWithBackgroundColor(CharSequence,int,int,int)} to avoid object creation.
+     * This variable is a temporary object used in {@link #commitText(CharSequence,int)}
+     * to avoid object creation.
      */
     private SpannableStringBuilder mTempObjectForCommitText = new SpannableStringBuilder();
     /**
@@ -247,31 +244,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     /**
-     * Synonym of {@code commitTextWithBackgroundColor(text, newCursorPosition, Color.TRANSPARENT}.
+     * Calls {@link InputConnection#commitText(CharSequence, int)}.
+     *
      * @param text The text to commit. This may include styles.
-     * See {@link InputConnection#commitText(CharSequence, int)}.
      * @param newCursorPosition The new cursor position around the text.
-     * See {@link InputConnection#commitText(CharSequence, int)}.
      */
     public void commitText(final CharSequence text, final int newCursorPosition) {
-        commitTextWithBackgroundColor(text, newCursorPosition, Color.TRANSPARENT, text.length());
-    }
-
-    /**
-     * Calls {@link InputConnection#commitText(CharSequence, int)} with the given background color.
-     * @param text The text to commit. This may include styles.
-     * See {@link InputConnection#commitText(CharSequence, int)}.
-     * @param newCursorPosition The new cursor position around the text.
-     * See {@link InputConnection#commitText(CharSequence, int)}.
-     * @param color The background color to be attached. Set {@link Color#TRANSPARENT} to disable
-     * the background color. Note that this method specifies {@link BackgroundColorSpan} with
-     * {@link Spanned#SPAN_COMPOSING} flag, meaning that the background color persists until
-     * {@link #finishComposingText()} is called.
-     * @param coloredTextLength the length of text, in Java chars, which should be rendered with
-     * the given background color.
-     */
-    public void commitTextWithBackgroundColor(final CharSequence text, final int newCursorPosition,
-            final int color, final int coloredTextLength) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
@@ -283,18 +261,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mComposingText.setLength(0);
         mLastCommittedTextHasBackgroundColor = false;
         if (null != mIC) {
-            if (color == Color.TRANSPARENT) {
-                mIC.commitText(text, newCursorPosition);
-            } else {
-                mTempObjectForCommitText.clear();
-                mTempObjectForCommitText.append(text);
-                final BackgroundColorSpan backgroundColorSpan = new BackgroundColorSpan(color);
-                final int spanLength = Math.min(coloredTextLength, text.length());
-                mTempObjectForCommitText.setSpan(backgroundColorSpan, 0, spanLength,
-                        Spanned.SPAN_COMPOSING | Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                mIC.commitText(mTempObjectForCommitText, newCursorPosition);
-                mLastCommittedTextHasBackgroundColor = true;
-            }
+            mIC.commitText(text, newCursorPosition);
         }
     }
 
