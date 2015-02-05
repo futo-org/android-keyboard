@@ -94,12 +94,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * to avoid object creation.
      */
     private SpannableStringBuilder mTempObjectForCommitText = new SpannableStringBuilder();
-    /**
-     * This variable is used to track whether the last committed text had the background color or
-     * not.
-     * TODO: Omit this flag if possible.
-     */
-    private boolean mLastCommittedTextHasBackgroundColor = false;
 
     private final InputMethodService mParent;
     InputConnection mIC;
@@ -238,8 +232,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // it works, but it's wrong and should be fixed.
         mCommittedTextBeforeComposingText.append(mComposingText);
         mComposingText.setLength(0);
-        // TODO: Clear this flag in setComposingRegion() and setComposingText() as well if needed.
-        mLastCommittedTextHasBackgroundColor = false;
         if (null != mIC) {
             mIC.finishComposingText();
         }
@@ -261,7 +253,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mExpectedSelStart += text.length() - mComposingText.length();
         mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
-        mLastCommittedTextHasBackgroundColor = false;
         if (null != mIC) {
             mTempObjectForCommitText.clear();
             mTempObjectForCommitText.append(text);
@@ -286,27 +277,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             }
             mIC.commitText(mTempObjectForCommitText, newCursorPosition);
         }
-    }
-
-    /**
-     * Removes the background color from the highlighted text if necessary. Should be called while
-     * there is no on-going composing text.
-     *
-     * <p>CAVEAT: This method internally calls {@link InputConnection#finishComposingText()}.
-     * Be careful of any unexpected side effects.</p>
-     */
-    public void removeBackgroundColorFromHighlightedTextIfNecessary() {
-        // TODO: We haven't yet full tested if we really need to check this flag or not. Omit this
-        // flag if everything works fine without this condition.
-        if (!mLastCommittedTextHasBackgroundColor) {
-            return;
-        }
-        if (mComposingText.length() > 0) {
-            Log.e(TAG, "clearSpansWithComposingFlags should be called when composing text is " +
-                    "empty. mComposingText=" + mComposingText);
-            return;
-        }
-        finishComposingText();
     }
 
     public CharSequence getSelectedText(final int flags) {
@@ -936,8 +906,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
     }
 
-    private boolean mCursorAnchorInfoMonitorEnabled = false;
-
     /**
      * Requests the editor to call back {@link InputMethodManager#updateCursorAnchorInfo}.
      * @param enableMonitor {@code true} to request the editor to call back the method whenever the
@@ -952,23 +920,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public boolean requestCursorUpdates(final boolean enableMonitor,
             final boolean requestImmediateCallback) {
         mIC = mParent.getCurrentInputConnection();
-        final boolean scheduled;
-        if (null != mIC) {
-            scheduled = InputConnectionCompatUtils.requestCursorUpdates(mIC, enableMonitor,
-                    requestImmediateCallback);
-        } else {
-            scheduled = false;
+        if (mIC == null) {
+            return false;
         }
-        mCursorAnchorInfoMonitorEnabled = (scheduled && enableMonitor);
-        return scheduled;
-    }
-
-    /**
-     * @return {@code true} if the application reported that the monitor mode of
-     * {@link InputMethodService#onUpdateCursorAnchorInfo(android.view.inputmethod.CursorAnchorInfo)}
-     * is currently enabled.
-     */
-    public boolean isCursorAnchorInfoMonitorEnabled() {
-        return mCursorAnchorInfoMonitorEnabled;
+        return InputConnectionCompatUtils.requestCursorUpdates(
+                mIC, enableMonitor, requestImmediateCallback);
     }
 }

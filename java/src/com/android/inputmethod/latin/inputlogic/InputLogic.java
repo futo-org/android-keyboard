@@ -475,8 +475,6 @@ public final class InputLogic {
         ++mAutoCommitSequenceNumber;
         mConnection.beginBatchEdit();
         if (!mWordComposer.isComposingWord()) {
-            mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
-        } else {
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
@@ -767,10 +765,6 @@ public final class InputLogic {
             final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
-        if (!mWordComposer.isComposingWord()) {
-            mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
-        }
-
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
