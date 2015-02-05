@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.CharacterStyle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -32,6 +33,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.UnicodeSurrogate;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.inputlogic.PrivateCommandPerformer;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -261,7 +263,28 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mComposingText.setLength(0);
         mLastCommittedTextHasBackgroundColor = false;
         if (null != mIC) {
-            mIC.commitText(text, newCursorPosition);
+            mTempObjectForCommitText.clear();
+            mTempObjectForCommitText.append(text);
+            final CharacterStyle[] spans = mTempObjectForCommitText.getSpans(
+                    0, text.length(), CharacterStyle.class);
+            for (final CharacterStyle span : spans) {
+                final int spanStart = mTempObjectForCommitText.getSpanStart(span);
+                final int spanEnd = mTempObjectForCommitText.getSpanEnd(span);
+                final int spanFlags = mTempObjectForCommitText.getSpanFlags(span);
+                // We have to adjust the end of the span to include an additional character.
+                // This is to avoid splitting a unicode surrogate pair.
+                // See com.android.inputmethod.latin.common.Constants.UnicodeSurrogate
+                // See https://b.corp.google.com/issues/19255233
+                if (0 < spanEnd && spanEnd < mTempObjectForCommitText.length()) {
+                    final char spanEndChar = mTempObjectForCommitText.charAt(spanEnd - 1);
+                    final char nextChar = mTempObjectForCommitText.charAt(spanEnd);
+                    if (UnicodeSurrogate.isLowSurrogate(spanEndChar)
+                            && UnicodeSurrogate.isHighSurrogate(nextChar)) {
+                        mTempObjectForCommitText.setSpan(span, spanStart, spanEnd + 1, spanFlags);
+                    }
+                }
+            }
+            mIC.commitText(mTempObjectForCommitText, newCursorPosition);
         }
     }
 
