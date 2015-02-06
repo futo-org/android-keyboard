@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictDecoder.DictionaryBufferFactory;
 
 import java.io.File;
@@ -183,7 +183,7 @@ public final class BinaryDictIOUtils {
         dictDecoder.readHeader();
         int wordPos = 0;
         final int wordLen = word.codePointCount(0, word.length());
-        for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
+        for (int depth = 0; depth < DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
             if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
 
             do {

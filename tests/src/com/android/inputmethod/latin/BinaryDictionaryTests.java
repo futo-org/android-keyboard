@@ -23,8 +23,8 @@ import android.util.Pair;
 
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.common.CodePointUtils;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.FileUtils;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.WeightedString;
@@ -171,7 +171,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     private void testAddTooLongWord(final int formatVersion) {
         final BinaryDictionary binaryDictionary = getEmptyBinaryDictionary(formatVersion);
         final StringBuffer stringBuilder = new StringBuffer();
-        for (int i = 0; i < Constants.DICTIONARY_MAX_WORD_LENGTH; i++) {
+        for (int i = 0; i < DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH; i++) {
             stringBuilder.append('a');
         }
         final String validLongWord = stringBuilder.toString();

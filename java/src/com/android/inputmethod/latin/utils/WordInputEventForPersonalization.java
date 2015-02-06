@@ -20,8 +20,8 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.NgramContext;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.DistracterFilter.HandlingType;
 
@@ -37,9 +37,10 @@ public final class WordInputEventForPersonalization {
 
     public final int[] mTargetWord;
     public final int mPrevWordsCount;
-    public final int[][] mPrevWordArray = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
+    public final int[][] mPrevWordArray =
+            new int[DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
     public final boolean[] mIsPrevWordBeginningOfSentenceArray =
-            new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+            new boolean[DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     public final boolean mIsValid;
     // Time stamp in seconds.
     public final int mTimestamp;

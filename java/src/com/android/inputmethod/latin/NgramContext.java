@@ -19,8 +19,8 @@ package com.android.inputmethod.latin;
 import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,8 +111,8 @@ public class NgramContext {
     // Create next prevWordsInfo using current prevWordsInfo.
     @Nonnull
     public NgramContext getNextNgramContext(final WordInfo wordInfo) {
-        final int nextPrevWordCount = Math.min(Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM,
-                mPrevWordsCount + 1);
+        final int nextPrevWordCount = Math.min(
+                DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM, mPrevWordsCount + 1);
         final WordInfo[] prevWordsInfo = new WordInfo[nextPrevWordCount];
         prevWordsInfo[0] = wordInfo;
         System.arraycopy(mPrevWordsInfo, 0, prevWordsInfo, 1, nextPrevWordCount - 1);
