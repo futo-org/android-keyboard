@@ -31,7 +31,6 @@ import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
-import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;
 
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -57,7 +55,6 @@ import javax.annotation.Nullable;
  *
  * A class that extends this abstract class must have a static factory method named
  *   getDictionary(Context context, Locale locale, File dictFile, String dictNamePrefix)
- * @see DictionaryFacilitator#getSubDict(String,Context,Locale,File,String)
  */
 abstract public class ExpandableBinaryDictionary extends Dictionary {
     private static final boolean DEBUG = false;
@@ -172,33 +169,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     private static void asyncExecuteTaskWithLock(final Lock lock, final String executorName,
             final Runnable task) {
-        asyncPreCheckAndExecuteTaskWithLock(lock, null /* preCheckTask */, executorName, task);
-    }
-
-    private void asyncPreCheckAndExecuteTaskWithWriteLock(
-            final Callable<Boolean> preCheckTask, final Runnable task) {
-        asyncPreCheckAndExecuteTaskWithLock(mLock.writeLock(), preCheckTask,
-                mDictName /* executorName */, task);
-
-    }
-
-    // Execute task with lock when the result of preCheckTask is true or preCheckTask is null.
-    private static void asyncPreCheckAndExecuteTaskWithLock(final Lock lock,
-            final Callable<Boolean> preCheckTask, final String executorName, final Runnable task) {
-        final String tag = TAG;
         ExecutorUtils.getExecutor(executorName).execute(new Runnable() {
             @Override
             public void run() {
-                if (preCheckTask != null) {
-                    try {
-                        if (!preCheckTask.call().booleanValue()) {
-                            return;
-                        }
-                    } catch (final Exception e) {
-                        Log.e(tag, "The pre check task throws an exception.", e);
-                        return;
-                    }
-                }
                 lock.lock();
                 try {
                     task.run();
@@ -305,17 +278,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
     }
 
-    private void updateDictionaryWithWriteLockIfWordIsNotADistracter(
-            @Nonnull final Runnable updateTask,
-            @Nonnull final String word, @Nonnull final DistracterFilter distracterFilter) {
+    private void updateDictionaryWithWriteLock(@Nonnull final Runnable updateTask) {
         reloadDictionaryIfRequired();
-        final Callable<Boolean> preCheckTask = new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return !distracterFilter.isDistracterToWordsInDictionaries(
-                        NgramContext.EMPTY_PREV_WORDS_INFO, word, mLocale);
-            }
-        };
         final Runnable task = new Runnable() {
             @Override
             public void run() {
@@ -326,23 +290,22 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 updateTask.run();
             }
         };
-        asyncPreCheckAndExecuteTaskWithWriteLock(preCheckTask, task);
+        asyncExecuteTaskWithWriteLock(task);
     }
 
     /**
      * Adds unigram information of a word to the dictionary. May overwrite an existing entry.
      */
-    public void addUnigramEntryWithCheckingDistracter(final String word, final int frequency,
+    public void addUnigramEntry(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
-            final boolean isPossiblyOffensive, final int timestamp,
-            @Nonnull final DistracterFilter distracterFilter) {
-        updateDictionaryWithWriteLockIfWordIsNotADistracter(new Runnable() {
+            final boolean isPossiblyOffensive, final int timestamp) {
+        updateDictionaryWithWriteLock(new Runnable() {
             @Override
             public void run() {
                 addUnigramLocked(word, frequency, shortcutTarget, shortcutFreq,
                         isNotAWord, isPossiblyOffensive, timestamp);
             }
-        }, word, distracterFilter);
+        });
     }
 
     protected void addUnigramLocked(final String word, final int frequency,
@@ -430,12 +393,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Update dictionary for the word with the ngramContext if the word is not a distracter.
+     * Update dictionary for the word with the ngramContext.
      */
-    public void updateEntriesForWordWithCheckingDistracter(@Nonnull final NgramContext ngramContext,
-            final String word, final boolean isValidWord, final int count, final int timestamp,
-            @Nonnull final DistracterFilter distracterFilter) {
-        updateDictionaryWithWriteLockIfWordIsNotADistracter(new Runnable() {
+    public void updateEntriesForWord(@Nonnull final NgramContext ngramContext,
+            final String word, final boolean isValidWord, final int count, final int timestamp) {
+        updateDictionaryWithWriteLock(new Runnable() {
             @Override
             public void run() {
                 final BinaryDictionary binaryDictionary = getBinaryDictionary();
@@ -450,7 +412,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     }
                 }
             }
-        }, word, distracterFilter);
+        });
     }
 
     public interface UpdateEntriesForInputEventsCallback {
@@ -653,7 +615,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Reloads the dictionary. Access is controlled on a per dictionary file basis.
      */
-    private final void asyncReloadDictionary() {
+    private void asyncReloadDictionary() {
         final AtomicBoolean isReloading = mIsReloading;
         if (!isReloading.compareAndSet(false, true)) {
             return;

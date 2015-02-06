@@ -21,7 +21,6 @@ import android.content.Context;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.common.FileUtils;
-import com.android.inputmethod.latin.utils.DistracterFilter;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -101,8 +100,7 @@ public class UserHistoryDictionaryTestsHelper {
             final List<String> words, final int timestamp) {
         NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
         for (final String word : words) {
-            UserHistoryDictionary.addToDictionary(dict, ngramContext, word, true, timestamp,
-                    DistracterFilter.EMPTY_DISTRACTER_FILTER);
+            UserHistoryDictionary.addToDictionary(dict, ngramContext, word, true, timestamp);
             ngramContext = ngramContext.getNextNgramContext(new WordInfo(word));
         }
     }

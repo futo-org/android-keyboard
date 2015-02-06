@@ -20,7 +20,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
-import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.KeyboardLayout;
@@ -29,9 +28,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
-import com.android.inputmethod.latin.utils.DistracterFilter;
-import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
-import com.android.inputmethod.latin.utils.DistracterFilterCheckingIsInDictionary;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
@@ -42,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,7 +71,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionaries = new CountDownLatch(0);
     // To synchronize assigning mDictionaryGroup to ensure closing dictionaries.
     private final Object mLock = new Object();
-    private final DistracterFilter mDistracterFilter;
 
     public static final Map<String, Class<? extends ExpandableBinaryDictionary>>
             DICT_TYPE_TO_CLASS = new HashMap<>();
@@ -233,15 +227,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     public DictionaryFacilitatorImpl() {
-        mDistracterFilter = DistracterFilter.EMPTY_DISTRACTER_FILTER;
-    }
-
-    public DictionaryFacilitatorImpl(final Context context) {
-        mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context);
-    }
-
-    public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes) {
-        mDistracterFilter.updateEnabledSubtypes(enabledSubtypes);
     }
 
     // TODO: remove this, it's confusing with seamless multiple language switching
@@ -545,7 +530,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 dictionaryGroup.closeDict(dictType);
             }
         }
-        mDistracterFilter.close();
     }
 
     @UsedForTesting
@@ -659,9 +643,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
         UserHistoryDictionary.addToDictionary(userHistoryDictionary, ngramContext, secondWord,
-                isValid, timeStampInSeconds,
-                new DistracterFilterCheckingIsInDictionary(
-                        mDistracterFilter, userHistoryDictionary));
+                isValid, timeStampInSeconds);
     }
 
     private void removeWord(final String dictName, final String word) {
