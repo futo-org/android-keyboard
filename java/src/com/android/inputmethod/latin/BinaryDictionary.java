@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
@@ -319,9 +320,9 @@ public final class BinaryDictionary extends Dictionary {
         final int count = session.mOutputSuggestionCount[0];
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         for (int j = 0; j < count; ++j) {
-            final int start = j * Constants.DICTIONARY_MAX_WORD_LENGTH;
+            final int start = j * DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH;
             int len = 0;
-            while (len < Constants.DICTIONARY_MAX_WORD_LENGTH
+            while (len < DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH
                     && session.mOutputCodePoints[start + len] != 0) {
                 ++len;
             }
@@ -390,7 +391,7 @@ public final class BinaryDictionary extends Dictionary {
             return null;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
-        final int[] outCodePoints = new int[Constants.DICTIONARY_MAX_WORD_LENGTH];
+        final int[] outCodePoints = new int[DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH];
         final boolean[] outFlags = new boolean[FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT];
         final int[] outProbabilityInfo =
                 new int[FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT];
@@ -431,7 +432,7 @@ public final class BinaryDictionary extends Dictionary {
      * If token is 0, this method newly starts iterating the dictionary.
      */
     public GetNextWordPropertyResult getNextWordProperty(final int token) {
-        final int[] codePoints = new int[Constants.DICTIONARY_MAX_WORD_LENGTH];
+        final int[] codePoints = new int[DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH];
         final boolean[] isBeginningOfSentence = new boolean[1];
         final int nextToken = getNextWordNative(mNativeDict, token, codePoints,
                 isBeginningOfSentence);

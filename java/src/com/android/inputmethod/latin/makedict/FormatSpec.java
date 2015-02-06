@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -186,7 +186,7 @@ public final class FormatSpec {
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
-    static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
+    static final int MAX_WORD_LENGTH = DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH;
 
     // These flags are used only in the static dictionary.
     static final int MASK_CHILDREN_ADDRESS_TYPE = 0xC0;

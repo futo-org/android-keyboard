@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 
 import java.util.ArrayList;
@@ -387,7 +387,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             final ArrayList<WeightedString> shortcutTargets,
             final boolean isNotAWord, final boolean isPossiblyOffensive) {
         assert(probabilityInfo.mProbability <= FormatSpec.MAX_TERMINAL_FREQUENCY);
-        if (word.length >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
+        if (word.length >= DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH) {
             MakedictLog.w("Ignoring a word that is too long: word.length = " + word.length);
             return;
         }

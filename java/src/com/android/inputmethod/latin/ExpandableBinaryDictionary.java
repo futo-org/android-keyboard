@@ -22,8 +22,8 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.ComposedData;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.FileUtils;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
@@ -73,7 +73,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * The maximum length of a word in this dictionary.
      */
-    protected static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
+    protected static final int MAX_WORD_LENGTH =
+            DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH;
 
     private static final int DICTIONARY_FORMAT_VERSION = FormatSpec.VERSION4;
 

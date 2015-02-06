@@ -27,8 +27,8 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.AssetFileAddress;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.LocaleUtils;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -450,7 +450,7 @@ public class DictionaryInfoUtils {
             return false;
         }
         final int length = text.length();
-        if (length > Constants.DICTIONARY_MAX_WORD_LENGTH) {
+        if (length > DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH) {
             return false;
         }
         int i = 0;
