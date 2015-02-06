@@ -23,12 +23,9 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 @LargeTest
 public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
-    static final int MAX_CACHE_SIZE = 2;
-    static final int MAX_CACHE_SIZE_LARGE = 5;
-
     public void testCacheSize() {
         final DictionaryFacilitatorLruCache cache =
-                new DictionaryFacilitatorLruCache(getContext(), MAX_CACHE_SIZE, "");
+                new DictionaryFacilitatorLruCache(getContext(), "");
 
         assertEquals(0, cache.getCachedLocalesForTesting().size());
         assertNotNull(cache.get(Locale.US));
@@ -42,12 +39,9 @@ public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
     }
 
     public void testGetFacilitator() {
-        testGetFacilitator(new DictionaryFacilitatorLruCache(getContext(), MAX_CACHE_SIZE, ""));
-        testGetFacilitator(new DictionaryFacilitatorLruCache(
-                getContext(), MAX_CACHE_SIZE_LARGE, ""));
-    }
+        final DictionaryFacilitatorLruCache cache =
+                new DictionaryFacilitatorLruCache(getContext(), "");
 
-    private static void testGetFacilitator(final DictionaryFacilitatorLruCache cache) {
         final DictionaryFacilitator dictionaryFacilitatorEnUs = cache.get(Locale.US);
         assertNotNull(dictionaryFacilitatorEnUs);
         assertTrue(dictionaryFacilitatorEnUs.isForLocales(new Locale[] { Locale.US }));
@@ -62,13 +56,9 @@ public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
     }
 
     public void testSetUseContactsDictionary() {
-        testSetUseContactsDictionary(new DictionaryFacilitatorLruCache(
-                getContext(), MAX_CACHE_SIZE, ""));
-        testSetUseContactsDictionary(new DictionaryFacilitatorLruCache(
-                getContext(), MAX_CACHE_SIZE_LARGE, ""));
-    }
+        final DictionaryFacilitatorLruCache cache =
+                new DictionaryFacilitatorLruCache(getContext(), "");
 
-    private static void testSetUseContactsDictionary(final DictionaryFacilitatorLruCache cache) {
         assertNull(cache.get(Locale.US).getSubDictForTesting(Dictionary.TYPE_CONTACTS));
         cache.setUseContactsDictionary(true /* useContactsDictionary */);
         assertNotNull(cache.get(Locale.US).getSubDictForTesting(Dictionary.TYPE_CONTACTS));

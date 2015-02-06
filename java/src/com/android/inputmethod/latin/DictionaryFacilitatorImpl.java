@@ -342,16 +342,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
-    public void resetDictionaries(final Context context, final Locale[] newLocales,
-            final boolean useContactsDict, final boolean usePersonalizedDicts,
-            final boolean forceReloadMainDictionary,
-            @Nullable final String account,
-            final DictionaryInitializationListener listener) {
-        resetDictionariesWithDictNamePrefix(context, newLocales, useContactsDict,
-                usePersonalizedDicts, forceReloadMainDictionary, listener, "" /* dictNamePrefix */,
-                account);
-    }
-
     @Nullable
     static DictionaryGroup findDictionaryGroupWithLocale(final DictionaryGroup[] dictionaryGroups,
             final Locale locale) {
@@ -363,14 +353,15 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return null;
     }
 
-    public void resetDictionariesWithDictNamePrefix(final Context context,
+    public void resetDictionaries(
+            final Context context,
             final Locale[] newLocales,
             final boolean useContactsDict,
             final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
-            @Nullable final DictionaryInitializationListener listener,
+            @Nullable final String account,
             final String dictNamePrefix,
-            @Nullable final String account) {
+            @Nullable final DictionaryInitializationListener listener) {
         final HashMap<Locale, ArrayList<String>> existingDictionariesToCleanup = new HashMap<>();
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
         final HashSet<String> subDictTypesToUse = new HashSet<>();
