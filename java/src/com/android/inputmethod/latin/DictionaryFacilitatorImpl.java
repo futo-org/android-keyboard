@@ -746,10 +746,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return maxFreq;
     }
 
+    @Override
     public int getFrequency(final String word) {
         return getFrequencyInternal(word, false /* isGettingMaxFrequencyOfExactMatches */);
     }
 
+    @Override
     public int getMaxFrequencyOfExactMatches(final String word) {
         return getFrequencyInternal(word, true /* isGettingMaxFrequencyOfExactMatches */);
     }
@@ -792,5 +794,14 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
         return statsOfEnabledSubDicts;
+    }
+
+    @Override
+    public void addOrIncrementTerm(String fileName,
+            String word,
+            NgramContext ngramContext,
+            int increment,
+            int timeStampInSeconds) {
+        // Do nothing.
     }
 }

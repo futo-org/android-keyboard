@@ -171,4 +171,10 @@ public interface DictionaryFacilitator {
     void dumpDictionaryForDebug(final String dictName);
 
     ArrayList<Pair<String, DictionaryStats>> getStatsOfEnabledSubDicts();
+
+    void addOrIncrementTerm(String fileName,
+            String finalWordToBeAdded,
+            NgramContext ngramContext,
+            int increment,
+            int timeStampInSeconds);
 }

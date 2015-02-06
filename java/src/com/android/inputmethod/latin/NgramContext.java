@@ -108,7 +108,9 @@ public class NgramContext {
         mPrevWordsCount = prevWordsInfo.length;
     }
 
-    // Create next prevWordsInfo using current prevWordsInfo.
+    /**
+     * Create next prevWordsInfo using current prevWordsInfo.
+     */
     @Nonnull
     public NgramContext getNextNgramContext(final WordInfo wordInfo) {
         final int nextPrevWordCount = Math.min(
