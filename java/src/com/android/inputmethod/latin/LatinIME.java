@@ -128,7 +128,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator =
-      DictionaryFacilitatorProvider.newDictionaryFacilitator(this /* context */);
+            DictionaryFacilitatorProvider.newDictionaryFacilitator(this /* context */);
     final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
@@ -679,7 +679,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mDictionaryFacilitator.resetDictionaries(this /* context */, locales,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
                 false /* forceReloadMainDictionary */,
-                settingsValues.mAccount,
+                settingsValues.mAccount, "" /* dictNamePrefix */,
                 this /* DictionaryInitializationListener */);
         if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
             mInputLogic.mSuggest.setAutoCorrectionThreshold(
@@ -697,7 +697,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mDictionaryFacilitator.getLocales(), settingsValues.mUseContactsDict,
                 settingsValues.mUsePersonalizedDicts,
                 true /* forceReloadMainDictionary */,
-                settingsValues.mAccount,
+                settingsValues.mAccount, "" /* dictNamePrefix */,
                 this /* DictionaryInitializationListener */);
     }
 
@@ -1810,7 +1810,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mDictionaryFacilitator.resetDictionaries(this, new Locale[] { locale },
             settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
             false /* forceReloadMainDictionary */,
-            settingsValues.mAccount,
+            settingsValues.mAccount, "", /* dictionaryNamePrefix */
             this /* DictionaryInitializationListener */);
     }
 

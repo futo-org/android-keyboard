@@ -28,10 +28,11 @@ import android.util.LruCache;
 
 /**
  * Cache for dictionary facilitators of multiple locales.
- * This class automatically creates and releases facilitator instances using LRU policy.
+ * This class automatically creates and releases up to 3 facilitator instances using LRU policy.
  */
 public class DictionaryFacilitatorLruCache {
-    static final String TAG = DictionaryFacilitatorLruCache.class.getSimpleName();
+    private static final String TAG = "DictionaryFacilitatorLruCache";
+    private static final int MAX_DICTIONARY_FACILITATOR_COUNT = 3;
     private static final int WAIT_FOR_LOADING_MAIN_DICT_IN_MILLISECONDS = 1000;
     private static final int MAX_RETRY_COUNT_FOR_WAITING_FOR_LOADING_DICT = 5;
 
@@ -74,10 +75,10 @@ public class DictionaryFacilitatorLruCache {
     private final Object mLock = new Object();
     private boolean mUseContactsDictionary = false;
 
-    public DictionaryFacilitatorLruCache(final Context context, final int maxSize,
-            final String dictionaryNamePrefix) {
+    public DictionaryFacilitatorLruCache(final Context context, final String dictionaryNamePrefix) {
         mContext = context;
-        mLruCache = new DictionaryFacilitatorLruCacheInner(mCachedLocales, maxSize);
+        mLruCache = new DictionaryFacilitatorLruCacheInner(
+                mCachedLocales, MAX_DICTIONARY_FACILITATOR_COUNT);
         mDictionaryNamePrefix = dictionaryNamePrefix;
     }
 
@@ -103,11 +104,10 @@ public class DictionaryFacilitatorLruCache {
     private void resetDictionariesForLocaleLocked(final DictionaryFacilitator dictionaryFacilitator,
             final Locale locale) {
         // Note: Given that personalized dictionaries are not used here; we can pass null account.
-        dictionaryFacilitator.resetDictionariesWithDictNamePrefix(mContext, new Locale[] { locale },
+        dictionaryFacilitator.resetDictionaries(mContext, new Locale[]{locale},
                 mUseContactsDictionary, false /* usePersonalizedDicts */,
-                false /* forceReloadMainDictionary */, null /* listener */,
-                mDictionaryNamePrefix,
-                null /* account */);
+                false /* forceReloadMainDictionary */, null /* account */,
+                mDictionaryNamePrefix, null /* listener */);
     }
 
     public void setUseContactsDictionary(final boolean useContectsDictionary) {

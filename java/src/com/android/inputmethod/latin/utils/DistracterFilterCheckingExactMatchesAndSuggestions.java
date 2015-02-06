@@ -53,7 +53,6 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
             DistracterFilterCheckingExactMatchesAndSuggestions.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final int MAX_DICTIONARY_FACILITATOR_CACHE_SIZE = 3;
     private static final int MAX_DISTRACTERS_CACHE_SIZE = 1024;
 
     private final Context mContext;
@@ -81,8 +80,8 @@ public class DistracterFilterCheckingExactMatchesAndSuggestions implements Distr
         mContext = context;
         mLocaleToSubtypeCache = new ConcurrentHashMap<>();
         mLocaleToKeyboardCache = new ConcurrentHashMap<>();
-        mDictionaryFacilitatorLruCache = new DictionaryFacilitatorLruCache(context,
-                MAX_DICTIONARY_FACILITATOR_CACHE_SIZE, "" /* dictionaryNamePrefix */);
+        mDictionaryFacilitatorLruCache = new DictionaryFacilitatorLruCache(
+                context, "" /* dictionaryNamePrefix */);
         mDistractersCache = new LruCache<>(MAX_DISTRACTERS_CACHE_SIZE);
     }
 

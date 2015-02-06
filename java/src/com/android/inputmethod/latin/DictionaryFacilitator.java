@@ -113,24 +113,22 @@ public interface DictionaryFacilitator {
 
     boolean isConfidentAboutCurrentLanguageBeing(final Locale mLocale);
 
-    void resetDictionaries(final Context context, final Locale[] newLocales,
-            final boolean useContactsDict, final boolean usePersonalizedDicts,
-            final boolean forceReloadMainDictionary,
-            @Nullable final String account,
-            final DictionaryInitializationListener listener);
-
-    void resetDictionariesWithDictNamePrefix(final Context context,
+    void resetDictionaries(
+            final Context context,
             final Locale[] newLocales,
             final boolean useContactsDict,
             final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
-            @Nullable final DictionaryInitializationListener listener,
+            @Nullable final String account,
             final String dictNamePrefix,
-            @Nullable final String account);
+            @Nullable final DictionaryInitializationListener listener);
 
     @UsedForTesting
-    void resetDictionariesForTesting(final Context context, final Locale[] locales,
-            final ArrayList<String> dictionaryTypes, final HashMap<String, File> dictionaryFiles,
+    void resetDictionariesForTesting(
+            final Context context,
+            final Locale[] locales,
+            final ArrayList<String> dictionaryTypes,
+            final HashMap<String, File> dictionaryFiles,
             final Map<String, Map<String, String>> additionalDictAttributes,
             @Nullable final String account);
 

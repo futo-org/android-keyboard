@@ -67,10 +67,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     // TODO: Make each spell checker session has its own session id.
     private final ConcurrentLinkedQueue<Integer> mSessionIdPool = new ConcurrentLinkedQueue<>();
 
-    private static final int MAX_DICTIONARY_FACILITATOR_COUNT = 3;
     private final DictionaryFacilitatorLruCache mDictionaryFacilitatorCache =
-            new DictionaryFacilitatorLruCache(this /* context */, MAX_DICTIONARY_FACILITATOR_COUNT,
-                    DICTIONARY_NAME_PREFIX);
+            new DictionaryFacilitatorLruCache(this /* context */, DICTIONARY_NAME_PREFIX);
     private final ConcurrentHashMap<Locale, Keyboard> mKeyboardCache = new ConcurrentHashMap<>();
 
     // The threshold for a suggestion to be considered "recommended".
