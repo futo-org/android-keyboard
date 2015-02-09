@@ -782,8 +782,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         int prevWordCount = 0;
         for (int i = 0; i < inputEvents.length; i++) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
-            inputEvents[i] = new WordInputEventForPersonalization(word, ngramContext,
-                    true /* isValid */, mCurrentTime);
+            inputEvents[i] = new WordInputEventForPersonalization(word, ngramContext, mCurrentTime);
             unigrams.add(word);
             if (prevWordCount >= 2) {
                 final Pair<String, String> prevWordsPair = bigrams.get(bigrams.size() - 1);

@@ -128,7 +128,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator =
-            DictionaryFacilitatorProvider.newDictionaryFacilitator(this /* context */);
+            DictionaryFacilitatorProvider.newDictionaryFacilitator();
     final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
@@ -608,8 +608,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!mHandler.hasPendingReopenDictionaries()) {
             resetDictionaryFacilitator(locales);
         }
-        mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
-                true /* allowsImplicitlySelectedSubtypes */));
         refreshPersonalizationDictionarySession(currentSettingsValues);
         resetDictionaryFacilitatorIfNecessary();
         mStatsUtilsManager.onLoadSettings(this /* context */, currentSettingsValues,

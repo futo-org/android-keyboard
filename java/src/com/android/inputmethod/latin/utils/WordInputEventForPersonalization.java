@@ -23,7 +23,6 @@ import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
-import com.android.inputmethod.latin.utils.DistracterFilter.HandlingType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,17 +40,15 @@ public final class WordInputEventForPersonalization {
             new int[DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
     public final boolean[] mIsPrevWordBeginningOfSentenceArray =
             new boolean[DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    public final boolean mIsValid;
     // Time stamp in seconds.
     public final int mTimestamp;
 
     @UsedForTesting
     public WordInputEventForPersonalization(final CharSequence targetWord,
-            final NgramContext ngramContext, final boolean isValid, final int timestamp) {
+            final NgramContext ngramContext, final int timestamp) {
         mTargetWord = StringUtils.toCodePointArray(targetWord);
         mPrevWordsCount = ngramContext.getPrevWordCount();
         ngramContext.outputToArray(mPrevWordArray, mIsPrevWordBeginningOfSentenceArray);
-        mIsValid = isValid;
         mTimestamp = timestamp;
     }
 
@@ -59,8 +56,7 @@ public final class WordInputEventForPersonalization {
     // objects.
     public static ArrayList<WordInputEventForPersonalization> createInputEventFrom(
             final List<String> tokens, final int timestamp,
-            final SpacingAndPunctuations spacingAndPunctuations, final Locale locale,
-            final DistracterFilter distracterFilter) {
+            final SpacingAndPunctuations spacingAndPunctuations, final Locale locale) {
         final ArrayList<WordInputEventForPersonalization> inputEvents = new ArrayList<>();
         final int N = tokens.size();
         NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
@@ -89,7 +85,7 @@ public final class WordInputEventForPersonalization {
             }
             final WordInputEventForPersonalization inputEvent =
                     detectWhetherVaildWordOrNotAndGetInputEvent(
-                            ngramContext, tempWord, timestamp, locale, distracterFilter);
+                            ngramContext, tempWord, timestamp, locale);
             if (inputEvent == null) {
                 continue;
             }
@@ -101,19 +97,10 @@ public final class WordInputEventForPersonalization {
 
     private static WordInputEventForPersonalization detectWhetherVaildWordOrNotAndGetInputEvent(
             final NgramContext ngramContext, final String targetWord, final int timestamp,
-            final Locale locale, final DistracterFilter distracterFilter) {
+            final Locale locale) {
         if (locale == null) {
             return null;
         }
-        final int wordHandlingType = distracterFilter.getWordHandlingType(ngramContext,
-                targetWord, locale);
-        final String word = HandlingType.shouldBeLowerCased(wordHandlingType) ?
-                targetWord.toLowerCase(locale) : targetWord;
-        if (distracterFilter.isDistracterToWordsInDictionaries(ngramContext, targetWord, locale)) {
-            // The word is a distracter.
-            return null;
-        }
-        return new WordInputEventForPersonalization(word, ngramContext,
-                !HandlingType.shouldBeHandledAsOov(wordHandlingType), timestamp);
+        return new WordInputEventForPersonalization(targetWord, ngramContext, timestamp);
     }
 }

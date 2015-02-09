@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.util.Pair;
-import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.KeyboardLayout;
@@ -28,7 +27,6 @@ import com.android.inputmethod.latin.utils.SuggestionResults;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -89,8 +87,6 @@ public interface DictionaryFacilitator {
     interface DictionaryInitializationListener {
         void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
     }
-
-    void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes);
 
     // TODO: remove this, it's confusing with seamless multiple language switching
     void setIsMonolingualUser(final boolean isMonolingualUser);

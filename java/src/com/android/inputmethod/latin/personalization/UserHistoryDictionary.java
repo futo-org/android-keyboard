@@ -25,7 +25,6 @@ import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.define.ProductionFlags;
-import com.android.inputmethod.latin.utils.DistracterFilter;
 
 import java.io.File;
 import java.util.Locale;
@@ -94,15 +93,14 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
      * @param word the word the user inputted
      * @param isValid whether the word is valid or not
      * @param timestamp the timestamp when the word has been inputted
-     * @param distracterFilter the filter to check whether the word is a distracter
      */
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
             @Nonnull final NgramContext ngramContext, final String word, final boolean isValid,
-            final int timestamp, @Nonnull final DistracterFilter distracterFilter) {
+            final int timestamp) {
         if (word.length() > DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH) {
             return;
         }
-        userHistoryDictionary.updateEntriesForWordWithCheckingDistracter(ngramContext, word,
-                isValid, 1 /* count */, timestamp, distracterFilter);
+        userHistoryDictionary.updateEntriesForWord(ngramContext, word,
+                isValid, 1 /* count */, timestamp);
     }
 }

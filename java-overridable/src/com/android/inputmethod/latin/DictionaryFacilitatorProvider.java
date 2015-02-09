@@ -16,17 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
-
 /**
  * Factory for instantiating DictionaryFacilitator objects.
  */
 public class DictionaryFacilitatorProvider {
     public static DictionaryFacilitator newDictionaryFacilitator() {
         return new DictionaryFacilitatorImpl();
-    }
-
-    public static DictionaryFacilitator newDictionaryFacilitator(final Context context) {
-        return new DictionaryFacilitatorImpl(context);
     }
 }
