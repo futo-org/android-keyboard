@@ -16,23 +16,16 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.ContentObserver;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
-import android.os.SystemClock;
-import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.ExternallyReferenced;
-import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.ContactsManager.ContactsChangedListener;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.personalization.AccountUtils;
-import com.android.inputmethod.latin.utils.ExecutorUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,11 +34,8 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
-
-    private static final String[] PROJECTION = {BaseColumns._ID, Contacts.DISPLAY_NAME};
-    private static final String[] PROJECTION_ID_ONLY = {BaseColumns._ID};
-
+public class ContactsBinaryDictionary extends ExpandableBinaryDictionary
+        implements ContactsChangedListener {
     private static final String TAG = ContactsBinaryDictionary.class.getSimpleName();
     private static final String NAME = "contacts";
 
@@ -53,35 +43,18 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private static final boolean DEBUG_DUMP = false;
 
     /**
-     * Frequency for contacts information into the dictionary
-     */
-    private static final int FREQUENCY_FOR_CONTACTS = 40;
-    private static final int FREQUENCY_FOR_CONTACTS_BIGRAM = 90;
-
-    /** The maximum number of contacts that this dictionary supports. */
-    private static final int MAX_CONTACT_COUNT = 10000;
-
-    private static final int INDEX_NAME = 1;
-
-    /** The number of contacts in the most recent dictionary rebuild. */
-    private int mContactCountAtLastRebuild = 0;
-
-    /** The hash code of ArrayList of contacts names in the most recent dictionary rebuild. */
-    private int mHashCodeAtLastRebuild = 0;
-
-    private ContentObserver mObserver;
-
-    /**
      * Whether to use "firstname lastname" in bigram predictions.
      */
     private final boolean mUseFirstLastBigrams;
+    private final ContactsManager mContactsManager;
 
     protected ContactsBinaryDictionary(final Context context, final Locale locale,
             final File dictFile, final String name) {
         super(context, getDictName(name, locale, dictFile), locale, Dictionary.TYPE_CONTACTS,
                 dictFile);
-        mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
-        registerObserver(context);
+        mUseFirstLastBigrams = ContactsDictionaryUtils.useFirstLastBigramsForLocale(locale);
+        mContactsManager = new ContactsManager(context);
+        mContactsManager.registerForUpdates(this /* listener */);
         reloadDictionaryIfRequired();
     }
 
@@ -92,34 +65,17 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         return new ContactsBinaryDictionary(context, locale, dictFile, dictNamePrefix + NAME);
     }
 
-    private synchronized void registerObserver(final Context context) {
-        if (mObserver != null) return;
-        ContentResolver cres = context.getContentResolver();
-        cres.registerContentObserver(Contacts.CONTENT_URI, true, mObserver =
-                new ContentObserver(null) {
-                    @Override
-                    public void onChange(boolean self) {
-                        ExecutorUtils.getExecutor("Check Contacts").execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (haveContentsChanged()) {
-                                    setNeedsToRecreate();
-                                }
-                            }
-                        });
-                    }
-                });
-    }
-
     @Override
     public synchronized void close() {
-        if (mObserver != null) {
-            mContext.getContentResolver().unregisterContentObserver(mObserver);
-            mObserver = null;
-        }
+        mContactsManager.close();
         super.close();
     }
 
+    /**
+     * Typically called whenever the dictionary is created for the first time or
+     * recreated when we think that there are updates to the dictionary.
+     * This is called asynchronously.
+     */
     @Override
     public void loadInitialContentsLocked() {
         loadDeviceAccountsEmailAddressesLocked();
@@ -128,6 +84,9 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         loadDictionaryForUriLocked(Contacts.CONTENT_URI);
     }
 
+    /**
+     * Loads device accounts to the dictionary.
+     */
     private void loadDeviceAccountsEmailAddressesLocked() {
         final List<String> accountVocabulary =
                 AccountUtils.getDeviceAccountsEmailAddresses(mContext);
@@ -139,80 +98,25 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 Log.d(TAG, "loadAccountVocabulary: " + word);
             }
             runGCIfRequiredLocked(true /* mindsBlockByGC */);
-            addUnigramLocked(word, FREQUENCY_FOR_CONTACTS,
+            addUnigramLocked(word, ContactsDictionaryConstants.FREQUENCY_FOR_CONTACTS,
                     false /* isNotAWord */, false /* isPossiblyOffensive */,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP);
         }
     }
 
+    /**
+     * Loads data within content providers to the dictionary.
+     */
     private void loadDictionaryForUriLocked(final Uri uri) {
-        Cursor cursor = null;
-        try {
-            cursor = mContext.getContentResolver().query(uri, PROJECTION, null, null, null);
-            if (null == cursor) {
-                return;
-            }
-            if (cursor.moveToFirst()) {
-                mContactCountAtLastRebuild = getContactCount();
-                addWordsLocked(cursor);
-            }
-        } catch (final SQLiteException e) {
-            Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
-        } catch (final IllegalStateException e) {
-            Log.e(TAG, "Contacts DB is having problems", e);
-        } finally {
-            if (null != cursor) {
-                cursor.close();
-            }
+        final ArrayList<String> validNames = mContactsManager.getValidNames(uri);
+        for (final String name : validNames) {
+            addNameLocked(name);
         }
-    }
-
-    private static boolean useFirstLastBigramsForLocale(final Locale locale) {
-        // TODO: Add firstname/lastname bigram rules for other languages.
-        if (locale != null && locale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
-            return true;
+        if (uri.equals(Contacts.CONTENT_URI)) {
+            // Since we were able to add content successfully, update the local
+            // state of the manager.
+            mContactsManager.updateLocalState(validNames);
         }
-        return false;
-    }
-
-    private void addWordsLocked(final Cursor cursor) {
-        int count = 0;
-        final ArrayList<String> names = new ArrayList<>();
-        while (!cursor.isAfterLast() && count < MAX_CONTACT_COUNT) {
-            String name = cursor.getString(INDEX_NAME);
-            if (isValidName(name)) {
-                names.add(name);
-                addNameLocked(name);
-                ++count;
-            } else {
-                if (DEBUG_DUMP) {
-                    Log.d(TAG, "Invalid name: " + name);
-                }
-            }
-            cursor.moveToNext();
-        }
-        mHashCodeAtLastRebuild = names.hashCode();
-    }
-
-    private int getContactCount() {
-        // TODO: consider switching to a rawQuery("select count(*)...") on the database if
-        // performance is a bottleneck.
-        Cursor cursor = null;
-        try {
-            cursor = mContext.getContentResolver().query(Contacts.CONTENT_URI, PROJECTION_ID_ONLY,
-                    null, null, null);
-            if (null == cursor) {
-                return 0;
-            }
-            return cursor.getCount();
-        } catch (final SQLiteException e) {
-            Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
-        } finally {
-            if (null != cursor) {
-                cursor.close();
-            }
-        }
-        return 0;
     }
 
     /**
@@ -225,7 +129,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         // TODO: Better tokenization for non-Latin writing systems
         for (int i = 0; i < len; i++) {
             if (Character.isLetter(name.codePointAt(i))) {
-                int end = getWordEndPosition(name, len, i);
+                int end = ContactsDictionaryUtils.getWordEndPosition(name, len, i);
                 String word = name.substring(i, end);
                 if (DEBUG_DUMP) {
                     Log.d(TAG, "addName word = " + word);
@@ -239,12 +143,15 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                         Log.d(TAG, "addName " + name + ", " + word + ", "  + ngramContext);
                     }
                     runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                    addUnigramLocked(word, FREQUENCY_FOR_CONTACTS, false /* isNotAWord */,
+                    addUnigramLocked(word,
+                            ContactsDictionaryConstants.FREQUENCY_FOR_CONTACTS, false /* isNotAWord */,
                             false /* isPossiblyOffensive */,
                             BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-                    if (!ngramContext.isValid() && mUseFirstLastBigrams) {
+                    if (ngramContext.isValid() && mUseFirstLastBigrams) {
                         runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                        addNgramEntryLocked(ngramContext, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
+                        addNgramEntryLocked(ngramContext,
+                                word,
+                                ContactsDictionaryConstants.FREQUENCY_FOR_CONTACTS_BIGRAM,
                                 BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     }
                     ngramContext = ngramContext.getNextNgramContext(
@@ -254,75 +161,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    /**
-     * Returns the index of the last letter in the word, starting from position startIndex.
-     */
-    private static int getWordEndPosition(final String string, final int len,
-            final int startIndex) {
-        int end;
-        int cp = 0;
-        for (end = startIndex + 1; end < len; end += Character.charCount(cp)) {
-            cp = string.codePointAt(end);
-            if (!(cp == Constants.CODE_DASH || cp == Constants.CODE_SINGLE_QUOTE
-                    || Character.isLetter(cp))) {
-                break;
-            }
-        }
-        return end;
-    }
-
-    boolean haveContentsChanged() {
-        final long startTime = SystemClock.uptimeMillis();
-        final int contactCount = getContactCount();
-        if (contactCount > MAX_CONTACT_COUNT) {
-            // If there are too many contacts then return false. In this rare case it is impossible
-            // to include all of them anyways and the cost of rebuilding the dictionary is too high.
-            // TODO: Sort and check only the MAX_CONTACT_COUNT most recent contacts?
-            return false;
-        }
-        if (contactCount != mContactCountAtLastRebuild) {
-            if (DEBUG) {
-                Log.d(TAG, "Contact count changed: " + mContactCountAtLastRebuild + " to "
-                        + contactCount);
-            }
-            return true;
-        }
-        // Check all contacts since it's not possible to find out which names have changed.
-        // This is needed because it's possible to receive extraneous onChange events even when no
-        // name has changed.
-        final Cursor cursor = mContext.getContentResolver().query(Contacts.CONTENT_URI, PROJECTION,
-                null, null, null);
-        if (null == cursor) {
-            return false;
-        }
-        final ArrayList<String> names = new ArrayList<>();
-        try {
-            if (cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    String name = cursor.getString(INDEX_NAME);
-                    if (isValidName(name)) {
-                        names.add(name);
-                    }
-                    cursor.moveToNext();
-                }
-            }
-            if (names.hashCode() != mHashCodeAtLastRebuild) {
-                return true;
-            }
-        } finally {
-            cursor.close();
-        }
-        if (DEBUG) {
-            Log.d(TAG, "No contacts changed. (runtime = " + (SystemClock.uptimeMillis() - startTime)
-                    + " ms)");
-        }
-        return false;
-    }
-
-    private static boolean isValidName(final String name) {
-        if (name != null && -1 == name.indexOf(Constants.CODE_COMMERCIAL_AT)) {
-            return true;
-        }
-        return false;
+    @Override
+    public void onContactsChange() {
+        setNeedsToRecreate();
     }
 }

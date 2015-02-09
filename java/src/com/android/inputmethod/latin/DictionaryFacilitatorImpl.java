@@ -804,4 +804,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             int timeStampInSeconds) {
         // Do nothing.
     }
+
+    @Override
+    public void clearLanguageModel(String filePath) {
+        // Do nothing.
+    }
 }
