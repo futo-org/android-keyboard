@@ -176,9 +176,9 @@ public final class Suggest {
                 : typedWordString;
 
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, ngramContext, proximityInfo.getNativeProximityInfo(),
-                settingsValuesForSuggestion, SESSION_ID_TYPING, inputStyleIfNotPrediction,
-                keyboardLayout);
+                wordComposer.getComposedDataSnapshot(), ngramContext,
+                proximityInfo.getNativeProximityInfo(), settingsValuesForSuggestion,
+                SESSION_ID_TYPING, inputStyleIfNotPrediction, keyboardLayout);
         final Locale mostProbableLocale = mDictionaryFacilitator.getMostProbableLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
@@ -349,8 +349,9 @@ public final class Suggest {
             final OnGetSuggestedWordsCallback callback,
             final KeyboardLayout keyboardLayout) {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, ngramContext, proximityInfo.getNativeProximityInfo(),
-                settingsValuesForSuggestion, SESSION_ID_GESTURE, inputStyle, keyboardLayout);
+                wordComposer.getComposedDataSnapshot(), ngramContext,
+                proximityInfo.getNativeProximityInfo(), settingsValuesForSuggestion,
+                SESSION_ID_GESTURE, inputStyle, keyboardLayout);
         // For transforming words that don't come from a dictionary, because it's our best bet
         final Locale defaultLocale = mDictionaryFacilitator.getMostProbableLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =

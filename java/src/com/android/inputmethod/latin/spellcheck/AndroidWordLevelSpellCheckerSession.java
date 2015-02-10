@@ -32,11 +32,15 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardLayout;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.NgramContext;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
+import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.LocaleUtils;
+import com.android.inputmethod.latin.common.ResizableIntArray;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
@@ -286,7 +290,8 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             composer.setComposingWord(codePoints, coordinates);
             // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
             final SuggestionResults suggestionResults = mService.getSuggestionResults(
-                    mLocale, composer, ngramContext, proximityInfo, keyboardLayout);
+                    mLocale, composer.getComposedDataSnapshot(), ngramContext, proximityInfo,
+                    keyboardLayout);
             final Result result = getResult(capitalizeType, mLocale, suggestionsLimit,
                     mService.getRecommendedThreshold(), text, suggestionResults);
             isInDict = isInDictForAnyCapitalization(text, capitalizeType);

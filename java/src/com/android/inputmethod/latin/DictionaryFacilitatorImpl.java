@@ -25,6 +25,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.KeyboardLayout;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
@@ -666,7 +667,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     // TODO: Revise the way to fusion suggestion results.
     @Override
-    public SuggestionResults getSuggestionResults(WordComposer composer,
+    public SuggestionResults getSuggestionResults(ComposedData composedData,
             NgramContext ngramContext, long proximityInfoHandle,
             SettingsValuesForSuggestion settingsValuesForSuggestion, int sessionId,
             int inputStyle, KeyboardLayout keyboardLayout) {
@@ -679,11 +680,11 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             for (final String dictType : DICTIONARY_TYPES_FOR_SUGGESTIONS) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
                 if (null == dictionary) continue;
-                final float weightForLocale = composer.isBatchMode()
+                final float weightForLocale = composedData.mIsBatchMode
                         ? dictionaryGroup.mWeightForGesturingInLocale
                         : dictionaryGroup.mWeightForTypingInLocale;
                 final ArrayList<SuggestedWordInfo> dictionarySuggestions =
-                        dictionary.getSuggestions(composer.getComposedDataSnapshot(), ngramContext,
+                        dictionary.getSuggestions(composedData, ngramContext,
                                 proximityInfoHandle, settingsValuesForSuggestion, sessionId,
                                 weightForLocale, weightOfLangModelVsSpatialModel);
                 if (null == dictionarySuggestions) continue;

@@ -21,6 +21,7 @@ import android.util.Pair;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.KeyboardLayout;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
@@ -155,7 +156,7 @@ public interface DictionaryFacilitator {
             final int eventType);
 
     // TODO: Revise the way to fusion suggestion results.
-    SuggestionResults getSuggestionResults(final WordComposer composer,
+    SuggestionResults getSuggestionResults(final ComposedData composedData,
             final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
             final int inputStyle, final KeyboardLayout keyboardLayout);
