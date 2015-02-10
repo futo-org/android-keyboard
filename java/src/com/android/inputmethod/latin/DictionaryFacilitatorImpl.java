@@ -815,4 +815,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public void clearLanguageModel(String filePath) {
         // Do nothing.
     }
+
+    @Override
+    public String iterateOverLanguageModel(String filePath, String iterationToken,
+            ArrayList<String> outputNgramEntries, ArrayList<Integer> outputNgramCounts,
+            ArrayList<Integer> outputNgramTimestamps) {
+        // Do nothing.
+        return "";
+    }
 }

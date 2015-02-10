@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * A content observer that listens to updates to content provider {@link Contacts#CONTENT_URI}.
  */
-// TODO:add test
 public class ContactsContentObserver implements Runnable {
     private static final String TAG = ContactsContentObserver.class.getSimpleName();
     private static final boolean DEBUG = false;
@@ -82,7 +81,7 @@ public class ContactsContentObserver implements Runnable {
         sRunning.set(false);
     }
 
-    private boolean haveContentsChanged() {
+    boolean haveContentsChanged() {
         final long startTime = SystemClock.uptimeMillis();
         final int contactCount = mManager.getContactCount();
         if (contactCount > ContactsDictionaryConstants.MAX_CONTACT_COUNT) {

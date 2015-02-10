@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * The manager provides an API for listening to meaning full updates by keeping a
  * measure of the current state of the content provider.
  */
-// TODO:Add test
 public class ContactsManager {
     private static final String TAG = ContactsManager.class.getSimpleName();
     private static final boolean DEBUG = false;
