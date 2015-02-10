@@ -694,25 +694,25 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     }
 
     @Override
-    public boolean onTouchEvent(final MotionEvent me) {
+    public boolean onTouchEvent(final MotionEvent event) {
         if (getKeyboard() == null) {
             return false;
         }
         if (mNonDistinctMultitouchHelper != null) {
-            if (me.getPointerCount() > 1 && mTimerHandler.isInKeyRepeat()) {
+            if (event.getPointerCount() > 1 && mTimerHandler.isInKeyRepeat()) {
                 // Key repeating timer will be canceled if 2 or more keys are in action.
                 mTimerHandler.cancelKeyRepeatTimers();
             }
             // Non distinct multitouch screen support
-            mNonDistinctMultitouchHelper.processMotionEvent(me, mKeyDetector);
+            mNonDistinctMultitouchHelper.processMotionEvent(event, mKeyDetector);
             return true;
         }
-        return processMotionEvent(me);
+        return processMotionEvent(event);
     }
 
-    public boolean processMotionEvent(final MotionEvent me) {
-        final int index = me.getActionIndex();
-        final int id = me.getPointerId(index);
+    public boolean processMotionEvent(final MotionEvent event) {
+        final int index = event.getActionIndex();
+        final int id = event.getPointerId(index);
         final PointerTracker tracker = PointerTracker.getPointerTracker(id);
         // When a more keys panel is showing, we should ignore other fingers' single touch events
         // other than the finger that is showing the more keys panel.
@@ -720,7 +720,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
                 && PointerTracker.getActivePointerTrackerCount() == 1) {
             return true;
         }
-        tracker.processMotionEvent(me, mKeyDetector);
+        tracker.processMotionEvent(event, mKeyDetector);
         return true;
     }
 

@@ -57,15 +57,12 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private static final int UNIGRAM_FREQ = 10;
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
-    private static final int NUM_OF_NODES_HAVING_SHORTCUTS = 50;
-    private static final int NUM_OF_SHORTCUTS = 5;
 
     private static final ArrayList<String> sWords = new ArrayList<>();
     private static final ArrayList<String> sWordsWithVariousCodePoints = new ArrayList<>();
     private static final SparseArray<List<Integer>> sEmptyBigrams = new SparseArray<>();
     private static final SparseArray<List<Integer>> sStarBigrams = new SparseArray<>();
     private static final SparseArray<List<Integer>> sChainBigrams = new SparseArray<>();
-    private static final HashMap<String, List<String>> sShortcuts = new HashMap<>();
 
     final Random mRandom;
 
@@ -94,16 +91,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final int maxBigrams = Math.min(sWords.size(), FormatSpec.MAX_BIGRAMS_IN_A_PTNODE - 1);
         for (int i = 1; i < maxBigrams; ++i) {
             sStarBigrams.get(0).add(i);
-        }
-
-        sShortcuts.clear();
-        for (int i = 0; i < NUM_OF_NODES_HAVING_SHORTCUTS; ++i) {
-            final int from = Math.abs(mRandom.nextInt()) % sWords.size();
-            sShortcuts.put(sWords.get(from), new ArrayList<String>());
-            for (int j = 0; j < NUM_OF_SHORTCUTS; ++j) {
-                final int to = Math.abs(mRandom.nextInt()) % sWords.size();
-                sShortcuts.get(sWords.get(from)).add(sWords.get(to));
-            }
         }
     }
 
@@ -142,17 +129,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
      * Adds unigrams to the dictionary.
      */
     private static void addUnigrams(final int number, final FusionDictionary dict,
-            final List<String> words, final HashMap<String, List<String>> shortcutMap) {
+            final List<String> words) {
         for (int i = 0; i < number; ++i) {
             final String word = words.get(i);
             final ArrayList<WeightedString> shortcuts = new ArrayList<>();
-            if (shortcutMap != null && shortcutMap.containsKey(word)) {
-                for (final String shortcut : shortcutMap.get(word)) {
-                    shortcuts.add(new WeightedString(shortcut, UNIGRAM_FREQ));
-                }
-            }
-            dict.add(word, new ProbabilityInfo(UNIGRAM_FREQ),
-                    (shortcutMap == null) ? null : shortcuts, false /* isNotAWord */,
+            dict.add(word, new ProbabilityInfo(UNIGRAM_FREQ), false /* isNotAWord */,
                     false /* isPossiblyOffensive */);
         }
     }
@@ -200,8 +181,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     private static void checkDictionary(final FusionDictionary dict, final List<String> words,
-            final SparseArray<List<Integer>> bigrams,
-            final HashMap<String, List<String>> shortcutMap) {
+            final SparseArray<List<Integer>> bigrams) {
         assertNotNull(dict);
 
         // check unigram
@@ -219,19 +199,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 assertNotNull(words.get(w1) + "," + words.get(w2), ptNode.getBigram(words.get(w2)));
             }
         }
-
-        // check shortcut
-        if (shortcutMap != null) {
-            for (final Entry<String, List<String>> entry : shortcutMap.entrySet()) {
-                assertTrue(words.contains(entry.getKey()));
-                final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray,
-                        entry.getKey());
-                for (final String word : entry.getValue()) {
-                    assertNotNull("shortcut not found: " + entry.getKey() + ", " + word,
-                            ptNode.getShortcut(word));
-                }
-            }
-        }
     }
 
     private static String outputOptions(final int bufferType,
@@ -244,8 +211,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     // Tests for readDictionaryBinary and writeDictionaryBinary
 
     private static long timeReadingAndCheckDict(final File file, final List<String> words,
-            final SparseArray<List<Integer>> bigrams,
-            final HashMap<String, List<String>> shortcutMap, final int bufferType) {
+            final SparseArray<List<Integer>> bigrams, final int bufferType) {
         long now, diff = -1;
 
         FusionDictionary dict = null;
@@ -261,13 +227,13 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             Log.e(TAG, "Unsupported format", e);
         }
 
-        checkDictionary(dict, words, bigrams, shortcutMap);
+        checkDictionary(dict, words, bigrams);
         return diff;
     }
 
     // Tests for readDictionaryBinary and writeDictionaryBinary
     private String runReadAndWrite(final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final HashMap<String, List<String>> shortcuts,
+            final SparseArray<List<Integer>> bigrams,
             final int bufferType, final FormatSpec.FormatOptions formatOptions,
             final String message) {
 
@@ -278,12 +244,12 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
-        addUnigrams(words.size(), dict, words, shortcuts);
+        addUnigrams(words.size(), dict, words);
         addBigrams(dict, words, bigrams);
-        checkDictionary(dict, words, bigrams, shortcuts);
+        checkDictionary(dict, words, bigrams);
 
         final long write = timeWritingDictToFile(file, dict, formatOptions);
-        final long read = timeReadingAndCheckDict(file, words, bigrams, shortcuts, bufferType);
+        final long read = timeReadingAndCheckDict(file, words, bigrams, bufferType);
 
         return "PROF: read=" + read + "ms, write=" + write + "ms :" + message
                 + " : " + outputOptions(bufferType, formatOptions);
@@ -291,20 +257,20 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     private void runReadAndWriteTests(final List<String> results, final int bufferType,
             final FormatSpec.FormatOptions formatOptions) {
-        results.add(runReadAndWrite(sWords, sEmptyBigrams, null /* shortcuts */, bufferType,
+        results.add(runReadAndWrite(sWords, sEmptyBigrams, bufferType,
                 formatOptions, "unigram"));
-        results.add(runReadAndWrite(sWords, sChainBigrams, null /* shortcuts */, bufferType,
+        results.add(runReadAndWrite(sWords, sChainBigrams, bufferType,
                 formatOptions, "chain"));
-        results.add(runReadAndWrite(sWords, sStarBigrams, null /* shortcuts */, bufferType,
+        results.add(runReadAndWrite(sWords, sStarBigrams, bufferType,
                 formatOptions, "star"));
-        results.add(runReadAndWrite(sWords, sEmptyBigrams, sShortcuts, bufferType, formatOptions,
+        results.add(runReadAndWrite(sWords, sEmptyBigrams, bufferType, formatOptions,
                 "unigram with shortcuts"));
-        results.add(runReadAndWrite(sWords, sChainBigrams, sShortcuts, bufferType, formatOptions,
+        results.add(runReadAndWrite(sWords, sChainBigrams, bufferType, formatOptions,
                 "chain with shortcuts"));
-        results.add(runReadAndWrite(sWords, sStarBigrams, sShortcuts, bufferType, formatOptions,
+        results.add(runReadAndWrite(sWords, sStarBigrams, bufferType, formatOptions,
                 "star with shortcuts"));
         results.add(runReadAndWrite(sWordsWithVariousCodePoints, sEmptyBigrams,
-                null /* shortcuts */, bufferType, formatOptions,
+                bufferType, formatOptions,
                 "unigram with various code points"));
     }
 
@@ -326,7 +292,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                         FormatSpec.MINIMUM_SUPPORTED_STATIC_VERSION);
         final FusionDictionary sourcedict = new FusionDictionary(new PtNodeArray(),
                 BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
-        addUnigrams(words.size(), sourcedict, words, null /* shortcutMap */);
+        addUnigrams(words.size(), sourcedict, words);
         dictEncoder.writeDictionary(sourcedict, formatOptions);
 
         // Read the dictionary
@@ -472,7 +438,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         // making the dictionary from lists of words.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
-        addUnigrams(words.size(), dict, words, null /* shortcutMap */);
+        addUnigrams(words.size(), dict, words);
         addBigrams(dict, words, bigrams);
 
         timeWritingDictToFile(file, dict, formatOptions);
@@ -482,7 +448,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         // TODO: Abandon the Java code, and implement the v4 dictionary reading code in native.
         long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams, bufferType,
                 !formatOptions.mHasTimestamp /* checkProbability */);
-        long fullReading = timeReadingAndCheckDict(file, words, bigrams, null /* shortcutMap */,
+        long fullReading = timeReadingAndCheckDict(file, words, bigrams,
                 bufferType);
 
         return "readDictionaryBinary=" + fullReading + ", readUnigramsAndBigramsBinary=" + wordMap
@@ -567,7 +533,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
-        addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
+        addUnigrams(sWords.size(), dict, sWords);
         addBigrams(dict, words, bigrams);
         timeWritingDictToFile(file, dict, formatOptions);
 
@@ -636,12 +602,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     public void testVer2DictGetWordProperty() {
         final FormatOptions formatOptions = BinaryDictUtils.STATIC_OPTIONS;
         final ArrayList<String> words = sWords;
-        final HashMap<String, List<String>> shortcuts = sShortcuts;
         final String dictName = "testGetWordProperty";
         final String dictVersion = Long.toString(System.currentTimeMillis());
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
-        addUnigrams(words.size(), dict, words, shortcuts);
+        addUnigrams(words.size(), dict, words);
         addBigrams(dict, words, sEmptyBigrams);
         final File file = BinaryDictUtils.getDictFile(dictName, dictVersion, formatOptions,
                 getContext().getCacheDir());
@@ -655,30 +620,18 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                     false /* isBeginningOfSentence */);
             assertEquals(word, wordProperty.mWord);
             assertEquals(UNIGRAM_FREQ, wordProperty.getProbability());
-            if (shortcuts.containsKey(word)) {
-                assertEquals(shortcuts.get(word).size(), wordProperty.mShortcutTargets.size());
-                final List<String> shortcutList = shortcuts.get(word);
-                assertTrue(wordProperty.mHasShortcuts);
-                for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
-                    assertTrue(shortcutList.contains(shortcutTarget.mWord));
-                    assertEquals(UNIGRAM_FREQ, shortcutTarget.getProbability());
-                    shortcutList.remove(shortcutTarget.mWord);
-                }
-                assertTrue(shortcutList.isEmpty());
-            }
         }
     }
 
     public void testVer2DictIteration() {
         final FormatOptions formatOptions = BinaryDictUtils.STATIC_OPTIONS;
         final ArrayList<String> words = sWords;
-        final HashMap<String, List<String>> shortcuts = sShortcuts;
         final SparseArray<List<Integer>> bigrams = sEmptyBigrams;
         final String dictName = "testGetWordProperty";
         final String dictVersion = Long.toString(System.currentTimeMillis());
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
-        addUnigrams(words.size(), dict, words, shortcuts);
+        addUnigrams(words.size(), dict, words);
         addBigrams(dict, words, bigrams);
         final File file = BinaryDictUtils.getDictFile(dictName, dictVersion, formatOptions,
                 getContext().getCacheDir());
@@ -708,17 +661,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             final String word0 = wordProperty.mWord;
             assertEquals(UNIGRAM_FREQ, wordProperty.mProbabilityInfo.mProbability);
             wordSet.remove(word0);
-            if (shortcuts.containsKey(word0)) {
-                assertEquals(shortcuts.get(word0).size(), wordProperty.mShortcutTargets.size());
-                final List<String> shortcutList = shortcuts.get(word0);
-                assertNotNull(wordProperty.mShortcutTargets);
-                for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
-                    assertTrue(shortcutList.contains(shortcutTarget.mWord));
-                    assertEquals(UNIGRAM_FREQ, shortcutTarget.getProbability());
-                    shortcutList.remove(shortcutTarget.mWord);
-                }
-                assertTrue(shortcutList.isEmpty());
-            }
             if (wordProperty.mHasNgrams) {
                 for (final WeightedString bigramTarget : wordProperty.getBigrams()) {
                     final String word1 = bigramTarget.mWord;

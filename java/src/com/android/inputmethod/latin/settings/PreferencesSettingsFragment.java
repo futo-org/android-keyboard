@@ -25,6 +25,7 @@ import android.preference.Preference;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.common.Constants;
 
 /**
  * "Preferences" settings sub screen.
@@ -72,11 +73,9 @@ public final class PreferencesSettingsFragment extends SubScreenFragment {
         final Preference voiceInputKeyOption = findPreference(Settings.PREF_VOICE_INPUT_KEY);
         if (voiceInputKeyOption != null) {
             RichInputMethodManager.getInstance().refreshSubtypeCaches();
-            final boolean isShortcutImeEnabled = RichInputMethodManager.getInstance()
-                    .isShortcutImeEnabled();
-            voiceInputKeyOption.setEnabled(isShortcutImeEnabled);
-            voiceInputKeyOption.setSummary(
-                    isShortcutImeEnabled ? null : getText(R.string.voice_input_disabled_summary));
+            voiceInputKeyOption.setEnabled(Constants.JELLY_BEAN_OR_HIGHER);
+            voiceInputKeyOption.setSummary(Constants.JELLY_BEAN_OR_HIGHER
+                    ? null : getText(R.string.voice_input_disabled_summary));
         }
     }
 

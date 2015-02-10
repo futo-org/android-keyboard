@@ -139,8 +139,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 Log.d(TAG, "loadAccountVocabulary: " + word);
             }
             runGCIfRequiredLocked(true /* mindsBlockByGC */);
-            addUnigramLocked(word, FREQUENCY_FOR_CONTACTS, null /* shortcut */,
-                    0 /* shortcutFreq */, false /* isNotAWord */, false /* isPossiblyOffensive */,
+            addUnigramLocked(word, FREQUENCY_FOR_CONTACTS,
+                    false /* isNotAWord */, false /* isPossiblyOffensive */,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP);
         }
     }
@@ -239,8 +239,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                         Log.d(TAG, "addName " + name + ", " + word + ", "  + ngramContext);
                     }
                     runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                    addUnigramLocked(word, FREQUENCY_FOR_CONTACTS,
-                            null /* shortcut */, 0 /* shortcutFreq */, false /* isNotAWord */,
+                    addUnigramLocked(word, FREQUENCY_FOR_CONTACTS, false /* isNotAWord */,
                             false /* isPossiblyOffensive */,
                             BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     if (!ngramContext.isValid() && mUseFirstLastBigrams) {

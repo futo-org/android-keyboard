@@ -87,7 +87,6 @@ import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
-import com.android.inputmethod.latin.utils.NetworkConnectivityUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -565,8 +564,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         loadSettings();
         resetDictionaryFacilitatorIfNecessary();
 
-        NetworkConnectivityUtils.onCreate(this /* context */, mKeyboardSwitcher /* listener */);
-
         // Register to receive ringer mode change.
         final IntentFilter filter = new IntentFilter();
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
@@ -703,7 +700,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onDestroy() {
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
-        NetworkConnectivityUtils.onDestroy(this /* context */);
         unregisterReceiver(mRingerModeChangeReceiver);
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
@@ -717,7 +713,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         unregisterReceiver(mRingerModeChangeReceiver);
-        NetworkConnectivityUtils.onDestroy(this /* context */);
         mInputLogic.recycle();
     }
 

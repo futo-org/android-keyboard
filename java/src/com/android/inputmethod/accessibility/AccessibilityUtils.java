@@ -35,6 +35,7 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.compat.SettingsSecureCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 
 public final class AccessibilityUtils {
@@ -221,7 +222,7 @@ public final class AccessibilityUtils {
 
         // Platforms starting at SDK version 16 (Build.VERSION_CODES.JELLY_BEAN) should use
         // announce events.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Constants.JELLY_BEAN_OR_HIGHER) {
             event.setEventType(AccessibilityEventCompat.TYPE_ANNOUNCEMENT);
         } else {
             event.setEventType(AccessibilityEvent.TYPE_VIEW_FOCUSED);

@@ -297,21 +297,18 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Adds unigram information of a word to the dictionary. May overwrite an existing entry.
      */
     public void addUnigramEntry(final String word, final int frequency,
-            final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
-            final boolean isPossiblyOffensive, final int timestamp) {
+            final boolean isNotAWord, final boolean isPossiblyOffensive, final int timestamp) {
         updateDictionaryWithWriteLock(new Runnable() {
             @Override
             public void run() {
-                addUnigramLocked(word, frequency, shortcutTarget, shortcutFreq,
-                        isNotAWord, isPossiblyOffensive, timestamp);
+                addUnigramLocked(word, frequency, isNotAWord, isPossiblyOffensive, timestamp);
             }
         });
     }
 
     protected void addUnigramLocked(final String word, final int frequency,
-            final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
-            final boolean isPossiblyOffensive, final int timestamp) {
-        if (!mBinaryDictionary.addUnigramEntry(word, frequency, shortcutTarget, shortcutFreq,
+            final boolean isNotAWord, final boolean isPossiblyOffensive, final int timestamp) {
+        if (!mBinaryDictionary.addUnigramEntry(word, frequency,
                 false /* isBeginningOfSentence */, isNotAWord, isPossiblyOffensive, timestamp)) {
             Log.e(TAG, "Cannot add unigram entry. word: " + word);
         }
@@ -368,31 +365,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Dynamically remove the n-gram entry in the dictionary.
-     */
-    @UsedForTesting
-    public void removeNgramDynamically(@Nonnull final NgramContext ngramContext,
-            final String word) {
-        reloadDictionaryIfRequired();
-        asyncExecuteTaskWithWriteLock(new Runnable() {
-            @Override
-            public void run() {
-                final BinaryDictionary binaryDictionary = getBinaryDictionary();
-                if (binaryDictionary == null) {
-                    return;
-                }
-                runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                if (!binaryDictionary.removeNgramEntry(ngramContext, word)) {
-                    if (DEBUG) {
-                        Log.i(TAG, "Cannot remove n-gram entry.");
-                        Log.i(TAG, "  NgramContext: " + ngramContext + ", word: " + word);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
      * Update dictionary for the word with the ngramContext.
      */
     public void updateEntriesForWord(@Nonnull final NgramContext ngramContext,
@@ -408,20 +380,29 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         isValidWord, count, timestamp)) {
                     if (DEBUG) {
                         Log.e(TAG, "Cannot update counter. word: " + word
-                                + " context: "+ ngramContext.toString());
+                                + " context: " + ngramContext.toString());
                     }
                 }
             }
         });
     }
 
+    /**
+     * Used by Sketch.
+     * {@see https://cs.corp.google.com/#android/vendor/unbundled_google/packages/LatinIMEGoogle/tools/sketch/ime-simulator/src/com/android/inputmethod/sketch/imesimulator/ImeSimulator.java&q=updateEntriesForInputEventsCallback&l=286}
+     */
+    @UsedForTesting
     public interface UpdateEntriesForInputEventsCallback {
         public void onFinished();
     }
 
     /**
      * Dynamically update entries according to input events.
+     *
+     * Used by Sketch.
+     * {@see https://cs.corp.google.com/#android/vendor/unbundled_google/packages/LatinIMEGoogle/tools/sketch/ime-simulator/src/com/android/inputmethod/sketch/imesimulator/ImeSimulator.java&q=updateEntriesForInputEventsCallback&l=286}
      */
+    @UsedForTesting
     public void updateEntriesForInputEvents(
             @Nonnull final ArrayList<WordInputEventForPersonalization> inputEvents,
             final UpdateEntriesForInputEventsCallback callback) {
@@ -533,11 +514,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
 
-    protected boolean isValidNgramLocked(final NgramContext ngramContext, final String word) {
-        if (mBinaryDictionary == null) return false;
-        return mBinaryDictionary.isValidNgram(ngramContext, word);
-    }
-
     /**
      * Loads the current binary dictionary from internal storage. Assumes the dictionary file
      * exists.
@@ -551,6 +527,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 Thread.sleep(15000);
                 Log.w(TAG, "End stress in loading");
             } catch (InterruptedException e) {
+                Log.w("Interrupted while loading: " + mDictName, e);
             }
         }
         final BinaryDictionary oldBinaryDictionary = mBinaryDictionary;

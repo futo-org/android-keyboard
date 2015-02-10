@@ -74,26 +74,10 @@ public class Ver4DictEncoder implements DictEncoder {
             throw new IOException("Cannot create dictionary file");
         }
         for (final WordProperty wordProperty : dict) {
-            // TODO: switch to addMultipleDictionaryEntries when they support shortcuts
-            if (null == wordProperty.mShortcutTargets || wordProperty.mShortcutTargets.isEmpty()) {
-                if (!binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
-                        null /* shortcutTarget */, 0 /* shortcutProbability */,
-                        wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
-                        wordProperty.mIsPossiblyOffensive, 0 /* timestamp */)) {
-                    MakedictLog.e("Cannot add unigram entry for " + wordProperty.mWord);
-                }
-            } else {
-                for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
-                    if (!binaryDict.addUnigramEntry(wordProperty.mWord,
-                            wordProperty.getProbability(),
-                            shortcutTarget.mWord, shortcutTarget.getProbability(),
-                            wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
-                            wordProperty.mIsPossiblyOffensive, 0 /* timestamp */)) {
-                        MakedictLog.e("Cannot add unigram entry for " + wordProperty.mWord
-                                + ", shortcutTarget: " + shortcutTarget.mWord);
-                        return;
-                    }
-                }
+            if (!binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
+                    wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
+                    wordProperty.mIsPossiblyOffensive, 0 /* timestamp */)) {
+                MakedictLog.e("Cannot add unigram entry for " + wordProperty.mWord);
             }
             if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
                 if (!binaryDict.flushWithGC()) {

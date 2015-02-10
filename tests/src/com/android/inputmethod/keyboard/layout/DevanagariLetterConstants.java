@@ -16,15 +16,14 @@
 
 package com.android.inputmethod.keyboard.layout;
 
-import android.os.Build;
+import com.android.inputmethod.latin.common.Constants;
 
 /**
  * This class offers label strings of Devanagari letters that need the dotted circle to draw
  * its glyph.
  */
 class DevanagariLetterConstants {
-    private static final boolean NEEDS_DOTTED_CIRCLE =
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN;
+    private static final boolean NEEDS_DOTTED_CIRCLE = !Constants.JELLY_BEAN_OR_HIGHER;
     // U+25CC: "◌" DOTTED CIRCLE
     private static final String DOTTED_CIRCLE = NEEDS_DOTTED_CIRCLE ? "\u25CC" : "";
 

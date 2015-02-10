@@ -26,7 +26,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
-import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.LocaleUtils;
 
@@ -47,10 +46,7 @@ import javax.annotation.Nullable;
 public class UserDictionaryAddWordContents {
     public static final String EXTRA_MODE = "mode";
     public static final String EXTRA_WORD = "word";
-    public static final String EXTRA_SHORTCUT = "shortcut";
     public static final String EXTRA_LOCALE = "locale";
-    public static final String EXTRA_ORIGINAL_WORD = "originalWord";
-    public static final String EXTRA_ORIGINAL_SHORTCUT = "originalShortcut";
 
     public static final int MODE_EDIT = 0;
     public static final int MODE_INSERT = 1;
@@ -63,37 +59,18 @@ public class UserDictionaryAddWordContents {
 
     private final int mMode; // Either MODE_EDIT or MODE_INSERT
     private final EditText mWordEditText;
-    private final EditText mShortcutEditText;
     private String mLocale;
     private final String mOldWord;
-    private final String mOldShortcut;
     private String mSavedWord;
-    private String mSavedShortcut;
 
     /* package */ UserDictionaryAddWordContents(final View view, final Bundle args) {
         mWordEditText = (EditText)view.findViewById(R.id.user_dictionary_add_word_text);
-        mShortcutEditText = (EditText)view.findViewById(R.id.user_dictionary_add_shortcut);
-        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
-            mShortcutEditText.setVisibility(View.GONE);
-            view.findViewById(R.id.user_dictionary_add_shortcut_label).setVisibility(View.GONE);
-        }
         final String word = args.getString(EXTRA_WORD);
         if (null != word) {
             mWordEditText.setText(word);
             // Use getText in case the edit text modified the text we set. This happens when
             // it's too long to be edited.
             mWordEditText.setSelection(mWordEditText.getText().length());
-        }
-        final String shortcut;
-        if (UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
-            shortcut = args.getString(EXTRA_SHORTCUT);
-            if (null != shortcut && null != mShortcutEditText) {
-                mShortcutEditText.setText(shortcut);
-            }
-            mOldShortcut = args.getString(EXTRA_SHORTCUT);
-        } else {
-            shortcut = null;
-            mOldShortcut = null;
         }
         mMode = args.getInt(EXTRA_MODE); // default return value for #getInt() is 0 = MODE_EDIT
         mOldWord = args.getString(EXTRA_WORD);
@@ -103,10 +80,8 @@ public class UserDictionaryAddWordContents {
     /* package */ UserDictionaryAddWordContents(final View view,
             final UserDictionaryAddWordContents oldInstanceToBeEdited) {
         mWordEditText = (EditText)view.findViewById(R.id.user_dictionary_add_word_text);
-        mShortcutEditText = (EditText)view.findViewById(R.id.user_dictionary_add_shortcut);
         mMode = MODE_EDIT;
         mOldWord = oldInstanceToBeEdited.mSavedWord;
-        mOldShortcut = oldInstanceToBeEdited.mSavedShortcut;
         updateLocale(mLocale);
     }
 
@@ -118,13 +93,6 @@ public class UserDictionaryAddWordContents {
 
     /* package */ void saveStateIntoBundle(final Bundle outState) {
         outState.putString(EXTRA_WORD, mWordEditText.getText().toString());
-        outState.putString(EXTRA_ORIGINAL_WORD, mOldWord);
-        if (null != mShortcutEditText) {
-            outState.putString(EXTRA_SHORTCUT, mShortcutEditText.getText().toString());
-        }
-        if (null != mOldShortcut) {
-            outState.putString(EXTRA_ORIGINAL_SHORTCUT, mOldShortcut);
-        }
         outState.putString(EXTRA_LOCALE, mLocale);
     }
 
@@ -132,7 +100,7 @@ public class UserDictionaryAddWordContents {
         if (MODE_EDIT == mMode && !TextUtils.isEmpty(mOldWord)) {
             // Mode edit: remove the old entry.
             final ContentResolver resolver = context.getContentResolver();
-            UserDictionarySettings.deleteWord(mOldWord, mOldShortcut, resolver);
+            UserDictionarySettings.deleteWord(mOldWord, resolver);
         }
         // If we are in add mode, nothing was added, so we don't need to do anything.
     }
@@ -143,50 +111,31 @@ public class UserDictionaryAddWordContents {
         final ContentResolver resolver = context.getContentResolver();
         if (MODE_EDIT == mMode && !TextUtils.isEmpty(mOldWord)) {
             // Mode edit: remove the old entry.
-            UserDictionarySettings.deleteWord(mOldWord, mOldShortcut, resolver);
+            UserDictionarySettings.deleteWord(mOldWord, resolver);
         }
         final String newWord = mWordEditText.getText().toString();
-        final String newShortcut;
-        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
-            newShortcut = null;
-        } else if (null == mShortcutEditText) {
-            newShortcut = null;
-        } else {
-            final String tmpShortcut = mShortcutEditText.getText().toString();
-            if (TextUtils.isEmpty(tmpShortcut)) {
-                newShortcut = null;
-            } else {
-                newShortcut = tmpShortcut;
-            }
-        }
         if (TextUtils.isEmpty(newWord)) {
             // If the word is somehow empty, don't insert it.
             return CODE_CANCEL;
         }
         mSavedWord = newWord;
-        mSavedShortcut = newShortcut;
-        // If there is no shortcut, and the word already exists in the database, then we
-        // should not insert, because either A. the word exists with no shortcut, in which
-        // case the exact same thing we want to insert is already there, or B. the word
-        // exists with at least one shortcut, in which case it has priority on our word.
-        if (TextUtils.isEmpty(newShortcut) && hasWord(newWord, context)) {
+        // If the word already exists in the database, then we should not insert.
+        if (hasWord(newWord, context)) {
             return CODE_ALREADY_PRESENT;
         }
 
-        // Disallow duplicates. If the same word with no shortcut is defined, remove it; if
-        // the same word with the same shortcut is defined, remove it; but we don't mind if
-        // there is the same word with a different, non-empty shortcut.
-        UserDictionarySettings.deleteWord(newWord, null, resolver);
-        if (!TextUtils.isEmpty(newShortcut)) {
-            // If newShortcut is empty we just deleted this, no need to do it again
-            UserDictionarySettings.deleteWord(newWord, newShortcut, resolver);
-        }
+        // Disallow duplicates. If the same word is defined, remove it.
+        UserDictionarySettings.deleteWord(newWord, resolver);
 
         // In this class we use the empty string to represent 'all locales' and mLocale cannot
         // be null. However the addWord method takes null to mean 'all locales'.
-        UserDictionaryCompatUtils.addWord(context, newWord.toString(),
-                FREQUENCY_FOR_USER_DICTIONARY_ADDS, newShortcut, TextUtils.isEmpty(mLocale) ?
-                        null : LocaleUtils.constructLocaleFromString(mLocale));
+        final Locale locale = TextUtils.isEmpty(mLocale) ?
+                null : LocaleUtils.constructLocaleFromString(mLocale);
+        final Locale currentLocale = context.getResources().getConfiguration().locale;
+        final boolean useCurrentLocale = currentLocale.equals(locale);
+        UserDictionary.Words.addWord(context, newWord.toString(),
+                FREQUENCY_FOR_USER_DICTIONARY_ADDS, null /* shortcut */,
+                useCurrentLocale ? Locale.getDefault() : null);
 
         return CODE_WORD_ADDED;
     }
