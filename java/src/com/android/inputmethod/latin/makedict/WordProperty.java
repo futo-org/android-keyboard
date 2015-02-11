@@ -37,13 +37,11 @@ import javax.annotation.Nullable;
 public final class WordProperty implements Comparable<WordProperty> {
     public final String mWord;
     public final ProbabilityInfo mProbabilityInfo;
-    public final ArrayList<WeightedString> mShortcutTargets;
     public final ArrayList<NgramProperty> mNgrams;
     // TODO: Support mIsBeginningOfSentence.
     public final boolean mIsBeginningOfSentence;
     public final boolean mIsNotAWord;
     public final boolean mIsPossiblyOffensive;
-    public final boolean mHasShortcuts;
     public final boolean mHasNgrams;
 
     private int mHashCode = 0;
@@ -51,12 +49,10 @@ public final class WordProperty implements Comparable<WordProperty> {
     // TODO: Support n-gram.
     @UsedForTesting
     public WordProperty(final String word, final ProbabilityInfo probabilityInfo,
-            final ArrayList<WeightedString> shortcutTargets,
             @Nullable final ArrayList<WeightedString> bigrams,
             final boolean isNotAWord, final boolean isPossiblyOffensive) {
         mWord = word;
         mProbabilityInfo = probabilityInfo;
-        mShortcutTargets = shortcutTargets;
         if (null == bigrams) {
             mNgrams = null;
         } else {
@@ -70,7 +66,6 @@ public final class WordProperty implements Comparable<WordProperty> {
         mIsNotAWord = isNotAWord;
         mIsPossiblyOffensive = isPossiblyOffensive;
         mHasNgrams = bigrams != null && !bigrams.isEmpty();
-        mHasShortcuts = shortcutTargets != null && !shortcutTargets.isEmpty();
     }
 
     private static ProbabilityInfo createProbabilityInfoFromArray(final int[] probabilityInfo) {
@@ -84,21 +79,17 @@ public final class WordProperty implements Comparable<WordProperty> {
     // Construct word property using information from native code.
     // This represents invalid word when the probability is BinaryDictionary.NOT_A_PROBABILITY.
     public WordProperty(final int[] codePoints, final boolean isNotAWord,
-            final boolean isPossiblyOffensive, final boolean hasBigram, final boolean hasShortcuts,
+            final boolean isPossiblyOffensive, final boolean hasBigram,
             final boolean isBeginningOfSentence, final int[] probabilityInfo,
             final ArrayList<int[][]> ngramPrevWordsArray,
             final ArrayList<boolean[]> ngramPrevWordIsBeginningOfSentenceArray,
-            final ArrayList<int[]> ngramTargets, final ArrayList<int[]> ngramProbabilityInfo,
-            final ArrayList<int[]> shortcutTargets,
-            final ArrayList<Integer> shortcutProbabilities) {
+            final ArrayList<int[]> ngramTargets, final ArrayList<int[]> ngramProbabilityInfo) {
         mWord = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
         mProbabilityInfo = createProbabilityInfoFromArray(probabilityInfo);
-        mShortcutTargets = new ArrayList<>();
         final ArrayList<NgramProperty> ngrams = new ArrayList<>();
         mIsBeginningOfSentence = isBeginningOfSentence;
         mIsNotAWord = isNotAWord;
         mIsPossiblyOffensive = isPossiblyOffensive;
-        mHasShortcuts = hasShortcuts;
         mHasNgrams = hasBigram;
 
         final int relatedNgramCount = ngramTargets.size();
@@ -121,14 +112,6 @@ public final class WordProperty implements Comparable<WordProperty> {
             ngrams.add(new NgramProperty(ngramTarget, ngramContext));
         }
         mNgrams = ngrams.isEmpty() ? null : ngrams;
-
-        final int shortcutTargetCount = shortcutTargets.size();
-        for (int i = 0; i < shortcutTargetCount; i++) {
-            final String shortcutTargetString =
-                    StringUtils.getStringFromNullTerminatedCodePointArray(shortcutTargets.get(i));
-            mShortcutTargets.add(
-                    new WeightedString(shortcutTargetString, shortcutProbabilities.get(i)));
-        }
     }
 
     // TODO: Remove
@@ -154,7 +137,6 @@ public final class WordProperty implements Comparable<WordProperty> {
         return Arrays.hashCode(new Object[] {
                 word.mWord,
                 word.mProbabilityInfo,
-                word.mShortcutTargets,
                 word.mNgrams,
                 word.mIsNotAWord,
                 word.mIsPossiblyOffensive
@@ -185,10 +167,10 @@ public final class WordProperty implements Comparable<WordProperty> {
         if (o == this) return true;
         if (!(o instanceof WordProperty)) return false;
         WordProperty w = (WordProperty)o;
-        return mProbabilityInfo.equals(w.mProbabilityInfo) && mWord.equals(w.mWord)
-                && mShortcutTargets.equals(w.mShortcutTargets) && equals(mNgrams, w.mNgrams)
+        return mProbabilityInfo.equals(w.mProbabilityInfo)
+                && mWord.equals(w.mWord) && equals(mNgrams, w.mNgrams)
                 && mIsNotAWord == w.mIsNotAWord && mIsPossiblyOffensive == w.mIsPossiblyOffensive
-                && mHasNgrams == w.mHasNgrams && mHasShortcuts && w.mHasNgrams;
+                && mHasNgrams == w.mHasNgrams;
     }
 
     // TDOO: Have a utility method like java.util.Objects.equals.

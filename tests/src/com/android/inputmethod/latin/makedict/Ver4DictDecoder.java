@@ -84,7 +84,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         // Insert unigrams into the fusion dictionary.
         for (final WordProperty wordProperty : wordProperties) {
             fusionDict.add(wordProperty.mWord, wordProperty.mProbabilityInfo,
-                    wordProperty.mShortcutTargets, wordProperty.mIsNotAWord,
+                    wordProperty.mIsNotAWord,
                     wordProperty.mIsPossiblyOffensive);
         }
         // Insert bigrams into the fusion dictionary.

@@ -16,9 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -49,7 +47,7 @@ public class Ver2DictEncoderTests extends AndroidTestCase {
                 new FormatSpec.FormatOptions(FormatSpec.VERSION2);
         final FusionDictionary sourcedict = new FusionDictionary(new PtNodeArray(),
                 BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
-        addUnigrams(sourcedict, words, null /* shortcutMap */);
+        addUnigrams(sourcedict, words);
         final CodePointTable codePointTable = Ver2DictEncoder.makeCodePointTable(sourcedict);
 
         // Check if mCodePointOccurrenceArray is correct
@@ -73,17 +71,10 @@ public class Ver2DictEncoderTests extends AndroidTestCase {
     /**
      * Adds unigrams to the dictionary.
      */
-    private static void addUnigrams(final FusionDictionary dict, final List<String> words,
-            final HashMap<String, List<String>> shortcutMap) {
+    private static void addUnigrams(final FusionDictionary dict, final List<String> words) {
         for (final String word : words) {
-            final ArrayList<WeightedString> shortcuts = new ArrayList<>();
-            if (shortcutMap != null && shortcutMap.containsKey(word)) {
-                for (final String shortcut : shortcutMap.get(word)) {
-                    shortcuts.add(new WeightedString(shortcut, UNIGRAM_FREQ));
-                }
-            }
             dict.add(word, new ProbabilityInfo(UNIGRAM_FREQ),
-                    (shortcutMap == null) ? null : shortcuts, false /* isNotAWord */,
+                    false /* isNotAWord */,
                     false /* isPossiblyOffensive */);
         }
     }

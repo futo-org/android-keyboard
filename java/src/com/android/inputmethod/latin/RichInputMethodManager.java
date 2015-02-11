@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import static com.android.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MODE;
-import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.REQ_NETWORK_CONNECTIVITY;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -36,7 +35,6 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
-import com.android.inputmethod.latin.utils.NetworkConnectivityUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;
@@ -288,22 +286,18 @@ public class RichInputMethodManager {
     }
 
     public boolean checkIfSubtypeBelongsToThisImeAndEnabled(final InputMethodSubtype subtype) {
-        return checkIfSubtypeBelongsToImeAndEnabled(getInputMethodInfoOfThisIme(), subtype);
+        return checkIfSubtypeBelongsToList(subtype,
+                getEnabledInputMethodSubtypeList(
+                        getInputMethodInfoOfThisIme(),
+                        true /* allowsImplicitlySelectedSubtypes */));
     }
 
     public boolean checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(
             final InputMethodSubtype subtype) {
         final boolean subtypeEnabled = checkIfSubtypeBelongsToThisImeAndEnabled(subtype);
-        final boolean subtypeExplicitlyEnabled = checkIfSubtypeBelongsToList(
-                subtype, getMyEnabledInputMethodSubtypeList(
-                        false /* allowsImplicitlySelectedSubtypes */));
+        final boolean subtypeExplicitlyEnabled = checkIfSubtypeBelongsToList(subtype,
+                getMyEnabledInputMethodSubtypeList(false /* allowsImplicitlySelectedSubtypes */));
         return subtypeEnabled && !subtypeExplicitlyEnabled;
-    }
-
-    public boolean checkIfSubtypeBelongsToImeAndEnabled(final InputMethodInfo imi,
-            final InputMethodSubtype subtype) {
-        return checkIfSubtypeBelongsToList(subtype, getEnabledInputMethodSubtypeList(imi,
-                true /* allowsImplicitlySelectedSubtypes */));
     }
 
     private static boolean checkIfSubtypeBelongsToList(final InputMethodSubtype subtype,
@@ -564,25 +558,12 @@ public class RichInputMethodManager {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public boolean isShortcutImeEnabled() {
-        if (mShortcutInputMethodInfo == null) {
-            return false;
-        }
-        if (mShortcutSubtype == null) {
-            return true;
-        }
-        return checkIfSubtypeBelongsToImeAndEnabled(mShortcutInputMethodInfo, mShortcutSubtype);
-    }
-
     public boolean isShortcutImeReady() {
         if (mShortcutInputMethodInfo == null) {
             return false;
         }
         if (mShortcutSubtype == null) {
             return true;
-        }
-        if (mShortcutSubtype.containsExtraValueKey(REQ_NETWORK_CONNECTIVITY)) {
-            return NetworkConnectivityUtils.isNetworkConnected();
         }
         return true;
     }

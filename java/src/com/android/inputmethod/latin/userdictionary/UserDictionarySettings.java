@@ -48,41 +48,17 @@ import java.util.Locale;
 
 public class UserDictionarySettings extends ListFragment {
 
-    public static final boolean IS_SHORTCUT_API_SUPPORTED =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-
-    private static final String[] QUERY_PROJECTION_SHORTCUT_UNSUPPORTED =
-            { UserDictionary.Words._ID, UserDictionary.Words.WORD};
-    private static final String[] QUERY_PROJECTION_SHORTCUT_SUPPORTED =
-            { UserDictionary.Words._ID, UserDictionary.Words.WORD, UserDictionary.Words.SHORTCUT};
-    private static final String[] QUERY_PROJECTION =
-            IS_SHORTCUT_API_SUPPORTED ?
-                    QUERY_PROJECTION_SHORTCUT_SUPPORTED : QUERY_PROJECTION_SHORTCUT_UNSUPPORTED;
-
-    // The index of the shortcut in the above array.
-    private static final int INDEX_SHORTCUT = 2;
-
-    private static final String[] ADAPTER_FROM_SHORTCUT_UNSUPPORTED = {
-        UserDictionary.Words.WORD,
+    private static final String[] QUERY_PROJECTION = {
+            UserDictionary.Words._ID, UserDictionary.Words.WORD
     };
 
-    private static final String[] ADAPTER_FROM_SHORTCUT_SUPPORTED = {
-        UserDictionary.Words.WORD, UserDictionary.Words.SHORTCUT
+    private static final String[] ADAPTER_FROM = {
+            UserDictionary.Words.WORD, UserDictionary.Words.SHORTCUT
     };
 
-    private static final String[] ADAPTER_FROM = IS_SHORTCUT_API_SUPPORTED ?
-            ADAPTER_FROM_SHORTCUT_SUPPORTED : ADAPTER_FROM_SHORTCUT_UNSUPPORTED;
-
-    private static final int[] ADAPTER_TO_SHORTCUT_UNSUPPORTED = {
+    private static final int[] ADAPTER_TO = {
         android.R.id.text1,
     };
-
-    private static final int[] ADAPTER_TO_SHORTCUT_SUPPORTED = {
-        android.R.id.text1, android.R.id.text2
-    };
-
-    private static final int[] ADAPTER_TO = IS_SHORTCUT_API_SUPPORTED ?
-            ADAPTER_TO_SHORTCUT_SUPPORTED : ADAPTER_TO_SHORTCUT_UNSUPPORTED;
 
     // Either the locale is empty (means the word is applicable to all locales)
     // or the word equals our current locale
@@ -91,13 +67,7 @@ public class UserDictionarySettings extends ListFragment {
     private static final String QUERY_SELECTION_ALL_LOCALES =
             UserDictionary.Words.LOCALE + " is null";
 
-    private static final String DELETE_SELECTION_WITH_SHORTCUT = UserDictionary.Words.WORD
-            + "=? AND " + UserDictionary.Words.SHORTCUT + "=?";
-    private static final String DELETE_SELECTION_WITHOUT_SHORTCUT = UserDictionary.Words.WORD
-            + "=? AND " + UserDictionary.Words.SHORTCUT + " is null OR "
-            + UserDictionary.Words.SHORTCUT + "=''";
-    private static final String DELETE_SELECTION_SHORTCUT_UNSUPPORTED =
-            UserDictionary.Words.WORD + "=?";
+    private static final String DELETE_SELECTION = UserDictionary.Words.WORD + "=?";
 
     private static final int OPTIONS_MENU_ADD = Menu.FIRST;
 
@@ -192,20 +162,18 @@ public class UserDictionarySettings extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         final String word = getWord(position);
-        final String shortcut = getShortcut(position);
         if (word != null) {
-            showAddOrEditDialog(word, shortcut);
+            showAddOrEditDialog(word);
         }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             final Locale systemLocale = getResources().getConfiguration().locale;
             if (!TextUtils.isEmpty(mLocale) && !mLocale.equals(systemLocale.toString())) {
                 // Hide the add button for ICS because it doesn't support specifying a locale
-                // for an entry. This new "locale"-aware API has been added in conjunction
-                // with the shortcut API.
+                // for an entry.
                 return;
             }
         }
@@ -219,7 +187,7 @@ public class UserDictionarySettings extends ListFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == OPTIONS_MENU_ADD) {
-            showAddOrEditDialog(null, null);
+            showAddOrEditDialog(null);
             return true;
         }
         return false;
@@ -228,18 +196,15 @@ public class UserDictionarySettings extends ListFragment {
     /**
      * Add or edit a word. If editingWord is null, it's an add; otherwise, it's an edit.
      * @param editingWord the word to edit, or null if it's an add.
-     * @param editingShortcut the shortcut for this entry, or null if none.
      */
-    private void showAddOrEditDialog(final String editingWord, final String editingShortcut) {
+    private void showAddOrEditDialog(final String editingWord) {
         final Bundle args = new Bundle();
         args.putInt(UserDictionaryAddWordContents.EXTRA_MODE, null == editingWord
                 ? UserDictionaryAddWordContents.MODE_INSERT
                 : UserDictionaryAddWordContents.MODE_EDIT);
         args.putString(UserDictionaryAddWordContents.EXTRA_WORD, editingWord);
-        args.putString(UserDictionaryAddWordContents.EXTRA_SHORTCUT, editingShortcut);
         args.putString(UserDictionaryAddWordContents.EXTRA_LOCALE, mLocale);
-        android.preference.PreferenceActivity pa =
-                (android.preference.PreferenceActivity)getActivity();
+        getActivity();
     }
 
     private String getWord(final int position) {
@@ -252,31 +217,8 @@ public class UserDictionarySettings extends ListFragment {
                 mCursor.getColumnIndexOrThrow(UserDictionary.Words.WORD));
     }
 
-    private String getShortcut(final int position) {
-        if (!IS_SHORTCUT_API_SUPPORTED) return null;
-        if (null == mCursor) return null;
-        mCursor.moveToPosition(position);
-        // Handle a possible race-condition
-        if (mCursor.isAfterLast()) return null;
-
-        return mCursor.getString(
-                mCursor.getColumnIndexOrThrow(UserDictionary.Words.SHORTCUT));
-    }
-
-    public static void deleteWord(final String word, final String shortcut,
-            final ContentResolver resolver) {
-        if (!IS_SHORTCUT_API_SUPPORTED) {
-            resolver.delete(UserDictionary.Words.CONTENT_URI, DELETE_SELECTION_SHORTCUT_UNSUPPORTED,
-                    new String[] { word });
-        } else if (TextUtils.isEmpty(shortcut)) {
-            resolver.delete(
-                    UserDictionary.Words.CONTENT_URI, DELETE_SELECTION_WITHOUT_SHORTCUT,
-                    new String[] { word });
-        } else {
-            resolver.delete(
-                    UserDictionary.Words.CONTENT_URI, DELETE_SELECTION_WITH_SHORTCUT,
-                    new String[] { word, shortcut });
-        }
+    public static void deleteWord(final String word, final ContentResolver resolver) {
+        resolver.delete(UserDictionary.Words.CONTENT_URI, DELETE_SELECTION, new String[] { word });
     }
 
     private static class MyAdapter extends SimpleCursorAdapter implements SectionIndexer {
@@ -286,22 +228,7 @@ public class UserDictionarySettings extends ListFragment {
 
             @Override
             public boolean setViewValue(final View v, final Cursor c, final int columnIndex) {
-                if (!IS_SHORTCUT_API_SUPPORTED) {
-                    // just let SimpleCursorAdapter set the view values
-                    return false;
-                }
-                if (columnIndex == INDEX_SHORTCUT) {
-                    final String shortcut = c.getString(INDEX_SHORTCUT);
-                    if (TextUtils.isEmpty(shortcut)) {
-                        v.setVisibility(View.GONE);
-                    } else {
-                        ((TextView)v).setText(shortcut);
-                        v.setVisibility(View.VISIBLE);
-                    }
-                    v.invalidate();
-                    return true;
-                }
-
+                // just let SimpleCursorAdapter set the view values
                 return false;
             }
         };

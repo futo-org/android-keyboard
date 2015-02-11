@@ -31,6 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.LocaleUtils;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public class UserDictionaryList extends PreferenceFragment {
         } finally {
             cursor.close();
         }
-        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
+        if (!Constants.JELLY_BEAN_OR_HIGHER) {
             // For ICS, we need to show "For all languages" in case that the keyboard locale
             // is different from the system locale
             localeSet.add("");

@@ -19,7 +19,6 @@ package com.android.inputmethod.latin.utils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.NgramProperty;
 import com.android.inputmethod.latin.makedict.ProbabilityInfo;
-import com.android.inputmethod.latin.makedict.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
 
 import java.util.HashMap;
@@ -29,7 +28,6 @@ public class CombinedFormatUtils {
     public static final String BIGRAM_TAG = "bigram";
     public static final String NGRAM_TAG = "ngram";
     public static final String NGRAM_PREV_WORD_TAG = "prev_word";
-    public static final String SHORTCUT_TAG = "shortcut";
     public static final String PROBABILITY_TAG = "f";
     public static final String HISTORICAL_INFO_TAG = "historicalInfo";
     public static final String HISTORICAL_INFO_SEPARATOR = ":";
@@ -71,14 +69,6 @@ public class CombinedFormatUtils {
             builder.append("," + POSSIBLY_OFFENSIVE_TAG + "=" + TRUE_VALUE);
         }
         builder.append("\n");
-        if (wordProperty.mHasShortcuts) {
-            for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
-                builder.append("  " + SHORTCUT_TAG + "=" + shortcutTarget.mWord);
-                builder.append(",");
-                builder.append(formatProbabilityInfo(shortcutTarget.mProbabilityInfo));
-                builder.append("\n");
-            }
-        }
         if (wordProperty.mHasNgrams) {
             for (final NgramProperty ngramProperty : wordProperty.mNgrams) {
                 builder.append(" " + NGRAM_TAG + "=" + ngramProperty.mTargetWord.mWord);

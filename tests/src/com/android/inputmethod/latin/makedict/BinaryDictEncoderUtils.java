@@ -16,9 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -92,38 +90,6 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Compute the size of a shortcut in bytes.
-     */
-    private static int getShortcutSize(final WeightedString shortcut,
-            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
-        int size = FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE;
-        final String word = shortcut.mWord;
-        final int length = word.length();
-        for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
-            final int codePoint = word.codePointAt(i);
-            size += CharEncoding.getCharSize(codePoint, codePointToOneByteCodeMap);
-        }
-        size += FormatSpec.PTNODE_TERMINATOR_SIZE;
-        return size;
-    }
-
-    /**
-     * Compute the size of a shortcut list in bytes.
-     *
-     * This is known in advance and does not change according to position in the file
-     * like address lists do.
-     */
-    static int getShortcutListSize(final ArrayList<WeightedString> shortcutList,
-            final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
-        if (null == shortcutList || shortcutList.isEmpty()) return 0;
-        int size = FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
-        for (final WeightedString shortcut : shortcutList) {
-            size += getShortcutSize(shortcut, codePointToOneByteCodeMap);
-        }
-        return size;
-    }
-
-    /**
      * Compute the maximum size of a PtNode, assuming 3-byte addresses for everything.
      *
      * @param ptNode the PtNode to compute the size of.
@@ -137,8 +103,6 @@ public class BinaryDictEncoderUtils {
             size += FormatSpec.PTNODE_FREQUENCY_SIZE;
         }
         size += FormatSpec.PTNODE_MAX_ADDRESS_SIZE; // For children address
-        // TODO: Use codePointToOneByteCodeMap for shortcuts.
-        size += getShortcutListSize(ptNode.mShortcutTargets, null /* codePointToOneByteCodeMap */);
         if (null != ptNode.mBigrams) {
             size += (FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE
                     + FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE)
@@ -235,27 +199,6 @@ public class BinaryDictEncoderUtils {
                 /* fall through */
             case 1:
                 stream.write(value & 0xFF);
-                break;
-            default:
-                /* nop */
-        }
-    }
-
-    @UsedForTesting
-    static void writeUIntToDictBuffer(final DictBuffer dictBuffer, final int value,
-            final int size) {
-        switch(size) {
-            case 4:
-                dictBuffer.put((byte) ((value >> 24) & 0xFF));
-                /* fall through */
-            case 3:
-                dictBuffer.put((byte) ((value >> 16) & 0xFF));
-                /* fall through */
-            case 2:
-                dictBuffer.put((byte) ((value >> 8) & 0xFF));
-                /* fall through */
-            case 1:
-                dictBuffer.put((byte) (value & 0xFF));
                 break;
             default:
                 /* nop */
@@ -391,9 +334,6 @@ public class BinaryDictEncoderUtils {
                 nodeSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(ptNodeArray,
                         nodeSize + size, ptNode.mChildren));
             }
-            // TODO: Use codePointToOneByteCodeMap for shortcuts.
-            nodeSize += getShortcutListSize(ptNode.mShortcutTargets,
-                    null /* codePointToOneByteCodeMap */);
             if (null != ptNode.mBigrams) {
                 for (WeightedString bigram : ptNode.mBigrams) {
                     final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
@@ -568,14 +508,13 @@ public class BinaryDictEncoderUtils {
      * @param hasMultipleChars whether the PtNode has multiple chars.
      * @param isTerminal whether the PtNode is terminal.
      * @param childrenAddressSize the size of a children address.
-     * @param hasShortcuts whether the PtNode has shortcuts.
      * @param hasBigrams whether the PtNode has bigrams.
      * @param isNotAWord whether the PtNode is not a word.
      * @param isPossiblyOffensive whether the PtNode is a possibly offensive entry.
      * @return the flags
      */
     static int makePtNodeFlags(final boolean hasMultipleChars, final boolean isTerminal,
-            final int childrenAddressSize, final boolean hasShortcuts, final boolean hasBigrams,
+            final int childrenAddressSize, final boolean hasBigrams,
             final boolean isNotAWord, final boolean isPossiblyOffensive) {
         byte flags = 0;
         if (hasMultipleChars) flags |= FormatSpec.FLAG_HAS_MULTIPLE_CHARS;
@@ -596,7 +535,6 @@ public class BinaryDictEncoderUtils {
             default:
                 throw new RuntimeException("Node with a strange address");
         }
-        if (hasShortcuts) flags |= FormatSpec.FLAG_HAS_SHORTCUT_TARGETS;
         if (hasBigrams) flags |= FormatSpec.FLAG_HAS_BIGRAMS;
         if (isNotAWord) flags |= FormatSpec.FLAG_IS_NOT_A_WORD;
         if (isPossiblyOffensive) flags |= FormatSpec.FLAG_IS_POSSIBLY_OFFENSIVE;
@@ -606,7 +544,6 @@ public class BinaryDictEncoderUtils {
     /* package */ static byte makePtNodeFlags(final PtNode node, final int childrenOffset) {
         return (byte) makePtNodeFlags(node.mChars.length > 1, node.isTerminal(),
                 getByteSize(childrenOffset),
-                node.mShortcutTargets != null && !node.mShortcutTargets.isEmpty(),
                 node.mBigrams != null && !node.mBigrams.isEmpty(),
                 node.mIsNotAWord, node.mIsPossiblyOffensive);
     }
@@ -621,7 +558,7 @@ public class BinaryDictEncoderUtils {
      * @param word the second bigram, for debugging purposes
      * @return the flags
      */
-    /* package */ static final int makeBigramFlags(final boolean more, final int offset,
+    /* package */ static int makeBigramFlags(final boolean more, final int offset,
             final int bigramFrequency, final int unigramFrequency, final String word) {
         int bigramFlags = (more ? FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT : 0)
                 + (offset < 0 ? FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE : 0);
@@ -690,19 +627,7 @@ public class BinaryDictEncoderUtils {
         return discretizedFrequency > 0 ? discretizedFrequency : 0;
     }
 
-    /**
-     * Makes the flag value for a shortcut.
-     *
-     * @param more whether there are more attributes after this one.
-     * @param frequency the frequency of the attribute, 0..15
-     * @return the flags
-     */
-    static final int makeShortcutFlags(final boolean more, final int frequency) {
-        return (more ? FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT : 0)
-                + (frequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY);
-    }
-
-    /* package */ static final int getChildrenPosition(final PtNode ptNode,
+    /* package */ static int getChildrenPosition(final PtNode ptNode,
             final HashMap<Integer, Integer> codePointToOneByteCodeMap) {
         int positionOfChildrenPosField = ptNode.mCachedAddressAfterUpdate
                 + getNodeHeaderSize(ptNode, codePointToOneByteCodeMap);
