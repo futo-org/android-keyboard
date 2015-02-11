@@ -17,20 +17,19 @@
 package com.android.inputmethod.compat;
 
 import android.graphics.Typeface;
+import android.os.Build;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 
-import com.android.inputmethod.latin.common.Constants;
-
 import java.util.Locale;
 
 @SmallTest
 public class LocaleSpanCompatUtilsTests extends AndroidTestCase {
     public void testInstantiatable() {
-        if (!Constants.JELLY_BEAN_MR1_OR_HIGHER) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             // LocaleSpan isn't yet available.
             return;
         }

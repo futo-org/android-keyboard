@@ -38,7 +38,7 @@ public final class InputMethodSubtypeCompatUtils {
                     int.class, int.class, String.class, String.class, String.class, boolean.class,
                     boolean.class, int.class);
     static {
-        if (Constants.JELLY_BEAN_MR1_OR_HIGHER) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             if (CONSTRUCTOR_INPUT_METHOD_SUBTYPE == null) {
                 android.util.Log.w(TAG, "Warning!!! Constructor is not defined.");
             }
@@ -59,7 +59,8 @@ public final class InputMethodSubtypeCompatUtils {
     public static InputMethodSubtype newInputMethodSubtype(int nameId, int iconId, String locale,
             String mode, String extraValue, boolean isAuxiliary,
             boolean overridesImplicitlyEnabledSubtype, int id) {
-        if (CONSTRUCTOR_INPUT_METHOD_SUBTYPE == null || !Constants.JELLY_BEAN_MR1_OR_HIGHER) {
+        if (CONSTRUCTOR_INPUT_METHOD_SUBTYPE == null
+                || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return new InputMethodSubtype(nameId, iconId, locale, mode, extraValue, isAuxiliary,
                     overridesImplicitlyEnabledSubtype);
         }
