@@ -17,8 +17,7 @@
 package com.android.inputmethod.compat;
 
 import android.app.Notification;
-
-import com.android.inputmethod.latin.common.Constants;
+import android.os.Build;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -74,7 +73,7 @@ public class NotificationCompatUtils {
 
     @SuppressWarnings("deprecation")
     public static Notification build(final Notification.Builder builder) {
-        if (Constants.JELLY_BEAN_OR_HIGHER) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             // #build was added in API level 16, JELLY_BEAN
             return (Notification) CompatUtils.invoke(builder, null, METHOD_build);
         }

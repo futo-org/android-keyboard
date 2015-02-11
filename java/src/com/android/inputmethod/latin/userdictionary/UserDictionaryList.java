@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -31,7 +32,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.LocaleUtils;
 
 import java.util.List;
@@ -75,7 +75,7 @@ public class UserDictionaryList extends PreferenceFragment {
         } finally {
             cursor.close();
         }
-        if (!Constants.JELLY_BEAN_OR_HIGHER) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             // For ICS, we need to show "For all languages" in case that the keyboard locale
             // is different from the system locale
             localeSet.add("");

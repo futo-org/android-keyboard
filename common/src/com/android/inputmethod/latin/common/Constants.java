@@ -16,19 +16,11 @@
 
 package com.android.inputmethod.latin.common;
 
-import android.os.Build;
-
 import com.android.inputmethod.annotations.UsedForTesting;
 
 import javax.annotation.Nonnull;
 
 public final class Constants {
-
-    public static final boolean JELLY_BEAN_OR_HIGHER =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-
-    public static final boolean JELLY_BEAN_MR1_OR_HIGHER =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
 
     public static final class Color {
         /**
