@@ -23,9 +23,10 @@ import java.util.TreeMap;
  * A class to help with handling different writing scripts.
  */
 public class ScriptUtils {
+
     // Used for hardware keyboards
     public static final int SCRIPT_UNKNOWN = -1;
-    // TODO: should we use ISO 15924 identifiers instead?
+
     public static final int SCRIPT_ARABIC = 0;
     public static final int SCRIPT_ARMENIAN = 1;
     public static final int SCRIPT_BENGALI = 2;
@@ -44,34 +45,29 @@ public class ScriptUtils {
     public static final int SCRIPT_TAMIL = 15;
     public static final int SCRIPT_TELUGU = 16;
     public static final int SCRIPT_THAI = 17;
-    public static final TreeMap<String, Integer> mSpellCheckerLanguageToScript;
+
+    private static final TreeMap<String, Integer> mIso15924toImeScriptCode;
+
     static {
-        // List of the supported languages and their associated script. We won't check
-        // words written in another script than the selected script, because we know we
-        // don't have those in our dictionary so we will underline everything and we
-        // will never have any suggestions, so it makes no sense checking them, and this
-        // is done in {@link #shouldFilterOut}. Also, the script is used to choose which
-        // proximity to pass to the dictionary descent algorithm.
-        // IMPORTANT: this only contains languages - do not write countries in there.
-        // Only the language is searched from the map.
-        mSpellCheckerLanguageToScript = new TreeMap<>();
-        mSpellCheckerLanguageToScript.put("cs", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("da", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("de", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("el", SCRIPT_GREEK);
-        mSpellCheckerLanguageToScript.put("en", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("es", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("fi", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("fr", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("hr", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("it", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("lt", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("lv", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("nb", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("nl", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("pt", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("sl", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("ru", SCRIPT_CYRILLIC);
+        mIso15924toImeScriptCode = new TreeMap<>();
+        mIso15924toImeScriptCode.put("Arab", SCRIPT_ARABIC);
+        mIso15924toImeScriptCode.put("Armn", SCRIPT_ARMENIAN);
+        mIso15924toImeScriptCode.put("Beng", SCRIPT_BENGALI);
+        mIso15924toImeScriptCode.put("Cyrl", SCRIPT_CYRILLIC);
+        mIso15924toImeScriptCode.put("Deva", SCRIPT_DEVANAGARI);
+        mIso15924toImeScriptCode.put("Geor", SCRIPT_GEORGIAN);
+        mIso15924toImeScriptCode.put("Grek", SCRIPT_GREEK);
+        mIso15924toImeScriptCode.put("Hebr", SCRIPT_HEBREW);
+        mIso15924toImeScriptCode.put("Knda", SCRIPT_KANNADA);
+        mIso15924toImeScriptCode.put("Khmr", SCRIPT_KHMER);
+        mIso15924toImeScriptCode.put("Laoo", SCRIPT_LAO);
+        mIso15924toImeScriptCode.put("Latn", SCRIPT_LATIN);
+        mIso15924toImeScriptCode.put("Mlym", SCRIPT_MALAYALAM);
+        mIso15924toImeScriptCode.put("Mymr", SCRIPT_MYANMAR);
+        mIso15924toImeScriptCode.put("Sinh", SCRIPT_SINHALA);
+        mIso15924toImeScriptCode.put("Taml", SCRIPT_TAMIL);
+        mIso15924toImeScriptCode.put("Telu", SCRIPT_TELUGU);
+        mIso15924toImeScriptCode.put("Thai", SCRIPT_THAI);
     }
     /*
      * Returns whether the code point is a letter that makes sense for the specified
@@ -181,12 +177,17 @@ public class ScriptUtils {
         }
     }
 
+    /**
+     * @param locale spell checker locale
+     * @return internal Latin IME script code that maps to an ISO 15924 script code
+     * {@see http://unicode.org/iso15924/iso15924-codes.html}
+     */
     public static int getScriptFromSpellCheckerLocale(final Locale locale) {
-        final Integer script = mSpellCheckerLanguageToScript.get(locale.getLanguage());
-        if (null == script) {
-            throw new RuntimeException("We have been called with an unsupported language: \""
-                    + locale.getLanguage() + "\". Framework bug?");
+        String isoScriptCode = locale.getScript();
+        Integer imeScriptCode = mIso15924toImeScriptCode.get(isoScriptCode);
+        if (imeScriptCode == null) {
+            throw new RuntimeException("Unsupported ISO 15924 code: " + isoScriptCode);
         }
-        return script;
+        return imeScriptCode;
     }
 }
