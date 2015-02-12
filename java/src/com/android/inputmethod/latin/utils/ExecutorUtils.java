@@ -21,13 +21,14 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 
 /**
  * Utilities to manage executors.
  */
 public class ExecutorUtils {
-    static final ConcurrentHashMap<String, ExecutorService> sExecutorMap =
+    static final ConcurrentHashMap<String, ScheduledExecutorService> sExecutorMap =
             new ConcurrentHashMap<>();
 
     private static class ThreadFactoryWithId implements ThreadFactory {
@@ -46,13 +47,14 @@ public class ExecutorUtils {
     /**
      * Gets the executor for the given id.
      */
-    public static ExecutorService getExecutor(final String id) {
-        ExecutorService executor = sExecutorMap.get(id);
+    public static ScheduledExecutorService getExecutor(final String id) {
+        ScheduledExecutorService executor = sExecutorMap.get(id);
         if (executor == null) {
             synchronized (sExecutorMap) {
                 executor = sExecutorMap.get(id);
                 if (executor == null) {
-                    executor = Executors.newSingleThreadExecutor(new ThreadFactoryWithId(id));
+                    executor = Executors.newSingleThreadScheduledExecutor(
+                            new ThreadFactoryWithId(id));
                     sExecutorMap.put(id, executor);
                 }
             }
@@ -66,7 +68,7 @@ public class ExecutorUtils {
     @UsedForTesting
     public static void shutdownAllExecutors() {
         synchronized (sExecutorMap) {
-            for (final ExecutorService executor : sExecutorMap.values()) {
+            for (final ScheduledExecutorService executor : sExecutorMap.values()) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {

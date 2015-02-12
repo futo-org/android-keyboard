@@ -177,4 +177,6 @@ public interface DictionaryFacilitator {
             NgramContext ngramContext,
             int increment,
             int timeStampInSeconds);
+
+    void clearLanguageModel(String filePath);
 }
