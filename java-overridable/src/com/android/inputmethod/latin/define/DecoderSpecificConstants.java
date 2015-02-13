@@ -27,4 +27,7 @@ public class DecoderSpecificConstants {
     // (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram is supported in Java side. Needs to modify
     // MAX_PREV_WORD_COUNT_FOR_N_GRAM in native/jni/src/defines.h for suggestions.
     public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 3;
+
+    public static final String DECODER_DICT_SUFFIX = "";
+
 }

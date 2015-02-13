@@ -51,6 +51,7 @@ public class DictionaryInfoUtils {
     private static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
     private static final String DEFAULT_MAIN_DICT = "main";
     private static final String MAIN_DICT_PREFIX = "main_";
+    private static final String DECODER_DICT_SUFFIX = DecoderSpecificConstants.DECODER_DICT_SUFFIX;
     // 6 digits - unicode is limited to 21 bits
     private static final int MAX_HEX_DIGITS_FOR_CODEPOINT = 6;
 
@@ -267,8 +268,8 @@ public class DictionaryInfoUtils {
         int resId;
         // Try to find main_language_country dictionary.
         if (!locale.getCountry().isEmpty()) {
-            final String dictLanguageCountry =
-                    MAIN_DICT_PREFIX + locale.toString().toLowerCase(Locale.ROOT);
+            final String dictLanguageCountry = MAIN_DICT_PREFIX
+                    + locale.toString().toLowerCase(Locale.ROOT) + DECODER_DICT_SUFFIX;
             if ((resId = res.getIdentifier(
                     dictLanguageCountry, "raw", RESOURCE_PACKAGE_NAME)) != 0) {
                 return resId;
@@ -276,7 +277,7 @@ public class DictionaryInfoUtils {
         }
 
         // Try to find main_language dictionary.
-        final String dictLanguage = MAIN_DICT_PREFIX + locale.getLanguage();
+        final String dictLanguage = MAIN_DICT_PREFIX + locale.getLanguage() + DECODER_DICT_SUFFIX;
         if ((resId = res.getIdentifier(dictLanguage, "raw", RESOURCE_PACKAGE_NAME)) != 0) {
             return resId;
         }
