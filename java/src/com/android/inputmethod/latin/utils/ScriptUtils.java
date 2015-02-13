@@ -46,29 +46,30 @@ public class ScriptUtils {
     public static final int SCRIPT_TELUGU = 16;
     public static final int SCRIPT_THAI = 17;
 
-    private static final TreeMap<String, Integer> mIso15924toImeScriptCode;
+    private static final TreeMap<String, Integer> mLanguageCodeToScriptCode;
 
     static {
-        mIso15924toImeScriptCode = new TreeMap<>();
-        mIso15924toImeScriptCode.put("Arab", SCRIPT_ARABIC);
-        mIso15924toImeScriptCode.put("Armn", SCRIPT_ARMENIAN);
-        mIso15924toImeScriptCode.put("Beng", SCRIPT_BENGALI);
-        mIso15924toImeScriptCode.put("Cyrl", SCRIPT_CYRILLIC);
-        mIso15924toImeScriptCode.put("Deva", SCRIPT_DEVANAGARI);
-        mIso15924toImeScriptCode.put("Geor", SCRIPT_GEORGIAN);
-        mIso15924toImeScriptCode.put("Grek", SCRIPT_GREEK);
-        mIso15924toImeScriptCode.put("Hebr", SCRIPT_HEBREW);
-        mIso15924toImeScriptCode.put("Knda", SCRIPT_KANNADA);
-        mIso15924toImeScriptCode.put("Khmr", SCRIPT_KHMER);
-        mIso15924toImeScriptCode.put("Laoo", SCRIPT_LAO);
-        mIso15924toImeScriptCode.put("Latn", SCRIPT_LATIN);
-        mIso15924toImeScriptCode.put("Mlym", SCRIPT_MALAYALAM);
-        mIso15924toImeScriptCode.put("Mymr", SCRIPT_MYANMAR);
-        mIso15924toImeScriptCode.put("Sinh", SCRIPT_SINHALA);
-        mIso15924toImeScriptCode.put("Taml", SCRIPT_TAMIL);
-        mIso15924toImeScriptCode.put("Telu", SCRIPT_TELUGU);
-        mIso15924toImeScriptCode.put("Thai", SCRIPT_THAI);
+        mLanguageCodeToScriptCode = new TreeMap<>();
+        mLanguageCodeToScriptCode.put("", SCRIPT_LATIN); // default
+        mLanguageCodeToScriptCode.put("ar", SCRIPT_ARABIC);
+        mLanguageCodeToScriptCode.put("hy", SCRIPT_ARMENIAN);
+        mLanguageCodeToScriptCode.put("bn", SCRIPT_BENGALI);
+        mLanguageCodeToScriptCode.put("bg", SCRIPT_CYRILLIC);
+        mLanguageCodeToScriptCode.put("sr", SCRIPT_CYRILLIC);
+        mLanguageCodeToScriptCode.put("ru", SCRIPT_CYRILLIC);
+        mLanguageCodeToScriptCode.put("ka", SCRIPT_GEORGIAN);
+        mLanguageCodeToScriptCode.put("el", SCRIPT_GREEK);
+        mLanguageCodeToScriptCode.put("he", SCRIPT_HEBREW);
+        mLanguageCodeToScriptCode.put("km", SCRIPT_KHMER);
+        mLanguageCodeToScriptCode.put("lo", SCRIPT_LAO);
+        mLanguageCodeToScriptCode.put("ml", SCRIPT_MALAYALAM);
+        mLanguageCodeToScriptCode.put("my", SCRIPT_MYANMAR);
+        mLanguageCodeToScriptCode.put("si", SCRIPT_SINHALA);
+        mLanguageCodeToScriptCode.put("ta", SCRIPT_TAMIL);
+        mLanguageCodeToScriptCode.put("te", SCRIPT_TELUGU);
+        mLanguageCodeToScriptCode.put("th", SCRIPT_THAI);
     }
+
     /*
      * Returns whether the code point is a letter that makes sense for the specified
      * locale for this spell checker.
@@ -179,15 +180,16 @@ public class ScriptUtils {
 
     /**
      * @param locale spell checker locale
-     * @return internal Latin IME script code that maps to an ISO 15924 script code
-     * {@see http://unicode.org/iso15924/iso15924-codes.html}
+     * @return internal Latin IME script code that maps to a language code
+     * {@see http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes}
      */
     public static int getScriptFromSpellCheckerLocale(final Locale locale) {
-        String isoScriptCode = locale.getScript();
-        Integer imeScriptCode = mIso15924toImeScriptCode.get(isoScriptCode);
-        if (imeScriptCode == null) {
-            throw new RuntimeException("Unsupported ISO 15924 code: " + isoScriptCode);
+        String language = locale.getLanguage();
+        Integer script = mLanguageCodeToScriptCode.get(language);
+        if (script == null) {
+            // Default to Latin.
+            script = mLanguageCodeToScriptCode.get("");
         }
-        return imeScriptCode;
+        return script;
     }
 }
