@@ -164,12 +164,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private void asyncExecuteTaskWithWriteLock(final Runnable task) {
-        asyncExecuteTaskWithLock(mLock.writeLock(), mDictName /* executorName */, task);
+        asyncExecuteTaskWithLock(mLock.writeLock(), task);
     }
 
-    private static void asyncExecuteTaskWithLock(final Lock lock, final String executorName,
-            final Runnable task) {
-        ExecutorUtils.getExecutor(executorName).execute(new Runnable() {
+    private static void asyncExecuteTaskWithLock(final Lock lock, final Runnable task) {
+        ExecutorUtils.getExecutorForDynamicLanguageModelUpdate().execute(new Runnable() {
             @Override
             public void run() {
                 lock.lock();
@@ -663,7 +662,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         final String dictName = mDictName;
         final File dictFile = mDictFile;
         final AsyncResultHolder<DictionaryStats> result = new AsyncResultHolder<>();
-        asyncExecuteTaskWithLock(mLock.readLock(), dictName /* executorName */, new Runnable() {
+        asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
             @Override
             public void run() {
                 final BinaryDictionary binaryDictionary = getBinaryDictionary();
@@ -714,7 +713,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         reloadDictionaryIfRequired();
         final String tag = TAG;
         final String dictName = mDictName;
-        asyncExecuteTaskWithLock(mLock.readLock(), "dumpAllWordsForDebug", new Runnable() {
+        asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
             @Override
             public void run() {
                 Log.d(tag, "Dump dictionary: " + dictName + " for " + mLocale);
@@ -752,7 +751,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     public WordProperty[] getWordPropertiesForSyncing() {
         reloadDictionaryIfRequired();
         final AsyncResultHolder<WordProperty[]> result = new AsyncResultHolder<>();
-        asyncExecuteTaskWithLock(mLock.readLock(), "sync-read", new Runnable() {
+        asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
             @Override
             public void run() {
                 final ArrayList<WordProperty> wordPropertyList = new ArrayList<>();

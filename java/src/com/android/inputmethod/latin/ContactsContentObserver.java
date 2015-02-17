@@ -23,22 +23,21 @@ import android.os.SystemClock;
 import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.ContactsManager.ContactsChangedListener;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
 
 /**
- * A content observer that listens to updates to content provider {@link Contacts.CONTENT_URI}.
+ * A content observer that listens to updates to content provider {@link Contacts#CONTENT_URI}.
  */
 // TODO:add test
-public class ContactsContentObserver {
+public class ContactsContentObserver implements Runnable {
     private static final String TAG = ContactsContentObserver.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private ContentObserver mObserver;
+    private ContentObserver mContentObserver;
+    private ContactsChangedListener mContactsChangedListener;
 
     private final Context mContext;
     private final ContactsManager mManager;
@@ -52,29 +51,27 @@ public class ContactsContentObserver {
         if (DEBUG) {
             Log.d(TAG, "Registered Contacts Content Observer");
         }
-        mObserver = new ContentObserver(null /* handler */) {
+        mContactsChangedListener = listener;
+        mContentObserver = new ContentObserver(null /* handler */) {
             @Override
             public void onChange(boolean self) {
-                getBgExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (haveContentsChanged()) {
-                            if (DEBUG) {
-                                Log.d(TAG, "Contacts have changed; notifying listeners");
-                            }
-                            listener.onContactsChange();
-                        }
-                    }
-                });
+                // TODO(zivkovic): Limit the queue to 1 instance of ContactsContentObserver.
+                ExecutorUtils.getExecutorForDynamicLanguageModelUpdate()
+                        .execute(ContactsContentObserver.this);
             }
         };
         final ContentResolver contentResolver = mContext.getContentResolver();
-        contentResolver.registerContentObserver(Contacts.CONTENT_URI, true, mObserver);
+        contentResolver.registerContentObserver(Contacts.CONTENT_URI, true, mContentObserver);
     }
 
-    @UsedForTesting
-    private ExecutorService getBgExecutor() {
-        return ExecutorUtils.getExecutor("Check Contacts");
+    @Override
+    public void run() {
+        if (haveContentsChanged()) {
+            if (DEBUG) {
+                Log.d(TAG, "Contacts have changed; notifying listeners");
+            }
+            mContactsChangedListener.onContactsChange();
+        }
     }
 
     private boolean haveContentsChanged() {
@@ -105,6 +102,6 @@ public class ContactsContentObserver {
     }
 
     public void unregister() {
-        mContext.getContentResolver().unregisterContentObserver(mObserver);
+        mContext.getContentResolver().unregisterContentObserver(mContentObserver);
     }
 }

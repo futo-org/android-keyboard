@@ -25,18 +25,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Unit tests for ExecutorUtils.
+ * Unit tests for {@link ExecutorUtils}.
  */
 @MediumTest
 public class ExecutorUtilsTests extends AndroidTestCase {
     private static final String TAG = ExecutorUtilsTests.class.getSimpleName();
 
-    private static final String TEST_EXECUTOR_ID = "test";
     private static final int NUM_OF_TASKS = 10;
     private static final int DELAY_FOR_WAITING_TASKS_MILLISECONDS = 500;
 
     public void testExecute() {
-        final ExecutorService executor = ExecutorUtils.getExecutor(TEST_EXECUTOR_ID);
+        final ExecutorService executor = ExecutorUtils.getExecutorForDynamicLanguageModelUpdate();
         final AtomicInteger v = new AtomicInteger(0);
         for (int i = 0; i < NUM_OF_TASKS; ++i) {
             executor.execute(new Runnable() {
