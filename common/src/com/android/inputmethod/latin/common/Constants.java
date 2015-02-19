@@ -325,6 +325,10 @@ public final class Constants {
     public static final int DECODER_SCORE_SCALAR = 1000000;
     public static final int DECODER_MAX_SCORE = 1000000000;
 
+    public static final int EVENT_BACKSPACE = 1;
+    public static final int EVENT_REJECTION = 2;
+    public static final int EVENT_REVERT = 3;
+
     private Constants() {
         // This utility class is not publicly instantiable.
     }

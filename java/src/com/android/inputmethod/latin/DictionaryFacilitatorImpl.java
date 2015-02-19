@@ -654,8 +654,14 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
-    public void removeWordFromPersonalizedDicts(final String word) {
-        removeWord(Dictionary.TYPE_USER_HISTORY, word);
+    @Override
+    public void unlearnFromUserHistory(final String word,
+            @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
+            final int eventType) {
+        // TODO: Decide whether or not to remove the word on EVENT_BACKSPACE.
+        if (eventType != Constants.EVENT_BACKSPACE) {
+            removeWord(Dictionary.TYPE_USER_HISTORY, word);
+        }
     }
 
     // TODO: Revise the way to fusion suggestion results.

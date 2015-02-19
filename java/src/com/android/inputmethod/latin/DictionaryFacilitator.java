@@ -150,7 +150,9 @@ public interface DictionaryFacilitator {
             @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
             final boolean blockPotentiallyOffensive);
 
-    void removeWordFromPersonalizedDicts(final String word);
+    void unlearnFromUserHistory(final String word,
+            @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
+            final int eventType);
 
     // TODO: Revise the way to fusion suggestion results.
     SuggestionResults getSuggestionResults(final WordComposer composer,
