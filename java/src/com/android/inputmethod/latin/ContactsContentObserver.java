@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.ContactsManager.ContactsChangedListener;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A content observer that listens to updates to content provider {@link Contacts#CONTENT_URI}.
@@ -35,12 +36,13 @@ import java.util.ArrayList;
 public class ContactsContentObserver implements Runnable {
     private static final String TAG = ContactsContentObserver.class.getSimpleName();
     private static final boolean DEBUG = false;
-
-    private ContentObserver mContentObserver;
-    private ContactsChangedListener mContactsChangedListener;
+    private static AtomicBoolean sRunning = new AtomicBoolean(false);
 
     private final Context mContext;
     private final ContactsManager mManager;
+
+    private ContentObserver mContentObserver;
+    private ContactsChangedListener mContactsChangedListener;
 
     public ContactsContentObserver(final ContactsManager manager, final Context context) {
         mManager = manager;
@@ -55,7 +57,6 @@ public class ContactsContentObserver implements Runnable {
         mContentObserver = new ContentObserver(null /* handler */) {
             @Override
             public void onChange(boolean self) {
-                // TODO(zivkovic): Limit the queue to 1 instance of ContactsContentObserver.
                 ExecutorUtils.getExecutorForDynamicLanguageModelUpdate()
                         .execute(ContactsContentObserver.this);
             }
@@ -66,12 +67,19 @@ public class ContactsContentObserver implements Runnable {
 
     @Override
     public void run() {
+        if (!sRunning.compareAndSet(false /* expect */, true /* update */)) {
+            if (DEBUG) {
+                Log.d(TAG, "run() : Already running. Don't waste time checking again.");
+            }
+            return;
+        }
         if (haveContentsChanged()) {
             if (DEBUG) {
-                Log.d(TAG, "Contacts have changed; notifying listeners");
+                Log.d(TAG, "run() : Contacts have changed. Notifying listeners.");
             }
             mContactsChangedListener.onContactsChange();
         }
+        sRunning.set(false);
     }
 
     private boolean haveContentsChanged() {
