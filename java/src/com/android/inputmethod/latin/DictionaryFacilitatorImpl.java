@@ -443,7 +443,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             final Locale[] locales, final DictionaryInitializationListener listener) {
         final CountDownLatch latchForWaitingLoadingMainDictionary = new CountDownLatch(1);
         mLatchForWaitingLoadingMainDictionaries = latchForWaitingLoadingMainDictionary;
-        ExecutorUtils.getExecutor("InitializeBinaryDictionary").execute(new Runnable() {
+        ExecutorUtils.getExecutorForStaticLanguageModelUpdate().execute(new Runnable() {
             @Override
             public void run() {
                 doReloadUninitializedMainDictionaries(

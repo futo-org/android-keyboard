@@ -26,14 +26,13 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.common.LocaleUtils;
+import com.android.inputmethod.latin.utils.ExecutorUtils;
 
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -81,12 +80,6 @@ public class UserDictionaryLookup implements Closeable {
     static final int RELOAD_DELAY_MS = 200;
 
     private final ContentResolver mResolver;
-
-    /**
-     *  Executor on which to perform the initial load and subsequent reloads (after a delay).
-     */
-    private final ScheduledExecutorService mLoadExecutor =
-            Executors.newSingleThreadScheduledExecutor();
 
     /**
      * Runnable that calls loadUserDictionary().
@@ -150,7 +143,8 @@ public class UserDictionaryLookup implements Closeable {
             }
 
             // Schedule a new reload after RELOAD_DELAY_MS.
-            mReloadFuture = mLoadExecutor.schedule(mLoader, RELOAD_DELAY_MS, TimeUnit.MILLISECONDS);
+            mReloadFuture = ExecutorUtils.getExecutorForDynamicLanguageModelUpdate().schedule(
+                    mLoader, RELOAD_DELAY_MS, TimeUnit.MILLISECONDS);
         }
     }
     private final ContentObserver mObserver = new UserDictionaryContentObserver();
@@ -192,7 +186,8 @@ public class UserDictionaryLookup implements Closeable {
         // Schedule the initial load to run immediately.  It's possible that the first call to
         // isValidWord occurs before the dictionary has actually loaded, so it should not
         // assume that the dictionary has been loaded.
-        mLoadExecutor.schedule(mLoader, 0, TimeUnit.MILLISECONDS);
+        ExecutorUtils.getExecutorForDynamicLanguageModelUpdate().schedule(
+                mLoader, 0, TimeUnit.MILLISECONDS);
 
         // Register the observer to be notified on changes to the UserDictionary and all individual
         // items.
@@ -236,9 +231,6 @@ public class UserDictionaryLookup implements Closeable {
             Log.d(TAG, "Close called (no pun intended), cleaning up executor and observer");
         }
         if (mIsClosed.compareAndSet(false, true)) {
-            // Shut down the load executor.
-            mLoadExecutor.shutdown();
-
             // Unregister the content observer.
             mResolver.unregisterContentObserver(mObserver);
         }
@@ -342,8 +334,7 @@ public class UserDictionaryLookup implements Closeable {
         if (DEBUG) {
             Log.d(TAG, "Loading UserDictionary");
         }
-        HashMap<String, ArrayList<Locale>> dictWords =
-                new HashMap<String, ArrayList<Locale>>();
+        HashMap<String, ArrayList<Locale>> dictWords = new HashMap<>();
         // Load the UserDictionary.  Request that items be returned in the default sort order
         // for UserDictionary, which is by frequency.
         Cursor cursor = mResolver.query(UserDictionary.Words.CONTENT_URI,
@@ -413,7 +404,7 @@ public class UserDictionaryLookup implements Closeable {
                         Log.d(TAG, "Word [" + dictWord +
                                 "] not seen for other locales, creating new entry");
                     }
-                    dictLocales = new ArrayList<Locale>();
+                    dictLocales = new ArrayList<>();
                     dictWords.put(dictWord, dictLocales);
                 }
                 // Append the locale to the list of locales this word is in.
