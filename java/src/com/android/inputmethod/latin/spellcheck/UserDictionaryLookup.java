@@ -186,8 +186,7 @@ public class UserDictionaryLookup implements Closeable {
         // Schedule the initial load to run immediately.  It's possible that the first call to
         // isValidWord occurs before the dictionary has actually loaded, so it should not
         // assume that the dictionary has been loaded.
-        ExecutorUtils.getExecutorForDynamicLanguageModelUpdate().schedule(
-                mLoader, 0, TimeUnit.MILLISECONDS);
+        ExecutorUtils.getExecutorForDynamicLanguageModelUpdate().execute(mLoader);
 
         // Register the observer to be notified on changes to the UserDictionary and all individual
         // items.
