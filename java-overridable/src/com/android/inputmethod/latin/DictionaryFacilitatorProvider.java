@@ -20,7 +20,7 @@ package com.android.inputmethod.latin;
  * Factory for instantiating DictionaryFacilitator objects.
  */
 public class DictionaryFacilitatorProvider {
-    public static DictionaryFacilitator newDictionaryFacilitator() {
+    public static DictionaryFacilitator getDictionaryFacilitator() {
         return new DictionaryFacilitatorImpl();
     }
 }
