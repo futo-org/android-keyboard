@@ -1007,7 +1007,8 @@ public final class InputLogic {
                 mWordComposer.reset();
                 mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
                 if (!TextUtils.isEmpty(rejectedSuggestion)) {
-                    mDictionaryFacilitator.removeWordFromPersonalizedDicts(rejectedSuggestion);
+                    unlearnWord(rejectedSuggestion, inputTransaction.mSettingsValues,
+                            Constants.EVENT_REJECTION);
                 }
                 StatsUtils.onBackspaceWordDelete(rejectedSuggestion.length());
             } else {
@@ -1060,6 +1061,8 @@ public final class InputLogic {
                 }
             }
 
+            boolean hasUnlearnedWordBeingDeleted = false;
+
             // No cancelling of commit/double space/swap: we have a regular backspace.
             // We should backspace one char and restart suggestion if at the end of a word.
             if (mConnection.hasSelection()) {
@@ -1090,6 +1093,11 @@ public final class InputLogic {
                     sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
                     int totalDeletedLength = 1;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
+                        // If this is an accelerated (i.e., double) deletion, then we need to
+                        // consider unlearning here too because we may have just entered the
+                        // previous word, and the next deletion will currupt it.
+                        hasUnlearnedWordBeingDeleted |= unlearnWordBeingDeleted(
+                                inputTransaction.mSettingsValues, currentKeyboardScriptId);
                         sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
                         totalDeletedLength++;
                     }
@@ -1112,6 +1120,11 @@ public final class InputLogic {
                     mConnection.deleteSurroundingText(lengthToDelete, 0);
                     int totalDeletedLength = lengthToDelete;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
+                        // If this is an accelerated (i.e., double) deletion, then we need to
+                        // consider unlearning here too because we may have just entered the
+                        // previous word, and the next deletion will currupt it.
+                        hasUnlearnedWordBeingDeleted |= unlearnWordBeingDeleted(
+                                inputTransaction.mSettingsValues, currentKeyboardScriptId);
                         final int codePointBeforeCursorToDeleteAgain =
                                 mConnection.getCodePointBeforeCursor();
                         if (codePointBeforeCursorToDeleteAgain != Constants.NOT_A_CODE) {
@@ -1124,6 +1137,11 @@ public final class InputLogic {
                     StatsUtils.onBackspacePressed(totalDeletedLength);
                 }
             }
+            if (!hasUnlearnedWordBeingDeleted) {
+                // Consider unlearning the word being deleted (if we have not done so already).
+                unlearnWordBeingDeleted(
+                        inputTransaction.mSettingsValues, currentKeyboardScriptId);
+            }
             if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
                             .mCurrentLanguageHasSpaces
@@ -1133,6 +1151,38 @@ public final class InputLogic {
                         false /* forStartInput */, currentKeyboardScriptId);
             }
         }
+    }
+
+    boolean unlearnWordBeingDeleted(
+            final SettingsValues settingsValues,final int currentKeyboardScriptId) {
+        // If we just started backspacing to delete a previous word (but have not
+        // entered the composing state yet), unlearn the word.
+        // TODO: Consider tracking whether or not this word was typed by the user.
+        if (!mConnection.hasSelection()
+                && settingsValues.isSuggestionsEnabledPerUserSettings()
+                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                && !mConnection.isCursorFollowedByWordCharacter(
+                        settingsValues.mSpacingAndPunctuations)) {
+            final TextRange range = mConnection.getWordRangeAtCursor(
+                    settingsValues.mSpacingAndPunctuations,
+                    currentKeyboardScriptId);
+            final String wordBeingDeleted = range.mWord.toString();
+            if (!wordBeingDeleted.isEmpty()) {
+                unlearnWord(wordBeingDeleted, settingsValues,
+                        Constants.EVENT_BACKSPACE);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void unlearnWord(final String word, final SettingsValues settingsValues, final int eventType) {
+        final NgramContext ngramContext = mConnection.getNgramContextFromNthPreviousWord(
+            settingsValues.mSpacingAndPunctuations, 2);
+        final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
+            System.currentTimeMillis());
+        mDictionaryFacilitator.unlearnFromUserHistory(
+            word, ngramContext, timeStampInSeconds, eventType);
     }
 
     /**
@@ -1546,7 +1596,8 @@ public final class InputLogic {
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
         if (!TextUtils.isEmpty(committedWord)) {
-            mDictionaryFacilitator.removeWordFromPersonalizedDicts(committedWordString);
+            unlearnWord(committedWordString, inputTransaction.mSettingsValues,
+                    Constants.EVENT_REVERT);
         }
         final String stringToCommit = originallyTypedWord +
                 (usePhantomSpace ? "" : separatorString);
