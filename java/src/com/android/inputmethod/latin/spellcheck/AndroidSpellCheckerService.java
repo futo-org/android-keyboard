@@ -140,8 +140,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         if (!PREF_USE_CONTACTS_KEY.equals(key)) return;
-            final boolean useContactsDictionary = prefs.getBoolean(PREF_USE_CONTACTS_KEY, true);
-            mDictionaryFacilitatorCache.setUseContactsDictionary(useContactsDictionary);
+        final boolean useContactsDictionary = prefs.getBoolean(PREF_USE_CONTACTS_KEY, true);
+        mDictionaryFacilitatorCache.setUseContactsDictionary(useContactsDictionary);
     }
 
     @Override
@@ -226,7 +226,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     public boolean onUnbind(final Intent intent) {
         mSemaphore.acquireUninterruptibly(MAX_NUM_OF_THREADS_READ_DICTIONARY);
         try {
-            mDictionaryFacilitatorCache.evictAll();
+            mDictionaryFacilitatorCache.closeDictionaries();
         } finally {
             mSemaphore.release(MAX_NUM_OF_THREADS_READ_DICTIONARY);
         }
