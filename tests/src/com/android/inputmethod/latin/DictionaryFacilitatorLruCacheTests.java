@@ -23,21 +23,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 @LargeTest
 public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
-    public void testCacheSize() {
-        final DictionaryFacilitatorLruCache cache =
-                new DictionaryFacilitatorLruCache(getContext(), "");
-
-        assertEquals(0, cache.getCachedLocalesForTesting().size());
-        assertNotNull(cache.get(Locale.US));
-        assertEquals(1, cache.getCachedLocalesForTesting().size());
-        assertNotNull(cache.get(Locale.UK));
-        assertEquals(2, cache.getCachedLocalesForTesting().size());
-        assertNotNull(cache.get(Locale.FRENCH));
-        assertEquals(2, cache.getCachedLocalesForTesting().size());
-        cache.evictAll();
-        assertEquals(0, cache.getCachedLocalesForTesting().size());
-    }
-
     public void testGetFacilitator() {
         final DictionaryFacilitatorLruCache cache =
                 new DictionaryFacilitatorLruCache(getContext(), "");

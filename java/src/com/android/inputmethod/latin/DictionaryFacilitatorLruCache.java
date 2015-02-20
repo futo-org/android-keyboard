@@ -16,15 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import com.android.inputmethod.annotations.UsedForTesting;
-
 import android.content.Context;
 import android.util.Log;
-import android.util.LruCache;
 
 /**
  * Cache for dictionary facilitators of multiple locales.
@@ -32,54 +28,20 @@ import android.util.LruCache;
  */
 public class DictionaryFacilitatorLruCache {
     private static final String TAG = "DictionaryFacilitatorLruCache";
-    private static final int MAX_DICTIONARY_FACILITATOR_COUNT = 3;
     private static final int WAIT_FOR_LOADING_MAIN_DICT_IN_MILLISECONDS = 1000;
     private static final int MAX_RETRY_COUNT_FOR_WAITING_FOR_LOADING_DICT = 5;
 
-    /**
-     * Class extends LruCache. This class tracks cached locales and closes evicted dictionaries by
-     * overriding entryRemoved.
-     */
-    private static class DictionaryFacilitatorLruCacheInner extends
-            LruCache<Locale, DictionaryFacilitator> {
-        private final HashSet<Locale> mCachedLocales;
-        public DictionaryFacilitatorLruCacheInner(final HashSet<Locale> cachedLocales,
-                final int maxSize) {
-            super(maxSize);
-            mCachedLocales = cachedLocales;
-        }
-
-        @Override
-        protected void entryRemoved(boolean evicted, Locale key,
-                DictionaryFacilitator oldValue, DictionaryFacilitator newValue) {
-            if (oldValue != null && oldValue != newValue) {
-                oldValue.closeDictionaries();
-            }
-            if (key != null && newValue == null) {
-                // Remove locale from the cache when the dictionary facilitator for the locale is
-                // evicted and new facilitator is not set for the locale.
-                mCachedLocales.remove(key);
-                if (size() >= maxSize()) {
-                    Log.w(TAG, "DictionaryFacilitator for " + key.toString()
-                            + " has been evicted due to cache size limit."
-                            + " size: " + size() + ", maxSize: " + maxSize());
-                }
-            }
-        }
-    }
-
     private final Context mContext;
-    private final HashSet<Locale> mCachedLocales = new HashSet<>();
     private final String mDictionaryNamePrefix;
-    private final DictionaryFacilitatorLruCacheInner mLruCache;
     private final Object mLock = new Object();
+    private final DictionaryFacilitator mDictionaryFacilitator;
     private boolean mUseContactsDictionary = false;
+    private Locale mLocale;
 
     public DictionaryFacilitatorLruCache(final Context context, final String dictionaryNamePrefix) {
         mContext = context;
-        mLruCache = new DictionaryFacilitatorLruCacheInner(
-                mCachedLocales, MAX_DICTIONARY_FACILITATOR_COUNT);
         mDictionaryNamePrefix = dictionaryNamePrefix;
+        mDictionaryFacilitator = DictionaryFacilitatorProvider.getDictionaryFacilitator();
     }
 
     private static void waitForLoadingMainDictionary(
@@ -101,59 +63,40 @@ public class DictionaryFacilitatorLruCache {
         }
     }
 
-    private void resetDictionariesForLocaleLocked(final DictionaryFacilitator dictionaryFacilitator,
-            final Locale locale) {
+    private void resetDictionariesForLocaleLocked() {
         // Note: Given that personalized dictionaries are not used here; we can pass null account.
-        dictionaryFacilitator.resetDictionaries(mContext, new Locale[]{locale},
+        mDictionaryFacilitator.resetDictionaries(mContext, new Locale[]{mLocale},
                 mUseContactsDictionary, false /* usePersonalizedDicts */,
                 false /* forceReloadMainDictionary */, null /* account */,
                 mDictionaryNamePrefix, null /* listener */);
     }
 
     public void setUseContactsDictionary(final boolean useContectsDictionary) {
-        if (mUseContactsDictionary == useContectsDictionary) {
-            // The value has not been changed.
-            return;
-        }
         synchronized (mLock) {
-            mUseContactsDictionary = useContectsDictionary;
-            for (final Locale locale : mCachedLocales) {
-                final DictionaryFacilitator dictionaryFacilitator = mLruCache.get(locale);
-                resetDictionariesForLocaleLocked(dictionaryFacilitator, locale);
-                waitForLoadingMainDictionary(dictionaryFacilitator);
+            if (mUseContactsDictionary == useContectsDictionary) {
+                // The value has not been changed.
+                return;
             }
+            mUseContactsDictionary = useContectsDictionary;
+            resetDictionariesForLocaleLocked();
+            waitForLoadingMainDictionary(mDictionaryFacilitator);
         }
     }
 
     public DictionaryFacilitator get(final Locale locale) {
-        DictionaryFacilitator dictionaryFacilitator = mLruCache.get(locale);
-        if (dictionaryFacilitator != null) {
-            // dictionary facilitator for the locale is in the cache.
-            return dictionaryFacilitator;
-        }
         synchronized (mLock) {
-            dictionaryFacilitator = mLruCache.get(locale);
-            if (dictionaryFacilitator != null) {
-                return dictionaryFacilitator;
+            if (!mDictionaryFacilitator.isForLocales(new Locale[]{locale})) {
+                mLocale = locale;
+                resetDictionariesForLocaleLocked();
             }
-            dictionaryFacilitator = DictionaryFacilitatorProvider.getDictionaryFacilitator();
-            resetDictionariesForLocaleLocked(dictionaryFacilitator, locale);
-            waitForLoadingMainDictionary(dictionaryFacilitator);
-            mLruCache.put(locale, dictionaryFacilitator);
-            mCachedLocales.add(locale);
-            return dictionaryFacilitator;
+            waitForLoadingMainDictionary(mDictionaryFacilitator);
+            return mDictionaryFacilitator;
         }
     }
 
-    public void evictAll() {
+    public void closeDictionaries() {
         synchronized (mLock) {
-            mLruCache.evictAll();
-            mCachedLocales.clear();
+            mDictionaryFacilitator.closeDictionaries();
         }
-    }
-
-    @UsedForTesting
-    HashSet<Locale> getCachedLocalesForTesting() {
-        return mCachedLocales;
     }
 }
