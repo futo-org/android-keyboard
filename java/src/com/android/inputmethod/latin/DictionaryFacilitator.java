@@ -173,25 +173,4 @@ public interface DictionaryFacilitator {
     void dumpDictionaryForDebug(final String dictName);
 
     ArrayList<Pair<String, DictionaryStats>> getStatsOfEnabledSubDicts();
-
-    void addOrIncrementTerm(String fileName,
-            String finalWordToBeAdded,
-            NgramContext ngramContext,
-            int increment,
-            int timeStampInSeconds);
-
-    void clearLanguageModel(String filePath);
-
-    /**
-     * Lets callers iterate over a given dynamic language model. Each iterate call
-     * results in ngrams, their counts, their last updated timestamps and an iteration token
-     * that can be used for the next {@link #iterateOverLanguageModel} call.
-     *
-     * Use empty string for starting the iterator from the begining.
-     * Returns empty string if there are no more entries to iterate upon.
-     * TODO: Encapsulate the result arrays into a java class.
-     */
-    String  iterateOverLanguageModel(String filePath, String iterationToken,
-            ArrayList<String> outputNgramEntries, ArrayList<Integer> outputNgramCounts,
-            ArrayList<Integer> outputNgramTimestamps);
 }
