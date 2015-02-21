@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project
+7 * Copyright (C) 2013 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -772,10 +772,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
+    @Override
     public void clearUserHistoryDictionary() {
         clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
     }
 
+    @Override
     public void dumpDictionaryForDebug(final String dictName) {
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
         for (final DictionaryGroup dictionaryGroup : dictionaryGroups) {
@@ -789,6 +791,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
+    @Override
     public ArrayList<Pair<String, DictionaryStats>> getStatsOfEnabledSubDicts() {
         final ArrayList<Pair<String, DictionaryStats>> statsOfEnabledSubDicts = new ArrayList<>();
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
@@ -800,27 +803,5 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
         return statsOfEnabledSubDicts;
-    }
-
-    @Override
-    public void addOrIncrementTerm(String fileName,
-            String word,
-            NgramContext ngramContext,
-            int increment,
-            int timeStampInSeconds) {
-        // Do nothing.
-    }
-
-    @Override
-    public void clearLanguageModel(String filePath) {
-        // Do nothing.
-    }
-
-    @Override
-    public String iterateOverLanguageModel(String filePath, String iterationToken,
-            ArrayList<String> outputNgramEntries, ArrayList<Integer> outputNgramCounts,
-            ArrayList<Integer> outputNgramTimestamps) {
-        // Do nothing.
-        return "";
     }
 }
