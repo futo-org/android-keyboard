@@ -30,4 +30,7 @@ public class DecoderSpecificConstants {
 
     public static final String DECODER_DICT_SUFFIX = "";
 
+    public static final boolean SHOULD_VERIFY_MAGIC_NUMBER = true;
+    public static final boolean SHOULD_VERIFY_CHECKSUM = true;
+    public static final boolean SHOULD_USE_DICT_VERSION = true;
 }
