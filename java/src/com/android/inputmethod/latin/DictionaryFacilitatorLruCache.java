@@ -35,7 +35,7 @@ public class DictionaryFacilitatorLruCache {
     private final String mDictionaryNamePrefix;
     private final Object mLock = new Object();
     private final DictionaryFacilitator mDictionaryFacilitator;
-    private boolean mUseContactsDictionary = false;
+    private boolean mUseContactsDictionary;
     private Locale mLocale;
 
     public DictionaryFacilitatorLruCache(final Context context, final String dictionaryNamePrefix) {
@@ -71,13 +71,13 @@ public class DictionaryFacilitatorLruCache {
                 mDictionaryNamePrefix, null /* listener */);
     }
 
-    public void setUseContactsDictionary(final boolean useContectsDictionary) {
+    public void setUseContactsDictionary(final boolean useContactsDictionary) {
         synchronized (mLock) {
-            if (mUseContactsDictionary == useContectsDictionary) {
+            if (mUseContactsDictionary == useContactsDictionary) {
                 // The value has not been changed.
                 return;
             }
-            mUseContactsDictionary = useContectsDictionary;
+            mUseContactsDictionary = useContactsDictionary;
             resetDictionariesForLocaleLocked();
             waitForLoadingMainDictionary(mDictionaryFacilitator);
         }
