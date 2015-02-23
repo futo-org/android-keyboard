@@ -22,6 +22,7 @@ import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
 import com.android.inputmethod.latin.common.LocaleUtils;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
@@ -53,6 +54,9 @@ final public class BinaryDictionaryGetter {
      * Name of the common preferences name to know which word list are on and which are off.
      */
     private static final String COMMON_PREFERENCES_NAME = "LatinImeDictPrefs";
+
+    private static final boolean SHOULD_USE_DICT_VERSION =
+            DecoderSpecificConstants.SHOULD_USE_DICT_VERSION;
 
     // Name of the category for the main dictionary
     public static final String MAIN_DICTIONARY_CATEGORY = "main";
@@ -224,6 +228,10 @@ final public class BinaryDictionaryGetter {
     // those do not include whitelist entries, the new code with an old version of the dictionary
     // would lose whitelist functionality.
     private static boolean hackCanUseDictionaryFile(final File file) {
+        if (!SHOULD_USE_DICT_VERSION) {
+            return true;
+        }
+
         try {
             // Read the version of the file
             final DictionaryHeader header = BinaryDictionaryUtils.getHeader(file);
