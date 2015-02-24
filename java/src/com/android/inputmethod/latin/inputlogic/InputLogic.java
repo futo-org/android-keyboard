@@ -1094,8 +1094,8 @@ public final class InputLogic {
                     int totalDeletedLength = 1;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
                         // If this is an accelerated (i.e., double) deletion, then we need to
-                        // consider unlearning here too because we may have just entered the
-                        // previous word, and the next deletion will currupt it.
+                        // consider unlearning here because we may have already reached
+                        // the previous word, and will lose it after next deletion.
                         hasUnlearnedWordBeingDeleted |= unlearnWordBeingDeleted(
                                 inputTransaction.mSettingsValues, currentKeyboardScriptId);
                         sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
@@ -1121,8 +1121,8 @@ public final class InputLogic {
                     int totalDeletedLength = lengthToDelete;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
                         // If this is an accelerated (i.e., double) deletion, then we need to
-                        // consider unlearning here too because we may have just entered the
-                        // previous word, and the next deletion will currupt it.
+                        // consider unlearning here because we may have already reached
+                        // the previous word, and will lose it after next deletion.
                         hasUnlearnedWordBeingDeleted |= unlearnWordBeingDeleted(
                                 inputTransaction.mSettingsValues, currentKeyboardScriptId);
                         final int codePointBeforeCursorToDeleteAgain =
@@ -1166,6 +1166,11 @@ public final class InputLogic {
             final TextRange range = mConnection.getWordRangeAtCursor(
                     settingsValues.mSpacingAndPunctuations,
                     currentKeyboardScriptId);
+            if (range == null) {
+                // TODO(zivkovic): Check for bad connection before getting this far.
+                // Happens if we don't have an input connection at all.
+                return false;
+            }
             final String wordBeingDeleted = range.mWord.toString();
             if (!wordBeingDeleted.isEmpty()) {
                 unlearnWord(wordBeingDeleted, settingsValues,
