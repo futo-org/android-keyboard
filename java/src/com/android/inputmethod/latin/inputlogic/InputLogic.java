@@ -1184,7 +1184,7 @@ public final class InputLogic {
     void unlearnWord(final String word, final SettingsValues settingsValues, final int eventType) {
         final NgramContext ngramContext = mConnection.getNgramContextFromNthPreviousWord(
             settingsValues.mSpacingAndPunctuations, 2);
-        final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
+        final long timeStampInSeconds = TimeUnit.MILLISECONDS.toSeconds(
             System.currentTimeMillis());
         mDictionaryFacilitator.unlearnFromUserHistory(
             word, ngramContext, timeStampInSeconds, eventType);

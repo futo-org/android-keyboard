@@ -147,11 +147,11 @@ public interface DictionaryFacilitator {
             throws InterruptedException;
 
     void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
-            @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
+            @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
             final boolean blockPotentiallyOffensive);
 
     void unlearnFromUserHistory(final String word,
-            @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
+            @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
             final int eventType);
 
     // TODO: Revise the way to fusion suggestion results.
