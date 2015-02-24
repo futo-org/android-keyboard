@@ -297,7 +297,8 @@ public class DictionaryInfoUtils {
         if (0 != resourceId) {
             return resourceId;
         }
-        return res.getIdentifier(DEFAULT_MAIN_DICT, "raw", RESOURCE_PACKAGE_NAME);
+        return res.getIdentifier(DEFAULT_MAIN_DICT + DecoderSpecificConstants.DECODER_DICT_SUFFIX,
+                "raw", RESOURCE_PACKAGE_NAME);
     }
 
     /**
