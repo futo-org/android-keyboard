@@ -359,8 +359,11 @@ public class DictionaryInfoUtils {
      * @param fileAddress the asset dictionary file address.
      * @return information of the specified dictionary.
      */
+    @Nullable
     private static DictionaryInfo createDictionaryInfoFromFileAddress(
             final AssetFileAddress fileAddress) {
+        // TODO: Read the header and update the version number for the new dictionaries.
+        // This will make sure that the dictionary version is updated in the database.
         final DictionaryHeader header = getDictionaryFileHeaderOrNull(
                 new File(fileAddress.mFilename), fileAddress.mOffset, fileAddress.mLength);
         if (header == null) {
@@ -436,7 +439,8 @@ public class DictionaryInfoUtils {
             // Protect against cases of a less-specific dictionary being found, like an
             // en dictionary being used for an en_US locale. In this case, the en dictionary
             // should be used for en_US but discounted for listing purposes.
-            if (!dictionaryInfo.mLocale.equals(locale)) {
+            // TODO: Remove dictionaryInfo == null when the static LMs have the headers.
+            if (dictionaryInfo == null || !dictionaryInfo.mLocale.equals(locale)) {
                 continue;
             }
             addOrUpdateDictInfo(dictList, dictionaryInfo);
