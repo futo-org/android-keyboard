@@ -579,7 +579,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
-            @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
+            @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
             final boolean blockPotentiallyOffensive) {
         final DictionaryGroup dictionaryGroup = getDictionaryGroupForMostProbableLanguage();
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
@@ -588,7 +588,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             final String currentWord = words[i];
             final boolean wasCurrentWordAutoCapitalized = (i == 0) ? wasAutoCapitalized : false;
             addWordToUserHistory(dictionaryGroup, ngramContextForCurrentWord, currentWord,
-                    wasCurrentWordAutoCapitalized, timeStampInSeconds, blockPotentiallyOffensive);
+                    wasCurrentWordAutoCapitalized, (int) timeStampInSeconds, blockPotentiallyOffensive);
             ngramContextForCurrentWord =
                     ngramContextForCurrentWord.getNextNgramContext(new WordInfo(currentWord));
         }
@@ -656,7 +656,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     @Override
     public void unlearnFromUserHistory(final String word,
-            @Nonnull final NgramContext ngramContext, final int timeStampInSeconds,
+            @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
             final int eventType) {
         // TODO: Decide whether or not to remove the word on EVENT_BACKSPACE.
         if (eventType != Constants.EVENT_BACKSPACE) {
