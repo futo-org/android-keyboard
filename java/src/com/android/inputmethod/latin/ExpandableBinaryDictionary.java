@@ -259,7 +259,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Check whether GC is needed and run GC if required.
      */
-    protected void runGCIfRequired(final boolean mindsBlockByGC) {
+    public void runGCIfRequired(final boolean mindsBlockByGC) {
         asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
             public void run() {
