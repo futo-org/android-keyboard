@@ -28,9 +28,7 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.KeyboardLayout;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.DictionaryFacilitatorLruCache;
 import com.android.inputmethod.latin.NgramContext;
@@ -47,6 +45,8 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+
+import javax.annotation.Nonnull;
 
 /**
  * Service for spell checking, using LatinIME's dictionaries and mechanisms.
@@ -193,7 +193,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
 
     public SuggestionResults getSuggestionResults(final Locale locale,
             final ComposedData composedData, final NgramContext ngramContext,
-            final ProximityInfo proximityInfo, final KeyboardLayout keyboardLayout) {
+            @Nonnull final Keyboard keyboard) {
         Integer sessionId = null;
         mSemaphore.acquireUninterruptibly();
         try {
@@ -201,8 +201,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
             DictionaryFacilitator dictionaryFacilitatorForLocale =
                     mDictionaryFacilitatorCache.get(locale);
             return dictionaryFacilitatorForLocale.getSuggestionResults(composedData, ngramContext,
-                    proximityInfo.getNativeProximityInfo(), mSettingsValuesForSuggestion,
-                    sessionId, SuggestedWords.INPUT_STYLE_TYPING, keyboardLayout);
+                    keyboard, mSettingsValuesForSuggestion,
+                    sessionId, SuggestedWords.INPUT_STYLE_TYPING);
         } finally {
             if (sessionId != null) {
                 mSessionIdPool.add(sessionId);

@@ -20,7 +20,7 @@ import android.content.Context;
 import android.util.Pair;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.KeyboardLayout;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.SuggestionResults;
@@ -157,9 +157,9 @@ public interface DictionaryFacilitator {
 
     // TODO: Revise the way to fusion suggestion results.
     SuggestionResults getSuggestionResults(final ComposedData composedData,
-            final NgramContext ngramContext, final long proximityInfoHandle,
+            final NgramContext ngramContext, @Nonnull final Keyboard keyboard,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
-            final int inputStyle, final KeyboardLayout keyboardLayout);
+            final int inputStyle);
 
     boolean isValidSpellingWord(final String word);
 

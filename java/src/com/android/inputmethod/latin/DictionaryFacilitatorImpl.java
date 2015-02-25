@@ -22,7 +22,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.KeyboardLayout;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.ComposedData;
@@ -668,9 +668,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     // TODO: Revise the way to fusion suggestion results.
     @Override
     public SuggestionResults getSuggestionResults(ComposedData composedData,
-            NgramContext ngramContext, long proximityInfoHandle,
+            NgramContext ngramContext, @Nonnull final Keyboard keyboard,
             SettingsValuesForSuggestion settingsValuesForSuggestion, int sessionId,
-            int inputStyle, KeyboardLayout keyboardLayout) {
+            int inputStyle) {
+        long proximityInfoHandle = keyboard.getProximityInfo().getNativeProximityInfo();
         final DictionaryGroup[] dictionaryGroups = mDictionaryGroups;
         final SuggestionResults suggestionResults = new SuggestionResults(
                 SuggestedWords.MAX_SUGGESTIONS, ngramContext.isBeginningOfSentenceContext());
