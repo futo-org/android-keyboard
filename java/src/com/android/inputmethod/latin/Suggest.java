@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
 
+import static com.android.inputmethod.latin.define.DecoderSpecificConstants.SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION;
+
 import com.android.inputmethod.keyboard.KeyboardLayout;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -236,10 +238,11 @@ public final class Suggest {
         }
         final boolean resultsArePredictions = !wordComposer.isComposingWord();
 
-        // We allow auto-correction if we have a whitelisted word, or if the word had more than
-        // one char and was not suggested.
-        final boolean allowsToBeAutoCorrected = (null != whitelistedWord)
-                || (consideredWord.length() > 1 && (null == sourceDictionaryOfRemovedWord));
+        // We allow auto-correction if whitelisting is not required or the word is whitelisted,
+        // or if the word had more than one char and was not suggested.
+        final boolean allowsToBeAutoCorrected =
+                (SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION || whitelistedWord != null)
+                || (consideredWord.length() > 1 && (sourceDictionaryOfRemovedWord == null));
 
         final boolean hasAutoCorrection;
         // If correction is not enabled, we never auto-correct. This is for example for when

@@ -33,4 +33,5 @@ public class DecoderSpecificConstants {
     public static final boolean SHOULD_VERIFY_MAGIC_NUMBER = true;
     public static final boolean SHOULD_VERIFY_CHECKSUM = true;
     public static final boolean SHOULD_USE_DICT_VERSION = true;
+    public static final boolean SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION = false;
 }
