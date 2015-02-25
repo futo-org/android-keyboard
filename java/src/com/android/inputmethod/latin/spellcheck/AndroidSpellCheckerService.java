@@ -37,11 +37,11 @@ import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.SuggestionResults;
-import com.android.inputmethod.latin.WordComposer;
 
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
@@ -191,16 +191,16 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         }
     }
 
-    public SuggestionResults getSuggestionResults(final Locale locale, final WordComposer composer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
-            final KeyboardLayout keyboardLayout) {
+    public SuggestionResults getSuggestionResults(final Locale locale,
+            final ComposedData composedData, final NgramContext ngramContext,
+            final ProximityInfo proximityInfo, final KeyboardLayout keyboardLayout) {
         Integer sessionId = null;
         mSemaphore.acquireUninterruptibly();
         try {
             sessionId = mSessionIdPool.poll();
             DictionaryFacilitator dictionaryFacilitatorForLocale =
                     mDictionaryFacilitatorCache.get(locale);
-            return dictionaryFacilitatorForLocale.getSuggestionResults(composer, ngramContext,
+            return dictionaryFacilitatorForLocale.getSuggestionResults(composedData, ngramContext,
                     proximityInfo.getNativeProximityInfo(), mSettingsValuesForSuggestion,
                     sessionId, SuggestedWords.INPUT_STYLE_TYPING, keyboardLayout);
         } finally {
