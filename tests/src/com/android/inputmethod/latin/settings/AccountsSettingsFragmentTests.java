@@ -49,7 +49,7 @@ public class AccountsSettingsFragmentTests
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
         try {
-            fragment.createAccountPicker(new String[0], null);
+            fragment.createAccountPicker(new String[0], null, null /* listener */);
             fail("Expected IllegalArgumentException, never thrown");
         } catch (IllegalArgumentException expected) {
             // Expected.
@@ -76,7 +76,7 @@ public class AccountsSettingsFragmentTests
                                 "2@example.com",
                                 "3@example.com",
                                 "4@example.com"},
-                        null);
+                        null, null /* positiveButtonListner */);
                 dialog.show();
                 dialogHolder.mDialog = dialog;
                 latch.countDown();
@@ -118,7 +118,7 @@ public class AccountsSettingsFragmentTests
                                 "2@example.com",
                                 "3@example.com",
                                 "4@example.com"},
-                        "3@example.com");
+                        "3@example.com", null /* positiveButtonListner */);
                 dialog.show();
                 dialogHolder.mDialog = dialog;
                 latch.countDown();

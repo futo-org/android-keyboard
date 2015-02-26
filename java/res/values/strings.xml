@@ -39,11 +39,9 @@
     <!-- Settings screen title for preferences [CHAR LIMIT=33]-->
     <string name="settings_screen_preferences">Preferences</string>
     <!-- Settings screen title for accounts and privacy preferences [CHAR LIMIT=33]-->
-    <string name="settings_screen_accounts">Accounts &amp; privacy</string>
+    <string name="settings_screen_accounts">Accounts &amp; Privacy</string>
     <!-- Settings screen title for appearance & layouts preferences [CHAR LIMIT=33] -->
-    <string name="settings_screen_appearance">Appearance &amp; layouts</string>
-    <!-- Settings screen title for multilingual options [CHAR_LIMIT=33] -->
-    <string name="settings_screen_multilingual">Multilingual options</string>
+    <string name="settings_screen_appearance">Appearance &amp; Layouts</string>
     <!-- Settings screen title for gesture typing preferences [CHAR_LIMIT=33] -->
     <string name="settings_screen_gesture">Gesture Typing</string>
     <!-- Settings screen title for text correction options [CHAR_LIMIT=33] -->
@@ -56,17 +54,31 @@
     <!--  Option for enabling or disabling the split keyboard layout. [CHAR LIMIT=65]-->
     <string name="enable_split_keyboard">Enable split keyboard</string>
 
-    <!-- TODO: Enable translation for user-visible strings -->
-    <string name="cloud_sync_title" translatable="false">Enable sync</string>
-    <string name="cloud_sync_summary" translatable="false">Sync your personal dictionary across devices</string>
-    <string name="cloud_sync_summary_disabled_signed_out" translatable="false">Select an account to enable sync</string>
-    <string name="sync_now_title" translatable="false">[DEBUG] Sync Now</string>
-    <string name="clear_sync_data_title" translatable="false">[DEBUG] Delete Google Keyboard cloud data</string>
-    <string name="clear_sync_data_summary" translable="false">Deletes your synced data from Google</string>
-    <string name="clear_sync_data_confirmation" translable="false">Your synced data will be deleted. Are you sure?</string>
-    <string name="clear_sync_data_ok" translable="false">Delete</string>
-    <string name="clear_sync_data_cancel" translable="false">Cancel</string>
-
+    <!-- Option title for enabling cloud sync feature [CHAR LIMIT=33]-->
+    <string name="cloud_sync_title">Google Keyboard Sync</string>
+    <!-- Option summary when cloud sync feature is enabled  [CHAR LIMIT=65] -->
+    <string name="cloud_sync_summary">Sync is turned on</string>
+    <!-- Option summary when cloud sync feature is disabled  [CHAR LIMIT=65] -->
+    <string name="cloud_sync_summary_disabled">Sync your personal dictionary across devices</string>
+    <!-- Option title for starting the sync cycle now. [CHAR LIMIT=33]-->
+    <string name="sync_now_title">Sync Now</string>
+    <!-- Option title for letting user delete data from Google servers.  [CHAR LIMIT=33] -->
+    <string name="clear_sync_data_title">Delete Keyboard Cloud data</string>
+    <!-- Option summary for letting user delete data from Google servers. [CHAR LIMIT=65] -->
+    <string name="clear_sync_data_summary">Deletes your synced data from Google</string>
+    <!-- Text for confirmation dialog box asking user to confirm deletion of cloud data. [CHAR LIMIT=65] -->
+    <string name="clear_sync_data_confirmation">Your synced data will be deleted from the cloud. Are you sure?</string>
+    <!-- Option to confirm deleting of user data from cloud [CHAR LIMIT=20] -->
+    <string name="clear_sync_data_ok">Delete</string>
+    <!-- Option to cancel the deletion of user data from cloud [CHAR LIMIT=20] -->
+    <string name="cloud_sync_cancel">Cancel</string>
+    <!-- Option to agree to terms and conditions for enabling cloud sync feature. -->
+    <string name="cloud_sync_opt_in_text">Your personal dictionary will be synced &amp; backed up to
+        Google servers. The statistical information of word frequency may be collected to help 
+        improve our products. The collection and usage of all the information will be compliant with
+        <a href="https://www.google.com/policies/privacy">Google\'s Privacy Policy</a>.
+    </string>
+    
     <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>
     <!-- Option summary for including other IMEs in the language switch list [CHAR LIMIT=65] -->
