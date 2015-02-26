@@ -23,10 +23,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.SwitchPreference;
+import android.preference.TwoStatePreference;
 import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -36,6 +40,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.accounts.AccountStateChangedListener;
 import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.define.ProductionFlags;
+import com.android.inputmethod.latin.utils.ManagedProfileUtils;
 
 import javax.annotation.Nullable;
 
@@ -74,7 +79,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     /**
      * Enable sync checkbox pref.
      */
-    private CheckBoxPreference mEnableSyncPreference;
+    private TwoStatePreference mEnableSyncPreference;
 
     /**
      * Enable sync checkbox pref.
@@ -86,32 +91,86 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      */
     private Preference mClearSyncDataPreference;
 
+    /**
+     * Account switcher preference.
+     */
+    private Preference mAccountSwitcher;
+
 
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_screen_accounts);
 
-        if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
-            removePreference(PREF_ACCCOUNT_SWITCHER);
-            removePreference(PREF_ENABLE_CLOUD_SYNC);
-            removePreference(PREF_SYNC_NOW);
-            removePreference(PREF_CLEAR_SYNC_DATA);
-        }
-        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
-            removePreference(PREF_ENABLE_CLOUD_SYNC);
-            removePreference(PREF_SYNC_NOW);
-            removePreference(PREF_CLEAR_SYNC_DATA);
+        if (ProductionFlags.IS_METRICS_LOGGING_SUPPORTED) {
+            final Preference enableMetricsLogging =
+                    findPreference(Settings.PREF_ENABLE_METRICS_LOGGING);
+            final Resources res = getResources();
+            if (enableMetricsLogging != null) {
+                final String enableMetricsLoggingTitle = res.getString(
+                        R.string.enable_metrics_logging, getApplicationName());
+                enableMetricsLogging.setTitle(enableMetricsLoggingTitle);
+            }
         } else {
-            mEnableSyncPreference = (CheckBoxPreference) findPreference(PREF_ENABLE_SYNC_NOW);
-            mEnableSyncPreference.setOnPreferenceClickListener(mEnableSyncClickListener);
-
-            mSyncNowPreference = findPreference(PREF_SYNC_NOW);
-            mSyncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
-
-            mClearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
-            mClearSyncDataPreference.setOnPreferenceClickListener(mDeleteSyncDataListener);
+            removePreference(Settings.PREF_ENABLE_METRICS_LOGGING);
         }
+
+        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
+            removeSyncPreferences();
+        } else {
+            disableSyncPreferences();
+            final AsyncTask<Void, Void, Void> checkManagedProfileTask =
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            if (ManagedProfileUtils.hasManagedWorkProfile(getActivity())) {
+                                removeSyncPreferences();
+                            } else {
+                                enableSyncPreferences();
+                            }
+                            return null;
+                        }
+                    };
+            checkManagedProfileTask.execute();
+        }
+    }
+
+    private void enableSyncPreferences() {
+        mAccountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
+        mAccountSwitcher.setEnabled(true);
+
+        mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
+        mEnableSyncPreference.setEnabled(true);
+        mEnableSyncPreference.setOnPreferenceClickListener(mEnableSyncClickListener);
+
+        mSyncNowPreference = findPreference(PREF_SYNC_NOW);
+        mSyncNowPreference.setEnabled(true);
+        mSyncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
+
+        mClearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
+        mSyncNowPreference.setEnabled(true);
+        mClearSyncDataPreference.setOnPreferenceClickListener(mDeleteSyncDataListener);
+    }
+
+    private void disableSyncPreferences() {
+        mAccountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
+        mAccountSwitcher.setEnabled(false);
+
+        mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
+        mEnableSyncPreference.setEnabled(false);
+
+        mSyncNowPreference = findPreference(PREF_SYNC_NOW);
+        mSyncNowPreference.setEnabled(false);
+
+        mClearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
+        mSyncNowPreference.setEnabled(false);
+    }
+
+    private void removeSyncPreferences() {
+        removePreference(PREF_ACCCOUNT_SWITCHER);
+        removePreference(PREF_ENABLE_CLOUD_SYNC);
+        removePreference(PREF_SYNC_NOW);
+        removePreference(PREF_CLEAR_SYNC_DATA);
     }
 
     @Override
@@ -126,8 +185,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             refreshAccountAndDependentPreferences(prefs.getString(PREF_ACCOUNT_NAME, null));
         } else if (TextUtils.equals(key, PREF_ENABLE_CLOUD_SYNC)) {
             final boolean syncEnabled = prefs.getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
-            mEnableSyncPreference = (CheckBoxPreference)findPreference(PREF_ENABLE_SYNC_NOW);
-            mEnableSyncPreference.setChecked(syncEnabled);
+            mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
             if (syncEnabled) {
                 mEnableSyncPreference.setSummary(R.string.cloud_sync_summary);
             } else {
@@ -147,27 +205,22 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             return;
         }
 
-        final Preference accountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
         if (currentAccount == null) {
             // No account is currently selected; switch enable sync preference off.
-            accountSwitcher.setSummary(getString(R.string.no_accounts_selected));
+            mAccountSwitcher.setSummary(getString(R.string.no_accounts_selected));
             mEnableSyncPreference.setChecked(false);
         } else {
             // Set the currently selected account as the summary text.
-            accountSwitcher.setSummary(getString(R.string.account_selected, currentAccount));
+            mAccountSwitcher.setSummary(getString(R.string.account_selected, currentAccount));
         }
 
-        // Set up on click listener for the account picker preference.
-        accountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        mAccountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(final Preference preference) {
                     final String[] accountsForLogin =
                             LoginAccountUtils.getAccountsForLogin(getActivity());
-                    if (accountsForLogin.length == 0) {
-                        // TODO: Handle account addition.
-                        Toast.makeText(getActivity(), getString(R.string.account_select_cancel),
-                                Toast.LENGTH_SHORT).show();
-                    } else {
+                    if (accountsForLogin.length > 0) {
+                        // TODO: Add addition of account.
                         createAccountPicker(accountsForLogin, currentAccount,
                                 new AccountChangedListener(null)).show();
                     }
@@ -236,9 +289,9 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         /**
          * Represents preference that should be changed based on account chosen.
          */
-        private CheckBoxPreference mDependentPreference;
+        private TwoStatePreference mDependentPreference;
 
-        AccountChangedListener(final CheckBoxPreference dependentPreference) {
+        AccountChangedListener(final TwoStatePreference dependentPreference) {
             mDependentPreference = dependentPreference;
         }
 
@@ -300,7 +353,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                                     }
                                 }
                              })
-                    .setNegativeButton(R.string.clear_sync_data_cancel, null /* OnClickListener */)
+                    .setNegativeButton(R.string.cloud_sync_cancel, null /* OnClickListener */)
                     .create();
             confirmationDialog.show();
             return true;
@@ -313,7 +366,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     class EnableSyncClickListener implements Preference.OnPreferenceClickListener {
         @Override
         public boolean onPreferenceClick(final Preference preference) {
-            final CheckBoxPreference syncPreference = (CheckBoxPreference) preference;
+            final TwoStatePreference syncPreference = (TwoStatePreference) preference;
             if (syncPreference.isChecked()) {
                 // Uncheck for now.
                 syncPreference.setChecked(false);
