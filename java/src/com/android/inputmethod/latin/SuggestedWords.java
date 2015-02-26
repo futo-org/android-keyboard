@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.inputmethod.CompletionInfo;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -375,31 +376,45 @@ public class SuggestedWords {
             return mWord + " (" + mDebugString + ")";
         }
 
-        // This will always remove the higher index if a duplicate is found.
-        public static void removeDups(@Nullable final String typedWord,
-                @Nonnull ArrayList<SuggestedWordInfo> candidates) {
+        /**
+         * This will always remove the higher index if a duplicate is found.
+         *
+         * @return position of typed word in the candidate list
+         */
+        public static int removeDups(
+                @Nullable final String typedWord,
+                @Nonnull final ArrayList<SuggestedWordInfo> candidates) {
             if (candidates.isEmpty()) {
-                return;
+                return -1;
             }
+            int firstOccurrenceOfWord = -1;
             if (!TextUtils.isEmpty(typedWord)) {
-                removeSuggestedWordInfoFromList(typedWord, candidates, -1 /* startIndexExclusive */);
+                firstOccurrenceOfWord = removeSuggestedWordInfoFromList(
+                        typedWord, candidates, -1 /* startIndexExclusive */);
             }
             for (int i = 0; i < candidates.size(); ++i) {
-                removeSuggestedWordInfoFromList(candidates.get(i).mWord, candidates,
-                        i /* startIndexExclusive */);
+                removeSuggestedWordInfoFromList(
+                        candidates.get(i).mWord, candidates, i /* startIndexExclusive */);
             }
+            return firstOccurrenceOfWord;
         }
 
-        private static void removeSuggestedWordInfoFromList(
-                @Nonnull final String word, @Nonnull final ArrayList<SuggestedWordInfo> candidates,
+        private static int removeSuggestedWordInfoFromList(
+                @Nonnull final String word,
+                @Nonnull final ArrayList<SuggestedWordInfo> candidates,
                 final int startIndexExclusive) {
+            int firstOccurrenceOfWord = -1;
             for (int i = startIndexExclusive + 1; i < candidates.size(); ++i) {
                 final SuggestedWordInfo previous = candidates.get(i);
                 if (word.equals(previous.mWord)) {
+                    if (firstOccurrenceOfWord == -1) {
+                        firstOccurrenceOfWord = i;
+                    }
                     candidates.remove(i);
                     --i;
                 }
             }
+            return firstOccurrenceOfWord;
         }
     }
 

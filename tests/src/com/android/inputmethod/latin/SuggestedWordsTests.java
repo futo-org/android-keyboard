@@ -59,6 +59,14 @@ public class SuggestedWordsTests extends AndroidTestCase {
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
     }
 
+    private static ArrayList<SuggestedWordInfo> createCorrectionWordInfos(final String... words) {
+        final ArrayList<SuggestedWordInfo> infos = new ArrayList<>();
+        for (final String word : words) {
+            infos.add(createCorrectionWordInfo(word));
+        }
+        return infos;
+    }
+
     // Helper for testGetTransformedWordInfo
     private static SuggestedWordInfo transformWordInfo(final String info,
             final int trailingSingleQuotesCount) {
@@ -70,6 +78,30 @@ public class SuggestedWordsTests extends AndroidTestCase {
         assertEquals(suggestedWordInfo.mAutoCommitFirstWordConfidence,
                 returnedWordInfo.mAutoCommitFirstWordConfidence);
         return returnedWordInfo;
+    }
+
+    public void testRemoveDupesNoDupes() {
+        final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "c");
+        assertEquals(-1, SuggestedWordInfo.removeDups("b", infos));
+        assertEquals(2, infos.size());
+    }
+
+    public void testRemoveDupesTypedWordNotDupe() {
+        final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "a", "c");
+        assertEquals(-1, SuggestedWordInfo.removeDups("b", infos));
+        assertEquals(2, infos.size());
+    }
+
+    public void testRemoveDupesTypedWordOnlyDupe() {
+        final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "b", "c");
+        assertEquals(1, SuggestedWordInfo.removeDups("b", infos));
+        assertEquals(2, infos.size());
+    }
+
+    public void testRemoveDupesTypedWordNotOnlyDupe() {
+        final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "b", "b", "c");
+        assertEquals(1, SuggestedWordInfo.removeDups("b", infos));
+        assertEquals(2, infos.size());
     }
 
     public void testGetTransformedSuggestedWordInfo() {
