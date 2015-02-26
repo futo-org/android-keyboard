@@ -21,7 +21,6 @@ import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -123,8 +122,6 @@ public final class BinaryDictionaryUtils {
      */
     @UsedForTesting
     public static int setCurrentTimeForTest(final int currentTime) {
-        final int currentNativeTimestamp = setCurrentTimeForTestNative(currentTime);
-        PersonalizationHelper.currentTimeChangedForTesting(currentNativeTimestamp);
-        return currentNativeTimestamp;
+        return setCurrentTimeForTestNative(currentTime);
     }
 }

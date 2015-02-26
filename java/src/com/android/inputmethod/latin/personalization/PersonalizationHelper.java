@@ -26,7 +26,6 @@ import java.io.FilenameFilter;
 import java.lang.ref.SoftReference;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,60 +67,28 @@ public class PersonalizationHelper {
         }
     }
 
-    private static int sCurrentTimestampForTesting = 0;
-    public static void currentTimeChangedForTesting(final int currentTimestamp) {
-        if (TimeUnit.MILLISECONDS.toSeconds(
-                DictionaryDecayBroadcastReciever.DICTIONARY_DECAY_INTERVAL_IN_MILLIS)
-                        < currentTimestamp - sCurrentTimestampForTesting) {
-            runGCOnAllOpenedUserHistoryDictionaries();
-        }
-    }
-
-    public static void runGCOnAllOpenedUserHistoryDictionaries() {
-        runGCOnAllDictionariesIfRequired(sLangUserHistoryDictCache);
-    }
-
-    private static <T extends DecayingExpandableBinaryDictionaryBase>
-            void runGCOnAllDictionariesIfRequired(
-                    final ConcurrentHashMap<String, SoftReference<T>> dictionaryMap) {
-        for (final ConcurrentHashMap.Entry<String, SoftReference<T>> entry
-                : dictionaryMap.entrySet()) {
-            final DecayingExpandableBinaryDictionaryBase dict = entry.getValue().get();
-            if (dict != null) {
-                dict.runGCIfRequired();
-            } else {
-                dictionaryMap.remove(entry.getKey());
-            }
-        }
-    }
-
     public static void removeAllUserHistoryDictionaries(final Context context) {
-        removeAllDictionaries(context, sLangUserHistoryDictCache,
-                UserHistoryDictionary.NAME);
-    }
-
-    private static <T extends DecayingExpandableBinaryDictionaryBase> void removeAllDictionaries(
-            final Context context, final ConcurrentHashMap<String, SoftReference<T>> dictionaryMap,
-            final String dictNamePrefix) {
-        synchronized (dictionaryMap) {
-            for (final ConcurrentHashMap.Entry<String, SoftReference<T>> entry
-                    : dictionaryMap.entrySet()) {
+        synchronized (sLangUserHistoryDictCache) {
+            for (final ConcurrentHashMap.Entry<String, SoftReference<UserHistoryDictionary>> entry
+                    : sLangUserHistoryDictCache.entrySet()) {
                 if (entry.getValue() != null) {
-                    final DecayingExpandableBinaryDictionaryBase dict = entry.getValue().get();
+                    final UserHistoryDictionary dict = entry.getValue().get();
                     if (dict != null) {
                         dict.clear();
                     }
                 }
             }
-            dictionaryMap.clear();
+            sLangUserHistoryDictCache.clear();
             final File filesDir = context.getFilesDir();
             if (filesDir == null) {
                 Log.e(TAG, "context.getFilesDir() returned null.");
                 return;
             }
-            if (!FileUtils.deleteFilteredFiles(filesDir, new DictFilter(dictNamePrefix))) {
-                Log.e(TAG, "Cannot remove all existing dictionary files. filesDir: "
-                        + filesDir.getAbsolutePath() + ", dictNamePrefix: " + dictNamePrefix);
+            final boolean filesDeleted = FileUtils.deleteFilteredFiles(
+                    filesDir, new DictFilter(UserHistoryDictionary.NAME));
+            if (!filesDeleted) {
+                Log.e(TAG, "Cannot remove dictionary files. filesDir: " + filesDir.getAbsolutePath()
+                        + ", dictNamePrefix: " + UserHistoryDictionary.NAME);
             }
         }
     }

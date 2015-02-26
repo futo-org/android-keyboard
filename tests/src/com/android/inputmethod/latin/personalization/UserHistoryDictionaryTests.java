@@ -21,15 +21,11 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
-import com.android.inputmethod.latin.NgramContext;
-import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 
 import java.io.File;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Unit tests for UserHistoryDictionary
@@ -84,20 +80,6 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
 
     private void resetCurrentTimeForTestMode() {
         mCurrentTime = 0;
-        setCurrentTimeForTestMode(mCurrentTime);
-    }
-
-    private void forcePassingShortTime() {
-        // 3 days.
-        final int timeToElapse = (int)TimeUnit.DAYS.toSeconds(3);
-        mCurrentTime += timeToElapse;
-        setCurrentTimeForTestMode(mCurrentTime);
-    }
-
-    private void forcePassingLongTime() {
-        // 365 days.
-        final int timeToElapse = (int)TimeUnit.DAYS.toSeconds(365);
-        mCurrentTime += timeToElapse;
         setCurrentTimeForTestMode(mCurrentTime);
     }
 
@@ -227,47 +209,5 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         assertTrue(UserHistoryDictionaryTestsHelper.addAndWriteRandomWords(dict,
                 numberOfWords, random, true /* checksContents */, mCurrentTime));
         assertDictionaryExists(dict, dictFile);
-    }
-
-    public void testDecaying() {
-        doTestDecaying(TEST_ACCOUNT);
-    }
-
-    public void testDecaying_NullAccount() {
-        doTestDecaying(null /* testAccount */);
-    }
-
-    private void doTestDecaying(final String testAccount) {
-        final Locale dummyLocale = UserHistoryDictionaryTestsHelper.getDummyLocale("decaying");
-        final UserHistoryDictionary dict = PersonalizationHelper.getUserHistoryDictionary(
-                getContext(), dummyLocale, testAccount);
-        resetCurrentTimeForTestMode();
-        clearHistory(dict);
-        dict.waitAllTasksForTests();
-
-        final int numberOfWords = 5000;
-        final Random random = new Random(123456);
-        final List<String> words = UserHistoryDictionaryTestsHelper.generateWords(numberOfWords,
-                random);
-        NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
-        for (final String word : words) {
-            UserHistoryDictionary.addToDictionary(dict, ngramContext, word, true, mCurrentTime);
-            ngramContext = ngramContext.getNextNgramContext(new WordInfo(word));
-            dict.waitAllTasksForTests();
-            assertTrue(dict.isInDictionary(word));
-        }
-        forcePassingShortTime();
-        dict.runGCIfRequired();
-        dict.waitAllTasksForTests();
-        for (final String word : words) {
-            assertTrue(dict.isInDictionary(word));
-        }
-        // Long term decay results in words removed from the dictionary.
-        forcePassingLongTime();
-        dict.runGCIfRequired();
-        dict.waitAllTasksForTests();
-        for (final String word : words) {
-            assertFalse(dict.isInDictionary(word));
-        }
     }
 }

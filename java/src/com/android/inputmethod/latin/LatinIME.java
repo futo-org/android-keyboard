@@ -73,7 +73,6 @@ import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
-import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
@@ -584,7 +583,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         dictDumpFilter.addAction(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
         registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
 
-        DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
         StatsUtils.onCreate(mSettings.getCurrent(), mRichImm);
     }
 
@@ -704,7 +702,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         mStatsUtilsManager.onDestroy(this /* context */);
-        DictionaryDecayBroadcastReciever.cancelIntervalAlarmForDictionaryDecaying(this);
         super.onDestroy();
     }
 
