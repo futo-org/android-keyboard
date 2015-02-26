@@ -41,7 +41,8 @@ public class DictionaryFacilitatorLruCache {
     public DictionaryFacilitatorLruCache(final Context context, final String dictionaryNamePrefix) {
         mContext = context;
         mDictionaryNamePrefix = dictionaryNamePrefix;
-        mDictionaryFacilitator = DictionaryFacilitatorProvider.getDictionaryFacilitator();
+        mDictionaryFacilitator = DictionaryFacilitatorProvider.getDictionaryFacilitator(
+                true /* isNeededForSpellChecking */);
     }
 
     private static void waitForLoadingMainDictionary(
