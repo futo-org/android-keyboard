@@ -80,7 +80,7 @@ public final class DictionaryFactory {
      * @param context The context to contact the dictionary provider, if possible.
      * @param f A file address to the dictionary to kill.
      */
-    private static void killDictionary(final Context context, final AssetFileAddress f) {
+    public static void killDictionary(final Context context, final AssetFileAddress f) {
         if (f.pointsToPhysicalFile()) {
             f.deleteUnderlyingFile();
             // Warn the dictionary provider if the dictionary came from there.
