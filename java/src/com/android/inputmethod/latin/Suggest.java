@@ -210,7 +210,8 @@ public final class Suggest {
             }
         }
 
-        SuggestedWordInfo.removeDups(typedWordString, suggestionsContainer);
+        final int firstOcurrenceOfTypedWordInSuggestions =
+                SuggestedWordInfo.removeDups(typedWordString, suggestionsContainer);
 
         final SuggestedWordInfo whitelistedWordInfo =
                 getWhitelistedWordInfoOrNull(suggestionsContainer);
@@ -273,7 +274,8 @@ public final class Suggest {
             hasAutoCorrection = false;
         } else {
             final SuggestedWordInfo firstSuggestion = suggestionResults.first();
-            if (suggestionResults.mAutocorrectRecommendation) {
+            if (suggestionResults.mFirstSuggestionExceedsConfidenceThreshold
+                    && firstOcurrenceOfTypedWordInSuggestions != 0) {
                 hasAutoCorrection = true;
             } else if (!AutoCorrectionUtils.suggestionExceedsThreshold(
                     firstSuggestion, consideredWord, mAutoCorrectionThreshold)) {
@@ -314,12 +316,12 @@ public final class Suggest {
         } else {
             inputStyle = inputStyleIfNotPrediction;
         }
+
+        final boolean isTypedWordValid = firstOcurrenceOfTypedWordInSuggestions > -1
+                || (!resultsArePredictions && !allowsToBeAutoCorrected);
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
                 suggestionResults.mRawSuggestions, typedWordInfo,
-                // TODO: this first argument is lying. If this is a whitelisted word which is an
-                // actual word, it says typedWordValid = false, which looks wrong. We should either
-                // rename the attribute or change the value.
-                !resultsArePredictions && !allowsToBeAutoCorrected /* typedWordValid */,
+                isTypedWordValid,
                 hasAutoCorrection /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */, inputStyle, sequenceNumber));
     }
