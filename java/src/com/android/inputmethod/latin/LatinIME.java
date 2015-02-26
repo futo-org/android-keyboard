@@ -143,7 +143,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
     private final EmojiAltPhysicalKeyDetector mEmojiAltPhysicalKeyDetector =
-            new EmojiAltPhysicalKeyDetector();
+            new EmojiAltPhysicalKeyDetector(mInputLogic.mConnection);
     private StatsUtilsManager mStatsUtilsManager;
     // Working variable for {@link #startShowingInputView()} and
     // {@link #onEvaluateInputViewShown()}.
