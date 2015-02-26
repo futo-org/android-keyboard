@@ -23,8 +23,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.text.TextUtils;
@@ -48,35 +48,49 @@ import javax.annotation.Nullable;
  * <li> Privacy preferences </li>
  */
 public final class AccountsSettingsFragment extends SubScreenFragment {
-    private static final String PREF_SYNC_NOW = "pref_beanstalk";
-    private static final String PREF_CLEAR_SYNC_DATA = "pref_beanstalk_clear_data";
+    private static final String PREF_ENABLE_SYNC_NOW = "pref_enable_cloud_sync";
+    private static final String PREF_SYNC_NOW = "pref_sync_now";
+    private static final String PREF_CLEAR_SYNC_DATA = "pref_clear_sync_data";
 
     static final String PREF_ACCCOUNT_SWITCHER = "account_switcher";
 
-    private final DialogInterface.OnClickListener mAccountChangedListener =
-            new AccountChangedListener();
-    private final Preference.OnPreferenceClickListener mSyncNowListener = new SyncNowListener();
-    private final Preference.OnPreferenceClickListener mClearSyncDataListener =
-            new ClearSyncDataListener();
+    /**
+     * Onclick listener for sync now pref.
+     */
+    private final Preference.OnPreferenceClickListener mSyncNowListener =
+            new SyncNowListener();
+    /**
+     * Onclick listener for delete sync pref.
+     */
+    private final Preference.OnPreferenceClickListener mDeleteSyncDataListener =
+            new DeleteSyncDataListener();
+
+    /**
+     * Onclick listener for enable sync pref.
+     */
+    private final Preference.OnPreferenceClickListener mEnableSyncClickListener =
+            new EnableSyncClickListener();
+
+    /**
+     * Enable sync checkbox pref.
+     */
+    private CheckBoxPreference mEnableSyncPreference;
+
+    /**
+     * Enable sync checkbox pref.
+     */
+    private Preference mSyncNowPreference;
+
+    /**
+     * Clear sync data pref.
+     */
+    private Preference mClearSyncDataPreference;
+
 
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_screen_accounts);
-
-        final Resources res = getResources();
-
-        if (ProductionFlags.IS_METRICS_LOGGING_SUPPORTED) {
-            final Preference enableMetricsLogging =
-                    findPreference(Settings.PREF_ENABLE_METRICS_LOGGING);
-            if (enableMetricsLogging != null) {
-                final String enableMetricsLoggingTitle = res.getString(
-                        R.string.enable_metrics_logging, getApplicationName());
-                enableMetricsLogging.setTitle(enableMetricsLoggingTitle);
-            }
-        } else {
-            removePreference(Settings.PREF_ENABLE_METRICS_LOGGING);
-        }
 
         if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
             removePreference(PREF_ACCCOUNT_SWITCHER);
@@ -89,11 +103,14 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             removePreference(PREF_SYNC_NOW);
             removePreference(PREF_CLEAR_SYNC_DATA);
         } else {
-            final Preference syncNowPreference = findPreference(PREF_SYNC_NOW);
-            syncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
+            mEnableSyncPreference = (CheckBoxPreference) findPreference(PREF_ENABLE_SYNC_NOW);
+            mEnableSyncPreference.setOnPreferenceClickListener(mEnableSyncClickListener);
 
-            final Preference clearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
-            clearSyncDataPreference.setOnPreferenceClickListener(mClearSyncDataListener);
+            mSyncNowPreference = findPreference(PREF_SYNC_NOW);
+            mSyncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
+
+            mClearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
+            mClearSyncDataPreference.setOnPreferenceClickListener(mDeleteSyncDataListener);
         }
     }
 
@@ -106,15 +123,25 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         if (TextUtils.equals(key, PREF_ACCOUNT_NAME)) {
-            refreshAccountAndDependentPreferences(
-                    prefs.getString(PREF_ACCOUNT_NAME, null));
+            refreshAccountAndDependentPreferences(prefs.getString(PREF_ACCOUNT_NAME, null));
         } else if (TextUtils.equals(key, PREF_ENABLE_CLOUD_SYNC)) {
             final boolean syncEnabled = prefs.getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
-            AccountStateChangedListener.onSyncPreferenceChanged(
-                    getSignedInAccountName(), syncEnabled);
+            mEnableSyncPreference = (CheckBoxPreference)findPreference(PREF_ENABLE_SYNC_NOW);
+            mEnableSyncPreference.setChecked(syncEnabled);
+            if (syncEnabled) {
+                mEnableSyncPreference.setSummary(R.string.cloud_sync_summary);
+            } else {
+                mEnableSyncPreference.setSummary(R.string.cloud_sync_summary_disabled);
+            }
+            AccountStateChangedListener.onSyncPreferenceChanged(getSignedInAccountName(),
+                    syncEnabled);
         }
     }
 
+    /**
+     * Summarizes what account is being used and turns off dependent preferences if no account
+     * is currently selected.
+     */
     private void refreshAccountAndDependentPreferences(@Nullable final String currentAccount) {
         if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
             return;
@@ -122,59 +149,31 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
 
         final Preference accountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
         if (currentAccount == null) {
-            // No account is currently selected.
+            // No account is currently selected; switch enable sync preference off.
             accountSwitcher.setSummary(getString(R.string.no_accounts_selected));
-            // Disable the sync preference UI.
-            disableSyncPreference();
+            mEnableSyncPreference.setChecked(false);
         } else {
-            // Set the currently selected account.
+            // Set the currently selected account as the summary text.
             accountSwitcher.setSummary(getString(R.string.account_selected, currentAccount));
-            // Enable the sync preference UI.
-            enableSyncPreference();
         }
-        // Set up onClick listener for the account picker preference.
-        final Context context = getActivity();
-        final String[] accountsForLogin = LoginAccountUtils.getAccountsForLogin(context);
+
+        // Set up on click listener for the account picker preference.
         accountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(final Preference preference) {
-                if (accountsForLogin.length == 0) {
-                    // TODO: Handle account addition.
-                    Toast.makeText(getActivity(), getString(R.string.account_select_cancel),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    createAccountPicker(accountsForLogin, currentAccount).show();
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    final String[] accountsForLogin =
+                            LoginAccountUtils.getAccountsForLogin(getActivity());
+                    if (accountsForLogin.length == 0) {
+                        // TODO: Handle account addition.
+                        Toast.makeText(getActivity(), getString(R.string.account_select_cancel),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        createAccountPicker(accountsForLogin, currentAccount,
+                                new AccountChangedListener(null)).show();
+                    }
+                    return true;
                 }
-                return true;
-            }
         });
-    }
-
-    /**
-     * Enables the Sync preference UI and updates its summary.
-     */
-    private void enableSyncPreference() {
-        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
-            return;
-        }
-
-        final Preference syncPreference = findPreference(PREF_ENABLE_CLOUD_SYNC);
-        syncPreference.setEnabled(true);
-        syncPreference.setSummary(R.string.cloud_sync_summary);
-    }
-
-    /**
-     * Disables the Sync preference UI and updates its summary to indicate
-     * the fact that an account needs to be selected for sync.
-     */
-    private void disableSyncPreference() {
-        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
-            return;
-        }
-
-        final Preference syncPreference = findPreference(PREF_ENABLE_CLOUD_SYNC);
-        syncPreference.setEnabled(false);
-        syncPreference.setSummary(R.string.cloud_sync_summary_disabled_signed_out);
     }
 
     @Nullable
@@ -188,14 +187,19 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
 
     /**
      * Creates an account picker dialog showing the given accounts in a list and selecting
-     * the selected account by default.
-     * The list of accounts must not be null/empty.
+     * the selected account by default.  The list of accounts must not be null/empty.
      *
      * Package-private for testing.
+     *
+     * @param accounts list of accounts on the device.
+     * @param selectedAccount currently selected account
+     * @param positiveButtonClickListener listener that gets called when positive button is
+     * clicked
      */
     @UsedForTesting
     AlertDialog createAccountPicker(final String[] accounts,
-            final String selectedAccount) {
+            final String selectedAccount,
+            final DialogInterface.OnClickListener positiveButtonClickListener) {
         if (accounts == null || accounts.length == 0) {
             throw new IllegalArgumentException("List of accounts must not be empty");
         }
@@ -216,10 +220,10 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.account_select_title)
                 .setSingleChoiceItems(accounts, index, null)
-                .setPositiveButton(R.string.account_select_ok, mAccountChangedListener)
+                .setPositiveButton(R.string.account_select_ok, positiveButtonClickListener)
                 .setNegativeButton(R.string.account_select_cancel, null);
         if (isSignedIn) {
-            builder.setNeutralButton(R.string.account_select_sign_out, mAccountChangedListener);
+            builder.setNeutralButton(R.string.account_select_sign_out, positiveButtonClickListener);
         }
         return builder.create();
     }
@@ -229,6 +233,15 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      * Persists/removes the account to/from shared preferences and sets up sync if required.
      */
     class AccountChangedListener implements DialogInterface.OnClickListener {
+        /**
+         * Represents preference that should be changed based on account chosen.
+         */
+        private CheckBoxPreference mDependentPreference;
+
+        AccountChangedListener(final CheckBoxPreference dependentPreference) {
+            mDependentPreference = dependentPreference;
+        }
+
         @Override
         public void onClick(final DialogInterface dialog, final int which) {
             final String oldAccount = getSignedInAccountName();
@@ -242,6 +255,9 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                             .putString(PREF_ACCOUNT_NAME, newAccount)
                             .apply();
                     AccountStateChangedListener.onAccountSignedIn(oldAccount, newAccount);
+                    if (mDependentPreference != null) {
+                        mDependentPreference.setChecked(true);
+                    }
                     break;
                 case DialogInterface.BUTTON_NEUTRAL: // Signed out
                     AccountStateChangedListener.onAccountSignedOut(oldAccount);
@@ -268,7 +284,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     /**
      * Listener that initiates the process of deleting user's data from the cloud.
      */
-    class ClearSyncDataListener implements Preference.OnPreferenceClickListener {
+    class DeleteSyncDataListener implements Preference.OnPreferenceClickListener {
         @Override
         public boolean onPreferenceClick(final Preference preference) {
             final AlertDialog confirmationDialog = new AlertDialog.Builder(getActivity())
@@ -287,6 +303,45 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                     .setNegativeButton(R.string.clear_sync_data_cancel, null /* OnClickListener */)
                     .create();
             confirmationDialog.show();
+            return true;
+        }
+    }
+
+    /**
+     * Listens to events when user clicks on "Enable sync" feature.
+     */
+    class EnableSyncClickListener implements Preference.OnPreferenceClickListener {
+        @Override
+        public boolean onPreferenceClick(final Preference preference) {
+            final CheckBoxPreference syncPreference = (CheckBoxPreference) preference;
+            if (syncPreference.isChecked()) {
+                // Uncheck for now.
+                syncPreference.setChecked(false);
+
+                // Show opt-in.
+                final AlertDialog optInDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.cloud_sync_title)
+                        .setMessage(R.string.cloud_sync_opt_in_text)
+                        .setPositiveButton(R.string.account_select_ok,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(final DialogInterface dialog,
+                                            final int which) {
+                                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                                            final Context context = getActivity();
+                                            final String[] accountsForLogin =
+                                                    LoginAccountUtils.getAccountsForLogin(context);
+                                            createAccountPicker(accountsForLogin,
+                                                    getSignedInAccountName(),
+                                                    new AccountChangedListener(syncPreference))
+                                                    .show();
+                                        }
+                                    }
+                         })
+                         .setNegativeButton(R.string.cloud_sync_cancel, null)
+                         .create();
+                optInDialog.show();
+            }
             return true;
         }
     }
