@@ -101,10 +101,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private final InputMethodService mParent;
     InputConnection mIC;
     int mNestLevel;
+
     public RichInputConnection(final InputMethodService parent) {
         mParent = parent;
         mIC = null;
         mNestLevel = 0;
+    }
+
+    public boolean isConnected() {
+        return mIC != null;
     }
 
     private void checkConsistencyForDebug() {
@@ -142,7 +147,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public void beginBatchEdit() {
         if (++mNestLevel == 1) {
             mIC = mParent.getCurrentInputConnection();
-            if (null != mIC) {
+            if (isConnected()) {
                 mIC.beginBatchEdit();
             }
         } else {
@@ -157,7 +162,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public void endBatchEdit() {
         if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
-        if (--mNestLevel == 0 && null != mIC) {
+        if (--mNestLevel == 0 && isConnected()) {
             mIC.endBatchEdit();
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
@@ -189,7 +194,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             Log.d(TAG, "Will try to retrieve text later.");
             return false;
         }
-        if (null != mIC && shouldFinishComposition) {
+        if (isConnected() && shouldFinishComposition) {
             mIC.finishComposingText();
         }
         return true;
@@ -205,8 +210,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mIC = mParent.getCurrentInputConnection();
         // Call upon the inputconnection directly since our own method is using the cache, and
         // we want to refresh it.
-        final CharSequence textBeforeCursor = null == mIC ? null :
-                mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
+        final CharSequence textBeforeCursor = isConnected()
+                ? mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0)
+                : null;
         if (null == textBeforeCursor) {
             // For some reason the app thinks we are not connected to it. This looks like a
             // framework bug... Fall back to ground state and return false.
@@ -235,7 +241,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // it works, but it's wrong and should be fixed.
         mCommittedTextBeforeComposingText.append(mComposingText);
         mComposingText.setLength(0);
-        if (null != mIC) {
+        if (isConnected()) {
             mIC.finishComposingText();
         }
     }
@@ -256,7 +262,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mExpectedSelStart += text.length() - mComposingText.length();
         mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
-        if (null != mIC) {
+        if (isConnected()) {
             mTempObjectForCommitText.clear();
             mTempObjectForCommitText.append(text);
             final CharacterStyle[] spans = mTempObjectForCommitText.getSpans(
@@ -283,7 +289,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public CharSequence getSelectedText(final int flags) {
-        return (null == mIC) ? null : mIC.getSelectedText(flags);
+        return isConnected() ?  mIC.getSelectedText(flags) : null;
     }
 
     public boolean canDeleteCharacters() {
@@ -308,7 +314,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public int getCursorCapsMode(final int inputType,
             final SpacingAndPunctuations spacingAndPunctuations, final boolean hasSpaceBefore) {
         mIC = mParent.getCurrentInputConnection();
-        if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
+        if (!isConnected()) {
+            return Constants.TextUtils.CAP_MODE_OFF;
+        }
         if (!TextUtils.isEmpty(mComposingText)) {
             if (hasSpaceBefore) {
                 // If we have some composing text and a space before, then we should have
@@ -368,12 +376,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             return s;
         }
         mIC = mParent.getCurrentInputConnection();
-        return (null == mIC) ? null : mIC.getTextBeforeCursor(n, flags);
+        return isConnected() ? mIC.getTextBeforeCursor(n, flags) : null;
     }
 
     public CharSequence getTextAfterCursor(final int n, final int flags) {
         mIC = mParent.getCurrentInputConnection();
-        return (null == mIC) ? null : mIC.getTextAfterCursor(n, flags);
+        return isConnected() ? mIC.getTextAfterCursor(n, flags) : null;
     }
 
     public void deleteSurroundingText(final int beforeLength, final int afterLength) {
@@ -400,7 +408,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             mExpectedSelEnd -= mExpectedSelStart;
             mExpectedSelStart = 0;
         }
-        if (null != mIC) {
+        if (isConnected()) {
             mIC.deleteSurroundingText(beforeLength, afterLength);
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
@@ -408,7 +416,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public void performEditorAction(final int actionId) {
         mIC = mParent.getCurrentInputConnection();
-        if (null != mIC) {
+        if (isConnected()) {
             mIC.performEditorAction(actionId);
         }
     }
@@ -460,7 +468,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 break;
             }
         }
-        if (null != mIC) {
+        if (isConnected()) {
             mIC.sendKeyEvent(keyEvent);
         }
     }
@@ -483,7 +491,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             mCommittedTextBeforeComposingText.append(
                     textBeforeCursor.subSequence(0, indexOfStartOfComposingText));
         }
-        if (null != mIC) {
+        if (isConnected()) {
             mIC.setComposingRegion(start, end);
         }
     }
@@ -497,7 +505,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mComposingText.append(text);
         // TODO: support values of newCursorPosition != 1. At this time, this is never called with
         // newCursorPosition != 1.
-        if (null != mIC) {
+        if (isConnected()) {
             mIC.setComposingText(text, newCursorPosition);
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
@@ -522,7 +530,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         mExpectedSelStart = start;
         mExpectedSelEnd = end;
-        if (null != mIC) {
+        if (isConnected()) {
             final boolean isIcValid = mIC.setSelection(start, end);
             if (!isIcValid) {
                 return false;
@@ -536,7 +544,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         // This has no effect on the text field and does not change its content. It only makes
         // TextView flash the text for a second based on indices contained in the argument.
-        if (null != mIC) {
+        if (isConnected()) {
             mIC.commitCorrection(correctionInfo);
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
@@ -552,7 +560,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mExpectedSelStart += text.length() - mComposingText.length();
         mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
-        if (null != mIC) {
+        if (isConnected()) {
             mIC.commitCompletion(completionInfo);
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
@@ -563,7 +571,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public NgramContext getNgramContextFromNthPreviousWord(
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
         mIC = mParent.getCurrentInputConnection();
-        if (null == mIC) {
+        if (!isConnected()) {
             return NgramContext.EMPTY_PREV_WORDS_INFO;
         }
         final CharSequence prev = getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
@@ -608,7 +616,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
             final int scriptId) {
         mIC = mParent.getCurrentInputConnection();
-        if (mIC == null) {
+        if (!isConnected()) {
             return null;
         }
         final CharSequence before = mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE,
@@ -824,7 +832,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mIC = mParent.getCurrentInputConnection();
         final CharSequence textBeforeCursor = getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
-        final CharSequence selectedText = null == mIC ? null : mIC.getSelectedText(0 /* flags */);
+        final CharSequence selectedText = isConnected() ? mIC.getSelectedText(0 /* flags */) : null;
         if (null == textBeforeCursor ||
                 (!TextUtils.isEmpty(selectedText) && mExpectedSelEnd == mExpectedSelStart)) {
             // If textBeforeCursor is null, we have no idea what kind of text field we have or if
@@ -863,7 +871,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     @Override
     public boolean performPrivateCommand(final String action, final Bundle data) {
         mIC = mParent.getCurrentInputConnection();
-        if (mIC == null) {
+        if (!isConnected()) {
             return false;
         }
         return mIC.performPrivateCommand(action, data);
@@ -923,7 +931,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public boolean requestCursorUpdates(final boolean enableMonitor,
             final boolean requestImmediateCallback) {
         mIC = mParent.getCurrentInputConnection();
-        if (mIC == null) {
+        if (!isConnected()) {
             return false;
         }
         return InputConnectionCompatUtils.requestCursorUpdates(

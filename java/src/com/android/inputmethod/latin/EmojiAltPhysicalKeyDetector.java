@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -25,9 +26,17 @@ import com.android.inputmethod.latin.settings.Settings;
  * A class for detecting Emoji-Alt physical key.
  */
 final class EmojiAltPhysicalKeyDetector {
+    private static final String TAG = "EmojiAltPhysicalKeyDetector";
+
+    private final RichInputConnection mRichInputConnection;
+
     // True if the Alt key has been used as a modifier. In this case the Alt key up isn't
     // recognized as an emoji key.
     private boolean mAltHasBeenUsedAsAModifier;
+
+    public EmojiAltPhysicalKeyDetector(final RichInputConnection richInputConnection) {
+        mRichInputConnection = richInputConnection;
+    }
 
     /**
      * Record a down key event.
@@ -62,9 +71,14 @@ final class EmojiAltPhysicalKeyDetector {
         if (!Settings.getInstance().getCurrent().mEnableEmojiAltPhysicalKey) {
             return;
         }
-        if (!mAltHasBeenUsedAsAModifier) {
-            onEmojiAltKeyDetected();
+        if (mAltHasBeenUsedAsAModifier) {
+            return;
         }
+        if (!mRichInputConnection.isConnected()) {
+            Log.w(TAG, "onKeyUp() : No connection to text view");
+            return;
+        }
+        onEmojiAltKeyDetected();
     }
 
     private static void onEmojiAltKeyDetected() {
