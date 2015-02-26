@@ -32,9 +32,8 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.InputTransaction;
-import com.android.inputmethod.keyboard.KeyboardLayout;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.LastComposedWord;
@@ -2165,9 +2164,8 @@ public final class InputLogic {
     }
 
     public void getSuggestedWords(final SettingsValues settingsValues,
-            final ProximityInfo proximityInfo, final int keyboardShiftMode, final int inputStyle,
-            final int sequenceNumber, final OnGetSuggestedWordsCallback callback,
-            final KeyboardLayout keyboardLayout) {
+            final Keyboard keyboard, final int keyboardShiftMode, final int inputStyle,
+            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
         mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                 getActualCapsMode(settingsValues, keyboardShiftMode));
         mSuggest.getSuggestedWords(mWordComposer,
@@ -2177,11 +2175,11 @@ public final class InputLogic {
                         // a word, it's whatever is *before* the half-committed word in the buffer,
                         // hence 2; if we aren't, we should just skip whitespace if any, so 1.
                         mWordComposer.isComposingWord() ? 2 : 1),
-                proximityInfo,
+                keyboard,
                 new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive,
                         settingsValues.mPhraseGestureEnabled),
                 settingsValues.mAutoCorrectionEnabledPerUserSettings,
-                inputStyle, sequenceNumber, callback, keyboardLayout);
+                inputStyle, sequenceNumber, callback);
     }
 
     /**

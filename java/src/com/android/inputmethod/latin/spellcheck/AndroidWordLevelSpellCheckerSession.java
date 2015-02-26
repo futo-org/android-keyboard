@@ -29,18 +29,11 @@ import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardLayout;
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.NgramContext;
-import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
-import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
-import com.android.inputmethod.latin.common.CoordinateUtils;
-import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.LocaleUtils;
-import com.android.inputmethod.latin.common.ResizableIntArray;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
@@ -272,26 +265,20 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                         false /* reportAsTypo */);
             }
             final Keyboard keyboard = mService.getKeyboardForLocale(mLocale);
+            if (null == keyboard) {
+                Log.d(TAG, "No keyboard for locale: " + mLocale);
+                // If there is no keyboard for this locale, don't do any spell-checking.
+                return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                        false /* reportAsTypo */);
+            }
             final WordComposer composer = new WordComposer();
             final int[] codePoints = StringUtils.toCodePointArray(text);
             final int[] coordinates;
-            final ProximityInfo proximityInfo;
-            final KeyboardLayout keyboardLayout;
-            if (null == keyboard) {
-                coordinates = CoordinateUtils.newCoordinateArray(codePoints.length,
-                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-                proximityInfo = null;
-                keyboardLayout = null;
-            } else {
-                coordinates = keyboard.getCoordinates(codePoints);
-                proximityInfo = keyboard.getProximityInfo();
-                keyboardLayout = keyboard.getKeyboardLayout();
-            }
+            coordinates = keyboard.getCoordinates(codePoints);
             composer.setComposingWord(codePoints, coordinates);
             // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
             final SuggestionResults suggestionResults = mService.getSuggestionResults(
-                    mLocale, composer.getComposedDataSnapshot(), ngramContext, proximityInfo,
-                    keyboardLayout);
+                    mLocale, composer.getComposedDataSnapshot(), ngramContext, keyboard);
             final Result result = getResult(capitalizeType, mLocale, suggestionsLimit,
                     mService.getRecommendedThreshold(), text, suggestionResults);
             isInDict = isInDictForAnyCapitalization(text, capitalizeType);

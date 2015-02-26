@@ -20,8 +20,7 @@ import android.text.TextUtils;
 
 import static com.android.inputmethod.latin.define.DecoderSpecificConstants.SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION;
 
-import com.android.inputmethod.keyboard.KeyboardLayout;
-import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
@@ -97,19 +96,17 @@ public final class Suggest {
     }
 
     public void getSuggestedWords(final WordComposer wordComposer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final Keyboard keyboard,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final boolean isCorrectionEnabled, final int inputStyle, final int sequenceNumber,
-            final OnGetSuggestedWordsCallback callback,
-            final KeyboardLayout keyboardLayout) {
+            final OnGetSuggestedWordsCallback callback) {
         if (wordComposer.isBatchMode()) {
-            getSuggestedWordsForBatchInput(wordComposer, ngramContext, proximityInfo,
-                    settingsValuesForSuggestion, inputStyle, sequenceNumber, callback,
-                    keyboardLayout);
+            getSuggestedWordsForBatchInput(wordComposer, ngramContext, keyboard,
+                    settingsValuesForSuggestion, inputStyle, sequenceNumber, callback);
         } else {
-            getSuggestedWordsForNonBatchInput(wordComposer, ngramContext, proximityInfo,
+            getSuggestedWordsForNonBatchInput(wordComposer, ngramContext, keyboard,
                     settingsValuesForSuggestion, inputStyle, isCorrectionEnabled,
-                    sequenceNumber, callback, keyboardLayout);
+                    sequenceNumber, callback);
         }
     }
 
@@ -165,11 +162,10 @@ public final class Suggest {
     // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForNonBatchInput(final WordComposer wordComposer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final Keyboard keyboard,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int inputStyleIfNotPrediction, final boolean isCorrectionEnabled,
-            final int sequenceNumber, final OnGetSuggestedWordsCallback callback,
-            final KeyboardLayout keyboardLayout) {
+            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
         final String typedWordString = wordComposer.getTypedWord();
         final int trailingSingleQuotesCount =
                 StringUtils.getTrailingSingleQuotesCount(typedWordString);
@@ -178,9 +174,8 @@ public final class Suggest {
                 : typedWordString;
 
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer.getComposedDataSnapshot(), ngramContext,
-                proximityInfo.getNativeProximityInfo(), settingsValuesForSuggestion,
-                SESSION_ID_TYPING, inputStyleIfNotPrediction, keyboardLayout);
+                wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
+                settingsValuesForSuggestion, SESSION_ID_TYPING, inputStyleIfNotPrediction);
         final Locale mostProbableLocale = mDictionaryFacilitator.getMostProbableLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
@@ -346,15 +341,13 @@ public final class Suggest {
     // Retrieves suggestions for the batch input
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForBatchInput(final WordComposer wordComposer,
-            final NgramContext ngramContext, final ProximityInfo proximityInfo,
+            final NgramContext ngramContext, final Keyboard keyboard,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int inputStyle, final int sequenceNumber,
-            final OnGetSuggestedWordsCallback callback,
-            final KeyboardLayout keyboardLayout) {
+            final OnGetSuggestedWordsCallback callback) {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer.getComposedDataSnapshot(), ngramContext,
-                proximityInfo.getNativeProximityInfo(), settingsValuesForSuggestion,
-                SESSION_ID_GESTURE, inputStyle, keyboardLayout);
+                wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
+                settingsValuesForSuggestion, SESSION_ID_GESTURE, inputStyle);
         // For transforming words that don't come from a dictionary, because it's our best bet
         final Locale defaultLocale = mDictionaryFacilitator.getMostProbableLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
