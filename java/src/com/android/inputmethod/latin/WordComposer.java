@@ -232,31 +232,33 @@ public final class WordComposer {
      * @return true if the cursor is still inside the composing word, false otherwise.
      */
     public boolean moveCursorByAndReturnIfInsideComposingWord(final int expectedMoveAmount) {
-        int actualMoveAmountWithinWord = 0;
+        int actualMoveAmount = 0;
         int cursorPos = mCursorPositionWithinWord;
         // TODO: Don't make that copy. We can do this directly from mTypedWordCache.
         final int[] codePoints = StringUtils.toCodePointArray(mTypedWordCache);
         if (expectedMoveAmount >= 0) {
             // Moving the cursor forward for the expected amount or until the end of the word has
             // been reached, whichever comes first.
-            while (actualMoveAmountWithinWord < expectedMoveAmount && cursorPos < mCodePointSize) {
-                actualMoveAmountWithinWord += Character.charCount(codePoints[cursorPos]);
+            while (actualMoveAmount < expectedMoveAmount && cursorPos < codePoints.length) {
+                actualMoveAmount += Character.charCount(codePoints[cursorPos]);
                 ++cursorPos;
             }
         } else {
             // Moving the cursor backward for the expected amount or until the start of the word
             // has been reached, whichever comes first.
-            while (actualMoveAmountWithinWord > expectedMoveAmount && cursorPos > 0) {
+            while (actualMoveAmount > expectedMoveAmount && cursorPos > 0) {
                 --cursorPos;
-                actualMoveAmountWithinWord -= Character.charCount(codePoints[cursorPos]);
+                actualMoveAmount -= Character.charCount(codePoints[cursorPos]);
             }
         }
         // If the actual and expected amounts differ, we crossed the start or the end of the word
         // so the result would not be inside the composing word.
-        if (actualMoveAmountWithinWord != expectedMoveAmount) return false;
+        if (actualMoveAmount != expectedMoveAmount) {
+            return false;
+        }
         mCursorPositionWithinWord = cursorPos;
-        mCombinerChain.applyProcessedEvent(mCombinerChain.processEvent(mEvents,
-                Event.createCursorMovedEvent(cursorPos)));
+        mCombinerChain.applyProcessedEvent(mCombinerChain.processEvent(
+                mEvents, Event.createCursorMovedEvent(cursorPos)));
         return true;
     }
 
