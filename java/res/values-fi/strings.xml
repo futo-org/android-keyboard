@@ -26,18 +26,17 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Käytä värinää näppäimiä painettaessa"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Toista ääni näppäimiä painettaessa"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ponnahdusikkuna painalluksella"</string>
-    <string name="settings_screen_input" msgid="2808654300248306866">"Syöttöasetukset"</string>
-    <string name="settings_screen_appearances" msgid="3611951947835553700">"Ulkonäkö"</string>
-    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Kieliasetukset"</string>
-    <string name="settings_screen_gesture" msgid="9113437621722871665">"Piirtokirjoitusasetukset"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Asetukset"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Ulkoasu ja asettelut"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Monikielisyysasetukset"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Piirtokirjoitus"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Tekstin korjaus"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Lisäasetukset"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"Teema"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Käytä toista syöttötapaa"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kielenvaihtonäppäin kattaa myös muut syöttötavat"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Kielenvaihtonäppäin"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Näytä, kun käytössä on useita syöttökieliä"</string>
-    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Näytä liu\'utuksen tilaosoitin"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Näytä visuaalinen vihje Vaihto- tai Symbol-näppäim. liu\'uttam."</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Näppäimen hylkäysviive"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Ei viivettä"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Oletus"</string>
@@ -56,9 +55,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Pääsanakirja"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Näytä korjausehdotukset"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Näytä sanaehdotukset kirjoitettaessa"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Näytä aina"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Näytä pystysuunnassa"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Piilota aina"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Estä loukkaavat sanat"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Älä ehdota mahd. loukkaavia sanoja"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autom. korjaus"</string>
@@ -76,13 +72,14 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Näytä ehdotettu sana piirron aikana"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Ilmausele"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Lisää välilyöntejä eleiden aikana liukumalla välilyöntinäppäim."</string>
-    <string name="voice_input" msgid="3583258583521397548">"Äänisyöteavain"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Äänisyötenäppäin"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Äänen syöttötapoja ei ole otettu käyttöön. Tarkista Kieli ja syöttötapa -asetukset."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Määritä syöttötavat"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Syöttökielet"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"Lähetä palautetta"</string>
-    <string name="select_language" msgid="3693815588777926848">"Syöttökielet"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"Kielet"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Ohje ja palaute"</string>
+    <string name="select_language" msgid="5709487854987078367">"Kielet"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tallenna koskettamalla uudelleen"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Tallenna koskettamalla tätä"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sanakirja saatavilla"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Näppäimistöteema"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"englanti (Iso-Britannia)"</string>
@@ -103,10 +100,6 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Aakkoset (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Näppäimistöteema"</string>
-    <string name="keyboard_theme_holo_white" msgid="8506588144096428751">"Valkoinen"</string>
-    <string name="keyboard_theme_holo_blue" msgid="192400518003397418">"Sininen"</string>
-    <string name="keyboard_theme_material_dark" msgid="2701178578784760596">"Tumma"</string>
-    <string name="keyboard_theme_material_light" msgid="3479400901818790331">"Vaalea"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Muokatut syöttötyylit"</string>
     <string name="add_style" msgid="6163126614514489951">"Lisää tyyli"</string>
     <string name="add" msgid="8299699805688017798">"Lisää"</string>
@@ -118,14 +111,8 @@
     <string name="enable" msgid="5031294444630523247">"Ota käyttöön"</string>
     <string name="not_now" msgid="6172462888202790482">"Ei nyt"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Syöttötyyli on jo olemassa: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Pitkän painalluksen viive"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Painalluksen värinän kesto"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Näppäinpainalluksen äänenvoim."</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Lue ulkoista sanakirjatiedostoa"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Lataukset-kansiossa ei ole sanakirjatiedostoja"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Valitse asennettava sanakirjatiedosto"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Haluatko asentaa tämän tiedoston kielelle <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
-    <string name="error" msgid="8940763624668513648">"Tapahtui virhe"</string>
     <string name="button_default" msgid="3988017840431881491">"Oletusarvot"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Tervetuloa käyttämään sovellusta <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ja piirtokirjoitus"</string>
@@ -170,9 +157,9 @@
     <string name="install_dict" msgid="180852772562189365">"Asenna"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Peruuta"</string>
     <string name="delete_dict" msgid="756853268088330054">"Poista"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Laitteesi käyttökielelle on saatavilla sanakirja.&lt;br/&gt; Suosittelemme <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-sanakirjan &lt;b&gt;lataamista&lt;/b&gt;, sillä se helpottaa laitteella kirjoittamista.&lt;br/&gt; &lt;br/&gt; Lataus kestää useimmiten muutaman minuutin 3G-yhteydellä. Latauksesta saatetaan periä maksu, ellei käytössäsi ole &lt;b&gt;rajoittamatonta tiedonsiirtopakettia&lt;/b&gt;.&lt;br/&gt; Jos et ole varma tiedonsiirtosopimuksesi tyypistä, etsi käyttöösi wifi-yhteys, niin lataus alkaa automaattisesti.&lt;br/&gt; &lt;br/&gt; Vinkki: voit ladata ja poistaa sanakirjoja mobiililaitteesi &lt;b&gt;Asetukset&lt;/b&gt;-valikon &lt;b&gt;Kieli ja syöttötapa&lt;/b&gt; -osiossa."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Laitteesi käyttökielelle on saatavilla sanakirja.&lt;br/&gt; Suosittelemme <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-sanakirjan &lt;b&gt;lataamista&lt;/b&gt;, sillä se helpottaa laitteella kirjoittamista.&lt;br/&gt; &lt;br/&gt; Lataus kestää useimmiten muutaman minuutin 3G-yhteydellä. Latauksesta saatetaan periä maksu, ellei käytössäsi ole &lt;b&gt;rajoittamatonta tiedonsiirtopakettia&lt;/b&gt;.&lt;br/&gt; Jos et ole varma tiedonsiirtosopimuksesi tyypistä, etsi käyttöösi Wi-Fi-yhteys, niin lataus alkaa automaattisesti.&lt;br/&gt; &lt;br/&gt; Vinkki: voit ladata ja poistaa sanakirjoja mobiililaitteesi &lt;b&gt;Asetukset&lt;/b&gt;-valikon &lt;b&gt;Kieli ja syöttötapa&lt;/b&gt; -osiossa."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Lataa nyt (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> Mt)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Lataa wifi-yhteydellä"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Lataa Wi-Fi-yhteydellä"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Sanakirja on saatavilla kielelle <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Paina tätä, jos haluat tarkastella kohdetta ja ladata sen"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Ladataan: kielen <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ehdotukset ovat pian käytettävissä."</string>
