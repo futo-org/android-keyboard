@@ -342,8 +342,11 @@ final class SuggestionStripLayoutHelper {
      * @param placerView the view where the debug info will be placed.
      * @return the start index of more suggestions.
      */
-    public int layoutAndReturnStartIndexOfMoreSuggestions(final SuggestedWords suggestedWords,
-            final ViewGroup stripView, final ViewGroup placerView) {
+    public int layoutAndReturnStartIndexOfMoreSuggestions(
+            final Context context,
+            final SuggestedWords suggestedWords,
+            final ViewGroup stripView,
+            final ViewGroup placerView) {
         if (suggestedWords.isPunctuationSuggestions()) {
             return layoutPunctuationsAndReturnStartIndexOfMoreSuggestions(
                     (PunctuationSuggestions)suggestedWords, stripView);
@@ -362,7 +365,7 @@ final class SuggestionStripLayoutHelper {
             // by consolidating all slots in the strip.
             final int countInStrip = 1;
             mMoreSuggestionsAvailable = (wordCountToShow > countInStrip);
-            layoutWord(mCenterPositionInStrip, stripWidth - mPadding);
+            layoutWord(context, mCenterPositionInStrip, stripWidth - mPadding);
             stripView.addView(centerWordView);
             setLayoutWeight(centerWordView, 1.0f, ViewGroup.LayoutParams.MATCH_PARENT);
             if (SuggestionStripView.DBG) {
@@ -385,7 +388,7 @@ final class SuggestionStripLayoutHelper {
             }
 
             final int width = getSuggestionWidth(positionInStrip, stripWidth);
-            final TextView wordView = layoutWord(positionInStrip, width);
+            final TextView wordView = layoutWord(context, positionInStrip, width);
             stripView.addView(wordView);
             setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
                     ViewGroup.LayoutParams.MATCH_PARENT);
@@ -414,7 +417,7 @@ final class SuggestionStripLayoutHelper {
      * @param width the maximum width for layout in pixels.
      * @return the {@link TextView} containing the suggested word appropriately formatted.
      */
-    private TextView layoutWord(final int positionInStrip, final int width) {
+    private TextView layoutWord(final Context context, final int positionInStrip, final int width) {
         final TextView wordView = mWordViews.get(positionInStrip);
         final CharSequence word = wordView.getText();
         if (positionInStrip == mCenterPositionInStrip && mMoreSuggestionsAvailable) {
@@ -428,7 +431,10 @@ final class SuggestionStripLayoutHelper {
         }
         // {@link StyleSpan} in a content description may cause an issue of TTS/TalkBack.
         // Use a simple {@link String} to avoid the issue.
-        wordView.setContentDescription(TextUtils.isEmpty(word) ? null : word.toString());
+        wordView.setContentDescription(
+                TextUtils.isEmpty(word)
+                    ? context.getResources().getString(R.string.spoken_empty_suggestion)
+                    : word.toString());
         final CharSequence text = getEllipsizedTextWithSettingScaleX(
                 word, width, wordView.getPaint());
         final float scaleX = wordView.getTextScaleX();
