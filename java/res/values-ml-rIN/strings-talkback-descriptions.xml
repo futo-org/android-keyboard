@@ -58,7 +58,7 @@
     <string name="keyboard_mode_date" msgid="6597407244976713364">"തീയതി"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"തീയതിയും സമയവും"</string>
     <string name="keyboard_mode_email" msgid="1239682082047693644">"ഇമെയിൽ"</string>
-    <string name="keyboard_mode_im" msgid="3812086215529493501">"സന്ദേശമയയ്‌ക്കൽ"</string>
+    <string name="keyboard_mode_im" msgid="3812086215529493501">"സന്ദേശം"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"നമ്പർ"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"ഫോൺ"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"ടെക്‌സ്‌റ്റ്"</string>
