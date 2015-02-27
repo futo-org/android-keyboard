@@ -83,6 +83,9 @@ public final class StatsUtils {
             final String commitWord, final boolean isBatchMode) {
     }
 
+    public static void onDoubleSpacePeriod() {
+    }
+
     public static void onLoadSettings(SettingsValues settingsValues) {
     }
 
