@@ -172,8 +172,8 @@ public final class FormatSpec {
     public static final int VERSION2 = 2;
     public static final int VERSION201 = 201;
     public static final int VERSION202 = 202;
-    // format version for Fava
-    public static final int VERSION300 = 300;
+    // format version for Fava Dictionaries.
+    public static final int VERSION_DELIGHT3 = 86736212;
     public static final int MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE = VERSION201;
     // Dictionary version used for testing.
     public static final int VERSION4_ONLY_FOR_TESTING = 399;
@@ -182,7 +182,7 @@ public final class FormatSpec {
     public static final int VERSION4 = VERSION403;
     public static final int VERSION4_DEV = VERSION403;
     public static final int MINIMUM_SUPPORTED_STATIC_VERSION = VERSION202;
-    public static final int MAXIMUM_SUPPORTED_STATIC_VERSION = VERSION300;
+    public static final int MAXIMUM_SUPPORTED_STATIC_VERSION = VERSION_DELIGHT3;
     static final int MINIMUM_SUPPORTED_DYNAMIC_VERSION = VERSION4;
     static final int MAXIMUM_SUPPORTED_DYNAMIC_VERSION = VERSION4_DEV;
 

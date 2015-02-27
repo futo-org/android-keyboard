@@ -153,7 +153,7 @@ public class DictionaryInfoUtils {
     }
 
     /**
-     * Reverse escaping done by replaceFileNameDangerousCharacters.
+     * Reverse escaping done by {@link #replaceFileNameDangerousCharacters(String)}.
      */
     @Nonnull
     public static String getWordListIdFromFileName(@Nonnull final String fname) {
