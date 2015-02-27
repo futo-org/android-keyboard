@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2014, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<!-- 
+    These Emoji symbols are unsupported by TTS.
+    TODO: Remove this file when TTS/TalkBack support these Emoji symbols.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="spoken_emoji_00A9" msgid="2859822817116803638">"Signe de drets d\'autor"</string>
+    <string name="spoken_emoji_00AE" msgid="7708335454134589027">"Signe de marca registrada"</string>
+    <string name="spoken_emoji_203C" msgid="153340916701508663">"Signe d\'exclamació doble"</string>
+    <string name="spoken_emoji_2049" msgid="4877256448299555371">"Signe d\'exclamació i d\'interrogació"</string>
+    <string name="spoken_emoji_2122" msgid="9188440722954720429">"Signe de marca comercial"</string>
+    <string name="spoken_emoji_2139" msgid="9114342638917304327">"Punt d\'informació"</string>
+    <string name="spoken_emoji_2194" msgid="8055202727034946680">"Fletxa cap a l\'esquerra i cap a la dreta"</string>
+    <string name="spoken_emoji_2195" msgid="8028122253301087407">"Fletxa cap amunt i cap avall"</string>
+    <string name="spoken_emoji_2196" msgid="4019164898967854363">"Fletxa nord-oest"</string>
+    <string name="spoken_emoji_2197" msgid="4255723717709017801">"Fletxa nord-est"</string>
+    <string name="spoken_emoji_2198" msgid="1452063451313622090">"Fletxa sud-est"</string>
+    <string name="spoken_emoji_2199" msgid="6942722693368807849">"Fletxa sud-oest"</string>
+    <string name="spoken_emoji_21A9" msgid="5204750172335111188">"Fletxa cap a l\'esquerra amb ganxo"</string>
+    <string name="spoken_emoji_21AA" msgid="3950259884359247006">"Fletxa cap a la dreta amb ganxo"</string>
+    <string name="spoken_emoji_231A" msgid="6751448803233874993">"Rellotge"</string>
+    <string name="spoken_emoji_231B" msgid="5956428809948426182">"Rellotge de sorra"</string>
+    <string name="spoken_emoji_23E9" msgid="4022497733535162237">"Triangle negre doble cap a la dreta"</string>
+    <string name="spoken_emoji_23EA" msgid="2251396938087774944">"Triangle negre doble cap a l\'esquerra"</string>
+    <string name="spoken_emoji_23EB" msgid="3746885195641491865">"Triangle negre doble cap amunt"</string>
+    <string name="spoken_emoji_23EC" msgid="7852372752901163416">"Triangle negre doble cap avall"</string>
+    <string name="spoken_emoji_23F0" msgid="8474219588750627870">"Rellotge despertador"</string>
+    <string name="spoken_emoji_23F3" msgid="166900119581024371">"Rellotge de sorra amb sorra que cau"</string>
+    <string name="spoken_emoji_24C2" msgid="3948348737566038470">"Lletra de l\'alfabet llatí M majúscula encerclada"</string>
+    <string name="spoken_emoji_25AA" msgid="7865181015100227349">"Quadrat negre petit"</string>
+    <string name="spoken_emoji_25AB" msgid="6446532820937381457">"Quadrat blanc petit"</string>
+    <string name="spoken_emoji_25B6" msgid="2423897708496040947">"Triangle negre cap a la dreta"</string>
+    <string name="spoken_emoji_25C0" msgid="3595083440074484934">"Triangle negre cap a l\'esquerra"</string>
+    <string name="spoken_emoji_25FB" msgid="4838691986881215419">"Quadrat blanc mitjà"</string>
+    <string name="spoken_emoji_25FC" msgid="7008859564991191050">"Quadrat negre mitjà"</string>
+    <string name="spoken_emoji_25FD" msgid="7673439755069217479">"Quadrat blanc petit"</string>
+    <string name="spoken_emoji_25FE" msgid="6782214109919768923">"Quadrat negre petit"</string>
+    <string name="spoken_emoji_2600" msgid="2272722634618990413">"Sol negre amb raigs"</string>
+    <string name="spoken_emoji_2601" msgid="6205136889311537150">"Núvol"</string>
+    <string name="spoken_emoji_260E" msgid="8670395193046424238">"Telèfon negre"</string>
+    <string name="spoken_emoji_2611" msgid="4530550203347054611">"Casella amb marca de verificació"</string>
+    <string name="spoken_emoji_2614" msgid="1612791247861229500">"Paraigües amb les gotes de pluja"</string>
+    <string name="spoken_emoji_2615" msgid="3320562382424018588">"Beguda calenta"</string>
+    <string name="spoken_emoji_261D" msgid="4690554173549768467">"Dit índex que apunta cap amunt"</string>
+    <string name="spoken_emoji_263A" msgid="3170094381521989300">"Cara somrient blanca"</string>
+    <string name="spoken_emoji_2648" msgid="4621241062667020673">"Àries"</string>
+    <string name="spoken_emoji_2649" msgid="7694461245947059086">"Taure"</string>
+    <string name="spoken_emoji_264A" msgid="1258074605878705030">"Bessons"</string>
+    <string name="spoken_emoji_264B" msgid="4409219914377810956">"Càncer"</string>
+    <string name="spoken_emoji_264C" msgid="6520255367817054163">"Lleó"</string>
+    <string name="spoken_emoji_264D" msgid="1504758945499854018">"Verge"</string>
+    <string name="spoken_emoji_264E" msgid="2354847104530633519">"Balança"</string>
+    <string name="spoken_emoji_264F" msgid="5822933280406416112">"Escorpió"</string>
+    <string name="spoken_emoji_2650" msgid="4832481156714796163">"Sagitari"</string>
+    <string name="spoken_emoji_2651" msgid="840953134601595090">"Capricorn"</string>
+    <string name="spoken_emoji_2652" msgid="3586925968718775281">"Aquari"</string>
+    <string name="spoken_emoji_2653" msgid="8420547731496254492">"Peixos"</string>
+    <string name="spoken_emoji_2660" msgid="4541170554542412536">"Pica negra"</string>
+    <string name="spoken_emoji_2663" msgid="3669352721942285724">"Trèvol negre"</string>
+    <string name="spoken_emoji_2665" msgid="6347941599683765843">"Cor negre"</string>
+    <string name="spoken_emoji_2666" msgid="8296769213401115999">"Diamant negre"</string>
+    <string name="spoken_emoji_2668" msgid="7063148281053820386">"Font termal"</string>
+    <string name="spoken_emoji_267B" msgid="21716857176812762">"Símbol universal de reciclatge negre"</string>
+    <string name="spoken_emoji_267F" msgid="8833496533226475443">"Símbol de cadira de rodes"</string>
+    <string name="spoken_emoji_2693" msgid="7443148847598433088">"Àncora"</string>
+    <string name="spoken_emoji_26A0" msgid="6272635532992727510">"Senyal d\'advertiment"</string>
+    <string name="spoken_emoji_26A1" msgid="5604749644693339145">"Senyal d\'alt voltatge"</string>
+    <string name="spoken_emoji_26AA" msgid="8005748091690377153">"Cercle blanc mitjà"</string>
+    <string name="spoken_emoji_26AB" msgid="1655910278422753244">"Cercle negre mitjà"</string>
+    <string name="spoken_emoji_26BD" msgid="1545218197938889737">"Pilota de futbol"</string>
+    <string name="spoken_emoji_26BE" msgid="8959760533076498209">"Beisbol"</string>
+    <string name="spoken_emoji_26C4" msgid="3045791757044255626">"Ninot de neu"</string>
+    <string name="spoken_emoji_26C5" msgid="5580129409712578639">"Sol darrere d\'un núvol"</string>
+    <string name="spoken_emoji_26CE" msgid="8963656417276062998">"Serpentari"</string>
+    <string name="spoken_emoji_26D4" msgid="2231451988209604130">"Prohibit el pas"</string>
+    <string name="spoken_emoji_26EA" msgid="7513319636103804907">"Església"</string>
+    <string name="spoken_emoji_26F2" msgid="7134115206158891037">"Font"</string>
+    <string name="spoken_emoji_26F3" msgid="4912302210162075465">"Banderí al forat"</string>
+    <string name="spoken_emoji_26F5" msgid="4766328116769075217">"Veler"</string>
+    <string name="spoken_emoji_26FA" msgid="5888017494809199037">"Tenda de campanya"</string>
+    <string name="spoken_emoji_26FD" msgid="2417060622927453534">"Assortidor de gasolina"</string>
+    <string name="spoken_emoji_2702" msgid="4005741160717451912">"Tisores negres"</string>
+    <string name="spoken_emoji_2705" msgid="164605766946697759">"Marca de verificació blanca gran"</string>
+    <string name="spoken_emoji_2708" msgid="7153840886849268988">"Avió"</string>
+    <string name="spoken_emoji_2709" msgid="2217319160724311369">"Sobre"</string>
+    <string name="spoken_emoji_270A" msgid="508347232762319473">"Puny aixecat"</string>
+    <string name="spoken_emoji_270B" msgid="6640562128327753423">"Mà aixecada"</string>
+    <string name="spoken_emoji_270C" msgid="1344288035704944581">"Senyal de la victòria"</string>
+    <string name="spoken_emoji_270F" msgid="6108251586067318718">"Llapis"</string>
+    <string name="spoken_emoji_2712" msgid="6320544535087710482">"Ploma negra"</string>
+    <string name="spoken_emoji_2714" msgid="1968242800064001654">"Marca de verificació gran"</string>
+    <string name="spoken_emoji_2716" msgid="511941294762977228">"Signe de multiplicar gran"</string>
+    <string name="spoken_emoji_2728" msgid="5650330815808691881">"Espurnejos"</string>
+    <string name="spoken_emoji_2733" msgid="8915809595141157327">"Asterisc de vuit radis"</string>
+    <string name="spoken_emoji_2734" msgid="4846583547980754332">"Estrella negra de vuit puntes"</string>
+    <string name="spoken_emoji_2744" msgid="4350636647760161042">"Floc de neu"</string>
+    <string name="spoken_emoji_2747" msgid="3718282973916474455">"Espurneig"</string>
+    <string name="spoken_emoji_274C" msgid="2752145886733295314">"Creu"</string>
+    <string name="spoken_emoji_274E" msgid="4262918689871098338">"Creu blanca sobre quadrat negre"</string>
+    <string name="spoken_emoji_2753" msgid="6935897159942119808">"Signe d\'interrogació negre"</string>
+    <string name="spoken_emoji_2754" msgid="7277504915105532954">"Signe d\'interrogació blanc"</string>
+    <string name="spoken_emoji_2755" msgid="6853076969826960210">"Signe d\'exclamació blanc"</string>
+    <string name="spoken_emoji_2757" msgid="3707907828776912174">"Signe d\'exclamació blanc gran"</string>
+    <string name="spoken_emoji_2764" msgid="4214257843609432167">"Cor molt negre"</string>
+    <string name="spoken_emoji_2795" msgid="6563954833786162168">"Signe més gran"</string>
+    <string name="spoken_emoji_2796" msgid="5990926508250772777">"Signe menys gran"</string>
+    <string name="spoken_emoji_2797" msgid="24694184172879174">"Signe de divisió gran"</string>
+    <string name="spoken_emoji_27A1" msgid="3513434778263100580">"Fletxa negra cap a la dreta"</string>
+    <string name="spoken_emoji_27B0" msgid="203395646864662198">"Bucle"</string>
+    <string name="spoken_emoji_27BF" msgid="4940514642375640510">"Bucle doble"</string>
+    <string name="spoken_emoji_2934" msgid="9062130477982973457">"Fletxa cap a la dreta que es corba cap amunt"</string>
+    <string name="spoken_emoji_2935" msgid="6198710960720232074">"Fletxa cap a la dreta que es corba cap avall"</string>
+    <string name="spoken_emoji_2B05" msgid="4813405635410707690">"Fletxa negra cap a l\'esquerra"</string>
+    <string name="spoken_emoji_2B06" msgid="1223172079106250748">"Fletxa negra cap amunt"</string>
+    <string name="spoken_emoji_2B07" msgid="1599124424746596150">"Fletxa negra cap avall"</string>
+    <string name="spoken_emoji_2B1B" msgid="3461247311988501626">"Quadrat negre gran"</string>
+    <string name="spoken_emoji_2B1C" msgid="5793146430145248915">"Quadrat blanc gran"</string>
+    <string name="spoken_emoji_2B50" msgid="3850845519526950524">"Estrella blanca mitjana"</string>
+    <string name="spoken_emoji_2B55" msgid="9137882158811541824">"Cercle gran"</string>
+    <string name="spoken_emoji_3030" msgid="4609172241893565639">"Guió ondulat"</string>
+    <string name="spoken_emoji_303D" msgid="2545833934975907505">"Signe d\'alternança"</string>
+    <string name="spoken_emoji_3297" msgid="928912923628973800">"Ideograma circular de felicitació"</string>
+    <string name="spoken_emoji_3299" msgid="3930347573693668426">"Ideograma circular de secret"</string>
+    <string name="spoken_emoji_1F004" msgid="1705216181345894600">"Fitxa de Mahjong del drac vermell"</string>
+    <string name="spoken_emoji_1F0CF" msgid="7601493592085987866">"Comodí negre de les cartes"</string>
+    <string name="spoken_emoji_1F170" msgid="3817698686602826773">"Tipus de sang A"</string>
+    <string name="spoken_emoji_1F171" msgid="3684218589626650242">"Tipus de sang B"</string>
+    <string name="spoken_emoji_1F17E" msgid="2978809190364779029">"Tipus de sang O"</string>
+    <string name="spoken_emoji_1F17F" msgid="463634348668462040">"Aparcament"</string>
+    <string name="spoken_emoji_1F18E" msgid="1650705325221496768">"Tipus de sang AB"</string>
+    <string name="spoken_emoji_1F191" msgid="5386969264431429221">"Quadre amb el símbol CL"</string>
+    <string name="spoken_emoji_1F192" msgid="8324226436829162496">"Quadre amb la paraula Cool"</string>
+    <string name="spoken_emoji_1F193" msgid="4731758603321515364">"Quadre amb la paraula Free"</string>
+    <string name="spoken_emoji_1F194" msgid="4903128609556175887">"Quadre amb la paraula ID"</string>
+    <string name="spoken_emoji_1F195" msgid="1433142500411060924">"Quadre amb la paraula New"</string>
+    <string name="spoken_emoji_1F196" msgid="8825160701159634202">"Quadre amb el símbol NG"</string>
+    <string name="spoken_emoji_1F197" msgid="7841079241554176535">"Quadre amb la paraula OK"</string>
+    <string name="spoken_emoji_1F198" msgid="7020298909426960622">"Quadre amb la paraula SOS"</string>
+    <string name="spoken_emoji_1F199" msgid="5971252667136235630">"Quadre amb un signe d\'exclamació"</string>
+    <string name="spoken_emoji_1F19A" msgid="4557270135899843959">"Quadre amb el símbol VS"</string>
+    <string name="spoken_emoji_1F201" msgid="7000490044681139002">"Quadre amb l\'ideograma japonès per a \"aquí\""</string>
+    <string name="spoken_emoji_1F202" msgid="8560906958695043947">"Quadre amb l\'ideograma japonès per a \"servei\""</string>
+    <string name="spoken_emoji_1F21A" msgid="1496435317324514033">"Quadre amb l\'ideograma de gratuït"</string>
+    <string name="spoken_emoji_1F22F" msgid="609797148862445402">"Quadre amb l\'ideograma de seient reservat"</string>
+    <string name="spoken_emoji_1F232" msgid="8125716331632035820">"Quadre amb l\'ideograma de prohibició"</string>
+    <string name="spoken_emoji_1F233" msgid="8749401090457355028">"Quadre amb l\'ideograma de lliure"</string>
+    <string name="spoken_emoji_1F234" msgid="3546951604285970768">"Quadre amb l\'ideograma d\'acceptació"</string>
+    <string name="spoken_emoji_1F235" msgid="5320186982841793711">"Quadre amb l\'ideograma d\'ocupació total"</string>
+    <string name="spoken_emoji_1F236" msgid="879755752069393034">"Quadre amb l\'ideograma de pagat"</string>
+    <string name="spoken_emoji_1F237" msgid="6741807001205851437">"Quadre amb l\'ideograma de mensual"</string>
+    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"Quadre amb l\'ideograma d\'aplicació"</string>
+    <string name="spoken_emoji_1F239" msgid="1634067311597618959">"Quadre amb l\'ideograma de descompte"</string>
+    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"Quadre amb l\'ideograma de negocis"</string>
+    <string name="spoken_emoji_1F250" msgid="6586943922806727907">"Cercle amb l\'ideograma d\'avantatge"</string>
+    <string name="spoken_emoji_1F251" msgid="9099032855993346948">"Cercle amb l\'ideograma d\'acceptar"</string>
+    <string name="spoken_emoji_1F300" msgid="4720098285295840383">"Cicló"</string>
+    <string name="spoken_emoji_1F301" msgid="3601962477653752974">"Emboirat"</string>
+    <string name="spoken_emoji_1F302" msgid="3404357123421753593">"Paraigües tancat"</string>
+    <string name="spoken_emoji_1F303" msgid="3899301321538188206">"Nit amb estrelles"</string>
+    <string name="spoken_emoji_1F304" msgid="2767148930689050040">"Sortida del sol sobre les muntanyes"</string>
+    <string name="spoken_emoji_1F305" msgid="9165812924292061196">"Sortida del sol"</string>
+    <string name="spoken_emoji_1F306" msgid="5889294736109193104">"Paisatge urbà al vespre"</string>
+    <string name="spoken_emoji_1F307" msgid="2714290867291163713">"Posta de sol sobre els edificis"</string>
+    <string name="spoken_emoji_1F308" msgid="688704703985173377">"Arc de Sant Martí"</string>
+    <string name="spoken_emoji_1F309" msgid="6217981957992313528">"Pont a la nit"</string>
+    <string name="spoken_emoji_1F30A" msgid="4329309263152110893">"Onada"</string>
+    <string name="spoken_emoji_1F30B" msgid="5729430693700923112">"Volcà"</string>
+    <string name="spoken_emoji_1F30C" msgid="2961230863217543082">"Via Làctia"</string>
+    <string name="spoken_emoji_1F30D" msgid="1113905673331547953">"Globus terraqüi d\'Europa i Àfrica"</string>
+    <string name="spoken_emoji_1F30E" msgid="5278512600749223671">"Globus terraqüi del continent americà"</string>
+    <string name="spoken_emoji_1F30F" msgid="5718144880978707493">"Globus terraqüi d\'Àsia i Austràlia"</string>
+    <string name="spoken_emoji_1F310" msgid="2959618582975247601">"Globus terraqüi amb meridians"</string>
+    <string name="spoken_emoji_1F311" msgid="623906380914895542">"Lluna nova"</string>
+    <string name="spoken_emoji_1F312" msgid="4458575672576125401">"Lluna en quart creixent"</string>
+    <string name="spoken_emoji_1F313" msgid="7599181787989497294">"Lluna en el primer quart creixent"</string>
+    <string name="spoken_emoji_1F314" msgid="4898293184964365413">"Lluna gibosa creixent"</string>
+    <string name="spoken_emoji_1F315" msgid="3218117051779496309">"Lluna plena"</string>
+    <string name="spoken_emoji_1F316" msgid="2061317145777689569">"Lluna gibosa minvant"</string>
+    <string name="spoken_emoji_1F317" msgid="2721090687319539049">"Lluna en l\'últim quart minvant"</string>
+    <string name="spoken_emoji_1F318" msgid="3814091755648887570">"Lluna minvant"</string>
+    <string name="spoken_emoji_1F319" msgid="4074299824890459465">"Lluna creixent"</string>
+    <string name="spoken_emoji_1F31A" msgid="3092285278116977103">"Lluna nova amb cara"</string>
+    <string name="spoken_emoji_1F31B" msgid="2658562138386927881">"Lluna creixent amb cara"</string>
+    <string name="spoken_emoji_1F31C" msgid="7914768515547867384">"Lluna minvant amb cara"</string>
+    <string name="spoken_emoji_1F31D" msgid="1925730459848297182">"Lluna plena amb cara"</string>
+    <string name="spoken_emoji_1F31E" msgid="8022112382524084418">"Sol amb cara"</string>
+    <string name="spoken_emoji_1F31F" msgid="1051661214137766369">"Estrella que brilla"</string>
+    <string name="spoken_emoji_1F320" msgid="5450591979068216115">"Estrella fugaç"</string>
+    <string name="spoken_emoji_1F330" msgid="3115760035618051575">"Castanya"</string>
+    <string name="spoken_emoji_1F331" msgid="5658888205290008691">"Planta de planter"</string>
+    <string name="spoken_emoji_1F332" msgid="2935650450421165938">"Arbre de fulla perenne"</string>
+    <string name="spoken_emoji_1F333" msgid="5898847427062482675">"Arbre de fulla caduca"</string>
+    <string name="spoken_emoji_1F334" msgid="6183375224678417894">"Palmera"</string>
+    <string name="spoken_emoji_1F335" msgid="5352418412103584941">"Cactus"</string>
+    <string name="spoken_emoji_1F337" msgid="3839107352363566289">"Tulipa"</string>
+    <string name="spoken_emoji_1F338" msgid="6389970364260468490">"Flor de cirerer"</string>
+    <string name="spoken_emoji_1F339" msgid="9128891447985256151">"Rosa"</string>
+    <string name="spoken_emoji_1F33A" msgid="2025828400095233078">"Hibisc"</string>
+    <string name="spoken_emoji_1F33B" msgid="8163868254348448552">"Gira-sol"</string>
+    <string name="spoken_emoji_1F33C" msgid="6850371206262335812">"Flor"</string>
+    <string name="spoken_emoji_1F33D" msgid="9033484052864509610">"Panotxa de blat de moro"</string>
+    <string name="spoken_emoji_1F33E" msgid="2540173396638444120">"Espiga d\'arròs"</string>
+    <string name="spoken_emoji_1F33F" msgid="4384823344364908558">"Herba"</string>
+    <string name="spoken_emoji_1F340" msgid="3494255459156499305">"Trèvol de quatre fulles"</string>
+    <string name="spoken_emoji_1F341" msgid="4581959481754990158">"Fulla d\'auró"</string>
+    <string name="spoken_emoji_1F342" msgid="3119068426871821222">"Fulla caiguda"</string>
+    <string name="spoken_emoji_1F343" msgid="2663317495805149004">"Fulla que vola amb el vent"</string>
+    <string name="spoken_emoji_1F344" msgid="2738517881678722159">"Bolet"</string>
+    <string name="spoken_emoji_1F345" msgid="6135288642349085554">"Tomàquet"</string>
+    <string name="spoken_emoji_1F346" msgid="2075395322785406367">"Albergínia"</string>
+    <string name="spoken_emoji_1F347" msgid="7753453754963890571">"Raïm"</string>
+    <string name="spoken_emoji_1F348" msgid="1247076837284932788">"Meló"</string>
+    <string name="spoken_emoji_1F349" msgid="5563054555180611086">"Síndria"</string>
+    <string name="spoken_emoji_1F34A" msgid="4688661208570160524">"Mandarina"</string>
+    <string name="spoken_emoji_1F34B" msgid="4335318423164185706">"Llimona"</string>
+    <string name="spoken_emoji_1F34C" msgid="3712827239858159474">"Plàtan"</string>
+    <string name="spoken_emoji_1F34D" msgid="7712521967162622936">"Pinya"</string>
+    <string name="spoken_emoji_1F34E" msgid="1859466882598614228">"Poma vermella"</string>
+    <string name="spoken_emoji_1F34F" msgid="8251711032295005633">"Poma verda"</string>
+    <string name="spoken_emoji_1F350" msgid="625802980159197701">"Pera"</string>
+    <string name="spoken_emoji_1F351" msgid="4269460120610911895">"Préssec"</string>
+    <string name="spoken_emoji_1F352" msgid="965600953360182635">"Cireres"</string>
+    <string name="spoken_emoji_1F353" msgid="7068623879906925592">"Maduixa"</string>
+    <string name="spoken_emoji_1F354" msgid="45162285238888494">"Hamburguesa"</string>
+    <string name="spoken_emoji_1F355" msgid="9157587635526433283">"Porció de pizza"</string>
+    <string name="spoken_emoji_1F356" msgid="2667196119149852244">"Carn amb l\'os"</string>
+    <string name="spoken_emoji_1F357" msgid="8022817413851052256">"Cuixa de pollastre"</string>
+    <string name="spoken_emoji_1F358" msgid="3042693264748036476">"Galeta d\'arròs"</string>
+    <string name="spoken_emoji_1F359" msgid="3988148661730121958">"Bola d\'arròs"</string>
+    <string name="spoken_emoji_1F35A" msgid="1763824172198327268">"Arròs bullit"</string>
+    <string name="spoken_emoji_1F35B" msgid="62530406745717835">"Arròs amb curri"</string>
+    <string name="spoken_emoji_1F35C" msgid="7537756539198945509">"Plat fumejant"</string>
+    <string name="spoken_emoji_1F35D" msgid="8173523083861875196">"Espagueti"</string>
+    <string name="spoken_emoji_1F35E" msgid="2935428307894662571">"Pa"</string>
+    <string name="spoken_emoji_1F35F" msgid="4840297386785728443">"Patates fregides"</string>
+    <string name="spoken_emoji_1F360" msgid="4094659855684686801">"Moniato rostit"</string>
+    <string name="spoken_emoji_1F361" msgid="6475486395784096109">"Dango"</string>
+    <string name="spoken_emoji_1F362" msgid="5004692577661076275">"Oden"</string>
+    <string name="spoken_emoji_1F363" msgid="1606603765717743806">"Sushi"</string>
+    <string name="spoken_emoji_1F364" msgid="6550457766169570811">"Gamba fregida"</string>
+    <string name="spoken_emoji_1F365" msgid="4963815540953316307">"Pastís de peix amb forma de remolí"</string>
+    <string name="spoken_emoji_1F366" msgid="7862401745277049404">"Gelat de màquina"</string>
+    <string name="spoken_emoji_1F367" msgid="7447972978281980414">"Granissat"</string>
+    <string name="spoken_emoji_1F368" msgid="7790003146142724913">"Gelat"</string>
+    <string name="spoken_emoji_1F369" msgid="7383712944084857350">"Rosquilla"</string>
+    <string name="spoken_emoji_1F36A" msgid="2726271795913042295">"Galeta"</string>
+    <string name="spoken_emoji_1F36B" msgid="6342163604299875931">"Rajola de xocolata"</string>
+    <string name="spoken_emoji_1F36C" msgid="2168934753998218790">"Caramel"</string>
+    <string name="spoken_emoji_1F36D" msgid="3671507903799975792">"Pirulí"</string>
+    <string name="spoken_emoji_1F36E" msgid="4630541402785165902">"Flam"</string>
+    <string name="spoken_emoji_1F36F" msgid="5577915387425169439">"Pot de mel"</string>
+    <string name="spoken_emoji_1F370" msgid="7243244547866114951">"Porció de pastís"</string>
+    <string name="spoken_emoji_1F371" msgid="6731527040552916358">"Caixa de bento"</string>
+    <string name="spoken_emoji_1F372" msgid="1635035323832181733">"Plat de menjar"</string>
+    <string name="spoken_emoji_1F373" msgid="7799289534289221045">"Fent un ou ferrat"</string>
+    <string name="spoken_emoji_1F374" msgid="5973820884987069131">"Forquilla i ganivet"</string>
+    <string name="spoken_emoji_1F375" msgid="1074832087699617700">"Tassa de te sense nansa"</string>
+    <string name="spoken_emoji_1F376" msgid="6499274685584852067">"Ampolla de sake i got"</string>
+    <string name="spoken_emoji_1F377" msgid="1762398562314172075">"Copa de vi"</string>
+    <string name="spoken_emoji_1F378" msgid="5528234560590117516">"Còctel"</string>
+    <string name="spoken_emoji_1F379" msgid="790581290787943325">"Beguda tropical"</string>
+    <string name="spoken_emoji_1F37A" msgid="391966822450619516">"Gerra de cervesa"</string>
+    <string name="spoken_emoji_1F37B" msgid="9015043286465670662">"Brindis amb gerres de cervesa"</string>
+    <string name="spoken_emoji_1F37C" msgid="2532113819464508894">"Biberó"</string>
+    <string name="spoken_emoji_1F380" msgid="3487363857092458827">"Llaç"</string>
+    <string name="spoken_emoji_1F381" msgid="614180683680675444">"Regal embolicat"</string>
+    <string name="spoken_emoji_1F382" msgid="4720497171946687501">"Pastís d\'aniversari"</string>
+    <string name="spoken_emoji_1F383" msgid="3536505941578757623">"Carabassa de Halloween"</string>
+    <string name="spoken_emoji_1F384" msgid="1797870204479059004">"Arbre de Nadal"</string>
+    <string name="spoken_emoji_1F385" msgid="1754174063483626367">"Pare Noel"</string>
+    <string name="spoken_emoji_1F386" msgid="2130445450758114746">"Focs artificials"</string>
+    <string name="spoken_emoji_1F387" msgid="3403182563117999933">"Bengala"</string>
+    <string name="spoken_emoji_1F388" msgid="2903047203723251804">"Globus"</string>
+    <string name="spoken_emoji_1F389" msgid="2352830665883549388">"Tub de confeti"</string>
+    <string name="spoken_emoji_1F38A" msgid="6280428984773641322">"Bola de confeti"</string>
+    <string name="spoken_emoji_1F38B" msgid="4902225837479015489">"Arbre dels desitjos de Tanabata"</string>
+    <string name="spoken_emoji_1F38C" msgid="7623268024030989365">"Banderes creuades"</string>
+    <string name="spoken_emoji_1F38D" msgid="8237542796124408528">"Decoració de bambú"</string>
+    <string name="spoken_emoji_1F38E" msgid="5373397476238212371">"Nines japoneses"</string>
+    <string name="spoken_emoji_1F38F" msgid="8754091376829552844">"Banderins de carpes"</string>
+    <string name="spoken_emoji_1F390" msgid="8903307048095431374">"Mòbil sonor"</string>
+    <string name="spoken_emoji_1F391" msgid="2134952069191911841">"Cerimònia de contemplació de la lluna"</string>
+    <string name="spoken_emoji_1F392" msgid="6380405493914304737">"Motxilla de l\'escola"</string>
+    <string name="spoken_emoji_1F393" msgid="6947890064872470996">"Birret de la graduació"</string>
+    <string name="spoken_emoji_1F3A0" msgid="3572095190082826057">"Cavall dels cavallets"</string>
+    <string name="spoken_emoji_1F3A1" msgid="4300565511681058798">"Sínia de fira"</string>
+    <string name="spoken_emoji_1F3A2" msgid="15486093912232140">"Muntanya russa"</string>
+    <string name="spoken_emoji_1F3A3" msgid="921739319504942924">"Canya de pescar i peix"</string>
+    <string name="spoken_emoji_1F3A4" msgid="7497596355346856950">"Micròfon"</string>
+    <string name="spoken_emoji_1F3A5" msgid="4290497821228183002">"Càmera de cinema"</string>
+    <string name="spoken_emoji_1F3A6" msgid="26019057872319055">"Cinema"</string>
+    <string name="spoken_emoji_1F3A7" msgid="837856608794094105">"Auricular"</string>
+    <string name="spoken_emoji_1F3A8" msgid="2332260356509244587">"Paleta de l\'artista"</string>
+    <string name="spoken_emoji_1F3A9" msgid="9045869366525115256">"Barret de copa"</string>
+    <string name="spoken_emoji_1F3AA" msgid="5728760354237132">"Vela de circ"</string>
+    <string name="spoken_emoji_1F3AB" msgid="1657997517193216284">"Entrada"</string>
+    <string name="spoken_emoji_1F3AC" msgid="4317366554314492152">"Claqueta"</string>
+    <string name="spoken_emoji_1F3AD" msgid="607157286336130470">"Arts escèniques"</string>
+    <string name="spoken_emoji_1F3AE" msgid="2902308174671548150">"Videojoc"</string>
+    <string name="spoken_emoji_1F3AF" msgid="5420539221790296407">"Diana"</string>
+    <string name="spoken_emoji_1F3B0" msgid="7440244806527891956">"Escurabutxaques"</string>
+    <string name="spoken_emoji_1F3B1" msgid="545544382391379234">"Billar"</string>
+    <string name="spoken_emoji_1F3B2" msgid="8302262034774787493">"Dau"</string>
+    <string name="spoken_emoji_1F3B3" msgid="5180870610771027520">"Bitlles"</string>
+    <string name="spoken_emoji_1F3B4" msgid="4723852033266071564">"Cartes de les flors"</string>
+    <string name="spoken_emoji_1F3B5" msgid="1998470239850548554">"Nota musical"</string>
+    <string name="spoken_emoji_1F3B6" msgid="3827730457113941705">"Diverses notes musicals"</string>
+    <string name="spoken_emoji_1F3B7" msgid="5503403099445042180">"Saxòfon"</string>
+    <string name="spoken_emoji_1F3B8" msgid="3985658156795011430">"Guitarra"</string>
+    <string name="spoken_emoji_1F3B9" msgid="5596295757967881451">"Teclat musical"</string>
+    <string name="spoken_emoji_1F3BA" msgid="4284064120340683558">"Trompeta"</string>
+    <string name="spoken_emoji_1F3BB" msgid="2856598510069988745">"Violí"</string>
+    <string name="spoken_emoji_1F3BC" msgid="1608424748821446230">"Partitura"</string>
+    <string name="spoken_emoji_1F3BD" msgid="5490786111375627777">"Samarreta per córrer amb banda"</string>
+    <string name="spoken_emoji_1F3BE" msgid="1851613105691627931">"Raqueta de tennis i pilota"</string>
+    <string name="spoken_emoji_1F3BF" msgid="6862405997423247921">"Esquí"</string>
+    <string name="spoken_emoji_1F3C0" msgid="7421420756115104085">"Bàsquet"</string>
+    <string name="spoken_emoji_1F3C1" msgid="6926537251677319922">"Bandera a quadres"</string>
+    <string name="spoken_emoji_1F3C2" msgid="5708596929237987082">"Surfista de neu"</string>
+    <string name="spoken_emoji_1F3C3" msgid="5850982999510115824">"Corredor"</string>
+    <string name="spoken_emoji_1F3C4" msgid="8468355585994639838">"Surfista"</string>
+    <string name="spoken_emoji_1F3C6" msgid="9094474706847545409">"Trofeu"</string>
+    <string name="spoken_emoji_1F3C7" msgid="8172206200368370116">"Curses de cavalls"</string>
+    <string name="spoken_emoji_1F3C8" msgid="5619171461277597709">"Futbol americà"</string>
+    <string name="spoken_emoji_1F3C9" msgid="6371294008765871043">"Rugbi"</string>
+    <string name="spoken_emoji_1F3CA" msgid="130977831787806932">"Nedador"</string>
+    <string name="spoken_emoji_1F3E0" msgid="6277213201655811842">"Casa"</string>
+    <string name="spoken_emoji_1F3E1" msgid="233476176077538885">"Casa amb jardí"</string>
+    <string name="spoken_emoji_1F3E2" msgid="919736380093964570">"Edifici d\'oficines"</string>
+    <string name="spoken_emoji_1F3E3" msgid="6177606081825094184">"Oficina de correus japonesa"</string>
+    <string name="spoken_emoji_1F3E4" msgid="717377871070970293">"Oficina de correus europea"</string>
+    <string name="spoken_emoji_1F3E5" msgid="1350532500431776780">"Hospital"</string>
+    <string name="spoken_emoji_1F3E6" msgid="342132788513806214">"Banc"</string>
+    <string name="spoken_emoji_1F3E7" msgid="6322352038284944265">"Caixer automàtic"</string>
+    <string name="spoken_emoji_1F3E8" msgid="5864918444350599907">"Hotel"</string>
+    <string name="spoken_emoji_1F3E9" msgid="7830416185375326938">"Hotel de cites"</string>
+    <string name="spoken_emoji_1F3EA" msgid="5081084413084360479">"Botiga local"</string>
+    <string name="spoken_emoji_1F3EB" msgid="7010966528205150525">"Escola"</string>
+    <string name="spoken_emoji_1F3EC" msgid="4845978861878295154">"Grans magatzems"</string>
+    <string name="spoken_emoji_1F3ED" msgid="3980316226665215370">"Fàbrica"</string>
+    <string name="spoken_emoji_1F3EE" msgid="1253964276770550248">"Llum d\'izakaya"</string>
+    <string name="spoken_emoji_1F3EF" msgid="1128975573507389883">"Castell japonès"</string>
+    <string name="spoken_emoji_1F3F0" msgid="1544632297502291578">"Castell europeu"</string>
+    <string name="spoken_emoji_1F400" msgid="2063034795679578294">"Rata"</string>
+    <string name="spoken_emoji_1F401" msgid="6736421616217369594">"Ratolí"</string>
+    <string name="spoken_emoji_1F402" msgid="7276670995895485604">"Bou"</string>
+    <string name="spoken_emoji_1F403" msgid="8045709541897118928">"Búfal indi"</string>
+    <string name="spoken_emoji_1F404" msgid="5240777285676662335">"Vaca"</string>
+    <string name="spoken_emoji_1F406" msgid="5163461930159540018">"Lleopard"</string>
+    <string name="spoken_emoji_1F407" msgid="6905370221172708160">"Conill"</string>
+    <string name="spoken_emoji_1F408" msgid="1362164550508207284">"Gat"</string>
+    <string name="spoken_emoji_1F409" msgid="8476130983168866013">"Drac"</string>
+    <string name="spoken_emoji_1F40A" msgid="1149626786411545043">"Cocodril"</string>
+    <string name="spoken_emoji_1F40B" msgid="5199104921208397643">"Balena"</string>
+    <string name="spoken_emoji_1F40C" msgid="2704006052881702675">"Caragol"</string>
+    <string name="spoken_emoji_1F40D" msgid="8648186663643157522">"Serp"</string>
+    <string name="spoken_emoji_1F40E" msgid="7219137467573327268">"Cavall"</string>
+    <string name="spoken_emoji_1F40F" msgid="7834336676729040395">"Moltó"</string>
+    <string name="spoken_emoji_1F410" msgid="8686765722255775031">"Cabra"</string>
+    <string name="spoken_emoji_1F411" msgid="3585715397876383525">"Ovella"</string>
+    <string name="spoken_emoji_1F412" msgid="4924794582980077838">"Mona"</string>
+    <string name="spoken_emoji_1F413" msgid="1460475310405677377">"Gall"</string>
+    <string name="spoken_emoji_1F414" msgid="5857296282631892219">"Gallina"</string>
+    <string name="spoken_emoji_1F415" msgid="5920041074892949527">"Gos"</string>
+    <string name="spoken_emoji_1F416" msgid="4362403392912540286">"Porc"</string>
+    <string name="spoken_emoji_1F417" msgid="6836978415840795128">"Porc senglar"</string>
+    <string name="spoken_emoji_1F418" msgid="7926161463897783691">"Elefant"</string>
+    <string name="spoken_emoji_1F419" msgid="1055233959755784186">"Pop"</string>
+    <string name="spoken_emoji_1F41A" msgid="5195666556511558060">"Cargol de mar"</string>
+    <string name="spoken_emoji_1F41B" msgid="7652480167465557832">"Insecte"</string>
+    <string name="spoken_emoji_1F41C" msgid="1123461148697574239">"Formiga"</string>
+    <string name="spoken_emoji_1F41D" msgid="718579308764058851">"Abella"</string>
+    <string name="spoken_emoji_1F41E" msgid="6766305509608115467">"Marieta"</string>
+    <string name="spoken_emoji_1F41F" msgid="1207261298343160838">"Peix"</string>
+    <string name="spoken_emoji_1F420" msgid="1041145003133609221">"Peix tropical"</string>
+    <string name="spoken_emoji_1F421" msgid="1748378324417438751">"Peix globus"</string>
+    <string name="spoken_emoji_1F422" msgid="4106724877523329148">"Tortuga"</string>
+    <string name="spoken_emoji_1F423" msgid="4077407945958691907">"Pollet sortint de l\'ou"</string>
+    <string name="spoken_emoji_1F424" msgid="6911326019270172283">"Pollet"</string>
+    <string name="spoken_emoji_1F425" msgid="5466514196557885577">"Pollet de cara"</string>
+    <string name="spoken_emoji_1F426" msgid="2163979138772892755">"Ocell"</string>
+    <string name="spoken_emoji_1F427" msgid="3585670324511212961">"Pingüí"</string>
+    <string name="spoken_emoji_1F428" msgid="7955440808647898579">"Coala"</string>
+    <string name="spoken_emoji_1F429" msgid="5028269352809819035">"Caniche"</string>
+    <string name="spoken_emoji_1F42A" msgid="4681926706404032484">"Dromedari"</string>
+    <string name="spoken_emoji_1F42B" msgid="2725166074981558322">"Camell"</string>
+    <string name="spoken_emoji_1F42C" msgid="6764791873413727085">"Dofí"</string>
+    <string name="spoken_emoji_1F42D" msgid="1033643138546864251">"Cara de ratolí"</string>
+    <string name="spoken_emoji_1F42E" msgid="8099223337120508820">"Cara de vaca"</string>
+    <string name="spoken_emoji_1F42F" msgid="2104743989330781572">"Cara de tigre"</string>
+    <string name="spoken_emoji_1F430" msgid="525492897063150160">"Cara de conill"</string>
+    <string name="spoken_emoji_1F431" msgid="6051358666235016851">"Cara de gat"</string>
+    <string name="spoken_emoji_1F432" msgid="7698001871193018305">"Cara de drac"</string>
+    <string name="spoken_emoji_1F433" msgid="3762356053512899326">"Balena que treu aigua"</string>
+    <string name="spoken_emoji_1F434" msgid="3619943222159943226">"Cara de cavall"</string>
+    <string name="spoken_emoji_1F435" msgid="59199202683252958">"Cara de mona"</string>
+    <string name="spoken_emoji_1F436" msgid="340544719369009828">"Cara de gos"</string>
+    <string name="spoken_emoji_1F437" msgid="1219818379784982585">"Cara de porc"</string>
+    <string name="spoken_emoji_1F438" msgid="9128124743321008210">"Cara de granota"</string>
+    <string name="spoken_emoji_1F439" msgid="1424161319554642266">"Cara d\'hàmster"</string>
+    <string name="spoken_emoji_1F43A" msgid="6727645488430385584">"Cara de llop"</string>
+    <string name="spoken_emoji_1F43B" msgid="5397170068392865167">"Cara d\'ós"</string>
+    <string name="spoken_emoji_1F43C" msgid="2715995734367032431">"Cara d\'ós panda"</string>
+    <string name="spoken_emoji_1F43D" msgid="6005480717951776597">"Nas de porc"</string>
+    <string name="spoken_emoji_1F43E" msgid="8917626103219080547">"Petjades d\'animal"</string>
+    <string name="spoken_emoji_1F440" msgid="7144338258163384433">"Ulls"</string>
+    <string name="spoken_emoji_1F442" msgid="1905515392292676124">"Orella"</string>
+    <string name="spoken_emoji_1F443" msgid="1491504447758933115">"Nas"</string>
+    <string name="spoken_emoji_1F444" msgid="3654613047946080332">"Boca"</string>
+    <string name="spoken_emoji_1F445" msgid="7024905244040509204">"Llengua"</string>
+    <string name="spoken_emoji_1F446" msgid="2150365643636471745">"Dit índex que apunta cap amunt"</string>
+    <string name="spoken_emoji_1F447" msgid="8794022344940891388">"Dit índex que apunta cap avall"</string>
+    <string name="spoken_emoji_1F448" msgid="3261812959215550650">"Dit índex que apunta cap a l\'esquerra"</string>
+    <string name="spoken_emoji_1F449" msgid="4764447975177805991">"Dit índex que apunta cap a la dreta"</string>
+    <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"Puny"</string>
+    <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"Mà que saluda"</string>
+    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"Signe d\'OK amb la mà"</string>
+    <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"Signe de m\'agrada"</string>
+    <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"Signe de no m\'agrada"</string>
+    <string name="spoken_emoji_1F44F" msgid="5148753662268213389">"Mans aplaudint"</string>
+    <string name="spoken_emoji_1F450" msgid="1012021072085157054">"Mans obertes"</string>
+    <string name="spoken_emoji_1F451" msgid="8257466714629051320">"Corona"</string>
+    <string name="spoken_emoji_1F452" msgid="4567394011149905466">"Barret de dona"</string>
+    <string name="spoken_emoji_1F453" msgid="5978410551173163010">"Ulleres"</string>
+    <string name="spoken_emoji_1F454" msgid="348469036193323252">"Corbata"</string>
+    <string name="spoken_emoji_1F455" msgid="5665118831861433578">"Samarreta"</string>
+    <string name="spoken_emoji_1F456" msgid="1890991330923356408">"Texans"</string>
+    <string name="spoken_emoji_1F457" msgid="3904310482655702620">"Vestit"</string>
+    <string name="spoken_emoji_1F458" msgid="5704243858031107692">"Quimono"</string>
+    <string name="spoken_emoji_1F459" msgid="3553148747050035251">"Biquini"</string>
+    <string name="spoken_emoji_1F45A" msgid="1389654639484716101">"Camisa de dona"</string>
+    <string name="spoken_emoji_1F45B" msgid="1113293170254222904">"Moneder"</string>
+    <string name="spoken_emoji_1F45C" msgid="3410257778598006936">"Bossa de mà"</string>
+    <string name="spoken_emoji_1F45D" msgid="812176504300064819">"Estoig"</string>
+    <string name="spoken_emoji_1F45E" msgid="2901741399934723562">"Sabata d\'home"</string>
+    <string name="spoken_emoji_1F45F" msgid="6828566359287798863">"Sabatilla esportiva"</string>
+    <string name="spoken_emoji_1F460" msgid="305863879170420855">"Sabata de taló alt"</string>
+    <string name="spoken_emoji_1F461" msgid="5160493217831417630">"Sandàlia de dona"</string>
+    <string name="spoken_emoji_1F462" msgid="1722897795554863734">"Botes de dona"</string>
+    <string name="spoken_emoji_1F463" msgid="5850772903593010699">"Petjades"</string>
+    <string name="spoken_emoji_1F464" msgid="1228335905487734913">"Silueta de bust"</string>
+    <string name="spoken_emoji_1F465" msgid="4461307702499679879">"Silueta de bustos"</string>
+    <string name="spoken_emoji_1F466" msgid="1938873085514108889">"Noi"</string>
+    <string name="spoken_emoji_1F467" msgid="8237080594860144998">"Noia"</string>
+    <string name="spoken_emoji_1F468" msgid="6081300722526675382">"Home"</string>
+    <string name="spoken_emoji_1F469" msgid="1090140923076108158">"Dona"</string>
+    <string name="spoken_emoji_1F46A" msgid="5063570981942606595">"Família"</string>
+    <string name="spoken_emoji_1F46B" msgid="6795882374287327952">"Home i dona agafats de la mà"</string>
+    <string name="spoken_emoji_1F46C" msgid="6844464165783964495">"Dos homes agafats de la mà"</string>
+    <string name="spoken_emoji_1F46D" msgid="2316773068014053180">"Dues dones agafades de la mà"</string>
+    <string name="spoken_emoji_1F46E" msgid="5897625605860822401">"Agent de policia"</string>
+    <string name="spoken_emoji_1F46F" msgid="7716871657717641490">"Dona amb orelles de conill"</string>
+    <string name="spoken_emoji_1F470" msgid="6409995400510338892">"Núvia amb vel"</string>
+    <string name="spoken_emoji_1F471" msgid="3058247860441670806">"Persona rossa"</string>
+    <string name="spoken_emoji_1F472" msgid="3928854667819339142">"Home amb barret típic"</string>
+    <string name="spoken_emoji_1F473" msgid="5921952095808988381">"Home amb turbant"</string>
+    <string name="spoken_emoji_1F474" msgid="1082237499496725183">"Home gran"</string>
+    <string name="spoken_emoji_1F475" msgid="7280323988642212761">"Dona gran"</string>
+    <string name="spoken_emoji_1F476" msgid="4713322657821088296">"Nadó"</string>
+    <string name="spoken_emoji_1F477" msgid="2197036131029221370">"Treballador de la construcció"</string>
+    <string name="spoken_emoji_1F478" msgid="7245521193493488875">"Princesa"</string>
+    <string name="spoken_emoji_1F479" msgid="6876475321015553972">"Ogre japonès"</string>
+    <string name="spoken_emoji_1F47A" msgid="3900813633102703571">"Follet japonès"</string>
+    <string name="spoken_emoji_1F47B" msgid="2608250873194079390">"Fantasma"</string>
+    <string name="spoken_emoji_1F47C" msgid="3838699131276537421">"Angelet"</string>
+    <string name="spoken_emoji_1F47D" msgid="2874077455888369538">"Alienígena"</string>
+    <string name="spoken_emoji_1F47E" msgid="3642607168625579507">"Invasor de l\'espai"</string>
+    <string name="spoken_emoji_1F47F" msgid="441605977269926252">"Dimoniet"</string>
+    <string name="spoken_emoji_1F480" msgid="3696253485164878739">"Calavera"</string>
+    <string name="spoken_emoji_1F481" msgid="320408708521966893">"Recepcionista"</string>
+    <string name="spoken_emoji_1F482" msgid="3424354860245608949">"Guàrdia"</string>
+    <string name="spoken_emoji_1F483" msgid="3221113594843849083">"Ballarina"</string>
+    <string name="spoken_emoji_1F484" msgid="7348014979080444885">"Pintallavis"</string>
+    <string name="spoken_emoji_1F485" msgid="6133507975565116339">"Pintaungles"</string>
+    <string name="spoken_emoji_1F486" msgid="9085459968247394155">"Massatge facial"</string>
+    <string name="spoken_emoji_1F487" msgid="1479113637259592150">"Tall de cabell"</string>
+    <string name="spoken_emoji_1F488" msgid="6922559285234100252">"Barberia"</string>
+    <string name="spoken_emoji_1F489" msgid="8114863680950147305">"Xeringa"</string>
+    <string name="spoken_emoji_1F48A" msgid="8526843630145963032">"Píndola"</string>
+    <string name="spoken_emoji_1F48B" msgid="2538528967897640292">"Marca de petó"</string>
+    <string name="spoken_emoji_1F48C" msgid="1681173271652890232">"Carta d\'amor"</string>
+    <string name="spoken_emoji_1F48D" msgid="8259886164999042373">"Anell"</string>
+    <string name="spoken_emoji_1F48E" msgid="8777981696011111101">"Gemma"</string>
+    <string name="spoken_emoji_1F48F" msgid="741593675183677907">"Petó"</string>
+    <string name="spoken_emoji_1F490" msgid="4482549128959806736">"Ram"</string>
+    <string name="spoken_emoji_1F491" msgid="2305245307882441500">"Parella amb cor"</string>
+    <string name="spoken_emoji_1F492" msgid="3884119934804475732">"Casament"</string>
+    <string name="spoken_emoji_1F493" msgid="1208828371565525121">"Cor que batega"</string>
+    <string name="spoken_emoji_1F494" msgid="6198876398509338718">"Cor trencat"</string>
+    <string name="spoken_emoji_1F495" msgid="9206202744967130919">"Dos cors"</string>
+    <string name="spoken_emoji_1F496" msgid="5436953041732207775">"Cor espurnejant"</string>
+    <string name="spoken_emoji_1F497" msgid="7285142863951448473">"Cor que creix"</string>
+    <string name="spoken_emoji_1F498" msgid="7940131245037575715">"Cor amb una fletxa"</string>
+    <string name="spoken_emoji_1F499" msgid="4453235040265550009">"Cor blau"</string>
+    <string name="spoken_emoji_1F49A" msgid="6262178648366971405">"Cor verd"</string>
+    <string name="spoken_emoji_1F49B" msgid="8085384999750714368">"Cor groc"</string>
+    <string name="spoken_emoji_1F49C" msgid="453829540120898698">"Cor porpra"</string>
+    <string name="spoken_emoji_1F49D" msgid="3460534750224161888">"Cor amb un llaç"</string>
+    <string name="spoken_emoji_1F49E" msgid="4490636226072523867">"Cors que giren"</string>
+    <string name="spoken_emoji_1F49F" msgid="2059319756421226336">"Decoració de cor"</string>
+    <string name="spoken_emoji_1F4A0" msgid="1954850380550212038">"Forma de diamant amb un punt a l\'interior"</string>
+    <string name="spoken_emoji_1F4A1" msgid="403137413540909021">"Bombeta"</string>
+    <string name="spoken_emoji_1F4A2" msgid="2604192053295622063">"Signe de la ira"</string>
+    <string name="spoken_emoji_1F4A3" msgid="6378351742957821735">"Bomba"</string>
+    <string name="spoken_emoji_1F4A4" msgid="7217736258870346625">"Signe de dormir"</string>
+    <string name="spoken_emoji_1F4A5" msgid="5401995723541239858">"Signe de col·lisió"</string>
+    <string name="spoken_emoji_1F4A6" msgid="3837802182716483848">"Esquitx de suor"</string>
+    <string name="spoken_emoji_1F4A7" msgid="5718438987757885141">"Gota"</string>
+    <string name="spoken_emoji_1F4A8" msgid="4472108229720006377">"Signe de córrer"</string>
+    <string name="spoken_emoji_1F4A9" msgid="1240958472788430032">"Caca"</string>
+    <string name="spoken_emoji_1F4AA" msgid="8427525538635146416">"Bíceps flexionat"</string>
+    <string name="spoken_emoji_1F4AB" msgid="5484114759939427459">"Signe de mareig"</string>
+    <string name="spoken_emoji_1F4AC" msgid="5571196638219612682">"Bafarada de parlar"</string>
+    <string name="spoken_emoji_1F4AD" msgid="353174619257798652">"Bafarada de pensar"</string>
+    <string name="spoken_emoji_1F4AE" msgid="1223142786927162641">"Flor blanca"</string>
+    <string name="spoken_emoji_1F4AF" msgid="3526278354452138397">"Signe d\'excel·lent"</string>
+    <string name="spoken_emoji_1F4B0" msgid="4124102195175124156">"Bossa dels diners"</string>
+    <string name="spoken_emoji_1F4B1" msgid="8339494003418572905">"Canvi de divisa"</string>
+    <string name="spoken_emoji_1F4B2" msgid="3179159430187243132">"Signe del dòlar gran"</string>
+    <string name="spoken_emoji_1F4B3" msgid="5375412518221759596">"Targeta de crèdit"</string>
+    <string name="spoken_emoji_1F4B4" msgid="1068592463669453204">"Bitllets amb el signe del ien"</string>
+    <string name="spoken_emoji_1F4B5" msgid="1426708699891832564">"Bitllets amb el signe del dòlar"</string>
+    <string name="spoken_emoji_1F4B6" msgid="8289249930736444837">"Bitllets amb el signe de l\'euro"</string>
+    <string name="spoken_emoji_1F4B7" msgid="5245100496860739429">"Bitllets amb el signe de la lliura"</string>
+    <string name="spoken_emoji_1F4B8" msgid="4401099580477164440">"Diners amb ales"</string>
+    <string name="spoken_emoji_1F4B9" msgid="647509393536679903">"Gràfic d\'increment amb el signe del ien"</string>
+    <string name="spoken_emoji_1F4BA" msgid="1269737854891046321">"Seient"</string>
+    <string name="spoken_emoji_1F4BB" msgid="6252883563347816451">"Ordinador"</string>
+    <string name="spoken_emoji_1F4BC" msgid="6182597732218446206">"Maletí"</string>
+    <string name="spoken_emoji_1F4BD" msgid="5820961044768829176">"Minidisc"</string>
+    <string name="spoken_emoji_1F4BE" msgid="4754542485835379808">"Disquet"</string>
+    <string name="spoken_emoji_1F4BF" msgid="2237481756984721795">"Disc òptic"</string>
+    <string name="spoken_emoji_1F4C0" msgid="491582501089694461">"DVD"</string>
+    <string name="spoken_emoji_1F4C1" msgid="6645461382494158111">"Carpeta d\'arxius"</string>
+    <string name="spoken_emoji_1F4C2" msgid="8095638715523765338">"Carpeta de fitxer oberta"</string>
+    <string name="spoken_emoji_1F4C3" msgid="3727274466173970142">"Pàgina que es cargola"</string>
+    <string name="spoken_emoji_1F4C4" msgid="4382570710795501612">"Pàgina cap amunt"</string>
+    <string name="spoken_emoji_1F4C5" msgid="8693944622627762487">"Calendari"</string>
+    <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"Calendari de tall"</string>
+    <string name="spoken_emoji_1F4C7" msgid="2665313547987324495">"Organitzador de targetes"</string>
+    <string name="spoken_emoji_1F4C8" msgid="8007686702282833600">"Gràfic d\'increment"</string>
+    <string name="spoken_emoji_1F4C9" msgid="2271951411192893684">"Gràfic de disminució"</string>
+    <string name="spoken_emoji_1F4CA" msgid="3525692829622381444">"Gràfic de barres"</string>
+    <string name="spoken_emoji_1F4CB" msgid="977639227554095521">"Portanotes"</string>
+    <string name="spoken_emoji_1F4CC" msgid="156107396088741574">"Xinxeta"</string>
+    <string name="spoken_emoji_1F4CD" msgid="4266572175361190231">"Xinxeta rodona"</string>
+    <string name="spoken_emoji_1F4CE" msgid="6294288509864968290">"Clip"</string>
+    <string name="spoken_emoji_1F4CF" msgid="149679400831136810">"Regle"</string>
+    <string name="spoken_emoji_1F4D0" msgid="8130339336619202915">"Escaire"</string>
+    <string name="spoken_emoji_1F4D1" msgid="5852176364856284968">"Marcadors"</string>
+    <string name="spoken_emoji_1F4D2" msgid="2276810154105920052">"Llibre major"</string>
+    <string name="spoken_emoji_1F4D3" msgid="5873386492793610808">"Quadern"</string>
+    <string name="spoken_emoji_1F4D4" msgid="4754469936418776360">"Quadern amb coberta decorativa"</string>
+    <string name="spoken_emoji_1F4D5" msgid="4642713351802778905">"Llibre tancat"</string>
+    <string name="spoken_emoji_1F4D6" msgid="6987347918381807186">"Llibre obert"</string>
+    <string name="spoken_emoji_1F4D7" msgid="7813394163241379223">"Llibre verd"</string>
+    <string name="spoken_emoji_1F4D8" msgid="7189799718984979521">"Llibre blau"</string>
+    <string name="spoken_emoji_1F4D9" msgid="3874664073186440225">"Llibre taronja"</string>
+    <string name="spoken_emoji_1F4DA" msgid="872212072924287762">"Llibres"</string>
+    <string name="spoken_emoji_1F4DB" msgid="2015183603583392969">"Etiqueta identificativa"</string>
+    <string name="spoken_emoji_1F4DC" msgid="5075845110932456783">"Desplaça"</string>
+    <string name="spoken_emoji_1F4DD" msgid="2494006707147586786">"Nota"</string>
+    <string name="spoken_emoji_1F4DE" msgid="7883008605002117671">"Auricular del telèfon"</string>
+    <string name="spoken_emoji_1F4DF" msgid="3538610110623780465">"Cercapersones"</string>
+    <string name="spoken_emoji_1F4E0" msgid="2960778342609543077">"Fax"</string>
+    <string name="spoken_emoji_1F4E1" msgid="6269733703719242108">"Antena de satèl·lit"</string>
+    <string name="spoken_emoji_1F4E2" msgid="1987535386302883116">"Altaveu de megafonia"</string>
+    <string name="spoken_emoji_1F4E3" msgid="5588916572878599224">"Megàfon d\'animació"</string>
+    <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"Safata de sortida"</string>
+    <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"Safata d\'entrada"</string>
+    <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"Paquet"</string>
+    <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"Símbol de correu electrònic"</string>
+    <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Correu entrant"</string>
+    <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"Sobre amb una fletxa cap avall al damunt"</string>
+    <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"Bústia tancada amb la bandera baixada"</string>
+    <string name="spoken_emoji_1F4EB" msgid="6491414165464146137">"Bústia tancada amb la bandera aixecada"</string>
+    <string name="spoken_emoji_1F4EC" msgid="7369517138779988438">"Bústia oberta amb la bandera aixecada"</string>
+    <string name="spoken_emoji_1F4ED" msgid="5657520436285454241">"Bústia oberta amb la bandera baixada"</string>
+    <string name="spoken_emoji_1F4EE" msgid="8464138906243608614">"Bústia"</string>
+    <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"Símbol de correus"</string>
+    <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"Diari"</string>
+    <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"Telèfon mòbil"</string>
+    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"Telèfon mòbil amb una fletxa cap a la dreta a l\'esquerra"</string>
+    <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"Mode de vibració"</string>
+    <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"Telèfon mòbil apagat"</string>
+    <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"Senyal de prohibit telèfons mòbils"</string>
+    <string name="spoken_emoji_1F4F6" msgid="2676974903233268860">"Gràfic de barres"</string>
+    <string name="spoken_emoji_1F4F7" msgid="2643891943105989039">"Càmera"</string>
+    <string name="spoken_emoji_1F4F9" msgid="4475626303058218048">"Càmera de vídeo"</string>
+    <string name="spoken_emoji_1F4FA" msgid="1079796186652960775">"Televisió"</string>
+    <string name="spoken_emoji_1F4FB" msgid="3848729587403760645">"Ràdio"</string>
+    <string name="spoken_emoji_1F4FC" msgid="8370432508874310054">"Cinta de vídeo"</string>
+    <string name="spoken_emoji_1F500" msgid="2389947994502144547">"Fletxes creuades cap a la dreta"</string>
+    <string name="spoken_emoji_1F501" msgid="2132188352433347009">"Fletxes cap a la dreta i l\'esquerra que formen un cercle obert en sentit horari"</string>
+    <string name="spoken_emoji_1F502" msgid="2361976580513178391">"Fletxes cap a la dreta i l\'esquerra que formen un cercle obert en sentit horari i un número u encerclat"</string>
+    <string name="spoken_emoji_1F503" msgid="8936283551917858793">"Fletxes cap avall i cap amunt que formen un cercle obert en sentit horari"</string>
+    <string name="spoken_emoji_1F504" msgid="708290317843535943">"Fletxes cap avall i cap amunt que formen un cercle obert en sentit antihorari"</string>
+    <string name="spoken_emoji_1F505" msgid="6348909939004951860">"Símbol de brillantor baixa"</string>
+    <string name="spoken_emoji_1F506" msgid="4449609297521280173">"Símbol de brillantor alta"</string>
+    <string name="spoken_emoji_1F507" msgid="7136386694923708448">"Altaveu amb barra de cancel·lació"</string>
+    <string name="spoken_emoji_1F508" msgid="5063567689831527865">"Altaveu"</string>
+    <string name="spoken_emoji_1F509" msgid="3948050077992370791">"Altaveu amb una ona de so"</string>
+    <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"Altaveu amb tres ones de so"</string>
+    <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"Bateria"</string>
+    <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"Endoll elèctric"</string>
+    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Lupa cap a l\'esquerra"</string>
+    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"Lupa cap a la dreta"</string>
+    <string name="spoken_emoji_1F50F" msgid="915079280472199605">"Cadenat amb ploma"</string>
+    <string name="spoken_emoji_1F510" msgid="7658381761691758318">"Cadenat amb clau"</string>
+    <string name="spoken_emoji_1F511" msgid="262319867774655688">"Clau"</string>
+    <string name="spoken_emoji_1F512" msgid="5628688337255115175">"Cadenat tancat"</string>
+    <string name="spoken_emoji_1F513" msgid="8579201846619420981">"Cadenat obert"</string>
+    <string name="spoken_emoji_1F514" msgid="7027268683047322521">"Campana"</string>
+    <string name="spoken_emoji_1F515" msgid="8903179856036069242">"Campana amb barra de cancel·lació"</string>
+    <string name="spoken_emoji_1F516" msgid="108097933937925381">"Marcador"</string>
+    <string name="spoken_emoji_1F517" msgid="2450846665734313397">"Signe d\'enllaç"</string>
+    <string name="spoken_emoji_1F518" msgid="7028220286841437832">"Botó d\'opció"</string>
+    <string name="spoken_emoji_1F519" msgid="8211189165075445687">"Paraula Back amb fletxa cap a l\'esquerra a sobre"</string>
+    <string name="spoken_emoji_1F51A" msgid="823966751787338892">"Paraula End amb fletxa cap a l\'esquerra a sobre"</string>
+    <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"Paraula On amb fletxa cap a l\'esquerra i la dreta a sobre"</string>
+    <string name="spoken_emoji_1F51C" msgid="110609810659826676">"Paraula Soon amb fletxa cap a la dreta a sobre"</string>
+    <string name="spoken_emoji_1F51D" msgid="4087697222026095447">"Paraula Top amb fletxa cap amunt a sobre"</string>
+    <string name="spoken_emoji_1F51E" msgid="8512873526157201775">"Prohibit per a menors de 18 anys"</string>
+    <string name="spoken_emoji_1F51F" msgid="8673370823728653973">"Tecla 10"</string>
+    <string name="spoken_emoji_1F520" msgid="7335109890337048900">"Tecla per introduir majúscules de l\'alfabet llatí"</string>
+    <string name="spoken_emoji_1F521" msgid="2693185864450925778">"Tecla per introduir minúscules de l\'alfabet llatí"</string>
+    <string name="spoken_emoji_1F522" msgid="8419130286280673347">"Tecla per introduir nombres"</string>
+    <string name="spoken_emoji_1F523" msgid="3318053476401719421">"Símbol d\'entrada per a símbols"</string>
+    <string name="spoken_emoji_1F524" msgid="1625073997522316331">"Tecla per introduir lletres de l\'alfabet llatí"</string>
+    <string name="spoken_emoji_1F525" msgid="4083884189172963790">"Foc"</string>
+    <string name="spoken_emoji_1F526" msgid="2035494936742643580">"Llanterna"</string>
+    <string name="spoken_emoji_1F527" msgid="134257142354034271">"Clau anglesa"</string>
+    <string name="spoken_emoji_1F528" msgid="700627429570609375">"Martell"</string>
+    <string name="spoken_emoji_1F529" msgid="7480548235904988573">"Femella i cargol"</string>
+    <string name="spoken_emoji_1F52A" msgid="7613580031502317893">"Ganivet per cuinar"</string>
+    <string name="spoken_emoji_1F52B" msgid="4554906608328118613">"Pistola"</string>
+    <string name="spoken_emoji_1F52C" msgid="1330294501371770790">"Microscopi"</string>
+    <string name="spoken_emoji_1F52D" msgid="7549551775445177140">"Telescopi"</string>
+    <string name="spoken_emoji_1F52E" msgid="4457099417872625141">"Bola de vidre"</string>
+    <string name="spoken_emoji_1F52F" msgid="8899031001317442792">"Estrella de sis puntes amb un punt central"</string>
+    <string name="spoken_emoji_1F530" msgid="3572898444281774023">"Símbol japonès per a principiants"</string>
+    <string name="spoken_emoji_1F531" msgid="5225633376450025396">"Trident"</string>
+    <string name="spoken_emoji_1F532" msgid="9169568490485180779">"Botó negre quadrat"</string>
+    <string name="spoken_emoji_1F533" msgid="6554193837201918598">"Botó blanc quadrat"</string>
+    <string name="spoken_emoji_1F534" msgid="8339298801331865340">"Cercle vermell gran"</string>
+    <string name="spoken_emoji_1F535" msgid="1227403104835533512">"Cercle blau gran"</string>
+    <string name="spoken_emoji_1F536" msgid="5477372445510469331">"Rombe taronja gran"</string>
+    <string name="spoken_emoji_1F537" msgid="3158915214347274626">"Rombe taronja blau"</string>
+    <string name="spoken_emoji_1F538" msgid="4300084249474451991">"Rombe taronja petit"</string>
+    <string name="spoken_emoji_1F539" msgid="6535159756325742275">"Rombe blau petit"</string>
+    <string name="spoken_emoji_1F53A" msgid="3728196273988781389">"Triangle vermell cap amunt"</string>
+    <string name="spoken_emoji_1F53B" msgid="7182097039614128707">"Triangle vermell cap avall"</string>
+    <string name="spoken_emoji_1F53C" msgid="4077022046319615029">"Triangle vermell petit cap amunt"</string>
+    <string name="spoken_emoji_1F53D" msgid="3939112784894620713">"Triangle vermell petit cap avall"</string>
+    <string name="spoken_emoji_1F550" msgid="7761392621689986218">"Rellotge que marca la una"</string>
+    <string name="spoken_emoji_1F551" msgid="2699448504113431716">"Rellotge que marca les dues"</string>
+    <string name="spoken_emoji_1F552" msgid="5872107867411853750">"Rellotge que marca les tres"</string>
+    <string name="spoken_emoji_1F553" msgid="8490966286158640743">"Rellotge que marca les quatre"</string>
+    <string name="spoken_emoji_1F554" msgid="7662585417832909280">"Rellotge que marca les cinc"</string>
+    <string name="spoken_emoji_1F555" msgid="5564698204520412009">"Rellotge que marca les sis"</string>
+    <string name="spoken_emoji_1F556" msgid="7325712194836512205">"Rellotge que marca les set"</string>
+    <string name="spoken_emoji_1F557" msgid="4398343183682848693">"Rellotge que marca les vuit"</string>
+    <string name="spoken_emoji_1F558" msgid="3110507820404018172">"Rellotge que marca les nou"</string>
+    <string name="spoken_emoji_1F559" msgid="2972160366448337839">"Rellotge que marca les deu"</string>
+    <string name="spoken_emoji_1F55A" msgid="5568112876681714834">"Rellotge que marca les onze"</string>
+    <string name="spoken_emoji_1F55B" msgid="6731739890330659276">"Rellotge que marca les dotze"</string>
+    <string name="spoken_emoji_1F55C" msgid="7838853679879115890">"Rellotge que marca dos quarts de dues"</string>
+    <string name="spoken_emoji_1F55D" msgid="3518832144255922544">"Rellotge que marca dos quarts de tres"</string>
+    <string name="spoken_emoji_1F55E" msgid="3092760695634993002">"Rellotge que marca dos quarts de quatre"</string>
+    <string name="spoken_emoji_1F55F" msgid="2326720311892906763">"Rellotge que marca dos quarts de cinc"</string>
+    <string name="spoken_emoji_1F560" msgid="5771339179963924448">"Rellotge que marca dos quarts de sis"</string>
+    <string name="spoken_emoji_1F561" msgid="3139944777062475382">"Rellotge que marca dos quarts de set"</string>
+    <string name="spoken_emoji_1F562" msgid="8273944611162457084">"Rellotge que marca dos quarts de vuit"</string>
+    <string name="spoken_emoji_1F563" msgid="8643976903718136299">"Rellotge que marca dos quarts de nou"</string>
+    <string name="spoken_emoji_1F564" msgid="3511070239796141638">"Rellotge que marca dos quarts de deu"</string>
+    <string name="spoken_emoji_1F565" msgid="4567451985272963088">"Rellotge que marca dos quarts d\'onze"</string>
+    <string name="spoken_emoji_1F566" msgid="2790552288169929810">"Rellotge que marca dos quarts de dotze"</string>
+    <string name="spoken_emoji_1F567" msgid="9026037362100689337">"Rellotge que marca dos quarts d\'una"</string>
+    <string name="spoken_emoji_1F5FB" msgid="9037503671676124015">"Mont Fuji"</string>
+    <string name="spoken_emoji_1F5FC" msgid="1409415995817242150">"Torre de Tòquio"</string>
+    <string name="spoken_emoji_1F5FD" msgid="2562726956654429582">"Estàtua de la Llibertat"</string>
+    <string name="spoken_emoji_1F5FE" msgid="1184469756905210580">"Silueta del Japó"</string>
+    <string name="spoken_emoji_1F5FF" msgid="6003594799354942297">"Moyai"</string>
+    <string name="spoken_emoji_1F600" msgid="7601109464776835283">"Cara somrient"</string>
+    <string name="spoken_emoji_1F601" msgid="746026523967444503">"Cara amb somriure i ulls somrients"</string>
+    <string name="spoken_emoji_1F602" msgid="8354558091785198246">"Cara amb llàgrimes d\'alegria"</string>
+    <string name="spoken_emoji_1F603" msgid="3861022912544159823">"Cara somrient amb la boca oberta"</string>
+    <string name="spoken_emoji_1F604" msgid="5119021072966343531">"Cara somrient amb la boca oberta i els ulls contents"</string>
+    <string name="spoken_emoji_1F605" msgid="6140813923973561735">"Cara somrient amb la boca oberta i la suor freda"</string>
+    <string name="spoken_emoji_1F606" msgid="3549936813966832799">"Cara somrient amb la boca oberta i els ulls tancats fortament"</string>
+    <string name="spoken_emoji_1F607" msgid="2826424078212384817">"Cara somrient amb halo"</string>
+    <string name="spoken_emoji_1F608" msgid="7343559595089811640">"Cara somrient amb banyes"</string>
+    <string name="spoken_emoji_1F609" msgid="5481030187207504405">"Cara picant l\'ullet"</string>
+    <string name="spoken_emoji_1F60A" msgid="5023337769148679767">"Cara somrient amb els ulls contents"</string>
+    <string name="spoken_emoji_1F60B" msgid="3005248217216195694">"Cara d\'assaborir un menjar deliciós"</string>
+    <string name="spoken_emoji_1F60C" msgid="349384012958268496">"Cara d\'alleujament"</string>
+    <string name="spoken_emoji_1F60D" msgid="7921853137164938391">"Cara somrient amb els ulls en forma de cor"</string>
+    <string name="spoken_emoji_1F60E" msgid="441718886380605643">"Cara somrient amb ulleres de sol"</string>
+    <string name="spoken_emoji_1F60F" msgid="2674453144890180538">"Somriure amb superioritat"</string>
+    <string name="spoken_emoji_1F610" msgid="3225675825334102369">"Cara neutral"</string>
+    <string name="spoken_emoji_1F611" msgid="7199179827619679668">"Cara inexpressiva"</string>
+    <string name="spoken_emoji_1F612" msgid="985081329745137998">"Cara de desaprovació"</string>
+    <string name="spoken_emoji_1F613" msgid="5548607684830303562">"Cara amb suor freda"</string>
+    <string name="spoken_emoji_1F614" msgid="3196305665259916390">"Cara pensativa"</string>
+    <string name="spoken_emoji_1F615" msgid="3051674239303969101">"Cara de confusió"</string>
+    <string name="spoken_emoji_1F616" msgid="8124887056243813089">"Cara de frustració"</string>
+    <string name="spoken_emoji_1F617" msgid="7052733625511122870">"Cara que fa un petó"</string>
+    <string name="spoken_emoji_1F618" msgid="408207170572303753">"Cara llançant un petó"</string>
+    <string name="spoken_emoji_1F619" msgid="8645430335143153645">"Cara que fa un petó amb els ulls contents"</string>
+    <string name="spoken_emoji_1F61A" msgid="2882157190974340247">"Cara que fa un petó amb els ulls tancats"</string>
+    <string name="spoken_emoji_1F61B" msgid="3765927202787211499">"Cara que treu la llengua"</string>
+    <string name="spoken_emoji_1F61C" msgid="198943912107589389">"Cara que treu la llengua i pica l\'ullet"</string>
+    <string name="spoken_emoji_1F61D" msgid="7643546385877816182">"Cara que treu la llengua i tanca fortament els ulls"</string>
+    <string name="spoken_emoji_1F61E" msgid="1528732952202098364">"Cara de decepció"</string>
+    <string name="spoken_emoji_1F61F" msgid="1853664164636082404">"Cara de preocupació"</string>
+    <string name="spoken_emoji_1F620" msgid="6051942001307375830">"Cara enutjada"</string>
+    <string name="spoken_emoji_1F621" msgid="2114711878097257704">"Cara molt enutjada"</string>
+    <string name="spoken_emoji_1F622" msgid="29291014645931822">"Cara que plora"</string>
+    <string name="spoken_emoji_1F623" msgid="7803959833595184773">"Cara de perseverança"</string>
+    <string name="spoken_emoji_1F624" msgid="8637637647725752799">"Cara amb expressió de triomf"</string>
+    <string name="spoken_emoji_1F625" msgid="6153625183493635030">"Cara de decepció, però alleujada"</string>
+    <string name="spoken_emoji_1F626" msgid="6179485689935562950">"Cara emmurriada amb la boca oberta"</string>
+    <string name="spoken_emoji_1F627" msgid="8566204052903012809">"Cara angoixada"</string>
+    <string name="spoken_emoji_1F628" msgid="8875777401624904224">"Cara de por"</string>
+    <string name="spoken_emoji_1F629" msgid="1411538490319190118">"Cara d\'esgotament"</string>
+    <string name="spoken_emoji_1F62A" msgid="4726686726690289969">"Cara de son"</string>
+    <string name="spoken_emoji_1F62B" msgid="3221980473921623613">"Cara de cansament"</string>
+    <string name="spoken_emoji_1F62C" msgid="4616356691941225182">"Ganyota amb les dents"</string>
+    <string name="spoken_emoji_1F62D" msgid="4283677508698812232">"Cara que plora desconsoladament"</string>
+    <string name="spoken_emoji_1F62E" msgid="726083405284353894">"Cara amb la boca oberta"</string>
+    <string name="spoken_emoji_1F62F" msgid="7746620088234710962">"Cara de silenci"</string>
+    <string name="spoken_emoji_1F630" msgid="3298804852155581163">"Cara amb la boca oberta i la suor freda"</string>
+    <string name="spoken_emoji_1F631" msgid="1603391150954646779">"Cara que crida de por"</string>
+    <string name="spoken_emoji_1F632" msgid="4846193232203976013">"Cara de sorpresa"</string>
+    <string name="spoken_emoji_1F633" msgid="4023593836629700443">"Cara enrogida"</string>
+    <string name="spoken_emoji_1F634" msgid="3155265083246248129">"Cara adormida"</string>
+    <string name="spoken_emoji_1F635" msgid="4616691133452764482">"Cara marejada"</string>
+    <string name="spoken_emoji_1F636" msgid="947000211822375683">"Cara sense boca"</string>
+    <string name="spoken_emoji_1F637" msgid="1269551267347165774">"Cara amb màscara"</string>
+    <string name="spoken_emoji_1F638" msgid="3410766467496872301">"Cara de gat amb somriure i ulls somrients"</string>
+    <string name="spoken_emoji_1F639" msgid="1833417519781022031">"Cara de gat amb llàgrimes d\'alegria"</string>
+    <string name="spoken_emoji_1F63A" msgid="8566294484007152613">"Cara de gat somrient amb la boca oberta"</string>
+    <string name="spoken_emoji_1F63B" msgid="74417995938927571">"Cara de gat somrient amb els ulls en forma de cor"</string>
+    <string name="spoken_emoji_1F63C" msgid="6472812005729468870">"Cara de gat amb somriure irònic"</string>
+    <string name="spoken_emoji_1F63D" msgid="1638398369553349509">"Cara de gat que fa un petó amb els ulls tancats"</string>
+    <string name="spoken_emoji_1F63E" msgid="6788969063020278986">"Cara de gat molt enutjada"</string>
+    <string name="spoken_emoji_1F63F" msgid="1207234562459550185">"Cara de gat que plora"</string>
+    <string name="spoken_emoji_1F640" msgid="6023054549904329638">"Cara de gat esgotada"</string>
+    <string name="spoken_emoji_1F645" msgid="5202090629227587076">"Cara sense expressió"</string>
+    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"Cara amb expressió d\'acceptació"</string>
+    <string name="spoken_emoji_1F647" msgid="1090285518444205483">"Persona que mostra un agraïment profund"</string>
+    <string name="spoken_emoji_1F648" msgid="8978535230610522356">"Mona que no veu"</string>
+    <string name="spoken_emoji_1F649" msgid="8486145279809495102">"Mona que no escolta"</string>
+    <string name="spoken_emoji_1F64A" msgid="1237524974033228660">"Mona que no parla"</string>
+    <string name="spoken_emoji_1F64B" msgid="4251150782016370475">"Persona feliç que aixeca una mà"</string>
+    <string name="spoken_emoji_1F64C" msgid="5446231430684558344">"Dues mans aixecades a manera de celebració"</string>
+    <string name="spoken_emoji_1F64D" msgid="4646485595309482342">"Persona emmurriada"</string>
+    <string name="spoken_emoji_1F64E" msgid="3376579939836656097">"Persona amb cara d\'enuig"</string>
+    <string name="spoken_emoji_1F64F" msgid="1044439574356230711">"Persona amb les mans creuades"</string>
+    <string name="spoken_emoji_1F680" msgid="513263736012689059">"Coet"</string>
+    <string name="spoken_emoji_1F681" msgid="9201341783850525339">"Helicòpter"</string>
+    <string name="spoken_emoji_1F682" msgid="8046933583867498698">"Locomotora de vapor"</string>
+    <string name="spoken_emoji_1F683" msgid="8772750354339223092">"Vagó de ferrocarril"</string>
+    <string name="spoken_emoji_1F684" msgid="346396777356203608">"Tren d\'alta velocitat"</string>
+    <string name="spoken_emoji_1F685" msgid="1237059817190832730">"Tren bala"</string>
+    <string name="spoken_emoji_1F686" msgid="3525197227223620343">"Tren"</string>
+    <string name="spoken_emoji_1F687" msgid="5110143437960392837">"Metro"</string>
+    <string name="spoken_emoji_1F688" msgid="4702085029871797965">"Tren lleuger"</string>
+    <string name="spoken_emoji_1F689" msgid="2375851019798817094">"Estació"</string>
+    <string name="spoken_emoji_1F68A" msgid="6368370859718717198">"Tramvia"</string>
+    <string name="spoken_emoji_1F68B" msgid="2920160427117436633">"Vagó de tramvia"</string>
+    <string name="spoken_emoji_1F68C" msgid="1061520934758810864">"Autobús"</string>
+    <string name="spoken_emoji_1F68D" msgid="2890059031360969304">"Bus que arriba"</string>
+    <string name="spoken_emoji_1F68E" msgid="6234042976027309654">"Troleibús"</string>
+    <string name="spoken_emoji_1F68F" msgid="5871099334672012107">"Parada d\'autobús"</string>
+    <string name="spoken_emoji_1F690" msgid="8080964620200195262">"Microbús"</string>
+    <string name="spoken_emoji_1F691" msgid="999173032408730501">"Ambulància"</string>
+    <string name="spoken_emoji_1F692" msgid="1712863785341849487">"Camió de bombers"</string>
+    <string name="spoken_emoji_1F693" msgid="7987109037389768934">"Cotxe de policia"</string>
+    <string name="spoken_emoji_1F694" msgid="6061658916653884608">"Cotxe de policia que arriba"</string>
+    <string name="spoken_emoji_1F695" msgid="6913445460364247283">"Taxi"</string>
+    <string name="spoken_emoji_1F696" msgid="6391604457418285404">"Taxi que arriba"</string>
+    <string name="spoken_emoji_1F697" msgid="7978399334396733790">"Automòbil"</string>
+    <string name="spoken_emoji_1F698" msgid="7006050861129732018">"Automòbil que arriba"</string>
+    <string name="spoken_emoji_1F699" msgid="630317052666590607">"Vehicle d\'ús recreatiu"</string>
+    <string name="spoken_emoji_1F69A" msgid="4739797891735823577">"Camió de repartiment"</string>
+    <string name="spoken_emoji_1F69B" msgid="4715997280786620649">"Camió articulat"</string>
+    <string name="spoken_emoji_1F69C" msgid="5557395610750818161">"Tractor"</string>
+    <string name="spoken_emoji_1F69D" msgid="5467164189942951047">"Monocarril"</string>
+    <string name="spoken_emoji_1F69E" msgid="169238196389832234">"Ferrocarril de muntanya"</string>
+    <string name="spoken_emoji_1F69F" msgid="7508128757012845102">"Ferrocarril de suspensió"</string>
+    <string name="spoken_emoji_1F6A0" msgid="8733056213790160147">"Telefèric de muntanya"</string>
+    <string name="spoken_emoji_1F6A1" msgid="4666516337749347253">"Tramvia aeri"</string>
+    <string name="spoken_emoji_1F6A2" msgid="4511220588943129583">"Vaixell"</string>
+    <string name="spoken_emoji_1F6A3" msgid="8412962252222205387">"Bot de rems"</string>
+    <string name="spoken_emoji_1F6A4" msgid="8867571300266339211">"Llanxa"</string>
+    <string name="spoken_emoji_1F6A5" msgid="7650260812741963884">"Semàfor horitzontal"</string>
+    <string name="spoken_emoji_1F6A6" msgid="485575967773793454">"Semàfor vertical"</string>
+    <string name="spoken_emoji_1F6A7" msgid="6411048933816976794">"Senyal de construcció"</string>
+    <string name="spoken_emoji_1F6A8" msgid="6345717218374788364">"Llum giratòria dels cotxes de policia"</string>
+    <string name="spoken_emoji_1F6A9" msgid="6586380356807600412">"Banderí triangular"</string>
+    <string name="spoken_emoji_1F6AA" msgid="8954448167261738885">"Porta"</string>
+    <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"Senyal de prohibida l\'entrada"</string>
+    <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"Senyal de es permet fumar"</string>
+    <string name="spoken_emoji_1F6AD" msgid="6320088669185507241">"Senyal de prohibit fumar"</string>
+    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"Senyal de llençar la brossa on toca"</string>
+    <string name="spoken_emoji_1F6AF" msgid="2286668056123642208">"Senyal de no llençar escombraries"</string>
+    <string name="spoken_emoji_1F6B0" msgid="179424763882990952">"Senyal d\'aigua potable"</string>
+    <string name="spoken_emoji_1F6B1" msgid="5585212805429161877">"Senyal d\'aigua no potable"</string>
+    <string name="spoken_emoji_1F6B2" msgid="1771885082068421875">"Bicicleta"</string>
+    <string name="spoken_emoji_1F6B3" msgid="8033779581263314408">"Prohibit per a bicicletes"</string>
+    <string name="spoken_emoji_1F6B4" msgid="1999538449018476947">"Ciclista"</string>
+    <string name="spoken_emoji_1F6B5" msgid="340846352660993117">"Ciclista de muntanya"</string>
+    <string name="spoken_emoji_1F6B6" msgid="4351024386495098336">"Vianant"</string>
+    <string name="spoken_emoji_1F6B7" msgid="4564800655866838802">"Prohibit per a vianants"</string>
+    <string name="spoken_emoji_1F6B8" msgid="3020531906940267349">"Nens que creuen"</string>
+    <string name="spoken_emoji_1F6B9" msgid="1207095844125041251">"Símbol d\'home"</string>
+    <string name="spoken_emoji_1F6BA" msgid="2346879310071017531">"Símbol de dona"</string>
+    <string name="spoken_emoji_1F6BB" msgid="2370172469642078526">"Lavabos"</string>
+    <string name="spoken_emoji_1F6BC" msgid="5558827593563530851">"Símbol de nadó"</string>
+    <string name="spoken_emoji_1F6BD" msgid="9213590243049835957">"Vàter"</string>
+    <string name="spoken_emoji_1F6BE" msgid="394016533781742491">"Lavabo"</string>
+    <string name="spoken_emoji_1F6BF" msgid="906336365928291207">"Dutxa"</string>
+    <string name="spoken_emoji_1F6C0" msgid="4592099854378821599">"Bany"</string>
+    <string name="spoken_emoji_1F6C1" msgid="2845056048320031158">"Banyera"</string>
+    <string name="spoken_emoji_1F6C2" msgid="8117262514698011877">"Control de passaport"</string>
+    <string name="spoken_emoji_1F6C3" msgid="1176342001834630675">"Duana"</string>
+    <string name="spoken_emoji_1F6C4" msgid="1477622834179978886">"Recollida d\'equipatges"</string>
+    <string name="spoken_emoji_1F6C5" msgid="2495834050856617451">"Consigna"</string>
+</resources>
