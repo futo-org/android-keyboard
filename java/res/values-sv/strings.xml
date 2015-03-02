@@ -27,23 +27,18 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Knappljud"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup vid knapptryck"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Inställningar"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"Konton och sekretess"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"Utseende och layouter"</string>
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"Konton och sekretess"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Utseende och layouter"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Alternativ för flera språk"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Svepskrivning"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Textkorrigering"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Avancerat"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Aktivera delat tangentbord"</string>
-    <string name="cloud_sync_title" msgid="8579271074443847055">"Synkronisera Googles tangentbord"</string>
-    <string name="cloud_sync_summary" msgid="7684887161145650857">"Synkroniseringen har aktiverats"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Synkronisera din personliga ordlista på dina enheter"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Synkronisera"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Radera tangentbordsdata i molnet"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Din synkroniserade data raderas från Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Din synkroniserade data raderas från molnet. Vill du fortsätta?"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"Din synkroniserade data raderas. Vill du fortsätta?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Radera"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Avbryt"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Din personliga ordbok synkroniseras och säkerhetskopieras till Googles servrar. Statistisk information om ordfrekvens kan samlas in och användas för att förbättra våra produkter. Insamlingen och användningen av all information sker i enlighet med "<a href="https://www.google.com/policies/privacy">"Googles sekretesspolicy"</a>"."</string>
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Avbryt"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Byt till annan inmatning"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Språkbytesknappen omfattar även andra inmatningsmetoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Knapp för att byta språk"</string>

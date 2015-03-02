@@ -27,33 +27,18 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"키를 누를 때 소리 발생"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"키를 누를 때 팝업"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"환경설정"</string>
-    <!-- no translation found for settings_screen_accounts (2786418968536696670) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearance (7358046399111611615) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"계정 및 개인정보 보호"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"모양 및 레이아웃"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"다국어 옵션"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"제스처 타이핑"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"텍스트 수정"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"고급"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"테마"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"분할 키보드 사용"</string>
-    <!-- no translation found for cloud_sync_title (8579271074443847055) -->
-    <skip />
-    <!-- no translation found for cloud_sync_summary (7684887161145650857) -->
-    <skip />
-    <!-- no translation found for cloud_sync_summary_disabled (4553338970382825796) -->
-    <skip />
-    <!-- no translation found for sync_now_title (9061566866231227957) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_title (2041801164014550565) -->
-    <skip />
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google에서 동기화된 데이터 삭제"</string>
-    <!-- no translation found for clear_sync_data_confirmation (2811931135574727678) -->
-    <skip />
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"동기화된 데이터가 삭제됩니다. 계속하시겠습니까?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"삭제"</string>
-    <!-- no translation found for cloud_sync_cancel (5877481252150919037) -->
-    <skip />
-    <!-- no translation found for cloud_sync_opt_in_text (8954652963668180621) -->
-    <skip />
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"취소"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"다른 입력 방법으로 전환"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"언어 전환 키가 제공하는 기타 입력 방법"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"언어 전환 키"</string>

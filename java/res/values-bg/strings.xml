@@ -27,23 +27,18 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при натискане на клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Изскачащ прозорец при натискане на клавиш"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Предпочитания"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"Профили и поверителност"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"Облик и оформления"</string>
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"Профили и поверителност"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Облик и оформления"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Опции за няколко езика"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Въвеждане чрез жест"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Коригиране на текст"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Разширени"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Тема"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Активиране на разделената клавиатура"</string>
-    <string name="cloud_sync_title" msgid="8579271074443847055">"Клавиатура на Google: Синхрон."</string>
-    <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронизирането е включено"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизиране на личния ви речник на устройствата"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Синхронизиране сега"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Данни за клавиатура в облака: Изтр."</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Изтрива синхронизираните ви данни от Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Синхрон. ви данни ще бъдат изтрити от облака. Сигурни ли сте?"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"Синхронизираните ви данни ще се изтрият. Наистина ли искате това?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Изтриване"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Отказ"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Личният ви речник ще бъде синхронизиран и за него ще бъде създадено резервно копие на сървърите на Google. Статистическата информация за честотата на използване на думите може да се събира с цел подобряване на продуктите ни. Събирането и ползването на всички данни ще бъде съгласно "<a href="https://www.google.com/policies/privacy">"Декларацията ни за поверителност"</a>"."</string>
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Отказ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Други методи за въвеждане"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавишът за превкл. на езика обхваща и други методи за въвеждане"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиш за превкл. на езика"</string>
