@@ -300,7 +300,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                                     }
                                 }
                              })
-                    .setNegativeButton(R.string.clear_sync_data_cancel, null /* OnClickListener */)
+                    .setNegativeButton(R.string.cloud_sync_cancel, null /* OnClickListener */)
                     .create();
             confirmationDialog.show();
             return true;
