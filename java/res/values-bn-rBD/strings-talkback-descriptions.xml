@@ -25,6 +25,8 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"কোনো পাঠ্য লেখা হয়নি"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> কী <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> কে <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> এ সংশোধন করছে"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> স্বত:সংশোধন করে"</string>
+    <!-- no translation found for spoken_empty_suggestion (4250215619373459752) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="5139930082759824442">"অজানা অক্ষর"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"শিফ্ট"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"আরো প্রতীক"</string>

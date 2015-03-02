@@ -25,6 +25,7 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"कुनै पाठ प्रविष्टि गरिएको छैन"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> ले <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> लाई <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> मा सच्याउँछ"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> ले स्वतः सच्याउने गर्छ"</string>
+    <string name="spoken_empty_suggestion" msgid="4250215619373459752">"कुनै सुझाव छैन"</string>
     <string name="spoken_description_unknown" msgid="5139930082759824442">"अज्ञात वर्ण"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"सिफ्ट"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"थप प्रतीकहरु"</string>
