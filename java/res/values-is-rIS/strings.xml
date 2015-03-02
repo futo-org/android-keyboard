@@ -27,18 +27,23 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Hljóð þegar ýtt er á lykil"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Stækkaðir stafir við innslátt"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Kjörstillingar"</string>
-    <string name="settings_screen_accounts" msgid="7570397912370223287">"Reikningar og persónuvernd"</string>
-    <string name="settings_screen_appearance" msgid="9153102634339912029">"Útlit og skipulag"</string>
-    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Fjölmálavalkostir"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Reikningar og persónuvernd"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"Útlit og uppsetning"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Bendingainnsláttur"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Textaleiðrétting"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Ítarlegt"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Þema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Virkja skipt lyklaborð"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Samstilling Google lyklaborðs"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"Kveikt er á samstillingu"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Samstilltu orðabókina þína á milli tækja"</string>
+    <string name="sync_now_title" msgid="9061566866231227957">"Samstilla núna"</string>
+    <string name="clear_sync_data_title" msgid="2041801164014550565">"Eyða lyklaborðsgögnum í skýi"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Eyðir samstilltum gögnum af Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"Samstilltum gögnum verður eytt. Ertu viss?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Samstilltum gögnum frá þér verður eytt úr skýinu. Ertu viss?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Eyða"</string>
-    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Hætta við"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Hætta við"</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Orðabókin þín verður samstillt og afrituð á netþjóna Google. Hugsanlega verður talnagögnum um tíðni orða safnað til að gera vörur okkar betri. Söfnun og notkun allra upplýsinga fellur undir "<a href="https://www.google.com/policies/privacy">"persónuverndarstefnu Google"</a>"."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skipta um innsláttaraðferð"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Lykill til að skipta um mál inniheldur aðrar innsláttaraðferðir"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Lykill til að breyta tungumáli"</string>
