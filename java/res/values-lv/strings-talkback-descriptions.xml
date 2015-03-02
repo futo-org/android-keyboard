@@ -25,6 +25,8 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"Teksts nav ievadīts"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"Nospiežot taustiņu <xliff:g id="KEY_NAME">%1$s</xliff:g>, “<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>” tiek labots uz “<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>”."</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"Taustiņam <xliff:g id="KEY_NAME">%1$s</xliff:g> ir automātiskas labošanas funkcija."</string>
+    <!-- no translation found for spoken_empty_suggestion (4250215619373459752) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="5139930082759824442">"Nezināma rakstzīme"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Pārslēgšanas taustiņš"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Citi simboli"</string>

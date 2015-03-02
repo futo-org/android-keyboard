@@ -25,6 +25,8 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"စာမရိုက်ထည့်ထားပါ"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> မှ <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> သို့ <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> မှန်ကန်စေသည်"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> အလိုအလျောက် မှန်ကန်ခြင်း လုပ်ဆောင်သည်"</string>
+    <!-- no translation found for spoken_empty_suggestion (4250215619373459752) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="5139930082759824442">"မသိရ စာလုံး"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shiftခလုတ်"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"နောက်ထပ် သင်္ကေတများ"</string>
@@ -79,7 +81,7 @@
     <string name="spoken_emoticon_3A_2D_21_20" msgid="2410905667389534573">"စိတ်ကုန်နေသော မျက်နှာ"</string>
     <string name="spoken_emoticon_3A_2D_24_20" msgid="2481260475945560438">"ကသိကအောက် မျက်နှာ"</string>
     <string name="spoken_emoticon_42_2D_29_20" msgid="1063205250387128068">"နေကာမျက်မှန်တပ် မျက်နှာ"</string>
-    <string name="spoken_emoticon_3A_4F_20" msgid="532695091593447238">"အံ့အားသင့်နေသော မျက်နှာ"</string>
+    <string name="spoken_emoticon_3A_4F_20" msgid="532695091593447238">"အံ့အားသင့်နေသော မျက်နှာ"</string>
     <string name="spoken_emoticon_3A_2D_2A_20" msgid="5612342617244114291">"နမ်းနေသော မျက်နှာ"</string>
     <string name="spoken_emoticon_3A_2D_5B_20" msgid="2223507987759905920">"မှုန်ကုပ်ကုပ် မျက်နှာ"</string>
     <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"အစားထိုးစရာ စာလုံးများ ရှိနိုင်"</string>

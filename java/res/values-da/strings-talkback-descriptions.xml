@@ -25,6 +25,8 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"Der er ingen indtastet tekst"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> retter <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> til <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> udfører automatisk stavekontrol"</string>
+    <!-- no translation found for spoken_empty_suggestion (4250215619373459752) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="5139930082759824442">"Ukendt tegn"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Flere symboler"</string>
@@ -38,7 +40,7 @@
     <string name="spoken_description_settings" msgid="7281251004003143204">"Indstillinger"</string>
     <string name="spoken_description_tab" msgid="8210782459446866716">"Fane"</string>
     <string name="spoken_description_space" msgid="5908716896642059145">"Mellemrum"</string>
-    <string name="spoken_description_mic" msgid="6153138783813452464">"Taleinput"</string>
+    <string name="spoken_description_mic" msgid="6153138783813452464">"Indtaling"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"Emoji"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"Return"</string>
     <string name="spoken_description_search" msgid="5099937658231911288">"Søgning"</string>
