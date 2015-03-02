@@ -27,23 +27,18 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sound on keypress"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up on key press"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferences"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"Accounts &amp; Privacy"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"Appearance &amp; Layouts"</string>
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"Accounts &amp; privacy"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Appearance &amp; layouts"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Multilingual options"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Gesture Typing"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Text correction"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Advanced"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Theme"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Enable split keyboard"</string>
-    <string name="cloud_sync_title" msgid="8579271074443847055">"Google Keyboard Sync"</string>
-    <string name="cloud_sync_summary" msgid="7684887161145650857">"Sync is turned on"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sync your personal dictionary across devices"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Sync now"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Delete Keyboard Cloud data"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Deletes your synced data from Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Your synced data will be deleted from the cloud. Are you sure?"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"Your synced data will be deleted. Are you sure?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Delete"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancel"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Your personal dictionary will be synced &amp; backed up to Google servers. The statistical information of word frequency may be collected to help improve our products. The collection and usage of all the information will be compliant with "<a href="https://www.google.com/policies/privacy">"Google\'s Privacy Policy"</a>"."</string>
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Cancel"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Switch to other input methods"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Language switch key also covers other input methods"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Language switch key"</string>
