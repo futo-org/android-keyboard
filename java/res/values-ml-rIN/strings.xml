@@ -27,33 +27,18 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"കീ അമർത്തുമ്പോഴുള്ള ശബ്‌ദമുണ്ടാക്കുക"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"കീ അമർത്തുമ്പോൾ പോപ്പ്അപ്പ് ചെയ്യുക"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"മുൻഗണനകൾ"</string>
-    <!-- no translation found for settings_screen_accounts (2786418968536696670) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearance (7358046399111611615) -->
-    <skip />
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"അക്കൗണ്ടുകളും സ്വകാര്യതയും"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"രൂപഭാവവും ലേഔട്ടുകളും"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"മൾട്ടിലിംഗ്വൽ ഓപ്‌ഷനുകൾ"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ഗെസ്ചർ ടൈപ്പിംഗ്"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"വാചകം തിരുത്തൽ"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"വിപുലമായ"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"തീം"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"സ്‌പ്‌ലിറ്റ് കീബോർഡ് പ്രവർത്തനക്ഷമമാക്കുക"</string>
-    <!-- no translation found for cloud_sync_title (8579271074443847055) -->
-    <skip />
-    <!-- no translation found for cloud_sync_summary (7684887161145650857) -->
-    <skip />
-    <!-- no translation found for cloud_sync_summary_disabled (4553338970382825796) -->
-    <skip />
-    <!-- no translation found for sync_now_title (9061566866231227957) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_title (2041801164014550565) -->
-    <skip />
     <string name="clear_sync_data_summary" msgid="993477139012576584">"നിങ്ങളുടെ സമന്വയിപ്പിച്ച വിവരം Google-ൽ നിന്ന് ഇല്ലാതാക്കുന്നു"</string>
-    <!-- no translation found for clear_sync_data_confirmation (2811931135574727678) -->
-    <skip />
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"നിങ്ങളുടെ സമന്വയിപ്പിച്ച വിവരം ഇല്ലാതാക്കും. തീർച്ചയാണോ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ഇല്ലാതാക്കുക"</string>
-    <!-- no translation found for cloud_sync_cancel (5877481252150919037) -->
-    <skip />
-    <!-- no translation found for cloud_sync_opt_in_text (8954652963668180621) -->
-    <skip />
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"റദ്ദാക്കുക"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"മറ്റു ടൈപ്പുചെയ്യൽ രീതികളിലേക്ക് മാറുക"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ഭാഷ മാറൽ കീയിൽ മറ്റ് ടൈപ്പുചെയ്യൽ രീതികളും ഉൾപ്പെടുന്നു"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ഭാഷ മാറൽ കീ"</string>

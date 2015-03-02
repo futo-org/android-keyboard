@@ -27,23 +27,18 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Товч дарахад дуу гаргах"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Товч дарахад попап гарна"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Тохируулга"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"Хаяг &amp; Нууцлал"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"Харагдах байдал &amp; Зураглал"</string>
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"Акаунт &amp; нууцлал"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"Харагдац &amp; байрлал"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Олон хэлний сонголт"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Зангаагаар бичих"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Текст залруулалт"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Дэлгэрэнгүй"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Загвар"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Хуваагдмал гарыг идэвхжүүлэх"</string>
-    <string name="cloud_sync_title" msgid="8579271074443847055">"Google-н гарны тохиргоо"</string>
-    <string name="cloud_sync_summary" msgid="7684887161145650857">"Тохиргоо хийгдэх үйлдлийг идэвхжүүлсэн байна"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Төхөөрөмжинд өөрийн хувийн толь бичгийг тохируулах"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Одоо тохируулах"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Гарэны Cloud мэдээллийг устгах"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Таны синк хийсэн мэдээллийг Google-ээс устгана."</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Таны мэдээллийг cloud-с устгах болно. Та итгэлтэй байна уу?"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"Таны синк хийсэн мэдээлэл устах болно. Та итгэлтэй байна уу?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Устгах"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Цуцлах"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Таны хувийн толь бичгийг тохируулна&amp; Google серверт мөн хадгална. Үгний давтамжтай холбоотой статистик мэдээллийг бүтээгдэхүүнийг сайжруулах зорилгоор авах магадлалтай. Мэдээлэл цуглццлах болон хэрэглэх үйл ажиллагааг бүхэлд нь "<a href="https://www.google.com/policies/privacy">" Google-н нууцлалын бодлого"</a>" -н дагуу зохицуулна."</string>
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Цуцлах"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Оруулах өөр арга руу шилжүүлэх"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Хэл солих түлхүүрт өөр оруулах аргууд мөн багтсан байгаа"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Хэл солих товч"</string>
