@@ -27,18 +27,23 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk při stisku klávesy"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Detail znaku při stisku klávesy"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Předvolby"</string>
-    <string name="settings_screen_accounts" msgid="7570397912370223287">"Účty a ochrana soukromí"</string>
-    <string name="settings_screen_appearance" msgid="9153102634339912029">"Vzhled a rozvržení"</string>
-    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Možnosti pro více jazyků"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Účty a ochrana soukromí"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"Vzhled a rozvržení"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Psaní gesty"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Oprava textu"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Rozšířená nastavení"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Motiv"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Aktivovat rozdělenou klávesnici"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Synchronizace Klávesnice Google"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"Synchronizace je zapnutá"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Synchronizovat váš osobní slovník mezi zařízeními"</string>
+    <string name="sync_now_title" msgid="9061566866231227957">"Synchronizovat"</string>
+    <string name="clear_sync_data_title" msgid="2041801164014550565">"Smazat data Klávesnice z cloudu"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Smaže z Googlu vaše synchronizovaná data"</string>
-    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"Vaše synchronizovaná data budou smazána. Jste si jisti?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Synchronizovaná data budou z cloudu smazána. Chcete pokračovat?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Smazat"</string>
-    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Zrušit"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Zrušit"</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Váš osobní slovník bude synchronizován a zálohován na servery Google. Za účelem vylepšení našich služeb mohou být shromažďovány statistické informace o četnosti slov. Shromažďování a využití všech informací bude probíhat v souladu se "<a href="https://www.google.com/policies/privacy">"zásadami ochrany soukromí společnosti Google"</a>"."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Přepínat metody zadávání"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Klávesa pro přepínání jazyka ovládá i další metody zadávání"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Klávesa přepínání jazyka"</string>
