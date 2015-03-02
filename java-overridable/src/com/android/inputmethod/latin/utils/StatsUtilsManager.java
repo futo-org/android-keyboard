@@ -34,11 +34,10 @@ public class StatsUtilsManager {
         return sInstance;
     }
 
-    public void onCreate(final Context context) {
+    public void onCreate(final Context context, final DictionaryFacilitator dictionaryFacilitator) {
     }
 
-    public void onLoadSettings(final Context context, final SettingsValues settingsValues,
-            final DictionaryFacilitator dictionaryFacilitator) {
+    public void onLoadSettings(final Context context, final SettingsValues settingsValues) {
     }
 
     public void onStartInputView() {

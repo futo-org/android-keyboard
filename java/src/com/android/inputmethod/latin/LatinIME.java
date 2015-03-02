@@ -553,7 +553,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
-        mStatsUtilsManager.onCreate(this /* context */);
+        mStatsUtilsManager.onCreate(this /* context */, mDictionaryFacilitator);
         super.onCreate();
 
         mHandler.onCreate();
@@ -606,8 +606,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         refreshPersonalizationDictionarySession(currentSettingsValues);
         resetDictionaryFacilitatorIfNecessary();
-        mStatsUtilsManager.onLoadSettings(this /* context */, currentSettingsValues,
-                mDictionaryFacilitator);
+        mStatsUtilsManager.onLoadSettings(this /* context */, currentSettingsValues);
     }
 
     private void refreshPersonalizationDictionarySession(
