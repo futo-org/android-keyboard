@@ -27,18 +27,23 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Lyd ved tastetrykk"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Hurtigvindu ved tastetrykk"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Innstillinger"</string>
-    <string name="settings_screen_accounts" msgid="7570397912370223287">"Kontoer og personvern"</string>
-    <string name="settings_screen_appearance" msgid="9153102634339912029">"Utseende og utforming"</string>
-    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Flerspråksalternativer"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Kontoer og personvern"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"Utseende og utforming"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Ordføring"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Tekstkorrigering"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Avansert"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Aktivér delt tastatur"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Syknronisering av Google-tastatur"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"Synkronisering er slått på"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Synkroniser den personlige ordboken din på alle enheter"</string>
+    <string name="sync_now_title" msgid="9061566866231227957">"Synkroniser nå"</string>
+    <string name="clear_sync_data_title" msgid="2041801164014550565">"Slett tastaturdata i nettskyen"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Sletter de synkroniserte dataene dine fra Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"De synkroniserte dataene dine blir slettet. Er du sikker?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"De synkroniserte dataene blir slettet fra skyen. Er du sikker?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Slett"</string>
-    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Avbryt"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Avbryt"</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Den personlige ordlisten din blir synkronisert og sikkerhetskopiert til Google-servere. Statistisk informasjon av ordfrekvens kan samles for å bidra til å forbedre produktene våre. Innsamling og bruk av all informasjon er i henhold til "<a href="https://www.google.com/policies/privacy">"Googles personvernregler"</a>"."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Bytt inndatametode"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten for språkbytte dekker også andre inndatametoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Nøkkel for språkskifte"</string>
