@@ -27,23 +27,18 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"صدا با فشار کلید"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"بازشدن با فشار کلید"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"تنظیمات ترجیحی"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"حساب‌ها و حریم خصوصی"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"شکل ظاهری و چیدمان"</string>
+    <string name="settings_screen_accounts" msgid="7570397912370223287">"حساب‌ها و حریم خصوصی"</string>
+    <string name="settings_screen_appearance" msgid="9153102634339912029">"ظاهر و طرح‌بندی‌ها"</string>
+    <string name="settings_screen_multilingual" msgid="1391301621464509659">"گزینه‌های چندزبانی"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ورودی اشاره‌ای"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"اصلاح نوشتار"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"پیشرفته"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"طرح‌زمینه"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"فعال کردن دونیم‌کردن صفحه‌کلید"</string>
-    <string name="cloud_sync_title" msgid="8579271074443847055">"‏همگام‌سازی صفحه‌کلید Google"</string>
-    <string name="cloud_sync_summary" msgid="7684887161145650857">"همگام‌سازی روشن است"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"همگام‌سازی فرهنگ لغت شخصی‌تان در همه دستگاه‌ها"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"اکنون همگام‌سازی شود"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"‏حذف داده‌های Cloud صفحه‌کلید"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"‏اطلاعات همگام‌سازی شده شما را از Google حذف می‌کند"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"‏داده‌های همگام‌سازی شده شما از cloud حذف می‌شوند. مطمئنید؟"</string>
+    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"اطلاعات همگام‌سازی شده شما حذف می‌شوند. مطمئن هستید؟"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"حذف"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"لغو"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"‏فرهنگ لغت شخصی شما همگام‌سازی شده و در سرورهای Google پشتیبان‌گیری می‌شود. اطلاعات آماری تکرار کلمات ممکن است جمع‌آوری شود تا برای بهبود محصولاتمان مورد استفاده قرار بگیرد. جمع‌آوری و استفاده از همه این اطلاعات با "<a href="https://www.google.com/policies/privacy">"خط‌مشی رازداری Google"</a>" مطابقت دارد."</string>
+    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"لغو"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"تغییر به دیگر روش‌های ورودی"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"کلید تغییر زبان، سایر ورودی‌های زبان را نیز پوشش می‌دهد"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"کلید تغییر زبان"</string>
