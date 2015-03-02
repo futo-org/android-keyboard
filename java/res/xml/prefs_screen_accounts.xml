@@ -48,4 +48,11 @@
         android:title="@string/clear_sync_data_title"
         android:summary="@string/clear_sync_data_summary"
         android:dependency="pref_enable_cloud_sync" />
+
+    <!-- Title will be set programmatically to embed application name -->
+    <CheckBoxPreference
+        android:key="pref_enable_metrics_logging"
+        android:summary="@string/enable_metrics_logging_summary"
+        android:defaultValue="true"
+        android:persistent="true" />
 </PreferenceScreen>
