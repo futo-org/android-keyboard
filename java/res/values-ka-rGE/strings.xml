@@ -27,18 +27,23 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"ხმა კლავიშზე დაჭერისას"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"გადიდება ღილაკზე დაჭერისას"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"პარამეტრები"</string>
-    <string name="settings_screen_accounts" msgid="7570397912370223287">"ანგარიშები და კონფიდენციალურობა"</string>
-    <string name="settings_screen_appearance" msgid="9153102634339912029">"იერსახე &amp; განლაგებები"</string>
-    <string name="settings_screen_multilingual" msgid="1391301621464509659">"მრავალენობრივი ვარიანტები"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"ანგარიშები &amp; კონფიდენციალურობა"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"იერსახე &amp; განლაგებები"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ჟესტებით წერა"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"ტექსტის კორექცია"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"გაფართოებული"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"თემა"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"გაყოფილი კლავიატურის გააქტიურება"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Google კლავიატურის სინქრონიზება"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"სინქრონიზება ჩართულია"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"აწარმოეთ თქვენი პერს. ლექსიკონის სინქ. მოწყობილობების მასშტაბით"</string>
+    <string name="sync_now_title" msgid="9061566866231227957">"ახლა სინქრონიზაცია"</string>
+    <string name="clear_sync_data_title" msgid="2041801164014550565">"კლავიატურის ღრ. მონაცემების წაშლა"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"წაშლის Google-თან თქვენს სინქრონიზებულს მონაცემებს"</string>
-    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"თქვენი სინქრონიზებული მონაცემები წაიშლება. დარწმუნებული ხართ?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"თქვენი სინქ. მონაც. წაიშლება ღრუბ. სივრციდან. დარწმუნებული ხართ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"წაშლა"</string>
-    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"გაუქმება"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"გაუქმება"</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"თქვენი პერსონალური ლექსიკონი სინქრონიზდება &amp; amp; შეინახეთ სარეზერვოდ Google სერვერებზე. ჩვენი პროდუქტების გაუმჯობესებისათვის, შესაძლოა შეგროვებულ იქნას სიტყვების სიხშირის სტატისტიკური ინფორმაცია. ყველა ინფორმაციის შეგროვება და გამოყენება შესაბამისობაში იქნება "<a href="https://www.google.com/policies/privacy">" Google- ის კონფიდენციალურობის პოლიტიკასთან "</a>" ."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"შეყვანის სხვა მეთოდებზე გადართვა"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ენის გადართვის ღილაკს შეყვანის სხვა მეთოდებსაც შეიცავს"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ენის გადართვის კლავიში"</string>

@@ -27,18 +27,23 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"کلید دبانے پر آواز"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"کلید دبانے پر پاپ اپ"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"ترجیحات"</string>
-    <string name="settings_screen_accounts" msgid="7570397912370223287">"اکاؤنٹس اور رازداری"</string>
-    <string name="settings_screen_appearance" msgid="9153102634339912029">"ظہور اور لے آؤٹس"</string>
-    <string name="settings_screen_multilingual" msgid="1391301621464509659">"کثیر لسانی اختیارات"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"اکاؤنٹس اور رازداری"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"ظہور اور لے آؤٹس"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"اشارہ جاتی ٹائپنگ"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"متن کی اصلاح"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"جدید ترین"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"تھیم"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"الگ ہونے والا کی بورڈ فعال کریں"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"‏Google کی بورڈ کی مطابقت پذیری"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"مطابقت پذیری آن کر دی گئی"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"سبھی آلات پر اپنی ذاتی لغت کی مطابقت پذیری کریں"</string>
+    <string name="sync_now_title" msgid="9061566866231227957">"ابھی مطابقت پذیری کریں"</string>
+    <string name="clear_sync_data_title" msgid="2041801164014550565">"کی بورڈ کلاؤڈ ڈیٹا حذف کریں"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"‏Google سے آپ کے مطابقت پذیر ڈیٹا کو حذف کر دیتا ہے"</string>
-    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"آپ کا مطابقت پذیر ڈیٹا حذف ہو جائے گا۔ کیا آپ تیار ہیں؟"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"آپ کا مطابقت پذیر ڈيٹا کلاؤڈ سے حذف ہو جائے گا۔ کیا آپ تیار ہیں؟"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"حذف کریں"</string>
-    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"منسوخ کریں"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"منسوخ کریں"</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"‏آپ کی ذاتی لغت کی مطابقت پذیری کی جائے گی اور Google سرورز میں اس کا بیک اپ لیا جائے گا۔ ہمارے پروڈکٹس کو بہتر بنانے میں مدد کرنے کیلئے الفاظ کی فریکوئنسی کے اعداد و شمار کی معلومات کو جمع کیا جا سکتا ہے۔ سبھی معلومات کی جمع آوری اور استعمال "<a href="https://www.google.com/policies/privacy">"Google کی رازداری کی پالیسی"</a>" کے مطابق ہوگا۔"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"دیگر اندراج طریقوں پر سوئچ کریں"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"زبان سوئچ کرنے کی کلید اندراج کے دیگر طریقوں کا بھی احاطہ کرتی ہے"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"زبان سوئچ کرنے کی کلید"</string>

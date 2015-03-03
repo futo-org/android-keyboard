@@ -27,18 +27,23 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Egin soinua tekla sakatzean"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Handitu teklak, sakatzean"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Hobespenak"</string>
-    <string name="settings_screen_accounts" msgid="7570397912370223287">"Kontuak eta pribatutasuna"</string>
-    <string name="settings_screen_appearance" msgid="9153102634339912029">"Itxura eta diseinuak"</string>
-    <string name="settings_screen_multilingual" msgid="1391301621464509659">"Aukera eleanitzak"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Kontuak eta pribatutasuna"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"Itxura eta diseinuak"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Keinu bidezko idazketa"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Testu-zuzenketa"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Ezarpen aurreratuak"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Gaia"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Gaitu teklatu banatua"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Google teklatuaren sinkronizazioa"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinkronizazioa aktibatuta dago"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Izan hiztegi pertsonala sinkronizatuta gailu guztietan"</string>
+    <string name="sync_now_title" msgid="9061566866231227957">"Sinkronizatu"</string>
+    <string name="clear_sync_data_title" msgid="2041801164014550565">"Ezabatu teklatuaren hodeiko datuak"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Sinkronizatutako datuak ezabatzen ditu Google-tik"</string>
-    <string name="clear_sync_data_confirmation" msgid="6415032621884042784">"Sinkronizatutako datuak ezabatuko dira. Ziur hori egin nahi duzula?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Datuak hodeitik ezabatuko dira. Ziur hori egin nahi duzula?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Ezabatu"</string>
-    <string name="clear_sync_data_cancel" msgid="8543925137765830060">"Utzi"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Utzi"</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Hiztegi pertsonalizatua sinkronizatu egingo da eta Google zerbitzarietan gordeko da babeskopia gisa. Hitzak erabiltzeko maiztasunari buruzko estatistikak bil daitezke produktuak hobetzen laguntzeko. Informazioaren bilketak eta erabilerak "<a href="https://www.google.com/policies/privacy">"Google Pribatutasun-gidalerroak"</a>" gordeko ditu uneoro."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Aldatu idazketa-metodoa"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Hizkuntza aldatzeko teklak beste idazketa-metodoetarako ere balio du"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Hizkuntza aldatzeko tekla"</string>
