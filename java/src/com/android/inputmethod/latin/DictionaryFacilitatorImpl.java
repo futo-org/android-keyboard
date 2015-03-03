@@ -807,4 +807,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
         return statsOfEnabledSubDicts;
     }
+
+    @Override
+    public String dump(final Context context) {
+        return "";
+    }
 }

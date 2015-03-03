@@ -170,7 +170,9 @@ public interface DictionaryFacilitator {
     int getMaxFrequencyOfExactMatches(final String word);
 
     void clearUserHistoryDictionary();
-
+    
+    String dump(final Context context);
+    
     void dumpDictionaryForDebug(final String dictName);
 
     ArrayList<Pair<String, DictionaryStats>> getStatsOfEnabledSubDicts();

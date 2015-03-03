@@ -1845,6 +1845,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         p.println("  Keyboard mode = " + keyboardMode);
         final SettingsValues settingsValues = mSettings.getCurrent();
         p.println(settingsValues.dump());
+        p.println(mDictionaryFacilitator.dump(this /* context */));
         // TODO: Dump all settings values
     }
 
