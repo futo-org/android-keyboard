@@ -146,6 +146,32 @@ public class NgramContext {
                 : TextUtils.join(CONTEXT_SEPARATOR, terms);
     }
 
+    /**
+     * Extracts the previous words context.
+     *
+     * @return a String array with the previous words.
+     */
+    public String[] extractPrevWordsContextArray() {
+        final ArrayList<String> prevTermList = new ArrayList<>();
+        for (int i = mPrevWordsInfo.length - 1; i >= 0; --i) {
+            if (mPrevWordsInfo[i] != null && mPrevWordsInfo[i].isValid()) {
+                final NgramContext.WordInfo wordInfo = mPrevWordsInfo[i];
+                if (wordInfo.mIsBeginningOfSentence) {
+                    prevTermList.add(BEGINNING_OF_SENTENCE_TAG);
+                } else {
+                    final String term = wordInfo.mWord.toString();
+                    if (!term.isEmpty()) {
+                        prevTermList.add(term);
+                    }
+                }
+            }
+        }
+        final String[] contextStringArray = prevTermList.size() == 0 ?
+                new String[] { BEGINNING_OF_SENTENCE_TAG }
+                : prevTermList.toArray(new String[prevTermList.size()]);
+        return contextStringArray;
+    }
+
     public boolean isValid() {
         return mPrevWordsCount > 0 && mPrevWordsInfo[0].isValid();
     }
