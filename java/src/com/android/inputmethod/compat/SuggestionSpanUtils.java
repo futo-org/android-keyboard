@@ -26,7 +26,6 @@ import android.text.style.SuggestionSpan;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.define.DebugFlags;
 
@@ -65,8 +64,7 @@ public final class SuggestionSpanUtils {
         final Spannable spannable = new SpannableString(text);
         // TODO: Set locale if it is feasible.
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
-                new String[] {} /* suggestions */, OBJ_FLAG_AUTO_CORRECTION,
-                SuggestionSpanPickedNotificationReceiver.class);
+                new String[] {} /* suggestions */, OBJ_FLAG_AUTO_CORRECTION, null);
         spannable.setSpan(suggestionSpan, 0, text.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
         return spannable;
@@ -96,8 +94,7 @@ public final class SuggestionSpanUtils {
         }
         // TODO: Set locale if it is feasible.
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
-                suggestionsList.toArray(new String[suggestionsList.size()]), 0 /* flags */,
-                SuggestionSpanPickedNotificationReceiver.class);
+                suggestionsList.toArray(new String[suggestionsList.size()]), 0 /* flags */, null);
         final Spannable spannable = new SpannableString(pickedWord);
         spannable.setSpan(suggestionSpan, 0, pickedWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
