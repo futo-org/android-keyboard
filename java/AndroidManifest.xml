@@ -139,12 +139,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="SuggestionSpanPickedNotificationReceiver" android:enabled="true">
-            <intent-filter>
-                <action android:name="android.text.style.SUGGESTION_PICKED" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name="com.android.inputmethod.dictionarypack.EventHandler">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
