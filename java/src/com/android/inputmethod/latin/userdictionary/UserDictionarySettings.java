@@ -16,6 +16,12 @@
 
 package com.android.inputmethod.latin.userdictionary;
 
+import static com.android.inputmethod.latin.userdictionary.UserDictionaryAddWordContents.EXTRA_LOCALE;
+import static com.android.inputmethod.latin.userdictionary.UserDictionaryAddWordContents.EXTRA_MODE;
+import static com.android.inputmethod.latin.userdictionary.UserDictionaryAddWordContents.EXTRA_WORD;
+import static com.android.inputmethod.latin.userdictionary.UserDictionaryAddWordContents.MODE_EDIT;
+import static com.android.inputmethod.latin.userdictionary.UserDictionaryAddWordContents.MODE_INSERT;
+
 import com.android.inputmethod.latin.R;
 
 import android.app.ListFragment;
@@ -25,7 +31,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.UserDictionary;
+import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,32 +54,8 @@ import java.util.Locale;
 
 public class UserDictionarySettings extends ListFragment {
 
-    private static final String[] QUERY_PROJECTION = {
-            UserDictionary.Words._ID, UserDictionary.Words.WORD
-    };
-
-    private static final String[] ADAPTER_FROM = {
-            UserDictionary.Words.WORD, UserDictionary.Words.SHORTCUT
-    };
-
-    private static final int[] ADAPTER_TO = {
-        android.R.id.text1,
-    };
-
-    // Either the locale is empty (means the word is applicable to all locales)
-    // or the word equals our current locale
-    private static final String QUERY_SELECTION =
-            UserDictionary.Words.LOCALE + "=?";
-    private static final String QUERY_SELECTION_ALL_LOCALES =
-            UserDictionary.Words.LOCALE + " is null";
-
-    private static final String DELETE_SELECTION = UserDictionary.Words.WORD + "=?";
-
-    private static final int OPTIONS_MENU_ADD = Menu.FIRST;
-
     private Cursor mCursor;
-
-    protected String mLocale;
+    private String mLocale;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,21 +124,30 @@ public class UserDictionarySettings extends ListFragment {
         // TODO: it should be easy to make this more readable by making the special values
         // human-readable, like "all_locales" and "current_locales" strings, provided they
         // can be guaranteed not to match locales that may exist.
-        if ("".equals(locale)) {
+        if (TextUtils.isEmpty(locale)) {
             // Case-insensitive sort
-            return getActivity().managedQuery(UserDictionary.Words.CONTENT_URI, QUERY_PROJECTION,
-                    QUERY_SELECTION_ALL_LOCALES, null,
-                    "UPPER(" + UserDictionary.Words.WORD + ")");
+            return getActivity().managedQuery(
+                    Words.CONTENT_URI,
+                    new String[] { Words._ID, Words.WORD },
+                    Words.LOCALE + " is null",
+                    null,
+                    "UPPER(" + Words.WORD + ")");
         }
-        final String queryLocale = null != locale ? locale : Locale.getDefault().toString();
-        return getActivity().managedQuery(UserDictionary.Words.CONTENT_URI, QUERY_PROJECTION,
-                QUERY_SELECTION, new String[] { queryLocale },
-                "UPPER(" + UserDictionary.Words.WORD + ")");
+        return getActivity().managedQuery(
+                Words.CONTENT_URI,
+                new String[] { Words._ID, Words.WORD },
+                Words.LOCALE + "=?",
+                new String[] { locale },
+                "UPPER(" + Words.WORD + ")");
     }
 
     private ListAdapter createAdapter() {
-        return new MyAdapter(getActivity(), R.layout.user_dictionary_item, mCursor,
-                ADAPTER_FROM, ADAPTER_TO);
+        return new MyAdapter(
+                getActivity(),
+                R.layout.user_dictionary_item,
+                mCursor,
+                new String[] { Words.WORD },
+                new int[] { android.R.id.text1 });
     }
 
     @Override
@@ -177,16 +168,15 @@ public class UserDictionarySettings extends ListFragment {
                 return;
             }
         }
-        MenuItem actionItem =
-                menu.add(0, OPTIONS_MENU_ADD, 0, R.string.user_dict_settings_add_menu_title)
-                .setIcon(R.drawable.ic_menu_add);
-        actionItem.setShowAsAction(
-                MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        menu.add(0, Menu.FIRST, 0, R.string.user_dict_settings_add_menu_title)
+                .setIcon(R.drawable.ic_menu_add)
+                .setShowAsAction(
+                        MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == OPTIONS_MENU_ADD) {
+        if (item.getItemId() == Menu.FIRST) {
             showAddOrEditDialog(null);
             return true;
         }
@@ -199,11 +189,9 @@ public class UserDictionarySettings extends ListFragment {
      */
     private void showAddOrEditDialog(final String editingWord) {
         final Bundle args = new Bundle();
-        args.putInt(UserDictionaryAddWordContents.EXTRA_MODE, null == editingWord
-                ? UserDictionaryAddWordContents.MODE_INSERT
-                : UserDictionaryAddWordContents.MODE_EDIT);
-        args.putString(UserDictionaryAddWordContents.EXTRA_WORD, editingWord);
-        args.putString(UserDictionaryAddWordContents.EXTRA_LOCALE, mLocale);
+        args.putInt(EXTRA_MODE, editingWord == null ? MODE_INSERT : MODE_EDIT);
+        args.putString(EXTRA_WORD, editingWord);
+        args.putString(EXTRA_LOCALE, mLocale);
         getActivity();
     }
 
@@ -213,12 +201,11 @@ public class UserDictionarySettings extends ListFragment {
         // Handle a possible race-condition
         if (mCursor.isAfterLast()) return null;
 
-        return mCursor.getString(
-                mCursor.getColumnIndexOrThrow(UserDictionary.Words.WORD));
+        return mCursor.getString(mCursor.getColumnIndexOrThrow(Words.WORD));
     }
 
     public static void deleteWord(final String word, final ContentResolver resolver) {
-        resolver.delete(UserDictionary.Words.CONTENT_URI, DELETE_SELECTION, new String[] { word });
+        resolver.delete(Words.CONTENT_URI, Words.WORD + "=?", new String[] { word });
     }
 
     private static class MyAdapter extends SimpleCursorAdapter implements SectionIndexer {
@@ -239,7 +226,7 @@ public class UserDictionarySettings extends ListFragment {
 
             if (null != c) {
                 final String alphabet = context.getString(R.string.user_dict_fast_scroll_alphabet);
-                final int wordColIndex = c.getColumnIndexOrThrow(UserDictionary.Words.WORD);
+                final int wordColIndex = c.getColumnIndexOrThrow(Words.WORD);
                 mIndexer = new AlphabetIndexer(c, wordColIndex, alphabet);
             }
             setViewBinder(mViewBinder);
