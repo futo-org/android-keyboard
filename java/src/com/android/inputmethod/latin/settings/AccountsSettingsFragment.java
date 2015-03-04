@@ -204,8 +204,31 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      * is currently selected.
      */
     private void refreshAccountAndDependentPreferences(@Nullable final String currentAccount) {
+        // TODO(cvnguyen): Write tests.
         if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
             return;
+        }
+
+        final String[] accountsForLogin =
+                LoginAccountUtils.getAccountsForLogin(getActivity());
+
+        if (accountsForLogin.length > 0) {
+            enableSyncPreferences();
+            mAccountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    if (accountsForLogin.length > 0) {
+                        // TODO: Add addition of account.
+                        createAccountPicker(accountsForLogin, currentAccount,
+                                new AccountChangedListener(null)).show();
+                    }
+                    return true;
+                }
+            });
+        } else {
+            mAccountSwitcher.setEnabled(false);
+            disableSyncPreferences();
+            mEnableSyncPreference.setSummary(getString(R.string.add_account_to_enable_sync));
         }
 
         if (currentAccount == null) {
@@ -216,20 +239,6 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             // Set the currently selected account as the summary text.
             mAccountSwitcher.setSummary(getString(R.string.account_selected, currentAccount));
         }
-
-        mAccountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(final Preference preference) {
-                    final String[] accountsForLogin =
-                            LoginAccountUtils.getAccountsForLogin(getActivity());
-                    if (accountsForLogin.length > 0) {
-                        // TODO: Add addition of account.
-                        createAccountPicker(accountsForLogin, currentAccount,
-                                new AccountChangedListener(null)).show();
-                    }
-                    return true;
-                }
-        });
     }
 
     @Nullable
