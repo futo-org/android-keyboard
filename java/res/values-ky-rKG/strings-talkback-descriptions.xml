@@ -25,8 +25,7 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"Текст киргизилген жок"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> сөзүн <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> сөзүнө оңдойт"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> авто оңдойт"</string>
-    <!-- no translation found for spoken_empty_suggestion (4250215619373459752) -->
-    <skip />
+    <string name="spoken_empty_suggestion" msgid="4250215619373459752">"Сунуш жок"</string>
     <string name="spoken_description_unknown" msgid="5139930082759824442">"Белгисиз белги"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Дагы символдор"</string>
