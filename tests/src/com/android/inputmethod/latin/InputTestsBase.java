@@ -77,7 +77,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     protected MyEditText mEditText;
     protected View mInputView;
     protected InputConnection mInputConnection;
-    private boolean mPreviousBigramPredictionSettings;
     private String mPreviousAutoCorrectSetting;
 
     // A helper class to ease span tests
@@ -201,8 +200,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         setupService();
         mLatinIME = getService();
         setDebugMode(true);
-        mPreviousBigramPredictionSettings = setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS,
-                true, true /* defaultValue */);
         mPreviousAutoCorrectSetting = setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD,
                 DEFAULT_AUTO_CORRECTION_THRESHOLD, DEFAULT_AUTO_CORRECTION_THRESHOLD);
         mLatinIME.onCreate();
@@ -233,8 +230,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mLatinIME.onFinishInput();
         runMessages();
         mLatinIME.mHandler.removeAllMessages();
-        setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, mPreviousBigramPredictionSettings,
-                true /* defaultValue */);
         setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD, mPreviousAutoCorrectSetting,
                 DEFAULT_AUTO_CORRECTION_THRESHOLD);
         setDebugMode(false);

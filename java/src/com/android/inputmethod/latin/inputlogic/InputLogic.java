@@ -1405,11 +1405,6 @@ public final class InputLogic {
             return;
         }
 
-        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
-            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-            return;
-        }
-
         final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<>();
         mInputLogicHandler.getSuggestedWords(inputStyle, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
                 new OnGetSuggestedWordsCallback() {
