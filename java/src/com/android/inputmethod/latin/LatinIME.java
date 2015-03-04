@@ -1543,11 +1543,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // punctuation suggestions (if it's disabled).
     @Override
     public void setNeutralSuggestionStrip() {
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        final SuggestedWords neutralSuggestions = currentSettings.mBigramPredictionEnabled
-                ? SuggestedWords.getEmptyInstance()
-                : currentSettings.mSpacingAndPunctuations.mSuggestPuncList;
-        setSuggestedWords(neutralSuggestions);
+        setSuggestedWords(SuggestedWords.getEmptyInstance());
     }
 
     // TODO: Make this private

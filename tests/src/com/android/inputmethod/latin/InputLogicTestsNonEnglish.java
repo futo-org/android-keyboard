@@ -23,7 +23,6 @@ import com.android.inputmethod.latin.settings.Settings;
 
 @LargeTest
 public class InputLogicTestsNonEnglish extends InputTestsBase {
-    final String NEXT_WORD_PREDICTION_OPTION = "next_word_prediction";
 
     public void testAutoCorrectForFrench() {
         final String STRING_TO_TYPE = "irq ";
@@ -63,48 +62,28 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         final String WORD_TO_TYPE = "test ";
         final String PUNCTUATION_FROM_STRIP = "!";
         final String EXPECTED_RESULT = "test !!";
-        final boolean defaultNextWordPredictionOption =
-                mLatinIME.getResources().getBoolean(R.bool.config_default_next_word_prediction);
-        final boolean previousNextWordPredictionOption =
-                setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, false,
-                        defaultNextWordPredictionOption);
-        try {
-            changeLanguage("fr");
-            type(WORD_TO_TYPE);
-            sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
-            runMessages();
-            assertTrue("type word then type space should display punctuation strip",
-                    mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());
-            pickSuggestionManually(PUNCTUATION_FROM_STRIP);
-            pickSuggestionManually(PUNCTUATION_FROM_STRIP);
-            assertEquals("type word then type space then punctuation from strip twice for French",
-                    EXPECTED_RESULT, mEditText.getText().toString());
-        } finally {
-            setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, previousNextWordPredictionOption,
-                    defaultNextWordPredictionOption);
-        }
+        changeLanguage("fr");
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
+        runMessages();
+        assertTrue("type word then type space should display punctuation strip",
+                mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());
+        pickSuggestionManually(PUNCTUATION_FROM_STRIP);
+        pickSuggestionManually(PUNCTUATION_FROM_STRIP);
+        assertEquals("type word then type space then punctuation from strip twice for French",
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testWordThenSpaceDisplaysPredictions() {
         final String WORD_TO_TYPE = "beaujolais ";
         final String EXPECTED_RESULT = "nouveau";
-        final boolean defaultNextWordPredictionOption =
-                mLatinIME.getResources().getBoolean(R.bool.config_default_next_word_prediction);
-        final boolean previousNextWordPredictionOption =
-                setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, true,
-                        defaultNextWordPredictionOption);
-        try {
-            changeLanguage("fr");
-            type(WORD_TO_TYPE);
-            sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
-            runMessages();
-            final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
-            assertEquals("type word then type space yields predictions for French",
-                    EXPECTED_RESULT, suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
-        } finally {
-            setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, previousNextWordPredictionOption,
-                    defaultNextWordPredictionOption);
-        }
+        changeLanguage("fr");
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
+        runMessages();
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertEquals("type word then type space yields predictions for French",
+                EXPECTED_RESULT, suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
 
     public void testAutoCorrectForGerman() {

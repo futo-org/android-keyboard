@@ -20,9 +20,6 @@
 
 <resources>
     <bool name="config_block_potentially_offensive">true</bool>
-    <!-- Default value for next word prediction: after entering a word and a space only, should we look
-         at input history to suggest a hopefully helpful suggestions for the next word? -->
-    <bool name="config_default_next_word_prediction">true</bool>
 
     <integer name="config_delay_in_milliseconds_to_update_shift_state">100</integer>
     <integer name="config_double_space_period_timeout">1100</integer>

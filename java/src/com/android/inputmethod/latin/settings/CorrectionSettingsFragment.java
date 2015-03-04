@@ -19,12 +19,10 @@ package com.android.inputmethod.latin.settings;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
@@ -61,8 +59,6 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
         final Context context = getActivity();
         final PackageManager pm = context.getPackageManager();
 
-        ensureConsistencyOfAutoCorrectionSettings();
-
         final Preference dictionaryLink = findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
         final Intent intent = dictionaryLink.getIntent();
         intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
@@ -80,21 +76,6 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
         if (ri == null) {
             overwriteUserDictionaryPreference(editPersonalDictionary);
         }
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
-        ensureConsistencyOfAutoCorrectionSettings();
-    }
-
-    private void ensureConsistencyOfAutoCorrectionSettings() {
-        final String autoCorrectionOff = getString(
-                R.string.auto_correction_threshold_mode_index_off);
-        final ListPreference autoCorrectionThresholdPref = (ListPreference)findPreference(
-                Settings.PREF_AUTO_CORRECTION_THRESHOLD);
-        final String currentSetting = autoCorrectionThresholdPref.getValue();
-        setPreferenceEnabled(
-                Settings.PREF_BIGRAM_PREDICTIONS, !currentSetting.equals(autoCorrectionOff));
     }
 
     private void overwriteUserDictionaryPreference(final Preference userDictionaryPreference) {
