@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Teie sünkroonitud andmed kustutatakse pilvest. Kas olete kindel?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Kustuta"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Tühista"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Teie isiklik kataloog sünkroonitakse ja varundatakse Google\'i serveritesse. Meie toodete parandamise abistamiseks võidakse koguda sõna esinemissageduse statistikat. Kogu teabe kogumine ja kasutamine toimub "<a href="https://www.google.com/policies/privacy">"Google\'i privaatsuseeskirjade järgi"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Teie isiklik kataloog sünkroonitakse ja varundatakse Google\'i serveritesse. Oma toodete parandamiseks võime koguda sõna esinemissageduse statistikat. Kogu teabe kogumine ja kasutamine toimub "<a href="https://www.google.com/policies/privacy">"Google\'i privaatsuseeskirjade järgi"</a>"."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Vaheta sisestusmeetodit"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Keelevahetuse võti hõlmab ka muid sisestusmeetodeid"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Keelevahetuse nupp"</string>
