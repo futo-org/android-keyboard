@@ -340,7 +340,7 @@ public class DictionaryInfoUtils {
         return getDictionaryFileHeaderOrNull(file, 0, file.length());
     }
 
-    private static DictionaryHeader getDictionaryFileHeaderOrNull(final File file,
+    public static DictionaryHeader getDictionaryFileHeaderOrNull(final File file,
             final long offset, final long length) {
         try {
             final DictionaryHeader header =
@@ -357,23 +357,17 @@ public class DictionaryInfoUtils {
      * Returns information of the dictionary.
      *
      * @param fileAddress the asset dictionary file address.
+     * @param locale Locale for this file.
      * @return information of the specified dictionary.
      */
     @Nullable
     private static DictionaryInfo createDictionaryInfoFromFileAddress(
-            final AssetFileAddress fileAddress) {
-        // TODO: Read the header and update the version number for the new dictionaries.
-        // This will make sure that the dictionary version is updated in the database.
-        final DictionaryHeader header = getDictionaryFileHeaderOrNull(
-                new File(fileAddress.mFilename), fileAddress.mOffset, fileAddress.mLength);
-        if (header == null) {
-            return null;
-        }
-        final String id = header.mIdString;
-        final Locale locale = LocaleUtils.constructLocaleFromString(header.mLocaleString);
-        final String description = header.getDescription();
-        final String version = header.mVersionString;
-        return new DictionaryInfo(id, locale, description, fileAddress, Integer.parseInt(version));
+            final AssetFileAddress fileAddress, Locale locale) {
+        final String id = getMainDictId(locale);
+        final int version = DictionaryHeaderUtils.getContentVersion(fileAddress);
+        final String description = SubtypeLocaleUtils
+                .getSubtypeLocaleDisplayName(locale.toString());
+        return new DictionaryInfo(id, locale, description, fileAddress, version);
     }
 
     private static void addOrUpdateDictInfo(final ArrayList<DictionaryInfo> dictList,
@@ -410,7 +404,7 @@ public class DictionaryInfoUtils {
                     final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
                     final AssetFileAddress fileAddress = AssetFileAddress.makeFromFile(dict);
                     final DictionaryInfo dictionaryInfo =
-                            createDictionaryInfoFromFileAddress(fileAddress);
+                            createDictionaryInfoFromFileAddress(fileAddress, locale);
                     // Protect against cases of a less-specific dictionary being found, like an
                     // en dictionary being used for an en_US locale. In this case, the en dictionary
                     // should be used for en_US but discounted for listing purposes.
@@ -435,7 +429,8 @@ public class DictionaryInfoUtils {
             }
             final AssetFileAddress fileAddress =
                     BinaryDictionaryGetter.loadFallbackResource(context, resourceId);
-            final DictionaryInfo dictionaryInfo = createDictionaryInfoFromFileAddress(fileAddress);
+            final DictionaryInfo dictionaryInfo = createDictionaryInfoFromFileAddress(fileAddress,
+                    locale);
             // Protect against cases of a less-specific dictionary being found, like an
             // en dictionary being used for an en_US locale. In this case, the en dictionary
             // should be used for en_US but discounted for listing purposes.
