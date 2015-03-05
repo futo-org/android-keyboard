@@ -22,6 +22,7 @@ import static com.android.inputmethod.latin.settings.LocalSettingsConstants.PREF
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnShowListener;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -32,7 +33,9 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -363,7 +366,8 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     /**
      * Listens to events when user clicks on "Enable sync" feature.
      */
-    class EnableSyncClickListener implements Preference.OnPreferenceClickListener {
+    class EnableSyncClickListener implements OnShowListener, Preference.OnPreferenceClickListener {
+        // TODO(cvnguyen): Write tests.
         @Override
         public boolean onPreferenceClick(final Preference preference) {
             final TwoStatePreference syncPreference = (TwoStatePreference) preference;
@@ -393,9 +397,19 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                          })
                          .setNegativeButton(R.string.cloud_sync_cancel, null)
                          .create();
+                optInDialog.setOnShowListener(this);
                 optInDialog.show();
             }
             return true;
+        }
+
+        @Override
+        public void onShow(DialogInterface dialog) {
+            TextView messageView = (TextView) ((AlertDialog) dialog).findViewById(
+                    android.R.id.message);
+            if (messageView != null) {
+                messageView.setMovementMethod(LinkMovementMethod.getInstance());
+            }
         }
     }
 }
