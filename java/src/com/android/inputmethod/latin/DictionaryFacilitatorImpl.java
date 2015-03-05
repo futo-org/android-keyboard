@@ -667,7 +667,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     // TODO: Revise the way to fusion suggestion results.
     @Override
-    public SuggestionResults getSuggestionResults(ComposedData composedData,
+    @Nonnull public SuggestionResults getSuggestionResults(ComposedData composedData,
             NgramContext ngramContext, @Nonnull final Keyboard keyboard,
             SettingsValuesForSuggestion settingsValuesForSuggestion, int sessionId,
             int inputStyle) {

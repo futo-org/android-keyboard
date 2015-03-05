@@ -156,7 +156,7 @@ public interface DictionaryFacilitator {
             final int eventType);
 
     // TODO: Revise the way to fusion suggestion results.
-    SuggestionResults getSuggestionResults(final ComposedData composedData,
+    @Nonnull SuggestionResults getSuggestionResults(final ComposedData composedData,
             final NgramContext ngramContext, @Nonnull final Keyboard keyboard,
             final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
             final int inputStyle);
