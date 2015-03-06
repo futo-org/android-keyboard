@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Enrichment class for InputMethodSubtype to enable concurrent multi-lingual input.
@@ -145,6 +146,15 @@ public final class RichInputMethodSubtype {
     @Nonnull
     public String getKeyboardLayoutSetName() {
         return SubtypeLocaleUtils.getKeyboardLayoutSetName(mSubtype);
+    }
+
+    public static RichInputMethodSubtype getRichInputMethodSubtype(
+            @Nullable final InputMethodSubtype subtype) {
+        if (subtype == null) {
+            return getNoLanguageSubtype();
+        } else {
+            return new RichInputMethodSubtype(subtype);
+        }
     }
 
     // Dummy no language QWERTY subtype. See {@link R.xml.method}.
