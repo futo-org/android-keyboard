@@ -1027,6 +1027,20 @@ public final class InputLogic {
                 revertCommit(inputTransaction, inputTransaction.mSettingsValues);
                 StatsUtils.onRevertAutoCorrect();
                 StatsUtils.onWordCommitUserTyped(lastComposedWord, mWordComposer.isBatchMode());
+                // Restart suggestions when backspacing into a reverted word. This is required for
+                // the final corrected word to be learned, as learning only occurs when suggestions
+                // are active.
+                //
+                // Note: restartSuggestionsOnWordTouchedByCursor is already called for normal
+                // (non-revert) backspace handling.
+                if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
+                        && inputTransaction.mSettingsValues.mSpacingAndPunctuations
+                                .mCurrentLanguageHasSpaces
+                        && !mConnection.isCursorFollowedByWordCharacter(
+                                inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
+                    restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
+                            false /* forStartInput */, currentKeyboardScriptId);
+                }
                 return;
             }
             if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
