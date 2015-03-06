@@ -110,7 +110,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         ImportantNoticeDialog.ImportantNoticeDialogListener {
     static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
-    private static boolean DEBUG = false;
 
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
@@ -557,7 +556,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onCreate();
 
         mHandler.onCreate();
-        DEBUG = DebugFlags.DEBUG_ENABLED;
 
         // TODO: Resolve mutual dependencies of {@link #loadSettings()} and
         // {@link #resetDictionaryFacilitatorIfNecessary()}.
@@ -823,7 +821,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             return;
         }
-        if (DEBUG) {
+        if (DebugFlags.DEBUG_ENABLED) {
             Log.d(TAG, "onStartInputView: editorInfo:"
                     + String.format("inputType=0x%08x imeOptions=0x%08x",
                             editorInfo.inputType, editorInfo.imeOptions));
@@ -1011,7 +1009,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final int composingSpanStart, final int composingSpanEnd) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
                 composingSpanStart, composingSpanEnd);
-        if (DEBUG) {
+        if (DebugFlags.DEBUG_ENABLED) {
             Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart + ", ose=" + oldSelEnd
                     + ", nss=" + newSelStart + ", nse=" + newSelEnd
                     + ", cs=" + composingSpanStart + ", ce=" + composingSpanEnd);
@@ -1079,7 +1077,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDisplayCompletions(final CompletionInfo[] applicationSpecifiedCompletions) {
-        if (DEBUG) {
+        if (DebugFlags.DEBUG_ENABLED) {
             Log.i(TAG, "Received completions:");
             if (applicationSpecifiedCompletions != null) {
                 for (int i = 0; i < applicationSpecifiedCompletions.length; i++) {
@@ -1780,7 +1778,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting
     /* package for test */ SuggestedWords getSuggestedWordsForTest() {
         // You may not use this method for anything else than debug
-        return DEBUG ? mInputLogic.mSuggestedWords : null;
+        return DebugFlags.DEBUG_ENABLED ? mInputLogic.mSuggestedWords : null;
     }
 
     // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
