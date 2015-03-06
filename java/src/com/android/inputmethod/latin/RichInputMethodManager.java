@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Enrichment class for InputMethodManager to simplify interaction and add functionality.
@@ -329,7 +330,7 @@ public class RichInputMethodManager {
 
     @UsedForTesting
     static void forceSubtype(@Nonnull final InputMethodSubtype subtype) {
-        sForcedSubtypeForTesting = new RichInputMethodSubtype(subtype);
+        sForcedSubtypeForTesting = RichInputMethodSubtype.getRichInputMethodSubtype(subtype);
     }
 
     @Nonnull
@@ -488,8 +489,8 @@ public class RichInputMethodManager {
         return true;
     }
 
-    private void updateCurrentSubtype(@Nonnull final InputMethodSubtype subtype) {
-        mCurrentRichInputMethodSubtype = new RichInputMethodSubtype(subtype);
+    private void updateCurrentSubtype(@Nullable final InputMethodSubtype subtype) {
+        mCurrentRichInputMethodSubtype = RichInputMethodSubtype.getRichInputMethodSubtype(subtype);
     }
 
     private void updateShortcutIme() {
