@@ -21,7 +21,6 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -31,11 +30,10 @@ import java.util.concurrent.ThreadFactory;
  */
 public class ExecutorUtils {
 
-    private static final String STATIC_LANGUAGE_MODEL_UPDATE = "StaticLanguageModelUpdate";
-    private static final String DYNAMIC_LANGUAGE_MODEL_UPDATE = "DynamicLanguageModelUpdate";
+    private static final String TAG = "ExecutorUtils";
 
-    private static final ConcurrentHashMap<String, ScheduledExecutorService> sExecutorMap =
-            new ConcurrentHashMap<>();
+    private static final ScheduledExecutorService sExecutorService =
+            Executors.newSingleThreadScheduledExecutor(new ExecutorFactory());
 
     @UsedForTesting
     private static ScheduledExecutorService sExecutorServiceForTests;
@@ -47,37 +45,13 @@ public class ExecutorUtils {
     }
 
     /**
-     * @return scheduled executor service used to update static language models
+     * @return scheduled executor service used to run background tasks
      */
-    public static ScheduledExecutorService getExecutorForStaticLanguageModelUpdate() {
-        return getExecutor(STATIC_LANGUAGE_MODEL_UPDATE);
-    }
-
-    /**
-     * @return scheduled executor service used to update dynamic language models
-     */
-    public static ScheduledExecutorService getExecutorForDynamicLanguageModelUpdate() {
-        return getExecutor(DYNAMIC_LANGUAGE_MODEL_UPDATE);
-    }
-
-    /**
-     * Gets the executor for the given id.
-     */
-    private static ScheduledExecutorService getExecutor(final String id) {
+    public static ScheduledExecutorService getBackgroundExecutor() {
         if (sExecutorServiceForTests != null) {
             return sExecutorServiceForTests;
         }
-        ScheduledExecutorService executor = sExecutorMap.get(id);
-        if (executor == null) {
-            synchronized (sExecutorMap) {
-                executor = sExecutorMap.get(id);
-                if (executor == null) {
-                    executor = Executors.newSingleThreadScheduledExecutor(new ExecutorFactory(id));
-                    sExecutorMap.put(id, executor);
-                }
-            }
-        }
-        return executor;
+        return sExecutorService;
     }
 
     /**
@@ -85,28 +59,17 @@ public class ExecutorUtils {
      */
     @UsedForTesting
     public static void shutdownAllExecutors() {
-        synchronized (sExecutorMap) {
-            for (final ScheduledExecutorService executor : sExecutorMap.values()) {
-                executor.execute(new ExecutorShutdown(executor));
-            }
-            sExecutorMap.clear();
-        }
+        sExecutorService.execute(new ExecutorShutdown(sExecutorService));
     }
 
     private static class ExecutorFactory implements ThreadFactory {
-        private final String mThreadName;
-
-        public ExecutorFactory(final String threadName) {
-            mThreadName = threadName;
-        }
-
         @Override
         public Thread newThread(final Runnable runnable) {
-            Thread thread = new Thread(runnable, mThreadName);
+            Thread thread = new Thread(runnable, TAG);
             thread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
                 @Override
                 public void uncaughtException(Thread thread, Throwable ex) {
-                    Log.w(mThreadName + "-" + runnable.getClass().getSimpleName(), ex);
+                    Log.w(TAG + "-" + runnable.getClass().getSimpleName(), ex);
                 }
             });
             return thread;

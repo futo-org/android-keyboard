@@ -56,7 +56,7 @@ public class ContactsContentObserver implements Runnable {
         mContentObserver = new ContentObserver(null /* handler */) {
             @Override
             public void onChange(boolean self) {
-                ExecutorUtils.getExecutorForDynamicLanguageModelUpdate()
+                ExecutorUtils.getBackgroundExecutor()
                         .execute(ContactsContentObserver.this);
             }
         };

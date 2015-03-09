@@ -444,7 +444,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             final Locale[] locales, final DictionaryInitializationListener listener) {
         final CountDownLatch latchForWaitingLoadingMainDictionary = new CountDownLatch(1);
         mLatchForWaitingLoadingMainDictionaries = latchForWaitingLoadingMainDictionary;
-        ExecutorUtils.getExecutorForStaticLanguageModelUpdate().execute(new Runnable() {
+        ExecutorUtils.getBackgroundExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 doReloadUninitializedMainDictionaries(
