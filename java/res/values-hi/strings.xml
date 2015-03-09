@@ -74,8 +74,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"साधारण"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"तेज़"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"बहुत तेज़"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"अगले शब्द के सुझाव"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"सुझाव बनाने में पिछले शब्द का उपयोग करें"</string>
     <string name="gesture_input" msgid="826951152254563827">"जेस्‍चर लिखना सक्षम करें"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरों से स्लाइड करते हुए शब्द इनपुट करें"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"जेस्चर ट्रेल दिखाएं"</string>
