@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Os seus dados sincr. serão eliminados da nuvem. Tem a certeza?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Eliminar"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancelar"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"O seu dicionário personalizado será sincronizado e será criada uma cópia de segurança do mesmo nos servidores da Google. As informações estatísticas de frequência das palavras podem ser recolhidas para ajudar a melhorar os nossos produtos. A recolha e a utilização de todas as informações são efetuadas em conformidade com a "<a href="https://www.google.com/policies/privacy">"Política de Privacidade da Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"O seu dicionário pessoal será sincronizado e será criada uma cópia de segurança do mesmo nos servidores da Google. As informações estatísticas de frequência das palavras podem ser recolhidas para ajudar a melhorar os nossos produtos. A recolha e a utilização de todas as informações são efetuadas em conformidade com a "<a href="https://www.google.com/policies/privacy">"Política de Privacidade da Google"</a>"."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Mudar p/ outros mét. ent."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A tecla de mudança de idioma abrange outros métodos de entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla alterar idioma"</string>
@@ -74,8 +74,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderada"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agressiva"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Muito agressiva"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Sugestões da palavra seguinte"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utilizar palavra anterior para fazer sugestões"</string>
     <string name="gesture_input" msgid="826951152254563827">"Ativar escrita por toque"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Introduzir uma palavra deslizando lentamente pelas letras"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar percurso do gesto"</string>

@@ -74,8 +74,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"মাঝারি"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"আক্রমণাত্মক"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"খুব আক্রমণাত্মক"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"পরবর্তী-শব্দের জন্য পরামর্শগুলি"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"পরামর্শ দিতে পূর্ববর্তী শব্দ ব্যবহার করুন"</string>
     <string name="gesture_input" msgid="826951152254563827">"অঙ্গভঙ্গির মাধ্যমে লেখা সক্ষম করুন"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"অক্ষরগুলোর মাঝে স্লাইড করে একটি শব্দ ইনপুট করুন"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"অঙ্গভঙ্গির ট্রেল দেখান"</string>

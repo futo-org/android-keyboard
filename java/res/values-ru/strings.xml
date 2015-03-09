@@ -74,8 +74,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Активно"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Очень активно"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Подсказывать слова"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Предлагать подсказки на основе предыдущего слова"</string>
     <string name="gesture_input" msgid="826951152254563827">"Включить функцию"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Вводите слова, не отрывая пальца от клавиатуры"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Рисовать линию"</string>

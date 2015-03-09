@@ -74,8 +74,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"ល្មម"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"បំពាន"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"បំពាន​ខ្លាំង"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"ការ​ស្នើ​ពាក្យ​បន្ទាប់"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"ប្រើ​ពាក្យ​មុន​​នៅ​ពេល​ធ្វើ​ការ​​​ស្នើ"</string>
     <string name="gesture_input" msgid="826951152254563827">"បើក​ការ​​បញ្ចូល​​កាយវិការ"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"បញ្ចូល​ពាក្យ​ដោយ​រំកិល​​​តាម​​អក្សរ"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"បង្ហាញ​ដាន​កាយវិការ"</string>

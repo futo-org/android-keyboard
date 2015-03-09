@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपला संकालित केलेला डेटा मेघवरून हटविला जाईल. आपल्‍याला खात्री आहे?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"हटवा"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द करा"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"आपला वैयक्तिक शब्दकोश संकालित केला जाईल आणि Google सर्व्हरवर बॅकअप घेतला. आमची उत्पादने सुधारित करण्‍यात मदत करण्‍यासाठी शब्द वारंवारतेची आकडेवारी माहिती संकलित केली जाऊ शकते. सर्व माहितीचे संकलन आणि वापर "<a href="https://www.google.com/policies/privacy">"Google च्या गोपनीयता धोरणाचे"</a>" पालन करेल."</string>
+    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"आपला वैयक्तिक शब्दकोश संकालित केला जाईल आणि Google सर्व्हरवर बॅकअप घेतला . आमची उत्पादने सुधारित करण्‍यात मदत करण्‍यासाठी शब्द वारंवारतेची आकडेवारी माहिती संकलित केली जाऊ शकते. सर्व माहितीचे संकलन आणि वापर "<a href="https://www.google.com/policies/privacy">"Google च्या गोपनीयता धोरणाचे"</a>" पालन करेल."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्य इनपुट पद्धतींवर स्विच करा"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्विच की अन्य इनपुट पद्धती देखील समाविष्ट करते"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच की"</string>
@@ -74,8 +74,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"मर्यादशील"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"आक्रमक"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"खूप आक्रमक"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"पुढील-शब्द सूचना"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"सूचना करताना मागील शब्द वापरा"</string>
     <string name="gesture_input" msgid="826951152254563827">"जेश्चर टायपिंग सक्षम करा"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरांमधून स्लायडिंग करून एक शब्द इनपुट करा"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"जेश्चर अनुचिन्ह दर्शवा"</string>
