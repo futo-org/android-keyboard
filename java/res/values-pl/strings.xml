@@ -74,8 +74,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Umiarkowana"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agresywna"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Bardzo agresywna"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Podpowiadanie kolejnego słowa"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Pokazuj podpowiedzi na podstawie poprzedniego słowa"</string>
     <string name="gesture_input" msgid="826951152254563827">"Włącz pisanie gestami"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Wpisz słowo, przesuwając palcem po literach"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Pokazuj ślad gestu"</string>
