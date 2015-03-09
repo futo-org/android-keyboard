@@ -23,7 +23,9 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utilities to manage executors.
@@ -34,33 +36,6 @@ public class ExecutorUtils {
 
     private static final ScheduledExecutorService sExecutorService =
             Executors.newSingleThreadScheduledExecutor(new ExecutorFactory());
-
-    @UsedForTesting
-    private static ScheduledExecutorService sExecutorServiceForTests;
-
-    @UsedForTesting
-    public static void setExecutorServiceForTests(
-            final ScheduledExecutorService executorServiceForTests) {
-        sExecutorServiceForTests = executorServiceForTests;
-    }
-
-    /**
-     * @return scheduled executor service used to run background tasks
-     */
-    public static ScheduledExecutorService getBackgroundExecutor() {
-        if (sExecutorServiceForTests != null) {
-            return sExecutorServiceForTests;
-        }
-        return sExecutorService;
-    }
-
-    /**
-     * Shutdowns all executors and removes all executors from the executor map for testing.
-     */
-    @UsedForTesting
-    public static void shutdownAllExecutors() {
-        sExecutorService.execute(new ExecutorShutdown(sExecutorService));
-    }
 
     private static class ExecutorFactory implements ThreadFactory {
         @Override
@@ -76,16 +51,51 @@ public class ExecutorUtils {
         }
     }
 
-    private static class ExecutorShutdown implements Runnable {
-        private final ScheduledExecutorService mExecutor;
+    @UsedForTesting
+    private static ScheduledExecutorService sExecutorServiceForTests;
 
-        public ExecutorShutdown(final ScheduledExecutorService executor) {
-            mExecutor = executor;
+    @UsedForTesting
+    public static void setExecutorServiceForTests(
+            final ScheduledExecutorService executorServiceForTests) {
+        sExecutorServiceForTests = executorServiceForTests;
+    }
+
+    //
+    // Public methods used to schedule a runnable for execution.
+    //
+
+    /**
+     * @return scheduled executor service used to run background tasks
+     */
+    public static ScheduledExecutorService getBackgroundExecutor() {
+        if (sExecutorServiceForTests != null) {
+            return sExecutorServiceForTests;
+        }
+        return sExecutorService;
+    }
+
+    public static Runnable chain(final Runnable... runnables) {
+        return new RunnableChain(runnables);
+    }
+
+    private static class RunnableChain implements Runnable {
+        private final Runnable[] mRunnables;
+
+        private RunnableChain(final Runnable... runnables) {
+            if (runnables == null || runnables.length == 0) {
+                throw new IllegalArgumentException("Attempting to construct an empty chain");
+            }
+            mRunnables = runnables;
         }
 
         @Override
         public void run() {
-            mExecutor.shutdown();
+            for (Runnable runnable : mRunnables) {
+                if (Thread.interrupted()) {
+                    return;
+                }
+                runnable.run();
+            }
         }
     }
 }
