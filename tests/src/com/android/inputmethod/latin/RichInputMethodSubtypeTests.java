@@ -318,4 +318,11 @@ public class RichInputMethodSubtypeTests extends AndroidTestCase {
     public void testAdditionalSubtypeForSpacebarInFrench() {
         testsAdditionalSubtypesForSpacebar.runInLocale(mRes, Locale.FRENCH);
     }
+
+    public void testRichInputMethodSubtypeForNullInputMethodSubtype() {
+        RichInputMethodSubtype subtype = RichInputMethodSubtype.getRichInputMethodSubtype(null);
+        assertNotNull(subtype);
+        assertEquals("zz", subtype.getRawSubtype().getLocale());
+        assertEquals("keyboard", subtype.getRawSubtype().getMode());
+    }
 }
