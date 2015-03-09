@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"同步處理功能已開啟"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"在各裝置上同步處理您的個人字典"</string>
     <string name="sync_now_title" msgid="9061566866231227957">"立即同步處理"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"刪除鍵盤雲端資料"</string>
+    <string name="clear_sync_data_title" msgid="2041801164014550565">"刪除 Google 鍵盤雲端資料"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"將已同步處理的資料從 Google 刪除"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"已同步處理的資料將從雲端中刪除。您確定嗎？"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"刪除"</string>
@@ -74,8 +74,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"更正範圍小"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"大幅更正"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"極大幅度更正"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"建議下一個字詞"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"根據前一個字詞提供建議"</string>
     <string name="gesture_input" msgid="826951152254563827">"啟用滑行輸入"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"以滑動方式寫出字詞中字母來輸入字詞"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"顯示手勢軌跡"</string>
