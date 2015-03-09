@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google விசைப்பலகை ஒத்திசைவு"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"ஒத்திசைவு இயக்கப்பட்டது"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"எல்லா சாதனங்களிலும் தனிப்பட்ட அகராதியை ஒத்திசைக்கவும்"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"இப்போது ஒத்திசை"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"விசைப்பலகை மேகக்கணி தரவை நீக்கு"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google இலிருந்து ஒத்திசைத்த தரவை நீக்கும்"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ஒத்திசைத்தத் தரவு மேகக்கணியிலிருந்து நீக்கப்படும். நிச்சயமாக நீக்கவா?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"நீக்கு"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ரத்துசெய்"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"தனிப்பட்ட அகராதியானது Google சேவையகங்களில் ஒத்திசைக்கப்பட்டு, காப்புப் பிரதி எடுக்கப்படும். எங்கள் தயாரிப்புகளை மேம்படுத்துவதற்கு வார்த்தைகளின் புள்ளிவிவரத் தகவல் சேகரிக்கப்படலாம். சேகரிக்கப்படும் தகவலும் அதன் பயன்பாடும் "<a href="https://www.google.com/policies/privacy">"Google இன் தனியுரிமைக் கொள்கை"</a>" உடன் இணங்கியிருக்க வேண்டும்."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"பிற உள்ளீட்டு முறைகளுக்கு மாறு"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"மொழி மாற்றல் விசை பிற உள்ளீட்டு முறைகளையும் கட்டுப்படுத்துகிறது"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"மொழி மாற்ற விசை"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"மிதமாக"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"தீவிரமாக"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"மிகத் தீவிரமாக"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"அடுத்த வார்த்தை பரிந்துரைகள்"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"பரிந்துரைகளை உருவாக்க முந்தைய வார்த்தைகளைப் பயன்படுத்தும்"</string>
     <string name="gesture_input" msgid="826951152254563827">"சைகை உள்ளீட்டை இயக்கு"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"எழுத்துகள் வழியாக இழுப்பதன் மூலம் வார்த்தையை உள்ளிடலாம்"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"சைகை தடத்தைக் காட்டு"</string>

@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Sincronizare Tastatură Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sincronizarea este activată"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sincronizați dicționarul personal pe dispozitive"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Sincronizați acum"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Ștergeți date tastatură din cloud"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Șterge datele sincronizate de pe Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Datele sincronizate vor fi șterse din cloud. Sunteți sigur(ă)?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Ștergeți"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Anulați"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Dicționarul personal va fi sincronizat și i se va face backup pe serverele Google. Informațiile statistice privind frecvența cuvintelor pot fi culese pentru a îmbunătăți produsele noastre. Culegerea și folosirea informațiilor vor respecta "<a href="https://www.google.com/policies/privacy">"Politica de confidențialitate Google"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Comut. alte metode de introd."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasta de comutare între limbi include şi alte metode de introd."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tastă comutare limbi"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderată"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Exigentă"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Foarte agresivă"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Sugestii pentru cuvântul următor"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utilizează cuvântul anterior pentru sugestii"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activați tastarea gestuală"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Introduceţi un cuvânt glisând uşor între litere"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afişează urma gestului"</string>

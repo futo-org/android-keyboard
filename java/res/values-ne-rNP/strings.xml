@@ -27,23 +27,27 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"कुञ्जी थिच्दा आवाज"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"कुञ्जी दबाउँदा पपअप"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"प्राथमिकताहरू"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"खाताहरू &amp; गोपनीयता"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"प्रकटन &amp; लेआउटहरू"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"खाताहरू तथा गोपनीयता"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"आवरण तथा लेआउटहरू"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"इशारा टाइपिङ"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"पाठ सुधार"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"उन्नत"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"विषयवस्तु"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"विभाजित कुञ्जीपाटी सक्षम गर्नुहोस्"</string>
-    <string name="cloud_sync_title" msgid="8579271074443847055">"Google कीबोर्ड सिंक गर्नुहोस्"</string>
-    <string name="cloud_sync_summary" msgid="7684887161145650857">"सिंक खोलिएको छ"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"तपाईंको व्यक्तिगत शब्दकोषलाई यन्त्रमा सिंक गर्नुहोस्"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"अहिले सिंक गर्नुहोस्"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"कीबोर्ड Cloud डेटा मेटाउनुहोस्"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Google किबोर्ड सिंक गर्नुहोस्"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"सिंक सक्रिय गरिएको छ"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"तपाईंको व्यक्तिगत शब्दकोषलाई यन्त्रहरूमा सिंक गर्नुहोस्"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
+    <string name="clear_sync_data_title" msgid="2041801164014550565">"किबोर्ड क्लाउड डेटा मेटाउनुहोस्"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिङ्क गरिएको डाटा मेटाउँछ"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईंको सिंक गरिएको डाटालाई cloud बाट मेटाइनेछ। तपाईं निश्चित हुनुहुन्छ?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईंको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईं निश्चित हुनुहुन्छ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"मेटाउनुहोस्"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द गर्नुहोस्"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"तपाईंको व्यक्तिगत शब्दकोषलाई Google सर्भरहरूमा सिंक &amp; ब्याक अप गरिनेछ। हाम्रो उत्पादनहरू सुधार गर्नको लागि मद्दत गर्न word आवृत्तिको तथ्याङ्क जानकारी संग्रह गरिनेछ। सबै जानकारीको संकलन र प्रयोग "<a href="https://www.google.com/policies/privacy">"Google को गोपनीयता नीति"</a>" को अनुरूप हुनेछ।"</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्य इनपुट विधिमा स्विच गर्नुहोस्"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्विच किले अन्य इनपुट विधि पनि समेट्छ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुञ्जी"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"सामान्य"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"आक्रामक"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"ज्यादै आक्रामक"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"अर्को शब्द सुझाव"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"सुझावहरू निर्माण गर्न अघिल्लो शब्द प्रयोग गर्नुहोस्"</string>
     <string name="gesture_input" msgid="826951152254563827">"इशारा टाइप गर्ने सक्षम पार्नुहोस्"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षर स्लाइड गरी शब्द इनपुट गर्नुहोस्"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"इशारा ट्रेल देखाउनुहोस्"</string>

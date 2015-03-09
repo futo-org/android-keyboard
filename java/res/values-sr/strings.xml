@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Синхронизуј Google тастатуру"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронизација је укључена"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизујте лични речник на свим уређајима"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Синхронизуј одмах"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Обриши податке тастатуре у клауду"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Брише синхронизоване податке са Google-а"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Избрисаћемо синхронизоване податке из клауда. Да ли сте сигурни?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Избриши"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Откажи"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Синхронизоваћемо лични речник и направићемо његову резервну копију на Google серверима. Можда ћемо прикупљати статистичке податке о учесталости речи да бисмо побољшали производе. Прикупљање и коришћење свих информација ће бити у складу са "<a href="https://www.google.com/policies/privacy">"Google-овом политиком приватности"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Пребаци на друге методе уноса"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Тастер за пребацивање језика обухвата и друге методе уноса"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Тастер за пребацивање језика"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умерено"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Агресивно"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Веома агресивно"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Предлози за следећу реч"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Користи претходну реч при давању предлога"</string>
     <string name="gesture_input" msgid="826951152254563827">"Омогући унос покретом"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Унесите реч превлачењем прста преко од слова до слова на екрану"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Прикажи траг покрета"</string>

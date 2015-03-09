@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google tastatūras sinhronizācija"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinhronizācija ir ieslēgta."</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sinhronizējiet savu personisko vārdnīcu vairākās ierīcēs."</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Sinhronizēt tūlīt"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Dzēst Tastatūras mākoņa datus"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Dzēš sinhronizētos datus no Google serveriem"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Sinhronizētie dati tiks dzēsti no mākoņa. Vai tiešām to vēlaties?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Dzēst"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Atcelt"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Jūsu personiskā vārdnīca tiks sinhronizēta un dublēta Google serveros. Mūsu produktu uzlabošanas nolūkos var tikt apkopota statistiskā informācija par vārdu biežumu. Visa informācija tiks apkopota un izmantota saskaņā ar "<a href="https://www.google.com/policies/privacy">"Google konfidencialitātes politiku"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Pārsl. uz citām iev. met."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Valodas pārslēgš. taustiņu var lietot arī citām ievades metodēm."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Valodas pārslēgšanas taustiņš"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mērena"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agresīvi"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Ļoti agresīvi"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Nākamā vārda ieteikumi"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Veidojot ieteikumus, izmantot iepriekšējo vārdu."</string>
     <string name="gesture_input" msgid="826951152254563827">"Iespējot ievadi ar žestiem"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Ievadiet vārdu, velkot ar pirkstu pa burtiem."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Rādīt žesta pēdas"</string>

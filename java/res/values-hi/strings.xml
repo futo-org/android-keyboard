@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google कीबोर्ड समन्‍वयन"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"समन्‍वयन चालू किया गया है"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"अपना व्‍यक्‍तिगत शब्‍दकोश सभी डिवाइसों में समन्‍वयित करें"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"अभी समन्‍वयित करें"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"कीबोर्ड क्‍लाउड डेटा हटाएं"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google से आपका समन्वयित डेटा हटाता है"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपका समन्‍वयित डेटा क्‍लाउड से हटा दिया जाएगा. आप सुनिश्‍चित हैं?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"हटाएं"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रहने दें"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"आपका व्‍यक्‍तिगत शब्‍दकोश समन्‍वयित किया जाएगा और Google के सर्वरों पर उसका बैकअप ले लिया जाएगा. हमारे उत्‍पादों को बेहतर बनाने में सहायता के लिए शब्‍द की आवृत्‍ति के सांख्‍यिक आंकड़े एकत्रित किए जा सकते हैं. सभी जानकारी का एकत्रीकरण और उपयोग "<a href="https://www.google.com/policies/privacy">"Google की गोपनीयता नीति"</a>" के अनुपालन में होगा."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्‍य इनपुट पद्धतियों पर जाएं"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्‍विच कुंजी में अन्‍य इनपुट पद्धतियां भी शामिल हैं"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुंजी"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"साधारण"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"तेज़"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"बहुत तेज़"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"अगले शब्द के सुझाव"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"सुझाव बनाने में पिछले शब्द का उपयोग करें"</string>
     <string name="gesture_input" msgid="826951152254563827">"जेस्‍चर लिखना सक्षम करें"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरों से स्लाइड करते हुए शब्द इनपुट करें"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"जेस्चर ट्रेल दिखाएं"</string>

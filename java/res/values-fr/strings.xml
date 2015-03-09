@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Synchronisation du clavier Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"La synchronisation est activée."</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Synchronisez votre dictionnaire personnel sur plusieurs appareils."</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Synchroniser"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Supprimer données clavier cloud"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Supprime vos données synchronisées de Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Les données synchronisées seront supprimées du cloud. Continuer ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Supprimer"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Annuler"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Votre dictionnaire personnel sera synchronisé et sauvegardé sur les serveurs de Google. Des statistiques concernant la fréquence des mots peuvent être recueillies pour nous aider à améliorer nos produits. La collecte et l\'utilisation de toutes les informations sont effectuées conformément aux "<a href="https://www.google.com/policies/privacy">"Règles de confidentialité de Google"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Autres modes de saisie"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La touche de sélection de langue couvre d\'autres modes de saisie."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Touche de sélection de langue"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Simple"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Proactive"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Très proactive"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Suggestions pour le mot suivant"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utiliser le mot précédent pour les suggestions"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activer la saisie gestuelle"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Saisir un mot en faisant glisser le doigt sur les lettres"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Afficher le tracé du geste"</string>

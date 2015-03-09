@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google კლავიატურის სინქრონიზება"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"სინქრონიზება ჩართულია"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"აწარმოეთ თქვენი პერს. ლექსიკონის სინქ. მოწყობილობების მასშტაბით"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"ახლა სინქრონიზაცია"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"კლავიატურის ღრ. მონაცემების წაშლა"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"წაშლის Google-თან თქვენს სინქრონიზებულს მონაცემებს"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"თქვენი სინქ. მონაც. წაიშლება ღრუბ. სივრციდან. დარწმუნებული ხართ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"წაშლა"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"გაუქმება"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"თქვენი პერსონალური ლექსიკონი სინქრონიზდება &amp; amp; შეინახეთ სარეზერვოდ Google სერვერებზე. ჩვენი პროდუქტების გაუმჯობესებისათვის, შესაძლოა შეგროვებულ იქნას სიტყვების სიხშირის სტატისტიკური ინფორმაცია. ყველა ინფორმაციის შეგროვება და გამოყენება შესაბამისობაში იქნება "<a href="https://www.google.com/policies/privacy">" Google- ის კონფიდენციალურობის პოლიტიკასთან "</a>" ."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"შეყვანის სხვა მეთოდებზე გადართვა"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ენის გადართვის ღილაკს შეყვანის სხვა მეთოდებსაც შეიცავს"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ენის გადართვის კლავიში"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"მოკრძალებული"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"აგრესიული"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"ძალიან აგრესიული"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"შემდეგი სიტყვის შეთავაზებები"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"შეთავაზებებისას წინა სიტყვის გამოყენება"</string>
     <string name="gesture_input" msgid="826951152254563827">"ჟესტებით წერის ჩართვა"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"სიტყვის შეყვანა ასო-ნიშნებზე გასრიალებით"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"ჟესტიკულაციის კუდის ჩვენება"</string>
