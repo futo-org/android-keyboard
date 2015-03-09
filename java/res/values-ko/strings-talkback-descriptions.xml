@@ -25,8 +25,7 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"입력한 텍스트 없음"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g>을(를) 누르면 <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>을(를) <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>(으)로 수정합니다."</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g>을(를) 누르면 자동 수정됩니다."</string>
-    <!-- no translation found for spoken_empty_suggestion (4250215619373459752) -->
-    <skip />
+    <string name="spoken_empty_suggestion" msgid="4250215619373459752">"추천 항목 없음"</string>
     <string name="spoken_description_unknown" msgid="5139930082759824442">"알 수 없는 문자"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift 키"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"기호 더보기"</string>
