@@ -61,7 +61,7 @@
     <!-- Option summary when cloud sync feature is disabled  [CHAR LIMIT=65] -->
     <string name="cloud_sync_summary_disabled">Sync your personal dictionary across devices</string>
     <!-- Option title for starting the sync cycle now. [CHAR LIMIT=33]-->
-    <string name="sync_now_title">Sync Now</string>
+    <string name="sync_now_title">Sync now</string>
     <!-- Option title for letting user delete data from Google servers.  [CHAR LIMIT=33] -->
     <string name="clear_sync_data_title">Delete Keyboard Cloud data</string>
     <!-- Option summary for letting user delete data from Google servers. [CHAR LIMIT=65] -->
@@ -73,12 +73,16 @@
     <!-- Option to cancel the deletion of user data from cloud [CHAR LIMIT=20] -->
     <string name="cloud_sync_cancel">Cancel</string>
     <!-- Option to agree to terms and conditions for enabling cloud sync feature. -->
-    <string name="cloud_sync_opt_in_text">Your personal dictionary will be synced &amp; backed up to
-        Google servers. The statistical information of word frequency may be collected to help 
+    <string name="cloud_sync_opt_in_text">Your personal dictionary will be synced and backed up to
+        Google servers. The statistical information of word frequency may be collected to help
         improve our products. The collection and usage of all the information will be compliant with
         <a href="https://www.google.com/policies/privacy">Google\'s Privacy Policy</a>.
     </string>
-    
+    <!-- Text to tell the user to add a Google account to the device to enable the cloud sync feature. [CHAR LIMIT=65]-->
+    <string name="add_account_to_enable_sync">
+        Please add a Google account to this device to enable this feature
+    </string>
+
     <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>
     <!-- Option summary for including other IMEs in the language switch list [CHAR LIMIT=65] -->
