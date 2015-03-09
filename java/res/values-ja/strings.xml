@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Googleキーボードの同期"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"同期はON"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"端末間で単語リストを同期する"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"今すぐ同期"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"キーボードクラウドデータの削除"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Googleから同期データを削除します"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"クラウドから同期データを削除します。よろしいですか？"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"削除"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"キャンセル"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"単語リストがGoogleのサーバーと同期され、サーバーにバックアップされます。Googleのサービス改善を目的として、語句の使用頻度に関する統計情報が収集される場合があります。収集した情報およびその利用方法は、"<a href="https://www.google.com/policies/privacy">"Googleプライバシーポリシー"</a>"に準拠します。"</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"他の入力方法に切り替え"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"言語切り替えキーは他の入力方法にも対応しています"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"言語切り替えキー"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"中"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"強"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"最も強い"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"次の入力候補"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"前の単語に基づいて入力候補を表示します"</string>
     <string name="gesture_input" msgid="826951152254563827">"ジェスチャー入力を有効にする"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"文字間をスライドして単語を入力できます"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"ジェスチャートレイルを表示"</string>

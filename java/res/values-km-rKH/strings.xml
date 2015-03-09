@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"សមកាលកម្មលើក្តារចុច Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"សមកាលម្មត្រូវបានបើក"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ធ្វើសមកាលកម្មបញ្ជីឯកសារផ្ទាល់ខ្លួនឆ្លងឧបករណ៍"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"ធ្វើសម្មកាលកម្មឥឡូវ"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"លុបទិន្នន័យក្តារចុចពពក"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"លុបទិន្នន័យដែលបានធ្វើសមកាលកម្មរបស់អ្នកចេញពី Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ទិន្នន័យធ្វើសមកាលកម្មរបស់អ្នកនឹងត្រូវបានលុបពីពពក។ តើអ្នកប្រាកដទេ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"លុប"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"បោះបង់"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"បញ្ជីឯកសារផ្ទាល់ខ្លួនរបស់អ្នកនឹងត្រូវបានធ្វើសមកាលកម្ម និងបម្រុងទុកនៅក្នុងម៉ាស៊ីនមេ Google។ ព័ត៌មានស្ថិតិនៃចំនួនពាក្យដែលឧស្សាហ៍ប្រើអាចត្រូវបានប្រមូលដើម្បីធ្វើឲ្យផលិតផលប្រសើរជាងមុន។ ការប្រមូល និងការប្រើប្រាស់ព័ត៌មាន នឹងត្រូវអនុលោមតាម "<a href="https://www.google.com/policies/privacy">"គោលការណ៍ភាពឯកជនរបស់ Google"</a>"។"</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ប្ដូរ​ទៅ​​​វិធីសាស្ត្រ​បញ្ចូល​​​ផ្សេង​ទៀត"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"គ្រាប់ចុច​ប្ដូរ​ភាសា​តាម​វិធីសាស្ត្រ​បញ្ចូល​ផ្សេងទៀត"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"គ្រាប់​ចុច​ប្ដូរ​​ភាសា"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"ល្មម"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"បំពាន"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"បំពាន​ខ្លាំង"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"ការ​ស្នើ​ពាក្យ​បន្ទាប់"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"ប្រើ​ពាក្យ​មុន​​នៅ​ពេល​ធ្វើ​ការ​​​ស្នើ"</string>
     <string name="gesture_input" msgid="826951152254563827">"បើក​ការ​​បញ្ចូល​​កាយវិការ"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"បញ្ចូល​ពាក្យ​ដោយ​រំកិល​​​តាម​​អក្សរ"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"បង្ហាញ​ដាន​កាយវិការ"</string>

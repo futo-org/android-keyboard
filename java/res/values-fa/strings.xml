@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"‏همگام‌سازی صفحه‌کلید Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"همگام‌سازی روشن است"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"همگام‌سازی فرهنگ لغت شخصی‌تان در همه دستگاه‌ها"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"اکنون همگام‌سازی شود"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"‏حذف داده‌های Cloud صفحه‌کلید"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"‏اطلاعات همگام‌سازی شده شما را از Google حذف می‌کند"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"‏داده‌های همگام‌سازی شده شما از cloud حذف می‌شوند. مطمئنید؟"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"حذف"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"لغو"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"‏فرهنگ لغت شخصی شما همگام‌سازی شده و در سرورهای Google پشتیبان‌گیری می‌شود. اطلاعات آماری تکرار کلمات ممکن است جمع‌آوری شود تا برای بهبود محصولاتمان مورد استفاده قرار بگیرد. جمع‌آوری و استفاده از همه این اطلاعات با "<a href="https://www.google.com/policies/privacy">"خط‌مشی رازداری Google"</a>" مطابقت دارد."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"تغییر به دیگر روش‌های ورودی"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"کلید تغییر زبان، سایر ورودی‌های زبان را نیز پوشش می‌دهد"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"کلید تغییر زبان"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"متوسط"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"شدید"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"بسیار شدید"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"پیشنهادات کلمه بعدی"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"استفاده از کلمه قبلی در ایجاد پیشنهادات"</string>
     <string name="gesture_input" msgid="826951152254563827">"فعال کردن تایپ حرکتی"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"ورود یک کلمه با کشیدن انگشت در میان حروف"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"نمایش نسخه آزمایشی حرکت"</string>

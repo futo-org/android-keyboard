@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"ການ​ຊິງ​ຄ໌​ແປ້ນ​ພິມ Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"ຊິງ​ຄ໌​ເປ​ີດ​ແລ້ວ"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ຊິງ​ຄ໌​ພົດ​ຈະ​ນາ​ນຸ​ກົມ​ສ່ວນ​ຕົວ​ຂອງ​ທ່ານ​ໃນ​ທຸກ​ອຸ​ປະ​ກອນ"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"ຊິງຄ໌ດຽວນີ້"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"ລຶບ​ຂໍ້​ມູນ​ຄ​ລາວ​ແປ້ນ​ພິມ"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"ລຶບ​ຂໍ້​ມູນ​ທີ່​ຊິງ​ຄ໌​ແລ້ວ​ຂອງ​ທ່ານ​ຈາກ Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ຂໍ້​ມູນ​ທີ່​ຊິງ​ຄ໌​ແລ້ວ​ຂອງ​ທ່ານ​ຈະ​ຖືກ​ລຶບ​ໄປ​ຈາກ​ຄ​ລາວ. ທ່ານ​ແນ່​ໃຈ​ບໍ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ລຶບ"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ຍົກເລີກ"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"ພົດ​ຈະ​ນາ​ນຸ​ກົມ​ສ່ວນ​ຕົວ​ຂອງ​ທ່ານຈະ​ຖືກ​ຊິງ​ຄ໌ &amp; ສຳ​ຮອງ​ໃສ່​ເຊີບ​ເວີ Google. ຂໍ້​ມູນ​ສະ​ຖິ​ຕິ​ຂອງ​ຄວາມ​ຖີ່​ຄຳ​ສັບ​ອາດ​ຈະ​ຖືກ​ເກັບ​ກຳ ເພື່ອ​ຊ່ວຍ​ປັບ​ປຸງ​ຜະ​ລິດ​ຕະ​ພັນ​ຂອງ​ພວກ​ເຮົາ. ການ​ເກັບ​ກຳ ແລະ​ການ​ໃຊ້​ທຸກ​ຂໍ້​ມູນ​ຈະ​ເປັນ​ໄປ​ຕາມ "<a href="https://www.google.com/policies/privacy">"ນະ​ໂຍ​ບາຍ​ວ່າ​ດ້ວຍ​ຄວາມ​ເປັນ​ສ່ວນ​ຕົວ​ຂອງ Google"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ປ່ຽນໄປໃຊ້ການປ້ອນຂໍ້ມູນແບບອື່ນ"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ໂຕປ່ຽນພາສາເປັນທັງໂຕປ່ຽນຮູບແບບການປ້ອນຂໍ້ມູນເຊັ່ນກັນ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ປຸ່ມປ່ຽນພາສາ"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"ປານກາງ"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"ສູງ"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"ສູງສຸດ"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"ການແນະນຳຄຳຕໍ່ໄປ"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"ໃຊ້ຄຳທີ່ຜ່ານມາໃນການແນະນຳຄຳ"</string>
     <string name="gesture_input" msgid="826951152254563827">"ເປີດນຳໃຊ້ການພິມແບບ Gesture"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"ໃສ່ຄຳສັບລົງໄປໂດຍການສະໄລ້ຜ່ານໂຕອັກສອນ"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"ສະແດງຫາງຂອງ Gesture"</string>

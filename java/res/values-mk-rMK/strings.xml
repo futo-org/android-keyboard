@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Синхронизирање на таст. на Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронизирањето е вклучено"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизирајте го личниот речник низ уредите"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Синхронизирај сега"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Избриши под. за таст. на облак"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Ги брише синхронизираните податоци од Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Синхронизираните податоци ќе се избр. од облак. Дали сте сигурни?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Избриши"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Откажи"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Вашиот личен речник ќе се синхронизира и ќе направи резервна копија на серверите на Google. Може да се собираат статистички информации за честотата на зборовите за помош при подобрување на нашите производи. Собирањето и користењето на сите информации ќе биде во согласност со"<a href="https://www.google.com/policies/privacy">"Политиката за приватност на Google"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Префрли на други влезни методи"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Копчето за менување јазици покрива и други методи на внес"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Копче за промена на јазик"</string>
@@ -74,8 +78,6 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Скромно"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Агресивна"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Многу агресивно"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Предлози за следен збор"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Употребете го претходниот збор за предлози"</string>
     <string name="gesture_input" msgid="826951152254563827">"Овозможи пишување со движење"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Внесете збор со лизгање низ буквите"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Покажи патека на движења"</string>
