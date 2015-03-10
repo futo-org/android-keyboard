@@ -23,7 +23,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
@@ -72,6 +71,16 @@ public class ExecutorUtils {
             return sExecutorServiceForTests;
         }
         return sExecutorService;
+    }
+
+    public static void killTasks() {
+        getBackgroundExecutor().shutdownNow();
+        try {
+            getBackgroundExecutor().awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Log.wtf(TAG, "Failed to shut down background task.");
+            throw new IllegalStateException("Failed to shut down background task.");
+        }
     }
 
     public static Runnable chain(final Runnable... runnables) {

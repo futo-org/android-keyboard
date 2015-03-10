@@ -26,12 +26,17 @@ import com.android.inputmethod.latin.settings.SettingsValues;
 public class StatsUtilsManager {
 
     private static final StatsUtilsManager sInstance = new StatsUtilsManager();
+    private static StatsUtilsManager sTestInstance = null;
 
     /**
      * @return the singleton instance of {@link StatsUtilsManager}.
      */
     public static StatsUtilsManager getInstance() {
-        return sInstance;
+        return sTestInstance != null ? sTestInstance : sInstance;
+    }
+
+    public static void setTestInstance(final StatsUtilsManager testInstance) {
+        sTestInstance = testInstance;
     }
 
     public void onCreate(final Context context, final DictionaryFacilitator dictionaryFacilitator) {
