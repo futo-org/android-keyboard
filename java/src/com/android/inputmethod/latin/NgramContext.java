@@ -142,8 +142,7 @@ public class NgramContext {
                 }
             }
         }
-        return terms.size() == 0 ? BEGINNING_OF_SENTENCE_TAG
-                : TextUtils.join(CONTEXT_SEPARATOR, terms);
+        return TextUtils.join(CONTEXT_SEPARATOR, terms);
     }
 
     /**
@@ -166,9 +165,7 @@ public class NgramContext {
                 }
             }
         }
-        final String[] contextStringArray = prevTermList.size() == 0 ?
-                new String[] { BEGINNING_OF_SENTENCE_TAG }
-                : prevTermList.toArray(new String[prevTermList.size()]);
+        final String[] contextStringArray = prevTermList.toArray(new String[prevTermList.size()]);
         return contextStringArray;
     }
 

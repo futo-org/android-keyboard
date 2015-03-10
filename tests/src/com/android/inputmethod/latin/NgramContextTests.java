@@ -81,15 +81,24 @@ public class NgramContextTests extends AndroidTestCase {
         assertTrue(ngramContext_bos_b.isBeginningOfSentenceContext());
         assertEquals("b", ngramContext_bos_b.getNthPrevWord(2));
         assertEquals("a b <S>", ngramContext_bos_b.extractPrevWordsContext());
+
+        final NgramContext ngramContext_empty = new NgramContext(WordInfo.EMPTY_WORD_INFO);
+        assertEquals("", ngramContext_empty.extractPrevWordsContext());
+        final NgramContext ngramContext_a_empty =
+                ngramContext_empty.getNextNgramContext(new WordInfo("a"));
+        assertEquals("a", ngramContext_a_empty.getNthPrevWord(1));
+        assertEquals("a", ngramContext_a_empty.extractPrevWordsContext());
     }
 
     public void testExtractPrevWordsContextArray() {
         final NgramContext ngramContext_bos =
                 new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
         assertEquals("<S>", ngramContext_bos.extractPrevWordsContext());
+        assertEquals(1, ngramContext_bos.extractPrevWordsContextArray().length);
         final NgramContext ngramContext_a = new NgramContext(new WordInfo("a"));
         final NgramContext ngramContext_b_a =
                 ngramContext_a.getNextNgramContext(new WordInfo("b"));
+        assertEquals(2, ngramContext_b_a.extractPrevWordsContextArray().length);
         assertEquals("b", ngramContext_b_a.getNthPrevWord(1));
         assertEquals("a", ngramContext_b_a.getNthPrevWord(2));
         assertEquals("a", ngramContext_b_a.extractPrevWordsContextArray()[0]);
@@ -98,9 +107,17 @@ public class NgramContextTests extends AndroidTestCase {
         final NgramContext ngramContext_bos_b =
                 ngramContext_b_a.getNextNgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
         assertTrue(ngramContext_bos_b.isBeginningOfSentenceContext());
+        assertEquals(3, ngramContext_bos_b.extractPrevWordsContextArray().length);
         assertEquals("b", ngramContext_bos_b.getNthPrevWord(2));
         assertEquals("a", ngramContext_bos_b.extractPrevWordsContextArray()[0]);
         assertEquals("b", ngramContext_bos_b.extractPrevWordsContextArray()[1]);
         assertEquals("<S>", ngramContext_bos_b.extractPrevWordsContextArray()[2]);
+
+        final NgramContext ngramContext_empty = new NgramContext(WordInfo.EMPTY_WORD_INFO);
+        assertEquals(0, ngramContext_empty.extractPrevWordsContextArray().length);
+        final NgramContext ngramContext_a_empty =
+                ngramContext_empty.getNextNgramContext(new WordInfo("a"));
+        assertEquals(1, ngramContext_a_empty.extractPrevWordsContextArray().length);
+        assertEquals("a", ngramContext_a_empty.extractPrevWordsContextArray()[0]);
     }
 }
