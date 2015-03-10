@@ -33,7 +33,7 @@ public class ExecutorUtils {
 
     private static final String TAG = "ExecutorUtils";
 
-    private static final ScheduledExecutorService sExecutorService =
+    private static ScheduledExecutorService sExecutorService =
             Executors.newSingleThreadScheduledExecutor(new ExecutorFactory());
 
     private static class ExecutorFactory implements ThreadFactory {
@@ -80,6 +80,8 @@ public class ExecutorUtils {
         } catch (InterruptedException e) {
             Log.wtf(TAG, "Failed to shut down background task.");
             throw new IllegalStateException("Failed to shut down background task.");
+        } finally {
+            sExecutorService = Executors.newSingleThreadScheduledExecutor(new ExecutorFactory());
         }
     }
 
