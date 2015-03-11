@@ -85,11 +85,13 @@ public class ExecutorUtils {
         }
     }
 
+    @UsedForTesting
     public static Runnable chain(final Runnable... runnables) {
         return new RunnableChain(runnables);
     }
 
-    private static class RunnableChain implements Runnable {
+    @UsedForTesting
+    public static class RunnableChain implements Runnable {
         private final Runnable[] mRunnables;
 
         private RunnableChain(final Runnable... runnables) {
@@ -97,6 +99,10 @@ public class ExecutorUtils {
                 throw new IllegalArgumentException("Attempting to construct an empty chain");
             }
             mRunnables = runnables;
+        }
+
+        public Runnable[] getRunnables() {
+            return mRunnables;
         }
 
         @Override
