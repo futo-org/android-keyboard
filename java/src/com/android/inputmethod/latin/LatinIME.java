@@ -609,7 +609,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void refreshPersonalizationDictionarySession(
             final SettingsValues currentSettingsValues) {
-        // TODO: Remove all existing personalized dictionaries.
         mDictionaryFacilitator.setIsMonolingualUser(
                 mRichImm.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
         final boolean shouldKeepUserHistoryDictionaries;
@@ -621,7 +620,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!shouldKeepUserHistoryDictionaries) {
             // Remove user history dictionaries.
             PersonalizationHelper.removeAllUserHistoryDictionaries(this);
-            mDictionaryFacilitator.clearUserHistoryDictionary();
+            mDictionaryFacilitator.clearUserHistoryDictionary(this);
         }
     }
 
@@ -1802,7 +1801,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // DO NOT USE THIS for any other purpose than testing.
     @UsedForTesting
     /* package for test */ void clearPersonalizedDictionariesForTest() {
-        mDictionaryFacilitator.clearUserHistoryDictionary();
+        mDictionaryFacilitator.clearUserHistoryDictionary(this);
     }
 
     @UsedForTesting
