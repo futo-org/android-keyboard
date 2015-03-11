@@ -63,7 +63,7 @@ import javax.annotation.Nullable;
  */
 public final class KeyboardLayoutSet {
     private static final String TAG = KeyboardLayoutSet.class.getSimpleName();
-    private static final boolean DEBUG_CACHE = DebugFlags.DEBUG_ENABLED;
+    private static final boolean DEBUG_CACHE = false;
 
     private static final String TAG_KEYBOARD_SET = "KeyboardLayoutSet";
     private static final String TAG_ELEMENT = "Element";

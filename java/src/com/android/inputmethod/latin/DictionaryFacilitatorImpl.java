@@ -776,7 +776,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     @Override
-    public void clearUserHistoryDictionary() {
+    public void clearUserHistoryDictionary(final Context context) {
         clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
     }
 
