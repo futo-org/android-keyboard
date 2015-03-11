@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google Klaviatura Sinxronlaşması"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinxronlaşdırma yandırılıb"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Cihazlarda şəxsi lüğətinizi sinxronlaşdırın"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"İndi Sinxronlaşdır"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Klaviatura Bulud verilənləri sil"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google\'dan olan sinx datanızı siləcək."</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Sinxronlaşdırılmış verilənləriniz buluddan silinəcək. Əminsiniz?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Silin"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Ləğv et"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Şəxsi lüğətiniz sinxronlaşdırılacaq &amp; Google serverlərinə ehtiyat nüsxəsi çıxarılacaq. Söz tezliyinin statistik məlumatı məhsullarımızı təkmilləşdirmək üçün toplana bilər. Bütün məlumatların toplanması və istifadəsi "<a href="https://www.google.com/policies/privacy">"Google-un Məxfilik Siyasətinə"</a>" müvafiq olacaq."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Digər daxiletmə metodlarına keçin"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Dil keçid düyməsi başqa daxiletmə metodlarını da əhatə edir"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Dil keçidi düyməsi"</string>

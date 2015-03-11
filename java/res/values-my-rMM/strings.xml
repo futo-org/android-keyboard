@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google Keyboard စင့်လုပ်ရန်"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"စင့် ဖွင့်ထားသည်"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"သင့် ကိုယ်ပိုင်သုံး အဘိဓာန်အား စက်များအားလုံးတွင် စင့်လုပ်ရန်"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"ယခု စင့်ချိန်ကိုက်ညှိရန်"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"လက်ကွက် Cloud ဒေတာ ဖျက်ရန်"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"သင်၏ စင့်က် လုပ်ပြီးသား ဒေတာ Google ထဲမှ ဖျက်ခံရမည်။"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"သင့် စင့်လုပ်ထားသော ဒေတာများအား cloud မှ ဖျက်လိမ့်မည်။ သေချာသလား?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ဖျက်ရန်"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ဖျက်သိမ်းရန်"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"သင့် ကိုယ်ပိုင်သုံး အဘိဓာန်အား စင့်လုပ်ပြီး &amp; Google ဆာဗာများတွင် အရံသိမ်းဆည်းထားမည်။စာလုံးကြိမ်ရေဆိုင်ရာ စာရင်းအင်း အချက်အလက်များအား ကျွန်ုပ်တို့ ထုတ်လုပ်မည့်အရာအား တိုးတက်အောင်အကူအညီပေးနိုင်ရေးအတွက် စုဆောင်းထားနိုင်သည်။  အချက်အလက်များအားလုံးအား စုစည်းအသုံးပြုခြင်းသည် "<a href="https://www.google.com/policies/privacy">"Google ၏ ကိုယ်ရေးကိုယ်တာဆိုင်ရာ မူဝါဒ"</a>" နှင့်အညီ ဖြစ်ပါမည်။"</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"အခြားထည့်သွင်းမည့် နည်းလမ်းများသို့ ပြောင်းရန်"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ဘာသာပြောင်းသည့် ကီးသည် အခြားထည့်သွင်းရန် နည်းလမ်းများလည်း ပါဝင်သည်"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ဘာသာစကား ပြောင်းခလုတ်"</string>

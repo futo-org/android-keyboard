@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Đồng bộ hóa Bàn phím Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Đã bật tính năng đồng bộ hóa"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Đồng bộ hóa từ điển cá nhân của bạn trên các thiết bị"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Đồng bộ hóa ngay bây giờ"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Xóa dữ liệu khỏi đám mây bằng bàn phím"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Xóa dữ liệu đã được đồng bộ hóa của bạn khỏi Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Dữ liệu đã đồng bộ hóa của bạn sẽ bị xóa khỏi đám mây. Bạn có chắc chắn không?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Xóa"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Hủy"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Từ điển cá nhân của bạn sẽ được đồng bộ hóa và sao lưu vào máy chủ của Google. Chúng tôi có thể thu thập thông tin thống kê tần suất từ để giúp cải thiện sản phẩm của mình. Việc thu thập và sử dụng tất cả các thông tin sẽ tuân thủ "<a href="https://www.google.com/policies/privacy">"Chính sách bảo mật của Google"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Phương thức nhập khác"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Khóa chuyển ngôn ngữ bao gồm cả các phương thức nhập liệu khác"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Phím chuyển đổi ngôn ngữ"</string>

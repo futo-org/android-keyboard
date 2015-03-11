@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google klaviaturasini sinx-sh"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinxronlash yoqildi"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Shaxsiy lug‘atingizni qurilmalar bo‘ylab sinxronlang"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Hozir sinxronlash"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Bulutdagi ma’l-ni o‘chirish"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google xizmatlaridagi sinxronlangan ma’lumotlaringizni o‘chirib tashlaydi"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Sinxronlangan ma’lumotlaringiz o‘chib ketadi. Davom etsinmi?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"O‘chirish"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Bekor qilish"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Shaxsiy lug‘atingiz sinxronlanadi va Google serverlariga zaxiralanadi. Mahsulotlarni takomillashtirish maqsadida so‘zlardan foydalanish haqidagi statistik ma’lumotlar to‘planishi mumkin. Ushbu ma’lumotlarni to‘plash va ulardan foydalanish "<a href="https://www.google.com/policies/privacy">"Google Maxfiylik siyosatiga"</a>" muvofiq amalga oshiriladi."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Boshqa usullarga o‘tish"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tilni o‘zgartirish tugmasi matn kiritish usulini ham o‘zgartiradi"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tilni o‘zgartirish tugmasi"</string>

@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google কীবোর্ড সিঙ্ক"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"সিঙ্ক চালু করা হয়েছে"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ডিভাইস জুড়ে আপনার ব্যক্তিগত অভিধান সিঙ্ক করুন"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"এখন সিঙ্ক করুন"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"কীবোর্ড ক্লাউড ডেটা মুছুন"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google থেকে আপনার সিঙ্ক করা ডেটা মুছে ফেলে"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"আপনার সিঙ্ক করা ডেটা ক্লাউড থেকে মুছে ফেলা হবে৷ আপনি কি নিশ্চিত?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"মুছুন"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"বাতিল"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"আপনার ব্যক্তিগত অভিধান Google সার্ভারগুলিতে সিঙ্ক এবং ব্যাকআপ নেওয়া হবে৷ শব্দ ফ্রিকোয়েন্সির পরিসংখ্যানগত তথ্য আমাদের পণ্য উন্নতিতে সহায়তার জন্য সংগ্রহ করা হতে পারে৷ এই সংগ্রহ এবং সমস্ত তথ্যের ব্যবহার "<a href="https://www.google.com/policies/privacy">"Google এর গোপনীয়তা নীতি"</a>"-র সাথে সঙ্গতিশীল হবে৷"</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"অন্য ইনপুট পদ্ধতিতে স্যুইচ করুন"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ভাষা স্যুইচ কীতে অন্যান্য ইনপুট পদ্ধতি পাওয়া যায়"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ভাষা স্যুইচ কী"</string>

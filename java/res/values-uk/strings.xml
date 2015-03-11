@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Синхронізувати Клавіатуру Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронізацію ввімкнено"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронізувати особистий словник на різних пристроях"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Синхронізувати"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Видалити з хмари дані Клавіатури"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Видаляє з Google ваші синхронізовані дані"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Видалити з хмари синхронізовані дані?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Видалити"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Скасувати"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Ваш особистий словник буде синхронізовано із серверами Google. Ми можемо збирати статистичні дані про частоту пошуку слів, щоб покращити наші продукти. Збирання та використання даних регулюється "<a href="https://www.google.com/policies/privacy">"Політикою конфіденційності Google"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Інші методи введення"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавіша зміни мови дозволяє змінювати методи введення"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавіша зміни мови"</string>
