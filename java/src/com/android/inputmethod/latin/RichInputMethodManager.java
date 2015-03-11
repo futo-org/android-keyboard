@@ -334,11 +334,11 @@ public class RichInputMethodManager {
     }
 
     @Nonnull
-    public Locale[] getCurrentSubtypeLocales() {
+    public Locale getCurrentSubtypeLocale() {
         if (null != sForcedSubtypeForTesting) {
-            return sForcedSubtypeForTesting.getLocales();
+            return sForcedSubtypeForTesting.getLocale();
         }
-        return getCurrentSubtype().getLocales();
+        return getCurrentSubtype().getLocale();
     }
 
     @Nonnull

@@ -94,7 +94,7 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
             final boolean implicitlyEnabledSubtype, final Locale systemLocale,
             final int expectedFormat) {
         LanguageOnSpacebarUtils.onSubtypeChanged(subtype, implicitlyEnabledSubtype, systemLocale);
-        assertEquals(subtype.getLocales()[0] + " implicitly=" + implicitlyEnabledSubtype
+        assertEquals(subtype.getLocale() + " implicitly=" + implicitlyEnabledSubtype
                 + " in " + systemLocale, expectedFormat,
                 LanguageOnSpacebarUtils.getLanguageOnSpacebarFormatType(subtype));
     }

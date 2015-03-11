@@ -176,13 +176,13 @@ public final class Suggest {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
                 settingsValuesForSuggestion, SESSION_ID_TYPING, inputStyleIfNotPrediction);
-        final Locale mostProbableLocale = mDictionaryFacilitator.getMostProbableLocale();
+        final Locale locale = mDictionaryFacilitator.getLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
                         trailingSingleQuotesCount,
                         // For transforming suggestions that don't come for any dictionary, we
                         // use the currently most probable locale as it's our best bet.
-                        mostProbableLocale);
+                        locale);
 
         boolean typedWordExistsInAnotherLanguage = false;
         int qualityOfFoundSourceDictionary = QUALITY_NO_MATCH;
@@ -191,7 +191,7 @@ public final class Suggest {
             // Search for the best dictionary, defined as the first one with the highest match
             // quality we can find.
             if (typedWordString.equals(info.mWord)) {
-                if (mostProbableLocale.equals(info.mSourceDict.mLocale)) {
+                if (locale.equals(info.mSourceDict.mLocale)) {
                     if (qualityOfFoundSourceDictionary < QUALITY_MATCH_PREFERRED_LOCALE) {
                         // Use this source if the old match had lower quality than this match
                         sourceDictionaryOfRemovedWord = info.mSourceDict;
@@ -217,8 +217,7 @@ public final class Suggest {
                 getWhitelistedWordInfoOrNull(suggestionsContainer);
         final String whitelistedWord;
         if (null != whitelistedWordInfo &&
-                (mDictionaryFacilitator.isConfidentAboutCurrentLanguageBeing(
-                        whitelistedWordInfo.mSourceDict.mLocale)
+                (mDictionaryFacilitator.isForLocale(whitelistedWordInfo.mSourceDict.mLocale)
                 || (!typedWordExistsInAnotherLanguage
                         && !hasPlausibleCandidateInAnyOtherLanguage(suggestionsContainer,
                                 consideredWord, whitelistedWordInfo)))) {
@@ -351,7 +350,7 @@ public final class Suggest {
                 wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
                 settingsValuesForSuggestion, SESSION_ID_GESTURE, inputStyle);
         // For transforming words that don't come from a dictionary, because it's our best bet
-        final Locale defaultLocale = mDictionaryFacilitator.getMostProbableLocale();
+        final Locale locale = mDictionaryFacilitator.getLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
@@ -362,7 +361,7 @@ public final class Suggest {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
                 final Locale wordlocale = wordInfo.mSourceDict.mLocale;
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
-                        wordInfo, null == wordlocale ? defaultLocale : wordlocale, isAllUpperCase,
+                        wordInfo, null == wordlocale ? locale : wordlocale, isAllUpperCase,
                         isFirstCharCapitalized, 0 /* trailingSingleQuotesCount */);
                 suggestionsContainer.set(i, transformedWordInfo);
             }

@@ -843,15 +843,6 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     // Layout language name on spacebar.
     private String layoutLanguageOnSpacebar(final Paint paint,
             final RichInputMethodSubtype subtype, final int width) {
-        if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_MULTIPLE) {
-            final Locale[] locales = subtype.getLocales();
-            final String[] languages = new String[locales.length];
-            for (int i = 0; i < locales.length; ++i) {
-                languages[i] = locales[i].getLanguage().toUpperCase(Locale.ROOT);
-            }
-            return TextUtils.join(" / ", languages);
-        }
-
         // Choose appropriate language name to fit into the width.
         if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_FULL_LOCALE) {
             final String fullText = subtype.getFullDisplayName();

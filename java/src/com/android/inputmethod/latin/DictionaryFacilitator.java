@@ -72,11 +72,11 @@ public interface DictionaryFacilitator {
             Dictionary.TYPE_CONTACTS};
 
     /**
-     * Returns whether this facilitator is exactly for this list of locales.
+     * Returns whether this facilitator is exactly for this locale.
      *
-     * @param locales the list of locales to test against
+     * @param locale the locale to test against
      */
-    boolean isForLocales(final Locale[] locales);
+    boolean isForLocale(final Locale locale);
 
     /**
      * Returns whether this facilitator is exactly for this account.
@@ -91,25 +91,11 @@ public interface DictionaryFacilitator {
 
     boolean isActive();
 
-    /**
-     * Returns the most probable locale among all currently active locales. BE CAREFUL using this.
-     *
-     * DO NOT USE THIS just because it's convenient. Use it when it's correct, for example when
-     * choosing what dictionary to put a word in, or when changing the capitalization of a typed
-     * string.
-     * @return the most probable locale
-     */
-    Locale getMostProbableLocale();
-
-    Locale[] getLocales();
-
-    void switchMostProbableLanguage(@Nullable final Locale locale);
-
-    boolean isConfidentAboutCurrentLanguageBeing(final Locale mLocale);
+    Locale getLocale();
 
     void resetDictionaries(
             final Context context,
-            final Locale[] newLocales,
+            final Locale newLocale,
             final boolean useContactsDict,
             final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
@@ -120,7 +106,7 @@ public interface DictionaryFacilitator {
     @UsedForTesting
     void resetDictionariesForTesting(
             final Context context,
-            final Locale[] locales,
+            final Locale locale,
             final ArrayList<String> dictionaryTypes,
             final HashMap<String, File> dictionaryFiles,
             final Map<String, Map<String, String>> additionalDictAttributes,
