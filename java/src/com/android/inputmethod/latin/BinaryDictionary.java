@@ -216,7 +216,7 @@ public final class BinaryDictionary extends Dictionary {
             long newFormatVersion);
 
     // TODO: Move native dict into session
-    private final void loadDictionary(final String path, final long startOffset,
+    private void loadDictionary(final String path, final long startOffset,
             final long length, final boolean isUpdatable) {
         mHasUpdated = false;
         mNativeDict = openNative(path, startOffset, length, isUpdatable);
@@ -481,23 +481,6 @@ public final class BinaryDictionary extends Dictionary {
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         if (!addNgramEntryNative(mNativeDict, prevWordCodePointArrays,
                 isBeginningOfSentenceArray, wordCodePoints, probability, timestamp)) {
-            return false;
-        }
-        mHasUpdated = true;
-        return true;
-    }
-
-    // Remove an n-gram entry from the binary dictionary in native code.
-    public boolean removeNgramEntry(final NgramContext ngramContext, final String word) {
-        if (!ngramContext.isValid() || TextUtils.isEmpty(word)) {
-            return false;
-        }
-        final int[][] prevWordCodePointArrays = new int[ngramContext.getPrevWordCount()][];
-        final boolean[] isBeginningOfSentenceArray = new boolean[ngramContext.getPrevWordCount()];
-        ngramContext.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
-        final int[] wordCodePoints = StringUtils.toCodePointArray(word);
-        if (!removeNgramEntryNative(mNativeDict, prevWordCodePointArrays,
-                isBeginningOfSentenceArray, wordCodePoints)) {
             return false;
         }
         mHasUpdated = true;
