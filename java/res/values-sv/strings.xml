@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Synkronisera Googles tangentbord"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Synkroniseringen har aktiverats"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Synkronisera din personliga ordlista på dina enheter"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Synkronisera"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Radera tangentbordsdata i molnet"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Din synkroniserade data raderas från Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Din synkroniserade data raderas från molnet. Vill du fortsätta?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Radera"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Avbryt"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Din personliga ordbok synkroniseras och säkerhetskopieras till Googles servrar. Statistisk information om ordfrekvens kan samlas in och användas för att förbättra våra produkter. Insamlingen och användningen av all information sker i enlighet med "<a href="https://www.google.com/policies/privacy">"Googles sekretesspolicy"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Byt till annan inmatning"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Språkbytesknappen omfattar även andra inmatningsmetoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Knapp för att byta språk"</string>

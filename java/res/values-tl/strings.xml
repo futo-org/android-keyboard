@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Pag-sync ng Google Keyboard"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Naka-on ang pag-sync"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"I-sync ang iyong personal na diksyunaryo sa mga device"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"I-sync Ngayon"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"I-delete ang Keyboard Cloud data"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Dine-delete ang iyong naka-sync na data sa Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Ide-delete sa cloud ang iyong na-sync na data. Sigurado ka ba?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"I-delete"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Kanselahin"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Isi-sync at iba-back up sa mga server ng Google ang iyong personal na diksyunaryo. Maaaring kolektahin ang impormasyon ng istatistika ng dalas ng salita upang makatulong na mapahusay ang aming mga produkto. Ang pagkolekta at paggamit ng lahat ng impormasyon ay susunod sa "<a href="https://www.google.com/policies/privacy">"Patakaran sa Privacy ng Google"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Lipat iba paraan ng input"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Saklaw din ng key ng pagpalit ng wika ang ibang paraan ng input"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Key ng panlipat ng wika"</string>

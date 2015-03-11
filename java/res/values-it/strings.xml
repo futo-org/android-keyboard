@@ -37,13 +37,17 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Sincronizzazione tastiera Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"La sicronizzazione è attiva"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sincronizza il tuo dizionario personale sui dispositivi"</string>
-    <string name="sync_now_title" msgid="9061566866231227957">"Sincronizza ora"</string>
+    <!-- no translation found for sync_now_title (3088838136743277721) -->
+    <skip />
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Elimina dati tastiera da Cloud"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"I dati sincronizzati vengono eliminati da Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"I tuoi dati sincronizzati verranno eliminati dalla cloud. Vuoi procedere?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Elimina"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Annulla"</string>
-    <string name="cloud_sync_opt_in_text" msgid="8954652963668180621">"Il·tuo·dizionario personale verrà·sincronizzato e ne verrà effettuato il backup sui server di Google. Le informazioni·statistiche·relative alla frequenza delle·parole·potrebbero essere raccolte per migliorare i·nostri·prodotti. La·raccolta·e l\'utilizzo·di·tali informazioni·saranno·conformi·alle·"<a href="https://www.google.com/policies/privacy">"Norme·sulla privacy·di Google"</a>"."</string>
+    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Altri metodi immissione"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Il tasto per cambiare lingua offre altri metodi di immissione"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tasto cambio lingua"</string>
