@@ -89,9 +89,6 @@ public interface DictionaryFacilitator {
         void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
     }
 
-    // TODO: remove this, it's confusing with seamless multiple language switching
-    void setIsMonolingualUser(final boolean isMonolingualUser);
-
     boolean isActive();
 
     /**
@@ -164,10 +161,6 @@ public interface DictionaryFacilitator {
     boolean isValidSpellingWord(final String word);
 
     boolean isValidSuggestionWord(final String word);
-
-    int getFrequency(final String word);
-
-    int getMaxFrequencyOfExactMatches(final String word);
 
     void clearUserHistoryDictionary(final Context context);
 

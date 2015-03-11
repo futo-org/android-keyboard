@@ -230,10 +230,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public DictionaryFacilitatorImpl() {
     }
 
-    // TODO: remove this, it's confusing with seamless multiple language switching
-    public void setIsMonolingualUser(final boolean isMonolingualUser) {
-    }
-
     public boolean isActive() {
         return null != mDictionaryGroups[0].mLocale;
     }
@@ -730,8 +726,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return false;
     }
 
-    private int getFrequencyInternal(final String word,
-            final boolean isGettingMaxFrequencyOfExactMatches) {
+    private int getFrequency(final String word) {
         if (TextUtils.isEmpty(word)) {
             return Dictionary.NOT_A_PROBABILITY;
         }
@@ -741,28 +736,13 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             for (final String dictType : ALL_DICTIONARY_TYPES) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
                 if (dictionary == null) continue;
-                final int tempFreq;
-                if (isGettingMaxFrequencyOfExactMatches) {
-                    tempFreq = dictionary.getMaxFrequencyOfExactMatches(word);
-                } else {
-                    tempFreq = dictionary.getFrequency(word);
-                }
+                final int tempFreq = dictionary.getFrequency(word);
                 if (tempFreq >= maxFreq) {
                     maxFreq = tempFreq;
                 }
             }
         }
         return maxFreq;
-    }
-
-    @Override
-    public int getFrequency(final String word) {
-        return getFrequencyInternal(word, false /* isGettingMaxFrequencyOfExactMatches */);
-    }
-
-    @Override
-    public int getMaxFrequencyOfExactMatches(final String word) {
-        return getFrequencyInternal(word, true /* isGettingMaxFrequencyOfExactMatches */);
     }
 
     private void clearSubDictionary(final String dictName) {

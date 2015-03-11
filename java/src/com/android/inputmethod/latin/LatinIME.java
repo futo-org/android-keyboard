@@ -609,15 +609,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void refreshPersonalizationDictionarySession(
             final SettingsValues currentSettingsValues) {
-        mDictionaryFacilitator.setIsMonolingualUser(
-                mRichImm.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
-        final boolean shouldKeepUserHistoryDictionaries;
-        if (currentSettingsValues.mUsePersonalizedDicts) {
-            shouldKeepUserHistoryDictionaries = true;
-        } else {
-            shouldKeepUserHistoryDictionaries = false;
-        }
-        if (!shouldKeepUserHistoryDictionaries) {
+        if (!currentSettingsValues.mUsePersonalizedDicts) {
             // Remove user history dictionaries.
             PersonalizationHelper.removeAllUserHistoryDictionaries(this);
             mDictionaryFacilitator.clearUserHistoryDictionary(this);
