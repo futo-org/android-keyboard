@@ -37,11 +37,4 @@
         android:title="@string/gesture_preview_trail"
         android:defaultValue="true"
         android:persistent="true" />
-    <CheckBoxPreference
-        android:key="pref_gesture_space_aware"
-        android:dependency="gesture_input"
-        android:title="@string/gesture_space_aware"
-        android:summary="@string/gesture_space_aware_summary"
-        android:defaultValue="true"
-        android:persistent="true" />
 </PreferenceScreen>
