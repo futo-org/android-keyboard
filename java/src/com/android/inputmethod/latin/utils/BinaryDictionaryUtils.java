@@ -40,6 +40,7 @@ public final class BinaryDictionaryUtils {
         JniUtils.loadNativeLibrary();
     }
 
+    @UsedForTesting
     private static native boolean createEmptyDictFileNative(String filePath, long dictVersion,
             String locale, String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);

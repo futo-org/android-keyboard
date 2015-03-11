@@ -27,8 +27,6 @@ import org.junit.Test;
 @SmallTest
 public class KeyboardLayoutTest {
 
-    private KeyboardLayout mKeyboardLayout;
-
     @Test
     public void testNewKeyboardLayout() {
         KeyboardLayout keyboardLayout = KeyboardLayout
