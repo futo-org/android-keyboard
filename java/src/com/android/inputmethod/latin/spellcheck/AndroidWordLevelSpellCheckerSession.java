@@ -41,6 +41,7 @@ import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public abstract class AndroidWordLevelSpellCheckerSession extends Session {
@@ -259,7 +260,6 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             final String text = inText.replaceAll(
                     AndroidSpellCheckerService.APOSTROPHE, AndroidSpellCheckerService.SINGLE_QUOTE);
             final int capitalizeType = StringUtils.getCapitalizationType(text);
-            boolean isInDict = true;
             if (!mService.hasMainDictionaryForLocale(mLocale)) {
                 return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
                         false /* reportAsTypo */);
@@ -281,7 +281,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                     mLocale, composer.getComposedDataSnapshot(), ngramContext, keyboard);
             final Result result = getResult(capitalizeType, mLocale, suggestionsLimit,
                     mService.getRecommendedThreshold(), text, suggestionResults);
-            isInDict = isInDictForAnyCapitalization(text, capitalizeType);
+            final boolean isInDict = isInDictForAnyCapitalization(text, capitalizeType);
             if (DBG) {
                 Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
                         + suggestionsLimit);
@@ -329,8 +329,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     private static final class Result {
         public final String[] mSuggestions;
         public final boolean mHasRecommendedSuggestions;
-        public Result(final String[] gatheredSuggestions,
-                final boolean hasRecommendedSuggestions) {
+        public Result(final String[] gatheredSuggestions, final boolean hasRecommendedSuggestions) {
             mSuggestions = gatheredSuggestions;
             mHasRecommendedSuggestions = hasRecommendedSuggestions;
         }
@@ -364,14 +363,15 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         StringUtils.removeDupes(suggestions);
         // This returns a String[], while toArray() returns an Object[] which cannot be cast
         // into a String[].
+        final List<String> gatheredSuggestionsList =
+                suggestions.subList(0, Math.min(suggestions.size(), suggestionsLimit));
         final String[] gatheredSuggestions =
-                suggestions.subList(0, Math.min(suggestions.size(), suggestionsLimit))
-                        .toArray(EMPTY_STRING_ARRAY);
+                gatheredSuggestionsList.toArray(new String[gatheredSuggestionsList.size()]);
 
         final int bestScore = suggestionResults.first().mScore;
         final String bestSuggestion = suggestions.get(0);
         final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(
-                originalText, bestSuggestion.toString(), bestScore);
+                originalText, bestSuggestion, bestScore);
         final boolean hasRecommendedSuggestions = (normalizedScore > recommendedThreshold);
         if (DBG) {
             Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
@@ -390,8 +390,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
      * That's what the following method does.
      */
     @Override
-    public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
-            final int suggestionsLimit) {
+    public SuggestionsInfo onGetSuggestions(final TextInfo textInfo, final int suggestionsLimit) {
         long ident = Binder.clearCallingIdentity();
         try {
             return onGetSuggestionsInternal(textInfo, suggestionsLimit);

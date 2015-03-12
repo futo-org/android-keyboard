@@ -92,7 +92,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         }
     }
 
-    @Override public void onCreate() {
+    @Override
+    public void onCreate() {
         super.onCreate();
         mRecommendedThreshold =
                 Float.parseFloat(getString(R.string.spellchecker_recommended_threshold_value));
@@ -110,7 +111,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         }
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         if (DEBUG) {
             Log.d(TAG, "Closing and dereferencing mUserDictionaryLookup in onDestroy");
         }
