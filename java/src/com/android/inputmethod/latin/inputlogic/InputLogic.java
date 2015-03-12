@@ -534,29 +534,6 @@ public final class InputLogic {
             final InputPointers batchPointers,
             // TODO: remove these arguments
             final KeyboardSwitcher keyboardSwitcher) {
-        if (settingsValues.mPhraseGestureEnabled) {
-            final SuggestedWordInfo candidate = mSuggestedWords.getAutoCommitCandidate();
-            // If these suggested words have been generated with out of date input pointers, then
-            // we skip auto-commit (see comments above on the mSequenceNumber member).
-            if (null != candidate
-                    && mSuggestedWords.mSequenceNumber >= mAutoCommitSequenceNumber) {
-                if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
-                    final String[] commitParts = candidate.mWord.split(Constants.WORD_SEPARATOR, 2);
-                    batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
-                    if (SpaceState.PHANTOM == mSpaceState) {
-                        insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
-                    }
-                    mConnection.commitText(commitParts[0], 0);
-                    StatsUtils.onWordCommitUserTyped(commitParts[0], mWordComposer.isBatchMode());
-                    mSpaceState = SpaceState.PHANTOM;
-                    keyboardSwitcher.requestUpdatingShiftState(
-                            getCurrentAutoCapsState(settingsValues), getCurrentRecapitalizeState());
-                    mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode(
-                            settingsValues, keyboardSwitcher.getKeyboardShiftMode()));
-                    ++mAutoCommitSequenceNumber;
-                }
-            }
-        }
         mInputLogicHandler.onUpdateBatchInput(batchPointers, mAutoCommitSequenceNumber);
     }
 
@@ -1984,27 +1961,8 @@ public final class InputLogic {
         if (SpaceState.PHANTOM == mSpaceState) {
             insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
         }
-        final SuggestedWordInfo autoCommitCandidate = mSuggestedWords.getAutoCommitCandidate();
-        // Commit except the last word for phrase gesture if the top suggestion is eligible for auto
-        // commit.
-        if (settingsValues.mPhraseGestureEnabled && null != autoCommitCandidate) {
-            // Find the last space
-            final int indexOfLastSpace = batchInputText.lastIndexOf(Constants.CODE_SPACE) + 1;
-            if (0 != indexOfLastSpace) {
-                mConnection.commitText(batchInputText.substring(0, indexOfLastSpace), 1);
-                StatsUtils.onWordCommitUserTyped(
-                        batchInputText.substring(0, indexOfLastSpace), mWordComposer.isBatchMode());
-                final SuggestedWords suggestedWordsForLastWordOfPhraseGesture =
-                        suggestedWords.getSuggestedWordsForLastWordOfPhraseGesture();
-                mLatinIME.showSuggestionStrip(suggestedWordsForLastWordOfPhraseGesture);
-            }
-            final String lastWord = batchInputText.substring(indexOfLastSpace);
-            mWordComposer.setBatchInputWord(lastWord);
-            setComposingTextInternal(lastWord, 1);
-        } else {
-            mWordComposer.setBatchInputWord(batchInputText);
-            setComposingTextInternal(batchInputText, 1);
-        }
+        mWordComposer.setBatchInputWord(batchInputText);
+        setComposingTextInternal(batchInputText, 1);
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.PHANTOM;
@@ -2186,8 +2144,7 @@ public final class InputLogic {
                         // hence 2; if we aren't, we should just skip whitespace if any, so 1.
                         mWordComposer.isComposingWord() ? 2 : 1),
                 keyboard,
-                new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive,
-                        settingsValues.mPhraseGestureEnabled),
+                new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive),
                 settingsValues.mAutoCorrectionEnabledPerUserSettings,
                 inputStyle, sequenceNumber, callback);
     }

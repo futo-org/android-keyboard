@@ -43,10 +43,6 @@ public class NativeSuggestOptions {
         setBooleanOption(BLOCK_OFFENSIVE_WORDS, value);
     }
 
-    public void setSpaceAwareGestureEnabled(final boolean value) {
-        setBooleanOption(SPACE_AWARE_GESTURE_ENABLED, value);
-    }
-
     public void setWeightForLocale(final float value) {
         // We're passing this option as a fixed point value, in thousands. This is decoded in
         // native code by SuggestOptions#weightForLocale().

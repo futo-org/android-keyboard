@@ -79,8 +79,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     private float mRecommendedThreshold;
     // TODO: make a spell checker option to block offensive words or not
     private final SettingsValuesForSuggestion mSettingsValuesForSuggestion =
-            new SettingsValuesForSuggestion(true /* blockPotentiallyOffensive */,
-                    true /* spaceAwareGestureEnabled */);
+            new SettingsValuesForSuggestion(true /* blockPotentiallyOffensive */);
 
     public static final String SINGLE_QUOTE = "\u0027";
     public static final String APOSTROPHE = "\u2019";

@@ -90,7 +90,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_GESTURE_PREVIEW_TRAIL = "pref_gesture_preview_trail";
     public static final String PREF_GESTURE_FLOATING_PREVIEW_TEXT =
             "pref_gesture_floating_preview_text";
-    public static final String PREF_PHRASE_GESTURE_ENABLED = "pref_gesture_space_aware";
 
     public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
 
@@ -233,12 +232,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             final Resources res) {
         return readFromBuildConfigIfGestureInputEnabled(res)
                 && prefs.getBoolean(PREF_GESTURE_INPUT, true);
-    }
-
-    public static boolean readPhraseGestureEnabled(final SharedPreferences prefs,
-            final Resources res) {
-        return prefs.getBoolean(PREF_PHRASE_GESTURE_ENABLED,
-                res.getBoolean(R.bool.config_default_phrase_gesture_enabled));
     }
 
     public static boolean readFromBuildConfigIfToShowKeyPreviewPopupOption(final Resources res) {
