@@ -147,19 +147,14 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         for (final RichInputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
                     .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
-            final Locale[] locales = subtype.getLocales();
-            if (1 == locales.length) {
-                if (subtype.isNoLanguage()) {
-                    final String layoutName = SubtypeLocaleUtils
-                            .getKeyboardLayoutSetDisplayName(subtype.getRawSubtype());
-                    assertTrue(subtypeName, subtypeName.contains(layoutName));
-                } else {
-                    final String languageName = SubtypeLocaleUtils
-                            .getSubtypeLocaleDisplayNameInSystemLocale(locales[0].toString());
-                    assertTrue(subtypeName, subtypeName.contains(languageName));
-                }
+            if (subtype.isNoLanguage()) {
+                final String layoutName = SubtypeLocaleUtils
+                        .getKeyboardLayoutSetDisplayName(subtype.getRawSubtype());
+                assertTrue(subtypeName, subtypeName.contains(layoutName));
             } else {
-                // TODO: test multi-lingual subtype spacebar display
+                final String languageName = SubtypeLocaleUtils
+                        .getSubtypeLocaleDisplayNameInSystemLocale(subtype.getLocale().toString());
+                assertTrue(subtypeName, subtypeName.contains(languageName));
             }
         }
     }

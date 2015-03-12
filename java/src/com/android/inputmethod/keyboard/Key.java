@@ -287,7 +287,7 @@ public class Key implements Comparable<Key> {
         mLabelFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
                 | row.getDefaultKeyLabelFlags();
         final boolean needsToUpcase = needsToUpcase(mLabelFlags, params.mId.mElementId);
-        final Locale localeForUpcasing = params.mId.getLocales()[0];
+        final Locale localeForUpcasing = params.mId.getLocale();
         int actionFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
 

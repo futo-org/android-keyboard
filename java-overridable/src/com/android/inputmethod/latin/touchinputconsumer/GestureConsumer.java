@@ -23,7 +23,6 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.inputlogic.PrivateCommandPerformer;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -39,7 +38,7 @@ public class GestureConsumer {
 
     public static GestureConsumer newInstance(
             final EditorInfo editorInfo, final PrivateCommandPerformer commandPerformer,
-            final List<Locale> locales, final Keyboard keyboard) {
+            final Locale locale, final Keyboard keyboard) {
         return GestureConsumer.NULL_GESTURE_CONSUMER;
     }
 
@@ -50,10 +49,10 @@ public class GestureConsumer {
         return false;
     }
 
-    public void onInit(final List<Locale> locales, final Keyboard keyboard) {
+    public void onInit(final Locale locale, final Keyboard keyboard) {
     }
 
-    public void onGestureStarted(final List<Locale> locales, final Keyboard keyboard) {
+    public void onGestureStarted(final Locale locale, final Keyboard keyboard) {
     }
 
     public void onGestureCanceled() {

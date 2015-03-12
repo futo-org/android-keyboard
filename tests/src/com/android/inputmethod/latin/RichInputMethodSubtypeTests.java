@@ -164,17 +164,12 @@ public class RichInputMethodSubtypeTests extends AndroidTestCase {
             final String subtypeName = SubtypeLocaleUtils
                     .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
             final String spacebarText = subtype.getFullDisplayName();
-            final Locale[] locales = subtype.getLocales();
-            if (1 == locales.length) {
-                final String languageName = SubtypeLocaleUtils
-                        .getSubtypeLocaleDisplayName(locales[0].toString());
-                if (subtype.isNoLanguage()) {
-                    assertFalse(subtypeName, spacebarText.contains(languageName));
-                } else {
-                    assertTrue(subtypeName, spacebarText.contains(languageName));
-                }
+            final String languageName = SubtypeLocaleUtils
+                    .getSubtypeLocaleDisplayName(subtype.getLocale().toString());
+            if (subtype.isNoLanguage()) {
+                assertFalse(subtypeName, spacebarText.contains(languageName));
             } else {
-                // TODO: test multi-lingual subtype spacebar display
+                assertTrue(subtypeName, spacebarText.contains(languageName));
             }
         }
     }
@@ -183,12 +178,7 @@ public class RichInputMethodSubtypeTests extends AndroidTestCase {
         for (final RichInputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
                     .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
-            final Locale[] locales = subtype.getLocales();
-            if (locales.length > 1) {
-                // TODO: test multi-lingual subtype spacebar display
-                continue;
-            }
-            final Locale locale = locales[0];
+            final Locale locale = subtype.getLocale();
             final Locale displayLocale = SubtypeLocaleUtils.getDisplayLocaleOfSubtypeLocale(
                     locale.toString());
             if (Locale.ROOT.equals(displayLocale)) {
