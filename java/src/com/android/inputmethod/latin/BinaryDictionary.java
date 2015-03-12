@@ -292,8 +292,6 @@ public final class BinaryDictionary extends Dictionary {
         session.mNativeSuggestOptions.setIsGesture(isGesture);
         session.mNativeSuggestOptions.setBlockOffensiveWords(
                 settingsValuesForSuggestion.mBlockPotentiallyOffensive);
-        session.mNativeSuggestOptions.setSpaceAwareGestureEnabled(
-                settingsValuesForSuggestion.mSpaceAwareGestureEnabled);
         session.mNativeSuggestOptions.setWeightForLocale(weightForLocale);
         if (inOutWeightOfLangModelVsSpatialModel != null) {
             session.mInputOutputWeightOfLangModelVsSpatialModel[0] =

@@ -77,7 +77,6 @@ public class SettingsValues {
     public final boolean mGestureTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
     public final boolean mSlidingKeyInputPreviewEnabled;
-    public final boolean mPhraseGestureEnabled;
     public final int mKeyLongpressTimeout;
     public final boolean mEnableEmojiAltPhysicalKey;
     public final boolean mEnableMetricsLogging;
@@ -174,7 +173,6 @@ public class SettingsValues {
                 null /* default */);
         mGestureFloatingPreviewTextEnabled = !mInputAttributes.mDisableGestureFloatingPreviewText
                 && prefs.getBoolean(Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
-        mPhraseGestureEnabled = Settings.readPhraseGestureEnabled(prefs, res);
         mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
                 && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
@@ -389,8 +387,6 @@ public class SettingsValues {
         sb.append("" + mGestureFloatingPreviewTextEnabled);
         sb.append("\n   mSlidingKeyInputPreviewEnabled = ");
         sb.append("" + mSlidingKeyInputPreviewEnabled);
-        sb.append("\n   mPhraseGestureEnabled = ");
-        sb.append("" + mPhraseGestureEnabled);
         sb.append("\n   mKeyLongpressTimeout = ");
         sb.append("" + mKeyLongpressTimeout);
         sb.append("\n   mLocale = ");
