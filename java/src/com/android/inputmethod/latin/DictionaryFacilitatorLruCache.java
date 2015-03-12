@@ -68,7 +68,7 @@ public class DictionaryFacilitatorLruCache {
         // Nothing to do if the locale is null.  This would be the case before any get() calls.
         if (mLocale != null) {
           // Note: Given that personalized dictionaries are not used here; we can pass null account.
-          mDictionaryFacilitator.resetDictionaries(mContext, new Locale[]{mLocale},
+          mDictionaryFacilitator.resetDictionaries(mContext, mLocale,
               mUseContactsDictionary, false /* usePersonalizedDicts */,
               false /* forceReloadMainDictionary */, null /* account */,
               mDictionaryNamePrefix, null /* listener */);
@@ -89,7 +89,7 @@ public class DictionaryFacilitatorLruCache {
 
     public DictionaryFacilitator get(final Locale locale) {
         synchronized (mLock) {
-            if (!mDictionaryFacilitator.isForLocales(new Locale[]{locale})) {
+            if (!mDictionaryFacilitator.isForLocale(locale)) {
                 mLocale = locale;
                 resetDictionariesForLocaleLocked();
             }

@@ -29,28 +29,14 @@ public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
 
         final DictionaryFacilitator dictionaryFacilitatorEnUs = cache.get(Locale.US);
         assertNotNull(dictionaryFacilitatorEnUs);
-        assertTrue(dictionaryFacilitatorEnUs.isForLocales(new Locale[] { Locale.US }));
+        assertTrue(dictionaryFacilitatorEnUs.isForLocale(Locale.US));
 
         final DictionaryFacilitator dictionaryFacilitatorFr = cache.get(Locale.FRENCH);
         assertNotNull(dictionaryFacilitatorEnUs);
-        assertTrue(dictionaryFacilitatorFr.isForLocales(new Locale[] { Locale.FRENCH }));
+        assertTrue(dictionaryFacilitatorFr.isForLocale(Locale.FRENCH));
 
         final DictionaryFacilitator dictionaryFacilitatorDe = cache.get(Locale.GERMANY);
         assertNotNull(dictionaryFacilitatorDe);
-        assertTrue(dictionaryFacilitatorDe.isForLocales(new Locale[] { Locale.GERMANY }));
-    }
-
-    public void testSetUseContactsDictionary() {
-        final DictionaryFacilitatorLruCache cache =
-                new DictionaryFacilitatorLruCache(getContext(), "");
-
-        assertNull(cache.get(Locale.US).getSubDictForTesting(Dictionary.TYPE_CONTACTS));
-        cache.setUseContactsDictionary(true /* useContactsDictionary */);
-        assertNotNull(cache.get(Locale.US).getSubDictForTesting(Dictionary.TYPE_CONTACTS));
-        assertNotNull(cache.get(Locale.FRENCH).getSubDictForTesting(Dictionary.TYPE_CONTACTS));
-        assertNotNull(cache.get(Locale.GERMANY).getSubDictForTesting(Dictionary.TYPE_CONTACTS));
-        cache.setUseContactsDictionary(false /* useContactsDictionary */);
-        assertNull(cache.get(Locale.GERMANY).getSubDictForTesting(Dictionary.TYPE_CONTACTS));
-        assertNull(cache.get(Locale.US).getSubDictForTesting(Dictionary.TYPE_CONTACTS));
+        assertTrue(dictionaryFacilitatorDe.isForLocale(Locale.GERMANY));
     }
 }

@@ -588,19 +588,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Has to be package-visible for unit tests
     @UsedForTesting
     void loadSettings() {
-        final Locale[] locales = mRichImm.getCurrentSubtypeLocales();
+        final Locale locale = mRichImm.getCurrentSubtypeLocale();
         final EditorInfo editorInfo = getCurrentInputEditorInfo();
         final InputAttributes inputAttributes = new InputAttributes(
                 editorInfo, isFullscreenMode(), getPackageName());
-        // TODO: pass the array instead
-        mSettings.loadSettings(this, locales[0], inputAttributes);
+        mSettings.loadSettings(this, locale, inputAttributes);
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(currentSettingsValues);
         // This method is called on startup and language switch, before the new layout has
         // been displayed. Opening dictionaries never affects responsivity as dictionaries are
         // asynchronously loaded.
         if (!mHandler.hasPendingReopenDictionaries()) {
-            resetDictionaryFacilitator(locales);
+            resetDictionaryFacilitator(locale);
         }
         refreshPersonalizationDictionarySession(currentSettingsValues);
         resetDictionaryFacilitatorIfNecessary();
@@ -630,35 +629,35 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     void resetDictionaryFacilitatorIfNecessary() {
-        final Locale[] subtypeSwitcherLocales = mRichImm.getCurrentSubtypeLocales();
-        if (mDictionaryFacilitator.isForLocales(subtypeSwitcherLocales)
-                && mDictionaryFacilitator.isForAccount(mSettings.getCurrent().mAccount)) {
-            return;
-        }
-        final Locale[] subtypeLocales;
-        if (0 == subtypeSwitcherLocales.length) {
+        final Locale subtypeSwitcherLocale = mRichImm.getCurrentSubtypeLocale();
+        final Locale subtypeLocale;
+        if (subtypeSwitcherLocale == null) {
             // This happens in very rare corner cases - for example, immediately after a switch
             // to LatinIME has been requested, about a frame later another switch happens. In this
             // case, we are about to go down but we still don't know it, however the system tells
             // us there is no current subtype.
             Log.e(TAG, "System is reporting no current subtype.");
-            subtypeLocales = new Locale[] { getResources().getConfiguration().locale };
+            subtypeLocale = getResources().getConfiguration().locale;
         } else {
-            subtypeLocales = subtypeSwitcherLocales;
+            subtypeLocale = subtypeSwitcherLocale;
         }
-        resetDictionaryFacilitator(subtypeLocales);
+        if (mDictionaryFacilitator.isForLocale(subtypeLocale)
+                && mDictionaryFacilitator.isForAccount(mSettings.getCurrent().mAccount)) {
+            return;
+        }
+        resetDictionaryFacilitator(subtypeLocale);
     }
 
     /**
-     * Reset the facilitator by loading dictionaries for the locales and
+     * Reset the facilitator by loading dictionaries for the given locale and
      * the current settings values.
      *
-     * @param locales the locales
+     * @param locale the locale
      */
     // TODO: make sure the current settings always have the right locales, and read from them.
-    private void resetDictionaryFacilitator(final Locale[] locales) {
+    private void resetDictionaryFacilitator(final Locale locale) {
         final SettingsValues settingsValues = mSettings.getCurrent();
-        mDictionaryFacilitator.resetDictionaries(this /* context */, locales,
+        mDictionaryFacilitator.resetDictionaries(this /* context */, locale,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
                 false /* forceReloadMainDictionary */,
                 settingsValues.mAccount, "" /* dictNamePrefix */,
@@ -676,7 +675,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /* package private */ void resetSuggestMainDict() {
         final SettingsValues settingsValues = mSettings.getCurrent();
         mDictionaryFacilitator.resetDictionaries(this /* context */,
-                mDictionaryFacilitator.getLocales(), settingsValues.mUseContactsDict,
+                mDictionaryFacilitator.getLocale(), settingsValues.mUseContactsDict,
                 settingsValues.mUsePersonalizedDicts,
                 true /* forceReloadMainDictionary */,
                 settingsValues.mAccount, "" /* dictNamePrefix */,
@@ -843,7 +842,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Update to a gesture consumer with the current editor and IME state.
         mGestureConsumer = GestureConsumer.newInstance(editorInfo,
                 mInputLogic.getPrivateCommandPerformer(),
-                Arrays.asList(mRichImm.getCurrentSubtypeLocales()),
+                mRichImm.getCurrentSubtypeLocale(),
                 switcher.getKeyboard());
 
         // Forward this event to the accessibility utilities, if enabled.
@@ -1379,7 +1378,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onStartBatchInput() {
         mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
         mGestureConsumer.onGestureStarted(
-                Arrays.asList(mRichImm.getCurrentSubtypeLocales()),
+                mRichImm.getCurrentSubtypeLocale(),
                 mKeyboardSwitcher.getKeyboard());
     }
 
@@ -1767,23 +1766,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO: can this be removed somehow without breaking the tests?
     @UsedForTesting
-    /* package for test */ SuggestedWords getSuggestedWordsForTest() {
+    SuggestedWords getSuggestedWordsForTest() {
         // You may not use this method for anything else than debug
         return DebugFlags.DEBUG_ENABLED ? mInputLogic.mSuggestedWords : null;
     }
 
     // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
     @UsedForTesting
-    /* package for test */ void waitForLoadingDictionaries(final long timeout, final TimeUnit unit)
+    void waitForLoadingDictionaries(final long timeout, final TimeUnit unit)
             throws InterruptedException {
         mDictionaryFacilitator.waitForLoadingDictionariesForTesting(timeout, unit);
     }
 
     // DO NOT USE THIS for any other purpose than testing. This can break the keyboard badly.
     @UsedForTesting
-    /* package for test */ void replaceDictionariesForTest(final Locale locale) {
+    void replaceDictionariesForTest(final Locale locale) {
         final SettingsValues settingsValues = mSettings.getCurrent();
-        mDictionaryFacilitator.resetDictionaries(this, new Locale[] { locale },
+        mDictionaryFacilitator.resetDictionaries(this, locale,
             settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
             false /* forceReloadMainDictionary */,
             settingsValues.mAccount, "", /* dictionaryNamePrefix */
@@ -1792,12 +1791,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // DO NOT USE THIS for any other purpose than testing.
     @UsedForTesting
-    /* package for test */ void clearPersonalizedDictionariesForTest() {
+    void clearPersonalizedDictionariesForTest() {
         mDictionaryFacilitator.clearUserHistoryDictionary(this);
     }
 
     @UsedForTesting
-    /* package for test */ List<InputMethodSubtype> getEnabledSubtypesForTest() {
+    List<InputMethodSubtype> getEnabledSubtypesForTest() {
         return (mRichImm != null) ? mRichImm.getMyEnabledInputMethodSubtypeList(
                 true /* allowsImplicitlySelectedSubtypes */) : new ArrayList<InputMethodSubtype>();
     }

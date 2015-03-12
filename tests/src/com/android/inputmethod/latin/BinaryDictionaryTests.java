@@ -1102,25 +1102,4 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(bigramProbability,
                 binaryDictionary.getNgramProbability(beginningOfSentenceContext, "bbb"));
     }
-
-    public void testGetMaxFrequencyOfExactMatches() {
-        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
-            testGetMaxFrequencyOfExactMatches(formatVersion);
-        }
-    }
-
-    private void testGetMaxFrequencyOfExactMatches(final int formatVersion) {
-        final BinaryDictionary binaryDictionary = getEmptyBinaryDictionary(formatVersion);
-        addUnigramWord(binaryDictionary, "abc", 10);
-        addUnigramWord(binaryDictionary, "aBc", 15);
-        assertEquals(15, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
-        addUnigramWord(binaryDictionary, "ab'c", 20);
-        assertEquals(20, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
-        addUnigramWord(binaryDictionary, "a-b-c", 25);
-        assertEquals(25, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
-        addUnigramWord(binaryDictionary, "ab-'-'-'-c", 30);
-        assertEquals(30, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
-        addUnigramWord(binaryDictionary, "ab c", 255);
-        assertEquals(30, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
-    }
 }

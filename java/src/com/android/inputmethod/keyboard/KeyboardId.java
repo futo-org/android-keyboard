@@ -164,8 +164,8 @@ public final class KeyboardId {
         return InputTypeUtils.getImeOptionsActionIdFromEditorInfo(mEditorInfo);
     }
 
-    public Locale[] getLocales() {
-        return mSubtype.getLocales();
+    public Locale getLocale() {
+        return mSubtype.getLocale();
     }
 
     @Override
@@ -182,7 +182,7 @@ public final class KeyboardId {
     public String toString() {
         return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s%s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
-                Arrays.deepToString(mSubtype.getLocales()),
+                mSubtype.getLocale(),
                 mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
                 mWidth, mHeight,
                 modeName(mMode),

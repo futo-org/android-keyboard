@@ -33,7 +33,6 @@ public final class LanguageOnSpacebarUtils {
     public static final int FORMAT_TYPE_NONE = 0;
     public static final int FORMAT_TYPE_LANGUAGE_ONLY = 1;
     public static final int FORMAT_TYPE_FULL_LOCALE = 2;
-    public static final int FORMAT_TYPE_MULTIPLE = 3;
 
     private static List<InputMethodSubtype> sEnabledSubtypes = Collections.emptyList();
     private static boolean sIsSystemLanguageSameAsInputLanguage;
@@ -51,11 +50,11 @@ public final class LanguageOnSpacebarUtils {
         if (sEnabledSubtypes.size() < 2 && sIsSystemLanguageSameAsInputLanguage) {
             return FORMAT_TYPE_NONE;
         }
-        final Locale[] locales = subtype.getLocales();
-        if (1 < locales.length) {
-            return FORMAT_TYPE_MULTIPLE;
+        final Locale locale = subtype.getLocale();
+        if (locale == null) {
+            return FORMAT_TYPE_NONE;
         }
-        final String keyboardLanguage = locales[0].getLanguage();
+        final String keyboardLanguage = locale.getLanguage();
         final String keyboardLayout = subtype.getKeyboardLayoutSetName();
         int sameLanguageAndLayoutCount = 0;
         for (final InputMethodSubtype ims : sEnabledSubtypes) {
@@ -77,14 +76,7 @@ public final class LanguageOnSpacebarUtils {
 
     public static void onSubtypeChanged(@Nonnull final RichInputMethodSubtype subtype,
            final boolean implicitlyEnabledSubtype, @Nonnull final Locale systemLocale) {
-        final Locale[] newLocales = subtype.getLocales();
-        if (newLocales.length > 1) {
-            // In multi-locales mode, the system language is never the same as the input language
-            // because there is no single input language.
-            sIsSystemLanguageSameAsInputLanguage = false;
-            return;
-        }
-        final Locale newLocale = newLocales[0];
+        final Locale newLocale = subtype.getLocale();
         if (systemLocale.equals(newLocale)) {
             sIsSystemLanguageSameAsInputLanguage = true;
             return;

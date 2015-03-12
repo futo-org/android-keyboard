@@ -26,7 +26,6 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -43,14 +42,11 @@ public final class RichInputMethodSubtype {
     @Nonnull
     private final InputMethodSubtype mSubtype;
     @Nonnull
-    private final Locale[] mLocales;
+    private final Locale mLocale;
 
-    public RichInputMethodSubtype(@Nonnull final InputMethodSubtype subtype,
-            @Nonnull final Locale... locales) {
+    public RichInputMethodSubtype(@Nonnull final InputMethodSubtype subtype) {
         mSubtype = subtype;
-        mLocales = new Locale[locales.length + 1];
-        mLocales[0] = LocaleUtils.constructLocaleFromString(mSubtype.getLocale());
-        System.arraycopy(locales, 0, mLocales, 1, locales.length);
+        mLocale = LocaleUtils.constructLocaleFromString(mSubtype.getLocale());
     }
 
     // Extra values are determined by the primary subtype. This is probably right, but
@@ -65,9 +61,6 @@ public final class RichInputMethodSubtype {
     }
 
     public boolean isNoLanguage() {
-        if (mLocales.length > 1) {
-            return false;
-        }
         return SubtypeLocaleUtils.NO_LANGUAGE.equals(mSubtype.getLocale());
     }
 
@@ -116,27 +109,27 @@ public final class RichInputMethodSubtype {
             return false;
         }
         final RichInputMethodSubtype other = (RichInputMethodSubtype)o;
-        return mSubtype.equals(other.mSubtype) && Arrays.equals(mLocales, other.mLocales);
+        return mSubtype.equals(other.mSubtype) && mLocale.equals(other.mLocale);
     }
 
     @Override
     public int hashCode() {
-        return mSubtype.hashCode() + Arrays.hashCode(mLocales);
+        return mSubtype.hashCode() + mLocale.hashCode();
     }
 
     @Override
     public String toString() {
-        return "Multi-lingual subtype: " + mSubtype.toString() + ", " + Arrays.toString(mLocales);
+        return "Multi-lingual subtype: " + mSubtype + ", " + mLocale;
     }
 
     @Nonnull
-    public Locale[] getLocales() {
-        return mLocales;
+    public Locale getLocale() {
+        return mLocale;
     }
 
     public boolean isRtlSubtype() {
         // The subtype is considered RTL if the language of the main subtype is RTL.
-        return LocaleUtils.isRtlLanguage(mLocales[0]);
+        return LocaleUtils.isRtlLanguage(mLocale);
     }
 
     // TODO: remove this method
