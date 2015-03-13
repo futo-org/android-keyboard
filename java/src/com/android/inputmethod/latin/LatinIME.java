@@ -94,7 +94,6 @@ import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -1255,7 +1254,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
     @Override
     public void onClickSettingsOfImportantNoticeDialog(final int nextVersion) {
-        launchSettings();
+        launchSettings(SettingsActivity.EXTRA_ENTRY_VALUE_NOTICE_DIALOG);
     }
 
     // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
@@ -1692,7 +1691,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     };
 
-    void launchSettings() {
+    void launchSettings(final String extraEntryValue) {
         mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
@@ -1705,6 +1704,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(SettingsActivity.EXTRA_SHOW_HOME_AS_UP, false);
+        intent.putExtra(SettingsActivity.EXTRA_ENTRY_KEY, extraEntryValue);
         startActivity(intent);
     }
 
@@ -1732,7 +1732,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     startActivity(intent);
                     break;
                 case 1:
-                    launchSettings();
+                    launchSettings(SettingsActivity.EXTRA_ENTRY_VALUE_LONG_PRESS_COMMA);
                     break;
                 }
             }
