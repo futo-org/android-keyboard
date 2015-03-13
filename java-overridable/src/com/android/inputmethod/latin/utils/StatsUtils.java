@@ -95,4 +95,7 @@ public final class StatsUtils {
     public static void onSubtypeChanged(final InputMethodSubtype oldSubtype,
             final InputMethodSubtype newSubtype) {
     }
+
+    public static void onSettingsActivity(final String entryPoint) {
+    }
 }
