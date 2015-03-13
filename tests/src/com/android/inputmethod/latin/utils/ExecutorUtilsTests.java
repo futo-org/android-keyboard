@@ -35,7 +35,8 @@ public class ExecutorUtilsTests extends AndroidTestCase {
     private static final int DELAY_FOR_WAITING_TASKS_MILLISECONDS = 500;
 
     public void testExecute() {
-        final ExecutorService executor = ExecutorUtils.getBackgroundExecutor();
+        final ExecutorService executor =
+                ExecutorUtils.getBackgroundExecutor(ExecutorUtils.KEYBOARD);
         final AtomicInteger v = new AtomicInteger(0);
         for (int i = 0; i < NUM_OF_TASKS; ++i) {
             executor.execute(new Runnable() {
