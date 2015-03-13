@@ -33,17 +33,30 @@ public class ExecutorUtils {
 
     private static final String TAG = "ExecutorUtils";
 
-    private static ScheduledExecutorService sExecutorService =
-            Executors.newSingleThreadScheduledExecutor(new ExecutorFactory());
+    public static final String KEYBOARD = "Keyboard";
+    public static final String SPELLING = "Spelling";
+
+    private static ScheduledExecutorService sKeyboardExecutorService = newExecutorService(KEYBOARD);
+    private static ScheduledExecutorService sSpellingExecutorService = newExecutorService(SPELLING);
+
+    private static ScheduledExecutorService newExecutorService(final String name) {
+        return Executors.newSingleThreadScheduledExecutor(new ExecutorFactory(name));
+    }
 
     private static class ExecutorFactory implements ThreadFactory {
+        private final String mName;
+
+        private ExecutorFactory(final String name) {
+            mName = name;
+        }
+
         @Override
         public Thread newThread(final Runnable runnable) {
             Thread thread = new Thread(runnable, TAG);
             thread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
                 @Override
                 public void uncaughtException(Thread thread, Throwable ex) {
-                    Log.w(TAG + "-" + runnable.getClass().getSimpleName(), ex);
+                    Log.w(mName + "-" + runnable.getClass().getSimpleName(), ex);
                 }
             });
             return thread;
@@ -64,24 +77,44 @@ public class ExecutorUtils {
     //
 
     /**
+     * @param name Executor's name.
      * @return scheduled executor service used to run background tasks
      */
-    public static ScheduledExecutorService getBackgroundExecutor() {
+    public static ScheduledExecutorService getBackgroundExecutor(final String name) {
         if (sExecutorServiceForTests != null) {
             return sExecutorServiceForTests;
         }
-        return sExecutorService;
+        switch (name) {
+            case KEYBOARD:
+                return sKeyboardExecutorService;
+            case SPELLING:
+                return sSpellingExecutorService;
+            default:
+                throw new IllegalArgumentException("Invalid executor: " + name);
+        }
     }
 
-    public static void killTasks() {
-        getBackgroundExecutor().shutdownNow();
+    public static void killTasks(final String name) {
+        final ScheduledExecutorService executorService = getBackgroundExecutor(name);
+        executorService.shutdownNow();
         try {
-            getBackgroundExecutor().awaitTermination(5, TimeUnit.SECONDS);
+            executorService.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            Log.wtf(TAG, "Failed to shut down background task.");
-            throw new IllegalStateException("Failed to shut down background task.");
-        } finally {
-            sExecutorService = Executors.newSingleThreadScheduledExecutor(new ExecutorFactory());
+            Log.wtf(TAG, "Failed to shut down: " + name);
+        }
+        if (executorService == sExecutorServiceForTests) {
+            // Don't do anything to the test service.
+            return;
+        }
+        switch (name) {
+            case KEYBOARD:
+                sKeyboardExecutorService = newExecutorService(KEYBOARD);
+                break;
+            case SPELLING:
+                sSpellingExecutorService = newExecutorService(SPELLING);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid executor: " + name);
         }
     }
 

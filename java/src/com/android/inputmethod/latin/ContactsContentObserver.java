@@ -56,8 +56,8 @@ public class ContactsContentObserver implements Runnable {
         mContentObserver = new ContentObserver(null /* handler */) {
             @Override
             public void onChange(boolean self) {
-                // TODO(zivkovic): Schedule a separate task to reset the decoder.
-                ExecutorUtils.getBackgroundExecutor().execute(ContactsContentObserver.this);
+                ExecutorUtils.getBackgroundExecutor(ExecutorUtils.KEYBOARD)
+                        .execute(ContactsContentObserver.this);
             }
         };
         final ContentResolver contentResolver = mContext.getContentResolver();

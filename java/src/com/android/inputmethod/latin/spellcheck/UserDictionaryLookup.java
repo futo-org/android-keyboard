@@ -143,8 +143,8 @@ public class UserDictionaryLookup implements Closeable {
             }
 
             // Schedule a new reload after RELOAD_DELAY_MS.
-            mReloadFuture = ExecutorUtils.getBackgroundExecutor().schedule(
-                    mLoader, RELOAD_DELAY_MS, TimeUnit.MILLISECONDS);
+            mReloadFuture = ExecutorUtils.getBackgroundExecutor(ExecutorUtils.SPELLING)
+                    .schedule(mLoader, RELOAD_DELAY_MS, TimeUnit.MILLISECONDS);
         }
     }
     private final ContentObserver mObserver = new UserDictionaryContentObserver();
@@ -186,7 +186,7 @@ public class UserDictionaryLookup implements Closeable {
         // Schedule the initial load to run immediately.  It's possible that the first call to
         // isValidWord occurs before the dictionary has actually loaded, so it should not
         // assume that the dictionary has been loaded.
-        ExecutorUtils.getBackgroundExecutor().execute(mLoader);
+        ExecutorUtils.getBackgroundExecutor(ExecutorUtils.SPELLING).execute(mLoader);
 
         // Register the observer to be notified on changes to the UserDictionary and all individual
         // items.

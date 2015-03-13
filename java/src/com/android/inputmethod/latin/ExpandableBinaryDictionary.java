@@ -168,7 +168,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private static void asyncExecuteTaskWithLock(final Lock lock, final Runnable task) {
-        ExecutorUtils.getBackgroundExecutor().execute(new Runnable() {
+        ExecutorUtils.getBackgroundExecutor(ExecutorUtils.KEYBOARD).execute(new Runnable() {
             @Override
             public void run() {
                 lock.lock();
