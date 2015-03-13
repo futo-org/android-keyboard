@@ -19,10 +19,12 @@ package com.android.inputmethod.latin.settings;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
@@ -59,6 +61,8 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
         final Context context = getActivity();
         final PackageManager pm = context.getPackageManager();
 
+        ensureConsistencyOfAutoCorrectionSettings();
+
         final Preference dictionaryLink = findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
         final Intent intent = dictionaryLink.getIntent();
         intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
@@ -75,6 +79,19 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
                         editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
         if (ri == null) {
             overwriteUserDictionaryPreference(editPersonalDictionary);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
+        ensureConsistencyOfAutoCorrectionSettings();
+    }
+
+    private void ensureConsistencyOfAutoCorrectionSettings() {
+        final CheckBoxPreference autoCorrectionPref = (CheckBoxPreference) findPreference(
+                Settings.PREF_AUTO_CORRECTION);
+        if (!autoCorrectionPref.isChecked()) {
+            setPreferenceEnabled(Settings.PREF_BIGRAM_PREDICTIONS, false);
         }
     }
 
