@@ -58,7 +58,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     // Default value for auto-correction threshold. This is the string representation of the
     // index in the resources array of auto-correction threshold settings.
-    private static final String DEFAULT_AUTO_CORRECTION_THRESHOLD = "1";
+    private static final boolean DEFAULT_AUTO_CORRECTION = true;
 
     // The message that sets the underline is posted with a 500 ms delay
     protected static final int DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS = 500;
@@ -77,7 +77,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     protected MyEditText mEditText;
     protected View mInputView;
     protected InputConnection mInputConnection;
-    private String mPreviousAutoCorrectSetting;
+    private boolean mPreviousAutoCorrectSetting;
 
     // A helper class to ease span tests
     public static class SpanGetter {
@@ -200,8 +200,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         setupService();
         mLatinIME = getService();
         setDebugMode(true);
-        mPreviousAutoCorrectSetting = setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD,
-                DEFAULT_AUTO_CORRECTION_THRESHOLD, DEFAULT_AUTO_CORRECTION_THRESHOLD);
+        mPreviousAutoCorrectSetting = setBooleanPreference(Settings.PREF_AUTO_CORRECTION,
+                DEFAULT_AUTO_CORRECTION, DEFAULT_AUTO_CORRECTION);
         mLatinIME.onCreate();
         EditorInfo ei = new EditorInfo();
         final InputConnection ic = mEditText.onCreateInputConnection(ei);
@@ -230,8 +230,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mLatinIME.onFinishInput();
         runMessages();
         mLatinIME.mHandler.removeAllMessages();
-        setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD, mPreviousAutoCorrectSetting,
-                DEFAULT_AUTO_CORRECTION_THRESHOLD);
+        setBooleanPreference(Settings.PREF_AUTO_CORRECTION, mPreviousAutoCorrectSetting,
+                DEFAULT_AUTO_CORRECTION);
         setDebugMode(false);
         mLatinIME.recycle();
         super.tearDown();

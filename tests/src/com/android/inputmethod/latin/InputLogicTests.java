@@ -265,7 +265,7 @@ public class InputLogicTests extends InputTestsBase {
     public void testDoubleSpacePeriod() {
         // Reset settings to default, else these tests will go flaky.
         setBooleanPreference(Settings.PREF_SHOW_SUGGESTIONS, true, true);
-        setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD, "1", "1");
+        setBooleanPreference(Settings.PREF_AUTO_CORRECTION, true, true);
         setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
         testDoubleSpacePeriodWithSettings(true /* expectsPeriod */);
         // "Suggestion visibility" to off
@@ -277,18 +277,16 @@ public class InputLogicTests extends InputTestsBase {
         testDoubleSpacePeriodWithSettings(false, Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, false);
 
         // "Auto-correction" to "off"
-        testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION_THRESHOLD, "0");
-        // "Auto-correction" to "modest"
-        testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION_THRESHOLD, "1");
-        // "Auto-correction" to "very aggressive"
-        testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION_THRESHOLD, "3");
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION, false);
+        // "Auto-correction" to "on"
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION, true);
 
         // "Suggestion visibility" to "always hide" and "Auto-correction" to "off"
         testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS, false,
-                Settings.PREF_AUTO_CORRECTION_THRESHOLD, "0");
+                Settings.PREF_AUTO_CORRECTION, false);
         // "Suggestion visibility" to "always hide" and "Auto-correction" to "off"
         testDoubleSpacePeriodWithSettings(false, Settings.PREF_SHOW_SUGGESTIONS, false,
-                Settings.PREF_AUTO_CORRECTION_THRESHOLD, "0",
+                Settings.PREF_AUTO_CORRECTION, false,
                 Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, false);
     }
 
