@@ -36,7 +36,8 @@ import javax.annotation.Nullable;
  *
  * Right now, this returns the extra value of its primary subtype.
  */
-public final class RichInputMethodSubtype {
+// non final for easy mocking.
+public class RichInputMethodSubtype {
     private static final String TAG = RichInputMethodSubtype.class.getSimpleName();
 
     @Nonnull
