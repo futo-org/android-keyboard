@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.common;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
@@ -140,6 +142,7 @@ public final class ResizableIntArray {
      * Shift to the left by elementCount, discarding elementCount pointers at the start.
      * @param elementCount how many elements to shift.
      */
+    @UsedForTesting
     public void shift(final int elementCount) {
         System.arraycopy(mArray, elementCount, mArray, 0, mLength - elementCount);
         mLength -= elementCount;

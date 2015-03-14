@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.common;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -57,6 +59,7 @@ public final class CollectionUtils {
      * @param c Collection to test.
      * @return Whether c contains no elements.
      */
+    @UsedForTesting
     public static boolean isNullOrEmpty(@Nullable final Collection<?> c) {
         return c == null || c.isEmpty();
     }
