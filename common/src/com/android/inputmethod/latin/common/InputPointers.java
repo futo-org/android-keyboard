@@ -112,6 +112,7 @@ public final class InputPointers {
      * Shift to the left by elementCount, discarding elementCount pointers at the start.
      * @param elementCount how many elements to shift.
      */
+    @UsedForTesting
     public void shift(final int elementCount) {
         mXCoordinates.shift(elementCount);
         mYCoordinates.shift(elementCount);
