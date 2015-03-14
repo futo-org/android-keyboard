@@ -58,6 +58,8 @@ public final class BinaryDictionary extends Dictionary {
     // Must be equal to CONFIDENCE_TO_AUTO_COMMIT in native/jni/src/defines.h
     private static final int CONFIDENCE_TO_AUTO_COMMIT = 1000000;
 
+    static final int DICTIONARY_MAX_WORD_LENGTH = 48;
+
     @UsedForTesting
     public static final String UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
     @UsedForTesting
@@ -318,9 +320,9 @@ public final class BinaryDictionary extends Dictionary {
         final int count = session.mOutputSuggestionCount[0];
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         for (int j = 0; j < count; ++j) {
-            final int start = j * DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH;
+            final int start = j * DICTIONARY_MAX_WORD_LENGTH;
             int len = 0;
-            while (len < DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH
+            while (len < DICTIONARY_MAX_WORD_LENGTH
                     && session.mOutputCodePoints[start + len] != 0) {
                 ++len;
             }
@@ -389,7 +391,7 @@ public final class BinaryDictionary extends Dictionary {
             return null;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
-        final int[] outCodePoints = new int[DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH];
+        final int[] outCodePoints = new int[DICTIONARY_MAX_WORD_LENGTH];
         final boolean[] outFlags = new boolean[FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT];
         final int[] outProbabilityInfo =
                 new int[FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT];
@@ -428,7 +430,7 @@ public final class BinaryDictionary extends Dictionary {
      * If token is 0, this method newly starts iterating the dictionary.
      */
     public GetNextWordPropertyResult getNextWordProperty(final int token) {
-        final int[] codePoints = new int[DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH];
+        final int[] codePoints = new int[DICTIONARY_MAX_WORD_LENGTH];
         final boolean[] isBeginningOfSentence = new boolean[1];
         final int nextToken = getNextWordNative(mNativeDict, token, codePoints,
                 isBeginningOfSentence);
