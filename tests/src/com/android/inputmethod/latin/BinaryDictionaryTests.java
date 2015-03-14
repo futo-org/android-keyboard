@@ -170,7 +170,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     private void testAddTooLongWord(final int formatVersion) {
         final BinaryDictionary binaryDictionary = getEmptyBinaryDictionary(formatVersion);
         final StringBuffer stringBuilder = new StringBuffer();
-        for (int i = 0; i < DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH; i++) {
+        for (int i = 0; i < BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH; i++) {
             stringBuilder.append('a');
         }
         final String validLongWord = stringBuilder.toString();
