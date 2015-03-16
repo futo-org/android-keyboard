@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google-н гарны тохиргоо"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Тохиргоо хийгдэх үйлдлийг идэвхжүүлсэн байна"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Төхөөрөмжинд өөрийн хувийн толь бичгийг тохируулах"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"Одоо синк хийх"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Гарэны Cloud мэдээллийг устгах"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Таны синк хийсэн мэдээллийг Google-ээс устгана."</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Таны мэдээллийг cloud-с устгах болно. Та итгэлтэй байна уу?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Устгах"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Цуцлах"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Таны хувийн толь бичгийг синк хийж, Google-ийн серверүүд дээр хадгалж авч үлдэнэ. Манай бүтээгдэхүүнүүдийг сайжруулахад туслах зорилгоор үгийн давтамжийн статистик мэдээллийг цуглуулж болно. Бүх мэдээллийг "<a href="https://www.google.com/policies/privacy">"Google-ийн Нууцлалын бодлогын дагуу"</a>" цуглуулж, ашиглана."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Энэ горимыг идэвхжүүлэхийн тулд энэ төхөөрөмж рүү Google акаунт нэмж оруулна уу"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Оруулах өөр арга руу шилжүүлэх"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Хэл солих түлхүүрт өөр оруулах аргууд мөн багтсан байгаа"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Хэл солих товч"</string>

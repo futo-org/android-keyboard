@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"‏Google کی بورڈ کی مطابقت پذیری"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"مطابقت پذیری آن کر دی گئی"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"سبھی آلات پر اپنی ذاتی لغت کی مطابقت پذیری کریں"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"ابھی مطابقت پذیری کریں"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"کی بورڈ کلاؤڈ ڈیٹا حذف کریں"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"‏Google سے آپ کے مطابقت پذیر ڈیٹا کو حذف کر دیتا ہے"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"آپ کا مطابقت پذیر ڈيٹا کلاؤڈ سے حذف ہو جائے گا۔ کیا آپ تیار ہیں؟"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"حذف کریں"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"منسوخ کریں"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏آپ کی ذاتی لغت کی مطابقت پذیری کی جائے گی اور Google سرورز میں اس کا بیک اپ لیا جائے گا۔ ہمارے پروڈکٹس کو بہتر بنانے میں مدد کرنے کیلئے الفاظ کی فریکوئنسی کے اعداد و شمار کی معلومات کو جمع کیا جا سکتا ہے۔ سبھی معلومات کی جمع آوری اور استعمال "<a href="https://www.google.com/policies/privacy">"Google کی رازداری کی پالیسی"</a>" کے مطابق ہوگا۔"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏یہ خصوصیت فعال کرنے کیلئے اس آلہ پر ایک Google اکاؤنٹ شامل کریں"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"دیگر اندراج طریقوں پر سوئچ کریں"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"زبان سوئچ کرنے کی کلید اندراج کے دیگر طریقوں کا بھی احاطہ کرتی ہے"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"زبان سوئچ کرنے کی کلید"</string>

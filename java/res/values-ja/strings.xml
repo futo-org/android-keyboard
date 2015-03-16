@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Googleキーボードの同期"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"同期はON"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"端末間で単語リストを同期する"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"今すぐ同期"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"キーボードクラウドデータの削除"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Googleから同期データを削除します"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"クラウドから同期データを削除します。よろしいですか？"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"削除"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"キャンセル"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"単語リストがGoogleのサーバーと同期され、サーバーにバックアップされます。Googleのサービス改善を目的として、語句の使用頻度に関する統計情報が収集される場合があります。収集した情報およびその利用方法は、"<a href="https://www.google.com/policies/privacy">"Googleプライバシーポリシー"</a>"に準拠します。"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"この機能を有効にするには端末にGoogleアカウントを追加してください"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"他の入力方法に切り替え"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"言語切り替えキーは他の入力方法にも対応しています"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"言語切り替えキー"</string>

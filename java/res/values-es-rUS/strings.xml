@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Sincronizar el Teclado de Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sincronización activada"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sincroniza tu diccionario personal en distintos dispositivos."</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"Sincronizar ahora"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Eliminar datos Teclado en la nube"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Elimina los datos sincronizados de Google."</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Se eliminarán los datos sincronizados de la nube. ¿Estás seguro?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Eliminar"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancelar"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Se creará una copia de tu diccionario personal y se sincronizará con los servidores de Google. Es posible que se recopile información estadística de la frecuencia de palabras para mejorar nuestros productos. La recopilación y el uso de toda la información se realizará conforme a la "<a href="https://www.google.com/policies/privacy">"Política de privacidad de Google"</a>"."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Para habilitar esta función, agrega una cuenta de Google."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de entrada"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma abarca otros métodos de entrada."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de selección de idioma"</string>
