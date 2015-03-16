@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Penyegerakan Papan Kekunci Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Penyegerakan dihidupkan"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Segerakkan kamus peribadi anda merentas peranti"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"Segerakkan sekarang"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Padamkan data Awan Papan Kekunci"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Memadam data disegerak anda dari Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Data yang disegerakkan akan dipadamkan daripada awan. Anda pasti?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Padam"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Batal"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Kamus peribadi anda akan disegerakkan dan disandarkan ke pelayan Google. Maklumat statistik kekerapan perkataan mungkin dikumpulkan untuk membantu mempertingkatkan produk kami. Pengumpulan dan penggunaan semua maklumat adalah selaras dengan "<a href="https://www.google.com/policies/privacy">"Dasar Privasi Google"</a>"."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Sila tambahkan akaun Google pada peranti ini untuk mendayakan ciri ini"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Tukar ke kaedah input lain"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kunci pertukaran bahasa meliputi kaedah masukan lain juga"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Kekunci tukar bahasa"</string>

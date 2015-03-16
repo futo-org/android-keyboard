@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google ቁልፍ ሰሌዳ አመሳስል"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"አመሳስል በርቷል"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"የግል መዝገበ-ቃላትዎን በሁሉም መሣሪያዎች ላይ ያመሳስሉ"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"አሁን አመሳስል"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"የቁልፍ ሰሌዳ ደመና ውሂብ ይሰርዙ"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"ከGoogle የእርስዎን የተመሳሰለ ውሂብ ይሰርዛል"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"የተመሳሰለው ውሂብዎ ከደመናው ይሰረዛል። እርግጠኛ ነዎት?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ሰርዝ"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ይቅር"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"የግል መዝገበ-ቃላትዎ ይመሳሰልና ምትኬው በGoogle አገልጋዮች ላይ ይቀመጣል። ምርቶቻችንን ለማሻሻል የቃላት ተደጋጋሚነት ስታቲስቲካዊ መረጃ ሊሰበሰብ ይችላል። የመረጃው አሰባሰብ እና አጠቃቀም በ"<a href="https://www.google.com/policies/privacy">"Google ግላዊነት መመሪያ"</a>" መሠረት የሚካሄድ ነው።"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ይህን ባህሪ ለማንቃት እባክዎ የGoogle መለያ ወደዚህ መሣሪያ ያክሉ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ወደ ሌሎች የግቤት ስልቶች ቀይር"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"የቋንቋ መቀየሪያ ቁልፍ ሌሎች የግቤት ስልቶችንም ይሸፍናል"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"የቋንቋ መቀየሪያ ቁልፍ"</string>

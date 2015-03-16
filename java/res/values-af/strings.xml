@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google-sleutelbordsinkronisering"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinkronisering is aangeskakel"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sinkroniseer jou persoonlike woordeboek oor toestelle heen"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"Sinkroniseer nou"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Vee Sleutelbord-wolkdata uit"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Vee jou gesinkroniseerde data van Google af uit"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Jou gesinkroniseerde data sal uit die wolk uitgevee word. Seker?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Vee uit"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Kanselleer"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Jou persoonlike woordeboek sal gesinkroniseer en in Google-bedieners gerugsteun word. Die statistiese inligting van woordfrekwensie sal dalk ingesamel word om ons produkte te help verbeter. Die insameling en gebruik van al die inligting sal voldoen aan "<a href="https://www.google.com/policies/privacy">"Google se privaatheidsbeleid"</a>"."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Voeg \'n Google-rekening by toestel om hierdie kenmerk te aktiveer"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skakel oor na die ander invoermetodes"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Taal-wisselsleutel dek ook ander invoermetodes"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Taal-wisselsleutel"</string>

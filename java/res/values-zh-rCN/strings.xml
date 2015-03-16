@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google 键盘同步"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"同步功能已开启"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"在设备间同步您的个人字典"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"立即同步"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"删除键盘云端数据"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"将您已同步的数据从 Google 删除"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"您已同步的数据将会从云端删除。确定要执行此操作吗？"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"删除"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"取消"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"您的个人字典将会同步并备份到 Google 服务器。系统可能会收集字词出现频率的统计信息，来帮助改进我们的产品。所有信息的收集和使用都会遵守 "<a href="https://www.google.com/policies/privacy">"Google 隐私权政策"</a>"。"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"要启用此功能，请将 Google 帐户添加到此设备中"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切换到其他输入法"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"语言切换键也可用于切换其他输入法"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"语言切换键"</string>
