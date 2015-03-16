@@ -119,24 +119,34 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             removeSyncPreferences();
         } else {
             disableSyncPreferences();
-            final AsyncTask<Void, Void, Void> checkManagedProfileTask =
-                    new AsyncTask<Void, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(Void... params) {
-                            if (ManagedProfileUtils.hasManagedWorkProfile(getActivity())) {
-                                removeSyncPreferences();
-                            } else {
-                                enableSyncPreferences();
-                            }
-                            return null;
-                        }
-                    };
-            checkManagedProfileTask.execute();
+            new ManagedProfileCheckerTask(this).execute();
+        }
+    }
+
+    private static class ManagedProfileCheckerTask extends AsyncTask<Void, Void, Void> {
+        private final AccountsSettingsFragment mFragment;
+
+        private ManagedProfileCheckerTask(final AccountsSettingsFragment fragment) {
+            mFragment = fragment;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (ManagedProfileUtils.getInstance().hasManagedWorkProfile(mFragment.getActivity())) {
+                mFragment.removeSyncPreferences();
+            } else {
+                mFragment.enableSyncPreferences();
+            }
+            return null;
         }
     }
 
     private void enableSyncPreferences() {
         mAccountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
+        if (mAccountSwitcher == null) {
+            // Preference has been removed because the device has a managed profile.
+            return;
+        }
         mAccountSwitcher.setEnabled(true);
 
         mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
@@ -154,6 +164,10 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
 
     private void disableSyncPreferences() {
         mAccountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
+        if (mAccountSwitcher == null) {
+            // Preference has been removed because the device has a managed profile.
+            return;
+        }
         mAccountSwitcher.setEnabled(false);
 
         mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
@@ -211,6 +225,9 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
 
         if (accountsForLogin.length > 0) {
             enableSyncPreferences();
+            if (mAccountSwitcher == null) {
+                return;
+            }
             mAccountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(final Preference preference) {
