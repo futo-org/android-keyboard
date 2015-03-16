@@ -73,6 +73,8 @@ public class SettingsValues {
     public final boolean mUsePersonalizedDicts;
     public final boolean mUseDoubleSpacePeriod;
     public final boolean mBlockPotentiallyOffensive;
+    // Use bigrams to predict the next word when there is no input for it yet
+    public final boolean mBigramPredictionEnabled;
     public final boolean mGestureInputEnabled;
     public final boolean mGestureTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
@@ -149,6 +151,7 @@ public class SettingsValues {
         final String autoCorrectionThresholdRawValue = mAutoCorrectEnabled
                 ? res.getString(R.string.auto_correction_threshold_mode_index_modest)
                 : res.getString(R.string.auto_correction_threshold_mode_index_off);
+        mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
         mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
@@ -302,6 +305,12 @@ public class SettingsValues {
         return prefs.getBoolean(Settings.PREF_SHOW_SUGGESTIONS, true);
     }
 
+    private static boolean readBigramPredictionEnabled(final SharedPreferences prefs,
+            final Resources res) {
+        return prefs.getBoolean(Settings.PREF_BIGRAM_PREDICTIONS, res.getBoolean(
+                R.bool.config_default_next_word_prediction));
+    }
+
     private static float readAutoCorrectionThreshold(final Resources res,
             final String currentAutoCorrectionSetting) {
         final String[] autoCorrectionThresholdValues = res.getStringArray(
@@ -379,6 +388,8 @@ public class SettingsValues {
         sb.append("" + mUseDoubleSpacePeriod);
         sb.append("\n   mBlockPotentiallyOffensive = ");
         sb.append("" + mBlockPotentiallyOffensive);
+        sb.append("\n   mBigramPredictionEnabled = ");
+        sb.append("" + mBigramPredictionEnabled);
         sb.append("\n   mGestureInputEnabled = ");
         sb.append("" + mGestureInputEnabled);
         sb.append("\n   mGestureTrailEnabled = ");

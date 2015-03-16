@@ -65,4 +65,10 @@
         android:summary="@string/use_contacts_dict_summary"
         android:defaultValue="true"
         android:persistent="true" />
+    <CheckBoxPreference
+        android:key="next_word_prediction"
+        android:title="@string/bigram_prediction"
+        android:summary="@string/bigram_prediction_summary"
+        android:defaultValue="true"
+        android:persistent="true" />
 </PreferenceScreen>

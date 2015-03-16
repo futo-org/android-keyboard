@@ -502,11 +502,9 @@ public class InputLogicTests extends InputTestsBase {
         type(" ");
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
-        // Corrections have been replaced with predictions.
+        // Test the predictions have been cleared
         SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
-        String word = suggestedWords == null ? null : suggestedWords.getWord(0);
-        assertTrue("predictions after double-space-to-period is I or The",
-                "I".equals(word) || "The".equals(word));
+        assertEquals("predictions cleared after double-space-to-period", suggestedWords.size(), 0);
         type(Constants.CODE_DELETE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
@@ -526,6 +524,23 @@ public class InputLogicTests extends InputTestsBase {
         // Test the first prediction is displayed
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("predictions after manual pick", "Obama",
+                suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
+    }
+
+    public void testPredictionsAfterPeriod() {
+        mLatinIME.clearPersonalizedDictionariesForTest();
+        final String WORD_TO_TYPE = "Barack. ";
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
+        runMessages();
+        SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertEquals("No prediction after period after inputting once.", 0, suggestedWords.size());
+
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
+        runMessages();
+        suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertEquals("Beginning-of-Sentence prediction after inputting 2 times.", "Barack",
                 suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
 
