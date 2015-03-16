@@ -1607,15 +1607,11 @@ public final class InputLogic {
             // First, add the committed word to the list of suggestions.
             suggestions.add(committedWordString);
             for (final Object span : spans) {
-                // If this is a suggestion span, we check that the locale is the right one, and
-                // that the word is not the committed word. That should mostly be the case.
+                // If this is a suggestion span, we check that the word is not the committed word.
+                // That should mostly be the case.
                 // Given this, we add it to the list of suggestions, otherwise we discard it.
                 if (span instanceof SuggestionSpan) {
                     final SuggestionSpan suggestionSpan = (SuggestionSpan)span;
-                    if (!suggestionSpan.getLocale().equals(
-                            inputTransaction.mSettingsValues.mLocale.toString())) {
-                        continue;
-                    }
                     for (final String suggestion : suggestionSpan.getSuggestions()) {
                         if (!suggestion.equals(committedWordString)) {
                             suggestions.add(suggestion);

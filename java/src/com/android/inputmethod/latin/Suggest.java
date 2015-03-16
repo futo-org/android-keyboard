@@ -147,18 +147,6 @@ public final class Suggest {
         return firstSuggestedWordInfo;
     }
 
-    // Quality constants for dictionary match
-    // In increasing order of quality
-    // This source dictionary does not match the typed word.
-    private static final int QUALITY_NO_MATCH = 0;
-    // This source dictionary has a null locale, and the preferred locale is also null.
-    private static final int QUALITY_MATCH_NULL = 1;
-    // This source dictionary has a non-null locale different from the preferred locale. The
-    // preferred locale may be null : this is still better than MATCH_NULL.
-    private static final int QUALITY_MATCH_OTHER_LOCALE = 2;
-    // This source dictionary matches the preferred locale.
-    private static final int QUALITY_MATCH_PREFERRED_LOCALE = 3;
-
     // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForNonBatchInput(final WordComposer wordComposer,
@@ -179,34 +167,18 @@ public final class Suggest {
         final Locale locale = mDictionaryFacilitator.getLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
-                        trailingSingleQuotesCount,
-                        // For transforming suggestions that don't come for any dictionary, we
-                        // use the currently most probable locale as it's our best bet.
-                        locale);
+                        trailingSingleQuotesCount, locale);
 
-        boolean typedWordExistsInAnotherLanguage = false;
-        int qualityOfFoundSourceDictionary = QUALITY_NO_MATCH;
-        @Nullable Dictionary sourceDictionaryOfRemovedWord = null;
+        boolean foundInDictionary = false;
+        Dictionary sourceDictionaryOfRemovedWord = null;
         for (final SuggestedWordInfo info : suggestionsContainer) {
             // Search for the best dictionary, defined as the first one with the highest match
             // quality we can find.
-            if (typedWordString.equals(info.mWord)) {
-                if (locale.equals(info.mSourceDict.mLocale)) {
-                    if (qualityOfFoundSourceDictionary < QUALITY_MATCH_PREFERRED_LOCALE) {
-                        // Use this source if the old match had lower quality than this match
-                        sourceDictionaryOfRemovedWord = info.mSourceDict;
-                        qualityOfFoundSourceDictionary = QUALITY_MATCH_PREFERRED_LOCALE;
-                    }
-                } else {
-                    final int matchQuality = (null == info.mSourceDict.mLocale)
-                            ? QUALITY_MATCH_NULL : QUALITY_MATCH_OTHER_LOCALE;
-                    if (qualityOfFoundSourceDictionary < matchQuality) {
-                        // Use this source if the old match had lower quality than this match
-                        sourceDictionaryOfRemovedWord = info.mSourceDict;
-                        qualityOfFoundSourceDictionary = matchQuality;
-                    }
-                    typedWordExistsInAnotherLanguage = true;
-                }
+            if (!foundInDictionary && typedWordString.equals(info.mWord)) {
+                // Use this source if the old match had lower quality than this match
+                sourceDictionaryOfRemovedWord = info.mSourceDict;
+                foundInDictionary = true;
+                break;
             }
         }
 
@@ -215,22 +187,8 @@ public final class Suggest {
 
         final SuggestedWordInfo whitelistedWordInfo =
                 getWhitelistedWordInfoOrNull(suggestionsContainer);
-        final String whitelistedWord;
-        if (null != whitelistedWordInfo &&
-                (mDictionaryFacilitator.isForLocale(whitelistedWordInfo.mSourceDict.mLocale)
-                || (!typedWordExistsInAnotherLanguage
-                        && !hasPlausibleCandidateInAnyOtherLanguage(suggestionsContainer,
-                                consideredWord, whitelistedWordInfo)))) {
-            // We'll use the whitelist candidate if we are confident the user is typing in the
-            // language of the dictionary it's coming from, or if there is no plausible candidate
-            // coming from another language.
-            whitelistedWord = whitelistedWordInfo.mWord;
-        } else {
-            // If on the contrary we are not confident in the current language and we have
-            // at least a plausible candidate in any other language, then we don't use this
-            // whitelist candidate.
-            whitelistedWord = null;
-        }
+        final String whitelistedWord = whitelistedWordInfo == null
+                ? null : whitelistedWordInfo.mWord;
         final boolean resultsArePredictions = !wordComposer.isComposingWord();
 
         // We allow auto-correction if whitelisting is not required or the word is whitelisted,
@@ -323,20 +281,6 @@ public final class Suggest {
                 isTypedWordValid,
                 hasAutoCorrection /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */, inputStyle, sequenceNumber));
-    }
-
-    private boolean hasPlausibleCandidateInAnyOtherLanguage(
-            final ArrayList<SuggestedWordInfo> suggestionsContainer, final String consideredWord,
-            final SuggestedWordInfo whitelistedWordInfo) {
-        for (final SuggestedWordInfo info : suggestionsContainer) {
-            if (whitelistedWordInfo.mSourceDict.mLocale.equals(info.mSourceDict.mLocale)) {
-                continue;
-            }
-            return AutoCorrectionUtils.suggestionExceedsThreshold(info, consideredWord,
-                    mPlausibilityThreshold);
-        }
-        // No candidate in another language
-        return false;
     }
 
     // Retrieves suggestions for the batch input
