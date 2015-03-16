@@ -24,7 +24,6 @@ import android.util.Pair;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.common.CodePointUtils;
 import com.android.inputmethod.latin.common.FileUtils;
-import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.WeightedString;
@@ -44,7 +43,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final String TEST_LOCALE = "test";
     private static final int[] DICT_FORMAT_VERSIONS =
-            new int[] { FormatSpec.VERSION402, FormatSpec.VERSION403, FormatSpec.VERSION4_DEV };
+            new int[] { FormatSpec.VERSION402, FormatSpec.VERSION403 };
     private static final String DICTIONARY_ID = "TestBinaryDictionary";
 
     private static boolean supportsNgram(final int formatVersion) {
