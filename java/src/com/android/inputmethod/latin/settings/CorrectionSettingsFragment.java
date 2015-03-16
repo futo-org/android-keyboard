@@ -24,8 +24,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.TwoStatePreference;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
 import com.android.inputmethod.latin.R;
@@ -88,8 +88,8 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
     }
 
     private void ensureConsistencyOfAutoCorrectionSettings() {
-        final CheckBoxPreference autoCorrectionPref = (CheckBoxPreference) findPreference(
-                Settings.PREF_AUTO_CORRECTION);
+        final TwoStatePreference autoCorrectionPref = (TwoStatePreference)
+                findPreference(Settings.PREF_AUTO_CORRECTION);
         if (!autoCorrectionPref.isChecked()) {
             setPreferenceEnabled(Settings.PREF_BIGRAM_PREDICTIONS, false);
         }
