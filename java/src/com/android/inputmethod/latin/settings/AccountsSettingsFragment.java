@@ -27,16 +27,13 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
