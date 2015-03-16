@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"សមកាលកម្មលើក្តារចុច Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"សមកាលម្មត្រូវបានបើក"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ធ្វើសមកាលកម្មបញ្ជីឯកសារផ្ទាល់ខ្លួនឆ្លងឧបករណ៍"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"ធ្វើសម្មកាលកម្មឥឡូវនេះ"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"លុបទិន្នន័យក្តារចុចពពក"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"លុបទិន្នន័យដែលបានធ្វើសមកាលកម្មរបស់អ្នកចេញពី Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ទិន្នន័យធ្វើសមកាលកម្មរបស់អ្នកនឹងត្រូវបានលុបពីពពក។ តើអ្នកប្រាកដទេ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"លុប"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"បោះបង់"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"បញ្ជីឯកសារផ្ទាល់ខ្លួនរបស់អ្នកនឹងត្រូវបានធ្វើសមកាលកម្ម និងបម្រុងទុកនៅក្នុងម៉ាស៊ីនមេ Google។ ព័ត៌មានស្ថិតិនៃចំនួនពាក្យដែលឧស្សាហ៍ប្រើអាចត្រូវបានប្រមូលដើម្បីធ្វើឲ្យផលិតផលរបស់ពួកយើងប្រសើរជាងមុន។ ការប្រមូល និងការប្រើប្រាស់ព័ត៌មាន នឹងត្រូវអនុលោមតាម "<a href="https://www.google.com/policies/privacy">"គោលការណ៍ភាពឯកជនរបស់ Google"</a>"។"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"សូមបន្ថែមគណនី Google ទៅឧបករណ៍នេះដើម្បីបើកដំណើរការលក្ខណៈពិសេសនេះ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ប្ដូរ​ទៅ​​​វិធីសាស្ត្រ​បញ្ចូល​​​ផ្សេង​ទៀត"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"គ្រាប់ចុច​ប្ដូរ​ភាសា​តាម​វិធីសាស្ត្រ​បញ្ចូល​ផ្សេងទៀត"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"គ្រាប់​ចុច​ប្ដូរ​​ភាសា"</string>

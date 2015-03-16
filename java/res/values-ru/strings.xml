@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Синхронизировать Клавиатуру"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронизация включена"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизировать пользовательский словарь со всеми устройствами"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"Синхронизировать"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"Удалить данные с серверов Google"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Удаление синхронизированных данных из Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Синхронизированные данные будут удалены из облака. Продолжить?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Удалить"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Отменить"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Словарь будет синхронизирован с серверами Google и сохранен на них. Чтобы повысить качество наших сервисов, мы можем отслеживать статистику использования тех или иных слов. Вся получаемая нами информация обрабатывается в соответствии с "<a href="https://www.google.com/policies/privacy">"Политикой конфиденциальности"</a>"."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Чтобы включить функцию, добавьте аккаунт Google на устройство"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Смена способов ввода"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавиша переключения языков также служит для смены способа ввода"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиша смены языка"</string>
