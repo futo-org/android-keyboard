@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google किबोर्ड सिंक गर्नुहोस्"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"सिंक सक्रिय गरिएको छ"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"तपाईंको व्यक्तिगत शब्दकोषलाई यन्त्रहरूमा सिंक गर्नुहोस्"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"अहिले सिंक गर्नुहोस्"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"किबोर्ड क्लाउड डेटा मेटाउनुहोस्"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिङ्क गरिएको डाटा मेटाउँछ"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईंको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईं निश्चित हुनुहुन्छ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"मेटाउनुहोस्"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द गर्नुहोस्"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"तपाईँको व्यक्तिगत शब्दकोश सिंक गरेर Google सर्भरहरूमा जगेडा राखिने छ। शब्द आवृत्तिको तथ्याङ्क जानकारी हाम्रो उत्पादनहरू सुधार गर्न मद्दतका लागि संकलन हुन सक्छ। संग्रह र सबै जानकारीको प्रयोग  "<a href="https://www.google.com/policies/privacy">" Google को गोपनीयता नीति "</a>" अनुरूप हुने छ।"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"कृपया यो सुविधा सक्षम गर्न यो यन्त्रमा एउटा Google खाता थप्नुहोस्"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्य इनपुट विधिमा स्विच गर्नुहोस्"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्विच किले अन्य इनपुट विधि पनि समेट्छ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुञ्जी"</string>

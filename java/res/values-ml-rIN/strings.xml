@@ -37,17 +37,14 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google കീബോർഡ് സമന്വയം"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"സമന്വയം ഓണാണ്"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ഉപകരണങ്ങളിലുടനീളം നിങ്ങളുടെ സ്വകാര്യ നിഘണ്ടു സമന്വയിപ്പിക്കുക"</string>
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
+    <string name="sync_now_title" msgid="3088838136743277721">"ഇപ്പോൾ സമന്വയിപ്പിക്കുക"</string>
     <string name="clear_sync_data_title" msgid="2041801164014550565">"കീബോർഡ് ക്ലൗഡ് വിവരം ഇല്ലാതാക്കുക"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"നിങ്ങളുടെ സമന്വയിപ്പിച്ച വിവരം Google-ൽ നിന്ന് ഇല്ലാതാക്കുന്നു"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"നിങ്ങളുടെ സമന്വയിപ്പിച്ച വിവരം ക്ലൗഡിൽ നിന്ന് ഇല്ലാതാക്കും. തീർച്ചയാണോ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ഇല്ലാതാക്കുക"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"റദ്ദാക്കുക"</string>
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"നിങ്ങളുടെ സ്വകാര്യ നിഘണ്ടു Google സെർവറുകളിലേക്ക് സമന്വയിപ്പിച്ച് ബാക്കപ്പുചെയ്യും. ഞങ്ങളുടെ ഉൽപ്പന്നങ്ങൾ മെച്ചപ്പെടുത്താൻ സഹായിക്കുന്നതിന് പദങ്ങളുടെ ആവർത്തനം സംബന്ധിച്ച സ്ഥിതിവിവരക്കണക്കുകൾ ശേഖരിച്ചേക്കാം. എല്ലാ വിവരങ്ങളും ശേഖരിക്കുന്നതും ഉപയോഗിക്കുന്നതും "<a href="https://www.google.com/policies/privacy">"Google-ന്റെ സ്വകാര്യത നയത്തിന്"</a>" വിധേയമായിട്ടായിരിക്കും."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ഈ ഫീച്ചർ പ്രവർത്തനക്ഷമമാക്കാൻ ഈ ഉപകരണത്തിൽ Google അക്കൗണ്ട് ചേർക്കുക"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"മറ്റു ടൈപ്പുചെയ്യൽ രീതികളിലേക്ക് മാറുക"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ഭാഷ മാറൽ കീയിൽ മറ്റ് ടൈപ്പുചെയ്യൽ രീതികളും ഉൾപ്പെടുന്നു"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ഭാഷ മാറൽ കീ"</string>
