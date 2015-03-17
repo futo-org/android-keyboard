@@ -164,6 +164,11 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         return previousSetting;
     }
 
+    protected boolean getBooleanPreference(final String key, final boolean defaultValue) {
+        return PreferenceManager.getDefaultSharedPreferences(mLatinIME)
+                .getBoolean(key, defaultValue);
+    }
+
     protected String setStringPreference(final String key, final String value,
             final String defaultValue) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
