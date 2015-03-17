@@ -128,7 +128,7 @@ public class NgramContext {
         final WordInfo[] prevWordsInfo = new WordInfo[nextPrevWordCount];
         prevWordsInfo[0] = wordInfo;
         System.arraycopy(mPrevWordsInfo, 0, prevWordsInfo, 1, nextPrevWordCount - 1);
-        return new NgramContext(prevWordsInfo);
+        return new NgramContext(mMaxPrevWordCount, prevWordsInfo);
     }
 
 
