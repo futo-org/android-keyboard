@@ -43,6 +43,10 @@ public class NgramContext {
 
     public static final String CONTEXT_SEPARATOR = " ";
 
+    public static NgramContext getEmptyPrevWordsContext(int maxPrevWordCount) {
+        return new NgramContext(maxPrevWordCount, WordInfo.EMPTY_WORD_INFO);
+    }
+
     /**
      * Word information used to represent previous words information.
      */
@@ -102,10 +106,17 @@ public class NgramContext {
     private final WordInfo[] mPrevWordsInfo;
     private final int mPrevWordsCount;
 
+    private final int mMaxPrevWordCount;
+
     // Construct from the previous word information.
     public NgramContext(final WordInfo... prevWordsInfo) {
+        this(DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM, prevWordsInfo);
+    }
+
+    public NgramContext(final int maxPrevWordCount, final WordInfo... prevWordsInfo) {
         mPrevWordsInfo = prevWordsInfo;
         mPrevWordsCount = prevWordsInfo.length;
+        mMaxPrevWordCount = maxPrevWordCount;
     }
 
     /**
@@ -113,8 +124,7 @@ public class NgramContext {
      */
     @Nonnull
     public NgramContext getNextNgramContext(final WordInfo wordInfo) {
-        final int nextPrevWordCount = Math.min(
-                DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM, mPrevWordsCount + 1);
+        final int nextPrevWordCount = Math.min(mMaxPrevWordCount, mPrevWordsCount + 1);
         final WordInfo[] prevWordsInfo = new WordInfo[nextPrevWordCount];
         prevWordsInfo[0] = wordInfo;
         System.arraycopy(mPrevWordsInfo, 0, prevWordsInfo, 1, nextPrevWordCount - 1);
