@@ -270,6 +270,7 @@ public class SuggestedWords {
         public final int mScore;
         public final int mKindAndFlags;
         public final int mCodePointCount;
+        @Deprecated
         public final Dictionary mSourceDict;
         // For auto-commit. This keeps track of the index inside the touch coordinates array
         // passed to native code to get suggestions for a gesture that corresponds to the first
@@ -360,6 +361,7 @@ public class SuggestedWords {
             return mWord;
         }
 
+        @Deprecated
         public Dictionary getSourceDictionary() {
             return mSourceDict;
         }
