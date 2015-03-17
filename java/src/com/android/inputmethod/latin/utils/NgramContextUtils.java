@@ -31,6 +31,7 @@ public final class NgramContextUtils {
         // Intentional empty constructor for utility class.
     }
 
+    private static final Pattern NEWLINE_REGEX = Pattern.compile("[\\r\\n]+");
     private static final Pattern SPACE_REGEX = Pattern.compile("\\s+");
     // Get context information from nth word before the cursor. n = 1 retrieves the words
     // immediately before the cursor, n = 2 retrieves the words before that, and so on. This splits
@@ -58,7 +59,11 @@ public final class NgramContextUtils {
     public static NgramContext getNgramContextFromNthPreviousWord(final CharSequence prev,
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
         if (prev == null) return NgramContext.EMPTY_PREV_WORDS_INFO;
-        final String[] w = SPACE_REGEX.split(prev);
+        final String[] lines = NEWLINE_REGEX.split(prev);
+        if (lines.length == 0) {
+            return new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
+        }
+        final String[] w = SPACE_REGEX.split(lines[lines.length - 1]);
         final WordInfo[] prevWordsInfo =
                 new WordInfo[DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
         Arrays.fill(prevWordsInfo, WordInfo.EMPTY_WORD_INFO);
@@ -81,16 +86,17 @@ public final class NgramContextUtils {
                 prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO;
                 break;
             }
+
             final String focusedWord = w[focusedWordIndex];
-            // If the word is, the context is beginning-of-sentence.
+            // If the word is empty, the context is beginning-of-sentence.
             final int length = focusedWord.length();
             if (length <= 0) {
                 prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO;
                 break;
             }
-            // If ends in a sentence separator, the context is beginning-of-sentence.
+            // If the word ends in a sentence terminator, the context is beginning-of-sentence.
             final char lastChar = focusedWord.charAt(length - 1);
-            if (spacingAndPunctuations.isSentenceSeparator(lastChar)) {
+            if (spacingAndPunctuations.isSentenceTerminator(lastChar)) {
                 prevWordsInfo[i] = WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO;
                 break;
             }
