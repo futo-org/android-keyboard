@@ -23,6 +23,8 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 import java.util.List;
 
 /**
@@ -32,8 +34,20 @@ public class ManagedProfileUtils {
     private static final boolean DEBUG = false;
     private static final String TAG = ManagedProfileUtils.class.getSimpleName();
 
+    private static ManagedProfileUtils INSTANCE = new ManagedProfileUtils();
+    private static ManagedProfileUtils sTestInstance;
+
     private ManagedProfileUtils() {
         // This utility class is not publicly instantiable.
+    }
+
+    @UsedForTesting
+    public static void setTestInstance(final ManagedProfileUtils testInstance) {
+        sTestInstance = testInstance;
+    }
+
+    public static ManagedProfileUtils getInstance() {
+        return sTestInstance == null ? INSTANCE : sTestInstance;
     }
 
     /**
@@ -41,7 +55,7 @@ public class ManagedProfileUtils {
      * in API level 21 (Build.VERSION_CODES.LOLLIPOP).
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static boolean hasManagedWorkProfile(final Context context) {
+    public boolean hasManagedWorkProfile(final Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return false;
         }
