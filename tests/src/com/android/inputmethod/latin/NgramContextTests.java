@@ -17,6 +17,8 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.latin.NgramContext.WordInfo;
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import com.android.inputmethod.latin.utils.NgramContextUtils;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -119,5 +121,25 @@ public class NgramContextTests extends AndroidTestCase {
                 ngramContext_empty.getNextNgramContext(new WordInfo("a"));
         assertEquals(1, ngramContext_a_empty.extractPrevWordsContextArray().length);
         assertEquals("a", ngramContext_a_empty.extractPrevWordsContextArray()[0]);
+    }
+
+    public void testGetNgramContextFromNthPreviousWord() {
+        SpacingAndPunctuations spacingAndPunctuations = new SpacingAndPunctuations(
+                mContext.getResources());
+        assertEquals("<S>", NgramContextUtils.getNgramContextFromNthPreviousWord("",
+                spacingAndPunctuations, 1).extractPrevWordsContext());
+        assertEquals("<S> b", NgramContextUtils.getNgramContextFromNthPreviousWord("a. b ",
+                spacingAndPunctuations, 1).extractPrevWordsContext());
+        assertEquals("<S> b", NgramContextUtils.getNgramContextFromNthPreviousWord("a? b ",
+                spacingAndPunctuations, 1).extractPrevWordsContext());
+        assertEquals("<S> b", NgramContextUtils.getNgramContextFromNthPreviousWord("a! b ",
+                spacingAndPunctuations, 1).extractPrevWordsContext());
+        assertEquals("<S> b", NgramContextUtils.getNgramContextFromNthPreviousWord("a\nb ",
+                spacingAndPunctuations, 1).extractPrevWordsContext());
+        assertEquals("<S> a b", NgramContextUtils.getNgramContextFromNthPreviousWord("a b ",
+                spacingAndPunctuations, 1).extractPrevWordsContext());
+        assertFalse(NgramContextUtils
+                .getNgramContextFromNthPreviousWord("a b c d e", spacingAndPunctuations, 1)
+                .extractPrevWordsContext().startsWith("<S>"));
     }
 }
