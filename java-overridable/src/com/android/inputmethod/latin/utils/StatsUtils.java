@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.utils;
 
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.settings.SettingsValues;
@@ -36,7 +37,8 @@ public final class StatsUtils {
     }
 
     public static void onPickSuggestionManually(final SuggestedWords suggestedWords,
-            final SuggestedWords.SuggestedWordInfo suggestionInfo) {
+            final SuggestedWords.SuggestedWordInfo suggestionInfo,
+            final DictionaryFacilitator dictionaryFacilitator) {
     }
 
     public static void onBackspaceWordDelete(int wordLength) {
@@ -70,7 +72,7 @@ public final class StatsUtils {
     }
 
     public static void onAutoCorrection(final String typedWord, final String autoCorrectionWord,
-            final boolean isBatchInput, @Nullable final String dictionaryType) {
+            final boolean isBatchInput, final DictionaryFacilitator dictionaryType) {
     }
 
     public static void onWordCommitUserTyped(final String commitWord, final boolean isBatchMode) {

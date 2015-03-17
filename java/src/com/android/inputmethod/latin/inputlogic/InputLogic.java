@@ -324,7 +324,8 @@ public final class InputLogic {
         // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
         handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
 
-        StatsUtils.onPickSuggestionManually(mSuggestedWords, suggestionInfo);
+        StatsUtils.onPickSuggestionManually(
+                mSuggestedWords, suggestionInfo, mDictionaryFacilitator);
         StatsUtils.onWordCommitSuggestionPickedManually(
                 suggestionInfo.mWord, mWordComposer.isBatchMode());
         return inputTransaction;
@@ -2053,8 +2054,7 @@ public final class InputLogic {
                         mConnection.getExpectedSelectionEnd() - stringToCommit.length(),
                         typedWord, stringToCommit));
                 StatsUtils.onAutoCorrection(typedWord, stringToCommit, isBatchMode,
-                        null == autoCorrectionOrNull
-                                ? null : autoCorrectionOrNull.mSourceDict.mDictType);
+                        mDictionaryFacilitator);
                 StatsUtils.onWordCommitAutoCorrect(stringToCommit, isBatchMode);
             } else {
                 StatsUtils.onWordCommitUserTyped(stringToCommit, isBatchMode);
