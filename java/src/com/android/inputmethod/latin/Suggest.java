@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.text.TextUtils;
 
 import static com.android.inputmethod.latin.define.DecoderSpecificConstants.SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION;
+import static com.android.inputmethod.latin.define.DecoderSpecificConstants.SHOULD_REMOVE_PREVIOUSLY_REJECTED_SUGGESTION;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -311,8 +312,10 @@ public final class Suggest {
             }
         }
 
-        if (suggestionsContainer.size() > 1 && TextUtils.equals(suggestionsContainer.get(0).mWord,
-                wordComposer.getRejectedBatchModeSuggestion())) {
+        if (SHOULD_REMOVE_PREVIOUSLY_REJECTED_SUGGESTION
+                && suggestionsContainer.size() > 1
+                && TextUtils.equals(suggestionsContainer.get(0).mWord,
+                   wordComposer.getRejectedBatchModeSuggestion())) {
             final SuggestedWordInfo rejected = suggestionsContainer.remove(0);
             suggestionsContainer.add(1, rejected);
         }
