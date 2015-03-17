@@ -16,16 +16,32 @@
 
 package com.android.inputmethod.latin;
 
-import android.test.MoreAsserts;
+import static android.test.MoreAsserts.assertNotEqual;
+
 import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.view.inputmethod.BaseInputConnection;
 
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.settings.Settings;
 
 @LargeTest
 public class InputLogicTests extends InputTestsBase {
+
+    private boolean mNextWordPrediction;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        mNextWordPrediction = getBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, true);
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, mNextWordPrediction, true);
+        super.tearDown();
+    }
 
     public void testTypeWord() {
         final String WORD_TO_TYPE = "abcd";
@@ -494,24 +510,19 @@ public class InputLogicTests extends InputTestsBase {
 
     public void testPredictionsWithDoubleSpaceToPeriod() {
         mLatinIME.clearPersonalizedDictionariesForTest();
-        final String WORD_TO_TYPE = "Barack ";
+        final String WORD_TO_TYPE = "Barack  ";
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
-        // No need to test here, testPredictionsAfterSpace is testing it already
-        type(" ");
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
-        runMessages();
-        // Test the predictions have been cleared
-        SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
-        assertEquals("predictions cleared after double-space-to-period", suggestedWords.size(), 0);
+
         type(Constants.CODE_DELETE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
-        // Test the first prediction is displayed
+
+        SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("predictions after cancel double-space-to-period", "Obama",
-                suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
+                mLatinIME.getSuggestedWordsForTest().getWord(0));
     }
 
     public void testPredictionsAfterManualPick() {
@@ -533,15 +544,9 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
-        SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
-        assertEquals("No prediction after period after inputting once.", 0, suggestedWords.size());
 
-        type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
-        runMessages();
-        suggestedWords = mLatinIME.getSuggestedWordsForTest();
-        assertEquals("Beginning-of-Sentence prediction after inputting 2 times.", "Barack",
-                suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
+        SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertFalse(mLatinIME.getSuggestedWordsForTest().isEmpty());
     }
 
     public void testPredictionsAfterRecorrection() {
@@ -668,8 +673,11 @@ public class InputLogicTests extends InputTestsBase {
         type(Constants.CODE_DELETE);
         assertEquals("gesture then backspace", "", mEditText.getText().toString());
         gesture("this");
-        MoreAsserts.assertNotEqual("gesture twice the same thing", "this",
-                mEditText.getText().toString());
+        if (DecoderSpecificConstants.SHOULD_REMOVE_PREVIOUSLY_REJECTED_SUGGESTION) {
+            assertNotEqual("this", mEditText.getText().toString());
+        } else {
+            assertEquals("this", mEditText.getText().toString());
+        }
     }
 
     private void typeOrGestureWordAndPutCursorInside(final boolean gesture, final String word,
@@ -736,12 +744,13 @@ public class InputLogicTests extends InputTestsBase {
         ensureComposingSpanPos("space while in the middle of a word cancels composition", -1, -1);
     }
 
+    // TODO: Verify this works when we return FIGS language models to the APK.
     public void testAutoCorrectForFrench() {
         final String STRING_TO_TYPE = "irq ";
-        final String EXPECTED_RESULT = "ira ";
-        changeLanguage("fr");
+        final String EXPECTED_RESULT = "ir a ";
+        changeLanguage("es");
         type(STRING_TO_TYPE);
-        assertEquals("simple auto-correct for French", EXPECTED_RESULT,
+        assertEquals("simple auto-correct for Spanish", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
 
@@ -771,6 +780,8 @@ public class InputLogicTests extends InputTestsBase {
     }
 
     public void testWordThenSpaceThenPunctuationFromStripTwiceForFrench() {
+        setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, false, true);
+
         final String WORD_TO_TYPE = "test ";
         final String PUNCTUATION_FROM_STRIP = "!";
         final String EXPECTED_RESULT = "test !!";
