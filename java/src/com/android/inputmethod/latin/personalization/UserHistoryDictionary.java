@@ -20,6 +20,7 @@ import android.content.Context;
 
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.NgramContext;
@@ -98,7 +99,7 @@ public class UserHistoryDictionary extends ExpandableBinaryDictionary {
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
             @Nonnull final NgramContext ngramContext, final String word, final boolean isValid,
             final int timestamp) {
-        if (word.length() > DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH) {
+        if (word.length() > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH) {
             return;
         }
         userHistoryDictionary.updateEntriesForWord(ngramContext, word,

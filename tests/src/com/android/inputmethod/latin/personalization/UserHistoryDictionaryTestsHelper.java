@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
+import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.common.FileUtils;
@@ -98,7 +99,8 @@ public class UserHistoryDictionaryTestsHelper {
 
     private static void addWordsToDictionary(final UserHistoryDictionary dict,
             final List<String> words, final int timestamp) {
-        NgramContext ngramContext = NgramContext.EMPTY_PREV_WORDS_INFO;
+        NgramContext ngramContext = NgramContext.getEmptyPrevWordsContext(
+                BinaryDictionary.MAX_PREV_WORD_COUNT_FOR_N_GRAM);
         for (final String word : words) {
             UserHistoryDictionary.addToDictionary(dict, ngramContext, word, true, timestamp);
             ngramContext = ngramContext.getNextNgramContext(new WordInfo(word));

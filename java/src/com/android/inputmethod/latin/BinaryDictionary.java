@@ -58,7 +58,8 @@ public final class BinaryDictionary extends Dictionary {
     // Must be equal to CONFIDENCE_TO_AUTO_COMMIT in native/jni/src/defines.h
     private static final int CONFIDENCE_TO_AUTO_COMMIT = 1000000;
 
-    static final int DICTIONARY_MAX_WORD_LENGTH = 48;
+    public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
+    public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 3;
 
     @UsedForTesting
     public static final String UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
