@@ -18,12 +18,18 @@ package com.android.inputmethod.latin.utils;
 
 import static com.android.inputmethod.latin.utils.ImportantNoticeUtils.KEY_IMPORTANT_NOTICE_VERSION;
 import static com.android.inputmethod.latin.utils.ImportantNoticeUtils.KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE;
+import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.text.TextUtils;
+
+import com.android.inputmethod.latin.settings.SettingsValues;
+
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,6 +39,8 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
     private static final int CURRENT_IMPORTANT_NOTICE_VERSION = 1;
 
     private ImportantNoticePreferences mImportantNoticePreferences;
+
+    @Mock private SettingsValues mMockSettingsValues;
 
     private static class ImportantNoticePreferences {
         private final SharedPreferences mPref;
@@ -97,8 +105,10 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        MockitoAnnotations.initMocks(this);
         mImportantNoticePreferences = new ImportantNoticePreferences(getContext());
         mImportantNoticePreferences.save();
+        when(mMockSettingsValues.isPersonalizationEnabled()).thenReturn(true);
     }
 
     @Override
@@ -117,9 +127,9 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
 
         // Check internal state of {@link ImportantNoticeUtils.shouldShowImportantNotice(Context)}
         // after fresh install.
-        assertEquals("Has new imortant notice after fresh install", true,
+        assertEquals("Has new important notice after fresh install", true,
                 ImportantNoticeUtils.hasNewImportantNotice(getContext()));
-        assertEquals("Next important norice title after fresh install", false, TextUtils.isEmpty(
+        assertEquals("Next important notice title after fresh install", false, TextUtils.isEmpty(
                 ImportantNoticeUtils.getNextImportantNoticeTitle(getContext())));
         assertEquals("Is in system setup wizard after fresh install", false,
                 ImportantNoticeUtils.isInSystemSetupWizard(getContext()));
@@ -131,14 +141,14 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
                 mImportantNoticePreferences.getLong(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE));
 
         assertEquals("Current boolean before update", true,
-                ImportantNoticeUtils.shouldShowImportantNotice(getContext()));
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
     }
 
     public void testUpdateVersion() {
         mImportantNoticePreferences.clear();
 
         assertEquals("Current boolean before update", true,
-                ImportantNoticeUtils.shouldShowImportantNotice(getContext()));
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
         assertEquals("Last version before update", 0,
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version before update ", 1,
@@ -151,7 +161,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
         ImportantNoticeUtils.updateLastImportantNoticeVersion(getContext());
 
         assertEquals("Current boolean after update", false,
-                ImportantNoticeUtils.shouldShowImportantNotice(getContext()));
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
         assertEquals("Last version after update", 1,
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version after update", 2,
@@ -180,7 +190,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
 
         // Call {@link ImportantNoticeUtils#shouldShowImportantNotice(Context)} before timeout.
         assertEquals("Current boolean before timeout 1", true,
-                ImportantNoticeUtils.shouldShowImportantNotice(getContext()));
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
         assertEquals("Last version before timeout 1", 0,
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version before timeout 1", 1,
@@ -197,7 +207,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
         // Call {@link ImportantNoticeUtils#shouldShowImportantNotice(Context)} before timeout
         // again.
         assertEquals("Current boolean before timeout 2", true,
-                ImportantNoticeUtils.shouldShowImportantNotice(getContext()));
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
         assertEquals("Last version before timeout 2", 0,
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version before timeout 2", 1,
@@ -213,7 +223,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
 
         // Call {@link ImportantNoticeUtils#shouldShowImportantNotice(Context)} after timeout.
         assertEquals("Current boolean after timeout 1", false,
-                ImportantNoticeUtils.shouldShowImportantNotice(getContext()));
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
         assertEquals("Last version after timeout 1", 1,
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version after timeout 1", 2,
@@ -229,7 +239,7 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
 
         // Call {@link ImportantNoticeUtils#shouldShowImportantNotice(Context)} after timeout again.
         assertEquals("Current boolean after timeout 2", false,
-                ImportantNoticeUtils.shouldShowImportantNotice(getContext()));
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
         assertEquals("Last version after timeout 2", 1,
                 ImportantNoticeUtils.getLastImportantNoticeVersion(getContext()));
         assertEquals("Next version after timeout 2", 2,
@@ -240,5 +250,19 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
                 ImportantNoticeUtils.getNextImportantNoticeTitle(getContext())));
         assertEquals("Current contents after timeout 2", true, TextUtils.isEmpty(
                 ImportantNoticeUtils.getNextImportantNoticeContents(getContext())));
+    }
+
+    public void testPersonalizationSetting() {
+        mImportantNoticePreferences.clear();
+
+        // Personalization enabled.
+        when(mMockSettingsValues.isPersonalizationEnabled()).thenReturn(true);
+        assertEquals("Current boolean with personalization enabled", true,
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
+
+        // Personalization disabled.
+        when(mMockSettingsValues.isPersonalizationEnabled()).thenReturn(false);
+        assertEquals("Current boolean with personalization disabled", false,
+                ImportantNoticeUtils.shouldShowImportantNotice(getContext(), mMockSettingsValues));
     }
 }

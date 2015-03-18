@@ -25,6 +25,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.settings.SettingsValues;
 
 import java.util.concurrent.TimeUnit;
 
@@ -105,7 +106,12 @@ public final class ImportantNoticeUtils {
         return elapsedTime >= TIMEOUT_OF_IMPORTANT_NOTICE;
     }
 
-    public static boolean shouldShowImportantNotice(final Context context) {
+    public static boolean shouldShowImportantNotice(final Context context,
+            final SettingsValues settingsValues) {
+        // Check to see whether personalization is enabled by the user.
+        if (!settingsValues.isPersonalizationEnabled()) {
+            return false;
+        }
         if (!hasNewImportantNotice(context)) {
             return false;
         }
