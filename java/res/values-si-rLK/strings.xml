@@ -43,8 +43,8 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ඔබගේ සමමුහුර්ත දත්ත සියල්ල ක්ලවුඩ් එකෙන් ඉවත් කරනු ඇත. ඔබට විශ්වාසද?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"මකන්න"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"අවලංගු කරන්න"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ඔබගේ පෞද්ගලික ශබ්දකෝෂය Google සේවාදායකයන් වෙත සමමුහුර්ත කර උපස්ථය කෙරෙනු ඇත. අපගේ නිෂ්පාදන වැඩි දියුණු කිරීමට උදවු වනු පිණිස වචන භාවිතා වන වාර ගණන පිළිබඳ සංඛ්‍යාත්මක තොරතුරු සමුච්චය කිරීමට ඉඩ ඇත. සියලු දත්ත සමුච්චය කිරීම සහ භාවිතා කිරීම "<a href="https://www.google.com/policies/privacy">"Google හි රහස්‍යතා ප්‍රතිපත්තිය"</a>"අනුව සිදු කරනු ඇත."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"මෙම විශේෂාංගය සක්‍රීය කිරීමට කරුණාකර Google ගිණුමක් එක් කරන්න"</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ඔබගේ පෞද්ගලික ශබ්දකෝෂය Google සේවාදායකයන් වෙත සමමුහුර්ත කර උපස්ථය කෙරෙනු ඇත. අපගේ නිෂ්පාදන වැඩි දියුණු කිරීමට උදවු වනු පිණිස වචන භාවිතා වන වාර ගණන පිළිබඳ සංඛ්‍යාත්මක තොරතුරු සමුච්චය කිරීමට ඉඩ ඇත. සියලු දත්ත සමුච්චය කිරීම සහ භාවිතා කිරීම "<a href="https://www.google.com/policies/privacy">"Google හි රහස්‍යතා ප්‍රතිපත්තිය"</a>"අනුව සිදු කරනු ඇත."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"මෙම විශේෂාංගය සබල කිරීමට කරුණාකර Google ගිණුමක් එක් කරන්න"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"වෙනත් ආදාන ක්‍රම වෙත මාරුවන්න"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"භාෂා මාරු යතුර වෙනත් ආදාන ක්‍රමද ආවරණය කරයි"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"භාෂා මාරු යතුර"</string>
@@ -75,6 +75,8 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"මධ්‍යස්"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"ආක්‍රමණකාරී"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"ඉතා ආක්‍රමණකාරී"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"ඊළඟ-වචනයේ යෝජනා"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"යෝජනා කිරීමේදී පෙර වචනය භාවිතා කරන්න"</string>
     <string name="gesture_input" msgid="826951152254563827">"ඉංගිතයෙන් ටයිප් කිරීම සබල කරන්න"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"අකුරු ඔස්සේ සර්පණය කිරීමෙන් වචනයක් ආදානය කරන්න"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"ඉංගිතයෙන් මඟ පෙන්වන්න"</string>
