@@ -75,6 +75,8 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"मर्यादशील"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"आक्रमक"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"खूप आक्रमक"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"पुढील-शब्द सूचना"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"सूचना करताना मागील शब्द वापरा"</string>
     <string name="gesture_input" msgid="826951152254563827">"जेश्चर टायपिंग सक्षम करा"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरांमधून स्लायडिंग करून एक शब्द इनपुट करा"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"जेश्चर अनुचिन्ह दर्शवा"</string>

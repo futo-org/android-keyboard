@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"De synkroniserte dataene blir slettet fra skyen. Er du sikker?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Slett"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Avbryt"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Den personlige ordlisten din blir synkronisert og sikkerhetskopiert til Google-tjenere. Statistisk informasjon om ordfrekvens kan samles inn for å bidra til å forbedre produktene våre. Innsamling og bruk av all informasjon er i henhold til "<a href="https://www.google.com/policies/privacy">"Googles personvernregler"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Den personlige ordlisten din blir synkronisert og sikkerhetskopiert til Google-tjenere. For å bidra til å forbedre produktene våre, kan det hende vi samler inn informasjon om ordfrekvens. Innsamling og bruk av all informasjon skjer i henhold til "<a href="https://www.google.com/policies/privacy">"Googles personvernregler"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Legg en Google-konto til enheten for å aktivere denne funksjonen"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Bytt inndatametode"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten for språkbytte dekker også andre inndatametoder"</string>
@@ -75,6 +75,8 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderat"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Omfattende"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Veldig omfattende"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Forslag til neste ord"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Bruk forrige ord til å lage forslag"</string>
     <string name="gesture_input" msgid="826951152254563827">"Aktiver ordføring"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Skriv inn et ord ved å sveipe langsmed bokstavene"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Vis bevegelsesspor"</string>
