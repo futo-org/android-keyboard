@@ -206,10 +206,14 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
                 "abc def .", mSpacingAndPunctuations, 1), NgramContext.BEGINNING_OF_SENTENCE);
         assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc, def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
+        // question mark is treated as the end of the sentence. Hence, beginning of the
+        // sentence is expected.
         assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
-                "abc? def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
+                "abc? def", mSpacingAndPunctuations, 2), NgramContext.BEGINNING_OF_SENTENCE);
+        // Exclamation mark is treated as the end of the sentence. Hence, beginning of the
+        // sentence is expected.
         assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
-                "abc! def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
+                "abc! def", mSpacingAndPunctuations, 2), NgramContext.BEGINNING_OF_SENTENCE);
         assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc 'def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
     }
