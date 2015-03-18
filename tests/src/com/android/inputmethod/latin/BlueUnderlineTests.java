@@ -39,8 +39,8 @@ public class BlueUnderlineTests extends InputTestsBase {
     }
 
     public void testBlueUnderlineDisappears() {
-        final String STRING_1_TO_TYPE = "tgis";
-        final String STRING_2_TO_TYPE = "q";
+        final String STRING_1_TO_TYPE = "tqis";
+        final String STRING_2_TO_TYPE = "g";
         final int EXPECTED_SPAN_START = 0;
         final int EXPECTED_SPAN_END = 5;
         type(STRING_1_TO_TYPE);
