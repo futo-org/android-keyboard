@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Синхронизированные данные будут удалены из облака. Продолжить?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Удалить"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Отменить"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Словарь будет синхронизирован с серверами Google и сохранен на них. Чтобы повысить качество наших сервисов, мы можем отслеживать статистику использования тех или иных слов. Вся получаемая нами информация обрабатывается в соответствии с "<a href="https://www.google.com/policies/privacy">"Политикой конфиденциальности"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Словарь будет сохраняться на серверах Google и синхронизироваться. Чтобы повысить качество наших сервисов, мы можем отслеживать статистику использования тех или иных слов. Вся информация обрабатывается в соответствии с "<a href="https://www.google.com/policies/privacy">"Политикой конфиденциальности"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Чтобы включить функцию, добавьте аккаунт Google на устройство"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Смена способов ввода"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавиша переключения языков также служит для смены способа ввода"</string>
@@ -75,6 +75,8 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Активно"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Очень активно"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Подсказывать слова"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Предлагать подсказки на основе предыдущего слова"</string>
     <string name="gesture_input" msgid="826951152254563827">"Включить функцию"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Вводите слова, не отрывая пальца от клавиатуры"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Рисовать линию"</string>
