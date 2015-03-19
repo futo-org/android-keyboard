@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -106,16 +107,27 @@ public final class DictionarySettingsFragment extends PreferenceFragment
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-        final String metadataUri =
-                MetadataDbHelper.getMetadataUriAsString(getActivity(), mClientId);
-        // We only add the "Refresh" button if we have a non-empty URL to refresh from. If the
-        // URL is empty, of course we can't refresh so it makes no sense to display this.
-        if (!TextUtils.isEmpty(metadataUri)) {
-            mUpdateNowMenu =
-                    menu.add(Menu.NONE, MENU_UPDATE_NOW, 0, R.string.check_for_updates_now);
-            mUpdateNowMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            refreshNetworkState();
-        }
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                return MetadataDbHelper.getMetadataUriAsString(getActivity(), mClientId);
+            }
+
+            @Override
+            protected void onPostExecute(String metadataUri) {
+                // We only add the "Refresh" button if we have a non-empty URL to refresh from. If
+                // the URL is empty, of course we can't refresh so it makes no sense to display
+                // this.
+                if (!TextUtils.isEmpty(metadataUri)) {
+                    if (mUpdateNowMenu == null) {
+                        mUpdateNowMenu = menu.add(Menu.NONE, MENU_UPDATE_NOW, 0,
+                                        R.string.check_for_updates_now);
+                        mUpdateNowMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                    }
+                    refreshNetworkState();
+                }
+            }
+        }.execute();
     }
 
     @Override
@@ -124,18 +136,25 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         mChangedSettings = false;
         UpdateHandler.registerUpdateEventListener(this);
         final Activity activity = getActivity();
-        if (!MetadataDbHelper.isClientKnown(activity, mClientId)) {
-            Log.i(TAG, "Unknown dictionary pack client: " + mClientId + ". Requesting info.");
-            final Intent unknownClientBroadcast =
-                    new Intent(DictionaryPackConstants.UNKNOWN_DICTIONARY_PROVIDER_CLIENT);
-            unknownClientBroadcast.putExtra(
-                    DictionaryPackConstants.DICTIONARY_PROVIDER_CLIENT_EXTRA, mClientId);
-            activity.sendBroadcast(unknownClientBroadcast);
-        }
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         getActivity().registerReceiver(mConnectivityChangedReceiver, filter);
         refreshNetworkState();
+
+        new Thread("onResume") {
+            @Override
+            public void run() {
+                if (!MetadataDbHelper.isClientKnown(activity, mClientId)) {
+                    Log.i(TAG, "Unknown dictionary pack client: " + mClientId
+                            + ". Requesting info.");
+                    final Intent unknownClientBroadcast =
+                            new Intent(DictionaryPackConstants.UNKNOWN_DICTIONARY_PROVIDER_CLIENT);
+                    unknownClientBroadcast.putExtra(
+                            DictionaryPackConstants.DICTIONARY_PROVIDER_CLIENT_EXTRA, mClientId);
+                    activity.sendBroadcast(unknownClientBroadcast);
+                }
+            }
+        }.start();
     }
 
     @Override
@@ -375,8 +394,13 @@ public final class DictionarySettingsFragment extends PreferenceFragment
     private void cancelRefresh() {
         UpdateHandler.unregisterUpdateEventListener(this);
         final Context context = getActivity();
-        UpdateHandler.cancelUpdate(context, mClientId);
-        stopLoadingAnimation();
+        new Thread("cancelByHand") {
+            @Override
+            public void run() {
+                UpdateHandler.cancelUpdate(context, mClientId);
+                stopLoadingAnimation();
+            }
+        }.start();
     }
 
     private void startLoadingAnimation() {
