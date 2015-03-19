@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
@@ -249,7 +248,8 @@ public final class Suggest {
         }
 
         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
-                SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
+                "" /* prevWordsContext */, SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED,
                 null == sourceDictionaryOfRemovedWord ? Dictionary.DICTIONARY_USER_TYPED
                         : sourceDictionaryOfRemovedWord,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
@@ -426,7 +426,8 @@ public final class Suggest {
         for (int i = quotesToAppend - 1; i >= 0; --i) {
             sb.appendCodePoint(Constants.CODE_SINGLE_QUOTE);
         }
-        return new SuggestedWordInfo(sb.toString(), wordInfo.mScore, wordInfo.mKindAndFlags,
+        return new SuggestedWordInfo(sb.toString(), wordInfo.mPrevWordsContext,
+                wordInfo.mScore, wordInfo.mKindAndFlags,
                 wordInfo.mSourceDict, wordInfo.mIndexOfTouchPointOfSecondWord,
                 wordInfo.mAutoCommitFirstWordConfidence);
     }

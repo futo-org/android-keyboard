@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.StringUtils;
-import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
@@ -330,7 +329,9 @@ public final class BinaryDictionary extends Dictionary {
             if (len > 0) {
                 suggestions.add(new SuggestedWordInfo(
                         new String(session.mOutputCodePoints, start, len),
-                        (int)(session.mOutputScores[j] * weightForLocale), session.mOutputTypes[j],
+                        "" /* prevWordsContext */,
+                        (int)(session.mOutputScores[j] * weightForLocale),
+                        session.mOutputTypes[j],
                         this /* sourceDict */,
                         session.mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
                         session.mOutputAutoCommitFirstWordConfidence[0]));

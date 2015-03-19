@@ -42,7 +42,8 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
      * @return a new instance of {@link SuggestedWordInfo}.
      */
     private static SuggestedWordInfo createWordInfo(final String word, final int kindAndFlags) {
-        return new SuggestedWordInfo(word, 1 /* score */, kindAndFlags, null /* sourceDict */,
+        return new SuggestedWordInfo(word, "" /* prevWordsContext */, 1 /* score */, kindAndFlags,
+                null /* sourceDict */,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
     }

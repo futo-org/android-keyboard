@@ -37,7 +37,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
     private static SuggestedWordInfo createTypedWordInfo(final String word) {
         // Use 100 as the frequency because the numerical value does not matter as
         // long as it's > 1 and < INT_MAX.
-        return new SuggestedWordInfo(word, 100 /* score */,
+        return new SuggestedWordInfo(word, "" /* prevWordsContext */, 100 /* score */,
                 SuggestedWordInfo.KIND_TYPED,
                 null /* sourceDict */,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
@@ -52,7 +52,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
      * @return a new instance of {@link SuggestedWordInfo}.
      */
     private static SuggestedWordInfo createCorrectionWordInfo(final String word) {
-        return new SuggestedWordInfo(word, 1 /* score */,
+        return new SuggestedWordInfo(word, "" /* prevWordsContext */, 1 /* score */,
                 SuggestedWordInfo.KIND_CORRECTION,
                 null /* sourceDict */,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,

@@ -1408,7 +1408,8 @@ public final class InputLogic {
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         final String typedWordString = mWordComposer.getTypedWord();
                         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
-                                typedWordString, SuggestedWordInfo.MAX_SCORE,
+                                typedWordString, "" /* prevWordsContext */,
+                                SuggestedWordInfo.MAX_SCORE,
                                 SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
                                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                                 SuggestedWordInfo.NOT_A_CONFIDENCE);
@@ -1492,7 +1493,7 @@ public final class InputLogic {
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         final String typedWordString = range.mWord.toString();
         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
-                SuggestedWords.MAX_SUGGESTIONS + 1,
+                "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS + 1,
                 SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
@@ -1507,7 +1508,7 @@ public final class InputLogic {
                 ++i;
                 if (!TextUtils.equals(s, typedWordString)) {
                     suggestions.add(new SuggestedWordInfo(s,
-                            SuggestedWords.MAX_SUGGESTIONS - i,
+                            "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
                             SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
                             SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                             SuggestedWordInfo.NOT_A_CONFIDENCE
@@ -2053,8 +2054,11 @@ public final class InputLogic {
                 mConnection.commitCorrection(new CorrectionInfo(
                         mConnection.getExpectedSelectionEnd() - stringToCommit.length(),
                         typedWord, stringToCommit));
+                String prevWordsContext = (autoCorrectionOrNull != null)
+                        ? autoCorrectionOrNull.mPrevWordsContext
+                        : "";
                 StatsUtils.onAutoCorrection(typedWord, stringToCommit, isBatchMode,
-                        mDictionaryFacilitator);
+                        mDictionaryFacilitator, prevWordsContext);
                 StatsUtils.onWordCommitAutoCorrect(stringToCommit, isBatchMode);
             } else {
                 StatsUtils.onWordCommitUserTyped(stringToCommit, isBatchMode);
