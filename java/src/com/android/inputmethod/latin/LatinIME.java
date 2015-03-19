@@ -1407,7 +1407,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     public void onTailBatchInputResultShown(final SuggestedWords suggestedWords) {
         mGestureConsumer.onImeSuggestionsProcessed(suggestedWords,
-                mInputLogic.getComposingStart(), mInputLogic.getComposingLength());
+                mInputLogic.getComposingStart(), mInputLogic.getComposingLength(),
+                mDictionaryFacilitator);
     }
 
     // This method must run on the UI Thread.

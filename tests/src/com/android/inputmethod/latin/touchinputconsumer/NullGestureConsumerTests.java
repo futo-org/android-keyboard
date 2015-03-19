@@ -34,7 +34,7 @@ public class NullGestureConsumerTests extends AndroidTestCase {
         GestureConsumer.NULL_GESTURE_CONSUMER.onGestureStarted(null, null);
         GestureConsumer.NULL_GESTURE_CONSUMER.onGestureCanceled();
         GestureConsumer.NULL_GESTURE_CONSUMER.onGestureCompleted(null);
-        GestureConsumer.NULL_GESTURE_CONSUMER.onImeSuggestionsProcessed(null, -1, -1);
+        GestureConsumer.NULL_GESTURE_CONSUMER.onImeSuggestionsProcessed(null, -1, -1, null);
     }
 
     /**
