@@ -1386,7 +1386,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
-        mInputLogic.onUpdateBatchInput(mSettings.getCurrent(), batchPointers, mKeyboardSwitcher);
+        mInputLogic.onUpdateBatchInput(batchPointers);
     }
 
     @Override
@@ -1541,7 +1541,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestedWords(neutralSuggestions);
     }
 
-    // TODO: Make this private
     // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
     @UsedForTesting
     void loadKeyboard() {
@@ -1772,7 +1771,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         dialog.show();
     }
 
-    // TODO: can this be removed somehow without breaking the tests?
     @UsedForTesting
     SuggestedWords getSuggestedWordsForTest() {
         // You may not use this method for anything else than debug

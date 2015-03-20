@@ -225,9 +225,7 @@ public final class InputLogic {
      * @return the complete transaction object
      */
     public InputTransaction onTextInput(final SettingsValues settingsValues, final Event event,
-            final int keyboardShiftMode,
-            // TODO: remove this argument
-            final LatinIME.UIHandler handler) {
+            final int keyboardShiftMode, final LatinIME.UIHandler handler) {
         final String rawText = event.getTextToCommit().toString();
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
                 SystemClock.uptimeMillis(), mSpaceState,
@@ -266,7 +264,6 @@ public final class InputLogic {
     // interface
     public InputTransaction onPickSuggestionManually(final SettingsValues settingsValues,
             final SuggestedWordInfo suggestionInfo, final int keyboardShiftState,
-            // TODO: remove these arguments
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         final SuggestedWords suggestedWords = mSuggestedWords;
         final String suggestion = suggestionInfo.mWord;
@@ -422,7 +419,6 @@ public final class InputLogic {
      */
     public InputTransaction onCodeInput(final SettingsValues settingsValues,
             @Nonnull final Event event, final int keyboardShiftMode,
-            // TODO: remove these arguments
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         final Event processedEvent = mWordComposer.processEvent(event);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
@@ -469,7 +465,6 @@ public final class InputLogic {
     }
 
     public void onStartBatchInput(final SettingsValues settingsValues,
-            // TODO: remove these arguments
             final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
         mInputLogicHandler.onStartBatchInput();
         handler.showGesturePreviewAndSuggestionStrip(
@@ -533,10 +528,7 @@ public final class InputLogic {
      * earlier sequence number.
      */
     private int mAutoCommitSequenceNumber = 1;
-    public void onUpdateBatchInput(final SettingsValues settingsValues,
-            final InputPointers batchPointers,
-            // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher) {
+    public void onUpdateBatchInput(final InputPointers batchPointers) {
         mInputLogicHandler.onUpdateBatchInput(batchPointers, mAutoCommitSequenceNumber);
     }
 
@@ -545,7 +537,6 @@ public final class InputLogic {
         ++mAutoCommitSequenceNumber;
     }
 
-    // TODO: remove this argument
     public void onCancelBatchInput(final LatinIME.UIHandler handler) {
         mInputLogicHandler.onCancelBatchInput();
         handler.showGesturePreviewAndSuggestionStrip(
@@ -621,7 +612,6 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleFunctionalEvent(final Event event, final InputTransaction inputTransaction,
-            // TODO: remove these arguments
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
@@ -673,7 +663,6 @@ public final class InputLogic {
                 // handled in {@link KeyboardState#onEvent(Event,int)}.
                 break;
             case Constants.CODE_SHIFT_ENTER:
-                // TODO: remove this object
                 final Event tmpEvent = Event.createSoftwareKeypressEvent(Constants.CODE_ENTER,
                         event.mKeyCode, event.mX, event.mY, event.isKeyRepeat());
                 handleNonSpecialCharacterEvent(tmpEvent, inputTransaction, handler);
@@ -697,7 +686,6 @@ public final class InputLogic {
      */
     private void handleNonFunctionalEvent(final Event event,
             final InputTransaction inputTransaction,
-            // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         inputTransaction.setDidAffectContents();
         switch (event.mCodePoint) {
@@ -743,7 +731,6 @@ public final class InputLogic {
      */
     private void handleNonSpecialCharacterEvent(final Event event,
             final InputTransaction inputTransaction,
-            // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
@@ -849,7 +836,6 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction,
-            // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         final int codePoint = event.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
@@ -957,7 +943,6 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleBackspaceEvent(final Event event, final InputTransaction inputTransaction,
-            // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
@@ -1161,7 +1146,6 @@ public final class InputLogic {
                     settingsValues.mSpacingAndPunctuations,
                     currentKeyboardScriptId);
             if (range == null) {
-                // TODO(zivkovic): Check for bad connection before getting this far.
                 // Happens if we don't have an input connection at all.
                 return false;
             }
@@ -1445,7 +1429,6 @@ public final class InputLogic {
      *   to a cursor move, for example). In ICS, there is a platform bug that we need to work
      *   around only when we come here at input start time.
      */
-    // TODO: make this private.
     public void restartSuggestionsOnWordTouchedByCursor(final SettingsValues settingsValues,
             final boolean forStartInput,
             // TODO: remove this argument, put it into settingsValues
@@ -1725,7 +1708,6 @@ public final class InputLogic {
      * @param nthPreviousWord reverse index of the word to get (1-indexed)
      * @return the information of previous words
      */
-    // TODO: Make this private
     public NgramContext getNgramContextFromNthPreviousWordForSuggestion(
             final SpacingAndPunctuations spacingAndPunctuations, final int nthPreviousWord) {
         if (spacingAndPunctuations.mCurrentLanguageHasSpaces) {
@@ -1955,9 +1937,7 @@ public final class InputLogic {
      * @param suggestedWords suggestedWords to use.
      */
     public void onUpdateTailBatchInputCompleted(final SettingsValues settingsValues,
-            final SuggestedWords suggestedWords,
-            // TODO: remove this argument
-            final KeyboardSwitcher keyboardSwitcher) {
+            final SuggestedWords suggestedWords, final KeyboardSwitcher keyboardSwitcher) {
         final String batchInputText = suggestedWords.isEmpty() ? null : suggestedWords.getWord(0);
         if (TextUtils.isEmpty(batchInputText)) {
             return;
@@ -1990,7 +1970,6 @@ public final class InputLogic {
      * @param settingsValues the current values of the settings.
      * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
      */
-    // TODO: Make this private
     public void commitTyped(final SettingsValues settingsValues, final String separatorString) {
         if (!mWordComposer.isComposingWord()) return;
         final String typedWord = mWordComposer.getTypedWord();
@@ -2019,9 +1998,7 @@ public final class InputLogic {
      * @param separator the separator that's causing the commit to happen.
      */
     private void commitCurrentAutoCorrection(final SettingsValues settingsValues,
-            final String separator,
-            // TODO: Remove this argument.
-            final LatinIME.UIHandler handler) {
+            final String separator, final LatinIME.UIHandler handler) {
         // Complete any pending suggestions query first
         if (handler.hasPendingUpdateSuggestions()) {
             handler.cancelUpdateSuggestionStrip();
@@ -2110,11 +2087,8 @@ public final class InputLogic {
      * @param remainingTries How many times we may try again before giving up.
      * @return whether true if the caches were successfully reset, false otherwise.
      */
-    // TODO: make this private
     public boolean retryResetCachesAndReturnSuccess(final boolean tryResumeSuggestions,
-            final int remainingTries,
-            // TODO: remove these arguments
-            final LatinIME.UIHandler handler) {
+            final int remainingTries, final LatinIME.UIHandler handler) {
         final boolean shouldFinishComposition = mConnection.hasSelection()
                 || !mConnection.isCursorPositionKnown();
         if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(
