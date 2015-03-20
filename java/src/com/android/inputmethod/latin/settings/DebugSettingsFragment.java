@@ -30,7 +30,6 @@ import android.preference.TwoStatePreference;
 import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
 import com.android.inputmethod.latin.DictionaryFacilitatorImpl;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.debug.ExternalDictionaryGetterForDebug;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
@@ -43,12 +42,10 @@ import java.util.Locale;
  */
 public final class DebugSettingsFragment extends SubScreenFragment
         implements OnPreferenceClickListener {
-    private static final String PREF_READ_EXTERNAL_DICTIONARY = "read_external_dictionary";
     private static final String PREF_KEY_DUMP_DICTS = "pref_key_dump_dictionaries";
     private static final String PREF_KEY_DUMP_DICT_PREFIX = "pref_key_dump_dictionaries";
 
     private boolean mServiceNeedsRestart = false;
-    private Preference mReadExternalDictionaryPref;
     private TwoStatePreference mDebugMode;
 
     @Override
@@ -58,11 +55,6 @@ public final class DebugSettingsFragment extends SubScreenFragment
 
         if (!Settings.SHOULD_SHOW_LXX_SUGGESTION_UI) {
             removePreference(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI);
-        }
-
-        mReadExternalDictionaryPref = findPreference(PREF_READ_EXTERNAL_DICTIONARY);
-        if (mReadExternalDictionaryPref != null) {
-            mReadExternalDictionaryPref.setOnPreferenceClickListener(this);
         }
 
         final PreferenceGroup dictDumpPreferenceGroup =
@@ -111,11 +103,6 @@ public final class DebugSettingsFragment extends SubScreenFragment
     @Override
     public boolean onPreferenceClick(final Preference pref) {
         final Context context = getActivity();
-        if (pref == mReadExternalDictionaryPref) {
-            ExternalDictionaryGetterForDebug.chooseAndInstallDictionary(context);
-            mServiceNeedsRestart = true;
-            return true;
-        }
         if (pref instanceof DictDumpPreference) {
             final DictDumpPreference dictDumpPref = (DictDumpPreference)pref;
             final String dictName = dictDumpPref.mDictName;

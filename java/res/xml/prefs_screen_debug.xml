@@ -87,9 +87,6 @@
         android:title="@string/prefs_keyboard_height_scale"
         latin:minValue="50"
         latin:maxValue="120" /> <!-- percentage -->
-    <PreferenceScreen
-        android:key="read_external_dictionary"
-        android:title="@string/prefs_read_external_dictionary" />
     <PreferenceCategory
         android:key="pref_key_dump_dictionaries"
         android:title="@string/prefs_dump_dynamic_dicts">
