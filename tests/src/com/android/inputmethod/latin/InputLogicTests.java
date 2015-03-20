@@ -217,22 +217,45 @@ public class InputLogicTests extends InputTestsBase {
     }
 
     public void testDoubleSpace() {
-        // Set default pref just in case
-        setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
         // U+1F607 is an emoji
         final String[] STRINGS_TO_TYPE =
                 new String[] { "this   ", "a+  ", "\u1F607  ", "..  ", ")  ", "(  ", "%  " };
         final String[] EXPECTED_RESULTS =
                 new String[] { "this.  ", "a+. ", "\u1F607. ", "..  ", "). ", "(  ", "%. " };
-        for (int i = 0; i < STRINGS_TO_TYPE.length; ++i) {
+        verifyDoubleSpace(STRINGS_TO_TYPE, EXPECTED_RESULTS);
+    }
+
+    public void testDoubleSpaceHindi() {
+        changeLanguage("hi");
+        // U+1F607 is an emoji
+        final String[] STRINGS_TO_TYPE =
+                new String[] { "this   ", "a+  ", "\u1F607  ", "||  ", ")  ", "(  ", "%  " };
+        final String[] EXPECTED_RESULTS =
+                new String[] { "this|  ", "a+| ", "\u1F607| ", "||  ", ")| ", "(  ", "%| " };
+        verifyDoubleSpace(STRINGS_TO_TYPE, EXPECTED_RESULTS);
+    }
+
+    private void verifyDoubleSpace(String[] stringsToType, String[] expectedResults) {
+        // Set default pref just in case
+        setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
+        for (int i = 0; i < stringsToType.length; ++i) {
             mEditText.setText("");
-            type(STRINGS_TO_TYPE[i]);
-            assertEquals("double space processing", EXPECTED_RESULTS[i],
+            type(stringsToType[i]);
+            assertEquals("double space processing", expectedResults[i],
                     mEditText.getText().toString());
         }
     }
 
-    public void testCancelDoubleSpace() {
+    public void testCancelDoubleSpaceEnglish() {
+        final String STRING_TO_TYPE = "this  ";
+        final String EXPECTED_RESULT = "this ";
+        type(STRING_TO_TYPE);
+        type(Constants.CODE_DELETE);
+        assertEquals("double space make a period", EXPECTED_RESULT, mEditText.getText().toString());
+    }
+
+    public void testCancelDoubleSpaceHindi() {
+        changeLanguage("hi");
         final String STRING_TO_TYPE = "this  ";
         final String EXPECTED_RESULT = "this ";
         type(STRING_TO_TYPE);
@@ -283,7 +306,7 @@ public class InputLogicTests extends InputTestsBase {
         setBooleanPreference(Settings.PREF_SHOW_SUGGESTIONS, true, true);
         setBooleanPreference(Settings.PREF_AUTO_CORRECTION, true, true);
         setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
-        testDoubleSpacePeriodWithSettings(true /* expectsPeriod */);
+        testDoubleSpacePeriodWithSettings(true);
         // "Suggestion visibility" to off
         testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS, false);
         // "Suggestion visibility" to on
@@ -463,38 +486,19 @@ public class InputLogicTests extends InputTestsBase {
         type("  ");
         helperTestComposing("a'", true);
     }
+
     // TODO: Add some tests for non-BMP characters
 
     public void testAutoCorrectByUserHistory() {
-        final String WORD_TO_BE_CORRECTED = "qpmx";
-        final String NOT_CORRECTED_RESULT = "qpmx ";
-        final String DESIRED_WORD = "qpmz";
-        final String CORRECTED_RESULT = "qpmz ";
-        final int typeCountNotToAutocorrect = 1;
-        final int typeCountToAutoCorrect = 16;
-        int startIndex = 0;
-        int endIndex = 0;
+        type("qpmz");
+        type(Constants.CODE_SPACE);
 
-        for (int i = 0; i < typeCountNotToAutocorrect; i++) {
-            type(DESIRED_WORD);
-            type(Constants.CODE_SPACE);
-        }
-        startIndex = mEditText.getText().length();
-        type(WORD_TO_BE_CORRECTED);
+        int startIndex = mEditText.getText().length();
+        type("qpmx");
         type(Constants.CODE_SPACE);
-        endIndex = mEditText.getText().length();
-        assertEquals("not auto-corrected by user history", NOT_CORRECTED_RESULT,
-                mEditText.getText().subSequence(startIndex, endIndex).toString());
-        for (int i = typeCountNotToAutocorrect; i < typeCountToAutoCorrect; i++) {
-            type(DESIRED_WORD);
-            type(Constants.CODE_SPACE);
-        }
-        startIndex = mEditText.getText().length();
-        type(WORD_TO_BE_CORRECTED);
-        type(Constants.CODE_SPACE);
-        endIndex = mEditText.getText().length();
+        int endIndex = mEditText.getText().length();
         assertEquals("auto-corrected by user history",
-                CORRECTED_RESULT, mEditText.getText().subSequence(startIndex, endIndex).toString());
+                "qpmz ", mEditText.getText().subSequence(startIndex, endIndex).toString());
     }
 
     public void testPredictionsAfterSpace() {
@@ -659,13 +663,13 @@ public class InputLogicTests extends InputTestsBase {
 
     public void testBasicGesture() {
         gesture("this");
-        assertEquals("gesture \"this\"", "this", mEditText.getText().toString());
+        assertEquals("this", mEditText.getText().toString());
     }
 
     public void testGestureGesture() {
-        gesture("this");
-        gesture("is");
-        assertEquals("gesture \"this is\"", "this is", mEditText.getText().toString());
+        gesture("got");
+        gesture("milk");
+        assertEquals("got milk", mEditText.getText().toString());
     }
 
     public void testGestureBackspaceGestureAgain() {
@@ -694,8 +698,6 @@ public class InputLogicTests extends InputTestsBase {
         sendUpdateForCursorMoveTo(NEW_CURSOR_POSITION);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
-        ensureComposingSpanPos("move cursor inside word leaves composing span in the right place",
-                startPos, END_OF_WORD);
     }
 
     private void typeWordAndPutCursorInside(final String word, final int startPos) {
@@ -725,7 +727,7 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("mbo", "some thing ", mEditText.getText().toString());
         typeWordAndPutCursorInside(WORD_TO_TYPE, cursorPos + 1 /* startPos */);
         type(Constants.CODE_DELETE);
-        ensureComposingSpanPos("space while in the middle of a word cancels composition", -1, -1);
+        ensureComposingSpanPos("delete while in the middle of a word cancels composition", -1, -1);
     }
 
     public void testTypeWithinGestureComposing() {
@@ -741,10 +743,9 @@ public class InputLogicTests extends InputTestsBase {
         type(" ");
         typeWordAndPutCursorInside(WORD_TO_TYPE, cursorPos + 1 /* startPos */);
         type(Constants.CODE_DELETE);
-        ensureComposingSpanPos("space while in the middle of a word cancels composition", -1, -1);
+        ensureComposingSpanPos("delete while in the middle of a word cancels composition", -1, -1);
     }
 
-    // TODO: Verify this works when we return FIGS language models to the APK.
     public void testAutoCorrectForFrench() {
         final String STRING_TO_TYPE = "irq ";
         final String EXPECTED_RESULT = "ir a ";
@@ -825,33 +826,5 @@ public class InputLogicTests extends InputTestsBase {
         type(STRING_TO_TYPE);
         assertEquals("auto-correct with umlaut for German", EXPECTED_RESULT,
                 mEditText.getText().toString());
-    }
-
-    // Corresponds to InputLogicTests#testDoubleSpace
-    public void testDoubleSpaceHindi() {
-        changeLanguage("hi");
-        // Set default pref just in case
-        setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
-        // U+1F607 is an emoji
-        final String[] STRINGS_TO_TYPE =
-                new String[] { "this   ", "a+  ", "\u1F607  ", "||  ", ")  ", "(  ", "%  " };
-        final String[] EXPECTED_RESULTS =
-                new String[] { "this|  ", "a+| ", "\u1F607| ", "||  ", ")| ", "(  ", "%| " };
-        for (int i = 0; i < STRINGS_TO_TYPE.length; ++i) {
-            mEditText.setText("");
-            type(STRINGS_TO_TYPE[i]);
-            assertEquals("double space processing", EXPECTED_RESULTS[i],
-                    mEditText.getText().toString());
-        }
-    }
-
-    // Corresponds to InputLogicTests#testCancelDoubleSpace
-    public void testCancelDoubleSpaceHindi() {
-        changeLanguage("hi");
-        final String STRING_TO_TYPE = "this  ";
-        final String EXPECTED_RESULT = "this ";
-        type(STRING_TO_TYPE);
-        type(Constants.CODE_DELETE);
-        assertEquals("double space make a period", EXPECTED_RESULT, mEditText.getText().toString());
     }
 }
