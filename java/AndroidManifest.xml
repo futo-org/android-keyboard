@@ -133,7 +133,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".DictionaryPackInstallBroadcastReceiver" android:exported="false">
+        <receiver android:name="DictionaryPackInstallBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="com.android.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
             </intent-filter>
@@ -148,8 +148,7 @@
         </receiver>
 
         <!-- Broadcast receiver for AccountManager#LOGIN_ACCOUNTS_CHANGED_ACTION. -->
-        <receiver
-            android:name=".accounts.AccountsChangedReceiver">
+        <receiver android:name=".accounts.AccountsChangedReceiver">
             <intent-filter>
                 <action android:name="android.accounts.LOGIN_ACCOUNTS_CHANGED" />
             </intent-filter>
