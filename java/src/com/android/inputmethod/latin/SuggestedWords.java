@@ -17,11 +17,9 @@
 package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.inputmethod.CompletionInfo;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.define.DebugFlags;
 
@@ -264,6 +262,7 @@ public class SuggestedWords {
         public static final int KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION = 0x10000000;
 
         public final String mWord;
+        public final String mPrevWordsContext;
         // The completion info from the application. Null for suggestions that don't come from
         // the application (including keyboard-computed ones, so this is almost always null)
         public final CompletionInfo mApplicationSpecifiedCompletionInfo;
@@ -284,6 +283,7 @@ public class SuggestedWords {
         /**
          * Create a new suggested word info.
          * @param word The string to suggest.
+         * @param prevWordsContext previous words context.
          * @param score A measure of how likely this suggestion is.
          * @param kindAndFlags The kind of suggestion, as one of the above KIND_* constants with
          * flags.
@@ -291,10 +291,12 @@ public class SuggestedWords {
          * @param indexOfTouchPointOfSecondWord See mIndexOfTouchPointOfSecondWord.
          * @param autoCommitFirstWordConfidence See mAutoCommitFirstWordConfidence.
          */
-        public SuggestedWordInfo(final String word, final int score, final int kindAndFlags,
+        public SuggestedWordInfo(final String word, final String prevWordsContext,
+                final int score, final int kindAndFlags,
                 final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord,
                 final int autoCommitFirstWordConfidence) {
             mWord = word;
+            mPrevWordsContext = prevWordsContext;
             mApplicationSpecifiedCompletionInfo = null;
             mScore = score;
             mKindAndFlags = kindAndFlags;
@@ -311,6 +313,7 @@ public class SuggestedWords {
          */
         public SuggestedWordInfo(final CompletionInfo applicationSpecifiedCompletion) {
             mWord = applicationSpecifiedCompletion.getText().toString();
+            mPrevWordsContext = "";
             mApplicationSpecifiedCompletionInfo = applicationSpecifiedCompletion;
             mScore = SuggestedWordInfo.MAX_SCORE;
             mKindAndFlags = SuggestedWordInfo.KIND_APP_DEFINED;
@@ -427,27 +430,6 @@ public class SuggestedWords {
 
     public boolean isPrediction() {
         return isPrediction(mInputStyle);
-    }
-
-    // Creates a new SuggestedWordInfo from the currently suggested words that removes all but the
-    // last word of all suggestions, separated by a space. This is necessary because when we commit
-    // a multiple-word suggestion, the IME only retains the last word as the composing word, and
-    // we should only suggest replacements for this last word.
-    // TODO: make this work with languages without spaces.
-    public SuggestedWords getSuggestedWordsForLastWordOfPhraseGesture() {
-        final ArrayList<SuggestedWordInfo> newSuggestions = new ArrayList<>();
-        for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
-            final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
-            final int indexOfLastSpace = info.mWord.lastIndexOf(Constants.CODE_SPACE) + 1;
-            final String lastWord = info.mWord.substring(indexOfLastSpace);
-            newSuggestions.add(new SuggestedWordInfo(lastWord, info.mScore, info.mKindAndFlags,
-                    info.mSourceDict, SuggestedWordInfo.NOT_AN_INDEX,
-                    SuggestedWordInfo.NOT_A_CONFIDENCE));
-        }
-        return new SuggestedWords(newSuggestions, null /* rawSuggestions */,
-                newSuggestions.isEmpty() ? null : newSuggestions.get(0) /* typedWordInfo */,
-                mTypedWordValid, mWillAutoCorrect, mIsObsoleteSuggestions, INPUT_STYLE_TAIL_BATCH,
-                NOT_A_SEQUENCE_NUMBER);
     }
 
     /**

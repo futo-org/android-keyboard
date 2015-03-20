@@ -114,7 +114,8 @@ public final class PunctuationSuggestions extends SuggestedWords {
     }
 
     private static SuggestedWordInfo newHardCodedWordInfo(final String keySpec) {
-        return new SuggestedWordInfo(keySpec, SuggestedWordInfo.MAX_SCORE,
+        return new SuggestedWordInfo(keySpec, "" /* prevWordsContext */,
+                SuggestedWordInfo.MAX_SCORE,
                 SuggestedWordInfo.KIND_HARDCODED,
                 Dictionary.DICTIONARY_HARDCODED,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,

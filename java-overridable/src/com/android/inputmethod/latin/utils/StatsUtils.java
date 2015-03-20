@@ -72,7 +72,8 @@ public final class StatsUtils {
     }
 
     public static void onAutoCorrection(final String typedWord, final String autoCorrectionWord,
-            final boolean isBatchInput, final DictionaryFacilitator dictionaryType) {
+            final boolean isBatchInput, final DictionaryFacilitator dictionaryFacilitator,
+            final String prevWordsContext) {
     }
 
     public static void onWordCommitUserTyped(final String commitWord, final boolean isBatchMode) {
