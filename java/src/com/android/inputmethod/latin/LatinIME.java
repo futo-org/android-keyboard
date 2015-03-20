@@ -792,6 +792,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @SuppressWarnings("deprecation")
     void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
+
+        mDictionaryFacilitator.onStartInput();
         // Switch to the null consumer to handle cases leading to early exit below, for which we
         // also wouldn't be consuming gesture data.
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
@@ -970,6 +972,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     void onFinishInputInternal() {
         super.onFinishInput();
 
+        mDictionaryFacilitator.onFinishInput();
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();

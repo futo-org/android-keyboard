@@ -202,6 +202,15 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public DictionaryFacilitatorImpl() {
     }
 
+    @Override
+    public void onStartInput() {
+    }
+
+    @Override
+    public void onFinishInput() {
+    }
+
+    @Override
     public boolean isActive() {
         return mDictionaryGroup.mLocale != null;
     }
