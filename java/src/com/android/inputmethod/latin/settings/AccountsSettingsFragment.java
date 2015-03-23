@@ -132,7 +132,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (ManagedProfileUtils.getInstance().hasManagedWorkProfile(mFragment.getActivity())) {
+            if (ManagedProfileUtils.getInstance().hasWorkProfile(mFragment.getActivity())) {
                 mFragment.removeSyncPreferences();
             } else {
                 mFragment.enableSyncPreferences();
