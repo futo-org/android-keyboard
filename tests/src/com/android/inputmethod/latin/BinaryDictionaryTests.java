@@ -44,10 +44,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     private static final String TEST_LOCALE = "test";
     private static final String DICTIONARY_ID = "TestBinaryDictionary";
 
-    private static boolean supportsNgram(final int formatVersion) {
-        return formatVersion >= FormatSpec.VERSION403;
-    }
-
     private HashSet<File> mDictFilesToBeDeleted = new HashSet<>();
 
     @Override
