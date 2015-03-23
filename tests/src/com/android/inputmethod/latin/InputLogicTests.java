@@ -645,22 +645,6 @@ public class InputLogicTests extends InputTestsBase {
                 mEditText.getText().toString());
     }
 
-    public void testSwitchLanguages() {
-        final String WORD_TO_TYPE_FIRST_PART = "com";
-        final String WORD_TO_TYPE_SECOND_PART = "md";
-        final String EXPECTED_RESULT = "comme";
-        changeLanguage("en");
-        type(WORD_TO_TYPE_FIRST_PART);
-        changeLanguage("fr");
-        runMessages();
-        type(WORD_TO_TYPE_SECOND_PART);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
-        runMessages();
-        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
-        assertEquals("Suggestions updated after switching languages",
-                    EXPECTED_RESULT, suggestedWords.size() > 0 ? suggestedWords.getWord(1) : null);
-    }
-
     public void testBasicGesture() {
         gesture("this");
         assertEquals("this", mEditText.getText().toString());
@@ -743,16 +727,8 @@ public class InputLogicTests extends InputTestsBase {
         type(" ");
         typeWordAndPutCursorInside(WORD_TO_TYPE, cursorPos + 1 /* startPos */);
         type(Constants.CODE_DELETE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         ensureComposingSpanPos("delete while in the middle of a word cancels composition", -1, -1);
-    }
-
-    public void testAutoCorrectForFrench() {
-        final String STRING_TO_TYPE = "irq ";
-        final String EXPECTED_RESULT = "ir a ";
-        changeLanguage("es");
-        type(STRING_TO_TYPE);
-        assertEquals("simple auto-correct for Spanish", EXPECTED_RESULT,
-                mEditText.getText().toString());
     }
 
     public void testManualPickThenSeparatorForFrench() {
@@ -780,13 +756,12 @@ public class InputLogicTests extends InputTestsBase {
                 mEditText.getText().toString());
     }
 
-    public void testWordThenSpaceThenPunctuationFromStripTwiceForFrench() {
+    public void testWordThenSpaceThenPunctuationFromStripTwice() {
         setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, false, true);
 
         final String WORD_TO_TYPE = "test ";
         final String PUNCTUATION_FROM_STRIP = "!";
-        final String EXPECTED_RESULT = "test !!";
-        changeLanguage("fr");
+        final String EXPECTED_RESULT = "test!! ";
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
@@ -794,37 +769,17 @@ public class InputLogicTests extends InputTestsBase {
                 mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());
         pickSuggestionManually(PUNCTUATION_FROM_STRIP);
         pickSuggestionManually(PUNCTUATION_FROM_STRIP);
-        assertEquals("type word then type space then punctuation from strip twice for French",
-                EXPECTED_RESULT, mEditText.getText().toString());
+        assertEquals(EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testWordThenSpaceDisplaysPredictions() {
-        final String WORD_TO_TYPE = "beaujolais ";
-        final String EXPECTED_RESULT = "nouveau";
-        changeLanguage("fr");
+        final String WORD_TO_TYPE = "Barack ";
+        final String EXPECTED_RESULT = "Obama";
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("type word then type space yields predictions for French",
                 EXPECTED_RESULT, suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
-    }
-
-    public void testAutoCorrectForGerman() {
-        final String STRING_TO_TYPE = "unf ";
-        final String EXPECTED_RESULT = "und ";
-        changeLanguage("de");
-        type(STRING_TO_TYPE);
-        assertEquals("simple auto-correct for German", EXPECTED_RESULT,
-                mEditText.getText().toString());
-    }
-
-    public void testAutoCorrectWithUmlautForGerman() {
-        final String STRING_TO_TYPE = "ueber ";
-        final String EXPECTED_RESULT = "über ";
-        changeLanguage("de");
-        type(STRING_TO_TYPE);
-        assertEquals("auto-correct with umlaut for German", EXPECTED_RESULT,
-                mEditText.getText().toString());
     }
 }
