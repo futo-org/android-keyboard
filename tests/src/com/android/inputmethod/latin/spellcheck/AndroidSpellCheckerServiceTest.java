@@ -53,14 +53,8 @@ public class AndroidSpellCheckerServiceTest extends InputTestsBase {
         sleep(1000);
 
         final SpanGetter span = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
-        // If no span, the following will crash
-        final String[] suggestions = span.getSuggestions();
-        // For this test we consider "годп" should yield at least 2 suggestions (at this moment
-        // it yields 5).
-        assertTrue(suggestions.length >= 2);
-        // We also assume the top suggestion should be "года", which is the top word in the
-        // Russian dictionary.
-        assertEquals("", "года", suggestions[0]);
+        // We don't ship with Russian LM
+        assertNull(span.getSpan());
     }
 
     public void testSpellcheckWithPeriods() {
