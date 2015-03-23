@@ -62,9 +62,9 @@
     <string name="cloud_sync_summary_disabled">Sync your personal dictionary across devices</string>
     <!-- Option title for starting the sync cycle now. [CHAR LIMIT=33]-->
     <string name="sync_now_title">Sync now</string>
-    <!-- Option title for letting user delete data from Google servers.  [CHAR LIMIT=33] -->
-    <string name="clear_sync_data_title">Delete Keyboard Cloud data</string>
-    <!-- Option summary for letting user delete data from Google servers. [CHAR LIMIT=65] -->
+    <!-- Option title for letting user delete synced google keyboard data from Google servers.  [CHAR LIMIT=35] -->
+    <string name="clear_sync_data_title">Delete cloud data</string>
+    <!-- Option summary for letting user delete synced google keyboard data from Google servers. [CHAR LIMIT=65] -->
     <string name="clear_sync_data_summary">Deletes your synced data from Google</string>
     <!-- Text for confirmation dialog box asking user to confirm deletion of cloud data. [CHAR LIMIT=65] -->
     <string name="clear_sync_data_confirmation">Your synced data will be deleted from the cloud. Are you sure?</string>
