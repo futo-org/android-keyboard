@@ -85,7 +85,7 @@ public class AccountsSettingsFragmentTests
     }
 
     public void testMultipleAccounts_noSettingsForManagedProfile() {
-        when(mManagedProfileUtils.hasManagedWorkProfile(any(Context.class))).thenReturn(true);
+        when(mManagedProfileUtils.hasWorkProfile(any(Context.class))).thenReturn(true);
 
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
@@ -97,7 +97,7 @@ public class AccountsSettingsFragmentTests
     }
 
     public void testMultipleAccounts_noCurrentAccount() {
-        when(mManagedProfileUtils.hasManagedWorkProfile(any(Context.class))).thenReturn(false);
+        when(mManagedProfileUtils.hasWorkProfile(any(Context.class))).thenReturn(false);
 
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
@@ -118,7 +118,7 @@ public class AccountsSettingsFragmentTests
     }
 
     public void testMultipleAccounts_currentAccount() {
-        when(mManagedProfileUtils.hasManagedWorkProfile(any(Context.class))).thenReturn(false);
+        when(mManagedProfileUtils.hasWorkProfile(any(Context.class))).thenReturn(false);
 
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
