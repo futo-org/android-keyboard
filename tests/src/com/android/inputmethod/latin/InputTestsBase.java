@@ -66,7 +66,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     protected static final int DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS = 200;
     // We wait for gesture computation for this delay
     protected static final int DELAY_TO_WAIT_FOR_GESTURE_MILLIS = 200;
-    private final int TIMEOUT_TO_WAIT_FOR_LOADING_MAIN_DICTIONARY_IN_SECONDS = 60;
+    // If a dictionary takes longer to load, we could have serious problems.
+    private final int TIMEOUT_TO_WAIT_FOR_LOADING_MAIN_DICTIONARY_IN_SECONDS = 5;
 
     // Type for a test phony dictionary
     private static final String TYPE_TEST = "test";
