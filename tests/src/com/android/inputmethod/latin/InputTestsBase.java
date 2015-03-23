@@ -152,8 +152,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         super(LatinIMEForTests.class);
     }
 
-    // TODO: Isn't there a way to make this generic somehow? We can take a <T> and return a <T>
-    // but we'd have to dispatch types on editor.put...() functions
     protected boolean setBooleanPreference(final String key, final boolean value,
             final boolean defaultValue) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
