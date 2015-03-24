@@ -118,11 +118,17 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             removeSyncPreferences();
         } else {
+            // Temporarily disable the preferences till we can
+            // check that we don't have a work profile.
             disableSyncPreferences();
             new ManagedProfileCheckerTask(this).execute();
         }
     }
 
+    /**
+     * Task to check work profile. If found, it removes the sync prefs. If not,
+     * it enables them.
+     */
     private static class ManagedProfileCheckerTask extends AsyncTask<Void, Void, Void> {
         private final AccountsSettingsFragment mFragment;
 
@@ -135,7 +141,8 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             if (ManagedProfileUtils.getInstance().hasWorkProfile(mFragment.getActivity())) {
                 mFragment.removeSyncPreferences();
             } else {
-                mFragment.enableSyncPreferences();
+                mFragment.refreshAccountAndDependentPreferences(
+                        mFragment.getSignedInAccountName());
             }
             return null;
         }
