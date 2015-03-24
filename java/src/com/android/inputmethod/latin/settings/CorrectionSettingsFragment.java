@@ -49,7 +49,7 @@ import java.util.TreeSet;
  */
 public final class CorrectionSettingsFragment extends SubScreenFragment {
     private static final boolean DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS = false;
-    private static final boolean USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS =
+    private static final boolean USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS =
             DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS
             || Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2;
 
@@ -74,7 +74,7 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
         final Preference editPersonalDictionary =
                 findPreference(Settings.PREF_EDIT_PERSONAL_DICTIONARY);
         final Intent editPersonalDictionaryIntent = editPersonalDictionary.getIntent();
-        final ResolveInfo ri = USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS ? null
+        final ResolveInfo ri = USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS ? null
                 : pm.resolveActivity(
                         editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
         if (ri == null) {
@@ -90,9 +90,7 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
     private void ensureConsistencyOfAutoCorrectionSettings() {
         final TwoStatePreference autoCorrectionPref = (TwoStatePreference)
                 findPreference(Settings.PREF_AUTO_CORRECTION);
-        if (!autoCorrectionPref.isChecked()) {
-            setPreferenceEnabled(Settings.PREF_BIGRAM_PREDICTIONS, false);
-        }
+        setPreferenceEnabled(Settings.PREF_BIGRAM_PREDICTIONS, autoCorrectionPref.isChecked());
     }
 
     private void overwriteUserDictionaryPreference(final Preference userDictionaryPreference) {
