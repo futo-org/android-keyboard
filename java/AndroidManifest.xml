@@ -144,6 +144,7 @@
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="com.android.inputmethod.dictionarypack.aosp.UPDATE_NOW" />
+                <action android:name="com.android.inputmethod.dictionarypack.aosp.INIT_AND_UPDATE_NOW" />
             </intent-filter>
         </receiver>
 

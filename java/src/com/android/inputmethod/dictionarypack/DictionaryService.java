@@ -25,6 +25,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.inputmethod.latin.BinaryDictionaryFileDumper;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.LocaleUtils;
 
@@ -192,13 +193,26 @@ public final class DictionaryService extends Service {
 
     static void dispatchBroadcast(final Context context, final Intent intent) {
         if (DATE_CHANGED_INTENT_ACTION.equals(intent.getAction())) {
+            // Do not force download dictionaries on date change updates.
+            CommonPreferences.setForceDownloadDict(context, false);
             // This happens when the date of the device changes. This normally happens
             // at midnight local time, but it may happen if the user changes the date
             // by hand or something similar happens.
             checkTimeAndMaybeSetupUpdateAlarm(context);
         } else if (DictionaryPackConstants.UPDATE_NOW_INTENT_ACTION.equals(intent.getAction())) {
             // Intent to trigger an update now.
-            UpdateHandler.tryUpdate(context, false);
+            UpdateHandler.tryUpdate(context, CommonPreferences.isForceDownloadDict(context));
+        } else if (DictionaryPackConstants.INIT_AND_UPDATE_NOW_INTENT_ACTION.equals(
+                intent.getAction())) {
+            // Enable force download of dictionaries irrespective of wifi or metered connection.
+            CommonPreferences.setForceDownloadDict(context, true);
+
+            // Initialize the client Db.
+            final String mClientId = context.getString(R.string.dictionary_pack_client_id);
+            BinaryDictionaryFileDumper.initializeClientRecordHelper(context, mClientId);
+
+            // Updates the metadata and the download the dictionaries.
+            UpdateHandler.tryUpdate(context, true);
         } else {
             UpdateHandler.downloadFinished(context, intent);
         }
@@ -249,7 +263,7 @@ public final class DictionaryService extends Service {
      */
     public static void updateNowIfNotUpdatedInAVeryLongTime(final Context context) {
         if (!isLastUpdateAtLeastThisOld(context, VERY_LONG_TIME_MILLIS)) return;
-        UpdateHandler.tryUpdate(context, false);
+        UpdateHandler.tryUpdate(context, CommonPreferences.isForceDownloadDict(context));
     }
 
     /**
