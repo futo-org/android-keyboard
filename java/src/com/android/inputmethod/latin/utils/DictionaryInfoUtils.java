@@ -22,11 +22,13 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.AssetFileAddress;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
@@ -37,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -69,12 +72,11 @@ public class DictionaryInfoUtils {
         public final Locale mLocale;
         @Nullable
         public final String mDescription;
-        @Nonnull
         public final AssetFileAddress mFileAddress;
         public final int mVersion;
 
         public DictionaryInfo(@Nonnull final String id, @Nonnull final Locale locale,
-                @Nullable final String description, @Nonnull final AssetFileAddress fileAddress,
+                @Nullable final String description, @Nullable final AssetFileAddress fileAddress,
                 final int version) {
             mId = id;
             mLocale = locale;
@@ -88,10 +90,12 @@ public class DictionaryInfoUtils {
             values.put(WORDLISTID_COLUMN, mId);
             values.put(LOCALE_COLUMN, mLocale.toString());
             values.put(DESCRIPTION_COLUMN, mDescription);
-            values.put(LOCAL_FILENAME_COLUMN, mFileAddress.mFilename);
+            values.put(LOCAL_FILENAME_COLUMN,
+                    mFileAddress != null ? mFileAddress.mFilename : "");
             values.put(DATE_COLUMN, TimeUnit.MILLISECONDS.toSeconds(
-                    new File(mFileAddress.mFilename).lastModified()));
-            values.put(FILESIZE_COLUMN, mFileAddress.mLength);
+                    mFileAddress != null ? new File(mFileAddress.mFilename).lastModified() : 0));
+            values.put(FILESIZE_COLUMN,
+                    mFileAddress != null ? mFileAddress.mLength : 0);
             values.put(VERSION_COLUMN, mVersion);
             return values;
         }
@@ -360,7 +364,6 @@ public class DictionaryInfoUtils {
      * @param locale Locale for this file.
      * @return information of the specified dictionary.
      */
-    @Nullable
     private static DictionaryInfo createDictionaryInfoFromFileAddress(
             final AssetFileAddress fileAddress, Locale locale) {
         final String id = getMainDictId(locale);
@@ -368,6 +371,17 @@ public class DictionaryInfoUtils {
         final String description = SubtypeLocaleUtils
                 .getSubtypeLocaleDisplayName(locale.toString());
         return new DictionaryInfo(id, locale, description, fileAddress, version);
+    }
+
+    /**
+     * Returns dictionary information for the given locale.
+     */
+    private static DictionaryInfo createDictionaryInfoFromLocale(Locale locale) {
+        final String id = getMainDictId(locale);
+        final int version = -1;
+        final String description = SubtypeLocaleUtils
+                .getSubtypeLocaleDisplayName(locale.toString());
+        return new DictionaryInfo(id, locale, description, null, version);
     }
 
     private static void addOrUpdateDictInfo(final ArrayList<DictionaryInfo> dictList,
@@ -438,6 +452,17 @@ public class DictionaryInfoUtils {
             if (dictionaryInfo == null || !dictionaryInfo.mLocale.equals(locale)) {
                 continue;
             }
+            addOrUpdateDictInfo(dictList, dictionaryInfo);
+        }
+
+        // Generate the dictionary information from  the enabled subtypes. This will not
+        // overwrite the real records.
+        RichInputMethodManager.init(context);
+        List<InputMethodSubtype> enabledSubtypes = RichInputMethodManager
+                .getInstance().getMyEnabledInputMethodSubtypeList(true);
+        for (InputMethodSubtype subtype : enabledSubtypes) {
+            Locale locale = LocaleUtils.constructLocaleFromString(subtype.getLocale());
+            DictionaryInfo dictionaryInfo = createDictionaryInfoFromLocale(locale);
             addOrUpdateDictInfo(dictList, dictionaryInfo);
         }
 

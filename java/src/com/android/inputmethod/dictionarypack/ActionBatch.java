@@ -173,7 +173,7 @@ public final class ActionBatch {
             final long downloadId = UpdateHandler.registerDownloadRequest(manager, request, db,
                     mWordList.mId, mWordList.mVersion);
             Log.i(TAG, String.format("Starting the dictionary download with version:"
-                            + " %d and Url: %s" + mWordList.mVersion, uri));
+                            + " %d and Url: %s", mWordList.mVersion, uri));
             DebugLogUtils.l("Starting download of", uri, "with id", downloadId);
             PrivateLog.log("Starting download of " + uri + ", id : " + downloadId);
         }

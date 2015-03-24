@@ -62,4 +62,11 @@ public class DictionaryPackConstants {
      */
     public static final String UPDATE_NOW_INTENT_ACTION = DICTIONARY_DOMAIN
             + ".UPDATE_NOW";
+
+    /**
+     * The intent action to inform the dictionary provider to initialize the db
+     * and update now.
+     */
+    public static final String INIT_AND_UPDATE_NOW_INTENT_ACTION = DICTIONARY_DOMAIN
+            + ".INIT_AND_UPDATE_NOW";
 }

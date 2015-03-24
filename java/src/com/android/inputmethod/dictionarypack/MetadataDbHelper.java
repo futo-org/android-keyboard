@@ -264,6 +264,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+        // Allow automatic download of dictionaries on upgrading the database.
+        CommonPreferences.setForceDownloadDict(mContext, true);
         if (METADATA_DATABASE_INITIAL_VERSION == oldVersion
                 && METADATA_DATABASE_VERSION_WITH_CLIENTID <= newVersion
                 && CURRENT_METADATA_DATABASE_VERSION >= newVersion) {
