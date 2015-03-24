@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -39,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -644,12 +644,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     @Override
-    public ArrayList<Pair<String, DictionaryStats>> getStatsOfEnabledSubDicts() {
-        final ArrayList<Pair<String, DictionaryStats>> statsOfEnabledSubDicts = new ArrayList<>();
+    @Nonnull public List<DictionaryStats> getDictionaryStats(final Context context) {
+        final ArrayList<DictionaryStats> statsOfEnabledSubDicts = new ArrayList<>();
         for (final String dictType : DYNAMIC_DICTIONARY_TYPES) {
             final ExpandableBinaryDictionary dictionary = mDictionaryGroup.getSubDict(dictType);
             if (dictionary == null) continue;
-            statsOfEnabledSubDicts.add(new Pair<>(dictType, dictionary.getDictionaryStats()));
+            statsOfEnabledSubDicts.add(dictionary.getDictionaryStats());
         }
         return statsOfEnabledSubDicts;
     }

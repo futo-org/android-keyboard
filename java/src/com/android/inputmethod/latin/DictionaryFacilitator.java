@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.util.Pair;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -28,6 +27,7 @@ import com.android.inputmethod.latin.utils.SuggestionResults;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -172,5 +172,5 @@ public interface DictionaryFacilitator {
 
     void dumpDictionaryForDebug(final String dictName);
 
-    ArrayList<Pair<String, DictionaryStats>> getStatsOfEnabledSubDicts();
+    @Nonnull List<DictionaryStats> getDictionaryStats(final Context context);
 }
