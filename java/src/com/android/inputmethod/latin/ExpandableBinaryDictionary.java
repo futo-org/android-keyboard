@@ -646,16 +646,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         });
     }
 
-    static int parseEntryCount(final String entryCountStr) {
-        int entryCount;
-        try {
-            entryCount = Integer.parseInt(entryCountStr);
-        } catch (final NumberFormatException e) {
-            entryCount = DictionaryStats.NOT_AN_ENTRY_COUNT;
-        }
-        return entryCount;
-    }
-
     public DictionaryStats getDictionaryStats() {
         reloadDictionaryIfRequired();
         final String dictName = mDictName;
@@ -664,22 +654,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
             @Override
             public void run() {
-                final BinaryDictionary binaryDictionary = getBinaryDictionary();
-                if (binaryDictionary == null) {
-                    result.set(new DictionaryStats(mLocale, dictName, dictFile,
-                            DictionaryStats.NOT_AN_ENTRY_COUNT,
-                            DictionaryStats.NOT_AN_ENTRY_COUNT));
-                    return;
-                }
-                final int unigramCount = parseEntryCount(
-                        binaryDictionary.getPropertyForGettingStats(
-                                BinaryDictionary.MAX_UNIGRAM_COUNT_QUERY));
-                // TODO: Get dedicated entry counts for bigram, trigram, and so on.
-                final int ngramCount = parseEntryCount(binaryDictionary.getPropertyForGettingStats(
-                        BinaryDictionary.MAX_BIGRAM_COUNT_QUERY));
-                // TODO: Get more information from dictionary.
-                result.set(new DictionaryStats(mLocale, dictName, dictFile, unigramCount,
-                        ngramCount));
+                result.set(new DictionaryStats(mLocale, dictName, dictFile, 0));
             }
         });
         return result.get(null /* defaultValue */, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
