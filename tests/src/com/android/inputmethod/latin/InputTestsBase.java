@@ -107,12 +107,15 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 throw new RuntimeException("Expected one span, found " + spans.length);
             }
         }
+        public SuggestionSpan getSpan() {
+            return (SuggestionSpan) mSpan;
+        }
         public boolean isAutoCorrectionIndicator() {
             return (mSpan instanceof SuggestionSpan) &&
-                    0 != (SuggestionSpan.FLAG_AUTO_CORRECTION & ((SuggestionSpan)mSpan).getFlags());
+                    0 != (SuggestionSpan.FLAG_AUTO_CORRECTION & getSpan().getFlags());
         }
         public String[] getSuggestions() {
-            return ((SuggestionSpan)mSpan).getSuggestions();
+            return getSpan().getSuggestions();
         }
     }
 
