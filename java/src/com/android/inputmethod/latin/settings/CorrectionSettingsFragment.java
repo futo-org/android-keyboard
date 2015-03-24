@@ -61,8 +61,6 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
         final Context context = getActivity();
         final PackageManager pm = context.getPackageManager();
 
-        ensureConsistencyOfAutoCorrectionSettings();
-
         final Preference dictionaryLink = findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
         final Intent intent = dictionaryLink.getIntent();
         intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
@@ -80,17 +78,6 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
         if (ri == null) {
             overwriteUserDictionaryPreference(editPersonalDictionary);
         }
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
-        ensureConsistencyOfAutoCorrectionSettings();
-    }
-
-    private void ensureConsistencyOfAutoCorrectionSettings() {
-        final TwoStatePreference autoCorrectionPref = (TwoStatePreference)
-                findPreference(Settings.PREF_AUTO_CORRECTION);
-        setPreferenceEnabled(Settings.PREF_BIGRAM_PREDICTIONS, autoCorrectionPref.isChecked());
     }
 
     private void overwriteUserDictionaryPreference(final Preference userDictionaryPreference) {
