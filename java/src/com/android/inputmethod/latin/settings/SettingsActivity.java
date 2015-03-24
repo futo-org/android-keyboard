@@ -50,7 +50,7 @@ public final class SettingsActivity extends PreferenceActivity {
         }
         StatsUtils.onSettingsActivity(
                 intent.hasExtra(EXTRA_ENTRY_KEY) ? intent.getStringExtra(EXTRA_ENTRY_KEY)
-                        : intent.getStringExtra(EXTRA_ENTRY_VALUE_SYSTEM_SETTINGS));
+                        : EXTRA_ENTRY_VALUE_SYSTEM_SETTINGS);
     }
 
     @Override
