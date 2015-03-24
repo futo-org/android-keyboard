@@ -27,6 +27,8 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.dictionarypack.CommonPreferences;
+import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.setup.SetupActivity;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
@@ -70,6 +72,7 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             final InputMethodSubtype[] additionalSubtypes = richImm.getAdditionalSubtypes();
             richImm.setAdditionalInputMethodSubtypes(additionalSubtypes);
             toggleAppIcon(context);
+            downloadLatestDictionaries(context);
         } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
             Log.i(TAG, "Boot has been completed");
             toggleAppIcon(context);
@@ -95,6 +98,12 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             Log.i(TAG, "Killing my process: pid=" + myPid);
             Process.killProcess(myPid);
         }
+    }
+
+    private void downloadLatestDictionaries(Context context) {
+        final Intent updateIntent = new Intent(
+                DictionaryPackConstants.INIT_AND_UPDATE_NOW_INTENT_ACTION);
+        context.sendBroadcast(updateIntent);
     }
 
     private static void toggleAppIcon(final Context context) {

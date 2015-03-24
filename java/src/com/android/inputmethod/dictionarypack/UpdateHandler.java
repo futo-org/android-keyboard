@@ -449,6 +449,8 @@ public final class UpdateHandler {
         // download, so we are pretty sure it's alive. It's theoretically possible that it's
         // disabled right inbetween the firing of the intent and the control reaching here.
 
+        boolean dictionaryDownloaded = false;
+
         for (final DownloadRecord record : recordList) {
             // downloadSuccessful is not final because we may still have exceptions from now on
             boolean downloadSuccessful = false;
@@ -463,8 +465,14 @@ public final class UpdateHandler {
                     final SQLiteDatabase db = MetadataDbHelper.getDb(context, record.mClientId);
                     publishUpdateWordListCompleted(context, downloadSuccessful, fileId,
                             db, record.mAttributes, record.mClientId);
+                    dictionaryDownloaded = true;
                 }
             }
+        }
+
+        if (dictionaryDownloaded) {
+            // Disable the force download after downloading the dictionaries.
+            CommonPreferences.setForceDownloadDict(context, false);
         }
         // Now that we're done using it, we can remove this download from DLManager
         manager.remove(fileId);
@@ -804,7 +812,7 @@ public final class UpdateHandler {
             } else {
                 final SQLiteDatabase db = MetadataDbHelper.getDb(context, clientId);
                 if (newInfo.mVersion == currentInfo.mVersion) {
-                    if (newInfo.mRemoteFilename == currentInfo.mRemoteFilename) {
+                    if (TextUtils.equals(newInfo.mRemoteFilename, currentInfo.mRemoteFilename)) {
                         // If the dictionary url hasn't changed, we should preserve the retryCount.
                         newInfo.mRetryCount = currentInfo.mRetryCount;
                     }
@@ -820,7 +828,8 @@ public final class UpdateHandler {
                     actions.add(new ActionBatch.MakeAvailableAction(clientId, newInfo));
                     if (status == MetadataDbHelper.STATUS_INSTALLED
                             || status == MetadataDbHelper.STATUS_DISABLED) {
-                        actions.add(new ActionBatch.StartDownloadAction(clientId, newInfo, false));
+                        actions.add(new ActionBatch.StartDownloadAction(
+                                clientId, newInfo, CommonPreferences.isForceDownloadDict(context)));
                     } else {
                         // Pass true to ForgetAction: this is indeed an update to a non-installed
                         // word list, so activate status == AVAILABLE check
@@ -973,8 +982,10 @@ public final class UpdateHandler {
         // change the shared preferences. So there is no way for a word list that has been
         // auto-installed once to get auto-installed again, and that's what we want.
         final ActionBatch actions = new ActionBatch();
-        actions.add(new ActionBatch.StartDownloadAction(clientId,
-                WordListMetadata.createFromContentValues(installCandidate), false));
+        actions.add(new ActionBatch.StartDownloadAction(
+                clientId,
+                WordListMetadata.createFromContentValues(installCandidate),
+                CommonPreferences.isForceDownloadDict(context)));
         final String localeString = installCandidate.getAsString(MetadataDbHelper.LOCALE_COLUMN);
         // We are in a content provider: we can't do any UI at all. We have to defer the displaying
         // itself to the service. Also, we only display this when the user does not have a
@@ -1020,8 +1031,9 @@ public final class UpdateHandler {
                 || MetadataDbHelper.STATUS_DELETING == status) {
             actions.add(new ActionBatch.EnableAction(clientId, wordListMetaData));
         } else if (MetadataDbHelper.STATUS_AVAILABLE == status) {
+            boolean forceDownloadDict = CommonPreferences.isForceDownloadDict(context);
             actions.add(new ActionBatch.StartDownloadAction(clientId, wordListMetaData,
-                    allowDownloadOnMeteredData));
+                    forceDownloadDict || allowDownloadOnMeteredData));
         } else {
             Log.e(TAG, "Unexpected state of the word list for markAsUsed : " + status);
         }
@@ -1133,7 +1145,8 @@ public final class UpdateHandler {
                     context, clientId, wordlistId, version);
 
             final ActionBatch actions = new ActionBatch();
-            actions.add(new ActionBatch.StartDownloadAction(clientId, wordListMetaData, false));
+            actions.add(new ActionBatch.StartDownloadAction(
+                    clientId, wordListMetaData, CommonPreferences.isForceDownloadDict(context)));
             actions.execute(context, new LogProblemReporter(TAG));
         } else {
             if (DEBUG) {
