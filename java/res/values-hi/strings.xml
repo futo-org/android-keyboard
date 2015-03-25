@@ -38,7 +38,8 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"समन्‍वयन चालू किया गया है"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"अपना व्‍यक्‍तिगत शब्‍दकोश सभी डिवाइसों में समन्‍वयित करें"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"अभी समन्वयन करें"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"कीबोर्ड क्‍लाउड डेटा हटाएं"</string>
+    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
+    <skip />
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google से आपका समन्वयित डेटा हटाता है"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपका समन्‍वयित डेटा क्‍लाउड से हटा दिया जाएगा. आप सुनिश्‍चित हैं?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"हटाएं"</string>

@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"সিঙ্ক চালু করা হয়েছে"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ডিভাইস জুড়ে আপনার ব্যক্তিগত অভিধান সিঙ্ক করুন"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"এখন সিঙ্ক করুন"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"কীবোর্ড ক্লাউড ডেটা মুছুন"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"ক্লাউড ডেটা মুছুন"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google থেকে আপনার সিঙ্ক করা ডেটা মুছে ফেলে"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"আপনার সিঙ্ক করা ডেটা ক্লাউড থেকে মুছে ফেলা হবে৷ আপনি কি নিশ্চিত?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"মুছুন"</string>

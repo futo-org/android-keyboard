@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Тохиргоо хийгдэх үйлдлийг идэвхжүүлсэн байна"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Төхөөрөмжинд өөрийн хувийн толь бичгийг тохируулах"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Одоо синк хийх"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Гарэны Cloud мэдээллийг устгах"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Cloud-ын мэдээллийг устгах"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Таны синк хийсэн мэдээллийг Google-ээс устгана."</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Таны мэдээллийг cloud-с устгах болно. Та итгэлтэй байна уу?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Устгах"</string>

@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"စင့် ဖွင့်ထားသည်"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"သင့် ကိုယ်ပိုင်သုံး အဘိဓာန်အား စက်များအားလုံးတွင် စင့်လုပ်ရန်"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"ထပ်တူညီအောင် ယခုပြုလုပ်နေပါပြီ…"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"လက်ကွက် Cloud ဒေတာ ဖျက်ရန်"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Cloud ဒေတာ ဖျက်ရန်"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"သင်၏ စင့်က် လုပ်ပြီးသား ဒေတာ Google ထဲမှ ဖျက်ခံရမည်။"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"သင့် စင့်လုပ်ထားသော ဒေတာများအား cloud မှ ဖျက်လိမ့်မည်။ သေချာသလား?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ဖျက်ရန်"</string>

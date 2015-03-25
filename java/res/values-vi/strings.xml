@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Đã bật tính năng đồng bộ hóa"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Đồng bộ hóa từ điển cá nhân của bạn trên các thiết bị"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Đồng bộ hóa ngay bây giờ"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Xóa dữ liệu khỏi đám mây bằng bàn phím"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Xóa dữ liệu đám mây"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Xóa dữ liệu đã được đồng bộ hóa của bạn khỏi Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Dữ liệu đã đồng bộ hóa của bạn sẽ bị xóa khỏi đám mây. Bạn có chắc chắn không?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Xóa"</string>

@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"സമന്വയം ഓണാണ്"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ഉപകരണങ്ങളിലുടനീളം നിങ്ങളുടെ സ്വകാര്യ നിഘണ്ടു സമന്വയിപ്പിക്കുക"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"ഇപ്പോൾ സമന്വയിപ്പിക്കുക"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"കീബോർഡ് ക്ലൗഡ് വിവരം ഇല്ലാതാക്കുക"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"ക്ലൗഡ് വിവരം ഇല്ലാതാക്കുക"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"നിങ്ങളുടെ സമന്വയിപ്പിച്ച വിവരം Google-ൽ നിന്ന് ഇല്ലാതാക്കുന്നു"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"നിങ്ങളുടെ സമന്വയിപ്പിച്ച വിവരം ക്ലൗഡിൽ നിന്ന് ഇല്ലാതാക്കും. തീർച്ചയാണോ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ഇല്ലാതാക്കുക"</string>

@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"សមកាលម្មត្រូវបានបើក"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ធ្វើសមកាលកម្មបញ្ជីឯកសារផ្ទាល់ខ្លួនឆ្លងឧបករណ៍"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"ធ្វើសម្មកាលកម្មឥឡូវនេះ"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"លុបទិន្នន័យក្តារចុចពពក"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"លុបទិន្នន័យក្លោត"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"លុបទិន្នន័យដែលបានធ្វើសមកាលកម្មរបស់អ្នកចេញពី Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ទិន្នន័យធ្វើសមកាលកម្មរបស់អ្នកនឹងត្រូវបានលុបពីពពក។ តើអ្នកប្រាកដទេ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"លុប"</string>

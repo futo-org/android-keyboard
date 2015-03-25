@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinhronizacija je vklopljena"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sinhronizacija osebnega slovarja po napravah"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sinhroniziraj"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Izbris podat. tipkovnice v oblaku"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Izbris podatkov v oblaku"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Izbriše sinhronizirane podatke iz Googla"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Sinhronizirani podatki bodo izbrisani iz oblaka. Ste prepričani?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Izbriši"</string>
