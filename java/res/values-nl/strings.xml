@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Synchronisatie is ingeschakeld"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Uw persoonlijke woordenboek synchroniseren op meerdere apparaten"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Nu synchroniseren"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Cloudgegev. toetsenb. verwijderen"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Cloudgegevens verwijderen"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Hiermee worden uw gesynchroniseerde gegevens verwijderd van Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Wilt u gesynchroniseerde gegevens echt verwijderen uit de cloud?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Verwijderen"</string>

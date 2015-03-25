@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"सिंक सक्रिय गरिएको छ"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"तपाईंको व्यक्तिगत शब्दकोषलाई यन्त्रहरूमा सिंक गर्नुहोस्"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"अहिले सिंक गर्नुहोस्"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"किबोर्ड क्लाउड डेटा मेटाउनुहोस्"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"क्लाउड डेटा मेटाउनुहोस्"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिङ्क गरिएको डाटा मेटाउँछ"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईंको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईं निश्चित हुनुहुन्छ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"मेटाउनुहोस्"</string>

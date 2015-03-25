@@ -38,7 +38,8 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Համաժամեցումը միացված է"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Համաժամեցնել ձեր անհատական բառարանը սարքերի միջև"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Համաժամացնել հիմա"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Ջնջել Ստեղնաշարի ամպի տվյալները"</string>
+    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
+    <skip />
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google- ից ջնջում է ձեր համաժամեցրած տվյալները"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Ձեր համաժամեցրած տվյալները ջնջվելու են ամպից: Շարունակե՞լ:"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Ջնջել"</string>
