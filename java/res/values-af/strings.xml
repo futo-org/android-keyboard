@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinkronisering is aangeskakel"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sinkroniseer jou persoonlike woordeboek oor toestelle heen"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sinkroniseer nou"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Vee Sleutelbord-wolkdata uit"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Vee wolkdata uit"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Vee jou gesinkroniseerde data van Google af uit"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Jou gesinkroniseerde data sal uit die wolk uitgevee word. Seker?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Vee uit"</string>

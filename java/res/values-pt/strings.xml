@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"A sincronização está ativada"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sincronizar seu dicionário pessoal nos dispositivos"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sincronizar agora"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Excluir dados do teclado na nuvem"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Excluir dados na nuvem"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Exclui seus dados sincronizados do Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Seus dados sincronizados serão excluídos da nuvem. Tem certeza?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Excluir"</string>

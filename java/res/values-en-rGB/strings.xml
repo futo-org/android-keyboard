@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sync is turned on"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sync your personal dictionary across devices"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sync now"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Delete Keyboard Cloud data"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Delete cloud data"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Deletes your synced data from Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Your synced data will be deleted from the cloud. Are you sure?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Delete"</string>

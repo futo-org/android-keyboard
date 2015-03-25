@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinkronisasi diaktifkan"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Menyinkronkan kamus pribadi di perangkat"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sinkronkan sekarang"</string>
-    <string name="clear_sync_data_title" msgid="2041801164014550565">"Hapus data Awan Keyboard"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Menghapus data awan"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Menghapus data yang disinkronkan dari Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Data yang disinkronkan akan dihapus dari awan. Anda yakin?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Hapus"</string>
