@@ -91,10 +91,15 @@ final public class BinaryDictionaryGetter {
      */
     public static AssetFileAddress loadFallbackResource(final Context context,
             final int fallbackResId) {
-        final AssetFileDescriptor afd = context.getResources().openRawResourceFd(fallbackResId);
+        AssetFileDescriptor afd = null;
+        try {
+            afd = context.getResources().openRawResourceFd(fallbackResId);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Resource not found: " + fallbackResId, e);
+            return null;
+        }
         if (afd == null) {
-            Log.e(TAG, "Found the resource but cannot read it. Is it compressed? resId="
-                    + fallbackResId);
+            Log.e(TAG, "Resource cannot be opened: " + fallbackResId);
             return null;
         }
         try {
@@ -103,8 +108,7 @@ final public class BinaryDictionaryGetter {
         } finally {
             try {
                 afd.close();
-            } catch (IOException e) {
-                // Ignored
+            } catch (IOException ignored) {
             }
         }
     }
