@@ -95,7 +95,7 @@ final public class BinaryDictionaryGetter {
         try {
             afd = context.getResources().openRawResourceFd(fallbackResId);
         } catch (RuntimeException e) {
-            Log.e(TAG, "Resource not found: " + fallbackResId, e);
+            Log.e(TAG, "Resource not found: " + fallbackResId);
             return null;
         }
         if (afd == null) {
