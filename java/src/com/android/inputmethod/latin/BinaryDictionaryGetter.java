@@ -273,12 +273,14 @@ final public class BinaryDictionaryGetter {
      * @return The list of addresses of valid dictionary files, or null.
      */
     public static ArrayList<AssetFileAddress> getDictionaryFiles(final Locale locale,
-            final Context context) {
+            final Context context, boolean notifyDictionaryPackForUpdates) {
 
         final boolean hasDefaultWordList = DictionaryInfoUtils.isDictionaryAvailable(
                 context, locale);
-        BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
-                hasDefaultWordList);
+        if (notifyDictionaryPackForUpdates) {
+            BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
+                    hasDefaultWordList);
+        }
         final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
         final String mainDictId = DictionaryInfoUtils.getMainDictId(locale);
         final DictPackSettings dictPackSettings = new DictPackSettings(context);
