@@ -38,8 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sincronización activada"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sincroniza tu diccionario personal en distintos dispositivos."</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sincronizar ahora"</string>
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Eliminar datos de la nube"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Elimina los datos sincronizados de Google."</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Se eliminarán los datos sincronizados de la nube. ¿Estás seguro?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Eliminar"</string>

@@ -38,8 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"同步功能已开启"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"在设备间同步您的个人字典"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"立即同步"</string>
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"删除云端数据"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"将您已同步的数据从 Google 删除"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"您已同步的数据将会从云端删除。确定要执行此操作吗？"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"删除"</string>
