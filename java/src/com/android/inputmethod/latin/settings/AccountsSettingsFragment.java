@@ -42,6 +42,8 @@ import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.utils.ManagedProfileUtils;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.Nullable;
 
 /**
@@ -96,11 +98,25 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      */
     private Preference mAccountSwitcher;
 
+    /**
+     * Stores if we are currently detecting a managed profile.
+     */
+    private AtomicBoolean mManagedProfileBeingDetected = new AtomicBoolean(true);
+
+    /**
+     * Stores if we have successfully detected if the device has a managed profile.
+     */
+    private AtomicBoolean mHasManagedProfile = new AtomicBoolean(false);
 
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_screen_accounts);
+
+        mAccountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
+        mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
+        mSyncNowPreference = findPreference(PREF_SYNC_NOW);
+        mClearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
 
         if (ProductionFlags.IS_METRICS_LOGGING_SUPPORTED) {
             final Preference enableMetricsLogging =
@@ -118,8 +134,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             removeSyncPreferences();
         } else {
-            // Temporarily disable the preferences till we can
-            // check that we don't have a work profile.
+            // Disable by default till we are sure we can enable this.
             disableSyncPreferences();
             new ManagedProfileCheckerTask(this).execute();
         }
@@ -129,7 +144,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
      * Task to check work profile. If found, it removes the sync prefs. If not,
      * it enables them.
      */
-    private static class ManagedProfileCheckerTask extends AsyncTask<Void, Void, Void> {
+    private static class ManagedProfileCheckerTask extends AsyncTask<Void, Void, Boolean> {
         private final AccountsSettingsFragment mFragment;
 
         private ManagedProfileCheckerTask(final AccountsSettingsFragment fragment) {
@@ -137,56 +152,70 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
-            if (ManagedProfileUtils.getInstance().hasWorkProfile(mFragment.getActivity())) {
-                mFragment.removeSyncPreferences();
-            } else {
-                mFragment.refreshAccountAndDependentPreferences(
-                        mFragment.getSignedInAccountName());
-            }
-            return null;
+        protected void onPreExecute() {
+            mFragment.mManagedProfileBeingDetected.set(true);
+        }
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return ManagedProfileUtils.getInstance().hasWorkProfile(mFragment.getActivity());
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean hasWorkProfile) {
+            mFragment.mHasManagedProfile.set(hasWorkProfile);
+            mFragment.mManagedProfileBeingDetected.set(false);
+            mFragment.refreshSyncSettingsUI();
         }
     }
 
-    private void enableSyncPreferences() {
-        mAccountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
-        if (mAccountSwitcher == null) {
-            // Preference has been removed because the device has a managed profile.
+    private void enableSyncPreferences(final String[] accountsForLogin,
+            final String currentAccountName) {
+        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             return;
         }
         mAccountSwitcher.setEnabled(true);
 
-        mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
         mEnableSyncPreference.setEnabled(true);
         mEnableSyncPreference.setOnPreferenceClickListener(mEnableSyncClickListener);
 
-        mSyncNowPreference = findPreference(PREF_SYNC_NOW);
         mSyncNowPreference.setEnabled(true);
         mSyncNowPreference.setOnPreferenceClickListener(mSyncNowListener);
 
-        mClearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
-        mSyncNowPreference.setEnabled(true);
+        mClearSyncDataPreference.setEnabled(true);
         mClearSyncDataPreference.setOnPreferenceClickListener(mDeleteSyncDataListener);
+
+        if (currentAccountName != null) {
+            mAccountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    if (accountsForLogin.length > 0) {
+                        // TODO: Add addition of account.
+                        createAccountPicker(accountsForLogin, getSignedInAccountName(),
+                                new AccountChangedListener(null)).show();
+                    }
+                    return true;
+                }
+            });
+        }
     }
 
+    /**
+     * Two reasons for disable - work profile or no accounts on device.
+     */
     private void disableSyncPreferences() {
-        mAccountSwitcher = findPreference(PREF_ACCCOUNT_SWITCHER);
-        if (mAccountSwitcher == null) {
-            // Preference has been removed because the device has a managed profile.
+        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             return;
         }
+
         mAccountSwitcher.setEnabled(false);
-
-        mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
         mEnableSyncPreference.setEnabled(false);
-
-        mSyncNowPreference = findPreference(PREF_SYNC_NOW);
         mSyncNowPreference.setEnabled(false);
-
-        mClearSyncDataPreference = findPreference(PREF_CLEAR_SYNC_DATA);
-        mSyncNowPreference.setEnabled(false);
+        mClearSyncDataPreference.setEnabled(false);
     }
 
+    /**
+     * Called only when ProductionFlag is turned off.
+     */
     private void removeSyncPreferences() {
         removePreference(PREF_ACCCOUNT_SWITCHER);
         removePreference(PREF_ENABLE_CLOUD_SYNC);
@@ -197,20 +226,20 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     @Override
     public void onResume() {
         super.onResume();
-        refreshAccountAndDependentPreferences(getSignedInAccountName());
+        refreshSyncSettingsUI();
     }
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         if (TextUtils.equals(key, PREF_ACCOUNT_NAME)) {
-            refreshAccountAndDependentPreferences(prefs.getString(PREF_ACCOUNT_NAME, null));
+            refreshSyncSettingsUI();
         } else if (TextUtils.equals(key, PREF_ENABLE_CLOUD_SYNC)) {
-            final boolean syncEnabled = prefs.getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
             mEnableSyncPreference = (TwoStatePreference) findPreference(PREF_ENABLE_SYNC_NOW);
-            if (syncEnabled) {
-                mEnableSyncPreference.setSummary(R.string.cloud_sync_summary);
+            final boolean syncEnabled = prefs.getBoolean(PREF_ENABLE_CLOUD_SYNC, false);
+            if (isSyncEnabled()) {
+                mEnableSyncPreference.setSummary(getString(R.string.cloud_sync_summary));
             } else {
-                mEnableSyncPreference.setSummary(R.string.cloud_sync_summary_disabled);
+                mEnableSyncPreference.setSummary(getString(R.string.cloud_sync_summary_disabled));
             }
             AccountStateChangedListener.onSyncPreferenceChanged(getSignedInAccountName(),
                     syncEnabled);
@@ -218,47 +247,67 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
     }
 
     /**
-     * Summarizes what account is being used and turns off dependent preferences if no account
-     * is currently selected.
+     * Checks different states like whether account is present or managed profile is present
+     * and sets the sync settings accordingly.
      */
-    private void refreshAccountAndDependentPreferences(@Nullable final String currentAccount) {
-        // TODO(cvnguyen): Write tests.
-        if (!ProductionFlags.ENABLE_ACCOUNT_SIGN_IN) {
+    private void refreshSyncSettingsUI() {
+        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
+            return;
+        }
+        final String[] accountsForLogin =
+                LoginAccountUtils.getAccountsForLogin(getActivity());
+        final String currentAccount = getSignedInAccountName();
+
+        if (!mManagedProfileBeingDetected.get() &&
+                !mHasManagedProfile.get() && accountsForLogin.length > 0) {
+            // Sync can be used by user; enable all preferences.
+            enableSyncPreferences(accountsForLogin, currentAccount);
+        } else {
+            // Sync cannot be used by user; disable all preferences.
+            disableSyncPreferences();
+        }
+        refreshSyncSettingsMessaging(mManagedProfileBeingDetected.get(),
+                mHasManagedProfile.get(), accountsForLogin.length > 0,
+                currentAccount);
+    }
+
+    /**
+     * @param managedProfileBeingDetected whether we are in process of determining work profile.
+     * @param hasManagedProfile whether the device has work profile.
+     * @param hasAccountsForLogin whether the device has enough accounts for login.
+     * @param currentAccount the account currently selected in the application.
+     */
+    private void refreshSyncSettingsMessaging(boolean managedProfileBeingDetected,
+            boolean hasManagedProfile, boolean hasAccountsForLogin, String currentAccount) {
+        if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             return;
         }
 
-        final String[] accountsForLogin =
-                LoginAccountUtils.getAccountsForLogin(getActivity());
-
-        if (accountsForLogin.length > 0) {
-            enableSyncPreferences();
-            if (mAccountSwitcher == null) {
-                return;
-            }
-            mAccountSwitcher.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(final Preference preference) {
-                    if (accountsForLogin.length > 0) {
-                        // TODO: Add addition of account.
-                        createAccountPicker(accountsForLogin, currentAccount,
-                                new AccountChangedListener(null)).show();
-                    }
-                    return true;
-                }
-            });
-        } else {
-            mAccountSwitcher.setEnabled(false);
-            disableSyncPreferences();
+        // If we are determining eligiblity, we show empty summaries.
+        // Once we have some deterministic result, we set summaries based on different results.
+        if (managedProfileBeingDetected) {
+            mEnableSyncPreference.setSummary("");
+            mAccountSwitcher.setSummary("");
+        } else if (hasManagedProfile) {
+            mEnableSyncPreference.setSummary(
+                    getString(R.string.cloud_sync_summary_disabled_work_profile));
+        } else if (!hasAccountsForLogin) {
             mEnableSyncPreference.setSummary(getString(R.string.add_account_to_enable_sync));
+        } else if (isSyncEnabled()) {
+            mEnableSyncPreference.setSummary(getString(R.string.cloud_sync_summary));
+        } else {
+            mEnableSyncPreference.setSummary(getString(R.string.cloud_sync_summary_disabled));
         }
 
-        if (currentAccount == null) {
-            // No account is currently selected; switch enable sync preference off.
-            mAccountSwitcher.setSummary(getString(R.string.no_accounts_selected));
-            mEnableSyncPreference.setChecked(false);
-        } else {
-            // Set the currently selected account as the summary text.
-            mAccountSwitcher.setSummary(getString(R.string.account_selected, currentAccount));
+        // Set some interdependent settings.
+        // No account automatically turns off sync.
+        if (!managedProfileBeingDetected && !hasManagedProfile) {
+            if (currentAccount != null) {
+                mAccountSwitcher.setSummary(getString(R.string.account_selected, currentAccount));
+            } else {
+                mEnableSyncPreference.setChecked(false);
+                mAccountSwitcher.setSummary(getString(R.string.no_accounts_selected));
+            }
         }
     }
 
