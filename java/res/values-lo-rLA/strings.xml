@@ -38,8 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"ຊິງ​ຄ໌​ເປ​ີດ​ແລ້ວ"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ຊິງ​ຄ໌​ພົດ​ຈະ​ນາ​ນຸ​ກົມ​ສ່ວນ​ຕົວ​ຂອງ​ທ່ານ​ໃນ​ທຸກ​ອຸ​ປະ​ກອນ"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"ຊິງ​ຄ໌ດຽວນີ້"</string>
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"ລຶບ​ຂໍ້​ມູນ​ຄ​ລາວ"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"ລຶບ​ຂໍ້​ມູນ​ທີ່​ຊິງ​ຄ໌​ແລ້ວ​ຂອງ​ທ່ານ​ຈາກ Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ຂໍ້​ມູນ​ທີ່​ຊິງ​ຄ໌​ແລ້ວ​ຂອງ​ທ່ານ​ຈະ​ຖືກ​ລຶບ​ໄປ​ຈາກ​ຄ​ລາວ. ທ່ານ​ແນ່​ໃຈ​ບໍ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ລຶບ"</string>

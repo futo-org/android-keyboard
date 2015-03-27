@@ -38,8 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхрондау қосылды"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Жеке сөздікті құрылғылар арасында синхрондау"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Қазір синхрондау"</string>
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Бұлтты деректерді жою"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Синхрондалған деректерді Google жүйесінен жояды"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Синхрондалған деректер бұлттан жойылады. Сіз сенімдісіз бе?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Жою"</string>
