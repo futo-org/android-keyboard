@@ -38,8 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"동기화가 사용 설정됩니다."</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"개인 사전을 기기 간에 동기화합니다."</string>
     <string name="sync_now_title" msgid="3088838136743277721">"지금 동기화"</string>
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"클라우드 데이터 삭제"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google에서 동기화된 데이터 삭제"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"동기화된 데이터가 클라우드에서 삭제됩니다. 계속하시겠습니까?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"삭제"</string>

@@ -38,12 +38,11 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"समन्‍वयन चालू किया गया है"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"अपना व्‍यक्‍तिगत शब्‍दकोश सभी डिवाइसों में समन्‍वयित करें"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"अभी समन्वयन करें"</string>
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"क्‍लाउड डेटा हटाएं"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google से आपका समन्वयित डेटा हटाता है"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपका समन्‍वयित डेटा क्‍लाउड से हटा दिया जाएगा. आप सुनिश्‍चित हैं?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"हटाएं"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"रहने दें"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"अभी नहीं"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"आपका व्यक्तिगत शब्दकोश Google सर्वरों पर समन्वयित किया जाएगा और उसका बैक अप लिया जाएगा. हमारे उत्पादों को बेहतर बनाने में सहायता करने के लिए शब्द को दोहराने की सांख्यिकीय जानकारी एकत्र की जा सकती है. सभी जानकारी को एकत्र करना और उपयोग करना "<a href="https://www.google.com/policies/privacy">"Google की गोपनीयता नीति"</a>" के अनुपालन में होगा."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"यह सुविधा सक्षम करने के लिए इस डिवाइस पर एक Google खाता जोड़ें"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्‍य इनपुट पद्धतियों पर जाएं"</string>
@@ -99,7 +98,7 @@
     <string name="no_accounts_selected" msgid="2073821619103904330">"कोई खाता नहीं चुना गया"</string>
     <string name="account_selected" msgid="2846876462199625974">"वर्तमान में <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> का उपयोग कर रहा है"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"ठीक"</string>
-    <string name="account_select_cancel" msgid="5181012062618504340">"रहने दें"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"अभी नहीं"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"प्रस्थान करें"</string>
     <string name="account_select_title" msgid="6279711684772922649">"उपयोग करने के लिए कोई खाता चुनें"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
@@ -174,10 +173,10 @@
     <string name="message_updating" msgid="4457761393932375219">"नई जानकारी देखा जा रहा हैं"</string>
     <string name="message_loading" msgid="5638680861387748936">"लोड हो रहा है…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"मुख्‍य डिक्‍शनरी"</string>
-    <string name="cancel" msgid="6830980399865683324">"रहने दें"</string>
+    <string name="cancel" msgid="6830980399865683324">"अभी नहीं"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"सेटिंग"</string>
     <string name="install_dict" msgid="180852772562189365">"इंस्टॉल करें"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"रहने दें"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"अभी नहीं"</string>
     <string name="delete_dict" msgid="756853268088330054">"हटाएं"</string>
     <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"आपके मोबाइल पर चयनित भाषा के लिए शब्‍दकोश उपलब्‍ध है.&lt;br/&gt; हम आपके लेखन अनुभव को बेहतर बनाने के लिए <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्‍दकोश &lt;b&gt;डाउनलोड करने&lt;/b&gt; की सुझाव देते हैं.&lt;br/&gt; &lt;br/&gt; 3G में डाउनलोड करने पर एक या दो मिनट लगेंगे. यदि आपके पास &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; नहीं है, तो शुल्क लागू हो सकते हैं.&lt;br/&gt; यदि आप अपनी डेटा योजना के बारे में सुनिश्चित नहीं हैं, तो हम अपने आप डाउनलोड प्रारंभ करने के लिए वाई-फ़ाई  कनेक्‍शन ढूंढने की सुझाव देते हैं.&lt;br/&gt; &lt;br/&gt; युक्ति: आप अपने मोबाइल डिवाइस के &lt;b&gt;सेटिंग&lt;/b&gt; मेनू में &lt;b&gt;भाषा और इनपुट&lt;/b&gt; पर जाकर शब्‍दकोशों को डाउनलोड कर सकते हैं और निकाल सकते हैं."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"अभी डाउनलोड करें (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>

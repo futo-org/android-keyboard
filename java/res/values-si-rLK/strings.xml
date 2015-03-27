@@ -38,8 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"සමමුහුර්ත කිරීම් ක්‍රියාත්මකයි"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ඔබේ පෞද්ගලික ශබ්දකෝෂය ඔබේ උපකරණ සමඟ සමමුහුර්ත කරන්න"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"දැන් සමමුහුර්ත කරන්න"</string>
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"වලාකුළු දත්ත මකන්න"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"ඔබගේ සමමුහුර්ත කළ දත්ත Google වෙතින් මකා දමයි"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ඔබගේ සමමුහුර්ත දත්ත සියල්ල ක්ලවුඩ් එකෙන් ඉවත් කරනු ඇත. ඔබට විශ්වාසද?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"මකන්න"</string>
