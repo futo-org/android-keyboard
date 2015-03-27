@@ -38,8 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронизация включена"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизировать пользовательский словарь со всеми устройствами"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Синхронизировать"</string>
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Удалить данные с серверов Google"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Удаление синхронизированных данных из Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Синхронизированные данные будут удалены из облака. Продолжить?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Удалить"</string>
