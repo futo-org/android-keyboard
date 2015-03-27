@@ -44,9 +44,6 @@ LOCAL_MODULE_TAGS := tests
 LOCAL_SRC_FILES :=  \
     $(addprefix $(LATIN_IME_TEST_SRC_DIR)/, $(LATIN_IME_CORE_TEST_FILES))
 LOCAL_STATIC_LIBRARIES += liblatinime_target_static_for_unittests
-# Here intentionally include external/libcxx/libcxx.mk rather because
-# $(BUILD_NATIVE_TEST) fails when LOCAL_NDK_STL_VARIANT is specified.
-include external/libcxx/libcxx.mk
 include $(BUILD_NATIVE_TEST)
 
 #################### Clean up the tmp vars
