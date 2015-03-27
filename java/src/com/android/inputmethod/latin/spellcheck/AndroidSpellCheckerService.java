@@ -125,7 +125,12 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         return mRecommendedThreshold;
     }
 
-    private static String getKeyboardLayoutNameForScript(final int script) {
+    private static String getKeyboardLayoutNameForLocale(final Locale locale) {
+        // See b/19963288.
+        if (locale.getLanguage().equals("sr")) {
+            return "south_slavic";
+        }
+        final int script = ScriptUtils.getScriptFromSpellCheckerLocale(locale);
         switch (script) {
         case ScriptUtils.SCRIPT_LATIN:
             return "qwerty";
@@ -247,8 +252,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     private Keyboard createKeyboardForLocale(final Locale locale) {
-        final int script = ScriptUtils.getScriptFromSpellCheckerLocale(locale);
-        final String keyboardLayoutName = getKeyboardLayoutNameForScript(script);
+        final String keyboardLayoutName = getKeyboardLayoutNameForLocale(locale);
         final InputMethodSubtype subtype = AdditionalSubtypeUtils.createDummyAdditionalSubtype(
                 locale.toString(), keyboardLayoutName);
         final KeyboardLayoutSet keyboardLayoutSet = createKeyboardSetForSpellChecker(subtype);
