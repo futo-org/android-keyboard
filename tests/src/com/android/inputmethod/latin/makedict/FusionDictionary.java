@@ -327,7 +327,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      * an exception is thrown.
      *  @param word the word, as an int array.
      * @param probabilityInfo the probability information of the word.
-     * @param isNotAWord true if this is not a word for spellcheking purposes (shortcut only or so)
+     * @param isNotAWord true if this is not a word for spellchecking purposes (shortcut only or so)
      * @param isPossiblyOffensive true if this word is possibly offensive
      */
     private void add(final int[] word, final ProbabilityInfo probabilityInfo,
