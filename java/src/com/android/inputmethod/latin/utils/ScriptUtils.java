@@ -59,7 +59,7 @@ public class ScriptUtils {
         mLanguageCodeToScriptCode.put("ru", SCRIPT_CYRILLIC);
         mLanguageCodeToScriptCode.put("ka", SCRIPT_GEORGIAN);
         mLanguageCodeToScriptCode.put("el", SCRIPT_GREEK);
-        mLanguageCodeToScriptCode.put("he", SCRIPT_HEBREW);
+        mLanguageCodeToScriptCode.put("iw", SCRIPT_HEBREW);
         mLanguageCodeToScriptCode.put("km", SCRIPT_KHMER);
         mLanguageCodeToScriptCode.put("lo", SCRIPT_LAO);
         mLanguageCodeToScriptCode.put("ml", SCRIPT_MALAYALAM);
