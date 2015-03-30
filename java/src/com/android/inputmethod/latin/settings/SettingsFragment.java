@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.settings;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
@@ -71,11 +72,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         final Activity activity = getActivity();
-        final int setupStatus = Secure.getInt(
-                activity.getContentResolver(),
-                "user_setup_complete",
-                0 /* default */);
-        if (setupStatus == 0) {
+        if (!isUserSetupComplete(activity)) {
             // If setup is not complete, it's not safe to launch Help or other activities
             // because they might go to the Play Store.  See b/19866981.
             return true;
@@ -93,5 +90,12 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private static boolean isUserSetupComplete(final Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return true;
+        }
+        return Secure.getInt(activity.getContentResolver(), "user_setup_complete", 0) != 0;
     }
 }
