@@ -26,7 +26,8 @@
         android:key="account_switcher"
         android:persistent="false"
         android:title="@string/switch_accounts"
-        android:summary="@string/no_accounts_selected" />
+        android:summary="@string/no_accounts_selected"
+        android:enabled="false" />
 
     <!-- Summary will be set programmatically to reflect the account status -->
     <CheckBoxPreference
@@ -34,7 +35,8 @@
         android:title="@string/cloud_sync_title"
         android:defaultValue="false"
         android:persistent="true"
-        android:disableDependentsState="false" />
+        android:disableDependentsState="false"
+        android:enabled="false" />
 
     <!-- This preference (acts like a button) enables the user to initiate an one time sync. -->
     <Preference android:key="pref_sync_now"
