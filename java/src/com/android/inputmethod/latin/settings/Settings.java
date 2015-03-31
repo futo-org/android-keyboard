@@ -55,7 +55,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // PREF_VOICE_MODE_OBSOLETE is obsolete. Use PREF_VOICE_INPUT_KEY instead.
     public static final String PREF_VOICE_MODE_OBSOLETE = "voice_mode";
     public static final String PREF_VOICE_INPUT_KEY = "pref_voice_input_key";
-    public static final String PREF_EDIT_PERSONAL_DICTIONARY = "edit_personal_dictionary";
     public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
     // PREF_AUTO_CORRECTION_THRESHOLD_OBSOLETE is obsolete. Use PREF_AUTO_CORRECTION instead.
     public static final String PREF_AUTO_CORRECTION_THRESHOLD_OBSOLETE =

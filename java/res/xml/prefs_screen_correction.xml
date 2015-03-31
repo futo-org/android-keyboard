@@ -20,11 +20,6 @@
     android:title="@string/settings_screen_correction"
     android:key="screen_correction">
     <PreferenceScreen
-        android:key="edit_personal_dictionary"
-        android:title="@string/edit_personal_dictionary">
-        <intent android:action="android.settings.USER_DICTIONARY_SETTINGS" />
-    </PreferenceScreen>
-    <PreferenceScreen
         android:key="configure_dictionaries_key"
         android:title="@string/configure_dictionaries_title">
         <intent
