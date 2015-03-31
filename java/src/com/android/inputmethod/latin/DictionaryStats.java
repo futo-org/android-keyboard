@@ -20,6 +20,9 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class DictionaryStats {
     public static final int NOT_AN_ENTRY_COUNT = -1;
 
@@ -29,8 +32,12 @@ public class DictionaryStats {
     public final long mDictFileSize;
     public final int mContentVersion;
 
-    public DictionaryStats(final Locale locale, final String dictType, final String dictFileName,
-            final File dictFile, final int contentVersion) {
+    public DictionaryStats(
+            @Nonnull final Locale locale,
+            @Nonnull final String dictType,
+            @Nonnull final String dictFileName,
+            @Nullable final File dictFile,
+            final int contentVersion) {
         mLocale = locale;
         mDictType = dictType;
         mDictFileSize = (dictFile == null || !dictFile.exists()) ? 0 : dictFile.length();
@@ -39,9 +46,6 @@ public class DictionaryStats {
     }
 
     public String getFileSizeString() {
-        if (mDictFileSize == 0) {
-            return "0";
-        }
         BigDecimal bytes = new BigDecimal(mDictFileSize);
         BigDecimal kb = bytes.divide(new BigDecimal(1024), 2, BigDecimal.ROUND_HALF_UP);
         if (kb.longValue() == 0) {
