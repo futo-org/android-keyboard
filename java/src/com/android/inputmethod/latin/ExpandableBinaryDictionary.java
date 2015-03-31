@@ -654,7 +654,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
             @Override
             public void run() {
-                result.set(new DictionaryStats(mLocale, dictName, dictFile, 0));
+                result.set(new DictionaryStats(mLocale, dictName, dictName, dictFile, 0));
             }
         });
         return result.get(null /* defaultValue */, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);

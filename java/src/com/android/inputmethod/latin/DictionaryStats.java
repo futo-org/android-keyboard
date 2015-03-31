@@ -24,17 +24,17 @@ public class DictionaryStats {
     public static final int NOT_AN_ENTRY_COUNT = -1;
 
     public final Locale mLocale;
-    public final String mDictName;
-    public final String mDictFilePath;
+    public final String mDictType;
+    public final String mDictFileName;
     public final long mDictFileSize;
     public final int mContentVersion;
 
-    public DictionaryStats(final Locale locale, final String dictName, final File dictFile,
-            final int contentVersion) {
+    public DictionaryStats(final Locale locale, final String dictType, final String dictFileName,
+            final File dictFile, final int contentVersion) {
         mLocale = locale;
-        mDictName = dictName;
-        mDictFilePath = (dictFile == null) ? null : dictFile.getName();
+        mDictType = dictType;
         mDictFileSize = (dictFile == null || !dictFile.exists()) ? 0 : dictFile.length();
+        mDictFileName = dictFileName;
         mContentVersion = contentVersion;
     }
 
@@ -56,14 +56,14 @@ public class DictionaryStats {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder(mDictName);
-        if (mDictName.equals(Dictionary.TYPE_MAIN)) {
+        final StringBuilder builder = new StringBuilder(mDictType);
+        if (mDictType.equals(Dictionary.TYPE_MAIN)) {
             builder.append(" (");
             builder.append(mContentVersion);
             builder.append(")");
         }
         builder.append(": ");
-        builder.append(mDictFilePath);
+        builder.append(mDictFileName);
         builder.append(" / ");
         builder.append(getFileSizeString());
         return builder.toString();
