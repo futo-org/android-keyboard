@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Annulla"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Il·tuo·dizionario personale verrà·sincronizzato sui server di Google e ne verrà effettuato il backup. Potrebbero essere raccolte informazioni·statistiche·relative alla frequenza delle·parole·per migliorare i·nostri·prodotti. La·raccolta·e l\'utilizzo di tutte le informazioni·saranno·conformi·alle·"<a href="https://www.google.com/policies/privacy">"Norme sulla privacy di Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Per attivare la funzione, aggiungi un account Google al dispositivo"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"La sincronizzazione non è disponibile per i dispositivi con account Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Altri metodi immissione"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Il tasto per cambiare lingua offre altri metodi di immissione"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tasto cambio lingua"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tocca due volte barra spaziatr. per inserire punto seguito da spazio"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Maiuscole automatiche"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Iniziale maiuscola per la prima parola di ogni frase"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dizionario personale"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dizionari aggiuntivi"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dizionario principale"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostra suggerimenti correzioni"</string>

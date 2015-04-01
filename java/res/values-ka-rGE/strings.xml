@@ -45,6 +45,8 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"გაუქმება"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"თქვენი პერსონალური ლექსიკონი სინქრონიზდება და შეინახება სარეზერვოდ Google სერვერებზე. ჩვენი პროდუქტების გასაუმჯობესებლად, შეიძლება შეგროვდეს სტატისტიკური ინფორმაცია სიტყვების სიხშირის შესახებ. ნებისმიერი ინფორმაციის შეგროვება და გამოყენება "<a href="https://www.google.com/policies/privacy">"Google-ის კონფიდენციალურობის პოლიტიკასთან"</a>" შესაბამისობაში იქნება."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ფუნქციის ჩასართავად, გთხოვთ მოწყობილობას Google ანგარიში დაამატოთ"</string>
+    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"შეყვანის სხვა მეთოდებზე გადართვა"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ენის გადართვის ღილაკს შეყვანის სხვა მეთოდებსაც შეიცავს"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ენის გადართვის კლავიში"</string>
@@ -62,7 +64,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"შორისზე ორჯერ შეხება დაწერს წერტილს და შორისის სიმბოლოს"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ავტო-კაპიტალიზაცია"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ყოველი წინადადების პირველი სიტყვის კაპიტალიზაცია"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"პერსონალური ლექსიკონი"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"დამატებითი ლექსიკონები"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"მთავარი ლექსიკონი"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"კორექციის შეთავაზებების ჩვენება"</string>

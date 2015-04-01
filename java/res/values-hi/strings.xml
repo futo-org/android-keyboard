@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"अभी नहीं"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"आपका व्यक्तिगत शब्दकोश Google सर्वरों पर समन्वयित किया जाएगा और उसका बैक अप लिया जाएगा. हमारे उत्पादों को बेहतर बनाने में सहायता करने के लिए शब्द को दोहराने की सांख्यिकीय जानकारी एकत्र की जा सकती है. सभी जानकारी को एकत्र करना और उपयोग करना "<a href="https://www.google.com/policies/privacy">"Google की गोपनीयता नीति"</a>" के अनुपालन में होगा."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"यह सुविधा सक्षम करने के लिए इस डिवाइस पर एक Google खाता जोड़ें"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Google Apps for Business खातों वाले डिवाइस के लिए समन्वय उपलब्ध नहीं है"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्‍य इनपुट पद्धतियों पर जाएं"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्‍विच कुंजी में अन्‍य इनपुट पद्धतियां भी शामिल हैं"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुंजी"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"स्पेसबार पर डबल टैप करने से पीरियड शामिल हो जाता है जिसके बाद एक रिक्ति होती है"</string>
     <string name="auto_cap" msgid="1719746674854628252">"स्‍वत: अक्षर बड़े करना"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"प्रत्येक वाक्य के पहले शब्द को बड़ा लिखें"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"निजी शब्दकोश"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"एड-ऑन शब्दकोश"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"मुख्‍य डिक्‍शनरी"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधार सुझाव दिखाएं"</string>

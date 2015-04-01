@@ -45,6 +45,8 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"បោះបង់"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"បញ្ជីឯកសារផ្ទាល់ខ្លួនរបស់អ្នកនឹងត្រូវបានធ្វើសមកាលកម្ម និងបម្រុងទុកនៅក្នុងម៉ាស៊ីនមេ Google។ ព័ត៌មានស្ថិតិនៃចំនួនពាក្យដែលឧស្សាហ៍ប្រើអាចត្រូវបានប្រមូលដើម្បីធ្វើឲ្យផលិតផលរបស់ពួកយើងប្រសើរជាងមុន។ ការប្រមូល និងការប្រើប្រាស់ព័ត៌មាន នឹងត្រូវអនុលោមតាម "<a href="https://www.google.com/policies/privacy">"គោលការណ៍ភាពឯកជនរបស់ Google"</a>"។"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"សូមបន្ថែមគណនី Google ទៅឧបករណ៍នេះដើម្បីបើកដំណើរការលក្ខណៈពិសេសនេះ"</string>
+    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ប្ដូរ​ទៅ​​​វិធីសាស្ត្រ​បញ្ចូល​​​ផ្សេង​ទៀត"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"គ្រាប់ចុច​ប្ដូរ​ភាសា​តាម​វិធីសាស្ត្រ​បញ្ចូល​ផ្សេងទៀត"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"គ្រាប់​ចុច​ប្ដូរ​​ភាសា"</string>
@@ -62,7 +64,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ប៉ះ​ដកឃ្លា​ពីរ​​ដង​បញ្ចូល​​​រយៈ​ពេល​ដែល​អនុវត្ត​តាម​ដកឃ្លា"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ការ​សរសេរ​ជា​អក្សរ​ធំ​​ស្វ័យប្រវត្តិ​"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"សរសេរ​ពាក្យ​ដំបូង​​​ជា​អក្សរ​ធំ​​នៃ​ប្រយោគ​នីមួយ​ៗ"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"វចនានុក្រម​ផ្ទាល់ខ្លួន"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ផ្នែក​បន្ថែម​វចនានុក្រម"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"វចនានុក្រម​ចម្បង"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"បង្ហាញ​ការ​ស្នើ​​កែ"</string>

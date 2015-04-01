@@ -45,6 +45,8 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"취소"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"개인 사전이 Google 서버에 동기화되며 백업됩니다. Google의 제품 개선을 위해 단어 빈도에 관한 통계 정보가 수집될 수 있습니다. 모든 정보는 "<a href="https://www.google.com/policies/privacy">"Google 개인정보취급방침"</a>"에 따라 수집되고 사용됩니다."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"이 기능을 사용하려면 기기에 Google 계정을 추가하세요."</string>
+    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"다른 입력 방법으로 전환"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"언어 전환 키가 제공하는 기타 입력 방법"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"언어 전환 키"</string>
@@ -62,7 +64,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"스페이스바를 두 번 탭하면 마침표와 공백 한 개가 삽입됩니다."</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"문장의 첫 단어를 대문자로 표시"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"개인 사전"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"사전 추가"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"기본 사전"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"수정 제안 표시"</string>

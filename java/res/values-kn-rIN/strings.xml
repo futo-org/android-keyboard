@@ -46,6 +46,7 @@
     <!-- unknown quoting pattern: original -1, translation 1 -->
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ನಿಘಂಟನ್ನು Google ಸರ್ವರ್‌ಗಳಿಗೆ ಸಿಂಕ್‌ ಮಾಡಲಾಗುತ್ತದೆ &amp;amp; ಬ್ಯಾಕಪ್‌ ಮಾಡಲಾಗುತ್ತದೆ. ನಮ್ಮ ಉತ್ಪನ್ನಗಳನ್ನು ಸುಧಾರಿಸಲು ಸಹಾಯ ಮಾಡಲು ಪದ ಆವರ್ತನೆ ಅಂಕಿಅಂಶವನ್ನು ಸಂಗ್ರಹಿಸಬಹುದು. ಎಲ್ಲಾ ಮಾಹಿತಿಯ ಸಂಗ್ರಹಣೆ ಮತ್ತು ಬಳಕೆಯ "<a href="https://www.google.com/policies/privacy">"Google ನ ಗೌಪ್ಯತೆ ನೀತಿ"</a>" ಯ ಅಡಿಯಲ್ಲಿ ಅನುಸರಣೆ ಮಾಡಲಾಗುತ್ತದೆ."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ಈ ಸಾಧನಕ್ಕೆ ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ದಯವಿಟ್ಟು Google ಖಾತೆಯನ್ನು ಸೇರಿಸಿ"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ವ್ಯಾಪಾರಕ್ಕಾಗಿ Google Apps ಖಾತೆಗಳನ್ನು ಹೊಂದಿರುವ ಸಾಧನಗಳಿಗೆ ಸಿಂಕ್ ಲಭ್ಯವಿಲ್ಲ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ಇತರೆ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳಿಗೆ ಬದಲಾಯಿಸು"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ಭಾಷಾ ಬದಲಾವಣೆ ಕೀಯು ಇತರೆ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಕೂಡ ಒಳಗೊಂಡಿರುತ್ತದೆ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ಭಾಷೆ ಬದಲಾವಣೆ ಕೀ"</string>
@@ -63,7 +64,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ಸ್ಪೇಸ್‌ಬಾರ್ ಮೇಲೆ ಡಬಲ್ ಟ್ಯಾಪ್ ಮಾಡುವುದರಿಂದ ಸ್ಪೇಸ್ ನಂತರ ವಿರಾಮವನ್ನು ಸೇರಿಸುತ್ತದೆ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ಸ್ವಯಂ-ದೊಡ್ಡಕ್ಷರ"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ಪ್ರತಿ ವಾಕ್ಯದ ಮೊದಲ ಅಕ್ಷರವನ್ನು ದೊಡ್ಡಕ್ಷರಗೊಳಿಸು"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ವೈಯಕ್ತಿಕ ನಿಘಂಟು"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ಆಡ್-ಆನ್ ನಿಘಂಟುಗಳು"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ಮುಖ್ಯ ನಿಘಂಟು"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ತಿದ್ದುಪಡಿ ಸಲಹೆಗಳನ್ನು ತೋರಿಸು"</string>

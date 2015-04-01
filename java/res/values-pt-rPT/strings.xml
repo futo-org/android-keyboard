@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancelar"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"O seu dicionário pessoal será sincronizado e será criada uma cópia de segurança do mesmo nos servidores da Google. As informações estatísticas de frequência das palavras podem ser recolhidas para ajudar a melhorar os nossos produtos. A recolha e a utilização de todas as informações são efetuadas em conformidade com a "<a href="https://www.google.com/policies/privacy">"Política de Privacidade da Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Adicione uma Conta Google a este disp. para ativar esta func."</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"A sinc. não está disp. para disp. com contas do Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Mudar p/ outros mét. ent."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A tecla de mudança de idioma abrange outros métodos de entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla alterar idioma"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tocar duas vezes na barra espaço insere ponto seguido de espaço"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Letras maiúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Maiúscula no início da frase"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dicionário pessoal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicionários extras"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dicionário principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar sugestões de correcção"</string>

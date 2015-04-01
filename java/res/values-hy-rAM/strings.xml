@@ -45,6 +45,8 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Չեղարկել"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Ձեր անհատական բառարանը համաժամեցվելու և կրկնօրինակվելու է Google սերվերներում: Կարող են հավաքվել բառերի օգտագործման հաճախականության վիճակագրական տվյալներ՝ մեր արտադրանքների որակը բարելավելու նպատակով: Բոլոր տվյալները հավաքվելու և օգտագործվելու են "<a href="https://www.google.com/policies/privacy">"Google-ի Գաղտնիության քաղաքականության"</a>" դրույթների համաձայն:"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Այս հնարավորությունն ընձեռելու համար սարքում հավելեք Google հաշիվ"</string>
+    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Անցնել մուտքագրման այլ եղանակների"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Լեզվի փոխարկման բանալին ընդգրկում է այլ մուտքագրման եղանակներ ևս"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Լեզվի փոխարկման ստեղն"</string>
@@ -62,7 +64,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Բացակի ստեղնի կրկնակի հպումը բացակից հետո վերջակետ է դնում"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Ավտոմատ գլխատառացում"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Գլխատառել յուրաքանչյուր նախադասության առաջին բառը"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Անհատական բառարան"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ավելացնել բառարաններ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Հիմնական բառարան"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Ցուցադրել ուղղումների առաջարկներ"</string>

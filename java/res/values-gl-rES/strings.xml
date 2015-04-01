@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancelar"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Sincronizarase o teu dicionario persoal e realizarase unha copia de seguranza nos servidores de Google. Quizais se recompile información estatística da frecuencia das palabras para axudar a mellorar os nosos produtos. A recompilación e o uso de toda a información cumprirán coa "<a href="https://www.google.com/policies/privacy">"Política de privacidade de Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Engade unha conta de Google ao dispositivo para activar a función"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sincronización non dispoñible para dispositivo con Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Outros métodos de entrada"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A tecla de cambio de idioma inclúe outros métodos de entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de cambio de idioma"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Ao tocar dúas veces a barra de espazo insire un punto e un espazo"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Maiúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Pon en maiúscula a primeira palabra de cada frase"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dicionario persoal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicionarios complementarios"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dicionario principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar suxestións de corrección"</string>

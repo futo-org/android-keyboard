@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Prekliči"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Osebni slovar bo sinhroniziran in varnostno kopiran v Googlove strežnike. Statistične podatke o pogostosti rabe besed bomo morda zbirali zaradi izboljšanja naših izdelkov. Zbiranje in uporaba vseh podatkov bo skladna z "<a href="https://www.google.com/policies/privacy">"Googlovim pravilnikom o zasebnosti"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"V napravi dodajte Google Račun, če želite omogočiti to funkcijo"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinhronizacija ni na voljo za naprave z računi za Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Prekl. na drug nač. vnosa"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tipka za preklop jezika, ki vključuje tudi druge načine vnosa"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tipka za preklop med jeziki"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Z dvojnim dotikom preslednice vstavite piko in za njo presledek"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Samod. velike začetnice"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Prvo besedo stavka piši z veliko začetnico"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Osebni slovar"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dodatni slovarji"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Glavni slovar"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Pokaži predloge popravkov"</string>

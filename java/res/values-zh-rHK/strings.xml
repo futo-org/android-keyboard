@@ -45,6 +45,8 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"取消"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"您的個人字典將同步處理並備份至 Google 伺服器。系統可能會收集字詞頻率的統計資料，以協助改善產品。所有資訊的收集和使用均遵循《"<a href="https://www.google.com/policies/privacy">"Google 私隱權政策"</a>"》。"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"請在這部裝置加入 Google 帳戶，以加入此功能。"</string>
+    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切換至其他輸入法"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"語言切換鍵包括其他輸入法"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"語言切換鍵"</string>
@@ -62,7 +64,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"只要輕按兩下空格鍵，即可插入句號並在後面加上一個空格"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大寫"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"每句首個字詞大寫"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"個人字典"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"附加字典"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"主要字典"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"顯示更正建議"</string>

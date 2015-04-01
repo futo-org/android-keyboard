@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Откажи"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Синхронизоваћемо лични речник и направићемо његову резервну копију на Google серверима. Можда ћемо прикупљати статистичке податке о учесталости речи да бисмо побољшали производе. Прикупљање и коришћење свих информација ће бити у складу са "<a href="https://www.google.com/policies/privacy">"Google-овом политиком приватности"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Додајте Google налог на уређај да бисте омогућили ову функцију"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Синхрониз. није доступна за уређаје са налозима Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Пребаци на друге методе уноса"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Тастер за пребацивање језика обухвата и друге методе уноса"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Тастер за пребацивање језика"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Двоструким додиром размака умеће се тачка праћена размаком"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Аутоматски унос великих слова"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Писање великог слова на почетку сваке реченице"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Лични речник"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Помоћни речници"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Главни речник"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Прикажи предлоге за исправку"</string>

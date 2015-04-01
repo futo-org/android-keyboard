@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancelar"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"El diccionario personal se sincroniza con los servidores de Google, donde se crea una copia de seguridad. Se puede recopilar información estadística sobre frecuencia de palabras para mejorar nuestros productos. Toda la información se recopila y se utiliza siguiendo las disposiciones de la "<a href="https://www.google.com/policies/privacy">"Política de privacidad de Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Añade una cuenta de Google al dispositivo para activar la función"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinc. no disponible en dispositivos con cuentas de Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de introducción"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma sirve también para otros métodos"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla para cambiar de idioma"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Si tocas dos veces el espacio, se inserta un punto seguido de un espacio"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Escribir la primera letra de cada palabra en mayúscula"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Diccionario personal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionarios complementarios"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionario principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Sugerencias de correcciones"</string>

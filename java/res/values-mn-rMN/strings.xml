@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Цуцлах"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Таны хувийн толь бичгийг синк хийж, Google-ийн серверүүд дээр хадгалж авч үлдэнэ. Манай бүтээгдэхүүнүүдийг сайжруулахад туслах зорилгоор үгийн давтамжийн статистик мэдээллийг цуглуулж болно. Бүх мэдээллийг "<a href="https://www.google.com/policies/privacy">"Google-ийн Нууцлалын бодлогын дагуу"</a>" цуглуулж, ашиглана."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Энэ горимыг идэвхжүүлэхийн тулд энэ төхөөрөмж рүү Google акаунт нэмж оруулна уу"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Бизнес акаунтуудын Google Апп бүхий төхөөрөмжүүдэд синк хийх боломжгүй"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Оруулах өөр арга руу шилжүүлэх"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Хэл солих түлхүүрт өөр оруулах аргууд мөн багтсан байгаа"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Хэл солих товч"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Ардаа зайтай цэг оруулахын тулд Зай авах дээр давхар товшино уу"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоматаар томруулах"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Өгүүлбэр бүрийн эхний үгийн эхний үсгийг томруулах"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Хувийн толь бичиг"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Нэмэлт толь бичгүүд"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Үндсэн толь бичиг"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Залруулах санал болголтуудыг харуулах"</string>

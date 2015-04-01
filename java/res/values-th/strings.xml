@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ยกเลิก"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"พจนานุกรมส่วนตัวของคุณจะซิงค์และสำรองข้อมูลไปยังเซิร์ฟเวอร์ Google ข้อมูลเชิงสถิติของความถี่ในการใช้คำอาจได้รับการเก็บรวบรวมเพื่อใช้ปรับปรุงผลิตภัณฑ์ของเรา การเก็บรวบรวมและการใช้งานข้อมูลทั้งหมดจะเป็นไปอย่างสอดคล้องกับ"<a href="https://www.google.com/policies/privacy">"นโยบายส่วนบุคคลของ Google"</a></string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"โปรดเพิ่มบัญชี Google ไปยังอุปกรณ์นี้เพื่อเปิดใช้คุณลักษณะนี้"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"การซิงค์ไม่พร้อมใช้งานสำหรับอุปกรณ์ที่มีบัญชี Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ใช้วิธีการป้อนข้อมูลอื่น"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"แป้นสลับภาษาครอบคลุมวิธีการป้อนข้อมูลอื่นๆ ด้วย"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"แป้นสลับภาษา"</string>
@@ -62,7 +63,6 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"แตะ Spacebar สองครั้งจะแทรกจุดตามด้วยช่องว่างหนึ่งช่อง"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ปรับเป็นตัวพิมพ์ใหญ่อัตโนมัติ"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ทำให้คำแรกของทุกประโยคเป็นตัวพิมพ์ใหญ่"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"พจนานุกรมส่วนตัว"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"พจนานุกรม Add-On"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"พจนานุกรมหลัก"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"แสดงคำแนะนำการแก้ไข"</string>
