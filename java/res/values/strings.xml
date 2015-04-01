@@ -82,7 +82,7 @@
     <string name="add_account_to_enable_sync">
         Please add a Google account to this device to enable this feature
     </string>
-    <!-- Text to tell the user that sync feature is disabled because they have Google Apps for Business account(s) on their device. [CHAR LIMIT=75]-->
+    <!-- Text to tell the user that sync feature is disabled because they have Google Apps for Business account(s) on their device. [CHAR LIMIT=80]-->
     <string name="cloud_sync_summary_disabled_work_profile">
         Sync is not available for devices with Google Apps for Business accounts
     </string>
