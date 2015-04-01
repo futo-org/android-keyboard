@@ -45,8 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Ləğv et"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Şəxsi lüğətiniz sinxronlaşdırılacaq və Google serverlərinə ehtiyat nüsxəsi çıxarılacaq. Söz tezliyinin statistik məlumatı məhsullarımızı təkmilləşdirməyə kömək üçün toplana bilər. Bütün məlumatın toplanması və istifadəsi "<a href="https://www.google.com/policies/privacy">"Google Məxfilik Siyasətinə"</a>" uyğun olmalıdır."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Bu funksiyanı aktivləşdirmək üçün cihaza Google hesabı əlavə edin"</string>
-    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
-    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Digər daxiletmə metodlarına keçin"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Dil keçid düyməsi başqa daxiletmə metodlarını da əhatə edir"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Dil keçidi düyməsi"</string>
@@ -64,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Boşluqdakı iki klik boşluqdan sonra pauza daxil edir"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Avtomatik böyük hərfləşmə"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Hər cümlənin ilk sözünü böyük hərflə yaz"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Şəxsi lüğət"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Əlavə lüğətlər"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Əsas lüğət"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Korreksiya təkliflərini göstər"</string>

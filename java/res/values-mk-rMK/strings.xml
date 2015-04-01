@@ -45,8 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Откажи"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Вашиот личен речник ќе се синхронизира и ќе се создаде резервна копија на серверите на Google. Може да се собираат статистички информации за честотата на зборовите за помош при подобрување на нашите производи. Собирањето и користењето на сите информации ќе биде во согласност со "<a href="https://www.google.com/policies/privacy">"Политиката за приватност на Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Додајте сметка на Google на уредов за овозможување на функцијава"</string>
-    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
-    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Префрли на други влезни методи"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Копчето за менување јазици покрива и други методи на внес"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Копче за промена на јазик"</string>
@@ -64,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Со двоен допир на празно место се вметнува точка и празно место"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоматска голема буква"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Прави првиот збор од секоја реченица да почнува со голема буква"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Личен речник"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Додатоци за речници"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Главен речник"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Покажи предлози за корекција"</string>

@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Kanselahin"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Masi-sync at maba-back up ang iyong personal na dictionary sa mga server ng Google. Maaaring kolektahin ang istatistikal na impormasyon ng dalas ng salita upang makatulong na pahusayin ang aming mga produkto. Susunod ang pagkolekta at paggamit ng lahat ng impormasyon sa "<a href="https://www.google.com/policies/privacy">"Patakaran sa Privacy ng Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Mangyaring magdagdag ng Google account sa device na ito upang i-enable ang feature na ito"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Pag-sync, hindi available sa device na may Google Apps for Business account"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Lipat iba paraan ng input"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Saklaw din ng key ng pagpalit ng wika ang ibang paraan ng input"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Key ng panlipat ng wika"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Naglalagay ng tuldok na may puwang ang pag-double tap sa spacebar"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalization"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"I-capitalize ang unang salita ng bawat pangungusap"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Personal na diksyunaryo"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Mga diksyunaryo na add-on"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Pangunahing diksyunaryo"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Magpakita ng mga suhestiyon ng pagwawasto"</string>

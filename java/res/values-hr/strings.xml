@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Odustani"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Vaš osobni rječnik sinkronizirat će se i sigurnosno kopirati na Googleovim poslužiteljima. Moguće je prikupljanje statističkih podataka o učestalosti riječi radi poboljšanja naših proizvoda. Prikupljanje i upotreba svih podataka odvijat će se u skladu s "<a href="https://www.google.com/policies/privacy">"Googleovim pravilima o privatnosti"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Dodajte Google račun na uređaj da biste omogućili tu značajku"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinkronizacija nije dostupna za uređaje s računima Google Apps za tvrtke"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Prebaci na druge unose"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tipka za prebacivanje jezika pokriva i druge načine unosa"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tipka za izmjenjivanje jezika"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dvostrukim dodirivanjem razmaknice umeću se točka i razmak"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatsko pisanje velikih slova"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Napiši velikim slovom prvu riječ svake rečenice"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Osobni rječnik"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Rječnici-dodaci"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Glavni rječnik"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Pokaži prijedloge ispravka"</string>

@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"إلغاء"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏ستتم مزامنة قاموسك الشخصي والاحتفاظ بنسخة احتياطية منه على خوادم Google، وقد يتم جمع المعلومات الإحصائية لتكرار الكلمات للمساعدة في تحسين منتجاتنا هذا وسيتوافق جمع كل المعلومات واستخدامها مع "<a href="https://www.google.com/policies/privacy">"سياسة خصوصية Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏الرجاء إضافة حساب Google إلى هذا الجهاز لتمكين هذه الميزة."</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"‏لا تتوفر إمكانية المزامنة للأجهزة التي تتضمن حسابات Google Apps للأنشطة التجارية"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"التبديل إلى أسلوب إدخال آخر"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"يغطي مفتاح تبديل اللغات أساليب الإدخال الأخرى أيضًا"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"مفتاح تبديل اللغة"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"يؤدي النقر نقرًا مزدوجًا على مفتاح المسافة إلى إدخال نقطة متبوعة بمسافة"</string>
     <string name="auto_cap" msgid="1719746674854628252">"أحرف كبيرة تلقائيًا"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"كتابة الحرف الأول من كل جملة بحرف كبير."</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"القاموس الشخصي"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"القواميس الإضافية"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"القاموس الرئيسي"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"عرض اقتراحات التصحيح"</string>

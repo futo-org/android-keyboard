@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Kanselleer"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Jou persoonlike woordeboek sal gesinkroniseer en in Google-bedieners gerugsteun word. Die statistiese inligting van woordfrekwensie sal dalk ingesamel word om ons produkte te help verbeter. Die insameling en gebruik van al die inligting sal voldoen aan "<a href="https://www.google.com/policies/privacy">"Google se privaatheidsbeleid"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Voeg \'n Google-rekening by die toestel om hierdie kenmerk te aktiveer"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Toestelle met Google Apps vir Besigheid-rekeninge kan nie sinkroniseer nie"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skakel oor na die ander invoermetodes"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Taal-wisselsleutel dek ook ander invoermetodes"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Taal-wisselsleutel"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dubbeltik op spasiebalk voeg \'n punt in, gevolg deur \'n spasie"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Outohoofletters"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Die eerste woord van elke sin moet met \'n hoofletter begin"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Persoonlike woordeboek"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Voeg woordeboeke by"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Hoofwoordeboek"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Wys voorstelle vir korrigering"</string>

@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Hætta við"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Orðabókin þín verður samstillt og afrituð á netþjóna Google. Hugsanlega verður talnagögnum um tíðni orða safnað til að gera vörur okkar betri. Söfnun og notkun allra upplýsinga fellur undir "<a href="https://www.google.com/policies/privacy">"persónuverndarstefnu Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Bættu Google reikningi við tækið til að virkja þennan eiginleika"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Samstilling er ekki í boði fyrir tæki með Google Apps fyrirtækjareikning"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skipta um innsláttaraðferð"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Lykill til að skipta um mál inniheldur aðrar innsláttaraðferðir"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Lykill til að breyta tungumáli"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Ef ýtt er tvisvar á bilslána er settur inn punktur og svo bil"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Sjálfvirkir hástafir"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Setja hástaf í upphaf hverrar málsgreinar"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Sérsniðin orðabók"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Viðbótarorðabækur"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Aðalorðabók"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Sýna leiðréttingartillögur"</string>

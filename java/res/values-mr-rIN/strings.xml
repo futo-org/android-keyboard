@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द करा"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"आपली वैयक्तिक निर्देशिका Google सर्व्हरवर संकालित केली जाईल आणि बॅकअप घेतला जाईल. आमचे उत्पादन सुधारित करण्यात मदत करण्यासाठी शब्दाच्या वारंवारतेची आकडेवारी माहिती गोळा केली जाऊ शकते. सर्व माहितीचे संकलन आणि वापर "<a href="https://www.google.com/policies/privacy">"Google चे गोपनीयता धोरण"</a>" शी सुसंगत असेल."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"या डिव्हाइसमध्ये हे वैशिष्ट्य सक्षम करण्यासाठी कृपया एक Google खाते जोडा"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Google Apps for Business खात्यांसह डिव्हाइसेससाठी संकालन उपलब्ध नाही"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्य इनपुट पद्धतींवर स्विच करा"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्विच की अन्य इनपुट पद्धती देखील समाविष्ट करते"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच की"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"स्पेसबारवर डबल टॅप केल्याने पूर्णविरामचिन्ह व त्यापाठोपाठ स्पेस घातली जाते"</string>
     <string name="auto_cap" msgid="1719746674854628252">"स्‍वयं-कॅपिटलायझेशन"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"प्रत्येक वाक्याचा पहिला शब्द कॅपिटल करा"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"वैयक्तिक शब्दकोश"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"अॅड-ऑन शब्दकोश"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"मु्ख्य शब्दकोश"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधारणा सूचना दर्शवा"</string>

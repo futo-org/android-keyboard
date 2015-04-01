@@ -45,8 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"منسوخ کریں"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏آپ کی ذاتی لغت کی مطابقت پذیری کی جائے گی اور Google سرورز میں اس کا بیک اپ لیا جائے گا۔ ہمارے پروڈکٹس کو بہتر بنانے میں مدد کرنے کیلئے الفاظ کی فریکوئنسی کے اعداد و شمار کی معلومات کو جمع کیا جا سکتا ہے۔ سبھی معلومات کی جمع آوری اور استعمال "<a href="https://www.google.com/policies/privacy">"Google کی رازداری کی پالیسی"</a>" کے مطابق ہوگا۔"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏یہ خصوصیت فعال کرنے کیلئے اس آلہ پر ایک Google اکاؤنٹ شامل کریں"</string>
-    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
-    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"دیگر اندراج طریقوں پر سوئچ کریں"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"زبان سوئچ کرنے کی کلید اندراج کے دیگر طریقوں کا بھی احاطہ کرتی ہے"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"زبان سوئچ کرنے کی کلید"</string>
@@ -64,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"سپیس بار دو بار تھپتھپانے سے سپیس کے بعد پیریڈ داخل ہوجاتا ہے۔"</string>
     <string name="auto_cap" msgid="1719746674854628252">"بڑے حروف میں خودکار تبدیلی"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ہر جملے کا پہلا لفظ بڑے حروف میں لکھیں"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ذاتی لغت"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"اضافی لغات"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"مرکزی لغت"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"اصلاح کی تجاویز دکھائیں"</string>

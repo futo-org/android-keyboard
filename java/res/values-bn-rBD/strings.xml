@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"বাতিল"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"আপনার ব্যক্তিগত অভিধান Google সার্ভারগুলিতে সিঙ্ক এবং ব্যাকআপ নেওয়া হবে৷ শব্দ ফ্রিকোয়েন্সির পরিসংখ্যানগত তথ্য আমাদের পণ্য উন্নতিতে সহায়তার জন্য সংগ্রহ করা হতে পারে৷ এই সংগ্রহ এবং সমস্ত তথ্যের ব্যবহার "<a href="https://www.google.com/policies/privacy">"Google এর গোপনীয়তা নীতি"</a>"-র সাথে সঙ্গতিশীল হবে৷"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"এই বৈশিষ্ট্যটি সক্ষম করার জন্য অনুগ্রহ করে এই ডিভাইসে একটি Google অ্যাকাউন্ট যোগ করুন"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ব্যবসা অ্যাকাউন্টগুলির জন্য Google Apps এর সাথে ডিভাইসগুলির জন্য সিঙ্ক অনুপলব্ধ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"অন্য ইনপুট পদ্ধতিতে স্যুইচ করুন"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ভাষা স্যুইচ কীতে অন্যান্য ইনপুট পদ্ধতি পাওয়া যায়"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ভাষা স্যুইচ কী"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"স্পেসবার দুবার টিপলে একটি স্পেস এর পর একটি পিরিয়ড লেখা হয়"</string>
     <string name="auto_cap" msgid="1719746674854628252">"স্বতঃ-ক্যাপিটালাইজেশন"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"প্রতিটি বাক্যের প্রথম শব্দ বড় হাতের করুন"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ব্যক্তিগত অভিধান"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"অ্যাড-অন অভিধানগুলি"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"মূল অভিধান"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"সংশোধনের পরামর্শগুলি দেখান"</string>

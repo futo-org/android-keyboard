@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"റദ്ദാക്കുക"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"നിങ്ങളുടെ സ്വകാര്യ നിഘണ്ടു Google സെർവറുകളിലേക്ക് സമന്വയിപ്പിച്ച് ബാക്കപ്പുചെയ്യും. ഞങ്ങളുടെ ഉൽപ്പന്നങ്ങൾ മെച്ചപ്പെടുത്താൻ സഹായിക്കുന്നതിന് പദങ്ങളുടെ ആവർത്തനം സംബന്ധിച്ച സ്ഥിതിവിവരക്കണക്കുകൾ ശേഖരിച്ചേക്കാം. എല്ലാ വിവരങ്ങളും ശേഖരിക്കുന്നതും ഉപയോഗിക്കുന്നതും "<a href="https://www.google.com/policies/privacy">"Google-ന്റെ സ്വകാര്യത നയത്തിന്"</a>" വിധേയമായിട്ടായിരിക്കും."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ഈ ഫീച്ചർ പ്രവർത്തനക്ഷമമാക്കാൻ ഈ ഉപകരണത്തിൽ Google അക്കൗണ്ട് ചേർക്കുക"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ബിസിനസ്സിനായുള്ള Google Apps അക്കൗണ്ടുകൾ ഉള്ള ഉപകരണങ്ങൾക്ക് സമന്വയം ലഭ്യമല്ല"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"മറ്റു ടൈപ്പുചെയ്യൽ രീതികളിലേക്ക് മാറുക"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ഭാഷ മാറൽ കീയിൽ മറ്റ് ടൈപ്പുചെയ്യൽ രീതികളും ഉൾപ്പെടുന്നു"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ഭാഷ മാറൽ കീ"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"സ്‌പെയ്‌സ് ബാറിൽ ഇരട്ട ടാപ്പുചെയ്യുന്നത്, ഒരു സ്‌പെയ്‌സിന് മുമ്പായി വിരാമം ഇടുന്നു"</string>
     <string name="auto_cap" msgid="1719746674854628252">"യാന്ത്രികമായി വലിയക്ഷരമാക്കൽ"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ഓരോ വാക്യത്തിന്റെയും ആദ്യ പദം വലിയക്ഷരമാക്കുക"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"വ്യക്തിഗത നിഘണ്ടു"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ആഡ്-ഓൺ നിഘണ്ടുക്കൾ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"പ്രധാന നിഘണ്ടു"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"തിരുത്തൽ നിർദ്ദേശങ്ങൾ വായിക്കുക"</string>

@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ຍົກເລີກ"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ພົດ​ຈະ​ນາ​ນຸ​ກົມ​ສ່ວນ​ຕົວ​ຂອງ​ທ່ານ​ຈະ​ຖືກ​ຊິງ​ຄ໌ ແລະ​ສຳ​ຮອງ​ໄປ​ໃສ່​ເຊີບ​ເວີ Google. ຂໍ້​ມູນ​ສະ​ຖິ​ຕິ​ຂອງ​ຄວາມ​ຖີ່​ຄຳ​ເວົ້າ​ອາດ​ຈະ​ຖືກ​ເກັບ​ກຳ ເພື່ອ​ຊ່ວຍ​ປັບ​ປຸງ​ຜະ​ລິດ​ຕະ​ພັນ​ຂອງ​ທ່ານ. ການ​ເກັບ​ກຳ ແລະ​ການ​ນຳ​ໃຊ້​ທຸກ​ຂໍ້​ມູນ​ຈະ​ເປັນ​ໄປ​ຕາມ "<a href="https://www.google.com/policies/privacy">"ນະ​ໂຍ​ບາຍ​ຄວາມ​ເປັນ​ສ່ວນ​ຕົວ​ຂອງ Googl"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ກະ​ລຸ​ນາ​ເພີ່ມ​ບັນ​ຊີ Google ໃສ່​ອຸ​ປະ​ກອນ​ນີ້ ເພື່ອ​ເປີດ​ໃຊ້​ງານ​ຄຸນ​ສົມ​ບັດ​ນີ້"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ບໍ່​ມີ​ການ​ຊິງ​ຄ໌​ໃຫ້​ສຳ​ລັບ​ອຸ​ປະ​ກອນ​ທີ່​ມີ Google Apps ສຳ​ລັບ​ບັນ​ຊີ Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ປ່ຽນໄປໃຊ້ການປ້ອນຂໍ້ມູນແບບອື່ນ"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ໂຕປ່ຽນພາສາເປັນທັງໂຕປ່ຽນຮູບແບບການປ້ອນຂໍ້ມູນເຊັ່ນກັນ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ປຸ່ມປ່ຽນພາສາ"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ກົດທີ່ປຸ່ມຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດແລ້ວຕາມດ້ວຍການຍະຫວ່າງ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ເຮັດໂຕພິມໃຫຍ່ອັດຕະໂນມັດ"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ເຮັດໂຕພິມໃຫຍ່ໃຫ້ໂຕອັກສອນທຳອິດຂອງແຕ່ລໃນປະໂຫຍກ"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ວັດຈະນານຸກົມສ່ວນໂຕ"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ໂຕເສີມວັດຈະນານຸກົມ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ວັດຈະນານຸກົມຫຼັກ"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ສະແດງການແນະນຳຄຳທີ່ຖືກຕ້ອງ"</string>

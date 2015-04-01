@@ -45,7 +45,6 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"අවලංගු කරන්න"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ඔබගේ පෞද්ගලික ශබ්දකෝෂය Google සේවාදායකයන් වෙත සමමුහුර්ත කර උපස්ථය කෙරෙනු ඇත. අපගේ නිෂ්පාදන වැඩි දියුණු කිරීමට උදවු වනු පිණිස වචන භාවිතා වන වාර ගණන පිළිබඳ සංඛ්‍යාත්මක තොරතුරු සමුච්චය කිරීමට ඉඩ ඇත. සියලු දත්ත සමුච්චය කිරීම සහ භාවිතා කිරීම "<a href="https://www.google.com/policies/privacy">"Google හි රහස්‍යතා ප්‍රතිපත්තිය"</a>"අනුව සිදු කරනු ඇත."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"මෙම විශේෂාංගය සබල කිරීමට කරුණාකර Google ගිණුමක් එක් කරන්න"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ව්‍යාපාර ගිණුම් සඳහා Google යෙදුම් සමඟ සමමුහුර්ත කිරීම ලද නොහැකිය."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"වෙනත් ආදාන ක්‍රම වෙත මාරුවන්න"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"භාෂා මාරු යතුර වෙනත් ආදාන ක්‍රමද ආවරණය කරයි"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"භාෂා මාරු යතුර"</string>
@@ -63,6 +62,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ඉඩ යතුර මත දෙවරක් තට්ටු කිරීම හිස් තැනකට අනුගාමිව නැවතීමේ ලකුණක් ඇතුළත් කරයි."</string>
     <string name="auto_cap" msgid="1719746674854628252">"ස්වයං-ලොකු අකුරු කරණය"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"එක් එක් වාක්‍යයේ පළමු වචනය ලොකු අකුරු කරන්න"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"පුද්ගලික ශබ්ද කෝෂය"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ඈඳුම් ශබ්දකෝෂ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ප්‍රධාන ශබ්ද කෝෂය"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"නිවැරදි කිරීම් යෝජනා පෙන්වන්න"</string>
