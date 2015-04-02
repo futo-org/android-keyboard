@@ -104,6 +104,10 @@ public final class InputLogic {
     private boolean mIsAutoCorrectionIndicatorOn;
     private long mDoubleSpacePeriodCountdownStart;
 
+    // The word being corrected while the cursor is in the middle of the word.
+    // Note: This does not have a composing span, so it must be handled separately.
+    private String mWordBeingCorrectedByCursor = null;
+
     /**
      * Create a new instance of the input logic.
      * @param latinIME the instance of the parent LatinIME. We should remove this when we can.
@@ -133,6 +137,7 @@ public final class InputLogic {
      */
     public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
         mEnteredText = null;
+        mWordBeingCorrectedByCursor = null;
         if (!mWordComposer.getTypedWord().isEmpty()) {
             // For messaging apps that offer send button, the IME does not get the opportunity
             // to capture the last word. This block should capture those uncommitted words.
@@ -247,6 +252,7 @@ public final class InputLogic {
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.NONE;
         mEnteredText = text;
+        mWordBeingCorrectedByCursor = null;
         inputTransaction.setDidAffectContents();
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         return inputTransaction;
@@ -386,6 +392,15 @@ public final class InputLogic {
             // it here, which means we'll keep outdated suggestions for a split second but the
             // visual result is better.
             resetEntireInputState(newSelStart, newSelEnd, false /* clearSuggestionStrip */);
+            // If the user is in the middle of correcting a word, we should learn it before moving
+            // the cursor away.
+            if (!TextUtils.isEmpty(mWordBeingCorrectedByCursor)) {
+                final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
+                        System.currentTimeMillis());
+                mDictionaryFacilitator.addToUserHistory(mWordBeingCorrectedByCursor, false,
+                        NgramContext.EMPTY_PREV_WORDS_INFO, timeStampInSeconds,
+                        settingsValues.mBlockPotentiallyOffensive);
+            }
         } else {
             // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
             // composition to end. But in all cases where we don't reset the entire input
@@ -401,6 +416,7 @@ public final class InputLogic {
         mLatinIME.mHandler.postResumeSuggestions(true /* shouldDelay */);
         // Stop the last recapitalization, if started.
         mRecapitalizeStatus.stop();
+        mWordBeingCorrectedByCursor = null;
         return true;
     }
 
@@ -420,6 +436,7 @@ public final class InputLogic {
     public InputTransaction onCodeInput(final SettingsValues settingsValues,
             @Nonnull final Event event, final int keyboardShiftMode,
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
+        mWordBeingCorrectedByCursor = null;
         final Event processedEvent = mWordComposer.processEvent(event);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 processedEvent, SystemClock.uptimeMillis(), mSpaceState,
@@ -453,6 +470,14 @@ public final class InputLogic {
             }
             currentEvent = currentEvent.mNextEvent;
         }
+        // Try to record the word being corrected when the user enters a word character or
+        // the backspace key.
+        if (!mWordComposer.isComposingWord()
+                && (settingsValues.isWordCodePoint(processedEvent.mCodePoint) ||
+                        processedEvent.mKeyCode == Constants.CODE_DELETE)) {
+            mWordBeingCorrectedByCursor = getWordAtCursor(
+                   settingsValues, currentKeyboardScriptId);
+        }
         if (!inputTransaction.didAutoCorrect() && processedEvent.mKeyCode != Constants.CODE_SHIFT
                 && processedEvent.mKeyCode != Constants.CODE_CAPSLOCK
                 && processedEvent.mKeyCode != Constants.CODE_SWITCH_ALPHA_SYMBOL)
@@ -466,6 +491,7 @@ public final class InputLogic {
 
     public void onStartBatchInput(final SettingsValues settingsValues,
             final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+        mWordBeingCorrectedByCursor = null;
         mInputLogicHandler.onStartBatchInput();
         handler.showGesturePreviewAndSuggestionStrip(
                 SuggestedWords.getEmptyInstance(), false /* dismissGestureFloatingPreviewText */);
@@ -1151,27 +1177,30 @@ public final class InputLogic {
         }
     }
 
-    boolean unlearnWordBeingDeleted(
-            final SettingsValues settingsValues,final int currentKeyboardScriptId) {
-        // If we just started backspacing to delete a previous word (but have not
-        // entered the composing state yet), unlearn the word.
-        // TODO: Consider tracking whether or not this word was typed by the user.
+    String getWordAtCursor(final SettingsValues settingsValues, final int currentKeyboardScriptId) {
         if (!mConnection.hasSelection()
                 && settingsValues.isSuggestionsEnabledPerUserSettings()
-                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                && !mConnection.isCursorFollowedByWordCharacter(
-                        settingsValues.mSpacingAndPunctuations)) {
+                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             final TextRange range = mConnection.getWordRangeAtCursor(
                     settingsValues.mSpacingAndPunctuations,
                     currentKeyboardScriptId);
-            if (range == null) {
-                // Happens if we don't have an input connection at all.
-                return false;
+            if (range != null) {
+                return range.mWord.toString();
             }
-            final String wordBeingDeleted = range.mWord.toString();
-            if (!wordBeingDeleted.isEmpty()) {
-                unlearnWord(wordBeingDeleted, settingsValues,
-                        Constants.EVENT_BACKSPACE);
+        }
+        return "";
+    }
+
+    boolean unlearnWordBeingDeleted(
+            final SettingsValues settingsValues, final int currentKeyboardScriptId) {
+        // If we just started backspacing to delete a previous word (but have not
+        // entered the composing state yet), unlearn the word.
+        // TODO: Consider tracking whether or not this word was typed by the user.
+        if (!mConnection.isCursorFollowedByWordCharacter(settingsValues.mSpacingAndPunctuations)) {
+            final String wordBeingDeleted = getWordAtCursor(
+                    settingsValues, currentKeyboardScriptId);
+            if (!TextUtils.isEmpty(wordBeingDeleted)) {
+                unlearnWord(wordBeingDeleted, settingsValues, Constants.EVENT_BACKSPACE);
                 return true;
             }
         }
