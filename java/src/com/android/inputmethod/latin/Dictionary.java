@@ -39,6 +39,10 @@ public abstract class Dictionary {
     public static final String TYPE_USER_TYPED = "user_typed";
     public static final PhonyDictionary DICTIONARY_USER_TYPED = new PhonyDictionary(TYPE_USER_TYPED);
 
+    public static final String TYPE_USER_SHORTCUT = "user_shortcut";
+    public static final PhonyDictionary DICTIONARY_USER_SHORTCUT =
+            new PhonyDictionary(TYPE_USER_SHORTCUT);
+
     public static final String TYPE_APPLICATION_DEFINED = "application_defined";
     public static final PhonyDictionary DICTIONARY_APPLICATION_DEFINED =
             new PhonyDictionary(TYPE_APPLICATION_DEFINED);

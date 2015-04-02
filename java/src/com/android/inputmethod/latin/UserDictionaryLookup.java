@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.spellcheck;
+package com.android.inputmethod.latin;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -22,9 +22,11 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.UserDictionary;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.common.CollectionUtils;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 
@@ -35,6 +37,9 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * UserDictionaryLookup provides the ability to lookup into the system-wide "Personal dictionary".
@@ -47,7 +52,6 @@ import java.util.concurrent.TimeUnit;
  * onCreate and close() it in onDestroy.
  */
 public class UserDictionaryLookup implements Closeable {
-    private static final String TAG = UserDictionaryLookup.class.getSimpleName();
 
     /**
      * This guards the execution of any Log.d() logging, so that if false, they are not even
@@ -79,7 +83,12 @@ public class UserDictionaryLookup implements Closeable {
     @UsedForTesting
     static final int RELOAD_DELAY_MS = 200;
 
+    @UsedForTesting
+    static final Locale ANY_LOCALE = new Locale("");
+
+    private final String mTag;
     private final ContentResolver mResolver;
+    private final String mServiceName;
 
     /**
      * Runnable that calls loadUserDictionary().
@@ -88,12 +97,11 @@ public class UserDictionaryLookup implements Closeable {
         @Override
         public void run() {
             if (DEBUG) {
-                Log.d(TAG, "Executing (re)load");
+                Log.d(mTag, "Executing (re)load");
             }
             loadUserDictionary();
         }
     }
-    private final UserDictionaryLoader mLoader = new UserDictionaryLoader();
 
     /**
      *  Content observer for UserDictionary changes.  It has the following properties:
@@ -122,7 +130,7 @@ public class UserDictionaryLookup implements Closeable {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             if (DEBUG) {
-                Log.d(TAG, "Received content observer onChange notification for URI: " + uri);
+                Log.d(mTag, "Received content observer onChange notification for URI: " + uri);
             }
             // Cancel (but don't interrupt) any pending reloads (except the initial load).
             if (mReloadFuture != null && !mReloadFuture.isCancelled() &&
@@ -131,20 +139,20 @@ public class UserDictionaryLookup implements Closeable {
                 boolean isCancelled = mReloadFuture.cancel(false);
                 if (DEBUG) {
                     if (isCancelled) {
-                        Log.d(TAG, "Successfully canceled previous reload request");
+                        Log.d(mTag, "Successfully canceled previous reload request");
                     } else {
-                        Log.d(TAG, "Unable to cancel previous reload request");
+                        Log.d(mTag, "Unable to cancel previous reload request");
                     }
                 }
             }
 
             if (DEBUG) {
-                Log.d(TAG, "Scheduling reload in " + RELOAD_DELAY_MS + " ms");
+                Log.d(mTag, "Scheduling reload in " + RELOAD_DELAY_MS + " ms");
             }
 
             // Schedule a new reload after RELOAD_DELAY_MS.
-            mReloadFuture = ExecutorUtils.getBackgroundExecutor(ExecutorUtils.SPELLING)
-                    .schedule(mLoader, RELOAD_DELAY_MS, TimeUnit.MILLISECONDS);
+            mReloadFuture = ExecutorUtils.getBackgroundExecutor(mServiceName)
+                    .schedule(new UserDictionaryLoader(), RELOAD_DELAY_MS, TimeUnit.MILLISECONDS);
         }
     }
     private final ContentObserver mObserver = new UserDictionaryContentObserver();
@@ -167,6 +175,12 @@ public class UserDictionaryLookup implements Closeable {
     private volatile HashMap<String, ArrayList<Locale>> mDictWords;
 
     /**
+     * We store a map from a shortcut to a word for each locale.
+     * Shortcuts that apply to any locale are keyed by {@link #ANY_LOCALE}.
+     */
+    private volatile HashMap<Locale, HashMap<String, String>> mShortcutsPerLocale;
+
+    /**
      *  The last-scheduled reload future.  Saved in order to cancel a pending reload if a new one
      * is coming.
      */
@@ -175,18 +189,24 @@ public class UserDictionaryLookup implements Closeable {
     /**
      * @param context the context from which to obtain content resolver
      */
-    public UserDictionaryLookup(Context context) {
-        if (DEBUG) {
-            Log.d(TAG, "UserDictionaryLookup constructor with context: " + context);
-        }
+    public UserDictionaryLookup(@Nonnull final Context context, @Nonnull final String serviceName) {
+        mTag = serviceName + ".UserDictionaryLookup";
+
+        Log.i(mTag, "create()");
+
+        mServiceName = serviceName;
 
         // Obtain a content resolver.
         mResolver = context.getContentResolver();
+    }
+
+    public void open() {
+        Log.i(mTag, "open()");
 
         // Schedule the initial load to run immediately.  It's possible that the first call to
         // isValidWord occurs before the dictionary has actually loaded, so it should not
         // assume that the dictionary has been loaded.
-        ExecutorUtils.getBackgroundExecutor(ExecutorUtils.SPELLING).execute(mLoader);
+        loadUserDictionary();
 
         // Register the observer to be notified on changes to the UserDictionary and all individual
         // items.
@@ -210,7 +230,7 @@ public class UserDictionaryLookup implements Closeable {
     public void finalize() throws Throwable {
         try {
             if (DEBUG) {
-                Log.d(TAG, "Finalize called, calling close()");
+                Log.d(mTag, "Finalize called, calling close()");
             }
             close();
         } finally {
@@ -227,7 +247,7 @@ public class UserDictionaryLookup implements Closeable {
     @Override
     public void close() {
         if (DEBUG) {
-            Log.d(TAG, "Close called (no pun intended), cleaning up executor and observer");
+            Log.d(mTag, "Close called (no pun intended), cleaning up executor and observer");
         }
         if (mIsClosed.compareAndSet(false, true)) {
             // Unregister the content observer.
@@ -240,9 +260,8 @@ public class UserDictionaryLookup implements Closeable {
      *
      * @return true if the initial load is successful
      */
-    @UsedForTesting
-    boolean isLoaded() {
-        return mDictWords != null;
+    public boolean isLoaded() {
+        return mDictWords != null && mShortcutsPerLocale != null;
     }
 
     /**
@@ -255,14 +274,13 @@ public class UserDictionaryLookup implements Closeable {
      * @param locale the locale in which to match the word
      * @return true iff the word has been matched for this locale in the UserDictionary.
      */
-    public boolean isValidWord(
-            final String word, final Locale locale) {
+    public boolean isValidWord(@Nonnull final String word, @Nonnull final Locale locale) {
         if (!isLoaded()) {
             // This is a corner case in the event the initial load of UserDictionary has not
             // been loaded. In that case, we assume the word is not a valid word in
             // UserDictionary.
             if (DEBUG) {
-                Log.d(TAG, "isValidWord invoked, but initial load not complete");
+                Log.d(mTag, "isValidWord invoked, but initial load not complete");
             }
             return false;
         }
@@ -271,7 +289,7 @@ public class UserDictionaryLookup implements Closeable {
         final HashMap<String, ArrayList<Locale>> dictWords = mDictWords;
 
         if (DEBUG) {
-            Log.d(TAG, "isValidWord invoked for word [" + word +
+            Log.d(mTag, "isValidWord invoked for word [" + word +
                     "] in locale " + locale);
         }
         // Lowercase the word using the given locale. Note, that dictionary
@@ -282,13 +300,13 @@ public class UserDictionaryLookup implements Closeable {
         final ArrayList<Locale> dictLocales = dictWords.get(lowercased);
         if (null == dictLocales) {
             if (DEBUG) {
-                Log.d(TAG, "isValidWord=false, since there is no entry for " +
+                Log.d(mTag, "isValidWord=false, since there is no entry for " +
                         "lowercased word [" + lowercased + "]");
             }
             return false;
         } else {
             if (DEBUG) {
-                Log.d(TAG, "isValidWord found an entry for lowercased word [" + lowercased +
+                Log.d(mTag, "isValidWord found an entry for lowercased word [" + lowercased +
                         "]; examining locales");
             }
             // Iterate over the locales this word is in.
@@ -296,25 +314,87 @@ public class UserDictionaryLookup implements Closeable {
                 final int matchLevel = LocaleUtils.getMatchLevel(dictLocale.toString(),
                         locale.toString());
                 if (DEBUG) {
-                    Log.d(TAG, "matchLevel for dictLocale=" + dictLocale + ", locale=" +
+                    Log.d(mTag, "matchLevel for dictLocale=" + dictLocale + ", locale=" +
                             locale + " is " + matchLevel);
                 }
                 if (LocaleUtils.isMatch(matchLevel)) {
                     if (DEBUG) {
-                        Log.d(TAG, "isValidWord=true, since matchLevel " + matchLevel +
+                        Log.d(mTag, "isValidWord=true, since matchLevel " + matchLevel +
                                 " is a match");
                     }
                     return true;
                 }
                 if (DEBUG) {
-                    Log.d(TAG, "matchLevel " + matchLevel + " is not a match");
+                    Log.d(mTag, "matchLevel " + matchLevel + " is not a match");
                 }
             }
             if (DEBUG) {
-                Log.d(TAG, "isValidWord=false, since none of the locales matched");
+                Log.d(mTag, "isValidWord=false, since none of the locales matched");
             }
             return false;
         }
+    }
+
+    /**
+     * Expands the given shortcut for the given locale.
+     *
+     * @param shortcut the shortcut to expand
+     * @param inputLocale the locale in which to expand the shortcut
+     * @return expanded shortcut iff the word is a shortcut in the UserDictionary.
+     */
+    @Nullable public String expandShortcut(
+            @Nonnull final String shortcut, @Nonnull final Locale inputLocale) {
+        if (DEBUG) {
+            Log.d(mTag, "expandShortcut() : Shortcut [" + shortcut + "] for [" + inputLocale + "]");
+        }
+
+        // Atomically obtain the current copy of mShortcuts;
+        final HashMap<Locale, HashMap<String, String>> shortcutsPerLocale = mShortcutsPerLocale;
+
+        // Exit as early as possible. Most users don't use shortcuts.
+        if (CollectionUtils.isNullOrEmpty(shortcutsPerLocale)) {
+            return null;
+        }
+
+        if (!TextUtils.isEmpty(inputLocale.getCountry())) {
+            // First look for the country-specific shortcut: en_US, en_UK, fr_FR, etc.
+            final String expansionForCountry = expandShortcut(
+                    shortcutsPerLocale, shortcut, inputLocale);
+            if (!TextUtils.isEmpty(expansionForCountry)) {
+                return expansionForCountry;
+            }
+        }
+
+        // Next look for the language-specific shortcut: en, fr, etc.
+        final Locale languageOnlyLocale =
+                LocaleUtils.constructLocaleFromString(inputLocale.getLanguage());
+        final String expansionForLanguage = expandShortcut(
+                shortcutsPerLocale, shortcut, languageOnlyLocale);
+        if (!TextUtils.isEmpty(expansionForLanguage)) {
+            return expansionForLanguage;
+        }
+
+        // If all else fails, loof for a global shortcut.
+        return expandShortcut(shortcutsPerLocale, shortcut, ANY_LOCALE);
+    }
+
+    @Nullable private String expandShortcut(
+            @Nullable final HashMap<Locale, HashMap<String, String>> shortcutsPerLocale,
+            @Nonnull final String shortcut,
+            @Nonnull final Locale locale) {
+        if (CollectionUtils.isNullOrEmpty(shortcutsPerLocale)) {
+            return null;
+        }
+        final HashMap<String, String> localeShortcuts = shortcutsPerLocale.get(locale);
+        if (CollectionUtils.isNullOrEmpty(localeShortcuts)) {
+            return null;
+        }
+        final String word = localeShortcuts.get(shortcut);
+        if (DEBUG && word != null) {
+            Log.d(mTag, "expandShortcut() : Shortcut [" + shortcut + "] for [" + locale
+                    + "] expands to [" + word + "]");
+        }
+        return word;
     }
 
     /**
@@ -325,45 +405,36 @@ public class UserDictionaryLookup implements Closeable {
     private void loadUserDictionary() {
         // Bail out if already in the process of loading.
         if (!mIsLoading.compareAndSet(false, true)) {
-            if (DEBUG) {
-                Log.d(TAG, "Already in the process of loading UserDictionary, skipping");
-            }
+            Log.i(mTag, "loadUserDictionary() : Already Loading (exit)");
             return;
         }
-        if (DEBUG) {
-            Log.d(TAG, "Loading UserDictionary");
-        }
+        Log.i(mTag, "loadUserDictionary() : Start Loading");
         HashMap<String, ArrayList<Locale>> dictWords = new HashMap<>();
+        HashMap<Locale, HashMap<String, String>> shortcutsPerLocale = new HashMap<>();
         // Load the UserDictionary.  Request that items be returned in the default sort order
         // for UserDictionary, which is by frequency.
         Cursor cursor = mResolver.query(UserDictionary.Words.CONTENT_URI,
                 null, null, null, UserDictionary.Words.DEFAULT_SORT_ORDER);
         if (null == cursor || cursor.getCount() < 1) {
-            if (DEBUG) {
-                Log.d(TAG, "No entries found in UserDictionary");
-            }
+            Log.i(mTag, "loadUserDictionary() : Empty");
         } else {
             // Iterate over the entries in the UserDictionary.  Note, that iteration is in
             // descending frequency by default.
             while (dictWords.size() < MAX_NUM_ENTRIES && cursor.moveToNext()) {
                 // If there is no column for locale, skip this entry. An empty
                 // locale on the other hand will not be skipped.
-                final int dictLocaleIndex = cursor.getColumnIndex(
-                        UserDictionary.Words.LOCALE);
+                final int dictLocaleIndex = cursor.getColumnIndex(UserDictionary.Words.LOCALE);
                 if (dictLocaleIndex < 0) {
                     if (DEBUG) {
-                        Log.d(TAG, "Encountered UserDictionary entry " +
-                                "without LOCALE, skipping");
+                        Log.d(mTag, "Encountered UserDictionary entry without LOCALE, skipping");
                     }
                     continue;
                 }
                 // If there is no column for word, skip this entry.
-                final int dictWordIndex = cursor.getColumnIndex(
-                        UserDictionary.Words.WORD);
+                final int dictWordIndex = cursor.getColumnIndex(UserDictionary.Words.WORD);
                 if (dictWordIndex < 0) {
                     if (DEBUG) {
-                        Log.d(TAG, "Encountered UserDictionary entry without " +
-                                "WORD, skipping");
+                        Log.d(mTag, "Encountered UserDictionary entry without WORD, skipping");
                     }
                     continue;
                 }
@@ -371,7 +442,7 @@ public class UserDictionaryLookup implements Closeable {
                 final String rawDictWord = cursor.getString(dictWordIndex);
                 if (null == rawDictWord) {
                     if (DEBUG) {
-                        Log.d(TAG, "Encountered null word");
+                        Log.d(mTag, "Encountered null word");
                     }
                     continue;
                 }
@@ -380,19 +451,17 @@ public class UserDictionaryLookup implements Closeable {
                 String localeString = cursor.getString(dictLocaleIndex);
                 if (null == localeString) {
                     if (DEBUG) {
-                        Log.d(TAG, "Encountered null locale for word [" +
+                        Log.d(mTag, "Encountered null locale for word [" +
                                 rawDictWord + "], assuming all locales");
                     }
-                    // For purposes of LocaleUtils, an empty locale matches
-                    // everything.
+                    // For purposes of LocaleUtils, an empty locale matches everything.
                     localeString = "";
                 }
-                final Locale dictLocale = LocaleUtils.constructLocaleFromString(
-                        localeString);
+                final Locale dictLocale = LocaleUtils.constructLocaleFromString(localeString);
                 // Lowercase the word before storing it.
                 final String dictWord = rawDictWord.toLowerCase(dictLocale);
                 if (DEBUG) {
-                    Log.d(TAG, "Incorporating UserDictionary word [" + dictWord +
+                    Log.d(mTag, "Incorporating UserDictionary word [" + dictWord +
                             "] for locale " + dictLocale);
                 }
                 // Check if there is an existing entry for this word.
@@ -400,7 +469,7 @@ public class UserDictionaryLookup implements Closeable {
                 if (null == dictLocales) {
                     // If there is no entry for this word, create one.
                     if (DEBUG) {
-                        Log.d(TAG, "Word [" + dictWord +
+                        Log.d(mTag, "Word [" + dictWord +
                                 "] not seen for other locales, creating new entry");
                     }
                     dictLocales = new ArrayList<>();
@@ -408,13 +477,42 @@ public class UserDictionaryLookup implements Closeable {
                 }
                 // Append the locale to the list of locales this word is in.
                 dictLocales.add(dictLocale);
+
+                // If there is no column for a shortcut, we're done.
+                final int shortcutIndex = cursor.getColumnIndex(UserDictionary.Words.SHORTCUT);
+                if (shortcutIndex < 0) {
+                    if (DEBUG) {
+                        Log.d(mTag, "Encountered UserDictionary entry without SHORTCUT, done");
+                    }
+                    continue;
+                }
+                // If the shortcut is null, we're done.
+                final String shortcut = cursor.getString(shortcutIndex);
+                if (shortcut == null) {
+                    if (DEBUG) {
+                        Log.d(mTag, "Encountered null shortcut");
+                    }
+                    continue;
+                }
+                // Else, save the shortcut.
+                HashMap<String, String> localeShortcuts = shortcutsPerLocale.get(dictLocale);
+                if (localeShortcuts == null) {
+                    localeShortcuts = new HashMap<>();
+                    shortcutsPerLocale.put(dictLocale, localeShortcuts);
+                }
+                // Map to the raw input, which might be capitalized.
+                // This lets the user create a shortcut from "gm" to "General Motors".
+                localeShortcuts.put(shortcut, rawDictWord);
             }
         }
 
-        // Atomically replace the copy of mDictWords.
+        // Atomically replace the copy of mDictWords and mShortcuts.
         mDictWords = dictWords;
+        mShortcutsPerLocale = shortcutsPerLocale;
 
         // Allow other calls to loadUserDictionary to execute now.
         mIsLoading.set(false);
+
+        Log.i(mTag, "loadUserDictionary() : Loaded " + mDictWords.size() + " words");
     }
 }

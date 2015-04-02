@@ -20,6 +20,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,7 +61,17 @@ public final class CollectionUtils {
      * @return Whether c contains no elements.
      */
     @UsedForTesting
-    public static boolean isNullOrEmpty(@Nullable final Collection<?> c) {
+    public static boolean isNullOrEmpty(@Nullable final Collection c) {
         return c == null || c.isEmpty();
+    }
+
+    /**
+     * Tests whether map contains no elements, true if map is null or map is empty.
+     * @param map Map to test.
+     * @return Whether map contains no elements.
+     */
+    @UsedForTesting
+    public static boolean isNullOrEmpty(@Nullable final Map map) {
+        return map == null || map.isEmpty();
     }
 }

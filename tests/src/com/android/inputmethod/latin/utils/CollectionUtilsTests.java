@@ -24,6 +24,9 @@ import com.android.inputmethod.latin.common.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tests for {@link CollectionUtils}.
@@ -79,9 +82,13 @@ public class CollectionUtilsTests extends AndroidTestCase {
      * results for a few cases.
      */
     public void testIsNullOrEmpty() {
-        assertTrue(CollectionUtils.isNullOrEmpty(null));
-        assertTrue(CollectionUtils.isNullOrEmpty(new ArrayList<>()));
-        assertTrue(CollectionUtils.isNullOrEmpty(Collections.EMPTY_SET));
-        assertFalse(CollectionUtils.isNullOrEmpty(Collections.singleton("Not empty")));
+        assertTrue(CollectionUtils.isNullOrEmpty((List) null));
+        assertTrue(CollectionUtils.isNullOrEmpty((Map) null));
+        assertTrue(CollectionUtils.isNullOrEmpty(new ArrayList()));
+        assertTrue(CollectionUtils.isNullOrEmpty(new HashMap()));
+        assertTrue(CollectionUtils.isNullOrEmpty(Collections.EMPTY_LIST));
+        assertTrue(CollectionUtils.isNullOrEmpty(Collections.EMPTY_MAP));
+        assertFalse(CollectionUtils.isNullOrEmpty(Collections.singletonList("Not empty")));
+        assertFalse(CollectionUtils.isNullOrEmpty(Collections.singletonMap("Not", "empty")));
     }
 }
