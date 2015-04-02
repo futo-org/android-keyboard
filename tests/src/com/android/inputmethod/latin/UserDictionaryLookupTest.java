@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.spellcheck;
+package com.android.inputmethod.latin;
+
+import static com.android.inputmethod.latin.UserDictionaryLookup.ANY_LOCALE;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -25,11 +27,13 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.utils.ExecutorUtils;
+
 import java.util.HashSet;
 import java.util.Locale;
 
 /**
- * Unit tests for {@link UserDictionaryLookup}.
+ * Unit tests for {@link com.android.inputmethod.latin.UserDictionaryLookup}.
  *
  * Note, this test doesn't mock out the ContentResolver, in order to make sure UserDictionaryLookup
  * works in a real setting.
@@ -68,9 +72,9 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
      * @return the Uri for the given word
      */
     @SuppressLint("NewApi")
-    private Uri addWord(final String word, final Locale locale, int frequency) {
+    private Uri addWord(final String word, final Locale locale, int frequency, String shortcut) {
         // Add the given word for the given locale.
-        UserDictionary.Words.addWord(mContext, word, frequency, null, locale);
+        UserDictionary.Words.addWord(mContext, word, frequency, shortcut, locale);
         // Obtain an Uri for the given word.
         Cursor cursor = mContentResolver.query(UserDictionary.Words.CONTENT_URI, null,
                 UserDictionary.Words.WORD + "='" + word + "'", null, null);
@@ -94,14 +98,78 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         mContentResolver.delete(uri, null, null);
     }
 
+    private UserDictionaryLookup setUpShortcut(final Locale locale) {
+        // Insert "shortcut" => "Expansion" in the UserDictionary for the given locale.
+        addWord("Expansion", locale, 17, "shortcut");
+
+        // Create the UserDictionaryLookup and wait until it's loaded.
+        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
+        while (!lookup.isLoaded()) {
+        }
+        return lookup;
+    }
+
+    public void testShortcutKeyMatching() {
+        Log.d(TAG, "testShortcutKeyMatching");
+        UserDictionaryLookup lookup = setUpShortcut(Locale.US);
+
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.US));
+        assertNull(lookup.expandShortcut("Shortcut", Locale.US));
+        assertNull(lookup.expandShortcut("SHORTCUT", Locale.US));
+        assertNull(lookup.expandShortcut("shortcu", Locale.US));
+        assertNull(lookup.expandShortcut("shortcutt", Locale.US));
+
+        lookup.close();
+    }
+
+    public void testShortcutMatchesInputCountry() {
+        Log.d(TAG, "testShortcutMatchesInputCountry");
+        UserDictionaryLookup lookup = setUpShortcut(Locale.US);
+
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.US));
+        assertNull(lookup.expandShortcut("shortcut", Locale.UK));
+        assertNull(lookup.expandShortcut("shortcut", Locale.ENGLISH));
+        assertNull(lookup.expandShortcut("shortcut", Locale.FRENCH));
+        assertNull(lookup.expandShortcut("shortcut", ANY_LOCALE));
+
+        lookup.close();
+    }
+
+    public void testShortcutMatchesInputLanguage() {
+        Log.d(TAG, "testShortcutMatchesInputLanguage");
+        UserDictionaryLookup lookup = setUpShortcut(Locale.ENGLISH);
+
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.US));
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.UK));
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.ENGLISH));
+        assertNull(lookup.expandShortcut("shortcut", Locale.FRENCH));
+        assertNull(lookup.expandShortcut("shortcut", ANY_LOCALE));
+
+        lookup.close();
+    }
+
+    public void testShortcutMatchesAnyLocale() {
+        UserDictionaryLookup lookup = setUpShortcut(UserDictionaryLookup.ANY_LOCALE);
+
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.US));
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.UK));
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.ENGLISH));
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.FRENCH));
+        assertEquals("Expansion", lookup.expandShortcut("shortcut", ANY_LOCALE));
+
+        lookup.close();
+    }
+
     public void testExactLocaleMatch() {
         Log.d(TAG, "testExactLocaleMatch");
 
         // Insert "Foo" as capitalized in the UserDictionary under en_US locale.
-        addWord("Foo", Locale.US, 17);
+        addWord("Foo", Locale.US, 17, null);
 
         // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext);
+        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
         while (!lookup.isLoaded()) {
         }
 
@@ -117,7 +185,7 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         assertFalse(lookup.isValidWord("foo", Locale.ENGLISH));
         assertFalse(lookup.isValidWord("foo", Locale.UK));
         assertFalse(lookup.isValidWord("foo", Locale.FRENCH));
-        assertFalse(lookup.isValidWord("foo", new Locale("")));
+        assertFalse(lookup.isValidWord("foo", ANY_LOCALE));
 
         lookup.close();
     }
@@ -126,10 +194,11 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         Log.d(TAG, "testSubLocaleMatch");
 
         // Insert "Foo" as capitalized in the UserDictionary under the en locale.
-        addWord("Foo", Locale.ENGLISH, 17);
+        addWord("Foo", Locale.ENGLISH, 17, null);
 
         // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext);
+        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
         while (!lookup.isLoaded()) {
         }
 
@@ -150,15 +219,16 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         Log.d(TAG, "testAllLocalesMatch");
 
         // Insert "Foo" as capitalized in the UserDictionary under the all locales.
-        addWord("Foo", null, 17);
+        addWord("Foo", null, 17, null);
 
         // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext);
+        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
         while (!lookup.isLoaded()) {
         }
 
         // Any capitalization variation should match for fr, en and en_US.
-        assertTrue(lookup.isValidWord("foo", new Locale("")));
+        assertTrue(lookup.isValidWord("foo", ANY_LOCALE));
         assertTrue(lookup.isValidWord("foo", Locale.FRENCH));
         assertTrue(lookup.isValidWord("foo", Locale.ENGLISH));
         assertTrue(lookup.isValidWord("foo", Locale.US));
@@ -177,12 +247,13 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
 
         // Insert "Foo" as capitalized in the UserDictionary under the en_US and en_CA and fr
         // locales.
-        addWord("Foo", Locale.US, 17);
-        addWord("foO", Locale.CANADA, 17);
-        addWord("fOo", Locale.FRENCH, 17);
+        addWord("Foo", Locale.US, 17, null);
+        addWord("foO", Locale.CANADA, 17, null);
+        addWord("fOo", Locale.FRENCH, 17, null);
 
         // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext);
+        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
         while (!lookup.isLoaded()) {
         }
 
@@ -193,7 +264,7 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         // Other locales, including more general locales won't match.
         assertFalse(lookup.isValidWord("foo", Locale.ENGLISH));
         assertFalse(lookup.isValidWord("foo", Locale.UK));
-        assertFalse(lookup.isValidWord("foo", new Locale("")));
+        assertFalse(lookup.isValidWord("foo", ANY_LOCALE));
 
         lookup.close();
     }
@@ -202,10 +273,11 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         Log.d(TAG, "testReload");
 
         // Insert "foo".
-        Uri uri = addWord("foo", Locale.US, 17);
+        Uri uri = addWord("foo", Locale.US, 17, null);
 
         // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext);
+        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
         while (!lookup.isLoaded()) {
         }
 
@@ -217,7 +289,7 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
 
         // Now delete "foo" and add "bar".
         deleteWord(uri);
-        addWord("bar", Locale.US, 18);
+        addWord("bar", Locale.US, 18, null);
 
         // Wait a little bit before expecting a change. The time we wait should be greater than
         // UserDictionaryLookup.RELOAD_DELAY_MS.
@@ -241,10 +313,11 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         Log.d(TAG, "testClose");
 
         // Insert "foo".
-        Uri uri = addWord("foo", Locale.US, 17);
+        Uri uri = addWord("foo", Locale.US, 17, null);
 
         // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext);
+        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
         while (!lookup.isLoaded()) {
         }
 
@@ -259,7 +332,7 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
 
         // Now delete "foo" and add "bar".
         deleteWord(uri);
-        addWord("bar", Locale.US, 18);
+        addWord("bar", Locale.US, 18, null);
 
         // Wait a little bit before expecting a change. The time we wait should be greater than
         // UserDictionaryLookup.RELOAD_DELAY_MS.
