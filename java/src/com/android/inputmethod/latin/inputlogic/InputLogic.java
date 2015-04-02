@@ -476,6 +476,9 @@ public final class InputLogic {
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
+                // We also need to unlearn the original word that is now being corrected.
+                unlearnWord(mWordComposer.getTypedWord(), settingsValues,
+                        Constants.EVENT_BACKSPACE);
                 resetEntireInputState(mConnection.getExpectedSelectionStart(),
                         mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             } else if (mWordComposer.isSingleLetter()) {
@@ -742,6 +745,9 @@ public final class InputLogic {
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                     // If we are in the middle of a recorrection, we need to commit the recorrection
                     // first so that we can insert the character at the current cursor position.
+                    // We also need to unlearn the original word that is now being corrected.
+                    unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
+                            Constants.EVENT_BACKSPACE);
                     resetEntireInputState(mConnection.getExpectedSelectionStart(),
                             mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
                 } else {
@@ -781,6 +787,9 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the character at the current cursor position.
+            // We also need to unlearn the original word that is now being corrected.
+            unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
+                    Constants.EVENT_BACKSPACE);
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             isComposingWord = false;
@@ -847,6 +856,9 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
+            // We also need to unlearn the original word that is now being corrected.
+            unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
+                    Constants.EVENT_BACKSPACE);
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
         }
@@ -962,6 +974,9 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can remove the character at the current cursor position.
+            // We also need to unlearn the original word that is now being corrected.
+            unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
+                    Constants.EVENT_BACKSPACE);
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
@@ -1046,6 +1061,10 @@ public final class InputLogic {
             // We should backspace one char and restart suggestion if at the end of a word.
             if (mConnection.hasSelection()) {
                 // If there is a selection, remove it.
+                // We also need to unlearn the selected text.
+                final CharSequence selection = mConnection.getSelectedText(0 /* 0 for no styles */);
+                unlearnWord(selection.toString(), inputTransaction.mSettingsValues,
+                        Constants.EVENT_BACKSPACE);
                 final int numCharsDeleted = mConnection.getExpectedSelectionEnd()
                         - mConnection.getExpectedSelectionStart();
                 mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
