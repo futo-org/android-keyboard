@@ -650,7 +650,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         reloadDictionaryIfRequired();
         final String dictName = mDictName;
         final File dictFile = mDictFile;
-        final AsyncResultHolder<DictionaryStats> result = new AsyncResultHolder<>();
+        final AsyncResultHolder<DictionaryStats> result =
+                new AsyncResultHolder<>("DictionaryStats");
         asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
             @Override
             public void run() {
@@ -724,7 +725,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     public WordProperty[] getWordPropertiesForSyncing() {
         reloadDictionaryIfRequired();
-        final AsyncResultHolder<WordProperty[]> result = new AsyncResultHolder<>();
+        final AsyncResultHolder<WordProperty[]> result =
+                new AsyncResultHolder<>("WordPropertiesForSync");
         asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
             @Override
             public void run() {
