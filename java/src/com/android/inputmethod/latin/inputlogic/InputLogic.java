@@ -2094,6 +2094,9 @@ public final class InputLogic {
         }
     }
 
+    // TODO: Remove this before going live.
+    private static final boolean DEBUG_COMMIT_TIMING = true;
+
     /**
      * Commits the chosen word to the text field and saves it for later retrieval.
      *
@@ -2104,24 +2107,60 @@ public final class InputLogic {
      */
     private void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
             final int commitType, final String separatorString) {
+        long startTimeMillis = 0;
+        if (DEBUG_COMMIT_TIMING) {
+            startTimeMillis = System.currentTimeMillis();
+            Log.d(TAG, "commitChosenWord() : [" + chosenWord + "]");
+        }
         final SuggestedWords suggestedWords = mSuggestedWords;
         final CharSequence chosenWordWithSuggestions =
                 SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
                         suggestedWords);
+        if (DEBUG_COMMIT_TIMING) {
+            long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
+            Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
+                    + "SuggestionSpanUtils.getTextWithSuggestionSpan()");
+            startTimeMillis = System.currentTimeMillis();
+        }
         // When we are composing word, get n-gram context from the 2nd previous word because the
         // 1st previous word is the word to be committed. Otherwise get n-gram context from the 1st
         // previous word.
         final NgramContext ngramContext = mConnection.getNgramContextFromNthPreviousWord(
                 settingsValues.mSpacingAndPunctuations, mWordComposer.isComposingWord() ? 2 : 1);
+        if (DEBUG_COMMIT_TIMING) {
+            long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
+            Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
+                    + "Connection.getNgramContextFromNthPreviousWord()");
+            Log.d(TAG, "commitChosenWord() : NgramContext = " + ngramContext);
+            startTimeMillis = System.currentTimeMillis();
+        }
         mConnection.commitText(chosenWordWithSuggestions, 1);
+        if (DEBUG_COMMIT_TIMING) {
+            long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
+            Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
+                    + "Connection.commitText");
+            startTimeMillis = System.currentTimeMillis();
+        }
         // Add the word to the user history dictionary
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, ngramContext);
+        if (DEBUG_COMMIT_TIMING) {
+            long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
+            Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
+                    + "performAdditionToUserHistoryDictionary()");
+            startTimeMillis = System.currentTimeMillis();
+        }
         // TODO: figure out here if this is an auto-correct or if the best word is actually
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType,
                 chosenWordWithSuggestions, separatorString, ngramContext);
+        if (DEBUG_COMMIT_TIMING) {
+            long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
+            Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
+                    + "WordComposer.commitWord()");
+            startTimeMillis = System.currentTimeMillis();
+        }
     }
 
     /**
