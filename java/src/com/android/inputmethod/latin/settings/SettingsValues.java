@@ -209,7 +209,7 @@ public class SettingsValues {
                 prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
                 defaultKeyPreviewDismissEndScale);
         mDisplayOrientation = res.getConfiguration().orientation;
-        mAppWorkarounds = new AsyncResultHolder<>();
+        mAppWorkarounds = new AsyncResultHolder<>("AppWorkarounds");
         final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(
                 mInputAttributes.mTargetApplicationPackageName);
         if (null != packageInfo) {
