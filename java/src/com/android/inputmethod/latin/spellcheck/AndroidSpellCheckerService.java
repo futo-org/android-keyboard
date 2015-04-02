@@ -24,7 +24,6 @@ import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 import android.view.textservice.SuggestionsInfo;
-import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -83,7 +82,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
 
     public static final String SINGLE_QUOTE = "\u0027";
     public static final String APOSTROPHE = "\u2019";
-    private UserDictionaryLookup mUserDictionaryLookup;
 
     public AndroidSpellCheckerService() {
         super();
@@ -95,30 +93,11 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     @Override
     public void onCreate() {
         super.onCreate();
-        mRecommendedThreshold =
-                Float.parseFloat(getString(R.string.spellchecker_recommended_threshold_value));
+        mRecommendedThreshold = Float.parseFloat(
+                getString(R.string.spellchecker_recommended_threshold_value));
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
         onSharedPreferenceChanged(prefs, PREF_USE_CONTACTS_KEY);
-        // Create a UserDictionaryLookup.  It needs to be close()d and set to null in onDestroy.
-        if (mUserDictionaryLookup == null) {
-            if (DEBUG) {
-                Log.d(TAG, "Creating mUserDictionaryLookup in onCreate");
-            }
-            mUserDictionaryLookup = new UserDictionaryLookup(this);
-        } else if (DEBUG) {
-            Log.d(TAG, "mUserDictionaryLookup already created before onCreate");
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        if (DEBUG) {
-            Log.d(TAG, "Closing and dereferencing mUserDictionaryLookup in onDestroy");
-        }
-        mUserDictionaryLookup.close();
-        mUserDictionaryLookup = null;
-        super.onDestroy();
     }
 
     public float getRecommendedThreshold() {
@@ -181,16 +160,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     public boolean isValidWord(final Locale locale, final String word) {
         mSemaphore.acquireUninterruptibly();
         try {
-            if (mUserDictionaryLookup.isValidWord(word, locale)) {
-                if (DEBUG) {
-                    Log.d(TAG, "mUserDictionaryLookup.isValidWord(" + word + ")=true");
-                }
-                return true;
-            } else {
-                if (DEBUG) {
-                    Log.d(TAG, "mUserDictionaryLookup.isValidWord(" + word + ")=false");
-                }
-            }
             DictionaryFacilitator dictionaryFacilitatorForLocale =
                     mDictionaryFacilitatorCache.get(locale);
             return dictionaryFacilitatorForLocale.isValidSpellingWord(word);
