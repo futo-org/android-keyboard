@@ -2094,9 +2094,6 @@ public final class InputLogic {
         }
     }
 
-    // TODO: Remove this before going live.
-    private static final boolean DEBUG_COMMIT_TIMING = true;
-
     /**
      * Commits the chosen word to the text field and saves it for later retrieval.
      *
@@ -2108,7 +2105,7 @@ public final class InputLogic {
     private void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
             final int commitType, final String separatorString) {
         long startTimeMillis = 0;
-        if (DEBUG_COMMIT_TIMING) {
+        if (DebugFlags.DEBUG_ENABLED) {
             startTimeMillis = System.currentTimeMillis();
             Log.d(TAG, "commitChosenWord() : [" + chosenWord + "]");
         }
@@ -2116,7 +2113,7 @@ public final class InputLogic {
         final CharSequence chosenWordWithSuggestions =
                 SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
                         suggestedWords);
-        if (DEBUG_COMMIT_TIMING) {
+        if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
                     + "SuggestionSpanUtils.getTextWithSuggestionSpan()");
@@ -2127,7 +2124,7 @@ public final class InputLogic {
         // previous word.
         final NgramContext ngramContext = mConnection.getNgramContextFromNthPreviousWord(
                 settingsValues.mSpacingAndPunctuations, mWordComposer.isComposingWord() ? 2 : 1);
-        if (DEBUG_COMMIT_TIMING) {
+        if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
                     + "Connection.getNgramContextFromNthPreviousWord()");
@@ -2135,7 +2132,7 @@ public final class InputLogic {
             startTimeMillis = System.currentTimeMillis();
         }
         mConnection.commitText(chosenWordWithSuggestions, 1);
-        if (DEBUG_COMMIT_TIMING) {
+        if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
                     + "Connection.commitText");
@@ -2143,7 +2140,7 @@ public final class InputLogic {
         }
         // Add the word to the user history dictionary
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, ngramContext);
-        if (DEBUG_COMMIT_TIMING) {
+        if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
                     + "performAdditionToUserHistoryDictionary()");
@@ -2155,7 +2152,7 @@ public final class InputLogic {
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType,
                 chosenWordWithSuggestions, separatorString, ngramContext);
-        if (DEBUG_COMMIT_TIMING) {
+        if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
                     + "WordComposer.commitWord()");
