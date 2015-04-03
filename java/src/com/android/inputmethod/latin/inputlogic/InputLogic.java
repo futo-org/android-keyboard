@@ -1420,6 +1420,11 @@ public final class InputLogic {
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
             final int inputStyle) {
+        long startTimeMillis = 0;
+        if (DebugFlags.DEBUG_ENABLED) {
+            startTimeMillis = System.currentTimeMillis();
+            Log.d(TAG, "performUpdateSuggestionStripSync()");
+        }
         // Check if we have a suggestion engine attached.
         if (!settingsValues.needsToLookupSuggestions()) {
             if (mWordComposer.isComposingWord()) {
@@ -1465,6 +1470,10 @@ public final class InputLogic {
                 Constants.GET_SUGGESTED_WORDS_TIMEOUT);
         if (suggestedWords != null) {
             mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
+        }
+        if (DebugFlags.DEBUG_ENABLED) {
+            long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
+            Log.d(TAG, "performUpdateSuggestionStripSync() : " + runTimeMillis + " ms to finish");
         }
     }
 
