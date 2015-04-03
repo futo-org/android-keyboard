@@ -19,6 +19,7 @@ package com.android.inputmethod.dictionarypack;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,10 +31,13 @@ import java.util.List;
  * Helper class to easy up manipulation of dictionary pack metadata.
  */
 public class MetadataHandler {
+
+    public static final String TAG = MetadataHandler.class.getSimpleName();
+
     // The canonical file name for metadata. This is not the name of a real file on the
     // device, but a symbolic name used in the database and in metadata handling. It is never
     // tested against, only used for human-readability as the file name for the metadata.
-    public final static String METADATA_FILENAME = "metadata.json";
+    public static final String METADATA_FILENAME = "metadata.json";
 
     /**
      * Reads the data from the cursor and store it in metadata objects.
@@ -114,6 +118,14 @@ public class MetadataHandler {
             final String clientId, final String wordListId, final int version) {
         final ContentValues contentValues = MetadataDbHelper.getContentValuesByWordListId(
                 MetadataDbHelper.getDb(context, clientId), wordListId, version);
+        if (contentValues == null) {
+            // TODO: Figure out why this would happen.
+            // Check if this happens when the metadata gets updated in the background.
+            Log.e(TAG, String.format( "Unable to find the current metadata for wordlist "
+                            + "(clientId=%s, wordListId=%s, version=%d) on the database",
+                    clientId, wordListId, version));
+            return null;
+        }
         return WordListMetadata.createFromContentValues(contentValues);
     }
 
