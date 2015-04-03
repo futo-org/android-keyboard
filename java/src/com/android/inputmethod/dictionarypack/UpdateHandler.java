@@ -1143,6 +1143,9 @@ public final class UpdateHandler {
             }
             final WordListMetadata wordListMetaData = MetadataHandler.getCurrentMetadataForWordList(
                     context, clientId, wordlistId, version);
+            if (wordListMetaData == null) {
+                return;
+            }
 
             final ActionBatch actions = new ActionBatch();
             actions.add(new ActionBatch.StartDownloadAction(
