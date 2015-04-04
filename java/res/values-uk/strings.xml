@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Скасувати"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Ваш особистий словник буде синхронізовано із серверами Google. Ми можемо збирати статистичні дані про частоту пошуку слів, щоб покращити наші продукти. Ці дані збираються та використовуються відповідно до "<a href="https://www.google.com/policies/privacy">"Політики конфіденційності Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Щоб увімкнути функцію, додайте на пристрій обліковий запис Google"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Пристрої з обліковими записами Google Apps for Business не синхронізуються"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Інші методи введення"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавіша зміни мови дозволяє змінювати методи введення"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавіша зміни мови"</string>

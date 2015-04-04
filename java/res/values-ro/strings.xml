@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Anulați"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Dicționarul personal va fi sincronizat și i se va face backup pe serverele Google. Informațiile statistice privind frecvența cuvintelor pot fi culese pentru a îmbunătăți produsele noastre. Culegerea și folosirea informațiilor vor respecta "<a href="https://www.google.com/policies/privacy">"Politica de confidențialitate Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Pentru a activa funcția, adăugați un cont Google pe dispozitiv"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Fără sincronizare pe dispozitivele cu conturi Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Comut. alte metode de introd."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasta de comutare între limbi include și alte metode de introd."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tastă comutare limbi"</string>

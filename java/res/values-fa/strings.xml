@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"لغو"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏فرهنگ لغت شخصی شما با سرورهای Google همگام‌سازی و در آنها پشتیبان گرفته می‌شود. ممکن است برای کمک به بهبود محصولات ما، اطلاعات آماری از فراوانی کلمه جمع‌آوری شود. جمع‌آوری و استفاده از همه اطلاعات مطابق با "<a href="https://www.google.com/policies/privacy">"خط‌مشی رازداری Google"</a>" خواهد بود."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏برای فعال کردن این ویژگی، یک حساب Google به این دستگاه اضافه کنید"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"‏همگام‌سازی برای دستگاه‌های دارای حساب Google Apps for Business در دسترس نیست"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"تغییر به دیگر روش‌های ورودی"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"کلید تغییر زبان، سایر ورودی‌های زبان را نیز پوشش می‌دهد"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"کلید تغییر زبان"</string>

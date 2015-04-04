@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Hætta við"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Orðabókin þín verður samstillt og afrituð á netþjóna Google. Hugsanlega verður talnagögnum um tíðni orða safnað til að gera vörur okkar betri. Söfnun og notkun allra upplýsinga fellur undir "<a href="https://www.google.com/policies/privacy">"persónuverndarstefnu Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Bættu Google reikningi við tækið til að virkja þennan eiginleika"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Samstilling er ekki í boði fyrir tæki með Google Apps fyrirtækjareikning"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skipta um innsláttaraðferð"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Lykill til að skipta um mál inniheldur aðrar innsláttaraðferðir"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Lykill til að breyta tungumáli"</string>

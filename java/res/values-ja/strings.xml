@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"キャンセル"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"単語リストがGoogleのサーバーと同期され、サーバーにバックアップされます。Googleのサービス改善を目的として、語句の使用頻度に関する統計情報が収集される場合があります。収集した情報およびその利用方法は、"<a href="https://www.google.com/policies/privacy">"Googleプライバシーポリシー"</a>"に準拠します。"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"この機能を有効にするには端末にGoogleアカウントを追加してください"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"同期は、Google Apps for Businessアカウントの端末ではご利用いただけません"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"他の入力方法に切り替え"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"言語切り替えキーは他の入力方法にも対応しています"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"言語切り替えキー"</string>
