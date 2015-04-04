@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Avbryt"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Den egna ordboken synkroniseras och säkerhetskopieras till Googles servrar. Statistisk information om ordfrekvens kan samlas in och användas för att förbättra våra produkter. Insamlingen och användningen av all information sker i enlighet med "<a href="https://www.google.com/policies/privacy">"Googles sekretesspolicy"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Lägg till ett Google-konto på enheten om du vill aktivera detta"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Synkronisering är inte tillgänglig för enheter med Google Apps for Business-konton"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Byt till annan inmatning"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Språkbytesknappen omfattar även andra inmatningsmetoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Knapp för att byta språk"</string>

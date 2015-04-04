@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Batal"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Kamus peribadi anda akan disegerakkan dan disandarkan ke pelayan Google. Maklumat statistik kekerapan perkataan mungkin dikumpulkan untuk membantu mempertingkatkan produk kami. Pengumpulan dan penggunaan semua maklumat adalah selaras dengan "<a href="https://www.google.com/policies/privacy">"Dasar Privasi Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Sila tambahkan akaun Google pada peranti ini untuk mendayakan ciri ini"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Segerak tidak tersedia untuk peranti dengan akaun Google Apps untuk Perniagaan"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Tukar ke kaedah input lain"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kunci pertukaran bahasa meliputi kaedah masukan lain juga"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Kekunci tukar bahasa"</string>

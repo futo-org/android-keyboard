@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"İptal"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Kişisel sözlüğünüz senkronize edilecek ve Google sunucularına yedeklenecektir. Ürünlerimizi iyileştirmeye yardımcı olması için kelime sıklığına ilişkin istatistiksel bilgiler toplanabilir. Tüm bilgilerin toplanması ve kullanımı "<a href="https://www.google.com/policies/privacy">"Google\'ın Gizlilik Politikası"</a>"\'na uygun olarak gerçekleştirilir."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Bu özelliği etkinleştirmek için cihaza bir Google Hesabı ekleyin"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Senkronizasyon Google Apps for Business hesabı olan cihazlarda kullanılamaz"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Diğer giriş yöntemine geç"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Dil geçiş tuşu diğer giriş yöntemlerini de kapsar"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Dil değiştirme tuşu"</string>

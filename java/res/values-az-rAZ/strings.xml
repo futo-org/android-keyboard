@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Ləğv et"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Şəxsi lüğətiniz sinxronlaşdırılacaq və Google serverlərinə ehtiyat nüsxəsi çıxarılacaq. Söz tezliyinin statistik məlumatı məhsullarımızı təkmilləşdirməyə kömək üçün toplana bilər. Bütün məlumatın toplanması və istifadəsi "<a href="https://www.google.com/policies/privacy">"Google Məxfilik Siyasətinə"</a>" uyğun olmalıdır."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Bu funksiyanı aktivləşdirmək üçün cihaza Google hesabı əlavə edin"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Biznes hesablarına aid Google Tətbiqləri olan cihazlarda sinxronizasiya əlçatan deyil"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Digər daxiletmə metodlarına keçin"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Dil keçid düyməsi başqa daxiletmə metodlarını da əhatə edir"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Dil keçidi düyməsi"</string>

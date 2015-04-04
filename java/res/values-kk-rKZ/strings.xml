@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Бас тарту"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Жеке сөздігіңіз синхрондалады және Google серверлеріне сақтық көшірмесі жасалады. Сөз жиілігінің статистикалық ақпараты өнімдерімізді жақсарту үшін жинақталуы мүмкін. Барлық ақпаратты жинау және пайдалану "<a href="https://www.google.com/policies/privacy">" Google құпиялылық саясатына "</a>"сәйкес орындалады."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Мүмкіндікті қосу үшін құрылғыға Google есептік жазбасын қосыңыз"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Бизнес ес.жазб.арн.Google қолд.бар құрылғылар үшін синхрондау қол жет.емес"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Басқа енгізу әдістеріне ауыстырыңыз"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Тілді ауыстыру пернесі басқа енгізу әдістерін де қамтиды"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Тілді ауыстыру пернесі"</string>

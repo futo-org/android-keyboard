@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Kanselleer"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Jou persoonlike woordeboek sal gesinkroniseer en in Google-bedieners gerugsteun word. Die statistiese inligting van woordfrekwensie sal dalk ingesamel word om ons produkte te help verbeter. Die insameling en gebruik van al die inligting sal voldoen aan "<a href="https://www.google.com/policies/privacy">"Google se privaatheidsbeleid"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Voeg \'n Google-rekening by die toestel om hierdie kenmerk te aktiveer"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Toestelle met Google Apps vir Besigheid-rekeninge kan nie sinkroniseer nie"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skakel oor na die ander invoermetodes"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Taal-wisselsleutel dek ook ander invoermetodes"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Taal-wisselsleutel"</string>

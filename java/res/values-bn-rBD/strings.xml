@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"বাতিল"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"আপনার ব্যক্তিগত অভিধান Google সার্ভারগুলিতে সিঙ্ক এবং ব্যাকআপ নেওয়া হবে৷ শব্দ ফ্রিকোয়েন্সির পরিসংখ্যানগত তথ্য আমাদের পণ্য উন্নতিতে সহায়তার জন্য সংগ্রহ করা হতে পারে৷ এই সংগ্রহ এবং সমস্ত তথ্যের ব্যবহার "<a href="https://www.google.com/policies/privacy">"Google এর গোপনীয়তা নীতি"</a>"-র সাথে সঙ্গতিশীল হবে৷"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"এই বৈশিষ্ট্যটি সক্ষম করার জন্য অনুগ্রহ করে এই ডিভাইসে একটি Google অ্যাকাউন্ট যোগ করুন"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ব্যবসা অ্যাকাউন্টগুলির জন্য Google Apps এর সাথে ডিভাইসগুলির জন্য সিঙ্ক অনুপলব্ধ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"অন্য ইনপুট পদ্ধতিতে স্যুইচ করুন"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ভাষা স্যুইচ কীতে অন্যান্য ইনপুট পদ্ধতি পাওয়া যায়"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ভাষা স্যুইচ কী"</string>

@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"రద్దు చేయి"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"మీ వ్యక్తిగత నిఘంటువు Google సర్వర్‌లకు సమకాలీకరించబడుతుంది మరియు బ్యాకప్ చేయబడుతుంది. మా ఉత్పత్తులను మెరుగుపరచడంలో సహాయకరంగా ఉండటానికి పదం తరచుదనానికి సంబంధించిన గణాంక సమాచారం సేకరించవచ్చు. మొత్తం సమాచార సేకరణ మరియు వినియోగం "<a href="https://www.google.com/policies/privacy">"Google గోప్యతా విధానం"</a>"కి లోబడి ఉంటుంది."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"దయచేసి ఈ లక్షణాన్ని ప్రారంభించడానికి ఈ పరికరానికి Google ఖాతాను జోడించండి"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"వ్యాపారం కోసం Google Apps ఖాతాలు గల పరికరాల కోసం సమకాలీకరణ అందుబాటులో లేదు"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ఇతర ఇన్‌పుట్ పద్ధతులకు మారండి"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"భాష మార్పు కీ ఇతర ఇన్‌పుట్ పద్ధతులను కూడా కవర్ చేస్తుంది"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"భాష మార్పు కీ"</string>

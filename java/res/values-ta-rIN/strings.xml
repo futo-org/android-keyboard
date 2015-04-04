@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ரத்துசெய்"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"உங்கள் தனிப்பட்ட அகராதி ஒத்திசைக்கப்பட்டு, Google சேவையகங்களில் காப்புப் பிரதி எடுக்கப்படும். எங்கள் தயாரிப்புகளை மேம்படுத்த உதவ, சொல் உபயோகத்தின் புள்ளிவிவரத் தகவல் சேகரிக்கப்படலாம். எல்லா தகவல்களின் சேகரிப்பும், உபயோகமும் "<a href="https://www.google.com/policies/privacy">"Google இன் தனியுரிமைக் கொள்கைக்கு"</a>" இணங்கியபடியே இருக்கும்."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"இந்த அம்சத்தை இயக்க, சாதனத்தில் Google கணக்கைச் சேர்க்கவும்"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"வணிகத்திற்கான Google Apps கணக்குகள் இயங்கும் சாதனங்களில் ஒத்திசைக்க முடியாது."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"பிற உள்ளீட்டு முறைகளுக்கு மாறு"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"மொழி மாற்றல் விசை பிற உள்ளீட்டு முறைகளையும் கட்டுப்படுத்துகிறது"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"மொழி மாற்ற விசை"</string>

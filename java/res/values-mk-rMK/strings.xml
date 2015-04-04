@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Откажи"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Вашиот личен речник ќе се синхронизира и ќе се создаде резервна копија на серверите на Google. Може да се собираат статистички информации за честотата на зборовите за помош при подобрување на нашите производи. Собирањето и користењето на сите информации ќе биде во согласност со "<a href="https://www.google.com/policies/privacy">"Политиката за приватност на Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Додајте сметка на Google на уредов за овозможување на функцијава"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Синхронизација не е достапна за уреди со сметки за бизнис на Апликации на Google"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Префрли на други влезни методи"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Копчето за менување јазици покрива и други методи на внес"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Копче за промена на јазик"</string>

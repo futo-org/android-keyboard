@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Atcelt"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Jūsu personiskā vārdnīca tiks sinhronizēta un dublēta Google serveros. Mūsu produktu uzlabošanas nolūkos var tikt apkopota statistiskā informācija par vārdu biežumu. Visa informācija tiks apkopota un izmantota saskaņā ar "<a href="https://www.google.com/policies/privacy">"Google konfidencialitātes politiku"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Lai iespējotu šo funkciju, pievienojiet Google kontu šai ierīcei."</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Ierīcēm ar Google Apps for Business kontiem nav pieejama sinhronizācija."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Pārsl. uz citām iev. met."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Valodas pārslēgš. taustiņu var lietot arī citām ievades metodēm."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Valodas pārslēgšanas taustiņš"</string>

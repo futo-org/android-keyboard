@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Avbryt"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Den personlige ordlisten din blir synkronisert og sikkerhetskopiert til Google-tjenere. For å bidra til å forbedre produktene våre, kan det hende vi samler inn informasjon om ordfrekvens. Innsamling og bruk av all informasjon skjer i henhold til "<a href="https://www.google.com/policies/privacy">"Googles personvernregler"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Legg en Google-konto til enheten for å aktivere denne funksjonen"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Synkronisering er ikke tilgjengelig for enheter med Google Apps for Business-kontoer"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Bytt inndatametode"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten for språkbytte dekker også andre inndatametoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Nøkkel for språkskifte"</string>

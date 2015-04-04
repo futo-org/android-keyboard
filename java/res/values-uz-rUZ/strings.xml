@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Bekor qilish"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Sizning shaxsiy lug\'atingiz Google serverlarida sinxronlashadi va zahiraga nusxalanadi. So‘zning qayta uchrash ko‘rsatkichi statistik ma’lumotlari, bizga mahsulotlarimiz sifatini oshirishda ko‘maklashish uchun to‘planishi mumkin. Barcha ma’lumotlar yig‘ilishi va foydalanishi "<a href="https://www.google.com/policies/privacy">" Google maxfiylik siyosati "</a>" shartlari bo‘yicha amalga oshadi."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Ushbu imkoniyatni yoqish uchun, iltimos, Google hisobingizni qo‘shing"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"“Biznes uchun Google Apps” hisobi mavjud qurilmalarda sinxronlab bo‘lmaydi"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Boshqa usullarga o‘tish"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tilni o‘zgartirish tugmasi matn kiritish usulini ham o‘zgartiradi"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tilni o‘zgartirish tugmasi"</string>

@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Mégse"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"A rendszer szinkronizálni fogja az Ön személyes szótárát, és biztonsági mentést készít róla a Google szerverein. Termékeink továbbfejlesztése érdekében a rendszer a szavak előfordulási gyakoriságára vonatkozó statisztikai adatokat gyűjthet. Ezen információkat a "<a href="https://www.google.com/policies/privacy">"Google adatvédelmi irányelveivel"</a>" összhangban gyűjtjük és használjuk fel."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"A funkció engedélyezéséhez adjon egy Google-fiókot az eszközhöz"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"A Google Apps cégeknek-fiókkal rendelkező eszközökön nem érhető el a szinkronizálás"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Váltás más beviteli módra"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A nyelvkapcsoló gomb egyéb beviteli módokat is tartalmaz"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"A nyelvkapcsoló"</string>
