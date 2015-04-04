@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Tühista"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Teie isiklik sõnastik sünkroonitakse ja varundatakse Google\'i serveritesse. Meie toodete parandamiseks võidakse koguda sõna esinemissageduse statistikat. Kogu teabe kogumine ja kasutamine toimub "<a href="https://www.google.com/policies/privacy">"Google\'i privaatsuseeskirjade"</a>" järgi."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Lisage selle funktsiooni lubamiseks seadmesse Google\'i konto"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sünkroonimine pole Google Apps for Businessi kontodega seadmetele saadaval"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Vaheta sisestusmeetodit"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Keelevahetuse võti hõlmab ka muid sisestusmeetodeid"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Keelevahetuse nupp"</string>

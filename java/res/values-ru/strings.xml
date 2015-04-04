@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Отменить"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Словарь будет сохраняться на серверах Google и синхронизироваться. Чтобы повысить качество наших сервисов, мы можем отслеживать статистику использования тех или иных слов. Вся информация обрабатывается в соответствии с "<a href="https://www.google.com/policies/privacy">"Политикой конфиденциальности"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Чтобы включить функцию, добавьте аккаунт Google на устройство"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Синхронизация на устройствах с аккаунтом Google Apps for Business запрещена"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Смена способов ввода"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавиша переключения языков также служит для смены способа ввода"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиша смены языка"</string>

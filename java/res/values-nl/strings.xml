@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Annuleren"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Uw persoonlijke woordenboek wordt gesynchroniseerd en er wordt een back-up gemaakt op servers van Google. De statistische gegevens voor woordfrequentie kunnen worden verzameld om onze producten te verbeteren. Het verzamelen en gebruik van alle gegevens is in overeenstemming met het "<a href="https://www.google.com/policies/privacy">"Privacybeleid van Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Voeg een Google-account toe om deze functie in te schakelen"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Synchronisatie is niet beschikbaar voor Google Apps for Business-accounts"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Invoermeth. overschakelen"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Schakelknop voor taal ook van toepassing op andere invoermethoden"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Schakelknop voor taal"</string>

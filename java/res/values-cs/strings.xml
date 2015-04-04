@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Zrušit"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Váš osobní slovník bude synchronizován a zálohován na servery Google. Za účelem vylepšení našich služeb mohou být shromažďovány statistické informace o četnosti slov. Shromažďování a využití všech informací bude probíhat v souladu se "<a href="https://www.google.com/policies/privacy">"zásadami ochrany soukromí společnosti Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Za účelem aktivace této funkce přidejte do zařízení účet Google."</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"U zařízení s účty Google Apps pro firmy není synchronizace dostupná"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Přepínat metody zadávání"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Klávesa pro přepínání jazyka ovládá i další metody zadávání"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Klávesa přepínání jazyka"</string>

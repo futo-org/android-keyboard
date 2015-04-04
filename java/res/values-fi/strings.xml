@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Peruuta"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Oma sanakirjasi synkronoidaan ja varmuuskopiodaan Googlen palvelimille. Sanojen yleisyyttä koskevia tilastotietoja voidaan kerätä tuotteidemme parantamiseksi. Tietojen keräämisessä ja käytössä noudatetaan "<a href="https://www.google.com/policies/privacy">"Googlen tietosuojakäytäntöä"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Ota tämä ominaisuus käyttöön lisäämällä Google-tili laitteeseen."</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Synkronointi ei ole käytettävissä Google Apps for Business -tilejä sisältäville laitteille."</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Käytä toista syöttötapaa"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kielenvaihtonäppäin kattaa myös muut syöttötavat"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Kielenvaihtonäppäin"</string>

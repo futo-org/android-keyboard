@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Откажи"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Синхронизоваћемо лични речник и направићемо његову резервну копију на Google серверима. Можда ћемо прикупљати статистичке податке о учесталости речи да бисмо побољшали производе. Прикупљање и коришћење свих информација ће бити у складу са "<a href="https://www.google.com/policies/privacy">"Google-овом политиком приватности"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Додајте Google налог на уређај да бисте омогућили ову функцију"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Синхрониз. није доступна за уређаје са налозима Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Пребаци на друге методе уноса"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Тастер за пребацивање језика обухвата и друге методе уноса"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Тастер за пребацивање језика"</string>

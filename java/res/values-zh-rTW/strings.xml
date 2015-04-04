@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"取消"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"系統將會同步處理您的個人字典並備份至 Google 伺服器，同時也會收集字詞頻率的統計資訊，藉此改善我們的產品品質。所有資訊的收集和使用方式都會遵守《"<a href="https://www.google.com/policies/privacy">"Google 隱私權政策"</a>"》的規定。"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"請將 Google 帳戶新增到這個裝置以啟用這項功能"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"採用 Google Apps for Business 帳戶的裝置無法使用同步處理功能"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切換到其他輸入法"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"使語言切換鍵包含其他輸入法"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"語言切換鍵"</string>

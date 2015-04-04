@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Отказ"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Личният ви речник ще бъде синхронизиран и за него ще бъде създадено резервно копие на сървърите на Google. Статистическата информация за честотата на използване на думите може да се събира с цел подобряване на продуктите ни. Събирането и ползването на всички данни ще бъде съгласно "<a href="https://www.google.com/policies/privacy">"Декларацията ни за поверителност"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"За да активирате функцията, добавете профил в Google към у-вото"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Синхронизирането не е налице за у-ва с профили в Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Други методи за въвеждане"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавишът за превкл. на езика обхваща и други методи за въвеждане"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиш за превкл. на езика"</string>

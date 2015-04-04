@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Atšaukti"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Asmeninis žodynas bus sinchronizuotas ir atsarginė kopija sukurta „Google“ serveriuose. Gali būti renkama statistinė žodžių dažnumo informacija, kad būtų galima patobulinti produktus. Visa informacija renkama ir naudojama laikantis "<a href="https://www.google.com/policies/privacy">"„Google“ privatumo politikos"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Pridėkite „Google“ paskyrą prie įreng., kad įgalint. šią funkciją"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinchronizuoti negalima įrengin. su „Google Apps for Business“ paskyromis"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Perj. į kt. įvesties būd."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kalbos perjungimo klavišu taip pat perjungiami įvesties būdai"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Kalbos keitimo klavišas"</string>

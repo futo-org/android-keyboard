@@ -45,6 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"منسوخ کریں"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏آپ کی ذاتی لغت کی مطابقت پذیری کی جائے گی اور Google سرورز میں اس کا بیک اپ لیا جائے گا۔ ہمارے پروڈکٹس کو بہتر بنانے میں مدد کرنے کیلئے الفاظ کی فریکوئنسی کے اعداد و شمار کی معلومات کو جمع کیا جا سکتا ہے۔ سبھی معلومات کی جمع آوری اور استعمال "<a href="https://www.google.com/policies/privacy">"Google کی رازداری کی پالیسی"</a>" کے مطابق ہوگا۔"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏یہ خصوصیت فعال کرنے کیلئے اس آلہ پر ایک Google اکاؤنٹ شامل کریں"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"‏Google Apps برائے کاروبار اکاؤنٹس کے ساتھ آلات کیلئے مطابقت پذیری دستیاب نہیں ہے"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"دیگر اندراج طریقوں پر سوئچ کریں"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"زبان سوئچ کرنے کی کلید اندراج کے دیگر طریقوں کا بھی احاطہ کرتی ہے"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"زبان سوئچ کرنے کی کلید"</string>
