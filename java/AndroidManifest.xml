@@ -38,8 +38,7 @@
     <application android:label="@string/english_ime_name"
             android:icon="@drawable/ic_launcher_keyboard"
             android:supportsRtl="true"
-            android:allowBackup="true"
-            android:usesCleartextTraffic="false">
+            android:allowBackup="true">
 
         <!-- Services -->
         <service android:name="LatinIME"
