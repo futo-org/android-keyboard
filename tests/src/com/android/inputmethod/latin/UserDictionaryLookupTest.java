@@ -309,6 +309,52 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         lookup.close();
     }
 
+    public void testDictionaryStats() {
+        Log.d(TAG, "testDictionaryStats");
+
+        // Insert "foo" and "bar". Only "foo" has a shortcut.
+        Uri uri = addWord("foo", Locale.GERMANY, 17, "f");
+        addWord("bar", Locale.GERMANY, 17, null);
+
+        // Create the UserDictionaryLookup and wait until it's loaded.
+        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
+        while (!lookup.isLoaded()) {
+        }
+
+        // "foo" should match.
+        assertTrue(lookup.isValidWord("foo", Locale.GERMANY));
+
+        // "bar" should match.
+        assertTrue(lookup.isValidWord("bar", Locale.GERMANY));
+
+        // "foo" should have a shortcut.
+        assertEquals("foo", lookup.expandShortcut("f", Locale.GERMANY));
+
+        // Now delete "foo".
+        deleteWord(uri);
+
+        // Wait a little bit before expecting a change. The time we wait should be greater than
+        // UserDictionaryLookup.RELOAD_DELAY_MS.
+        try {
+            Thread.sleep(UserDictionaryLookup.RELOAD_DELAY_MS + 1000);
+        } catch (InterruptedException e) {
+        }
+
+        // Perform lookups again. Reload should have occured.
+        //
+        // "foo" should not match.
+        assertFalse(lookup.isValidWord("foo", Locale.GERMANY));
+
+        // "foo" should not have a shortcut.
+        assertNull(lookup.expandShortcut("f", Locale.GERMANY));
+
+        // "bar" should still match.
+        assertTrue(lookup.isValidWord("bar", Locale.GERMANY));
+
+        lookup.close();
+    }
+
     public void testClose() {
         Log.d(TAG, "testClose");
 

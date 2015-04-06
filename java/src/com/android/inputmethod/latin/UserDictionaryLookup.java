@@ -33,6 +33,7 @@ import com.android.inputmethod.latin.utils.ExecutorUtils;
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ScheduledFuture;
@@ -186,6 +187,8 @@ public class UserDictionaryLookup implements Closeable {
      */
     private volatile ScheduledFuture<?> mReloadFuture;
 
+    private volatile List<DictionaryStats> mDictionaryStats;
+
     /**
      * @param context the context from which to obtain content resolver
      */
@@ -195,9 +198,16 @@ public class UserDictionaryLookup implements Closeable {
         Log.i(mTag, "create()");
 
         mServiceName = serviceName;
+        mDictionaryStats = new ArrayList<DictionaryStats>();
+        mDictionaryStats.add(new DictionaryStats(ANY_LOCALE, Dictionary.TYPE_USER, 0));
+        mDictionaryStats.add(new DictionaryStats(ANY_LOCALE, Dictionary.TYPE_USER_SHORTCUT, 0));
 
         // Obtain a content resolver.
         mResolver = context.getContentResolver();
+    }
+
+    public List<DictionaryStats> getDictionaryStats() {
+        return mDictionaryStats;
     }
 
     public void open() {
@@ -506,6 +516,15 @@ public class UserDictionaryLookup implements Closeable {
             }
         }
 
+        List<DictionaryStats> stats = new ArrayList<>();
+        stats.add(new DictionaryStats(ANY_LOCALE, Dictionary.TYPE_USER, dictWords.size()));
+        int numShortcuts = 0;
+        for (HashMap<String, String> shortcuts : shortcutsPerLocale.values()) {
+            numShortcuts += shortcuts.size();
+        }
+        stats.add(new DictionaryStats(ANY_LOCALE, Dictionary.TYPE_USER_SHORTCUT, numShortcuts));
+        mDictionaryStats = stats;
+
         // Atomically replace the copy of mDictWords and mShortcuts.
         mDictWords = dictWords;
         mShortcutsPerLocale = shortcutsPerLocale;
@@ -513,6 +532,7 @@ public class UserDictionaryLookup implements Closeable {
         // Allow other calls to loadUserDictionary to execute now.
         mIsLoading.set(false);
 
-        Log.i(mTag, "loadUserDictionary() : Loaded " + mDictWords.size() + " words");
+        Log.i(mTag, "loadUserDictionary() : Loaded " + mDictWords.size()
+                + " words and " + numShortcuts + " shortcuts");
     }
 }

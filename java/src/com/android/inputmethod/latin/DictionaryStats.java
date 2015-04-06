@@ -31,6 +31,7 @@ public class DictionaryStats {
     public final String mDictFileName;
     public final long mDictFileSize;
     public final int mContentVersion;
+    public final int mWordCount;
 
     public DictionaryStats(
             @Nonnull final Locale locale,
@@ -43,6 +44,19 @@ public class DictionaryStats {
         mDictFileSize = (dictFile == null || !dictFile.exists()) ? 0 : dictFile.length();
         mDictFileName = dictFileName;
         mContentVersion = contentVersion;
+        mWordCount = -1;
+    }
+
+    public DictionaryStats(
+            @Nonnull final Locale locale,
+            @Nonnull final String dictType,
+            final int wordCount) {
+        mLocale = locale;
+        mDictType = dictType;
+        mDictFileSize = wordCount;
+        mDictFileName = null;
+        mContentVersion = 0;
+        mWordCount = wordCount;
     }
 
     public String getFileSizeString() {
@@ -67,9 +81,14 @@ public class DictionaryStats {
             builder.append(")");
         }
         builder.append(": ");
-        builder.append(mDictFileName);
-        builder.append(" / ");
-        builder.append(getFileSizeString());
+        if (mWordCount > -1) {
+            builder.append(mWordCount);
+            builder.append(" words");
+        } else {
+            builder.append(mDictFileName);
+            builder.append(" / ");
+            builder.append(getFileSizeString());
+        }
         return builder.toString();
     }
 
