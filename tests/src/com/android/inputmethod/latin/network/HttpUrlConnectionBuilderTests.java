@@ -87,7 +87,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
 
     public void testAddHeader() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
-        builder.setUrl("https://www.example.com");
+        builder.setUrl("http://www.example.com");
         builder.addHeader("some-random-key", "some-random-value");
         HttpURLConnection connection = builder.build();
         assertEquals("some-random-value", connection.getRequestProperty("some-random-key"));
@@ -95,14 +95,14 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
 
     public void testSetUseCache_notSet() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
-        builder.setUrl("https://www.example.com");
+        builder.setUrl("http://www.example.com");
         HttpURLConnection connection = builder.build();
         assertFalse(connection.getUseCaches());
     }
 
     public void testSetUseCache_false() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
-        builder.setUrl("https://www.example.com");
+        builder.setUrl("http://www.example.com");
         HttpURLConnection connection = builder.build();
         connection.setUseCaches(false);
         assertFalse(connection.getUseCaches());
@@ -110,7 +110,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
 
     public void testSetUseCache_true() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
-        builder.setUrl("https://www.example.com");
+        builder.setUrl("http://www.example.com");
         HttpURLConnection connection = builder.build();
         connection.setUseCaches(true);
         assertTrue(connection.getUseCaches());
@@ -118,7 +118,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
 
     public void testSetMode_uploadOnly() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
-        builder.setUrl("https://www.example.com");
+        builder.setUrl("http://www.example.com");
         builder.setMode(MODE_UPLOAD_ONLY);
         HttpURLConnection connection = builder.build();
         assertTrue(connection.getDoInput());
