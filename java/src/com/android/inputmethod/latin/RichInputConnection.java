@@ -62,10 +62,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private static final boolean DBG = false;
     private static final boolean DEBUG_PREVIOUS_TEXT = false;
     private static final boolean DEBUG_BATCH_NESTING = false;
-    // Provision for long words and separators between the words.
-    private static final int LOOKBACK_CHARACTER_NUM = DICTIONARY_MAX_WORD_LENGTH
-            * (DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1) /* words */
-            + DecoderSpecificConstants.MAX_PREV_WORD_COUNT_FOR_N_GRAM /* separators */;
+    // Provision for realistic N-grams like "Hello, how are you?" and "I'm running 5 late".
+    // Technically, this will not handle 5-grams composed of long words, but in practice,
+    // our language models don't include that much data.
+    private static final int LOOKBACK_CHARACTER_NUM = 80;
     private static final int INVALID_CURSOR_POSITION = -1;
 
     /**
