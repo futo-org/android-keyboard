@@ -271,10 +271,14 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             final int capitalizeType = StringUtils.getCapitalizationType(text);
 
             if (isInDictForAnyCapitalization(text, capitalizeType)) {
-                Log.i(TAG, "onGetSuggestionsInternal() : [" + text + "] is a valid word");
+                if (DebugFlags.DEBUG_ENABLED) {
+                    Log.i(TAG, "onGetSuggestionsInternal() : [" + text + "] is a valid word");
+                }
                 return AndroidSpellCheckerService.getInDictEmptySuggestions();
             }
-            Log.i(TAG, "onGetSuggestionsInternal() : [" + text + "] is NOT a valid word");
+            if (DebugFlags.DEBUG_ENABLED) {
+                Log.i(TAG, "onGetSuggestionsInternal() : [" + text + "] is NOT a valid word");
+            }
 
             final Keyboard keyboard = mService.getKeyboardForLocale(mLocale);
             if (null == keyboard) {
