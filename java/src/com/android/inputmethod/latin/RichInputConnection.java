@@ -619,9 +619,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (!isConnected()) {
             return null;
         }
-        final CharSequence before = mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE,
+        final CharSequence before = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM,
                 InputConnection.GET_TEXT_WITH_STYLES);
-        final CharSequence after = mIC.getTextAfterCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE,
+        final CharSequence after = mIC.getTextAfterCursor(LOOKBACK_CHARACTER_NUM,
                 InputConnection.GET_TEXT_WITH_STYLES);
         if (before == null || after == null) {
             return null;
