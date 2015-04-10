@@ -68,7 +68,7 @@ public class CollectionUtilsTests extends AndroidTestCase {
      */
     public void testArrayAsList() {
         final ArrayList<String> empty = new ArrayList<>();
-        assertEquals(empty, CollectionUtils.arrayAsList(new String[] { }, 0, 0));
+        assertEquals(empty, CollectionUtils.arrayAsList(new String[] {}, 0, 0));
         final String[] array = { "0", "1", "2", "3", "4" };
         assertEquals(empty, CollectionUtils.arrayAsList(array, 0, 0));
         assertEquals(empty, CollectionUtils.arrayAsList(array, 1, 1));
@@ -82,12 +82,10 @@ public class CollectionUtilsTests extends AndroidTestCase {
      * results for a few cases.
      */
     public void testIsNullOrEmpty() {
-        assertTrue(CollectionUtils.isNullOrEmpty((List) null));
-        assertTrue(CollectionUtils.isNullOrEmpty((Map) null));
-        assertTrue(CollectionUtils.isNullOrEmpty(new ArrayList()));
-        assertTrue(CollectionUtils.isNullOrEmpty(new HashMap()));
-        assertTrue(CollectionUtils.isNullOrEmpty(Collections.EMPTY_LIST));
-        assertTrue(CollectionUtils.isNullOrEmpty(Collections.EMPTY_MAP));
+        assertTrue(CollectionUtils.isNullOrEmpty((List<String>) null));
+        assertTrue(CollectionUtils.isNullOrEmpty((Map<String, String>) null));
+        assertTrue(CollectionUtils.isNullOrEmpty(new ArrayList<String>()));
+        assertTrue(CollectionUtils.isNullOrEmpty(new HashMap<String, String>()));
         assertFalse(CollectionUtils.isNullOrEmpty(Collections.singletonList("Not empty")));
         assertFalse(CollectionUtils.isNullOrEmpty(Collections.singletonMap("Not", "empty")));
     }

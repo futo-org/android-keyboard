@@ -16,7 +16,12 @@
 
 package com.android.inputmethod.latin;
 
-import static com.android.inputmethod.latin.UserDictionaryLookup.ANY_LOCALE;
+import static com.android.inputmethod.latin.PersonalDictionaryLookup.ANY_LOCALE;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -27,20 +32,22 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.PersonalDictionaryLookup.PersonalDictionaryListener;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 /**
- * Unit tests for {@link com.android.inputmethod.latin.UserDictionaryLookup}.
+ * Unit tests for {@link PersonalDictionaryLookup}.
  *
- * Note, this test doesn't mock out the ContentResolver, in order to make sure UserDictionaryLookup
- * works in a real setting.
+ * Note, this test doesn't mock out the ContentResolver, in order to make sure
+ * {@link PersonalDictionaryLookup} works in a real setting.
  */
 @SmallTest
-public class UserDictionaryLookupTest extends AndroidTestCase {
-    private static final String TAG = UserDictionaryLookupTest.class.getSimpleName();
+public class PersonalDictionaryLookupTest extends AndroidTestCase {
+    private static final String TAG = PersonalDictionaryLookupTest.class.getSimpleName();
 
     private ContentResolver mContentResolver;
     private HashSet<Uri> mAddedBackup;
@@ -64,7 +71,7 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
     }
 
     /**
-     * Adds the given word to UserDictionary.
+     * Adds the given word to the personal dictionary.
      *
      * @param word the word to add
      * @param locale the locale of the word to add
@@ -94,25 +101,43 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
     private void deleteWord(Uri uri) {
         // Remove the word from the backup so that it's not cleared again later.
         mAddedBackup.remove(uri);
-        // Remove the word from UserDictionary.
+        // Remove the word from the personal dictionary.
         mContentResolver.delete(uri, null, null);
     }
 
-    private UserDictionaryLookup setUpShortcut(final Locale locale) {
-        // Insert "shortcut" => "Expansion" in the UserDictionary for the given locale.
+    private PersonalDictionaryLookup setUpWord(final Locale locale) {
+        // Insert "foo" in the personal dictionary for the given locale.
+        addWord("foo", locale, 17, null);
+
+        // Create the PersonalDictionaryLookup and wait until it's loaded.
+        PersonalDictionaryLookup lookup =
+                new PersonalDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        lookup.open();
+        return lookup;
+    }
+
+    private PersonalDictionaryLookup setUpShortcut(final Locale locale) {
+        // Insert "shortcut" => "Expansion" in the personal dictionary for the given locale.
         addWord("Expansion", locale, 17, "shortcut");
 
-        // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        // Create the PersonalDictionaryLookup and wait until it's loaded.
+        PersonalDictionaryLookup lookup =
+                new PersonalDictionaryLookup(mContext, ExecutorUtils.SPELLING);
         lookup.open();
-        while (!lookup.isLoaded()) {
-        }
         return lookup;
+    }
+
+    private void verifyWordExists(final Set<String> set, final String word) {
+        assertTrue(set.contains(word));
+    }
+
+    private void verifyWordDoesNotExist(final Set<String> set, final String word) {
+        assertFalse(set.contains(word));
     }
 
     public void testShortcutKeyMatching() {
         Log.d(TAG, "testShortcutKeyMatching");
-        UserDictionaryLookup lookup = setUpShortcut(Locale.US);
+        PersonalDictionaryLookup lookup = setUpShortcut(Locale.US);
 
         assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.US));
         assertNull(lookup.expandShortcut("Shortcut", Locale.US));
@@ -125,7 +150,13 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
 
     public void testShortcutMatchesInputCountry() {
         Log.d(TAG, "testShortcutMatchesInputCountry");
-        UserDictionaryLookup lookup = setUpShortcut(Locale.US);
+        PersonalDictionaryLookup lookup = setUpShortcut(Locale.US);
+
+        verifyWordExists(lookup.getShortcutsForLocale(Locale.US), "shortcut");
+        assertTrue(lookup.getShortcutsForLocale(Locale.UK).isEmpty());
+        assertTrue(lookup.getShortcutsForLocale(Locale.ENGLISH).isEmpty());
+        assertTrue(lookup.getShortcutsForLocale(Locale.FRENCH).isEmpty());
+        assertTrue(lookup.getShortcutsForLocale(ANY_LOCALE).isEmpty());
 
         assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.US));
         assertNull(lookup.expandShortcut("shortcut", Locale.UK));
@@ -138,7 +169,13 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
 
     public void testShortcutMatchesInputLanguage() {
         Log.d(TAG, "testShortcutMatchesInputLanguage");
-        UserDictionaryLookup lookup = setUpShortcut(Locale.ENGLISH);
+        PersonalDictionaryLookup lookup = setUpShortcut(Locale.ENGLISH);
+
+        verifyWordExists(lookup.getShortcutsForLocale(Locale.US), "shortcut");
+        verifyWordExists(lookup.getShortcutsForLocale(Locale.UK), "shortcut");
+        verifyWordExists(lookup.getShortcutsForLocale(Locale.ENGLISH), "shortcut");
+        assertTrue(lookup.getShortcutsForLocale(Locale.FRENCH).isEmpty());
+        assertTrue(lookup.getShortcutsForLocale(ANY_LOCALE).isEmpty());
 
         assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.US));
         assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.UK));
@@ -150,7 +187,13 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
     }
 
     public void testShortcutMatchesAnyLocale() {
-        UserDictionaryLookup lookup = setUpShortcut(UserDictionaryLookup.ANY_LOCALE);
+        PersonalDictionaryLookup lookup = setUpShortcut(PersonalDictionaryLookup.ANY_LOCALE);
+
+        verifyWordExists(lookup.getShortcutsForLocale(Locale.US), "shortcut");
+        verifyWordExists(lookup.getShortcutsForLocale(Locale.UK), "shortcut");
+        verifyWordExists(lookup.getShortcutsForLocale(Locale.ENGLISH), "shortcut");
+        verifyWordExists(lookup.getShortcutsForLocale(Locale.FRENCH), "shortcut");
+        verifyWordExists(lookup.getShortcutsForLocale(ANY_LOCALE), "shortcut");
 
         assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.US));
         assertEquals("Expansion", lookup.expandShortcut("shortcut", Locale.UK));
@@ -163,15 +206,13 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
 
     public void testExactLocaleMatch() {
         Log.d(TAG, "testExactLocaleMatch");
+        PersonalDictionaryLookup lookup = setUpWord(Locale.US);
 
-        // Insert "Foo" as capitalized in the UserDictionary under en_US locale.
-        addWord("Foo", Locale.US, 17, null);
-
-        // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
-        lookup.open();
-        while (!lookup.isLoaded()) {
-        }
+        verifyWordExists(lookup.getWordsForLocale(Locale.US), "foo");
+        verifyWordDoesNotExist(lookup.getWordsForLocale(Locale.UK), "foo");
+        verifyWordDoesNotExist(lookup.getWordsForLocale(Locale.ENGLISH), "foo");
+        verifyWordDoesNotExist(lookup.getWordsForLocale(Locale.FRENCH), "foo");
+        verifyWordDoesNotExist(lookup.getWordsForLocale(ANY_LOCALE), "foo");
 
         // Any capitalization variation should match.
         assertTrue(lookup.isValidWord("foo", Locale.US));
@@ -192,15 +233,13 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
 
     public void testSubLocaleMatch() {
         Log.d(TAG, "testSubLocaleMatch");
+        PersonalDictionaryLookup lookup = setUpWord(Locale.ENGLISH);
 
-        // Insert "Foo" as capitalized in the UserDictionary under the en locale.
-        addWord("Foo", Locale.ENGLISH, 17, null);
-
-        // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
-        lookup.open();
-        while (!lookup.isLoaded()) {
-        }
+        verifyWordExists(lookup.getWordsForLocale(Locale.US), "foo");
+        verifyWordExists(lookup.getWordsForLocale(Locale.UK), "foo");
+        verifyWordExists(lookup.getWordsForLocale(Locale.ENGLISH), "foo");
+        verifyWordDoesNotExist(lookup.getWordsForLocale(Locale.FRENCH), "foo");
+        verifyWordDoesNotExist(lookup.getWordsForLocale(ANY_LOCALE), "foo");
 
         // Any capitalization variation should match for both en and en_US.
         assertTrue(lookup.isValidWord("foo", Locale.ENGLISH));
@@ -217,15 +256,13 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
 
     public void testAllLocalesMatch() {
         Log.d(TAG, "testAllLocalesMatch");
+        PersonalDictionaryLookup lookup = setUpWord(null);
 
-        // Insert "Foo" as capitalized in the UserDictionary under the all locales.
-        addWord("Foo", null, 17, null);
-
-        // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
-        lookup.open();
-        while (!lookup.isLoaded()) {
-        }
+        verifyWordExists(lookup.getWordsForLocale(Locale.US), "foo");
+        verifyWordExists(lookup.getWordsForLocale(Locale.UK), "foo");
+        verifyWordExists(lookup.getWordsForLocale(Locale.ENGLISH), "foo");
+        verifyWordExists(lookup.getWordsForLocale(Locale.FRENCH), "foo");
+        verifyWordExists(lookup.getWordsForLocale(ANY_LOCALE), "foo");
 
         // Any capitalization variation should match for fr, en and en_US.
         assertTrue(lookup.isValidWord("foo", ANY_LOCALE));
@@ -245,17 +282,15 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
     public void testMultipleLocalesMatch() {
         Log.d(TAG, "testMultipleLocalesMatch");
 
-        // Insert "Foo" as capitalized in the UserDictionary under the en_US and en_CA and fr
+        // Insert "Foo" as capitalized in the personal dictionary under the en_US and en_CA and fr
         // locales.
         addWord("Foo", Locale.US, 17, null);
         addWord("foO", Locale.CANADA, 17, null);
         addWord("fOo", Locale.FRENCH, 17, null);
 
-        // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        // Create the PersonalDictionaryLookup and wait until it's loaded.
+        PersonalDictionaryLookup lookup = new PersonalDictionaryLookup(mContext, ExecutorUtils.SPELLING);
         lookup.open();
-        while (!lookup.isLoaded()) {
-        }
 
         // Both en_CA and en_US match.
         assertTrue(lookup.isValidWord("foo", Locale.CANADA));
@@ -269,17 +304,40 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         lookup.close();
     }
 
+    public void testManageListeners() {
+        Log.d(TAG, "testManageListeners");
+
+        PersonalDictionaryLookup lookup =
+                new PersonalDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+
+        PersonalDictionaryListener listener = mock(PersonalDictionaryListener.class);
+        // Add the same listener a bunch of times. It doesn't make a difference.
+        lookup.addListener(listener);
+        lookup.addListener(listener);
+        lookup.addListener(listener);
+        lookup.notifyListeners();
+
+        verify(listener, times(1)).onUpdate();
+
+        // Remove the same listener a bunch of times. It doesn't make a difference.
+        lookup.removeListener(listener);
+        lookup.removeListener(listener);
+        lookup.removeListener(listener);
+        lookup.notifyListeners();
+
+        verifyNoMoreInteractions(listener);
+    }
+
     public void testReload() {
         Log.d(TAG, "testReload");
 
         // Insert "foo".
         Uri uri = addWord("foo", Locale.US, 17, null);
 
-        // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        // Create the PersonalDictionaryLookup and wait until it's loaded.
+        PersonalDictionaryLookup lookup =
+                new PersonalDictionaryLookup(mContext, ExecutorUtils.SPELLING);
         lookup.open();
-        while (!lookup.isLoaded()) {
-        }
 
         // "foo" should match.
         assertTrue(lookup.isValidWord("foo", Locale.US));
@@ -292,9 +350,9 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         addWord("bar", Locale.US, 18, null);
 
         // Wait a little bit before expecting a change. The time we wait should be greater than
-        // UserDictionaryLookup.RELOAD_DELAY_MS.
+        // PersonalDictionaryLookup.RELOAD_DELAY_MS.
         try {
-            Thread.sleep(UserDictionaryLookup.RELOAD_DELAY_MS + 1000);
+            Thread.sleep(PersonalDictionaryLookup.RELOAD_DELAY_MS + 1000);
         } catch (InterruptedException e) {
         }
 
@@ -316,11 +374,10 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         Uri uri = addWord("foo", Locale.GERMANY, 17, "f");
         addWord("bar", Locale.GERMANY, 17, null);
 
-        // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        // Create the PersonalDictionaryLookup and wait until it's loaded.
+        PersonalDictionaryLookup lookup =
+                new PersonalDictionaryLookup(mContext, ExecutorUtils.SPELLING);
         lookup.open();
-        while (!lookup.isLoaded()) {
-        }
 
         // "foo" should match.
         assertTrue(lookup.isValidWord("foo", Locale.GERMANY));
@@ -335,9 +392,9 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         deleteWord(uri);
 
         // Wait a little bit before expecting a change. The time we wait should be greater than
-        // UserDictionaryLookup.RELOAD_DELAY_MS.
+        // PersonalDictionaryLookup.RELOAD_DELAY_MS.
         try {
-            Thread.sleep(UserDictionaryLookup.RELOAD_DELAY_MS + 1000);
+            Thread.sleep(PersonalDictionaryLookup.RELOAD_DELAY_MS + 1000);
         } catch (InterruptedException e) {
         }
 
@@ -361,11 +418,10 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         // Insert "foo".
         Uri uri = addWord("foo", Locale.US, 17, null);
 
-        // Create the UserDictionaryLookup and wait until it's loaded.
-        UserDictionaryLookup lookup = new UserDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        // Create the PersonalDictionaryLookup and wait until it's loaded.
+        PersonalDictionaryLookup lookup =
+                new PersonalDictionaryLookup(mContext, ExecutorUtils.SPELLING);
         lookup.open();
-        while (!lookup.isLoaded()) {
-        }
 
         // "foo" should match.
         assertTrue(lookup.isValidWord("foo", Locale.US));
@@ -381,9 +437,9 @@ public class UserDictionaryLookupTest extends AndroidTestCase {
         addWord("bar", Locale.US, 18, null);
 
         // Wait a little bit before expecting a change. The time we wait should be greater than
-        // UserDictionaryLookup.RELOAD_DELAY_MS.
+        // PersonalDictionaryLookup.RELOAD_DELAY_MS.
         try {
-            Thread.sleep(UserDictionaryLookup.RELOAD_DELAY_MS + 1000);
+            Thread.sleep(PersonalDictionaryLookup.RELOAD_DELAY_MS + 1000);
         } catch (InterruptedException e) {
         }
 

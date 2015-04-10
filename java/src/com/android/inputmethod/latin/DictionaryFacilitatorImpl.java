@@ -557,7 +557,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 false /* firstSuggestionExceedsConfidenceThreshold */);
         final float[] weightOfLangModelVsSpatialModel =
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
-        for (final String dictType : DICTIONARY_TYPES_FOR_SUGGESTIONS) {
+        for (final String dictType : ALL_DICTIONARY_TYPES) {
             final Dictionary dictionary = mDictionaryGroup.getDict(dictType);
             if (null == dictionary) continue;
             final float weightForLocale = composedData.mIsBatchMode
@@ -577,11 +577,11 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     public boolean isValidSpellingWord(final String word) {
-        return isValidWord(word, DICTIONARY_TYPES_FOR_SPELLING);
+        return isValidWord(word, ALL_DICTIONARY_TYPES);
     }
 
     public boolean isValidSuggestionWord(final String word) {
-        return isValidWord(word, DICTIONARY_TYPES_FOR_SUGGESTIONS);
+        return isValidWord(word, ALL_DICTIONARY_TYPES);
     }
 
     private boolean isValidWord(final String word, final String[] dictionariesToCheck) {
