@@ -35,8 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * measure of the current state of the content provider.
  */
 public class ContactsManager {
-    private static final String TAG = ContactsManager.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final String TAG = "ContactsManager";
 
     /**
      * Interface to implement for classes interested in getting notified for updates

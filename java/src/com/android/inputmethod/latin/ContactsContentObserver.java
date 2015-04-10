@@ -24,6 +24,7 @@ import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 
 import com.android.inputmethod.latin.ContactsManager.ContactsChangedListener;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 
 import java.util.ArrayList;
@@ -33,8 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * A content observer that listens to updates to content provider {@link Contacts#CONTENT_URI}.
  */
 public class ContactsContentObserver implements Runnable {
-    private static final String TAG = ContactsContentObserver.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final String TAG = "ContactsContentObserver";
     private static AtomicBoolean sRunning = new AtomicBoolean(false);
 
     private final Context mContext;
@@ -49,8 +49,8 @@ public class ContactsContentObserver implements Runnable {
     }
 
     public void registerObserver(final ContactsChangedListener listener) {
-        if (DEBUG) {
-            Log.d(TAG, "Registered Contacts Content Observer");
+        if (DebugFlags.DEBUG_ENABLED) {
+            Log.d(TAG, "registerObserver()");
         }
         mContactsChangedListener = listener;
         mContentObserver = new ContentObserver(null /* handler */) {
@@ -67,13 +67,13 @@ public class ContactsContentObserver implements Runnable {
     @Override
     public void run() {
         if (!sRunning.compareAndSet(false /* expect */, true /* update */)) {
-            if (DEBUG) {
+            if (DebugFlags.DEBUG_ENABLED) {
                 Log.d(TAG, "run() : Already running. Don't waste time checking again.");
             }
             return;
         }
         if (haveContentsChanged()) {
-            if (DEBUG) {
+            if (DebugFlags.DEBUG_ENABLED) {
                 Log.d(TAG, "run() : Contacts have changed. Notifying listeners.");
             }
             mContactsChangedListener.onContactsChange();
@@ -91,9 +91,9 @@ public class ContactsContentObserver implements Runnable {
             return false;
         }
         if (contactCount != mManager.getContactCountAtLastRebuild()) {
-            if (DEBUG) {
-                Log.d(TAG, "Contact count changed: " + mManager.getContactCountAtLastRebuild()
-                        + " to " + contactCount);
+            if (DebugFlags.DEBUG_ENABLED) {
+                Log.d(TAG, "haveContentsChanged() : Count changed from "
+                        + mManager.getContactCountAtLastRebuild() + " to " + contactCount);
             }
             return true;
         }
@@ -101,9 +101,9 @@ public class ContactsContentObserver implements Runnable {
         if (names.hashCode() != mManager.getHashCodeAtLastRebuild()) {
             return true;
         }
-        if (DEBUG) {
-            Log.d(TAG, "No contacts changed. (runtime = " + (SystemClock.uptimeMillis() - startTime)
-                    + " ms)");
+        if (DebugFlags.DEBUG_ENABLED) {
+            Log.d(TAG, "haveContentsChanged() : No change detected in "
+                    + (SystemClock.uptimeMillis() - startTime) + " ms)");
         }
         return false;
     }
