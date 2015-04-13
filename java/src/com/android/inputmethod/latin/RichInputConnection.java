@@ -48,6 +48,7 @@ import com.android.inputmethod.latin.utils.SpannableStringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Enrichment class for InputConnection to simplify interaction and add functionality.
@@ -288,6 +289,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
     }
 
+    @Nullable
     public CharSequence getSelectedText(final int flags) {
         return isConnected() ?  mIC.getSelectedText(flags) : null;
     }
