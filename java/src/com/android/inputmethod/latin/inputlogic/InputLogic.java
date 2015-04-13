@@ -1089,8 +1089,11 @@ public final class InputLogic {
                 // If there is a selection, remove it.
                 // We also need to unlearn the selected text.
                 final CharSequence selection = mConnection.getSelectedText(0 /* 0 for no styles */);
-                unlearnWord(selection.toString(), inputTransaction.mSettingsValues,
-                        Constants.EVENT_BACKSPACE);
+                if (!TextUtils.isEmpty(selection)) {
+                    unlearnWord(selection.toString(), inputTransaction.mSettingsValues,
+                            Constants.EVENT_BACKSPACE);
+                    hasUnlearnedWordBeingDeleted = true;
+                }
                 final int numCharsDeleted = mConnection.getExpectedSelectionEnd()
                         - mConnection.getExpectedSelectionStart();
                 mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
