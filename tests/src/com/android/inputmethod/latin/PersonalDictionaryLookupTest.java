@@ -289,7 +289,8 @@ public class PersonalDictionaryLookupTest extends AndroidTestCase {
         addWord("fOo", Locale.FRENCH, 17, null);
 
         // Create the PersonalDictionaryLookup and wait until it's loaded.
-        PersonalDictionaryLookup lookup = new PersonalDictionaryLookup(mContext, ExecutorUtils.SPELLING);
+        PersonalDictionaryLookup lookup = new PersonalDictionaryLookup(mContext,
+                ExecutorUtils.SPELLING);
         lookup.open();
 
         // Both en_CA and en_US match.
@@ -302,6 +303,43 @@ public class PersonalDictionaryLookupTest extends AndroidTestCase {
         assertFalse(lookup.isValidWord("foo", ANY_LOCALE));
 
         lookup.close();
+    }
+
+
+    public void testCaseMatchingForWordsAndShortcuts() {
+        Log.d(TAG, "testCaseMatchingForWordsAndShortcuts");
+        addWord("Foo", Locale.US, 17, "f");
+        addWord("bokabu", Locale.US, 17, "Bu");
+
+        // Create the PersonalDictionaryLookup and wait until it's loaded.
+        PersonalDictionaryLookup lookup = new PersonalDictionaryLookup(mContext,
+                ExecutorUtils.SPELLING);
+        lookup.open();
+
+        // Valid, inspite of capitalization in US but not in other
+        // locales.
+        assertTrue(lookup.isValidWord("Foo", Locale.US));
+        assertTrue(lookup.isValidWord("foo", Locale.US));
+        assertFalse(lookup.isValidWord("Foo", Locale.UK));
+        assertFalse(lookup.isValidWord("foo", Locale.UK));
+
+        // Valid in all forms in US.
+        assertTrue(lookup.isValidWord("bokabu", Locale.US));
+        assertTrue(lookup.isValidWord("BOKABU", Locale.US));
+        assertTrue(lookup.isValidWord("BokaBU", Locale.US));
+
+        // Correct capitalization; sensitive to shortcut casing & locale.
+        assertEquals("Foo", lookup.expandShortcut("f", Locale.US));
+        assertNull(lookup.expandShortcut("f", Locale.UK));
+
+        // Correct capitalization; sensitive to shortcut casing & locale.
+        assertEquals("bokabu", lookup.expandShortcut("Bu", Locale.US));
+        assertNull(lookup.expandShortcut("Bu", Locale.UK));
+        assertNull(lookup.expandShortcut("bu", Locale.US));
+
+        // Verify that raw strings are retained for #getWordsForLocale.
+        verifyWordExists(lookup.getWordsForLocale(Locale.US), "Foo");
+        verifyWordDoesNotExist(lookup.getWordsForLocale(Locale.US), "foo");
     }
 
     public void testManageListeners() {
