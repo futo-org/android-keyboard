@@ -40,9 +40,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -196,11 +196,10 @@ public class PersonalDictionaryLookup implements Closeable {
     private AtomicBoolean mIsClosed = new AtomicBoolean(false);
 
     /**
-     * We store a map from a dictionary word to the set of locales it belongs
-     * in. We then iterate over the set of locales to find a match using
-     * LocaleUtils.
+     * We store a map from a dictionary word to the set of locales & raw string(as it appears)
+     * We then iterate over the set of locales to find a match using LocaleUtils.
      */
-    private volatile HashMap<String, ArrayList<Locale>> mDictWords;
+    private volatile HashMap<String, HashMap<Locale, String>> mDictWords;
 
     /**
      * We store a map from a shortcut to a word for each locale.
@@ -317,7 +316,7 @@ public class PersonalDictionaryLookup implements Closeable {
      * @return set of words that apply to the given locale.
      */
     public Set<String> getWordsForLocale(@Nonnull final Locale inputLocale) {
-        final HashMap<String, ArrayList<Locale>> dictWords = mDictWords;
+        final HashMap<String, HashMap<Locale, String>> dictWords = mDictWords;
         if (CollectionUtils.isNullOrEmpty(dictWords)) {
             return Collections.emptySet();
         }
@@ -325,12 +324,15 @@ public class PersonalDictionaryLookup implements Closeable {
         final Set<String> words = new HashSet<>();
         final String inputLocaleString = inputLocale.toString();
         for (String word : dictWords.keySet()) {
-            for (Locale wordLocale : dictWords.get(word)) {
-                final String wordLocaleString = wordLocale.toString();
-                final int match = LocaleUtils.getMatchLevel(wordLocaleString, inputLocaleString);
-                if (LocaleUtils.isMatch(match)) {
-                    words.add(word);
-                }
+            HashMap<Locale, String> localeStringMap = dictWords.get(word);
+                if (!CollectionUtils.isNullOrEmpty(localeStringMap)) {
+                    for (Locale wordLocale : localeStringMap.keySet()) {
+                        final String wordLocaleString = wordLocale.toString();
+                        final int match = LocaleUtils.getMatchLevel(wordLocaleString, inputLocaleString);
+                        if (LocaleUtils.isMatch(match)) {
+                            words.add(localeStringMap.get(wordLocale));
+                        }
+                    }
             }
         }
         return words;
@@ -399,29 +401,29 @@ public class PersonalDictionaryLookup implements Closeable {
             return false;
         }
 
-        // Atomically obtain the current copy of mDictWords;
-        final HashMap<String, ArrayList<Locale>> dictWords = mDictWords;
-
         if (DebugFlags.DEBUG_ENABLED) {
             Log.d(mTag, "isValidWord() : Word [" + word + "] in Locale [" + inputLocale + "]");
         }
+        // Atomically obtain the current copy of mDictWords;
+        final HashMap<String, HashMap<Locale, String>> dictWords = mDictWords;
         // Lowercase the word using the given locale. Note, that dictionary
         // words are lowercased using their locale, and theoretically the
         // lowercasing between two matching locales may differ. For simplicity
         // we ignore that possibility.
         final String lowercased = word.toLowerCase(inputLocale);
-        final ArrayList<Locale> dictLocales = dictWords.get(lowercased);
-        if (null == dictLocales) {
+        final HashMap<Locale, String> dictLocales = dictWords.get(lowercased);
+
+        if (CollectionUtils.isNullOrEmpty(dictLocales)) {
             if (DebugFlags.DEBUG_ENABLED) {
-                Log.d(mTag, "isValidWord() : No entry for lowercased word [" + lowercased + "]");
+                Log.d(mTag, "isValidWord() : No entry for word [" + word + "]");
             }
             return false;
         } else {
             if (DebugFlags.DEBUG_ENABLED) {
-                Log.d(mTag, "isValidWord() : Found entry for lowercased word [" + lowercased + "]");
+                Log.d(mTag, "isValidWord() : Found entry for word [" + word + "]");
             }
             // Iterate over the locales this word is in.
-            for (final Locale dictLocale : dictLocales) {
+            for (final Locale dictLocale : dictLocales.keySet()) {
                 final int matchLevel = LocaleUtils.getMatchLevel(dictLocale.toString(),
                         inputLocale.toString());
                 if (DebugFlags.DEBUG_ENABLED) {
@@ -529,7 +531,7 @@ public class PersonalDictionaryLookup implements Closeable {
             return;
         }
         Log.i(mTag, "loadPersonalDictionary() : Start Loading");
-        HashMap<String, ArrayList<Locale>> dictWords = new HashMap<>();
+        HashMap<String, HashMap<Locale, String>> dictWords = new HashMap<>();
         HashMap<Locale, HashMap<String, String>> shortcutsPerLocale = new HashMap<>();
         // Load the dictionary.  Items are returned in the default sort order (by frequency).
         Cursor cursor = mResolver.query(UserDictionary.Words.CONTENT_URI,
@@ -581,21 +583,21 @@ public class PersonalDictionaryLookup implements Closeable {
                 final String dictWord = rawDictWord.toLowerCase(dictLocale);
                 if (DebugFlags.DEBUG_ENABLED) {
                     Log.d(mTag, "loadPersonalDictionary() : Adding word [" + dictWord
-                            + "] for locale " + dictLocale);
+                            + "] for locale " + dictLocale + "with value" + rawDictWord);
                 }
                 // Check if there is an existing entry for this word.
-                ArrayList<Locale> dictLocales = dictWords.get(dictWord);
-                if (null == dictLocales) {
+                HashMap<Locale, String> dictLocales = dictWords.get(dictWord);
+                if (CollectionUtils.isNullOrEmpty(dictLocales)) {
                     // If there is no entry for this word, create one.
                     if (DebugFlags.DEBUG_ENABLED) {
                         Log.d(mTag, "loadPersonalDictionary() : Word [" + dictWord +
                                 "] not seen for other locales, creating new entry");
                     }
-                    dictLocales = new ArrayList<>();
+                    dictLocales = new HashMap<>();
                     dictWords.put(dictWord, dictLocales);
                 }
                 // Append the locale to the list of locales this word is in.
-                dictLocales.add(dictLocale);
+                dictLocales.put(dictLocale, rawDictWord);
 
                 // If there is no column for a shortcut, we're done.
                 final int shortcutIndex = cursor.getColumnIndex(UserDictionary.Words.SHORTCUT);
