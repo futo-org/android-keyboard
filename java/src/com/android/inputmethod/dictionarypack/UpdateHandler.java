@@ -95,6 +95,8 @@ public final class UpdateHandler {
     // Name of the category for the main dictionary
     public static final String MAIN_DICTIONARY_CATEGORY = "main";
 
+    public static final String TEMP_DICT_FILE_SUB = "___";
+
     // The id for the "dictionary available" notification.
     static final int DICT_AVAILABLE_NOTIFICATION_ID = 1;
 
@@ -743,7 +745,7 @@ public final class UpdateHandler {
             throws IOException {
         DebugLogUtils.l("Entering openTempFileOutput");
         final File dir = context.getFilesDir();
-        final File f = File.createTempFile(locale + "___", DICT_FILE_SUFFIX, dir);
+        final File f = File.createTempFile(locale + TEMP_DICT_FILE_SUB, DICT_FILE_SUFFIX, dir);
         DebugLogUtils.l("File name is", f.getName());
         return f.getName();
     }
