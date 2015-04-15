@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.dictionarypack.UpdateHandler;
 import com.android.inputmethod.latin.AssetFileAddress;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
@@ -36,6 +37,7 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -58,6 +60,8 @@ public class DictionaryInfoUtils {
     // 6 digits - unicode is limited to 21 bits
     private static final int MAX_HEX_DIGITS_FOR_CODEPOINT = 6;
 
+    private static final String TEMP_DICT_FILE_SUB = UpdateHandler.TEMP_DICT_FILE_SUB;
+
     public static class DictionaryInfo {
         private static final String LOCALE_COLUMN = "locale";
         private static final String WORDLISTID_COLUMN = "id";
@@ -66,22 +70,24 @@ public class DictionaryInfoUtils {
         private static final String DATE_COLUMN = "date";
         private static final String FILESIZE_COLUMN = "filesize";
         private static final String VERSION_COLUMN = "version";
-        @Nonnull
-        public final String mId;
-        @Nonnull
-        public final Locale mLocale;
-        @Nullable
-        public final String mDescription;
-        public final AssetFileAddress mFileAddress;
+
+        @Nonnull public final String mId;
+        @Nonnull public final Locale mLocale;
+        @Nullable public final String mDescription;
+        @Nullable public final String mFilename;
+        public final long mFilesize;
+        public final long mModifiedTimeMillis;
         public final int mVersion;
 
-        public DictionaryInfo(@Nonnull final String id, @Nonnull final Locale locale,
-                @Nullable final String description, @Nullable final AssetFileAddress fileAddress,
-                final int version) {
+        public DictionaryInfo(@Nonnull String id, @Nonnull Locale locale,
+                @Nullable String description, @Nullable String filename,
+                long filesize, long modifiedTimeMillis, int version) {
             mId = id;
             mLocale = locale;
             mDescription = description;
-            mFileAddress = fileAddress;
+            mFilename = filename;
+            mFilesize = filesize;
+            mModifiedTimeMillis = modifiedTimeMillis;
             mVersion = version;
         }
 
@@ -90,12 +96,9 @@ public class DictionaryInfoUtils {
             values.put(WORDLISTID_COLUMN, mId);
             values.put(LOCALE_COLUMN, mLocale.toString());
             values.put(DESCRIPTION_COLUMN, mDescription);
-            values.put(LOCAL_FILENAME_COLUMN,
-                    mFileAddress != null ? mFileAddress.mFilename : "");
-            values.put(DATE_COLUMN, TimeUnit.MILLISECONDS.toSeconds(
-                    mFileAddress != null ? new File(mFileAddress.mFilename).lastModified() : 0));
-            values.put(FILESIZE_COLUMN,
-                    mFileAddress != null ? mFileAddress.mLength : 0);
+            values.put(LOCAL_FILENAME_COLUMN, mFilename != null ? mFilename : "");
+            values.put(DATE_COLUMN, TimeUnit.MILLISECONDS.toSeconds(mModifiedTimeMillis));
+            values.put(FILESIZE_COLUMN, mFilesize);
             values.put(VERSION_COLUMN, mVersion);
             return values;
         }
@@ -183,6 +186,17 @@ public class DictionaryInfoUtils {
      */
     public static File[] getCachedDirectoryList(final Context context) {
         return new File(DictionaryInfoUtils.getWordListCacheDirectory(context)).listFiles();
+    }
+
+    @Nullable
+    public static File[] getUnusedDictionaryList(final Context context) {
+        return context.getFilesDir().listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return !TextUtils.isEmpty(filename) && filename.endsWith(".dict")
+                        && filename.contains(TEMP_DICT_FILE_SUB);
+            }
+        });
     }
 
     /**
@@ -342,12 +356,44 @@ public class DictionaryInfoUtils {
      * @return information of the specified dictionary.
      */
     private static DictionaryInfo createDictionaryInfoFromFileAddress(
-            final AssetFileAddress fileAddress, Locale locale) {
+            @Nonnull final AssetFileAddress fileAddress, final Locale locale) {
         final String id = getMainDictId(locale);
         final int version = DictionaryHeaderUtils.getContentVersion(fileAddress);
         final String description = SubtypeLocaleUtils
                 .getSubtypeLocaleDisplayName(locale.toString());
-        return new DictionaryInfo(id, locale, description, fileAddress, version);
+        // Do not store the filename on db as it will try to move the filename from db to the
+        // cached directory. If the filename is already in cached directory, this is not
+        // necessary.
+        final String filenameToStoreOnDb = null;
+        return new DictionaryInfo(id, locale, description, filenameToStoreOnDb,
+                fileAddress.mLength, new File(fileAddress.mFilename).lastModified(), version);
+    }
+
+    /**
+     * Returns the information of the dictionary for the given {@link AssetFileAddress}.
+     * If the file is corrupted or a pre-fava file, then the file gets deleted and the null
+     * value is returned.
+     */
+    @Nullable
+    private static DictionaryInfo createDictionaryInfoForUnCachedFile(
+            @Nonnull final AssetFileAddress fileAddress, final Locale locale) {
+        final String id = getMainDictId(locale);
+        final int version = DictionaryHeaderUtils.getContentVersion(fileAddress);
+
+        if (version == -1) {
+            // Purge the pre-fava/corrupted unused dictionaires.
+            fileAddress.deleteUnderlyingFile();
+            return null;
+        }
+
+        final String description = SubtypeLocaleUtils
+                .getSubtypeLocaleDisplayName(locale.toString());
+
+        final File unCachedFile = new File(fileAddress.mFilename);
+        // Store just the filename and not the full path.
+        final String filenameToStoreOnDb = unCachedFile.getName();
+        return new DictionaryInfo(id, locale, description, filenameToStoreOnDb, fileAddress.mLength,
+                unCachedFile.lastModified(), version);
     }
 
     /**
@@ -358,7 +404,7 @@ public class DictionaryInfoUtils {
         final int version = -1;
         final String description = SubtypeLocaleUtils
                 .getSubtypeLocaleDisplayName(locale.toString());
-        return new DictionaryInfo(id, locale, description, null, version);
+        return new DictionaryInfo(id, locale, description, null, 0L, 0L, version);
     }
 
     private static void addOrUpdateDictInfo(final ArrayList<DictionaryInfo> dictList,
@@ -380,7 +426,7 @@ public class DictionaryInfoUtils {
             final Context context) {
         final ArrayList<DictionaryInfo> dictList = new ArrayList<>();
 
-        // Retrieve downloaded dictionaries
+        // Retrieve downloaded dictionaries from cached directories
         final File[] directoryList = getCachedDirectoryList(context);
         if (null != directoryList) {
             for (final File directory : directoryList) {
@@ -402,6 +448,25 @@ public class DictionaryInfoUtils {
                     if (dictionaryInfo == null || !dictionaryInfo.mLocale.equals(locale)) {
                         continue;
                     }
+                    addOrUpdateDictInfo(dictList, dictionaryInfo);
+                }
+            }
+        }
+
+        // Retrieve downloaded dictionaries from the unused dictionaries.
+        File[] unusedDictionaryList = getUnusedDictionaryList(context);
+        if (unusedDictionaryList != null) {
+            for (File dictionaryFile : unusedDictionaryList) {
+                String fileName = dictionaryFile.getName();
+                int index = fileName.indexOf(TEMP_DICT_FILE_SUB);
+                if (index == -1) {
+                    continue;
+                }
+                String locale = fileName.substring(0, index);
+                DictionaryInfo dictionaryInfo = createDictionaryInfoForUnCachedFile(
+                        AssetFileAddress.makeFromFile(dictionaryFile),
+                        LocaleUtils.constructLocaleFromString(locale));
+                if (dictionaryInfo != null) {
                     addOrUpdateDictInfo(dictList, dictionaryInfo);
                 }
             }

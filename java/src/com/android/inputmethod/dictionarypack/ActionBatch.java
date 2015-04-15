@@ -377,7 +377,8 @@ public final class ActionBatch {
             final ContentValues values = MetadataDbHelper.makeContentValues(0,
                     MetadataDbHelper.TYPE_BULK, MetadataDbHelper.STATUS_INSTALLED,
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
-                    "", mWordList.mRemoteFilename, mWordList.mLastUpdate,
+                    TextUtils.isEmpty(mWordList.mLocalFilename) ? "" : mWordList.mLocalFilename,
+                    mWordList.mRemoteFilename, mWordList.mLastUpdate,
                     mWordList.mRawChecksum, mWordList.mChecksum, mWordList.mRetryCount,
                     mWordList.mFileSize, mWordList.mVersion, mWordList.mFormatVersion);
             PrivateLog.log("Insert 'preinstalled' record for " + mWordList.mDescription
