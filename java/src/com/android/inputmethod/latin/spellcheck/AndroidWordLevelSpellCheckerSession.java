@@ -58,6 +58,9 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     protected final SuggestionsCache mSuggestionsCache = new SuggestionsCache();
     private final ContentObserver mObserver;
 
+    private static final String quotesRegexp =
+            "\\u0022|\\u0027|\\u0060|\\u00B4|\\u2018|\\u2018|\\u201C|\\u201D";
+
     private static final class SuggestionsParams {
         public final String[] mSuggestions;
         public final int mFlags;
@@ -224,12 +227,16 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     protected SuggestionsInfo onGetSuggestionsInternal(
             final TextInfo textInfo, final NgramContext ngramContext, final int suggestionsLimit) {
         try {
-            final String inText = textInfo.getText();
+            final String text = textInfo.getText().
+                    replaceAll(AndroidSpellCheckerService.APOSTROPHE,
+                            AndroidSpellCheckerService.SINGLE_QUOTE).
+                    replaceAll("^" + quotesRegexp, "").
+                    replaceAll(quotesRegexp + "$", "");
             final SuggestionsParams cachedSuggestionsParams =
-                    mSuggestionsCache.getSuggestionsFromCache(inText, ngramContext);
+                    mSuggestionsCache.getSuggestionsFromCache(text, ngramContext);
 
             if (cachedSuggestionsParams != null) {
-                Log.d(TAG, "onGetSuggestionsInternal() : Cache hit for [" + inText + "]");
+                Log.d(TAG, "onGetSuggestionsInternal() : Cache hit for [" + text + "]");
                 return new SuggestionsInfo(
                         cachedSuggestionsParams.mFlags, cachedSuggestionsParams.mSuggestions);
             }
@@ -241,10 +248,10 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             }
 
             // Handle special patterns like email, URI, telephone number.
-            final int checkability = getCheckabilityInScript(inText, mScript);
+            final int checkability = getCheckabilityInScript(text, mScript);
             if (CHECKABILITY_CHECKABLE != checkability) {
                 if (CHECKABILITY_CONTAINS_PERIOD == checkability) {
-                    final String[] splitText = inText.split(Constants.REGEXP_PERIOD);
+                    final String[] splitText = text.split(Constants.REGEXP_PERIOD);
                     boolean allWordsAreValid = true;
                     for (final String word : splitText) {
                         if (!mService.isValidWord(mLocale, word)) {
@@ -259,15 +266,13 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                                         TextUtils.join(Constants.STRING_SPACE, splitText) });
                     }
                 }
-                return mService.isValidWord(mLocale, inText) ?
+                return mService.isValidWord(mLocale, text) ?
                         AndroidSpellCheckerService.getInDictEmptySuggestions() :
                         AndroidSpellCheckerService.getNotInDictEmptySuggestions(
                                 CHECKABILITY_CONTAINS_PERIOD == checkability /* reportAsTypo */);
             }
 
             // Handle normal words.
-            final String text = inText.replaceAll(
-                    AndroidSpellCheckerService.APOSTROPHE, AndroidSpellCheckerService.SINGLE_QUOTE);
             final int capitalizeType = StringUtils.getCapitalizationType(text);
 
             if (isInDictForAnyCapitalization(text, capitalizeType)) {
