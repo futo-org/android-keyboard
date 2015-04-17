@@ -29,11 +29,15 @@ import android.test.mock.MockContentProvider;
 import android.test.mock.MockContentResolver;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.ContactsDictionaryConstants;
+import com.android.inputmethod.latin.ContactsManager;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Tests for {@link ContactsManager}
@@ -63,12 +67,13 @@ public class ContactsManagerTest extends AndroidTestCase {
 
     @Test
     public void testGetValidNames() {
-        final String contactName1 = "firstname lastname";
+        final String contactName1 = "firstname last-name";
         final String contactName2 = "larry";
-        mMatrixCursor.addRow(new Object[] { 1, contactName1 });
-        mMatrixCursor.addRow(new Object[] { 2, null /* null name */ });
-        mMatrixCursor.addRow(new Object[] { 3, contactName2 });
-        mMatrixCursor.addRow(new Object[] { 4, "floopy@example.com" /* invalid name */ });
+        mMatrixCursor.addRow(new Object[] { 1, contactName1, 0, 0, 0 });
+        mMatrixCursor.addRow(new Object[] { 2, null /* null name */, 0, 0, 0 });
+        mMatrixCursor.addRow(new Object[] { 3, contactName2, 0, 0, 0 });
+        mMatrixCursor.addRow(new Object[] { 4, "floopy@example.com" /* invalid name */, 0, 0, 0 });
+        mMatrixCursor.addRow(new Object[] { 5, "news-group" /* invalid name */, 0, 0, 0 });
         mFakeContactsContentProvider.addQueryResult(Contacts.CONTENT_URI, mMatrixCursor);
 
         final ArrayList<String> validNames = mManager.getValidNames(Contacts.CONTENT_URI);
@@ -78,13 +83,48 @@ public class ContactsManagerTest extends AndroidTestCase {
     }
 
     @Test
-    public void testGetCount() {
-        mMatrixCursor.addRow(new Object[] { 1, "firstname" });
-        mMatrixCursor.addRow(new Object[] { 2, null /* null name */ });
-        mMatrixCursor.addRow(new Object[] { 3, "larry" });
-        mMatrixCursor.addRow(new Object[] { 4, "floopy@example.com" /* invalid name */ });
+    public void testGetValidNamesAffinity() {
+        final long now = System.currentTimeMillis();
+        final long month_ago = now - TimeUnit.MILLISECONDS.convert(31, TimeUnit.DAYS);
+        for (int i = 0; i < ContactsManager.MAX_CONTACT_NAMES + 10; ++i) {
+            mMatrixCursor.addRow(new Object[] { i, "name" + i, i, now, 1 });
+        }
         mFakeContactsContentProvider.addQueryResult(Contacts.CONTENT_URI, mMatrixCursor);
 
+        final ArrayList<String> validNames = mManager.getValidNames(Contacts.CONTENT_URI);
+        assertEquals(ContactsManager.MAX_CONTACT_NAMES, validNames.size());
+        for (int i = 0; i < 10; ++i) {
+            assertFalse(validNames.contains("name" + i));
+        }
+        for (int i = 10; i < ContactsManager.MAX_CONTACT_NAMES + 10; ++i) {
+            assertTrue(validNames.contains("name" + i));
+        }
+    }
+
+    @Test
+    public void testComputeAffinity() {
+        final long now = System.currentTimeMillis();
+        final long month_ago = now - TimeUnit.MILLISECONDS.convert(31, TimeUnit.DAYS);
+        mMatrixCursor.addRow(new Object[] { 1, "name", 1, month_ago, 1 });
+        mFakeContactsContentProvider.addQueryResult(Contacts.CONTENT_URI, mMatrixCursor);
+
+        Cursor cursor = mFakeContactsContentProvider.query(Contacts.CONTENT_URI,
+                ContactsDictionaryConstants.PROJECTION_ID_ONLY, null, null, null);
+        cursor.moveToFirst();
+        ContactsManager.RankedContact contact = new ContactsManager.RankedContact(cursor);
+        contact.computeAffinity(1, month_ago);
+        assertEquals(contact.getAffinity(), 1.0f);
+        contact.computeAffinity(2, now);
+        assertEquals(contact.getAffinity(), (2.0f/3.0f + (float)Math.pow(0.5, 3) + 1.0f) / 3);
+    }
+
+    @Test
+    public void testGetCount() {
+        mMatrixCursor.addRow(new Object[] { 1, "firstname", 0, 0, 0 });
+        mMatrixCursor.addRow(new Object[] { 2, null /* null name */, 0, 0, 0 });
+        mMatrixCursor.addRow(new Object[] { 3, "larry", 0, 0, 0 });
+        mMatrixCursor.addRow(new Object[] { 4, "floopy@example.com" /* invalid name */, 0, 0, 0 });
+        mFakeContactsContentProvider.addQueryResult(Contacts.CONTENT_URI, mMatrixCursor);
         assertEquals(4, mManager.getContactCount());
     }
 
