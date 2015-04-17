@@ -60,6 +60,7 @@ import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
@@ -1903,6 +1904,15 @@ public final class InputLogic {
     }
 
     /**
+     * @return the {@link Locale} of the {@link #mDictionaryFacilitator} if available. Otherwise
+     * {@link Locale#ROOT}.
+     */
+    @Nonnull
+    private Locale getDictionaryFacilitatorLocale() {
+        return mDictionaryFacilitator != null ? mDictionaryFacilitator.getLocale() : Locale.ROOT;
+    }
+
+    /**
      * Gets a chunk of text with or the auto-correction indicator underline span as appropriate.
      *
      * This method looks at the old state of the auto-correction indicator to put or not put
@@ -1921,8 +1931,10 @@ public final class InputLogic {
      */
     // TODO: Shouldn't this go in some *Utils class instead?
     private CharSequence getTextWithUnderline(final String text) {
+        // TODO: Locale should be determined based on context and the text given.
         return mIsAutoCorrectionIndicatorOn
-                ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(mLatinIME, text)
+                ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
+                        mLatinIME, text, getDictionaryFacilitatorLocale())
                 : text;
     }
 
@@ -2122,9 +2134,11 @@ public final class InputLogic {
             Log.d(TAG, "commitChosenWord() : [" + chosenWord + "]");
         }
         final SuggestedWords suggestedWords = mSuggestedWords;
+        // TODO: Locale should be determined based on context and the text given.
+        final Locale locale = getDictionaryFacilitatorLocale();
         final CharSequence chosenWordWithSuggestions =
                 SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
-                        suggestedWords);
+                        suggestedWords, locale);
         if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
