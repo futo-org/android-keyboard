@@ -59,7 +59,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     private final ContentObserver mObserver;
 
     private static final String quotesRegexp =
-            "\\u0022|\\u0027|\\u0060|\\u00B4|\\u2018|\\u2018|\\u201C|\\u201D";
+            "(\\u0022|\\u0027|\\u0060|\\u00B4|\\u2018|\\u2018|\\u201C|\\u201D)";
 
     private static final class SuggestionsParams {
         public final String[] mSuggestions;
