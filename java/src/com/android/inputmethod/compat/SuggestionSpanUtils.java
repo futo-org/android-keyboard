@@ -33,6 +33,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class SuggestionSpanUtils {
@@ -57,13 +58,12 @@ public final class SuggestionSpanUtils {
 
     @UsedForTesting
     public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
-            final Context context, final String text) {
+            final Context context, final String text, @Nonnull final Locale locale) {
         if (TextUtils.isEmpty(text) || OBJ_FLAG_AUTO_CORRECTION == null) {
             return text;
         }
         final Spannable spannable = new SpannableString(text);
-        // TODO: Set locale if it is feasible.
-        final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
+        final SuggestionSpan suggestionSpan = new SuggestionSpan(context, locale,
                 new String[] {} /* suggestions */, OBJ_FLAG_AUTO_CORRECTION, null);
         spannable.setSpan(suggestionSpan, 0, text.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
@@ -72,7 +72,7 @@ public final class SuggestionSpanUtils {
 
     @UsedForTesting
     public static CharSequence getTextWithSuggestionSpan(final Context context,
-            final String pickedWord, final SuggestedWords suggestedWords) {
+            final String pickedWord, final SuggestedWords suggestedWords, final Locale locale) {
         if (TextUtils.isEmpty(pickedWord) || suggestedWords.isEmpty()
                 || suggestedWords.isPrediction() || suggestedWords.isPunctuationSuggestions()) {
             return pickedWord;
@@ -92,8 +92,7 @@ public final class SuggestionSpanUtils {
                 suggestionsList.add(word.toString());
             }
         }
-        // TODO: Set locale if it is feasible.
-        final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
+        final SuggestionSpan suggestionSpan = new SuggestionSpan(context, locale,
                 suggestionsList.toArray(new String[suggestionsList.size()]), 0 /* flags */, null);
         final Spannable spannable = new SpannableString(pickedWord);
         spannable.setSpan(suggestionSpan, 0, pickedWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

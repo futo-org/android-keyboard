@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 @SmallTest
 public class SuggestionSpanUtilsTest extends AndroidTestCase {
 
@@ -62,7 +64,7 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
 
     private static void assertSuggestionSpan(final String expectedText,
             final int reuiredSuggestionSpanFlags, final int requiredSpanFlags,
-            final String[] expectedSuggestions,
+            final String[] expectedSuggestions, @Nullable final Locale expectedLocale,
             final CharSequence actualText) {
         assertTrue(TextUtils.equals(expectedText, actualText));
         assertTrue(actualText instanceof Spanned);
@@ -84,22 +86,39 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
                 assertEquals(expectedSuggestions[i], actualSuggestions[i]);
             }
         }
+        // CAVEAT: SuggestionSpan#getLocale() returns String rather than Locale object.
+        assertEquals(expectedLocale.toString(), suggestionSpan.getLocale());
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     public void testGetTextWithAutoCorrectionIndicatorUnderline() {
         final String ORIGINAL_TEXT = "Hey!";
+        final Locale NONNULL_LOCALE = new Locale("en", "GB");
         final CharSequence text = SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
-                getContext(), ORIGINAL_TEXT);
+                getContext(), ORIGINAL_TEXT, NONNULL_LOCALE);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
             assertNotSuggestionSpan(ORIGINAL_TEXT, text);
             return;
         }
-
         assertSuggestionSpan(ORIGINAL_TEXT,
                 SuggestionSpan.FLAG_AUTO_CORRECTION /* reuiredSuggestionSpanFlags */,
                 Spanned.SPAN_COMPOSING | Spanned.SPAN_EXCLUSIVE_EXCLUSIVE /* requiredSpanFlags */,
-                new String[]{}, text);
+                new String[]{}, NONNULL_LOCALE, text);
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
+    public void testGetTextWithAutoCorrectionIndicatorUnderlineRootLocale() {
+        final String ORIGINAL_TEXT = "Hey!";
+        final CharSequence text = SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
+                getContext(), ORIGINAL_TEXT, Locale.ROOT);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            assertNotSuggestionSpan(ORIGINAL_TEXT, text);
+            return;
+        }
+        assertSuggestionSpan(ORIGINAL_TEXT,
+                SuggestionSpan.FLAG_AUTO_CORRECTION /* reuiredSuggestionSpanFlags */,
+                Spanned.SPAN_COMPOSING | Spanned.SPAN_EXCLUSIVE_EXCLUSIVE /* requiredSpanFlags */,
+                new String[]{}, Locale.ROOT, text);
     }
 
     public void testGetTextWithSuggestionSpan() {
@@ -119,6 +138,8 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
             corrections[i] = createWordInfo("correction" + i, SuggestedWordInfo.KIND_CORRECTION);
         }
 
+        final Locale NONNULL_LOCALE = new Locale("en", "GB");
+
         // SuggestionSpan will not be attached when {@link SuggestedWords#INPUT_STYLE_PREDICTION}
         // is specified.
         {
@@ -132,10 +153,11 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
                     SuggestedWords.INPUT_STYLE_PREDICTION,
                     SuggestedWords.NOT_A_SEQUENCE_NUMBER);
             final String PICKED_WORD = prediction2.mWord;
+            // Note that the framework uses the context locale as a fallback locale.
             assertNotSuggestionSpan(
                     PICKED_WORD,
                     SuggestionSpanUtils.getTextWithSuggestionSpan(getContext(), PICKED_WORD,
-                            predictedWords));
+                            predictedWords, NONNULL_LOCALE));
         }
 
         final ArrayList<SuggestedWordInfo> suggestedWordList = new ArrayList<>();
@@ -174,13 +196,25 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
                 expectedSuggestions.add(suggestedWord);
             }
 
+            // non-null locale
             assertSuggestionSpan(
                     PICKED_WORD,
                     0 /* reuiredSuggestionSpanFlags */,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE /* requiredSpanFlags */,
                     expectedSuggestions.toArray(new String[expectedSuggestions.size()]),
+                    NONNULL_LOCALE,
                     SuggestionSpanUtils.getTextWithSuggestionSpan(getContext(), PICKED_WORD,
-                            typedAndCollectedWords));
+                            typedAndCollectedWords, NONNULL_LOCALE));
+
+            // root locale
+            assertSuggestionSpan(
+                    PICKED_WORD,
+                    0 /* reuiredSuggestionSpanFlags */,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE /* requiredSpanFlags */,
+                    expectedSuggestions.toArray(new String[expectedSuggestions.size()]),
+                    Locale.ROOT,
+                    SuggestionSpanUtils.getTextWithSuggestionSpan(getContext(), PICKED_WORD,
+                            typedAndCollectedWords, Locale.ROOT));
         }
     }
 
