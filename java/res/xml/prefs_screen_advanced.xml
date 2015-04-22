@@ -43,6 +43,11 @@
         android:summary="@string/prefs_enable_emoji_alt_physical_key_summary"
         android:defaultValue="true"
         android:persistent="true" />
+    <CheckBoxPreference
+        android:key="pref_show_setup_wizard_icon"
+        android:title="@string/show_setup_wizard_icon"
+        android:summary="@string/show_setup_wizard_icon_summary"
+        android:persistent="true" />
     <PreferenceScreen
         android:fragment="com.android.inputmethod.latin.settings.DebugSettingsFragment"
         android:key="screen_debug"

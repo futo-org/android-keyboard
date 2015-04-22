@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
@@ -93,6 +94,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_GESTURE_PREVIEW_TRAIL = "pref_gesture_preview_trail";
     public static final String PREF_GESTURE_FLOATING_PREVIEW_TEXT =
             "pref_gesture_floating_preview_text";
+    public static final String PREF_SHOW_SETUP_WIZARD_ICON = "pref_show_setup_wizard_icon";
 
     public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
 
@@ -348,6 +350,18 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean readUseFullscreenMode(final Resources res) {
         return res.getBoolean(R.bool.config_use_fullscreen_mode);
+    }
+
+    public static boolean readShowSetupWizardIcon(final SharedPreferences prefs,
+            final Context context) {
+        if (!prefs.contains(PREF_SHOW_SETUP_WIZARD_ICON)) {
+            final ApplicationInfo appInfo = context.getApplicationInfo();
+            final boolean isApplicationInSystemImage =
+                    (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+            // Default value
+            return !isApplicationInSystemImage;
+        }
+        return prefs.getBoolean(PREF_SHOW_SETUP_WIZARD_ICON, false);
     }
 
     public static boolean readHasHardwareKeyboard(final Configuration conf) {
