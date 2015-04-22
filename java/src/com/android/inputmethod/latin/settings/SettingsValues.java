@@ -81,6 +81,8 @@ public class SettingsValues {
     public final boolean mSlidingKeyInputPreviewEnabled;
     public final int mKeyLongpressTimeout;
     public final boolean mEnableEmojiAltPhysicalKey;
+    public final boolean mShowAppIcon;
+    public final boolean mIsShowAppIconSettingInPreferences;
     public final boolean mCloudSyncEnabled;
     public final boolean mEnableMetricsLogging;
     public final boolean mShouldShowLxxSuggestionUi;
@@ -168,6 +170,8 @@ public class SettingsValues {
         mKeyPreviewPopupDismissDelay = Settings.readKeyPreviewPopupDismissDelay(prefs, res);
         mEnableEmojiAltPhysicalKey = prefs.getBoolean(
                 Settings.PREF_ENABLE_EMOJI_ALT_PHYSICAL_KEY, true);
+        mShowAppIcon = Settings.readShowSetupWizardIcon(prefs, context);
+        mIsShowAppIconSettingInPreferences = prefs.contains(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
         mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,
                 autoCorrectionThresholdRawValue);
         mPlausibilityThreshold = Settings.readPlausibilityThreshold(res);

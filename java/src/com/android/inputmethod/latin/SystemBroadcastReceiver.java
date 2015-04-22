@@ -20,9 +20,11 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
@@ -30,6 +32,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.dictionarypack.CommonPreferences;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.setup.SetupActivity;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
 
@@ -112,11 +115,12 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         if (Log.isLoggable(TAG, Log.INFO)) {
             Log.i(TAG, "toggleAppIcon() : FLAG_SYSTEM = " + isSystemApp);
         }
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         context.getPackageManager().setComponentEnabledSetting(
                 new ComponentName(context, SetupActivity.class),
-                isSystemApp
-                        ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                        : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                Settings.readShowSetupWizardIcon(prefs, context)
+                        ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                        : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
     }
 }
