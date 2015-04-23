@@ -36,7 +36,7 @@ public class DictionaryStats {
     public DictionaryStats(
             @Nonnull final Locale locale,
             @Nonnull final String dictType,
-            @Nonnull final String dictFileName,
+            @Nullable final String dictFileName,
             @Nullable final File dictFile,
             final int contentVersion) {
         mLocale = locale;
