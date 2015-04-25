@@ -155,6 +155,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"ಈಗ ನೀವು <xliff:g id="APPLICATION_NAME">%s</xliff:g> ನೊಂದಿಗೆ ನಿಮ್ಮ ಎಲ್ಲ ಮೆಚ್ಚಿನ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಲ್ಲಿ ಟೈಪ್ ಮಾಡಬಹುದು."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"ಹೆಚ್ಚುವರಿ ಭಾಷೆಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡು"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"ಮುಕ್ತಾಯಗೊಂಡಿದೆ"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ಅಪ್ಲಿಕೇಶನ್ ಐಕಾನ್ ತೋರಿಸು"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"ಲಾಂಚರ್‌ನಲ್ಲಿ ಅಪ್ಲಿಕೇಶನ್ ಐಕಾನ್ ಪ್ರದರ್ಶಿಸು"</string>
     <string name="app_name" msgid="6320102637491234792">"ನಿಘಂಟು ಪೂರೈಕೆದಾರರು"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ನಿಘಂಟು ಪೂರೈಕೆದಾರರು"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"ನಿಘಂಟು ಸೇವೆ"</string>
