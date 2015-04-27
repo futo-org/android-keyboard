@@ -109,7 +109,7 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(updateIntent);
     }
 
-    private static void toggleAppIcon(final Context context) {
+    public static void toggleAppIcon(final Context context) {
         final int appInfoFlags = context.getApplicationInfo().flags;
         final boolean isSystemApp = (appInfoFlags & ApplicationInfo.FLAG_SYSTEM) > 0;
         if (Log.isLoggable(TAG, Log.INFO)) {
