@@ -84,8 +84,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
                 if (TextUtils.isEmpty(splitText)) {
                     continue;
                 }
-                if (mSuggestionsCache.getSuggestionsFromCache(splitText.toString(), ngramContext)
-                        == null) {
+                if (mSuggestionsCache.getSuggestionsFromCache(splitText.toString()) == null) {
                     continue;
                 }
                 final int newLength = splitText.length();

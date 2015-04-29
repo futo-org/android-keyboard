@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LruCache;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -81,6 +82,19 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private static final String DICT_FACTORY_METHOD_NAME = "getDictionary";
     private static final Class<?>[] DICT_FACTORY_METHOD_ARG_TYPES =
             new Class[] { Context.class, Locale.class, File.class, String.class, String.class };
+
+    private LruCache<String, Boolean> mValidSpellingWordReadCache;
+    private LruCache<String, Boolean> mValidSpellingWordWriteCache;
+
+    @Override
+    public void setValidSpellingWordReadCache(final LruCache<String, Boolean> cache) {
+        mValidSpellingWordReadCache = cache;
+    }
+
+    @Override
+    public void setValidSpellingWordWriteCache(final LruCache<String, Boolean> cache) {
+        mValidSpellingWordWriteCache = cache;
+    }
 
     @Override
     public boolean isForLocale(final Locale locale) {
@@ -341,6 +355,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 dictionarySetToCleanup.closeDict(dictType);
             }
         }
+
+        if (mValidSpellingWordWriteCache != null) {
+            mValidSpellingWordWriteCache.evictAll();
+        }
     }
 
     private void asyncReloadUninitializedMainDictionaries(final Context context,
@@ -464,6 +482,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
             @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
             final boolean blockPotentiallyOffensive) {
+        // Update the spelling cache before learning. Words that are not yet added to user history
+        // and appear in no other language model are not considered valid.
+        putWordIntoValidSpellingWordCache("addToUserHistory", suggestion);
+
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
         NgramContext ngramContextForCurrentWord = ngramContext;
         for (int i = 0; i < words.length; i++) {
@@ -475,6 +497,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             ngramContextForCurrentWord =
                     ngramContextForCurrentWord.getNextNgramContext(new WordInfo(currentWord));
         }
+    }
+
+    private void putWordIntoValidSpellingWordCache(final String caller, final String word) {
+        final String spellingWord = word.toLowerCase(getLocale());
+        final boolean isValid = isValidSpellingWord(spellingWord);
+        mValidSpellingWordWriteCache.put(spellingWord, isValid);
     }
 
     private void addWordToUserHistory(final DictionaryGroup dictionaryGroup,
@@ -543,6 +571,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         if (eventType != Constants.EVENT_BACKSPACE) {
             removeWord(Dictionary.TYPE_USER_HISTORY, word);
         }
+
+        // Update the spelling cache after unlearning. Words that are removed from user history
+        // and appear in no other language model are not considered valid.
+        putWordIntoValidSpellingWordCache("unlearnFromUserHistory", word.toLowerCase());
     }
 
     // TODO: Revise the way to fusion suggestion results.
@@ -577,6 +609,14 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     public boolean isValidSpellingWord(final String word) {
+        if (mValidSpellingWordReadCache != null) {
+            final String spellingWord = word.toLowerCase(getLocale());
+            final Boolean cachedValue = mValidSpellingWordReadCache.get(spellingWord);
+            if (cachedValue != null) {
+                return cachedValue;
+            }
+        }
+
         return isValidWord(word, ALL_DICTIONARY_TYPES);
     }
 
