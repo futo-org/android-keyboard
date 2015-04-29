@@ -71,30 +71,26 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     }
 
     protected static final class SuggestionsCache {
-        private static final char CHAR_DELIMITER = '\uFFFC';
         private static final int MAX_CACHE_SIZE = 50;
         private final LruCache<String, SuggestionsParams> mUnigramSuggestionsInfoCache =
                 new LruCache<>(MAX_CACHE_SIZE);
 
-        private static String generateKey(final String query, final NgramContext ngramContext) {
-            if (TextUtils.isEmpty(query) || !ngramContext.isValid()) {
-                return query;
-            }
-            return query + CHAR_DELIMITER + ngramContext;
+        private static String generateKey(final String query) {
+            return query + "";
         }
 
-        public SuggestionsParams getSuggestionsFromCache(String query,
-                final NgramContext ngramContext) {
-            return mUnigramSuggestionsInfoCache.get(generateKey(query, ngramContext));
+        public SuggestionsParams getSuggestionsFromCache(final String query) {
+            return mUnigramSuggestionsInfoCache.get(query);
         }
 
-        public void putSuggestionsToCache(final String query, final NgramContext ngramContext,
-                final String[] suggestions, final int flags) {
+        public void putSuggestionsToCache(
+                final String query, final String[] suggestions, final int flags) {
             if (suggestions == null || TextUtils.isEmpty(query)) {
                 return;
             }
             mUnigramSuggestionsInfoCache.put(
-                    generateKey(query, ngramContext), new SuggestionsParams(suggestions, flags));
+                    generateKey(query),
+                    new SuggestionsParams(suggestions, flags));
         }
 
         public void clearCache() {
@@ -232,16 +228,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                             AndroidSpellCheckerService.SINGLE_QUOTE).
                     replaceAll("^" + quotesRegexp, "").
                     replaceAll(quotesRegexp + "$", "");
-            final SuggestionsParams cachedSuggestionsParams =
-                    mSuggestionsCache.getSuggestionsFromCache(text, ngramContext);
 
-            if (cachedSuggestionsParams != null) {
-                Log.d(TAG, "onGetSuggestionsInternal() : Cache hit for [" + text + "]");
-                return new SuggestionsInfo(
-                        cachedSuggestionsParams.mFlags, cachedSuggestionsParams.mSuggestions);
-            }
-
-            // If spell checking is impossible, return early.
             if (!mService.hasMainDictionaryForLocale(mLocale)) {
                 return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
                         false /* reportAsTypo */);
@@ -329,8 +316,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                                     .getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS()
                             : 0);
             final SuggestionsInfo retval = new SuggestionsInfo(flags, result.mSuggestions);
-            mSuggestionsCache.putSuggestionsToCache(text, ngramContext, result.mSuggestions,
-                    flags);
+            mSuggestionsCache.putSuggestionsToCache(text, result.mSuggestions, flags);
             return retval;
         } catch (RuntimeException e) {
             // Don't kill the keyboard if there is a bug in the spell checker

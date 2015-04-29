@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.util.LruCache;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -53,6 +54,18 @@ public interface DictionaryFacilitator {
             Dictionary.TYPE_CONTACTS,
             Dictionary.TYPE_USER_HISTORY,
             Dictionary.TYPE_USER};
+
+    /**
+     * The facilitator will put words into the cache whenever it decodes them.
+     * @param cache
+     */
+    void setValidSpellingWordReadCache(final LruCache<String, Boolean> cache);
+
+    /**
+     * The facilitator will get words from the cache whenever it needs to check their spelling.
+     * @param cache
+     */
+    void setValidSpellingWordWriteCache(final LruCache<String, Boolean> cache);
 
     /**
      * Returns whether this facilitator is exactly for this locale.
