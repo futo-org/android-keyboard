@@ -398,9 +398,8 @@ public final class InputLogic {
             if (!TextUtils.isEmpty(mWordBeingCorrectedByCursor)) {
                 final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
                         System.currentTimeMillis());
-                mDictionaryFacilitator.addToUserHistory(mWordBeingCorrectedByCursor, false,
-                        NgramContext.EMPTY_PREV_WORDS_INFO, timeStampInSeconds,
-                        settingsValues.mBlockPotentiallyOffensive);
+                performAdditionToUserHistoryDictionary(settingsValues, mWordBeingCorrectedByCursor,
+                        NgramContext.EMPTY_PREV_WORDS_INFO);
             }
         } else {
             // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
