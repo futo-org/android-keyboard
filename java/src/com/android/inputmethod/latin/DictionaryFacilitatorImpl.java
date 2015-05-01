@@ -234,6 +234,16 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return mDictionaryGroup.mLocale;
     }
 
+    @Override
+    public boolean usesContacts() {
+        return mDictionaryGroup.getSubDict(Dictionary.TYPE_CONTACTS) != null;
+    }
+
+    @Override
+    public String getAccount() {
+        return null;
+    }
+
     @Nullable
     private static ExpandableBinaryDictionary getSubDict(final String dictType,
             final Context context, final Locale locale, final File dictFile,
@@ -660,16 +670,18 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return maxFreq;
     }
 
-    private void clearSubDictionary(final String dictName) {
+    private boolean clearSubDictionary(final String dictName) {
         final ExpandableBinaryDictionary dictionary = mDictionaryGroup.getSubDict(dictName);
-        if (dictionary != null) {
-            dictionary.clear();
+        if (dictionary == null) {
+            return false;
         }
+        dictionary.clear();
+        return true;
     }
 
     @Override
-    public void clearUserHistoryDictionary(final Context context) {
-        clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
+    public boolean clearUserHistoryDictionary(final Context context) {
+        return clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
     }
 
     @Override
