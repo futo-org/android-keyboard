@@ -107,6 +107,10 @@ public interface DictionaryFacilitator {
 
     Locale getLocale();
 
+    boolean usesContacts();
+
+    String getAccount();
+
     void resetDictionaries(
             final Context context,
             final Locale newLocale,
@@ -162,7 +166,7 @@ public interface DictionaryFacilitator {
 
     boolean isValidSuggestionWord(final String word);
 
-    void clearUserHistoryDictionary(final Context context);
+    boolean clearUserHistoryDictionary(final Context context);
 
     String dump(final Context context);
 
