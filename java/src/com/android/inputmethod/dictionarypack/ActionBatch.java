@@ -26,7 +26,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.compat.DownloadManagerCompatUtils;
+import com.android.inputmethod.latin.BinaryDictionaryFileDumper;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
 
@@ -210,9 +212,17 @@ public final class ActionBatch {
                         + " for an InstallAfterDownload action. Bailing out.");
                 return;
             }
+
             DebugLogUtils.l("Setting word list as installed");
             final SQLiteDatabase db = MetadataDbHelper.getDb(context, mClientId);
             MetadataDbHelper.markEntryAsFinishedDownloadingAndInstalled(db, mWordListValues);
+
+            // Install the downloaded file by un-compressing and moving it to the staging
+            // directory. Ideally, we should do this before updating the DB, but the
+            // installDictToStagingFromContentProvider() relies on the db being updated.
+            final String localeString = mWordListValues.getAsString(MetadataDbHelper.LOCALE_COLUMN);
+            BinaryDictionaryFileDumper.installDictToStagingFromContentProvider(
+                    LocaleUtils.constructLocaleFromString(localeString), context, false);
         }
     }
 

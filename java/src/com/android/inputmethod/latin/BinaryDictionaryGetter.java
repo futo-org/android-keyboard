@@ -195,39 +195,6 @@ final public class BinaryDictionaryGetter {
         return result;
     }
 
-    /**
-     * Remove all files with the passed id, except the passed file.
-     *
-     * If a dictionary with a given ID has a metadata change that causes it to change
-     * path, we need to remove the old version. The only way to do this is to check all
-     * installed files for a matching ID in a different directory.
-     */
-    public static void removeFilesWithIdExcept(final Context context, final String id,
-            final File fileToKeep) {
-        try {
-            final File canonicalFileToKeep = fileToKeep.getCanonicalFile();
-            final File[] directoryList = DictionaryInfoUtils.getCachedDirectoryList(context);
-            if (null == directoryList) return;
-            for (File directory : directoryList) {
-                // There is one directory per locale. See #getCachedDirectoryList
-                if (!directory.isDirectory()) continue;
-                final File[] wordLists = directory.listFiles();
-                if (null == wordLists) continue;
-                for (File wordList : wordLists) {
-                    final String fileId =
-                            DictionaryInfoUtils.getWordListIdFromFileName(wordList.getName());
-                    if (fileId.equals(id)) {
-                        if (!canonicalFileToKeep.equals(wordList.getCanonicalFile())) {
-                            wordList.delete();
-                        }
-                    }
-                }
-            }
-        } catch (java.io.IOException e) {
-            Log.e(TAG, "IOException trying to cleanup files", e);
-        }
-    }
-
     // ## HACK ## we prevent usage of a dictionary before version 18. The reason for this is, since
     // those do not include whitelist entries, the new code with an old version of the dictionary
     // would lose whitelist functionality.
@@ -274,12 +241,18 @@ final public class BinaryDictionaryGetter {
      */
     public static ArrayList<AssetFileAddress> getDictionaryFiles(final Locale locale,
             final Context context, boolean notifyDictionaryPackForUpdates) {
-
-        final boolean hasDefaultWordList = DictionaryInfoUtils.isDictionaryAvailable(
-                context, locale);
         if (notifyDictionaryPackForUpdates) {
-            BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
-                    hasDefaultWordList);
+            final boolean hasDefaultWordList = DictionaryInfoUtils.isDictionaryAvailable(
+                    context, locale);
+            // It makes sure that the first time keyboard comes up and the dictionaries are reset,
+            // the DB is populated with the appropriate values for each locale. Helps in downloading
+            // the dictionaries when the user enables and switches new languages before the
+            // DictionaryService runs.
+            BinaryDictionaryFileDumper.downloadDictIfNeverRequested(
+                    locale, context, hasDefaultWordList);
+
+            // Move a staging files to the cache ddirectories if any.
+            DictionaryInfoUtils.moveStagingFilesIfExists(context);
         }
         final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
         final String mainDictId = DictionaryInfoUtils.getMainDictId(locale);
