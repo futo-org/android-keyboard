@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin.common;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.FilenameFilter;
 
@@ -58,11 +56,6 @@ public class FileUtils {
 
     public static boolean renameTo(final File fromFile, final File toFile) {
         toFile.delete();
-        final boolean success = fromFile.renameTo(toFile);
-        if (!success) {
-            Log.e(TAG, String.format("Failed to rename from %s to %s.",
-                    fromFile.getAbsoluteFile(), toFile.getAbsoluteFile()));
-        }
-        return  success;
+        return fromFile.renameTo(toFile);
     }
 }
