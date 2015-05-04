@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.common;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FilenameFilter;
 
@@ -23,6 +25,8 @@ import java.io.FilenameFilter;
  * A simple class to help with removing directories recursively.
  */
 public class FileUtils {
+    private static final String TAG = "FileUtils";
+
     public static boolean deleteRecursively(final File path) {
         if (path.isDirectory()) {
             final File[] files = path.listFiles();
@@ -50,5 +54,15 @@ public class FileUtils {
             }
         }
         return hasDeletedAllFiles;
+    }
+
+    public static boolean renameTo(final File fromFile, final File toFile) {
+        toFile.delete();
+        final boolean success = fromFile.renameTo(toFile);
+        if (!success) {
+            Log.e(TAG, String.format("Failed to rename from %s to %s.",
+                    fromFile.getAbsoluteFile(), toFile.getAbsoluteFile()));
+        }
+        return  success;
     }
 }
