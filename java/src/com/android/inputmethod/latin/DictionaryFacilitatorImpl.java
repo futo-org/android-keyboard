@@ -221,7 +221,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     @Override
-    public void onFinishInput() {
+    public void onFinishInput(Context context) {
     }
 
     @Override

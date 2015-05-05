@@ -101,7 +101,7 @@ public interface DictionaryFacilitator {
      *
      * WARNING: The service methods that call start/finish are very spammy.
      */
-    void onFinishInput();
+    void onFinishInput(Context context);
 
     boolean isActive();
 
