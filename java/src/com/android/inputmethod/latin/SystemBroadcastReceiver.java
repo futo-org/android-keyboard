@@ -16,8 +16,10 @@
 
 package com.android.inputmethod.latin;
 
+import android.accounts.Account;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +33,8 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.latin.settings.LocalSettingsConstants;
+import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.setup.SetupActivity;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
@@ -77,6 +81,7 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             richImm.setAdditionalInputMethodSubtypes(additionalSubtypes);
             toggleAppIcon(context);
             downloadLatestDictionaries(context);
+            ////////////////////////////////////////////////////////////////////////////
             // TODO: This is only for dogfood builds. Remove this from the final release.
             DictionaryFacilitator keyboardFacilitator =
                     DictionaryFacilitatorProvider.getDictionaryFacilitator(false);
@@ -93,6 +98,16 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
                         "" /* prefix */,
                         null /* listener */);
             }
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            final String syncAccount = prefs.getString(
+                LocalSettingsConstants.PREF_ACCOUNT_NAME, null /* default */);
+            if (syncAccount != null) {
+                ContentResolver.setSyncAutomatically(
+                        new Account(syncAccount, LoginAccountUtils.ACCOUNT_TYPE),
+                        "com.android.inputmethod.latin.provider",
+                        true);
+            }
+            ////////////////////////////////////////////////////////////////////////////
         } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
             Log.i(TAG, "Boot has been completed");
             toggleAppIcon(context);
