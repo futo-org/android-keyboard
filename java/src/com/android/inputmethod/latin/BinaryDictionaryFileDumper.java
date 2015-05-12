@@ -445,7 +445,6 @@ public final class BinaryDictionaryFileDumper {
      */
     public static void downloadDictIfNeverRequested(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
-        Log.d("inamul_tag", "BinaryDictionaryFileDumper.downloadDictIfNeverRequested()");
         getWordListWordListInfos(locale, context, hasDefaultWordList);
     }
 
