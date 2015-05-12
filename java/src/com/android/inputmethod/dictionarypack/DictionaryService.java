@@ -83,7 +83,7 @@ public final class DictionaryService extends Service {
      * How often, in milliseconds, we want to update the metadata. This is a
      * floor value; actually, it may happen several hours later, or even more.
      */
-    private static final long UPDATE_FREQUENCY_MILLIS = TimeUnit.DAYS.toMillis(4);
+    private static final long UPDATE_FREQUENCY_MILLIS = TimeUnit.DAYS.toMillis(1);
 
     /**
      * We are waked around midnight, local time. We want to wake between midnight and 6 am,
