@@ -92,7 +92,7 @@
     <string name="spoken_emoji_26BE" msgid="8959760533076498209">"បាល់បោះ"</string>
     <string name="spoken_emoji_26C4" msgid="3045791757044255626">"អ្នកលេង​ព្រិល​ដោយ​គ្មាន​ព្រិល"</string>
     <string name="spoken_emoji_26C5" msgid="5580129409712578639">"ព្រះអាទិត្យ​នៅ​​ក្រោយ​ពពក"</string>
-    <string name="spoken_emoji_26CE" msgid="8963656417276062998">"សញ្ញា (⛎)"</string>
+    <string name="spoken_emoji_26CE" msgid="8963656417276062998">"សញ្ញាអាព្យូឈូស"</string>
     <string name="spoken_emoji_26D4" msgid="2231451988209604130">"ហាមចូល"</string>
     <string name="spoken_emoji_26EA" msgid="7513319636103804907">"វិហារ​សាសនា"</string>
     <string name="spoken_emoji_26F2" msgid="7134115206158891037">"បាញ់​ទឹក"</string>
@@ -114,7 +114,7 @@
     <string name="spoken_emoji_2728" msgid="5650330815808691881">"បញ្ចេញ​ពន្លឺ"</string>
     <string name="spoken_emoji_2733" msgid="8915809595141157327">"ផ្កាយ​ប្រាំ​បី​ជ្រុង"</string>
     <string name="spoken_emoji_2734" msgid="4846583547980754332">"ផ្កាយ​ប្រាំ​បី​ជ្រុង​ដិត"</string>
-    <string name="spoken_emoji_2744" msgid="4350636647760161042">"សញ្ញា (❄)"</string>
+    <string name="spoken_emoji_2744" msgid="4350636647760161042">"ផ្កាព្រិល"</string>
     <string name="spoken_emoji_2747" msgid="3718282973916474455">"បញ្ចេញ​ពន្លឺ"</string>
     <string name="spoken_emoji_274C" msgid="2752145886733295314">"សញ្ញា​​ខ្វែង"</string>
     <string name="spoken_emoji_274E" msgid="4262918689871098338">"សញ្ញា​ខ្វែង​ក្នុង​ប្រអប់"</string>
@@ -139,11 +139,11 @@
     <string name="spoken_emoji_2B50" msgid="3850845519526950524">"​ផ្កាយ​​មធ្យម​ពណ៌ស"</string>
     <string name="spoken_emoji_2B55" msgid="9137882158811541824">"រង្វង់​ធំ​​ដិត"</string>
     <string name="spoken_emoji_3030" msgid="4609172241893565639">"សញ្ញា​​រលក​ដិត"</string>
-    <string name="spoken_emoji_303D" msgid="2545833934975907505">"សញ្ញា (〽)"</string>
-    <string name="spoken_emoji_3297" msgid="928912923628973800">"សញ្ញា (㊗)"</string>
-    <string name="spoken_emoji_3299" msgid="3930347573693668426">"សញ្ញា (㊙)"</string>
-    <string name="spoken_emoji_1F004" msgid="1705216181345894600">"សញ្ញា (🀄)"</string>
-    <string name="spoken_emoji_1F0CF" msgid="7601493592085987866">"សញ្ញា (🃏)"</string>
+    <string name="spoken_emoji_303D" msgid="2545833934975907505">"សញ្ញាចាប់ផ្តើមចម្រៀង"</string>
+    <string name="spoken_emoji_3297" msgid="928912923628973800">"សញ្ញាអបអរសាទរមូល"</string>
+    <string name="spoken_emoji_3299" msgid="3930347573693668426">"សញ្ញាសម្ងាត់មូល"</string>
+    <string name="spoken_emoji_1F004" msgid="1705216181345894600">"សញ្ញានាគក្រហមម៉ាចុង"</string>
+    <string name="spoken_emoji_1F0CF" msgid="7601493592085987866">"រូបតុក្កតាបៀពណ៌ខ្មៅ"</string>
     <string name="spoken_emoji_1F170" msgid="3817698686602826773">"ឈាម​ប្រភេទ A"</string>
     <string name="spoken_emoji_1F171" msgid="3684218589626650242">"ឈាម​ប្រភេទ B"</string>
     <string name="spoken_emoji_1F17E" msgid="2978809190364779029">"ឈាម​ប្រភេទ O"</string>
@@ -159,21 +159,21 @@
     <string name="spoken_emoji_1F198" msgid="7020298909426960622">"ប្រអប់ SOS"</string>
     <string name="spoken_emoji_1F199" msgid="5971252667136235630">"ប្រអប់ up!"</string>
     <string name="spoken_emoji_1F19A" msgid="4557270135899843959">"ប្រអប់ vs"</string>
-    <string name="spoken_emoji_1F201" msgid="7000490044681139002">"សញ្ញា (🈁)"</string>
-    <string name="spoken_emoji_1F202" msgid="8560906958695043947">"សញ្ញា (🈂)"</string>
-    <string name="spoken_emoji_1F21A" msgid="1496435317324514033">"សញ្ញា (🈚)"</string>
-    <string name="spoken_emoji_1F22F" msgid="609797148862445402">"សញ្ញា (🈯)"</string>
-    <string name="spoken_emoji_1F232" msgid="8125716331632035820">"សញ្ញា (🈲)"</string>
-    <string name="spoken_emoji_1F233" msgid="8749401090457355028">"សញ្ញា (🈳)"</string>
-    <string name="spoken_emoji_1F234" msgid="3546951604285970768">"សញ្ញា (🈴)"</string>
-    <string name="spoken_emoji_1F235" msgid="5320186982841793711">"សញ្ញា (🈵)"</string>
-    <string name="spoken_emoji_1F236" msgid="879755752069393034">"សញ្ញា (🈶)"</string>
-    <string name="spoken_emoji_1F237" msgid="6741807001205851437">"សញ្ញា (🈷)"</string>
-    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"សញ្ញា (🈸)"</string>
-    <string name="spoken_emoji_1F239" msgid="1634067311597618959">"សញ្ញា (🈹)"</string>
-    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"សញ្ញា (🈺)"</string>
-    <string name="spoken_emoji_1F250" msgid="6586943922806727907">"សញ្ញា (🉐)"</string>
-    <string name="spoken_emoji_1F251" msgid="9099032855993346948">"សញ្ញា (🉑)"</string>
+    <string name="spoken_emoji_1F201" msgid="7000490044681139002">"សញ្ញានៅទីនេះកាតាកាណាជ្រុង"</string>
+    <string name="spoken_emoji_1F202" msgid="8560906958695043947">"សញ្ញាសេវាកម្មកាតាកាណាជ្រុង"</string>
+    <string name="spoken_emoji_1F21A" msgid="1496435317324514033">"សញ្ញាឥតគិតថ្លៃជ្រុង"</string>
+    <string name="spoken_emoji_1F22F" msgid="609797148862445402">"សញ្ញាកន្លែងកក់រួចជ្រុង"</string>
+    <string name="spoken_emoji_1F232" msgid="8125716331632035820">"សញ្ញាហាមឃាត់ជ្រុង"</string>
+    <string name="spoken_emoji_1F233" msgid="8749401090457355028">"សញ្ញាកន្លែងទំនេរជ្រុង"</string>
+    <string name="spoken_emoji_1F234" msgid="3546951604285970768">"សញ្ញាព្រមទទួលជ្រុង"</string>
+    <string name="spoken_emoji_1F235" msgid="5320186982841793711">"សញ្ញាជួលពេញជ្រុង"</string>
+    <string name="spoken_emoji_1F236" msgid="879755752069393034">"សញ្ញាមានផ្តល់ជូនជ្រុង"</string>
+    <string name="spoken_emoji_1F237" msgid="6741807001205851437">"សញ្ញាប្រចាំខែជ្រុង"</string>
+    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"សញ្ញាកម្មវិធីជ្រុង"</string>
+    <string name="spoken_emoji_1F239" msgid="1634067311597618959">"សញ្ញាបញ្ចុះតម្លៃជ្រុង"</string>
+    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"សញ្ញាដំណើរការអាជីវកម្មជ្រុង"</string>
+    <string name="spoken_emoji_1F250" msgid="6586943922806727907">"សញ្ញាអត្ថប្រយោជន៍មូល"</string>
+    <string name="spoken_emoji_1F251" msgid="9099032855993346948">"សញ្ញាយល់ព្រមមូល"</string>
     <string name="spoken_emoji_1F300" msgid="4720098285295840383">"ស៊ីក្លូន"</string>
     <string name="spoken_emoji_1F301" msgid="3601962477653752974">"អ័ភ្រ"</string>
     <string name="spoken_emoji_1F302" msgid="3404357123421753593">"ឆត្រ​បិទ"</string>
