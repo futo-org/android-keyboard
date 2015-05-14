@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"મેઘમાંથી તમારો સમન્વયિત ડેટા કાઢી નાખવામાં આવશે. શું તમે ખરેખર આ કરવા માંગો છો?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"કાઢી નાખો"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"રદ કરો"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"તમારો વ્યક્તિગત શબ્દકોશનો Google સર્વર્સ પર બેક અપ લેવાશે અને સમન્વયિત કરવામાં આવશે. અમારા ઉત્પાદનોને બહેતર બનાવવામાં સહાય માટે શબ્દ આવૃત્તિની આંકડાકીય માહિતી ભેગી કરવામાં આવી શકે છે. બધી માહિતીનો સંગ્રહ અને ઉપયોગ "<a href="https://www.google.com/policies/privacy">"Google ની ગોપનીયતા નીતિ"</a>"ની સાથે સંસંગત હશે."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"તમારો વ્યક્તિગત શબ્દકોશનો Google સર્વર્સ પર બેક અપ લેવાશે અને સમન્વયિત કરવામાં આવશે. અમારા ઉત્પાદનોને બહેતર બનાવવામાં સહાય માટે શબ્દ આવૃત્તિની આંકડાકીય માહિતી ભેગી કરવામાં આવી શકે છે. બધી માહિતીનો સંગ્રહ અને ઉપયોગ "<a href="https://www.google.com/policies/privacy">"Google ની ગોપનીયતા નીતિ"</a>"ની સાથે સુસંગત હશે."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"કૃપા કરીને આ સુવિધા સક્ષમ કરવા માટે આ ઉપકરણ પર Google એકાઉન્ટ ઉમેરો"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"વ્યવસાય એકાઉન્ટ્સ માટે Google Apps સાથેના ઉપકરણો માટે સમન્વયન ઉપલબ્ધ નથી"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"અન્ય ઇનપુટ પદ્ધતિઓ પર સ્વિચ કરો"</string>
