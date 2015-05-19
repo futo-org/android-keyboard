@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
@@ -509,10 +510,27 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
-    private void putWordIntoValidSpellingWordCache(final String caller, final String word) {
-        final String spellingWord = word.toLowerCase(getLocale());
-        final boolean isValid = isValidSpellingWord(spellingWord);
-        mValidSpellingWordWriteCache.put(spellingWord, isValid);
+    private void putWordIntoValidSpellingWordCache(
+            @Nonnull final String caller,
+            @Nonnull final String originalWord) {
+        if (mValidSpellingWordWriteCache == null) {
+            return;
+        }
+
+        final String lowerCaseWord = originalWord.toLowerCase(getLocale());
+        final boolean lowerCaseValid = isValidSpellingWord(lowerCaseWord);
+        mValidSpellingWordWriteCache.put(lowerCaseWord, lowerCaseValid);
+
+        final String capitalWord =
+                StringUtils.capitalizeFirstAndDowncaseRest(originalWord, getLocale());
+        final boolean capitalValid;
+        if (lowerCaseValid) {
+            // The lower case form of the word is valid, so the upper case must be valid.
+            capitalValid = true;
+        } else {
+            capitalValid = isValidSpellingWord(capitalWord);
+        }
+        mValidSpellingWordWriteCache.put(capitalWord, capitalValid);
     }
 
     private void addWordToUserHistory(final DictionaryGroup dictionaryGroup,
@@ -620,8 +638,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     public boolean isValidSpellingWord(final String word) {
         if (mValidSpellingWordReadCache != null) {
-            final String spellingWord = word.toLowerCase(getLocale());
-            final Boolean cachedValue = mValidSpellingWordReadCache.get(spellingWord);
+            final Boolean cachedValue = mValidSpellingWordReadCache.get(word);
             if (cachedValue != null) {
                 return cachedValue;
             }
