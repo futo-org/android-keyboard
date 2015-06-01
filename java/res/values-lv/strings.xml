@@ -137,6 +137,10 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Taust. nosp. vibrācijas ilgums"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Taustiņu nosp. skaņas skaļums"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Taustiņa ilgās nosp. noildze"</string>
+    <!-- no translation found for prefs_enable_emoji_alt_physical_key (5963640002335470112) -->
+    <skip />
+    <!-- no translation found for prefs_enable_emoji_alt_physical_key_summary (5259484820941627827) -->
+    <skip />
     <string name="button_default" msgid="3988017840431881491">"Noklusējums"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Laipni lūdzam pakalpojumā <xliff:g id="APPLICATION_NAME">%s</xliff:g>,"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"kurā varat izmantot ievadi ar žestiem"</string>

@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुंजी-स्पर्श कंपन अवधि"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुंजी-स्पर्श ध्वनि आवाज़"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुंजी को देर तक दबाने का विलंब"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"भौतिक कीबोर्ड के लिए इमोजी"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"भौतिक Alt कुंजी इमोजी पैलेट दिखाती है"</string>
     <string name="button_default" msgid="3988017840431881491">"सामान्य"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> में आपका स्वागत है"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"हावभाव लेखन के साथ"</string>

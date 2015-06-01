@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"طول مدت لرزش در اثر فشردن کلید"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"میزان صدای فشردن کلید"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"تأخیر فشار طولانی کلید"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"صورتک برای صفحه‌کلید فیزیکی"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"‏کلید Alt صفحه کلید فیزیکی، پالت صورتک را نشان می‌دهد"</string>
     <string name="button_default" msgid="3988017840431881491">"پیش‌فرض"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"به <xliff:g id="APPLICATION_NAME">%s</xliff:g> خوش آمدید"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"با ورودی اشاره‌ای"</string>

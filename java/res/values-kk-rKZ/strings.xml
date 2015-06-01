@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Емлені тексеру құралы контактілер тізімінің жазбаларын пайдаланады"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Пернені басқан кездегі діріл"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Пернені басу кезіндегі дыбыс"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Пернені басқан кездегі ашылмалы мәзір"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Басылған пернені үлкейтіп көрсету"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Қалауларыңыз"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Есептік жазбалар және құпиялық"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Сыртқы түр және орналасулар"</string>
@@ -50,7 +50,7 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Тілді ауыстыру пернесі басқа енгізу әдістерін де қамтиды"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Тілді ауыстыру пернесі"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Бірнеше енгізу тілдері қосылған кезде көрсету"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Перненің ашылмалы мәзірі кідірісті жояды"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Перненің ұлғайған кескінін жабу"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Кідіріс жоқ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Әдепкі"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>мс"</string>
@@ -59,8 +59,8 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Ұсыныстар мен түзетулер үшін контакт аттарын пайдалану"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Жекелендірілген ұсыныстар"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> жақсарту"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Қос бос орын кезеңі"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Бос орынға екі рет түрту бос орыннан кейінгі кезеңді енгізеді"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Нүкте мен бос орын қою"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Бос орын пернесін екі рет түртсе, нүкте мен бос орын қойылады"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Авто бас әріптерге түрлендіру"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Әрбір сөйлемнің бірінші әріпін бас әріпке түрлендіру"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Жеке сөздік"</string>
@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Негізгі сөздік"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Түзету ұсыныстарын көрсету"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Теру кезінде ұсынылған сөздерді көрсету"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Қорлаушы сөздерді құлыптамау"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Қорлаушы сөздерді тыю"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Қорлаушы сөздерді ұсынбау"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Авто түзету"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Бос орын және тыныс белгі автоматты түрде қателерді түзетеді"</string>
@@ -77,7 +77,7 @@
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Белсенді"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Өте белсенді"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Келесі сөз ұсыныстары"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Ұсыныстар жасауда бастапқы сөзді пайдалану"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Ұсыныстар жасауда алдыңғы сөзді пайдалану"</string>
     <string name="gesture_input" msgid="826951152254563827">"Қимылмен теруді қосу"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Әріптерді жанап өту арқылы сөзді енгізу"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Қимыл қадамын көрсету"</string>
@@ -126,10 +126,10 @@
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Реттелетін енгізу стильдері"</string>
     <string name="add_style" msgid="6163126614514489951">"Стиль қосу"</string>
     <string name="add" msgid="8299699805688017798">"Қосу"</string>
-    <string name="remove" msgid="4486081658752944606">"Аластау"</string>
+    <string name="remove" msgid="4486081658752944606">"Өшіру"</string>
     <string name="save" msgid="7646738597196767214">"Сақтау"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Тіл"</string>
-    <string name="keyboard_layout_set" msgid="4309233698194565609">"Пішім"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Орналасу"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"Реттелетін енгізу стилі пайдалануды бастамас бұрын қосылуы қажет. Оны қазір қосу қажет пе?"</string>
     <string name="enable" msgid="5031294444630523247">"Қосу"</string>
     <string name="not_now" msgid="6172462888202790482">"Қазір емес"</string>
@@ -137,6 +137,10 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Пернені басқан кездегі діріл ұзақтығы"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Пернені басқан кездегі дыбыс деңгейі"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Пернені ұзақ басу кідірісі"</string>
+    <!-- no translation found for prefs_enable_emoji_alt_physical_key (5963640002335470112) -->
+    <skip />
+    <!-- no translation found for prefs_enable_emoji_alt_physical_key_summary (5259484820941627827) -->
+    <skip />
     <string name="button_default" msgid="3988017840431881491">"Әдепкі"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасына қош келдіңіз"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Қимылмен теру арқылы"</string>
