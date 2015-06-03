@@ -188,7 +188,7 @@
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Pobierz przez Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Dostępny jest słownik <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Naciśnij, by sprawdzić i pobrać"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Pobieranie – wkrótce będą dostępne sugestie w tym języku: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>."</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Pobieranie – sugestie w tym języku (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>) będą dostępne wkrótce"</string>
     <string name="version_text" msgid="2715354215568469385">"Wersja <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Dodaj"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Dodaj do słownika"</string>

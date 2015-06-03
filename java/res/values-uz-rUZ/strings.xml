@@ -37,7 +37,7 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Klaviaturani sinxronlash"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinxronlash yoqildi"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Shaxsiy lug‘atingizni qurilmalar bo‘ylab sinxronlang"</string>
-    <string name="sync_now_title" msgid="3088838136743277721">"Hozir sinxronlash"</string>
+    <string name="sync_now_title" msgid="3088838136743277721">"Sinxronlash"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Bulutdagi ma’lumotlarni o‘chirish"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Sinxronlangan ma’lumotlarni Google serveridan o‘chirib tashlash"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Sinxronlangan ma’lumotlaringiz o‘chib ketadi. Davom etsinmi?"</string>
@@ -137,10 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tugma bosilganda tebranish vaqti"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tugma bosilgandagi ovoz"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tugmani bosib turish"</string>
-    <!-- no translation found for prefs_enable_emoji_alt_physical_key (5963640002335470112) -->
-    <skip />
-    <!-- no translation found for prefs_enable_emoji_alt_physical_key_summary (5259484820941627827) -->
-    <skip />
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Tashqi klaviatura uchun kulgichlar"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tashqi klaviaturadagi Alt tugmasi kulgichlar ro‘yxatini ko‘rsatadi"</string>
     <string name="button_default" msgid="3988017840431881491">"Standart"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ilovasiga xush kelibsiz!"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"qo‘l uzmasdan yozish"</string>
