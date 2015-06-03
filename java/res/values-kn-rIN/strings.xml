@@ -37,7 +37,7 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google ಕೀಬೋರ್ಡ್‌ ಸಿಂಕ್‌"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"ಸಿಂಕ್‌ ಆನ್‌ ಆಗಿದೆ"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ನಿಘಂಟನ್ನು ಸಾಧನಗಳಲ್ಲಿ ಸಿಂಕ್ ಮಾಡಿ"</string>
-    <string name="sync_now_title" msgid="3088838136743277721">"ಇದೀಗ ಸಿಂಕ್ ಮಾಡಿ"</string>
+    <string name="sync_now_title" msgid="3088838136743277721">"ಈಗ ಸಿಂಕ್ ಮಾಡು"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"ಮೇಘ ಡೇಟಾವನ್ನು ಅಳಿಸಿ"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google ನಿಂದ ನಿಮ್ಮ ಸಿಂಕ್ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತದೆ"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ನಿಮ್ಮ ಸಿಂಕ್‌ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಮೇಘದಿಂದ ಅಳಿಸಲಾಗುತ್ತದೆ. ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"</string>

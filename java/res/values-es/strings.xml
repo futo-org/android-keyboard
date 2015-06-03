@@ -62,12 +62,12 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"Punto y espacio"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Si tocas dos veces el espacio, se inserta un punto seguido de un espacio"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Escribir la primera letra de cada palabra en mayúscula"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Escribir la primera letra de cada frase en mayúscula"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Diccionario personal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionarios complementarios"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionario principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Sugerencias de correcciones"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Muestra las palabras sugeridas mientras se escribe."</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostrar las palabras sugeridas mientras se escribe"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palabras ofensivas"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No sugerir palabras potencialmente ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>
@@ -134,9 +134,9 @@
     <string name="enable" msgid="5031294444630523247">"Habilitar"</string>
     <string name="not_now" msgid="6172462888202790482">"Ahora no"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ya existe el estilo de entrada <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>."</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Duración de vibración al pulsar"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volumen sonido al pulsar tecla"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Retraso de pulsación prolongada"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Duración de la vibración al pulsar"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volumen de sonido al pulsar tecla"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Retraso al mantener pulsado"</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Te damos la bienvenida a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"con escritura gestual"</string>
@@ -203,7 +203,7 @@
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Editar"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Eliminar"</string>
     <string name="user_dict_settings_empty_text" msgid="558499587532668203">"No tienes ninguna palabra en el diccionario del usuario. Toca el botón Añadir (+) para añadir una palabra."</string>
-    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Para todos los idiomas"</string>
+    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Todos los idiomas"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Más idiomas…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Eliminar"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"</string>
