@@ -137,10 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Пернені басқан кездегі діріл ұзақтығы"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Пернені басқан кездегі дыбыс деңгейі"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Пернені ұзақ басу кідірісі"</string>
-    <!-- no translation found for prefs_enable_emoji_alt_physical_key (5963640002335470112) -->
-    <skip />
-    <!-- no translation found for prefs_enable_emoji_alt_physical_key_summary (5259484820941627827) -->
-    <skip />
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Қатты пернетақтадан енгізілетін эмодзи"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Alt пернесі арқылы эмодзилерді ашуға болады"</string>
     <string name="button_default" msgid="3988017840431881491">"Әдепкі"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасына қош келдіңіз"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Қимылмен теру арқылы"</string>
