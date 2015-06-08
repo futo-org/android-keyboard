@@ -182,7 +182,7 @@
     <string name="cancel_download_dict" msgid="7843340278507019303">"Anulo"</string>
     <string name="delete_dict" msgid="756853268088330054">"Fshi"</string>
     <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Gjuha e përzgjedhur në pajisjen tënde celulare mund të përdorë një fjalor.&lt;br/&gt; Rekomandojmë &lt;b&gt;shkarkimin&lt;/b&gt; e fjalorit <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> për të përmirësuar përvojën tënde të të shkruarit.&lt;br/&gt; &lt;br/&gt; Shkarkimi mund të zgjasë një ose dy minuta përmes rrjetit 3G. Mund të aplikohen tarifa nëse nuk ke një &lt;b&gt;plan të dhënash të pakufizuara&lt;/b&gt;.&lt;br/&gt; Nëse nuk je i sigurt se cilin plan të dhënash ke, rekomandojmë të gjesh një lidhje Wi-Fi për të filluar automatikisht shkarkimin.&lt;br/&gt; &lt;br/&gt; Këshillë! Mund të shkarkosh dhe heqësh fjalorë duke shkuar te menyja &lt;b&gt;\"Cilësimet e gjuhës dhe hyrjeve\"&lt;/b&gt; të pajisjes tënde celulare."</string>
-    <string name="download_over_metered" msgid="1643065851159409546">"Shkarko tani (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> megabajt)"</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Shkarko tani (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Shkarko nga Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Mund të përdoret një fjalor për <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Shtyp për të rishikuar dhe shkarkuar"</string>

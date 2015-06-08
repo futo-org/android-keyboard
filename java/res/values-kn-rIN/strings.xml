@@ -24,9 +24,9 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಹುಡುಕು"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"ಕಾಗುಣಿತ ಪರೀಕ್ಷಕವು ನಿಮ್ಮ ಸಂಪರ್ಕ ಪಟ್ಟಿಯ ಮಾಹಿತಿಯನ್ನು ಬಳಸಿಕೊಳ್ಳುತ್ತದೆ"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ಕೀಲಿಯನ್ನು ಒತ್ತಿದಾಗ ವೈಬ್ರೇಷನ್‌"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀಲಿಯನ್ನು ಒತ್ತಿದಾಗ ಶಬ್ದಮಾಡು"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀ ಒತ್ತಿದಾಗ ಶಬ್ದಮಾಡು"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ಕೀ ಒತ್ತಿದಾಗ ಪಾಪ್ ಅಪ್‌ ಮಾಡು"</string>
-    <string name="settings_screen_preferences" msgid="2696713156722014624">"ಆದ್ಯತೆಗಳು"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"ಪ್ರಾಶಸ್ತ್ಯಗಳು"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"ಖಾತೆಗಳ ಗೌಪ್ಯತೆ"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"ಗೋಚರತೆಯ ಲೇಔಟ್‌ಗಳ"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ಗೆಸ್ಚರ್ ಟೈಪಿಂಗ್"</string>

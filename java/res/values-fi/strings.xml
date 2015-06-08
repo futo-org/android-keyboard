@@ -84,7 +84,7 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynaaminen kelluva esikatselu"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Näytä ehdotettu sana piirron aikana"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Ilmausele"</string>
-    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Lisää välilyöntejä eleiden aikana liukumalla välilyöntinäppäim."</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Lisää välilyöntejä eleiden aikana liukumalla välilyöntinäppäimelle"</string>
     <string name="voice_input" msgid="3583258583521397548">"Äänisyötenäppäin"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Äänen syöttötapoja ei ole otettu käyttöön. Tarkista Kieli ja syöttötapa -asetukset."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Määritä syöttötavat"</string>
@@ -115,7 +115,7 @@
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (perinteinen)"</string>
     <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tiivis)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Ei kieltä (aakkoset)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Aakkoset (QWERTY)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"aakkoset (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Aakkoset (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Aakkoset (AZERTY)"</string>
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Aakkoset (Dvorak)"</string>
@@ -135,7 +135,7 @@
     <string name="not_now" msgid="6172462888202790482">"Ei nyt"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Syöttötyyli on jo olemassa: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Painalluksen värinän kesto"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Näppäinpainalluksen äänenvoim."</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Näppäinpainalluksen äänenvoimakkuus"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Pitkän painalluksen viive"</string>
     <string name="button_default" msgid="3988017840431881491">"Oletusarvot"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Tervetuloa käyttämään sovellusta <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
