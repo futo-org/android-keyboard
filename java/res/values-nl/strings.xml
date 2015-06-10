@@ -50,7 +50,7 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Schakelknop voor taal ook van toepassing op andere invoermethoden"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Schakelknop voor taal"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Weergeven wanneer meerdere invoertalen zijn geselecteerd"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Vertr.sluiten toetspop-up"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Pop-up vertraagd sluiten"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Geen vertraging"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standaard"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
@@ -78,13 +78,13 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Zeer agressief"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Suggesties voor volgend woord"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Het vorige woord gebruiken bij het doen van suggesties"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Typen via tekenen inschakelen"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Voer een woord in door van letter naar letter te schuiven"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Bewegingsinvoer inschakelen"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Voer een woord in door van letter naar letter te bewegen"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Gebarenspoor weergeven"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynamisch zwevend voorbeeld"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Het voorgestelde woord weergeven tijdens het tekenen"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gebaar voor woordgroep"</string>
-    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Spaties invoeren bij gebaren door naar de spatietoets te bewegen"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Spaties invoeren door naar de spatietoets te bewegen"</string>
     <string name="voice_input" msgid="3583258583521397548">"Toets voor spraakinvoer"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Geen spraakinvoermethoden ingeschakeld. Ga naar \'Instellingen voor taal en invoer\'."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Invoermethoden configureren"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Dezelfde invoerstijl bestaat al: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Trilingsduur bij toetsgebruik"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Geluidsvolume bij toetsgebruik"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Vertraging toets lang indrukkn"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Lengte toetsinvoer"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji voor fysiek toetsenbord"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Emoji-palet weergeven met fysieke Alt-toets"</string>
     <string name="button_default" msgid="3988017840431881491">"Standaard"</string>
