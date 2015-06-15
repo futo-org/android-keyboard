@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"گزینه‌های ورودی"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"جستجوی نام مخاطبین"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"پیدا کردن نام مخاطبین"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"غلط‌گیر املا از ورودی‌های لیست مخاطبین شما استفاده می‌کند"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"لرزش با فشار کلید"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"صدا با فشار کلید"</string>
@@ -60,7 +60,7 @@
     <string name="use_personalized_dicts" msgid="5167396352105467626">"پیشنهادات شخصی شده"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"بهبود <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"نقطه با دو فاصله"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"با دوبار ضربه روی دکمه فاصله نقطه با یک فاصله بعد آن درج می‌شود"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"با دو بار ضربه روی دکمه فاصله، نقطه بعلاوه فاصله‌ای بعد آن درج می‌شود"</string>
     <string name="auto_cap" msgid="1719746674854628252">"بزرگ‌کردن خودکار حروف"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"بزرگ‌نویسی کلمه اول هر جمله"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"فرهنگ لغت شخصی"</string>
@@ -202,7 +202,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ویرایش کلمه"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ویرایش"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"حذف"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"کلمه‌ای در فرهنگ لغت کاربر شما موجود نیست. می‌توانید با لمس کردن دکمه افزودن (+) یک کلمه را اضافه کنید."</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"کلمه‌ای در فرهنگ لغت کاربر شما موجود نیست. می‌توانید با لمس کردن دکمه به‌علاوه (+) کلمه اضافه کنید."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"برای همه زبان‌ها"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"زبان‌های بیشتر…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"حذف"</string>
