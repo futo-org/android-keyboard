@@ -246,13 +246,10 @@ public final class UpdateHandler {
             }
             metadataRequest.setAllowedOverRoaming(res.getBoolean(R.bool.allow_over_roaming));
         }
-        final boolean notificationVisible = updateNow
-                ? res.getBoolean(R.bool.display_notification_for_user_requested_update)
-                : res.getBoolean(R.bool.display_notification_for_auto_update);
 
         metadataRequest.setTitle(res.getString(R.string.download_description));
-        metadataRequest.setNotificationVisibility(notificationVisible
-                ? Request.VISIBILITY_VISIBLE : Request.VISIBILITY_HIDDEN);
+        // Do not show the notification when downloading the metadata.
+        metadataRequest.setNotificationVisibility(Request.VISIBILITY_HIDDEN);
         metadataRequest.setVisibleInDownloadsUi(
                 res.getBoolean(R.bool.metadata_downloads_visible_in_download_UI));
 
