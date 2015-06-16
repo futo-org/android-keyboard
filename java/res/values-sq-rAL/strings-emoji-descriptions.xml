@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2014, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<!-- 
+    These Emoji symbols are unsupported by TTS.
+    TODO: Remove this file when TTS/TalkBack support these Emoji symbols.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="spoken_emoji_00A9" msgid="2859822817116803638">"Shenja e të drejtës së autorit"</string>
+    <string name="spoken_emoji_00AE" msgid="7708335454134589027">"Shenja e regjistruar"</string>
+    <string name="spoken_emoji_203C" msgid="153340916701508663">"Dy pikëçuditje"</string>
+    <string name="spoken_emoji_2049" msgid="4877256448299555371">"Pikëçuditje dhe pikëpyetje"</string>
+    <string name="spoken_emoji_2122" msgid="9188440722954720429">"Shenjë marke tregtare"</string>
+    <string name="spoken_emoji_2139" msgid="9114342638917304327">"Burim informacioni"</string>
+    <string name="spoken_emoji_2194" msgid="8055202727034946680">"Shigjetë majtas-djathtas"</string>
+    <string name="spoken_emoji_2195" msgid="8028122253301087407">"Shigjetë lart-poshtë"</string>
+    <string name="spoken_emoji_2196" msgid="4019164898967854363">"Shigjetë veriperëndim"</string>
+    <string name="spoken_emoji_2197" msgid="4255723717709017801">"Shigjetë verilindje"</string>
+    <string name="spoken_emoji_2198" msgid="1452063451313622090">"Shigjetë juglindje"</string>
+    <string name="spoken_emoji_2199" msgid="6942722693368807849">"Shigjetë jugperëndim"</string>
+    <string name="spoken_emoji_21A9" msgid="5204750172335111188">"Shigjetë majtas me grremç"</string>
+    <string name="spoken_emoji_21AA" msgid="3950259884359247006">"Shigjetë djathtas me grremç"</string>
+    <string name="spoken_emoji_231A" msgid="6751448803233874993">"Orë"</string>
+    <string name="spoken_emoji_231B" msgid="5956428809948426182">"Orë qelqi"</string>
+    <string name="spoken_emoji_23E9" msgid="4022497733535162237">"Trekëndësh i dyfishtë i zi me drejtim djathtas"</string>
+    <string name="spoken_emoji_23EA" msgid="2251396938087774944">"Trekëndësh i dyfishtë i zi me drejtim majtas"</string>
+    <string name="spoken_emoji_23EB" msgid="3746885195641491865">"Trekëndësh i dyfishtë i zi me drejtim lart"</string>
+    <string name="spoken_emoji_23EC" msgid="7852372752901163416">"Trekëndësh i dyfishtë i zi me drejtim poshtë"</string>
+    <string name="spoken_emoji_23F0" msgid="8474219588750627870">"Orë me zile"</string>
+    <string name="spoken_emoji_23F3" msgid="166900119581024371">"Orë me rërë"</string>
+    <string name="spoken_emoji_24C2" msgid="3948348737566038470">"Germa e madhe latine e rrethuar M"</string>
+    <string name="spoken_emoji_25AA" msgid="7865181015100227349">"Katror i vogël i zi"</string>
+    <string name="spoken_emoji_25AB" msgid="6446532820937381457">"Katror i vogël i bardhë"</string>
+    <string name="spoken_emoji_25B6" msgid="2423897708496040947">"Trekëndësh i zi me drejtim djathtas"</string>
+    <string name="spoken_emoji_25C0" msgid="3595083440074484934">"Trekëndësh i zi me drejtim majtas"</string>
+    <string name="spoken_emoji_25FB" msgid="4838691986881215419">"Katror mesatar i bardhë"</string>
+    <string name="spoken_emoji_25FC" msgid="7008859564991191050">"Katror mesatar i zi"</string>
+    <string name="spoken_emoji_25FD" msgid="7673439755069217479">"Katror i vogël mesatar i bardhë"</string>
+    <string name="spoken_emoji_25FE" msgid="6782214109919768923">"Katror i vogël mesatar i zi"</string>
+    <string name="spoken_emoji_2600" msgid="2272722634618990413">"Diell i zi me rreze"</string>
+    <string name="spoken_emoji_2601" msgid="6205136889311537150">"Re"</string>
+    <string name="spoken_emoji_260E" msgid="8670395193046424238">"Telefon i zi"</string>
+    <string name="spoken_emoji_2611" msgid="4530550203347054611">"Kuti votimi e verifikuar"</string>
+    <string name="spoken_emoji_2614" msgid="1612791247861229500">"Çadër me pika shiu"</string>
+    <string name="spoken_emoji_2615" msgid="3320562382424018588">"Pije e nxehtë"</string>
+    <string name="spoken_emoji_261D" msgid="4690554173549768467">"Indeks i bardhë me drejtim lart"</string>
+    <string name="spoken_emoji_263A" msgid="3170094381521989300">"Fytyrë e bardhë e buzëqeshur"</string>
+    <string name="spoken_emoji_2648" msgid="4621241062667020673">"Dashi"</string>
+    <string name="spoken_emoji_2649" msgid="7694461245947059086">"Demi"</string>
+    <string name="spoken_emoji_264A" msgid="1258074605878705030">"Binjakët"</string>
+    <string name="spoken_emoji_264B" msgid="4409219914377810956">"Gaforrja"</string>
+    <string name="spoken_emoji_264C" msgid="6520255367817054163">"Luani"</string>
+    <string name="spoken_emoji_264D" msgid="1504758945499854018">"Virgjëresha"</string>
+    <string name="spoken_emoji_264E" msgid="2354847104530633519">"Peshorja"</string>
+    <string name="spoken_emoji_264F" msgid="5822933280406416112">"Akrepi"</string>
+    <string name="spoken_emoji_2650" msgid="4832481156714796163">"Shigjetari"</string>
+    <string name="spoken_emoji_2651" msgid="840953134601595090">"Bricjapi"</string>
+    <string name="spoken_emoji_2652" msgid="3586925968718775281">"Ujori"</string>
+    <string name="spoken_emoji_2653" msgid="8420547731496254492">"Peshqit"</string>
+    <string name="spoken_emoji_2660" msgid="4541170554542412536">"Lulja maç i zi"</string>
+    <string name="spoken_emoji_2663" msgid="3669352721942285724">"Lulja spathi i zi"</string>
+    <string name="spoken_emoji_2665" msgid="6347941599683765843">"Lulja kupë e zezë"</string>
+    <string name="spoken_emoji_2666" msgid="8296769213401115999">"Lulja karo e zezë"</string>
+    <string name="spoken_emoji_2668" msgid="7063148281053820386">"Burime termale"</string>
+    <string name="spoken_emoji_267B" msgid="21716857176812762">"Simboli i zi i riciklimit universal"</string>
+    <string name="spoken_emoji_267F" msgid="8833496533226475443">"Simboli i karriges me rrota"</string>
+    <string name="spoken_emoji_2693" msgid="7443148847598433088">"Spirancë"</string>
+    <string name="spoken_emoji_26A0" msgid="6272635532992727510">"Tabelë paralajmërimi"</string>
+    <string name="spoken_emoji_26A1" msgid="5604749644693339145">"Tabela \"Tension i lartë\""</string>
+    <string name="spoken_emoji_26AA" msgid="8005748091690377153">"Rreth mesatar i bardhë"</string>
+    <string name="spoken_emoji_26AB" msgid="1655910278422753244">"Rreth mesatar i zi"</string>
+    <string name="spoken_emoji_26BD" msgid="1545218197938889737">"Top futbolli"</string>
+    <string name="spoken_emoji_26BE" msgid="8959760533076498209">"Bejsboll"</string>
+    <string name="spoken_emoji_26C4" msgid="3045791757044255626">"Burrë dëbore pa dëborë"</string>
+    <string name="spoken_emoji_26C5" msgid="5580129409712578639">"Diell mbrapa reve"</string>
+    <string name="spoken_emoji_26CE" msgid="8963656417276062998">"Ofjukus (mbajtësi i gjarprit)"</string>
+    <string name="spoken_emoji_26D4" msgid="2231451988209604130">"Ndalohet hyrja"</string>
+    <string name="spoken_emoji_26EA" msgid="7513319636103804907">"Kishë"</string>
+    <string name="spoken_emoji_26F2" msgid="7134115206158891037">"Burim"</string>
+    <string name="spoken_emoji_26F3" msgid="4912302210162075465">"Flamur në vrimë"</string>
+    <string name="spoken_emoji_26F5" msgid="4766328116769075217">"Varkë lundrimi"</string>
+    <string name="spoken_emoji_26FA" msgid="5888017494809199037">"Tendë"</string>
+    <string name="spoken_emoji_26FD" msgid="2417060622927453534">"Pompë karburanti"</string>
+    <string name="spoken_emoji_2702" msgid="4005741160717451912">"Gërshërë të zeza"</string>
+    <string name="spoken_emoji_2705" msgid="164605766946697759">"Shenjë e bardhë e rënduar verifikimi"</string>
+    <string name="spoken_emoji_2708" msgid="7153840886849268988">"Aeroplan"</string>
+    <string name="spoken_emoji_2709" msgid="2217319160724311369">"Zarf"</string>
+    <string name="spoken_emoji_270A" msgid="508347232762319473">"Grusht i ngritur"</string>
+    <string name="spoken_emoji_270B" msgid="6640562128327753423">"Dorë e ngritur"</string>
+    <string name="spoken_emoji_270C" msgid="1344288035704944581">"Dorë fitoreje"</string>
+    <string name="spoken_emoji_270F" msgid="6108251586067318718">"Laps"</string>
+    <string name="spoken_emoji_2712" msgid="6320544535087710482">"Majë pene e zezë"</string>
+    <string name="spoken_emoji_2714" msgid="1968242800064001654">"Shenjë e rënduar verifikimi"</string>
+    <string name="spoken_emoji_2716" msgid="511941294762977228">"X e rënduar e shumëzimit"</string>
+    <string name="spoken_emoji_2728" msgid="5650330815808691881">"Xixëllima"</string>
+    <string name="spoken_emoji_2733" msgid="8915809595141157327">"Yllth me tetë cepa"</string>
+    <string name="spoken_emoji_2734" msgid="4846583547980754332">"Yll i zi me tetë cepa"</string>
+    <string name="spoken_emoji_2744" msgid="4350636647760161042">"Flok dëbore"</string>
+    <string name="spoken_emoji_2747" msgid="3718282973916474455">"Xixë"</string>
+    <string name="spoken_emoji_274C" msgid="2752145886733295314">"Shenjë kryqëzimi"</string>
+    <string name="spoken_emoji_274E" msgid="4262918689871098338">"Shenjë kryqëzimi i negatives në katror"</string>
+    <string name="spoken_emoji_2753" msgid="6935897159942119808">"Zbukurim i pikëpyetjes së zezë"</string>
+    <string name="spoken_emoji_2754" msgid="7277504915105532954">"Zbukurim i pikëpyetjes së bardhë"</string>
+    <string name="spoken_emoji_2755" msgid="6853076969826960210">"Zbukurim i pikëçuditjes së bardhë"</string>
+    <string name="spoken_emoji_2757" msgid="3707907828776912174">"Simbol i pikëçuditjes së rënduar"</string>
+    <string name="spoken_emoji_2764" msgid="4214257843609432167">"Zemër e zezë e rënduar"</string>
+    <string name="spoken_emoji_2795" msgid="6563954833786162168">"Shenjë e plusit të rënduar"</string>
+    <string name="spoken_emoji_2796" msgid="5990926508250772777">"Shenjë e minusit të rënduar"</string>
+    <string name="spoken_emoji_2797" msgid="24694184172879174">"Shenjë e pjesëtimit të rënduar"</string>
+    <string name="spoken_emoji_27A1" msgid="3513434778263100580">"Shigjetë e zezë djathtas"</string>
+    <string name="spoken_emoji_27B0" msgid="203395646864662198">"Lak i përdredhur"</string>
+    <string name="spoken_emoji_27BF" msgid="4940514642375640510">"Lak i përdredhur dy herë"</string>
+    <string name="spoken_emoji_2934" msgid="9062130477982973457">"Shigjetë me drejtim djathtas pastaj lart"</string>
+    <string name="spoken_emoji_2935" msgid="6198710960720232074">"Shigjetë me drejtim djathtas pastaj poshtë"</string>
+    <string name="spoken_emoji_2B05" msgid="4813405635410707690">"Shigjetë e zezë majtas"</string>
+    <string name="spoken_emoji_2B06" msgid="1223172079106250748">"Shigjetë e zezë lart"</string>
+    <string name="spoken_emoji_2B07" msgid="1599124424746596150">"Shigjetë e zezë poshtë"</string>
+    <string name="spoken_emoji_2B1B" msgid="3461247311988501626">"Katror i madh i zi"</string>
+    <string name="spoken_emoji_2B1C" msgid="5793146430145248915">"Katror i madh i bardhë"</string>
+    <string name="spoken_emoji_2B50" msgid="3850845519526950524">"Yll mesatar i bardhë"</string>
+    <string name="spoken_emoji_2B55" msgid="9137882158811541824">"Rreth i madh i rënduar"</string>
+    <string name="spoken_emoji_3030" msgid="4609172241893565639">"Vizë lidhëse e dallgëzuar"</string>
+    <string name="spoken_emoji_303D" msgid="2545833934975907505">"Shenjë alternimi të pjesës"</string>
+    <string name="spoken_emoji_3297" msgid="928912923628973800">"Hieroglif i rrethuar përgëzimi"</string>
+    <string name="spoken_emoji_3299" msgid="3930347573693668426">"Hieroglif i rrethuar sekreti"</string>
+    <string name="spoken_emoji_1F004" msgid="1705216181345894600">"Dragoi i kuq i pllakës \"Mahjong\""</string>
+    <string name="spoken_emoji_1F0CF" msgid="7601493592085987866">"Xholi i zi në lojën me letra"</string>
+    <string name="spoken_emoji_1F170" msgid="3817698686602826773">"Grupi i gjakut A"</string>
+    <string name="spoken_emoji_1F171" msgid="3684218589626650242">"Grupi i gjakut B"</string>
+    <string name="spoken_emoji_1F17E" msgid="2978809190364779029">"Grupi i gjakut O"</string>
+    <string name="spoken_emoji_1F17F" msgid="463634348668462040">"Vend parkimi"</string>
+    <string name="spoken_emoji_1F18E" msgid="1650705325221496768">"Grupi i gjakut AB"</string>
+    <string name="spoken_emoji_1F191" msgid="5386969264431429221">"\"CL\" në katror"</string>
+    <string name="spoken_emoji_1F192" msgid="8324226436829162496">"\"Elegant\" në katror"</string>
+    <string name="spoken_emoji_1F193" msgid="4731758603321515364">"\"I lirë\" në katror"</string>
+    <string name="spoken_emoji_1F194" msgid="4903128609556175887">"\"ID\" në katror"</string>
+    <string name="spoken_emoji_1F195" msgid="1433142500411060924">"\"I ri\" në katror"</string>
+    <string name="spoken_emoji_1F196" msgid="8825160701159634202">"\"Jo mirë\" në katror"</string>
+    <string name="spoken_emoji_1F197" msgid="7841079241554176535">"\"Në rregull!\" në katror"</string>
+    <string name="spoken_emoji_1F198" msgid="7020298909426960622">"\"SOS\" në katror"</string>
+    <string name="spoken_emoji_1F199" msgid="5971252667136235630">"\"Pikëçuditje\" në katror"</string>
+    <string name="spoken_emoji_1F19A" msgid="4557270135899843959">"\"vs\" në katror"</string>
+    <string name="spoken_emoji_1F201" msgid="7000490044681139002">"\"Katakana\" në katror"</string>
+    <string name="spoken_emoji_1F202" msgid="8560906958695043947">"\"Shërbimi katakana\" në katror"</string>
+    <string name="spoken_emoji_1F21A" msgid="1496435317324514033">"\"Hieroglifi pa pagesë\" në katror"</string>
+    <string name="spoken_emoji_1F22F" msgid="609797148862445402">"\"Hieroglifi e rezervuar\" në katror"</string>
+    <string name="spoken_emoji_1F232" msgid="8125716331632035820">"\"Hieroglifi e ndaluar\" në katror"</string>
+    <string name="spoken_emoji_1F233" msgid="8749401090457355028">"\"Hieroglifi boshe\" në katror"</string>
+    <string name="spoken_emoji_1F234" msgid="3546951604285970768">"\"Hieroglifi pranimi\" në katror"</string>
+    <string name="spoken_emoji_1F235" msgid="5320186982841793711">"\"Hieroglifi zënie e plotë\" në katror"</string>
+    <string name="spoken_emoji_1F236" msgid="879755752069393034">"\"Hieroglifi e paguar\" në katror"</string>
+    <string name="spoken_emoji_1F237" msgid="6741807001205851437">"\"Hieroglifi mujore\" në katror"</string>
+    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"\"Hieroglifi aplikacioni\" në katror"</string>
+    <string name="spoken_emoji_1F239" msgid="1634067311597618959">"\"Hieroglifi zbritjeje\" në katror"</string>
+    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"\"Hieroglifi në biznes\" në katror"</string>
+    <string name="spoken_emoji_1F250" msgid="6586943922806727907">"\"Hieroglifi avantazhi\" në rreth"</string>
+    <string name="spoken_emoji_1F251" msgid="9099032855993346948">"\"Hieroglifi pranimi\" në rreth"</string>
+    <string name="spoken_emoji_1F300" msgid="4720098285295840383">"Ciklon"</string>
+    <string name="spoken_emoji_1F301" msgid="3601962477653752974">"Mjegull"</string>
+    <string name="spoken_emoji_1F302" msgid="3404357123421753593">"Çadër e mbyllur"</string>
+    <string name="spoken_emoji_1F303" msgid="3899301321538188206">"Natë me yje"</string>
+    <string name="spoken_emoji_1F304" msgid="2767148930689050040">"Lindje dielli mbi male"</string>
+    <string name="spoken_emoji_1F305" msgid="9165812924292061196">"Lindje dielli"</string>
+    <string name="spoken_emoji_1F306" msgid="5889294736109193104">"Peizazhi qyteti në muzg"</string>
+    <string name="spoken_emoji_1F307" msgid="2714290867291163713">"Perëndim mbi ndërtesa"</string>
+    <string name="spoken_emoji_1F308" msgid="688704703985173377">"Ylber"</string>
+    <string name="spoken_emoji_1F309" msgid="6217981957992313528">"Urë natën"</string>
+    <string name="spoken_emoji_1F30A" msgid="4329309263152110893">"Dallgë uji"</string>
+    <string name="spoken_emoji_1F30B" msgid="5729430693700923112">"Vullkan"</string>
+    <string name="spoken_emoji_1F30C" msgid="2961230863217543082">"Rruga e Qumështit"</string>
+    <string name="spoken_emoji_1F30D" msgid="1113905673331547953">"Toka, Evropë-Afrikë"</string>
+    <string name="spoken_emoji_1F30E" msgid="5278512600749223671">"Toka, Amerikat"</string>
+    <string name="spoken_emoji_1F30F" msgid="5718144880978707493">"Toka, Azi-Australi"</string>
+    <string name="spoken_emoji_1F310" msgid="2959618582975247601">"Globi me meridianë"</string>
+    <string name="spoken_emoji_1F311" msgid="623906380914895542">"Simboli i hënës së re"</string>
+    <string name="spoken_emoji_1F312" msgid="4458575672576125401">"Simboli i gjysmëhënës së zbehur"</string>
+    <string name="spoken_emoji_1F313" msgid="7599181787989497294">"Simboli i hënës së tremujorit të parë"</string>
+    <string name="spoken_emoji_1F314" msgid="4898293184964365413">"Simboli i hënës gungaçe të zbehur"</string>
+    <string name="spoken_emoji_1F315" msgid="3218117051779496309">"Simboli i hënës së plotë"</string>
+    <string name="spoken_emoji_1F316" msgid="2061317145777689569">"Simboli i hënës gungaçe të venitur"</string>
+    <string name="spoken_emoji_1F317" msgid="2721090687319539049">"Simboli i hënës së tremujorit të fundit"</string>
+    <string name="spoken_emoji_1F318" msgid="3814091755648887570">"Simboli i gjysmëhënës së venitur"</string>
+    <string name="spoken_emoji_1F319" msgid="4074299824890459465">"Gjysmëhënë"</string>
+    <string name="spoken_emoji_1F31A" msgid="3092285278116977103">"Hënë e re me fytyrë"</string>
+    <string name="spoken_emoji_1F31B" msgid="2658562138386927881">"Hëna e tremujorit të parë me fytyrë"</string>
+    <string name="spoken_emoji_1F31C" msgid="7914768515547867384">"Hëna e tremujorit të fundit me fytyrë"</string>
+    <string name="spoken_emoji_1F31D" msgid="1925730459848297182">"Hëna e plotë me fytyrë"</string>
+    <string name="spoken_emoji_1F31E" msgid="8022112382524084418">"Dielli me fytyrë"</string>
+    <string name="spoken_emoji_1F31F" msgid="1051661214137766369">"Yll i përflakur"</string>
+    <string name="spoken_emoji_1F320" msgid="5450591979068216115">"Meteor"</string>
+    <string name="spoken_emoji_1F330" msgid="3115760035618051575">"Gështenjë"</string>
+    <string name="spoken_emoji_1F331" msgid="5658888205290008691">"Filiz"</string>
+    <string name="spoken_emoji_1F332" msgid="2935650450421165938">"Pemë me gjelbërim të përhershëm"</string>
+    <string name="spoken_emoji_1F333" msgid="5898847427062482675">"Pemë gjetherënëse"</string>
+    <string name="spoken_emoji_1F334" msgid="6183375224678417894">"Palmë"</string>
+    <string name="spoken_emoji_1F335" msgid="5352418412103584941">"Kaktus"</string>
+    <string name="spoken_emoji_1F337" msgid="3839107352363566289">"Tulipan"</string>
+    <string name="spoken_emoji_1F338" msgid="6389970364260468490">"Qershi e lulëzuar"</string>
+    <string name="spoken_emoji_1F339" msgid="9128891447985256151">"Trëndafil"</string>
+    <string name="spoken_emoji_1F33A" msgid="2025828400095233078">"Hibiskus"</string>
+    <string name="spoken_emoji_1F33B" msgid="8163868254348448552">"Luledielli"</string>
+    <string name="spoken_emoji_1F33C" msgid="6850371206262335812">"Lulëzim"</string>
+    <string name="spoken_emoji_1F33D" msgid="9033484052864509610">"Misër"</string>
+    <string name="spoken_emoji_1F33E" msgid="2540173396638444120">"Oriz"</string>
+    <string name="spoken_emoji_1F33F" msgid="4384823344364908558">"Bar"</string>
+    <string name="spoken_emoji_1F340" msgid="3494255459156499305">"Tërfil me katër gjethe"</string>
+    <string name="spoken_emoji_1F341" msgid="4581959481754990158">"Gjethe panje"</string>
+    <string name="spoken_emoji_1F342" msgid="3119068426871821222">"Gjethe e rënë"</string>
+    <string name="spoken_emoji_1F343" msgid="2663317495805149004">"Gjethe duke u valëvitur në erë"</string>
+    <string name="spoken_emoji_1F344" msgid="2738517881678722159">"Këpurdhë"</string>
+    <string name="spoken_emoji_1F345" msgid="6135288642349085554">"Domate"</string>
+    <string name="spoken_emoji_1F346" msgid="2075395322785406367">"Patëllxhan"</string>
+    <string name="spoken_emoji_1F347" msgid="7753453754963890571">"Verige rrushi"</string>
+    <string name="spoken_emoji_1F348" msgid="1247076837284932788">"Pjepër"</string>
+    <string name="spoken_emoji_1F349" msgid="5563054555180611086">"Shalqi"</string>
+    <string name="spoken_emoji_1F34A" msgid="4688661208570160524">"Mandarinë"</string>
+    <string name="spoken_emoji_1F34B" msgid="4335318423164185706">"Limon"</string>
+    <string name="spoken_emoji_1F34C" msgid="3712827239858159474">"Banane"</string>
+    <string name="spoken_emoji_1F34D" msgid="7712521967162622936">"Ananas"</string>
+    <string name="spoken_emoji_1F34E" msgid="1859466882598614228">"Mollë e kuqe"</string>
+    <string name="spoken_emoji_1F34F" msgid="8251711032295005633">"Mollë e gjelbër"</string>
+    <string name="spoken_emoji_1F350" msgid="625802980159197701">"Dardhë"</string>
+    <string name="spoken_emoji_1F351" msgid="4269460120610911895">"Pjeshkë"</string>
+    <string name="spoken_emoji_1F352" msgid="965600953360182635">"Qershi"</string>
+    <string name="spoken_emoji_1F353" msgid="7068623879906925592">"Luleshtrydhe"</string>
+    <string name="spoken_emoji_1F354" msgid="45162285238888494">"Hamburger"</string>
+    <string name="spoken_emoji_1F355" msgid="9157587635526433283">"Copë pice"</string>
+    <string name="spoken_emoji_1F356" msgid="2667196119149852244">"Mish në kockë"</string>
+    <string name="spoken_emoji_1F357" msgid="8022817413851052256">"Këmbë pule"</string>
+    <string name="spoken_emoji_1F358" msgid="3042693264748036476">"Biskotë me oriz"</string>
+    <string name="spoken_emoji_1F359" msgid="3988148661730121958">"Top orizi"</string>
+    <string name="spoken_emoji_1F35A" msgid="1763824172198327268">"Oriz i gatuar"</string>
+    <string name="spoken_emoji_1F35B" msgid="62530406745717835">"Mish me oriz"</string>
+    <string name="spoken_emoji_1F35C" msgid="7537756539198945509">"Tas që avullon"</string>
+    <string name="spoken_emoji_1F35D" msgid="8173523083861875196">"Makarona"</string>
+    <string name="spoken_emoji_1F35E" msgid="2935428307894662571">"Bukë"</string>
+    <string name="spoken_emoji_1F35F" msgid="4840297386785728443">"Patate të skuqura"</string>
+    <string name="spoken_emoji_1F360" msgid="4094659855684686801">"Patate të pjekura"</string>
+    <string name="spoken_emoji_1F361" msgid="6475486395784096109">"Dango"</string>
+    <string name="spoken_emoji_1F362" msgid="5004692577661076275">"Oden"</string>
+    <string name="spoken_emoji_1F363" msgid="1606603765717743806">"Sushi"</string>
+    <string name="spoken_emoji_1F364" msgid="6550457766169570811">"Karkalec i skuqur"</string>
+    <string name="spoken_emoji_1F365" msgid="4963815540953316307">"Kek peshku me formë vorbulle"</string>
+    <string name="spoken_emoji_1F366" msgid="7862401745277049404">"Akullore e butë"</string>
+    <string name="spoken_emoji_1F367" msgid="7447972978281980414">"Akull i shkrirë"</string>
+    <string name="spoken_emoji_1F368" msgid="7790003146142724913">"Akullore"</string>
+    <string name="spoken_emoji_1F369" msgid="7383712944084857350">"Petull e ëmbël"</string>
+    <string name="spoken_emoji_1F36A" msgid="2726271795913042295">"Biskotë"</string>
+    <string name="spoken_emoji_1F36B" msgid="6342163604299875931">"Çokollatë"</string>
+    <string name="spoken_emoji_1F36C" msgid="2168934753998218790">"Karamele"</string>
+    <string name="spoken_emoji_1F36D" msgid="3671507903799975792">"Lëpirëse"</string>
+    <string name="spoken_emoji_1F36E" msgid="4630541402785165902">"Krem karamel"</string>
+    <string name="spoken_emoji_1F36F" msgid="5577915387425169439">"Vazo me mjaltë"</string>
+    <string name="spoken_emoji_1F370" msgid="7243244547866114951">"Kek i shkurtër"</string>
+    <string name="spoken_emoji_1F371" msgid="6731527040552916358">"Tabaka ushqimi"</string>
+    <string name="spoken_emoji_1F372" msgid="1635035323832181733">"Tenxhere ushqimi"</string>
+    <string name="spoken_emoji_1F373" msgid="7799289534289221045">"Gatim"</string>
+    <string name="spoken_emoji_1F374" msgid="5973820884987069131">"Pirun dhe thikë"</string>
+    <string name="spoken_emoji_1F375" msgid="1074832087699617700">"Filxhan çaji pa bisht"</string>
+    <string name="spoken_emoji_1F376" msgid="6499274685584852067">"Shishe sake dhe filxhan"</string>
+    <string name="spoken_emoji_1F377" msgid="1762398562314172075">"Gotë vere"</string>
+    <string name="spoken_emoji_1F378" msgid="5528234560590117516">"Gotë kokteji"</string>
+    <string name="spoken_emoji_1F379" msgid="790581290787943325">"Pije tropikale"</string>
+    <string name="spoken_emoji_1F37A" msgid="391966822450619516">"Krikëll"</string>
+    <string name="spoken_emoji_1F37B" msgid="9015043286465670662">"Kriklla duke u trokitur"</string>
+    <string name="spoken_emoji_1F37C" msgid="2532113819464508894">"Biberon"</string>
+    <string name="spoken_emoji_1F380" msgid="3487363857092458827">"Fjongo"</string>
+    <string name="spoken_emoji_1F381" msgid="614180683680675444">"Dhuratë e mbështjellë"</string>
+    <string name="spoken_emoji_1F382" msgid="4720497171946687501">"Kek ditëlindjeje"</string>
+    <string name="spoken_emoji_1F383" msgid="3536505941578757623">"Kungull hallouni"</string>
+    <string name="spoken_emoji_1F384" msgid="1797870204479059004">"Pemë Krishtlindjesh"</string>
+    <string name="spoken_emoji_1F385" msgid="1754174063483626367">"Babagjyshi i Vitit të Ri"</string>
+    <string name="spoken_emoji_1F386" msgid="2130445450758114746">"Fishekzjarrë"</string>
+    <string name="spoken_emoji_1F387" msgid="3403182563117999933">"Fishekzjarr xixëllues"</string>
+    <string name="spoken_emoji_1F388" msgid="2903047203723251804">"Tullumbace"</string>
+    <string name="spoken_emoji_1F389" msgid="2352830665883549388">"Sustë fishekzjarrësh"</string>
+    <string name="spoken_emoji_1F38A" msgid="6280428984773641322">"Top konfeti"</string>
+    <string name="spoken_emoji_1F38B" msgid="4902225837479015489">"Pemë tanabata"</string>
+    <string name="spoken_emoji_1F38C" msgid="7623268024030989365">"Flamuj të kryqëzuar"</string>
+    <string name="spoken_emoji_1F38D" msgid="8237542796124408528">"Dekorim pishe"</string>
+    <string name="spoken_emoji_1F38E" msgid="5373397476238212371">"Kukulla japoneze"</string>
+    <string name="spoken_emoji_1F38F" msgid="8754091376829552844">"Shirit gjarpërues krapi"</string>
+    <string name="spoken_emoji_1F390" msgid="8903307048095431374">"Zile ere"</string>
+    <string name="spoken_emoji_1F391" msgid="2134952069191911841">"Ceremonia e shikimit të hënës"</string>
+    <string name="spoken_emoji_1F392" msgid="6380405493914304737">"Çantë shkolle"</string>
+    <string name="spoken_emoji_1F393" msgid="6947890064872470996">"Kapele diplomimi"</string>
+    <string name="spoken_emoji_1F3A0" msgid="3572095190082826057">"Kalë karuseli"</string>
+    <string name="spoken_emoji_1F3A1" msgid="4300565511681058798">"Karusel"</string>
+    <string name="spoken_emoji_1F3A2" msgid="15486093912232140">"Tren elektrik"</string>
+    <string name="spoken_emoji_1F3A3" msgid="921739319504942924">"Grep peshkimi dhe peshk"</string>
+    <string name="spoken_emoji_1F3A4" msgid="7497596355346856950">"Mikrofon"</string>
+    <string name="spoken_emoji_1F3A5" msgid="4290497821228183002">"Kamerë filmimi"</string>
+    <string name="spoken_emoji_1F3A6" msgid="26019057872319055">"Kinema"</string>
+    <string name="spoken_emoji_1F3A7" msgid="837856608794094105">"Kufje"</string>
+    <string name="spoken_emoji_1F3A8" msgid="2332260356509244587">"Paletë piktori"</string>
+    <string name="spoken_emoji_1F3A9" msgid="9045869366525115256">"Kapelë e lartë"</string>
+    <string name="spoken_emoji_1F3AA" msgid="5728760354237132">"Tendë cirku"</string>
+    <string name="spoken_emoji_1F3AB" msgid="1657997517193216284">"Biletë"</string>
+    <string name="spoken_emoji_1F3AC" msgid="4317366554314492152">"Tabelë sinkronizimi"</string>
+    <string name="spoken_emoji_1F3AD" msgid="607157286336130470">"Arte interpretimi"</string>
+    <string name="spoken_emoji_1F3AE" msgid="2902308174671548150">"Videolojë"</string>
+    <string name="spoken_emoji_1F3AF" msgid="5420539221790296407">"Goditje e drejtpërdrejtë"</string>
+    <string name="spoken_emoji_1F3B0" msgid="7440244806527891956">"Makineri me monedhë"</string>
+    <string name="spoken_emoji_1F3B1" msgid="545544382391379234">"Bilardo"</string>
+    <string name="spoken_emoji_1F3B2" msgid="8302262034774787493">"Zara loje"</string>
+    <string name="spoken_emoji_1F3B3" msgid="5180870610771027520">"Lojë me birila"</string>
+    <string name="spoken_emoji_1F3B4" msgid="4723852033266071564">"Letra bixhozi me lule"</string>
+    <string name="spoken_emoji_1F3B5" msgid="1998470239850548554">"Notë muzikore"</string>
+    <string name="spoken_emoji_1F3B6" msgid="3827730457113941705">"Nota të shumta muzikore"</string>
+    <string name="spoken_emoji_1F3B7" msgid="5503403099445042180">"Saksofon"</string>
+    <string name="spoken_emoji_1F3B8" msgid="3985658156795011430">"Kitarë"</string>
+    <string name="spoken_emoji_1F3B9" msgid="5596295757967881451">"Tastierë muzikore"</string>
+    <string name="spoken_emoji_1F3BA" msgid="4284064120340683558">"Trumpetë"</string>
+    <string name="spoken_emoji_1F3BB" msgid="2856598510069988745">"Violinë"</string>
+    <string name="spoken_emoji_1F3BC" msgid="1608424748821446230">"Pentagram muzikor"</string>
+    <string name="spoken_emoji_1F3BD" msgid="5490786111375627777">"Bluzë vrapimi me shirit"</string>
+    <string name="spoken_emoji_1F3BE" msgid="1851613105691627931">"Raketë tenisi dhe top"</string>
+    <string name="spoken_emoji_1F3BF" msgid="6862405997423247921">"Ski dhe çizme skish"</string>
+    <string name="spoken_emoji_1F3C0" msgid="7421420756115104085">"Basketboll dhe kosh"</string>
+    <string name="spoken_emoji_1F3C1" msgid="6926537251677319922">"Flamur me katrorë"</string>
+    <string name="spoken_emoji_1F3C2" msgid="5708596929237987082">"Dërrasë skie"</string>
+    <string name="spoken_emoji_1F3C3" msgid="5850982999510115824">"Vrapues"</string>
+    <string name="spoken_emoji_1F3C4" msgid="8468355585994639838">"Sërfist"</string>
+    <string name="spoken_emoji_1F3C6" msgid="9094474706847545409">"Trofe"</string>
+    <string name="spoken_emoji_1F3C7" msgid="8172206200368370116">"Gara me kuaj"</string>
+    <string name="spoken_emoji_1F3C8" msgid="5619171461277597709">"Futboll amerikan"</string>
+    <string name="spoken_emoji_1F3C9" msgid="6371294008765871043">"Futboll \"ragbi\""</string>
+    <string name="spoken_emoji_1F3CA" msgid="130977831787806932">"Notues"</string>
+    <string name="spoken_emoji_1F3E0" msgid="6277213201655811842">"Shtëpi"</string>
+    <string name="spoken_emoji_1F3E1" msgid="233476176077538885">"Shtëpi me kopsht"</string>
+    <string name="spoken_emoji_1F3E2" msgid="919736380093964570">"Zyrë"</string>
+    <string name="spoken_emoji_1F3E3" msgid="6177606081825094184">"Zyrë postare japoneze"</string>
+    <string name="spoken_emoji_1F3E4" msgid="717377871070970293">"Zyrë postare evropiane"</string>
+    <string name="spoken_emoji_1F3E5" msgid="1350532500431776780">"Spital"</string>
+    <string name="spoken_emoji_1F3E6" msgid="342132788513806214">"Bankë"</string>
+    <string name="spoken_emoji_1F3E7" msgid="6322352038284944265">"Bankomat"</string>
+    <string name="spoken_emoji_1F3E8" msgid="5864918444350599907">"Hotel"</string>
+    <string name="spoken_emoji_1F3E9" msgid="7830416185375326938">"Hotel të dashuruarish"</string>
+    <string name="spoken_emoji_1F3EA" msgid="5081084413084360479">"Dyqan"</string>
+    <string name="spoken_emoji_1F3EB" msgid="7010966528205150525">"Shkollë"</string>
+    <string name="spoken_emoji_1F3EC" msgid="4845978861878295154">"Mapo industriale"</string>
+    <string name="spoken_emoji_1F3ED" msgid="3980316226665215370">"Fabrikë"</string>
+    <string name="spoken_emoji_1F3EE" msgid="1253964276770550248">"Fanar \"izakaja\""</string>
+    <string name="spoken_emoji_1F3EF" msgid="1128975573507389883">"Kështjellë japoneze"</string>
+    <string name="spoken_emoji_1F3F0" msgid="1544632297502291578">"Kështjellë evropiane"</string>
+    <string name="spoken_emoji_1F400" msgid="2063034795679578294">"Mi i madh"</string>
+    <string name="spoken_emoji_1F401" msgid="6736421616217369594">"Mi"</string>
+    <string name="spoken_emoji_1F402" msgid="7276670995895485604">"Dem"</string>
+    <string name="spoken_emoji_1F403" msgid="8045709541897118928">"Buall uji"</string>
+    <string name="spoken_emoji_1F404" msgid="5240777285676662335">"Lopë"</string>
+    <string name="spoken_emoji_1F406" msgid="5163461930159540018">"Leopard"</string>
+    <string name="spoken_emoji_1F407" msgid="6905370221172708160">"Lepur"</string>
+    <string name="spoken_emoji_1F408" msgid="1362164550508207284">"Mace"</string>
+    <string name="spoken_emoji_1F409" msgid="8476130983168866013">"Dragua"</string>
+    <string name="spoken_emoji_1F40A" msgid="1149626786411545043">"Krokodil"</string>
+    <string name="spoken_emoji_1F40B" msgid="5199104921208397643">"Balenë"</string>
+    <string name="spoken_emoji_1F40C" msgid="2704006052881702675">"Kërmill"</string>
+    <string name="spoken_emoji_1F40D" msgid="8648186663643157522">"Gjarpër"</string>
+    <string name="spoken_emoji_1F40E" msgid="7219137467573327268">"Kalë"</string>
+    <string name="spoken_emoji_1F40F" msgid="7834336676729040395">"Dash"</string>
+    <string name="spoken_emoji_1F410" msgid="8686765722255775031">"Dhi"</string>
+    <string name="spoken_emoji_1F411" msgid="3585715397876383525">"Dele"</string>
+    <string name="spoken_emoji_1F412" msgid="4924794582980077838">"Majmun"</string>
+    <string name="spoken_emoji_1F413" msgid="1460475310405677377">"Gjel"</string>
+    <string name="spoken_emoji_1F414" msgid="5857296282631892219">"Pulë"</string>
+    <string name="spoken_emoji_1F415" msgid="5920041074892949527">"Qen"</string>
+    <string name="spoken_emoji_1F416" msgid="4362403392912540286">"Derr"</string>
+    <string name="spoken_emoji_1F417" msgid="6836978415840795128">"Derr i egër"</string>
+    <string name="spoken_emoji_1F418" msgid="7926161463897783691">"Elefant"</string>
+    <string name="spoken_emoji_1F419" msgid="1055233959755784186">"Oktapod"</string>
+    <string name="spoken_emoji_1F41A" msgid="5195666556511558060">"Guaskë spirale"</string>
+    <string name="spoken_emoji_1F41B" msgid="7652480167465557832">"Tartabiq"</string>
+    <string name="spoken_emoji_1F41C" msgid="1123461148697574239">"Milingonë"</string>
+    <string name="spoken_emoji_1F41D" msgid="718579308764058851">"Bletë"</string>
+    <string name="spoken_emoji_1F41E" msgid="6766305509608115467">"Nusepashkë"</string>
+    <string name="spoken_emoji_1F41F" msgid="1207261298343160838">"Peshk"</string>
+    <string name="spoken_emoji_1F420" msgid="1041145003133609221">"Peshk tropikal"</string>
+    <string name="spoken_emoji_1F421" msgid="1748378324417438751">"Peshk i fryrë"</string>
+    <string name="spoken_emoji_1F422" msgid="4106724877523329148">"Breshkë"</string>
+    <string name="spoken_emoji_1F423" msgid="4077407945958691907">"Zog që del nga veza"</string>
+    <string name="spoken_emoji_1F424" msgid="6911326019270172283">"Zog pule"</string>
+    <string name="spoken_emoji_1F425" msgid="5466514196557885577">"Zog pule me pamje nga para"</string>
+    <string name="spoken_emoji_1F426" msgid="2163979138772892755">"Zog"</string>
+    <string name="spoken_emoji_1F427" msgid="3585670324511212961">"Pinguin"</string>
+    <string name="spoken_emoji_1F428" msgid="7955440808647898579">"Koala"</string>
+    <string name="spoken_emoji_1F429" msgid="5028269352809819035">"Qen qimedredhur"</string>
+    <string name="spoken_emoji_1F42A" msgid="4681926706404032484">"Gamile"</string>
+    <string name="spoken_emoji_1F42B" msgid="2725166074981558322">"Deve baktriane"</string>
+    <string name="spoken_emoji_1F42C" msgid="6764791873413727085">"Delfin"</string>
+    <string name="spoken_emoji_1F42D" msgid="1033643138546864251">"Fytyrë miu"</string>
+    <string name="spoken_emoji_1F42E" msgid="8099223337120508820">"Fytyrë lope"</string>
+    <string name="spoken_emoji_1F42F" msgid="2104743989330781572">"Fytyrë tigri"</string>
+    <string name="spoken_emoji_1F430" msgid="525492897063150160">"Fytyrë lepuri"</string>
+    <string name="spoken_emoji_1F431" msgid="6051358666235016851">"Fytyrë maceje"</string>
+    <string name="spoken_emoji_1F432" msgid="7698001871193018305">"Fytyrë dragoi"</string>
+    <string name="spoken_emoji_1F433" msgid="3762356053512899326">"Balenë gufuese"</string>
+    <string name="spoken_emoji_1F434" msgid="3619943222159943226">"Fytyrë kali"</string>
+    <string name="spoken_emoji_1F435" msgid="59199202683252958">"Fytyrë majmuni"</string>
+    <string name="spoken_emoji_1F436" msgid="340544719369009828">"Fytyrë qeni"</string>
+    <string name="spoken_emoji_1F437" msgid="1219818379784982585">"Fytyrë derri"</string>
+    <string name="spoken_emoji_1F438" msgid="9128124743321008210">"Fytyrë bretkose"</string>
+    <string name="spoken_emoji_1F439" msgid="1424161319554642266">"Fytyrë brejtësi"</string>
+    <string name="spoken_emoji_1F43A" msgid="6727645488430385584">"Fytyrë ujku"</string>
+    <string name="spoken_emoji_1F43B" msgid="5397170068392865167">"Fytyrë ariu"</string>
+    <string name="spoken_emoji_1F43C" msgid="2715995734367032431">"Fytyrë pande"</string>
+    <string name="spoken_emoji_1F43D" msgid="6005480717951776597">"Hundë derri"</string>
+    <string name="spoken_emoji_1F43E" msgid="8917626103219080547">"Gjurmë putrash"</string>
+    <string name="spoken_emoji_1F440" msgid="7144338258163384433">"Sy"</string>
+    <string name="spoken_emoji_1F442" msgid="1905515392292676124">"Vesh"</string>
+    <string name="spoken_emoji_1F443" msgid="1491504447758933115">"Hundë"</string>
+    <string name="spoken_emoji_1F444" msgid="3654613047946080332">"Gojë"</string>
+    <string name="spoken_emoji_1F445" msgid="7024905244040509204">"Gjuhë"</string>
+    <string name="spoken_emoji_1F446" msgid="2150365643636471745">"Gisht tregues për lart"</string>
+    <string name="spoken_emoji_1F447" msgid="8794022344940891388">"Gisht tregues për poshtë"</string>
+    <string name="spoken_emoji_1F448" msgid="3261812959215550650">"Gisht tregues majtas"</string>
+    <string name="spoken_emoji_1F449" msgid="4764447975177805991">"Gisht tregues djathtas"</string>
+    <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"Shenja e grushtit"</string>
+    <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"Shenja e dorës së valëzuar"</string>
+    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"Shenja e dorës \"Në rregull\""</string>
+    <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"Shenja e \"Gishtit lart\""</string>
+    <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"Shenja e \"Gishtit poshtë\""</string>
+    <string name="spoken_emoji_1F44F" msgid="5148753662268213389">"Shenja e duarve në duartrokitje"</string>
+    <string name="spoken_emoji_1F450" msgid="1012021072085157054">"Shenja e duarve të hapura"</string>
+    <string name="spoken_emoji_1F451" msgid="8257466714629051320">"Kurorë"</string>
+    <string name="spoken_emoji_1F452" msgid="4567394011149905466">"Kapelë gruaje"</string>
+    <string name="spoken_emoji_1F453" msgid="5978410551173163010">"Syze"</string>
+    <string name="spoken_emoji_1F454" msgid="348469036193323252">"Kravatë"</string>
+    <string name="spoken_emoji_1F455" msgid="5665118831861433578">"Bluzë"</string>
+    <string name="spoken_emoji_1F456" msgid="1890991330923356408">"Xhinse"</string>
+    <string name="spoken_emoji_1F457" msgid="3904310482655702620">"Fustan"</string>
+    <string name="spoken_emoji_1F458" msgid="5704243858031107692">"Kimono"</string>
+    <string name="spoken_emoji_1F459" msgid="3553148747050035251">"Bikini"</string>
+    <string name="spoken_emoji_1F45A" msgid="1389654639484716101">"Veshje grash"</string>
+    <string name="spoken_emoji_1F45B" msgid="1113293170254222904">"Kuletë"</string>
+    <string name="spoken_emoji_1F45C" msgid="3410257778598006936">"Çantë dore"</string>
+    <string name="spoken_emoji_1F45D" msgid="812176504300064819">"Çantë e vogël"</string>
+    <string name="spoken_emoji_1F45E" msgid="2901741399934723562">"Këpucë burrash"</string>
+    <string name="spoken_emoji_1F45F" msgid="6828566359287798863">"Atlete"</string>
+    <string name="spoken_emoji_1F460" msgid="305863879170420855">"Këpucë me takë të lartë"</string>
+    <string name="spoken_emoji_1F461" msgid="5160493217831417630">"Sandale grash"</string>
+    <string name="spoken_emoji_1F462" msgid="1722897795554863734">"Çizme grash"</string>
+    <string name="spoken_emoji_1F463" msgid="5850772903593010699">"Gjurmë këmbësh"</string>
+    <string name="spoken_emoji_1F464" msgid="1228335905487734913">"Bust në siluetë"</string>
+    <string name="spoken_emoji_1F465" msgid="4461307702499679879">"Buste në siluetë"</string>
+    <string name="spoken_emoji_1F466" msgid="1938873085514108889">"Djalë"</string>
+    <string name="spoken_emoji_1F467" msgid="8237080594860144998">"Vajzë"</string>
+    <string name="spoken_emoji_1F468" msgid="6081300722526675382">"Burrë"</string>
+    <string name="spoken_emoji_1F469" msgid="1090140923076108158">"Grua"</string>
+    <string name="spoken_emoji_1F46A" msgid="5063570981942606595">"Familje"</string>
+    <string name="spoken_emoji_1F46B" msgid="6795882374287327952">"Burrë e grua kapur për duarsh"</string>
+    <string name="spoken_emoji_1F46C" msgid="6844464165783964495">"Dy burra kapur për duarsh"</string>
+    <string name="spoken_emoji_1F46D" msgid="2316773068014053180">"Dy gra kapur për duarsh"</string>
+    <string name="spoken_emoji_1F46E" msgid="5897625605860822401">"Oficer policie"</string>
+    <string name="spoken_emoji_1F46F" msgid="7716871657717641490">"Grua me veshë lepuri"</string>
+    <string name="spoken_emoji_1F470" msgid="6409995400510338892">"Nuse me vello"</string>
+    <string name="spoken_emoji_1F471" msgid="3058247860441670806">"Njeri flokëverdhë"</string>
+    <string name="spoken_emoji_1F472" msgid="3928854667819339142">"Burrë me qeleshe \"gua pi mao\""</string>
+    <string name="spoken_emoji_1F473" msgid="5921952095808988381">"Burrë me çallmë"</string>
+    <string name="spoken_emoji_1F474" msgid="1082237499496725183">"Burrë i moshuar"</string>
+    <string name="spoken_emoji_1F475" msgid="7280323988642212761">"Grua e moshuar"</string>
+    <string name="spoken_emoji_1F476" msgid="4713322657821088296">"Bebe"</string>
+    <string name="spoken_emoji_1F477" msgid="2197036131029221370">"Punëtor ndërtimi"</string>
+    <string name="spoken_emoji_1F478" msgid="7245521193493488875">"Princeshë"</string>
+    <string name="spoken_emoji_1F479" msgid="6876475321015553972">"Maskë japoneze"</string>
+    <string name="spoken_emoji_1F47A" msgid="3900813633102703571">"Krijesë djallëzore japoneze"</string>
+    <string name="spoken_emoji_1F47B" msgid="2608250873194079390">"Fantazmë"</string>
+    <string name="spoken_emoji_1F47C" msgid="3838699131276537421">"Bebe engjëll"</string>
+    <string name="spoken_emoji_1F47D" msgid="2874077455888369538">"Jashtëtokësor"</string>
+    <string name="spoken_emoji_1F47E" msgid="3642607168625579507">"Përbindësh jashtëtokësor"</string>
+    <string name="spoken_emoji_1F47F" msgid="441605977269926252">"Demon"</string>
+    <string name="spoken_emoji_1F480" msgid="3696253485164878739">"Kafkë"</string>
+    <string name="spoken_emoji_1F481" msgid="320408708521966893">"Personi i zyrës së informacionit"</string>
+    <string name="spoken_emoji_1F482" msgid="3424354860245608949">"Rojë"</string>
+    <string name="spoken_emoji_1F483" msgid="3221113594843849083">"Kërcimtar"</string>
+    <string name="spoken_emoji_1F484" msgid="7348014979080444885">"Buzëkuq"</string>
+    <string name="spoken_emoji_1F485" msgid="6133507975565116339">"Lustër thonjsh"</string>
+    <string name="spoken_emoji_1F486" msgid="9085459968247394155">"Masazh fytyre"</string>
+    <string name="spoken_emoji_1F487" msgid="1479113637259592150">"Prerje flokësh"</string>
+    <string name="spoken_emoji_1F488" msgid="6922559285234100252">"Simboli i berberit"</string>
+    <string name="spoken_emoji_1F489" msgid="8114863680950147305">"Shiringë"</string>
+    <string name="spoken_emoji_1F48A" msgid="8526843630145963032">"Pilulë"</string>
+    <string name="spoken_emoji_1F48B" msgid="2538528967897640292">"Shenjë puthjeje"</string>
+    <string name="spoken_emoji_1F48C" msgid="1681173271652890232">"Letër dashurie"</string>
+    <string name="spoken_emoji_1F48D" msgid="8259886164999042373">"Unazë"</string>
+    <string name="spoken_emoji_1F48E" msgid="8777981696011111101">"Gur i çmuar"</string>
+    <string name="spoken_emoji_1F48F" msgid="741593675183677907">"Puthje"</string>
+    <string name="spoken_emoji_1F490" msgid="4482549128959806736">"Buqetë"</string>
+    <string name="spoken_emoji_1F491" msgid="2305245307882441500">"Çift me zemër"</string>
+    <string name="spoken_emoji_1F492" msgid="3884119934804475732">"Dasmë"</string>
+    <string name="spoken_emoji_1F493" msgid="1208828371565525121">"Zemër që rreh"</string>
+    <string name="spoken_emoji_1F494" msgid="6198876398509338718">"Zemër e thyer"</string>
+    <string name="spoken_emoji_1F495" msgid="9206202744967130919">"Dy zemra"</string>
+    <string name="spoken_emoji_1F496" msgid="5436953041732207775">"Zemër xixëlluese"</string>
+    <string name="spoken_emoji_1F497" msgid="7285142863951448473">"Zemër në rritje"</string>
+    <string name="spoken_emoji_1F498" msgid="7940131245037575715">"Zemër me shigjetë"</string>
+    <string name="spoken_emoji_1F499" msgid="4453235040265550009">"Zemër e kaltër"</string>
+    <string name="spoken_emoji_1F49A" msgid="6262178648366971405">"Zemër e gjelbër"</string>
+    <string name="spoken_emoji_1F49B" msgid="8085384999750714368">"Zemër e verdhë"</string>
+    <string name="spoken_emoji_1F49C" msgid="453829540120898698">"Zemër vjollcë"</string>
+    <string name="spoken_emoji_1F49D" msgid="3460534750224161888">"Zemër me fjongo"</string>
+    <string name="spoken_emoji_1F49E" msgid="4490636226072523867">"Zemra rrotulluese"</string>
+    <string name="spoken_emoji_1F49F" msgid="2059319756421226336">"Zbukurim zemre"</string>
+    <string name="spoken_emoji_1F4A0" msgid="1954850380550212038">"Formë diamanti me një pikë brenda"</string>
+    <string name="spoken_emoji_1F4A1" msgid="403137413540909021">"Llambë elektrike"</string>
+    <string name="spoken_emoji_1F4A2" msgid="2604192053295622063">"Simboli i zemërimit"</string>
+    <string name="spoken_emoji_1F4A3" msgid="6378351742957821735">"Bombë"</string>
+    <string name="spoken_emoji_1F4A4" msgid="7217736258870346625">"Simboli i gjumit"</string>
+    <string name="spoken_emoji_1F4A5" msgid="5401995723541239858">"Simboli i përplasjes"</string>
+    <string name="spoken_emoji_1F4A6" msgid="3837802182716483848">"Simboli i fshirjes së djersës"</string>
+    <string name="spoken_emoji_1F4A7" msgid="5718438987757885141">"Pikëz"</string>
+    <string name="spoken_emoji_1F4A8" msgid="4472108229720006377">"Simboli i vizës lidhëse"</string>
+    <string name="spoken_emoji_1F4A9" msgid="1240958472788430032">"Grumbull jashtëqitjeje"</string>
+    <string name="spoken_emoji_1F4AA" msgid="8427525538635146416">"Muskul i tendosur"</string>
+    <string name="spoken_emoji_1F4AB" msgid="5484114759939427459">"Simboli me trullosje"</string>
+    <string name="spoken_emoji_1F4AC" msgid="5571196638219612682">"Tullumbace ligjërate"</string>
+    <string name="spoken_emoji_1F4AD" msgid="353174619257798652">"Tullumbace mendimi"</string>
+    <string name="spoken_emoji_1F4AE" msgid="1223142786927162641">"Lule e bardhë"</string>
+    <string name="spoken_emoji_1F4AF" msgid="3526278354452138397">"Simboli i një qind pikëve"</string>
+    <string name="spoken_emoji_1F4B0" msgid="4124102195175124156">"Çantë parash"</string>
+    <string name="spoken_emoji_1F4B1" msgid="8339494003418572905">"Këmbim valutor"</string>
+    <string name="spoken_emoji_1F4B2" msgid="3179159430187243132">"Shenja e dollarit të rëndë"</string>
+    <string name="spoken_emoji_1F4B3" msgid="5375412518221759596">"Kart krediti"</string>
+    <string name="spoken_emoji_1F4B4" msgid="1068592463669453204">"Kartëmonedhë me shenjën e jenit"</string>
+    <string name="spoken_emoji_1F4B5" msgid="1426708699891832564">"Kartëmonedhë me shenjën e dollarit"</string>
+    <string name="spoken_emoji_1F4B6" msgid="8289249930736444837">"Kartëmonedhë me shenjën e euros"</string>
+    <string name="spoken_emoji_1F4B7" msgid="5245100496860739429">"Kartëmonedhë me shenjën e sterlinës"</string>
+    <string name="spoken_emoji_1F4B8" msgid="4401099580477164440">"Para me krahë"</string>
+    <string name="spoken_emoji_1F4B9" msgid="647509393536679903">"Grafik me tendencë rritjeje dhe shenjën e jenit"</string>
+    <string name="spoken_emoji_1F4BA" msgid="1269737854891046321">"Ndenjëse"</string>
+    <string name="spoken_emoji_1F4BB" msgid="6252883563347816451">"Kompjuter personal"</string>
+    <string name="spoken_emoji_1F4BC" msgid="6182597732218446206">"Valixhe"</string>
+    <string name="spoken_emoji_1F4BD" msgid="5820961044768829176">"Minidisk"</string>
+    <string name="spoken_emoji_1F4BE" msgid="4754542485835379808">"Disketë"</string>
+    <string name="spoken_emoji_1F4BF" msgid="2237481756984721795">"Disk optik"</string>
+    <string name="spoken_emoji_1F4C0" msgid="491582501089694461">"DVD"</string>
+    <string name="spoken_emoji_1F4C1" msgid="6645461382494158111">"Dosje skedari"</string>
+    <string name="spoken_emoji_1F4C2" msgid="8095638715523765338">"Dosje skedari e hapur"</string>
+    <string name="spoken_emoji_1F4C3" msgid="3727274466173970142">"Faqe me përdredhje"</string>
+    <string name="spoken_emoji_1F4C4" msgid="4382570710795501612">"Faqe me pamje nga para"</string>
+    <string name="spoken_emoji_1F4C5" msgid="8693944622627762487">"Kalendar"</string>
+    <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"Kalendar që griset"</string>
+    <string name="spoken_emoji_1F4C7" msgid="2665313547987324495">"Kartë indeksi"</string>
+    <string name="spoken_emoji_1F4C8" msgid="8007686702282833600">"Grafik me tendencë rritjeje"</string>
+    <string name="spoken_emoji_1F4C9" msgid="2271951411192893684">"Grafik me tendencë zbritjeje"</string>
+    <string name="spoken_emoji_1F4CA" msgid="3525692829622381444">"Grafik me shtylla"</string>
+    <string name="spoken_emoji_1F4CB" msgid="977639227554095521">"Kujtesa e fragmenteve"</string>
+    <string name="spoken_emoji_1F4CC" msgid="156107396088741574">"Gjilpërë me kokë"</string>
+    <string name="spoken_emoji_1F4CD" msgid="4266572175361190231">"Gjilpërë e rrumbullakët me kokë"</string>
+    <string name="spoken_emoji_1F4CE" msgid="6294288509864968290">"Kapëse letrash"</string>
+    <string name="spoken_emoji_1F4CF" msgid="149679400831136810">"Vizore drejtimi"</string>
+    <string name="spoken_emoji_1F4D0" msgid="8130339336619202915">"Vizore drejtkëndore"</string>
+    <string name="spoken_emoji_1F4D1" msgid="5852176364856284968">"Lidhëse faqeshënuesi"</string>
+    <string name="spoken_emoji_1F4D2" msgid="2276810154105920052">"Libër llogarish"</string>
+    <string name="spoken_emoji_1F4D3" msgid="5873386492793610808">"Fletore"</string>
+    <string name="spoken_emoji_1F4D4" msgid="4754469936418776360">"Fletore me kopertinë dekorative"</string>
+    <string name="spoken_emoji_1F4D5" msgid="4642713351802778905">"Libër i mbyllur"</string>
+    <string name="spoken_emoji_1F4D6" msgid="6987347918381807186">"Libër i hapur"</string>
+    <string name="spoken_emoji_1F4D7" msgid="7813394163241379223">"Libër i gjelbër"</string>
+    <string name="spoken_emoji_1F4D8" msgid="7189799718984979521">"Libër i kaltër"</string>
+    <string name="spoken_emoji_1F4D9" msgid="3874664073186440225">"Libër portokalli"</string>
+    <string name="spoken_emoji_1F4DA" msgid="872212072924287762">"Libra"</string>
+    <string name="spoken_emoji_1F4DB" msgid="2015183603583392969">"Distinktiv emri"</string>
+    <string name="spoken_emoji_1F4DC" msgid="5075845110932456783">"Dorëshkrim i mbledhur rrotull"</string>
+    <string name="spoken_emoji_1F4DD" msgid="2494006707147586786">"Memorandum"</string>
+    <string name="spoken_emoji_1F4DE" msgid="7883008605002117671">"Receptor"</string>
+    <string name="spoken_emoji_1F4DF" msgid="3538610110623780465">"Biper"</string>
+    <string name="spoken_emoji_1F4E0" msgid="2960778342609543077">"Makineri faksi"</string>
+    <string name="spoken_emoji_1F4E1" msgid="6269733703719242108">"Antenë satelitore"</string>
+    <string name="spoken_emoji_1F4E2" msgid="1987535386302883116">"Altoparlant për adresimin e publikut"</string>
+    <string name="spoken_emoji_1F4E3" msgid="5588916572878599224">"Megafon për brohoritje"</string>
+    <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"Kutia e postës dalëse"</string>
+    <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"Kutia e postës hyrëse"</string>
+    <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"Paketë"</string>
+    <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"Simboli i mail-it"</string>
+    <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Zarf në ardhje"</string>
+    <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"Zarf me shigjetë sipër"</string>
+    <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"Kuti e mbyllur postare me flamur të ulur"</string>
+    <string name="spoken_emoji_1F4EB" msgid="6491414165464146137">"Kuti e mbyllur postare me flamur të ngritur"</string>
+    <string name="spoken_emoji_1F4EC" msgid="7369517138779988438">"Kuti e hapur postare me flamur të ngritur"</string>
+    <string name="spoken_emoji_1F4ED" msgid="5657520436285454241">"Kuti e hapur postare me flamur të ulur"</string>
+    <string name="spoken_emoji_1F4EE" msgid="8464138906243608614">"Kuti postare"</string>
+    <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"Briri postar"</string>
+    <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"Gazetë"</string>
+    <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"Celular"</string>
+    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"Celular me shigjetë djathtas në të majtë"</string>
+    <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"Modalitet dridhjeje"</string>
+    <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"Celular i fikur"</string>
+    <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"Ndalohen celularët"</string>
+    <string name="spoken_emoji_1F4F6" msgid="2676974903233268860">"Antenë me sinjal me vija"</string>
+    <string name="spoken_emoji_1F4F7" msgid="2643891943105989039">"Kamerë"</string>
+    <string name="spoken_emoji_1F4F9" msgid="4475626303058218048">"Video-kamerë"</string>
+    <string name="spoken_emoji_1F4FA" msgid="1079796186652960775">"Televizor"</string>
+    <string name="spoken_emoji_1F4FB" msgid="3848729587403760645">"Radio"</string>
+    <string name="spoken_emoji_1F4FC" msgid="8370432508874310054">"Videokasetë"</string>
+    <string name="spoken_emoji_1F500" msgid="2389947994502144547">"Shigjeta të përdredhura me drejtim djathtas"</string>
+    <string name="spoken_emoji_1F501" msgid="2132188352433347009">"Shigjeta me rreth të hapur me drejtim djathtas e majtas të akrepit të orës"</string>
+    <string name="spoken_emoji_1F502" msgid="2361976580513178391">"Shigjeta me rreth të hapur e të mbushur me drejtim djathtas e majtas të akrepit të orës"</string>
+    <string name="spoken_emoji_1F503" msgid="8936283551917858793">"Shigjeta me rreth të hapur me drejtim poshtë e lart të akrepit të orës"</string>
+    <string name="spoken_emoji_1F504" msgid="708290317843535943">"Shigjeta me rreth të hapur me drejtim të kundërt poshtë e lart të akrepit të orës"</string>
+    <string name="spoken_emoji_1F505" msgid="6348909939004951860">"Simbol i ndriçimit të ulët"</string>
+    <string name="spoken_emoji_1F506" msgid="4449609297521280173">"Simboli i ndriçimit të lartë"</string>
+    <string name="spoken_emoji_1F507" msgid="7136386694923708448">"Altoparlant me vizë anulimi"</string>
+    <string name="spoken_emoji_1F508" msgid="5063567689831527865">"Altoparlant"</string>
+    <string name="spoken_emoji_1F509" msgid="3948050077992370791">"Altoparlant me një valë zëri"</string>
+    <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"Altoparlant me tre valë zëri"</string>
+    <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"Bateri"</string>
+    <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"Spinë"</string>
+    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Lupë me drejtim majtas"</string>
+    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"Lupë me drejtim djathtas"</string>
+    <string name="spoken_emoji_1F50F" msgid="915079280472199605">"Kyç me stilograf"</string>
+    <string name="spoken_emoji_1F510" msgid="7658381761691758318">"Kyç i mbyllur me çelës"</string>
+    <string name="spoken_emoji_1F511" msgid="262319867774655688">"Çelës"</string>
+    <string name="spoken_emoji_1F512" msgid="5628688337255115175">"Kyç"</string>
+    <string name="spoken_emoji_1F513" msgid="8579201846619420981">"Kyç i hapur"</string>
+    <string name="spoken_emoji_1F514" msgid="7027268683047322521">"Zile"</string>
+    <string name="spoken_emoji_1F515" msgid="8903179856036069242">"Zile me vizë anulimi"</string>
+    <string name="spoken_emoji_1F516" msgid="108097933937925381">"Faqeshënues"</string>
+    <string name="spoken_emoji_1F517" msgid="2450846665734313397">"Simbol i lidhjes"</string>
+    <string name="spoken_emoji_1F518" msgid="7028220286841437832">"Butoni i radios"</string>
+    <string name="spoken_emoji_1F519" msgid="8211189165075445687">"Prapa me shigjetë majtas sipër"</string>
+    <string name="spoken_emoji_1F51A" msgid="823966751787338892">"Fund me shigjetë majtas sipër"</string>
+    <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"Aktivizuar me pikëçuditje dhe me shigjetë majtas-djathtas sipër"</string>
+    <string name="spoken_emoji_1F51C" msgid="110609810659826676">"Së shpejti me shigjetë djathtas sipër"</string>
+    <string name="spoken_emoji_1F51D" msgid="4087697222026095447">"Majë me shigjetë lart sipër"</string>
+    <string name="spoken_emoji_1F51E" msgid="8512873526157201775">"Simboli \"Ndalohet nën moshën 18 vjeç\""</string>
+    <string name="spoken_emoji_1F51F" msgid="8673370823728653973">"Butoni dhjetë i mbuluar"</string>
+    <string name="spoken_emoji_1F520" msgid="7335109890337048900">"Simbol hyrës për germa të mëdha latine"</string>
+    <string name="spoken_emoji_1F521" msgid="2693185864450925778">"Simbol hyrës për germa të vogla latine"</string>
+    <string name="spoken_emoji_1F522" msgid="8419130286280673347">"Simbol hyrës për numra"</string>
+    <string name="spoken_emoji_1F523" msgid="3318053476401719421">"Simbol hyrës për simbole"</string>
+    <string name="spoken_emoji_1F524" msgid="1625073997522316331">"Simbol hyrës për germa latine"</string>
+    <string name="spoken_emoji_1F525" msgid="4083884189172963790">"Zjarr"</string>
+    <string name="spoken_emoji_1F526" msgid="2035494936742643580">"Elektrik"</string>
+    <string name="spoken_emoji_1F527" msgid="134257142354034271">"Çelës anglez"</string>
+    <string name="spoken_emoji_1F528" msgid="700627429570609375">"Çekiç"</string>
+    <string name="spoken_emoji_1F529" msgid="7480548235904988573">"Dado dhe bulon"</string>
+    <string name="spoken_emoji_1F52A" msgid="7613580031502317893">"Thikë hoço"</string>
+    <string name="spoken_emoji_1F52B" msgid="4554906608328118613">"Pistoletë"</string>
+    <string name="spoken_emoji_1F52C" msgid="1330294501371770790">"Mikroskop"</string>
+    <string name="spoken_emoji_1F52D" msgid="7549551775445177140">"Teleskop"</string>
+    <string name="spoken_emoji_1F52E" msgid="4457099417872625141">"Sferë kristali"</string>
+    <string name="spoken_emoji_1F52F" msgid="8899031001317442792">"Yll me gjashtë cepa me pikë në mes"</string>
+    <string name="spoken_emoji_1F530" msgid="3572898444281774023">"Simbol japonez për fillestarët"</string>
+    <string name="spoken_emoji_1F531" msgid="5225633376450025396">"Emblemë sfurku tredhëmbësh"</string>
+    <string name="spoken_emoji_1F532" msgid="9169568490485180779">"Butoni i katrorit të zi"</string>
+    <string name="spoken_emoji_1F533" msgid="6554193837201918598">"Butoni i katrorit të bardhë"</string>
+    <string name="spoken_emoji_1F534" msgid="8339298801331865340">"Rreth i madh i kuq"</string>
+    <string name="spoken_emoji_1F535" msgid="1227403104835533512">"Rreth i madh i kaltër"</string>
+    <string name="spoken_emoji_1F536" msgid="5477372445510469331">"Diamant i madh portokalli"</string>
+    <string name="spoken_emoji_1F537" msgid="3158915214347274626">"Diamant i madh i kaltër"</string>
+    <string name="spoken_emoji_1F538" msgid="4300084249474451991">"Diamant i vogël portokalli"</string>
+    <string name="spoken_emoji_1F539" msgid="6535159756325742275">"Diamant i vogël i kaltër"</string>
+    <string name="spoken_emoji_1F53A" msgid="3728196273988781389">"Trekëndësh i kuq me drejtim lart"</string>
+    <string name="spoken_emoji_1F53B" msgid="7182097039614128707">"Trekëndësh i kuq me drejtim poshtë"</string>
+    <string name="spoken_emoji_1F53C" msgid="4077022046319615029">"Trekëndësh i vogël i kuq me drejtim lart"</string>
+    <string name="spoken_emoji_1F53D" msgid="3939112784894620713">"Trekëndësh i vogël i kuq me drejtim poshtë"</string>
+    <string name="spoken_emoji_1F550" msgid="7761392621689986218">"Orë që tregon orën një"</string>
+    <string name="spoken_emoji_1F551" msgid="2699448504113431716">"Orë që tregon orën dy"</string>
+    <string name="spoken_emoji_1F552" msgid="5872107867411853750">"Orë që tregon orën tre"</string>
+    <string name="spoken_emoji_1F553" msgid="8490966286158640743">"Orë që tregon orën katër"</string>
+    <string name="spoken_emoji_1F554" msgid="7662585417832909280">"Orë që tregon orën pesë"</string>
+    <string name="spoken_emoji_1F555" msgid="5564698204520412009">"Orë që tregon orën gjashtë"</string>
+    <string name="spoken_emoji_1F556" msgid="7325712194836512205">"Orë që tregon orën shtatë"</string>
+    <string name="spoken_emoji_1F557" msgid="4398343183682848693">"Orë që tregon orën tetë"</string>
+    <string name="spoken_emoji_1F558" msgid="3110507820404018172">"Orë që tregon orën nëntë"</string>
+    <string name="spoken_emoji_1F559" msgid="2972160366448337839">"Orë që tregon orën dhjetë"</string>
+    <string name="spoken_emoji_1F55A" msgid="5568112876681714834">"Orë që tregon orën njëmbëdhjetë"</string>
+    <string name="spoken_emoji_1F55B" msgid="6731739890330659276">"Orë që tregon orën dymbëdhjetë"</string>
+    <string name="spoken_emoji_1F55C" msgid="7838853679879115890">"Orë që tregon orën një e tridhjetë"</string>
+    <string name="spoken_emoji_1F55D" msgid="3518832144255922544">"Orë që tregon orën dy e tridhjetë"</string>
+    <string name="spoken_emoji_1F55E" msgid="3092760695634993002">"Orë që tregon orën tre e tridhjetë"</string>
+    <string name="spoken_emoji_1F55F" msgid="2326720311892906763">"Orë që tregon orën katër e tridhjetë"</string>
+    <string name="spoken_emoji_1F560" msgid="5771339179963924448">"Orë që tregon orën pesë e tridhjetë"</string>
+    <string name="spoken_emoji_1F561" msgid="3139944777062475382">"Orë që tregon orën gjashtë e tridhjetë"</string>
+    <string name="spoken_emoji_1F562" msgid="8273944611162457084">"Orë që tregon orën shtatë e tridhjetë"</string>
+    <string name="spoken_emoji_1F563" msgid="8643976903718136299">"Orë që tregon orën tetë e tridhjetë"</string>
+    <string name="spoken_emoji_1F564" msgid="3511070239796141638">"Orë që tregon orën nëntë e tridhjetë"</string>
+    <string name="spoken_emoji_1F565" msgid="4567451985272963088">"Orë që tregon orën dhjetë e tridhjetë"</string>
+    <string name="spoken_emoji_1F566" msgid="2790552288169929810">"Orë që tregon orën njëmbëdhjetë e tridhjetë"</string>
+    <string name="spoken_emoji_1F567" msgid="9026037362100689337">"Orë që tregon orën dymbëdhjetë e tridhjetë"</string>
+    <string name="spoken_emoji_1F5FB" msgid="9037503671676124015">"Mali Fuxhi"</string>
+    <string name="spoken_emoji_1F5FC" msgid="1409415995817242150">"Kulla e Tokios"</string>
+    <string name="spoken_emoji_1F5FD" msgid="2562726956654429582">"Statuja e Lirisë"</string>
+    <string name="spoken_emoji_1F5FE" msgid="1184469756905210580">"Siluetë e Japonisë"</string>
+    <string name="spoken_emoji_1F5FF" msgid="6003594799354942297">"Statuja e Mojait"</string>
+    <string name="spoken_emoji_1F600" msgid="7601109464776835283">"Fytyrë e qeshur"</string>
+    <string name="spoken_emoji_1F601" msgid="746026523967444503">"Fytyrë e qeshur me sy të qeshur"</string>
+    <string name="spoken_emoji_1F602" msgid="8354558091785198246">"Fytyrë me lot gëzimi"</string>
+    <string name="spoken_emoji_1F603" msgid="3861022912544159823">"Fytyrë e buzëqeshur me gojë hapur"</string>
+    <string name="spoken_emoji_1F604" msgid="5119021072966343531">"Fytyrë e buzëqeshur me gojë hapur dhe sy të qeshur"</string>
+    <string name="spoken_emoji_1F605" msgid="6140813923973561735">"Fytyrë e buzëqeshur me gojë hapur dhe djersë të ftohta"</string>
+    <string name="spoken_emoji_1F606" msgid="3549936813966832799">"Fytyrë e buzëqeshur me gojë hapur dhe sy të mbyllur fort"</string>
+    <string name="spoken_emoji_1F607" msgid="2826424078212384817">"Fytyrë e buzëqeshur me aureolë"</string>
+    <string name="spoken_emoji_1F608" msgid="7343559595089811640">"Fytyrë e buzëqeshur me brirë"</string>
+    <string name="spoken_emoji_1F609" msgid="5481030187207504405">"Fytyrë me shkelje syri"</string>
+    <string name="spoken_emoji_1F60A" msgid="5023337769148679767">"Fytyrë e buzëqeshur me sy të qeshur"</string>
+    <string name="spoken_emoji_1F60B" msgid="3005248217216195694">"Fytyrë duke provuar ushqim të shijshëm"</string>
+    <string name="spoken_emoji_1F60C" msgid="349384012958268496">"Fytyrë e çliruar"</string>
+    <string name="spoken_emoji_1F60D" msgid="7921853137164938391">"Fytyrë e buzëqeshur me sy në formë zemre"</string>
+    <string name="spoken_emoji_1F60E" msgid="441718886380605643">"Fytyrë e buzëqeshur me syze"</string>
+    <string name="spoken_emoji_1F60F" msgid="2674453144890180538">"Fytyrë me buzëqeshje të vetëkënaqur"</string>
+    <string name="spoken_emoji_1F610" msgid="3225675825334102369">"Fytyrë neutrale"</string>
+    <string name="spoken_emoji_1F611" msgid="7199179827619679668">"Fytyrë pa shprehje"</string>
+    <string name="spoken_emoji_1F612" msgid="985081329745137998">"Fytyrë jo e kënaqur"</string>
+    <string name="spoken_emoji_1F613" msgid="5548607684830303562">"Fytyrë me djersë të ftohta"</string>
+    <string name="spoken_emoji_1F614" msgid="3196305665259916390">"Fytyrë e menduar"</string>
+    <string name="spoken_emoji_1F615" msgid="3051674239303969101">"Fytyrë e hutuar"</string>
+    <string name="spoken_emoji_1F616" msgid="8124887056243813089">"Fytyrë e inatosur"</string>
+    <string name="spoken_emoji_1F617" msgid="7052733625511122870">"Fytyrë puthëse"</string>
+    <string name="spoken_emoji_1F618" msgid="408207170572303753">"Fytyrë duke dhënë puthje"</string>
+    <string name="spoken_emoji_1F619" msgid="8645430335143153645">"Fytyrë puthëse me sy të qeshur"</string>
+    <string name="spoken_emoji_1F61A" msgid="2882157190974340247">"Fytyrë puthëse me sy të mbyllur"</string>
+    <string name="spoken_emoji_1F61B" msgid="3765927202787211499">"Fytyrë me gjuhë të nxjerrë"</string>
+    <string name="spoken_emoji_1F61C" msgid="198943912107589389">"Fytyrë me gjuhë të nxjerrë dhe sy të shkelur"</string>
+    <string name="spoken_emoji_1F61D" msgid="7643546385877816182">"Fytyrë me gjuhë të nxjerrë dhe sy të mbyllur fort"</string>
+    <string name="spoken_emoji_1F61E" msgid="1528732952202098364">"Fytyrë e zhgënjyer"</string>
+    <string name="spoken_emoji_1F61F" msgid="1853664164636082404">"Fytyrë e shqetësuar"</string>
+    <string name="spoken_emoji_1F620" msgid="6051942001307375830">"Fytyrë e nxehur"</string>
+    <string name="spoken_emoji_1F621" msgid="2114711878097257704">"Fytyrë e varur"</string>
+    <string name="spoken_emoji_1F622" msgid="29291014645931822">"Fytyrë që qan"</string>
+    <string name="spoken_emoji_1F623" msgid="7803959833595184773">"Fytyrë këmbëngulëse"</string>
+    <string name="spoken_emoji_1F624" msgid="8637637647725752799">"Fytyrë me pamje triumfi"</string>
+    <string name="spoken_emoji_1F625" msgid="6153625183493635030">"Fytyrë e zhgënjyer, por e çliruar"</string>
+    <string name="spoken_emoji_1F626" msgid="6179485689935562950">"Fytyrë e vrenjtur me gojë hapur"</string>
+    <string name="spoken_emoji_1F627" msgid="8566204052903012809">"Fytyrë në ankth"</string>
+    <string name="spoken_emoji_1F628" msgid="8875777401624904224">"Fytyrë e frikësuar"</string>
+    <string name="spoken_emoji_1F629" msgid="1411538490319190118">"Fytyrë e lodhur"</string>
+    <string name="spoken_emoji_1F62A" msgid="4726686726690289969">"Fytyrë e përgjumur"</string>
+    <string name="spoken_emoji_1F62B" msgid="3221980473921623613">"Fytyrë e lodhur"</string>
+    <string name="spoken_emoji_1F62C" msgid="4616356691941225182">"Fytyrë e ngërdheshur"</string>
+    <string name="spoken_emoji_1F62D" msgid="4283677508698812232">"Fytyrë duke qarë me të madhe"</string>
+    <string name="spoken_emoji_1F62E" msgid="726083405284353894">"Fytyrë me gojë hapur"</string>
+    <string name="spoken_emoji_1F62F" msgid="7746620088234710962">"Fytyrë e heshtur"</string>
+    <string name="spoken_emoji_1F630" msgid="3298804852155581163">"Fytyrë me gojë hapur dhe djersë të ftohta"</string>
+    <string name="spoken_emoji_1F631" msgid="1603391150954646779">"Fytyrë që ulërin në frikë"</string>
+    <string name="spoken_emoji_1F632" msgid="4846193232203976013">"Fytyrë e habitur"</string>
+    <string name="spoken_emoji_1F633" msgid="4023593836629700443">"Fytyrë e skuqur"</string>
+    <string name="spoken_emoji_1F634" msgid="3155265083246248129">"Fytyrë e përgjumur"</string>
+    <string name="spoken_emoji_1F635" msgid="4616691133452764482">"Fytyrë e trullosur"</string>
+    <string name="spoken_emoji_1F636" msgid="947000211822375683">"Fytyrë pa gojë"</string>
+    <string name="spoken_emoji_1F637" msgid="1269551267347165774">"Fytyrë me maskë mjekësore"</string>
+    <string name="spoken_emoji_1F638" msgid="3410766467496872301">"Fytyrë e qeshur maceje me sy të qeshur"</string>
+    <string name="spoken_emoji_1F639" msgid="1833417519781022031">"Fytyrë maceje me lot gëzimi"</string>
+    <string name="spoken_emoji_1F63A" msgid="8566294484007152613">"Fytyrë e buzëqeshur maceje me gojë hapur"</string>
+    <string name="spoken_emoji_1F63B" msgid="74417995938927571">"Fytyrë e buzëqeshur maceje me sy në formë zemre"</string>
+    <string name="spoken_emoji_1F63C" msgid="6472812005729468870">"Fytyrë maceje me buzëqeshje të sforcuar"</string>
+    <string name="spoken_emoji_1F63D" msgid="1638398369553349509">"Fytyrë puthëse maceje me sy të mbyllur"</string>
+    <string name="spoken_emoji_1F63E" msgid="6788969063020278986">"Fytyrë e varur maceje"</string>
+    <string name="spoken_emoji_1F63F" msgid="1207234562459550185">"Fytyrë maceje në qarje"</string>
+    <string name="spoken_emoji_1F640" msgid="6023054549904329638">"Fytyrë e lodhur maceje"</string>
+    <string name="spoken_emoji_1F645" msgid="5202090629227587076">"Fytyrë pa gjest të mirë"</string>
+    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"Fytyrë me gjest të mirë"</string>
+    <string name="spoken_emoji_1F647" msgid="1090285518444205483">"Njeri që përkulet thellësisht"</string>
+    <string name="spoken_emoji_1F648" msgid="8978535230610522356">"Majmuni që nuk shikon"</string>
+    <string name="spoken_emoji_1F649" msgid="8486145279809495102">"Majmuni që nuk dëgjon"</string>
+    <string name="spoken_emoji_1F64A" msgid="1237524974033228660">"Majmuni që nuk flet"</string>
+    <string name="spoken_emoji_1F64B" msgid="4251150782016370475">"Njeri i lumtur duke ngritur dorën"</string>
+    <string name="spoken_emoji_1F64C" msgid="5446231430684558344">"Njeri duke ngritur të dy duart në festim"</string>
+    <string name="spoken_emoji_1F64D" msgid="4646485595309482342">"Njeri i vrenjtur"</string>
+    <string name="spoken_emoji_1F64E" msgid="3376579939836656097">"Njeri me fytyrë të varur"</string>
+    <string name="spoken_emoji_1F64F" msgid="1044439574356230711">"Njeri me duar të palosura"</string>
+    <string name="spoken_emoji_1F680" msgid="513263736012689059">"Raketë"</string>
+    <string name="spoken_emoji_1F681" msgid="9201341783850525339">"Helikopter"</string>
+    <string name="spoken_emoji_1F682" msgid="8046933583867498698">"Lokomotivë me avull"</string>
+    <string name="spoken_emoji_1F683" msgid="8772750354339223092">"Vagon hekurudhor"</string>
+    <string name="spoken_emoji_1F684" msgid="346396777356203608">"Tren i shpejtësisë së lartë"</string>
+    <string name="spoken_emoji_1F685" msgid="1237059817190832730">"Tren i shpejtësisë së lartë me hundë plumbi"</string>
+    <string name="spoken_emoji_1F686" msgid="3525197227223620343">"Tren"</string>
+    <string name="spoken_emoji_1F687" msgid="5110143437960392837">"Metro"</string>
+    <string name="spoken_emoji_1F688" msgid="4702085029871797965">"Hekurudhë për trafik jo të ngarkuar"</string>
+    <string name="spoken_emoji_1F689" msgid="2375851019798817094">"Stacion"</string>
+    <string name="spoken_emoji_1F68A" msgid="6368370859718717198">"Tramvaj"</string>
+    <string name="spoken_emoji_1F68B" msgid="2920160427117436633">"Vagon tramvaji"</string>
+    <string name="spoken_emoji_1F68C" msgid="1061520934758810864">"Autobus"</string>
+    <string name="spoken_emoji_1F68D" msgid="2890059031360969304">"Autobus në ardhje"</string>
+    <string name="spoken_emoji_1F68E" msgid="6234042976027309654">"Autobus elektrik"</string>
+    <string name="spoken_emoji_1F68F" msgid="5871099334672012107">"Stacioni autobusi"</string>
+    <string name="spoken_emoji_1F690" msgid="8080964620200195262">"Mikrobus"</string>
+    <string name="spoken_emoji_1F691" msgid="999173032408730501">"Ambulancë"</string>
+    <string name="spoken_emoji_1F692" msgid="1712863785341849487">"Zjarrfikës"</string>
+    <string name="spoken_emoji_1F693" msgid="7987109037389768934">"Makinë policie"</string>
+    <string name="spoken_emoji_1F694" msgid="6061658916653884608">"Makinë policie në ardhje"</string>
+    <string name="spoken_emoji_1F695" msgid="6913445460364247283">"Taksi"</string>
+    <string name="spoken_emoji_1F696" msgid="6391604457418285404">"Taksi në ardhje"</string>
+    <string name="spoken_emoji_1F697" msgid="7978399334396733790">"Automobil"</string>
+    <string name="spoken_emoji_1F698" msgid="7006050861129732018">"Automobil në ardhje"</string>
+    <string name="spoken_emoji_1F699" msgid="630317052666590607">"Rulotë"</string>
+    <string name="spoken_emoji_1F69A" msgid="4739797891735823577">"Kamion furnizimi"</string>
+    <string name="spoken_emoji_1F69B" msgid="4715997280786620649">"Kamion me rimorkio"</string>
+    <string name="spoken_emoji_1F69C" msgid="5557395610750818161">"Traktor"</string>
+    <string name="spoken_emoji_1F69D" msgid="5467164189942951047">"Hekurudhë me një shinë"</string>
+    <string name="spoken_emoji_1F69E" msgid="169238196389832234">"Hekurudhë në mal"</string>
+    <string name="spoken_emoji_1F69F" msgid="7508128757012845102">"Hekurudhë e varur"</string>
+    <string name="spoken_emoji_1F6A0" msgid="8733056213790160147">"Teleferik mali"</string>
+    <string name="spoken_emoji_1F6A1" msgid="4666516337749347253">"Tramvaj në ajër"</string>
+    <string name="spoken_emoji_1F6A2" msgid="4511220588943129583">"Anije"</string>
+    <string name="spoken_emoji_1F6A3" msgid="8412962252222205387">"Varkë për vozitje"</string>
+    <string name="spoken_emoji_1F6A4" msgid="8867571300266339211">"Motoskaf"</string>
+    <string name="spoken_emoji_1F6A5" msgid="7650260812741963884">"Semafor horizontal"</string>
+    <string name="spoken_emoji_1F6A6" msgid="485575967773793454">"Semafor vertikal"</string>
+    <string name="spoken_emoji_1F6A7" msgid="6411048933816976794">"Tabelë ndërtimi"</string>
+    <string name="spoken_emoji_1F6A8" msgid="6345717218374788364">"Makina policie me sirenë ndezur"</string>
+    <string name="spoken_emoji_1F6A9" msgid="6586380356807600412">"Flamur trekëndësh në shtizë"</string>
+    <string name="spoken_emoji_1F6AA" msgid="8954448167261738885">"Derë"</string>
+    <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"Tabelë \"Ndalohet hyrja\""</string>
+    <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"Simboli i duhanpirjes"</string>
+    <string name="spoken_emoji_1F6AD" msgid="6320088669185507241">"Simboli \"Ndalohet duhani\""</string>
+    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"Simboli \"Hidhini mbeturinat në vendin e duhur\""</string>
+    <string name="spoken_emoji_1F6AF" msgid="2286668056123642208">"Simboli \"Mos hidhni mbeturina\""</string>
+    <string name="spoken_emoji_1F6B0" msgid="179424763882990952">"Simboli \"Ujë i pijshëm\""</string>
+    <string name="spoken_emoji_1F6B1" msgid="5585212805429161877">"Simboli \"Ujë jo i pijshëm\""</string>
+    <string name="spoken_emoji_1F6B2" msgid="1771885082068421875">"Biçikletë"</string>
+    <string name="spoken_emoji_1F6B3" msgid="8033779581263314408">"Ndalohen biçikletat"</string>
+    <string name="spoken_emoji_1F6B4" msgid="1999538449018476947">"Çiklist"</string>
+    <string name="spoken_emoji_1F6B5" msgid="340846352660993117">"Çiklist mali"</string>
+    <string name="spoken_emoji_1F6B6" msgid="4351024386495098336">"Këmbësor"</string>
+    <string name="spoken_emoji_1F6B7" msgid="4564800655866838802">"Ndalohen këmbësorët"</string>
+    <string name="spoken_emoji_1F6B8" msgid="3020531906940267349">"Fëmijë duke kaluar rrugën"</string>
+    <string name="spoken_emoji_1F6B9" msgid="1207095844125041251">"Simboli i burrave"</string>
+    <string name="spoken_emoji_1F6BA" msgid="2346879310071017531">"Simboli i grave"</string>
+    <string name="spoken_emoji_1F6BB" msgid="2370172469642078526">"Banjë"</string>
+    <string name="spoken_emoji_1F6BC" msgid="5558827593563530851">"Simboli i bebes"</string>
+    <string name="spoken_emoji_1F6BD" msgid="9213590243049835957">"Tualet"</string>
+    <string name="spoken_emoji_1F6BE" msgid="394016533781742491">"WC"</string>
+    <string name="spoken_emoji_1F6BF" msgid="906336365928291207">"Dush"</string>
+    <string name="spoken_emoji_1F6C0" msgid="4592099854378821599">"Banjë"</string>
+    <string name="spoken_emoji_1F6C1" msgid="2845056048320031158">"Vaskë"</string>
+    <string name="spoken_emoji_1F6C2" msgid="8117262514698011877">"Kontroll i pasaportave"</string>
+    <string name="spoken_emoji_1F6C3" msgid="1176342001834630675">"Doganë"</string>
+    <string name="spoken_emoji_1F6C4" msgid="1477622834179978886">"Marrja e bagazheve"</string>
+    <string name="spoken_emoji_1F6C5" msgid="2495834050856617451">"Bagazhet e mbetura"</string>
+</resources>
