@@ -1053,7 +1053,7 @@ public final class InputLogic {
                 // Cancel multi-character input: remove the text we just entered.
                 // This is triggered on backspace after a key that inputs multiple characters,
                 // like the smiley key or the .com key.
-                mConnection.deleteSurroundingText(mEnteredText.length(), 0);
+                mConnection.deleteTextBeforeCursor(mEnteredText.length());
                 StatsUtils.onDeleteMultiCharInput(mEnteredText.length());
                 mEnteredText = null;
                 // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
@@ -1098,7 +1098,7 @@ public final class InputLogic {
                         - mConnection.getExpectedSelectionStart();
                 mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
                         mConnection.getExpectedSelectionEnd());
-                mConnection.deleteSurroundingText(numCharsDeleted, 0);
+                mConnection.deleteTextBeforeCursor(numCharsDeleted);
                 StatsUtils.onBackspaceSelectedText(numCharsDeleted);
             } else {
                 // There is no selection, just delete one character.
@@ -1138,13 +1138,13 @@ public final class InputLogic {
                         // broken apps expect something to happen in this case so that they can
                         // catch it and have their broken interface react. If you need the keyboard
                         // to do this, you're doing it wrong -- please fix your app.
-                        mConnection.deleteSurroundingText(1, 0);
+                        mConnection.deleteTextBeforeCursor(1);
                         // TODO: Add a new StatsUtils method onBackspaceWhenNoText()
                         return;
                     }
                     final int lengthToDelete =
                             Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
-                    mConnection.deleteSurroundingText(lengthToDelete, 0);
+                    mConnection.deleteTextBeforeCursor(lengthToDelete);
                     int totalDeletedLength = lengthToDelete;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
                         // If this is an accelerated (i.e., double) deletion, then we need to
@@ -1157,7 +1157,7 @@ public final class InputLogic {
                         if (codePointBeforeCursorToDeleteAgain != Constants.NOT_A_CODE) {
                             final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
                                     codePointBeforeCursorToDeleteAgain) ? 2 : 1;
-                            mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
+                            mConnection.deleteTextBeforeCursor(lengthToDeleteAgain);
                             totalDeletedLength += lengthToDeleteAgain;
                         }
                     }
@@ -1241,7 +1241,7 @@ public final class InputLogic {
         if (Constants.CODE_SPACE != codePointBeforeCursor) {
             return false;
         }
-        mConnection.deleteSurroundingText(1, 0);
+        mConnection.deleteTextBeforeCursor(1);
         final String text = event.getTextToCommit() + " ";
         mConnection.commitText(text, 1);
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
@@ -1331,7 +1331,7 @@ public final class InputLogic {
                         Character.codePointAt(lastTwo, length - 3) : lastTwo.charAt(length - 2);
         if (canBeFollowedByDoubleSpacePeriod(firstCodePoint)) {
             cancelDoubleSpacePeriodCountdown();
-            mConnection.deleteSurroundingText(1, 0);
+            mConnection.deleteTextBeforeCursor(1);
             final String textToInsert = inputTransaction.mSettingsValues.mSpacingAndPunctuations
                     .mSentenceSeparatorAndSpace;
             mConnection.commitText(textToInsert, 1);
@@ -1399,7 +1399,7 @@ public final class InputLogic {
         mConnection.finishComposingText();
         mRecapitalizeStatus.rotate();
         mConnection.setSelection(selectionEnd, selectionEnd);
-        mConnection.deleteSurroundingText(numCharsSelected, 0);
+        mConnection.deleteTextBeforeCursor(numCharsSelected);
         mConnection.commitText(mRecapitalizeStatus.getRecapitalizedString(), 0);
         mConnection.setSelection(mRecapitalizeStatus.getNewCursorStart(),
                 mRecapitalizeStatus.getNewCursorEnd());
@@ -1637,7 +1637,7 @@ public final class InputLogic {
                         + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
             }
         }
-        mConnection.deleteSurroundingText(deleteLength, 0);
+        mConnection.deleteTextBeforeCursor(deleteLength);
         if (!TextUtils.isEmpty(committedWord)) {
             unlearnWord(committedWordString, inputTransaction.mSettingsValues,
                     Constants.EVENT_REVERT);

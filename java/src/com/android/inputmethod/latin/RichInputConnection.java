@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import static com.android.inputmethod.latin.define.DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH;
-
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,7 +35,6 @@ import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.UnicodeSurrogate;
 import com.android.inputmethod.latin.common.StringUtils;
-import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.inputlogic.PrivateCommandPerformer;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
@@ -59,14 +56,12 @@ import javax.annotation.Nullable;
  * for example.
  */
 public final class RichInputConnection implements PrivateCommandPerformer {
-    private static final String TAG = RichInputConnection.class.getSimpleName();
+    private static final String TAG = "RichInputConnection";
     private static final boolean DBG = false;
     private static final boolean DEBUG_PREVIOUS_TEXT = false;
     private static final boolean DEBUG_BATCH_NESTING = false;
-    // Provision for realistic N-grams like "Hello, how are you?" and "I'm running 5 late".
-    // Technically, this will not handle 5-grams composed of long words, but in practice,
-    // our language models don't include that much data.
-    private static final int LOOKBACK_CHARACTER_NUM = 80;
+    private static final int NUM_CHARS_TO_GET_BEFORE_CURSOR = 40;
+    private static final int NUM_CHARS_TO_GET_AFTER_CURSOR = 40;
     private static final int INVALID_CURSOR_POSITION = -1;
 
     /**
@@ -85,7 +80,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private int mExpectedSelEnd = INVALID_CURSOR_POSITION; // in chars, not code points
     /**
      * This contains the committed text immediately preceding the cursor and the composing
-     * text if any. It is refreshed when the cursor moves by calling upon the TextView.
+     * text, if any. It is refreshed when the cursor moves by calling upon the TextView.
      */
     private final StringBuilder mCommittedTextBeforeComposingText = new StringBuilder();
     /**
@@ -386,7 +381,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return isConnected() ? mIC.getTextAfterCursor(n, flags) : null;
     }
 
-    public void deleteSurroundingText(final int beforeLength, final int afterLength) {
+    public void deleteTextBeforeCursor(final int beforeLength) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         // TODO: the following is incorrect if the cursor is not immediately after the composition.
         // Right now we never come here in this case because we reset the composing state before we
@@ -411,7 +406,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             mExpectedSelStart = 0;
         }
         if (isConnected()) {
-            mIC.deleteSurroundingText(beforeLength, afterLength);
+            mIC.deleteSurroundingText(beforeLength, 0);
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
@@ -576,9 +571,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (!isConnected()) {
             return NgramContext.EMPTY_PREV_WORDS_INFO;
         }
-        final CharSequence prev = getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        final CharSequence prev = getTextBeforeCursor(NUM_CHARS_TO_GET_BEFORE_CURSOR, 0);
         if (DEBUG_PREVIOUS_TEXT && null != prev) {
-            final int checkLength = LOOKBACK_CHARACTER_NUM - 1;
+            final int checkLength = NUM_CHARS_TO_GET_BEFORE_CURSOR - 1;
             final String reference = prev.length() <= checkLength ? prev.toString()
                     : prev.subSequence(prev.length() - checkLength, prev.length()).toString();
             // TODO: right now the following works because mComposingText holds the part of the
@@ -621,9 +616,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (!isConnected()) {
             return null;
         }
-        final CharSequence before = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM,
+        final CharSequence before = mIC.getTextBeforeCursor(NUM_CHARS_TO_GET_BEFORE_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
-        final CharSequence after = mIC.getTextAfterCursor(LOOKBACK_CHARACTER_NUM,
+        final CharSequence after = mIC.getTextAfterCursor(NUM_CHARS_TO_GET_AFTER_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
         if (before == null || after == null) {
             return null;
@@ -704,7 +699,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         final int codePointBeforeCursor = getCodePointBeforeCursor();
         if (Constants.CODE_SPACE == codePointBeforeCursor) {
-            deleteSurroundingText(1, 0);
+            deleteTextBeforeCursor(1);
         }
     }
 
@@ -730,7 +725,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         // Double-space results in ". ". A backspace to cancel this should result in a single
         // space in the text field, so we replace ". " with a single space.
-        deleteSurroundingText(2, 0);
+        deleteTextBeforeCursor(2);
         final String singleSpace = " ";
         commitText(singleSpace, 1);
         return true;
@@ -752,7 +747,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                     + "find a space just before the cursor.");
             return false;
         }
-        deleteSurroundingText(2, 0);
+        deleteTextBeforeCursor(2);
         final String text = " " + textBeforeCursor.subSequence(0, 1);
         commitText(text, 1);
         return true;
