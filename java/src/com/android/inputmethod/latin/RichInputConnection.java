@@ -46,6 +46,8 @@ import com.android.inputmethod.latin.utils.SpannableStringUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -65,7 +67,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private static final int NUM_CHARS_TO_GET_BEFORE_CURSOR = 40;
     private static final int NUM_CHARS_TO_GET_AFTER_CURSOR = 40;
     private static final int INVALID_CURSOR_POSITION = -1;
-    private static final long SLOW_INPUTCONNECTION_MS = 100;
+
+    /**
+     * The amount of time an InputConnection call needs to take for the keyboard to enter
+     * the SlowInputConnection state.
+     */
+    private static final long SLOW_INPUTCONNECTION_MS = 200;
     private static final int OPERATION_GET_TEXT_BEFORE_CURSOR = 0;
     private static final int OPERATION_GET_TEXT_AFTER_CURSOR = 1;
     private static final int OPERATION_GET_WORD_RANGE_AT_CURSOR = 2;
@@ -75,6 +82,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             "GET_TEXT_AFTER_CURSOR",
             "GET_WORD_RANGE_AT_CURSOR",
             "RELOAD_TEXT_CACHE"};
+
+    /**
+     * The amount of time the keyboard will persist in the 'hasSlowInputConnection' state
+     * after observing a slow InputConnection event.
+     */
+    private static final long SLOW_INPUTCONNECTION_PERSIST_MS = TimeUnit.MINUTES.toMillis(10);
 
     /**
      * This variable contains an expected value for the selection start position. This is where the
@@ -110,6 +123,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     InputConnection mIC;
     int mNestLevel;
 
+    /**
+     * The timestamp of the last slow InputConnection operation
+     */
+    private long mLastSlowInputConnectionTime = 0;
+
     public RichInputConnection(final InputMethodService parent) {
         mParent = parent;
         mIC = null;
@@ -118,6 +136,20 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public boolean isConnected() {
         return mIC != null;
+    }
+
+    /**
+     * Returns whether or not the underlying InputConnection is slow. When true, we want to avoid
+     * calling InputConnection methods that trigger an IPC round-trip (e.g., getTextAfterCursor).
+     */
+    public boolean hasSlowInputConnection() {
+        return mLastSlowInputConnectionTime > 0 &&
+                (SystemClock.uptimeMillis() - mLastSlowInputConnectionTime)
+                        <= SLOW_INPUTCONNECTION_PERSIST_MS;
+    }
+
+    public void onStartInput() {
+        mLastSlowInputConnectionTime = 0;
     }
 
     private void checkConsistencyForDebug() {
@@ -395,7 +427,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (!isConnected()) {
             return null;
         }
-        long startTime = SystemClock.uptimeMillis();
+        final long startTime = SystemClock.uptimeMillis();
         final CharSequence result = mIC.getTextBeforeCursor(n, flags);
         detectLaggyConnection(operation, startTime);
         return result;
@@ -424,6 +456,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             final String operationName = OPERATION_NAMES[operation];
             Log.w(TAG, "Slow InputConnection: " + operationName + " took " + duration + " ms.");
             StatsUtils.onInputConnectionLaggy(operation, duration);
+            mLastSlowInputConnectionTime = SystemClock.uptimeMillis();
         }
     }
 
@@ -666,7 +699,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 OPERATION_GET_WORD_RANGE_AT_CURSOR,
                 NUM_CHARS_TO_GET_BEFORE_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
-        final CharSequence after = getTextBeforeCursorAndDetectLaggyConnection(
+        final CharSequence after = getTextAfterCursorAndDetectLaggyConnection(
                 OPERATION_GET_WORD_RANGE_AT_CURSOR,
                 NUM_CHARS_TO_GET_AFTER_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
@@ -711,8 +744,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                         hasUrlSpans);
     }
 
-    public boolean isCursorTouchingWord(final SpacingAndPunctuations spacingAndPunctuations) {
-        if (isCursorFollowedByWordCharacter(spacingAndPunctuations)) {
+    public boolean isCursorTouchingWord(final SpacingAndPunctuations spacingAndPunctuations,
+            boolean checkTextAfter) {
+        if (checkTextAfter && isCursorFollowedByWordCharacter(spacingAndPunctuations)) {
             // If what's after the cursor is a word character, then we're touching a word.
             return true;
         }
