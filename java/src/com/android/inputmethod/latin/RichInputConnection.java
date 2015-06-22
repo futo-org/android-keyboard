@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
@@ -42,6 +43,7 @@ import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.NgramContextUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.SpannableStringUtils;
+import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
 import javax.annotation.Nonnull;
@@ -63,6 +65,16 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private static final int NUM_CHARS_TO_GET_BEFORE_CURSOR = 40;
     private static final int NUM_CHARS_TO_GET_AFTER_CURSOR = 40;
     private static final int INVALID_CURSOR_POSITION = -1;
+    private static final long SLOW_INPUTCONNECTION_MS = 100;
+    private static final int OPERATION_GET_TEXT_BEFORE_CURSOR = 0;
+    private static final int OPERATION_GET_TEXT_AFTER_CURSOR = 1;
+    private static final int OPERATION_GET_WORD_RANGE_AT_CURSOR = 2;
+    private static final int OPERATION_RELOAD_TEXT_CACHE = 3;
+    private static final String[] OPERATION_NAMES = new String[] {
+            "GET_TEXT_BEFORE_CURSOR",
+            "GET_TEXT_AFTER_CURSOR",
+            "GET_WORD_RANGE_AT_CURSOR",
+            "RELOAD_TEXT_CACHE"};
 
     /**
      * This variable contains an expected value for the selection start position. This is where the
@@ -206,9 +218,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mIC = mParent.getCurrentInputConnection();
         // Call upon the inputconnection directly since our own method is using the cache, and
         // we want to refresh it.
-        final CharSequence textBeforeCursor = isConnected()
-                ? mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0)
-                : null;
+        final CharSequence textBeforeCursor = getTextBeforeCursorAndDetectLaggyConnection(
+                OPERATION_RELOAD_TEXT_CACHE,
+                Constants.EDITOR_CONTENTS_CACHE_SIZE,
+                0 /* flags */);
         if (null == textBeforeCursor) {
             // For some reason the app thinks we are not connected to it. This looks like a
             // framework bug... Fall back to ground state and return false.
@@ -372,13 +385,46 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             }
             return s;
         }
+        return getTextBeforeCursorAndDetectLaggyConnection(
+                OPERATION_GET_TEXT_BEFORE_CURSOR, n, flags);
+    }
+
+    private CharSequence getTextBeforeCursorAndDetectLaggyConnection(
+            final int operation, final int n, final int flags) {
         mIC = mParent.getCurrentInputConnection();
-        return isConnected() ? mIC.getTextBeforeCursor(n, flags) : null;
+        if (!isConnected()) {
+            return null;
+        }
+        long startTime = SystemClock.uptimeMillis();
+        final CharSequence result = mIC.getTextBeforeCursor(n, flags);
+        detectLaggyConnection(operation, startTime);
+        return result;
     }
 
     public CharSequence getTextAfterCursor(final int n, final int flags) {
+        return getTextAfterCursorAndDetectLaggyConnection(
+                OPERATION_GET_TEXT_AFTER_CURSOR, n, flags);
+    }
+
+    private CharSequence getTextAfterCursorAndDetectLaggyConnection(
+            final int operation, final int n, final int flags) {
         mIC = mParent.getCurrentInputConnection();
-        return isConnected() ? mIC.getTextAfterCursor(n, flags) : null;
+        if (!isConnected()) {
+            return null;
+        }
+        final long startTime = SystemClock.uptimeMillis();
+        final CharSequence result = mIC.getTextAfterCursor(n, flags);
+        detectLaggyConnection(operation, startTime);
+        return result;
+    }
+
+    private void detectLaggyConnection(final int operation, final long startTime) {
+        final long duration = SystemClock.uptimeMillis() - startTime;
+        if (duration >= SLOW_INPUTCONNECTION_MS) {
+            final String operationName = OPERATION_NAMES[operation];
+            Log.w(TAG, "Slow InputConnection: " + operationName + " took " + duration + " ms.");
+            StatsUtils.onInputConnectionLaggy(operation, duration);
+        }
     }
 
     public void deleteTextBeforeCursor(final int beforeLength) {
@@ -616,9 +662,13 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (!isConnected()) {
             return null;
         }
-        final CharSequence before = mIC.getTextBeforeCursor(NUM_CHARS_TO_GET_BEFORE_CURSOR,
+        final CharSequence before = getTextBeforeCursorAndDetectLaggyConnection(
+                OPERATION_GET_WORD_RANGE_AT_CURSOR,
+                NUM_CHARS_TO_GET_BEFORE_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
-        final CharSequence after = mIC.getTextAfterCursor(NUM_CHARS_TO_GET_AFTER_CURSOR,
+        final CharSequence after = getTextBeforeCursorAndDetectLaggyConnection(
+                OPERATION_GET_WORD_RANGE_AT_CURSOR,
+                NUM_CHARS_TO_GET_AFTER_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
         if (before == null || after == null) {
             return null;
