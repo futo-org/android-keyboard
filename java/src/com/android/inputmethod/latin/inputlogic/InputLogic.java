@@ -2135,9 +2135,10 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = mSuggestedWords;
         // TODO: Locale should be determined based on context and the text given.
         final Locale locale = getDictionaryFacilitatorLocale();
-        final CharSequence chosenWordWithSuggestions =
-                SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
-                        suggestedWords, locale);
+        final CharSequence chosenWordWithSuggestions = chosenWord;
+        // b/21926256
+        //      SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
+        //                suggestedWords, locale);
         if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
