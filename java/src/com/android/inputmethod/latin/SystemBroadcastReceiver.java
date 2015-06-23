@@ -81,7 +81,8 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             // Remove all the previously scheduled downloads. This will also makes sure
             // that any erroneously stuck downloads will get cleared. (b/21797386)
             removeOldDownloads(context);
-            downloadLatestDictionaries(context);
+            // b/21797386
+            // downloadLatestDictionaries(context);
         } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
             Log.i(TAG, "Boot has been completed");
             toggleAppIcon(context);
