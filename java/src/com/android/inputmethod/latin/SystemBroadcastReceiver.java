@@ -122,13 +122,11 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
                     | DownloadManager.STATUS_RUNNING);
             final Cursor c = downloadManagerWrapper.query(q);
             if (c != null) {
-                if (c.moveToFirst()) {
-                    while (c.moveToNext()) {
-                        final long downloadId = c
-                                .getLong(c.getColumnIndex(DownloadManager.COLUMN_ID));
-                        downloadManagerWrapper.remove(downloadId);
-                        Log.i(TAG, "Removed the download with Id: " + downloadId);
-                    }
+                for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                    final long downloadId = c
+                            .getLong(c.getColumnIndex(DownloadManager.COLUMN_ID));
+                    downloadManagerWrapper.remove(downloadId);
+                    Log.i(TAG, "Removed the download with Id: " + downloadId);
                 }
                 c.close();
             }
