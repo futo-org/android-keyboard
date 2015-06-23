@@ -139,6 +139,7 @@ public final class InputLogic {
     public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
         mEnteredText = null;
         mWordBeingCorrectedByCursor = null;
+        mConnection.onStartInput();
         if (!mWordComposer.getTypedWord().isEmpty()) {
             // For messaging apps that offer send button, the IME does not get the opportunity
             // to capture the last word. This block should capture those uncommitted words.
@@ -472,7 +473,7 @@ public final class InputLogic {
         }
         // Try to record the word being corrected when the user enters a word character or
         // the backspace key.
-        if (!mWordComposer.isComposingWord()
+        if (!mConnection.hasSlowInputConnection() && !mWordComposer.isComposingWord()
                 && (settingsValues.isWordCodePoint(processedEvent.mCodePoint) ||
                         processedEvent.mKeyCode == Constants.CODE_DELETE)) {
             mWordBeingCorrectedByCursor = getWordAtCursor(
@@ -832,8 +833,14 @@ public final class InputLogic {
                 && settingsValues.needsToLookupSuggestions() &&
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
-                (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)
-                        || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces)) {
+        // NOTE: If the InputConnection is slow, we skip the text-after-cursor check since it
+        // can incur a very expensive getTextAfterCursor() lookup, potentially making the
+        // keyboard UI slow and non-responsive.
+        // TODO: Cache the text after the cursor so we don't need to go to the InputConnection
+        // each time. We are already doing this for getTextBeforeCursor().
+                (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                        || !mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
+                                !mConnection.hasSlowInputConnection() /* checkTextAfter */))) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a word connector. The idea here is, word connectors are not
             // separators and they should be treated as normal characters, except in the first
@@ -1169,7 +1176,9 @@ public final class InputLogic {
                 unlearnWordBeingDeleted(
                         inputTransaction.mSettingsValues, currentKeyboardScriptId);
             }
-            if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
+            if (mConnection.hasSlowInputConnection()) {
+                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
                             .mCurrentLanguageHasSpaces
                     && !mConnection.isCursorFollowedByWordCharacter(
@@ -1196,6 +1205,13 @@ public final class InputLogic {
 
     boolean unlearnWordBeingDeleted(
             final SettingsValues settingsValues, final int currentKeyboardScriptId) {
+        if (mConnection.hasSlowInputConnection()) {
+            // TODO: Refactor unlearning so that it does not incur any extra calls
+            // to the InputConnection. That way it can still be performed on a slow
+            // InputConnection.
+            Log.w(TAG, "Skipping unlearning due to slow InputConnection.");
+            return false;
+        }
         // If we just started backspacing to delete a previous word (but have not
         // entered the composing state yet), unlearn the word.
         // TODO: Consider tracking whether or not this word was typed by the user.
@@ -1411,6 +1427,12 @@ public final class InputLogic {
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
         if (!settingsValues.mAutoCorrectionEnabledPerUserSettings) return;
+        if (mConnection.hasSlowInputConnection()) {
+            // Since we don't unlearn when the user backspaces on a slow InputConnection,
+            // turn off learning to guard against adding typos that the user later deletes.
+            Log.w(TAG, "Skipping learning due to slow InputConnection.");
+            return;
+        }
 
         if (TextUtils.isEmpty(suggestion)) return;
         final boolean wasAutoCapitalized =
@@ -1514,7 +1536,8 @@ public final class InputLogic {
             return;
         }
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
-        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) {
+        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
+                    true /* checkTextAfter */)) {
             // Show predictions.
             mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
             mLatinIME.mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_RECORRECTION);
