@@ -69,10 +69,16 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private static final int INVALID_CURSOR_POSITION = -1;
 
     /**
-     * The amount of time an InputConnection call needs to take for the keyboard to enter
-     * the SlowInputConnection state.
+     * The amount of time a {@link #reloadTextCache} call needs to take for the keyboard to enter
+     * the {@link #hasSlowInputConnection} state.
      */
-    private static final long SLOW_INPUTCONNECTION_MS = 200;
+    private static final long SLOW_INPUT_CONNECTION_ON_FULL_RELOAD_MS = 1000;
+    /**
+     * The amount of time a {@link #getTextBeforeCursor} or {@link #getTextAfterCursor} call needs
+     * to take for the keyboard to enter the {@link #hasSlowInputConnection} state.
+     */
+    private static final long SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS = 200;
+
     private static final int OPERATION_GET_TEXT_BEFORE_CURSOR = 0;
     private static final int OPERATION_GET_TEXT_AFTER_CURSOR = 1;
     private static final int OPERATION_GET_WORD_RANGE_AT_CURSOR = 2;
@@ -84,7 +90,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             "RELOAD_TEXT_CACHE"};
 
     /**
-     * The amount of time the keyboard will persist in the 'hasSlowInputConnection' state
+     * The amount of time the keyboard will persist in the {@link #hasSlowInputConnection} state
      * after observing a slow InputConnection event.
      */
     private static final long SLOW_INPUTCONNECTION_PERSIST_MS = TimeUnit.MINUTES.toMillis(10);
@@ -120,8 +126,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private SpannableStringBuilder mTempObjectForCommitText = new SpannableStringBuilder();
 
     private final InputMethodService mParent;
-    InputConnection mIC;
-    int mNestLevel;
+    private InputConnection mIC;
+    private int mNestLevel;
 
     /**
      * The timestamp of the last slow InputConnection operation
@@ -252,6 +258,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // we want to refresh it.
         final CharSequence textBeforeCursor = getTextBeforeCursorAndDetectLaggyConnection(
                 OPERATION_RELOAD_TEXT_CACHE,
+                SLOW_INPUT_CONNECTION_ON_FULL_RELOAD_MS,
                 Constants.EDITOR_CONTENTS_CACHE_SIZE,
                 0 /* flags */);
         if (null == textBeforeCursor) {
@@ -418,41 +425,45 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             return s;
         }
         return getTextBeforeCursorAndDetectLaggyConnection(
-                OPERATION_GET_TEXT_BEFORE_CURSOR, n, flags);
+                OPERATION_GET_TEXT_BEFORE_CURSOR,
+                SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS,
+                n, flags);
     }
 
     private CharSequence getTextBeforeCursorAndDetectLaggyConnection(
-            final int operation, final int n, final int flags) {
+            final int operation, final long timeout, final int n, final int flags) {
         mIC = mParent.getCurrentInputConnection();
         if (!isConnected()) {
             return null;
         }
         final long startTime = SystemClock.uptimeMillis();
         final CharSequence result = mIC.getTextBeforeCursor(n, flags);
-        detectLaggyConnection(operation, startTime);
+        detectLaggyConnection(operation, timeout, startTime);
         return result;
     }
 
     public CharSequence getTextAfterCursor(final int n, final int flags) {
         return getTextAfterCursorAndDetectLaggyConnection(
-                OPERATION_GET_TEXT_AFTER_CURSOR, n, flags);
+                OPERATION_GET_TEXT_AFTER_CURSOR,
+                SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS,
+                n, flags);
     }
 
     private CharSequence getTextAfterCursorAndDetectLaggyConnection(
-            final int operation, final int n, final int flags) {
+            final int operation, final long timeout, final int n, final int flags) {
         mIC = mParent.getCurrentInputConnection();
         if (!isConnected()) {
             return null;
         }
         final long startTime = SystemClock.uptimeMillis();
         final CharSequence result = mIC.getTextAfterCursor(n, flags);
-        detectLaggyConnection(operation, startTime);
+        detectLaggyConnection(operation, timeout, startTime);
         return result;
     }
 
-    private void detectLaggyConnection(final int operation, final long startTime) {
+    private void detectLaggyConnection(final int operation, final long timeout, final long startTime) {
         final long duration = SystemClock.uptimeMillis() - startTime;
-        if (duration >= SLOW_INPUTCONNECTION_MS) {
+        if (duration >= timeout) {
             final String operationName = OPERATION_NAMES[operation];
             Log.w(TAG, "Slow InputConnection: " + operationName + " took " + duration + " ms.");
             StatsUtils.onInputConnectionLaggy(operation, duration);
@@ -697,10 +708,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         final CharSequence before = getTextBeforeCursorAndDetectLaggyConnection(
                 OPERATION_GET_WORD_RANGE_AT_CURSOR,
+                SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS,
                 NUM_CHARS_TO_GET_BEFORE_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
         final CharSequence after = getTextAfterCursorAndDetectLaggyConnection(
                 OPERATION_GET_WORD_RANGE_AT_CURSOR,
+                SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS,
                 NUM_CHARS_TO_GET_AFTER_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
         if (before == null || after == null) {
