@@ -126,7 +126,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     /**
      * The timestamp of the last slow InputConnection operation
      */
-    private long mLastSlowInputConnectionTime = 0;
+    private long mLastSlowInputConnectionTime = -SLOW_INPUTCONNECTION_PERSIST_MS;
 
     public RichInputConnection(final InputMethodService parent) {
         mParent = parent;
@@ -143,13 +143,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * calling InputConnection methods that trigger an IPC round-trip (e.g., getTextAfterCursor).
      */
     public boolean hasSlowInputConnection() {
-        return mLastSlowInputConnectionTime > 0 &&
-                (SystemClock.uptimeMillis() - mLastSlowInputConnectionTime)
+        return (SystemClock.uptimeMillis() - mLastSlowInputConnectionTime)
                         <= SLOW_INPUTCONNECTION_PERSIST_MS;
     }
 
     public void onStartInput() {
-        mLastSlowInputConnectionTime = 0;
+        mLastSlowInputConnectionTime = -SLOW_INPUTCONNECTION_PERSIST_MS;
     }
 
     private void checkConsistencyForDebug() {
