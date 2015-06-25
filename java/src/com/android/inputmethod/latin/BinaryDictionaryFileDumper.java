@@ -29,6 +29,7 @@ import android.util.Log;
 
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.dictionarypack.MD5Calculator;
+import com.android.inputmethod.dictionarypack.UpdateHandler;
 import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
@@ -487,6 +488,8 @@ public final class BinaryDictionaryFileDumper {
     private static void reinitializeClientRecordInDictionaryContentProvider(final Context context,
             final ContentProviderClient client, final String clientId) throws RemoteException {
         final String metadataFileUri = MetadataFileUriGetter.getMetadataUri(context);
+        Log.i(TAG, "reinitializeClientRecordInDictionaryContentProvider() : MetadataFileUri = "
+                + metadataFileUri);
         final String metadataAdditionalId = MetadataFileUriGetter.getMetadataAdditionalId(context);
         // Tell the content provider to reset all information about this client id
         final Uri metadataContentUri = getProviderUriBuilder(clientId)
@@ -511,8 +514,33 @@ public final class BinaryDictionaryFileDumper {
         final int length = dictionaryList.size();
         for (int i = 0; i < length; ++i) {
             final DictionaryInfo info = dictionaryList.get(i);
+            Log.i(TAG, "reinitializeClientRecordInDictionaryContentProvider() : Insert " + info);
             client.insert(Uri.withAppendedPath(dictionaryContentUriBase, info.mId),
                     info.toContentValues());
+        }
+
+        // Read from metadata file in resources to get the baseline dictionary info.
+        // This ensures we start with a sane list of available dictionaries.
+        final int metadataResourceId = context.getResources().getIdentifier("metadata",
+                "raw", DictionaryInfoUtils.RESOURCE_PACKAGE_NAME);
+        if (metadataResourceId == 0) {
+            Log.w(TAG, "Missing metadata.json resource");
+            return;
+        }
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getResources().openRawResource(metadataResourceId);
+            UpdateHandler.handleMetadata(context, inputStream, clientId);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to read metadata.json from resources", e);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    Log.w(TAG, "Failed to close metadata.json", e);
+                }
+            }
         }
     }
 

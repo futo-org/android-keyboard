@@ -54,7 +54,7 @@ import javax.annotation.Nullable;
  */
 public class DictionaryInfoUtils {
     private static final String TAG = DictionaryInfoUtils.class.getSimpleName();
-    private static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
+    public static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
     private static final String DEFAULT_MAIN_DICT = "main";
     private static final String MAIN_DICT_PREFIX = "main_";
     private static final String DECODER_DICT_SUFFIX = DecoderSpecificConstants.DECODER_DICT_SUFFIX;
@@ -102,6 +102,13 @@ public class DictionaryInfoUtils {
             values.put(FILESIZE_COLUMN, mFilesize);
             values.put(VERSION_COLUMN, mVersion);
             return values;
+        }
+
+        @Override
+        public String toString() {
+            return "DictionaryInfo : Id = '" + mId
+                    + "' : Locale=" + mLocale
+                    + " : Version=" + mVersion;
         }
     }
 

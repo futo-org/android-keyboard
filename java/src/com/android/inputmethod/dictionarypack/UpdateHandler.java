@@ -221,7 +221,7 @@ public final class UpdateHandler {
      */
     private static void updateClientsWithMetadataUri(
             final Context context, final String metadataUri) {
-        PrivateLog.log("Update for metadata URI " + DebugLogUtils.s(metadataUri));
+        Log.i(TAG, "updateClientsWithMetadataUri() : MetadataUri = " + metadataUri);
         // Adding a disambiguator to circumvent a bug in older versions of DownloadManager.
         // DownloadManager also stupidly cuts the extension to replace with its own that it
         // gets from the content-type. We need to circumvent this.
@@ -255,7 +255,7 @@ public final class UpdateHandler {
             // method will ignore it.
             writeMetadataDownloadId(context, metadataUri, downloadId);
         }
-        PrivateLog.log("Requested download with id " + downloadId);
+        Log.i(TAG, "updateClientsWithMetadataUri() : DownloadId = " + downloadId);
     }
 
     /**
@@ -327,11 +327,11 @@ public final class UpdateHandler {
      */
     public static long registerDownloadRequest(final DownloadManagerWrapper manager,
             final Request request, final SQLiteDatabase db, final String id, final int version) {
-        DebugLogUtils.l("RegisterDownloadRequest for word list id : ", id, ", version ", version);
+        Log.i(TAG, "registerDownloadRequest() : Id = " + id + " : Version = " + version);
         final long downloadId;
         synchronized (sSharedIdProtector) {
             downloadId = manager.enqueue(request);
-            DebugLogUtils.l("Download requested with id", downloadId);
+            Log.i(TAG, "registerDownloadRequest() : DownloadId = " + downloadId);
             MetadataDbHelper.markEntryAsDownloading(db, id, version, downloadId);
         }
         return downloadId;
@@ -582,7 +582,7 @@ public final class UpdateHandler {
      * @throws BadFormatException if the metadata is not in a known format.
      * @throws IOException if the downloaded file can't be read from the disk
      */
-    private static void handleMetadata(final Context context, final InputStream stream,
+    public static void handleMetadata(final Context context, final InputStream stream,
             final String clientId) throws IOException, BadFormatException {
         DebugLogUtils.l("Entering handleMetadata");
         final List<WordListMetadata> newMetadata;
@@ -905,6 +905,8 @@ public final class UpdateHandler {
     // word list ID / client ID combination.
     public static void installIfNeverRequested(final Context context, final String clientId,
             final String wordlistId, final boolean mayPrompt) {
+        Log.i(TAG, "installIfNeverRequested() : ClientId = " + clientId
+                + " : WordListId = " + wordlistId + " : MayPrompt = " + mayPrompt);
         final String[] idArray = wordlistId.split(DictionaryProvider.ID_CATEGORY_SEPARATOR);
         // If we have a new-format dictionary id (category:manual_id), then use the
         // specified category. Otherwise, it is a main dictionary, so force the
@@ -959,8 +961,8 @@ public final class UpdateHandler {
         // change the shared preferences. So there is no way for a word list that has been
         // auto-installed once to get auto-installed again, and that's what we want.
         final ActionBatch actions = new ActionBatch();
-        actions.add(new ActionBatch.StartDownloadAction(
-                clientId, WordListMetadata.createFromContentValues(installCandidate)));
+        WordListMetadata metadata = WordListMetadata.createFromContentValues(installCandidate);
+        actions.add(new ActionBatch.StartDownloadAction(clientId, metadata));
         final String localeString = installCandidate.getAsString(MetadataDbHelper.LOCALE_COLUMN);
         // We are in a content provider: we can't do any UI at all. We have to defer the displaying
         // itself to the service. Also, we only display this when the user does not have a
@@ -972,6 +974,7 @@ public final class UpdateHandler {
             intent.putExtra(DictionaryService.LOCALE_INTENT_ARGUMENT, localeString);
             context.startService(intent);
         }
+        Log.i(TAG, "installIfNeverRequested() : StartDownloadAction for " + metadata);
         actions.execute(context, new LogProblemReporter(TAG));
     }
 
