@@ -416,8 +416,7 @@ public final class UpdateHandler {
     /* package */ static void downloadFinished(final Context context, final Intent intent) {
         // Get and check the ID of the file that was downloaded
         final long fileId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, NOT_AN_ID);
-        PrivateLog.log("Download finished with id " + fileId);
-        DebugLogUtils.l("DownloadFinished with id", fileId);
+        Log.i(TAG, "downloadFinished() : DownloadId = " + fileId);
         if (NOT_AN_ID == fileId) return; // Spurious wake-up: ignore
 
         final DownloadManagerWrapper manager = new DownloadManagerWrapper(context);
@@ -439,11 +438,15 @@ public final class UpdateHandler {
             try {
                 if (downloadInfo.wasSuccessful()) {
                     downloadSuccessful = handleDownloadedFile(context, record, manager, fileId);
+                    Log.i(TAG, "downloadFinished() : Success = " + downloadSuccessful);
                 }
             } finally {
+                final String resultMessage = downloadSuccessful ? "Success" : "Failure";
                 if (record.isMetadata()) {
+                    Log.i(TAG, "downloadFinished() : Metadata " + resultMessage);
                     publishUpdateMetadataCompleted(context, downloadSuccessful);
                 } else {
+                    Log.i(TAG, "downloadFinished() : WordList " + resultMessage);
                     final SQLiteDatabase db = MetadataDbHelper.getDb(context, record.mClientId);
                     publishUpdateWordListCompleted(context, downloadSuccessful, fileId,
                             db, record.mAttributes, record.mClientId);
