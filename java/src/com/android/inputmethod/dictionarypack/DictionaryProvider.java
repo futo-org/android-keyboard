@@ -243,14 +243,8 @@ public final class DictionaryProvider extends ContentProvider {
                 // Fall through
             case DICTIONARY_V1_DICT_INFO:
                 final String locale = uri.getLastPathSegment();
-                // If LatinIME does not have a dictionary for this locale at all, it will
-                // send us true for this value. In this case, we may prompt the user for
-                // a decision about downloading a dictionary even over a metered connection.
-                final String mayPromptValue =
-                        uri.getQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER);
-                final boolean mayPrompt = QUERY_PARAMETER_TRUE.equals(mayPromptValue);
                 final Collection<WordListInfo> dictFiles =
-                        getDictionaryWordListsForLocale(clientId, locale, mayPrompt);
+                        getDictionaryWordListsForLocale(clientId, locale);
                 // TODO: pass clientId to the following function
                 DictionaryService.updateNowIfNotUpdatedInAVeryLongTime(getContext());
                 if (null != dictFiles && dictFiles.size() > 0) {
@@ -343,11 +337,10 @@ public final class DictionaryProvider extends ContentProvider {
      *
      * @param clientId the ID of the client requesting the list
      * @param locale the locale for which we want the list, as a String
-     * @param mayPrompt true if we are allowed to prompt the user for arbitration via notification
      * @return a collection of ids. It is guaranteed to be non-null, but may be empty.
      */
     private Collection<WordListInfo> getDictionaryWordListsForLocale(final String clientId,
-            final String locale, final boolean mayPrompt) {
+            final String locale) {
         final Context context = getContext();
         final Cursor results =
                 MetadataDbHelper.queryInstalledOrDeletingOrAvailableDictionaryMetadata(context,
@@ -412,8 +405,7 @@ public final class DictionaryProvider extends ContentProvider {
                         }
                     } else if (MetadataDbHelper.STATUS_AVAILABLE == wordListStatus) {
                         // The locale is the id for the main dictionary.
-                        UpdateHandler.installIfNeverRequested(context, clientId, wordListId,
-                                mayPrompt);
+                        UpdateHandler.installIfNeverRequested(context, clientId, wordListId);
                         continue;
                     }
                     final WordListInfo currentBestMatch = dicts.get(wordListCategory);

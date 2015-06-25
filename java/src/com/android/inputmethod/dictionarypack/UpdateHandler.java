@@ -907,9 +907,9 @@ public final class UpdateHandler {
     // list because it may only install the latest version we know about for this specific
     // word list ID / client ID combination.
     public static void installIfNeverRequested(final Context context, final String clientId,
-            final String wordlistId, final boolean mayPrompt) {
+            final String wordlistId) {
         Log.i(TAG, "installIfNeverRequested() : ClientId = " + clientId
-                + " : WordListId = " + wordlistId + " : MayPrompt = " + mayPrompt);
+                + " : WordListId = " + wordlistId);
         final String[] idArray = wordlistId.split(DictionaryProvider.ID_CATEGORY_SEPARATOR);
         // If we have a new-format dictionary id (category:manual_id), then use the
         // specified category. Otherwise, it is a main dictionary, so force the
@@ -942,17 +942,6 @@ public final class UpdateHandler {
             return;
         }
 
-        if (mayPrompt
-                && DOWNLOAD_OVER_METERED_SETTING_UNKNOWN
-                        == getDownloadOverMeteredSetting(context)) {
-            final ConnectivityManager cm =
-                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (ConnectivityManagerCompatUtils.isActiveNetworkMetered(cm)) {
-                showDictionaryAvailableNotification(context, clientId, installCandidate);
-                return;
-            }
-        }
-
         // We decided against prompting the user for a decision. This may be because we were
         // explicitly asked not to, or because we are currently on wi-fi anyway, or because we
         // already know the answer to the question. We'll enqueue a request ; StartDownloadAction
@@ -969,14 +958,12 @@ public final class UpdateHandler {
         final String localeString = installCandidate.getAsString(MetadataDbHelper.LOCALE_COLUMN);
         // We are in a content provider: we can't do any UI at all. We have to defer the displaying
         // itself to the service. Also, we only display this when the user does not have a
-        // dictionary for this language already: we know that from the mayPrompt argument.
-        if (mayPrompt) {
-            final Intent intent = new Intent();
-            intent.setClass(context, DictionaryService.class);
-            intent.setAction(DictionaryService.SHOW_DOWNLOAD_TOAST_INTENT_ACTION);
-            intent.putExtra(DictionaryService.LOCALE_INTENT_ARGUMENT, localeString);
-            context.startService(intent);
-        }
+        // dictionary for this language already.
+        final Intent intent = new Intent();
+        intent.setClass(context, DictionaryService.class);
+        intent.setAction(DictionaryService.SHOW_DOWNLOAD_TOAST_INTENT_ACTION);
+        intent.putExtra(DictionaryService.LOCALE_INTENT_ARGUMENT, localeString);
+        context.startService(intent);
         Log.i(TAG, "installIfNeverRequested() : StartDownloadAction for " + metadata);
         actions.execute(context, new LogProblemReporter(TAG));
     }
