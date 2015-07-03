@@ -29,13 +29,12 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.dictionarypack.CommonPreferences;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.setup.SetupActivity;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
-
-import java.util.Locale;
 
 /**
  * This class detects the {@link Intent#ACTION_MY_PACKAGE_REPLACED} broadcast intent when this IME
@@ -77,22 +76,6 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             richImm.setAdditionalInputMethodSubtypes(additionalSubtypes);
             toggleAppIcon(context);
             downloadLatestDictionaries(context);
-            // TODO: This is only for dogfood builds. Remove this from the final release.
-            DictionaryFacilitator keyboardFacilitator =
-                    DictionaryFacilitatorProvider.getDictionaryFacilitator(false);
-            boolean historyCleared = keyboardFacilitator.clearUserHistoryDictionary(context);
-            Locale keyboardLocale = keyboardFacilitator.getLocale();
-            if (historyCleared && keyboardLocale != null) {
-                keyboardFacilitator.resetDictionaries(
-                        context,
-                        keyboardLocale,
-                        keyboardFacilitator.usesContacts(),
-                        true /* history */,
-                        true /* force */,
-                        keyboardFacilitator.getAccount(),
-                        "" /* prefix */,
-                        null /* listener */);
-            }
         } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
             Log.i(TAG, "Boot has been completed");
             toggleAppIcon(context);
@@ -126,7 +109,7 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(updateIntent);
     }
 
-    public static void toggleAppIcon(final Context context) {
+    private static void toggleAppIcon(final Context context) {
         final int appInfoFlags = context.getApplicationInfo().flags;
         final boolean isSystemApp = (appInfoFlags & ApplicationInfo.FLAG_SYSTEM) > 0;
         if (Log.isLoggable(TAG, Log.INFO)) {

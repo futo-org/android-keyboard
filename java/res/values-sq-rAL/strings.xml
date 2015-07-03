@@ -43,9 +43,9 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Të dhënat e tua të sinkronizuara do të fshihen nga reja kompjuterike. Je i sigurt?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Fshi"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Anulo"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Fjalori yt personal do të sinkronizohet dhe do të rezervohet në serverët e Google. Informacionet statistikore të frekuencës së fjalëve mund të mblidhen për të ndihmuar në përmirësimin e produkteve tona. Mbledhja dhe përdorimi i të gjitha informacioneve do të jetë në përputhje me "<a href="https://www.google.com/policies/privacy">"\"Politikën e privatësisë së Google\""</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Fjalori yt personal do të sinkronizohet dhe do të rezervohet në serverët e Google. Informacionet statistikore të frekuencës së fjalëve mund të mblidhen për të ndihmuar në përmirësimin e produkteve tona. Mbledhja dhe përdorimi i të gjitha informacioneve do të jetë në përputhje me "<a href="https://www.google.com/policies/privacy">"Politikën e privatësisë së Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Shto një llogari të Google në këtë pajisje për të aktivizuar këtë funksion"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinkronizimi nuk mundësohet për pajisjet me llogari të \"Aplikacioneve të Google për biznesin\""</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinkronizimi është i papërdorshëm për pajisjet me llogari të \"Aplikacioneve të Google për biznesin\""</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Kalo në metoda të tjera hyrjeje"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasti i ndryshimit të gjuhës mbulon edhe metoda të tjera hyrjeje"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tasti i ndryshimit të gjuhës"</string>

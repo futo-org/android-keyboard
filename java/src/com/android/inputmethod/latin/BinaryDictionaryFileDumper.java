@@ -29,7 +29,6 @@ import android.util.Log;
 
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.dictionarypack.MD5Calculator;
-import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils.DictionaryInfo;
@@ -221,11 +220,11 @@ public final class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Stages a word list the id of which is passed as an argument. This will write the file
+     * Caches a word list the id of which is passed as an argument. This will write the file
      * to the cache file name designated by its id and locale, overwriting it if already present
      * and creating it (and its containing directory) if necessary.
      */
-    private static void installWordListToStaging(final String wordlistId, final String locale,
+    private static void cacheWordList(final String wordlistId, final String locale,
             final String rawChecksum, final ContentProviderClient providerClient,
             final Context context) {
         final int COMPRESSED_CRYPTED_COMPRESSED = 0;
@@ -247,7 +246,7 @@ public final class BinaryDictionaryFileDumper {
             return;
         }
         final String finalFileName =
-                DictionaryInfoUtils.getStagingFileName(wordlistId, locale, context);
+                DictionaryInfoUtils.getCacheFileName(wordlistId, locale, context);
         String tempFileName;
         try {
             tempFileName = BinaryDictionaryGetter.getTempFileName(wordlistId, context);
@@ -321,21 +320,23 @@ public final class BinaryDictionaryFileDumper {
                     }
                 }
 
-                // move the output file to the final staging file.
                 final File finalFile = new File(finalFileName);
-                FileUtils.renameTo(outputFile, finalFile);
-
+                finalFile.delete();
+                if (!outputFile.renameTo(finalFile)) {
+                    throw new IOException("Can't move the file to its final name");
+                }
                 wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
                         QUERY_PARAMETER_SUCCESS);
                 if (0 >= providerClient.delete(wordListUriBuilder.build(), null, null)) {
                     Log.e(TAG, "Could not have the dictionary pack delete a word list");
                 }
-                Log.d(TAG, "Successfully copied file for wordlist ID " + wordlistId);
+                BinaryDictionaryGetter.removeFilesWithIdExcept(context, wordlistId, finalFile);
+                Log.e(TAG, "Successfully copied file for wordlist ID " + wordlistId);
                 // Success! Close files (through the finally{} clause) and return.
                 return;
             } catch (Exception e) {
                 if (DEBUG) {
-                    Log.e(TAG, "Can't open word list in mode " + mode, e);
+                    Log.i(TAG, "Can't open word list in mode " + mode, e);
                 }
                 if (null != outputFile) {
                     // This may or may not fail. The file may not have been created if the
@@ -402,7 +403,7 @@ public final class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Queries a content provider for word list data for some locale and stage the returned files
+     * Queries a content provider for word list data for some locale and cache the returned files
      *
      * This will query a content provider for word list data for a given locale, and copy the
      * files locally so that they can be mmap'ed. This may overwrite previously cached word lists
@@ -410,7 +411,7 @@ public final class BinaryDictionaryFileDumper {
      * @throw FileNotFoundException if the provider returns non-existent data.
      * @throw IOException if the provider-returned data could not be read.
      */
-    public static void installDictToStagingFromContentProvider(final Locale locale,
+    public static void cacheWordListsFromContentProvider(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
         final ContentProviderClient providerClient;
         try {
@@ -428,25 +429,11 @@ public final class BinaryDictionaryFileDumper {
             final List<WordListInfo> idList = getWordListWordListInfos(locale, context,
                     hasDefaultWordList);
             for (WordListInfo id : idList) {
-                installWordListToStaging(id.mId, id.mLocale, id.mRawChecksum, providerClient,
-                        context);
+                cacheWordList(id.mId, id.mLocale, id.mRawChecksum, providerClient, context);
             }
         } finally {
             providerClient.release();
         }
-    }
-
-    /**
-     * Downloads the dictionary if it was never requested/used.
-     *
-     * @param locale locale to download
-     * @param context the context for resources and providers.
-     * @param hasDefaultWordList whether the default wordlist exists in the resources.
-     */
-    public static void downloadDictIfNeverRequested(final Locale locale,
-            final Context context, final boolean hasDefaultWordList) {
-        Log.d("inamul_tag", "BinaryDictionaryFileDumper.downloadDictIfNeverRequested()");
-        getWordListWordListInfos(locale, context, hasDefaultWordList);
     }
 
     /**

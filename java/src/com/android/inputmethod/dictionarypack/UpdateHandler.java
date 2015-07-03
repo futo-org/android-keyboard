@@ -592,8 +592,6 @@ public final class UpdateHandler {
      * Warn Android Keyboard that the state of dictionaries changed and it should refresh its data.
      */
     private static void signalNewDictionaryState(final Context context) {
-        // TODO: Also provide the locale of the updated dictionary so that the LatinIme
-        // does not have to reset if it is a different locale.
         final Intent newDictBroadcast =
                 new Intent(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
         context.sendBroadcast(newDictBroadcast);
