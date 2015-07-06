@@ -25,10 +25,10 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Kontrolluesi drejtshkrimor përdor fjalë të futura nga kontaktet e tua"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Lësho dridhje kur shtyp tastin"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Lësho tingull kur shtyp tastin"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Shfaqje dritareje nga shtypja e tastit"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Zmadhim germe kur shtyp"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferencat"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Llogaritë dhe privatësia"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"Shfaqja dhe strukturat"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"Pamja dhe struktura"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Shkrimi me gjeste"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Korrigjim teksti"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"I përparuar"</string>
@@ -38,19 +38,19 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinkronizimi është i aktivizuar"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sinkronizo fjalorin tënd personal midis pajisjeve"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sinkronizo tani"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"Fshi të dhënat në renë kompjuterike"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Fshi të dhënat në Renë kompjuterike"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Fshin të dhënat e tua të sinkronizuara nga Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Të dhënat e tua të sinkronizuara do të fshihen nga reja kompjuterike. Je i sigurt?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Të dhënat e tua të sinkronizuara do të fshihen nga Reja kompjuterike. Je i sigurt?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Fshi"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Anulo"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Fjalori yt personal do të sinkronizohet dhe do të rezervohet në serverët e Google. Informacionet statistikore të frekuencës së fjalëve mund të mblidhen për të ndihmuar në përmirësimin e produkteve tona. Mbledhja dhe përdorimi i të gjitha informacioneve do të jetë në përputhje me "<a href="https://www.google.com/policies/privacy">"\"Politikën e privatësisë së Google\""</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Fjalori yt personal do të sinkronizohet dhe do të rezervohet në serverët e Google. Informacionet statistikore mbi shpeshtësinë e përdorimit të fjalëve mund të mblidhen për të ndihmuar në përmirësimin e produkteve tona. Mbledhja dhe përdorimi i të gjitha informacioneve do të jetë në përputhje me "<a href="https://www.google.com/policies/privacy">"Politikën e privatësisë së Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Shto një llogari të Google në këtë pajisje për të aktivizuar këtë funksion"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinkronizimi nuk mundësohet për pajisjet me llogari të \"Aplikacioneve të Google për biznesin\""</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Kalo në metoda të tjera hyrjeje"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasti i ndryshimit të gjuhës mbulon edhe metoda të tjera hyrjeje"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tasti i ndryshimit të gjuhës"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Shfaq kur janë të aktivizuara shumë gjuhë hyrjeje"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Vonesa e heqjes së dritares që shfaq tastin"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Vonesa e heqjes së zmadhimit të tastit"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Pa vonesë"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"I parazgjedhur"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> milisek."</string>
@@ -58,10 +58,10 @@
     <string name="use_contacts_dict" msgid="4435317977804180815">"Sugjero emra te \"Kontaktet\""</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Përdor emra nga \"Kontaktet\" për sugjerime dhe korrigjime"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Sugjerime të personalizuara"</string>
-    <string name="enable_metrics_logging" msgid="5506372337118822837">"Përmirëso <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="enable_metrics_logging" msgid="5506372337118822837">"Përmirëso apl. \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\""</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Pikë me hapësirë të dyfishtë"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Trokitja dy herë në tastin e hapësirës vendos një pikë e pasuar nga një hapësirë"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Auto-kapitalizim"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Trokitja dy herë në tastin e hapësirës vendos një pikë të pasuar nga një hapësirë"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Kapitalizim automatik"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Kapitalizo fjalën e parë të çdo fjalie"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Fjalor personal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Fjalorët shtesë"</string>
@@ -77,11 +77,11 @@
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"I rreptë"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Shumë i rreptë"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Sugjerimet për fjalën e radhës"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Përdor fjalën e parashkruar për të ofruar sugjerime"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Aktivizo shkrimin e gjesteve"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Përdor fjalën e mëparshme për të ofruar sugjerime"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Aktivizo shkrimin me gjeste"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Fut një fjalë duke rrëshqitur përmes shkronjave"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Shfaq gjurmën e gjesteve"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Shikim paraprak dinamik lundrues"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Shfaq trajektoren e gjesteve"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Shikim paraprak dinamik"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Shiko fjalën e sugjeruar kur bën me gjeste"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gjest fraze"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Hapësirat e hyrjes gjatë gjesteve duke kaluar në tastin e hapësirës"</string>
@@ -101,7 +101,7 @@
     <string name="account_select_ok" msgid="9141195141763227797">"Në rregull!"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"Anulo"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Dil"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"Përzgjidh një llogari për përdorim"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Zgjidh një llogari për përdorim"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"anglisht (MB)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"anglisht (SHBA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"spanjisht (SHBA)"</string>
@@ -124,21 +124,21 @@
     <string name="subtype_emoji" msgid="7483586578074549196">"\"Emoji\""</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Tema e tastierës"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Stile të personalizuara hyrjeje"</string>
-    <string name="add_style" msgid="6163126614514489951">"Shto stil"</string>
+    <string name="add_style" msgid="6163126614514489951">"Shto stilizimin"</string>
     <string name="add" msgid="8299699805688017798">"Shto"</string>
     <string name="remove" msgid="4486081658752944606">"Hiq"</string>
     <string name="save" msgid="7646738597196767214">"Ruaj"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Gjuha"</string>
-    <string name="keyboard_layout_set" msgid="4309233698194565609">"Plani"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Struktura"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"Stili yt i hyrjes ka nevojë të aktivizohet para se të fillosh përdorimin e tij. Dëshiron ta aktivizosh tani?"</string>
     <string name="enable" msgid="5031294444630523247">"Aktivizo"</string>
     <string name="not_now" msgid="6172462888202790482">"Jo tani!"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"I njëjti stil hyrjesh ekziston tashmë: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Kohëzgjatja e dridhjes nga shtypja e tastit"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volumi i tingullit të tastit"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Vonesë e gjatë në shtypjen e tastit"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Vonesa e shtypjes së gjatë të tastit"</string>
     <string name="button_default" msgid="3988017840431881491">"I parazgjedhur"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"Mirë se vjen në <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Mirë se erdhe në <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"me \"Shkrimin me gjeste\""</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Fillo"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Hapi tjetër"</string>

@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Dine synkroniserede data slettes fra skyen. Er du sikker?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Slet"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Annuller"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Din personlige ordbog synkroniseres og sikkerhedskopieres til Googles servere. De statistiske oplysninger om ordfrekvens indsamles muligvis med henblik på at forbedre vores produkter. Indsamlingen og brugen af alle oplysninger sker i overensstemmelse med "<a href="https://www.google.com/policies/privacy">"Googles privatlivspolitik"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Din personlige ordbog synkroniseres og sikkerhedskopieres til Googles servere. De statistiske oplysninger om ordfrekvens kan blive indsamlet med henblik på at forbedre vores produkter. Indsamlingen og brugen af alle oplysninger sker i overensstemmelse med "<a href="https://www.google.com/policies/privacy">"Googles privatlivspolitik"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Føj en Google-konto til enheden for at aktivere denne funktion"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Synkronisering er ikke tilgængelig på enheder med Google Apps for Business-konti"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skift inputmetode"</string>

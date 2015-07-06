@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Zelo agresivno"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Predlogi za naslednjo besedo"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Pri predlogu upoštevaj prejšnjo besedo"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Omogoči vnos besedila s potezo"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Omogoči vnos s potezo"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Vnos besede s podrsavanjem od črke do črke"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Prikaži pot poteze"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dinamični plavajoči predogled"</string>
