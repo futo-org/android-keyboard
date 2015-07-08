@@ -174,7 +174,7 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Освежи"</string>
     <string name="last_update" msgid="730467549913588780">"Последње ажурирање"</string>
     <string name="message_updating" msgid="4457761393932375219">"Траже се ажурирања"</string>
-    <string name="message_loading" msgid="5638680861387748936">"Учитавање…"</string>
+    <string name="message_loading" msgid="5638680861387748936">"Учитава се…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Главни речник"</string>
     <string name="cancel" msgid="6830980399865683324">"Откажи"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"Подешавања"</string>
