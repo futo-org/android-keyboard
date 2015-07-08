@@ -61,7 +61,7 @@
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Poboljšaj aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Točka s dva razmaka"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dvostrukim dodirivanjem razmaknice umeću se točka i razmak"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Automatsko pisanje velikih slova"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Autom. veliko početno slovo"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Napiši velikim slovom prvu riječ svake rečenice"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Osobni rječnik"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Rječnici kao dodaci"</string>
@@ -123,7 +123,7 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Abeceda (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Tema tipkovnice"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Prilagođeni stilovi unosa"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Pril. stilovi unosa"</string>
     <string name="add_style" msgid="6163126614514489951">"Dodaj stil"</string>
     <string name="add" msgid="8299699805688017798">"Dodaj"</string>
     <string name="remove" msgid="4486081658752944606">"Ukloni"</string>

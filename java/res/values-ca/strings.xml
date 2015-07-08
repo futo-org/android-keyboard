@@ -36,7 +36,7 @@
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Activa el teclat partit"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Sincronitz. del Teclat de Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"La sincronització està activada"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sincronitza el diccionari personal als dispositius"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sincronitza el diccionari personal en diversos dispositius"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sincronitza ara"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Suprimeix les dades del núvol"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Suprimeix les dades sincronitzades de Google"</string>
@@ -54,7 +54,7 @@
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sense retard"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminat"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
-    <string name="settings_system_default" msgid="6268225104743331821">"Predeterm. del sist."</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"Predeterminat"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Suggereix noms de contactes"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilitza els noms de contactes per fer suggeriments i correccions"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Suggeriments personalitzats"</string>
@@ -95,13 +95,13 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Toca aquí per desar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionari disponible"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema del teclat"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"Canvi de compte"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Canvia de compte"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"No hi ha cap compte seleccionat."</string>
     <string name="account_selected" msgid="2846876462199625974">"Actualment es fa servir <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>."</string>
     <string name="account_select_ok" msgid="9141195141763227797">"D\'acord"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"Cancel·la"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Tanca la sessió"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"Selecció d\'un compte per utilitzar"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Compte que vols utilitzar"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglès (Regne Unit)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglès (EUA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Espanyol (EUA)"</string>
@@ -123,7 +123,7 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabet (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Tema del teclat"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Estils d\'entrada personalitzats"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Estils d\'introdució personalitzats"</string>
     <string name="add_style" msgid="6163126614514489951">"Afegeix estil"</string>
     <string name="add" msgid="8299699805688017798">"Afegeix"</string>
     <string name="remove" msgid="4486081658752944606">"Elimina"</string>
