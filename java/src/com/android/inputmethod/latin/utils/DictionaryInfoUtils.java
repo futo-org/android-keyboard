@@ -314,7 +314,10 @@ public class DictionaryInfoUtils {
                 final String cacheFilename = cacheDirectoryForLocale + File.separator + fileId;
                 final File cacheFile = new File(cacheFilename);
                 // move the staging file to cache file.
-                FileUtils.renameTo(stagingFile, cacheFile);
+                if (!FileUtils.renameTo(stagingFile, cacheFile)) {
+                    Log.e(TAG, String.format("Failed to rename from %s to %s.",
+                            stagingFile.getAbsoluteFile(), cacheFile.getAbsoluteFile()));
+                }
             }
         }
     }

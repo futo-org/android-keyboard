@@ -324,7 +324,10 @@ public final class BinaryDictionaryFileDumper {
 
                 // move the output file to the final staging file.
                 final File finalFile = new File(finalFileName);
-                FileUtils.renameTo(outputFile, finalFile);
+                if (!FileUtils.renameTo(outputFile, finalFile)) {
+                    Log.e(TAG, String.format("Failed to rename from %s to %s.",
+                            outputFile.getAbsoluteFile(), finalFile.getAbsoluteFile()));
+                }
 
                 wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
                         QUERY_PARAMETER_SUCCESS);
