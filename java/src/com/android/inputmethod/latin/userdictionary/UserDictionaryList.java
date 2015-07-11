@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -75,7 +74,7 @@ public class UserDictionaryList extends PreferenceFragment {
         } finally {
             cursor.close();
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
             // For ICS, we need to show "For all languages" in case that the keyboard locale
             // is different from the system locale
             localeSet.add("");
@@ -163,3 +162,4 @@ public class UserDictionaryList extends PreferenceFragment {
         createUserDictSettings(getPreferenceScreen());
     }
 }
+
