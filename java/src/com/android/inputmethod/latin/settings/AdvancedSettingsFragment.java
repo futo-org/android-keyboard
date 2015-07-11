@@ -26,6 +26,7 @@ import android.preference.Preference;
 
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SystemBroadcastReceiver;
 import com.android.inputmethod.latin.define.ProductionFlags;
 
 /**
@@ -106,6 +107,8 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
         if (key.equals(Settings.PREF_POPUP_ON)) {
             setPreferenceEnabled(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                     Settings.readKeyPreviewPopupEnabled(prefs, res));
+        } else if (key.equals(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
+            SystemBroadcastReceiver.toggleAppIcon(getActivity());
         }
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
         refreshEnablingsOfKeypressSoundAndVibrationSettings();

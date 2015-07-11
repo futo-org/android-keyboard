@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ໄລຍະເວລາຂອງການສັ່ນໃນການກົດປຸ່ມ"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ລະດັບສຽງຂອງການກົດປຸ່ມ"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ໄລຍະເວລາຂອງການກົດປຸ່ມ"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji ສຳ​ລັບ​ແປ້ນ​ພິມ​ແທ້"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ປຸ່ມ Alt ແທ້​ສະ​ແດງ​ແຜ່ນ​ຮອງ emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"ຄ່າເລີ່ມຕົ້ນ"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"ຍິນ​ດີ​ຕ້ອນ​ຮັບສູ່ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ດ້ວຍການພິມແບບ Gesture"</string>

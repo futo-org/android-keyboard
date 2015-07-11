@@ -385,12 +385,10 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="prefs_keypress_sound_volume_settings">Keypress sound volume</string>
     <!-- Title of the settings for key long press delay [CHAR LIMIT=35] -->
     <string name="prefs_key_longpress_timeout_settings">Key long press delay</string>
-    <!-- TODO: Let's finalize title of the settings and remove translatable="false" -->
     <!-- Title of the settings for enabling Emoji palette triggered by the Alt key on physical keyboards [CHAR LIMIT=35] -->
-    <string name="prefs_enable_emoji_alt_physical_key" translatable="false">Emoji for physical keyboard</string>
-    <!-- TODO: Let's finalize title of the settings and remove translatable="false" -->
+    <string name="prefs_enable_emoji_alt_physical_key">Emoji for physical keyboard</string>
     <!-- Description of the settings for enabling Emoji palette triggered by the Alt key on physical keyboards [CHAR LIMIT=64] -->
-    <string name="prefs_enable_emoji_alt_physical_key_summary" translatable="false">Physical Alt key shows the emoji palette</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary">Physical Alt key shows the emoji palette</string>
 
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>

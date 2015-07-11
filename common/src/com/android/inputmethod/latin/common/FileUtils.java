@@ -23,6 +23,8 @@ import java.io.FilenameFilter;
  * A simple class to help with removing directories recursively.
  */
 public class FileUtils {
+    private static final String TAG = "FileUtils";
+
     public static boolean deleteRecursively(final File path) {
         if (path.isDirectory()) {
             final File[] files = path.listFiles();

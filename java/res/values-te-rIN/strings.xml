@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"కీని నొక్కినప్పుడు వైబ్రేషన్ వ్యవధి"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"కీని నొక్కినప్పుడు చేసే ధ్వని వాల్యూమ్"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"కీని ఎక్కువసేపు నొక్కి ఉంచాల్సిన సమయంలో ఆలస్యం"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"భౌతిక కీబోర్డ్ కోసం ఎమోజి"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"భౌతిక Alt కీ ఎమోజి ఫలకాన్ని చూపుతుంది"</string>
     <string name="button_default" msgid="3988017840431881491">"డిఫాల్ట్"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>కు స్వాగతం"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"సంజ్ఞ టైపింగ్‌తో"</string>
@@ -197,7 +199,7 @@
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"పదం:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"సత్వరమార్గం:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"భాష:"</string>
-    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"పదాన్ని టైప్ చేయి"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"పదాన్ని టైప్ చేయండి"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ఐచ్ఛిక సత్వరమార్గం"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"పదాన్ని సవరించు"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"సవరించు"</string>

@@ -24,9 +24,9 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಹುಡುಕು"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"ಕಾಗುಣಿತ ಪರೀಕ್ಷಕವು ನಿಮ್ಮ ಸಂಪರ್ಕ ಪಟ್ಟಿಯ ಮಾಹಿತಿಯನ್ನು ಬಳಸಿಕೊಳ್ಳುತ್ತದೆ"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ಕೀಲಿಯನ್ನು ಒತ್ತಿದಾಗ ವೈಬ್ರೇಷನ್‌"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀಲಿಯನ್ನು ಒತ್ತಿದಾಗ ಶಬ್ದಮಾಡು"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀ ಒತ್ತಿದಾಗ ಶಬ್ದಮಾಡು"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ಕೀ ಒತ್ತಿದಾಗ ಪಾಪ್ ಅಪ್‌ ಮಾಡು"</string>
-    <string name="settings_screen_preferences" msgid="2696713156722014624">"ಆದ್ಯತೆಗಳು"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"ಪ್ರಾಶಸ್ತ್ಯಗಳು"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"ಖಾತೆಗಳ ಗೌಪ್ಯತೆ"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"ಗೋಚರತೆಯ ಲೇಔಟ್‌ಗಳ"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ಗೆಸ್ಚರ್ ಟೈಪಿಂಗ್"</string>
@@ -37,7 +37,7 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google ಕೀಬೋರ್ಡ್‌ ಸಿಂಕ್‌"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"ಸಿಂಕ್‌ ಆನ್‌ ಆಗಿದೆ"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ನಿಘಂಟನ್ನು ಸಾಧನಗಳಲ್ಲಿ ಸಿಂಕ್ ಮಾಡಿ"</string>
-    <string name="sync_now_title" msgid="3088838136743277721">"ಇದೀಗ ಸಿಂಕ್ ಮಾಡಿ"</string>
+    <string name="sync_now_title" msgid="3088838136743277721">"ಈಗ ಸಿಂಕ್ ಮಾಡು"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"ಮೇಘ ಡೇಟಾವನ್ನು ಅಳಿಸಿ"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google ನಿಂದ ನಿಮ್ಮ ಸಿಂಕ್ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತದೆ"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ನಿಮ್ಮ ಸಿಂಕ್‌ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಮೇಘದಿಂದ ಅಳಿಸಲಾಗುತ್ತದೆ. ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"</string>
@@ -138,6 +138,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ಕೀಒತ್ತುವ ವೈಬ್ರೇಷನ್‌‌ ಅವಧಿ"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ಕೀಒತ್ತುವ ಶಬ್ದದ ವಾಲ್ಯೂಮ್"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ಕೀಯ ದೀರ್ಘ ಒತ್ತುವ ವಿಳಂಬ"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"ಭೌತಿಕ ಕೀಬೋರ್ಡ್‌ಗೆ ಎಮೋಜಿ"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ಭೌತಿಕ Alt ಕೀ ಎಮೋಜಿ ಪ್ಯಾಲೆಟ್ ತೋರಿಸುತ್ತದೆ"</string>
     <string name="button_default" msgid="3988017840431881491">"ಡೀಫಾಲ್ಟ್"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಗೆ ಸುಸ್ವಾಗತ"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ಗೆಶ್ಚರ್ ಟೈಪಿಂಗ್‌ನೊಂದಿಗೆ"</string>
@@ -160,7 +162,7 @@
     <string name="app_name" msgid="6320102637491234792">"ನಿಘಂಟು ಪೂರೈಕೆದಾರರು"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ನಿಘಂಟು ಪೂರೈಕೆದಾರರು"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"ನಿಘಂಟು ಸೇವೆ"</string>
-    <string name="download_description" msgid="6014835283119198591">"ನಿಘಂಟು ನವೀಕರಣ ಮಾಹಿತಿ"</string>
+    <string name="download_description" msgid="6014835283119198591">"ನಿಘಂಟು ಅಪ್‌ಡೇಟ್‌‌ ಮಾಹಿತಿ"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"ಆಡ್-ಆನ್ ನಿಘಂಟುಗಳು"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"ನಿಘಂಟು ಲಭ್ಯವಿದೆ"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"ನಿಘಂಟುಗಳಿಗಾಗಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>

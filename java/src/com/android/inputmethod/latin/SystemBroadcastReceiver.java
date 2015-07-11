@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,14 +24,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Process;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.dictionarypack.CommonPreferences;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
+import com.android.inputmethod.dictionarypack.DownloadManagerWrapper;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.setup.SetupActivity;
@@ -75,7 +77,12 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             final InputMethodSubtype[] additionalSubtypes = richImm.getAdditionalSubtypes();
             richImm.setAdditionalInputMethodSubtypes(additionalSubtypes);
             toggleAppIcon(context);
-            downloadLatestDictionaries(context);
+
+            // Remove all the previously scheduled downloads. This will also makes sure
+            // that any erroneously stuck downloads will get cleared. (b/21797386)
+            removeOldDownloads(context);
+            // b/21797386
+            // downloadLatestDictionaries(context);
         } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
             Log.i(TAG, "Boot has been completed");
             toggleAppIcon(context);
@@ -103,13 +110,39 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    private void removeOldDownloads(Context context) {
+        try {
+            Log.i(TAG, "Removing the old downloads in progress of the previous keyboard version.");
+            final DownloadManagerWrapper downloadManagerWrapper = new DownloadManagerWrapper(
+                    context);
+            final DownloadManager.Query q = new DownloadManager.Query();
+            // Query all the download statuses except the succeeded ones.
+            q.setFilterByStatus(DownloadManager.STATUS_FAILED
+                    | DownloadManager.STATUS_PAUSED
+                    | DownloadManager.STATUS_PENDING
+                    | DownloadManager.STATUS_RUNNING);
+            final Cursor c = downloadManagerWrapper.query(q);
+            if (c != null) {
+                for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                    final long downloadId = c
+                            .getLong(c.getColumnIndex(DownloadManager.COLUMN_ID));
+                    downloadManagerWrapper.remove(downloadId);
+                    Log.i(TAG, "Removed the download with Id: " + downloadId);
+                }
+                c.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while removing old downloads.");
+        }
+    }
+
     private void downloadLatestDictionaries(Context context) {
         final Intent updateIntent = new Intent(
                 DictionaryPackConstants.INIT_AND_UPDATE_NOW_INTENT_ACTION);
         context.sendBroadcast(updateIntent);
     }
 
-    private static void toggleAppIcon(final Context context) {
+    public static void toggleAppIcon(final Context context) {
         final int appInfoFlags = context.getApplicationInfo().flags;
         final boolean isSystemApp = (appInfoFlags & ApplicationInfo.FLAG_SYSTEM) > 0;
         if (Log.isLoggable(TAG, Log.INFO)) {

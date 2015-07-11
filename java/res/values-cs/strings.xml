@@ -50,7 +50,7 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Klávesa pro přepínání jazyka ovládá i další metody zadávání"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Klávesa přepínání jazyka"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Zobrazit, když je aktivováno více vstupních jazyků"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Prodleva vysk. okna klávesnice"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Prodleva detailu znaku"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Bez prodlevy"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Výchozí"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
@@ -134,9 +134,11 @@
     <string name="enable" msgid="5031294444630523247">"Povolit"</string>
     <string name="not_now" msgid="6172462888202790482">"Teď ne"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Tento styl zadávání již existuje: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Délka vibrace u stisku klávesy"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Délka vibrace při stisknutí klávesy"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Hlasitost stisknutí klávesy"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Prodleva dlouhého stisknutí"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emodži pro fyzickou klávesnici"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Paletu emodži zobrazíte stisknutím fyzické klávesy Alt."</string>
     <string name="button_default" msgid="3988017840431881491">"Výchozí"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Vítá vás <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"s psaním gesty"</string>
@@ -197,7 +199,7 @@
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Slovo:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Zkratka:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Jazyk:"</string>
-    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Napište slovo."</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Napište slovo"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Volitelná zkratka"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Upravit slovo"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Upravit"</string>

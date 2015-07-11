@@ -67,7 +67,7 @@
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicţionare suplimentare"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dicţionar principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Afişaţi sugestii de corectare"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Afişaţi sugestii de cuvinte în timpul introducerii textului"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Afișează sugestii de cuvinte în timpul introducerii textului"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blocați cuvintele jignitoare"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Nu se sugerează cuvinte potențial jignitoare"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorectare"</string>
@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrare după apăsarea tastei"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Sunet la apăsarea tastelor"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Timpul apăsării lungi a tastei"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji pentru tastatura fizică"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tasta fizică Alt afișează panoul de emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Prestabilit"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Bun venit la <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"cu Tastarea gestuală"</string>

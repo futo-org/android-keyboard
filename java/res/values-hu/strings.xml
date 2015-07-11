@@ -71,7 +71,7 @@
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Sértő szavak kizárása"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Ne javasoljon esetlegesen sértő szavakat"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Automatikus javítás"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Szóköz és központozás automatikusan javítja az elgépelést"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"A szóköz és központozás automatikusan javítja az elgépelést"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Ki"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mérsékelt"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agresszív"</string>
@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Gombnyomás rezgési időtartama"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Gombnyomás hangereje"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Hosszú nyomás késleltetése"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Hangulatjelek listája"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Az Alt billentyű lenyomásával megjelenik a hangultjelek listája"</string>
     <string name="button_default" msgid="3988017840431881491">"Alapértelmezett"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Üdvözli a(z) <xliff:g id="APPLICATION_NAME">%s</xliff:g>!"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"kézmozdulatokkal történő bevitellel"</string>

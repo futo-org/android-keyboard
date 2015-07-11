@@ -30,6 +30,8 @@ import android.util.Log;
 import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.dictionarypack.MD5Calculator;
+import com.android.inputmethod.dictionarypack.UpdateHandler;
+import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils.DictionaryInfo;
@@ -221,11 +223,11 @@ public final class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Caches a word list the id of which is passed as an argument. This will write the file
+     * Stages a word list the id of which is passed as an argument. This will write the file
      * to the cache file name designated by its id and locale, overwriting it if already present
      * and creating it (and its containing directory) if necessary.
      */
-    private static void cacheWordList(final String wordlistId, final String locale,
+    private static void installWordListToStaging(final String wordlistId, final String locale,
             final String rawChecksum, final ContentProviderClient providerClient,
             final Context context) {
         final int COMPRESSED_CRYPTED_COMPRESSED = 0;
@@ -247,7 +249,7 @@ public final class BinaryDictionaryFileDumper {
             return;
         }
         final String finalFileName =
-                DictionaryInfoUtils.getCacheFileName(wordlistId, locale, context);
+                DictionaryInfoUtils.getStagingFileName(wordlistId, locale, context);
         String tempFileName;
         try {
             tempFileName = BinaryDictionaryGetter.getTempFileName(wordlistId, context);
@@ -321,6 +323,7 @@ public final class BinaryDictionaryFileDumper {
                     }
                 }
 
+                // move the output file to the final staging file.
                 final File finalFile = new File(finalFileName);
                 if (!FileUtils.renameTo(outputFile, finalFile)) {
                     Log.e(TAG, String.format("Failed to rename from %s to %s.",
@@ -332,13 +335,12 @@ public final class BinaryDictionaryFileDumper {
                 if (0 >= providerClient.delete(wordListUriBuilder.build(), null, null)) {
                     Log.e(TAG, "Could not have the dictionary pack delete a word list");
                 }
-                BinaryDictionaryGetter.removeFilesWithIdExcept(context, wordlistId, finalFile);
-                Log.e(TAG, "Successfully copied file for wordlist ID " + wordlistId);
+                Log.d(TAG, "Successfully copied file for wordlist ID " + wordlistId);
                 // Success! Close files (through the finally{} clause) and return.
                 return;
             } catch (Exception e) {
                 if (DEBUG) {
-                    Log.i(TAG, "Can't open word list in mode " + mode, e);
+                    Log.e(TAG, "Can't open word list in mode " + mode, e);
                 }
                 if (null != outputFile) {
                     // This may or may not fail. The file may not have been created if the
@@ -405,7 +407,7 @@ public final class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Queries a content provider for word list data for some locale and cache the returned files
+     * Queries a content provider for word list data for some locale and stage the returned files
      *
      * This will query a content provider for word list data for a given locale, and copy the
      * files locally so that they can be mmap'ed. This may overwrite previously cached word lists
@@ -413,7 +415,7 @@ public final class BinaryDictionaryFileDumper {
      * @throw FileNotFoundException if the provider returns non-existent data.
      * @throw IOException if the provider-returned data could not be read.
      */
-    public static void cacheWordListsFromContentProvider(final Locale locale,
+    public static void installDictToStagingFromContentProvider(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
         final ContentProviderClient providerClient;
         try {
@@ -431,11 +433,24 @@ public final class BinaryDictionaryFileDumper {
             final List<WordListInfo> idList = getWordListWordListInfos(locale, context,
                     hasDefaultWordList);
             for (WordListInfo id : idList) {
-                cacheWordList(id.mId, id.mLocale, id.mRawChecksum, providerClient, context);
+                installWordListToStaging(id.mId, id.mLocale, id.mRawChecksum, providerClient,
+                        context);
             }
         } finally {
             providerClient.release();
         }
+    }
+
+    /**
+     * Downloads the dictionary if it was never requested/used.
+     *
+     * @param locale locale to download
+     * @param context the context for resources and providers.
+     * @param hasDefaultWordList whether the default wordlist exists in the resources.
+     */
+    public static void downloadDictIfNeverRequested(final Locale locale,
+            final Context context, final boolean hasDefaultWordList) {
+        getWordListWordListInfos(locale, context, hasDefaultWordList);
     }
 
     /**
@@ -477,6 +492,8 @@ public final class BinaryDictionaryFileDumper {
     private static void reinitializeClientRecordInDictionaryContentProvider(final Context context,
             final ContentProviderClient client, final String clientId) throws RemoteException {
         final String metadataFileUri = MetadataFileUriGetter.getMetadataUri(context);
+        Log.i(TAG, "reinitializeClientRecordInDictionaryContentProvider() : MetadataFileUri = "
+                + metadataFileUri);
         final String metadataAdditionalId = MetadataFileUriGetter.getMetadataAdditionalId(context);
         // Tell the content provider to reset all information about this client id
         final Uri metadataContentUri = getProviderUriBuilder(clientId)
@@ -501,8 +518,33 @@ public final class BinaryDictionaryFileDumper {
         final int length = dictionaryList.size();
         for (int i = 0; i < length; ++i) {
             final DictionaryInfo info = dictionaryList.get(i);
+            Log.i(TAG, "reinitializeClientRecordInDictionaryContentProvider() : Insert " + info);
             client.insert(Uri.withAppendedPath(dictionaryContentUriBase, info.mId),
                     info.toContentValues());
+        }
+
+        // Read from metadata file in resources to get the baseline dictionary info.
+        // This ensures we start with a sane list of available dictionaries.
+        final int metadataResourceId = context.getResources().getIdentifier("metadata",
+                "raw", DictionaryInfoUtils.RESOURCE_PACKAGE_NAME);
+        if (metadataResourceId == 0) {
+            Log.w(TAG, "Missing metadata.json resource");
+            return;
+        }
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getResources().openRawResource(metadataResourceId);
+            UpdateHandler.handleMetadata(context, inputStream, clientId);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to read metadata.json from resources", e);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    Log.w(TAG, "Failed to close metadata.json", e);
+                }
+            }
         }
     }
 

@@ -61,14 +61,14 @@
     <string name="enable_metrics_logging" msgid="5506372337118822837">"שפר את <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"רווח כפול לנקודה"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"הקשה פעמיים על מקש הרווח מזינה נקודה ואחריה רווח"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"הפיכת אותיות לרישיות באופן אוטומטי"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"אותיות רישיות באופן אוטומטי"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"השתמש באות גדולה במילה הראשונה של כל משפט"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"מילון אישי"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"תוספי מילונים"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"מילון ראשי"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"הצג הצעות לתיקונים"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"הצג הצעות למילים בעת הקלדה"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"חסום מילים פוגעניות"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"חסימת מילים פוגעניות"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"אל תציע מילים שעלולות להיות פוגעניות"</string>
     <string name="auto_correction" msgid="7630720885194996950">"תיקון אוטומטי"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"מקש הרווח ופיסוק מתקנים אוטומטית שגיאות הקלדה"</string>
@@ -80,7 +80,7 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"השתמש במילה הקודמת ביצירת הצעות"</string>
     <string name="gesture_input" msgid="826951152254563827">"אפשר הקלדה ללא הרמת אצבע"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"הזן מילה על ידי החלקת האצבע מאות לאות"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"הצג שובל תנועות"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"הצגת שובל תנועות"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"תצוגה צפה דינמית"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ראה את המילה המוצעת תוך כדי הזזת האצבע"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"הקלדת משפט בהחלקה"</string>
@@ -130,13 +130,15 @@
     <string name="save" msgid="7646738597196767214">"שמור"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"שפה"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"פריסה"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"יש להפעיל את סגנון הקלט המותאם אישית לפני שתוכל להשתמש בו. האם אתה רוצה להפעיל אותו עכשיו?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"יש להפעיל את סגנון הקלט המותאם אישית לפני שתוכל להשתמש בו. האם ברצונך להפעיל אותו עכשיו?"</string>
     <string name="enable" msgid="5031294444630523247">"הפעל"</string>
     <string name="not_now" msgid="6172462888202790482">"לא עכשיו"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"סגנון קלט זהה כבר קיים: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"משך רטט של לחיצת מקש"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"עוצמת קול של לחיצת מקש"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"השהיית לחיצה ארוכה על מקש"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"אמוג\'י בשביל מקלדת פיזית"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"‏מקש Alt הפיזי מציג את לוח סמלי האמוג\'י"</string>
     <string name="button_default" msgid="3988017840431881491">"ברירת מחדל"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"ברוך הבא אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"עם הקלדת החלקה"</string>

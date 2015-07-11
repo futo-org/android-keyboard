@@ -68,8 +68,8 @@
     <string name="main_dictionary" msgid="4798763781818361168">"முதன்மை அகராதி"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"திருத்துதல் விருப்பங்களைக் காட்டு"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"உள்ளிடும்போது பரிந்துரைக்கப்பட்ட வார்த்தைகளைக் காட்டும்"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"தீங்குவிளைவிக்கும் வார்த்தைகளை தடு"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"தீங்குவிளைவிக்க சாத்தியமுள்ளதான வார்த்தைகளைப் பரிந்துரைக்க வேண்டாம்"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"வன்மொழி சொற்களைத் தடு"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"வன்மொழியாக இருக்கும் சாத்தியமுள்ள சொற்களைப் பரிந்துரைக்க வேண்டாம்"</string>
     <string name="auto_correction" msgid="7630720885194996950">"தன்னியக்க திருத்தம்"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"ஸ்பேஸ்பாரும், நிறுத்தற்குறிகளும் தவறாக உள்ளிடப்பட்ட வார்த்தைகளை தானாக திருத்தும்"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"முடக்கத்தில்"</string>
@@ -81,7 +81,7 @@
     <string name="gesture_input" msgid="826951152254563827">"சைகை உள்ளீட்டை இயக்கு"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"எழுத்துகள் வழியாக இழுப்பதன் மூலம் வார்த்தையை உள்ளிடலாம்"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"சைகை தடத்தைக் காட்டு"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ஆற்றல்மிகு மிதக்கும் மாதிரிக்காட்சி"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"நிகழ்நேர மிதக்கும் மாதிரிக்காட்சி"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"சைகையிடும் போது பரிந்துரைக்கும் வார்த்தையைப் பார்க்கலாம்"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"சொற்றொடர் சைகை"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ஸ்பேஸ் விசைக்கு இழுப்பதன் மூலம் சைகைகளுக்கு இடையே இடைவெளிகளை உள்ளிடலாம்"</string>
@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"விசையழுத்த அதிர்வின் காலஅளவு"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"விசையழுத்த ஒலியளவு"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"விசையின் நீண்ட அழுத்தத்தின் தாமதம்"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"கைமுறை விசைப்பலகைக்கான ஈமோஜி"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ஈமோஜி பலகத்தைக் காட்டும் கைமுறை Alt விசை"</string>
     <string name="button_default" msgid="3988017840431881491">"இயல்புநிலை"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டிற்கு வரவேற்கிறோம்"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"சைகை உள்ளீடு மூலம்"</string>

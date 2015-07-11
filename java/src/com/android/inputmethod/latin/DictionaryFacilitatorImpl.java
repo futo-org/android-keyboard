@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LruCache;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -26,6 +27,7 @@ import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
@@ -81,6 +83,19 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private static final String DICT_FACTORY_METHOD_NAME = "getDictionary";
     private static final Class<?>[] DICT_FACTORY_METHOD_ARG_TYPES =
             new Class[] { Context.class, Locale.class, File.class, String.class, String.class };
+
+    private LruCache<String, Boolean> mValidSpellingWordReadCache;
+    private LruCache<String, Boolean> mValidSpellingWordWriteCache;
+
+    @Override
+    public void setValidSpellingWordReadCache(final LruCache<String, Boolean> cache) {
+        mValidSpellingWordReadCache = cache;
+    }
+
+    @Override
+    public void setValidSpellingWordWriteCache(final LruCache<String, Boolean> cache) {
+        mValidSpellingWordWriteCache = cache;
+    }
 
     @Override
     public boolean isForLocale(final Locale locale) {
@@ -207,7 +222,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     @Override
-    public void onFinishInput() {
+    public void onFinishInput(Context context) {
     }
 
     @Override
@@ -218,6 +233,16 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     @Override
     public Locale getLocale() {
         return mDictionaryGroup.mLocale;
+    }
+
+    @Override
+    public boolean usesContacts() {
+        return mDictionaryGroup.getSubDict(Dictionary.TYPE_CONTACTS) != null;
+    }
+
+    @Override
+    public String getAccount() {
+        return null;
     }
 
     @Nullable
@@ -340,6 +365,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             for (final String dictType : dictTypesToCleanUp) {
                 dictionarySetToCleanup.closeDict(dictType);
             }
+        }
+
+        if (mValidSpellingWordWriteCache != null) {
+            mValidSpellingWordWriteCache.evictAll();
         }
     }
 
@@ -464,6 +493,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
             @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
             final boolean blockPotentiallyOffensive) {
+        // Update the spelling cache before learning. Words that are not yet added to user history
+        // and appear in no other language model are not considered valid.
+        putWordIntoValidSpellingWordCache("addToUserHistory", suggestion);
+
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
         NgramContext ngramContextForCurrentWord = ngramContext;
         for (int i = 0; i < words.length; i++) {
@@ -475,6 +508,29 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             ngramContextForCurrentWord =
                     ngramContextForCurrentWord.getNextNgramContext(new WordInfo(currentWord));
         }
+    }
+
+    private void putWordIntoValidSpellingWordCache(
+            @Nonnull final String caller,
+            @Nonnull final String originalWord) {
+        if (mValidSpellingWordWriteCache == null) {
+            return;
+        }
+
+        final String lowerCaseWord = originalWord.toLowerCase(getLocale());
+        final boolean lowerCaseValid = isValidSpellingWord(lowerCaseWord);
+        mValidSpellingWordWriteCache.put(lowerCaseWord, lowerCaseValid);
+
+        final String capitalWord =
+                StringUtils.capitalizeFirstAndDowncaseRest(originalWord, getLocale());
+        final boolean capitalValid;
+        if (lowerCaseValid) {
+            // The lower case form of the word is valid, so the upper case must be valid.
+            capitalValid = true;
+        } else {
+            capitalValid = isValidSpellingWord(capitalWord);
+        }
+        mValidSpellingWordWriteCache.put(capitalWord, capitalValid);
     }
 
     private void addWordToUserHistory(final DictionaryGroup dictionaryGroup,
@@ -543,6 +599,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         if (eventType != Constants.EVENT_BACKSPACE) {
             removeWord(Dictionary.TYPE_USER_HISTORY, word);
         }
+
+        // Update the spelling cache after unlearning. Words that are removed from user history
+        // and appear in no other language model are not considered valid.
+        putWordIntoValidSpellingWordCache("unlearnFromUserHistory", word.toLowerCase());
     }
 
     // TODO: Revise the way to fusion suggestion results.
@@ -577,6 +637,13 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     public boolean isValidSpellingWord(final String word) {
+        if (mValidSpellingWordReadCache != null) {
+            final Boolean cachedValue = mValidSpellingWordReadCache.get(word);
+            if (cachedValue != null) {
+                return cachedValue;
+            }
+        }
+
         return isValidWord(word, ALL_DICTIONARY_TYPES);
     }
 
@@ -620,16 +687,18 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return maxFreq;
     }
 
-    private void clearSubDictionary(final String dictName) {
+    private boolean clearSubDictionary(final String dictName) {
         final ExpandableBinaryDictionary dictionary = mDictionaryGroup.getSubDict(dictName);
-        if (dictionary != null) {
-            dictionary.clear();
+        if (dictionary == null) {
+            return false;
         }
+        dictionary.clear();
+        return true;
     }
 
     @Override
-    public void clearUserHistoryDictionary(final Context context) {
-        clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
+    public boolean clearUserHistoryDictionary(final Context context) {
+        return clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
     }
 
     @Override

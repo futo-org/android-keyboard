@@ -59,10 +59,10 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Öneri ve düzeltmeler için Kişiler\'deki adları kullan"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Kişisel öneriler"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını iyileştir"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Çift boşlukla nokta ekleme"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Çift boşlukla nokta ekle"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Boşluk çubuğuna iki kez dokunmak nokta ve ardından bir boşluk ekler"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük harf yap"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Her cümlenin ilk kelimesini büyük harf yap"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Her cümlenin ilk harfini büyük harf yap"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Kişisel sözlük"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ek sözlükler"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Ana sözlük"</string>
@@ -77,7 +77,7 @@
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Geniş ölçekte"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Çok geniş ölçekte"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Sonraki kelime önerileri"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Önerilerde bulunurken önceki kelimeyi kullan"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Öneride bulunurken önceki kelimeyi kullan"</string>
     <string name="gesture_input" msgid="826951152254563827">"Hareketle yazmayı etkinleştir"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Harflerin üzerinden parmağınızı kaydırarak kelime girin"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Hareket izini göster"</string>
@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tuşa basma titreşim süresi"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tuşa basma ses seviyesi"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tuşa uzun basma gecikmesi"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Fiziksel klavye için emoji"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Fiziksel Alt tuşu, emoji paletini gösterir"</string>
     <string name="button_default" msgid="3988017840431881491">"Varsayılan"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasına hoş geldiniz"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Hareketle Yazmayı içerir"</string>
@@ -202,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Kelimeyi düzenle"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Düzenle"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Sil"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Kullanıcı sözlüğünde hiç kelimeniz yok. Ekle (+) düğmesini kullanarak kelime ekleyin."</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Kullanıcı sözlüğünde kelime yok. Ekle (+) düğmesini kullanarak kelime ekleyin."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Tüm diller için"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Diğer diller…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Sil"</string>

@@ -51,7 +51,7 @@
     <string name="show_language_switch_key" msgid="5915478828318774384">"Phím chuyển đổi ngôn ngữ"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Hiển thị khi nhiều ngôn ngữ đầu vào được bật"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Độ trễ ẩn phím bật lên"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Không có tgian trễ"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Không trễ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Mặc định"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> mili giây"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"Mặc định của hệ thống"</string>
@@ -59,7 +59,7 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Sử dụng tên từ Danh bạ cho các đề xuất và chỉnh sửa"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Đề xuất được cá nhân hóa"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Cải thiện <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Nhấn đúp phím cách chèn dấu chấm câu"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Đúp phím cách chèn dấu chấm"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Nhấn đúp phím cách sẽ chèn thêm một dấu chấm câu, theo sau là dấu cách"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Tự động viết hoa"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Viết hoa chữ đầu tiên của mỗi câu"</string>
@@ -136,7 +136,9 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Đã tồn tại kiểu nhập tương tự: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Thời gian rung khi nhấn phím"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Âm lượng khi nhấn phím"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tgian chờ cho nhấn và giữ phím"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Thời gian trễ nhấn và giữ phím"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Biểu tượng cảm xúc cho bàn phím thực"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Phím Alt thực hiển thị bảng biểu tượng cảm xúc"</string>
     <string name="button_default" msgid="3988017840431881491">"Mặc định"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Chào mừng bạn đến với <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"với Nhập bằng cử chỉ"</string>

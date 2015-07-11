@@ -22,8 +22,6 @@ import android.content.SharedPreferences;
 public final class CommonPreferences {
     private static final String COMMON_PREFERENCES_NAME = "LatinImeDictPrefs";
 
-    public static final String PREF_FORCE_DOWNLOAD_DICT = "pref_key_force_download_dict";
-
     public static SharedPreferences getCommonPreferences(final Context context) {
         return context.getSharedPreferences(COMMON_PREFERENCES_NAME, 0);
     }
@@ -37,16 +35,6 @@ public final class CommonPreferences {
     public static void disable(final SharedPreferences pref, final String id) {
         final SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(id, false);
-        editor.apply();
-    }
-
-    public static boolean isForceDownloadDict(Context context) {
-        return getCommonPreferences(context).getBoolean(PREF_FORCE_DOWNLOAD_DICT, false);
-    }
-
-    public static void setForceDownloadDict(Context context, boolean forceDownload) {
-        SharedPreferences.Editor editor = getCommonPreferences(context).edit();
-        editor.putBoolean(PREF_FORCE_DOWNLOAD_DICT, forceDownload);
         editor.apply();
     }
 }

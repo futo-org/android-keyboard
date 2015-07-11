@@ -50,7 +50,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     private static final int METADATA_DATABASE_VERSION_WITH_CLIENTID = 6;
     // The current database version.
     // This MUST be increased every time the dictionary pack metadata URL changes.
-    private static final int CURRENT_METADATA_DATABASE_VERSION = 14;
+    private static final int CURRENT_METADATA_DATABASE_VERSION = 16;
 
     private final static long NOT_A_DOWNLOAD_ID = -1;
 
@@ -266,8 +266,6 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-        // Allow automatic download of dictionaries on upgrading the database.
-        CommonPreferences.setForceDownloadDict(mContext, true);
         if (METADATA_DATABASE_INITIAL_VERSION == oldVersion
                 && METADATA_DATABASE_VERSION_WITH_CLIENTID <= newVersion
                 && CURRENT_METADATA_DATABASE_VERSION >= newVersion) {
@@ -345,6 +343,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         return null != getMetadataUriAsString(context, clientId);
     }
 
+    private static final MetadataUriGetter sMetadataUriGetter = new MetadataUriGetter();
+
     /**
      * Returns the metadata URI as a string.
      *
@@ -358,13 +358,12 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static String getMetadataUriAsString(final Context context, final String clientId) {
         SQLiteDatabase defaultDb = MetadataDbHelper.getDb(context, null);
         final Cursor cursor = defaultDb.query(MetadataDbHelper.CLIENT_TABLE_NAME,
-                new String[] { MetadataDbHelper.CLIENT_METADATA_URI_COLUMN,
-                        MetadataDbHelper.CLIENT_METADATA_ADDITIONAL_ID_COLUMN },
+                new String[] { MetadataDbHelper.CLIENT_METADATA_URI_COLUMN },
                 MetadataDbHelper.CLIENT_CLIENT_ID_COLUMN + " = ?", new String[] { clientId },
                 null, null, null, null);
         try {
             if (!cursor.moveToFirst()) return null;
-            return MetadataUriGetter.getUri(context, cursor.getString(0), cursor.getString(1));
+            return sMetadataUriGetter.getUri(context, cursor.getString(0));
         } finally {
             cursor.close();
         }

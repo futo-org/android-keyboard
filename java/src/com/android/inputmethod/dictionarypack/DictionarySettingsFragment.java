@@ -384,7 +384,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 // We call tryUpdate(), which returns whether we could successfully start an update.
                 // If we couldn't, we'll never receive the end callback, so we stop the loading
                 // animation and return to the previous screen.
-                if (!UpdateHandler.tryUpdate(activity, true)) {
+                if (!UpdateHandler.tryUpdate(activity)) {
                     stopLoadingAnimation();
                 }
             }

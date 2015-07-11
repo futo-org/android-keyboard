@@ -59,8 +59,8 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"ใช้ชื่อจากรายชื่อติดต่อสำหรับคำแนะนำและการแก้ไข"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"คำแนะนำในแบบของคุณ"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"ปรับปรุง <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"แตะ Space สองครั้งแทรกจุด"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"แตะ Spacebar สองครั้งจะแทรกจุดตามด้วยช่องว่างหนึ่งช่อง"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"เคาะวรรคสองครั้งเพื่อพิมพ์จุด"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"เคาะวรรคสองครั้งจะแทรกจุดตามด้วยช่องว่างหนึ่งช่อง"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ปรับเป็นตัวพิมพ์ใหญ่อัตโนมัติ"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ทำให้คำแรกของทุกประโยคเป็นตัวพิมพ์ใหญ่"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"พจนานุกรมส่วนตัว"</string>
@@ -80,7 +80,7 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"ใช้คำก่อนหน้าในการสร้างข้อเสนอแนะ"</string>
     <string name="gesture_input" msgid="826951152254563827">"เปิดการพิมพ์ด้วยท่าทางสัมผัส"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"ป้อนคำด้วยการเลื่อนผ่านตัวอักษร"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"แสดงรอยทางเดินของท่าทางสัมผัส"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"แสดงรูปแบบของท่าทางสัมผัส"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ดูตัวอย่างลอยแบบไดนามิก"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ดูคำแนะนำในขณะที่ใช้ท่าทางสัมผัส"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"ท่าทางสัมผัสสำหรับวลี"</string>
@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ระยะเวลาการสั่นเมื่อกดแป้นพิมพ์"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ระดับเสียงเมื่อกดแป้นพิมพ์"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"การหน่วงเวลาของการกดแป้นค้าง"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"อีโมจิสำหรับแป้นพิมพ์บนเครื่อง"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"แป้น Alt บนเครื่องแสดงชุดอีโมจิ"</string>
     <string name="button_default" msgid="3988017840431881491">"ค่าเริ่มต้น"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"ยินดีต้อนรับสู่ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"พร้อมการป้อนข้อมูลด้วยท่าทาง"</string>
