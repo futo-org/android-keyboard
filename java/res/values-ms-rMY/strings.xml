@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Pilihan input"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Cari nama kenalan"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Penyemak ejaan menggunakan entri dari senarai kenalan anda"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Penyemak ejaan menggunakan entri daripada senarai kenalan anda"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Getar pada tekanan kekunci"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Bunyi pada tekanan kekunci"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop timbul pada tekanan kunci"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"The same input style already exists: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tempoh getaran tekan kekunci"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Kelantangan bunyi tekan kekunci"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Kelewatan tekan lama kekunci"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Lengah tekan lama kekunci"</string>
     <string name="button_default" msgid="3988017840431881491">"Lalai"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Selamat datang ke <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"dengan Taipan Gerak Isyarat"</string>

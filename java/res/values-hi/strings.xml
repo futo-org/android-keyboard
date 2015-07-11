@@ -78,11 +78,11 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"बहुत तेज़"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"अगले शब्द के सुझाव"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"सुझाव बनाने में पिछले शब्द का उपयोग करें"</string>
-    <string name="gesture_input" msgid="826951152254563827">"जेस्‍चर लिखना सक्षम करें"</string>
+    <string name="gesture_input" msgid="826951152254563827">"हावभाव लेखन सक्षम करें"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरों से स्लाइड करते हुए शब्द इनपुट करें"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"जेस्चर ट्रेल दिखाएं"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"हावभाव ट्रेल दिखाएं"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"गतिशील फ़्लोटिंग पूर्वावलोकन"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"जेस्‍चर बनाते समय सुझाया गया शब्द देखें"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"हावभाव बनाते समय सुझाया गया शब्द देखें"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश जेस्चर"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"स्पेस कुंजी तक ग्लाइड करके जेस्चर के दौरान रिक्तियां इनपुट करें"</string>
     <string name="voice_input" msgid="3583258583521397548">"ध्‍वनि‍ इनपुट कुंजी"</string>

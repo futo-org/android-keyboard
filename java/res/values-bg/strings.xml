@@ -24,8 +24,8 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Търсене на имена"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"За проверка на правописа се ползват записи от списъка с контакти"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Да вибрира при натискане на клавиш"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при натискане на клавиш"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Изскачащ прозорец при натискане на клавиш"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при натиск. на клавиш"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Изск. прозорец при натискане на клавиш"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Предпочитания"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Профили и поверителност"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Облик и оформления"</string>
@@ -51,7 +51,7 @@
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиш за превкл. на езика"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Показване при няколко активирани езика за въвеждане"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Отхвърляне на подсказката"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Без задържане"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Без забавяне"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"По подразбиране"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> милисек"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"Станд. за системата"</string>
@@ -61,12 +61,12 @@
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Подобряване на <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Точка чрез двоен интервал"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Двукр. докосване на клав. за интервал вмъква точка, следвана от интервал"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Автоматично поставяне на главни букви"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Правене на първата дума от всяко изречение главна"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Авт. поставяне на главни букви"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Главна буква за първата дума от всяко изречение"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Личен речник"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Добавени речници"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Основен речник"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения за поправка"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Показване на предложения, докато пишете"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Блокиране на обидни думи"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Без потенциално обидни думи"</string>
@@ -76,16 +76,16 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умерено"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Агресивно"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Много агресивно"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Предложения за следващата дума"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Предл. за следваща дума"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Използване на предишната дума при даване на предложения"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Активиране на въвеждането чрез жест"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Актив. на въвеждане чрез жест"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Въвеждане на дума чрез плъзгане на пръст през буквите"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Следа на жестовете: Показване"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Динамична плаваща визуализация"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Следа на жестовете"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Динам. плаваща визуализ."</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Преглед на предложената дума при използване на жестове"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Жест за фрази"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"При жестове въвеждaйте интервали чрез плъзгане през съотв. клавиш"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Клавиш за гласово въвеждане"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Клавиш за глас. въвеждане"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Няма активирани методи на гласово въвеждане. Проверете настройките за език и въвеждане."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Конфигуриране на въвеждането"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Езици"</string>
@@ -115,12 +115,12 @@
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (традиционна клавиатура)"</string>
     <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (компактна)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Без език (латиница)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Латиница (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Латиница (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Латиница (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Латиница (Дворак)"</string>
-    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Латиница (Коулмак)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Латиница (PC)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"латиница (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"латиница (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"латиница (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"латиница (Дворак)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"латиница (Коулмак)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"латиница (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Емотикони"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Тема на клавиатурата"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Персон. стилове за въвежд."</string>
@@ -137,7 +137,7 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Продълж. на вибриране при натискане"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Сила на звука при натиск. на клавиш"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Забавяне при продълж. натискане"</string>
-    <string name="button_default" msgid="3988017840431881491">"Стандартни"</string>
+    <string name="button_default" msgid="3988017840431881491">"Стандартно"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Добре дошли в/ъв <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"с въвеждане чрез жест"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Първи стъпки"</string>
