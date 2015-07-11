@@ -22,10 +22,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Парам. введення"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Шукати імена контактів"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Програма перевірки правопису використ. записи зі списку контактів"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Для перевірки правопису використовувати список контактів"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вібр. при натисканні клавіш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при натиску клав."</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Сплив. при нат.клав."</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Збільшення натиснутих"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Параметри"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Облік. записи й конфіденційність"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Вигляд і розкладка"</string>
@@ -50,23 +50,23 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавіша зміни мови дозволяє змінювати методи введення"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавіша зміни мови"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Показувати, коли ввімкнено декілька мов введення"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Затримка клавіши закриття"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Затримка закривання"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Без затримки"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"За умовчанням"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> мс"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"За умовчанням"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Пропон. імена контактів"</string>
-    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Використ. імена зі списку контактів для пропозицій і виправлень"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Показувати виправлення на основі імен зі списку контактів"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Персональні пропозиції"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Покращувати додаток <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Крапка подвійним пробілом"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Подвійне натискання пробілу вставляє крапку з пробілом після неї"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Авто викор. вел. літер"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Вел. літери автоматично"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Писати перше слово в кожному реченні з великої літери"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Особистий словник"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Додані словники"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Основний словник"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показувати пропозиції виправлень"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Варіанти виправлень"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Відображати пропоновані слова під час вводу"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Блокувати нецензурні слова"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Не пропонувати потенційно образливі слова"</string>
@@ -81,7 +81,7 @@
     <string name="gesture_input" msgid="826951152254563827">"Увімкнути ввід жестами"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Вводити слово, пересуваючи палець по буквах"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Показувати слід жестів"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Динамічний спливаючий перегляд"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Показувати підказки"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Показувати пропоноване слово під час введення тексту жестами"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Безперервний ввід фраз"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Вставляйте пробіли, проводячи пальцем по клавіші пробілу"</string>
@@ -95,14 +95,14 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Торкніться тут, щоб зберегти"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Словник доступний"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавіатури"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"Змінити обліковий запис"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Змінити облік. запис"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"Не вибрано облікових записів"</string>
     <string name="account_selected" msgid="2846876462199625974">"Зараз використовується <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"ОК"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"Скасувати"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Вийти"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Виберіть обліковий запис"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Англійська (Великобританія)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Англійська (Велика Британія)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англійська (США)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"іспанська (США)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Хінґліш"</string>
@@ -202,7 +202,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Редагувати слово"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Редагувати"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Видалити"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"У словнику користувача немає жодного слова. Додайте слово, торкнувшись кнопки \"Додати\" (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"У словнику користувача нічого немає. Додавати слова можна за допомогою кнопки \"Додати\" (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Для всіх мов"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Інші мови…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Видалити"</string>
