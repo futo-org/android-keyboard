@@ -30,6 +30,7 @@ import com.android.inputmethod.latin.AssetFileAddress;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
@@ -102,6 +103,13 @@ public class DictionaryInfoUtils {
             values.put(VERSION_COLUMN, mVersion);
             return values;
         }
+
+        @Override
+        public String toString() {
+            return "DictionaryInfo : Id = '" + mId
+                    + "' : Locale=" + mLocale
+                    + " : Version=" + mVersion;
+        }
     }
 
     private DictionaryInfoUtils() {
@@ -153,6 +161,13 @@ public class DictionaryInfoUtils {
     }
 
     /**
+     * Helper method to get the top level cache directory.
+     */
+    public static String getWordListStagingDirectory(final Context context) {
+        return context.getFilesDir() + File.separator + "staging";
+    }
+
+    /**
      * Helper method to get the top level temp directory.
      */
     public static String getWordListTempDirectory(final Context context) {
@@ -186,6 +201,10 @@ public class DictionaryInfoUtils {
      */
     public static File[] getCachedDirectoryList(final Context context) {
         return new File(DictionaryInfoUtils.getWordListCacheDirectory(context)).listFiles();
+    }
+
+    public static File[] getStagingDirectoryList(final Context context) {
+        return new File(DictionaryInfoUtils.getWordListStagingDirectory(context)).listFiles();
     }
 
     @Nullable
@@ -252,6 +271,55 @@ public class DictionaryInfoUtils {
     public static String getCacheFileName(String id, String locale, Context context) {
         final String fileName = replaceFileNameDangerousCharacters(id);
         return getCacheDirectoryForLocale(locale, context) + File.separator + fileName;
+    }
+
+    public static String getStagingFileName(String id, String locale, Context context) {
+        final String stagingDirectory = getWordListStagingDirectory(context);
+        // create the directory if it does not exist.
+        final File directory = new File(stagingDirectory);
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                Log.e(TAG, "Could not create the staging directory.");
+            }
+        }
+        // e.g. id="main:en_in", locale ="en_IN"
+        final String fileName = replaceFileNameDangerousCharacters(
+                locale + TEMP_DICT_FILE_SUB + id);
+        return stagingDirectory + File.separator + fileName;
+    }
+
+    public static void moveStagingFilesIfExists(Context context) {
+        final File[] stagingFiles = DictionaryInfoUtils.getStagingDirectoryList(context);
+        if (stagingFiles != null && stagingFiles.length > 0) {
+            for (final File stagingFile : stagingFiles) {
+                final String fileName = stagingFile.getName();
+                final int index = fileName.indexOf(TEMP_DICT_FILE_SUB);
+                if (index == -1) {
+                    // This should never happen.
+                    Log.e(TAG, "Staging file does not have ___ substring.");
+                    continue;
+                }
+                final String[] localeAndFileId = fileName.split(TEMP_DICT_FILE_SUB);
+                if (localeAndFileId.length != 2) {
+                    Log.e(TAG, String.format("malformed staging file %s. Deleting.",
+                            stagingFile.getAbsoluteFile()));
+                    stagingFile.delete();
+                    continue;
+                }
+
+                final String locale = localeAndFileId[0];
+                // already escaped while moving to staging.
+                final String fileId = localeAndFileId[1];
+                final String cacheDirectoryForLocale = getCacheDirectoryForLocale(locale, context);
+                final String cacheFilename = cacheDirectoryForLocale + File.separator + fileId;
+                final File cacheFile = new File(cacheFilename);
+                // move the staging file to cache file.
+                if (!FileUtils.renameTo(stagingFile, cacheFile)) {
+                    Log.e(TAG, String.format("Failed to rename from %s to %s.",
+                            stagingFile.getAbsoluteFile(), cacheFile.getAbsoluteFile()));
+                }
+            }
+        }
     }
 
     public static boolean isMainWordListId(final String id) {

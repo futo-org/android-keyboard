@@ -51,4 +51,9 @@ public class FileUtils {
         }
         return hasDeletedAllFiles;
     }
+
+    public static boolean renameTo(final File fromFile, final File toFile) {
+        toFile.delete();
+        return fromFile.renameTo(toFile);
+    }
 }
