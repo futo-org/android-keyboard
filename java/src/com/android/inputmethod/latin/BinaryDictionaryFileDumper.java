@@ -29,6 +29,7 @@ import android.util.Log;
 
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.dictionarypack.MD5Calculator;
+import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils.DictionaryInfo;
@@ -321,10 +322,11 @@ public final class BinaryDictionaryFileDumper {
                 }
 
                 final File finalFile = new File(finalFileName);
-                finalFile.delete();
-                if (!outputFile.renameTo(finalFile)) {
-                    throw new IOException("Can't move the file to its final name");
+                if (!FileUtils.renameTo(outputFile, finalFile)) {
+                    Log.e(TAG, String.format("Failed to rename from %s to %s.",
+                            outputFile.getAbsoluteFile(), finalFile.getAbsoluteFile()));
                 }
+
                 wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
                         QUERY_PARAMETER_SUCCESS);
                 if (0 >= providerClient.delete(wordListUriBuilder.build(), null, null)) {
