@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.util.LruCache;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -55,6 +56,18 @@ public interface DictionaryFacilitator {
             Dictionary.TYPE_USER};
 
     /**
+     * The facilitator will put words into the cache whenever it decodes them.
+     * @param cache
+     */
+    void setValidSpellingWordReadCache(final LruCache<String, Boolean> cache);
+
+    /**
+     * The facilitator will get words from the cache whenever it needs to check their spelling.
+     * @param cache
+     */
+    void setValidSpellingWordWriteCache(final LruCache<String, Boolean> cache);
+
+    /**
      * Returns whether this facilitator is exactly for this locale.
      *
      * @param locale the locale to test against
@@ -88,11 +101,15 @@ public interface DictionaryFacilitator {
      *
      * WARNING: The service methods that call start/finish are very spammy.
      */
-    void onFinishInput();
+    void onFinishInput(Context context);
 
     boolean isActive();
 
     Locale getLocale();
+
+    boolean usesContacts();
+
+    String getAccount();
 
     void resetDictionaries(
             final Context context,
@@ -149,7 +166,7 @@ public interface DictionaryFacilitator {
 
     boolean isValidSuggestionWord(final String word);
 
-    void clearUserHistoryDictionary(final Context context);
+    boolean clearUserHistoryDictionary(final Context context);
 
     String dump(final Context context);
 

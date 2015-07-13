@@ -54,7 +54,7 @@ import javax.annotation.Nullable;
  */
 public class DictionaryInfoUtils {
     private static final String TAG = DictionaryInfoUtils.class.getSimpleName();
-    private static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
+    public static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
     private static final String DEFAULT_MAIN_DICT = "main";
     private static final String MAIN_DICT_PREFIX = "main_";
     private static final String DECODER_DICT_SUFFIX = DecoderSpecificConstants.DECODER_DICT_SUFFIX;
@@ -240,7 +240,7 @@ public class DictionaryInfoUtils {
     /**
      * Find out the cache directory associated with a specific locale.
      */
-    private static String getCacheDirectoryForLocale(final String locale, final Context context) {
+    public static String getCacheDirectoryForLocale(final String locale, final Context context) {
         final String relativeDirectoryName = replaceFileNameDangerousCharacters(locale);
         final String absoluteDirectoryName = getWordListCacheDirectory(context) + File.separator
                 + relativeDirectoryName;

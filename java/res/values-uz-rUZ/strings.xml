@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Asosiy lug‘at"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Tuzatma variantlari"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Matn kiritishda so‘z variantlari taklif qilinsin"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Haqoratomuz so‘zlarni taqiqlash"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Haqorat so‘zlarini bloklash"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Haqoratomuz so‘zlar taklif qilinmasin"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Avtomatik tuzatish"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Tinish belgisi kiritilsa yoki bo‘sh joy qoldirilsa, xato so‘z avtomatik tuzatiladi"</string>
@@ -82,7 +82,7 @@
     <string name="gesture_input_summary" msgid="9180350639305731231">"So‘zlarni barmog‘ingizni klaviaturadan uzmasdan yozing"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Barmoq yo‘lini chizish"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Takliflarni ko‘rsatish"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Matn kiritishda so‘zlar taklif qilinsin"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Matn kiritishda taklif qilingan so‘zlarni ko‘rsatish"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Qo‘l uzmasdan yozish"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Barmoqni har bir so‘zdan so‘ng bo‘sh joy qoldirish tugmasiga olib borish"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ovoz bilan yozish tugmasi"</string>
@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tugma bosilganda tebranish vaqti"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tugma bosilgandagi ovoz"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tugmani bosib turish"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Tashqi klaviatura uchun kulgichlar"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tashqi klaviaturadagi Alt tugmasi kulgichlar ro‘yxatini ko‘rsatadi"</string>
     <string name="button_default" msgid="3988017840431881491">"Standart"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ilovasiga xush kelibsiz!"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"qo‘l uzmasdan yozish"</string>

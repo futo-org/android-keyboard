@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durata vibrazione pressione tasto"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume audio a pressione tasto"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Ritardo pressione lunga tasti"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji per tastiera fisica"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Il tasto fisico ALT consente di mostrare il riquadro di emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Predefinito"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Benvenuto in <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"con la Digitazione gestuale"</string>

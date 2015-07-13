@@ -136,7 +136,9 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Le style de saisie suivant existe déjà : <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>."</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durée de vibration des touches"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume son pression de touche"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Délai d\'appui prolongé"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Délai appui prolongé sur touche"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji pour clavier physique"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"La touche Alt physique permet d\'afficher la palette d\'emoji."</string>
     <string name="button_default" msgid="3988017840431881491">"Par défaut"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Bienvenue dans <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"avec la saisie gestuelle"</string>

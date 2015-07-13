@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"விசையழுத்த அதிர்வின் காலஅளவு"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"விசையழுத்த ஒலியளவு"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"விசையின் நீண்ட அழுத்தத்தின் தாமதம்"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"கைமுறை விசைப்பலகைக்கான ஈமோஜி"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ஈமோஜி பலகத்தைக் காட்டும் கைமுறை Alt விசை"</string>
     <string name="button_default" msgid="3988017840431881491">"இயல்புநிலை"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டிற்கு வரவேற்கிறோம்"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"சைகை உள்ளீடு மூலம்"</string>

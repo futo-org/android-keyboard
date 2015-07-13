@@ -101,4 +101,10 @@ public final class StatsUtils {
 
     public static void onSettingsActivity(final String entryPoint) {
     }
+
+    public static void onInputConnectionLaggy(final int operation, final long duration) {
+    }
+
+    public static void onDecoderLaggy(final int operation, final long duration) {
+    }
 }

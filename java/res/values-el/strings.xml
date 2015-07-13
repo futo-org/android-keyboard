@@ -136,7 +136,9 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Το ίδιο στυλ εισόδου υπάρχει ήδη: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Διάρκεια δόνησης πατήμ. πλήκτ."</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Ένταση ήχου πατήματος πλήκτρου"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Καθυστέρηση παρατεταμένου πατήματος"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Καθυστέρηση παρατεταμένου πατήματος πλήκτρου"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji για φυσικό πληκτρολόγιο"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Το φυσικό πλήκτρο Alt εμφανίζει την παλέτα emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Προεπιλογή"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Καλώς ορίσατε στο <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"με Πληκτρολόγηση με κίνηση"</string>

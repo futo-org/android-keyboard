@@ -27,8 +27,8 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀ ಒತ್ತಿದಾಗ ಶಬ್ದಮಾಡು"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ಕೀ ಒತ್ತಿದಾಗ ಪಾಪ್ ಅಪ್‌ ಮಾಡು"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"ಪ್ರಾಶಸ್ತ್ಯಗಳು"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"ಖಾತೆಗಳು ಮತ್ತು ಗೌಪ್ಯತೆ"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"ಗೋಚರತೆ ಮತ್ತು ಲೇಔಟ್‌ಗಳು"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"ಖಾತೆಗಳ ಗೌಪ್ಯತೆ"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"ಗೋಚರತೆಯ ಲೇಔಟ್‌ಗಳ"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ಗೆಸ್ಚರ್ ಟೈಪಿಂಗ್"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"ಪಠ್ಯ ತಿದ್ದುಪಡಿ"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"ಸುಧಾರಿತ"</string>
@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ಕೀಒತ್ತುವ ವೈಬ್ರೇಷನ್‌‌ ಅವಧಿ"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ಕೀಒತ್ತುವ ಶಬ್ದದ ವಾಲ್ಯೂಮ್"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ಕೀಯ ದೀರ್ಘ ಒತ್ತುವ ವಿಳಂಬ"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"ಭೌತಿಕ ಕೀಬೋರ್ಡ್‌ಗೆ ಎಮೋಜಿ"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ಭೌತಿಕ Alt ಕೀ ಎಮೋಜಿ ಪ್ಯಾಲೆಟ್ ತೋರಿಸುತ್ತದೆ"</string>
     <string name="button_default" msgid="3988017840431881491">"ಡೀಫಾಲ್ಟ್"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಗೆ ಸುಸ್ವಾಗತ"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ಗೆಶ್ಚರ್ ಟೈಪಿಂಗ್‌ನೊಂದಿಗೆ"</string>

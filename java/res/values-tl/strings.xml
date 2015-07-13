@@ -136,7 +136,9 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Umiiral na ang parehong estilo ng input: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tagal ng vibration ng keypress"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume ng tunog ng keypress"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Delay sa long press ng key"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Key long press delay"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji para sa pisikal na keyboard"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Ipinapakita ng pisikal na Alt key ang emoji palette"</string>
     <string name="button_default" msgid="3988017840431881491">"Default"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Maligayang pagdating sa <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"gamit ang Gesture na Pagta-type"</string>

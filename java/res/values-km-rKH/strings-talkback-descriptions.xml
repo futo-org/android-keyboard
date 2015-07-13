@@ -43,7 +43,7 @@
     <string name="spoken_description_emoji" msgid="7990051553008088470">"សញ្ញា​អារម្មណ៍"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"Return"</string>
     <string name="spoken_description_search" msgid="5099937658231911288">"ស្វែងរក"</string>
-    <string name="spoken_description_dot" msgid="5644176501632325560">"ចំណុច"</string>
+    <string name="spoken_description_dot" msgid="5644176501632325560">"សញ្ញា(.)"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"ប្ដូរ​​ភាសា"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"បន្ទាប់"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"មុន"</string>
@@ -73,8 +73,8 @@
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"និមិត្តសញ្ញា"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"សញ្ញា​អារម្មណ៍"</string>
     <string name="spoken_description_upper_case" msgid="4904835255229433916">"អក្សរ​ធំ <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
-    <string name="spoken_letter_0049" msgid="4743162182646977944">"I ធំ"</string>
-    <string name="spoken_letter_0130" msgid="4766619646231612274">"I ធំមានចំណុចពីលើ"</string>
+    <string name="spoken_letter_0049" msgid="4743162182646977944">"សញ្ញា I"</string>
+    <string name="spoken_letter_0130" msgid="4766619646231612274">"សញ្ញា İ"</string>
     <string name="spoken_symbol_unknown" msgid="717298227061173706">"មិន​ស្គាល់​និមិត្តសញ្ញា"</string>
     <string name="spoken_emoji_unknown" msgid="5981009928135394306">"មិន​ស្គាល់​សញ្ញា​អារម្មណ៍"</string>
     <string name="spoken_emoticon_3A_2D_21_20" msgid="2410905667389534573">"មុខ​អផ្សុក"</string>

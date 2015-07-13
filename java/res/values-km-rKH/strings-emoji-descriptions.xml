@@ -25,16 +25,16 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_emoji_00A9" msgid="2859822817116803638">"សញ្ញា​រក្សា​សិទ្ធ​"</string>
+    <string name="spoken_emoji_00A9" msgid="2859822817116803638">"សញ្ញា​រក្សា​សិទ្ធ"</string>
     <string name="spoken_emoji_00AE" msgid="7708335454134589027">"សញ្ញា​​​ចុះ​បញ្ជី"</string>
     <string name="spoken_emoji_203C" msgid="153340916701508663">"សញ្ញា​ឧទាន​​ពីរ"</string>
-    <string name="spoken_emoji_2049" msgid="4877256448299555371">"សញ្ញា​​ឧទាន​សញ្ញា​សួរ​​"</string>
+    <string name="spoken_emoji_2049" msgid="4877256448299555371">"សញ្ញា​​ឧទាន​សញ្ញា​សួរ"</string>
     <string name="spoken_emoji_2122" msgid="9188440722954720429">"សញ្ញា​​​និក្ខិត្តសញ្ញា"</string>
     <string name="spoken_emoji_2139" msgid="9114342638917304327">"ប្រភព​ព័ត៌មាន"</string>
     <string name="spoken_emoji_2194" msgid="8055202727034946680">"ព្រួញ​ឆ្វេងស្ដាំ"</string>
     <string name="spoken_emoji_2195" msgid="8028122253301087407">"ព្រួញ​ឡើង​លើ​ចុះក្រោម"</string>
     <string name="spoken_emoji_2196" msgid="4019164898967854363">"ព្រួញ​ទិសពាយព្យ"</string>
-    <string name="spoken_emoji_2197" msgid="4255723717709017801">"ព្រួញ​​ទិស​ឥសាន្ត​ឦសាន្ត​"</string>
+    <string name="spoken_emoji_2197" msgid="4255723717709017801">"ព្រួញ​​ទិស​ឥសាន្ត​ឦសាន្ត"</string>
     <string name="spoken_emoji_2198" msgid="1452063451313622090">"ព្រួញ​​ទិស​អាគ្នេយ៍"</string>
     <string name="spoken_emoji_2199" msgid="6942722693368807849">"ព្រួញ​​ទិស​និរតី"</string>
     <string name="spoken_emoji_21A9" msgid="5204750172335111188">"ព្រួញ​ទៅ​ឆ្វេង​មាន​ទំពក់"</string>
@@ -45,7 +45,7 @@
     <string name="spoken_emoji_23EA" msgid="2251396938087774944">"ត្រីកោណ​ខ្មៅ​ពីរ​ចង្អុល​ទៅ​ឆ្វេង"</string>
     <string name="spoken_emoji_23EB" msgid="3746885195641491865">"ត្រីកោណ​ខ្មៅ​ពីរ​ចង្អុល​​ឡើង​លើ"</string>
     <string name="spoken_emoji_23EC" msgid="7852372752901163416">"ត្រីកោណ​ខ្មៅ​ពីរ​ចង្អុល​​ចុះក្រោម"</string>
-    <string name="spoken_emoji_23F0" msgid="8474219588750627870">"នាឡិកា​រោទ៍​"</string>
+    <string name="spoken_emoji_23F0" msgid="8474219588750627870">"នាឡិកា​រោទ៍"</string>
     <string name="spoken_emoji_23F3" msgid="166900119581024371">"កែវ​ពិសោធន៍​មាន​ខ្សាច់ហូរ"</string>
     <string name="spoken_emoji_24C2" msgid="3948348737566038470">"អក្សរ​អឹម​ធំ​ក្នុង​រង្វង់"</string>
     <string name="spoken_emoji_25AA" msgid="7865181015100227349">"ការ៉េ​តូច​​ពណ៌ខ្មៅ"</string>
@@ -195,7 +195,7 @@
     <string name="spoken_emoji_1F312" msgid="4458575672576125401">"ព្រះ​ចន្ទ​មួយ​ចំណិត​ស្ដាំ"</string>
     <string name="spoken_emoji_1F313" msgid="7599181787989497294">"ព្រះ​ចន្ទ​ពាក់​កណ្ដាល"</string>
     <string name="spoken_emoji_1F314" msgid="4898293184964365413">"ព្រះ​ចន្ទ​មួយ​ចំណិត​ឆ្វេង"</string>
-    <string name="spoken_emoji_1F315" msgid="3218117051779496309">"ព្រះចន្ទ​ពេញ​វង់​"</string>
+    <string name="spoken_emoji_1F315" msgid="3218117051779496309">"ព្រះចន្ទ​ពេញ​វង់"</string>
     <string name="spoken_emoji_1F316" msgid="2061317145777689569">"ព្រះ​ចន្ទ​ភ្លឺ​មួយ​ចំហៀង"</string>
     <string name="spoken_emoji_1F317" msgid="2721090687319539049">"ព្រះ​ចន្ទ​ភ្លឺ​ពាក់​កណ្ដាល"</string>
     <string name="spoken_emoji_1F318" msgid="3814091755648887570">"ព្រះ​ចន្ទ​ភ្លឺ​មួយ​ចំណិត​ឆ្វេង"</string>
@@ -262,7 +262,7 @@
     <string name="spoken_emoji_1F365" msgid="4963815540953316307">"នំ​ត្រី​រាង​មូល"</string>
     <string name="spoken_emoji_1F366" msgid="7862401745277049404">"ការ៉េម​​បំពង់"</string>
     <string name="spoken_emoji_1F367" msgid="7447972978281980414">"ការ៉េម​កែវ"</string>
-    <string name="spoken_emoji_1F368" msgid="7790003146142724913">"ការ៉េម​"</string>
+    <string name="spoken_emoji_1F368" msgid="7790003146142724913">"ការ៉េម"</string>
     <string name="spoken_emoji_1F369" msgid="7383712944084857350">"ដូណាត់"</string>
     <string name="spoken_emoji_1F36A" msgid="2726271795913042295">"ខូគី"</string>
     <string name="spoken_emoji_1F36B" msgid="6342163604299875931">"​​សូកូឡា"</string>
@@ -280,7 +280,7 @@
     <string name="spoken_emoji_1F377" msgid="1762398562314172075">"កែវ​ស្រា"</string>
     <string name="spoken_emoji_1F378" msgid="5528234560590117516">"កែវ​ស្រា​ក្រឡុក"</string>
     <string name="spoken_emoji_1F379" msgid="790581290787943325">"ភេសជ្ជៈ​​​ត្រូពិក"</string>
-    <string name="spoken_emoji_1F37A" msgid="391966822450619516">"កែវ​​ស្រាបៀ​"</string>
+    <string name="spoken_emoji_1F37A" msgid="391966822450619516">"កែវ​​ស្រាបៀ"</string>
     <string name="spoken_emoji_1F37B" msgid="9015043286465670662">"ជល់​កែវ​ស្រាបៀ"</string>
     <string name="spoken_emoji_1F37C" msgid="2532113819464508894">"ដប​ទឹកដោះ​គោ"</string>
     <string name="spoken_emoji_1F380" msgid="3487363857092458827">"ខ្សែ​បូ"</string>
@@ -313,7 +313,7 @@
     <string name="spoken_emoji_1F3A7" msgid="837856608794094105">"កាស"</string>
     <string name="spoken_emoji_1F3A8" msgid="2332260356509244587">"ក្ដារ​លាយ​ពណ៌​វិចិត្រករ"</string>
     <string name="spoken_emoji_1F3A9" msgid="9045869366525115256">"មួក​​​សម្ដែង​សិល្បៈ"</string>
-    <string name="spoken_emoji_1F3AA" msgid="5728760354237132">"តង់​សៀក​"</string>
+    <string name="spoken_emoji_1F3AA" msgid="5728760354237132">"តង់​សៀក"</string>
     <string name="spoken_emoji_1F3AB" msgid="1657997517193216284">"សំបុត្រ"</string>
     <string name="spoken_emoji_1F3AC" msgid="4317366554314492152">"បន្ទះកណ្ដឹង"</string>
     <string name="spoken_emoji_1F3AD" msgid="607157286336130470">"សម្ដែង​សិល្បៈ"</string>
@@ -334,10 +334,10 @@
     <string name="spoken_emoji_1F3BC" msgid="1608424748821446230">"និមិត្តសញ្ញា​តន្ត្រី"</string>
     <string name="spoken_emoji_1F3BD" msgid="5490786111375627777">"អាវ​កីឡា​​មាន​ខ្សែ​ឆៀង"</string>
     <string name="spoken_emoji_1F3BE" msgid="1851613105691627931">"រ៉ាកែត និង​បាល់"</string>
-    <string name="spoken_emoji_1F3BF" msgid="6862405997423247921">"ជិះ​ស្គី ​និង​ក្ដារ​​ស្គី​"</string>
+    <string name="spoken_emoji_1F3BF" msgid="6862405997423247921">"ជិះ​ស្គី ​និង​ក្ដារ​​ស្គី"</string>
     <string name="spoken_emoji_1F3C0" msgid="7421420756115104085">"បាល់​បោះ​ និង​វណ្ណ​មូល"</string>
     <string name="spoken_emoji_1F3C1" msgid="6926537251677319922">"ទង់ជាតិ​ប្រណាំង​ម៉ូតូ"</string>
-    <string name="spoken_emoji_1F3C2" msgid="5708596929237987082">"អ្នក​ជិះ​​ក្ដារ​រំអិល​លើ​ព្រិល​"</string>
+    <string name="spoken_emoji_1F3C2" msgid="5708596929237987082">"អ្នក​ជិះ​​ក្ដារ​រំអិល​លើ​ព្រិល"</string>
     <string name="spoken_emoji_1F3C3" msgid="5850982999510115824">"អ្នក​រត់"</string>
     <string name="spoken_emoji_1F3C4" msgid="8468355585994639838">"អ្នក​ជិះ​ទូក​រអិល​លើ​ទឹក"</string>
     <string name="spoken_emoji_1F3C6" msgid="9094474706847545409">"ពាន​រង្វាន់"</string>
@@ -354,7 +354,7 @@
     <string name="spoken_emoji_1F3E6" msgid="342132788513806214">"ធនាគារ"</string>
     <string name="spoken_emoji_1F3E7" msgid="6322352038284944265">"ម៉ាស៊ីន​​អេធីអឹម"</string>
     <string name="spoken_emoji_1F3E8" msgid="5864918444350599907">"សណ្ឋាគារ"</string>
-    <string name="spoken_emoji_1F3E9" msgid="7830416185375326938">"សណ្ឋាគារ​ក្ដី​ស្រឡាញ់​"</string>
+    <string name="spoken_emoji_1F3E9" msgid="7830416185375326938">"សណ្ឋាគារ​ក្ដី​ស្រឡាញ់"</string>
     <string name="spoken_emoji_1F3EA" msgid="5081084413084360479">"ហាង​​ទំនិញ ២៤​ម៉ោង"</string>
     <string name="spoken_emoji_1F3EB" msgid="7010966528205150525">"សាលារៀន"</string>
     <string name="spoken_emoji_1F3EC" msgid="4845978861878295154">"ហាង​​ទំនិញធំៗ"</string>
@@ -439,12 +439,12 @@
     <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"​មេដៃ​ឡើង​លើ"</string>
     <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"​មេដៃ​ចុះ​ក្រោម"</string>
     <string name="spoken_emoji_1F44F" msgid="5148753662268213389">"ទះ​ដៃ"</string>
-    <string name="spoken_emoji_1F450" msgid="1012021072085157054">"លា​ដៃ​"</string>
+    <string name="spoken_emoji_1F450" msgid="1012021072085157054">"លា​ដៃ"</string>
     <string name="spoken_emoji_1F451" msgid="8257466714629051320">"មកុដ"</string>
     <string name="spoken_emoji_1F452" msgid="4567394011149905466">"មួក​​ស្ត្រី"</string>
     <string name="spoken_emoji_1F453" msgid="5978410551173163010">"វ៉ែនតា"</string>
-    <string name="spoken_emoji_1F454" msgid="348469036193323252">"ក្រ​វ៉ាត់​ករ​"</string>
-    <string name="spoken_emoji_1F455" msgid="5665118831861433578">"អាវ​យឺត​​"</string>
+    <string name="spoken_emoji_1F454" msgid="348469036193323252">"ក្រ​វ៉ាត់​ករ"</string>
+    <string name="spoken_emoji_1F455" msgid="5665118831861433578">"អាវ​យឺត"</string>
     <string name="spoken_emoji_1F456" msgid="1890991330923356408">"ខោ​ខោវប៊យ"</string>
     <string name="spoken_emoji_1F457" msgid="3904310482655702620">"សំលៀក​បំពាក់"</string>
     <string name="spoken_emoji_1F458" msgid="5704243858031107692">"គី​ម៉ូណូ"</string>
@@ -463,8 +463,8 @@
     <string name="spoken_emoji_1F465" msgid="4461307702499679879">"គណនី"</string>
     <string name="spoken_emoji_1F466" msgid="1938873085514108889">"ក្មេង​​ប្រុស"</string>
     <string name="spoken_emoji_1F467" msgid="8237080594860144998">"ក្មេង​ស្រី"</string>
-    <string name="spoken_emoji_1F468" msgid="6081300722526675382">"បុរស​"</string>
-    <string name="spoken_emoji_1F469" msgid="1090140923076108158">"ស្ត្រី​"</string>
+    <string name="spoken_emoji_1F468" msgid="6081300722526675382">"បុរស"</string>
+    <string name="spoken_emoji_1F469" msgid="1090140923076108158">"ស្ត្រី"</string>
     <string name="spoken_emoji_1F46A" msgid="5063570981942606595">"គ្រួសារ"</string>
     <string name="spoken_emoji_1F46B" msgid="6795882374287327952">"បុរស​​ និង​ស្ត្រី​កាន់ដៃ​គ្នា"</string>
     <string name="spoken_emoji_1F46C" msgid="6844464165783964495">"បុរស​ពីរ​នាក់​កាន់​ដៃ​គ្នា"</string>
@@ -490,16 +490,16 @@
     <string name="spoken_emoji_1F480" msgid="3696253485164878739">"លលាដ៍​ក្បាល"</string>
     <string name="spoken_emoji_1F481" msgid="320408708521966893">"អ្នក​ផ្ដល់​ព័ត៌មាន"</string>
     <string name="spoken_emoji_1F482" msgid="3424354860245608949">"អ្នក​យាម"</string>
-    <string name="spoken_emoji_1F483" msgid="3221113594843849083">"អ្នក​រាំ​"</string>
+    <string name="spoken_emoji_1F483" msgid="3221113594843849083">"អ្នក​រាំ"</string>
     <string name="spoken_emoji_1F484" msgid="7348014979080444885">"ក្រេម​លាប​បបូរ​មាត់"</string>
     <string name="spoken_emoji_1F485" msgid="6133507975565116339">"ថ្នាំ​លាប​​​ក្រចក"</string>
     <string name="spoken_emoji_1F486" msgid="9085459968247394155">"ម៉ាស្សា​មុខ"</string>
     <string name="spoken_emoji_1F487" msgid="1479113637259592150">"កាត់សក់"</string>
     <string name="spoken_emoji_1F488" msgid="6922559285234100252">"ស្លាក​សញ្ញា​កាត់សក់"</string>
     <string name="spoken_emoji_1F489" msgid="8114863680950147305">"ស៊ីរ៉ាំង"</string>
-    <string name="spoken_emoji_1F48A" msgid="8526843630145963032">"ថ្នាំ​គ្រាប់​"</string>
+    <string name="spoken_emoji_1F48A" msgid="8526843630145963032">"ថ្នាំ​គ្រាប់"</string>
     <string name="spoken_emoji_1F48B" msgid="2538528967897640292">"ស្នាម​ថើប"</string>
-    <string name="spoken_emoji_1F48C" msgid="1681173271652890232">"លិខិត​ស្នេហា​"</string>
+    <string name="spoken_emoji_1F48C" msgid="1681173271652890232">"លិខិត​ស្នេហា"</string>
     <string name="spoken_emoji_1F48D" msgid="8259886164999042373">"រោទ៍"</string>
     <string name="spoken_emoji_1F48E" msgid="8777981696011111101">"ត្បូង​ថ្ម"</string>
     <string name="spoken_emoji_1F48F" msgid="741593675183677907">"ថើប"</string>
@@ -525,7 +525,7 @@
     <string name="spoken_emoji_1F4A3" msgid="6378351742957821735">"គ្រាប់បែក"</string>
     <string name="spoken_emoji_1F4A4" msgid="7217736258870346625">"និមិត្ត​សញ្ញា​​ដេក"</string>
     <string name="spoken_emoji_1F4A5" msgid="5401995723541239858">"និមិត្ត​សញ្ញា​​ប៉ះ​ទង្គិច​គ្នា"</string>
-    <string name="spoken_emoji_1F4A6" msgid="3837802182716483848">"និមិត្ត​សញ្ញា​​ស្រក់​ញើស​"</string>
+    <string name="spoken_emoji_1F4A6" msgid="3837802182716483848">"និមិត្ត​សញ្ញា​​ស្រក់​ញើស"</string>
     <string name="spoken_emoji_1F4A7" msgid="5718438987757885141">"ដំណក់​ទឹក"</string>
     <string name="spoken_emoji_1F4A8" msgid="4472108229720006377">"និមិត្ត​សញ្ញា​​ដកឃ្លា"</string>
     <string name="spoken_emoji_1F4A9" msgid="1240958472788430032">"គំនរ​ធូលី"</string>
@@ -539,7 +539,7 @@
     <string name="spoken_emoji_1F4B1" msgid="8339494003418572905">"ប្ដូរ​​រូបិយប័ណ្ណ"</string>
     <string name="spoken_emoji_1F4B2" msgid="3179159430187243132">"សញ្ញា​ដុល្លារ"</string>
     <string name="spoken_emoji_1F4B3" msgid="5375412518221759596">"កាត​​ឥណទាន"</string>
-    <string name="spoken_emoji_1F4B4" msgid="1068592463669453204">"ក្រដាស​ប្រាក់​​ធនាគារ​មាន​សញ្ញា​​យ៉េន​​"</string>
+    <string name="spoken_emoji_1F4B4" msgid="1068592463669453204">"ក្រដាស​ប្រាក់​​ធនាគារ​មាន​សញ្ញា​​យ៉េន"</string>
     <string name="spoken_emoji_1F4B5" msgid="1426708699891832564">"លុយដុល្លារ"</string>
     <string name="spoken_emoji_1F4B6" msgid="8289249930736444837">"ក្រដាស​ប្រាក់​​ធនាគារ​មាន​សញ្ញា​អឺរ៉ូ"</string>
     <string name="spoken_emoji_1F4B7" msgid="5245100496860739429">"ក្រដាស​ប្រាក់​​ធនាគារ​មាន​សញ្ញា​​​ផោន"</string>
@@ -547,7 +547,7 @@
     <string name="spoken_emoji_1F4B9" msgid="647509393536679903">"ក្រាហ្វិក​និន្នាការ​ឡើង​​មាន​​សញ្ញា​យ៉េន"</string>
     <string name="spoken_emoji_1F4BA" msgid="1269737854891046321">"កៅអី"</string>
     <string name="spoken_emoji_1F4BB" msgid="6252883563347816451">"កុំព្យូទ័រ​ផ្ទាល់ខ្លួន"</string>
-    <string name="spoken_emoji_1F4BC" msgid="6182597732218446206">"វ៉ា​លី​"</string>
+    <string name="spoken_emoji_1F4BC" msgid="6182597732218446206">"វ៉ា​លី"</string>
     <string name="spoken_emoji_1F4BD" msgid="5820961044768829176">"ឌីស​​តូច"</string>
     <string name="spoken_emoji_1F4BE" msgid="4754542485835379808">"ថា​ស​​ទន់"</string>
     <string name="spoken_emoji_1F4BF" msgid="2237481756984721795">"ថាស"</string>
@@ -557,7 +557,7 @@
     <string name="spoken_emoji_1F4C3" msgid="3727274466173970142">"ទំព័រ​​កោង"</string>
     <string name="spoken_emoji_1F4C4" msgid="4382570710795501612">"ទំព័រ​បញ្ឈរ"</string>
     <string name="spoken_emoji_1F4C5" msgid="8693944622627762487">"ប្រតិទិន"</string>
-    <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"ហែក​ប្រតិទិន​"</string>
+    <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"ហែក​ប្រតិទិន"</string>
     <string name="spoken_emoji_1F4C7" msgid="2665313547987324495">"​កាត​រៀប​តាម​អក្សរ"</string>
     <string name="spoken_emoji_1F4C8" msgid="8007686702282833600">"ក្រាហ្វិក​មាន​និន្នាការ​ឡើង"</string>
     <string name="spoken_emoji_1F4C9" msgid="2271951411192893684">"ក្រាហ្វិក​មាន​និន្នាការ​ចុះ"</string>
@@ -573,11 +573,11 @@
     <string name="spoken_emoji_1F4D3" msgid="5873386492793610808">"សៀវភៅ"</string>
     <string name="spoken_emoji_1F4D4" msgid="4754469936418776360">"សៀវភៅ​មាន​ក្រប​ពណ៌"</string>
     <string name="spoken_emoji_1F4D5" msgid="4642713351802778905">"សៀវភៅ​​បិទ"</string>
-    <string name="spoken_emoji_1F4D6" msgid="6987347918381807186">"សៀវភៅ​បើក​​"</string>
+    <string name="spoken_emoji_1F4D6" msgid="6987347918381807186">"សៀវភៅ​បើក"</string>
     <string name="spoken_emoji_1F4D7" msgid="7813394163241379223">"សៀវភៅ​​ពណ៌​បៃតង"</string>
     <string name="spoken_emoji_1F4D8" msgid="7189799718984979521">"សៀវភៅ​​ពណ៌​ខៀវ"</string>
     <string name="spoken_emoji_1F4D9" msgid="3874664073186440225">"សៀវភៅ​​ពណ៌​ទឹកក្រូច"</string>
-    <string name="spoken_emoji_1F4DA" msgid="872212072924287762">"សៀវភៅ​"</string>
+    <string name="spoken_emoji_1F4DA" msgid="872212072924287762">"សៀវភៅ"</string>
     <string name="spoken_emoji_1F4DB" msgid="2015183603583392969">"ស្លាកឈ្មោះ"</string>
     <string name="spoken_emoji_1F4DC" msgid="5075845110932456783">"ក្រដាស​រមូរ"</string>
     <string name="spoken_emoji_1F4DD" msgid="2494006707147586786">"កំណត់ចំណាំ"</string>
@@ -589,7 +589,7 @@
     <string name="spoken_emoji_1F4E3" msgid="5588916572878599224">"ឧបករណ៍​បំពង​សំឡេង"</string>
     <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"ថា​ស​​​ចេញ"</string>
     <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"ថា​ស​ចូល"</string>
-    <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"កញ្ចប់​"</string>
+    <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"កញ្ចប់"</string>
     <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"និមិត្ត​សញ្ញា​អ៊ីមែល"</string>
     <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"ស្រោម​​សំបុត្រ​ចូល"</string>
     <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"ស្រោម​សំបុត្រ​​មាន​សញ្ញា​ព្រួញ​ពី​លើ"</string>
@@ -626,7 +626,7 @@
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"ដុយ​អគ្គិសនី"</string>
     <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"កែវ​ពង្រីក​ចង្អុល​ខាង​ឆ្វេង"</string>
     <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"កែវ​ពង្រីក​ចង្អុល​ខាង​ស្ដាំ"</string>
-    <string name="spoken_emoji_1F50F" msgid="915079280472199605">"ចាក់សោ​​​ដោយ​ប្រើ​​ប៊ិច​"</string>
+    <string name="spoken_emoji_1F50F" msgid="915079280472199605">"ចាក់សោ​​​ដោយ​ប្រើ​​ប៊ិច"</string>
     <string name="spoken_emoji_1F510" msgid="7658381761691758318">"បិទ​​សោ​ដោយ​ប្រើ​​​​កូនសោ"</string>
     <string name="spoken_emoji_1F511" msgid="262319867774655688">"សោ"</string>
     <string name="spoken_emoji_1F512" msgid="5628688337255115175">"ចាក់សោ"</string>
@@ -645,15 +645,15 @@
     <string name="spoken_emoji_1F51F" msgid="8673370823728653973">"គ្រាប់​ចុច​ ១០"</string>
     <string name="spoken_emoji_1F520" msgid="7335109890337048900">"និមិត្ត​សញ្ញា​បញ្ចូល​សម្រាប់​អក្សរ​ឡាតាំង​ធំ"</string>
     <string name="spoken_emoji_1F521" msgid="2693185864450925778">"និមិត្ត​សញ្ញា​បញ្ចូល​សម្រាប់​អក្សរ​ឡាតាំង​តូច"</string>
-    <string name="spoken_emoji_1F522" msgid="8419130286280673347">"និមិត្ត​សញ្ញា​បញ្ចូល​សម្រាប់​​លេខ​"</string>
+    <string name="spoken_emoji_1F522" msgid="8419130286280673347">"និមិត្ត​សញ្ញា​បញ្ចូល​សម្រាប់​​លេខ"</string>
     <string name="spoken_emoji_1F523" msgid="3318053476401719421">"ការ​បញ្ចូល​និមិត្តសញ្ញា"</string>
     <string name="spoken_emoji_1F524" msgid="1625073997522316331">"និមិត្ត​សញ្ញា​បញ្ចូល​សម្រាប់​អក្សរ​ឡាតាំង"</string>
     <string name="spoken_emoji_1F525" msgid="4083884189172963790">"ភ្លើង"</string>
     <string name="spoken_emoji_1F526" msgid="2035494936742643580">"ពិល​​អគ្គិសនី"</string>
     <string name="spoken_emoji_1F527" msgid="134257142354034271">"ម៉ាឡេត"</string>
     <string name="spoken_emoji_1F528" msgid="700627429570609375">"ញញួរ"</string>
-    <string name="spoken_emoji_1F529" msgid="7480548235904988573">"ឡោ​ស៊ី​​"</string>
-    <string name="spoken_emoji_1F52A" msgid="7613580031502317893">"កាំបិត​​"</string>
+    <string name="spoken_emoji_1F529" msgid="7480548235904988573">"ឡោ​ស៊ី"</string>
+    <string name="spoken_emoji_1F52A" msgid="7613580031502317893">"កាំបិត"</string>
     <string name="spoken_emoji_1F52B" msgid="4554906608328118613">"កាំភ្លើង​ខ្លី"</string>
     <string name="spoken_emoji_1F52C" msgid="1330294501371770790">"មីក្រូទស្សន៍"</string>
     <string name="spoken_emoji_1F52D" msgid="7549551775445177140">"កែវ​យឹត"</string>
@@ -662,7 +662,7 @@
     <string name="spoken_emoji_1F530" msgid="3572898444281774023">"និមិត្តសញ្ញា​ជប៉ុន​សម្រាប់​អ្នក​ចាប់ផ្ដើម"</string>
     <string name="spoken_emoji_1F531" msgid="5225633376450025396">"លំពែង​មុខ​បី"</string>
     <string name="spoken_emoji_1F532" msgid="9169568490485180779">"ប៊ូតុង​ការេ​ពណ៌​ខ្មៅ"</string>
-    <string name="spoken_emoji_1F533" msgid="6554193837201918598">"ប៊ូតុង​ការ៉េ​ពណ៌​ស​"</string>
+    <string name="spoken_emoji_1F533" msgid="6554193837201918598">"ប៊ូតុង​ការ៉េ​ពណ៌​ស"</string>
     <string name="spoken_emoji_1F534" msgid="8339298801331865340">"រង្វង់​ពណ៌​ក្រហម​​​ធំ"</string>
     <string name="spoken_emoji_1F535" msgid="1227403104835533512">"រង្វង់​ពណ៌​ខៀវ​ធំ"</string>
     <string name="spoken_emoji_1F536" msgid="5477372445510469331">"ពេជ្រ​ពណ៌​ទឹកក្រូច​ធំ"</string>
@@ -745,8 +745,8 @@
     <string name="spoken_emoji_1F628" msgid="8875777401624904224">"មុខ​ភ័យ​ខ្លាច"</string>
     <string name="spoken_emoji_1F629" msgid="1411538490319190118">"មុខ​​នឿយហត់"</string>
     <string name="spoken_emoji_1F62A" msgid="4726686726690289969">"មុខ​​ងងុយ​គេង"</string>
-    <string name="spoken_emoji_1F62B" msgid="3221980473921623613">"មុខ​អស់កម្លាំង​​"</string>
-    <string name="spoken_emoji_1F62C" msgid="4616356691941225182">"មុខ​ក្រញេវក្រញូវ​"</string>
+    <string name="spoken_emoji_1F62B" msgid="3221980473921623613">"មុខ​អស់កម្លាំង"</string>
+    <string name="spoken_emoji_1F62C" msgid="4616356691941225182">"មុខ​ក្រញេវក្រញូវ"</string>
     <string name="spoken_emoji_1F62D" msgid="4283677508698812232">"មុខ​យំ​លឺៗ"</string>
     <string name="spoken_emoji_1F62E" msgid="726083405284353894">"មុខ​បើក​មាត់"</string>
     <string name="spoken_emoji_1F62F" msgid="7746620088234710962">"មុខ​ស្ងៀមស្ងាត់"</string>
@@ -784,7 +784,7 @@
     <string name="spoken_emoji_1F683" msgid="8772750354339223092">"ទូរ​​រថភ្លើង"</string>
     <string name="spoken_emoji_1F684" msgid="346396777356203608">"រថភ្លើង​ល្បឿន​លឿន"</string>
     <string name="spoken_emoji_1F685" msgid="1237059817190832730">"រថភ្លើង​ល្បឿន​លឿន​​មាន​ច្រមុះ"</string>
-    <string name="spoken_emoji_1F686" msgid="3525197227223620343">"រថភ្លើង​"</string>
+    <string name="spoken_emoji_1F686" msgid="3525197227223620343">"រថភ្លើង"</string>
     <string name="spoken_emoji_1F687" msgid="5110143437960392837">"មេត្រូ"</string>
     <string name="spoken_emoji_1F688" msgid="4702085029871797965">"រថភ្លើង​ប្រើ​​​ពន្លឺ"</string>
     <string name="spoken_emoji_1F689" msgid="2375851019798817094">"ស្ថានីយ"</string>
@@ -803,7 +803,7 @@
     <string name="spoken_emoji_1F696" msgid="6391604457418285404">"តាក់ស៊ី​ខាង​មុខ"</string>
     <string name="spoken_emoji_1F697" msgid="7978399334396733790">"រថយន្ត"</string>
     <string name="spoken_emoji_1F698" msgid="7006050861129732018">"រថយន្ត​ខាង​មុខ"</string>
-    <string name="spoken_emoji_1F699" msgid="630317052666590607">"រថយន្ត​​​សម្រាប់​កម្សាន្ត​"</string>
+    <string name="spoken_emoji_1F699" msgid="630317052666590607">"រថយន្ត​​​សម្រាប់​កម្សាន្ត"</string>
     <string name="spoken_emoji_1F69A" msgid="4739797891735823577">"រថយន្ត​​ចែក​ចាយ"</string>
     <string name="spoken_emoji_1F69B" msgid="4715997280786620649">"ឡាន​កាមីយ៉ុង"</string>
     <string name="spoken_emoji_1F69C" msgid="5557395610750818161">"ត្រាក់ទ័រ"</string>
@@ -819,7 +819,7 @@
     <string name="spoken_emoji_1F6A6" msgid="485575967773793454">"ភ្លើង​ចរាចរណ៍​បញ្ឈរ"</string>
     <string name="spoken_emoji_1F6A7" msgid="6411048933816976794">"សញ្ញា​​សំណង់"</string>
     <string name="spoken_emoji_1F6A8" msgid="6345717218374788364">"រថយន្ត​​ប៉ូលិស​បើក​សារ៉ែន​វិល"</string>
-    <string name="spoken_emoji_1F6A9" msgid="6586380356807600412">"បង្គោល​ទង់ជាតិ​រាង​ត្រីកោណ​"</string>
+    <string name="spoken_emoji_1F6A9" msgid="6586380356807600412">"បង្គោល​ទង់ជាតិ​រាង​ត្រីកោណ"</string>
     <string name="spoken_emoji_1F6AA" msgid="8954448167261738885">"ទ្វារ"</string>
     <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"សញ្ញា​ហាម​ចូល"</string>
     <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"​សញ្ញា​ជក់​បារី"</string>

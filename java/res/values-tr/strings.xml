@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tuşa basma titreşim süresi"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tuşa basma ses seviyesi"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tuşa uzun basma gecikmesi"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Fiziksel klavye için emoji"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Fiziksel Alt tuşu, emoji paletini gösterir"</string>
     <string name="button_default" msgid="3988017840431881491">"Varsayılan"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasına hoş geldiniz"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Hareketle Yazmayı içerir"</string>

@@ -137,6 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Lengd lyklatitrings"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Styrkur lyklahljóða"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Töf áður en lykli er haldið inni"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji fyrir vélbúnaðarlyklaborð"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Alt-lykillinn á lyklaborðinu birtir töflu yfir emoji-tákn"</string>
     <string name="button_default" msgid="3988017840431881491">"Sjálfgefið"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Velkomin(n) í <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"með bendingainnslætti"</string>
