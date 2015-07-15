@@ -23,5 +23,5 @@
     <string name="english_ime_name" msgid="5940510615957428904">"Android കീബോർഡ് (AOSP)"</string>
     <string name="spell_checker_service_name" msgid="1254221805440242662">"Android അക്ഷരത്തെറ്റ് പരിശോധന (AOSP)"</string>
     <string name="english_ime_settings" msgid="5760361067176802794">"Android കീബോർഡ് ക്രമീകരണങ്ങൾ (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="6123949487832861885">"Android അക്ഷരത്തെറ്റ് പരിശോധനാ ക്രമീകരണങ്ങൾ (AOSP)"</string>
+    <string name="android_spell_checker_settings" msgid="6123949487832861885">"Android സ്പെൽചെക്കർ ക്രമീകരണങ്ങൾ (AOSP)"</string>
 </resources>
