@@ -59,8 +59,8 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Подсказывать исправления на основе имен из списка контактов"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Пользовательские словари"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Помочь улучшить <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Ставить точки автоматически"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Вводить точку с пробелом двойным нажатием кнопки \"Пробел\"."</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Точки автоматически"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Вводить точку с пробелом двойным нажатием пробела."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Писать первое слово предложения с прописной буквы"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Пользовательский словарь"</string>

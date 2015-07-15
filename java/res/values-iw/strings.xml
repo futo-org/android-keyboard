@@ -29,7 +29,7 @@
     <string name="settings_screen_preferences" msgid="2696713156722014624">"העדפות"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"חשבונות ופרטיות"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"מראה ופריסות"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"הקלדת החלקה"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"הקלדה רציפה"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"תיקון טקסט"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"מתקדם"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"עיצוב"</string>
@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"הנתונים המסונכרנים שלך יימחקו מהענן. האם אתה בטוח?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"מחק"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"בטל"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏המילון האישי שלך יסונכרן ויגובה בשרתי Google. ייתכן שהמידע הסטטיסטי לגבי תדירות מילים ייאסף כדי לעזור בשיפור המוצרים שלנו. איסוף המידע והשימוש בו יעשו בהתאם ל"<a href="https://www.google.com/policies/privacy">"מדיניות הפרטיות של Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏המילון האישי שלך יסונכרן ויגובה בשרתי Google. ייתכן שהמידע הסטטיסטי לגבי תדירות מילים ייאסף כדי לעזור בשיפור המוצרים שלנו. איסוף המידע והשימוש בו ייעשו בהתאם ל"<a href="https://www.google.com/policies/privacy">"מדיניות הפרטיות של Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏הוסף חשבון Google במכשיר הזה כדי להפעיל את התכונה הזו"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"‏סנכרון אינו זמין במכשירים עם חשבונות Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"עבור לשיטות קלט אחרות"</string>
@@ -78,12 +78,12 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"מחמיר מאוד"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"הצעות למילה הבאה"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"השתמש במילה הקודמת ביצירת הצעות"</string>
-    <string name="gesture_input" msgid="826951152254563827">"אפשר הקלדה ללא הרמת אצבע"</string>
+    <string name="gesture_input" msgid="826951152254563827">"אפשר הקלדה רציפה"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"הזן מילה על ידי החלקת האצבע מאות לאות"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"הצגת שובל תנועות"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"תצוגה צפה דינמית"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ראה את המילה המוצעת תוך כדי הזזת האצבע"</string>
-    <string name="gesture_space_aware" msgid="2078291600664682496">"הקלדת משפט בהחלקה"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"הקלדה רציפה של משפט"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"הזן רווחים במהלך התנועה על ידי החלקה אל מקש הרווח"</string>
     <string name="voice_input" msgid="3583258583521397548">"מקש קלט קולי"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"לא הופעלו שיטות של קלט קולי. בדוק את הגדרות השפה והקלט."</string>
@@ -101,7 +101,7 @@
     <string name="account_select_ok" msgid="9141195141763227797">"אישור"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"בטל"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"צא"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"בחר באיזה חשבון חשבון להשתמש"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"בחר באיזה חשבון להשתמש"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"אנגלית (בריטניה)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"אנגלית (ארה\"ב)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ספרדית (ארצות הברית)"</string>
@@ -140,8 +140,8 @@
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"אמוג\'י בשביל מקלדת פיזית"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"‏מקש Alt הפיזי מציג את לוח סמלי האמוג\'י"</string>
     <string name="button_default" msgid="3988017840431881491">"ברירת מחדל"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"ברוך הבא אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"עם הקלדת החלקה"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"ברוכים הבאים אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"עם הקלדה רציפה"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"תחילת העבודה"</string>
     <string name="setup_next_action" msgid="371821437915144603">"השלב הבא"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"הגדרת <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
