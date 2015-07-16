@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.Manifest;
 import android.content.Context;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -25,6 +26,7 @@ import android.util.Log;
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.ContactsManager.ContactsChangedListener;
 import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.permissions.PermissionsUtil;
 import com.android.inputmethod.latin.personalization.AccountUtils;
 
 import java.io.File;
@@ -108,6 +110,11 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary
      * Loads data within content providers to the dictionary.
      */
     private void loadDictionaryForUriLocked(final Uri uri) {
+        if (!PermissionsUtil.checkAllPermissionsGranted(
+                mContext, Manifest.permission.READ_CONTACTS)) {
+            Log.i(TAG, "No permission to read contacts. Not loading the Dictionary.");
+        }
+
         final ArrayList<String> validNames = mContactsManager.getValidNames(uri);
         for (final String name : validNames) {
             addNameLocked(name);

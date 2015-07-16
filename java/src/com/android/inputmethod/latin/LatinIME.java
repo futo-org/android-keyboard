@@ -20,6 +20,7 @@ import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASC
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
+import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -73,6 +74,7 @@ import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
+import com.android.inputmethod.latin.permissions.PermissionsManager;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
@@ -106,7 +108,7 @@ import javax.annotation.Nonnull;
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionStripView.Listener, SuggestionStripViewAccessor,
         DictionaryFacilitator.DictionaryInitializationListener,
-        ImportantNoticeDialog.ImportantNoticeDialogListener {
+        PermissionsManager.PermissionsResultCallback {
     static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
 
@@ -1251,18 +1253,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // pressed.
     @Override
     public void showImportantNoticeContents() {
-        showOptionDialog(new ImportantNoticeDialog(this /* context */, this /* listener */));
+        PermissionsManager.get(this).requestPermissions(
+                this /* PermissionsResultCallback */,
+                null /* activity */, permission.READ_CONTACTS);
     }
 
-    // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
     @Override
-    public void onClickSettingsOfImportantNoticeDialog(final int nextVersion) {
-        launchSettings(SettingsActivity.EXTRA_ENTRY_VALUE_NOTICE_DIALOG);
-    }
-
-    // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
-    @Override
-    public void onUserAcknowledgmentOfImportantNoticeDialog(final int nextVersion) {
+    public void onRequestPermissionsResult(boolean allGranted) {
+        ImportantNoticeUtils.updateContactsNoticeShown(this /* context */);
         setNeutralSuggestionStrip();
     }
 
