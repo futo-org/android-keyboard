@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.Manifest;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.permissions.PermissionsUtil;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
@@ -287,7 +289,11 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
         final HashSet<String> subDictTypesToUse = new HashSet<>();
         subDictTypesToUse.add(Dictionary.TYPE_USER);
-        if (useContactsDict) {
+
+        // Do not use contacts dictionary if we do not have permissions to read contacts.
+        final boolean contactsPermissionGranted = PermissionsUtil.checkAllPermissionsGranted(
+                context, Manifest.permission.READ_CONTACTS);
+        if (useContactsDict && contactsPermissionGranted) {
             subDictTypesToUse.add(Dictionary.TYPE_CONTACTS);
         }
         if (usePersonalizedDicts) {

@@ -16,17 +16,23 @@
 
 package com.android.inputmethod.latin.settings;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
+import android.text.TextUtils;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.permissions.PermissionsManager;
+import com.android.inputmethod.latin.permissions.PermissionsUtil;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
 
@@ -45,11 +51,16 @@ import java.util.TreeSet;
  * - Suggest Contact names
  * - Next-word suggestions
  */
-public final class CorrectionSettingsFragment extends SubScreenFragment {
+public final class CorrectionSettingsFragment extends SubScreenFragment
+    implements SharedPreferences.OnSharedPreferenceChangeListener,
+            PermissionsManager.PermissionsResultCallback {
+
     private static final boolean DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS = false;
     private static final boolean USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS =
             DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS
             || Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2;
+
+    private SwitchPreference mUseContactsPreference;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -76,6 +87,9 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
         if (ri == null) {
             overwriteUserDictionaryPreference(editPersonalDictionary);
         }
+
+        mUseContactsPreference = (SwitchPreference) findPreference(Settings.PREF_KEY_USE_CONTACTS_DICT);
+        turnOffUseContactsIfNoPermission();
     }
 
     private void overwriteUserDictionaryPreference(final Preference userDictionaryPreference) {
@@ -99,6 +113,40 @@ public final class CorrectionSettingsFragment extends SubScreenFragment {
             }
         } else {
             userDictionaryPreference.setFragment(UserDictionaryList.class.getName());
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        if (!TextUtils.equals(key, Settings.PREF_KEY_USE_CONTACTS_DICT)) {
+            return;
+        }
+        if (!sharedPreferences.getBoolean(key, false)) {
+            // don't care if the preference is turned off.
+            return;
+        }
+
+        // Check for permissions.
+        if (PermissionsUtil.checkAllPermissionsGranted(
+                getActivity() /* context */, Manifest.permission.READ_CONTACTS)) {
+            return; // all permissions granted, no need to request permissions.
+        }
+
+        PermissionsManager.get(getActivity() /* context */).requestPermissions(
+                this /* PermissionsResultCallback */,
+                getActivity() /* activity */,
+                Manifest.permission.READ_CONTACTS);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(boolean allGranted) {
+        turnOffUseContactsIfNoPermission();
+    }
+
+    private void turnOffUseContactsIfNoPermission() {
+        if (!PermissionsUtil.checkAllPermissionsGranted(
+                getActivity(), Manifest.permission.READ_CONTACTS)) {
+            mUseContactsPreference.setChecked(false);
         }
     }
 }
