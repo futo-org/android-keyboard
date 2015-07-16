@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.utils;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
@@ -25,6 +26,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.permissions.PermissionsUtil;
 import com.android.inputmethod.latin.settings.SettingsValues;
 
 import java.util.concurrent.TimeUnit;
@@ -35,14 +37,14 @@ public final class ImportantNoticeUtils {
     // {@link SharedPreferences} name to save the last important notice version that has been
     // displayed to users.
     private static final String PREFERENCE_NAME = "important_notice_pref";
+
+    private static final String KEY_SUGGEST_CONTACTS_NOTICE = "important_notice_suggest_contacts";
+
     @UsedForTesting
-    static final String KEY_IMPORTANT_NOTICE_VERSION = "important_notice_version";
-    @UsedForTesting
-    static final String KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE =
-            "timestamp_of_first_important_notice";
+    static final String KEY_TIMESTAMP_OF_CONTACTS_NOTICE = "timestamp_of_suggest_contacts_notice";
+
     @UsedForTesting
     static final long TIMEOUT_OF_IMPORTANT_NOTICE = TimeUnit.HOURS.toMillis(23);
-    public static final int VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS = 1;
 
     // Copy of the hidden {@link Settings.Secure#USER_SETUP_COMPLETE} settings key.
     // The value is zero until each multiuser completes system setup wizard.
@@ -73,87 +75,66 @@ public final class ImportantNoticeUtils {
     }
 
     @UsedForTesting
-    static int getCurrentImportantNoticeVersion(final Context context) {
-        return context.getResources().getInteger(R.integer.config_important_notice_version);
-    }
-
-    @UsedForTesting
-    static int getLastImportantNoticeVersion(final Context context) {
-        return getImportantNoticePreferences(context).getInt(KEY_IMPORTANT_NOTICE_VERSION, 0);
-    }
-
-    public static int getNextImportantNoticeVersion(final Context context) {
-        return getLastImportantNoticeVersion(context) + 1;
-    }
-
-    @UsedForTesting
-    static boolean hasNewImportantNotice(final Context context) {
-        final int lastVersion = getLastImportantNoticeVersion(context);
-        return getCurrentImportantNoticeVersion(context) > lastVersion;
-    }
-
-    @UsedForTesting
-    static boolean hasTimeoutPassed(final Context context, final long currentTimeInMillis) {
-        final SharedPreferences prefs = getImportantNoticePreferences(context);
-        if (!prefs.contains(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE)) {
-            prefs.edit()
-                    .putLong(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE, currentTimeInMillis)
-                    .apply();
-        }
-        final long firstDisplayTimeInMillis = prefs.getLong(
-                KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE, currentTimeInMillis);
-        final long elapsedTime = currentTimeInMillis - firstDisplayTimeInMillis;
-        return elapsedTime >= TIMEOUT_OF_IMPORTANT_NOTICE;
+    static boolean hasContactsNoticeShown(final Context context) {
+        return getImportantNoticePreferences(context).getBoolean(
+                KEY_SUGGEST_CONTACTS_NOTICE, false);
     }
 
     public static boolean shouldShowImportantNotice(final Context context,
             final SettingsValues settingsValues) {
-        // Check to see whether personalization is enabled by the user.
-        if (!settingsValues.isPersonalizationEnabled()) {
+        // Check to see whether "Use Contacts" is enabled by the user.
+        if (!settingsValues.mUseContactsDict) {
             return false;
         }
-        if (!hasNewImportantNotice(context)) {
+
+        if (hasContactsNoticeShown(context)) {
             return false;
         }
-        final String importantNoticeTitle = getNextImportantNoticeTitle(context);
+
+        // Don't show the dialog if we have all the permissions.
+        if (PermissionsUtil.checkAllPermissionsGranted(
+                context, Manifest.permission.READ_CONTACTS)) {
+            return false;
+        }
+
+        final String importantNoticeTitle = getSuggestContactsNoticeTitle(context);
         if (TextUtils.isEmpty(importantNoticeTitle)) {
             return false;
         }
         if (isInSystemSetupWizard(context)) {
             return false;
         }
-        if (hasTimeoutPassed(context, System.currentTimeMillis())) {
-            updateLastImportantNoticeVersion(context);
+        if (hasContactsNoticeTimeoutPassed(context, System.currentTimeMillis())) {
+            updateContactsNoticeShown(context);
             return false;
         }
         return true;
     }
 
-    public static void updateLastImportantNoticeVersion(final Context context) {
+    public static String getSuggestContactsNoticeTitle(final Context context) {
+        return context.getResources().getString(R.string.important_notice_suggest_contact_names);
+    }
+
+    @UsedForTesting
+    static boolean hasContactsNoticeTimeoutPassed(
+            final Context context, final long currentTimeInMillis) {
+        final SharedPreferences prefs = getImportantNoticePreferences(context);
+        if (!prefs.contains(KEY_TIMESTAMP_OF_CONTACTS_NOTICE)) {
+            prefs.edit()
+                    .putLong(KEY_TIMESTAMP_OF_CONTACTS_NOTICE, currentTimeInMillis)
+                    .apply();
+        }
+        final long firstDisplayTimeInMillis = prefs.getLong(
+                KEY_TIMESTAMP_OF_CONTACTS_NOTICE, currentTimeInMillis);
+        final long elapsedTime = currentTimeInMillis - firstDisplayTimeInMillis;
+        return elapsedTime >= TIMEOUT_OF_IMPORTANT_NOTICE;
+    }
+
+    public static void updateContactsNoticeShown(final Context context) {
         getImportantNoticePreferences(context)
                 .edit()
-                .putInt(KEY_IMPORTANT_NOTICE_VERSION, getNextImportantNoticeVersion(context))
-                .remove(KEY_TIMESTAMP_OF_FIRST_IMPORTANT_NOTICE)
+                .putBoolean(KEY_SUGGEST_CONTACTS_NOTICE, true)
+                .remove(KEY_TIMESTAMP_OF_CONTACTS_NOTICE)
                 .apply();
-    }
-
-    public static String getNextImportantNoticeTitle(final Context context) {
-        final int nextVersion = getNextImportantNoticeVersion(context);
-        final String[] importantNoticeTitleArray = context.getResources().getStringArray(
-                R.array.important_notice_title_array);
-        if (nextVersion > 0 && nextVersion < importantNoticeTitleArray.length) {
-            return importantNoticeTitleArray[nextVersion];
-        }
-        return null;
-    }
-
-    public static String getNextImportantNoticeContents(final Context context) {
-        final int nextVersion = getNextImportantNoticeVersion(context);
-        final String[] importantNoticeContentsArray = context.getResources().getStringArray(
-                R.array.important_notice_contents_array);
-        if (nextVersion > 0 && nextVersion < importantNoticeContentsArray.length) {
-            return importantNoticeContentsArray[nextVersion];
-        }
-        return null;
     }
 }
