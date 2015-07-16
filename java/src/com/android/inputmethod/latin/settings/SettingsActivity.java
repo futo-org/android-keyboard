@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.settings;
 
+import com.android.inputmethod.latin.permissions.PermissionsManager;
 import com.android.inputmethod.latin.utils.FragmentUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
@@ -24,9 +25,11 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.support.v4.app.ActivityCompat;
 import android.view.MenuItem;
 
-public final class SettingsActivity extends PreferenceActivity {
+public final class SettingsActivity extends PreferenceActivity
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String DEFAULT_FRAGMENT = SettingsFragment.class.getName();
 
     public static final String EXTRA_SHOW_HOME_AS_UP = "show_home_as_up";
@@ -76,5 +79,10 @@ public final class SettingsActivity extends PreferenceActivity {
     @Override
     public boolean isValidFragment(final String fragmentName) {
         return FragmentUtils.isValidFragment(fragmentName);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        PermissionsManager.get(this).onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
