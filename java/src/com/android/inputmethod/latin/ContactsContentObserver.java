@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -25,6 +26,7 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.ContactsManager.ContactsChangedListener;
 import com.android.inputmethod.latin.define.DebugFlags;
+import com.android.inputmethod.latin.permissions.PermissionsUtil;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 
 import java.util.ArrayList;
@@ -35,10 +37,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ContactsContentObserver implements Runnable {
     private static final String TAG = "ContactsContentObserver";
-    private static AtomicBoolean sRunning = new AtomicBoolean(false);
 
     private final Context mContext;
     private final ContactsManager mManager;
+    private final AtomicBoolean mRunning = new AtomicBoolean(false);
 
     private ContentObserver mContentObserver;
     private ContactsChangedListener mContactsChangedListener;
@@ -49,6 +51,13 @@ public class ContactsContentObserver implements Runnable {
     }
 
     public void registerObserver(final ContactsChangedListener listener) {
+        if (!PermissionsUtil.checkAllPermissionsGranted(
+                mContext, Manifest.permission.READ_CONTACTS)) {
+            Log.i(TAG, "No permission to read contacts. Not registering the observer.");
+            // do nothing if we do not have the permission to read contacts.
+            return;
+        }
+
         if (DebugFlags.DEBUG_ENABLED) {
             Log.d(TAG, "registerObserver()");
         }
@@ -66,7 +75,14 @@ public class ContactsContentObserver implements Runnable {
 
     @Override
     public void run() {
-        if (!sRunning.compareAndSet(false /* expect */, true /* update */)) {
+        if (!PermissionsUtil.checkAllPermissionsGranted(
+                mContext, Manifest.permission.READ_CONTACTS)) {
+            Log.i(TAG, "No permission to read contacts. Not updating the contacts.");
+            unregister();
+            return;
+        }
+
+        if (!mRunning.compareAndSet(false /* expect */, true /* update */)) {
             if (DebugFlags.DEBUG_ENABLED) {
                 Log.d(TAG, "run() : Already running. Don't waste time checking again.");
             }
@@ -78,10 +94,16 @@ public class ContactsContentObserver implements Runnable {
             }
             mContactsChangedListener.onContactsChange();
         }
-        sRunning.set(false);
+        mRunning.set(false);
     }
 
     boolean haveContentsChanged() {
+        if (!PermissionsUtil.checkAllPermissionsGranted(
+                mContext, Manifest.permission.READ_CONTACTS)) {
+            Log.i(TAG, "No permission to read contacts. Marking contacts as not changed.");
+            return false;
+        }
+
         final long startTime = SystemClock.uptimeMillis();
         final int contactCount = mManager.getContactCount();
         if (contactCount > ContactsDictionaryConstants.MAX_CONTACTS_PROVIDER_QUERY_LIMIT) {
