@@ -32,7 +32,7 @@ import android.util.Log;
  * A base abstract class for a {@link PreferenceFragment} that implements a nested
  * {@link PreferenceScreen} of the main preference screen.
  */
-abstract class SubScreenFragment extends PreferenceFragment
+public abstract class SubScreenFragment extends PreferenceFragment
         implements OnSharedPreferenceChangeListener {
     private OnSharedPreferenceChangeListener mSharedPreferenceChangeListener;
 
