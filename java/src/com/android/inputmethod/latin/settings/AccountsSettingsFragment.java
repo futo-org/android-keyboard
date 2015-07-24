@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.settings;
 import static com.android.inputmethod.latin.settings.LocalSettingsConstants.PREF_ACCOUNT_NAME;
 import static com.android.inputmethod.latin.settings.LocalSettingsConstants.PREF_ENABLE_CLOUD_SYNC;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,6 +41,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.accounts.AccountStateChangedListener;
 import com.android.inputmethod.latin.accounts.LoginAccountUtils;
 import com.android.inputmethod.latin.define.ProductionFlags;
+import com.android.inputmethod.latin.permissions.PermissionsUtil;
 import com.android.inputmethod.latin.utils.ManagedProfileUtils;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -254,11 +256,14 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
         if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             return;
         }
-        final String[] accountsForLogin =
-                LoginAccountUtils.getAccountsForLogin(getActivity());
-        final String currentAccount = getSignedInAccountName();
+        boolean hasAccountsPermission = PermissionsUtil.checkAllPermissionsGranted(
+            getActivity(), Manifest.permission.READ_CONTACTS);
 
-        if (!mManagedProfileBeingDetected.get() &&
+        final String[] accountsForLogin = hasAccountsPermission ?
+                LoginAccountUtils.getAccountsForLogin(getActivity()) : new String[0];
+        final String currentAccount = hasAccountsPermission ? getSignedInAccountName() : null;
+
+        if (hasAccountsPermission && !mManagedProfileBeingDetected.get() &&
                 !mHasManagedProfile.get() && accountsForLogin.length > 0) {
             // Sync can be used by user; enable all preferences.
             enableSyncPreferences(accountsForLogin, currentAccount);
@@ -266,26 +271,35 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
             // Sync cannot be used by user; disable all preferences.
             disableSyncPreferences();
         }
-        refreshSyncSettingsMessaging(mManagedProfileBeingDetected.get(),
+        refreshSyncSettingsMessaging(hasAccountsPermission, mManagedProfileBeingDetected.get(),
                 mHasManagedProfile.get(), accountsForLogin.length > 0,
                 currentAccount);
     }
 
     /**
+     * @param hasAccountsPermission whether the app has the permission to read accounts.
      * @param managedProfileBeingDetected whether we are in process of determining work profile.
      * @param hasManagedProfile whether the device has work profile.
      * @param hasAccountsForLogin whether the device has enough accounts for login.
      * @param currentAccount the account currently selected in the application.
      */
-    private void refreshSyncSettingsMessaging(boolean managedProfileBeingDetected,
-            boolean hasManagedProfile, boolean hasAccountsForLogin, String currentAccount) {
+    private void refreshSyncSettingsMessaging(boolean hasAccountsPermission,
+                                              boolean managedProfileBeingDetected,
+                                              boolean hasManagedProfile,
+                                              boolean hasAccountsForLogin,
+                                              String currentAccount) {
         if (!ProductionFlags.ENABLE_USER_HISTORY_DICTIONARY_SYNC) {
             return;
         }
 
-        // If we are determining eligiblity, we show empty summaries.
-        // Once we have some deterministic result, we set summaries based on different results.
-        if (managedProfileBeingDetected) {
+        if (!hasAccountsPermission) {
+            mEnableSyncPreference.setChecked(false);
+            mEnableSyncPreference.setSummary(getString(R.string.cloud_sync_summary_disabled));
+            mAccountSwitcher.setSummary("");
+            return;
+        } else if (managedProfileBeingDetected) {
+            // If we are determining eligiblity, we show empty summaries.
+            // Once we have some deterministic result, we set summaries based on different results.
             mEnableSyncPreference.setSummary("");
             mAccountSwitcher.setSummary("");
         } else if (hasManagedProfile) {
@@ -462,7 +476,7 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(final DialogInterface dialog,
-                                            final int which) {
+                                                        final int which) {
                                         if (which == DialogInterface.BUTTON_POSITIVE) {
                                             final Context context = getActivity();
                                             final String[] accountsForLogin =
@@ -473,9 +487,9 @@ public final class AccountsSettingsFragment extends SubScreenFragment {
                                                     .show();
                                         }
                                     }
-                         })
-                         .setNegativeButton(R.string.cloud_sync_cancel, null)
-                         .create();
+                        })
+                        .setNegativeButton(R.string.cloud_sync_cancel, null)
+                        .create();
                 optInDialog.setOnShowListener(this);
                 optInDialog.show();
             }
