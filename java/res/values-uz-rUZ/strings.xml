@@ -68,11 +68,11 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Asosiy lug‘at"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Tuzatma variantlari"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Matn kiritishda so‘z variantlari taklif qilinsin"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Haqorat so‘zlarini bloklash"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Haqoratomuz so‘zlarni taqiqlash"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Haqoratomuz so‘zlar taklif qilinmasin"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Avtomatik tuzatish"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Tinish belgisi kiritilsa yoki bo‘sh joy qoldirilsa, xato so‘z avtomatik tuzatiladi"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"O‘chirish"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"O‘ch."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"O‘rtacha"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Juda faol"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Juda faol"</string>
@@ -82,7 +82,7 @@
     <string name="gesture_input_summary" msgid="9180350639305731231">"So‘zlarni barmog‘ingizni klaviaturadan uzmasdan yozing"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Barmoq yo‘lini chizish"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Takliflarni ko‘rsatish"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Matn kiritishda taklif qilingan so‘zlarni ko‘rsatish"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Matn kiritishda so‘zlar taklif qilinsin"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Qo‘l uzmasdan yozish"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Barmoqni har bir so‘zdan so‘ng bo‘sh joy qoldirish tugmasiga olib borish"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ovoz bilan yozish tugmasi"</string>
