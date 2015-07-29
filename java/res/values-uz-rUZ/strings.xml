@@ -72,7 +72,7 @@
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Haqoratomuz so‘zlar taklif qilinmasin"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Avtomatik tuzatish"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Tinish belgisi kiritilsa yoki bo‘sh joy qoldirilsa, xato so‘z avtomatik tuzatiladi"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"O‘chirish"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"O‘ch."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"O‘rtacha"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Juda faol"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Juda faol"</string>
