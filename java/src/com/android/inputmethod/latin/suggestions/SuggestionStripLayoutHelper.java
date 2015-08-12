@@ -191,7 +191,9 @@ final class SuggestionStripLayoutHelper {
         final Bitmap buffer = Bitmap.createBitmap(width, (height * 3 / 2), Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
         canvas.drawText(MORE_SUGGESTIONS_HINT, width / 2, height, paint);
-        return new BitmapDrawable(res, buffer);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(res, buffer);
+        bitmapDrawable.setTargetDensity(canvas);
+        return bitmapDrawable;
     }
 
     private CharSequence getStyledSuggestedWord(final SuggestedWords suggestedWords,
