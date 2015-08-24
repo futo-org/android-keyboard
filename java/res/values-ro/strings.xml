@@ -80,7 +80,7 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utilizează cuvântul anterior pentru sugestii"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activați tastarea gestuală"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Introduceţi un cuvânt glisând uşor între litere"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afişează urma gestului"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afișează urma gestului"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Sugestie flotantă dinamică"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Afişaţi cuvântul sugerat când utilizaţi gesturi"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gest expresie"</string>
