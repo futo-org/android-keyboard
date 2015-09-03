@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -956,14 +957,23 @@ public final class UpdateHandler {
         WordListMetadata metadata = WordListMetadata.createFromContentValues(installCandidate);
         actions.add(new ActionBatch.StartDownloadAction(clientId, metadata));
         final String localeString = installCandidate.getAsString(MetadataDbHelper.LOCALE_COLUMN);
+
         // We are in a content provider: we can't do any UI at all. We have to defer the displaying
         // itself to the service. Also, we only display this when the user does not have a
-        // dictionary for this language already.
-        final Intent intent = new Intent();
-        intent.setClass(context, DictionaryService.class);
-        intent.setAction(DictionaryService.SHOW_DOWNLOAD_TOAST_INTENT_ACTION);
-        intent.putExtra(DictionaryService.LOCALE_INTENT_ARGUMENT, localeString);
-        context.startService(intent);
+        // dictionary for this language already. During setup wizard, however, this UI is
+        // suppressed.
+        final boolean deviceProvisioned = Settings.Global.getInt(context.getContentResolver(),
+                Settings.Global.DEVICE_PROVISIONED, 0) != 0;
+        if (deviceProvisioned) {
+            final Intent intent = new Intent();
+            intent.setClass(context, DictionaryService.class);
+            intent.setAction(DictionaryService.SHOW_DOWNLOAD_TOAST_INTENT_ACTION);
+            intent.putExtra(DictionaryService.LOCALE_INTENT_ARGUMENT, localeString);
+            context.startService(intent);
+        } else {
+            Log.i(TAG, "installIfNeverRequested() : Don't show download toast");
+        }
+
         Log.i(TAG, "installIfNeverRequested() : StartDownloadAction for " + metadata);
         actions.execute(context, new LogProblemReporter(TAG));
     }
