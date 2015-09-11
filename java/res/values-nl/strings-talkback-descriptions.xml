@@ -24,7 +24,7 @@
     <string name="spoken_current_text_is" msgid="4240549866156675799">"Huidige tekst is %s"</string>
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"Geen tekst ingevoerd"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"Met <xliff:g id="KEY_NAME">%1$s</xliff:g> wordt <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> gecorrigeerd naar <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"Met <xliff:g id="KEY_NAME">%1$s</xliff:g> voert u automatische correctie uit"</string>
+    <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"Met <xliff:g id="KEY_NAME">%1$s</xliff:g> voer je automatische correctie uit"</string>
     <string name="spoken_empty_suggestion" msgid="4250215619373459752">"Geen suggestie"</string>
     <string name="spoken_description_unknown" msgid="5139930082759824442">"Onbekend teken"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
