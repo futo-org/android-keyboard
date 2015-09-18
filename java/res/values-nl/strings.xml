@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Invoeropties"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Contactnamen opzoeken"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"De spellingcontrole gebruikt items uit uw contactenlijst"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"De spellingcontrole gebruikt items uit je contactenlijst"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Trillen bij toetsaanslag"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Geluid bij toetsaanslag"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up bij toetsaanslag"</string>
@@ -36,14 +36,14 @@
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Gesplitst toetsenbord inschakelen"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google-toetsenbordsynchronisatie"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Synchronisatie is ingeschakeld"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Uw persoonlijke woordenboek synchroniseren op meerdere apparaten"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Je persoonlijke woordenboek synchroniseren op meerdere apparaten"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Nu synchroniseren"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Cloudgegevens verwijderen"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Hiermee worden uw gesynchroniseerde gegevens verwijderd van Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Wilt u gesynchroniseerde gegevens echt verwijderen uit de cloud?"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Hiermee worden je gesynchroniseerde gegevens verwijderd van Google"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Wil je gesynchroniseerde gegevens echt verwijderen uit de cloud?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Verwijderen"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Annuleren"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Uw persoonlijke woordenboek wordt gesynchroniseerd en er wordt een back-up gemaakt op servers van Google. De statistische gegevens voor woordfrequentie kunnen worden verzameld om onze producten te verbeteren. Het verzamelen en gebruik van alle gegevens is in overeenstemming met het "<a href="https://www.google.com/policies/privacy">"Privacybeleid van Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Je persoonlijke woordenboek wordt gesynchroniseerd en er wordt een back-up gemaakt op servers van Google. De statistische gegevens voor woordfrequentie kunnen worden verzameld om onze producten te verbeteren. Het verzamelen en gebruik van alle gegevens is in overeenstemming met het "<a href="https://www.google.com/policies/privacy">"Privacybeleid van Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Voeg een Google-account toe om deze functie in te schakelen"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Synchronisatie is niet beschikbaar voor Google Apps for Business-accounts"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Invoermeth. overschakelen"</string>
@@ -130,7 +130,7 @@
     <string name="save" msgid="7646738597196767214">"Opslaan"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Taal"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Lay-out"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"U moet uw aangepaste invoerstijl inschakelen voor u deze kunt gebruiken. Wilt u de invoerstijl nu inschakelen?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Je moet je aangepaste invoerstijl inschakelen voor je deze kunt gebruiken. Wil je de invoerstijl nu inschakelen?"</string>
     <string name="enable" msgid="5031294444630523247">"Inschakelen"</string>
     <string name="not_now" msgid="6172462888202790482">"Niet nu"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Dezelfde invoerstijl bestaat al: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
@@ -146,14 +146,14 @@
     <string name="setup_next_action" msgid="371821437915144603">"Volgende stap"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> instellen"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> inschakelen"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Vink \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' aan in \'Instellingen voor taal en invoer\'. De app kan dan worden uitgevoerd op uw apparaat."</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Vink \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' aan in \'Instellingen voor taal en invoer\'. De app kan dan worden uitgevoerd op je apparaat."</string>
     <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is al ingeschakeld in \'Instellingen voor taal en invoer\', dus deze stap is voltooid. Op naar de volgende!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Inschakelen in \'Instellingen\'"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Overschakelen naar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Selecteer vervolgens \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' als actieve tekstinvoermethode."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"Schakelen tussen invoermethoden"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"Gefeliciteerd, u kunt nu aan de slag."</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"U kunt nu in al uw favoriete apps typen met <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"Gefeliciteerd, je kunt nu aan de slag."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Je kunt nu in al je favoriete apps typen met <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Extra talen configureren"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Voltooid"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"App-pictogram weergeven"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Installeren"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Annuleren"</string>
     <string name="delete_dict" msgid="756853268088330054">"Verwijderen"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Er is een woordenboek beschikbaar voor de geselecteerde taal op uw mobiele apparaat.&lt;br/&gt; We raden u aan het woordenboek voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> te &lt;b&gt;downloaden&lt;/b&gt; om uw typvaardigheid te verbeteren.&lt;br/&gt; &lt;br/&gt; De download kan één of twee minuten duren via 3G. Er kunnen kosten worden berekend als u geen &lt;b&gt;onbeperkt gegevensabonnement&lt;/b&gt; heeft.&lt;br/&gt; Als u niet zeker weet welk gegevensabonnement u heeft, raden we u aan een wifi-verbinding te zoeken om de download automatisch te starten.&lt;br/&gt; &lt;br/&gt; Tip: u kunt woordenboeken downloaden en verwijderen via &lt;b&gt;Taal en invoer&lt;/b&gt; in het menu &lt;b&gt;Instellingen&lt;/b&gt; van uw mobiele apparaat."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Er is een woordenboek beschikbaar voor de geselecteerde taal op je mobiele apparaat.&lt;br/&gt; We raden je aan het woordenboek voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> te &lt;b&gt;downloaden&lt;/b&gt; om je typvaardigheid te verbeteren.&lt;br/&gt; &lt;br/&gt; De download kan één of twee minuten duren via 3G. Er kunnen kosten worden berekend als je geen &lt;b&gt;onbeperkt gegevensabonnement&lt;/b&gt; hebt.&lt;br/&gt; Als je niet zeker weet welk gegevensabonnement je hebt, raden we je aan een wifi-verbinding te zoeken om de download automatisch te starten.&lt;br/&gt; &lt;br/&gt; Tip: je kunt woordenboeken downloaden en verwijderen via &lt;b&gt;Taal en invoer&lt;/b&gt; in het menu &lt;b&gt;Instellingen&lt;/b&gt; van je mobiele apparaat."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Nu downloaden (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Downloaden via wifi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Er is een woordenboek beschikbaar voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Woord bewerken"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Bewerken"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Verwijderen"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Er staan geen woorden in het gebruikerswoordenboek. U kunt een woord toevoegen door op de knop \'Toevoegen\' (+) te tikken."</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Er staan geen woorden in het gebruikerswoordenboek. Je kunt een woord toevoegen door op de knop \'Toevoegen\' (+) te tikken."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Voor alle talen"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Meer talen…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Verwijderen"</string>

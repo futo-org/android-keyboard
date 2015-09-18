@@ -101,7 +101,7 @@
     <string name="account_select_ok" msgid="9141195141763227797">"ঠিক আছে"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"বাতিল করুন"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"সাইন আউট"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"ব্যবহার করার জন্য একটি অ্যাকাউন্ট নির্বাচন করুন"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"ব্যবহার করার জন্য একটি অ্যাকাউন্ট বাছুন"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ইংরেজি (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ইংরেজি (US)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"স্প্যানিশ (US)"</string>

@@ -80,7 +80,7 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utilizează cuvântul anterior pentru sugestii"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activați tastarea gestuală"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Introduceţi un cuvânt glisând uşor între litere"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afişează urma gestului"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afișează urma gestului"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Sugestie flotantă dinamică"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Afişaţi cuvântul sugerat când utilizaţi gesturi"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gest expresie"</string>
@@ -130,8 +130,8 @@
     <string name="save" msgid="7646738597196767214">"Salvaţi"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Limbă"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Aspect"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Stilul de introducere personalizat trebuie să fie activat pentru a-l utiliza. Îl activaţi acum?"</string>
-    <string name="enable" msgid="5031294444630523247">"Activaţi"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Stilul de introducere personalizat trebuie să fie activat pentru a-l utiliza. Îl activați acum?"</string>
+    <string name="enable" msgid="5031294444630523247">"Activați"</string>
     <string name="not_now" msgid="6172462888202790482">"Nu acum"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Acelaşi stil de introducere există deja: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrare după apăsarea tastei"</string>
