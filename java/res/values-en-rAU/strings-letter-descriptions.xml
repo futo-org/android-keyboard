@@ -26,9 +26,9 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"ໂຕ​ບົ່ງ​ຊີ້​ລຳ​ດັບ​ເພດ​ຍິງ"</string>
-    <string name="spoken_accented_letter_00B5" msgid="9031387673828823891">"ສັນຍາລັກໄມໂຄຣ"</string>
-    <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"​ໂຕ​ບົ່ງ​ຊີ້​ລຳ​ດັບ​ເພດ​ຊາຍ"</string>
+    <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"Feminine ordinal indicator"</string>
+    <string name="spoken_accented_letter_00B5" msgid="9031387673828823891">"Micro sign"</string>
+    <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"Masculine ordinal indicator"</string>
     <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"Sharp S"</string>
     <string name="spoken_accented_letter_00E0" msgid="2234515772182387086">"A, grave"</string>
     <string name="spoken_accented_letter_00E1" msgid="7780174500802535063">"A, acute"</string>
@@ -178,31 +178,31 @@
     <string name="spoken_accented_letter_1EF9" msgid="6213977100552260366">"Y, tilde"</string>
     <string name="spoken_symbol_00A1" msgid="4281758332905123408">"Inverted exclamation mark"</string>
     <string name="spoken_symbol_00AB" msgid="4093069643313064892">"Left-pointing double angle quotation mark"</string>
-    <string name="spoken_symbol_00B7" msgid="2447718728927874920">"​​ຈ້ຳ​ເມັດ​ທາງ​ກາງ"</string>
+    <string name="spoken_symbol_00B7" msgid="2447718728927874920">"Middle dot"</string>
     <string name="spoken_symbol_00B9" msgid="8026257165451461231">"Superscript one"</string>
     <string name="spoken_symbol_00BB" msgid="1102740075655373928">"Right-pointing double angle quotation mark"</string>
     <string name="spoken_symbol_00BF" msgid="6233794752573788098">"Inverted question mark"</string>
     <string name="spoken_symbol_2018" msgid="4886476295598930225">"Left single quotation mark"</string>
     <string name="spoken_symbol_2019" msgid="8892530161598134083">"Right single quotation mark"</string>
     <string name="spoken_symbol_201A" msgid="2072987157683446644">"Single low-9 quotation mark"</string>
-    <string name="spoken_symbol_201C" msgid="4588048378803665427">"​ເຄື່ອງ​ໝາຍ​ວົງ​ຢືມ​ຊ້າຍ"</string>
-    <string name="spoken_symbol_201D" msgid="1642776849495925895">"​ເຄື່ອງ​ໝາຍ​ວົງ​ຢືມ​ຂວາ​"</string>
+    <string name="spoken_symbol_201C" msgid="4588048378803665427">"Left double quotation mark"</string>
+    <string name="spoken_symbol_201D" msgid="1642776849495925895">"Right double quotation mark"</string>
     <string name="spoken_symbol_2020" msgid="9084628638189344431">"Dagger"</string>
     <string name="spoken_symbol_2021" msgid="5081396468559426475">"Double dagger"</string>
-    <string name="spoken_symbol_2030" msgid="9068837172419431755">"​ເຄື່ອງ​ໝາຍ​ຕໍ່​ໄມລ໌"</string>
+    <string name="spoken_symbol_2030" msgid="9068837172419431755">"Per mille sign"</string>
     <string name="spoken_symbol_2032" msgid="3014506329156664396">"Prime"</string>
     <string name="spoken_symbol_2033" msgid="1251022699713475088">"Double prime"</string>
     <string name="spoken_symbol_2039" msgid="6989616457213775957">"Single left-pointing angle quotation mark"</string>
     <string name="spoken_symbol_203A" msgid="31245095449823701">"Single right-pointing angle quotation mark"</string>
-    <string name="spoken_symbol_2074" msgid="2116717717093306894">"ໂຕ​ຍົກ​ເລກ​ສີ່"</string>
-    <string name="spoken_symbol_207F" msgid="1706731172134246659">"ໂຕ​ຍົກ​ n ໂຕ​ນ້ອຍ"</string>
-    <string name="spoken_symbol_20B1" msgid="2159994270622444689">"ເຄື່ອງ​ໝາຍເປ​ໂຊ"</string>
-    <string name="spoken_symbol_2105" msgid="7289404939366976829">"CARE OF"</string>
-    <string name="spoken_symbol_2192" msgid="827804523596125414">"​ລູກ​ສອນ​ຊີ້​ໄປ​ຂວາ"</string>
-    <string name="spoken_symbol_2193" msgid="2659541693445985717">"ລູກ​ສອນ​ຊີ້​ລົງ"</string>
-    <string name="spoken_symbol_2205" msgid="4457188084269117343">"​ຊຸດ​ຫວ່າງ​ເປົ່າ"</string>
-    <string name="spoken_symbol_2206" msgid="4856786565708380687">"ເພີ່ມ"</string>
-    <string name="spoken_symbol_2264" msgid="5092061257745123554">"​ໜ້ອຍກວ່າ ຫຼື​ເທົ່າ​ກັບ"</string>
-    <string name="spoken_symbol_2265" msgid="1907966479878036357">"ຫຼາຍກວ່າ ຫຼື​ເທົ່າ​ກັບ"</string>
-    <string name="spoken_symbol_2605" msgid="5202920479405857753">"​ດາວ​ດຳ"</string>
+    <string name="spoken_symbol_2074" msgid="2116717717093306894">"Superscript four"</string>
+    <string name="spoken_symbol_207F" msgid="1706731172134246659">"Superscript latin small letter n"</string>
+    <string name="spoken_symbol_20B1" msgid="2159994270622444689">"Peso sign"</string>
+    <string name="spoken_symbol_2105" msgid="7289404939366976829">"Care of"</string>
+    <string name="spoken_symbol_2192" msgid="827804523596125414">"Rightwards arrow"</string>
+    <string name="spoken_symbol_2193" msgid="2659541693445985717">"Downwards arrow"</string>
+    <string name="spoken_symbol_2205" msgid="4457188084269117343">"Empty set"</string>
+    <string name="spoken_symbol_2206" msgid="4856786565708380687">"Increment"</string>
+    <string name="spoken_symbol_2264" msgid="5092061257745123554">"Less than or equal to"</string>
+    <string name="spoken_symbol_2265" msgid="1907966479878036357">"Greater than or equal to"</string>
+    <string name="spoken_symbol_2605" msgid="5202920479405857753">"Black star"</string>
 </resources>
