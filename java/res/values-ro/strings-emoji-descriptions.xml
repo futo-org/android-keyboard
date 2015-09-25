@@ -45,7 +45,7 @@
     <string name="spoken_emoji_23EA" msgid="2251396938087774944">"Triunghi dublu, negru, orientat spre stânga"</string>
     <string name="spoken_emoji_23EB" msgid="3746885195641491865">"Triunghi dublu, negru, orientat în sus"</string>
     <string name="spoken_emoji_23EC" msgid="7852372752901163416">"Triunghi dublu, negru, orientat în jos"</string>
-    <string name="spoken_emoji_23F0" msgid="8474219588750627870">"Ceas deşteptător"</string>
+    <string name="spoken_emoji_23F0" msgid="8474219588750627870">"Ceas deșteptător"</string>
     <string name="spoken_emoji_23F3" msgid="166900119581024371">"Clepsidră cu nisip"</string>
     <string name="spoken_emoji_24C2" msgid="3948348737566038470">"Majuscula „M”, din alfabetul latin, încercuită"</string>
     <string name="spoken_emoji_25AA" msgid="7865181015100227349">"Pătrat mic negru"</string>
@@ -75,7 +75,7 @@
     <string name="spoken_emoji_2650" msgid="4832481156714796163">"Săgetător"</string>
     <string name="spoken_emoji_2651" msgid="840953134601595090">"Capricorn"</string>
     <string name="spoken_emoji_2652" msgid="3586925968718775281">"Vărsător"</string>
-    <string name="spoken_emoji_2653" msgid="8420547731496254492">"Peşti"</string>
+    <string name="spoken_emoji_2653" msgid="8420547731496254492">"Pești"</string>
     <string name="spoken_emoji_2660" msgid="4541170554542412536">"Pică neagră"</string>
     <string name="spoken_emoji_2663" msgid="3669352721942285724">"Treflă neagră"</string>
     <string name="spoken_emoji_2665" msgid="6347941599683765843">"Inimă neagra"</string>
@@ -175,7 +175,7 @@
     <string name="spoken_emoji_1F250" msgid="6586943922806727907">"Caracter ideografic „Avantaj” în pătrat"</string>
     <string name="spoken_emoji_1F251" msgid="9099032855993346948">"Caracter ideografic „Acord” în pătrat"</string>
     <string name="spoken_emoji_1F300" msgid="4720098285295840383">"Ciclon"</string>
-    <string name="spoken_emoji_1F301" msgid="3601962477653752974">"Ceaţă"</string>
+    <string name="spoken_emoji_1F301" msgid="3601962477653752974">"Ceață"</string>
     <string name="spoken_emoji_1F302" msgid="3404357123421753593">"Umbrelă închisă"</string>
     <string name="spoken_emoji_1F303" msgid="3899301321538188206">"Noapte cu stele"</string>
     <string name="spoken_emoji_1F304" msgid="2767148930689050040">"Răsărit peste munți"</string>
@@ -356,7 +356,7 @@
     <string name="spoken_emoji_1F3E8" msgid="5864918444350599907">"Hotel"</string>
     <string name="spoken_emoji_1F3E9" msgid="7830416185375326938">"Hoteluri pentru îndrăgostiți"</string>
     <string name="spoken_emoji_1F3EA" msgid="5081084413084360479">"Alimentară"</string>
-    <string name="spoken_emoji_1F3EB" msgid="7010966528205150525">"Şcoală"</string>
+    <string name="spoken_emoji_1F3EB" msgid="7010966528205150525">"Școală"</string>
     <string name="spoken_emoji_1F3EC" msgid="4845978861878295154">"Magazin universal"</string>
     <string name="spoken_emoji_1F3ED" msgid="3980316226665215370">"Fabrică"</string>
     <string name="spoken_emoji_1F3EE" msgid="1253964276770550248">"Felinar Izakaya"</string>
@@ -379,7 +379,7 @@
     <string name="spoken_emoji_1F40F" msgid="7834336676729040395">"Berbec"</string>
     <string name="spoken_emoji_1F410" msgid="8686765722255775031">"Capră"</string>
     <string name="spoken_emoji_1F411" msgid="3585715397876383525">"Oaie"</string>
-    <string name="spoken_emoji_1F412" msgid="4924794582980077838">"Maimuţă"</string>
+    <string name="spoken_emoji_1F412" msgid="4924794582980077838">"Maimuță"</string>
     <string name="spoken_emoji_1F413" msgid="1460475310405677377">"Cocoș"</string>
     <string name="spoken_emoji_1F414" msgid="5857296282631892219">"Pui"</string>
     <string name="spoken_emoji_1F415" msgid="5920041074892949527">"Câine"</string>
@@ -479,7 +479,7 @@
     <string name="spoken_emoji_1F475" msgid="7280323988642212761">"Bătrână"</string>
     <string name="spoken_emoji_1F476" msgid="4713322657821088296">"Bebeluș"</string>
     <string name="spoken_emoji_1F477" msgid="2197036131029221370">"Muncitor în construcții"</string>
-    <string name="spoken_emoji_1F478" msgid="7245521193493488875">"Prinţesă"</string>
+    <string name="spoken_emoji_1F478" msgid="7245521193493488875">"Prințesă"</string>
     <string name="spoken_emoji_1F479" msgid="6876475321015553972">"Căpcăun japonez"</string>
     <string name="spoken_emoji_1F47A" msgid="3900813633102703571">"Goblin japonez"</string>
     <string name="spoken_emoji_1F47B" msgid="2608250873194079390">"Fantomă"</string>
