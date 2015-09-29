@@ -29,7 +29,7 @@
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferences"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Konti un konfidencialitāte"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Izskats un izkārtojumi"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"Ievade ar žestiem"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Ievadīt ar žestiem"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Teksta korekcija"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Papildu"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Motīvs"</string>
@@ -64,12 +64,12 @@
     <string name="auto_cap" msgid="1719746674854628252">"Automātiska lielo burtu lietošana"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Katra teikuma pirmo vārdu rakstīt ar lielo burtu."</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Personiskā vārdnīca"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Papildinājumu vārdnīcas"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Papildināmas vārdnīcas"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Galvenā vārdnīca"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Rādīt labojumu ieteikumus"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Ievades laikā attēlot ieteiktos vārdus"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloķēt aizvainojošus vārdus"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Neiesakiet vārdus, kas varētu būt aizvainojoši."</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Neiesakiet vārdus, kas varētu būt aizvainojoši"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Automātiska labošana"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Atstarpes taustiņš un interpunkcija; automātiska kļūdainu vārdu labošana"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Izslēgta"</string>
@@ -77,7 +77,7 @@
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agresīvi"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Ļoti agresīvi"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Nākamā vārda ieteikumi"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Veidojot ieteikumus, izmantot iepriekšējo vārdu."</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Veidojot ieteikumus, izmantot iepriekšējo vārdu"</string>
     <string name="gesture_input" msgid="826951152254563827">"Iespējot ievadi ar žestiem"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Ievadiet vārdu, velkot ar pirkstu pa burtiem."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Rādīt žesta pēdas"</string>
@@ -101,7 +101,7 @@
     <string name="account_select_ok" msgid="9141195141763227797">"Labi"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"Atcelt"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Izrakstīties"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"Izmantojamā konta atlasīšana"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Izvēlieties kontu"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Angļu valoda (Lielbritānija)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Angļu valoda (ASV)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Spāņu (ASV)"</string>
@@ -162,7 +162,7 @@
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Vārdnīcas nodrošinātājs"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Vārdnīcas pakalpojums"</string>
     <string name="download_description" msgid="6014835283119198591">"Vārdnīcas atjauninājuma informācija"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"Pievienojumvārdnīcas"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Papildināmas vārdnīcas"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Vārdnīca ir pieejama"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"Vārdnīcu iestatījumi"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"Lietotāja vārdnīcas"</string>

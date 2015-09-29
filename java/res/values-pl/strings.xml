@@ -79,7 +79,7 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Podpowiadaj kolejne słowo"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Pokazuj podpowiedzi na podstawie poprzedniego słowa"</string>
     <string name="gesture_input" msgid="826951152254563827">"Włącz pisanie gestami"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Wpisz słowo, przesuwając palcem po literach"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Wpisuj słowa, przesuwając palcem po literach"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Pokazuj ślad gestu"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynamiczny podgląd słowa"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Podczas pisania gestami zobaczysz podpowiadane słowo"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Edytuj słowo"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Edytuj"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Usuń"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Nie masz żadnych słów w słowniku użytkownika. Aby dodać słowo, kliknij przycisk Dodaj (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Nie masz żadnych słów w słowniku użytkownika. Aby dodać słowo, kliknij przycisk Dodaj (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Dla wszystkich języków"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Więcej języków…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Usuń"</string>

@@ -26,7 +26,7 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"لرزش با فشار کلید"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"صدا با فشار کلید"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"بازشدن با فشار کلید"</string>
-    <string name="settings_screen_preferences" msgid="2696713156722014624">"تنظیمات ترجیحی"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"تنظیمات برگزیده"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"حساب‌ها و حریم خصوصی"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"شکل ظاهری و چیدمان"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ورودی اشاره‌ای"</string>
@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"‏داده‌های همگام‌سازی شده شما از cloud حذف می‌شوند. مطمئنید؟"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"حذف"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"لغو"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏فرهنگ لغت شخصی شما با سرورهای Google همگام‌سازی و در آنها پشتیبان گرفته می‌شود. ممکن است برای کمک به بهبود محصولات ما، اطلاعات آماری از فراوانی کلمه جمع‌آوری شود. جمع‌آوری و استفاده از همه اطلاعات مطابق با "<a href="https://www.google.com/policies/privacy">"خط‌مشی رازداری Google"</a>" خواهد بود."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏فرهنگ لغت شخصی شما با سرورهای Google همگام‌سازی و در آنها پشتیبان‌گیری می‌شود. ممکن است برای کمک به بهبود محصولات ما، اطلاعات آماری از فراوانی کلمه جمع‌آوری شود. جمع‌آوری و استفاده از همه اطلاعات مطابق با "<a href="https://www.google.com/policies/privacy">"خط‌مشی رازداری Google"</a>" خواهد بود."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏برای فعال کردن این ویژگی، یک حساب Google به این دستگاه اضافه کنید"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"‏همگام‌سازی برای دستگاه‌های دارای حساب Google Apps for Business در دسترس نیست"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"تغییر به دیگر روش‌های ورودی"</string>
@@ -79,14 +79,14 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"پیشنهادات کلمه بعدی"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"استفاده از کلمه قبلی در ایجاد پیشنهادات"</string>
     <string name="gesture_input" msgid="826951152254563827">"فعال کردن تایپ حرکتی"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"ورود یک کلمه با کشیدن انگشت در میان حروف"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"وارد کردن یک واژه با کشیدن انگشت روی حروف"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"نمایش نسخه آزمایشی حرکت"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"پیش‌نمایش متحرک پویا"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"مشاهده کلمه پیشنهادی در حین انجام حرکات"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"‫ورود عبارت با حرکت اشاره‌ای"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"با سراندن انگشت روی کلید فاصله در زمان استفاده از حرکات، فاصله وارد کنید"</string>
-    <string name="voice_input" msgid="3583258583521397548">"کلید ورودی صدا"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"هیچ روش ورودی صوتی فعال نشده است. تنظیمات زبان و ورودی را بررسی کنید."</string>
+    <string name="voice_input" msgid="3583258583521397548">"کلید ورودی گفتاری"</string>
+    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"هیچ روش ورودی گفتاری‌ای فعال نشده است. تنظیمات زبان و ورودی را بررسی کنید."</string>
     <string name="configure_input_method" msgid="373356270290742459">"پیکربندی روش‌های ورودی"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"زبان‌ها"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"راهنما و بازخورد"</string>
@@ -132,7 +132,7 @@
     <string name="keyboard_layout_set" msgid="4309233698194565609">"چیدمان"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"سبک ورودی سفارشی شما باید قبل از شروع به استفاده از آن فعال شود. می‌خواهید اکنون آن را فعال کنید؟"</string>
     <string name="enable" msgid="5031294444630523247">"فعال کردن"</string>
-    <string name="not_now" msgid="6172462888202790482">"الآن نه"</string>
+    <string name="not_now" msgid="6172462888202790482">"اکنون نه"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"سبک ورودی مشابهی در حال حاضر وجود دارد: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"طول مدت لرزش در اثر فشردن کلید"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"میزان صدای فشردن کلید"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"نصب"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"لغو"</string>
     <string name="delete_dict" msgid="756853268088330054">"حذف"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"‏برای زبان انتخاب شده در دستگاه همراه شما فرهنگ لغتی در دسترس است.&lt;br/&gt; توصیه می‌کنیم برای بهبود بخشیدن به تجربه تایپ کردنتان، فرهنگ لغت <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> را &lt;b&gt;دانلود کنید&lt;/b&gt;.‏&lt;br/&gt; &lt;br/&gt; دانلود از طریق 3G ممکن است یک یا دو دقیقه طول بکشد. اگر &lt;b&gt;طرح داده نامحدود&lt;/b&gt; نداشته باشید، ممکن است هزینه‌هایی برای شما اعمال شوند.&lt;br/&gt; اگر مطمئن نیستید چه طرح داده‌ای دارید٬ توصیه می‌کنیم یک اتصال Wi-Fi بیابید تا دانلود به طور خودکار شروع شود.&lt;br/&gt; &lt;br/&gt; نکته: با رفتن به بخش &lt;b&gt;زبان و ورودی&lt;/b&gt; در منوی &lt;b&gt;تنظیمات&lt;/b&gt; دستگاهتان، فرهنگ‌های لغت را دانلود یا حذف کنید."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"‏برای زبان انتخاب شده در دستگاه همراه شما فرهنگ لغتی در دسترس است.&lt;br/&gt; توصیه می‌کنیم برای بهبود بخشیدن به تجربه تایپ کردنتان، فرهنگ لغت <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> را &lt;b&gt;دانلود کنید&lt;/b&gt;.‏&lt;br/&gt; &lt;br/&gt; دانلود از طریق 3G ممکن است یک یا دو دقیقه طول بکشد. اگر &lt;b&gt;طرح داده نامحدود&lt;/b&gt; نداشته باشید، ممکن است هزینه‌هایی برای شما اعمال شوند.&lt;br/&gt; اگر مطمئن نیستید چه طرح داده‌ای دارید٬ توصیه می‌کنیم یک اتصال Wi-Fi پیدا کنید تا دانلود به‌طور خودکار شروع شود.&lt;br/&gt; &lt;br/&gt; نکته: با رفتن به بخش &lt;b&gt;زبان و ورودی&lt;/b&gt; در منوی &lt;b&gt;تنظیمات&lt;/b&gt; دستگاهتان، فرهنگ‌های لغت را دانلود یا حذف کنید."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"هم‌اکنون بارگیری شود (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> مگابایت)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏دانلود ازطریق Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"یک فرهنگ لغت برای <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> در دسترس است"</string>
@@ -197,10 +197,10 @@
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"گزینه‌های کمتر"</string>
     <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"تأیید"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"کلمه:"</string>
-    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"میانبر:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"میان‌بر:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"زبان:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"یک کلمه تایپ کنید"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"میانبر اختیاری"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"میان‌بر اختیاری"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ویرایش کلمه"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ویرایش"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"حذف"</string>
