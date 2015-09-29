@@ -587,8 +587,8 @@
     <string name="spoken_emoji_1F4E1" msgid="6269733703719242108">"Satellietantenne"</string>
     <string name="spoken_emoji_1F4E2" msgid="1987535386302883116">"Handluidspreker"</string>
     <string name="spoken_emoji_1F4E3" msgid="5588916572878599224">"Megafoon"</string>
-    <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"Postvak UIT"</string>
-    <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"Postvak IN"</string>
+    <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"Outbox"</string>
+    <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"Inbox"</string>
     <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"Pakket"</string>
     <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"E-mailsymbool"</string>
     <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Inkomende envelop"</string>
