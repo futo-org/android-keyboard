@@ -74,10 +74,6 @@ final class EmojiAltPhysicalKeyDetector {
         if (mAltHasBeenUsedAsAModifier) {
             return;
         }
-        if (!mRichInputConnection.isConnected()) {
-            Log.w(TAG, "onKeyUp() : No connection to text view");
-            return;
-        }
         onEmojiAltKeyDetected();
     }
 
