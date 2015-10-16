@@ -91,4 +91,22 @@
     <fraction name="config_emoji_keyboard_row_height">33%p</fraction>
     <fraction name="config_emoji_keyboard_key_letter_size">68%p</fraction>
     <integer name="config_emoji_keyboard_max_page_key_count">21</integer>
+
+    <!-- Key codes of hardware keys that can be used to toggle the Emoji layout.
+         Each array defines a comma-separated tuple containing:
+         1. Key code constant from android.view.KeyEvent
+         2. Meta mask (if any) from android.view.KeyEvent
+         Used in EmojiAltPhysicalKeyDetector and KeyboardSwitcher. -->
+    <string-array name="keyboard_switcher_emoji" translatable="false">
+        <item>57,16</item> <!-- KeyEvent.KEYCODE_ALT_LEFT , KeyEvent.META_ALT_LEFT_ON -->
+    </string-array>
+
+    <!-- Key codes of hardware keys that can be used to toggle the Symbols (Shifted) layout.
+         Each array defines a comma-separated tuple containing:
+         1. Key code constant from android.view.KeyEvent
+         2. Meta mask (if any) from android.view.KeyEvent
+         Used in EmojiAltPhysicalKeyDetector and KeyboardSwitcher. -->
+    <string-array name="keyboard_switcher_symbols_shifted" translatable="false">
+        <item>58,32</item> <!-- KeyEvent.KEYCODE_ALT_RIGHT , KeyEvent.META_ALT_RIGHT_ON -->
+    </string-array>
 </resources>
