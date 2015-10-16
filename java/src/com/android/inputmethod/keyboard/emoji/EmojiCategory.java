@@ -120,22 +120,29 @@ final class EmojiCategory {
             mCategoryTabIconId[i] = emojiPaletteViewAttr.getResourceId(
                     sCategoryTabIconAttr[i], 0);
         }
+
+        int defaultCategoryId = EmojiCategory.ID_SYMBOLS;
         addShownCategoryId(EmojiCategory.ID_RECENTS);
         if (BuildCompatUtils.EFFECTIVE_SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            defaultCategoryId = EmojiCategory.ID_PEOPLE;
             addShownCategoryId(EmojiCategory.ID_PEOPLE);
             addShownCategoryId(EmojiCategory.ID_OBJECTS);
             addShownCategoryId(EmojiCategory.ID_NATURE);
             addShownCategoryId(EmojiCategory.ID_PLACES);
-            mCurrentCategoryId =
-                    Settings.readLastShownEmojiCategoryId(mPrefs, EmojiCategory.ID_PEOPLE);
-        } else {
-            mCurrentCategoryId =
-                    Settings.readLastShownEmojiCategoryId(mPrefs, EmojiCategory.ID_SYMBOLS);
         }
         addShownCategoryId(EmojiCategory.ID_SYMBOLS);
         addShownCategoryId(EmojiCategory.ID_EMOTICONS);
-        getKeyboard(EmojiCategory.ID_RECENTS, 0 /* cagetoryPageId */)
-                .loadRecentKeys(mCategoryKeyboardMap.values());
+
+        DynamicGridKeyboard recentsKbd =
+                getKeyboard(EmojiCategory.ID_RECENTS, 0 /* cagetoryPageId */);
+        recentsKbd.loadRecentKeys(mCategoryKeyboardMap.values());
+
+        mCurrentCategoryId = Settings.readLastShownEmojiCategoryId(mPrefs, defaultCategoryId);
+        if (mCurrentCategoryId == EmojiCategory.ID_RECENTS &&
+                recentsKbd.getSortedKeys().isEmpty()) {
+            Log.i(TAG, "No recent emojis found, starting in category " + mCurrentCategoryId);
+            mCurrentCategoryId = defaultCategoryId;
+        }
     }
 
     private void addShownCategoryId(final int categoryId) {
