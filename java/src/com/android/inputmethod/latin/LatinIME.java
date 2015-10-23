@@ -1650,6 +1650,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Hooks for hardware keyboard
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+        if (mEmojiAltPhysicalKeyDetector == null) {
+            mEmojiAltPhysicalKeyDetector = new EmojiAltPhysicalKeyDetector(
+                    getApplicationContext().getResources());
+        }
+        mEmojiAltPhysicalKeyDetector.onKeyDown(keyEvent);
         if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
             return super.onKeyDown(keyCode, keyEvent);
         }
