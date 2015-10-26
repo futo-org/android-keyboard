@@ -95,7 +95,7 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"برای ذخیره اینجا را لمس کنید"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه‌کلید"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"جابه‌جایی بین حساب‌ها"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"رفتن به حساب دیگر"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"هیچ حسابی انتخاب نشده است"</string>
     <string name="account_selected" msgid="2846876462199625974">"در حال حاضر در حال استفاده از <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"تأیید"</string>
