@@ -27,8 +27,8 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀ ಒತ್ತಿದಾಗ ಶಬ್ದಮಾಡು"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ಕೀ ಒತ್ತಿದಾಗ ಪಾಪ್ ಅಪ್‌ ಮಾಡು"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"ಪ್ರಾಶಸ್ತ್ಯಗಳು"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"ಖಾತೆಗಳ ಗೌಪ್ಯತೆ"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"ಗೋಚರತೆಯ ಲೇಔಟ್‌ಗಳ"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"ಖಾತೆಗಳು ಮತ್ತು ಗೌಪ್ಯತೆ"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"ಗೋಚರತೆ ಮತ್ತು ಲೇಔಟ್‌ಗಳು"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ಗೆಸ್ಚರ್ ಟೈಪಿಂಗ್"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"ಪಠ್ಯ ತಿದ್ದುಪಡಿ"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"ಸುಧಾರಿತ"</string>
@@ -40,11 +40,10 @@
     <string name="sync_now_title" msgid="3088838136743277721">"ಈಗ ಸಿಂಕ್ ಮಾಡು"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"ಮೇಘ ಡೇಟಾವನ್ನು ಅಳಿಸಿ"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google ನಿಂದ ನಿಮ್ಮ ಸಿಂಕ್ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತದೆ"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ನಿಮ್ಮ ಸಿಂಕ್‌ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಮೇಘದಿಂದ ಅಳಿಸಲಾಗುತ್ತದೆ. ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ಸಿಂಕ್‌ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಮೇಘದಿಂದ ಅಳಿಸಲಾಗುತ್ತದೆ. ಇದು ಖಚಿತವೇ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ಅಳಿಸು"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ರದ್ದುಮಾಡು"</string>
-    <!-- unknown quoting pattern: original -1, translation 1 -->
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ನಿಘಂಟನ್ನು Google ಸರ್ವರ್‌ಗಳಿಗೆ ಸಿಂಕ್‌ ಮಾಡಲಾಗುತ್ತದೆ &amp;amp; ಬ್ಯಾಕಪ್‌ ಮಾಡಲಾಗುತ್ತದೆ. ನಮ್ಮ ಉತ್ಪನ್ನಗಳನ್ನು ಸುಧಾರಿಸಲು ಸಹಾಯ ಮಾಡಲು ಪದ ಆವರ್ತನೆ ಅಂಕಿಅಂಶವನ್ನು ಸಂಗ್ರಹಿಸಬಹುದು. ಎಲ್ಲಾ ಮಾಹಿತಿಯ ಸಂಗ್ರಹಣೆ ಮತ್ತು ಬಳಕೆಯ "<a href="https://www.google.com/policies/privacy">"Google ನ ಗೌಪ್ಯತೆ ನೀತಿ"</a>" ಯ ಅಡಿಯಲ್ಲಿ ಅನುಸರಣೆ ಮಾಡಲಾಗುತ್ತದೆ."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ನಿಘಂಟನ್ನು Google ಸರ್ವರ್‌ಗಳಿಗೆ ಸಿಂಕ್‌ ಮಾಡಲಾಗುತ್ತದೆ ಹಾಗೂ ಬ್ಯಾಕಪ್‌ ಮಾಡಲಾಗುತ್ತದೆ. ನಮ್ಮ ಉತ್ಪನ್ನಗಳನ್ನು ಸುಧಾರಿಸಲು ಪದ ಆವರ್ತನೆಯ ಅಂಕಿಅಂಶವನ್ನು ಸಂಗ್ರಹಿಸಬಹುದು. ಎಲ್ಲಾ ಮಾಹಿತಿಯ ಸಂಗ್ರಹಣೆ ಮತ್ತು ಬಳಕೆಯು "<a href="https://www.google.com/policies/privacy">"Google ನ ಗೌಪ್ಯತೆ ನೀತಿ"</a>"ಗೆ ಬದ್ಧವಾಗಿರುತ್ತವೆ."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ಈ ಸಾಧನಕ್ಕೆ ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ದಯವಿಟ್ಟು Google ಖಾತೆಯನ್ನು ಸೇರಿಸಿ"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ವ್ಯಾಪಾರಕ್ಕಾಗಿ Google Apps ಖಾತೆಗಳನ್ನು ಹೊಂದಿರುವ ಸಾಧನಗಳಿಗೆ ಸಿಂಕ್ ಲಭ್ಯವಿಲ್ಲ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ಇತರೆ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳಿಗೆ ಬದಲಾಯಿಸು"</string>
@@ -124,7 +123,7 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"ವರ್ಣಮಾಲೆ (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"ಎಮೋಜಿ"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"ಕೀಬೋರ್ಡ್ ಥೀಮ್"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"ಕಸ್ಟಮ್ ಇನ್‌ಪುಟ್ ಶೈಲಿಗಳು"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"ಕಸ್ಟಮ್ ಇನ್‌ಪುಟ್ ಶೈಲಿ"</string>
     <string name="add_style" msgid="6163126614514489951">"ಶೈಲಿ ಸೇರಿಸು"</string>
     <string name="add" msgid="8299699805688017798">"ಸೇರಿಸು"</string>
     <string name="remove" msgid="4486081658752944606">"ತೆಗೆದುಹಾಕಿ"</string>
@@ -169,7 +168,7 @@
     <string name="user_dictionaries" msgid="3582332055892252845">"ಬಳಕೆದಾರರ ನಿಘಂಟುಗಳು"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"ಬಳಕೆದಾರರ ನಿಘಂಟು"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"ನಿಘಂಟು ಲಭ್ಯವಿದೆ"</string>
-    <string name="dictionary_downloading" msgid="2982650524622620983">"ಪ್ರಸ್ತುತವಾಗಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"ಪ್ರಸ್ತುತ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"ಸ್ಥಾಪಿಸಲಾಗಿದೆ"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"ಸ್ಥಾಪಿಸಲಾಗಿದೆ, ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"ನಿಘಂಟು ಸೇವೆಗೆ ಸಂಪರ್ಕಗೊಳಿಸುವಾಗ ಸಮಸ್ಯೆ"</string>

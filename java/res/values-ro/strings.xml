@@ -55,8 +55,8 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Prestabilit"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> msec."</string>
     <string name="settings_system_default" msgid="6268225104743331821">"Valoare prestabilită"</string>
-    <string name="use_contacts_dict" msgid="4435317977804180815">"Sugeraţi nume din Agendă"</string>
-    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilizaţi numele din Agendă pentru sugestii și corecţii"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Sugerați nume din Agendă"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilizaţi numele din Agendă pentru sugestii și corecții"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Sugestii personalizate"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Îmbunătățiți <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Inserează punct spațiu"</string>
@@ -64,14 +64,14 @@
     <string name="auto_cap" msgid="1719746674854628252">"Scriere automată cu majuscule"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Scrie cu majusculă primul cuvânt din fiecare propoziţie"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dicționar personal"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicţionare suplimentare"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicționare suplimentare"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dicţionar principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Afişaţi sugestii de corectare"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Afișează sugestii de cuvinte în timpul introducerii textului"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blocați cuvintele jignitoare"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Nu se sugerează cuvinte potențial jignitoare"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorectare"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Corectare automată cuvinte prin bară spaţiu/semne punctuaţie"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Corectare automată cuvinte prin bară spaţiu/semne punctuație"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Dezactivată"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderată"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Exigentă"</string>
@@ -80,7 +80,7 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utilizează cuvântul anterior pentru sugestii"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activați tastarea gestuală"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Introduceţi un cuvânt glisând uşor între litere"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afişează urma gestului"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afișează urma gestului"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Sugestie flotantă dinamică"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Afişaţi cuvântul sugerat când utilizaţi gesturi"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gest expresie"</string>
@@ -130,10 +130,10 @@
     <string name="save" msgid="7646738597196767214">"Salvaţi"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Limbă"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Aspect"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Stilul de introducere personalizat trebuie să fie activat pentru a-l utiliza. Îl activaţi acum?"</string>
-    <string name="enable" msgid="5031294444630523247">"Activaţi"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Stilul de introducere personalizat trebuie să fie activat pentru a-l utiliza. Îl activați acum?"</string>
+    <string name="enable" msgid="5031294444630523247">"Activați"</string>
     <string name="not_now" msgid="6172462888202790482">"Nu acum"</string>
-    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Acelaşi stil de introducere există deja: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Același stil de introducere există deja: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrare după apăsarea tastei"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Sunet la apăsarea tastelor"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Timpul apăsării lungi a tastei"</string>
