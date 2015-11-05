@@ -26,7 +26,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_emoji_00A9" msgid="2859822817116803638">"Copyrighttegn"</string>
-    <string name="spoken_emoji_00AE" msgid="7708335454134589027">"Registreret varemærke-tegn"</string>
+    <string name="spoken_emoji_00AE" msgid="7708335454134589027">"Registreret brand-tegn"</string>
     <string name="spoken_emoji_203C" msgid="153340916701508663">"Dobbelt udråbstegn"</string>
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"Udråbstegn spørgsmålstegn"</string>
     <string name="spoken_emoji_2122" msgid="9188440722954720429">"Varemærketegn"</string>
@@ -624,8 +624,8 @@
     <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"Højttaler med tre lydbølger"</string>
     <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"Batteri"</string>
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"Elstik"</string>
-    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Forstørrelsesglas mod venstre"</string>
-    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"Forstørrelsesglas mod højre"</string>
+    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Lup mod venstre"</string>
+    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"Lup mod højre"</string>
     <string name="spoken_emoji_1F50F" msgid="915079280472199605">"Lås med pen"</string>
     <string name="spoken_emoji_1F510" msgid="7658381761691758318">"Lukket lås med nøgle"</string>
     <string name="spoken_emoji_1F511" msgid="262319867774655688">"Nøgle"</string>
