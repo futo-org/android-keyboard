@@ -79,7 +79,7 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Sugestii pentru cuvântul următor"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utilizează cuvântul anterior pentru sugestii"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activați tastarea gestuală"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Introduceţi un cuvânt glisând uşor între litere"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Introduceţi un cuvânt glisând ușor între litere"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afișează urma gestului"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Sugestie flotantă dinamică"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Afişaţi cuvântul sugerat când utilizaţi gesturi"</string>
@@ -87,7 +87,7 @@
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Introduceți spații în timpul gesturilor, glisând pe tasta spațiu"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tastă pentru intrarea vocală"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nicio metodă de intrare vocală activată. Verificați setările pentru limbă și introducere de text."</string>
-    <string name="configure_input_method" msgid="373356270290742459">"Configuraţi metodele de intrare"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Configurați metodele de intrare"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Limbi"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ajutor și feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Limbi"</string>
@@ -125,9 +125,9 @@
     <string name="keyboard_theme" msgid="4909551808526178852">"Temă pentru tastatură"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Stiluri personalizate"</string>
     <string name="add_style" msgid="6163126614514489951">"Stil"</string>
-    <string name="add" msgid="8299699805688017798">"Adăugaţi"</string>
+    <string name="add" msgid="8299699805688017798">"Adăugați"</string>
     <string name="remove" msgid="4486081658752944606">"Eliminaţi"</string>
-    <string name="save" msgid="7646738597196767214">"Salvaţi"</string>
+    <string name="save" msgid="7646738597196767214">"Salvați"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Limbă"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Aspect"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"Stilul de introducere personalizat trebuie să fie activat pentru a-l utiliza. Îl activați acum?"</string>
