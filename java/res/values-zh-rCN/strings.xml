@@ -27,7 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"按键音效"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"按键时弹出显示字符"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"偏好设置"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"帐户和隐私权"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"帐号和隐私权"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"外观和布局"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"滑行输入"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"文字更正"</string>
@@ -44,8 +44,8 @@
     <string name="clear_sync_data_ok" msgid="613104067705915132">"删除"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"取消"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"您的个人字典将会同步并备份到 Google 服务器。系统可能会收集字词出现频率的统计信息，来帮助改进我们的产品。所有信息的收集和使用都会遵守 "<a href="https://www.google.com/policies/privacy">"Google 隐私权政策"</a>"。"</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"要启用此功能，请将 Google 帐户添加到此设备中"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"在登录了 Google Apps for Business 帐户的设备上无法使用同步功能"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"要启用此功能，请将 Google 帐号添加到此设备中"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"在登录了 Google Apps for Business 帐号的设备上无法使用同步功能"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切换到其他输入法"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"语言切换键也可用于切换其他输入法"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"语言切换键"</string>
@@ -95,13 +95,13 @@
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"触摸此处即可保存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"有可用字典"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"键盘主题"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"切换帐户"</string>
-    <string name="no_accounts_selected" msgid="2073821619103904330">"未选择任何帐户"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"切换帐号"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"未选择任何帐号"</string>
     <string name="account_selected" msgid="2846876462199625974">"当前使用的是<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"确定"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"取消"</string>
-    <string name="account_select_sign_out" msgid="3299651159390187933">"退出帐户"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"选择要使用的帐户"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"退出帐号"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"选择要使用的帐号"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英语(英国)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英语(美国)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"西班牙语（美国）"</string>
