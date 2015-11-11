@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2015, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -199,6 +199,16 @@
         <attr name="iconEmojiCategory4Tab" format="reference" />
         <attr name="iconEmojiCategory5Tab" format="reference" />
         <attr name="iconEmojiCategory6Tab" format="reference" />
+        <attr name="iconEmojiCategory7Tab" format="reference" />
+        <attr name="iconEmojiCategory8Tab" format="reference" />
+        <attr name="iconEmojiCategory9Tab" format="reference" />
+        <attr name="iconEmojiCategory10Tab" format="reference" />
+        <attr name="iconEmojiCategory11Tab" format="reference" />
+        <attr name="iconEmojiCategory12Tab" format="reference" />
+        <attr name="iconEmojiCategory13Tab" format="reference" />
+        <attr name="iconEmojiCategory14Tab" format="reference" />
+        <attr name="iconEmojiCategory15Tab" format="reference" />
+        <attr name="iconEmojiCategory16Tab" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionStripView">
@@ -454,6 +464,16 @@
             <enum name="emojiCategory4" value="14" />
             <enum name="emojiCategory5" value="15" />
             <enum name="emojiCategory6" value="16" />
+            <enum name="emojiCategory7" value="17" />
+            <enum name="emojiCategory8" value="18" />
+            <enum name="emojiCategory9" value="19" />
+            <enum name="emojiCategory10" value="20" />
+            <enum name="emojiCategory11" value="21" />
+            <enum name="emojiCategory12" value="22" />
+            <enum name="emojiCategory13" value="23" />
+            <enum name="emojiCategory14" value="24" />
+            <enum name="emojiCategory15" value="25" />
+            <enum name="emojiCategory16" value="26" />
         </attr>
         <!-- This should be aligned with Keyboard.themeId and
              {@link com.android.inputmethod.keyboard.KeyboardTheme#THEME_ID_ICS} etc. -->
@@ -529,6 +549,16 @@
             <enum name="emojiCategory4" value="14" />
             <enum name="emojiCategory5" value="15" />
             <enum name="emojiCategory6" value="16" />
+            <enum name="emojiCategory7" value="17" />
+            <enum name="emojiCategory8" value="18" />
+            <enum name="emojiCategory9" value="19" />
+            <enum name="emojiCategory10" value="20" />
+            <enum name="emojiCategory11" value="21" />
+            <enum name="emojiCategory12" value="22" />
+            <enum name="emojiCategory13" value="23" />
+            <enum name="emojiCategory14" value="24" />
+            <enum name="emojiCategory15" value="25" />
+            <enum name="emojiCategory16" value="26" />
         </attr>
         <attr name="elementKeyboard" format="reference"/>
         <!-- Enable proximity characters correction. Disabled by default. -->
