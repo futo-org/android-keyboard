@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2013, The Android Open Source Project
+** Copyright 2015, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -93,6 +93,16 @@
         <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_holo_dark</item>
         <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_holo_dark</item>
         <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_holo_dark</item>
+        <item name="iconEmojiCategory7Tab">@drawable/ic_emoji_flag_holo_dark</item>
+        <item name="iconEmojiCategory8Tab">@drawable/ic_emoji_people_holo_dark</item>
+        <item name="iconEmojiCategory9Tab">@drawable/ic_emoji_nature_holo_dark</item>
+        <item name="iconEmojiCategory10Tab">@drawable/ic_emoji_food_holo_dark</item>
+        <item name="iconEmojiCategory11Tab">@drawable/ic_emoji_places_holo_dark</item>
+        <item name="iconEmojiCategory12Tab">@drawable/ic_emoji_activity_holo_dark</item>
+        <item name="iconEmojiCategory13Tab">@drawable/ic_emoji_objects_holo_dark</item>
+        <item name="iconEmojiCategory14Tab">@drawable/ic_emoji_symbols_holo_dark</item>
+        <item name="iconEmojiCategory15Tab">@drawable/ic_emoji_flag_holo_dark</item>
+        <item name="iconEmojiCategory16Tab">@drawable/ic_emoji_people_holo_dark</item>
     </style>
     <style
         name="MoreKeysKeyboard.KLP"

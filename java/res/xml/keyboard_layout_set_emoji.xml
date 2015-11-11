@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2013, The Android Open Source Project
+** Copyright 2015, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -41,4 +41,34 @@
     <Element
         latin:elementName="emojiCategory6"
         latin:elementKeyboard="@xml/kbd_emoji_category6" />
+    <Element
+        latin:elementName="emojiCategory7"
+        latin:elementKeyboard="@xml/kbd_emoji_category7" />
+    <Element
+        latin:elementName="emojiCategory8"
+        latin:elementKeyboard="@xml/kbd_emoji_category8" />
+    <Element
+        latin:elementName="emojiCategory9"
+        latin:elementKeyboard="@xml/kbd_emoji_category9" />
+    <Element
+        latin:elementName="emojiCategory10"
+        latin:elementKeyboard="@xml/kbd_emoji_category10" />
+    <Element
+        latin:elementName="emojiCategory11"
+        latin:elementKeyboard="@xml/kbd_emoji_category11" />
+    <Element
+        latin:elementName="emojiCategory12"
+        latin:elementKeyboard="@xml/kbd_emoji_category12" />
+    <Element
+        latin:elementName="emojiCategory13"
+        latin:elementKeyboard="@xml/kbd_emoji_category13" />
+    <Element
+        latin:elementName="emojiCategory14"
+        latin:elementKeyboard="@xml/kbd_emoji_category14" />
+    <Element
+        latin:elementName="emojiCategory15"
+        latin:elementKeyboard="@xml/kbd_emoji_category15" />
+    <Element
+        latin:elementName="emojiCategory16"
+        latin:elementKeyboard="@xml/kbd_emoji_category16" />
 </KeyboardLayoutSet>
