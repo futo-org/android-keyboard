@@ -65,7 +65,7 @@
     <string name="keyboard_mode_text" msgid="9138789594969187494">"tekst"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"godzina"</string>
     <string name="keyboard_mode_url" msgid="8072011652949962550">"adres URL"</string>
-    <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Niedawne"</string>
+    <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Ostatnie"</string>
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"Osoby"</string>
     <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"Obiekty"</string>
     <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"Przyroda"</string>
