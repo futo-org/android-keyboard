@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Debug;
@@ -968,12 +969,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
+    public void onWindowShown() {
+        super.onWindowShown();
+        setNavigationBarVisibility(isInputViewShown());
+    }
+
+    @Override
     public void onWindowHidden() {
         super.onWindowHidden();
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
         }
+        setNavigationBarVisibility(false);
     }
 
     void onFinishInputInternal() {
@@ -1864,5 +1872,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return fallbackValue;
         }
         return mRichImm.shouldOfferSwitchingToNextInputMethod(token, fallbackValue);
+    }
+
+    private void setNavigationBarVisibility(final boolean visible) {
+        // Color.BLACK is ignored and default IME navigation bar color is used.
+        getWindow().getWindow().setNavigationBarColor(visible ? Color.BLACK : Color.TRANSPARENT);
     }
 }
