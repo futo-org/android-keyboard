@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
+import com.android.inputmethod.compat.UserManagerCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.UniqueKeysCache;
@@ -275,6 +276,16 @@ public final class KeyboardLayoutSet {
             params.mIsPasswordField = InputTypeUtils.isPasswordInputType(editorInfo.inputType);
             params.mNoSettingsKey = InputAttributes.inPrivateImeOptions(
                     mPackageName, NO_SETTINGS_KEY, editorInfo);
+
+            // When the device is still unlocked, features like showing the IME setting app need to
+            // be locked down.
+            // TODO: Switch to {@code UserManagerCompat.isUserUnlocked()} in the support-v4 library
+            // when it becomes publicly available.
+            @UserManagerCompatUtils.LockState
+            final int lockState = UserManagerCompatUtils.getUserLockState(context);
+            if (lockState == UserManagerCompatUtils.LOCK_STATE_LOCKED) {
+                params.mNoSettingsKey = true;
+            }
         }
 
         public Builder setKeyboardGeometry(final int keyboardWidth, final int keyboardHeight) {
