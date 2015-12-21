@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Vaše synchronizované dáta budú odstránené z cloudu. Chcete pokračovať?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Odstrániť"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Zrušiť"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Váš osobný slovník sa synchronizuje a zálohuje na servery Google. S cieľom zlepšiť naše služby môžeme zhromažďovať štatistické informácie o frekvencii slov. Zhromažďovanie informácií a ich použitie bude v súlade s "<a href="https://www.google.com/policies/privacy">"pravidlami ochrany osobných údajov spoločnosti Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Váš osobný slovník sa synchronizuje a zálohuje na servery Google. S cieľom zlepšiť naše služby môžeme zhromažďovať štatistické informácie o frekvencii slov. Zhromažďovanie informácií a ich použitie bude v súlade s "<a href="https://www.google.com/policies/privacy">"pravidlami ochrany súkromia spoločnosti Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Povoľte túto funkciu tak, že do zariadenia pridáte účet Google"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Synchronizácia je nedostupná pre zariadenia s účtami Google Apps pre firmy"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Prepnúť na iné metódy vstupu"</string>

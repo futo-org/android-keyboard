@@ -168,7 +168,7 @@
     <string name="user_dictionaries" msgid="3582332055892252845">"فرهنگ‌های لغت کاربر"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"فرهنگ‌ لغت کاربر"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"فرهنگ لغت موجود است"</string>
-    <string name="dictionary_downloading" msgid="2982650524622620983">"موارد در حال دانلود فعلی"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"موارد در حال بارگیری فعلی"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"نصب شده"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"نصب‌شده، غیرفعال شد"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"مشکل اتصال به سرویس فرهنگ لغت"</string>
@@ -183,11 +183,11 @@
     <string name="install_dict" msgid="180852772562189365">"نصب"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"لغو"</string>
     <string name="delete_dict" msgid="756853268088330054">"حذف"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"‏برای زبان انتخاب شده در دستگاه همراه شما فرهنگ لغتی در دسترس است.&lt;br/&gt; توصیه می‌کنیم برای بهبود بخشیدن به تجربه تایپ کردنتان، فرهنگ لغت <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> را &lt;b&gt;دانلود کنید&lt;/b&gt;.‏&lt;br/&gt; &lt;br/&gt; دانلود از طریق 3G ممکن است یک یا دو دقیقه طول بکشد. اگر &lt;b&gt;طرح داده نامحدود&lt;/b&gt; نداشته باشید، ممکن است هزینه‌هایی برای شما اعمال شوند.&lt;br/&gt; اگر مطمئن نیستید چه طرح داده‌ای دارید٬ توصیه می‌کنیم یک اتصال Wi-Fi پیدا کنید تا دانلود به‌طور خودکار شروع شود.&lt;br/&gt; &lt;br/&gt; نکته: با رفتن به بخش &lt;b&gt;زبان و ورودی&lt;/b&gt; در منوی &lt;b&gt;تنظیمات&lt;/b&gt; دستگاهتان، فرهنگ‌های لغت را دانلود یا حذف کنید."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"‏برای زبان انتخاب شده در دستگاه همراه شما فرهنگ لغتی در دسترس است.&lt;br/&gt; توصیه می‌کنیم برای بهبود بخشیدن به تجربه تایپ کردنتان، فرهنگ لغت <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> را &lt;b&gt;بارگیری کنید&lt;/b&gt;.‏&lt;br/&gt; &lt;br/&gt; بارگیری از طریق 3G ممکن است یک یا دو دقیقه طول بکشد. اگر &lt;b&gt;طرح داده نامحدود&lt;/b&gt; نداشته باشید، ممکن است هزینه‌هایی برای شما اعمال شوند.&lt;br/&gt; اگر مطمئن نیستید چه طرح داده‌ای دارید٬ توصیه می‌کنیم یک اتصال Wi-Fi پیدا کنید تا بارگیری به‌طور خودکار شروع شود.&lt;br/&gt; &lt;br/&gt; نکته: با رفتن به بخش &lt;b&gt;زبان و ورودی&lt;/b&gt; در منوی &lt;b&gt;تنظیمات&lt;/b&gt; دستگاهتان، فرهنگ‌های لغت را بارگیری یا حذف کنید."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"هم‌اکنون بارگیری شود (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> مگابایت)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏دانلود ازطریق Wi-Fi"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏بارگیری ازطریق Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"یک فرهنگ لغت برای <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> در دسترس است"</string>
-    <string name="dict_available_notification_description" msgid="1075194169443163487">"برای مرور و دانلود فشار دهید"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"برای مرور و بارگیری فشار دهید"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"بارگیری پیشنهادات برای <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> به زودی شروع می‌شود."</string>
     <string name="version_text" msgid="2715354215568469385">"نسخه <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"افرودن"</string>
