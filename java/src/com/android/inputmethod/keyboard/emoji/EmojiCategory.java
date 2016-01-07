@@ -196,6 +196,8 @@ final class EmojiCategory {
                     addShownCategoryId(EmojiCategory.ID_FLAGS);
                 }
             }
+        } else {
+            addShownCategoryId(EmojiCategory.ID_SYMBOLS);
         }
         addShownCategoryId(EmojiCategory.ID_EMOTICONS);
 
@@ -204,9 +206,14 @@ final class EmojiCategory {
         recentsKbd.loadRecentKeys(mCategoryKeyboardMap.values());
 
         mCurrentCategoryId = Settings.readLastShownEmojiCategoryId(mPrefs, defaultCategoryId);
-        if (mCurrentCategoryId == EmojiCategory.ID_RECENTS &&
+        Log.i(TAG, "Last Emoji category id is " + mCurrentCategoryId);
+        if (!isShownCategoryId(mCurrentCategoryId)) {
+            Log.i(TAG, "Last emoji category " + mCurrentCategoryId +
+                    " is invalid, starting in " + defaultCategoryId);
+            mCurrentCategoryId = defaultCategoryId;
+        } else if (mCurrentCategoryId == EmojiCategory.ID_RECENTS &&
                 recentsKbd.getSortedKeys().isEmpty()) {
-            Log.i(TAG, "No recent emojis found, starting in category " + mCurrentCategoryId);
+            Log.i(TAG, "No recent emojis found, starting in category " + defaultCategoryId);
             mCurrentCategoryId = defaultCategoryId;
         }
     }
@@ -217,6 +224,15 @@ final class EmojiCategory {
         final CategoryProperties properties =
                 new CategoryProperties(categoryId, getCategoryPageCount(categoryId));
         mShownCategories.add(properties);
+    }
+
+    private boolean isShownCategoryId(final int categoryId) {
+        for (final CategoryProperties prop : mShownCategories) {
+            if (prop.mCategoryId == categoryId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String getCategoryName(final int categoryId, final int categoryPageId) {
