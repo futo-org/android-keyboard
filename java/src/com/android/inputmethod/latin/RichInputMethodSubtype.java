@@ -47,7 +47,7 @@ public class RichInputMethodSubtype {
 
     public RichInputMethodSubtype(@Nonnull final InputMethodSubtype subtype) {
         mSubtype = subtype;
-        mLocale = LocaleUtils.constructLocaleFromString(mSubtype.getLocale());
+        mLocale = InputMethodSubtypeCompatUtils.getLocaleObject(mSubtype);
     }
 
     // Extra values are determined by the primary subtype. This is probably right, but

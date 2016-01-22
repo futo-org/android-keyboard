@@ -17,14 +17,17 @@
 package com.android.inputmethod.compat;
 
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.LocaleUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -76,6 +79,21 @@ public final class InputMethodSubtypeCompatUtils {
     public static boolean isAsciiCapable(final InputMethodSubtype subtype) {
         return isAsciiCapableWithAPI(subtype)
                 || subtype.containsExtraValueKey(Constants.Subtype.ExtraValue.ASCII_CAPABLE);
+    }
+
+    // Note that InputMethodSubtype.getLanguageTag() is expected to be available in Android N+.
+    private static final Method GET_LANGUAGE_TAG =
+            CompatUtils.getMethod(InputMethodSubtype.class, "getLanguageTag");
+
+    public static Locale getLocaleObject(final InputMethodSubtype subtype) {
+        // Locale.forLanguageTag() is available only in Android L and later.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final String languageTag = (String) CompatUtils.invoke(subtype, null, GET_LANGUAGE_TAG);
+            if (!TextUtils.isEmpty(languageTag)) {
+                return Locale.forLanguageTag(languageTag);
+            }
+        }
+        return LocaleUtils.constructLocaleFromString(subtype.getLocale());
     }
 
     @UsedForTesting
