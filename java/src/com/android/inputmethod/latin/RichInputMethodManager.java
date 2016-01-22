@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
@@ -422,6 +423,46 @@ public class RichInputMethodManager {
             final String layoutName = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
             if (localeString.equals(subtype.getLocale())
                     && keyboardLayoutSetName.equals(layoutName)) {
+                return subtype;
+            }
+        }
+        return null;
+    }
+
+    public InputMethodSubtype findSubtypeByLocale(final Locale locale) {
+        // Find the best subtype based on a straightforward matching algorithm.
+        // TODO: Use LocaleList#getFirstMatch() instead.
+        final List<InputMethodSubtype> subtypes =
+                getMyEnabledInputMethodSubtypeList(true /* allowsImplicitlySelectedSubtypes */);
+        final int count = subtypes.size();
+        for (int i = 0; i < count; ++i) {
+            final InputMethodSubtype subtype = subtypes.get(i);
+            final Locale subtypeLocale = InputMethodSubtypeCompatUtils.getLocaleObject(subtype);
+            if (subtypeLocale.equals(locale)) {
+                return subtype;
+            }
+        }
+        for (int i = 0; i < count; ++i) {
+            final InputMethodSubtype subtype = subtypes.get(i);
+            final Locale subtypeLocale = InputMethodSubtypeCompatUtils.getLocaleObject(subtype);
+            if (subtypeLocale.getLanguage().equals(locale.getLanguage()) &&
+                    subtypeLocale.getCountry().equals(locale.getCountry()) &&
+                    subtypeLocale.getVariant().equals(locale.getVariant())) {
+                return subtype;
+            }
+        }
+        for (int i = 0; i < count; ++i) {
+            final InputMethodSubtype subtype = subtypes.get(i);
+            final Locale subtypeLocale = InputMethodSubtypeCompatUtils.getLocaleObject(subtype);
+            if (subtypeLocale.getLanguage().equals(locale.getLanguage()) &&
+                    subtypeLocale.getCountry().equals(locale.getCountry())) {
+                return subtype;
+            }
+        }
+        for (int i = 0; i < count; ++i) {
+            final InputMethodSubtype subtype = subtypes.get(i);
+            final Locale subtypeLocale = InputMethodSubtypeCompatUtils.getLocaleObject(subtype);
+            if (subtypeLocale.getLanguage().equals(locale.getLanguage())) {
                 return subtype;
             }
         }

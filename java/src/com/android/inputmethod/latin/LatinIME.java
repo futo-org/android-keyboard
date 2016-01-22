@@ -54,7 +54,9 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
@@ -176,8 +178,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_WAIT_FOR_DICTIONARY_LOAD = 8;
         private static final int MSG_DEALLOCATE_MEMORY = 9;
         private static final int MSG_RESUME_SUGGESTIONS_FOR_START_INPUT = 10;
+        private static final int MSG_SWITCH_LANGUAGE_AUTOMATICALLY = 11;
         // Update this when adding new messages
-        private static final int MSG_LAST = MSG_RESUME_SUGGESTIONS_FOR_START_INPUT;
+        private static final int MSG_LAST = MSG_SWITCH_LANGUAGE_AUTOMATICALLY;
 
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
@@ -270,6 +273,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             case MSG_DEALLOCATE_MEMORY:
                 latinIme.deallocateMemory();
+                break;
+            case MSG_SWITCH_LANGUAGE_AUTOMATICALLY:
+                latinIme.switchLanguage((InputMethodSubtype)msg.obj);
                 break;
             }
         }
@@ -387,6 +393,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void showTailBatchInputResult(final SuggestedWords suggestedWords) {
             obtainMessage(MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED, suggestedWords).sendToTarget();
+        }
+
+        public void postSwitchLanguage(final InputMethodSubtype subtype) {
+            obtainMessage(MSG_SWITCH_LANGUAGE_AUTOMATICALLY, subtype).sendToTarget();
         }
 
         // Working variables for the following methods.
@@ -795,6 +805,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
+
+        // If the primary hint language does not match the current subtype language, then try
+        // to switch to the primary hint language.
+        // TODO: Support all the locales in EditorInfo#hintLocales.
+        final Locale primaryHintLocale = EditorInfoCompatUtils.getPrimaryHintLocale(editorInfo);
+        if (primaryHintLocale == null) {
+            return;
+        }
+        final InputMethodSubtype newSubtype = mRichImm.findSubtypeByLocale(primaryHintLocale);
+        if (newSubtype == null || newSubtype.equals(mRichImm.getCurrentSubtype().getRawSubtype())) {
+            return;
+        }
+        mHandler.postSwitchLanguage(newSubtype);
     }
 
     @SuppressWarnings("deprecation")
@@ -1299,6 +1322,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean isShowingOptionDialog() {
         return mOptionsDialog != null && mOptionsDialog.isShowing();
+    }
+
+    public void switchLanguage(final InputMethodSubtype subtype) {
+        final IBinder token = getWindow().getWindow().getAttributes().token;
+        mRichImm.setInputMethodAndSubtype(token, subtype);
     }
 
     // TODO: Revise the language switch key behavior to make it much smarter and more reasonable.
