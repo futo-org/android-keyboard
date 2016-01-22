@@ -19,6 +19,7 @@ package com.android.inputmethod.compat;
 import android.view.inputmethod.EditorInfo;
 
 import java.lang.reflect.Field;
+import java.util.Locale;
 
 public final class EditorInfoCompatUtils {
     // Note that EditorInfo.IME_FLAG_FORCE_ASCII has been introduced
@@ -27,6 +28,8 @@ public final class EditorInfoCompatUtils {
             EditorInfo.class, "IME_FLAG_FORCE_ASCII");
     private static final Integer OBJ_IME_FLAG_FORCE_ASCII = (Integer) CompatUtils.getFieldValue(
             null /* receiver */, null /* defaultValue */, FIELD_IME_FLAG_FORCE_ASCII);
+    private static final Field FIELD_HINT_LOCALES = CompatUtils.getField(
+            EditorInfo.class, "hintLocales");
 
     private EditorInfoCompatUtils() {
         // This utility class is not publicly instantiable.
@@ -77,5 +80,16 @@ public final class EditorInfoCompatUtils {
             flags.append("flagForceAscii|");
         }
         return (action != null) ? flags + action : flags.toString();
+    }
+
+    public static Locale getPrimaryHintLocale(final EditorInfo editorInfo) {
+        if (editorInfo == null) {
+            return null;
+        }
+        final Object localeList = CompatUtils.getFieldValue(editorInfo, null, FIELD_HINT_LOCALES);
+        if (localeList == null) {
+            return null;
+        }
+        return LocaleListCompatUtils.getPrimary(localeList);
     }
 }
