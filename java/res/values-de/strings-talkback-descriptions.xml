@@ -20,7 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_use_headphones" msgid="4313642710742229868">"Schließen Sie ein Headset an, um das Passwort gesprochen zu hören."</string>
+    <string name="spoken_use_headphones" msgid="4313642710742229868">"Schließe ein Headset an, um das Passwort gesprochen zu hören."</string>
     <string name="spoken_current_text_is" msgid="4240549866156675799">"Aktueller Text lautet %s"</string>
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"Kein Text eingegeben"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"Mit <xliff:g id="KEY_NAME">%1$s</xliff:g> wird \"<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>\" in \"<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>\" geändert."</string>
