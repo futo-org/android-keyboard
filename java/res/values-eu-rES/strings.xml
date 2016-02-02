@@ -29,7 +29,7 @@
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Hobespenak"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Kontuak eta pribatutasuna"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Itxura eta diseinuak"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"Keinu bidezko idazketa"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Idazketa lerrakorra"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Testu-zuzenketa"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Ezarpen aurreratuak"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Gaia"</string>
@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Oso neurriz gainekoa"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Hurrengo hitza iradokitzea"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Erabili aurreko hitza iradokizunak egiteko"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Gaitu keinu bidezko idazketa"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Gaitu idazketa lerrakorra"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Idatzi hitzak hizki batetik bestera hatza lerratuta"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Erakutsi keinuaren bidea"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Flotatze dinamikodun aurrebista"</string>
@@ -141,7 +141,7 @@
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Teklatu fisikoko Alt tekla sakatuta emotikonoak agertzen dira"</string>
     <string name="button_default" msgid="3988017840431881491">"Lehenetsia"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Ongi etorri <xliff:g id="APPLICATION_NAME">%s</xliff:g> aplikaziora"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Keinu bidezko idazketarekin"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Idazketa lerrakorrarekin"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Lehen urratsak"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Hurrengo urratsa"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> konfiguratzen"</string>

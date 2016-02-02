@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронизација је укључена"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизујте лични речник на свим уређајима"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Синхронизуј одмах"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"Избриши податке из клауда"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Желите да избришете податке из клауда"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Брише синхронизоване податке са Google-а"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Избрисаћемо синхронизоване податке из клауда. Да ли сте сигурни?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Избриши"</string>
@@ -123,8 +123,8 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"абецеда (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Емотикони"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Тема тастатуре"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Прилаг. стилови уноса"</string>
-    <string name="add_style" msgid="6163126614514489951">"Додав. стила"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Прилагођени стилови уноса"</string>
+    <string name="add_style" msgid="6163126614514489951">"Додајте стил"</string>
     <string name="add" msgid="8299699805688017798">"Додај"</string>
     <string name="remove" msgid="4486081658752944606">"Уклони"</string>
     <string name="save" msgid="7646738597196767214">"Сачувај"</string>
@@ -176,7 +176,7 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Освежи"</string>
     <string name="last_update" msgid="730467549913588780">"Последње ажурирање"</string>
     <string name="message_updating" msgid="4457761393932375219">"Траже се ажурирања"</string>
-    <string name="message_loading" msgid="5638680861387748936">"Учитавање…"</string>
+    <string name="message_loading" msgid="5638680861387748936">"Учитава се…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Главни речник"</string>
     <string name="cancel" msgid="6830980399865683324">"Откажи"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"Подешавања"</string>
