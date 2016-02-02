@@ -23,13 +23,13 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"इनपुट विकल्‍प"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"संपर्क नामों को खोजें"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"वर्तनी परीक्षक आपकी संपर्क सूची की प्रविष्टियों का उपयोग करता है"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"कुंजी दबाने पर कंपन करता है"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"कुंजी दबाने पर आवाज"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"बटन दबाने पर कंपन करे"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"बटन दबाने पर आवाज़"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"कुंजी दबाने पर पॉपअप दिखाएं"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"प्राथमिकताएं"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"खाते और गोपनीयता"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"दिखावट और सज्जा"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"हावभाव लेखन"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"संकेतोें द्वारा टाइपिंग"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"लेख सुधार"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"अतिरिक्त सेटिंग"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"थीम"</string>
@@ -78,14 +78,14 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"बहुत तेज़"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"अगले शब्द के सुझाव"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"सुझाव बनाने में पिछले शब्द का उपयोग करें"</string>
-    <string name="gesture_input" msgid="826951152254563827">"जेस्‍चर लिखना सक्षम करें"</string>
+    <string name="gesture_input" msgid="826951152254563827">"संकेतोें द्वारा टाइपिंग सक्रिय करें"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरों से स्लाइड करते हुए शब्द इनपुट करें"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"जेस्चर ट्रेल दिखाएं"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"हावभाव ट्रेल दिखाएं"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"गतिशील फ़्लोटिंग पूर्वावलोकन"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"जेस्‍चर बनाते समय सुझाया गया शब्द देखें"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"संकेतोें द्वारा टाइपिंग करते समय सुझाया गया शब्द देखें"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश जेस्चर"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"स्पेस कुंजी तक ग्लाइड करके जेस्चर के दौरान रिक्तियां इनपुट करें"</string>
-    <string name="voice_input" msgid="3583258583521397548">"ध्‍वनि‍ इनपुट कुंजी"</string>
+    <string name="voice_input" msgid="3583258583521397548">"ध्वनि संचालन बटन"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"कोई ध्वनि इनपुट पद्धति सक्षम नहीं है. भाषा और इनपुट सेटिंग जांचें."</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धति कॉन्‍फ़िगर करें"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"भाषाएं"</string>
@@ -134,10 +134,10 @@
     <string name="enable" msgid="5031294444630523247">"सक्षम करें"</string>
     <string name="not_now" msgid="6172462888202790482">"अभी नहीं"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ऐसी ही इनपुट शैली पहले से मौजूद है: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुंजी-स्पर्श कंपन अवधि"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुंजी-स्पर्श ध्वनि आवाज़"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुंजी को देर तक दबाने का विलंब"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"भौतिक कीबोर्ड के लिए इमोजी"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"बटन दबाने पर कंपन अवधि"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"बटन दबाने पर आवाज़ का स्तर"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"बटन दबाए रखने की समयाविधि"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"कीबोर्ड के लिए स्माइलीज़"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"भौतिक Alt कुंजी इमोजी पैलेट दिखाती है"</string>
     <string name="button_default" msgid="3988017840431881491">"सामान्य"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> में आपका स्वागत है"</string>
@@ -162,7 +162,7 @@
     <string name="dictionary_provider_name" msgid="3027315045397363079">"डिक्‍शनरी प्रदाता"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"डिक्‍शनरी सेवा"</string>
     <string name="download_description" msgid="6014835283119198591">"शब्दकोश की नई जानकारी"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"एड-ऑन शब्दकोश"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"अन्य शब्दकोष"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"शब्दकोश उपलब्‍ध"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"डिक्‍शनरी की सेटिंग"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"उपयोगकर्ता शब्दकोश"</string>

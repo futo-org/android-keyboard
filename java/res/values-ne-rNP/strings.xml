@@ -40,7 +40,7 @@
     <string name="sync_now_title" msgid="3088838136743277721">"अहिले सिंक गर्नुहोस्"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"क्लाउड डेटा मेटाउनुहोस्"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिङ्क गरिएको डाटा मेटाउँछ"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईंको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईं निश्चित हुनुहुन्छ?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईँको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईँ निश्चित हुनुहुन्छ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"मेटाउनुहोस्"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द गर्नुहोस्"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"तपाईँको व्यक्तिगत शब्दकोश सिंक गरेर Google सर्भरहरूमा जगेडा राखिने छ। शब्द आवृत्तिको तथ्याङ्क जानकारी हाम्रो उत्पादनहरू सुधार गर्न मद्दतका लागि संकलन हुन सक्छ। संग्रह र सबै जानकारीको प्रयोग  "<a href="https://www.google.com/policies/privacy">" Google को गोपनीयता नीति "</a>" अनुरूप हुने छ।"</string>
