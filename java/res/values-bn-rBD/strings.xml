@@ -28,8 +28,8 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"কীপ্রেস এর ফলে পপআপ"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"পছন্দসমূহ"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"অ্যাকাউন্টগুলি ও গোপনীয়তা"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"চেহারা ও লেআউটগুলি"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"অঙ্গভঙ্গি টাইপিং"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"প্রদর্শন ও লেআউটগুলি"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"অঙ্গভঙ্গির মাধ্যমে টাইপিং"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"পাঠ্য সংশোধন"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"উন্নত"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"থিম"</string>
@@ -40,7 +40,7 @@
     <string name="sync_now_title" msgid="3088838136743277721">"এখন সিঙ্ক করুন"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"ক্লাউড ডেটা মুছুন"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google থেকে আপনার সিঙ্ক করা ডেটা মুছে ফেলে"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"আপনার সিঙ্ক করা ডেটা ক্লাউড থেকে মুছে ফেলা হবে৷ আপনি কি নিশ্চিত?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"আপনার সিঙ্ক করা ডেটা ক্লাউড থেকে মুছে ফেলার ব্যাপারে আপনি কি নিশ্চিত?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"মুছুন"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"বাতিল"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"আপনার ব্যক্তিগত অভিধান Google সার্ভারগুলিতে সিঙ্ক এবং ব্যাকআপ নেওয়া হবে৷ শব্দ ফ্রিকোয়েন্সির পরিসংখ্যানগত তথ্য আমাদের পণ্য উন্নতিতে সহায়তার জন্য সংগ্রহ করা হতে পারে৷ এই সংগ্রহ এবং সমস্ত তথ্যের ব্যবহার "<a href="https://www.google.com/policies/privacy">"Google এর গোপনীয়তা নীতি"</a>"-র সাথে সঙ্গতিশীল হবে৷"</string>
@@ -101,7 +101,7 @@
     <string name="account_select_ok" msgid="9141195141763227797">"ঠিক আছে"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"বাতিল করুন"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"সাইন আউট"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"ব্যবহার করার জন্য একটি অ্যাকাউন্ট নির্বাচন করুন"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"ব্যবহার করার জন্য একটি অ্যাকাউন্ট বাছুন"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ইংরেজি (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ইংরেজি (US)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"স্প্যানিশ (US)"</string>

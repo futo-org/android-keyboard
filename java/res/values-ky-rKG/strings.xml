@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Үн менен киргизүү ыкмаларынын бири да иштетилген эмес. Тил &amp; киргизүү жөндөөлөрүн текшериңиз."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Дайндрд киргзүү ыкмалрн конфигрцлоо"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тилдер"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"Жардам &amp; жооп пикир"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Жардам жана жооп пикир"</string>
     <string name="select_language" msgid="5709487854987078367">"Тилдер"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Сактоо үчүн кайра тийип коюңуз"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Сактоо үчүн бул жерди басыңыз"</string>

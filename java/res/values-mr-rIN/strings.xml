@@ -50,7 +50,7 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्विच की अन्य इनपुट पद्धती देखील समाविष्ट करते"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच की"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"एकाधिक इनपुट भाषा सक्षम केलेल्या असताना दर्शवा"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"की पॉपअप विलंब डिसमिस करते"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"की पॉपअप डिसमिस विलंब"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"विलंब नाही"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डीफॉल्ट"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>मिसे"</string>
