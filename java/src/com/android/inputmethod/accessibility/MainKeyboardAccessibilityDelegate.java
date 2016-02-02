@@ -110,7 +110,9 @@ public final class MainKeyboardAccessibilityDelegate
      * Called when the keyboard is hidden and accessibility is enabled.
      */
     public void onHideWindow() {
-        announceKeyboardHidden();
+        if (mLastKeyboardMode != KEYBOARD_IS_HIDDEN) {
+            announceKeyboardHidden();
+        }
         mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     }
 
