@@ -71,7 +71,7 @@
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blocați cuvintele jignitoare"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Nu se sugerează cuvinte potențial jignitoare"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorectare"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Corectare automată cuvinte prin bară spaţiu/semne punctuație"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Corectare automată cuvinte prin bară spațiu/semne punctuație"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Dezactivată"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderată"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Exigentă"</string>
@@ -91,7 +91,7 @@
     <string name="language_selection_title" msgid="3666971864764478269">"Limbi"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ajutor și feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Limbi"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Atingeţi din nou pentru a salva"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Atingeți din nou pentru a salva"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Atingeți aici pentru a salva"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Temă pentru tastatură"</string>
