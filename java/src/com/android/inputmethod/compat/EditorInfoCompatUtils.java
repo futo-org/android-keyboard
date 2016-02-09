@@ -90,6 +90,9 @@ public final class EditorInfoCompatUtils {
         if (localeList == null) {
             return null;
         }
-        return LocaleListCompatUtils.getPrimary(localeList);
+        if (LocaleListCompatUtils.isEmpty(localeList)) {
+            return null;
+        }
+        return LocaleListCompatUtils.get(localeList, 0);
     }
 }
