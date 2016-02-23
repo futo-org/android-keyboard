@@ -59,8 +59,8 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"根據「聯絡人」名稱提供建議與修正"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"個人化建議"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"協助改善 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"輕按兩下空格鍵即插入句號"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"輕按兩下空格鍵可插入句號另加一個空格"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"輕觸兩下空格鍵即插入句號"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"輕觸兩下空格鍵可插入句號另加一個空格"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大寫"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"句首字詞大寫"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"個人字典"</string>

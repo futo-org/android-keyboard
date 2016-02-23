@@ -39,7 +39,7 @@
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"端末間で単語リストを同期する"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"今すぐ同期"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"クラウドデータの削除"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Googleから同期データを削除します"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Googleから同期データを削除する"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"クラウドから同期データを削除します。よろしいですか？"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"削除"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"キャンセル"</string>
@@ -97,7 +97,7 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"キーボードのテーマ"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"アカウントの切り替え"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"アカウントが選択されていません"</string>
-    <string name="account_selected" msgid="2846876462199625974">"現在 <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> を使用しています"</string>
+    <string name="account_selected" msgid="2846876462199625974">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> を使用中"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"OK"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"キャンセル"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"ログアウト"</string>
