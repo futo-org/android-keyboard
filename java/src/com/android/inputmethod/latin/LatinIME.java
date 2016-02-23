@@ -33,6 +33,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Debug;
 import android.os.IBinder;
 import android.os.Message;
@@ -54,6 +55,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
@@ -1908,7 +1910,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void setNavigationBarVisibility(final boolean visible) {
-        // Color.BLACK is ignored and default IME navigation bar color is used.
-        getWindow().getWindow().setNavigationBarColor(visible ? Color.BLACK : Color.TRANSPARENT);
+        if (BuildCompatUtils.EFFECTIVE_SDK_INT > Build.VERSION_CODES.M) {
+            // For N and later, IMEs can specify Color.TRANSPARENT to make the navigation bar
+            // transparent.  For other colors the system uses the default color.
+            getWindow().getWindow().setNavigationBarColor(
+                    visible ? Color.BLACK : Color.TRANSPARENT);
+        }
     }
 }
