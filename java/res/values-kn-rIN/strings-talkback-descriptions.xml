@@ -2,7 +2,7 @@
 <!-- 
 /*
 **
-** Copyright 2014, The Android Open Source Project
+** Copyright 2015, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -71,6 +71,12 @@
     <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"ಪ್ರಕೃತಿ"</string>
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"ಸ್ಥಳಗಳು"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"ಸಂಕೇತಗಳು"</string>
+    <string name="spoken_descrption_emoji_category_flags" msgid="5971573825866381472">"ಫ್ಲ್ಯಾಗ್‌ಗಳು"</string>
+    <string name="spoken_descrption_emoji_category_eight_smiley_people" msgid="5682663819532433464">"ಸ್ಮೈಲಿ ಮತ್ತು ಜನರು"</string>
+    <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="5844950234883716704">"ಪ್ರಾಣಿಗಳು ಮತ್ತು ಪ್ರಕೃತಿ"</string>
+    <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"ಆಹಾರ ಮತ್ತು ಪಾನೀಯ"</string>
+    <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="3834085499381434611">"ಪ್ರಯಾಣ ಮತ್ತು ಸ್ಥಳಗಳು"</string>
+    <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"ಚಟುವಟಿಕೆ"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"ಎಮೋಟಿಕಾನ್‌ಗಳು"</string>
     <string name="spoken_description_upper_case" msgid="4904835255229433916">"ಕ್ಯಾಪಿಟಲ್ <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
     <string name="spoken_letter_0049" msgid="4743162182646977944">"ಕ್ಯಾಪಿಟಲ್ I"</string>
