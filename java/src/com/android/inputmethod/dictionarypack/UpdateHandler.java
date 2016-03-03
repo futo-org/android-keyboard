@@ -689,16 +689,8 @@ public final class UpdateHandler {
         } else {
             try {
                 final FileChannel sourceChannel = ((FileInputStream) in).getChannel();
-                try {
-                    final FileChannel destinationChannel = ((FileOutputStream) out).getChannel();
-                    try {
-                        sourceChannel.transferTo(0, Integer.MAX_VALUE, destinationChannel);
-                    } finally {
-                        destinationChannel.close();
-                    }
-                } finally {
-                    sourceChannel.close();
-                }
+                final FileChannel destinationChannel = ((FileOutputStream) out).getChannel();
+                sourceChannel.transferTo(0, Integer.MAX_VALUE, destinationChannel);
             } catch (IOException e) {
                 // Can't work with channels, or something went wrong. Copy by hand.
                 DebugLogUtils.l("Won't work");
