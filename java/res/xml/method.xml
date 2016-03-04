@@ -673,6 +673,7 @@
             android:label="@string/subtype_sr_ZZ"
             android:subtypeId="0xf4a5569c"
             android:imeSubtypeLocale="sr_ZZ"
+            android:languageTag="sr-Latn"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=serbian_qwertz,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
