@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gesto de frase"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Inserir espaços durante gestos deslizando até a tecla de espaço"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tecla p/ inserir texto por voz"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nenhum método de entrada de texto por voz ativado. Verifique as configurações \"Idioma e entrada\"."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Idiomas"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ajuda e feedback"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Próxima etapa"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurando o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Ative o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Marque \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" em \"Configurações de idioma e entrada\" para autorizar a execução."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> já está ativado em suas configurações de idioma e entrada. Esta etapa está concluída. Vamos avançar para a próxima!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Ativar em \"Configurações\""</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Abra o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Em seguida, selecione \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de entrada de texto ativo."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Instalar"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancelar"</string>
     <string name="delete_dict" msgid="756853268088330054">"Excluir"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"O idioma selecionado em seu dispositivo móvel tem um dicionário disponível.&lt;br/&gt; Recomendamos &lt;b&gt;fazer o download&lt;/b&gt; do dicionário de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para melhorar sua experiência de digitação.&lt;br/&gt; O download pode levar um ou dois minutos por conexão 3G. Tarifas podem ser aplicáveis caso você não tenha um &lt;b&gt;plano de dados ilimitado&lt;/b&gt;.&lt;br/&gt; Se você não tem certeza quanto a seu plano de dados, recomendamos encontrar uma conexão Wi-Fi para iniciar o download automaticamente.&lt;br/&gt; Dica: você pode fazer o download de dicionários e removê-los acessando &lt;b&gt;Idioma e entrada&lt;/b&gt; no menu &lt;b&gt;Configurações&lt;/b&gt; do dispositivo móvel."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Fazer o download agora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Fazer o download por Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Há um dicionário disponível para <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frasegebaar"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Voer spasies tydens gebare in deur na die spasiesleutel te gly"</string>
     <string name="voice_input" msgid="3583258583521397548">"Steminvoerinstellings"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Geen steminvoermetodes geaktiveer nie. Gaan taal- en invoerinstellings na."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Stel invoermetodes op"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Tale"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Hulp en terugvoering"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Volgende stap"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Stel <xliff:g id="APPLICATION_NAME">%s</xliff:g> op"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Aktiveer <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Verifieer asseblief \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" in jou Taal- en invoerinstellings. Dit sal dit magtig om op jou toestel te loop."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is reeds geaktiveer in jou Taal- en invoer-instellings - hierdie stap is dus klaar. Aan na die volgende een!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktiveer in instellings"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Skakel oor na <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Volgende, kies \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" as jou aktiewe teks-invoermetode."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Installeer"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Kanselleer"</string>
     <string name="delete_dict" msgid="756853268088330054">"Vee uit"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Die gekose taal op jou mobiele toestel het \'n beskikbare woordeboek.&lt;br/&gt; Ons beveel aan dat die <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-woordeboek &lt;b&gt;afgelaai&lt;/b&gt; word om jou tikervaring te verbeter.&lt;br/&gt; &lt;br/&gt; Dit kan \'n minuut of twee duur om oor 3G af te laai. Heffings kan dalk geld as jy nie \'n &lt;b&gt;onbeperkte dataplan&lt;/b&gt; het nie.&lt;br/&gt; As jy onseker is oor watter dataplan jy het, beveel ons aan dat jy \'n Wi-Fi-verbinding soek om outomaties te begin aflaai.&lt;br/&gt; &lt;br/&gt; Wenk: Jy kan woordeboeke aflaai en verwyder deur te gaan na &lt;b&gt;Taal en invoer&lt;/b&gt; in die &lt;b&gt;Instellings&lt;/b&gt;-kieslys van jou mobiele toestel."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Laai nou af (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Laai oor Wi-Fi af"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"\'n Woordeboek is beskikbaar vir <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

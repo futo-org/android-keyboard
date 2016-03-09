@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Фраза қимылы"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Бос орын пернесіне сырғыту арқылы қимылдар барысында бос орындарды енгізу"</string>
     <string name="voice_input" msgid="3583258583521397548">"Дауыстық енгізу пернесі"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Дауыспен енгізу әдістері қосылмаған. «Тіл және енгізу параметрлері» тармағын тексеріңіз."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Енгізу әдістерін теңшеу"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тілдер"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Анықтама және кері байланыс"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Келесі қадам"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> орнату"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қосу"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Тіл &amp; енгізу параметрлерінде <xliff:g id="APPLICATION_NAME">%s</xliff:g> тексеріңіз. Бұл оған құрылғыңызды басқаруға рұқсат береді."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасы әлдеқашан Тіл &amp; енгізу параметрлерінде қосылған, сол себепті бұл қадам орындалған.Келесі біреуін қосыңыз!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Параметрлер ішінде қосу"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасына ауыстыру"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Одан кейін \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" қолданбасын белсенді мәтінді енгізу әдісі ретінде таңдаңыз."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Орнату"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Болдырмау"</string>
     <string name="delete_dict" msgid="756853268088330054">"Жою"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Мобильдік құрылғыда таңдалған тіл үшін сөздік қол жетімді.&lt;br/&gt; Теру тәжірибесін жақсарту үшін <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> сөздігін &lt;b&gt;жүктеу&lt;/b&gt; ұсынылады.&lt;br/&gt; &lt;br/&gt; Жүктеу 3G арқылы бір немесе екі минут алуы мүмкін. Сізде &lt;b&gt;шектеусіз деректер жоспары&lt;/b&gt; болмаса, ақылар алынуы мүмкін.&lt;br/&gt; Егер өзіңіздегі деректер жоспарын білмесеңіз, жүктеуді автоматты түрде бастау үшін Wi-Fi байланысын табу ұсынылады.&lt;br/&gt; &lt;br/&gt; Кеңес: мобильдік құрылғының &lt;b&gt;Параметрлер&lt;/b&gt; мәзірінде &lt;b&gt;Тіл және енгізу&lt;/b&gt; тармағына өту арқылы сөздіктерді жүктеуге және жоюға болады."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Қазір жүктеп алу (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>МБ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi арқылы жүктеп алу"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> үшін сөздік қол жетімді"</string>

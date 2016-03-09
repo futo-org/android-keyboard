@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ഫ്രെയ്‌സ് ജെസ്റ്റർ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"സ്‌പെയ്‌സ് കീയിലേക്ക് ഗ്ലൈഡുചെയ്യുന്നതിലൂടെ ജെസ്റ്റർ ചെയ്യുന്നതിനിടെ സ്‌പെയ്‌സുകൾ നൽകുക"</string>
     <string name="voice_input" msgid="3583258583521397548">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ കീ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ രീതികളൊന്നും പ്രവർത്തനക്ഷമമല്ല. ഭാഷ &amp; ടൈപ്പു ചെയ്യൽ ക്രമീകരണങ്ങൾ പരിശോധിക്കുക."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ടൈപ്പുചെയ്യൽ രീതികൾ കോൺഫിഗർ ചെയ്യുക"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ഭാഷകള്‍‌"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"സഹായവും ഫീഡ്‌ബാക്കും"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"അടുത്ത ചുവട്"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> സജ്ജമാക്കുന്നു"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> പ്രവർത്തനക്ഷമമാക്കുക"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"നിങ്ങളുടെ ഭാഷ &amp; ടൈപ്പുചെയ്യൽ ക്രമീകരണങ്ങളിൽ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" പരിശോധിക്കുക. ഇത് നിങ്ങളുടെ ഉപകരണത്തിൽ പ്രവർത്തിക്കാൻ ഇതിന് അംഗീകാരം നൽകും."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"നിങ്ങളുടെ ഭാഷ &amp; ടൈപ്പുചെയ്യൽ ക്രമീകരണങ്ങളിൽ <xliff:g id="APPLICATION_NAME">%s</xliff:g> എന്നത് ഇതിനകം പ്രവർത്തനക്ഷമമാക്കിയതിനാൽ ഈ ഘട്ടം പൂർത്തിയായി. അടുത്ത ഘട്ടത്തിലേക്ക് പോകുക!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"ക്രമീകരണങ്ങളിൽ പ്രവർത്തനക്ഷമമാകുക"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> എന്നതിലേക്ക് മാറുക"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"അടുത്തത്, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" എന്നതിനെ നിങ്ങളുടെ സജീവ വാചക-ടൈപ്പുചെയ്യൽ രീതിയായി തിരഞ്ഞെടുക്കുക."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"റദ്ദാക്കുക"</string>
     <string name="delete_dict" msgid="756853268088330054">"ഇല്ലാതാക്കുക"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"നിങ്ങളുടെ മൊബൈലിൽ തിരഞ്ഞെടുത്ത ഭാഷയ്‌ക്ക് നിഘണ്ടു ലഭ്യമാണ്.&lt;br/&gt; നിങ്ങളുടെ ടൈപ്പുചെയ്യൽ അനുഭവം മെച്ചപ്പെടുത്തുന്നതിനായി <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> നിഘണ്ടു &lt;b&gt;ഡൗൺലോഡുചെയ്യാൻ&lt;/b&gt; ഞങ്ങൾ ശുപാർശചെയ്യുന്നു. 3G-യിൽ ഡൗൺലോഡ് ചെയ്യാൻ ഒന്നോ രണ്ടോ മിനിറ്റെടുത്തേക്കാം. നിങ്ങൾക്ക് &lt;b&gt;പരിധിയില്ലാത്ത ഡാറ്റാ പ്ലാൻ&lt;/b&gt; ഇല്ലെങ്കിൽ നിരക്കുകൾ ബാധകമാകാം. നിങ്ങൾക്ക് ഏത് ഡാറ്റ പ്ലാനാണ് ഉള്ളതെന്ന് തീർച്ചയില്ലെങ്കിൽ, ഡൗൺലോഡ് യാന്ത്രികമായി ആരംഭിക്കുന്നതിന് ഒരു വൈഫൈ കണക്ഷൻ കണ്ടെത്താൻ ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; നുറുങ്ങ്: നിങ്ങളുടെ മൊബൈലിലെ &lt;b&gt;ക്രമീകരണങ്ങൾ&lt;/b&gt; മെനുവിലുള്ള &lt;b&gt;ഭാഷ &amp; ടൈപ്പുചെയ്യൽ&lt;/b&gt; എന്നതിലേക്ക് പോയി നിങ്ങൾക്ക് നിഘണ്ടുക്കൾ ഡൗൺലോഡുചെയ്യാനും നീക്കംചെയ്യാനുമാകും."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"ഇപ്പോൾ ഡൗൺലോഡുചെയ്യുക (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"വൈഫൈ മുഖേന ഡൗൺലോഡ് ചെയ്യുക"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ഭാഷയ്‌ക്കായി ഒരു നിഘണ്ടു ലഭ്യമാണ്"</string>

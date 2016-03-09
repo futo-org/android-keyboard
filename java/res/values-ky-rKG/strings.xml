@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Сөз айкашын жаңсоо"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Боштук баскычын сылоо менен боштуктарды жаңсап киргизиңиз"</string>
     <string name="voice_input" msgid="3583258583521397548">"Үн менен киргизүү баскычы"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Үн менен киргизүү ыкмаларынын бири да иштетилген эмес. Тил &amp; киргизүү жөндөөлөрүн текшериңиз."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Дайндрд киргзүү ыкмалрн конфигрцлоо"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тилдер"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Жардам жана жооп пикир"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Кийинки кадам"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> орнотулууда"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> иштетүү"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Тил &amp; Киргизүү жөндөөлөрүңүздөн \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" текшериңиз. Ушуну менен аны түзмөгүңүздө иштете аласыз."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> буга чейин эле Тил &amp; Киргизүү жөндөөлөрүндө иштетилгендиктен бул кадам аткарылды деск болт. Кийинкисине өтө бериңз!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Жөндөөлөрдөн иштетүү"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> которулуу"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Андан соң, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" жигердүү текст киргизүү ыкмасы катары коюңуз."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Орнотуу"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Жокко чыгаруу"</string>
     <string name="delete_dict" msgid="756853268088330054">"Жок кылуу"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Мобилдик түзмөгүңүздөгү тандалган тилде сөздүк бар.&lt;br/&gt; Терүү аракетиңизди жакшыртуу &lt;b&gt;үчүн&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> тилиндеги сөздүктү жүктөп алыңыз.&lt;br/&gt; &lt;br/&gt; 3G аркылуу жүктөп алууда бир нече мүнөт талап кылынышы мүмкүн. Эгер тарифтик планыңыз чектелген болсо, &lt;b&gt;акы төлөп калышыңыз мүмкүн&lt;/b&gt;.&lt;br/&gt; Ал эми кандай тарифтик планды колдонуп жатканыңызды билбесеңиз, жүктөп алуу аракетин автоматтык түрдө иштетүү үчүн Wi-Fi\'га туташыңыз.&lt;br/&gt; &lt;br/&gt; Кеңеш: Мобилдик түзмөгүңүздөгү &lt;b&gt;Жөндөөлөр&lt;/b&gt; менюсундагы уюлдук түзмөгүңүздүн менюсундагы <b>Тил &amp; киргизүү</b> бөлүмүнө өтүп, сөздүктөрдү жүктөп алсаңыз же алып салсаңыз болот."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Азыр жүктөп алуу (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>Мб)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi аркылуу жүктөп алуу"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> тилинде сөздүк бар"</string>

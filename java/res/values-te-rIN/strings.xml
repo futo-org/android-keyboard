@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"పదబంధం సంజ్ఞ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"స్పేస్ కీకి గ్లైడ్ చేయడం ద్వారా సంజ్ఞల సమయంలో అంతరాలను ఇన్‌పుట్ చేయండి"</string>
     <string name="voice_input" msgid="3583258583521397548">"వాయిస్ ఇన్‌పుట్ కీ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"వాయిస్ ఇన్‌పుట్ పద్ధతులు ఏవీ ప్రారంభించబడలేదు. భాష &amp; ఇన్‌పుట్ సెట్టింగ్‌లను తనిఖీ చేయండి."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ఇన్‌పుట్ పద్ధతులను కాన్ఫిగర్ చేయండి"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"భాషలు"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"సహాయం &amp; అభిప్రాయం"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"తదుపరి దశ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ని సెటప్ చేయడం"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ని ప్రారంభించండి"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"దయచేసి మీ భాష &amp; ఇన్‌పుట్ సెట్టింగ్‌ల్లో \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\"ని తనిఖీ చేయండి. ఇది మీ పరికరంలో అమలు చేయబడటానికి దీన్ని ప్రామాణీకరిస్తుంది."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ఇప్పటికే మీ భాష &amp; ఇన్‌పుట్ సెట్టింగ్‌ల్లో ప్రారంభించబడింది, కనుక ఈ దశ పూర్తయింది. తదుపరి దశకు వెళ్లండి!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"సెట్టింగ్‌ల్లో ప్రారంభించండి"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>కు మారండి"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"తర్వాత, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\"ని మీ సక్రియ వచన-ఇన్‌పుట్ పద్ధతిగా ఎంచుకోండి."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"ఇన్‌స్టాల్ చేయి"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"రద్దు చేయి"</string>
     <string name="delete_dict" msgid="756853268088330054">"తొలగించు"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"మీ మొబైల్ పరికరంలో ఎంచుకున్న భాషకు నిఘంటువు అందుబాటులో ఉంది.&lt;br/&gt; మీ టైపింగ్ అనుభవాన్ని మెరుగుపరచుకోవడానికి <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> నిఘంటువుని &lt;b&gt;డౌన్‌లోడ్ చేయాల్సిందిగా&lt;/b&gt; మేము సిఫార్సు చేస్తున్నాము.&lt;br/&gt; &lt;br/&gt; డౌన్‌లోడ్ చేయడానికి 3Gలో ఒకటి లేదా రెండు నిమిషాలు పట్టవచ్చు. మీకు &lt;b&gt;అపరిమిత డేటా ప్లాన్&lt;/b&gt; లేకపోతే, ఛార్జీలు వర్తించవచ్చు.&lt;br/&gt; మీరు ఏ డేటా ప్లాన్‌ను కలిగి ఉన్నారనే విషయం సరిగ్గా తెలియకపోతే, డౌన్‌లోడ్‌ను స్వయంచాలకంగా ప్రారంభించడానికి Wi-Fi కనెక్షన్‌ను కనుగొనాల్సిందిగా మేము సిఫార్సు చేస్తున్నాము.&lt;br/&gt; &lt;br/&gt; చిట్కా: మీరు మీ మొబైల్ పరికరం యొక్క &lt;b&gt;సెట్టింగ్‌‌లు&lt;/b&gt; మెనులో &lt;b&gt;భాష &amp; ఇన్‌పుట్&lt;/b&gt;కి వెళ్లడం ద్వారా నిఘంటువులను డౌన్‌లోడ్ చేయవచ్చు మరియు తీసివేయవచ్చు."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"ఇప్పుడే డౌన్‌లోడ్ చేయండి (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi ద్వారా డౌన్‌లోడ్ చేయండి"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> కోసం నిఘంటువు అందుబాటులో ఉంది"</string>

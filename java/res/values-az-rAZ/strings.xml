@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Jest bildirin"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Jest zamanı boşluq düyməsinə toxunmaqla boşluq daxil edin"</string>
     <string name="voice_input" msgid="3583258583521397548">"Səs daxiletmə klavişi"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Heç bir səs daxiletmə metodu aktiv deyil. Dil və daxiletmə ayarlarını yoxlayın."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Daxiletmə üsullarını sazla"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Dillər"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Yardım və geri əlaqə"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Növbəti addım"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> quraşdırılır"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> tətbiqini aktivləşdir"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Lütfən, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" tətbiqini Dil və daxiletmə parametrlərinizdə yoxlayın. Bununla tətbiqin cihazınızda işləməsinə icazə veriləcək."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> artıq sizin Dil və daxiletmə parametrlərinizdə aktivləşdirildi, beləliklə da bu mərhələ tamamlandı. İndi isə növbəti mərhələyə eçin!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Parametrlərdə aktivləşdir"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> tətbiqinə keçin"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Sonra, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" tətbiqini aktiv mətn-daxiletmə metodu olaraq seçin."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Quraşdırın"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Ləğv et"</string>
     <string name="delete_dict" msgid="756853268088330054">"Sil"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobil telefonunuzda seçilmiş dilin əlçatımlı lüğəti var. Daha rahat yazmaq üçün <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> lüğətini endirməyinizi məsləhət görürük. Lüğətin endirilməsi 3G üzərindən bir-iki dəqiqə vaxt ala bilər. Limitsiz data planınızın olmadığı halda, data ödənişləri də tətbiq edilə bilər. Əgər hansı data planına malik olmağınıza əmin deyilsinizsə, Sizə Wi-Fi bağlantısı üzərindən avtomatik endirməyi məsləhət görürük.  İpucu: Lüğətləri endirmək və ya sistemdən silmək üçün mobil cihazınızın menyusunda Ayarlar&gt;Dil&gt;Daxiletmə bölməsinə keçə bilərsiniz."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"İndi endirin (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi ilə endir"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> üçün lüğət əlçatımlıdır"</string>

@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"சொற்றொடர் சைகை"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ஸ்பேஸ் விசைக்கு இழுப்பதன் மூலம் சைகைகளுக்கு இடையே இடைவெளிகளை உள்ளிடலாம்"</string>
     <string name="voice_input" msgid="3583258583521397548">"குரல் உள்ளீட்டு விசை"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"குரல் உள்ளீட்டு முறைகள் எதுவும் இயக்கப்படவில்லை. மொழி &amp; உள்ளீட்டு அமைப்புகளைச் சரிபார்க்கவும்."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"உள்ளீட்டு முறைகளை உள்ளமைத்தல்"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"மொழிகள்"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"உதவி &amp; கருத்து"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"அடுத்த கட்டம்"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டை அமைக்கிறது"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டை இயக்கவும்"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"உங்கள் மொழி &amp; உள்ளீட்டு அமைப்புகளில் \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" பயன்பாட்டைச் சரிபார்க்கவும். உங்கள் சாதனத்தில் பயன்பாட்டை இயக்குவதை இது அங்கீகரிக்கும்."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"உங்கள் மொழி &amp; உள்ளீட்டு அமைப்புகளில் <xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாடு ஏற்கனவே இயக்கப்பட்டுவிட்டது, அதனால் இந்தப் படிமுறை முடிந்தது. அடுத்த படிமுறைக்குச் செல்கிறது!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"அமைப்புகளில் இயக்கு"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> க்கு மாறவும்"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"அடுத்து, உங்கள் செயலில் உள்ள உரை உள்ளீட்டு முறையாக \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" பயன்பாட்டைத் தேர்ந்தெடுக்கவும்."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"நிறுவு"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ரத்துசெய்"</string>
     <string name="delete_dict" msgid="756853268088330054">"நீக்கு"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"உங்கள் மொபைலில் தேர்ந்தெடுத்த மொழிக்கு அகராதி உள்ளது.&lt;br/&gt; உங்கள் உள்ளீட்டு அனுபவத்தை மேம்படுத்த <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> அகராதியைப்  &lt;b&gt;பதிவிறக்குவதைப்&lt;/b&gt; பரிந்துரைக்கிறோம்.&lt;br/&gt; &lt;br/&gt; 3G இல் பதிவிறக்கத்திற்கு ஒன்று அல்லது இரண்டு நிமிடங்கள் ஆகலாம். உங்களிடம் &lt;b&gt;வரம்பில்லா தரவு திட்டம்&lt;/b&gt; இல்லையெனில் கட்டணம் விதிக்கப்படலாம்.&lt;br/&gt; உங்களிடம் எந்தத் தரவு திட்டம் உள்ளது என்பது உறுதியாகத் தெரியவில்லையெனில், பதிவிறக்கத்தைத் தானாகத் துவங்க, வைஃபை இணைப்பைக் கண்டறிவதைப் பரிந்துரைக்கிறோம்.&lt;br/&gt; &lt;br/&gt; உதவிக்குறிப்பு: உங்கள் மொபைல் சாதனத்தில் &lt;b&gt;அமைப்பு&lt;/b&gt; மெனுவில் உள்ள &lt;b&gt;மொழி &amp; உள்ளீடு&lt;/b&gt; என்பதற்குச் செலவதன் மூலம் அகராதிகளைப் பதிவிறக்கலாம் மற்றும் அகற்றலாம்."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"இப்போது பதிவிறக்கு (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>மெ.பை.)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"வைஃபை வழியாகப் பதிவிறக்கு"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> மொழிக்கு அகராதி கிடைக்கிறது"</string>

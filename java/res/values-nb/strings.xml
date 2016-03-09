@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frasebevegelse"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Sett inn mellomrom ved å dra fingeren til mellomromstasten"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tast for taleinndata"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Ingen taleinndatametoder er aktivert. Sjekk Språk og inndata-innstillingene."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inndatametoder"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Språk"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Hjelp og tilbakemelding"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Neste trinn"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Konfigurerer <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Slå på <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Sjekk <xliff:g id="APPLICATION_NAME">%s</xliff:g> i Språk og inndata-innstillingene dine. Dette tillater appen å kjøre på enheten."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> er allerede aktivert i Språk og inndata-innstillingene dine, så dette trinnet er fullført. Gå til neste trinn!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktiver i Innstillinger"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Bytt til <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Deretter velger du  «<xliff:g id="APPLICATION_NAME">%s</xliff:g>» som den aktive inndatametoden for tekst."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Installer"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Avbryt"</string>
     <string name="delete_dict" msgid="756853268088330054">"Slett"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Det valgte språket på mobilenheten din har en tilgjengelig ordliste.&lt;br/&gt; Vi anbefaler å &lt;b&gt;laste ned&lt;/b&gt; ordlisten for <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>. Dette forbedrer skriveopplevelsen din.&lt;br/&gt; &lt;br/&gt; Nedlastingen kan ta fra ett til to minutter via 3G. Belastninger kan påløpe hvis du ikke har et abonnement med &lt;b&gt;ubegrenset databruk&lt;/b&gt;.&lt;br/&gt; Hvis du er usikker på hvilken abonnementstype du har, anbefaler vi deg å finne en Wi-Fi-tilkobling for å starte nedlastingen automatisk.&lt;br/&gt; &lt;br/&gt; Tips: Du kan laste ned og fjerne ordlister ved å gå til &lt;b&gt;Språk og inndata&lt;/b&gt; i menyen for &lt;b&gt;Innstillinger&lt;/b&gt; på mobilenheten din."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Last ned nå (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Last ned via Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"En ordliste er tilgjengelig for <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Igama lokuthinta"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Faka izikhala ngesikhathi sokuthinta ngokushelelela kukhiye wesikhala"</string>
     <string name="voice_input" msgid="3583258583521397548">"Inkinobho yokufaka izwi"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Azikho izindlela zokufaka zezwi ezinikwe amandla. Hlola izilungiselelo zolimi kanye nezokufaka."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Misa izindlela zokufakwayo"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Izilimi"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Usizo nempendulo"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Isinyathelo esilandelayo"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Kusethwa i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Nika amandla i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Sicela uhlole i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ngolimi lwakho nezilungiselelo zokokufaka. Lokhu kuzoyigunyaza ukuthi isebenze kudivayisi yakho."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"I-<xliff:g id="APPLICATION_NAME">%s</xliff:g> isivele inikwe amandla kulimi lwakho nakuzilungiselelo zokufaka, ngakho-ke lesi sinyathelo senziwe. Qhubekela kwesilandelayo!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Nika amandla kuzilungiselelo"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Shintshela ku-<xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Okulandelayo, khetha i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" njengendlela yakho yokufaka umbhalo osebenzayo."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Faka"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Khansela"</string>
     <string name="delete_dict" msgid="756853268088330054">"Susa"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ulimi olukhethiwe kudivayisi yakho yeselula lunesichazamazwi esitholakalayo.&lt;br/&gt; Sincoma &lt;b&gt;ukulanda&lt;/b&gt; isichazamazwi se-<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ukuze sithuthukise umuzwa wakho wokuthayipha.&lt;br/&gt; &lt;br/&gt; Ukulanda kungathatha iminithi noma amabili ngaphezulu kwe-3G. Ukukhokhiswa kungasebenza uma unganalo &lt;b&gt;uhlelo lwedatha elingenamkhawulo&lt;/b&gt;.&lt;br/&gt; Uma ungenaso isiqiniseko sokuthi ukuliphi uhlelo lwedatha, sincoma ukuthi uthole ukuxhumeka kwe-Wi-Fi ukuze uqale ukulanda ngokuzenzakalela.&lt;br/&gt; &lt;br/&gt; Ithiphu: Ungalanda uphinde ususe izichazamazwi ngokuya ku-&lt;b&gt;Ulimi nokokufaka&lt;/b&gt; kumenyu ye-&lt;b&gt;Izilungiselelo&lt;/b&gt; zedivayisi yakho yeselula."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Landa manje (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Landa nge-Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Isichazamazwi sitholakalela i-<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

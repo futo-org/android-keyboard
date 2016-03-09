@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ਵਾਕਾਂਸ਼ ਸੰਕੇਤ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ਸਪੇਸ ਕੁੰਜੀ ਸਰਕਾ ਕੇ ਸੰਕੇਤਾਂ ਦੇ ਦੌਰਾਨ ਸਪੇਸ ਇਨਪੁਟ ਕਰੋ"</string>
     <string name="voice_input" msgid="3583258583521397548">"ਵੌਇਸ ਇਨਪੁਟ ਕੁੰਜੀ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ਕੋਈ ਵੌਇਸ ਇਨਪੁਟ ਵਿਧੀਆਂ ਸਮਰਥਿਤ ਨਹੀਂ। ਭਾਸ਼ਾ &amp; ਇਨਪੁਟ ਸੈਟਿੰਗਾਂ ਦੀ ਜਾਂਚ ਕਰੋ।"</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ਇਨਪੁਟ ਵਿਧੀਆਂ ਕੌਂਫਿਗਰ ਕਰੋ"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ਭਾਸ਼ਾਵਾਂ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"ਸਹਾਇਤਾ &amp; ਫੀਡਬੈਕ"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"ਅਗਲਾ ਸਟੈਪ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਸੈਟ ਅਪ ਕਰ ਰਿਹਾ ਹੈ"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"ਕਿਰਪਾ ਕਰਕੇ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ਦੀ ਆਪਣੀ ਭਾਸ਼ਾ &amp; ਇਨਪੁਟ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਜਾਂਚ ਕਰੋ। ਇਹ ਇਸਨੂੰ ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਤੇ ਚਲਾਉਣ ਦਾ ਅਧਿਕਾਰ ਦੇਵੇਗਾ।"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਪਹਿਲਾਂ ਹੀ ਤੁਹਾਡੀ ਭਾਸ਼ਾ &amp; ਇਨਪੁਟ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸਮਰਥਿਤ ਹੈ, ਇਸਲਈ ਇਹ ਸਟੈਪ ਹੋ ਗਿਆ ਹੈ। ਅਗਲੇ ਤੇ ਜਾਣ ਲਈ ਚਾਲੂ ਕਰੋ!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸਮਰੱਥ ਬਣਾਓ"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਤੇ ਸਵਿਚ ਕਰੋ"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ਫਿਰ, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ਨੂੰ ਆਪਣੀ ਸਕਿਰਿਆ ਟੈਕਸਟ-ਇਨਪੁਟ ਵਿਧੀ ਦੇ ਤੌਰ ਤੇ ਚੁਣੋ।"</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"ਇੰਸਟੌਲ ਕਰੋ"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ਰੱਦ ਕਰੋ"</string>
     <string name="delete_dict" msgid="756853268088330054">"ਮਿਟਾਓ"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ਤੁਹਾਡੀ ਮੋਬਾਈਲ ਡਿਵਾਈਸ ਤੇ ਚੁਣੀ ਗਈ ਭਾਸ਼ਾ ਵਿੱਚ ਇੱਕ ਉਪਲਬਧ ਸ਼ਬਦਕੋਸ਼ ਹੈ।&lt;br/&gt; ਅਸੀਂ ਤੁਹਾਡੇ ਟਾਈਪਿੰਗ ਅਨੁਭਵ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਸ਼ਬਦਕੋਸ਼ &lt;b&gt; ਡਾਊਨਲੋਡ ਕਰਨ ਦੀ&lt;/b&gt; ਸਿਫਾਰਿਸ਼ ਕਰਦੇ ਹਾਂ। &lt;br/&gt; &lt;br/&gt; ਡਾਊਨਲੋਡ ਨੂੰ 3G ਤੇ ਇੱਕ ਜਾਂ ਦੋ ਮਿੰਟ ਲੱਗ ਸਕਦੇ ਹਨ। ਜੇਕਰ ਤੁਹਾਡੇ ਕੋਲ ਇੱਕ &lt;b&gt; ਅਨਲਿਮਿਟੇਡ ਡਾਟਾ ਪਲਾਨ&lt;/b&gt;.&lt;br/&gt; ਹੈ ਤਾਂ ਖ਼ਰਚੇ ਲਾਗੂ ਹੋ ਸਕਦੇ ਹਨ, ਜੇਕਰ ਤੁਹਾਨੂੰ ਪੱਕਾ ਪਤਾ ਨਹੀਂ ਹੈ ਕਿ ਤੁਹਾਡੇ ਕੋਲ ਕਿਹੜਾ ਡਾਟਾ ਪਲਾਨ ਹੈ, ਤਾਂ ਅਸੀਂ ਆਟੋਮੈਟਿਕਲੀ ਡਾਊਨਲੋਡ ਚਾਲੂ ਕਰਨ ਲਈ ਇੱਕ Wi-Fi ਕਨੈਕਸ਼ਨ ਪ੍ਰਾਪਤ ਕਰਨ ਦੀ ਸਿਫਾਰਿਸ਼ ਕਰਦੇ ਹਾਂ।&lt;br/&gt; &lt;br/&gt; ਸੁਝਾਅ: ਤੁਸੀਂ ਆਪਣੀ ਮੋਬਾਈਲ ਡਿਵਾਈਸ ਦੇ ਮੀਨੂ ਵਿੱਚ &lt;b&gt;ਭਾਸ਼ਾ &amp; ਇਨਪੁਟ&lt;/b&gt; &lt;b&gt; ਸੈਟਿੰਗਾਂ&lt;/b&gt; ਤੇ ਜਾ ਕੇ ਸ਼ਬਦਕੋਸ਼ ਡਾਊਨਲੋਡ ਕਰ ਸਕਦੇ ਹੋ ਅਤੇ ਹਟਾ ਸਕਦੇ ਹੋ।"</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"(<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB) ਹੁਣ ਡਾਊਨਲੋਡ ਕਰੋ"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi ਤੇ ਡਾਊਨਲੋਡ ਕਰੋ"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਲਈ ਇੱਕ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਹੈ"</string>

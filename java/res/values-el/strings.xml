@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Εισαγωγή φράσεων με κίνηση"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Εισαγάγετε κενά στις κινήσεις με ολίσθηση στο πλήκτρο διαστήματος"</string>
     <string name="voice_input" msgid="3583258583521397548">"Κλειδί φωνητικής εξόδου"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Δεν έχουν ενεργοποιηθεί μέθοδοι φωνητικής εισαγωγής. Ελέγξτε τις Ρυθμίσεις Γλώσσας και εισαγωγής."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Διαμόρφωση μεθόδων εισαγωγής"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Γλώσσες"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Βοήθεια και σχόλια"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Επόμενο βήμα"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Ρύθμιση της εφαρμογής <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Ενεργοποιήστε την εφαρμογή <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Επιλέξτε \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" στις ρυθμίσεις Γλώσσα και εισαγωγή, για να εκτελεστεί στη συσκευή."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Η εφαρμογή <xliff:g id="APPLICATION_NAME">%s</xliff:g> έχει ενεργοποιηθεί στις Ρυθμίσεις γλώσσας και εισαγωγής, συνεπώς το βήμα έχει ολοκληρωθεί. Πάμε στο επόμενο!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Ενεργοποίηση στις Ρυθμίσεις"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Μετάβαση στην εφαρμογή <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Στη συνέχεια, επιλέξτε \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ως την ενεργή μέθοδο εισαγωγής κειμένου."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Εγκατάσταση"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Ακύρωση"</string>
     <string name="delete_dict" msgid="756853268088330054">"Διαγραφή"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Η επιλεγμένη γλώσσα στην κινητή συσκευή σας διαθέτει λεξικό.&lt;br/&gt; Προτείνουμε να &lt;b&gt;κατεβάσετε&lt;/b&gt; το λεξικό <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> για βελτίωση της πληκτρολόγησης.&lt;br/&gt; &lt;br/&gt; Για τη λήψη μπορεί να χρειαστούν 1 ή 2 λεπτά μέσω 3G. Ενδέχεται να ισχύουν χρεώσεις αν δεν έχετε διαθέτετε&lt;b&gt;πρόγραμμα απεριόριστων δεδομένων&lt;/b&gt;.&lt;br/&gt; Αν δεν γνωρίζετε ποιο πρόγραμμα δεδομένων διαθέτετε, προτείνουμε να χρησιμοποιήσετε μια σύνδεση Wi-Fi για να ξεκινήσει αυτόματα η λήψη.&lt;br/&gt; &lt;br/&gt; Συμβουλή: Μπορείτε να κατεβάσετε και να καταργήσετε λεξικά, από την περιοχή &lt;b&gt;Γλώσσα και εισαγωγή&lt;/b&gt;, στο μενού &lt;b&gt;Ρυθμίσεις&lt;/b&gt; της κινητής συσκευής σας."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Άμεση λήψη (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Λήψη μέσω Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Υπάρχει διαθέσιμο λεξικό για τα <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

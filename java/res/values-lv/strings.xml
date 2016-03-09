@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frāzes žests"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Lai ievietotu atstarpi, velciet uz atstarpes taustiņu."</string>
     <string name="voice_input" msgid="3583258583521397548">"Balss ievades atslēga"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nav iespējota neviena balss ievades metode. Pārbaudiet valodas un ievades iestatījumus."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Ievades metožu konfigurēšana"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Valodas"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Palīdzība un atsauksmes"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Nākamā darbība"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Lietojumprogrammas <xliff:g id="APPLICATION_NAME">%s</xliff:g> iestatīšana"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Lietojumprogrammas <xliff:g id="APPLICATION_NAME">%s</xliff:g> iespējošana"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Valodas un ievades iestatījumos atzīmējiet “<xliff:g id="APPLICATION_NAME">%s</xliff:g>”, autorizējot tās palaišanu ierīcē."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Tā kā lietojumprogramma <xliff:g id="APPLICATION_NAME">%s</xliff:g> jau ir iespējota valodas un iesūtnes iestatījumos, šī darbība ir pabeigta. Veiciet nākamo darbību!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Iespējot iestatījumos"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Pārslēgšanās uz lietojumprogrammu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Pēc tam atlasiet “<xliff:g id="APPLICATION_NAME">%s</xliff:g>” kā aktīvo ievades metodi."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Instalēt"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Atcelt"</string>
     <string name="delete_dict" msgid="756853268088330054">"Dzēst"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobilajā ierīcē atlasītajai valodai ir pieejama vārdnīca.&lt;br/&gt; Ieteicams &lt;b&gt;lejupielādēt&lt;/b&gt; šo vārdnīcu (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>), lai uzlabotu rakstīšanas iespējas.&lt;br/&gt; &lt;br/&gt; Lejupielāde, izmantojot 3G tīklu, ilgs tikai dažas minūtes. Ja nelietojat &lt;b&gt;neierobežotu datu plānu&lt;/b&gt;, var tikt piemērota maksa.&lt;br/&gt; Ja nezināt, kādu datu plānu lietojat, ieteicams atrast Wi-Fi savienojumu, lai automātiski sāktu lejupielādi.&lt;br/&gt; &lt;br/&gt; Padoms: vārdnīcas var lejupielādēt un noņemt sadaļā &lt;b&gt;Valoda un ievade&lt;/b&gt;, kas atrodas mobilās ierīces izvēlnē &lt;b&gt;Iestatījumi&lt;/b&gt;."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Lejupielādēt tūlīt (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Lejupielādēt, izmantojot Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Ir pieejama vārdnīca šādai valodai: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
