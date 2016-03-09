@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"የሐረግ ምልክት"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ምልክት በሚሰጡበት ጊዜ ወደ ክፍተት ቁልፉ በማንሸራተት ክፍተቶችን ያስገቡ"</string>
     <string name="voice_input" msgid="3583258583521397548">"የድምፅ ግቤት ቁልፍ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ምንም የግቤት ስልቶች አልነቁም። የቋንቋ እና የግቤት ቅንብሮችን ይፈትሹ።"</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ግቤት ሜተዶችን አዋቀር"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ቋንቋዎች"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"እገዛ እና ግብረመልስ"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"ቀጣይ ደረጃ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ን በማዋቀር ላይ"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ን ያንቁ"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"እባክዎ «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን በቋንቋ እና ግቤት ቅንብሮችዎ ውስጥ ያረጋግጡት። ይሄ እሱ በመሣሪያዎ ላይ እንዲሄድ ይፈቅድለታል።"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> አስቀድሞ በእርስዎ ቋንቋ እና ግቤት ቅንብሮች ውስጥ ነቅቷል፣ ስለዚህ ይህ ደረጃ ተከናውኗል። ቀጣዩ ላይ!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"በቅንብሮች ውስጥ ያንቁ"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"ወደ <xliff:g id="APPLICATION_NAME">%s</xliff:g> ይቀይሩ"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"በመቀጠል «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን እንደ የጽሑፍ ግቤት ስልትዎ ይምረጡት።"</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"ጫን"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ይቅር"</string>
     <string name="delete_dict" msgid="756853268088330054">"ሰርዝ"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"በተንቀሳቃሽ መሣሪያዎ ላይ ለተመረጠው ቋንቋ የሚሆን መዝገበ-ቃላት ይገኛል።&lt;br/&gt; የትየባ ተሞክሮዎን ለማሻሻል የ<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> መዝገበ-ቃላቱን &lt;b&gt;እንዲያወርዱ&lt;/b&gt; እንመክራለን።&lt;br/&gt; &lt;br/&gt; ማውረድ በ3ጂ ላይ አንድ ወይም ሁለት ደቂቃ ሊወስድ ይችላል። &lt;b&gt;ያልተገደበ የውሂብ ዕቅድ&lt;/b&gt; ከሌለዎት ክፍያዎች መከፈል ሊኖርባቸው ይችላል።&lt;br/&gt; የትኛው የውሂብ ዕቅድ እንዳለዎት እርግጠኛ ካልሆኑ ውርዱን በራስ-ሰር ለመጀመር የWi-Fi ግንኙነት እንዲፈልጉ እንመክራለን።&lt;br/&gt; &lt;br/&gt; ጠቃሚ ምክር፦ የተንቀሳቃሽ መሣሪያዎ &lt;b&gt;ቅንብሮች&lt;/b&gt; ምናሌ ውስጥ ወዳለው &lt;b&gt;ቋንቋ እና ግብዓት&lt;/b&gt; በመሄድ መዝገበ-ቃላትን ማውረድና ማስወገድ ይችላሉ።"</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"አሁን አውርድ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> ሜባ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"በWi-Fi አውርድ"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"የ<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> መዝገበ-ቃላት ማግኘት ይችላል"</string>

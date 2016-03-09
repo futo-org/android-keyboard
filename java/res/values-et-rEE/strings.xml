@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Fraasi liigutus"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Sisestage liigutuste kasutamisel tühikuid, libistades tühikuklahvile"</string>
     <string name="voice_input" msgid="3583258583521397548">"Häälesisendi klahv"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Ühtegi häälsisendmeetodit pole lubatud. Kontrollige keele- ja sisendiseadeid."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Sisestusmeetodite seadistamine"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Keeled"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Abi ja tagasiside"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Järgmine toiming"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Rakenduse <xliff:g id="APPLICATION_NAME">%s</xliff:g> seadistamine"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Lubage <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Märkige oma keele ja sisestamise seadetes rakendus „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”. See lubab rakenduse käitamise teie seadmes."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> on teie keele- ja sisestusseadetes juba lubatud, seega on see toiming tehtud. Asuge järgmise toimingu juurde."</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Luba seadetes"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Minge üle rakendusele <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Järgmisena valige aktiivseks tekstisisestusmeetodiks rakendus „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Installi"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Tühista"</string>
     <string name="delete_dict" msgid="756853268088330054">"Kustuta"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobiilseadmes valitud keelele on saadaval sõnastik.&lt;br/&gt; Teksti mugavamaks sisestamiseks soovitame <b>alla laadida</b> <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> keele sõnastiku.&lt;br/&gt; &lt;br/&gt; 3G kaudu allalaadimisele võib kuluda minut või paar. Kui te ei kasuta <b>piiramatut andmepaketti</b>, võivad rakenduda tasud.<br/> Kui te ei tea, millist andmepaketti kasutate, soovitame allalaadimise automaatseks käivitamiseks leida WiFi-ühenduse.&lt;br/&gt; &lt;br/&gt; Nõuanne: sõnastikke saate alla laadida ja eemaldada, tehes mobiilseadme menüüs <b>Seaded</b> valiku &lt;b&gt;Keel ja sisend&lt;/b&gt;."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Laadi kohe alla (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Laadi alla WiFi kaudu"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Sõnastik on saadaval <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> keeles"</string>

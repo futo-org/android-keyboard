@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gjest fraze"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Hapësirat e hyrjes gjatë gjesteve duke kaluar në tastin e hapësirës"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tasti i hyrjes zanore"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Metodat e hyrjeve zanore nuk janë të aktivizuara. Kontrollo \"Cilësimet e gjuhës dhe hyrjes\"."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguro metodat e hyrjes"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Gjuhët"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ndihmë dhe komente"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Hapi tjetër"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Po konfiguron <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Aktivizo <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Kontrollo \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" te \"Cilësimet e gjuhës dhe hyrjes\". Kjo do ta autorizojë atë për ta vënë në punë në pajisjen tënde."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> është tashmë i aktivizuar te \"Cilësimet e gjuhës dhe hyrjes\", prandaj ky hap ka mbaruar. Vazhdo në hapin tjetër!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktivizo te \"Cilësimet\""</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Kalo në <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Më pas, përzgjidh \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" si metodën tënde aktive të hyrjes së tekstit."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Instalo"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Anulo"</string>
     <string name="delete_dict" msgid="756853268088330054">"Fshi"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Gjuha e përzgjedhur në pajisjen tënde celulare mund të përdorë një fjalor.&lt;br/&gt; Rekomandojmë &lt;b&gt;shkarkimin&lt;/b&gt; e fjalorit <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> për të përmirësuar përvojën tënde të të shkruarit.&lt;br/&gt; &lt;br/&gt; Shkarkimi mund të zgjasë një ose dy minuta përmes rrjetit 3G. Mund të aplikohen tarifa nëse nuk ke një &lt;b&gt;plan të dhënash të pakufizuara&lt;/b&gt;.&lt;br/&gt; Nëse nuk je i sigurt se cilin plan të dhënash ke, rekomandojmë të gjesh një lidhje Wi-Fi për të filluar automatikisht shkarkimin.&lt;br/&gt; &lt;br/&gt; Këshillë! Mund të shkarkosh dhe heqësh fjalorë duke shkuar te menyja &lt;b&gt;\"Cilësimet e gjuhës dhe hyrjeve\"&lt;/b&gt; të pajisjes tënde celulare."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Shkarko tani (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Shkarko nga Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Mund të përdoret një fjalor për <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

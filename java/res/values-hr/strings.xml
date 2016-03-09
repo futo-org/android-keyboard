@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Unos izraza kretnjom"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Umećite razmake tijekom izvođenja kretnji kliznuvši prema razmaknici"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tipka za glasovni unos"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nije omogućen nijedan način glasovnog unosa. Provjerite postavke jezika i unosa."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguriraj načine ulaza"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Jezici"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pomoć i povratne informacije"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Sljedeći korak"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Postavljanje aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Omogućite aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Potvrdite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" u postavkama Jezik i unos i ovlastite je za pokretanje."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> već je omogućena u postavkama jezika i unosa, pa je taj korak gotov. Nastavite sa sljedećim korakom!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Omogući u postavkama"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Prijeđite na aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Zatim odaberite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kao aktivan način unosa teksta."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Instaliraj"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Odustani"</string>
     <string name="delete_dict" msgid="756853268088330054">"Izbriši"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Dostupan je rječnik za odabrani jezik na vašem mobilnom uređaju.&lt;br/&gt; Preporučujemo da &lt;b&gt;preuzmete&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> rječnik radi lakšeg unosa teksta.&lt;br/&gt; &lt;br/&gt; Preuzimanje može potrajati jednu do dvije minute putem 3G-a. Možda se naplaćuje dodatna naknada ako nemate &lt;b&gt;neograničenu podatkovnu tarifu&lt;/b&gt;.&lt;br/&gt; Ako niste sigurni koju tarifu imate, preporučujemo da pronađete Wi-Fi vezu kako bi se automatski pokrenulo preuzimanje.&lt;br/&gt; &lt;br/&gt; Savjet: rječnike možete preuzeti i ukloniti u odjeljku &lt;b&gt;Jezik i unos&lt;/b&gt; u izborniku &lt;b&gt;Postavke&lt;/b&gt; na mobilnom uređaju."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Preuzmi sada (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Preuzmi putem Wi-Fi mreže"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Dostupan je rječnik za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> jezik"</string>

@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frazės gestas"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Atlikdami gestus įveskite tarpus perbraukę tarpo klavišą"</string>
     <string name="voice_input" msgid="3583258583521397548">"Įvesties balsu klavišas"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nėra jokių įgalintų įvesties balsu metodų. Patikrinkite kalbos ir įvesties nustatymus."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Konfigūruoti įvesties metodus"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Kalbos"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pagalba ir atsiliepimai"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Kitas veiksmas"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"„<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ sąranka"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Įgalinkite „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Skiltyje „Kalbos ir įvesties nustatymai“ žr. „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ (progr. bus įgal. veikti įr.)."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"„<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ jau įgalinta jūsų „Kalbos ir įvesties nustatymuose“, todėl šis veiksmas yra atliktas. Galite pereiti prie kito!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Įgalinti nustatymuose"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Perjungimas į „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Toliau pasirinkite „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ kaip aktyvų teksto įvesties metodą."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Įdiegti"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Atšaukti"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ištrinti"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Galimas jūsų mobiliajame įrenginyje pasirinktos kalbos žodynas.&lt;br/&gt; Rekomenduojame &lt;b&gt;atsisiųsti&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> žodyną, kad patobulintumėte teksto įvedimą.&lt;br/&gt; &lt;br/&gt; Naudojant 3G ryšį atsisiuntimas užtruks vieną ar dvi minutes. Jei naudojate ne &lt;b&gt;neribotų duomenų planą&lt;/b&gt;, gali būti taikomi mokesčiai.&lt;br/&gt; Jei nesate tikri, kurį duomenų planą naudojate, rekomenduojame rasti „Wi-Fi“ ryšį, kad atsisiuntimas būtų pradėtas automatiškai.&lt;br/&gt; &lt;br/&gt; Patarimas: žodynus galite atsisiųsti ir pašalinti apsilankę mobiliojo įrenginio skiltyje &lt;b&gt;Kalba ir įvestis&lt;/b&gt;, esančioje meniu &lt;b&gt;Nustatymai&lt;/b&gt;."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Atsisiųsti dabar (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Atsisiųsti per „Wi-Fi“"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Galimas <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> žodynas"</string>

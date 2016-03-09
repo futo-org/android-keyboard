@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Kelime öbeği hareketi"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Hareketle girişte boşlukları, boşluk tuşuna kaydırarak girin"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ses girişi tuşu"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Hiçbir ses girişi yöntemi etkinleştirilmedi. Dil ve giriş ayarlarını kontrol edin."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Giriş yöntemlerini yapılandır"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Diller"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Yardım ve geri bildirim"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Sonraki adım"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını kurma"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını etkinleştirin"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Lütfen \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" uygulamasını kendi Dil ve giriş ayarlarınızda işaretleyin. Bu işlem, uygulamaya cihazınızda çalışma yetkisi verecektir."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> zaten Diliniz ve giriş ayarlarınızda etkinleştirilmiş durumda, dolayısıyla bu adım tamamlanmıştır. Bir sonrakine geçin!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Ayarlarda etkinleştir"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasına geçin"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Sonra, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" uygulamasını etkin metin giriş yönteminiz olarak seçin."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Yükle"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"İptal"</string>
     <string name="delete_dict" msgid="756853268088330054">"Sil"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobil cihazınızda seçili dile ait kullanılabilir bir sözlük var.&lt;br/&gt; Daha iyi yazabilmek için bu <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> sözlüğü &lt;b&gt;indirmenizi&lt;/b&gt; öneririz.&lt;br/&gt; &lt;br/&gt; İndirme işlemi 3G üzerinden bir veya iki dakika sürebilir. &lt;b&gt;Sınırsız veri planınız &lt;/b&gt;yoksa ücret alınabilir.&lt;br/&gt; Ne tür bir veri planına sahip olduğunuzdan emin değilseniz, otomatik olarak indirmeye başlamak için bir Kablosuz bağlantı bulmanızı öneririz.&lt;br/&gt; &lt;br/&gt; İpucu: Sözlükleri, mobil cihazınızın &lt;b&gt;Ayarlar&lt;/b&gt; menüsünde &lt;b&gt;Dil ve giriş&lt;/b&gt; seçeneğine giderek indirebilir ve silebilirsiniz."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Hemen indir (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Kablosuz üzerinden indir"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> için kullanılabilir bir sözlük var"</string>

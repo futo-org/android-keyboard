@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Բառակապակցային ժեստ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Ներմուծեք բացատներ ժեստերի ընթացքում՝ սահելով բացատ ստեղնի վրայով"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ձայնային մուտքագրման ստեղն"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Ձայնային ներածման որևէ եղանակ միացված չէ։ Ստուգեք Լեզվի և ներածման կարգավորումները։"</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Կարգավորել մուտքագրման մեթոդները"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Լեզուներ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Օգնություն և հետադարձ կապ"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Հաջորդ քայլը"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Տեղադրվում է <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ը"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Միացնել <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ը"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Խնդրում ենք ստուգել «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»-ը ձեր Լեզվի &amp; մուտքագրման կարգավորումներում: Դա կլիազորի նրան գործարկվել ձեր սարքում:"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>-ն արդեն միացված է ձեր Լեզվի &amp; մուտքագրման կարգավորումներում, ուստի այս քայլն արված է: Անցնել հաջորդին:"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Միացնել կարգավորումներից"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Փոխարկել <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ին"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Հաջորդիվ, ընտրեք «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»-ը որպես ձեր ակտիվ տեքստային մուտքագրման եղանակ:"</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Տեղադրել"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Չեղարկել"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ջնջել"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ձեր բջջային սարքում ընտրված լեզվով առկա է բառարան:<br/> Խորհուրդ ենք տալիս &lt;b&gt;ներբեռնել&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> բառարանը՝ ձեր մուտքագրման հմտությունների բարելավման համար:&lt;br/&gt; &lt;br/&gt; Ներբեռնումը կարող է խլել մեկ կամ երկու րոպե 3G-ի դեպքում: Հնարավոր է գանձում կատարվի, եթե դուք չունեք &lt;b&gt;տվյալների անսահմանափակ փաթեթ&lt;/b&gt;.&lt;br/&gt; Եթե դուք վստահ չեք, թե տվյալների որ փաթեթն ունեք, խորհուրդ ենք տալիս գտնել Wi-Fi կապ՝ ներբեռնումն ավտոմատ սկսելու համար:&lt;br/&gt; &lt;br/&gt; Հուշում. դուք կարող եք ներբեռնել և հեռացնել բառարաններ՝ անցնելով ձեր բջջային սարքի &lt;b&gt;Կարգավորումներ ցանկի Լեզու և մուտքագրում&lt;/b&gt; բաժինը:"</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Ներբեռնել հիմա (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>ՄԲ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Ներբեռնել Wi-Fi-ով"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> լեզվի համար առկա է բառարան"</string>

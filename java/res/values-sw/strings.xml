@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Ishara ya fungu la maneno"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Weka nafasi wakati wa ishara kwa kuelea katika kitufe cha nafasi"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kibao cha kuweka data kwa kutamka"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Hakuna mbinu ya kuweka data kwa kutamka iliyowashwa. Angalia Lugha na mipangilio ya kuingiza data."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Sanidi mbinu za uingizaji"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Lugha"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Usaidizi na maoni"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Hatua inayofuata"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Inasanidi <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Washa <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Tafadhali angalia \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" katika lugha yako na mipangilio ya kuingiza. Hii itaidhinisha ili iendeshwe kwenye kifaa chako."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> tayari imewashwa katika mipangilio yako ya Lugha, Kibodi na Sauti, kwa hivyo hatua hii imekamilika. Nenda kwenye hatua inayofuata!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Washa katika Mipangilio"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Badilisha kwenda <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Kisha, chagua \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kama mbinu yako inayotumika ya kuingiza data ya maandishi."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Sakinisha"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Ghairi"</string>
     <string name="delete_dict" msgid="756853268088330054">"Futa"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Lugha iliyochaguliwa kwenye kifaa chako cha mkononi ina kamusi inayopatikana.&lt;br/&gt; Tunapendekeza&lt;b&gt;upakuaji wa kamusi ya&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ili kuboresha hali yako ya kuchapa.&lt;br/&gt; &lt;br/&gt; Upakuaji unaweza kuchukua dakika moja au mbili kukamilika kwenye mtandao wa 3G. Unaweza kutozwa ada ikiwa huna mpango wa data &lt;b&gt;usio na kipimo &lt;/b&gt;.&lt;br/&gt;Ikiwa huna uhakika una mpango gani wa data, tunapendekeza utafute muunganisho wa Wi-Fi ili uanze upakuaji kiotomatiki.&lt;br/&gt; &lt;br/&gt; Kidokezo: Unaweza kupakua na kuondoa kamusi kwa kuenda kwenye&lt;b&gt;Lugha na Zana za Kuingiza Datalt;/b&gt; katika &lt;b&gt;menyu ya Mipangilio&lt;/b&gt; ya kifaa chako cha mkononi."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Pakua sasa (MB<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Pakua kwenye Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Kamusi inapatikana ya <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

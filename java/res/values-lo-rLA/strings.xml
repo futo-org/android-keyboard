@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ການສະແດງທ່າທາງດ້ວຍປະໂຫຍກ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ໃສ່ຍະຫວ່າງເຂົ້າໄປໃນຂະນະທີ່ສະແດງທ່າທາງ ໂດຍການເລື່ອນໄປທີ່ປຸ່ມຍະຫວ່າງ"</string>
     <string name="voice_input" msgid="3583258583521397548">"ປຸ່ມປ້ອນຂໍ້ມູນດ້ວຍສຽງ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ບໍ່ມີວິທີການປ້ອນສຽງເປີດນໍາໃຊ້. ໃຫ້ກວດເບິ່ງການຕັ້ງຄ່າໃນເມນູ ພາສາ &amp; ການປ້ອນຂໍ້ມູນ."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ຕັ້ງຄ່າຮູບແບບການປ້ອນຂໍ້ມູນ"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ພາ​ສາ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"ຊ່ວຍ​ເຫຼືອ &amp; ຄຳ​ຕິ​ຊົມ"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"ຂັ້ນຕອນຕໍ່ໄປ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"ຕັ້ງຄ່າ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"ເປີດນຳໃຊ້ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"ກະລຸນາກວດເບິ່ງ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ໃນການຕັ້ງຄ່າພາສາ &amp; ການປ້ອນຂໍ້ມູນຂອງທ່ານ. ນີ້ຈະເປັນການອະນຸຍາດໃຫ້ມັນເຮັດວຽກໃນອຸປະກອນຂອງທ່ານ"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ຖືກເປີດນຳໃຊ້ໃນການຕັ້ງຄ່າພາສາ &amp; ການປ້ອນຂໍ້ມູນຂອງທ່ານແລ້ວ, ສະນັ້ນຂັ້ນຕອນນີ້ແມ່ນສຳເລັດໄປແລ້ວ. ໄປທີ່ຂັ້ນຕອນຕໍ່ໄປ!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"ເປີດນຳໃຊ້ໃນການຕັ້ງຄ່າ"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"ປ່ຽນເປັນ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ຕໍ່ໄປ, ເລືອກເອົາ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ເປັນຮູບແບບການປ້ອນຂໍ້ມູນຂອງທ່ານ."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"ຕິດຕັ້ງ"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ຍົກເລີກ"</string>
     <string name="delete_dict" msgid="756853268088330054">"ລຶບ"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ພາ​ສາ​ທີ່​ເລືອກ​ໃນ​ອຸ​ປະ​ກອນ​ມື​ຖື​ຂອງ​ທ່າ​ນັ້ນ​ມີ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ທີ່​ສາ​ມາດ​ໃຊ້​ໄດ້.&lt;br/&gt; ພວ​ກ​ເຮົາ​ຂໍ​ແນະ​ນຳ​ໃຫ້ &lt;b&gt;ດາວ​ໂຫລດ&lt;/b&gt; ວັດ​ຈ​ະ​ນາ​ນຸ​ກົມ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ເພື່ອ​ປັບ​ປຸງ​ປະ​ສົບ​ການ​ໃນ​ການ​ພິມ​ຂອງ​ທ່ານ.&lt;br/&gt; &lt;br/&gt; ການ​ດາວ​ໂຫລດ​ອາດ​ໃຊ້​ເວ​ລາ​ສອງ​ສາມ​ນາ​ທີ​ຜ່ານ​ເຄືອ​ຂ່າຍ 3G. ທ່ານ​ອາ​ດ​ຖືກ​ຮຽກ​ເກັບ​ຄ່າ​ຂໍ້​ມູນ​ໄດ້​ຫາກ​ທ່ານບໍ່​ໄດ້​ໃຊ້ &lt;b&gt;ແພັກ​ເກດ​ຂໍ້​ມູນ​ແບບບໍ່​ຈຳ​ກັດ&lt;/b&gt;.&lt;br/&gt; ຫາກ​ທ່ານບໍ່​ແນ່​ໃຈ​ວ່າ​ທ່ານ​ໃຊ້​ແພັກ​ເກດ​ແບບ​ໃດ​ຢູ່ ພວກ​ເຮົາ​ຂໍ​ແນະ​ນຳ​ໃຫ້​ທ່ານ​ເຊື່ອມ​ຕໍ່ເຄືອ​ຂ່າຍ Wi-Fi ໃດ​ນຶ່ງ​ແທນ​ເພື່ອ​ເລີ່ມ​ຕົ້ນ​ການ​ດາວ​ໂຫລດ​ໂດຍ​ອັດ​ຕະ​ໂນ​ມັດ.&lt;br/&gt; &lt;br/&gt; ເຄັດ​ລັບ: ທ່ານ​ສາ​ມາ​ດ​ດາວ​ໂຫລດ ແລະ​ລຶບ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ອອກ​ໄດ້​ໂດຍ​ການ​ໄປ​ທີ່ &lt;b&gt;ພາ​ສາ &amp; ການ​ປ້ອນ​ຂໍ້​ມູນ&lt;/b&gt; ໃນ​ເມ​ນູ &lt;b&gt;ການ​ຕັ້ງ​ຄ່າ&lt;/b&gt; ຂອງ​ອຸ​ປະ​ກອນ​ມື​ຖື​ຂອງ​ທ່ານ."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"ດາວໂຫລດດຽວນີ້ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ດາວ​ໂຫລດຜ່ານ Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"ມີ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ທີ່​ສາ​ມາດ​ໃຊ້​ໄດ້​ກັບ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

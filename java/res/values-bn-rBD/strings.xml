@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"শব্দবন্ধ অঙ্গভঙ্গি"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"অঙ্গভঙ্গির সময় ব্যবধান ইনপুট করতে স্পেস কীতে যান"</string>
     <string name="voice_input" msgid="3583258583521397548">"ভয়েস ইনপুট কী"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"কোনো ভয়েস ইনপুট পদ্ধতি সক্ষম নয়। ভাষা &amp; ইনপুট সেটিংস পরীক্ষা করুন।"</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ইনপুট পদ্ধতি কনফিগার করুন"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ভাষাগুলি"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"সহায়তা এবং প্রতিক্রিয়া"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"পরবর্তী পদক্ষেপ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সেট আপ হচ্ছে"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করুন"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"দয়া করে আপনার ভাষা ও কিবোর্ড সেটিংস <xliff:g id="APPLICATION_NAME">%s</xliff:g> পরীক্ষা করুন। এর ফলে এটি আপনার ডিভাইসে চলার জন্য অনুমোদন পাবে।"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"আপনার ভাষা ও কিবোর্ড সেটিংসে ইতোমধ্যে <xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করা হয়েছে, তাই এই পদক্ষেপটি সমাপ্ত। পরবর্তীটিতে এগোন!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"সেটিংসে সক্ষম করুন"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> এ স্যুইচ করুন"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"এখন, সক্রিয় পাঠ্য-ইনপুট পদ্ধতি হিসেবে \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" নির্বাচন করুন।"</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"ইনস্টল করুন"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"বাতিল করুন"</string>
     <string name="delete_dict" msgid="756853268088330054">"মুছুন"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"আপনার মোবাইল ডিভাইসে নির্বাচিত ভাষায় একটি অভিধান উপলব্ধ আছে।&lt;br/&gt; আমরা আপনার টাইপিং অভিজ্ঞতা উন্নত করতে <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> অভিধানটি&lt;b&gt;ডাউনলোড&lt;/b&gt; করার পরামর্শ দিচ্ছি।&lt;br/&gt; &lt;br/&gt; 3G মাধ্যমে ডাউনলোড হতে এক বা দুই মিনিট সময় লাগতে পারে। আপনার কোনো &lt;b&gt;সীমাহীন ডেটা প্ল্যান&lt;/b&gt;.&lt;br/&gt; না থাকলে আপনাকে মূল্য পরিশোধ করতে হতে পারে। আপনি যদি নিশ্চিত না হোন যে আপনি কোন ডেটা প্ল্যান ব্যবহার করছেন, তাহলে স্বয়ংক্রিয়ভাবে ডাউনলোড শুরু করার জন্য আমরা আপনাকে একটি Wi-Fi সংযোগ ব্যবহার করার পরামর্শ দিচ্ছি।&lt;br/&gt; &lt;br/&gt; টিপ: আপনার মোবাইল ডিভাইসের &lt;b&gt;সেটিংস&lt;/b&gt; মেনুতে &lt;b&gt;ভাষা&amp; ইনপুট&lt;/b&gt; এ গিয়ে অভিধান ডাউনলোড ও সরাতে পারবেন।"</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"এখন ডাউনলোড করুন (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>মেবা)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi মাধ্যমে ডাউনলোড করুন"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ভাষার জন্য একটি অভিধান উপলব্ধ"</string>

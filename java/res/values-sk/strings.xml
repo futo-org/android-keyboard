@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frázové gestá"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Zadávanie medzier prechádzaním cez kláves medzerníka"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kláves hlasového vstupu"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nie sú povolené žiadne metódy hlasového vstupu. Skontrolujte nastavenia položky Jazyk a vstup."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurovať metódy vstupu"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Jazyky"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pomocník a spätná väzba"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Ďalší krok"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Nastavenie aplikácie <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Povoľte aplikáciu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"V nastaveniach vstupu a jazyka začiarknite políčko <xliff:g id="APPLICATION_NAME">%s</xliff:g>. Týmto aplikácii povolíte spustenie v zariadení."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Aplikácia <xliff:g id="APPLICATION_NAME">%s</xliff:g> je už povolená v Nastaveniach jazyka a vstupu. Prejdite na ďalší krok."</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Povoliť v Nastaveniach"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Prepnite na aplikáciu <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Potom vyberte aplikáciu <xliff:g id="APPLICATION_NAME">%s</xliff:g> ako aktívnu metódu textového vstupu."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Inštalovať"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Zrušiť"</string>
     <string name="delete_dict" msgid="756853268088330054">"Odstrániť"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Pre vybratý jazyk mobilného zariadenia je k dispozícii slovník.&lt;br/&gt; Slovník jazyka <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> vám odporúčame &lt;b&gt;stiahnuť&lt;/b&gt;. Pomôže vám pri zadávaní textu.&lt;br/&gt; &lt;br/&gt; V sieti 3G môže sťahovanie trvať jednu až dve minúty. Ak nemáte &lt;b&gt;neobmedzený dátový program&lt;/b&gt;, môžu sa účtovať poplatky.&lt;br/&gt; Ak s určitosťou neviete aký dátový program používate, vyhľadajte pripojenie k sieti Wi-Fi a sťahovanie sa spustí automaticky.&lt;br/&gt; &lt;br/&gt; Tip: Slovníky môžete v mobilnom zariadení sťahovať a odstraňovať v časti &lt;b&gt;Jazyk a vstup&lt;/b&gt; ponuky &lt;b&gt;Nastavenia&lt;/b&gt;."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Stiahnuť (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Stiahnuť cez sieť Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"K dispozícii je slovník pre jazyk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

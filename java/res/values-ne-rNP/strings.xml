@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश इशारा"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"इशाराको बखतमा स्पेस कुञ्जीमा ग्लाईडिंग द्वारा आगत खाली ठाउँहरू"</string>
     <string name="voice_input" msgid="3583258583521397548">"आवाज इनपुट कुञ्जी"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"कुनै आवाज इनपुट विधिहरू सक्षम गरिएका छैनन्। भाषा र इनपुट सेटिङहरूको जाँच गर्नुहोस्।"</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट विधिहरू कन्फिगर गर्नुहोस्"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"भाषाहरू"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"मद्दत र प्रतिक्रिया"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"अर्को चरण"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"स्थापना गर्दै <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"सक्षम पार्नुहोस् <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"कृपया जाँच गर्नुहोस् \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" तपाईँको भाषा र इनपुट सेटिङमा। यसले तपाईँलाई तपाईँको उपकरणमा सञ्चालन गर्न आधिकारिकता प्रदान गर्छ।"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> पहिले नै तपाईँको भाषा र इनपुट सेटिङमा सक्षम पारिएको छ, त्यसैले यो कदम सकिसकिएको छ। अर्कोमा जानुहोस्!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"सेटिङहरूमा सक्षम पार्नुहोस्"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>मा स्विच गर्नुहोस्"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"त्यसपछि, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" लाई तपाईँको सक्रिय पाठ इनपुट विधिका रूपमा चयन गर्नुहोस्।"</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"स्थापना गर्नुहोस्"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द गर्नुहोस्"</string>
     <string name="delete_dict" msgid="756853268088330054">"मेट्नुहोस्"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"तपाईँको मोबाइल उपकरणमा चयन गरिएको भाषाको शब्दकोश उपलब्ध छ। &lt;br/&gt; तपाईँको टाइप गर्ने अनुभव सुधार गर्न हामी <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>को शब्दकोश &lt;b&gt; डाउनलोड गर्न &lt;/b&gt; सिफारिस गर्दछौँ।  यो डाउनलोड गर्न 3G मा एक वा दुई मिनेट लिन सक्छ। तपाईँ एक &lt;b&gt; तपाईँको असीमित डेटा योजना &lt;/b&gt; छैन भने शुल्क लागू हुन सक्छ। तपाईँसँग कुन डेटा योजना छ भन्ने निश्चित छैन भने Wi-Fi जडान गरेर स्वचालित डाउनलोड गर्न हामी सिफारिस गर्दछौँ। युक्ति: तपाईँ  आफ्नो मोबाइल उपकरणको &lt;/b&gt; भाषा र इनपुट &lt;b&gt; &lt;b&gt;सेटिङ &lt;/b&gt; मेनुमा गएर शब्दकोशलाई डाउनलोड र हटाउन सक्नुहुन्छ।"</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"(अब डाउनलोड गर्नुहोस्<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाइ-फाइको माध्ययमद्वार डाउनलोड गर्नुहोस्"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>को लागि एउटा शब्दकोश उपलब्ध छ"</string>

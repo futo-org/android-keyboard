@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"詞組手勢"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"手勢輸入時，滑過空格鍵即可輸入空格"</string>
     <string name="voice_input" msgid="3583258583521397548">"語音輸入按鍵"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"尚未啟動語音輸入法，請檢查語言與輸入設定。"</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"設定輸入法"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"語言"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"說明與意見回饋"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"下一步"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"正在設定「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"啟用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"請在語言與輸入設定中勾選「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」，授權這項應用程式在您的裝置上執行。"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"您已在 [語言與輸入設定] 中啟用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>，因此這個步驟已經完成。請進行下一個步驟！"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"在設定中啟用"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"切換至「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"接著，請選取「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」做為目前使用的文字輸入法。"</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"安裝"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"取消"</string>
     <string name="delete_dict" msgid="756853268088330054">"刪除"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"您的行動裝置選用的語言現有字典可供使用。&lt;br/&gt;建議您&lt;b&gt;下載&lt;/b&gt;<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典，藉此強化輸入功能。&lt;br/&gt;&lt;br/&gt;透過 3G 網路下載約需一兩分鐘。如果沒有&lt;b&gt;無限行動上網資費方案&lt;/b&gt;，可能必須另外付費。&lt;br/&gt;若不確定行動上網資費方案為何，可以等連上 Wi-Fi 網路後再自動下載。&lt;br/&gt;&lt;br/&gt;提示：前往行動裝置的 [設定] 選單，選擇 [語言和輸入] 即可下載及移除字典。&lt;b&gt;&lt;/b&gt;&lt;b&gt;&lt;/b&gt;"</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"立即下載 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"透過 Wi-Fi 下載"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"支援<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典"</string>

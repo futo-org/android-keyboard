@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Isyarat frasa"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Masukkan spasi dalam isyarat dengan meluncur ke tombol spasi"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tombol masukan suara"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Tidak ada metode masukan suara yang diaktifkan. Periksa setelan Bahasan &amp; masukan."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurasikan metode masukan"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Bahasa"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Bantuan &amp; masukan"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Langkah berikutnya"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Menyiapkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Aktifkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Centang \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" di setelan Bahasa &amp; masukan Anda. Tindakan ini akan mengizinkannya berjalan di perangkat Anda."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> telah diaktifkan di setelan Bahasa &amp; masukan Anda, jadi langkah ini sudah diselesaikan. Lanjut langkah selanjutnya!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktifkan dalam Setelan"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Beralih ke <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Lalu, pilih \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" sebagai metode masukan teks aktif Anda."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Pasang"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Batal"</string>
     <string name="delete_dict" msgid="756853268088330054">"Hapus"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Tersedia kamus untuk bahasa pilihan pada perangkat seluler Anda.&lt;br/&gt; Sebaiknya &lt;b&gt;unduh&lt;/b&gt; kamus <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> untuk meningkatkan pengalaman pengetikan.&lt;br/&gt; &lt;br/&gt; Unduhan dapat berlangsung selama satu atau dua menit melalui 3G. Mungkin dikenakan biaya data jika tidak memiliki &lt;b&gt;paket data tak terbatas&lt;/b&gt;.&lt;br/&gt; Jika tidak yakin dengan jenis paket data Anda, sebaiknya cari koneksi Wi-Fi untuk memulai unduhan secara otomatis.&lt;br/&gt; &lt;br/&gt; Kiat: Anda dapat mengunduh dan menghapus kamus dengan membuka &lt;b&gt;Bahasa &amp; masukan&lt;/b&gt; di menu &lt;b&gt;Setelan&lt;/b&gt; perangkat seluler Anda."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Unduh sekarang (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Unduh melalui Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Kamus tersedia untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

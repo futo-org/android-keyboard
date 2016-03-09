@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"הקלדה רציפה של משפט"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"הזן רווחים במהלך התנועה על ידי החלקה אל מקש הרווח"</string>
     <string name="voice_input" msgid="3583258583521397548">"מקש קלט קולי"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"לא הופעלו שיטות של קלט קולי. בדוק את הגדרות השפה והקלט."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"הגדרת שיטות קלט"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"שפות"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"עזרה ומשוב"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"השלב הבא"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"הגדרת <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"הפעל את <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"סמן את \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" בהגדרות השפה והקלט שלך. פעולה זו תאפשר לו לפעול במכשיר שלך."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> כבר פועל בשפה שלך ובהגדרות הקלט, כך שהשלב הזה הסתיים. הלאה אל השלב הבא!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"הפעל בהגדרות"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"עבור אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"בשלב הבא, בחר ב-\'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' כאמצעי הקלט הפעיל להזנת טקסט."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"התקן"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"בטל"</string>
     <string name="delete_dict" msgid="756853268088330054">"מחק"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"‏יש מילון זמין עבור השפה הנבחרת במכשיר הנייד שלך.&lt;br/&gt; אנחנו ממליצים &lt;b&gt;להוריד&lt;/b&gt; את המילון ב<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> לשיפור חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; ייתכן שההורדה תארך דקה או שתיים ברשת דור שלישי. ייתכנו חיובים אם אין לך &lt;b&gt;תכנית נתונים ללא הגבלה&lt;/b&gt;.&lt;br/&gt; אם אינך בטוח איזו תכנית נתונים יש לך, אנחנו ממליצים למצוא חיבור Wi-Fi כדי להתחיל את ההורדה באופן אוטומטי.&lt;br/&gt; &lt;br/&gt; טיפ: ניתן להוריד ולהסיר מילונים על ידי מעבר אל &lt;b&gt;שפה וקלט&lt;/b&gt; בתפריט &lt;b&gt;הגדרות&lt;/b&gt; של המכשיר הנייד."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"‏הורד עכשיו (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏הורד באמצעות Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"יש מילון זמין עבור <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

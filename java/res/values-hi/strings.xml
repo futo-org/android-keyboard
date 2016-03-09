@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश जेस्चर"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"स्पेस कुंजी तक ग्लाइड करके जेस्चर के दौरान रिक्तियां इनपुट करें"</string>
     <string name="voice_input" msgid="3583258583521397548">"ध्वनि संचालन बटन"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"कोई ध्वनि इनपुट पद्धति सक्षम नहीं है. भाषा और इनपुट सेटिंग जांचें."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धति कॉन्‍फ़िगर करें"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"भाषाएं"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"सहायता और फ़ीडबैक"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"अगला चरण"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> सेट करना"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> को सक्षम करें"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"कृपया अपनी भाषा और अक्षर सेटिंग में \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" को चेक करें. इससे वह आपके डिवाइस पर चलने के लिए अधिकृत हो जाएगा."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> आपकी भाषा और अक्षर सेटिंग में पहले से सक्षम है, इसलिए यह चरण पूर्ण हो गया है. अगले चरण पर जाएं!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"सेटिंग में सक्षम करें"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> पर स्विच करें"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"इसके बाद, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" को अपनी सक्रिय लेख-इनपुट पद्धति के रूप में चुनें."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"इंस्टॉल करें"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"अभी नहीं"</string>
     <string name="delete_dict" msgid="756853268088330054">"हटाएं"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"आपके मोबाइल पर चयनित भाषा के लिए शब्‍दकोश उपलब्‍ध है.&lt;br/&gt; हम आपके लेखन अनुभव को बेहतर बनाने के लिए <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्‍दकोश &lt;b&gt;डाउनलोड करने&lt;/b&gt; की सुझाव देते हैं.&lt;br/&gt; &lt;br/&gt; 3G में डाउनलोड करने पर एक या दो मिनट लगेंगे. यदि आपके पास &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; नहीं है, तो शुल्क लागू हो सकते हैं.&lt;br/&gt; यदि आप अपनी डेटा योजना के बारे में सुनिश्चित नहीं हैं, तो हम अपने आप डाउनलोड प्रारंभ करने के लिए वाई-फ़ाई  कनेक्‍शन ढूंढने की सुझाव देते हैं.&lt;br/&gt; &lt;br/&gt; युक्ति: आप अपने मोबाइल डिवाइस के &lt;b&gt;सेटिंग&lt;/b&gt; मेनू में &lt;b&gt;भाषा और इनपुट&lt;/b&gt; पर जाकर शब्‍दकोशों को डाउनलोड कर सकते हैं और निकाल सकते हैं."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"अभी डाउनलोड करें (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाई-फ़ाई  से डाउनलोड करें"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> के लिए एक शब्‍दकोश उपलब्‍ध है"</string>

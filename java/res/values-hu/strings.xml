@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Kifejezés-kézmozdulat"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Szóköz írása kézmozdulatok során: húzza el ujját a szóköz felett"</string>
     <string name="voice_input" msgid="3583258583521397548">"Hangbeviteli gomb"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nincs engedélyezett hangbeviteli módszer. Nézze meg a Nyelvi és beviteli beállításokat."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Beviteli módok beállítása"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Nyelvek"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Súgó és visszajelzés"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Következő lépés"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"A(z) <xliff:g id="APPLICATION_NAME">%s</xliff:g> beállítása"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"A(z) <xliff:g id="APPLICATION_NAME">%s</xliff:g> engedélyezése"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Jelölje be a(z) „<xliff:g id="APPLICATION_NAME">%s</xliff:g>” alkalmazást a „Nyelv és bevitel” alatt a futtatás érdekében."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> alkalmazást már engedélyezte a Nyelv és bevitel beállításainál, tehát ez a lépés már kész. Folytassa a következővel!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Engedélyezés a Beállítások között"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Váltás a(z) <xliff:g id="APPLICATION_NAME">%s</xliff:g> alkalmazásra"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Ezután válassza a(z) „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”  alkalmazást aktív szövegbeviteli módszerként."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"Telepítés"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Mégse"</string>
     <string name="delete_dict" msgid="756853268088330054">"Törlés"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"A mobileszközön kiválasztott nyelvhez szótár érhető el.&lt;br/&gt; A gépelési élmény javításához javasoljuk a(z) <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> szótár &lt;b&gt;letöltését.&lt;br/&gt; &lt;br/&gt; A letöltés 3G hálózaton keresztül néhány percig tart. Ha &lt;b&gt;előfizetése nem korlátlan&lt;/b&gt;, a letöltés költségekkel járhat.&lt;br/&gt; Ha nem biztos abban, hogy milyen adatcsomagot használ, javasoljuk, hogy keressen egy Wi-Fi-kapcsolatot a letöltés automatikus elindításához.&lt;br/&gt; &lt;br/&gt; Tipp: szótárakat a mobileszköz a &lt;b&gt;Beállítások&lt;/b&gt; menü &lt;b&gt;Nyelv és bevitel&lt;/b&gt; részében tölthet le és távolíthat el."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Töltse le most (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Letöltés Wi-Fivel"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> nyelvhez van rendelkezésre álló szótár"</string>

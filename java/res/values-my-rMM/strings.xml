@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"စကားစု အမူယာ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"နေရာခြားသည့်ကီးကိုနှိပ်ခြင်းဖြင့် အမူအယာပြုလုပ်စဉ်တွင် နေရာခြား ထည့်သွင်းရန်"</string>
     <string name="voice_input" msgid="3583258583521397548">"အသံထည့်သွင်းရန် ခလုတ်"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"မည်သည့် Check Language &amp; input settings."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ထည့်သွင်းရန် နည်းလမ်းကို ပြုပြင်မည်"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ဘာသာစကားများ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"အကူအညီ &amp; တုံ့ပြန်ချက်"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"နောက်တစ်ဆင့်"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> တပ်ဆင်ရန်"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ဖွင့်ရန်"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"သင့်ဘာသာစကား&amp; စာရိုက်ထည့်မှု ဆက်တင်များတွင် \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" အားစစ်ဆေးပါ။ ဤသည်မှာ သင့်ကိရိယာတွင် ဖွင့်ရန် အခွင့်ပေးပါမည်။"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> သည် သင့်ဘာသာစကား &amp; စာရိုက်ထည့်မှု ဆက်တင်များတွင် ဖွင့်ပြီးသောကြောင့်၊ ဤအဆင့်ပြီးပါပြီ။ နောက်တစ်ခုသို့!"</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"ဆက်တင်များတွင် ဖွင့်ရန်"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> သို့ပြောင်းမည်"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ရှေ့၊ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" အားသင်၏ ပွင့်နေသည့်ထည့်သွင်းမှု နည်းလမ်းအဖြစ်ရွေးပါ။"</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"တပ်ဆင်ပါ"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ထားတော့"</string>
     <string name="delete_dict" msgid="756853268088330054">"ဖျက်ရန်"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"သင့်ဖုန်းရှိ ရွေးချယ်ထားသည့် ဘာသာအတွက် အဘိဓါန်ရှိပါသည်။ &lt;br/&gt; အဘိဓါန်အား &lt;b&gt;ဒေါင်းလုပ်လုပ်ကာ&lt;/b&gt; the <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>  သင့်စာရိုက် အတွေ့အကြုံတိုးတက်စေရန် ကျွန်ုပ်တို့အကြံပြုပါသည်။ &lt;br/&gt; &lt;br/&gt; ဒေါင်းလုပ်လုပ်ရန် 3G ပေါ်တွင် ၁ မှ ၂ မိနစ်ခန့်ကြာနိုင်သည်။ သင့်တွင် &lt;b&gt;အကန့်သတ်မှရိ အချက်လက် သုံးစွဲမှု&lt;/b&gt;မရှိလျှင် ငွေကျသင့်နိုင်ပါသည်။ &lt;br/&gt; သင့်တွင် မည်သည့်အချက်လက်သုံးစွဲမှု ရှိနေသည်ကိုမသိလျှင်၊ အလိုအလျောက် ဒေါင်းလုပ်လုပ်ရန် Wi-Fi ကွန်ရက်တစ်ခု ရှာဖွေရန် တိုက်တွန်းပါသည်။ &lt;br/&gt; &lt;br/&gt; နည်းလမ်း: သင့်ဖုန်းကိရိယာရှိ &lt;b&gt;ဆက်တင်ထဲတွင်&lt;/b&gt; &lt;b&gt;ဘာသာ &amp; စာရိုက်ထည့်မှု&lt;/b&gt; သို့သွားကာ အဘိဓါန်များကို ဒေါင်းလုပ်လုပ်နိုင် ဖယ်ရှားနိုင်ပါသည်။"</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"ယခုဒေါင်းလုပ်လုပ်မည် (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi အသုံးပြု၍ ဒေါင်းလုပ်လုပ်ရန်"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> အတွက် အဘိဓါန် ရနိုင်ပါသည်"</string>

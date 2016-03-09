@@ -86,7 +86,8 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Qo‘l uzmasdan yozish"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Barmoqni har bir so‘zdan so‘ng bo‘sh joy qoldirish tugmasiga olib borish"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ovoz bilan yozish tugmasi"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Ovoz bilan yozish usuli yoqilmagan. “Til va matn kiritish” sozlamalarini tekshiring."</string>
+    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"Matn kiritish usullarini sozlash"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Tillar"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Yordam va fikr-mulohaza"</string>
@@ -146,8 +147,10 @@
     <string name="setup_next_action" msgid="371821437915144603">"Keyingi qadam"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Sozlash: <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Yoqish: <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Matn kiritishda foydalanish uchun Til va matn kiritish sozlamalarida “<xliff:g id="APPLICATION_NAME">%s</xliff:g>” bandiga belgi qo‘ying."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ilovasi allaqachon Til va matn kiritish sozlamalarida yoqilgan, shuning uchun keyingi qadamga o‘tish mumkin."</string>
+    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Sozlamalardan yoqish"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>: faollashtirish"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Keyin, joriy matn kiritish usuli sifatida “<xliff:g id="APPLICATION_NAME">%s</xliff:g>” ilovasini tanlang."</string>
@@ -183,7 +186,8 @@
     <string name="install_dict" msgid="180852772562189365">"O‘rnatish"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Bekor qilish"</string>
     <string name="delete_dict" msgid="756853268088330054">"O‘chirish"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobil telefoningizda tanlangan til uchun lug‘at mavjud.&lt;br/&gt; Matnlarni tezkor va bexato kiritish uchun <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> lug‘atini &lt;b&gt;yuklab olish&lt;/b&gt; tavsiya etiladi. &lt;br/&gt; &lt;br/&gt; Agar sizda mobil internet uchun &lt;b&gt;cheksiz internet tarifi&lt;/b&gt; o‘rnatilgan bo‘lsa, lug‘atni 3G orqali yuklab olishingiz mumkin (bir-ikki daqiqa vaqt oladi).&lt;br/&gt;Agar tarif rejangiz tafsilotlarini bilmasangiz, u holda Wi-Fi orqali yuklab olgan ma’qul (yuklab olish avtomatik ravishda boshlanadi).&lt;br/&gt; &lt;br/&gt; Maslahat: Lug‘at qo‘shish, o‘chirish yoki sozlash uchun mobil qurilmangizning &lt;b&gt;Sozlamalar&lt;/b&gt; menyusidan &lt;b&gt;Til va matn kiritish&lt;/b&gt; bo‘limiga o‘ting."</string>
+    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Yuklab olish (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi orqali yuklab olish"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Lug‘at mavjud: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
