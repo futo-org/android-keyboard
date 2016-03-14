@@ -200,9 +200,9 @@
     <string name="select_language">Languages</string>
 
     <!-- Add to dictionary hint -->
-    <string name="hint_add_to_dictionary">Touch again to save</string>
+    <string name="hint_add_to_dictionary">Tap again to save</string>
     <!-- Add to dictionary hint -->
-    <string name="hint_add_to_dictionary_without_word">Touch here to save</string>
+    <string name="hint_add_to_dictionary_without_word">Tap here to save</string>
 
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
@@ -562,7 +562,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="user_dict_settings_context_menu_delete_title">Delete</string>
     <!-- User dictionary settings. The text to show when there are no user-defined words in the dictionary  [CHAR LIMIT=200] -->
     <!-- This resource is corresponding to msgid="8165273379942105271" -->
-    <string name="user_dict_settings_empty_text">You don\'t have any words in the user dictionary. Add a word by touching the Add (+) button.</string>
+    <string name="user_dict_settings_empty_text">You don\'t have any words in the user dictionary. To add a word, tap the Add (+) button.</string>
     <!-- User dictionary settings. The list item to choose to insert a word into the user dictionary for all languages -->
     <!-- This resource is corresponding to msgid="6742000040975959247" -->
     <string name="user_dict_settings_all_languages">For all languages</string>
