@@ -716,7 +716,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean isImeSuppressedByHardwareKeyboard() {
         final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
-        return switcher.isImeSuppressedByHardwareKeyboard(
+        return !onEvaluateInputViewShown() && switcher.isImeSuppressedByHardwareKeyboard(
                 mSettings.getCurrent(), switcher.getKeyboardSwitchState());
     }
 
