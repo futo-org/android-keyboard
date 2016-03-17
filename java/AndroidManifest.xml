@@ -39,8 +39,8 @@
             android:icon="@drawable/ic_launcher_keyboard"
             android:supportsRtl="true"
             android:allowBackup="true"
-            android:forceDeviceEncrypted="true"
-            android:encryptionAware="true">
+            android:defaultToDeviceProtectedStorage="true"
+            android:directBootAware="true">
 
         <!-- Services -->
         <service android:name="LatinIME"
