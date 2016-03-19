@@ -92,8 +92,10 @@
     <string name="language_selection_title" msgid="3666971864764478269">"மொழிகள்"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"உதவி &amp; கருத்து"</string>
     <string name="select_language" msgid="5709487854987078367">"மொழிகள்"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"சேமிக்க தொடவும்"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"சேமிக்க இங்கு தொடவும்"</string>
+    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
+    <skip />
+    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"அகராதி உள்ளது"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"விசைப்பலகை தீம்"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"கணக்குகளை மாற்று"</string>
@@ -208,7 +210,8 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"வார்த்தையைத் திருத்து"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"திருத்து"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"நீக்கு"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"பயனர் அகராதியில் உங்களுக்கு எந்த வார்த்தைகளும் இல்லை. சேர் (+) என்ற பொத்தானைத் தொடுவதன் மூலம் வார்த்தையைச் சேர்க்கவும்."</string>
+    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
+    <skip />
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"எல்லா மொழிகளுக்கும்"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"மேலும் மொழிகள்..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"நீக்கு"</string>

@@ -92,8 +92,10 @@
     <string name="language_selection_title" msgid="3666971864764478269">"Kalbos"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pagalba ir atsiliepimai"</string>
     <string name="select_language" msgid="5709487854987078367">"Kalbos"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Jei norite išsaugoti, palieskite dar kartą"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Palieskite čia, kad išsaugotumėte"</string>
+    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
+    <skip />
+    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Žodynas galimas"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klaviatūros tema"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Perjungti paskyras"</string>
@@ -208,7 +210,8 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Redaguoti žodį"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Redaguoti"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Ištrinti"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Neturite jokių žodžių naudotojo žodyne. Žodį galite pridėti paliesdami mygtuką „Pridėti“ (+)."</string>
+    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
+    <skip />
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Visos kalbos"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Daugiau kalbų..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Ištrinti"</string>
