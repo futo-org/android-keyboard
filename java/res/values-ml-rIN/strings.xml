@@ -89,9 +89,9 @@
     <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
     <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ടൈപ്പുചെയ്യൽ രീതികൾ കോൺഫിഗർ ചെയ്യുക"</string>
-    <string name="language_selection_title" msgid="3666971864764478269">"ഭാഷകള്‍‌"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"ഭാഷകൾ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"സഹായവും ഫീഡ്‌ബാക്കും"</string>
-    <string name="select_language" msgid="5709487854987078367">"ഭാഷകള്‍‌"</string>
+    <string name="select_language" msgid="5709487854987078367">"ഭാഷകൾ"</string>
     <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
     <skip />
     <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
