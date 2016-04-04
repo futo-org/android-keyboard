@@ -107,12 +107,12 @@
     <string name="account_select_title" msgid="6279711684772922649">"انتخاب یک حساب برای استفاده"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"انگلیسی (بریتانیا)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"انگلیسی (امریکا)"</string>
-    <string name="subtype_es_US" msgid="5583145191430180200">"اسپانیایی (آمریکا)"</string>
+    <string name="subtype_es_US" msgid="5583145191430180200">"اسپانیایی (امریکا)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"هندی انگلیسی"</string>
     <string name="subtype_sr_ZZ" msgid="9059219552986034343">"صربی (لاتین)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"انگلیسی (بریتانیا) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"انگلیسی (آمریکا) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"اسپانیایی (آمریکا) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"انگلیسی (امریکا) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"اسپانیایی (امریکا) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"هندی انگلیسی (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"صربی (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (سنتی)"</string>
