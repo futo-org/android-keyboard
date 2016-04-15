@@ -86,16 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश जेश्चर"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"स्पेस की वर ग्लायडिंग करून जेश्चर दरम्यान स्थाने इनपुट करा"</string>
     <string name="voice_input" msgid="3583258583521397548">"व्हॉइस इनपुट की"</string>
-    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
-    <skip />
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"कोणत्याही व्हॉइस इनपुट पद्धती सक्षम केल्या नाहीत. भाषा आणि इनपुट सेटिंग्ज तपासा."</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धती कॉन्फिगर करा"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"भाषा"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"मदत आणि अभिप्राय"</string>
     <string name="select_language" msgid="5709487854987078367">"भाषा"</string>
-    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"जतन करण्यासाठी पुन्हा टॅप करा"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"जतन करण्यासाठी येथे टॅप करा"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"शब्दकोश उपलब्ध"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"खाती स्विच करा"</string>
@@ -149,10 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"पुढील चरण"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> सेट अप करत आहे"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> सक्षम करा"</string>
-    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
-    <skip />
-    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"कृपया आपल्या भाषांमध्ये आणि इनपुट सेटिंग्जमध्ये \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" तपासा. आपल्या डिव्हाइसवर चालण्यासाठी त्यास हे अधिकृत करेल."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> आपल्या भाषांमध्ये आणि इनपुट सेटिंग्जमध्ये आधीपासून सक्षम केला आहे, त्यामुळे हे चरण पूर्ण झाले आहे. पुढील चरणावर!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"सेटिंग्जमध्ये सक्षम करा"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> वर स्विच करा"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"पुढे, आपली सक्रिय मजकूर-इनपुट पद्धत म्हणून \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" निवडा."</string>
@@ -188,8 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"स्‍थापित करा"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द करा"</string>
     <string name="delete_dict" msgid="756853268088330054">"हटवा"</string>
-    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"आपल्या मोबाइल डिव्हाइस वरील निवडलेल्या भाषेमध्ये उपलब्ध असलेला शब्दकोश आहे.&lt;br/&gt; आपला टायपिंग अनुभव सुधारित करण्यासाठी <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोश &lt;b&gt;डाउनलोड&lt;/b&gt; करण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; 3G वरून डाउनलोड होण्यास एक किंवा दोन मिनिटे लागू शकतात. आपल्याकडे &lt;b&gt;अमर्यादित डेटा योजना&lt;/b&gt;.&lt;br/&gt; नसल्यास शुल्क लागू शकतात आपल्याकडे कोणती डेटा योजना आहे त्याबद्दल आपल्याला खात्री नसल्यास, डाउनलोड करण्यास स्वयंचलितपणे प्रारंभ करण्यासाठी वाय-फाय कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टीप: आपण आपल्या मोबाइल डिव्हाइसच्या <b>सेटिंग्ज</b> मेनू मधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन शब्दकोश डाउनलोड करू शकता आणि ते काढू शकता."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"आता डाउनलोड करा (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाय-फाय वर डाउनलोड करा"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> साठी शब्दकोश उपलब्ध आहे"</string>
@@ -210,8 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"शब्द संपादित करा"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"संपादित करा"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"हटवा"</string>
-    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
-    <skip />
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"वापरकर्ता शब्दकोशात आपल्याकडे कोणतेही शब्द नाहीत. एक शब्द जोडण्यासाठी, जोडा (+) बटण टॅप करा."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"सर्व भाषांसाठी"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"अधिक भाषा..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"हटवा"</string>
