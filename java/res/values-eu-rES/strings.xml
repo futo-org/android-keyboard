@@ -86,16 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Esaldi-keinua"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Sartu zuriuneak keinuak egin bitartean zuriune-teklara lerratuta"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ahots bidezko idazketaren tekla"</string>
-    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
-    <skip />
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Ez da gaitu ahots bidezko idazketa-metodorik. Egiaztatu Hizkuntza eta idazketa ataleko ezarpenak."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguratu idazketa-metodoak"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Hizkuntzak"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Laguntza eta iritziak"</string>
     <string name="select_language" msgid="5709487854987078367">"Hizkuntzak"</string>
-    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Gordetzeko, sakatu berriro"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Gordetzeko, sakatu hau"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hiztegia erabilgarri"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Teklatuaren gaia"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Aldatu kontuz"</string>
@@ -149,10 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Hurrengo urratsa"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> konfiguratzen"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Gaitu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
-    <skip />
-    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Hautatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> Hizkuntza eta idazketa ataleko ezarpenetan. Horrek gailuan exekutatzea baimenduko dio."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> gaituta duzu Hizkuntza eta idazketa ataleko ezarpenetan eta, beraz, urratsa eginda dago. Ekin hurrengoari!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Gaitu Ezarpenak atalean"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Aldatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> aplikaziora"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Ondoren, hautatu \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" idazketa-metodo aktibo gisa."</string>
@@ -188,8 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalatu"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Utzi"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ezabatu"</string>
-    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Gailu mugikorrean hautatutako hizkuntzak hiztegi bat du erabilgarri.&lt;br/&gt;<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> erabiltzeko, hiztegia &lt;b&gt;deskargatzea&lt;/b&gt; gomendatzen dugu, idaztea erosoagoa izan dadin.&lt;br/&gt; &lt;br/&gt; 3G sarearen bidez deskargatzeko minutu-pare bat behar izan dezakezu. Ez baduzu &lt;b&gt;datu-plan mugagaberik&lt;/b&gt;, baliteke gastu gehigarriak kobratzea.&lt;br/&gt;Ez badakizu ziur nolako datu-plana duzun, Wi-Fi konexio bat bilatzea gomendatzen dizugu deskarga automatikoki egin dadin.&lt;br/&gt; &lt;br/&gt; Aholkua: gailu mugikorreko &lt;b&gt;Ezarpenak&lt;/b&gt; menuan dagoen &lt;b&gt;Hizkuntza eta idazketa&lt;/b&gt; atalean deskarga eta ken ditzakezu hiztegiak."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Deskargatu (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Deskargatu Wi-Fi bidez"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> hizkuntzaren hiztegi bat erabilgarri dago"</string>
@@ -210,8 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Editatu hitza"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Editatu"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Ezabatu"</string>
-    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
-    <skip />
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Hutsik daukazu erabiltzailearen hiztegia. Hitzak gehitzeko, sakatu Gehitu (+) botoia."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Hizkuntza guztietan"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Hizkuntza gehiago…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Ezabatu"</string>
