@@ -147,7 +147,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"הגדרת <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"הפעל את <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="4295448056733329661">"סמן את \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" בהגדרות השפה והקלט שלך. פעולה זו תאפשר לה לפעול במכשיר."</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> כבר פועלת בהגדרות השפה והקלט שלך, אז השלב הזה הסתיים. ממשיכים הלאה לשלב הבא!"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"האפליקציה <xliff:g id="APPLICATION_NAME">%s</xliff:g> כבר פועלת בהגדרות השפה והקלט שלך, אז השלב הזה הסתיים. ממשיכים הלאה לשלב הבא!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"הפעל בהגדרות"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"עבור אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"בשלב הבא, בחר ב-\'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' כאמצעי הקלט הפעיל להזנת טקסט."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"התקן"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"בטל"</string>
     <string name="delete_dict" msgid="756853268088330054">"מחק"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"‏לשפה הנבחרת בנייד שלך יש מילון זמין.&lt;br/&gt; אנחנו ממליצים &lt;br/&gt;להוריד&lt;br/&gt; את המילון בשפה <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> כדי לשפר את חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; תהליך ההורדה עשוי לקחת כדקה או שתיים במכשיר 3G. ייתכן שתחויב בתשלום אם אין לך &lt;b&gt;תוכנית נתונים ללא הגבלה&lt;b&gt;&lt;b&gt; אם אינך בטוח איזו תוכנית נתונים יש לך, אנחנו ממליצים למצוא חיבור Wi-Fi כדי להתחיל בהורדה באופן אוטומטי.&lt;br/&gt;&lt;br/&gt; טיפ: ניתן להוריד מילונים ולהסיר אותם על ידי מעבר אל &lt;b&gt;שפות וקלט&lt;b&gt; בתפריט &lt;b&gt;הגדרות&lt;b&gt; בנייד."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"‏לשפה הנבחרת בנייד שלך יש מילון זמין.&lt;br/&gt; אנחנו ממליצים &lt;br/&gt;להוריד&lt;br/&gt; את המילון בשפה ה<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> כדי לשפר את חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; תהליך ההורדה עשוי לקחת כדקה או שתיים ברשת 3G. ייתכן שתחויב בתשלום אם אין לך &lt;b&gt;תוכנית נתונים ללא הגבלה&lt;b&gt;&lt;b&gt; אם אינך בטוח איזו תוכנית נתונים יש לך, אנחנו ממליצים למצוא חיבור Wi-Fi כדי להתחיל בהורדה באופן אוטומטי.&lt;br/&gt;&lt;br/&gt; טיפ: ניתן להוריד מילונים ולהסיר אותם על ידי מעבר אל &lt;b&gt;שפות וקלט&lt;b&gt; בתפריט &lt;b&gt;הגדרות&lt;b&gt; בנייד."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"‏הורד עכשיו (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏הורד באמצעות Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"יש מילון זמין עבור <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

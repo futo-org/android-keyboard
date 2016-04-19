@@ -86,16 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Сөз айкашын жаңсоо"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Боштук баскычын сылоо менен боштуктарды жаңсап киргизиңиз"</string>
     <string name="voice_input" msgid="3583258583521397548">"Үн менен киргизүү баскычы"</string>
-    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
-    <skip />
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Үн менен киргизүү ыкмаларынын бири да иштетилген эмес. Тилдер жана киргизүү жөндөөлөрүн текшериңиз."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Дайндрд киргзүү ыкмалрн конфигрцлоо"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тилдер"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Жардам жана жооп пикир"</string>
     <string name="select_language" msgid="5709487854987078367">"Тилдер"</string>
-    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Сактоо үчүн кайра таптап коюңуз"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Сактоо үчүн бул жерди таптаңыз"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Сөздүк бар"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Баскычтоп темасы"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Каттоо эсептерин которуштуруу"</string>
@@ -149,10 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Кийинки кадам"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> орнотулууда"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> иштетүү"</string>
-    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
-    <skip />
-    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Тилдер жана киргизүү жөндөөлөрүнөн \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" колдонмосун караңыз. Ушуну менен аны түзмөгүңүздө иштете аласыз."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> мурунтан эле Тилдер жана киргизүү жөндөөлөрүндө иштетилгендиктен бул кадам аткарылды деп, кийинкисине өтө бериңиз!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Жөндөөлөрдөн иштетүү"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> которулуу"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Андан соң, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" жигердүү текст киргизүү ыкмасы катары коюңуз."</string>
@@ -188,8 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Орнотуу"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Жокко чыгаруу"</string>
     <string name="delete_dict" msgid="756853268088330054">"Жок кылуу"</string>
-    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Мобилдик түзмөгүңүздө <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> тилиндеги сөздөрдүн туура жазылышын текшере турган сөздүк бар.&lt;br/&gt; Аны <b>орнотуп алсаңыз</b>, сөздөрдү оңоюраак тересиз.&lt;br/&gt; &lt;br/&gt; Жүктөп алуу процесси 3G тармагы аркылуу бир-эки мүнөт созулушу мүмкүн. Эгер &lt;b&gt;чексиз мобилдик Интернетиңиз&lt;/b&gt; болбосо, акы төлөп калышыңыз мүмкүн.&lt;br/&gt; Тарифтик планыңыз кандай экенин так билбесеңиз, Wi-Fi тармагын таап, автоматтык түрдө жүктөп алууну сунуштайбыз.&lt;br/&gt; &lt;br/&gt; Кеңеш: Мобилдик түзмөгүңүздүн &lt;b&gt;Жөндөөлөр&lt;/b&gt; менюсундагы &lt;b&gt;Тилдер жана киргизүү&lt;/b&gt; бөлүмүнө өтүп, сөздүктөрдү жүктөп алсаңыз же алып салсаңыз болот."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Азыр жүктөп алуу (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>Мб)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi аркылуу жүктөп алуу"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> тилинде сөздүк бар"</string>
@@ -210,8 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Сөздү түзөтүү"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Түзөтүү"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Жок кылуу"</string>
-    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
-    <skip />
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Колдонуучу сөздүгүңүздө бир дагы сөз жок. Сөз кошуу үчүн кошуу (+) баскычын таптап коюңуз."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Бардык тилдер үчүн"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Дагы тилдер…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Жок кылуу"</string>

@@ -26,46 +26,26 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вібрацыя пры націску клавіш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Гук пры націску"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Па націску на клавішы ўсплывае акно"</string>
-    <!-- no translation found for settings_screen_preferences (2696713156722014624) -->
-    <skip />
-    <!-- no translation found for settings_screen_accounts (2786418968536696670) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearance (7358046399111611615) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (8826372746901183556) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
-    <!-- no translation found for settings_screen_theme (2137262503543943871) -->
-    <skip />
-    <!-- no translation found for enable_split_keyboard (4177264923999493614) -->
-    <skip />
-    <!-- no translation found for cloud_sync_title (8579271074443847055) -->
-    <skip />
-    <!-- no translation found for cloud_sync_summary (7684887161145650857) -->
-    <skip />
-    <!-- no translation found for cloud_sync_summary_disabled (4553338970382825796) -->
-    <skip />
-    <!-- no translation found for sync_now_title (3088838136743277721) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_title (8582001557037069154) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_summary (993477139012576584) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_confirmation (2811931135574727678) -->
-    <skip />
-    <!-- no translation found for clear_sync_data_ok (613104067705915132) -->
-    <skip />
-    <!-- no translation found for cloud_sync_cancel (5877481252150919037) -->
-    <skip />
-    <!-- no translation found for cloud_sync_opt_in_text (9176039655776298248) -->
-    <skip />
-    <!-- no translation found for add_account_to_enable_sync (7836932571852055265) -->
-    <skip />
-    <!-- no translation found for cloud_sync_summary_disabled_work_profile (1381770407303129164) -->
-    <skip />
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Налады"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Улік. запісы і канфідэнцыяльнасць"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"Знешні выгляд і раскладкі"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Жэставы набор"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Выпраўленне тэксту"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Дадатковыя"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"Тэма"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"Уключэнне эрганамічнай клавіятуры"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Сінхранізацыя Клавіятуры Google"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"Сінхранізацыя ўключана"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Сінхранізацыя вашага асабістага слоўніка на розных прыладах"</string>
+    <string name="sync_now_title" msgid="3088838136743277721">"Сінхранiзаваць зараз"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Выдаліць даныя воблака"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Вашыя сінхранізаваныя даныя будуць выдалены з Google"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Вашыя сінхранізав. даныя будуць выдалены з воблака. Вы ўпэўненыя?"</string>
+    <string name="clear_sync_data_ok" msgid="613104067705915132">"Выдаліць"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Скасаваць"</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Ваш асабісты слоўнік будзе сінхранізаваны з серверамі Google, дзе для яго будуць стварацца рэзервовыя копіі. Можа сабірацца статыстычная інфармацыя аб частаце ўжывання слоў. Гэта робіцца, каб дапамагчы палепшыць нашыя прадукты. Збор і выкарыстанне ўсёй інфармацыі будзе адпавядаць "<a href="https://www.google.com/policies/privacy">"Палітыцы канфідэнцыяльнасці Googlе"</a>"."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Дад. ўлік. запіс Google для гэтай прылады, каб укл. гэту функцыю"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Сінхранізацыя не даступная для прылад з улік. запісамі Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Перакл. да інш. спос. ув."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Кнопка пераключэння мовы звязана i з iншымi спосабамi ўводу"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Кнопка пераключэння мовы"</string>
@@ -74,14 +54,11 @@
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Няма затрымкі"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Па змаўчанні"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> мс"</string>
-    <!-- no translation found for settings_system_default (6268225104743331821) -->
-    <skip />
+    <string name="settings_system_default" msgid="6268225104743331821">"Стандартныя сістэмныя"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Прапан. імёны кантактаў"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Выкарыстоўваць імёны са спісу кантактаў для прапаноў і выпраўл."</string>
-    <!-- no translation found for use_personalized_dicts (5167396352105467626) -->
-    <skip />
-    <!-- no translation found for enable_metrics_logging (5506372337118822837) -->
-    <skip />
+    <string name="use_personalized_dicts" msgid="5167396352105467626">"Персанальныя прапановы"</string>
+    <string name="enable_metrics_logging" msgid="5506372337118822837">"Палепшыць <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Падвойны iнтэрвал"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Падвойнае нацiсканне на прабел ўстаўляе iнтэрвал з наступным прабелам"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Аўтаматычна рабіць вялікія літары"</string>
@@ -97,10 +74,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Прабелы і пунктуацыйныя знакі дазваляюць аўтаматычна выпраўляць памылкова ўведзеныя словы"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Адключаны"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Сціплы"</string>
-    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Агрэсіўна"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Вельмі агрэсіўна"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Падказкi для наступнага слова"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Выкарыстоўваць папярэдняе слова, каб атрымлiваць падказкi"</string>
     <string name="gesture_input" msgid="826951152254563827">"Уключыць набор жэстамі"</string>
@@ -108,79 +83,46 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Паказаць след жэста"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Дынамічны плаваючы прагляд"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Праглядаць прапанаванае слова падчас жэсту"</string>
-    <!-- no translation found for gesture_space_aware (2078291600664682496) -->
-    <skip />
-    <!-- no translation found for gesture_space_aware_summary (4371385818348528538) -->
-    <skip />
+    <string name="gesture_space_aware" msgid="2078291600664682496">"Жэст фразы"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Уводзьце прабелы паміж жэстамі, праводзячы па клавішы прабелу"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ключ галасавога ўводу"</string>
-    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
-    <skip />
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Не ўключана ніводнага спосабу галасавога ўводу. Праверце налады Мовы і ўводу."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Налада метадаў уводу"</string>
-    <!-- no translation found for language_selection_title (3666971864764478269) -->
-    <skip />
-    <!-- no translation found for help_and_feedback (5328219371839879161) -->
-    <skip />
-    <!-- no translation found for select_language (5709487854987078367) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
-    <skip />
+    <string name="language_selection_title" msgid="3666971864764478269">"Мовы"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Даведка і водгукі"</string>
+    <string name="select_language" msgid="5709487854987078367">"Мовы"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Дакраніцеся зноў, каб захаваць"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Дакраніцеся тут, каб захаваць"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Слоўнік даступны"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тэма клавіятуры"</string>
-    <!-- no translation found for switch_accounts (3321216593719006162) -->
-    <skip />
-    <!-- no translation found for no_accounts_selected (2073821619103904330) -->
-    <skip />
-    <!-- no translation found for account_selected (2846876462199625974) -->
-    <skip />
-    <!-- no translation found for account_select_ok (9141195141763227797) -->
-    <skip />
-    <!-- no translation found for account_select_cancel (5181012062618504340) -->
-    <skip />
-    <!-- no translation found for account_select_sign_out (3299651159390187933) -->
-    <skip />
-    <!-- no translation found for account_select_title (6279711684772922649) -->
-    <skip />
+    <string name="switch_accounts" msgid="3321216593719006162">"Пераключ. на iншы ўлiк. запіс"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"Уліковыя запісы не выбраны"</string>
+    <string name="account_selected" msgid="2846876462199625974">"Зараз выкарыстоўваецца <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"ОК"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"Скасаваць"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"Выйсці"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Выберыце ўліковы запіс для выкарыстання"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англійская (ЗК)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англійская (ЗША)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"iспанская (ЗША)"</string>
-    <!-- no translation found for subtype_hi_ZZ (8860448146262798623) -->
-    <skip />
-    <!-- no translation found for subtype_sr_ZZ (9059219552986034343) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_hi_ZZ (6827402953860547044) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_sr_ZZ (2859024772719772407) -->
-    <skip />
-    <!-- no translation found for subtype_generic_traditional (8584594350973800586) -->
-    <skip />
-    <!-- no translation found for subtype_generic_compact (3353673321203202922) -->
-    <skip />
-    <!-- no translation found for subtype_no_language (7137390094240139495) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_qwerty (244337630616742604) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_qwertz (443066912507547976) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_azerty (8144348527575640087) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_dvorak (1564494667584718094) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_colemak (5837418400010302623) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_pcqwerty (5354918232046200018) -->
-    <skip />
-    <!-- no translation found for subtype_emoji (7483586578074549196) -->
-    <skip />
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
+    <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Хінгліш"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Сербская (лацініца)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Англ. (Вялікабрытанія) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Англійская (ЗША) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Іспанская (ЗША) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"Хінгліш (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"Сербская (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (традыцыйная)"</string>
+    <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (кампактная)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"Мова не выбрана (лацініца)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Лацініца (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Лацініца (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Лацініца (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Лацініца (Дворак)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Лацініца (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Лацініца (ПК)"</string>
+    <string name="subtype_emoji" msgid="7483586578074549196">"Эмодзі"</string>
+    <string name="keyboard_theme" msgid="4909551808526178852">"Тэма клавіятуры"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Карыстальніцкія стылі ўводу"</string>
     <string name="add_style" msgid="6163126614514489951">"Дадаць стыль"</string>
     <string name="add" msgid="8299699805688017798">"Дадаць"</string>
@@ -195,10 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Працягласць вібрацыі пры націску клавіш"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Гучнасць гуку пры націску клавіш"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Затрымка доўгага націску клавішы"</string>
-    <!-- no translation found for prefs_enable_emoji_alt_physical_key (5963640002335470112) -->
-    <skip />
-    <!-- no translation found for prefs_enable_emoji_alt_physical_key_summary (5259484820941627827) -->
-    <skip />
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Эмодзі для фізічнай клавіятуры"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Фізічная клавіша Alt паказвае ўсе даступныя эмодзі"</string>
     <string name="button_default" msgid="3988017840431881491">"Па змаўчанні"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Вітаем у прыкладанні <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"з уводам жэстамі"</string>
@@ -206,10 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Далей"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Наладка прыкладання <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Уключыць прыкладанне <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
-    <skip />
-    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Праверце праграму \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" у сваіх наладах Мовы і ўводу. Гэта дазволіць ёй працаваць на вашай прыладзе."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Праграма <xliff:g id="APPLICATION_NAME">%s</xliff:g> ужо ўключана у вашых наладах Мовы і ўводу, так што гэты крок зроблены. Пераходзім да наступнага!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Уключыць у наладах"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Пераключыцца на прыкладанне <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Выберыце \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" як актыўны метад уводу тэксту."</string>
@@ -238,24 +176,19 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Абнавіць"</string>
     <string name="last_update" msgid="730467549913588780">"Апошняе абнаўленне"</string>
     <string name="message_updating" msgid="4457761393932375219">"Праверка наяўнасці абнаўленняў"</string>
-    <!-- no translation found for message_loading (5638680861387748936) -->
-    <skip />
+    <string name="message_loading" msgid="5638680861387748936">"Загрузка…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Асноўны слоўнік"</string>
     <string name="cancel" msgid="6830980399865683324">"Адмяніць"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Налады"</string>
     <string name="install_dict" msgid="180852772562189365">"Усталяваць"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Адмена"</string>
     <string name="delete_dict" msgid="756853268088330054">"Выдаліць"</string>
-    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Для выбранай мовы на вашай мабільнай прыладзе даступны слоўнік.&lt;br/&gt; Мы рэкамендуем &lt;b&gt;спампаваць&lt;/b&gt; слоўнік для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>, каб палегчыць увод.&lt;br/&gt; &lt;br/&gt; Спампоўка па 3G можа заняць хвіліну ці дзве. Калі ў вас няма &lt;b&gt;тарыфнага плана без абмежаванняў&lt;/b&gt;.&lt;br/&gt;, можа быць спагнана аплата. Калі вы не ўпэўненыя, які ў вас тарыфны план, мы рэкамендуем знайсці падключэнне па Wi-Fi, каб пачаць аўтаматычную спампоўку.&lt;br/&gt; &lt;br/&gt; Парада: вы можаце спампоўваць і выдаляць слоўнікі, перайшоўшы ў \"&lt;b&gt;Мовы і ўвод&lt;/b&gt;\" у меню &lt;b&gt;Налады&lt;/b&gt; вашай мабільнай прылады."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Спампаваць зараз (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>МБ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Спампаваць праз Wi-Fi"</string>
-    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
-    <skip />
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"Слоўнік даступны для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Нацiснiце, каб прагледзець i спампаваць"</string>
-    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
-    <skip />
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Спампоўка: прапановы для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> хутка будуць гатовы."</string>
     <string name="version_text" msgid="2715354215568469385">"Версія <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Дадаць"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Дадаць у слоўнік"</string>
@@ -271,8 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Рэдагаваць слова"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Рэдагаваць"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Выдаліць"</string>
-    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
-    <skip />
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"У вашым карыстальніцкім слоўніку няма ніводнага слова. Каб дадаць слова, краніце кнопку Дадаць (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Для ўсіх моў"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Іншыя мовы..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Выдаліць"</string>
