@@ -27,8 +27,8 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Pusti zvuk pritiskom na tipku"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Iskoči pritiskom na tipku"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Karakteristike"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"Računi i&amp; privatnost"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"Izgled i&amp; rasporedi tipki"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Računi i privatnost"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"Izgled i rasporedi tipki"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Kucanje pokretima"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Ispravka teksta"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Napredno"</string>
@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Vaši snihronizirani podaci bit će izbrisani iz oblaka. Sigurno?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Izbriši"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Otkaži"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Vaš lični rječnik bit će sinhroniziran i sigurno pohranjen na Google servere. Moguće je da će se prikupljati statističke informacije o učestalosti riječi, u cilju poboljšanja naših proizvoda. Prikupljanje i upotreba svih informacija bit će u skladu s "<a href="https://www.google.com/policies/privacy">"Google pravilima o privatnosti"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Vaš lični rječnik bit će sinhroniziran i sigurno pohranjen na Google servere. Moguće je da će se prikupljati statističke informacije o učestalosti riječi, u cilju poboljšanja naših proizvoda. Prikupljanje i upotreba svih informacija bit će u skladu s "<a href="https://www.google.com/policies/privacy">"Googleovim pravilima o privatnosti"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Dodajte Google račun u ovaj uređaj da biste omogućili tu funkciju"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinhronizacija nije moguća na uređajima s Google aplikacijama za poslovne račune"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Prebacite na druge načine unosa"</string>
@@ -86,7 +86,7 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Pokret za fraze"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Klizanjem na tipku za razmak umetni razmake tokom pokreta"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tipka za govorni unos"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nisu omogućeni načini za glasovni unos. Provjerite postavke &amp; jezika za unos."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nisu omogućeni načini za glasovni unos. Provjerite postavke sekcije Jezici i unos."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguriraj načine unosa"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Jezici"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pomoć i povratne informacije"</string>
@@ -140,14 +140,14 @@
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji za fizičku tastaturu"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tipka Alt na fizičkoj tastaturi aktivira paletu za emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Zadano"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"Dobrodošli u aplikaicju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Dobrodošli u aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"s kucanjem pokretima"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Počnite"</string>
-    <string name="setup_next_action" msgid="371821437915144603">"Slijedeći korak"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"Sljedeći korak"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Postavljanje aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Omogući aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"Označite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" u postavkama &amp; jezika unosa. Na taj način ćete joj dozvoliti da se pokrene na vašem uređaju."</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> je već omogućena u vašim postavkama &amp; jezika unosa, tako da je ovaj korak završen. Pređite na sljedeći!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Označite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" u postavkama sekcije Jezici i unos. Na taj način ćete joj dozvoliti da se pokrene na vašem uređaju."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> je već omogućena u vašim postavkama sekcije Jezici i unos, tako da je ovaj korak završen. Pređite na sljedeći!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Omogući u Postavkama"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Prebacite se na aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Zatim, odaberite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kao vaš aktivni način unosa teksta."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instaliraj"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Otkaži"</string>
     <string name="delete_dict" msgid="756853268088330054">"Izbriši"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Za odabrani jezik na vašem uređaju postoji dostupan rječnik.&lt;br/&gt; Predlažemo da &lt;b&gt;preuzmete&lt;/b&gt; rječnik za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> kako biste poboljšali svoje iskustvo tipkanja.&lt;br/&gt; &lt;br/&gt; Preuzimanje putem 3G mreže može potrajati minut-dva. Mogući su troškovi ukoliko nemate &lt;b&gt;paket s neograničenim prijenosom podataka&lt;/b&gt;.&lt;br/&gt; Ako ne znate koji paket za prijenos podataka imate, preporučujemo da pronađete Wi-Fi mrežu kako biste počeli automatsko preuzimanje.&lt;br/&gt; &lt;br/&gt; Savjet: Rječnike možete preuzimati i uklanjati tako što ćete otići u meni &lt;b&gt;Unos &amp; jezika&lt;/b&gt; u meniju &lt;b&gt;Postavke&lt;/b&gt; vašeg mobilnog uređaja."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Za odabrani jezik na vašem uređaju postoji dostupan rječnik.&lt;br/&gt; Predlažemo da &lt;b&gt;preuzmete&lt;/b&gt; rječnik za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> kako biste poboljšali svoje iskustvo tipkanja.&lt;br/&gt; &lt;br/&gt; Preuzimanje putem 3G mreže može potrajati minut-dva. Mogući su troškovi ukoliko nemate &lt;b&gt;paket s neograničenim prijenosom podataka&lt;/b&gt;.&lt;br/&gt; Ako ne znate koji paket za prijenos podataka imate, preporučujemo da pronađete Wi-Fi mrežu kako biste počeli automatsko preuzimanje.&lt;br/&gt; &lt;br/&gt; Savjet: Rječnike možete preuzimati i uklanjati ako odete na &lt;b&gt;Jezici i unos&lt;/b&gt; u meniju &lt;b&gt;Postavke&lt;/b&gt; na vašem mobilnom uređaju."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Preuzmi odmah (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Preuzmi putem Wi-Fi mreže"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Rječnik je dostupan za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

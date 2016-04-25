@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Дауыспен енгізу әдістері қосылмаған. \"Тілдер және енгізу\" параметрлерін тексеріңіз."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Енгізу әдістерін теңшеу"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тілдер"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"Анықтама және кері байланыс"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Анықтама және пікір"</string>
     <string name="select_language" msgid="5709487854987078367">"Тілдер"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Сақтау үшін қайта түртіңіз"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Сақтау үшін осы жерді түртіңіз"</string>
