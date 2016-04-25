@@ -26,26 +26,26 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вібрацыя пры націску клавіш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Гук пры націску"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Па націску на клавішы ўсплывае акно"</string>
-    <string name="settings_screen_preferences" msgid="2696713156722014624">"Налады"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"Улік. запісы і канфідэнцыяльнасць"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Параметры"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Улік. запісы і прыватнасць"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Знешні выгляд і раскладкі"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Жэставы набор"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Выпраўленне тэксту"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Дадатковыя"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Тэма"</string>
-    <string name="enable_split_keyboard" msgid="4177264923999493614">"Уключэнне эрганамічнай клавіятуры"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"Уключыць раздзеленую клавіятуру"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Сінхранізацыя Клавіятуры Google"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Сінхранізацыя ўключана"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Сінхранізацыя вашага асабістага слоўніка на розных прыладах"</string>
-    <string name="sync_now_title" msgid="3088838136743277721">"Сінхранiзаваць зараз"</string>
+    <string name="sync_now_title" msgid="3088838136743277721">"Сінхранiзаваць"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Выдаліць даныя воблака"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Вашыя сінхранізаваныя даныя будуць выдалены з Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Вашыя сінхранізав. даныя будуць выдалены з воблака. Вы ўпэўненыя?"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Вашы сінхранізаваныя даныя будуць выдалены з Google"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Вашы сінхранізав. даныя будуць выдалены з воблака. Вы ўпэўненыя?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Выдаліць"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Скасаваць"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Ваш асабісты слоўнік будзе сінхранізаваны з серверамі Google, дзе для яго будуць стварацца рэзервовыя копіі. Можа сабірацца статыстычная інфармацыя аб частаце ўжывання слоў. Гэта робіцца, каб дапамагчы палепшыць нашыя прадукты. Збор і выкарыстанне ўсёй інфармацыі будзе адпавядаць "<a href="https://www.google.com/policies/privacy">"Палітыцы канфідэнцыяльнасці Googlе"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Дад. ўлік. запіс Google для гэтай прылады, каб укл. гэту функцыю"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Сінхранізацыя не даступная для прылад з улік. запісамі Google Apps for Business"</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Ваш асабісты слоўнік будзе сінхранізаваны з серверамі Google, дзе для яго будуць стварацца рэзервовыя копіі. Можа збірацца статыстычная інфармацыя аб частаце ўжывання слоў. Гэта робіцца, каб дапамагчы палепшыць нашы прадукты. Збор і выкарыстанне ўсёй інфармацыі будзе адпавядаць "<a href="https://www.google.com/policies/privacy">"Палітыцы прыватнасці Googlе"</a>"."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Дад. улік. запіс Google для гэтай прылады, каб укл. гэту функцыю"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Сінхранізацыя недаступная для прылад з улік. запісамі Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Перакл. да інш. спос. ув."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Кнопка пераключэння мовы звязана i з iншымi спосабамi ўводу"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Кнопка пераключэння мовы"</string>
@@ -86,7 +86,7 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Жэст фразы"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Уводзьце прабелы паміж жэстамі, праводзячы па клавішы прабелу"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ключ галасавога ўводу"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Не ўключана ніводнага спосабу галасавога ўводу. Праверце налады Мовы і ўводу."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Не ўключана ніводнага спосабу галасавога ўводу. Праверце налады параметра \"Мовы і ўвод\"."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Налада метадаў уводу"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Мовы"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Даведка і водгукі"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Далей"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Наладка прыкладання <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Уключыць прыкладанне <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"Праверце праграму \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" у сваіх наладах Мовы і ўводу. Гэта дазволіць ёй працаваць на вашай прыладзе."</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Праграма <xliff:g id="APPLICATION_NAME">%s</xliff:g> ужо ўключана у вашых наладах Мовы і ўводу, так што гэты крок зроблены. Пераходзім да наступнага!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Праверце праграму \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" у сваіх наладах параметра \"Мовы і ўвод\". Гэта дазволіць ёй працаваць на вашай прыладзе."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Праграма \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ужо ўключана ў вашых наладах параметра \"Мовы і ўвод\", так што гэты крок зроблены. Пераходзім да наступнага!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Уключыць у наладах"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Пераключыцца на прыкладанне <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Выберыце \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" як актыўны метад уводу тэксту."</string>
@@ -183,12 +183,12 @@
     <string name="install_dict" msgid="180852772562189365">"Усталяваць"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Адмена"</string>
     <string name="delete_dict" msgid="756853268088330054">"Выдаліць"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Для выбранай мовы на вашай мабільнай прыладзе даступны слоўнік.&lt;br/&gt; Мы рэкамендуем &lt;b&gt;спампаваць&lt;/b&gt; слоўнік для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>, каб палегчыць увод.&lt;br/&gt; &lt;br/&gt; Спампоўка па 3G можа заняць хвіліну ці дзве. Калі ў вас няма &lt;b&gt;тарыфнага плана без абмежаванняў&lt;/b&gt;.&lt;br/&gt;, можа быць спагнана аплата. Калі вы не ўпэўненыя, які ў вас тарыфны план, мы рэкамендуем знайсці падключэнне па Wi-Fi, каб пачаць аўтаматычную спампоўку.&lt;br/&gt; &lt;br/&gt; Парада: вы можаце спампоўваць і выдаляць слоўнікі, перайшоўшы ў \"&lt;b&gt;Мовы і ўвод&lt;/b&gt;\" у меню &lt;b&gt;Налады&lt;/b&gt; вашай мабільнай прылады."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Для выбранай мовы на вашай мабільнай прыладзе даступны слоўнік.&lt;br/&gt; Мы рэкамендуем &lt;b&gt;спампаваць&lt;/b&gt; слоўнік для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>, каб палегчыць увод.&lt;br/&gt; &lt;br/&gt; Спампоўка па 3G можа заняць хвіліну ці дзве. Калі ў вас няма &lt;b&gt;безлімітнага тарыфнага плана&lt;/b&gt;.&lt;br/&gt;, можа быць спагнана аплата. Калі вы не ўпэўненыя, які ў вас тарыфны план, мы рэкамендуем знайсці падключэнне па Wi-Fi, каб пачаць аўтаматычную спампоўку.&lt;br/&gt; &lt;br/&gt; Парада: вы можаце спампоўваць і выдаляць слоўнікі, перайшоўшы ў параметр \"&lt;b&gt;Мовы і ўвод&lt;/b&gt;\" у меню &lt;b&gt;Налады&lt;/b&gt; вашай мабільнай прылады."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Спампаваць зараз (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>МБ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Спампаваць праз Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Слоўнік даступны для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Нацiснiце, каб прагледзець i спампаваць"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Спампоўка: прапановы для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> хутка будуць гатовы."</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Спампоўка: прапановы для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> хутка будуць гатовыя."</string>
     <string name="version_text" msgid="2715354215568469385">"Версія <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Дадаць"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Дадаць у слоўнік"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Рэдагаваць слова"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Рэдагаваць"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Выдаліць"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"У вашым карыстальніцкім слоўніку няма ніводнага слова. Каб дадаць слова, краніце кнопку Дадаць (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"У вашым карыстальніцкім слоўніку няма ніводнага слова. Каб дадаць слова, краніце кнопку \"Дадаць (+)\"."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Для ўсіх моў"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Іншыя мовы..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Выдаліць"</string>
