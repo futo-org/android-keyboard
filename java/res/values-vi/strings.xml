@@ -86,16 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Cử chỉ nhập cụm từ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Nhập dấu cách khi thực hiện cử chỉ bằng cách trượt tới phím cách"</string>
     <string name="voice_input" msgid="3583258583521397548">"Khóa nhập giọng nói"</string>
-    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
-    <skip />
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Không có phương thức nhập bằng giọng nói nào được bật. Kiểm tra cài đặt Ngôn ngữ và phương thức nhập."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Định cấu hình phương thức nhập"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Ngôn ngữ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Trợ giúp và phản hồi"</string>
     <string name="select_language" msgid="5709487854987078367">"Ngôn ngữ"</string>
-    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Nhấn lại để lưu"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Nhấn vào đây để lưu"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Có sẵn từ điển"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Chuyển đổi tài khoản"</string>
@@ -149,10 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Bước tiếp theo"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Thiết lập <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Bật <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
-    <skip />
-    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Hãy chọn \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" trong cài đặt Ngôn ngữ và phương thức nhập. Thao tác này sẽ cho phép ứng dụng chạy trên thiết bị của bạn."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> đã được bật trong cài đặt Ngôn ngữ và phương thức nhập, do đó bước này đã hoàn tất. Hãy chuyển sang bước tiếp theo!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Bật trong Cài đặt"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Chuyển sang <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Tiếp theo, chọn \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" làm phương thức nhập văn bản hoạt động của bạn."</string>
@@ -188,8 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Cài đặt"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Hủy"</string>
     <string name="delete_dict" msgid="756853268088330054">"Xóa"</string>
-    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Ngôn ngữ đã chọn trên thiết bị di động của bạn hiện có từ điển.&lt;br/&gt; Chúng tôi khuyên bạn nên &lt;b&gt;tải xuống&lt;/b&gt; từ điển <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> để cải thiện trải nghiệm nhập của mình.&lt;br/&gt; &lt;br/&gt; Quá trình tải xuống có thể mất vài phút qua 3G. Có thể mất phí nếu bạn không có &lt;b&gt;gói dữ liệu không giới hạn&lt;/b&gt;.&lt;br/&gt; Nếu bạn không chắc mình có gói dữ liệu nào, bạn nên tìm kết nối Wi-Fi để bắt đầu tải xuống tự động.&lt;br/&gt; &lt;br/&gt; Mẹo: Bạn có thể tải xuống và xóa từ điển bằng cách chuyển tới &lt;b&gt;Ngôn ngữ và phương thức nhập&lt;/b&gt; trong menu &lt;b&gt;Cài đặt&lt;/b&gt; trên thiết bị di động của mình."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Tải xuống bây giờ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Tải xuống qua Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Hiện có từ điển cho <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -210,8 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Chỉnh sửa từ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Chỉnh sửa"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Xóa"</string>
-    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
-    <skip />
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Bạn không có bất kỳ từ nào trong từ điển người dùng. Để thêm từ, hãy nhấn vào nút Thêm (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Cho tất cả ngôn ngữ"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Ngôn ngữ khác…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Xóa"</string>

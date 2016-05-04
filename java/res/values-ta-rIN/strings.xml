@@ -86,16 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"சொற்றொடர் சைகை"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ஸ்பேஸ் விசைக்கு இழுப்பதன் மூலம் சைகைகளுக்கு இடையே இடைவெளிகளை உள்ளிடலாம்"</string>
     <string name="voice_input" msgid="3583258583521397548">"குரல் உள்ளீட்டு விசை"</string>
-    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
-    <skip />
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"குரல் உள்ளீட்டு முறைகள் இயக்கப்படவில்லை. மொழி &amp; உள்ளீட்டு அமைப்புகளைச் சரிபார்க்கவும்."</string>
     <string name="configure_input_method" msgid="373356270290742459">"உள்ளீட்டு முறைகளை உள்ளமைத்தல்"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"மொழிகள்"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"உதவி &amp; கருத்து"</string>
     <string name="select_language" msgid="5709487854987078367">"மொழிகள்"</string>
-    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"சேமிக்க, மீண்டும் தட்டவும்"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"சேமிக்க, இங்கே தட்டவும்"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"அகராதி உள்ளது"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"விசைப்பலகை தீம்"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"கணக்குகளை மாற்று"</string>
@@ -149,10 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"அடுத்த கட்டம்"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டை அமைக்கிறது"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டை இயக்கவும்"</string>
-    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
-    <skip />
-    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"மொழி &amp; உள்ளீட்டு அமைப்புகளில் \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" பயன்பாட்டைத் தேர்வு செய்யவும். இதனால், சாதனத்தில் பயன்பாட்டை இயக்கலாம்."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"மொழி &amp; உள்ளீட்டு அமைப்புகளில் <xliff:g id="APPLICATION_NAME">%s</xliff:g> ஏற்கனவே இயக்கப்பட்டுள்ளதால் இப்படிமுறை முடிந்தது. அடுத்த படிமுறைக்குச் செல்லவும்!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"அமைப்புகளில் இயக்கு"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> க்கு மாறவும்"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"அடுத்து, உங்கள் செயலில் உள்ள உரை உள்ளீட்டு முறையாக \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" பயன்பாட்டைத் தேர்ந்தெடுக்கவும்."</string>
@@ -188,8 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"நிறுவு"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ரத்துசெய்"</string>
     <string name="delete_dict" msgid="756853268088330054">"நீக்கு"</string>
-    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"உங்கள் மொபைலில் தேர்ந்தெடுத்துள்ள மொழிக்கான அகராதி கிடைக்கிறது.&lt;br/&gt; உள்ளிடும் அனுபவத்தை மேம்படுத்த, <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> அகராதியை &lt;b&gt;இறக்கும்படி&lt;/b&gt; பரிந்துரைக்கிறோம்.&lt;br/&gt; &lt;br/&gt; 3G இல் இறக்க, ஒன்று அல்லது இரண்டு நிமிடங்கள் ஆகலாம். உங்களிடம் &lt;b&gt;வரம்பற்ற தரவுத் திட்டம்&lt;/b&gt; இல்லையெனில், கட்டணம் விதிக்கப்படலாம்.&lt;br/&gt; எந்தத் தரவு திட்டத்தைப் பயன்படுத்துகிறீர்கள் என்பது உறுதியாகத் தெரியவில்லை எனில், இறக்குவதைத் தானாகத் தொடங்குவதற்கு வைஃபை இணைப்பைக் கண்டறியும்படி பரிந்துரைக்கிறோம்.&lt;br/&gt; &lt;br/&gt; உதவிக்குறிப்பு: மொபைலில் &lt;b&gt;அமைப்புகள்&lt;/b&gt; மெனுவில், &lt;b&gt;மொழி &amp; உள்ளீடு&lt;/b&gt; என்பதற்குச் சென்று அகராதிகளை இறக்கலாம், அகற்றலாம்."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"இப்போது பதிவிறக்கு (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>மெ.பை.)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"வைஃபை வழியாகப் பதிவிறக்கு"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> மொழிக்கு அகராதி கிடைக்கிறது"</string>
@@ -210,8 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"வார்த்தையைத் திருத்து"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"திருத்து"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"நீக்கு"</string>
-    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
-    <skip />
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"பயனர் அகராதியில் எந்தச் சொற்களும் இல்லை. சொல்லைச் சேர்க்க, சேர் (+) எனும் பொத்தானைத் தட்டவும்."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"எல்லா மொழிகளுக்கும்"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"மேலும் மொழிகள்..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"நீக்கு"</string>

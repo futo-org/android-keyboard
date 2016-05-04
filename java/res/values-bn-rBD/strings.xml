@@ -86,16 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"শব্দবন্ধ অঙ্গভঙ্গি"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"অঙ্গভঙ্গির সময় ব্যবধান ইনপুট করতে স্পেস কীতে যান"</string>
     <string name="voice_input" msgid="3583258583521397548">"ভয়েস ইনপুট কী"</string>
-    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
-    <skip />
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"কোনো ভয়েস ইনপুট পদ্ধতি সক্ষম নয়। ভাষা এবং ইনপুট সেটিংস পরীক্ষা করুন।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ইনপুট পদ্ধতি কনফিগার করুন"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ভাষাগুলি"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"সহায়তা এবং প্রতিক্রিয়া"</string>
     <string name="select_language" msgid="5709487854987078367">"ভাষাগুলি"</string>
-    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"সংরক্ষণ করতে আবার আলতো চাপুন"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"সংরক্ষণ করতে এখানে আলতো চাপুন"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"অভিধান উপলব্ধ"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"কীবোর্ড থিম"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"অ্যাকাউন্ট পাল্টান"</string>
@@ -149,10 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"পরবর্তী পদক্ষেপ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সেট আপ হচ্ছে"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করুন"</string>
-    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
-    <skip />
-    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"অনুগ্রহ করে আপনার ভাষা ও ইনপুট সেটিংসে <xliff:g id="APPLICATION_NAME">%s</xliff:g> পরীক্ষা করুন। এর ফলে এটি আপনার ডিভাইসে চলার জন্য অনুমোদন পাবে।"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"আপনার ভাষা ও ইনপুট সেটিংসে ইতিমধ্যে <xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করা হয়েছে, তাই এই পদক্ষেপটি সমাপ্ত হয়েছে। পরবর্তীটিতে যান!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"সেটিংসে সক্ষম করুন"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> এ স্যুইচ করুন"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"এখন, সক্রিয় পাঠ্য-ইনপুট পদ্ধতি হিসেবে \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" নির্বাচন করুন।"</string>
@@ -188,8 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ইনস্টল করুন"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"বাতিল করুন"</string>
     <string name="delete_dict" msgid="756853268088330054">"মুছুন"</string>
-    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"আপনার মোবাইল ডিভাইসে নির্বাচিত ভাষার জন্য একটি অভিধান উপলভ্য আছে। &lt;br/&gt; আপনার টাইপিং এর অভিজ্ঞতা ভালো করার জন্য আমরা <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> অভিধান &lt;b&gt;ডাউনলোড করার&lt;/b&gt; পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt; 3G-র মাধ্যমে ডাউনলোড হতে এক বা দুই মিনিট সময় লাগতে পারে। আপনার কাছে কোন &lt;b&gt;আনলিমিটেড ডেটা প্ল্যান&lt;/b&gt;.&lt;br/&gt; না থাকলে চার্জ প্রযোজ্য হতে পারে, আপনার কাছে কোন ডেটা প্ল্যান আছে তা নিয়ে আপনি নিশ্চিত না থাকলে সেক্ষেত্রে আমরা ডাউনলোড স্বয়ংক্রিয়ভাবে শুরু করার জন্য একটি Wi-Fi সংযোগ খোঁজার পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt;টিপ: আপনি আপনার মোবাইল ডিভাইসে &lt;b&gt;সেটিংস&lt;/b&gt; মেনুতে &lt;b&gt;ভাষা এবং ইনপুট&lt;/b&gt; এর মধ্যে গিয়ে অভিধান ডাউনলোড করতে ও মুছতে পারবেন।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"এখন ডাউনলোড করুন (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>মেবা)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi মাধ্যমে ডাউনলোড করুন"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ভাষার জন্য একটি অভিধান উপলব্ধ"</string>
@@ -210,8 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"শব্দ সম্পাদনা করুন"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"সম্পাদনা করুন"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"মুছুন"</string>
-    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
-    <skip />
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ব্যবহারকারীর অভিধানে আপনার কোনো শব্দ নেই। একটি শব্দ যোগ করতে যোগ করুন (+) বোতামটি আলতো চাপুন।"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"সব ভাষার জন্য"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"আরো ভাষা..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"মুছুন"</string>
