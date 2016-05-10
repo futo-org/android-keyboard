@@ -39,9 +39,9 @@ import com.android.inputmethod.latin.utils.InputTypeUtils;
 
 public final class AccessibilityUtils {
     private static final String TAG = AccessibilityUtils.class.getSimpleName();
-    private static final String CLASS = AccessibilityUtils.class.getClass().getName();
+    private static final String CLASS = AccessibilityUtils.class.getName();
     private static final String PACKAGE =
-            AccessibilityUtils.class.getClass().getPackage().getName();
+            AccessibilityUtils.class.getPackage().getName();
 
     private static final AccessibilityUtils sInstance = new AccessibilityUtils();
 
