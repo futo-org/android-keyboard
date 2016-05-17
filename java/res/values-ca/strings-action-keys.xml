@@ -26,6 +26,6 @@
     <string name="label_done_key" msgid="7564866296502630852">"Fet"</string>
     <string name="label_send_key" msgid="482252074224462163">"Envia"</string>
     <string name="label_search_key" msgid="7965186050435796642">"Cerca"</string>
-    <string name="label_pause_key" msgid="2225922926459730642">"Atura"</string>
+    <string name="label_pause_key" msgid="2225922926459730642">"Posa en pausa"</string>
     <string name="label_wait_key" msgid="5891247853595466039">"Esp."</string>
 </resources>
