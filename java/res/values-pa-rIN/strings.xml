@@ -38,13 +38,13 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"ਸਿੰਕ ਚਾਲੂ ਕੀਤਾ ਗਿਆ ਹੈ"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ਡਿਵਾਈਸਾਂ ਵਿੱਚ ਆਪਣਾ ਨਿੱਜੀ ਸ਼ਬਦਕੋਸ਼ ਸਿੰਕ ਕਰੋ"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"ਹੁਣ ਸਿੰਕ ਕਰੋ"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"ਕਲਾਉਡ ਡਾਟਾ ਮਿਟਾਓ"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google ਤੋਂ ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ ਡਾਟਾ ਮਿਟਾਉਂਦਾ ਹੈ"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ ਡਾਟਾ ਕਲਾਉਡ ਤੋਂ ਮਿਟਾ ਦਿੱਤਾ ਜਾਏਗਾ। ਕੀ ਤੁਸੀਂ ਨਿਸ਼ਚਿਤ ਹੋ?"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"ਕਲਾਉਡ ਡੈਟਾ ਮਿਟਾਓ"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google ਤੋਂ ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ ਡੈਟਾ ਮਿਟਾਉਂਦਾ ਹੈ"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ ਡੈਟਾ ਕਲਾਉਡ ਤੋਂ ਮਿਟਾ ਦਿੱਤਾ ਜਾਏਗਾ। ਕੀ ਤੁਸੀਂ ਨਿਸ਼ਚਿਤ ਹੋ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ਮਿਟਾਓ"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ਰੱਦ ਕਰੋ"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ਤੁਹਾਡਾ ਨਿੱਜੀ ਸ਼ਬਦਕੋਸ਼ ਸਿੰਕ ਕੀਤਾ ਜਾਏਗਾ ਅਤੇ Google ਸਰਵਰਾਂ ਤੇ ਬੈਕ ਅਪ ਕੀਤਾ ਜਾਏਗਾ। ਸ਼ਬਦ ਬਾਰੰਬਾਰਤਾ ਦੀ ਅੰਕੜੇ ਸੰਬੰਧੀ ਜਾਣਕਾਰੀ ਸਾਡੇ ਉਤਪਾਦਾਂ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ ਇਕੱਤਰ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ। ਸਾਰੀ ਜਾਣਕਾਰੀ ਦਾ ਇਕੱਤਰੀਕਰਨ ਅਤੇ ਵਰਤੋਂ "<a href="https://www.google.com/policies/privacy">"Google ਦੀ ਪ੍ਰਾਈਵੇਸੀ ਨੀਤੀ"</a>"ਦੇ ਮੁਤਾਬਕ ਹੋਵੇਗੀ।"</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ਕਿਰਪਾ ਕਰਕੇ ਇਸ ਵਿਸ਼ੇਸ਼ਤਾ ਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣ ਲਈ ਇਸ ਡਿਵਾਈਸ ਤੇ ਇੱਕ Google ਖਾਤਾ ਜੋੜੋ।"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ਕਿਰਪਾ ਕਰਕੇ ਇਸ ਵਿਸ਼ੇਸ਼ਤਾ ਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣ ਲਈ ਇਸ ਡੀਵਾਈਸ ਤੇ ਇੱਕ Google ਖਾਤਾ ਜੋੜੋ।"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ਬਿਜਨਸ ਖਾਤਿਆਂ ਲਈ Google ਐਪਸ ਵਾਲੀਆਂ ਡਿਵਾਈਸਾਂ ਲਈ ਸਿੰਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ਹੋਰਾਂ ਇਨਪੁਟ ਵਿਧੀਆਂ ਤੇ ਸਵਿਚ ਕਰੋ"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ਭਾਸ਼ਾ ਸਵਿਚ ਕੁੰਜੀ ਹੋਰਾਂ ਇਨਪੁਟ ਵਿਧੀਆਂ ਨੂੰ ਵੀ ਸ਼ਾਮਲ ਕਰਦੀ ਹੈ"</string>
@@ -67,7 +67,7 @@
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ਐਡ-ਓਨ ਸ਼ਬਦਕੋਸ਼"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ਮੁੱਖ ਸ਼ਬਦਕੋਸ਼"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ਸੁਧਾਈ ਸੁਝਾਅ ਦਿਖਾਓ"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ਟਾਈਪਿੰਗ ਕਰਦੇ ਸਮੇਂ ਸੁਝਾਏ ਗਏ ਸ਼ਬਦ ਡਿਸਪਲੇ ਕਰੋ"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ਟਾਈਪਿੰਗ ਕਰਦੇ ਸਮੇਂ ਸੁਝਾਏ ਗਏ ਸ਼ਬਦ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ਅਪਮਾਨਜਨਕ ਸ਼ਬਦਾਂ ਨੂੰ ਬਲੌਕ ਕਰੋ"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"ਸੰਭਾਵਿਤ ਰੂਪ ਨਾਲ ਅਪਮਾਨਜਨਕ ਸ਼ਬਦਾਂ ਦਾ ਸੁਝਾਅ ਨਾ ਦਿਓ"</string>
     <string name="auto_correction" msgid="7630720885194996950">"ਆਟੋ-ਸੁਧਾਈ"</string>
@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ਕੋਈ ਵੌਇਸ ਇਨਪੁੱਟ ਵਿਧੀਆਂ ਯੋਗ ਨਹੀਂ ਬਣਾਈਆਂ ਹਨ। ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ ਸੈਟਿੰਗਾਂ ਦੀ ਜਾਂਚ ਕਰੋ।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ਇਨਪੁਟ ਵਿਧੀਆਂ ਕੌਂਫਿਗਰ ਕਰੋ"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ਭਾਸ਼ਾਵਾਂ"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"ਸਹਾਇਤਾ &amp; ਫੀਡਬੈਕ"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"ਮਦਦ &amp; ਫੀਡਬੈਕ"</string>
     <string name="select_language" msgid="5709487854987078367">"ਭਾਸ਼ਾਵਾਂ"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"ਰੱਖਿਅਤ ਕਰਨ ਲਈ ਦੁਬਾਰਾ ਟੈਪ ਕਰੋ"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"ਰੱਖਿਅਤ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ"</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"ਵਾਧੂ ਭਾਸ਼ਾਵਾਂ ਕੌਂਫਿਗਰ ਕਰੋ"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"ਪੂਰਾ ਹੋਇਆ"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ਐਪ ਆਈਕਨ ਦਿਖਾਓ"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"ਲਾਂਚਰ ਵਿੱਚ ਐਪਲੀਕੇਸ਼ਨ ਆਈਕਨ ਡਿਸਪਲੇ ਕਰੋ"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"ਲਾਂਚਰ ਵਿੱਚ ਐਪਲੀਕੇਸ਼ਨ ਆਈਕਨ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ"</string>
     <string name="app_name" msgid="6320102637491234792">"ਸ਼ਬਦਕੋਸ਼ ਪ੍ਰਦਾਤਾ"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ਸ਼ਬਦਕੋਸ਼ ਪ੍ਰਦਾਤਾ"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"ਸ਼ਬਦਕੋਸ਼ ਸੇਵਾ"</string>

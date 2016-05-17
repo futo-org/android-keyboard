@@ -188,7 +188,7 @@
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Sækja í gegnum Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Orðabók er í boði fyrir <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Ýttu til að skoða og sækja"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Sækir: Tillögur fyrir <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> verða tilbúnar fljótlega."</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Sækir tillögur fyrir: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="version_text" msgid="2715354215568469385">"Útgáfa <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Bæta við"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Bæta við orðabók"</string>

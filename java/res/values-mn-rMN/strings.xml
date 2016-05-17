@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ижилхэн оруулах загвар байна: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Товч дарах чичиргээний хугацаа"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Товчны дууны хэмжээ"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Товч удаан дарах хугацааны тохиргоо"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Товчны удаан даралтын тохиргоо"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Бодит гарт зориулсан эможи"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Бодит Alt товчлуур нь эможи палитрыг харуулдаг"</string>
     <string name="button_default" msgid="3988017840431881491">"Үндсэн"</string>
@@ -195,7 +195,7 @@
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Хэллэг"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Нэмэлт сонголтууд"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Цөөн сонголт"</string>
-    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"Тийм"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"OK"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Үг:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Товчилбор:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Хэл:"</string>

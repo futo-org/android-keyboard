@@ -69,7 +69,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Sugerencias de correcciones"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostrar las palabras sugeridas mientras se escribe"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palabras ofensivas"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No sugerir palabras potencialmente ofensivas"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No sugerir palabras que pueden ser ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Pulsar la tecla de espacio o punto para corregir errores"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"No"</string>
