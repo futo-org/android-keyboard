@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 
 public final class LocaleListCompatUtils {
-    private static final Class CLASS_LocaleList = CompatUtils.getClass("android.util.LocaleList");
+    private static final Class CLASS_LocaleList = CompatUtils.getClass("android.os.LocaleList");
     private static final Method METHOD_get =
             CompatUtils.getMethod(CLASS_LocaleList, "get", int.class);
     private static final Method METHOD_isEmpty =
