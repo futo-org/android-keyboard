@@ -179,7 +179,7 @@
     <string name="message_loading" msgid="5638680861387748936">"ലോഡുചെയ്യുന്നു..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"പ്രധാന നിഘണ്ടു"</string>
     <string name="cancel" msgid="6830980399865683324">"റദ്ദാക്കുക"</string>
-    <string name="go_to_settings" msgid="3876892339342569259">"ക്രമീകരണങ്ങൾ"</string>
+    <string name="go_to_settings" msgid="3876892339342569259">"ക്രമീകരണം"</string>
     <string name="install_dict" msgid="180852772562189365">"ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"റദ്ദാക്കുക"</string>
     <string name="delete_dict" msgid="756853268088330054">"ഇല്ലാതാക്കുക"</string>

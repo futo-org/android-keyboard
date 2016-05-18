@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"အသံထည့်သွင်းမှုစနစ် မဖွင့်ထားပါ။ ဘာသာစကားနှင့် ထည့်သွင်းမှုဆက်တင်များကို စစ်ဆေးပါ။"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ထည့်သွင်းရန် နည်းလမ်းကို ပြုပြင်မည်"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ဘာသာစကားများ"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"အကူအညီ &amp; တုံ့ပြန်ချက်"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"အကူအညီနှင့် အကြံပြုချက်"</string>
     <string name="select_language" msgid="5709487854987078367">"ဘာသာစကားများ"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"သိမ်းဆည်းရန် နောက်တစ်ကြိမ် တို့ပါ"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"သိမ်းဆည်းရန် ဤနေရာတွင် တို့ပါ"</string>
@@ -99,7 +99,7 @@
     <string name="no_accounts_selected" msgid="2073821619103904330">"အကောင့်များ မရွေးရသေးပါ"</string>
     <string name="account_selected" msgid="2846876462199625974">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>အား လတ်တလော သုံးန​ေ၏"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"အိုကေ"</string>
-    <string name="account_select_cancel" msgid="5181012062618504340">"ထားတော့"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"ဖျက်သိမ်းရန်"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"ထွက်ရန်"</string>
     <string name="account_select_title" msgid="6279711684772922649">"သုံးမည့်အကောင့်ကို ရွေးရန်"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"အင်္ဂလိပ်(ယူကေ)"</string>
@@ -178,10 +178,10 @@
     <string name="message_updating" msgid="4457761393932375219">"အသစ်မွမ်းမံမှုကို ရှာဖွေနေ"</string>
     <string name="message_loading" msgid="5638680861387748936">"တင်နေ…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"အဓိက အဘိဓါန်"</string>
-    <string name="cancel" msgid="6830980399865683324">"ထားတော့"</string>
+    <string name="cancel" msgid="6830980399865683324">"ဖျက်သိမ်းရန်"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"ဆက်တင်များ"</string>
     <string name="install_dict" msgid="180852772562189365">"တပ်ဆင်ပါ"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"ထားတော့"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"ဖျက်သိမ်းရန်"</string>
     <string name="delete_dict" msgid="756853268088330054">"ဖျက်ရန်"</string>
     <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"သင့်မိုဘိုင်းစက်ပစ္စည်းပေါ်တွင် ရွေးချယ်ထားသည့် ဘာသာစကားအတွက် ရရှိနိုင်သည့် အဘိဓာန်တစ်ခု ရှိပါသည်။&lt;br/&gt; သင့်စာရိုက်ခြင်း အတွေ့အကြုံ တိုးတက်မှုရှိလာစေရန် <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> အဘိဓာန်ကို &lt;b&gt;ဒေါင်းလုဒ်&lt;/b&gt; လုပ်ရန် အကြံပြုပါသည်။&lt;br/&gt; &lt;br/&gt; 3G ဖြင့်ဒေါင်းလုဒ်လုပ်လျှင် တစ်မိနစ်၊ နှစ်မိနစ်ခန့် ကြာနိုင်ပါသည်။ သင့်ထံတွင် &lt;b&gt;အကန့်အသတ်မရှိ ဒေတာအစီအစဉ်&lt;/b&gt; မရှိလျှင် ငွေကုန်ကျနိုင်ပါသည်။&lt;br/&gt; သင့်ထံတွင် မည်သည့် ဒေတာအစီအစဉ်ရှိသည်ကို မသေချာလျှင်၊ Wi-Fi နှင့် ချိတ်ဆက်ကာ အလိုအလျောက် ဒေါင်းလုဒ်လုပ်ရန် အကြံပြုပါသည်။&lt;br/&gt; &lt;br/&gt; အကြံပြုချက် − သင့်မိုဘိုင်းစက်ပစ္စည်း၏ &lt;b&gt;Settings&lt;/b&gt; မီနူးရှိ &lt;b&gt;ဘာသာစကားများ &amp; ထည့်သွင်းမှု&lt;/b&gt; သို့သွားရောက်ကာ အဘိဓာန်များကို ဒေါင်းလုဒ်လုပ်ခြင်း၊ ဖယ်ရှားခြင်းများ ပြုလုပ်နိုင်သည်။"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ယခုဒေါင်းလုပ်လုပ်မည် (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>

@@ -67,7 +67,7 @@
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionaris complementaris"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionari principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Suggeriments de correcció"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra paraules suggerides mentre s\'escriu"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra les paraules suggerides mentre escrius"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloqueja paraules ofensives"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No suggereixis paraules potencialment ofensives"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Correcció automàtica"</string>
@@ -102,8 +102,8 @@
     <string name="account_select_cancel" msgid="5181012062618504340">"Cancel·la"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Tanca la sessió"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Compte que vols utilitzar"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Anglès (Regne Unit)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Anglès (EUA)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"anglès (Regne Unit)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"anglès (EUA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Espanyol (EUA)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hinglish"</string>
     <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbi (llatí)"</string>
@@ -114,7 +114,7 @@
     <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"Serbi (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradicional)"</string>
     <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (compacte)"</string>
-    <string name="subtype_no_language" msgid="7137390094240139495">"Cap idioma (alfabet)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"cap idioma (alfabet)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabet (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabet (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Alfabet (AZERTY)"</string>

@@ -63,7 +63,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ກົດທີ່ປຸ່ມຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດແລ້ວຕາມດ້ວຍການຍະຫວ່າງ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ເຮັດໂຕພິມໃຫຍ່ອັດຕະໂນມັດ"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ເຮັດໂຕພິມໃຫຍ່ໃຫ້ໂຕອັກສອນທຳອິດຂອງແຕ່ລໃນປະໂຫຍກ"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ວັດຈະນານຸກົມສ່ວນໂຕ"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ວັດຈະນານຸກົມສ່ວນຕົວ"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ໂຕເສີມວັດຈະນານຸກົມ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ວັດຈະນານຸກົມຫຼັກ"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ສະແດງການແນະນຳຄຳທີ່ຖືກຕ້ອງ"</string>
@@ -200,7 +200,7 @@
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"ທາງລັດ:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ພາສາ:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"ພິມ​ຄໍາ​ສັບ​ໃດ​ນຶ່ງ"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ໂຕເລືອກທາງລັດ"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ຕົວເລືອກທາງລັດ"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ແກ້ໄຂຄຳສັບ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ແກ້ໄຂ"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ລຶບ"</string>

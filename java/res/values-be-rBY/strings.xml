@@ -178,10 +178,10 @@
     <string name="message_updating" msgid="4457761393932375219">"Праверка наяўнасці абнаўленняў"</string>
     <string name="message_loading" msgid="5638680861387748936">"Загрузка…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Асноўны слоўнік"</string>
-    <string name="cancel" msgid="6830980399865683324">"Адмяніць"</string>
+    <string name="cancel" msgid="6830980399865683324">"Скасаваць"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"Налады"</string>
     <string name="install_dict" msgid="180852772562189365">"Усталяваць"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"Адмена"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Скасаваць"</string>
     <string name="delete_dict" msgid="756853268088330054">"Выдаліць"</string>
     <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Для выбранай мовы на вашай мабільнай прыладзе даступны слоўнік.&lt;br/&gt; Мы рэкамендуем &lt;b&gt;спампаваць&lt;/b&gt; слоўнік для наступнай мовы: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>, каб палегчыць увод.&lt;br/&gt; &lt;br/&gt; Спампоўка па 3G можа заняць хвіліну ці дзве. Калі ў вас няма &lt;b&gt;безлімітнага тарыфнага плана&lt;/b&gt;.&lt;br/&gt;, можа быць спагнана аплата. Калі вы не ўпэўненыя, які ў вас тарыфны план, мы рэкамендуем знайсці падключэнне па Wi-Fi, каб пачаць аўтаматычную спампоўку.&lt;br/&gt; &lt;br/&gt; Парада: вы можаце спампоўваць і выдаляць слоўнікі, перайшоўшы ў параметр \"&lt;b&gt;Мовы і ўвод&lt;/b&gt;\" у меню &lt;b&gt;Налады&lt;/b&gt; вашай мабільнай прылады."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Спампаваць зараз (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>МБ)"</string>
