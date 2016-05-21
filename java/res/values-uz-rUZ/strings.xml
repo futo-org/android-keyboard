@@ -31,7 +31,7 @@
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Ko‘rinish va sxema"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Qo‘l uzmasdan yozish"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Matnni tuzatish"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"Qo‘shimcha"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Qo‘shimcha sozlamalar"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Mavzu"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Ikkiga ajratiladigan klaviaturani yoqish"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Klaviaturani sinxronlash"</string>
@@ -126,7 +126,7 @@
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Maxsus usullar"</string>
     <string name="add_style" msgid="6163126614514489951">"Usul qo‘shish"</string>
     <string name="add" msgid="8299699805688017798">"Qo‘shish"</string>
-    <string name="remove" msgid="4486081658752944606">"O‘chirish"</string>
+    <string name="remove" msgid="4486081658752944606">"Olib tashlash"</string>
     <string name="save" msgid="7646738597196767214">"Saqlash"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Til"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Sxema"</string>

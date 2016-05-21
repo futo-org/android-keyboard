@@ -39,7 +39,7 @@
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"तपाईंको व्यक्तिगत शब्दकोषलाई यन्त्रहरूमा सिंक गर्नुहोस्"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"अहिले सिंक गर्नुहोस्"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"क्लाउड डेटा मेटाउनुहोस्"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिङ्क गरिएको डाटा मेटाउँछ"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिंक गरिएको डाटा मेटाउँछ"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईँको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईँ निश्चित हुनुहुन्छ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"मेटाउनुहोस्"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द गर्नुहोस्"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"यस्तो इनपुट शैली पहिले नै अवस्थित छ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुञ्जी थिचाइ भाइब्रेसन अवधि"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुञ्जी थिचाइ आवाज भोल्युम"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुञ्जी लामो थिचाइ ढिलाइ"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुञ्जीको लामो थिचाइमा ढिलाइ"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"भौतिक किबोर्डको लागि इमोजी"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"भौतिक Alt कुञ्जीले इमोजी प्यालेट देखाउँछ"</string>
     <string name="button_default" msgid="3988017840431881491">"पूर्वनिर्धारित"</string>
