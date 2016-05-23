@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Использовать имена контактов при проверке правописания"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Увеличивать при нажатии"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Настройки"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Аккаунты"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Вид и раскладки"</string>
@@ -36,7 +36,7 @@
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Включить разделенную клавиатуру"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Синхронизировать Клавиатуру"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронизация включена"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизировать пользовательский словарь со всеми устройствами"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизировать личный словарь со всеми устройствами"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Синхронизировать"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Удалить данные с серверов Google"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Удаление синхронизированных данных из Google"</string>
@@ -63,7 +63,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Вводить точку с пробелом двойным нажатием пробела."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Писать первое слово предложения с прописной буквы"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Пользовательский словарь"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Личный словарь"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дополнительные словари"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Основной словарь"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Варианты исправлений"</string>
@@ -123,7 +123,7 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Латиница (ПК)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Эмодзи"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Тема клавиатуры"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Персонализированные стили"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Свои стили ввода"</string>
     <string name="add_style" msgid="6163126614514489951">"Добавить стиль"</string>
     <string name="add" msgid="8299699805688017798">"Добавить"</string>
     <string name="remove" msgid="4486081658752944606">"Удалить"</string>

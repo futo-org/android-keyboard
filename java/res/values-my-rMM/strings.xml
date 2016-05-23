@@ -156,7 +156,7 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ဖြင့်သင့် ကြိုက်နှစ်သက်ရာ အပလီကေးရှင်းများအားလုံးအား ရိုက်ထည့်နိုင်ပါပြီ။"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"ထပ်ပေါင်းဘာသာစကားများ ပြုပြင်မည်"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"ပြီးဆုံးသွားပြီ"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"အပလီကေးရှင်းအိုင်ကွန် ပြပါ"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"အက်ပ်သင်္ကေတ ပြပါ"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"launcher တွင်နေ့စဉ် အပလီကေးရှင်းအိုင်ကွန် ပြရန်"</string>
     <string name="app_name" msgid="6320102637491234792">"အဘိဓါန် ထောက်ပံ့သူ"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"အဘိဓါန် ထောက်ပံ့သူ"</string>
@@ -199,7 +199,7 @@
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"စာလုံး:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"အတိုကောက်:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ဘာသာစကား:"</string>
-    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"စာတလုံးရိုက်ပါ"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"စကားလုံးတစ်လုံး ရိုက်ပါ"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"စိတ်ကြိုက်ရွေးစရာအတိုကောက်"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"စာလုံးကို ပြင်ဆင်မည်"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"တည်းဖြတ်ရန်"</string>

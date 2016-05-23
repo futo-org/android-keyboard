@@ -24,7 +24,7 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Bilatu kontaktu-izenak"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Zuzentzaile ortografikoak kontaktuak erabiltzen ditu"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Egin dar-dar sakatzean"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Egin soinua tekla sakatzean"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Soinua teklak sakatzean"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Handitu teklak, sakatzean"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Hobespenak"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Kontuak eta pribatutasuna"</string>
@@ -115,12 +115,12 @@
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradizionala)"</string>
     <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (trinkoa)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Ez dago hizkuntzarik (alfabetoa)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabetoa (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabetoa (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Alfabetoa (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Alfabetoa (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabetoa (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabetoa (PC)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"alfabetoa (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"alfabetoa (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"alfabetoa (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"alfabetoa (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"alfabetoa (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"alfabetoa (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emotikonoak"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Teklatuaren gaia"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Idazketa-estilo pertsonalizatuak"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Idazketa-estilo hori badago lehendik ere: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tekla sakatzearen dardararen iraupena"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tekla sakatzearen bolumena"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tekla luze sakatzearen atzerapena"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Luze sakatzearen atzerapena"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Teklatu fisikorako emotikonoak"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Teklatu fisikoko Alt tekla sakatuta emotikonoak agertzen dira"</string>
     <string name="button_default" msgid="3988017840431881491">"Lehenetsia"</string>

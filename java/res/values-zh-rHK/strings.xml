@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"極度加強模式"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"建議下一個字詞"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"根據前一個字詞提出建議"</string>
-    <string name="gesture_input" msgid="826951152254563827">"啟用觸控輸入功能"</string>
+    <string name="gesture_input" msgid="826951152254563827">"啟用手勢輸入功能"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"透過滑動手指寫出字母來輸入字詞"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"顯示觸控蹤跡"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"動態浮動預覽"</string>
@@ -141,7 +141,7 @@
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"以實體 Alt 鍵顯示表情圖案選項"</string>
     <string name="button_default" msgid="3988017840431881491">"預設"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"歡迎使用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"配備觸控輸入功能"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"配備手勢輸入功能"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"開始"</string>
     <string name="setup_next_action" msgid="371821437915144603">"下一步"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"設定「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>

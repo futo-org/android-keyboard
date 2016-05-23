@@ -200,7 +200,7 @@
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Qısayol:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Dil:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Bir söz yazın"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Könüllü qısayol"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Qısayol"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Sözü redaktə edin"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Düzəliş edin"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Silin"</string>

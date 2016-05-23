@@ -29,7 +29,7 @@
     <string name="settings_screen_preferences" msgid="2696713156722014624">"விருப்பங்கள்"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"கணக்குகள் &amp; தனியுரிமை"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"தோற்றம் &amp; தளவமைப்புகள்"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"சைகைத் தட்டச்சு"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"ஸ்வைப் தட்டச்சு"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"உரை திருத்தம்"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"மேம்பட்டவை"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"தீம்"</string>
@@ -78,12 +78,12 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"மிகத் தீவிரமாக"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"அடுத்த வார்த்தை பரிந்துரைகள்"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"பரிந்துரைகளை உருவாக்க முந்தைய வார்த்தைகளைப் பயன்படுத்தும்"</string>
-    <string name="gesture_input" msgid="826951152254563827">"சைகை உள்ளீட்டை இயக்கு"</string>
+    <string name="gesture_input" msgid="826951152254563827">"ஸ்வைப் உள்ளீட்டை இயக்கு"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"எழுத்துகள் வழியாக இழுப்பதன் மூலம் வார்த்தையை உள்ளிடலாம்"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"சைகை தடத்தைக் காட்டு"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"ஸ்வைப் தடத்தைக் காட்டு"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"நிகழ்நேர மிதக்கும் மாதிரிக்காட்சி"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"சைகையிடும் போது பரிந்துரைக்கும் வார்த்தையைப் பார்க்கலாம்"</string>
-    <string name="gesture_space_aware" msgid="2078291600664682496">"சொற்றொடர் சைகை"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"சொற்றொடர் ஸ்வைப்"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ஸ்பேஸ் விசைக்கு இழுப்பதன் மூலம் சைகைகளுக்கு இடையே இடைவெளிகளை உள்ளிடலாம்"</string>
     <string name="voice_input" msgid="3583258583521397548">"குரல் உள்ளீட்டு விசை"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"குரல் உள்ளீட்டு முறைகள் இயக்கப்படவில்லை. மொழி &amp; உள்ளீட்டு அமைப்புகளைச் சரிபார்க்கவும்."</string>
@@ -136,12 +136,12 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"இதே உள்ளீட்டு நடை ஏற்கனவே உள்ளது: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"விசையழுத்த அதிர்வின் காலஅளவு"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"விசையழுத்த ஒலியளவு"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"விசையின் நீண்ட அழுத்தத்தின் தாமதம்"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"விசைக்கான நீண்ட அழுத்த நேரம்"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"கைமுறை விசைப்பலகைக்கான ஈமோஜி"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ஈமோஜி பலகத்தைக் காட்டும் கைமுறை Alt விசை"</string>
     <string name="button_default" msgid="3988017840431881491">"இயல்புநிலை"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டிற்கு வரவேற்கிறோம்"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"சைகை உள்ளீடு மூலம்"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ஸ்வைப் உள்ளீடு மூலம்"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"தொடங்குக"</string>
     <string name="setup_next_action" msgid="371821437915144603">"அடுத்த கட்டம்"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டை அமைக்கிறது"</string>

@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"यस्तो इनपुट शैली पहिले नै अवस्थित छ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुञ्जी थिचाइ भाइब्रेसन अवधि"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुञ्जी थिचाइ आवाज भोल्युम"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुञ्जी लामो थिचाइ ढिलाइ"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुञ्जीको लामो थिचाइमा ढिलाइ"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"भौतिक किबोर्डको लागि इमोजी"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"भौतिक Alt कुञ्जीले इमोजी प्यालेट देखाउँछ"</string>
     <string name="button_default" msgid="3988017840431881491">"पूर्वनिर्धारित"</string>

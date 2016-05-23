@@ -60,7 +60,7 @@
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Sugestões personalizadas"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Melhorar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Ponto de espaço duplo"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tocar duas vezes na barra espaço insere ponto seguido de espaço"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tocar duas vezes na barra de espaço insere um ponto seguido de espaço"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Letras maiúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Maiúscula no início da frase"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dicionário pessoal"</string>
@@ -85,7 +85,7 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Ver palavra sugerida enquanto toca"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Toque de expressão"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Deslize p/ a tecla de espaço p/ introduzir espaços durante toques"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Chave de entrada de voz"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Tecla de entrada de voz"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nenhum método de entrada de texto por voz ativado. Verifique as definições de Idioma e introdução."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de introdução"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Idiomas"</string>
