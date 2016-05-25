@@ -21,11 +21,11 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Sozlamalar"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontaktlarni qidirish"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontaktlar ichidan qidirish"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Imloni tekshirishda kontaktlar ro‘yxatiga murojaat qilish"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Tugma bosilganda tebranish"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Tugma bosilganda ovoz"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Tugma bosilganda qalqish"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Tugma bosilganda qalqib chiqish"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Sozlamalar"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Hisoblar va maxfiylik"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Ko‘rinish va sxema"</string>
@@ -57,21 +57,21 @@
     <string name="settings_system_default" msgid="6268225104743331821">"Tizim standarti"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Ismlarni taklif qilish"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Kontaktlar ro‘yxatidagi ismlar asosida tuzatmalarni taklif qilish"</string>
-    <string name="use_personalized_dicts" msgid="5167396352105467626">"Foydalanuvchi lug‘atlari"</string>
+    <string name="use_personalized_dicts" msgid="5167396352105467626">"Takliflarni moslashtirish"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ni yaxshilash"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Nuqtani avtomatik qo‘yish"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Bo‘sh joy tugmasi ikki marta bosilsa, nuqta va bo‘sh joy qo‘yiladi"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Bo‘sh joy tugmasi ikki marta bosilsa, nuqta qo‘yiladi va bo‘sh joy tashlanadi"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Avtomatik bosh harf"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Har bir gapning birinchi so‘zini bosh harf bilan yozish"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Har bir gapning birinchi so‘zini bosh harf bilan boshlash"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Shaxsiy lug‘at"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Qo‘shimcha lug‘atlar"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Asosiy lug‘at"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Tuzatma variantlari"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Matn kiritishda so‘z variantlari taklif qilinsin"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Matn kiritishda so‘z variantlarini taklif qilish"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Haqoratomuz so‘zlarni taqiqlash"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Haqoratomuz so‘zlar taklif qilinmasin"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Avtomatik tuzatish"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Tinish belgisi kiritilsa yoki bo‘sh joy qoldirilsa, xato so‘z avtomatik tuzatiladi"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Tinish belgisi kiritilganda yoki bo‘sh joy qoldirilganda, xato so‘zni avtomatik tuzatish"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"O‘ch."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"O‘rtacha"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Juda faol"</string>
@@ -156,8 +156,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Endi, matn kiritish uchun “<xliff:g id="APPLICATION_NAME">%s</xliff:g>” ilovasidan foydalanishingiz mumkin."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Qo‘shimcha tillarni sozlash"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Tugallandi"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Ilovaning belgisi ko‘rsatilsin"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Ilovaning belgisi ishga tushirish panelida ko‘rsatilsin"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Ilova nishonchasini ko‘rsatish"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Ilova nishonchasini ishga tushirish panelida ko‘rsatish"</string>
     <string name="app_name" msgid="6320102637491234792">"Lug‘atlar ta’minotchisi"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Lug‘atlar ta’minotchisi"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Lug‘atlar xizmati"</string>
@@ -197,10 +197,10 @@
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Kamroq sozlamalar"</string>
     <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"OK"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"So‘z:"</string>
-    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Tezkor tugmalar:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Qisqartma:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Til:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"So‘zni kiriting"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Tezkor tugma (ixtiyoriy)"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Ibora uchun qisqartma (ixtiyoriy)"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"So‘zni tahrirlash"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Tahrirlash"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"O‘chirish"</string>
