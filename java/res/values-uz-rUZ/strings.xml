@@ -37,7 +37,7 @@
     <string name="cloud_sync_title" msgid="8579271074443847055">"Klaviaturani sinxronlash"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinxronlash yoqildi"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Shaxsiy lug‘atingizni qurilmalar bo‘ylab sinxronlang"</string>
-    <string name="sync_now_title" msgid="3088838136743277721">"Sinxronlash"</string>
+    <string name="sync_now_title" msgid="3088838136743277721">"Hozir sinxronlash"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Bulutdagi ma’lumotlarni o‘chirish"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Sinxronlangan ma’lumotlarni Google serveridan o‘chirib tashlash"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Sinxronlangan ma’lumotlaringiz o‘chib ketadi. Davom etsinmi?"</string>
