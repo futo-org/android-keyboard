@@ -126,7 +126,7 @@
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos de entrada personalizados"</string>
     <string name="add_style" msgid="6163126614514489951">"Añadir estilo"</string>
     <string name="add" msgid="8299699805688017798">"Añadir"</string>
-    <string name="remove" msgid="4486081658752944606">"Eliminar"</string>
+    <string name="remove" msgid="4486081658752944606">"Quitar"</string>
     <string name="save" msgid="7646738597196767214">"Guardar"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Idioma"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Tipo"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalar"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancelar"</string>
     <string name="delete_dict" msgid="756853268088330054">"Eliminar"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Hay un diccionario disponible para el idioma que has seleccionado en el dispositivo.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mejorar la experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga podría tardar uno o dos minutos con una conexión 3G. Es posible que se apliquen cargos si no tienes un &lt;b&gt;plan de datos ilimitados&lt;/b&gt;.&lt;br/&gt; Si dudas sobre el plan de datos que has contratado, te recomendamos que utilices una conexión Wi-Fi para que la descarga se inicie automáticamente.&lt;br/&gt; &lt;br/&gt; Consejo: Si quieres descargar y eliminar diccionarios, accede a la opción &lt;b&gt;Idioma e introducción de texto&lt;/b&gt; en el menú &lt;b&gt;Ajustes&lt;/b&gt; del dispositivo móvil."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Hay un diccionario disponible para el idioma que has seleccionado en el dispositivo.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mejorar la experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga podría tardar uno o dos minutos con una conexión 3G. Es posible que se apliquen cargos si no tienes un &lt;b&gt;plan de datos ilimitados&lt;/b&gt;.&lt;br/&gt; Si dudas sobre el plan de datos que has contratado, te recomendamos que utilices una conexión Wi-Fi para que la descarga se inicie automáticamente.&lt;br/&gt; &lt;br/&gt; Consejo: Si quieres descargar y quitar diccionarios, accede a la opción &lt;b&gt;Idioma e introducción de texto&lt;/b&gt; en el menú &lt;b&gt;Ajustes&lt;/b&gt; del dispositivo móvil."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Descargar ahora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Descargar mediante Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Hay disponible un diccionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
