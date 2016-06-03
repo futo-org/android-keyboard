@@ -60,7 +60,7 @@
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Đề xuất được cá nhân hóa"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Cải thiện <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Đúp phím cách chèn dấu chấm"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Nhấn đúp phím cách sẽ chèn thêm một dấu chấm câu, theo sau là dấu cách"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Nhấn đúp phím cách sẽ chèn một dấu chấm, theo sau là dấu cách"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Tự động viết hoa"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Viết hoa chữ đầu tiên của mỗi câu"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Từ điển cá nhân"</string>

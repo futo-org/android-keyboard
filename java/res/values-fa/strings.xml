@@ -121,7 +121,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"‏حروف الفبا (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"‏حروف الفبا (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"‏حروف الفبا (PC)"</string>
-    <string name="subtype_emoji" msgid="7483586578074549196">"شکلک"</string>
+    <string name="subtype_emoji" msgid="7483586578074549196">"اموجی"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"طرح زمینه صفحه‌کلید"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"سبک‌های ورودی سفارشی"</string>
     <string name="add_style" msgid="6163126614514489951">"افزودن سبک"</string>
@@ -137,8 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"طول مدت لرزش در اثر فشردن کلید"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"میزان صدای فشردن کلید"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"تأخیر فشار طولانی کلید"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"شکلک برای صفحه‌کلید فیزیکی"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"‏کلید Alt صفحه‌کلید فیزیکی، پالت شکلک را نشان می‌دهد"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"اموجی برای صفحه‌کلید فیزیکی"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"‏کلید Alt صفحه‌کلید فیزیکی، پالت اموجی را نشان می‌دهد"</string>
     <string name="button_default" msgid="3988017840431881491">"پیش‌فرض"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"به <xliff:g id="APPLICATION_NAME">%s</xliff:g> خوش آمدید"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"با ورودی اشاره‌ای"</string>
