@@ -31,7 +31,7 @@
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Aspect"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Tastare gestuală"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Corectarea textului"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"Setări avansate"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Avansate"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Temă"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Activați tastatura divizată"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Sincronizare Tastatură Google"</string>
@@ -86,16 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gest expresie"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Introduceți spații în timpul gesturilor, glisând pe tasta spațiu"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tastă pentru intrarea vocală"</string>
-    <!-- no translation found for voice_input_disabled_summary (6323489602945135165) -->
-    <skip />
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nicio metodă de intrare vocală activată. Verificați setările din „Limbi și introducerea textului”."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurați metodele de intrare"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Limbi"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ajutor și feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Limbi"</string>
-    <!-- no translation found for hint_add_to_dictionary (2645988432867033007) -->
-    <skip />
-    <!-- no translation found for hint_add_to_dictionary_without_word (6710206006427574423) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Atingeți din nou pentru a salva"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Atingeți aici pentru a salva"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicționar disponibil"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Temă pentru tastatură"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Comutați între conturi"</string>
@@ -149,10 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Pasul următor"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurarea <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Activați <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <!-- no translation found for setup_step1_instruction (4295448056733329661) -->
-    <skip />
-    <!-- no translation found for setup_step1_finished_instruction (8701441895377434947) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Bifați „<xliff:g id="APPLICATION_NAME">%s</xliff:g>” în „Limbi și introducerea textului”. Astfel, o veți autoriza să ruleze pe dispozitiv."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> este activată deja în „Limbi și introducerea textului”, deci ați finalizat pasul. Treceți la următorul!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Activați în Setări"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Comutați la <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Apoi, selectați „<xliff:g id="APPLICATION_NAME">%s</xliff:g>” ca metodă de introducere a textului activă."</string>
@@ -188,8 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalați"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Anulați"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ștergeți"</string>
-    <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Pentru limba selectată pe dispozitivul dvs. mobil este disponibil un dicționar.&lt;br/&gt; Vă recomandăm să &lt;b&gt;descărcați&lt;/b&gt; dicționarul de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> pentru o mai bună experiență a introducerii de text.&lt;br/&gt; &lt;br/&gt; Descărcarea poate dura un minut sau două prin 3G. Dacă nu aveți un &lt;b&gt;plan de date nelimitat&lt;/b&gt;, se pot aplica taxe.&lt;br/&gt; Dacă nu știți sigur ce plan de date aveți, vă recomandăm să căutați o conexiune Wi-Fi pentru a începe automat descărcarea.&lt;br/&gt; &lt;br/&gt; Sfat: puteți să descărcați și să ștergeți dicționare accesând &lt;b&gt;Limbi și introducerea textului&lt;/b&gt; din meniul &lt;b&gt;Setări&lt;/b&gt; al dispozitivului mobil."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Descărcați acum (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Descărcați prin Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Este disponibil un dicționar pentru <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -210,8 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Editați cuvântul"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Editați"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Ștergeți"</string>
-    <!-- no translation found for user_dict_settings_empty_text (6889278304342592383) -->
-    <skip />
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Nu aveți niciun cuvânt în dicționarul utilizatorului. Pentru a adăuga un cuvânt, atingeți butonul Adăugați (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Pentru toate limbile"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Mai multe limbi…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Ștergeți"</string>
