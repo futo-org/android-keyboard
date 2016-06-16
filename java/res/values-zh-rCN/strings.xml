@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"词组滑行输入"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"滑行输入时，滑过空格键即可输入空格"</string>
     <string name="voice_input" msgid="3583258583521397548">"语音输入键"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"未启用任何语音输入法。请检查“语言和输入法”设置。"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"未启用任何语音输入法。请检查“语言和输入法”设置。"</string>
     <string name="configure_input_method" msgid="373356270290742459">"配置输入法"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"语言"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"帮助和反馈"</string>
     <string name="select_language" msgid="5709487854987078367">"语言"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次触摸即可保存"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"触摸此处即可保存"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"再次点按即可保存"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"点按此处即可保存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"有可用字典"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"键盘主题"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"切换帐号"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"下一步"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"设置 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"启用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"请在“语言和输入法”设置中选中“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”，授权这项应用在您的设备上运行。"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"您已在“语言和输入法”设置中启用了 <xliff:g id="APPLICATION_NAME">%s</xliff:g>，因此这一步骤已完成。继续下一步吧！"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"请在“语言和输入法”设置中选中“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”，授权该应用在您的设备上运行。"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"您已在“语言和输入法”中启用了<xliff:g id="APPLICATION_NAME">%s</xliff:g>，因此这一步骤已完成。继续下一步吧！"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"在设置中启用"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"切换到 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"接下来，请选择“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”作为您要使用的文字输入法。"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"安装"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"取消"</string>
     <string name="delete_dict" msgid="756853268088330054">"删除"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"您的移动设备上选择的语言有一个字典可供下载。&lt;br/&gt;我们建议您&lt;b&gt;下载&lt;/b&gt;这个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典，以便获得更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过3G网络下载可能需要一两分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能产生一定的流量费。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，我们建议您连接到WLAN网络以便自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以在移动设备上的&lt;b&gt;语言和输入法&lt;/b&gt;部分（位于&lt;b&gt;设置&lt;/b&gt;菜单中）下载和删除字典。"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"您在移动设备上选择的语言有可用的字典可供下载。&lt;br/&gt;建议您&lt;b&gt;下载&lt;/b&gt;该<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典，以便获得更好的输入体验。&lt;br/&gt; &lt;br/&gt;通过 3G 网络下载可能需要一两分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能需要额外支付流量费用。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，建议您连接到 WLAN 网络后再自动开始下载。&lt;br/&gt; &lt;br/&gt;提示：您可以在移动设备上转到&lt;b&gt;语言和输入法&lt;/b&gt;（位于&lt;b&gt;设置&lt;/b&gt;菜单中）来下载及移除字典。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下载 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过WLAN网络下载"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"有一个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典可供下载"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"修改字词"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"修改"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"删除"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"用户字典中没有您定义的任何字词。您可以触摸“添加”(+) 按钮添加字词。"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"用户字典中没有任何字词。要添加字词，请点按“添加”(+) 按钮。"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"所有语言"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"更多语言…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"删除"</string>

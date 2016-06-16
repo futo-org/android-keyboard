@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gesto de frase"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Inserir espaços durante gestos deslizando até a tecla de espaço"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tecla p/ inserir texto por voz"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nenhum método de entrada de texto por voz ativado. Verifique as configurações \"Idioma e entrada\"."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nenhum método de entrada de texto por voz ativado. Verifique as configurações de idioma e entrada."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Idiomas"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ajuda e feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Idiomas"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toque novamente para salvar"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Toque aqui para salvar"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Tocar novamente para salvar"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Tocar aqui para salvar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema do teclado"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Alternar contas"</string>
@@ -109,7 +109,7 @@
     <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Sérvio (Latino)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Inglês (Reino Unido) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Inglês (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Espanhol (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"espanhol (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"Híndi-inglês (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"Sérvio (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradicional)"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Próxima etapa"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurando o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Ative o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Marque \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" em \"Configurações de idioma e entrada\" para autorizar a execução."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> já está ativado em suas configurações de idioma e entrada. Esta etapa está concluída. Vamos avançar para a próxima!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Marque \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" nas suas configurações de idioma e entrada para autorizar a execução."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"O <xliff:g id="APPLICATION_NAME">%s</xliff:g> já está ativado nas suas configurações de idioma e entrada. Essa etapa está concluída. Vamos avançar para a próxima!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Ativar em \"Configurações\""</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Abra o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Em seguida, selecione \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de entrada de texto ativo."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalar"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancelar"</string>
     <string name="delete_dict" msgid="756853268088330054">"Excluir"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"O idioma selecionado em seu dispositivo móvel tem um dicionário disponível.&lt;br/&gt; Recomendamos &lt;b&gt;fazer o download&lt;/b&gt; do dicionário de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para melhorar sua experiência de digitação.&lt;br/&gt; O download pode levar um ou dois minutos por conexão 3G. Tarifas podem ser aplicáveis caso você não tenha um &lt;b&gt;plano de dados ilimitado&lt;/b&gt;.&lt;br/&gt; Se você não tem certeza quanto a seu plano de dados, recomendamos encontrar uma conexão Wi-Fi para iniciar o download automaticamente.&lt;br/&gt; Dica: você pode fazer o download de dicionários e removê-los acessando &lt;b&gt;Idioma e entrada&lt;/b&gt; no menu &lt;b&gt;Configurações&lt;/b&gt; do dispositivo móvel."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Há um dicionário disponível para o idioma selecionado no dispositivo móvel.&lt;br/&gt; &lt;b&gt;Faça o download&lt;/b&gt; do dicionário de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para melhorar sua experiência de digitação.&lt;br/&gt; &lt;br/&gt; O download pode demorar um ou dois minutos por conexão 3G. Tarifas podem ser aplicáveis se você não tem um &lt;b&gt;plano de dados ilimitado&lt;/b&gt;.&lt;br/&gt; Se você não tem certeza sobre seu plano de dados, encontre uma conexão Wi-Fi para iniciar o download automaticamente.&lt;br/&gt; &lt;br/&gt; Dica: faça o download de dicionários e remova-os, acessando &lt;b&gt;Idiomas e entrada&lt;/b&gt; no menu &lt;b&gt;Config.&lt;/b&gt; do dispositivo móvel."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Fazer o download agora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Fazer o download por Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Há um dicionário disponível para <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Editar palavra"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Editar"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Excluir"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Você não possui palavras no dicionário do usuário. Adicione uma palavra tocando no botão \"Adicionar\" ou no símbolo \"+\"."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Você não tem nenhuma palavra no dicionário do usuário. Para adicionar uma palavra, toque no botão de adição (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Para todos os idiomas"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Mais idiomas..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Excluir"</string>

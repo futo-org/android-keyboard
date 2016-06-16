@@ -61,7 +61,7 @@
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını iyileştir"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Çift boşlukla nokta ekle"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Boşluk çubuğuna iki kez dokunmak nokta ve ardından bir boşluk ekler"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük harf yap"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Otomatik büyük harf yap"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Her cümlenin ilk harfini büyük harf yap"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Kişisel sözlük"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ek sözlükler"</string>
@@ -70,7 +70,7 @@
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Yazarken, önerilen kelimeleri görüntüle"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Rahatsız edici kelimeleri engelle"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Rahatsız edici olabilecek kelimeleri önerme"</string>
-    <string name="auto_correction" msgid="7630720885194996950">"Otomatik düzeltme"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"Otomatik düzelt"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Boşluk tuşu ve noktalama işaretleri yanlış yazılan kelimeleri otomatikman düzeltir"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Kapalı"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Ölçülü"</string>
@@ -79,20 +79,20 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Sonraki kelime önerileri"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Öneride bulunurken önceki kelimeyi kullan"</string>
     <string name="gesture_input" msgid="826951152254563827">"Hareketle yazmayı etkinleştir"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Harflerin üzerinden parmağınızı kaydırarak kelime girin"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Kelime girmek için parmağınızı harflerin üzerinde kaydırın"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Hareket izini göster"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dinamik kayan önizleme"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Hareket sırasında önerilen kelimeyi göster"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Kelime öbeği hareketi"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Hareketle girişte boşlukları, boşluk tuşuna kaydırarak girin"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ses girişi tuşu"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Hiçbir ses girişi yöntemi etkinleştirilmedi. Dil ve giriş ayarlarını kontrol edin."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Hiçbir ses girişi yöntemi etkinleştirilmedi. Dil ve giriş ayarlarını kontrol edin."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Giriş yöntemlerini yapılandır"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Diller"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Yardım ve geri bildirim"</string>
     <string name="select_language" msgid="5709487854987078367">"Diller"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Kaydetmek için tekrar dokunun"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Kaydetmek için buraya dokunun"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Kaydetmek için tekrar hafifçe dokunun"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Kaydetmek için buraya hafifçe dokunun"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sözlük kullanılabilir"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klavye teması"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Hesap değiştir"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Sonraki adım"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını kurma"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını etkinleştirin"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Lütfen \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" uygulamasını kendi Dil ve giriş ayarlarınızda işaretleyin. Bu işlem, uygulamaya cihazınızda çalışma yetkisi verecektir."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> zaten Diliniz ve giriş ayarlarınızda etkinleştirilmiş durumda, dolayısıyla bu adım tamamlanmıştır. Bir sonrakine geçin!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Lütfen \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" uygulamasını Dil ve giriş ayarlarınızda işaretleyin. Bu, uygulamaya cihazınızda çalışma yetkisi verecektir."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>, Dil ve giriş ayarlarınızda önceden etkinleştirildiği için bu adım tamamlandı. Bir sonraki adıma ilerleyin!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Ayarlarda etkinleştir"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasına geçin"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Sonra, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" uygulamasını etkin metin giriş yönteminiz olarak seçin."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Yükle"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"İptal"</string>
     <string name="delete_dict" msgid="756853268088330054">"Sil"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobil cihazınızda seçili dile ait kullanılabilir bir sözlük var.&lt;br/&gt; Daha iyi yazabilmek için bu <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> sözlüğü &lt;b&gt;indirmenizi&lt;/b&gt; öneririz.&lt;br/&gt; &lt;br/&gt; İndirme işlemi 3G üzerinden bir veya iki dakika sürebilir. &lt;b&gt;Sınırsız veri planınız &lt;/b&gt;yoksa ücret alınabilir.&lt;br/&gt; Ne tür bir veri planına sahip olduğunuzdan emin değilseniz, otomatik olarak indirmeye başlamak için bir Kablosuz bağlantı bulmanızı öneririz.&lt;br/&gt; &lt;br/&gt; İpucu: Sözlükleri, mobil cihazınızın &lt;b&gt;Ayarlar&lt;/b&gt; menüsünde &lt;b&gt;Dil ve giriş&lt;/b&gt; seçeneğine giderek indirebilir ve silebilirsiniz."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Mobil cihazınızda seçili dile ait kullanılabilir bir sözlük var.&lt;br/&gt; Yazma deneyiminizi iyileştirmek için <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> sözlüğünü &lt;b&gt;indirmenizi&lt;/b&gt; öneririz.&lt;br/&gt; &lt;br/&gt; İndirme işlemi 3G üzerinden bir veya iki dakika sürebilir. &lt;b&gt;Sınırsız veri tarifeniz&lt;/b&gt; yoksa ücret alınabilir.&lt;br/&gt; Ne tür bir veri tarifesine sahip olduğunuzdan emin değilseniz otomatik olarak indirmeye başlamak için bir kablosuz bağlantı bulmanızı öneririz.&lt;br/&gt; &lt;br/&gt; İpucu: Sözlükleri, mobil cihazınızın &lt;b&gt;Ayarlar&lt;/b&gt; menüsünde &lt;b&gt;Dil ve giriş&lt;/b&gt; seçeneğine giderek indirebilir ve kaldırabilirsiniz."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Hemen indir (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Kablosuz üzerinden indir"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> için kullanılabilir bir sözlük var"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Kelimeyi düzenle"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Düzenle"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Sil"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Kullanıcı sözlüğünde kelime yok. Ekle (+) düğmesini kullanarak kelime ekleyin."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Kullanıcı sözlüğünde kelime yok. Kelime eklemek için Ekle (+) düğmesine hafifçe dokunun."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Tüm diller için"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Diğer diller…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Sil"</string>

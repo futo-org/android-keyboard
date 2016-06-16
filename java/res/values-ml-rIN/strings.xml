@@ -71,7 +71,7 @@
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"നിന്ദ്യമായ വാക്കുകൾ തടയുക"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"നിന്ദ്യമാകാനിടയുള്ള വാക്കുകൾ നിർദ്ദേശിക്കരുത്"</string>
     <string name="auto_correction" msgid="7630720885194996950">"സ്വയം തിരുത്തൽ"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"തെറ്റായി ടൈപ്പുചെയ്‌ത വാക്കുകളിൽ സ്‌പെയ്‌സ് ബാറും ചിഹ്‌നവും യാന്ത്രികമായി തിരുത്തുന്നു"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"തെറ്റായി ടൈപ്പുചെയ്‌ത വാക്കുകളിൽ സ്‌പെയ്‌സ് ബാറും ചിഹ്‌നവും സ്വയമേവ തിരുത്തുന്നു"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ഓഫാക്കുക"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"മിതമായി"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"നിർബന്ധിതമായി"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ഫ്രെയ്‌സ് ജെസ്റ്റർ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"സ്‌പെയ്‌സ് കീയിലേക്ക് ഗ്ലൈഡുചെയ്യുന്നതിലൂടെ ജെസ്റ്റർ ചെയ്യുന്നതിനിടെ സ്‌പെയ്‌സുകൾ നൽകുക"</string>
     <string name="voice_input" msgid="3583258583521397548">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ കീ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ രീതികളൊന്നും പ്രവർത്തനക്ഷമമല്ല. ഭാഷ &amp; ടൈപ്പു ചെയ്യൽ ക്രമീകരണങ്ങൾ പരിശോധിക്കുക."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"വോയ്‌സ് ഇൻപുട്ട് രീതികളൊന്നും പ്രവർത്തനക്ഷമമാക്കിയിട്ടില്ല. ഭാഷയും ഇൻപുട്ടും ക്രമീകരണം പരിശോധിക്കുക."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ടൈപ്പുചെയ്യൽ രീതികൾ കോൺഫിഗർ ചെയ്യുക"</string>
-    <string name="language_selection_title" msgid="3666971864764478269">"ഭാഷകള്‍‌"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"ഭാഷകൾ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"സഹായവും ഫീഡ്‌ബാക്കും"</string>
-    <string name="select_language" msgid="5709487854987078367">"ഭാഷകള്‍‌"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"സംരക്ഷിക്കുന്നതിനായി വീണ്ടും സ്‌പർശിക്കുക"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"സംരക്ഷിക്കാൻ ഇവിടെ സ്‌പർശിക്കുക"</string>
+    <string name="select_language" msgid="5709487854987078367">"ഭാഷകൾ"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"സംരക്ഷിക്കുന്നതിന് വീണ്ടും ടാപ്പുചെയ്യുക"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"സംരക്ഷിക്കുന്നതിന് ഇവിടെ ടാപ്പുചെയ്യുക"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"നിഘണ്ടു ലഭ്യമാണ്"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"കീബോർഡ് തീം"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"അക്കൗണ്ടുകൾ മാറുക"</string>
@@ -123,7 +123,7 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"അക്ഷരമാല (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"ഇമോജി"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"കീബോർഡ് തീം"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"ഇഷ്‌ടാനുസൃത ടൈപ്പിംഗ് സ്റ്റൈലുകൾ"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"ഇഷ്‌ട ടൈപ്പ്സ്റ്റൈൽ"</string>
     <string name="add_style" msgid="6163126614514489951">"സ്റ്റൈൽ ചേർക്കുക"</string>
     <string name="add" msgid="8299699805688017798">"ചേര്‍ക്കുക"</string>
     <string name="remove" msgid="4486081658752944606">"നീക്കംചെയ്യുക"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"അടുത്ത ചുവട്"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> സജ്ജമാക്കുന്നു"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> പ്രവർത്തനക്ഷമമാക്കുക"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"നിങ്ങളുടെ ഭാഷ &amp; ടൈപ്പുചെയ്യൽ ക്രമീകരണങ്ങളിൽ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" പരിശോധിക്കുക. ഇത് നിങ്ങളുടെ ഉപകരണത്തിൽ പ്രവർത്തിക്കാൻ ഇതിന് അംഗീകാരം നൽകും."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"നിങ്ങളുടെ ഭാഷ &amp; ടൈപ്പുചെയ്യൽ ക്രമീകരണങ്ങളിൽ <xliff:g id="APPLICATION_NAME">%s</xliff:g> എന്നത് ഇതിനകം പ്രവർത്തനക്ഷമമാക്കിയതിനാൽ ഈ ഘട്ടം പൂർത്തിയായി. അടുത്ത ഘട്ടത്തിലേക്ക് പോകുക!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"ഭാഷയും ഇൻപുട്ടും ക്രമീകരണത്തിൽ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ചെക്കുചെയ്യുക. ചെക്കുചെയ്യുന്നത് ഉപകരണത്തിൽ പ്രവർത്തിക്കാൻ ഇതിന് അംഗീകാരം നൽകും."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"ഭാഷയും ഇൻപുട്ടും ക്രമീകരണത്തിൽ ഇതിനകം തന്നെ <xliff:g id="APPLICATION_NAME">%s</xliff:g> പ്രവർത്തനക്ഷമമാക്കിയതിനാൽ ഈ ഘട്ടം പൂർത്തിയായി. അടുത്ത ഘട്ടത്തിലേക്ക് പോകുക!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"ക്രമീകരണങ്ങളിൽ പ്രവർത്തനക്ഷമമാകുക"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> എന്നതിലേക്ക് മാറുക"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"അടുത്തത്, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" എന്നതിനെ നിങ്ങളുടെ സജീവ വാചക-ടൈപ്പുചെയ്യൽ രീതിയായി തിരഞ്ഞെടുക്കുക."</string>
@@ -179,11 +179,11 @@
     <string name="message_loading" msgid="5638680861387748936">"ലോഡുചെയ്യുന്നു..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"പ്രധാന നിഘണ്ടു"</string>
     <string name="cancel" msgid="6830980399865683324">"റദ്ദാക്കുക"</string>
-    <string name="go_to_settings" msgid="3876892339342569259">"ക്രമീകരണങ്ങൾ"</string>
+    <string name="go_to_settings" msgid="3876892339342569259">"ക്രമീകരണം"</string>
     <string name="install_dict" msgid="180852772562189365">"ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"റദ്ദാക്കുക"</string>
     <string name="delete_dict" msgid="756853268088330054">"ഇല്ലാതാക്കുക"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"നിങ്ങളുടെ മൊബൈലിൽ തിരഞ്ഞെടുത്ത ഭാഷയ്‌ക്ക് നിഘണ്ടു ലഭ്യമാണ്.&lt;br/&gt; നിങ്ങളുടെ ടൈപ്പുചെയ്യൽ അനുഭവം മെച്ചപ്പെടുത്തുന്നതിനായി <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> നിഘണ്ടു &lt;b&gt;ഡൗൺലോഡുചെയ്യാൻ&lt;/b&gt; ഞങ്ങൾ ശുപാർശചെയ്യുന്നു. 3G-യിൽ ഡൗൺലോഡ് ചെയ്യാൻ ഒന്നോ രണ്ടോ മിനിറ്റെടുത്തേക്കാം. നിങ്ങൾക്ക് &lt;b&gt;പരിധിയില്ലാത്ത ഡാറ്റാ പ്ലാൻ&lt;/b&gt; ഇല്ലെങ്കിൽ നിരക്കുകൾ ബാധകമാകാം. നിങ്ങൾക്ക് ഏത് ഡാറ്റ പ്ലാനാണ് ഉള്ളതെന്ന് തീർച്ചയില്ലെങ്കിൽ, ഡൗൺലോഡ് യാന്ത്രികമായി ആരംഭിക്കുന്നതിന് ഒരു വൈഫൈ കണക്ഷൻ കണ്ടെത്താൻ ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; നുറുങ്ങ്: നിങ്ങളുടെ മൊബൈലിലെ &lt;b&gt;ക്രമീകരണങ്ങൾ&lt;/b&gt; മെനുവിലുള്ള &lt;b&gt;ഭാഷ &amp; ടൈപ്പുചെയ്യൽ&lt;/b&gt; എന്നതിലേക്ക് പോയി നിങ്ങൾക്ക് നിഘണ്ടുക്കൾ ഡൗൺലോഡുചെയ്യാനും നീക്കംചെയ്യാനുമാകും."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"നിങ്ങളുടെ മൊബൈൽ ഉപകരണത്തിൽ തിരഞ്ഞെടുത്ത ഭാഷയ്‌ക്ക് നിഘണ്ടു ലഭ്യമാണ്.&lt;br/&gt; നിങ്ങളുടെ ടൈപ്പുചെയ്യൽ അനുഭവം മെച്ചപ്പെടുത്തുന്നതിനായി <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> നിഘണ്ടു &lt;b&gt;ഡൗൺലോഡുചെയ്യാൻ&lt;/b&gt; ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; 3G-യിൽ ഡൗൺലോഡ് ചെയ്യാൻ ഒന്നോ രണ്ടോ മിനിറ്റെടുത്തേക്കാം. നിങ്ങൾക്ക് &lt;b&gt;പരിധിയില്ലാത്ത ഡാറ്റാ പ്ലാൻ&lt;/b&gt; ഇല്ലെങ്കിൽ നിരക്കുകൾ ബാധകമാകാം.&lt;br/&gt; നിങ്ങൾക്ക് ഏത് ഡാറ്റ പ്ലാനാണ് ഉള്ളതെന്ന് തീർച്ചയില്ലെങ്കിൽ, ഡൗൺലോഡ് സ്വയമേവ ആരംഭിക്കുന്നതിന് ഒരു വൈഫൈ കണക്ഷൻ കണ്ടെത്താൻ ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; നുറുങ്ങുവിവരം: നിങ്ങളുടെ മൊബൈലിലെ &lt;b&gt;ക്രമീകരണം&lt;/b&gt; മെനുവിലുള്ള &lt;b&gt;ഭാഷയും ഇൻപുട്ടും&lt;/b&gt; എന്നതിലേക്ക് പോയി നിങ്ങൾക്ക് നിഘണ്ടുകൾ ഡൗൺലോഡ് ചെയ്യാനും നീക്കംചെയ്യാനുമാകും."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ഇപ്പോൾ ഡൗൺലോഡുചെയ്യുക (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"വൈഫൈ മുഖേന ഡൗൺലോഡ് ചെയ്യുക"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ഭാഷയ്‌ക്കായി ഒരു നിഘണ്ടു ലഭ്യമാണ്"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"പദം എഡിറ്റുചെയ്യുക"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"എഡിറ്റുചെയ്യുക"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ഇല്ലാതാക്കുക"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"ഉപയോക്തൃ നിഘണ്ടുവിൽ നിങ്ങൾക്ക് പദങ്ങളൊന്നുമില്ല. ചേർക്കൽ (+) ബട്ടൺ സ്‌പർശിച്ച് ഒരു പദം ചേർക്കുക."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ഉപയോക്തൃ നിഘണ്ടുവിൽ നിങ്ങൾക്ക് പദങ്ങളൊന്നുമില്ല. ഒരു പദം ചേർക്കുന്നതിന്, ചേർക്കുക (+) ബട്ടൺ ടാപ്പുചെയ്യുക."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"എല്ലാ ഭാഷകൾക്കുമായി"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"കൂടുതൽ ഭാഷകൾ…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"ഇല്ലാതാക്കുക"</string>
