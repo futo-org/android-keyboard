@@ -43,7 +43,7 @@
     <string name="spoken_description_emoji" msgid="7990051553008088470">"Emotikony"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"Enter"</string>
     <string name="spoken_description_search" msgid="5099937658231911288">"Szukaj"</string>
-    <string name="spoken_description_dot" msgid="5644176501632325560">"Kropka"</string>
+    <string name="spoken_description_dot" msgid="5644176501632325560">"Punktor"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"Przełącz język"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"Dalej"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"Wstecz"</string>
