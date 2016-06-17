@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"កាយវិការ​​ឃ្លា"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"បញ្ចូល​​ដកឃ្លា​​​អំឡុង​​​កាយវិការ​ ដោយ​រំកិល​ទៅ​គ្រាប់​ចុច​ដកឃ្លា"</string>
     <string name="voice_input" msgid="3583258583521397548">"គ្រាប់​ចុច​បញ្ចូល​​សំឡេង"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"គ្មាន​វិធីសាស្ត្រ​បញ្ចូល​សំឡេង​បាន​បើក។ ពិនិត្យ​មើល​ការ​កំណត់​ភាសា &amp; ការ​បញ្ចូល។"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"គ្មានការបើកវិធីសាស្ត្របញ្ចូលសំឡេងទេ។ សូមពិនិត្យការកំណត់ភាសា និងបញ្ចូល។"</string>
     <string name="configure_input_method" msgid="373356270290742459">"កំណត់​រចនាសម្ព័ន្ធ​វិធីសាស្ត្រ​បញ្ចូល"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ភាសា"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"ជំនួយ &amp; មតិ​ត្រឡប់"</string>
     <string name="select_language" msgid="5709487854987078367">"ភាសា"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"ប៉ះ​ម្ដង​ទៀត​ ដើម្បី​រក្សា​ទុក"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"ប៉ះ​ទីនេះ​ដើម្បី​រក្សាទុក"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"ប៉ះម្តងទៀតដើម្បីរក្សាទុក"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"ប៉ះទីនេះដើម្បីរក្សាទុក"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"មាន​វចនានុក្រម"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"រូបរាង​ក្ដារចុច"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"ប្ដូរ​គណនី"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"ជំហាន​បន្ទាប់"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"រៀបចំ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"បើក <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"សូម​ពិនិត្យ​ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" នៅ​ក្នុង​ការ​កំណត់​ភាសា &amp; និង​ការ​បញ្ចូល​របស់​អ្នក។ វា​នឹង​ដំណើរការ​នៅ​លើ​ឧបករណ៍​របស់​អ្នក។"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>បាន​បើក​នៅ​ក្នុង​​ការ​កំណត់​​ភាសា​ &amp; ការ​បញ្ចូល​របស់ ដូច្នេះ​ជំហាន​នេះ​រួចរាល់​ហើយ។ បន្ត​ទៅ​ជំហាន​បន្ទាប់!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"សូមពិនិត្យ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ក្នុងការកំណត់ភាសា និងបញ្ចូលរបស់អ្នក។ វានឹងផ្តល់សិទ្ធិឲ្យកម្មវិធីនេះដំណើរការនៅលើឧបករណ៍របស់អ្នក។"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ត្រូវបានបើកដំណើរការនៅក្នុងការកំណត់ភាសា និងបញ្ចូលរបស់អ្នករួចហើយ ដូច្នេះជំហ៊ាននេះបានបញ្ចប់ហើយ។ ចូលទៅជំហ៊ានបន្ទាប់!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"បើក​នៅ​ក្នុង​ការ​កំណត់"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"ប្ដូរ​ទៅ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"បន្ទាប់ ជ្រើស \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ជា​វិធី​សាស្ត្រ​បញ្ចូល​អត្ថបទ​សកម្ម​របស់​អ្នក។"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ដំឡើង"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"បោះ​បង់​"</string>
     <string name="delete_dict" msgid="756853268088330054">"លុប"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ភាសា​ដែល​បាន​ជ្រើស​នៅ​លើ​ឧបករណ៍​ចល័ត​មាន​វចនានុក្រម​អាច​ប្រើ​បាន។&lt;br/&gt; យើង​ផ្ដល់​អនុសាសន៍​ឲ្យ &lt;b&gt;ទាញ​យក&lt;/b&gt; វចនានុក្រម​ភាសា <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ដើម្បី​បង្កើន​បទពិសោធន៍​វាយ​បញ្ចូល​របស់​អ្នក។&lt;br/&gt; &lt;br/&gt; ការ​ទាញ​យក​អាច​ចំណាយ​ពេល​ប្រហែល​ពីរ​នាទី​នៅ​តាម 3G។ ការ​គិត​ថ្លៃ​អាច​អនុវត្ត​ប្រសិន​បើ​អ្នក​មិន​ប្រើ &lt;b&gt;ផែនការ​ទិន្នន័យ​គ្មាន​ដែន​កំណត់&lt;/b&gt;.&lt;br/&gt; បើ​អ្នក​មិន​ប្រាកដ​​ថា​ផែនការ​ណា​មួយ​ដែល​អ្នក​មាន យើង​ផ្ដល់​អនុសាសន៍​ឲ្យ​​ភ្ជាប់​វ៉ាយហ្វាយ ដើម្បី​ចាប់ផ្ដើម​ទាញ​យក​ដោយ​ស្វ័យ​ប្រវត្តិ។&lt;br/&gt; &lt;br/&gt; ជំនួយ៖ អ្នក​អាច​ទាញ​យក និង​លុប​វចនានុក្រម​ដោយ​ចូល​ទៅ​ &lt;b&gt;ភាសា &amp; ការ​បញ្ចូល&lt;/b&gt; នៅ​ក្នុង​ម៉ឺនុយ &lt;b&gt;ការ​កំណត់&lt;/b&gt; សម្រាប់​ឧបករណ៍​ចល័ត។"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"ភាសាដែលបានជ្រើសនៅលើឧបករណ៍ចល័តរបស់អ្នកមានវចនានុក្រមដែលអាចប្រើបាន&lt;br/&gt; យើងសូមណែនាំឲ្យអ្នក&lt;b&gt;ដោនឡូត&lt;/b&gt;វចនានុក្រម<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ដើម្បីធ្វើឲ្យការវាយបញ្ចូលរបស់អ្នកប្រសើរឡើង។&lt;br/&gt; &lt;br/&gt; ការដោនឡូតអាចចំណាយពេលមួយ ឬពីរនាទីតាមរយៈប្រព័ន្ធ 3G។ ការគិតប្រាក់អាចនឹងត្រូវបានអនុវត្ត ប្រសិនបើអ្នកមិនប្រើ&lt;b&gt;គម្រោងទិន្នន័យគ្មានដែនកំណត់&lt;/b&gt;ទេនោះ។&lt;br/&gt; ប្រសិនបើអ្នកមិនច្បាស់ថាតើគម្រោងទិន្នន័យប្រភេទណាដែលអ្នកប្រើទេនោះ យើងសូមណែនាំឲ្យអ្នករកមើលការតភ្ជាប់ Wi-Fi ដើម្បីចាប់ផ្តើមដោនឡូតដោយស្វ័យប្រវត្តិ។&lt;br/&gt; &lt;br/&gt; គន្លឹះ៖ អ្នកអាចដោនឡូត និងយកវចនានុក្រមចេញដោយចូលទៅកាន់&lt;b&gt;ភាសា និងបញ្ចូល&lt;/b&gt; នៅក្នុងម៉ឺនុយ&lt;b&gt;ការកំណត់&lt;/b&gt;នៃឧបករណ៍ចល័តរបស់អ្នក។"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ទាញ​យក​ឥឡូវ​នេះ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> មេកាបៃ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ទាញ​យក​តាម​វ៉ាយហ្វាយ"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"វចនានុក្រម​អាច​ប្រើ​បាន​សម្រាប់ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"កែ​ពាក្យ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"កែ"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"លុប"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"អ្នក​មិន​មាន​ពាក្យ​ណាមួយ​នៅ​ក្នុង​វចនានុក្រម​អ្នក​ប្រើ​ទេ។ បន្ថែម​ពាក្យ​ដោយ​​​​ប៉ះ​ប៊ូតុង​ បន្ថែម ​ (+)។"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"អ្នកមិនមានពាក្យនៅក្នុងវចនានុក្រមអ្នកប្រើទេ។ ដើម្បីបន្ថែមពាក្យ សូមប៉ះប៊ូតុងបន្ថែម (+)។"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"សម្រាប់​ភាសា​ទាំងអស់"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ភាសា​ច្រើន​ទៀត…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"លុប"</string>

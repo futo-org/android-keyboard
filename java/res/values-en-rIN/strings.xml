@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Phrase gesture"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Input spaces during gestures by gliding to the space key"</string>
     <string name="voice_input" msgid="3583258583521397548">"Voice input key"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"No voice input methods enabled. Check Language &amp; input settings."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"No voice input methods enabled. Check Languages &amp; input settings."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configure input methods"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Languages"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Help &amp; feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Languages"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Touch again to save"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Touch here to save"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Tap again to save"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Tap here to save"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionary available"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Keyboard theme"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Change accounts"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"The same input style already exists: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Keypress vibration duration"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Keypress sound volume"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Key long press delay"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Key long-press delay"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji for physical keyboard"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Physical Alt key shows the emoji palette"</string>
     <string name="button_default" msgid="3988017840431881491">"Default"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Next step"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Setting up <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Enable <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Please tick \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" in your Language &amp; input settings. This will authorise it to run on your device."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is already enabled in your Language &amp; input settings, so this step is done. On to the next one!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Please tick \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" in your Languages &amp; input settings. This will authorise it to run on your device."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is already enabled in your Languages &amp; input settings, so this step is complete. On to the next one."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Enable in Settings"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Switch to <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Next, select \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" as your active text-input method."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Install"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancel"</string>
     <string name="delete_dict" msgid="756853268088330054">"Delete"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"The selected language on your mobile device has an available dictionary.&lt;br/&gt; We recommend &lt;b&gt;downloading&lt;/b&gt; the <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> dictionary to improve your typing experience.&lt;br/&gt; &lt;br/&gt; The download could take a minute or two over 3G. Charges may apply if you don\'t have an &lt;b&gt;unlimited data plan&lt;/b&gt;.&lt;br/&gt; If you are not sure which data plan you have, we recommend finding a Wi-Fi connection to start the download automatically.&lt;br/&gt; &lt;br/&gt; Tip: You can download and remove dictionaries by going to &lt;b&gt;Language &amp; input&lt;/b&gt; in the &lt;b&gt;Settings&lt;/b&gt; menu of your mobile device."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"The selected language on your mobile device has an available dictionary.&lt;br/&gt; We recommend &lt;b&gt;downloading&lt;/b&gt; the <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> dictionary to improve your typing experience.&lt;br/&gt; &lt;br/&gt; The download could take a minute or two over 3G. Charges may apply if you don\'t have an &lt;b&gt;unlimited data plan&lt;/b&gt;.&lt;br/&gt; If you are not sure which data plan you have, we recommend finding a Wi-Fi connection to start the download automatically.&lt;br/&gt; &lt;br/&gt; Tip: You can download and remove dictionaries by going to &lt;b&gt;Languages &amp; input&lt;/b&gt; in the &lt;b&gt;Settings&lt;/b&gt; menu of your mobile device."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Download now (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Download over Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"A dictionary is available for <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Edit word"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Edit"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Delete"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"You don\'t have any words in the user dictionary. Add a word by touching the Add (+) button."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"You don\'t have any words in the user dictionary. To add a word, tap the Add (+) button."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"For all languages"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"More languages…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Delete"</string>

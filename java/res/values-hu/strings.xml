@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Kifejezés-kézmozdulat"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Szóköz írása kézmozdulatok során: húzza el ujját a szóköz felett"</string>
     <string name="voice_input" msgid="3583258583521397548">"Hangbeviteli gomb"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nincs engedélyezett hangbeviteli módszer. Nézze meg a Nyelvi és beviteli beállításokat."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nincs engedélyezett hangbeviteli módszer. Nézze meg a Nyelvek és bevitel alatti beállításokat."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Beviteli módok beállítása"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Nyelvek"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Súgó és visszajelzés"</string>
     <string name="select_language" msgid="5709487854987078367">"Nyelvek"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Érintse meg újból a mentéshez"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"A mentéshez érintse meg itt"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"A mentéshez koppintson újra"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Koppintson ide a mentéshez"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Van elérhető szótár"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Billentyűzettéma"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Fiókváltás"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Következő lépés"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"A(z) <xliff:g id="APPLICATION_NAME">%s</xliff:g> beállítása"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"A(z) <xliff:g id="APPLICATION_NAME">%s</xliff:g> engedélyezése"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Jelölje be a(z) „<xliff:g id="APPLICATION_NAME">%s</xliff:g>” alkalmazást a „Nyelv és bevitel” alatt a futtatás érdekében."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> alkalmazást már engedélyezte a Nyelv és bevitel beállításainál, tehát ez a lépés már kész. Folytassa a következővel!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Jelölje be a(z) „<xliff:g id="APPLICATION_NAME">%s</xliff:g>” alkalmazást a „Nyelvek és bevitel” alatt. Ezzel engedélyezi az eszközön való futtatását."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"A(z) <xliff:g id="APPLICATION_NAME">%s</xliff:g> alkalmazást már engedélyezte a Nyelvek és bevitel beállításainál, tehát ez a lépés már kész. Folytassa a következővel!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Engedélyezés a Beállítások között"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Váltás a(z) <xliff:g id="APPLICATION_NAME">%s</xliff:g> alkalmazásra"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Ezután válassza a(z) „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”  alkalmazást aktív szövegbeviteli módszerként."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Telepítés"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Mégse"</string>
     <string name="delete_dict" msgid="756853268088330054">"Törlés"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"A mobileszközön kiválasztott nyelvhez szótár érhető el.&lt;br/&gt; A gépelési élmény javításához javasoljuk a(z) <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> szótár &lt;b&gt;letöltését.&lt;br/&gt; &lt;br/&gt; A letöltés 3G hálózaton keresztül néhány percig tart. Ha &lt;b&gt;előfizetése nem korlátlan&lt;/b&gt;, a letöltés költségekkel járhat.&lt;br/&gt; Ha nem biztos abban, hogy milyen adatcsomagot használ, javasoljuk, hogy keressen egy Wi-Fi-kapcsolatot a letöltés automatikus elindításához.&lt;br/&gt; &lt;br/&gt; Tipp: szótárakat a mobileszköz a &lt;b&gt;Beállítások&lt;/b&gt; menü &lt;b&gt;Nyelv és bevitel&lt;/b&gt; részében tölthet le és távolíthat el."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"A mobileszközön kiválasztott nyelvhez szótár áll rendelkezésre.&lt;br/&gt; A gépelési élmény javításához javasoljuk a(z) <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> szótár &lt;b&gt;letöltését&lt;/b&gt;.&lt;br/&gt; &lt;br/&gt; A letöltés 3G hálózaton keresztül néhány percig tart. Ha &lt;b&gt;előfizetése nem tartalmaz korlátlan adatforgalmat&lt;/b&gt;, a letöltés költségekkel járhat.&lt;br/&gt; Ha nem biztos abban, hogy milyen adatcsomagot használ, javasoljuk, hogy keressen Wi-Fi-kapcsolatot a letöltés automatikus elindításához.&lt;br/&gt; &lt;br/&gt; Tipp: Szótárakat a mobileszköz <b>Beállítások</b> menüjének &lt;b&gt;Nyelvek és bevitel&lt;/b&gt; szakaszában tölthet le és távolíthat el."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Töltse le most (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Letöltés Wi-Fivel"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> nyelvhez van rendelkezésre álló szótár"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Szó szerkesztése"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Szerkesztés"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Törlés"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Nincsenek szavak a felhasználói szótárban. Új szavakat a Hozzáadás (+) gomb megérintésével vehet fel."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Nincsenek szavak a felhasználói szótárban. Új szavakat a Hozzáadás (+) gombra koppintva vehet fel."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Minden nyelven"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"További nyelvek…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Törlés"</string>

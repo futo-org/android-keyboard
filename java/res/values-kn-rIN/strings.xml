@@ -23,9 +23,9 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"ಇನ್‌ಪುಟ್ ಆಯ್ಕೆಗಳು"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಹುಡುಕು"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"ಕಾಗುಣಿತ ಪರೀಕ್ಷಕವು ನಿಮ್ಮ ಸಂಪರ್ಕ ಪಟ್ಟಿಯ ಮಾಹಿತಿಯನ್ನು ಬಳಸಿಕೊಳ್ಳುತ್ತದೆ"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"ಕೀಲಿಯನ್ನು ಒತ್ತಿದಾಗ ವೈಬ್ರೇಷನ್‌"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀ ಒತ್ತಿದಾಗ ಶಬ್ದಮಾಡು"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"ಕೀ ಒತ್ತಿದಾಗ ಪಾಪ್ ಅಪ್‌ ಮಾಡು"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"ಕೀಪ್ರೆಸ್‌ನ ವೈಬ್ರೇಟ್"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"ಕೀಪ್ರೆಸ್ ಶಬ್ದ"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"ಕೀಪ್ರೆಸ್‌ನಲ್ಲಿ ಪಾಪ್ಅಪ್"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"ಪ್ರಾಶಸ್ತ್ಯಗಳು"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"ಖಾತೆಗಳು ಮತ್ತು ಗೌಪ್ಯತೆ"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"ಗೋಚರತೆ ಮತ್ತು ಲೇಔಟ್‌ಗಳು"</string>
@@ -52,9 +52,9 @@
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"ಬಹು ಇನ್‌ಪುಟ್ ಭಾಷೆಗಳು ಸಕ್ರಿಯಗೊಂಡಾಗ ತೋರಿಸು"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"ಕೀ ಪಾಪ್‌ಅಪ್‌ನ ವಜಾ ವಿಳಂಬ"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ಯಾವುದೇ ವಿಳಂಬವಿಲ್ಲ"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ಡೀಫಾಲ್ಟ್"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ಡಿಫಾಲ್ಟ್"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>ಮಿ.ಸೆ."</string>
-    <string name="settings_system_default" msgid="6268225104743331821">"ಸಿಸ್ಟಂ ಡೀಫಾಲ್ಟ್"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"ಸಿಸ್ಟಂ ಡಿಫಾಲ್ಟ್"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸೂಚಿಸು"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"ಸಲಹೆಗಳು ಮತ್ತು ತಿದ್ದುಪಡಿಗಳಿಗಾಗಿ ಸಂಪರ್ಕಗಳಲ್ಲಿನ ಹೆಸರುಗಳನ್ನು ಬಳಸಿ"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"ವೈಯುಕ್ತೀಕರಿಸಿದ ಸಲಹೆಗಳು"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ಪದಗುಚ್ಛದ ಗೆಶ್ಚರ್"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ಸ್ಪೇಸ್ ಕೀಗೆ ಗ್ಲೈಡ್ ಮಾಡುವ ಮೂಲಕ ಗೆಶ್ಚರ್‌ಗಳ ಅವಧಿಯಲ್ಲಿ ಅಂತರ ನಮೂದಿಸಿ"</string>
     <string name="voice_input" msgid="3583258583521397548">"ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಕೀ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ಯಾವುದೇ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ. ಭಾಷೆ &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ಯಾವುದೇ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ. ಭಾಷೆಗಳು &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ಭಾಷೆಗಳು"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"ಸಹಾಯ &amp; ಪ್ರತಿಕ್ರಿಯೆ"</string>
     <string name="select_language" msgid="5709487854987078367">"ಭಾಷೆಗಳು"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"ಉಳಿಸಲು ಮತ್ತೆ ಸ್ಪರ್ಶಿಸಿ"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"ಉಳಿಸಲು ಇಲ್ಲಿ ಸ್ಪರ್ಶಿಸಿ"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"ಉಳಿಸಲು ಮತ್ತೊಮ್ಮೆ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"ಉಳಿಸಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ನಿಘಂಟು ಲಭ್ಯವಿದೆ"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"ಕೀಬೋರ್ಡ್ ಥೀಮ್"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"ಖಾತೆಗಳನ್ನು ಬದಲಿಸು"</string>
@@ -102,12 +102,12 @@
     <string name="account_select_cancel" msgid="5181012062618504340">"ರದ್ದುಮಾಡು"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"ಸೈನ್ ಔಟ್"</string>
     <string name="account_select_title" msgid="6279711684772922649">"ಬಳಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"ಇಂಗ್ಲಿಷ್ (UK)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"ಇಂಗ್ಲಿಷ್ (ಯುಕೆ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ಇಂಗ್ಲಿಷ್ (US)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ಸ್ಪ್ಯಾನಿಷ್ (US)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"ಹಿಂಗ್ಲಿಷ್"</string>
     <string name="subtype_sr_ZZ" msgid="9059219552986034343">"ಸರ್ಬಿಯನ್ (ಲ್ಯಾಟಿನ್)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"ಇಂಗ್ಲಿಷ್ (UK) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"ಇಂಗ್ಲಿಷ್ (ಯುಕೆ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"ಇಂಗ್ಲಿಷ್ (US) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"ಸ್ಪ್ಯಾನಿಷ್ (US) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"ಹಿಂಗ್ಲಿಷ್ (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
@@ -139,15 +139,15 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ಕೀಯ ದೀರ್ಘ ಒತ್ತುವ ವಿಳಂಬ"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"ಭೌತಿಕ ಕೀಬೋರ್ಡ್‌ಗೆ ಎಮೋಜಿ"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ಭೌತಿಕ Alt ಕೀ ಎಮೋಜಿ ಪ್ಯಾಲೆಟ್ ತೋರಿಸುತ್ತದೆ"</string>
-    <string name="button_default" msgid="3988017840431881491">"ಡೀಫಾಲ್ಟ್"</string>
+    <string name="button_default" msgid="3988017840431881491">"ಡಿಫಾಲ್ಟ್"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಗೆ ಸುಸ್ವಾಗತ"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ಗೆಶ್ಚರ್ ಟೈಪಿಂಗ್‌ನೊಂದಿಗೆ"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"ಪ್ರಾರಂಭ"</string>
     <string name="setup_next_action" msgid="371821437915144603">"ಮುಂದಿನ ಹಂತ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಅನ್ನು ಹೊಂದಿಸಲಾಗುತ್ತಿದೆ"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಸಕ್ರಿಯಗೊಳಿಸಿ"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"ನಿಮ್ಮ ಭಾಷೆ &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ದಯವಿಟ್ಟು \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ಅನ್ನು ಪರಿಶೀಲಿಸಿ. ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿ ಅದನ್ನು ಚಾಲನೆ ಮಾಡಲು ಅದು ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಅನ್ನು ಈಗಾಗಲೇ ನಿಮ್ಮ ಭಾಷೆ &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ, ಹೀಗಾಗಿ ಈ ಹಂತ ಮುಗಿದಿದೆ. ಮುಂದಿನದಕ್ಕೆ ತೆರಳಿ!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"ನಿಮ್ಮ ಭಾಷೆಗಳು &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ದಯವಿಟ್ಟು \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ಅನ್ನು ಪರಿಶೀಲಿಸಿ. ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿ ಅದನ್ನು ರನ್ ಮಾಡಲು ಅದು ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಅನ್ನು ಈಗಾಗಲೇ ನಿಮ್ಮ ಭಾಷೆಗಳು &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ, ಹೀಗಾಗಿ ಈ ಹಂತ ಮುಗಿದಿದೆ. ಮುಂದಿನದಕ್ಕೆ ತೆರಳಿ!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸು"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ಗೆ ಬದಲಾಯಿಸಿ"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ಮುಂದೆ, ನಿಮ್ಮ ಸಕ್ರಿಯ ಪಠ್ಯ-ಇನ್‌ಪುಟ್ ವಿಧಾನವಾಗಿ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ."</string>
@@ -183,9 +183,9 @@
     <string name="install_dict" msgid="180852772562189365">"ಸ್ಥಾಪಿಸು"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ರದ್ದುಮಾಡು"</string>
     <string name="delete_dict" msgid="756853268088330054">"ಅಳಿಸು"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಾಧನದಲ್ಲಿ ಆಯ್ಕೆ ಮಾಡಲಾದ ಭಾಷೆಗೆ ನಿಘಂಟು ಲಭ್ಯವಿದೆ.&lt;br/&gt; ನಿಮ್ಮ ಟೈಪ್ ಮಾಡುವ ಅನುಭವದ ಸುಧಾರಣೆಗೆ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ನಿಘಂಟು &lt;b&gt;ಡೌನ್‌ಲೋಡ್&lt;/b&gt; ಮಾಡಿಕೊಳ್ಳಲು ನಾವು ಶಿಫಾರಸು ಮಾಡುತ್ತೇವೆ.&lt;br/&gt; &lt;br/&gt; ಡೌನ್‌ಲೋಡ್‌ಗೆ 3G ಯಲ್ಲಿ ಒಂದು ಅಥವಾ ಎರಡು ನಿಮಿಷ ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ನೀವು &lt;b&gt;ಅನಿಯಮಿತ ಡೇಟಾ ಪ್ಲ್ಯಾನ್&lt;/b&gt; ಹೊಂದಿಲ್ಲದೆ ಇದ್ದರೆ ಶುಲ್ಕ ಅನ್ವಯಿಸಬಹುದು, ನಿಮ್ಮ ಡೇಟಾ ಪ್ಲ್ಯಾನ್ ಯಾವುದು ಅನ್ನುವುದರ ಕುರಿತು ನಿಮಗೆ ಖಾತ್ರಿಯಿಲ್ಲವಾದರೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಡೌನ್‌ಲೋಡ್ ಪ್ರಾರಂಭಿಸುವುದಕ್ಕಾಗಿ Wi-Fi ಸಂಪರ್ಕ ಹುಡುಕಲು ನಾವು ಶಿಫಾರಸು ಮಾಡುತ್ತೇವೆ.&lt;br/&gt; &lt;br/&gt; ಸಲಹೆ: ನಿಮ್ಮ ಮೊಬೈಲ್‌ ಸಾಧನದ ಮೆನುನಲ್ಲಿ &lt;b&gt;ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ&lt;/b&gt; &lt;b&gt;ಭಾಷೆ &amp; ಇನ್‌ಪುಟ್‌ಗೆ&lt;/b&gt; ಹೋಗುವ ಮೂಲಕ ನಿಘಂಟುಗಳನ್ನು ನೀವು ಡೌನ್‌ಲೋಡ್ ಮಾಡಬಹುದು ಮತ್ತು ತೆಗೆದುಹಾಕಬಹುದು."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"ನಿಮ್ಮ ಮೊಬೈಲ್‌ನಲ್ಲಿನ ಆಯ್ದ ಭಾಷೆಯು ಲಭ್ಯವಿರುವ ನಿಘಂಟನ್ನು ಹೊಂದಿರುತ್ತದೆ.&lt;br/&gt; ನಿಮ್ಮ ಟೈಪಿಂಗ್ ಅನುಭವವನ್ನು ಸುಧಾರಿಸಲು <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ನಿಘಂಟನ್ನು &lt;b&gt;ಡೌನ್‌ಲೋಡ್ ಮಾಡಿಕೊಳ್ಳುವಂತೆ&lt;/b&gt; ನಾವು ಸಲಹೆ ನೀಡುತ್ತೇವೆ.&lt;br/&gt; &lt;br/&gt; 3G ಸಂಪರ್ಕದಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಆಗಲು ಒಂದು ಅಥವಾ ಎರಡು ನಿಮಿಷಗಳಾಗಬಹುದು. ನಿಮ್ಮ ಬಳಿ &lt;b&gt;ಅನಿಯಮಿತ ಡೇಟಾ ಯೋಜನೆ&lt;/b&gt; ಇಲ್ಲದಿದ್ದರೆ ಶುಲ್ಕಗಳು ಅನ್ವಯಿಸಬಹುದು.&lt;br/&gt; ನಿಮ್ಮ ಬಳಿ ಯಾವ ಡೇಟಾ ಯೋಜನೆ ಇದೆ ಎಂಬುದರ ಕುರಿತು ನಿಮಗೆ ಖಚಿತತೆ ಇಲ್ಲದಿದ್ದರೆ, ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಡೌನ್‌ಲೋಡ್ ಪ್ರಾರಂಭಿಸಲು ವೈ-ಫೈ ಸಂಪರ್ಕವನ್ನು ಹುಡುಕುವಂತೆ ನಾವು ಸಲಹೆ ನೀಡುತ್ತೇವೆ.&lt;br/&gt; &lt;br/&gt; ಸುಳಿವು: ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಾಧನದ &lt;b&gt;ಸೆಟ್ಟಿಂಗ್‌ಗಳು&lt;/b&gt; ಮೆನುವಿಲ್ಲಿ &lt;b&gt;ಭಾಷೆಗಳು &amp; ಇನ್‌ಪುಟ್&lt;/b&gt; ಗೆ ಹೋಗುವ ಮೂಲಕ ನಿಘಂಟುಗಳನ್ನು ನೀವು ಡೌನ್‌ಲೋಡ್ ಮಾಡಬಹುದು ಮತ್ತು ತೆಗೆದುಹಾಕಬಹುದು."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ಇದೀಗ ಡೌನ್‌ಲೋಡ್ ಮಾಡು (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi ಮೂಲಕ ಡೌನ್‌ಲೋಡ್ ಮಾಡು"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"ವೈ-ಫೈ ಮೂಲಕ ಡೌನ್‌ಲೋಡ್ ಮಾಡು"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ಗೆ ನಿಘಂಟು ಲಭ್ಯವಿದೆ"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"ವಿಮರ್ಶಿಸಲು ಮತ್ತು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಒತ್ತಿರಿ"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ಗೆ ಸಲಹೆಗಳು ಶೀಘ್ರವೇ ಸಿದ್ಧಗೊಳ್ಳಲಿವೆ."</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ಪದವನ್ನು ಸಂಪಾದಿಸಿ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ಸಂಪಾದಿಸಿ"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ಅಳಿಸು"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"ಬಳಕೆದಾರರ ನಿಘಂಟಿನಲ್ಲಿ ನೀವು ಯಾವುದೇ ಪದಗಳನ್ನು ಹೊಂದಿಲ್ಲ. ಸೇರಿಸು (+) ಬಟನ್ ಅನ್ನು ಸ್ಪರ್ಶಿಸುವ ಮೂಲಕ ಪದವೊಂದನ್ನು ಸೇರಿಸಿ."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ಬಳಕೆದಾರರ ನಿಘಂಟಿನಲ್ಲಿ ನೀವು ಯಾವುದೇ ಪದಗಳನ್ನು ಹೊಂದಿಲ್ಲ. ಪದವನ್ನು ಸೇರಿಸಲು, ಸೇರಿಸು (+) ಬಟನ್ ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"ಎಲ್ಲ ಭಾಷೆಗಳಿಗೆ"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ಇನ್ನಷ್ಟು ಭಾಷೆಗಳು…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"ಅಳಿಸು"</string>

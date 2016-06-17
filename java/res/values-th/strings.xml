@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ท่าทางสัมผัสสำหรับวลี"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ใส่ช่องว่างระหว่างท่าทางสัมผัสโดยเลื่อนไปยังแป้นเคาะวรรค"</string>
     <string name="voice_input" msgid="3583258583521397548">"แป้นการป้อนข้อมูลด้วยเสียง"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ไม่ได้เปิดใช้วิธีการป้อนข้อมูลด้วยเสียง ตรวจสอบภาษาและการตั้งค่าการป้อนข้อมูล"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ไม่ได้เปิดใช้วิธีป้อนข้อมูลด้วยเสียง โปรดตรวจสอบการตั้งค่าภาษาและการป้อนข้อมูล"</string>
     <string name="configure_input_method" msgid="373356270290742459">"กำหนดค่าวิธีการป้อนข้อมูล"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ภาษา"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"ความช่วยเหลือและความคิดเห็น"</string>
     <string name="select_language" msgid="5709487854987078367">"ภาษา"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"แตะอีกครั้งเพื่อบัน​​ทึก"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"แตะที่นี่เพื่อบันทึก"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"แตะอีกครั้งเพื่อบันทึก"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"แตะที่นี่เพื่อบันทึก"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"มีพจนานุกรมให้ใช้งาน"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"ชุดรูปแบบแป้นพิมพ์"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"สลับบัญชี"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"ขั้นตอนถัดไป"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"การตั้งค่า <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"เปิดใช้งาน <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"โปรดตรวจสอบ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ในการตั้งค่าภาษาและการป้อนข้อมูลของคุณ ซึ่งจะอนุญาตให้แอปทำงานบนอุปกรณ์ของคุณ"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> เปิดใช้งานในภาษาและการตั้งค่าการป้อนข้อมูลของคุณอยู่แล้ว ดังนั้น ขั้นตอนนี้จึงเสร็จสิ้นแล้ว ไปยังขั้นตอนต่อไป!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"โปรดตรวจสอบ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ในการตั้งค่าภาษาและการป้อนข้อมูลของคุณ ซึ่งจะอนุญาตให้แอปทำงานบนอุปกรณ์ของคุณ"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> เปิดใช้ในการตั้งค่าภาษาและการป้อนข้อมูลของคุณอยู่แล้ว ขั้นตอนนี้จึงเสร็จสิ้นแล้ว ไปยังขั้นตอนถัดไปเลย!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"เปิดใช้งานในการตั้งค่า"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"สลับไปใช้ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ถัดไป เลือก \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" เป็นวิธีการป้อนข้อความที่ใช้งานของคุณ"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ติดตั้ง"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ยกเลิก"</string>
     <string name="delete_dict" msgid="756853268088330054">"ลบ"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ภาษาที่คุณเลือกในอุปกรณ์เคลื่อนที่มีพจนานุกรมที่สามารถใช้ได้&lt;br/&gt; เราขอแนะนำให้คุณ &lt;b&gt;ดาวน์โหลด&lt;/b&gt; พจนานุกรม <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> เพื่อรับประสบการณ์การพิมพ์ที่ดียิ่งขึ้น&lt;br/&gt; &lt;br/&gt; การดาวน์โหลดอาจใช้เวลาหนึ่งถึงสองนาทีผ่านทาง 3G ซึ่งอาจมีการเรียกเก็บเงินหากคุณไม่ได้ใช้ &lt;b&gt;แผนบริการข้อมูลแบบไม่จำกัดปริมาณ&lt;/b&gt;.&lt;br/&gt; หากไม่แน่ใจว่าใช้แผนบริการข้อมูลแบบใด เราขอแนะนำให้คุณเชื่อมต่อ Wi-Fi เพื่อเริ่มการดาวน์โหลดอัตโนมัติ&lt;br/&gt; &lt;br/&gt; เคล็ดลับ: คุณสามารถดาวน์โหลดและลบพจนานุกรมออกได้โดยไปที่ &lt;b&gt;ภาษาและการป้อนข้อมูล&lt;/b&gt; ในเมนู &lt;b&gt;การตั้งค่า&lt;/b&gt; ในอุปกรณ์เคลื่อนที่ของคุณ"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"ภาษาที่คุณเลือกในอุปกรณ์เคลื่อนที่มีพจนานุกรมที่สามารถใช้ได้&lt;br/&gt; เราขอแนะนำให้คุณ&lt;b&gt;ดาวน์โหลดพจนานุกรม&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> เพื่อรับประสบการณ์การพิมพ์ที่ดียิ่งขึ้น&lt;br/&gt; &lt;br/&gt; การดาวน์โหลดอาจใช้เวลา 1-2 นาทีผ่านทาง 3G ซึ่งอาจมีการเรียกเก็บเงินหากคุณไม่ได้ใช้&lt;b&gt;แผนบริการข้อมูลแบบไม่จำกัด&lt;/b&gt;.&lt;br/&gt; หากไม่แน่ใจว่าใช้แผนบริการข้อมูลแบบใดอยู่ เราขอแนะนำให้เชื่อมต่อ Wi-Fi เพื่อเริ่มการดาวน์โหลดโดยอัตโนมัติ&lt;br/&gt; &lt;br/&gt; เคล็ดลับ: คุณสามารถดาวน์โหลดและนำพจนานุกรมออกได้โดยไปที่&lt;b&gt;ภาษาและการป้อนข้อมูล&lt;/b&gt;ในเมนู&lt;b&gt;การตั้งค่า&lt;/b&gt;บนอุปกรณ์เคลื่อนที่ของคุณ"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ดาวน์โหลดเลย (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ดาวน์โหลดผ่าน WiFi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"มีพจนานุกรมให้ใช้งานสำหรับ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"แก้ไขคำ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"แก้ไข"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ลบ"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"คุณไม่มีคำในพจนานุกรมผู้ใช้เลย เพิ่มคำโดยแตะปุ่มเพิ่ม (+)"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"คุณยังไม่มีคำในพจนานุกรมผู้ใช้ หากต้องการเพิ่มคำ ให้แตะปุ่มเพิ่ม (+)"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"สำหรับทุกภาษา"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ภาษาเพิ่มเติม…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"ลบ"</string>
