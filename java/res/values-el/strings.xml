@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Εισαγωγή φράσεων με κίνηση"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Εισαγάγετε κενά στις κινήσεις με ολίσθηση στο πλήκτρο διαστήματος"</string>
     <string name="voice_input" msgid="3583258583521397548">"Κλειδί φωνητικής εξόδου"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Δεν έχουν ενεργοποιηθεί μέθοδοι φωνητικής εισαγωγής. Ελέγξτε τις Ρυθμίσεις Γλώσσας και εισαγωγής."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Δεν έχουν ενεργοποιηθεί μέθοδοι φωνητικής εντολής. Ελέγξτε τις Ρυθμίσεις Γλώσσας και εισαγωγής."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Διαμόρφωση μεθόδων εισαγωγής"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Γλώσσες"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Βοήθεια και σχόλια"</string>
     <string name="select_language" msgid="5709487854987078367">"Γλώσσες"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Αγγίξτε ξανά για αποθήκευση"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Αγγίξτε εδώ για αποθήκευση"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Πατήστε ξανά για αποθήκευση"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Πατήστε εδώ για αποθήκευση"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Λεξικό διαθέσιμο"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Θέμα πληκτρολογίου"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Εναλλαγή λογαριασμών"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Επόμενο βήμα"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Ρύθμιση της εφαρμογής <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Ενεργοποιήστε την εφαρμογή <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Επιλέξτε \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" στις ρυθμίσεις Γλώσσα και εισαγωγή, για να εκτελεστεί στη συσκευή."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Η εφαρμογή <xliff:g id="APPLICATION_NAME">%s</xliff:g> έχει ενεργοποιηθεί στις Ρυθμίσεις γλώσσας και εισαγωγής, συνεπώς το βήμα έχει ολοκληρωθεί. Πάμε στο επόμενο!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Επιλέξτε \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" στις Ρυθμίσεις γλώσσας και εισαγωγής, για να το εξουσιοδοτήσετε να εκτελείται στη συσκευή σας."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Το <xliff:g id="APPLICATION_NAME">%s</xliff:g> είναι ήδη ενεργοποιημένο στις Ρυθμίσεις γλώσσας και εισαγωγής, συνεπώς το βήμα έχει ολοκληρωθεί. Πάμε στο επόμενο!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Ενεργοποίηση στις Ρυθμίσεις"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Μετάβαση στην εφαρμογή <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Στη συνέχεια, επιλέξτε \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ως την ενεργή μέθοδο εισαγωγής κειμένου."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Εγκατάσταση"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Ακύρωση"</string>
     <string name="delete_dict" msgid="756853268088330054">"Διαγραφή"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Η επιλεγμένη γλώσσα στην κινητή συσκευή σας διαθέτει λεξικό.&lt;br/&gt; Προτείνουμε να &lt;b&gt;κατεβάσετε&lt;/b&gt; το λεξικό <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> για βελτίωση της πληκτρολόγησης.&lt;br/&gt; &lt;br/&gt; Για τη λήψη μπορεί να χρειαστούν 1 ή 2 λεπτά μέσω 3G. Ενδέχεται να ισχύουν χρεώσεις αν δεν έχετε διαθέτετε&lt;b&gt;πρόγραμμα απεριόριστων δεδομένων&lt;/b&gt;.&lt;br/&gt; Αν δεν γνωρίζετε ποιο πρόγραμμα δεδομένων διαθέτετε, προτείνουμε να χρησιμοποιήσετε μια σύνδεση Wi-Fi για να ξεκινήσει αυτόματα η λήψη.&lt;br/&gt; &lt;br/&gt; Συμβουλή: Μπορείτε να κατεβάσετε και να καταργήσετε λεξικά, από την περιοχή &lt;b&gt;Γλώσσα και εισαγωγή&lt;/b&gt;, στο μενού &lt;b&gt;Ρυθμίσεις&lt;/b&gt; της κινητής συσκευής σας."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Η επιλεγμένη γλώσσα στην κινητή συσκευή σας διαθέτει λεξικό.&lt;br/&gt; Σας συνιστούμε &lt;b&gt;να κατεβάσετε&lt;/b&gt; το λεξικό <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> για καλύτερη εμπειρία πληκτρολόγησης.&lt;br/&gt; &lt;br/&gt; Για τη λήψη μπορεί να χρειαστούν 1 ή 2 λεπτά μέσω 3G. Ενδέχεται να ισχύουν χρεώσεις αν δεν διαθέτετε &lt;b&gt;πρόγραμμα απεριόριστων δεδομένων&lt;/b&gt;.&lt;br/&gt; Αν δεν γνωρίζετε ποιο πρόγραμμα δεδομένων διαθέτετε, σας συνιστούμε να χρησιμοποιήσετε μια σύνδεση Wi-Fi για να ξεκινήσει αυτόματα η λήψη.&lt;br/&gt; &lt;br/&gt; Συμβουλή: Μπορείτε να κατεβάσετε και να καταργήσετε λεξικά, από την περιοχή &lt;b&gt;Γλώσσα και εισαγωγή&lt;/b&gt; του μενού &lt;b&gt;Ρυθμίσεις&lt;/b&gt; της κινητής συσκευής σας."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Άμεση λήψη (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Λήψη μέσω Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Υπάρχει διαθέσιμο λεξικό για τα <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Επεξεργασία λέξης"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Επεξεργασία"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Διαγραφή"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Δεν υπάρχουν λέξεις καταχωρισμένες στο λεξικό χρήστη. Προσθέστε μια λέξη πατώντας το κουμπί Προσθήκη (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Δεν υπάρχουν καταχωρισμένες λέξεις στο λεξικό χρήστη. Για να προσθέσετε μια λέξη, πατήστε το κουμπί Προσθήκης (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Για όλες τις γλώσσες"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Περισσότερες γλώσσες…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Διαγραφή"</string>

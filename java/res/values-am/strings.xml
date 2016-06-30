@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"የሐረግ ምልክት"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ምልክት በሚሰጡበት ጊዜ ወደ ክፍተት ቁልፉ በማንሸራተት ክፍተቶችን ያስገቡ"</string>
     <string name="voice_input" msgid="3583258583521397548">"የድምፅ ግቤት ቁልፍ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ምንም የግቤት ስልቶች አልነቁም። የቋንቋ እና የግቤት ቅንብሮችን ይፈትሹ።"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ምንም የግቤት ስልቶች አልነቁም። የቋንቋ እና የግቤት ቅንብሮችን ይፈትሹ።"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ግቤት ሜተዶችን አዋቀር"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ቋንቋዎች"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"እገዛ እና ግብረመልስ"</string>
     <string name="select_language" msgid="5709487854987078367">"ቋንቋዎች"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"ለማስቀመጥ እንደገና ንካ"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"ለማስቀመጥ እዚህ ይንኩ"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"ለማስቀመጥ እንደገና መታ ያድርጉ"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"ለማስቀመጥ እዚህ ላይ መታ ያድርጉ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"መዝገበ ቃላት አለ"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"የቁልፍ ሰሌዳ ገጽታ"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"መለያዎችን ቀይር"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"ቀጣይ ደረጃ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ን በማዋቀር ላይ"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ን ያንቁ"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"እባክዎ «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን በቋንቋ እና ግቤት ቅንብሮችዎ ውስጥ ያረጋግጡት። ይሄ እሱ በመሣሪያዎ ላይ እንዲሄድ ይፈቅድለታል።"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> አስቀድሞ በእርስዎ ቋንቋ እና ግቤት ቅንብሮች ውስጥ ነቅቷል፣ ስለዚህ ይህ ደረጃ ተከናውኗል። ቀጣዩ ላይ!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"እባክዎ «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን በእርስዎ የቋንቋ እና ግቤት ቅንብሮች ውስጥ መኖሩን ያረጋግጡት። ይሄ እሱ በመሣሪያዎ ላይ እንዲሄድ ይፈቅድለታል።"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> አስቀድሞ በእርስዎ ቋንቋ እና ግቤት ቅንብሮች ውስጥ ነቅቷል፣ ስለዚህ ይህ ደረጃ ተከናውኗል። ወደ ቀጣዩ እንሂድ!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"በቅንብሮች ውስጥ ያንቁ"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"ወደ <xliff:g id="APPLICATION_NAME">%s</xliff:g> ይቀይሩ"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"በመቀጠል «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን እንደ የጽሑፍ ግቤት ስልትዎ ይምረጡት።"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ጫን"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ይቅር"</string>
     <string name="delete_dict" msgid="756853268088330054">"ሰርዝ"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"በተንቀሳቃሽ መሣሪያዎ ላይ ለተመረጠው ቋንቋ የሚሆን መዝገበ-ቃላት ይገኛል።&lt;br/&gt; የትየባ ተሞክሮዎን ለማሻሻል የ<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> መዝገበ-ቃላቱን &lt;b&gt;እንዲያወርዱ&lt;/b&gt; እንመክራለን።&lt;br/&gt; &lt;br/&gt; ማውረድ በ3ጂ ላይ አንድ ወይም ሁለት ደቂቃ ሊወስድ ይችላል። &lt;b&gt;ያልተገደበ የውሂብ ዕቅድ&lt;/b&gt; ከሌለዎት ክፍያዎች መከፈል ሊኖርባቸው ይችላል።&lt;br/&gt; የትኛው የውሂብ ዕቅድ እንዳለዎት እርግጠኛ ካልሆኑ ውርዱን በራስ-ሰር ለመጀመር የWi-Fi ግንኙነት እንዲፈልጉ እንመክራለን።&lt;br/&gt; &lt;br/&gt; ጠቃሚ ምክር፦ የተንቀሳቃሽ መሣሪያዎ &lt;b&gt;ቅንብሮች&lt;/b&gt; ምናሌ ውስጥ ወዳለው &lt;b&gt;ቋንቋ እና ግብዓት&lt;/b&gt; በመሄድ መዝገበ-ቃላትን ማውረድና ማስወገድ ይችላሉ።"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"በእርስዎ ሞባይል መሣሪያ ላይ የተመረጠው ቋንቋ የሚገኝ መዝገብ-ቃላት አለው።&lt;br/&gt; የእርስዎን የትየባ ተሞክሮ ለማሻሻል <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> መዝገበ ቃላትን &lt;b&gt;እንዲያወርዱ&lt;/b&gt; እንመክራለን።&lt;br/&gt; &lt;br/&gt; ማውረዱ አንድ ወይም ሁለት ደቂቃ በ3ጂ ላይ ሊወስድ ይችላል። &lt;b&gt;ያልተገደበ ውሂብ የክፍያ ዕቅድ&lt;/b&gt;.&lt;br/&gt; ከሌለዎት ክፍያዎች ሊከፈልባቸው ይችላሉ። የትኛው የውሂብ የክፍያ ዕቅድ እንዳለዎት እርግጠኛ ካልሆኑ ማውረዱን በራስ-ሰር ለመጀመር የWi-Fi ግንኙነት እንዲያገኙ እንመክርዎታለን።&lt;br/&gt; &lt;br/&gt; ጠቃሚ ምክር፦  በእርስዎ ሞባይል መሣሪያ ወደ &lt;b&gt;ቋንቋዎች እና ግቤት&lt;/b&gt; በ&lt;b&gt;ቅንብሮች&lt;/b&gt; ምናሌ ውስጥ በመሄድ መዝገበ-ቃላትን ማውረድ እና ማስወገድ ይችላሉ።"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"አሁን አውርድ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> ሜባ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"በWi-Fi አውርድ"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"የ<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> መዝገበ-ቃላት ማግኘት ይችላል"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ቃሉን አርትዕ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"አርትዕ"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ሰርዝ"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"በተጠቃሚ መዝገበ-ቃላት ውስጥ ምንም ቃላቶች የሉዎትም። የአክል (+) አዝራሩን በመንካት ቃል ማከል ይችላሉ።"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"በተጠቃሚ መዝገበ-ቃላቱ ውስጥ ምንም ቃላት የለዎትም። አንድ ቃል ለማከል የአክል (+) አዝራሩን መታ ያድርጉ።"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"ለሁሉም ቋንቋዎች"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ተጨማሪ ቋንቋዎች…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"ሰርዝ"</string>

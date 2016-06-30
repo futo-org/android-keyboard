@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"구문 제스처"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"동작 중에 스페이스바 쪽으로 움직여 공백 입력"</string>
     <string name="voice_input" msgid="3583258583521397548">"음성 입력 키"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"사용 설정된 음성 입력 방법이 없습니다. 언어 및 입력 설정을 확인하세요."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"사용 설정된 음성 입력 방법이 없습니다. 언어 및 입력 설정을 확인하세요."</string>
     <string name="configure_input_method" msgid="373356270290742459">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"언어"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"도움말 및 의견"</string>
     <string name="select_language" msgid="5709487854987078367">"언어"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"저장하려면 다시 터치"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"저장하려면 여기를 터치하세요."</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"저장하려면 다시 탭합니다."</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"저장하려면 여기를 탭합니다."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"키보드 테마"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"계정 전환"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"다음 단계"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 설정"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 사용 설정"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"언어 및 입력 설정에서 \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\'을(를) 확인하세요. 애플리케이션을 기기에서 실행할 수 있도록 승인합니다."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>은(는) 언어 및 입력 설정에서 이미 사용하도록 설정되어 있으므로 이 단계는 완료되었습니다. 다음 단계로 이동하세요."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"언어 및 입력 설정에서 \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\'을(를) 확인하세요. 앱을 기기에서 실행할 수 있도록 승인합니다."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>은(는) 언어 및 입력 설정에서 이미 사용하도록 설정되어 있으므로 이 단계는 완료되었습니다. 다음 단계로 이동하세요."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"\'설정\'에서 사용 설정"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>(으)로 전환"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"그런 다음, 텍스트 입력 방법으로 \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\'을(를) 선택합니다."</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"추가 언어 설정"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"완료됨"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"앱 아이콘 표시"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"실행기에 애플리케이션 아이콘 표시"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"런처에 애플리케이션 아이콘 표시"</string>
     <string name="app_name" msgid="6320102637491234792">"사전 제공업체"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"사전 제공업체"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"사전 서비스"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"설치"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"취소"</string>
     <string name="delete_dict" msgid="756853268088330054">"삭제"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"휴대기기에서 선택한 언어로 사용할 수 있는 사전이 있습니다.&lt;br/&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> 사전을 &lt;b&gt;다운로드&lt;/b&gt;하여 입력 환경을 개선해 보세요.&lt;br/&gt; &lt;br/&gt; 3G로 다운로드하는 경우 1~2분 정도 걸립니다. &lt;b&gt;무제한 데이터 요금제&lt;/b&gt;가 아닌 경우 요금이 청구될 수 있습니다.&lt;br/&gt; 사용 중인 데이터 요금제를 잘 모르는 경우 Wi-Fi에 연결할 수 있는 곳을 찾아 자동 다운로드를 시작하는 것이 좋습니다.&lt;br/&gt; &lt;br/&gt; 도움말: 사전을 다운로드하거나 삭제하려면 휴대기기의 &lt;b&gt;설정&lt;/b&gt; 메뉴에 있는 &lt;b&gt;언어 및 입력&lt;/b&gt;으로 이동하면 됩니다."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"기기에서 선택한 언어로 사용할 수 있는 사전이 있습니다.&lt;br/&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> 사전을 <b>다운로드</b>하여 입력 환경을 개선해 보세요.&lt;br/&gt; &lt;br/&gt; 3G로 다운로드하는 경우 1~2분 정도 걸립니다. &lt;b&gt;무제한 데이터 요금제&lt;/b&gt;가 아닌 경우 요금이 청구됩니다.&lt;br/&gt; 사용 중인 데이터 요금제를 잘 모르는 경우 Wi-Fi에 연결할 수 있는 곳을 찾아 자동 다운로드를 시작하는 것이 좋습니다.&lt;br/&gt; &lt;br/&gt; 도움말: 사전을 다운로드하거나 삭제하려면 &lt;b&gt;언어 및 입력&lt;/b&gt;으로 이동하면 되며 이는 휴대기기의 &lt;b&gt;설정&lt;/b&gt; 메뉴에 있습니다."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"지금 다운로드(<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi를 통해 다운로드"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> 사전을 사용할 수 있습니다."</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"단어 수정"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"수정"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"삭제"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"사용자 사전에 단어가 없습니다. 추가(+) 버튼을 터치하여 단어를 추가할 수 있습니다."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"사용자 사전에 단어가 없습니다. 추가(+) 버튼을 탭하여 단어를 추가할 수 있습니다."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"모든 언어"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"더보기…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"삭제"</string>

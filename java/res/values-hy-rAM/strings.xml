@@ -64,7 +64,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"Ավտոմատ գլխատառացում"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Գլխատառել յուրաքանչյուր նախադասության առաջին բառը"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Անհատական բառարան"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ավելացնել բառարաններ"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Հավելյալ բառարաններ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Հիմնական բառարան"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Ցուցադրել ուղղումների առաջարկներ"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Ցուցադրել առաջարկվող բառերը մուտքագրման ընթացքում"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Բառակապակցային ժեստ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Ներմուծեք բացատներ ժեստերի ընթացքում՝ սահելով բացատ ստեղնի վրայով"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ձայնային մուտքագրման ստեղն"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Ձայնային ներածման որևէ եղանակ միացված չէ։ Ստուգեք Լեզվի և ներածման կարգավորումները։"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Ձայնային ներածման որևէ եղանակ միացված չէ։ Ստուգեք Լեզուների և ներածման կարգավորումները։"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Կարգավորել մուտքագրման մեթոդները"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Լեզուներ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Օգնություն և հետադարձ կապ"</string>
     <string name="select_language" msgid="5709487854987078367">"Լեզուներ"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Պահպանելու համար կրկին հպեք"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Պահելու համար հպեք այստեղ"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Հպեք կրկին՝ պահելու համար"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Հպեք այստեղ՝ պահելու համար"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Բառարանն առկա է"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Ստեղնաշարի թեման"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Փոխարկել հաշիվները"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Հաջորդ քայլը"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Տեղադրվում է <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ը"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Միացնել <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ը"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Խնդրում ենք ստուգել «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»-ը ձեր Լեզվի &amp; մուտքագրման կարգավորումներում: Դա կլիազորի նրան գործարկվել ձեր սարքում:"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>-ն արդեն միացված է ձեր Լեզվի &amp; մուտքագրման կարգավորումներում, ուստի այս քայլն արված է: Անցնել հաջորդին:"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Նշեք «<xliff:g id="APPLICATION_NAME">%s</xliff:g>» հավելվածը Լեզուների և մուտքագրման կարգավորումներում՝ ձեր սարքում դրա աշխատանքը թույլ տալու համար:"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>-ն արդեն միացված է ձեր Լեզուների և մուտքագրման կարգավորումներում, այնպես որ այս քայլն արդեն կատարված է:Անցեք հաջորդին:"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Միացնել կարգավորումներից"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Փոխարկել <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ին"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Հաջորդիվ, ընտրեք «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»-ը որպես ձեր ակտիվ տեքստային մուտքագրման եղանակ:"</string>
@@ -162,7 +162,7 @@
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Բառարանի մատակարար"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Բառարանի ծառայություն"</string>
     <string name="download_description" msgid="6014835283119198591">"Տեղեկություններ բառարանների թարմացման մասին"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"Ավելացնել բառարաններ"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Հավելյալ բառարաններ"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Բառարանն առկա է"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"Բառարանների կարգավորումներ"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"Օգտվողի բառարաններ"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Տեղադրել"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Չեղարկել"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ջնջել"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ձեր բջջային սարքում ընտրված լեզվով առկա է բառարան:<br/> Խորհուրդ ենք տալիս &lt;b&gt;ներբեռնել&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> բառարանը՝ ձեր մուտքագրման հմտությունների բարելավման համար:&lt;br/&gt; &lt;br/&gt; Ներբեռնումը կարող է խլել մեկ կամ երկու րոպե 3G-ի դեպքում: Հնարավոր է գանձում կատարվի, եթե դուք չունեք &lt;b&gt;տվյալների անսահմանափակ փաթեթ&lt;/b&gt;.&lt;br/&gt; Եթե դուք վստահ չեք, թե տվյալների որ փաթեթն ունեք, խորհուրդ ենք տալիս գտնել Wi-Fi կապ՝ ներբեռնումն ավտոմատ սկսելու համար:&lt;br/&gt; &lt;br/&gt; Հուշում. դուք կարող եք ներբեռնել և հեռացնել բառարաններ՝ անցնելով ձեր բջջային սարքի &lt;b&gt;Կարգավորումներ ցանկի Լեզու և մուտքագրում&lt;/b&gt; բաժինը:"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Ձեր բջջային սարքում ընտրված լեզվով առկա է բառարան:&lt;br/&gt; Մուտքագրումը հեշտացնելու նպատակով խորհուրդ ենք տալիս &lt;b&gt;ներբեռնել&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> բառարանը:&lt;br/&gt; &lt;br/&gt; 3G ցանցի միջոցով ներբեռնումը կարող է մեկ կամ երկու րոպե տևել: Դրա համար կարող է կատարվել գանձում, եթե &lt;b&gt;տվյալների անսահմանափակ փաթեթ&lt;/b&gt; չունեք:&lt;br/&gt; Եթե չգիտեք, թե տվյալների որ փաթեթից եք օգտվում, ապա խորհուրդ ենք տալիս միանալ Wi-Fi ցանցին՝ ներբեռնումն ավտոմատ սկսելու համար:&lt;br/&gt; &lt;br/&gt; Խորհուրդ. կարող եք ներբեռնել և հեռացնել բառարաններ՝ անցնելով շարժական սարքի &lt;b&gt;Կարգավորումներ&lt;/b&gt; ընտրացանկի &lt;b&gt;Լեզուներ և ներածում&lt;/b&gt; բաժին:"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Ներբեռնել հիմա (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>ՄԲ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Ներբեռնել Wi-Fi-ով"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> լեզվի համար առկա է բառարան"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Խմբագրել բառը"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Խմբագրել"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Ջնջել"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Դուք չունեք ոչ մի բառ օգտվողի բառարանում: Ավելացնել բառեր՝ հպելով Ավելացնել (+) կոճակը:"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Օգտվողի բառարանում ոչ մի բառ չկա: Բառեր ավելացնելու համար հպեք Ավելացնել (+) կոճակին:"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Բոլոր լեզուներով"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Ավելի շատ լեզուներով..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Ջնջել"</string>

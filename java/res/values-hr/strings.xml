@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Unos izraza kretnjom"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Umećite razmake tijekom izvođenja kretnji kliznuvši prema razmaknici"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tipka za glasovni unos"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nije omogućen nijedan način glasovnog unosa. Provjerite postavke jezika i unosa."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nije omogućen nijedan način glasovnog unosa. Provjerite postavke jezika i unosa."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguriraj načine ulaza"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Jezici"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pomoć i povratne informacije"</string>
     <string name="select_language" msgid="5709487854987078367">"Jezici"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Dodirnite ponovo za spremanje"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Dodirnite ovdje za spremanje"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Dodirnite ponovo za spremanje"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Dodirnite ovdje za spremanje"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Rječnik je dostupan"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema tipkovnice"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Prijelaz na drugi račun"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Već postoji isti stil unosa: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Trajanje vibracije pritiska"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Glasnoća pritiska tipke"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Odgoda dugog pritiska tipke"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Trajanje dugog pritiska tipke"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji za fizičku tipkovnicu"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Fizička tipka Alt prikazuje paletu emojija"</string>
     <string name="button_default" msgid="3988017840431881491">"Zadano"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Sljedeći korak"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Postavljanje aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Omogućite aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Potvrdite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" u postavkama Jezik i unos i ovlastite je za pokretanje."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> već je omogućena u postavkama jezika i unosa, pa je taj korak gotov. Nastavite sa sljedećim korakom!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Potvrdite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" u postavkama jezika i unosa. Time ćete je autorizirati za izvođenje na uređaju."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> već je omogućena u postavkama jezika i unosa, pa je taj korak gotov. Nastavite sa sljedećim korakom!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Omogući u postavkama"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Prijeđite na aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Zatim odaberite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kao aktivan način unosa teksta."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instaliraj"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Odustani"</string>
     <string name="delete_dict" msgid="756853268088330054">"Izbriši"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Dostupan je rječnik za odabrani jezik na vašem mobilnom uređaju.&lt;br/&gt; Preporučujemo da &lt;b&gt;preuzmete&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> rječnik radi lakšeg unosa teksta.&lt;br/&gt; &lt;br/&gt; Preuzimanje može potrajati jednu do dvije minute putem 3G-a. Možda se naplaćuje dodatna naknada ako nemate &lt;b&gt;neograničenu podatkovnu tarifu&lt;/b&gt;.&lt;br/&gt; Ako niste sigurni koju tarifu imate, preporučujemo da pronađete Wi-Fi vezu kako bi se automatski pokrenulo preuzimanje.&lt;br/&gt; &lt;br/&gt; Savjet: rječnike možete preuzeti i ukloniti u odjeljku &lt;b&gt;Jezik i unos&lt;/b&gt; u izborniku &lt;b&gt;Postavke&lt;/b&gt; na mobilnom uređaju."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Dostupan je rječnik za jezik odabran na vašem mobilnom uređaju.&lt;br/&gt; Preporučujemo da &lt;b&gt;preuzmete&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> rječnik radi lakšeg unosa teksta.&lt;br/&gt; &lt;br/&gt; Preuzimanje može potrajati minutu-dvije putem 3G-a. Možda će se naplatiti dodatna naknada ako nemate &lt;b&gt;neograničen podatkovni paket&lt;/b&gt;.&lt;br/&gt; Ako niste sigurni koji paket imate, preporučujemo da pronađete Wi-Fi vezu kako bi se preuzimanje pokrenulo automatski.&lt;br/&gt; &lt;br/&gt; Savjet: rječnike možete preuzeti i ukloniti u odjeljku &lt;b&gt;Jezici i unos&lt;/b&gt; u izborniku &lt;b&gt;Postavke&lt;/b&gt; na mobilnom uređaju."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Preuzmi sada (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Preuzmi putem Wi-Fi mreže"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Dostupan je rječnik za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> jezik"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Uređivanje riječi"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Uređivanje"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Brisanje"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Nemate nijednu riječ u korisničkom rječniku. Riječ možete dodati tako da dodirnete Dodaj (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Nemate nijednu riječ u korisničkom rječniku. Da biste dodali riječ, dodirnite gumb Dodaj (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Za sve jezike"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Više jezika…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Izbriši"</string>

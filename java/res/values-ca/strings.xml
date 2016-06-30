@@ -67,7 +67,7 @@
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionaris complementaris"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionari principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Suggeriments de correcció"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra paraules suggerides mentre s\'escriu"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra les paraules suggerides mentre escrius"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloqueja paraules ofensives"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No suggereixis paraules potencialment ofensives"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Correcció automàtica"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gest de frase"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Per afegir espais als gestos, apropa el dit a la tecla d\'espai"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tecla d\'entrada de veu"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"No hi ha cap mètode d\'introducció activat. Comprova la configuració d\'Idioma i introducció de text."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"No hi ha cap mètode d\'entrada de veu activat. Comprova la configuració d\'Idioma i introducció de text."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura mètodes d\'introducció"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Idiomes"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ajuda i suggeriments"</string>
     <string name="select_language" msgid="5709487854987078367">"Idiomes"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Torna a tocar per desar"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Toca aquí per desar."</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Torna a tocar per desar"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Toca aquí per desar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionari disponible"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema del teclat"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Canvia de compte"</string>
@@ -102,8 +102,8 @@
     <string name="account_select_cancel" msgid="5181012062618504340">"Cancel·la"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Tanca la sessió"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Compte que vols utilitzar"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Anglès (Regne Unit)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Anglès (EUA)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"anglès (Regne Unit)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"anglès (EUA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Espanyol (EUA)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hinglish"</string>
     <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbi (llatí)"</string>
@@ -114,7 +114,7 @@
     <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"Serbi (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradicional)"</string>
     <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (compacte)"</string>
-    <string name="subtype_no_language" msgid="7137390094240139495">"Cap idioma (alfabet)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"cap idioma (alfabet)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabet (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabet (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Alfabet (AZERTY)"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Pas següent"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"S\'està configurant <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Activa <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" a la configuració d\'Idioma i introducció de text perquè es pugui executar al teu dispositiu."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"L\'aplicació <xliff:g id="APPLICATION_NAME">%s</xliff:g> ja està activada per a la teva Configuració d\'idioma i d\'introducció de text. Pots passar al següent."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Marca <xliff:g id="APPLICATION_NAME">%s</xliff:g> a la configuració d\'Idioma i introducció de text. D\'aquesta manera, es podrà executar al dispositiu."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"L\'aplicació <xliff:g id="APPLICATION_NAME">%s</xliff:g> ja està activada a la configuració d\'Idioma i introducció de text. Vés al pas següent."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Activa a la configuració"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Canvi a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuació, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" com a mètode d\'introducció de text actiu."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instal·la"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancel·la"</string>
     <string name="delete_dict" msgid="756853268088330054">"Suprimeix"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Hi ha un diccionari disponible per a l\'idioma seleccionat al teu dispositiu mòbil.&lt;br/&gt; Et recomanem que &lt;b&gt;baixis&lt;/b&gt; el diccionari per a <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> per millorar la teva experiència d\'escriptura.&lt;br/&gt; &lt;br/&gt; La baixada pot trigar un parell de minuts en xarxes 3G. Si no tens un &lt;b&gt;pla de dades il·limitat&lt;/b&gt;,&lt;br/&gt; és possible que s\'apliquin càrrecs. Si no estàs segur de les característiques del teu pla de dades, et recomanem que cerquis una connexió Wi-Fi per iniciar la baixada automàticament.&lt;br/&gt; &lt;br/&gt;Consell: Pots baixar i suprimir diccionaris a la secció &lt;b&gt;Idioma i introducció de text&lt;/b&gt; del menú &lt;b&gt;Configuració&lt;/b&gt; del dispositiu mòbil."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Hi ha un diccionari disponible per a l\'idioma seleccionat al dispositiu mòbil.&lt;br/&gt; Et recomanem que &lt;b&gt;baixis&lt;/b&gt; el diccionari per a <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> per millorar l\'escriptura.&lt;br/&gt; &lt;br/&gt; La baixada pot tardar un parell de minuts en xarxes 3G. Si no tens un &lt;b&gt;pla de dades il·limitat&lt;/b&gt;, és possible que s\'apliquin càrrecs.&lt;br/&gt; Si no saps quin pla de dades tens, et recomanem que cerquis una connexió Wi-Fi per iniciar la baixada automàticament.&lt;br/&gt; &lt;br/&gt; Consell: pots baixar i suprimir diccionaris a la secció &lt;b&gt;Idioma i introducció de text&lt;/b&gt; del menú &lt;b&gt;Configuració&lt;/b&gt; del dispositiu mòbil."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Baixa ara (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Baixa mitjançant Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Hi ha disponible un diccionari per a <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>."</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Edició de la paraula"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Edita"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Suprimeix"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"No tens cap paraula al diccionari de l\'usuari. Per afegir una paraula, toca el botó Afegeix (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"No tens cap paraula al diccionari de l\'usuari. Toca el botó Afegeix (+) per afegir-n\'hi una."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Per a tots els idiomes"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Més idiomes..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Suprimeix"</string>

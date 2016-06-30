@@ -59,8 +59,8 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"使用「聯絡人」的名稱提供建議與修正"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"個人化建議"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"強化 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"按兩下空格鍵插入句號"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"只要輕按兩下空格鍵，即可插入句號並在後面加上一個空格"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"連按兩下空白鍵插入句號"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"只要連續輕按兩下空白鍵，即可插入句號並在後面加入空格"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大寫"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"每句首個字詞大寫"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"個人字典"</string>
@@ -69,7 +69,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"顯示更正建議"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"輸入時顯示建議字詞"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"封鎖令人反感的字詞"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"不建議使用可能令人反感的字詞"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"不建議可能令人反感的字詞"</string>
     <string name="auto_correction" msgid="7630720885194996950">"自動更正"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"自動插入空白鍵和標點符號鍵盤，以修正拼字錯誤"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"關閉"</string>
@@ -78,21 +78,21 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"極度加強模式"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"建議下一個字詞"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"根據前一個字詞提出建議"</string>
-    <string name="gesture_input" msgid="826951152254563827">"啟用手勢輸入"</string>
+    <string name="gesture_input" msgid="826951152254563827">"啟用手勢輸入功能"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"透過滑動手指寫出字母來輸入字詞"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"顯示手勢軌跡"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"顯示觸控蹤跡"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"動態浮動預覽"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"在啟用手勢輸入時顯示建議的字詞"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"詞組手勢"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"在手勢輸入過程中，滑過空白鍵即可輸入空格"</string>
     <string name="voice_input" msgid="3583258583521397548">"語音輸入鍵"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"尚未啟用語音輸入法，請檢查語言和輸入設定。"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"尚未啟用語音輸入法，請檢查「語言和輸入」設定。"</string>
     <string name="configure_input_method" msgid="373356270290742459">"設定輸入法"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"語言"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"說明和意見反映"</string>
     <string name="select_language" msgid="5709487854987078367">"語言"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次輕觸即可儲存"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"輕觸即可儲存"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"再次輕按即可儲存"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"輕按這裡即可儲存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"鍵盤主題"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"切換帳戶"</string>
@@ -137,17 +137,17 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"按鍵震動時間"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"按鍵音量"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"長按鍵延遲"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"實體鍵盤表情圖案"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"實體鍵盤上使用表情圖案"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"以實體 Alt 鍵顯示表情圖案選項"</string>
     <string name="button_default" msgid="3988017840431881491">"預設"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"歡迎使用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"配備觸控輸入功能"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"配備手勢輸入功能"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"開始"</string>
     <string name="setup_next_action" msgid="371821437915144603">"下一步"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"設定「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"啟用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"請在語言與輸入設定中勾選「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」，授權這個應用程式在您的裝置上執行。"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"您已在 [語言與輸入設定] 中啟用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」。這個步驟已完成，可繼續下一個步驟了！"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"請在「語言和輸入」設定中勾選「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」。這將允許裝置執行此應用程式。"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"您已在「語言和輸入」設定中啟用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」。因此這個步驟已完成，請繼續執行下一個步驟！"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"在設定中啟用"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"切換至「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"接著，請選取「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」作為目前使用的文字輸入方法。"</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"設定其他語言"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"完成"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"顯示應用程式圖示"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"在啟動器中顯示應用程式圖示"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"在應用程式啟動器中顯示圖示"</string>
     <string name="app_name" msgid="6320102637491234792">"字典供應商"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"字典供應商"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"字典服務"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"安裝"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"取消"</string>
     <string name="delete_dict" msgid="756853268088330054">"刪除"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"您的流動裝置所選取的語言現有字典可供使用。&lt;br/&gt;我們建議您&lt;b&gt;下載&lt;/b&gt;<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典，讓您輸入時更方便。&lt;br/&gt;&lt;br/&gt;經由 3G 網絡下載需時一、兩分鐘。如果您未使用&lt;b&gt;無限上網計劃&lt;/b&gt;，可能須另外付費。&lt;br/&gt;如果您不確定自己使用哪種上網計劃，我們建議您在連接 Wi-Fi 網絡後才開始自動下載。&lt;br/&gt;&lt;br/&gt;提示：您可以前往流動裝置的 [設定] &lt;b&gt;&lt;/b&gt;選單，透過其中的 [語言和輸入] &lt;b&gt;&lt;/b&gt;下載和移除字典。"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"您流動裝置上所選的語言有字典可供使用。&lt;br/&gt; 我們建議您&lt;b&gt;下載&lt;/b&gt;<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典以改善文字輸入體驗。&lt;br/&gt; &lt;br/&gt; 透過 3G 下載可能需時一至兩分鐘。如果您並非使用&lt;b&gt;無限數據計劃&lt;/b&gt;，可能需要支付數據費用。&lt;br/&gt; 如果您不清楚您的流動數據計劃內容，建議您連線至 Wi-Fi 網絡以開始自動下載。&lt;br/&gt; &lt;br/&gt; 提示：您可以前往流動裝置「設定」選單中的「語言和輸入」，下載並移除字典。&lt;b&gt;&lt;/b&gt;&lt;b&gt;&lt;/b&gt;"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下載 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"經由 Wi-Fi 下載"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"可使用<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"編輯字詞"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"編輯"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"刪除"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"您的使用者字典中沒有任何字詞。輕觸 [新增] (+) 按鈕即可新增字詞。"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"用戶字典中沒有任何字詞。如要新增字詞，請輕按「新增」(+) 按鈕。"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"所有語言"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"更多語言..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"刪除"</string>

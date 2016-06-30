@@ -79,20 +79,20 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Suger. de próxima palabra"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar la palabra anterior para hacer sugerencias"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activar escritura gestual"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Ingresa una palabra al deslizarte sobre las letras."</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Ingresa una palabra deslizando el dedo sobre las letras."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar recorrido de gesto"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Vista previa dinámica flotante"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Mira la palabra sugerida mientras haces gestos"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frase gestual"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Desliza el dedo hasta la tecla de espacio para ingresar espacios."</string>
     <string name="voice_input" msgid="3583258583521397548">"Tecla de entrada por voz"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"No hay métodos de entrada de voz habilitados. Comprueba la configuración de Teclado e idioma."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"No hay métodos de entrada de voz habilitados. Comprueba la configuración de Teclado e idioma."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Idiomas"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ayuda y comentarios"</string>
     <string name="select_language" msgid="5709487854987078367">"Idiomas"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Vuelve a tocar para guardar."</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Tocar aquí para guardar."</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Vuelve a presionar para guardar"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Presiona aquí para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionario disponible"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema del teclado"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Cambiar cuentas"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Siguiente paso"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurando <xliff:g id="APPLICATION_NAME">%s</xliff:g>…"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Habilitar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Marca \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" en Teclado e idioma para permitir que se ejecute en el dispositivo."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"La aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> ya está habilitada en Teclado e idioma, por lo que este paso está finalizado. Pasemos al siguiente."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Marca \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" en Teclado e idioma para permitir que la app se ejecute en tu dispositivo."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Debido a que la app de <xliff:g id="APPLICATION_NAME">%s</xliff:g> ya está habilitada en Teclado e idioma, pasaremos al siguiente paso."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Habilitar en Configuración"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Cambiar a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como tu método de entrada de texto activo."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalar"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancelar"</string>
     <string name="delete_dict" msgid="756853268088330054">"Eliminar"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Hay un diccionario disponible para el idioma seleccionado en tu dispositivo móvil.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mejorar tu experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga puede tardar unos minutos en redes 3G. Si no tienes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;, es posible que se apliquen cargos.&lt;br/&gt; Si no sabes qué plan de datos tienes, te recomendamos que uses una conexión Wi-Fi para iniciar la descarga automáticamente.&lt;br/&gt; &lt;br/&gt; Sugerencia: Puedes descargar y eliminar diccionarios desde &lt;b&gt;Teclado e idioma&lt;/b&gt; en el menú &lt;b&gt;Configuración&lt;/b&gt; del dispositivo móvil."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Hay un diccionario disponible para el idioma seleccionado en tu dispositivo móvil.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mejorar tu experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga puede tardar unos minutos en redes 3G. Si no tienes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;, es posible que se apliquen cargos.&lt;br/&gt; Si no sabes qué plan de datos tienes, te recomendamos que uses una conexión Wi-Fi para iniciar la descarga automáticamente.&lt;br/&gt; &lt;br/&gt; Sugerencia: Puedes descargar y quitar diccionarios desde &lt;b&gt;Teclado e idioma&lt;/b&gt; en el menú de &lt;b&gt;Configuración&lt;/b&gt; de tu dispositivo móvil."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Descargar ahora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Descargar por Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Hay un diccionario disponible de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>."</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Editar palabra"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Editar"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Eliminar"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"El diccionario del usuario no contiene ninguna palabra. Para agregar una palabra, toca el botón Agregar (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"El diccionario del usuario no contiene ninguna palabra. Para agregar una, presiona el botón Agregar (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Todos los idiomas"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Más idiomas"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Eliminar"</string>

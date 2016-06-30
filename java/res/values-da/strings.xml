@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Glidende mellemrum"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Tilføj mellemrum ved at glide til mellemrumstasten"</string>
     <string name="voice_input" msgid="3583258583521397548">"Knap til indtaling"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Der er ingen aktiverede indtalingsmetoder. Kontrollér Indstillinger for sprog og input."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Der er ingen aktiverede indtalingsmetoder. Kontrollér indstillingerne for sprog og indtastning."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inputmetoder"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Sprog"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Hjælp og feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Sprog"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tryk igen for at gemme"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Klik her for at gemme"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Tryk igen for at gemme"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Tryk her for at gemme"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbog er tilgængelig"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tastaturtema"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Skift konto"</string>
@@ -102,8 +102,8 @@
     <string name="account_select_cancel" msgid="5181012062618504340">"Annuller"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Log ud"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Vælg den konto, du vil bruge"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Engelsk (Storbritannien)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Engelsk (USA)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"engelsk (Storbritannien)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"engelsk (USA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Spansk (USA)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hinglish"</string>
     <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbisk (latinsk)"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Næste trin"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> konfigureres"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Aktivér <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Markér \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" i Sprog og inputindstillinger. Dermed får appen tilladelse til at køre på din enhed."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> er allerede aktiveret i indstillingerne for dit sprog og dine input, så dette skridt er udført. Videre til det næste!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Markér \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" i dine indstillinger for sprog og indtastning. Dermed får appen tilladelse til at køre på din enhed."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> er allerede aktiveret i dine indstillinger for sprog og indtastning, så dette trin er gennemført. Fortsæt til næste."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktivér i Indstillinger"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Skift til <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Dernæst skal du vælge \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" som din aktive sms-indtastningsmetode."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Installer"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Annuller"</string>
     <string name="delete_dict" msgid="756853268088330054">"Slet"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Det valgte sprog på din mobilenhed har en tilgængelig ordbog.&lt;br/&gt; Vi anbefaler, at du &lt;b&gt;downloader&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-ordbogen for at forbedre din skriveoplevelse.&lt;br/&gt; &lt;br/&gt; Downloaden kan tage 1-2 minutter via 3G. Der bliver muligvis opkrævet et gebyr, hvis du ikke har et &lt;b&gt;ubegrænset dataabonnement&lt;/b&gt;.&lt;br/&gt;. Hvis du ikke er sikker på, hvilket dataabonnement du har, anbefaler vi, at du finder en Wi-Fi-forbindelse for at starte automatisk download.&lt;br/&gt; &lt;br/&gt;Tip! Du kan downloade og fjerne ordbøger ved at gå til &lt;b&gt;Sprog og input &lt;/b&gt; i menuen &lt;b&gt;Indstillinger&lt;/b&gt; på din mobilenhed."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Det valgte sprog på din mobilenhed har en tilgængelig ordbog.&lt;br/&gt; Vi anbefaler, at du &lt;b&gt;downloader&lt;/b&gt; ordbogen <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> for at forbedre din skriveoplevelse.&lt;br/&gt; &lt;br/&gt; Downloaden kan tage 1-2 minutter via 3G. Der opkræves muligvis et gebyr, hvis du ikke har et &lt;b&gt;ubegrænset dataabonnement&lt;/b&gt;.&lt;br/&gt; Hvis du ikke er sikker på, hvilket dataabonnement du har, anbefaler vi, at du finder en Wi-Fi-forbindelse for at starte automatisk download.&lt;br/&gt; &lt;br/&gt; Tip! Du kan downloade og fjerne ordbøger ved at gå til &lt;b&gt;Sprog og indtastning&lt;/b&gt; i menuen &lt;b&gt;Indstillinger&lt;/b&gt; på din mobilenhed."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Download nu (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Download via Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Der er en ordbog tilgængelig for <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Rediger ord"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Rediger"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Slet"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Du har ikke nogen ord i brugerordbogen. Du kan tilføje et ord ved at trykke på knappen Tilføj (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Du har ikke nogen ord i brugerordbogen. Du kan tilføje et ord ved at trykke på knappen Tilføj (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"For alle sprog"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Flere sprog..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Slet"</string>

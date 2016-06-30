@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gesto frase"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Inserisci spazi durante gesti facendo scivolare dito su spazio"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tasto input vocale"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nessun metodo di immissione vocale abilitato. Controlla le impostazioni Lingua e input."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nessun metodo di immissione vocale attivo. Controlla le impostazioni Lingua e immissione."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura metodi di immissione"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Lingue"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Guida e feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Lingue"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tocca di nuovo per salvare"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Tocca qui per salvare"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Tocca di nuovo per salvare"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Tocca qui per salvare"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dizionario disponibile"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema della tastiera"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Cambia account"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Passaggio successivo"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurazione di <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Abilita <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Seleziona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" nelle impostazioni Lingua e immissione per autorizzarne l\'esecuzione sul dispositivo."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> è già abilitato nelle tue impostazioni di lingua e immissione, quindi questo passaggio è completato. Vai al prossimo."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Seleziona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" nelle impostazioni Lingua e immissione per autorizzarne l\'esecuzione sul dispositivo."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"L\'app <xliff:g id="APPLICATION_NAME">%s</xliff:g> è già attiva nelle impostazioni Lingua e immissione, quindi questo passaggio è completo. Vai al prossimo."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Abilita nelle impostazioni"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Passa a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Quindi seleziona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" come metodo di immissione testo attivo."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Installa"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Annulla"</string>
     <string name="delete_dict" msgid="756853268088330054">"Elimina"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Per la lingua selezionata sul dispositivo mobile è disponibile un dizionario.&lt;br/&gt; Ti consigliamo di &lt;b&gt;scaricare&lt;/b&gt; il dizionario in <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> per migliorare la digitazione.&lt;br/&gt; &lt;br/&gt; Il download potrebbe richiedere un paio di minuti su 3G. Potrebbero essere applicati costi se non disponi di un &lt;b&gt;piano dati illimitato&lt;/b&gt;.&lt;br/&gt; Se non sei sicuro di quale sia il tuo piano dati, dovresti trovare una connessione Wi-Fi per avviare il download automaticamente.&lt;br/&gt; &lt;br/&gt; Suggerimento. Puoi scaricare e rimuovere dizionari selezionando &lt;b&gt;Lingua e immissione&lt;/b&gt; nel menu &lt;b&gt;Impostazioni&lt;/b&gt; del dispositivo mobile."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Per la lingua selezionata sul dispositivo mobile è disponibile un dizionario.&lt;br/&gt; Ti consigliamo di &lt;b&gt;scaricare&lt;/b&gt; il dizionario in <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> per migliorare la digitazione.&lt;br/&gt; &lt;br/&gt; Il download potrebbe richiedere un paio di minuti su 3G. Potrebbero essere applicati costi se non disponi di un &lt;b&gt;piano dati illimitato&lt;/b&gt;.&lt;br/&gt; Se non sei sicuro di quale sia il tuo piano dati, cerca una connessione Wi-Fi per avviare automaticamente il download.&lt;br/&gt; &lt;br/&gt; Suggerimento. Puoi scaricare e rimuovere dizionari selezionando &lt;b&gt;Lingua e immissione&lt;/b&gt; nel menu &lt;b&gt;Impostazioni&lt;/b&gt; del dispositivo mobile."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Scarica ora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Scarica tramite Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"È disponibile un dizionario per: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Modifica parola"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Modifica"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Elimina"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Non sono presenti parole nel dizionario utente. Puoi aggiungere una parola toccando il pulsante Aggiungi (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Nessuna parola presente nel dizionario utente. Per aggiungere una parola, tocca il pulsante Aggiungi (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Per tutte le lingue"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Altre lingue..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Elimina"</string>
