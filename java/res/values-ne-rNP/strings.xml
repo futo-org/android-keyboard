@@ -39,7 +39,7 @@
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"तपाईंको व्यक्तिगत शब्दकोषलाई यन्त्रहरूमा सिंक गर्नुहोस्"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"अहिले सिंक गर्नुहोस्"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"क्लाउड डेटा मेटाउनुहोस्"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिङ्क गरिएको डाटा मेटाउँछ"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिंक गरिएको डाटा मेटाउँछ"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईँको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईँ निश्चित हुनुहुन्छ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"मेटाउनुहोस्"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द गर्नुहोस्"</string>
@@ -54,7 +54,7 @@
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ढिलाइ छैन"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"पूर्वनिर्धारित"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> मिलिसेकेन्ड"</string>
-    <string name="settings_system_default" msgid="6268225104743331821">"प्रणाली पूर्वनिर्धारित"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"पूर्वनिर्धारित प्रणाली"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"सम्पर्क नामहरू सुझाव गर्नुहोस्"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"सुझाव र सुधारका लागि सम्पर्कबाट नामहरू प्रयोग गर्नुहोस्"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"निजीकृत सुझावहरू"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश इशारा"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"इशाराको बखतमा स्पेस कुञ्जीमा ग्लाईडिंग द्वारा आगत खाली ठाउँहरू"</string>
     <string name="voice_input" msgid="3583258583521397548">"आवाज इनपुट कुञ्जी"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"कुनै आवाज इनपुट विधिहरू सक्षम गरिएका छैनन्। भाषा र इनपुट सेटिङहरूको जाँच गर्नुहोस्।"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"कुनै पनि आवाज इनपुट विधिलाई सक्रिय गरिएको छैन। भाषा र इनपुट सम्बन्धी सेटिङहरूलाई जाँच गर्नुहोस्।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट विधिहरू कन्फिगर गर्नुहोस्"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"भाषाहरू"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"मद्दत र प्रतिक्रिया"</string>
     <string name="select_language" msgid="5709487854987078367">"भाषाहरू"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"बचत गर्न पुनः छुनुहोस्"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"सुरक्षित गर्न यहाँ छुनुहोस्"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"सुरक्षित गर्न फेरि ट्याप गर्नुहोस्"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"सुरक्षित गर्न यहाँ ट्याप गर्नुहोस्"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"उपलब्ध शब्दकोश"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"किबोर्ड थिम"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"खाताहरू स्विच गर्नुहोस्"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"यस्तो इनपुट शैली पहिले नै अवस्थित छ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुञ्जी थिचाइ भाइब्रेसन अवधि"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुञ्जी थिचाइ आवाज भोल्युम"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुञ्जी लामो थिचाइ ढिलाइ"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुञ्जीको लामो थिचाइमा ढिलाइ"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"भौतिक किबोर्डको लागि इमोजी"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"भौतिक Alt कुञ्जीले इमोजी प्यालेट देखाउँछ"</string>
     <string name="button_default" msgid="3988017840431881491">"पूर्वनिर्धारित"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"अर्को चरण"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"स्थापना गर्दै <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"सक्षम पार्नुहोस् <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"कृपया जाँच गर्नुहोस् \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" तपाईँको भाषा र इनपुट सेटिङमा। यसले तपाईँलाई तपाईँको उपकरणमा सञ्चालन गर्न आधिकारिकता प्रदान गर्छ।"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> पहिले नै तपाईँको भाषा र इनपुट सेटिङमा सक्षम पारिएको छ, त्यसैले यो कदम सकिसकिएको छ। अर्कोमा जानुहोस्!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"कृपया आफ्नो भाषा र इनपुट सम्बन्धी सेटिङहरूमा \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" अनुप्रयोगलाई जाँच गर्नुहोस्। यस कारबाहीले अनुप्रयोगलाई तपाईँको यन्त्रमा सञ्चालन हुन आधिकार प्रदान गर्नेछ।"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"तपाईँको भाषा र इनपुट सम्बन्धी सेटिङहरूमा <xliff:g id="APPLICATION_NAME">%s</xliff:g> लाई पहिले नै सक्रिय गरिएको छ, त्यसैले यो चरण सम्पन्न भइसकेको छ। अर्को चरणमा जानुहोस्!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"सेटिङहरूमा सक्षम पार्नुहोस्"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>मा स्विच गर्नुहोस्"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"त्यसपछि, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" लाई तपाईँको सक्रिय पाठ इनपुट विधिका रूपमा चयन गर्नुहोस्।"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"स्थापना गर्नुहोस्"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द गर्नुहोस्"</string>
     <string name="delete_dict" msgid="756853268088330054">"मेट्नुहोस्"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"तपाईँको मोबाइल उपकरणमा चयन गरिएको भाषाको शब्दकोश उपलब्ध छ। &lt;br/&gt; तपाईँको टाइप गर्ने अनुभव सुधार गर्न हामी <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>को शब्दकोश &lt;b&gt; डाउनलोड गर्न &lt;/b&gt; सिफारिस गर्दछौँ।  यो डाउनलोड गर्न 3G मा एक वा दुई मिनेट लिन सक्छ। तपाईँ एक &lt;b&gt; तपाईँको असीमित डेटा योजना &lt;/b&gt; छैन भने शुल्क लागू हुन सक्छ। तपाईँसँग कुन डेटा योजना छ भन्ने निश्चित छैन भने Wi-Fi जडान गरेर स्वचालित डाउनलोड गर्न हामी सिफारिस गर्दछौँ। युक्ति: तपाईँ  आफ्नो मोबाइल उपकरणको &lt;/b&gt; भाषा र इनपुट &lt;b&gt; &lt;b&gt;सेटिङ &lt;/b&gt; मेनुमा गएर शब्दकोशलाई डाउनलोड र हटाउन सक्नुहुन्छ।"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"तपाईँको मोबाइल यन्त्रमा चयन गरिएको भाषाको शब्दकोष उपलब्ध छ।&lt;br/&gt; आफ्नो टाइपिङ सम्बन्धी अनुभवलाई सुधार गर्नका लागि हामी तपाईँलाई <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोष &lt;b&gt;डाउनलोड गर्न&lt;/b&gt; सिफारिस गर्छौं।&lt;br/&gt; &lt;br/&gt; यसलाई 3G मार्फत डाउनलोड गर्न एक वा दुई मिनेट लाग्न सक्छ। तपाईँसँग &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; छैन भने शुल्क लाग्न सक्छ।&lt;br/&gt; यदि तपाईँ आफूसँग कुन डेटा योजना छ भन्ने बारे निश्चित हुनुहुन्न भने हामी स्वचालित रूपमा डाउनलोड गर्नका लागि Wi-Fi जडान पत्ता लगाउन सिफारिस गर्दछौँ।<br/> <br/> जुक्ति: तपाईँ आफ्नो मोबाइल यन्त्रको &lt;b&gt;भाषा र इनपुट&lt;/b&gt; &lt;b&gt;सेटिङहरू&lt;/b&gt; को मेनुमा गएर शब्दकोषलाई डाउनलोड गर्न र हटाउन सक्नुहुन्छ।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"(अब डाउनलोड गर्नुहोस्<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाइ-फाइको माध्ययमद्वार डाउनलोड गर्नुहोस्"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>को लागि एउटा शब्दकोश उपलब्ध छ"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"शब्द सम्पादन गर्नुहोस्"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"सम्पादन गर्नुहोस्"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"मेट्नुहोस्"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"तपाईँसँग प्रयोगकर्ता शब्दकोशमा कुनै शब्द छैन।\"थप्नुहोस्\"(+) बटनमा छोएर एउटा शब्द थप्नुहोस्।"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"तपाईँको प्रयोगकर्ता शब्दकोषमा कुनै पनि शब्दहरू छैनन्। शब्द थप्न थप्नुहोस् (+) बटनलाई ट्याप गर्नुहोस्।"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"सबै भाषाहरूका लागि"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"थप भाषाहरू..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"मेट्नुहोस्"</string>

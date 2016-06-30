@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Jest bildirin"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Jest zamanı boşluq düyməsinə toxunmaqla boşluq daxil edin"</string>
     <string name="voice_input" msgid="3583258583521397548">"Səs daxiletmə klavişi"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Heç bir səs daxiletmə metodu aktiv deyil. Dil və daxiletmə ayarlarını yoxlayın."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Heç bir səs daxiletmə metodu aktiv deyil. Dillər və daxiletmə ayarlarını yoxlayın."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Daxiletmə üsullarını sazla"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Dillər"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Yardım və geri əlaqə"</string>
     <string name="select_language" msgid="5709487854987078367">"Dillər"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Yadda saxlamaq üçün yenidən toxunun"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Yadda saxlamaq üçün buraya toxunun"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Yadda saxlamaq üçün yenidən tıklayın"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Yadda saxlamaq üçün bura tıklayın"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Lüğət mövcuddur"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klaviatura teması"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Hesablar arasında keçid edin"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Növbəti addım"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> quraşdırılır"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> tətbiqini aktivləşdir"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Lütfən, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" tətbiqini Dil və daxiletmə parametrlərinizdə yoxlayın. Bununla tətbiqin cihazınızda işləməsinə icazə veriləcək."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> artıq sizin Dil və daxiletmə parametrlərinizdə aktivləşdirildi, beləliklə da bu mərhələ tamamlandı. İndi isə növbəti mərhələyə eçin!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Lütfən, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" tətbiqini Dillər və daxiletmə ayarlarında yoxlayın. Bununla tətbiqin cihazınızda işləməsinə icazə veriləcək."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> artıq Dillər və daxiletmə ayarlarında aktivləşdirildi, beləliklə da bu mərhələ tamamlandı. İndi isə növbəti mərhələyə keçin!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Parametrlərdə aktivləşdir"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> tətbiqinə keçin"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Sonra, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" tətbiqini aktiv mətn-daxiletmə metodu olaraq seçin."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Quraşdırın"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Ləğv et"</string>
     <string name="delete_dict" msgid="756853268088330054">"Sil"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobil telefonunuzda seçilmiş dilin əlçatımlı lüğəti var. Daha rahat yazmaq üçün <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> lüğətini endirməyinizi məsləhət görürük. Lüğətin endirilməsi 3G üzərindən bir-iki dəqiqə vaxt ala bilər. Limitsiz data planınızın olmadığı halda, data ödənişləri də tətbiq edilə bilər. Əgər hansı data planına malik olmağınıza əmin deyilsinizsə, Sizə Wi-Fi bağlantısı üzərindən avtomatik endirməyi məsləhət görürük.  İpucu: Lüğətləri endirmək və ya sistemdən silmək üçün mobil cihazınızın menyusunda Ayarlar&gt;Dil&gt;Daxiletmə bölməsinə keçə bilərsiniz."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Mobil cihazınızda seçilmiş dilin əlçatan lügəti var.&lt;br/&gt; Yazı təcrübənizi inkişaf etdirmək üçün <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> dilinin lüğətini &lt;b&gt;endirməyi&lt;/b&gt; tövsiyə edirik.&lt;br/&gt; &lt;br/&gt; Endirmə 3G üzərindən bir və ya iki dəqiqə çəkə bilər. &lt;b&gt;Limitsiz data planınız&lt;/b&gt; olmadıqda dəyişikliklər tətbiq oluna bilər.&lt;br/&gt; Data plandan əmin deyilsinizsə, endirməni avtomatik başlamaq üçün Wi-Fi bağlantısı tapmağı tövsiyə edirik.&lt;br/&gt; &lt;br/&gt; Məsləhət: Mobil cihazınızın <b>Ayarlar</b> menyusunda &lt;b&gt;Dillər və daxiletmə&lt;/b&gt; bölməsinə gedərək lüğətləri endirə və silə bilərsiniz."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"İndi endirin (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi ilə endir"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> üçün lüğət əlçatımlıdır"</string>
@@ -200,11 +200,11 @@
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Qısayol:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Dil:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Bir söz yazın"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Könüllü qısayol"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Qısayol"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Sözü redaktə edin"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Düzəliş edin"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Silin"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"İstifadəçi lüğətinizdə heç bir söz yoxdur. Əlavə et (+) düyməsinə toxunmqla bir söz əlavə edin."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"İstifadəçi lüğətinizdə heç bir söz yoxdur. Söz əlavə etmək üçün Əlavə et (+) düyməsinə tıklayın."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Bütün dillər üçün"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Digər dillər​​..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Silin"</string>

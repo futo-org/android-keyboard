@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gjest fraze"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Hapësirat e hyrjes gjatë gjesteve duke kaluar në tastin e hapësirës"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tasti i hyrjes zanore"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Metodat e hyrjeve zanore nuk janë të aktivizuara. Kontrollo \"Cilësimet e gjuhës dhe hyrjes\"."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nuk është aktivizuar asnjë metodë e hyrjes zanore. Kontrollo \"Cilësimet e gjuhës dhe hyrjes\"."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguro metodat e hyrjes"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Gjuhët"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ndihmë dhe komente"</string>
     <string name="select_language" msgid="5709487854987078367">"Gjuhët"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Prek sërish për të ruajtur"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Prek këtu për të ruajtur"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Trokit përsëri për të ruajtur"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Trokit këtu për të ruajtur"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Fjalor i përdorshëm"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema e tastierës"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Ndrysho llogaritë"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Hapi tjetër"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Po konfiguron <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Aktivizo <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Kontrollo \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" te \"Cilësimet e gjuhës dhe hyrjes\". Kjo do ta autorizojë atë për ta vënë në punë në pajisjen tënde."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> është tashmë i aktivizuar te \"Cilësimet e gjuhës dhe hyrjes\", prandaj ky hap ka mbaruar. Vazhdo në hapin tjetër!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Kontrollo \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" te \"Cilësimet e gjuhës dhe hyrjes\". Kjo do ta autorizojë atë që të ekzekutohet në pajisjen tënde."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> është i aktivizuar tashmë te \"Cilësimet e gjuhës dhe të hyrjes\", kështu që ky hap ka mbaruar. Vazhdo me hapin tjetër!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktivizo te \"Cilësimet\""</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Kalo në <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Më pas, përzgjidh \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" si metodën tënde aktive të hyrjes së tekstit."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalo"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Anulo"</string>
     <string name="delete_dict" msgid="756853268088330054">"Fshi"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Gjuha e përzgjedhur në pajisjen tënde celulare mund të përdorë një fjalor.&lt;br/&gt; Rekomandojmë &lt;b&gt;shkarkimin&lt;/b&gt; e fjalorit <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> për të përmirësuar përvojën tënde të të shkruarit.&lt;br/&gt; &lt;br/&gt; Shkarkimi mund të zgjasë një ose dy minuta përmes rrjetit 3G. Mund të aplikohen tarifa nëse nuk ke një &lt;b&gt;plan të dhënash të pakufizuara&lt;/b&gt;.&lt;br/&gt; Nëse nuk je i sigurt se cilin plan të dhënash ke, rekomandojmë të gjesh një lidhje Wi-Fi për të filluar automatikisht shkarkimin.&lt;br/&gt; &lt;br/&gt; Këshillë! Mund të shkarkosh dhe heqësh fjalorë duke shkuar te menyja &lt;b&gt;\"Cilësimet e gjuhës dhe hyrjeve\"&lt;/b&gt; të pajisjes tënde celulare."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Gjuha e zgjedhur në pajisjen tënde celulare ka një fjalor të disponueshëm.&lt;br/&gt; Ne rekomandojmë &lt;b&gt;shkarkimin&lt;/b&gt; e fjalorit në <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> për të përmirësuar përvojën tënde të të shkruarit.&lt;br/&gt; &lt;br/&gt; Shkarkimi mund të zgjasë një ose dy minuta me 3G. Mund të zbatohen tarifa nëse nuk ke &lt;b&gt;një plan të pakufizuar të të dhënave&lt;/b&gt;.&lt;br/&gt; Nëse nuk je i sigurt se cilin plan të dhënash ke, rekomandojmë të gjesh një lidhje Wi-Fi për ta nisur automatikisht shkarkimin.&lt;br/&gt; &lt;br/&gt; Këshillë: Mund të shkarkosh dhe t\'i heqësh fjalorët duke shkuar te &lt;b&gt;Gjuhët dhe hyrja&lt;/b&gt; te menyja &lt;b&gt;Cilësimet&lt;/b&gt; në pajisjen tënde celulare."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Shkarko tani (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Shkarko nga Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Mund të përdoret një fjalor për <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Redakto fjalën"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Redakto"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Fshi"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Nuk ke ndonjë fjalë në fjalorin e përdoruesit. Shto një fjalë duke prekur butonin \"Shto\" (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Nuk ke asnjë fjalë në fjalorin e përdoruesit. Për të shtuar një fjalë, trokit te butoni Shto (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Për të gjitha gjuhët"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Gjuhë të tjera…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Fshi"</string>

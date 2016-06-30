@@ -27,7 +27,7 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Пернені басу кезіндегі дыбыс"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Басылған пернені үлкейтіп көрсету"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Қалауларыңыз"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"Есептік жазбалар және құпиялық"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Есептік жазбалар және құпиялылық"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Сыртқы түр және орналасулар"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Қимыл арқылы теру"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Мәтінді түзету"</string>
@@ -79,20 +79,20 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Келесі сөз ұсыныстары"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Ұсыныстар жасауда алдыңғы сөзді пайдалану"</string>
     <string name="gesture_input" msgid="826951152254563827">"Қимылмен теруді қосу"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Әріптерді жанап өту арқылы сөзді енгізу"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Әріптерді сипап өту арқылы сөз енгізу"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Қимыл қадамын көрсету"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Динамикалық қалқымалы қарап шығу"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Қимылдау кезінде ұсынылған сөзді көру"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Фраза қимылы"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Бос орын пернесіне сырғыту арқылы қимылдар барысында бос орындарды енгізу"</string>
     <string name="voice_input" msgid="3583258583521397548">"Дауыстық енгізу пернесі"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Дауыспен енгізу әдістері қосылмаған. «Тіл және енгізу параметрлері» тармағын тексеріңіз."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Дауыспен енгізу әдістері қосылмаған. \"Тілдер және енгізу\" параметрлерін тексеріңіз."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Енгізу әдістерін теңшеу"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тілдер"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"Анықтама және кері байланыс"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Анықтама және пікір"</string>
     <string name="select_language" msgid="5709487854987078367">"Тілдер"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Сақтау үшін қайта түртіңіз"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Сақтау үшін осы жерді түртіңіз"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Сақтау үшін қайта түртіңіз"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Сақтау үшін осы жерді түртіңіз"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Сөздік қолжетімді"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Пернетақта тақырыбы"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Есептік жазбаларды ауыстыру"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Келесі қадам"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> орнату"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қосу"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Тіл &amp; енгізу параметрлерінде <xliff:g id="APPLICATION_NAME">%s</xliff:g> тексеріңіз. Бұл оған құрылғыңызды басқаруға рұқсат береді."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасы әлдеқашан Тіл &amp; енгізу параметрлерінде қосылған, сол себепті бұл қадам орындалған.Келесі біреуін қосыңыз!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"\"Тілдер және енгізу\" параметрлерінде <xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасына құсбелгі қойыңыз. Сонда оны құрылғыңызда қолдануға рұқсат беріледі."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасы \"Тілдер және енгізу\" параметрлерінде бұрыннан қосылған. Келесі қадамға өтіңіз!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Параметрлер ішінде қосу"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> қолданбасына ауыстыру"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Одан кейін \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" қолданбасын белсенді мәтінді енгізу әдісі ретінде таңдаңыз."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Орнату"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Болдырмау"</string>
     <string name="delete_dict" msgid="756853268088330054">"Жою"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Мобильдік құрылғыда таңдалған тіл үшін сөздік қол жетімді.&lt;br/&gt; Теру тәжірибесін жақсарту үшін <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> сөздігін &lt;b&gt;жүктеу&lt;/b&gt; ұсынылады.&lt;br/&gt; &lt;br/&gt; Жүктеу 3G арқылы бір немесе екі минут алуы мүмкін. Сізде &lt;b&gt;шектеусіз деректер жоспары&lt;/b&gt; болмаса, ақылар алынуы мүмкін.&lt;br/&gt; Егер өзіңіздегі деректер жоспарын білмесеңіз, жүктеуді автоматты түрде бастау үшін Wi-Fi байланысын табу ұсынылады.&lt;br/&gt; &lt;br/&gt; Кеңес: мобильдік құрылғының &lt;b&gt;Параметрлер&lt;/b&gt; мәзірінде &lt;b&gt;Тіл және енгізу&lt;/b&gt; тармағына өту арқылы сөздіктерді жүктеуге және жоюға болады."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Мобильдік құрылғыда таңдалған тіл бойынша сөздік қолжетімді.&lt;br/&gt; Теру мүмкіндігін жақсарту үшін <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> сөздігін <b>жүктеп</b> алғаныңыз жөн.&lt;br/&gt; &lt;br/&gt; Жүктеп алу 3G желісінде бір немесе екі минутқа созылуы мүмкін. &lt;b&gt;Шексіз интернет тарифіңіз&lt;/b&gt; болмаса, төлем алынуы мүмкін.&lt;br/&gt; Интернет тарифіңіздің қандай екенін білмесеңіз, жүктеп алу автоматты түрде басталу үшін Wi-Fi байланысына қосылғаныңыз жөн.&lt;br/&gt; &lt;br/&gt; Кеңес: Мобильдік құрылғының <b>Параметрлер</b> мәзіріндегі &lt;b&gt;Тілдер және енгізу&lt;/b&gt; тармағынан сөздіктерді жүктеп алуға және жоюға болады."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Қазір жүктеп алу (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>МБ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi арқылы жүктеп алу"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> үшін сөздік қол жетімді"</string>
@@ -199,12 +199,12 @@
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Сөз:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Пернелер тіркесімі:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Тіл:"</string>
-    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Сөзді теру"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Сөзді теріңіз"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Қосымша пернелер тіркесімі"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Сөзді өңдеу"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Өңдеу"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Жою"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Пайдаланушы сөздігінде сөздер жоқ. Қосу (+) түймесін басу арқылы сөзді қосыңыз."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Пайдаланушы сөздігінде сөздер жоқ. Сөзді қосу үшін \"Қосу\" (+) түймесін түртіңіз."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Барлық тілдер үшін"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Қосымша тілдер…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Жою"</string>

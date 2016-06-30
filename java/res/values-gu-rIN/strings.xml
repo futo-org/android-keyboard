@@ -80,25 +80,25 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"સૂચનો બનાવવા માટે પહેલાનાં શબ્દનો ઉપયોગ કરો"</string>
     <string name="gesture_input" msgid="826951152254563827">"હાવભાવથી ટાઇપિંગ સક્ષમ કરો"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"અક્ષરો મારફતે સ્લાઇડ કરીને એક શબ્દ ઇનપુટ કરો"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"હાવભાવ અજમાયશ બતાવો"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"હાવભાવ ટ્રેલ બતાવો"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ગતિશીલ ફ્લોટિંગ પૂર્વાવલોકન"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"હાવભાવ કરતી વખતે સૂચિત શબ્દ જુઓ"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"શબ્દસમૂહ હાવભાવ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"સ્પેસ કી પર જઈને હાવભાવ દરમિયાન સ્પેસ ઇનપુટ કરો"</string>
     <string name="voice_input" msgid="3583258583521397548">"વૉઇસ ઇનપુટ કી"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"કોઈ વૉઇસ ઇનપુટ પદ્ધતિઓ સક્ષમ કરેલ નથી. ભાષા &amp; ઇનપુટ સેટિંગ્સને ચેક કરો."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"કોઈ વૉઇસ ઇનપુટ પદ્ધતિઓ સક્ષમ કરેલ નથી. ભાષાઓ અને ઇનપુટ સેટિંગ્સને ચેક કરો."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ઇનપુટ પદ્ધતિઓ ગોઠવો"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ભાષાઓ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"સહાય અને પ્રતિસાદ"</string>
     <string name="select_language" msgid="5709487854987078367">"ભાષાઓ"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"સાચવવા માટે ફરી ટચ કરો"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"સાચવવા માટે અહીં ટચ કરો"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"સાચવવા માટે ફરીથી ટૅપ કરો"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"સાચવવા માટે અહીં ટૅપ કરો"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"શબ્દકોશ ઉપલબ્ધ છે"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"કીબોર્ડ થીમ"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"એકાઉન્ટ્સ સ્વિચ કરો"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"કોઈ એકાઉન્ટ પસંદ કરેલ નથી"</string>
     <string name="account_selected" msgid="2846876462199625974">"હાલમાં <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> વાપરી રહ્યાં છે"</string>
-    <string name="account_select_ok" msgid="9141195141763227797">"ઑકે"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"ઓકે"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"રદ કરો"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"સાઇન આઉટ કરો"</string>
     <string name="account_select_title" msgid="6279711684772922649">"વાપરવા માટે એક એકાઉન્ટ પસંદ કરો"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"આગલું પગલું"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> સેટ કરી રહ્યું છે"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> સક્ષમ કરો"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"કૃપા કરીને \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ને તમારી ભાષા &amp; ઇનપુટ સેટિંગ્સમાં તપાસો. આ તેને તમારા ઉપકરણ પર ચાલવા માટે અધિકૃત કરશે."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> એ તમારી ભાષા&amp; ઇનપુટ સેટિંગ્સમાં પહેલાથી જ સક્ષમ કરેલું છે, તેથી આ પગલું પૂર્ણ થયું. હવે આગલા પર!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"કૃપા કરીને \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ને તમારી ભાષાઓ અને ઇનપુટ સેટિંગ્સમાં તપાસો. આ તેને તમારા ઉપકરણ પર ચાલવા માટે અધિકૃત કરશે."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> એ તમારી ભાષાઓ અને ઇનપુટ સેટિંગ્સમાં પહેલાથી જ સક્ષમ કરેલું છે, તેથી આ પગલું પૂર્ણ થયું. હવે આગલા પર!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"સેટિંગ્સમાં સક્ષમ કરો"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> પર સ્વિચ કરો"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"આગલું, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ને તમારા સક્રિય ટેક્સ્ટ-ઇનપુટ પદ્ધતિ તરીકે પસંદ કરો."</string>
@@ -156,8 +156,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"હવે તમે તમારી મનપસંદ એપ્લિકેશન્સમાં <xliff:g id="APPLICATION_NAME">%s</xliff:g> થી ટાઇપ કરી શકો છો."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"વધારાની ભાષાઓ ગોઠવો"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"સમાપ્ત થયું"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"એપ્લિકેશન આયકન બતાવો"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"લોંચરમાં એપ્લિકેશન આયકન પ્રદર્શિત કરો"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ઍપ્લિકેશન આયકન બતાવો"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"લોંચરમાં ઍપ્લિકેશન આયકન પ્રદર્શિત કરો"</string>
     <string name="app_name" msgid="6320102637491234792">"શબ્દકોશ પ્રદાતા"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"શબ્દકોશ પ્રદાતા"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"શબ્દકોશ સેવા"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ઇન્સ્ટોલ કરો"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"રદ કરો"</string>
     <string name="delete_dict" msgid="756853268088330054">"કાઢી નાખો"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"તમારા મોબાઇલ સાધન પર પસંદ કરેલ ભાષા પાસે એક શબ્દકોશ ઉપલબ્ધ છે.&lt;br/&gt; અમે તમને તમારા લખાણ અનુભવને બહેતર બનાવવા માટે <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> શબ્દકોશ &lt;b&gt;ડાઉનલોડ કરવાની&lt;/b&gt; ભલામણ કરીએ છીએ.&lt;br/&gt; &lt;br/&gt; 3G પર ડાઉનલોડમાં એક કે બે મિનિટનો સમય લાગશે. જો તમારી પાસે &lt;b&gt;અસીમિત ડેટા પ્લાન&lt;/b&gt; ન હોય તો શુલ્ક લાગી શકે છે.&lt;br/&gt; જો તમે સુનિશ્ચિત ન હોવ કે તમારી પાસે કયો ડેટા પ્લાન છે, તો અમે ડાઉનલોડ આપમેળે પ્રારંભ કરવા માટે એક Wi-Fi કનેક્શન શોધવાની ભલામણ કરીએ છીએ.&lt;br/&gt; &lt;br/&gt; ટિપ: તમે તમારા મોબાઇલ સાધનનાં મેનૂમાં &lt;b&gt;સેટિંગ્સ&lt;/b&gt;માંના &lt;b&gt;ભાષા &amp; ઇનપુટ&lt;/b&gt; પર જઈને શબ્દકોશ ડાઉનલોડ કરી શકો છો અને દૂર કરી શકો છો."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"તમારા મોબાઇલ ઉપકરણ પર પસંદ કરેલ ભાષા પાસે એક શબ્દકોશ ઉપલબ્ધ છે.&lt;br/&gt; અમે તમને તમારા લખાણ અનુભવને બહેતર બનાવવા માટે <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> શબ્દકોશ &lt;b&gt;ડાઉનલોડ કરવાની&lt;/b&gt; ભલામણ કરીએ છીએ.&lt;br/&gt; &lt;br/&gt; 3G પર ડાઉનલોડમાં એક કે બે મિનિટનો સમય લાગશે. જો તમારી પાસે &lt;b&gt;અસીમિત ડેટા પ્લાન&lt;/b&gt; ન હોય તો શુલ્ક લાગી શકે છે.&lt;br/&gt; જો તમે સુનિશ્ચિત ન હોવ કે તમારી પાસે કયો ડેટા પ્લાન છે, તો અમે ડાઉનલોડ આપમેળે પ્રારંભ કરવા માટે એક Wi-Fi કનેક્શન શોધવાની ભલામણ કરીએ છીએ.&lt;br/&gt; &lt;br/&gt; ટિપ: તમે તમારા મોબાઇલ સાધનનાં મેનૂમાં &lt;b&gt;સેટિંગ્સ&lt;/b&gt;માંના &lt;b&gt;ભાષાઓ અને ઇનપુટ&lt;/b&gt; પર જઈને શબ્દકોશ ડાઉનલોડ કરી શકો છો અને દૂર કરી શકો છો."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"હમણાં ડાઉનલોડ કરો (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi પર ડાઉનલોડ કરો"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> માટે એક શબ્દકોશ ઉપલબ્ધ છે"</string>
@@ -195,7 +195,7 @@
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"શબ્દસમૂહ"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"વધુ વિકલ્પો"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"ઓછા વિકલ્પો"</string>
-    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"ઑકે"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"ઓકે"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"શબ્દ:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"શોર્ટકટ:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ભાષા:"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"શબ્દ સંપાદિત કરો"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"સંપાદિત કરો"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"કાઢી નાખો"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"તમારી પાસે વપરાશકર્તા શબ્દકોશમાંનાં કોઈપણ શબ્દ નથી. ઉમેરો (+) બટન ટચ કરીને એક શબ્દ ઉમેરો."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"તમારી પાસે વપરાશકર્તા શબ્દકોશમાં કોઈપણ શબ્દ નથી. શબ્દને ઉમેરવા માટે, ઉમેરો (+) બટન ટૅપ કરો."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"તમામ"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"વધુ ભાષાઓ…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"કાઢી નાખો"</string>
