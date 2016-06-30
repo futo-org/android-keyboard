@@ -263,7 +263,7 @@
     <string name="spoken_emoji_1F235" msgid="5320186982841793711">"အပြည့်အဝလုပ်ဆောင်ခြင်း အရုပ်စာ လေးထောင့်ကွက်"</string>
     <string name="spoken_emoji_1F236" msgid="879755752069393034">"Squared သင်္ကေတပေးချေပြီး"</string>
     <string name="spoken_emoji_1F237" msgid="6741807001205851437">"လစဉ် အရုပ်စာ လေးထောင့်ကွက်"</string>
-    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"အပလီကေးရှင်း အရုပ်စာ လေးထောင့်ကွက်"</string>
+    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"အက်ပ် အရုပ်စာ လေးထောင့်ကွက်"</string>
     <string name="spoken_emoji_1F239" msgid="1634067311597618959">"လျှော့ဈေး အရုပ်စာ လေးထောင့်ကွက်"</string>
     <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"စီးပွားရေးတွင် အရုပ်စာ လေးထောင့်ကွက်"</string>
     <string name="spoken_emoji_1F250" msgid="6586943922806727907">"စက်ဝိုင်းအရုပ်စာ အားသာမှု"</string>
@@ -844,7 +844,7 @@
     <string name="spoken_emoji_1F508" msgid="5063567689831527865">"စပီကာ"</string>
     <string name="spoken_emoji_1F509" msgid="3948050077992370791">"အသံလှိုင်းတစ်ခုနှင့် စပီကာ"</string>
     <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"အသံလှိုင်းသုံးခုနှင့် စပီကာ"</string>
-    <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"ဘတ်ထရီ"</string>
+    <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"ဘက်ထရီ"</string>
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"လျှစ်စစ် ပလပ်"</string>
     <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"ဘယ်ဘက်သို့ညွှန်နေသည့် မှန်ဘီလူး"</string>
     <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"ညာဘက်သို့ညွှန်နေသည့် မှန်ဘီလူး"</string>
@@ -1130,7 +1130,7 @@
     <string name="spoken_emoji_1F6A3" msgid="8412962252222205387">"လှော်သည့်လှေ"</string>
     <string name="spoken_emoji_1F6A4" msgid="8867571300266339211">"အမြန်သင်္ဘော"</string>
     <string name="spoken_emoji_1F6A5" msgid="7650260812741963884">"ရေပြင်ညီယာဉ်အသွားအလာမီး"</string>
-    <string name="spoken_emoji_1F6A6" msgid="485575967773793454">"ဒေါင်လိုက် မီးပွိုင့်"</string>
+    <string name="spoken_emoji_1F6A6" msgid="485575967773793454">"ထောင်လိုက် မီးပွိုင့်"</string>
     <string name="spoken_emoji_1F6A7" msgid="6411048933816976794">"ဆောက်လုပ်ရေး သင်္ကေတ"</string>
     <string name="spoken_emoji_1F6A8" msgid="6345717218374788364">"မီးလှည့်နေသောရဲကား"</string>
     <string name="spoken_emoji_1F6A9" msgid="6586380356807600412">"စာတိုက်ပေါ်ရှိ သုံးထောင့်အလံ"</string>
