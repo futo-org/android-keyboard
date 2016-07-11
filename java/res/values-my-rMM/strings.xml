@@ -50,7 +50,7 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ဘာသာပြောင်းသည့် ကီးသည် အခြားထည့်သွင်းရန် နည်းလမ်းများလည်း ပါဝင်သည်"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ဘာသာစကား ပြောင်းခလုတ်"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"များပြားသည့် ထည့်သွင်းရန်နည်းလမ်းများဖွင့်ထားလျှင် ပြပါ"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"ကီးပေါ်လာ၍ ဖျောက်ရန်နှုန်း"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"ကီးပေါ်လာ၍ ပယ်ရန်နှုန်း"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"နောက်မကျ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"မူရင်းအတိုင်း"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
@@ -127,7 +127,7 @@
     <string name="add_style" msgid="6163126614514489951">"စတိုင်လ်ထည့်ရန်"</string>
     <string name="add" msgid="8299699805688017798">"ထည့်ရန်"</string>
     <string name="remove" msgid="4486081658752944606">"ဖယ်ရှားပါ"</string>
-    <string name="save" msgid="7646738597196767214">"သိမ်းပါ"</string>
+    <string name="save" msgid="7646738597196767214">"သိမ်းရန်"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"ဘာသာစကား"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"အဆင်အပြင်"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"သင့်စိတ်ကြိုက် ထည့်သွင်းမှုစတိုင်လ်အား စတင် အသုံးမပြုမှီ ဖွင့်ရပါမည်။ ၎င်းအားယခု ဖွင့်လိုပါသလား?"</string>
@@ -157,11 +157,11 @@
     <string name="setup_step3_action" msgid="600879797256942259">"ထပ်ပေါင်းဘာသာစကားများ ပြုပြင်မည်"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"ပြီးဆုံးသွားပြီ"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"အက်ပ်သင်္ကေတ ပြပါ"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"launcher တွင်နေ့စဉ် အပလီကေးရှင်းအိုင်ကွန် ပြရန်"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"launcher တွင် အပလီကေးရှင်း သင်္ကေတကိုပြရန်"</string>
     <string name="app_name" msgid="6320102637491234792">"အဘိဓါန် ထောက်ပံ့သူ"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"အဘိဓါန် ထောက်ပံ့သူ"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"အဘိဓါန် ဝန်ဆောင်မှု"</string>
-    <string name="download_description" msgid="6014835283119198591">"အဘိဓါန် အသစ်မွမ်းမံရန် အချက်လက်"</string>
+    <string name="download_description" msgid="6014835283119198591">"အဘိဓာန် အသစ်အပ်ဒိတ်လုပ်ရန် အချက်အလက်"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"ပေါင်းထည့်ထားသည့် အဘိဓါန်များ"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"အဘိဓါန်ရနိုင်"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"အဘိဓါန်များအတွက် ဆက်တင်များ"</string>
@@ -207,6 +207,6 @@
     <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"အသုံးပြုသူ အဘိဓာန်တွင် မည်သည့်စကားလုံးမျှ မရှိပါ။ စကားလုံးကိုပေါင်းထည့်ရန် (+) ခလုတ် ကိုတို့ပါ။"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"ဘာသာစကားအားလုံးအတွက်"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ဘာသာစကားပိုများများ…"</string>
-    <string name="user_dict_settings_delete" msgid="110413335187193859">"မလုပ်တော့ပါ"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"ဖျက်ရန်"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>
