@@ -101,7 +101,7 @@
     <string name="account_select_ok" msgid="9141195141763227797">"ТИЙМ"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"Цуцлах"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Гарах"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"Ашиглах акаунтаа сонгоно уу"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Ашиглах бүртгэлээ сонгоно уу"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англи (ИБ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англи (АНУ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Испани (АНУ)"</string>

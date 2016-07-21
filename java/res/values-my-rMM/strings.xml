@@ -42,7 +42,7 @@
     <string name="clear_sync_data_summary" msgid="993477139012576584">"သင်၏ စင့်က် လုပ်ပြီးသား ဒေတာ Google ထဲမှ ဖျက်ခံရမည်။"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"သင့် စင့်လုပ်ထားသော ဒေတာများအား cloud မှ ဖျက်လိမ့်မည်။ သေချာသလား?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ဖျက်ရန်"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"မလုပ်တော့ပါ"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"မလုပ်တော့"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"သင့်ရဲ့ကိုယ်ပိုင်အဘိဓါန်ကို Google server များမှာ ထပ်တူညီအောင်လုပ် ပြီး မူလပုံစံ ပြန်သွားမည်။ အိုင်တီထုတ်ကုန်များ တိုးတက်မှုရှိအောင် စာလုံးရေ ကောက်ယူမှု အချက်အလက်ကို စုစည်းပါသည်။ အဆိုပါအချက်အလက်စုယူ သုံးစွဲမှုကို "<a href="https://www.google.com/policies/privacy">" Google၏မိမိအတွင်းရေးသီးသန့် မူဝါဒ "</a>" ဖြင့် စောဒကတက် နိုင်သည်။"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ဒီအင်္ဂါရပ်တွေကို ရဖို့ဒီစက်မှာ Google account တစ်ခုကို ဖွင့်ပါ"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"စီးပွားရေးအကောင့်များအတွက် Google အပ်ဖ်များဖြင့် စက်ပစ္စည်းများတွင် ထပ်တူပြုခြင်း မရနိုင်ပါ"</string>
@@ -50,7 +50,7 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ဘာသာပြောင်းသည့် ကီးသည် အခြားထည့်သွင်းရန် နည်းလမ်းများလည်း ပါဝင်သည်"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ဘာသာစကား ပြောင်းခလုတ်"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"များပြားသည့် ထည့်သွင်းရန်နည်းလမ်းများဖွင့်ထားလျှင် ပြပါ"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"ကီးပေါ်လာ၍ ဖျောက်ရန်နှုန်း"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"ကီးပေါ်လာ၍ ပယ်ရန်နှုန်း"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"နောက်မကျ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"မူရင်းအတိုင်း"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
@@ -99,7 +99,7 @@
     <string name="no_accounts_selected" msgid="2073821619103904330">"အကောင့်များ မရွေးရသေးပါ"</string>
     <string name="account_selected" msgid="2846876462199625974">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>အား လတ်တလော သုံးန​ေ၏"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"အိုကေ"</string>
-    <string name="account_select_cancel" msgid="5181012062618504340">"မလုပ်တော့ပါ"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"မလုပ်တော့"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"ထွက်ရန်"</string>
     <string name="account_select_title" msgid="6279711684772922649">"သုံးမည့်အကောင့်ကို ရွေးရန်"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"အင်္ဂလိပ်(ယူကေ)"</string>
@@ -127,7 +127,7 @@
     <string name="add_style" msgid="6163126614514489951">"စတိုင်လ်ထည့်ရန်"</string>
     <string name="add" msgid="8299699805688017798">"ထည့်ရန်"</string>
     <string name="remove" msgid="4486081658752944606">"ဖယ်ရှားပါ"</string>
-    <string name="save" msgid="7646738597196767214">"သိမ်းပါ"</string>
+    <string name="save" msgid="7646738597196767214">"သိမ်းရန်"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"ဘာသာစကား"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"အဆင်အပြင်"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"သင့်စိတ်ကြိုက် ထည့်သွင်းမှုစတိုင်လ်အား စတင် အသုံးမပြုမှီ ဖွင့်ရပါမည်။ ၎င်းအားယခု ဖွင့်လိုပါသလား?"</string>
@@ -157,11 +157,11 @@
     <string name="setup_step3_action" msgid="600879797256942259">"ထပ်ပေါင်းဘာသာစကားများ ပြုပြင်မည်"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"ပြီးဆုံးသွားပြီ"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"အက်ပ်သင်္ကေတ ပြပါ"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"launcher တွင်နေ့စဉ် အပလီကေးရှင်းအိုင်ကွန် ပြရန်"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"launcher တွင် အပလီကေးရှင်း သင်္ကေတကိုပြရန်"</string>
     <string name="app_name" msgid="6320102637491234792">"အဘိဓါန် ထောက်ပံ့သူ"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"အဘိဓါန် ထောက်ပံ့သူ"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"အဘိဓါန် ဝန်ဆောင်မှု"</string>
-    <string name="download_description" msgid="6014835283119198591">"အဘိဓါန် အသစ်မွမ်းမံရန် အချက်လက်"</string>
+    <string name="download_description" msgid="6014835283119198591">"အဘိဓာန် အသစ်အပ်ဒိတ်လုပ်ရန် အချက်အလက်"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"ပေါင်းထည့်ထားသည့် အဘိဓါန်များ"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"အဘိဓါန်ရနိုင်"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"အဘိဓါန်များအတွက် ဆက်တင်များ"</string>
@@ -178,10 +178,10 @@
     <string name="message_updating" msgid="4457761393932375219">"အသစ်မွမ်းမံမှုကို ရှာဖွေနေ"</string>
     <string name="message_loading" msgid="5638680861387748936">"တင်နေ…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"အဓိက အဘိဓါန်"</string>
-    <string name="cancel" msgid="6830980399865683324">"မလုပ်တော့ပါ"</string>
+    <string name="cancel" msgid="6830980399865683324">"မလုပ်တော့"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"ဆက်တင်များ"</string>
     <string name="install_dict" msgid="180852772562189365">"တပ်ဆင်ပါ"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"မလုပ်တော့ပါ"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"မလုပ်တော့"</string>
     <string name="delete_dict" msgid="756853268088330054">"ဖျက်ရန်"</string>
     <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"သင့်မိုဘိုင်းစက်ပစ္စည်းပေါ်တွင် ရွေးချယ်ထားသည့် ဘာသာစကားအတွက် ရရှိနိုင်သည့် အဘိဓာန်တစ်ခု ရှိပါသည်။&lt;br/&gt; သင့်စာရိုက်ခြင်း အတွေ့အကြုံ တိုးတက်မှုရှိလာစေရန် <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> အဘိဓာန်ကို &lt;b&gt;ဒေါင်းလုဒ်&lt;/b&gt; လုပ်ရန် အကြံပြုပါသည်။&lt;br/&gt; &lt;br/&gt; 3G ဖြင့်ဒေါင်းလုဒ်လုပ်လျှင် တစ်မိနစ်၊ နှစ်မိနစ်ခန့် ကြာနိုင်ပါသည်။ သင့်ထံတွင် &lt;b&gt;အကန့်အသတ်မရှိ ဒေတာအစီအစဉ်&lt;/b&gt; မရှိလျှင် ငွေကုန်ကျနိုင်ပါသည်။&lt;br/&gt; သင့်ထံတွင် မည်သည့် ဒေတာအစီအစဉ်ရှိသည်ကို မသေချာလျှင်၊ Wi-Fi နှင့် ချိတ်ဆက်ကာ အလိုအလျောက် ဒေါင်းလုဒ်လုပ်ရန် အကြံပြုပါသည်။&lt;br/&gt; &lt;br/&gt; အကြံပြုချက် − သင့်မိုဘိုင်းစက်ပစ္စည်း၏ &lt;b&gt;Settings&lt;/b&gt; မီနူးရှိ &lt;b&gt;ဘာသာစကားများ &amp; ထည့်သွင်းမှု&lt;/b&gt; သို့သွားရောက်ကာ အဘိဓာန်များကို ဒေါင်းလုဒ်လုပ်ခြင်း၊ ဖယ်ရှားခြင်းများ ပြုလုပ်နိုင်သည်။"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ယခုဒေါင်းလုပ်လုပ်မည် (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
@@ -207,6 +207,6 @@
     <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"အသုံးပြုသူ အဘိဓာန်တွင် မည်သည့်စကားလုံးမျှ မရှိပါ။ စကားလုံးကိုပေါင်းထည့်ရန် (+) ခလုတ် ကိုတို့ပါ။"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"ဘာသာစကားအားလုံးအတွက်"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ဘာသာစကားပိုများများ…"</string>
-    <string name="user_dict_settings_delete" msgid="110413335187193859">"မလုပ်တော့ပါ"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"ဖျက်ရန်"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>
