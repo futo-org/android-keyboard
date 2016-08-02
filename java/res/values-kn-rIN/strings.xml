@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ಯಾವುದೇ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ. ಭಾಷೆಗಳು &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ಭಾಷೆಗಳು"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"ಸಹಾಯ &amp; ಪ್ರತಿಕ್ರಿಯೆ"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"ಸಹಾಯ ಮತ್ತು ಪ್ರತಿಕ್ರಿಯೆ"</string>
     <string name="select_language" msgid="5709487854987078367">"ಭಾಷೆಗಳು"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"ಉಳಿಸಲು ಮತ್ತೊಮ್ಮೆ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"ಉಳಿಸಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
