@@ -30,7 +30,7 @@
     <string name="spoken_emoji_203C" msgid="153340916701508663">"ਡਬਲ ਵਿਸਮਿਕ ਚਿੰਨ੍ਹ"</string>
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"ਵਿਸਮਿਕ ਪ੍ਰਸ਼ਨ ਚਿੰਨ੍ਹ"</string>
     <string name="spoken_emoji_2122" msgid="9188440722954720429">"ਟ੍ਰੇਡ ਮਾਰਕ ਚਿੰਨ੍ਹ"</string>
-    <string name="spoken_emoji_2139" msgid="9114342638917304327">"ਜਾਣਕਾਰੀ ਸ੍ਰੋਤ"</string>
+    <string name="spoken_emoji_2139" msgid="9114342638917304327">"ਜਾਣਕਾਰੀ ਸਰੋਤ"</string>
     <string name="spoken_emoji_2194" msgid="8055202727034946680">"ਖੱਬੇ ਸੱਜੇ ਵੱਲ ਤੀਰ ਦਾ ਨਿਸ਼ਾਨ"</string>
     <string name="spoken_emoji_2195" msgid="8028122253301087407">"ਉੱਪਰ ਹੇਠਾਂ ਵੱਲ ਤੀਰ ਦਾ ਨਿਸ਼ਾਨ"</string>
     <string name="spoken_emoji_2196" msgid="4019164898967854363">"ਉੱਤਰ ਪੱਛਮ ਵੱਲ ਤੀਰ ਦਾ ਨਿਸ਼ਾਨ"</string>
@@ -291,12 +291,12 @@
     <string name="spoken_emoji_1F314" msgid="4898293184964365413">"ਵੈਕਸਿੰਗ ਗਿੱਬਸ ਚੰਦਰਮਾ ਦਾ ਚਿੰਨ੍ਹ"</string>
     <string name="spoken_emoji_1F315" msgid="3218117051779496309">"ਪੂਰਾ ਚੰਦਰਮਾ ਦਾ ਚਿੰਨ੍ਹ"</string>
     <string name="spoken_emoji_1F316" msgid="2061317145777689569">"ਵੈਨਿੰਗ ਗਿੱਬਸ ਚੰਦਰਮਾ ਦਾ ਚਿੰਨ੍ਹ"</string>
-    <string name="spoken_emoji_1F317" msgid="2721090687319539049">"ਆਖ਼ਰੀ ਤਿਮਾਹੀ ਦੇ ਚੰਦਰਮਾ ਦਾ ਚਿੰਨ੍ਹ"</string>
+    <string name="spoken_emoji_1F317" msgid="2721090687319539049">"ਆਖਰੀ ਤਿਮਾਹੀ ਦੇ ਚੰਦਰਮਾ ਦਾ ਚਿੰਨ੍ਹ"</string>
     <string name="spoken_emoji_1F318" msgid="3814091755648887570">"ਵੈਨਿੰਗ ਨਵੇਂ ਚੰਦਰਮਾ ਦਾ ਚਿੰਨ੍ਹ"</string>
     <string name="spoken_emoji_1F319" msgid="4074299824890459465">"ਨਵਾਂ ਚੰਦਰਮਾ"</string>
     <string name="spoken_emoji_1F31A" msgid="3092285278116977103">"ਚਿਹਰੇ ਨਾਲ ਨਵਾਂ ਚੰਦਰਮਾ"</string>
     <string name="spoken_emoji_1F31B" msgid="2658562138386927881">"ਚਿਹਰੇ ਨਾਲ ਪਹਿਲੀ ਤਿਮਾਹੀ ਦਾ ਚੰਦਰਮਾ"</string>
-    <string name="spoken_emoji_1F31C" msgid="7914768515547867384">"ਚਿਹਰੇ ਨਾਲ ਆਖ਼ਰੀ ਤਿਮਾਹੀ ਦਾ ਚੰਦਰਮਾ"</string>
+    <string name="spoken_emoji_1F31C" msgid="7914768515547867384">"ਚਿਹਰੇ ਨਾਲ ਆਖਰੀ ਤਿਮਾਹੀ ਦਾ ਚੰਦਰਮਾ"</string>
     <string name="spoken_emoji_1F31D" msgid="1925730459848297182">"ਚਿਹਰੇ ਨਾਲ ਪੂਰਾ ਚੰਦਰਮਾ"</string>
     <string name="spoken_emoji_1F31E" msgid="8022112382524084418">"ਚਿਹਰੇ ਨਾਲ ਸੂਰਜ"</string>
     <string name="spoken_emoji_1F31F" msgid="1051661214137766369">"ਚਮਕਦਾ ਤਾਰਾ"</string>
@@ -470,7 +470,7 @@
     <string name="spoken_emoji_1F3B6" msgid="3827730457113941705">"ਮਲਟੀਪਲ ਸੰਗੀਤਮਈ ਨੋਟਸ"</string>
     <string name="spoken_emoji_1F3B7" msgid="5503403099445042180">"ਸੈਕਸੋਫ਼ੋਨ"</string>
     <string name="spoken_emoji_1F3B8" msgid="3985658156795011430">"ਗਿਟਾਰ"</string>
-    <string name="spoken_emoji_1F3B9" msgid="5596295757967881451">"ਸੰਗੀਤਮਈ ਕੀਬੋਰਡ"</string>
+    <string name="spoken_emoji_1F3B9" msgid="5596295757967881451">"ਸੰਗੀਤਮਈ ਕੀ-ਬੋਰਡ"</string>
     <string name="spoken_emoji_1F3BA" msgid="4284064120340683558">"ਬਿਗਲ"</string>
     <string name="spoken_emoji_1F3BB" msgid="2856598510069988745">"ਸਾਰੰਗੀ"</string>
     <string name="spoken_emoji_1F3BC" msgid="1608424748821446230">"ਸੰਗੀਤਮਈ ਸਕੋਰ"</string>
@@ -798,7 +798,7 @@
     <string name="spoken_emoji_1F4DC" msgid="5075845110932456783">"ਸਕ੍ਰੌਲ ਕਰੋ"</string>
     <string name="spoken_emoji_1F4DD" msgid="2494006707147586786">"ਮੀਮੋ"</string>
     <string name="spoken_emoji_1F4DE" msgid="7883008605002117671">"ਟੈਲੀਫੋਨ ਰਿਸੀਵਰ"</string>
-    <string name="spoken_emoji_1F4DF" msgid="3538610110623780465">"ਪੇਜ਼ਰ"</string>
+    <string name="spoken_emoji_1F4DF" msgid="3538610110623780465">"ਪੇਜਰ"</string>
     <string name="spoken_emoji_1F4E0" msgid="2960778342609543077">"ਫੈਕਸ ਮਸ਼ੀਨ"</string>
     <string name="spoken_emoji_1F4E1" msgid="6269733703719242108">"ਸੈਟੇਲਾਈਟ ਐਂਟੀਨਾ"</string>
     <string name="spoken_emoji_1F4E2" msgid="1987535386302883116">"ਜਨਤਕ ਸੰਬੋਧਨ ਲਾਊਡਸਪੀਕਰ"</string>
