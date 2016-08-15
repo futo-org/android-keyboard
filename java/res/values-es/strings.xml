@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Los datos sincronizados se eliminarán de la nube. ¿Continuar?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Eliminar"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancelar"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"El diccionario personal se sincroniza con los servidores de Google, donde se crea una copia de seguridad. Se puede recopilar información estadística sobre frecuencia de palabras para mejorar nuestros productos. Toda la información se recopila y se utiliza siguiendo las disposiciones de la "<a href="https://www.google.com/policies/privacy">"Política de privacidad de Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"El diccionario personal se sincroniza con los servidores de Google, donde se crea una copia de seguridad. Se puede recopilar información estadística sobre frecuencia de palabras para mejorar nuestros productos. Toda la información se recopila y se utiliza siguiendo las disposiciones de la "<a href="https://www.google.com/policies/privacy">"Política de Privacidad de Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Añade una cuenta de Google al dispositivo para activar la función"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinc. no disponible en dispositivos con cuentas de Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de introducción"</string>
@@ -69,7 +69,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Sugerencias de correcciones"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostrar las palabras sugeridas mientras se escribe"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palabras ofensivas"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No sugerir palabras potencialmente ofensivas"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No sugerir palabras que pueden ser ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Pulsar la tecla de espacio o punto para corregir errores"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"No"</string>
@@ -126,7 +126,7 @@
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos de entrada personalizados"</string>
     <string name="add_style" msgid="6163126614514489951">"Añadir estilo"</string>
     <string name="add" msgid="8299699805688017798">"Añadir"</string>
-    <string name="remove" msgid="4486081658752944606">"Eliminar"</string>
+    <string name="remove" msgid="4486081658752944606">"Quitar"</string>
     <string name="save" msgid="7646738597196767214">"Guardar"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Idioma"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Tipo"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalar"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancelar"</string>
     <string name="delete_dict" msgid="756853268088330054">"Eliminar"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Hay un diccionario disponible para el idioma seleccionado en tu dispositivo móvil.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mejorar la experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga puede tardar unos minutos en redes 3G. Es posible que se apliquen cargos si no tienes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;.&lt;br/&gt; Si no sabes con certeza cuál es tu plan de datos, te recomendamos que te conectes a una red Wi-Fi para que la descarga empiece automáticamente.&lt;br/&gt; &lt;br/&gt; Consejo: Puedes descargar y eliminar diccionarios en la sección &lt;b&gt;Idioma e introducción de texto&lt;/b&gt; en el menú &lt;b&gt;Ajustes&lt;/b&gt; de tu dispositivo móvil."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Hay un diccionario disponible para el idioma seleccionado en tu dispositivo móvil.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mejorar la experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga puede tardar unos minutos en redes 3G. Es posible que se apliquen cargos si no tienes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;.&lt;br/&gt; Si no sabes con certeza cuál es tu plan de datos, te recomendamos que te conectes a una red Wi-Fi para que la descarga empiece automáticamente.&lt;br/&gt; &lt;br/&gt; Consejo: Puedes descargar y quitar diccionarios en la sección &lt;b&gt;Idioma e introducción de texto&lt;/b&gt; en el menú &lt;b&gt;Ajustes&lt;/b&gt; de tu dispositivo móvil."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Descargar ahora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Descargar mediante Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Hay disponible un diccionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
