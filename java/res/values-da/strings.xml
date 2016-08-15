@@ -102,8 +102,8 @@
     <string name="account_select_cancel" msgid="5181012062618504340">"Annuller"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Log ud"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Vælg den konto, du vil bruge"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Engelsk (Storbritannien)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Engelsk (USA)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"engelsk (Storbritannien)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"engelsk (USA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Spansk (USA)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hinglish"</string>
     <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbisk (latinsk)"</string>
