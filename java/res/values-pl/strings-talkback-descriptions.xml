@@ -43,7 +43,7 @@
     <string name="spoken_description_emoji" msgid="7990051553008088470">"Emotikony"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"Enter"</string>
     <string name="spoken_description_search" msgid="5099937658231911288">"Szukaj"</string>
-    <string name="spoken_description_dot" msgid="5644176501632325560">"Kropka"</string>
+    <string name="spoken_description_dot" msgid="5644176501632325560">"Punktor"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"Przełącz język"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"Dalej"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"Wstecz"</string>
@@ -65,7 +65,7 @@
     <string name="keyboard_mode_text" msgid="9138789594969187494">"tekst"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"godzina"</string>
     <string name="keyboard_mode_url" msgid="8072011652949962550">"adres URL"</string>
-    <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Niedawne"</string>
+    <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Ostatnie"</string>
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"Osoby"</string>
     <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"Obiekty"</string>
     <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"Przyroda"</string>

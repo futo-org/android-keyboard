@@ -36,7 +36,7 @@
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"ചിഹ്നങ്ങള്‍"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"അക്ഷരങ്ങൾ"</string>
     <string name="spoken_description_to_numeric" msgid="4560261331530795682">"നമ്പറുകൾ"</string>
-    <string name="spoken_description_settings" msgid="7281251004003143204">"ക്രമീകരണങ്ങൾ"</string>
+    <string name="spoken_description_settings" msgid="7281251004003143204">"ക്രമീകരണം"</string>
     <string name="spoken_description_tab" msgid="8210782459446866716">"ടാബ്"</string>
     <string name="spoken_description_space" msgid="5908716896642059145">"സ്പെയ്സ്"</string>
     <string name="spoken_description_mic" msgid="6153138783813452464">"വോയ്‌സ് ഇൻപുട്ട്"</string>

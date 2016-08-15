@@ -64,7 +64,7 @@
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"τηλέφωνο"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"κείμενο"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"ώρα"</string>
-    <string name="keyboard_mode_url" msgid="8072011652949962550">"διεύθυνση URL"</string>
+    <string name="keyboard_mode_url" msgid="8072011652949962550">"URL"</string>
     <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Πρόσφατα"</string>
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"Άτομα"</string>
     <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"Αντικείμενα"</string>
