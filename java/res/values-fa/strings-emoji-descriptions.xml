@@ -282,7 +282,7 @@
     <string name="spoken_emoji_1F30B" msgid="5729430693700923112">"آتش‌فشان"</string>
     <string name="spoken_emoji_1F30C" msgid="2961230863217543082">"راه شیری"</string>
     <string name="spoken_emoji_1F30D" msgid="1113905673331547953">"کره زمین اروپا-آفریقا"</string>
-    <string name="spoken_emoji_1F30E" msgid="5278512600749223671">"کره زمین قاره آمریکا"</string>
+    <string name="spoken_emoji_1F30E" msgid="5278512600749223671">"کره زمین قاره امریکا"</string>
     <string name="spoken_emoji_1F30F" msgid="5718144880978707493">"کره زمین آسیا-استرالیا"</string>
     <string name="spoken_emoji_1F310" msgid="2959618582975247601">"کره با نصف النهارها"</string>
     <string name="spoken_emoji_1F311" msgid="623906380914895542">"نماد هلال ماه"</string>
@@ -336,7 +336,7 @@
     <!-- no translation found for spoken_emoji_1F336 (5912660172314184275) -->
     <skip />
     <string name="spoken_emoji_1F337" msgid="3839107352363566289">"گل لاله"</string>
-    <string name="spoken_emoji_1F338" msgid="6389970364260468490">"شکوفه‌های گیلاس"</string>
+    <string name="spoken_emoji_1F338" msgid="6389970364260468490">"صورتی گلبرگ"</string>
     <string name="spoken_emoji_1F339" msgid="9128891447985256151">"گل رز"</string>
     <string name="spoken_emoji_1F33A" msgid="2025828400095233078">"گل ختمی ژاپنی"</string>
     <string name="spoken_emoji_1F33B" msgid="8163868254348448552">"گل آفتابگردان"</string>
@@ -349,7 +349,7 @@
     <string name="spoken_emoji_1F342" msgid="3119068426871821222">"برگ افتاده"</string>
     <string name="spoken_emoji_1F343" msgid="2663317495805149004">"برگ‌های لرزان در باد"</string>
     <string name="spoken_emoji_1F344" msgid="2738517881678722159">"قارچ"</string>
-    <string name="spoken_emoji_1F345" msgid="6135288642349085554">"گوجه‌فرنگی"</string>
+    <string name="spoken_emoji_1F345" msgid="6135288642349085554">"گوجه‌ای"</string>
     <string name="spoken_emoji_1F346" msgid="2075395322785406367">"بادمجان"</string>
     <string name="spoken_emoji_1F347" msgid="7753453754963890571">"انگور"</string>
     <string name="spoken_emoji_1F348" msgid="1247076837284932788">"خربزه"</string>
@@ -806,7 +806,7 @@
     <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"سینی صندوق خروجی"</string>
     <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"سینی صندوق ورودی"</string>
     <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"بسته‌بندی"</string>
-    <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"نماد ایمیل"</string>
+    <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"نماد رایانامه"</string>
     <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"پاکت نامه ورودی"</string>
     <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"پاکت نامه با پیکان‌های رو به پایین در بالا"</string>
     <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"صندوق پستی بسته شده با پرچم پایین آمده"</string>
@@ -1053,7 +1053,7 @@
     <string name="spoken_emoji_1F62A" msgid="4726686726690289969">"صورتک خواب‌آلود"</string>
     <string name="spoken_emoji_1F62B" msgid="3221980473921623613">"صورتک خسته"</string>
     <string name="spoken_emoji_1F62C" msgid="4616356691941225182">"صورتک دهان‌کج"</string>
-    <string name="spoken_emoji_1F62D" msgid="4283677508698812232">"صورتک زار زنان"</string>
+    <string name="spoken_emoji_1F62D" msgid="4283677508698812232">"صورتک زارکنان"</string>
     <string name="spoken_emoji_1F62E" msgid="726083405284353894">"صورتک با دهان باز"</string>
     <string name="spoken_emoji_1F62F" msgid="7746620088234710962">"صورتک با علامت هیس"</string>
     <string name="spoken_emoji_1F630" msgid="3298804852155581163">"صورتک با دهان باز و عرق سرد"</string>
