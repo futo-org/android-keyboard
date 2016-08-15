@@ -46,7 +46,7 @@
     <string name="spoken_description_search" msgid="5099937658231911288">"Search"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"Dot"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"Switch language"</string>
-    <string name="spoken_description_action_next" msgid="431761808119616962">"Next"</string>
+    <string name="spoken_description_action_next" msgid="431761808119616962">"Naprijed"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"Previous"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Shift enabled"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Caps lock enabled"</string>
