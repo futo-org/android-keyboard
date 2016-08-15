@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ಯಾವುದೇ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ. ಭಾಷೆಗಳು &amp; ಇನ್‌ಪುಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ಭಾಷೆಗಳು"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"ಸಹಾಯ &amp; ಪ್ರತಿಕ್ರಿಯೆ"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"ಸಹಾಯ ಮತ್ತು ಪ್ರತಿಕ್ರಿಯೆ"</string>
     <string name="select_language" msgid="5709487854987078367">"ಭಾಷೆಗಳು"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"ಉಳಿಸಲು ಮತ್ತೊಮ್ಮೆ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"ಉಳಿಸಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
@@ -201,8 +201,8 @@
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ಭಾಷೆ:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"ಪದವನ್ನು ಟೈಪ್ ಮಾಡಿ"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ಐಚ್ಛಿಕ ಶಾರ್ಟ್‌ಕಟ್"</string>
-    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ಪದವನ್ನು ಸಂಪಾದಿಸಿ"</string>
-    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ಸಂಪಾದಿಸಿ"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ಪದವನ್ನು ಎಡಿಟ್ ಮಾಡಿ"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ಎಡಿಟ್"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ಅಳಿಸು"</string>
     <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ಬಳಕೆದಾರರ ನಿಘಂಟಿನಲ್ಲಿ ನೀವು ಯಾವುದೇ ಪದಗಳನ್ನು ಹೊಂದಿಲ್ಲ. ಪದವನ್ನು ಸೇರಿಸಲು, ಸೇರಿಸು (+) ಬಟನ್ ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"ಎಲ್ಲ ಭಾಷೆಗಳಿಗೆ"</string>
