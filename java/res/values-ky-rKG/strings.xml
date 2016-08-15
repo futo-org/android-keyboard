@@ -62,7 +62,7 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"Эки жолу боштук чекити"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Боштук баскычы эки жолу таптлгнда аркаснда боштгу бар чекит коюлт"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Авто чоң тамгалоо"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Ар бир сүйлөмдүн биринчи сөзүн чоң тамгалоо"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Ар бир сүйлөмдүн биринчи сөзүн чоң тамга менен жазып турат"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Жеке сөздүк"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Кошумча сөздүктөр"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Негизги сөздүк"</string>
@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Үн менен киргизүү ыкмаларынын бири да иштетилген эмес. Тил &amp; киргизүү жөндөөлөрүн текшериңиз."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Дайндрд киргзүү ыкмалрн конфигрцлоо"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тилдер"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"Жардам &amp; жооп пикир"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Жардам жана жооп пикир"</string>
     <string name="select_language" msgid="5709487854987078367">"Тилдер"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Сактоо үчүн кайра тийип коюңуз"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Сактоо үчүн бул жерди басыңыз"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Мындай жазуу стили мурунтан бар: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Басылган баскычтын дирлдөө узактгы"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Басылган баскычтын үнүнүн катуулугу"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Баскычты көпкө басууну кечиктирүү"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Баскычты көпкө басуунун узактыгы"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Тышкы тергич үчүн быйтыкчалар"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Alt баскычы басылганда быйтыкчалар тактасы көрүнөт"</string>
     <string name="button_default" msgid="3988017840431881491">"Демейки"</string>
