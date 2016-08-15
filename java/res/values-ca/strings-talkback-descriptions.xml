@@ -20,7 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_use_headphones" msgid="4313642710742229868">"Connecta uns auriculars per sentir les tecles que s\'utilitzen per introduir la contrasenya en veu alta."</string>
+    <string name="spoken_use_headphones" msgid="4313642710742229868">"Connecteu uns auriculars per sentir la contrasenya en veu alta"</string>
     <string name="spoken_current_text_is" msgid="4240549866156675799">"El text actual és %s."</string>
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"No s\'ha introduït cap text."</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> corregeix <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> per <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>."</string>
