@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="label_go_key" msgid="4033615332628671065">"သွားပါ"</string>
-    <string name="label_next_key" msgid="5586407279258592635">"ရှေ့ဆက်ရန်"</string>
+    <string name="label_next_key" msgid="5586407279258592635">"ရှေ့"</string>
     <string name="label_previous_key" msgid="1421141755779895275">"ယခင်က"</string>
     <string name="label_done_key" msgid="7564866296502630852">"လုပ်ပြီး"</string>
     <string name="label_send_key" msgid="482252074224462163">"ပို့ရန်"</string>
