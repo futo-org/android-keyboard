@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"사용 설정된 음성 입력 방법이 없습니다. 언어 및 입력 설정을 확인하세요."</string>
     <string name="configure_input_method" msgid="373356270290742459">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"언어"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"도움말 및 의견"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"고객센터"</string>
     <string name="select_language" msgid="5709487854987078367">"언어"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"저장하려면 다시 탭합니다."</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"저장하려면 여기를 탭합니다."</string>
