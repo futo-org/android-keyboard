@@ -79,7 +79,7 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Suger. de próxima palabra"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar la palabra anterior para hacer sugerencias"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activar escritura gestual"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Ingresa una palabra al deslizarte sobre las letras."</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Ingresa una palabra deslizando el dedo sobre las letras."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar recorrido de gesto"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Vista previa dinámica flotante"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Mira la palabra sugerida mientras haces gestos"</string>

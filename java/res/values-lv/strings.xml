@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Pareizrakst. pārbaudītājs lieto ierakstus no kontaktp. saraksta."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrēt, nospiežot taustiņu"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Skaņa, nospiežot taustiņu"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Nospiežot taustiņu, parādīt uznirstošo izvēlni"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Parādās, nospiežot taustiņu"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferences"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Konti un konfidencialitāte"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Izskats un izkārtojumi"</string>
