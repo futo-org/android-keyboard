@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"사용 설정된 음성 입력 방법이 없습니다. 언어 및 입력 설정을 확인하세요."</string>
     <string name="configure_input_method" msgid="373356270290742459">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"언어"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"도움말 및 의견"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"고객센터"</string>
     <string name="select_language" msgid="5709487854987078367">"언어"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"저장하려면 다시 터치"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"저장하려면 여기를 터치하세요."</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"추가 언어 설정"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"완료됨"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"앱 아이콘 표시"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"실행기에 애플리케이션 아이콘 표시"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"런처에 애플리케이션 아이콘 표시"</string>
     <string name="app_name" msgid="6320102637491234792">"사전 제공업체"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"사전 제공업체"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"사전 서비스"</string>

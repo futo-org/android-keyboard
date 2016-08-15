@@ -23,13 +23,13 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcións de entrada"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Buscar nomes de contactos"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"O corrector ortográfico utiliza entradas da lista de contactos"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao tocar as teclas"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao premer as teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son ao premer as teclas"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ventás emerxentes ao premer as teclas"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferencias"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Contas e privacidade"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Aparencia e deseños"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"Escritura xestual"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Escritura por xestos"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Corrección de texto"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Opcións avanzadas"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Moi agresiva"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Suxerir palabra seguinte"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utiliza a palabra anterior para facer suxestións"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Activar escritura con xestos"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Activar escritura por xestos"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Pasa o dedo entre as letras para introducir unha palabra"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar percorrido dos xestos"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Vista previa flotante dinámica"</string>
@@ -115,7 +115,7 @@
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradicional)"</string>
     <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (compacto)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Ningún idioma (alfabeto)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabeto (QWERTY)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"alfabeto (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabeto (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Alfabeto (AZERTY)"</string>
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Alfabeto (Dvorak)"</string>
@@ -137,11 +137,11 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Duración vibración ao premer teclas"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume do son ao premer teclas"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Retraso de pulsación prolongada"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji para teclado físico"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emojis para o teclado físico"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"A tecla Alt física mostra a paleta de emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Benvido a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"con escritura xestual"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"con escritura por xestos"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Comezar"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Seguinte paso"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurando <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
