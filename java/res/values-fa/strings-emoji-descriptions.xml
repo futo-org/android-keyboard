@@ -459,7 +459,7 @@
     <string name="spoken_emoji_1F3AB" msgid="1657997517193216284">"بلیت"</string>
     <string name="spoken_emoji_1F3AC" msgid="4317366554314492152">"کلاکت"</string>
     <string name="spoken_emoji_1F3AD" msgid="607157286336130470">"هنرهای نمایشی"</string>
-    <string name="spoken_emoji_1F3AE" msgid="2902308174671548150">"بازی ویدیویی"</string>
+    <string name="spoken_emoji_1F3AE" msgid="2902308174671548150">"بازی ویدئویی"</string>
     <string name="spoken_emoji_1F3AF" msgid="5420539221790296407">"ضربه مستقیم"</string>
     <string name="spoken_emoji_1F3B0" msgid="7440244806527891956">"ماشین پولی"</string>
     <string name="spoken_emoji_1F3B1" msgid="545544382391379234">"بیلیارد"</string>
@@ -825,10 +825,10 @@
     <string name="spoken_emoji_1F4F7" msgid="2643891943105989039">"دوربین"</string>
     <!-- no translation found for spoken_emoji_1F4F8 (6874216216317936645) -->
     <skip />
-    <string name="spoken_emoji_1F4F9" msgid="4475626303058218048">"دوربین ویدیویی"</string>
+    <string name="spoken_emoji_1F4F9" msgid="4475626303058218048">"دوربین ویدئویی"</string>
     <string name="spoken_emoji_1F4FA" msgid="1079796186652960775">"تلویزیون"</string>
     <string name="spoken_emoji_1F4FB" msgid="3848729587403760645">"رادیو"</string>
-    <string name="spoken_emoji_1F4FC" msgid="8370432508874310054">"نوار ویدیویی"</string>
+    <string name="spoken_emoji_1F4FC" msgid="8370432508874310054">"نوار ویدئویی"</string>
     <!-- no translation found for spoken_emoji_1F4FD (992184090920043081) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F4FF (6566102135671766103) -->
