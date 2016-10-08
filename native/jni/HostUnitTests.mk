@@ -27,10 +27,9 @@ include $(CLEAR_VARS)
 include $(LOCAL_PATH)/NativeFileList.mk
 
 #################### Host library for unit test
-# TODO: Remove -std=c++11 once it is set by default on host build.
 LATIN_IME_SRC_DIR := src
 LOCAL_ADDRESS_SANITIZER := true
-LOCAL_CFLAGS += -std=c++11 -Wno-unused-parameter -Wno-unused-function
+LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
 LOCAL_CLANG := true
 LOCAL_CXX_STL := libc++
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
@@ -43,8 +42,7 @@ include $(BUILD_HOST_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LATIN_IME_TEST_SRC_DIR := tests
 LOCAL_ADDRESS_SANITIZER := true
-# TODO: Remove -std=c++11 once it is set by default on host build.
-LOCAL_CFLAGS += -std=c++11 -Wno-unused-parameter -Wno-unused-function
+LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
 LOCAL_CLANG := true
 LOCAL_CXX_STL := libc++
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
