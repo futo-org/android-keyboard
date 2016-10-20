@@ -95,7 +95,7 @@
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Հպեք այստեղ՝ պահելու համար"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Բառարանն առկա է"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Ստեղնաշարի թեման"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"Փոխարկել հաշիվները"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Անցնել մյուս հաշիվ"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"Հաշիվ չի ընտրվել"</string>
     <string name="account_selected" msgid="2846876462199625974">"Ներկայումս օգտագործում է՝ <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"Լավ"</string>
