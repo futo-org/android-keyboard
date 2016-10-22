@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Διαγραφή συγχρονισμένων δεδομένων από το cloud. Είστε βέβαιοι;"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Διαγραφή"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Ακύρωση"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Θα γίνει συγχρονισμός και δημιουργία αντιγράφων ασφαλείας του προσωπικού σας λεξικού στους διακομιστές της Google. Ενδέχεται να γίνεται συλλογή στατιστικών στοιχείων σχετικά με τη συχνότητα των λέξεων για τη βελτίωση των προϊόντων μας. Η συλλογή και χρήση όλων των πληροφοριών θα συμμορφώνεται με την "<a href="https://www.google.com/policies/privacy">"Πολιτική Απορρήτου της Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Θα γίνει συγχρονισμός και δημιουργία αντιγράφων ασφαλείας του προσωπικού σας λεξικού στους διακομιστές της Google. Ενδέχεται να γίνεται συλλογή στατιστικών στοιχείων σχετικά με τη συχνότητα των λέξεων για τη βελτίωση των προϊόντων μας. Η συλλογή και χρήση όλων των πληροφοριών θα συμμορφώνεται με την "<a href="https://www.google.com/policies/privacy">"Πολιτική απορρήτου της Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Προσθέσετε Λογαριασμό Google για να ενεργοποιήσετε τη λειτουργία"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Μη διαθέσιμος συγχρονισμός για συσκευές με λογ. Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Άλλη μέθοδος εισόδου"</string>
