@@ -130,10 +130,10 @@
     <string name="save" msgid="7646738597196767214">"Desa"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Idioma"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Disseny"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"El teu estil d\'entrada personalitzat ha d\'estar activat per poder fer-lo servir. Vols activar-lo ara?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"El teu estil d\'introducció personalitzat ha d\'estar activat per poder fer-lo servir. Vols activar-lo ara?"</string>
     <string name="enable" msgid="5031294444630523247">"Activa"</string>
     <string name="not_now" msgid="6172462888202790482">"Ara no"</string>
-    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ja existeix aquest estil d\'entrada: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ja existeix aquest estil d\'introducció: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durada vibració en prémer"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volum so en prémer tecla"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Retard en mantenir premut"</string>

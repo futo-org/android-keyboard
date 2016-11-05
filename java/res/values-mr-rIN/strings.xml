@@ -152,7 +152,7 @@
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> वर स्विच करा"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"पुढे, आपली सक्रिय मजकूर-इनपुट पद्धत म्हणून \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" निवडा."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"इनपुट पद्धती स्विच करा"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"अभिनंदन, आता आपण सज्ज आहात!"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"अभिनंदन, आता आपण तयार आहात!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"आता आपण <xliff:g id="APPLICATION_NAME">%s</xliff:g> सह आपल्या सर्व आवडत्या अॅप्समध्ये टाइप करू शकता."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"अतिरिक्त भाषा कॉन्फिगर करा"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त"</string>
