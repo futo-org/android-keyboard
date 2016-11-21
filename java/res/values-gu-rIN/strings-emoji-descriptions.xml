@@ -263,7 +263,7 @@
     <string name="spoken_emoji_1F235" msgid="5320186982841793711">"વર્ગાકાર આઇડિઓગ્રાફ પૂર્ણ દખલ"</string>
     <string name="spoken_emoji_1F236" msgid="879755752069393034">"વર્ગાકાર આઇડિઓગ્રાફ ચૂકવાયેલ"</string>
     <string name="spoken_emoji_1F237" msgid="6741807001205851437">"વર્ગાકાર આઇડિઓગ્રાફ માસિક"</string>
-    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"વર્ગાકાર આઇડિઓગ્રાફ એપ્લિકેશન"</string>
+    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"વર્ગાકાર આઇડિઓગ્રાફ ઍપ્લિકેશન"</string>
     <string name="spoken_emoji_1F239" msgid="1634067311597618959">"વર્ગાકાર આઇડિઓગ્રાફ ડિસ્કાઉન્ટ"</string>
     <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"વ્યવસાયમાં વર્ગાકાર આઇડિઓગ્રાફ"</string>
     <string name="spoken_emoji_1F250" msgid="6586943922806727907">"વર્તુળાકાર આઇડિઓગ્રાફ લાભ"</string>
@@ -651,7 +651,7 @@
     <string name="spoken_emoji_1F449" msgid="4764447975177805991">"સફેદ જમણી તરફનો બેકહેન્ડ ઇન્ડેક્સ"</string>
     <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"મુક્કાના હાથનું ચિહ્ન"</string>
     <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"લહેરાતા હાથનું ચિહ્ન"</string>
-    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"ઑકે કહેતું હાથનું ચિહ્ન"</string>
+    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"ઓકે કહેતું હાથનું ચિહ્ન"</string>
     <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"ઉપર અંગૂઠાનું ચિહ્ન"</string>
     <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"નીચે અંગૂઠાનું ચિહ્ન"</string>
     <string name="spoken_emoji_1F44F" msgid="5148753662268213389">"તાળી પાડતા હાથનું ચિહ્ન"</string>
@@ -772,8 +772,8 @@
     <string name="spoken_emoji_1F4C2" msgid="8095638715523765338">"ખુલ્લુ ફાઇલ ફોલ્ડર"</string>
     <string name="spoken_emoji_1F4C3" msgid="3727274466173970142">"કર્લ સાથે પૃષ્ઠ"</string>
     <string name="spoken_emoji_1F4C4" msgid="4382570710795501612">"ઉપર ફેસિંગવાળું પૃષ્ઠ"</string>
-    <string name="spoken_emoji_1F4C5" msgid="8693944622627762487">"કેલેન્ડર"</string>
-    <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"ટીઅર-ઑફ કેલેન્ડર"</string>
+    <string name="spoken_emoji_1F4C5" msgid="8693944622627762487">"કૅલેન્ડર"</string>
+    <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"ટીઅર-ઑફ કૅલેન્ડર"</string>
     <string name="spoken_emoji_1F4C7" msgid="2665313547987324495">"કાર્ડ અનુક્રમણિકા"</string>
     <string name="spoken_emoji_1F4C8" msgid="8007686702282833600">"ઉપર તરફ વલણ સાથેનો ચાર્ટ"</string>
     <string name="spoken_emoji_1F4C9" msgid="2271951411192893684">"નીચે તરફ વલણ સાથેનો ચાર્ટ"</string>
@@ -1082,7 +1082,7 @@
     <!-- no translation found for spoken_emoji_1F644 (446284817942609022) -->
     <skip />
     <string name="spoken_emoji_1F645" msgid="5202090629227587076">"સારું નહીંના હાવભાવ સાથેનો ચહેરો"</string>
-    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"ઑકે હાવભાવ સાથેનો ચહેરો"</string>
+    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"ઓકે હાવભાવ સાથેનો ચહેરો"</string>
     <string name="spoken_emoji_1F647" msgid="1090285518444205483">"તદ્દન હારેલ વ્યક્તિ"</string>
     <string name="spoken_emoji_1F648" msgid="8978535230610522356">"ખરાબ-જોશો-નહીંનો વાનર"</string>
     <string name="spoken_emoji_1F649" msgid="8486145279809495102">"ખરાબ-જોશો-નહીંનો વાનર"</string>
