@@ -56,20 +56,20 @@
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"Järjestelmän oletusarvo"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Ehdota yht.tietojen nimiä"</string>
-    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Käytä yhteystietojen nimiä ehdotuksissa ja korjauksissa"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Käytä yhteystietojen nimiä ehdotuksissa ja korjauksissa."</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Räätälöidyt ehdotukset"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> paremmaksi"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Kaksoisvälilyönti = piste"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Välilyönnin kaksoisnapautus lisää tekstiin pisteen ja välilyönnin"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Välilyönnin kaksoisnapautus lisää tekstiin pisteen ja välilyönnin."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automaattiset isot kirjaimet"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Kirjoita jokaisen lauseen ensimmäinen sana isolla alkukirjaimella"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Kirjoita jokaisen lauseen ensimmäinen sana isolla alkukirjaimella."</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Oma sanakirja"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Sanakirjalisäosat"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Pääsanakirja"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Näytä korjausehdotukset"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Näytä sanaehdotukset kirjoitettaessa"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Näytä sanaehdotukset kirjoitettaessa."</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Estä loukkaavat sanat"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Älä ehdota mahd. loukkaavia sanoja"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Älä ehdota mahd. loukkaavia sanoja."</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autom. korjaus"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Välilyönti ja -merkit korjaavat väärinkirjoitetut sanat"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Ei käytössä"</string>
@@ -79,20 +79,20 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Seuraavan sanan ehdotukset"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Käytä edellistä sanaa ehdotuksien perusteena"</string>
     <string name="gesture_input" msgid="826951152254563827">"Ota piirtokirjoitus käyttöön"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Syötä sana piirtämällä kirjaimet sormellasi"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Syötä sana piirtämällä kirjaimet sormellasi."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Näytä eleen jälki"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynaaminen kelluva esikatselu"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Näytä ehdotettu sana piirron aikana"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Ilmausele"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Lisää välilyöntejä eleiden aikana liukumalla välilyöntinäppäimelle"</string>
     <string name="voice_input" msgid="3583258583521397548">"Äänisyötenäppäin"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Äänen syöttötapoja ei ole otettu käyttöön. Tarkista Kieli ja syöttötapa -asetukset."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Äänen syöttötapoja ei ole otettu käyttöön. Tarkista Kielet ja syöttötapa ‑asetukset."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Määritä syöttötavat"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Kielet"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ohje ja palaute"</string>
     <string name="select_language" msgid="5709487854987078367">"Kielet"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tallenna koskettamalla uudelleen"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Tallenna koskettamalla tätä"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Tallenna koskettamalla uudelleen."</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Tallenna koskettamalla tätä."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sanakirja saatavilla"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Näppäimistöteema"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Vaihda tiliä"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Seuraava vaihe"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Sovelluksen <xliff:g id="APPLICATION_NAME">%s</xliff:g> asetukset"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Ota <xliff:g id="APPLICATION_NAME">%s</xliff:g> käyttöön"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Valitse <xliff:g id="APPLICATION_NAME">%s</xliff:g> Kieli ja syöttötapa -asetuksissa. Se antaa sovellukselle luvan toimia laitteessasi."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> on jo käytössä Kieli ja syöttötapa -asetuksissa, joten tämä vaihe on tehty. Siirrytään eteenpäin!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Valitse <xliff:g id="APPLICATION_NAME">%s</xliff:g> Kielet ja syöttötapa ‑asetuksissa. Se antaa sovellukselle luvan toimia laitteellasi."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> on jo otettu käyttöön Kielet ja syöttötapa ‑asetuksissa, joten tämä vaihe on valmis. Siirrytään eteenpäin!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Ota käyttöön asetuksissa"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Siirry sovellukseen <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Valitse <xliff:g id="APPLICATION_NAME">%s</xliff:g> käytössä olevaksi tekstinsyöttötavaksi."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Asenna"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Peruuta"</string>
     <string name="delete_dict" msgid="756853268088330054">"Poista"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Laitteesi käyttökielelle on saatavilla sanakirja.&lt;br/&gt; Suosittelemme <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-sanakirjan &lt;b&gt;lataamista&lt;/b&gt;, sillä se helpottaa laitteella kirjoittamista.&lt;br/&gt; &lt;br/&gt; Lataus kestää useimmiten muutaman minuutin 3G-yhteydellä. Latauksesta saatetaan periä maksu, ellei käytössäsi ole &lt;b&gt;rajoittamatonta tiedonsiirtopakettia&lt;/b&gt;.&lt;br/&gt; Jos et ole varma tiedonsiirtosopimuksesi tyypistä, etsi käyttöösi Wi-Fi-yhteys, niin lataus alkaa automaattisesti.&lt;br/&gt; &lt;br/&gt; Vinkki: voit ladata ja poistaa sanakirjoja mobiililaitteesi &lt;b&gt;Asetukset&lt;/b&gt;-valikon &lt;b&gt;Kieli ja syöttötapa&lt;/b&gt; -osiossa."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Mobiililaitteellasi valittuna olevalle kielelle (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>) on saatavilla sanakirja.&lt;br/&gt; Suosittelemme sanakirjan &lt;b&gt;lataamista&lt;/b&gt;, sillä se parantaa kirjoituskokemustasi.&lt;br/&gt; &lt;br/&gt; Lataus 3G-yhteydellä voi kestää pari minuuttia. Operaattorisi saattaa veloittaa sinua tiedonsiirrosta, jos &lt;b&gt;liittymäsi datamäärä ei ole rajoittamaton&lt;/b&gt;.&lt;br/&gt; Jos et ole varma, millainen liittymä sinulla on, muodosta yhteys Wi-Fi-verkkoon. Lataus käynnistyy tällöin automaattisesti.&lt;br/&gt; &lt;br/&gt; Vinkki: Voit ladata ja poistaa sanakirjoja avaamalla &lt;b&gt;Kielet ja syöttötapa ‑asetukset&lt;/b&gt; mobiililaitteesi &lt;b&gt;Asetukset&lt;/b&gt;-valikossa."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Lataa nyt (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> Mt)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Lataa Wi-Fi-yhteydellä"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Sanakirja on saatavilla kielelle <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Muokkaa sanaa"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Muokkaa"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Poista"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Käyttäjän sanakirjassa ei ole yhtään sanaa. Voit lisätä sanan koskettamalla Lisää (+) -painiketta."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Käyttäjän sanakirjassa ei ole sanoja. Lisää sana koskettamalla Lisää (+) ‑painiketta."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Kaikille kielille"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Lisää kieliä…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Poista"</string>

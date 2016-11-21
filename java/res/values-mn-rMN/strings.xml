@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Устгах"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Цуцлах"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Таны хувийн толь бичгийг синк хийж, Google-ийн серверүүд дээр хадгалж авч үлдэнэ. Манай бүтээгдэхүүнүүдийг сайжруулахад туслах зорилгоор үгийн давтамжийн статистик мэдээллийг цуглуулж болно. Бүх мэдээллийг "<a href="https://www.google.com/policies/privacy">"Google-ийн Нууцлалын бодлогын дагуу"</a>" цуглуулж, ашиглана."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Энэ горимыг идэвхжүүлэхийн тулд энэ төхөөрөмж рүү Google акаунт нэмж оруулна уу"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Энэ горимыг идэвхжүүлэхийн тулд энэ төхөөрөмж рүү Google бүртгэл нэмж оруулна уу"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Бизнес акаунтуудын Google Апп бүхий төхөөрөмжүүдэд синк хийх боломжгүй"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Оруулах өөр арга руу шилжүүлэх"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Хэл солих түлхүүрт өөр оруулах аргууд мөн багтсан байгаа"</string>
@@ -86,22 +86,22 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Хэллэгийн зангалт"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Зангалтын явцад зай авах товчин дээр гулсуулах замаар зай оруулах"</string>
     <string name="voice_input" msgid="3583258583521397548">"Дуун оруулгын товч"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Ямар ч дуу оруулах хэрэглүүр идэвхжээгүй байна. Хэл болон оруулалтын тохиргоог шалгана уу."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Дуу оруулах ямар ч аргыг идэвхжүүлээгүй байна. Хэл, оролтын тохиргоог шалгана уу."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Оруулах аргуудын тохиргоо"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Хэл"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Тусламж &amp; санал хүсэлт"</string>
     <string name="select_language" msgid="5709487854987078367">"Хэл"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Хадгалахын тулд дахин хүрнэ үү"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Хадгалахын тулд хүрнэ үү"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Хадгалахын тулд дахин товшино уу"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Хадгалахын тулд энд товшино уу"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Толь бичиг байна"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Гарын загвар"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"Акаунт сэлгэх"</string>
-    <string name="no_accounts_selected" msgid="2073821619103904330">"Акаунт сонгогдоогүй"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Бүртгэл сэлгэх"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"Бүртгэл сонгогдоогүй"</string>
     <string name="account_selected" msgid="2846876462199625974">"Одоо <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>-г ашиглаж байна"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"ТИЙМ"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"Цуцлах"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Гарах"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"Ашиглах акаунтаа сонгоно уу"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Ашиглах бүртгэлээ сонгоно уу"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англи (ИБ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англи (АНУ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Испани (АНУ)"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ижилхэн оруулах загвар байна: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Товч дарах чичиргээний хугацаа"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Товчны дууны хэмжээ"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Товч удаан дарах хугацааны тохиргоо"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Товчны удаан даралтын тохиргоо"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Бодит гарт зориулсан эможи"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Бодит Alt товчлуур нь эможи палитрыг харуулдаг"</string>
     <string name="button_default" msgid="3988017840431881491">"Үндсэн"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Дараагийн алхам"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>-г тохируулж байна"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>-г идэвхжүүлэх"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Өөрийн Хэл &amp; оруулах тохиргоон дотроос \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\"-г сонгоно уу. Ингэснээр таны төхөөрөмж дээр ажиллах зөвшөөрлийг өгөх болно."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> таны Хэл &amp;amp оруулах тохиргоонд аль хэдийн идэвхжүүлсэн байгаа учир энэ алхам хийгдсэн. Дараагийн алхам руу!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Хэл, оролтын тохиргоо хэсгээс \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\"-г сонгоно уу. Ингэснээр үүнийг таны төхөөрөмжид ажиллах зөвшөөрлийг өгөх болно."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>-г Хэл, оролтын тохиргоонд аль хэдийн идэвхжүүлснээр энэ алхам дууслаа. Дараагийн алхмыг хийцгээе!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Тохиргоо дотроос идэвхжүүлэх"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> рүү шилжих"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Дараа нь \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\"-г өөрийн идэвхтэй текст-оруулах аргаар сонгоно уу."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Суулгах"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Цуцлах"</string>
     <string name="delete_dict" msgid="756853268088330054">"Устгах"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Таны мобайл төхөөрөмж дээр сонгосон хэлний толь бичиг байна. &lt;br/&gt; Бид танд <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> хэлний толь бичиг &lt;b&gt; татаж аван &lt;/ б&gt; бичихэд хялбар болгохыг зөвлөж байна. &lt;br/&gt; &lt;br/&gt; Татаж авахад 3G дээр нэг, хоёр минут болж магадгүй. Хэрэв та  &lt;b&gt; хязгааргүй дата ашиглах эрхтэй &lt;/ б&gt; биш бол нэмэлт төлбөр гарч болно. Хэрэв та өөрийн дата ашиглалтын эрхийг сайн мэдэхгүй байгаа бол Wi-Fi холболт ашиглан автоматаар татан авахыг эхлүүлэхийг зөвлөж байна.&lt;br/&gt; &lt;br/&gt; &lt;br/&gt; Зөвлөмж: Та өөрийн мобайл төхөөрөмжийн &lt;b&gt; тохиргоо &lt;/ б&gt; цэсэнд &lt;/ б&gt; Хэл &amp; оролт &lt;b&gt; руу очиж толь бичиг татаж авах, устгах боломжтой."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Таны мобайл төхөөрөмждөө сонгосон хэлний толь бичиг боломжтой байна.&lt;br/&gt; Та бичих хэрэглээгээ сайжруулахын тулд <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> толийг &lt;b&gt;татах&lt;/b&amp;gt-г зөвлөж байна.&lt;br/&gt; &lt;br/&gt; 3G-р татахад 1-2 минут болно. Танд &lt;b&gt;хязгааргүй дата хэрэглээ&lt;/b&gt;.&lt;br/&gt; байхгүй бол төлбөр ногдож болзошгүй. Та датаны төрлөө мэдэхгүй байгаа бол  автоматаар татаж эхлэхийн тулд Wi-Fi холболттой газар олно уу.&lt;br/&gt; &lt;br/&gt; Зөвлөмж: Та утасныхаа цэсний <b>Тохиргоо</b> хэсгийн &lt;b&gt;Хэл, оролт&lt;/b&gt;хэсэгт толь бичиг нэмэх, устгах боломжтой."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Одоо татах (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi-р татаж авах"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> хэлний толь ашиглах боломжтой"</string>
@@ -195,7 +195,7 @@
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Хэллэг"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Нэмэлт сонголтууд"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Цөөн сонголт"</string>
-    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"Тийм"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"OK"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Үг:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Товчилбор:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Хэл:"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Үг засах"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Засах"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Устгах"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Таны хэрэглэгчийн толинд ямар ч үг алга байна. Нэмэх (+) товчинд хүрэн үг нэмнэ үү."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Таны хэрэглэгчийн толь бичигт ямар ч үг байхгүй байна. Үг нэмэхийн тулд Нэмэх (+) товчлуурыг дарна уу."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Бүх хэлэнд"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Өөр хэлүүд…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Устгах"</string>

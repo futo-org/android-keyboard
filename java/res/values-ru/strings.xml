@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Использовать имена контактов при проверке правописания"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Увеличивать при нажатии"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Настройки"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Аккаунты"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Вид и раскладки"</string>
@@ -36,7 +36,7 @@
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Включить разделенную клавиатуру"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Синхронизировать Клавиатуру"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Синхронизация включена"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизировать пользовательский словарь со всеми устройствами"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Синхронизировать личный словарь со всеми устройствами"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Синхронизировать"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Удалить данные с серверов Google"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Удаление синхронизированных данных из Google"</string>
@@ -63,7 +63,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Вводить точку с пробелом двойным нажатием пробела."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Писать первое слово предложения с прописной буквы"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Пользовательский словарь"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Личный словарь"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дополнительные словари"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Основной словарь"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Варианты исправлений"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Непрерывный ввод фраз"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Проводите по клавише пробела после каждого слова"</string>
     <string name="voice_input" msgid="3583258583521397548">"Кнопка голосового ввода"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Голосовой способ ввода не включен. Проверьте раздел настроек \"Язык и ввод\"."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Голосовой способ ввода не включен. Проверьте раздел настроек \"Язык и ввод\"."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Настройка способов ввода"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Выберите язык"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Справка/отзыв"</string>
     <string name="select_language" msgid="5709487854987078367">"Язык"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Нажмите, чтобы сохранить"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Нажмите, чтобы сохранить"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Чтобы сохранить, нажмите ещё раз"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Чтобы сохранить, нажмите здесь"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Доступен словарь"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавиатуры"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Сменить аккаунт"</string>
@@ -123,7 +123,7 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Латиница (ПК)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Эмодзи"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Тема клавиатуры"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Персонализированные стили"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Свои стили ввода"</string>
     <string name="add_style" msgid="6163126614514489951">"Добавить стиль"</string>
     <string name="add" msgid="8299699805688017798">"Добавить"</string>
     <string name="remove" msgid="4486081658752944606">"Удалить"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Далее"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>: настройка"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>: включение"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Установите флажок <xliff:g id="APPLICATION_NAME">%s</xliff:g> в меню \"Язык и ввод\", чтобы использовать этот способ ввода на устройстве."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Приложение <xliff:g id="APPLICATION_NAME">%s</xliff:g> уже включено в настройках языка и ввода, поэтому можно перейти к следующему шагу."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Чтобы включить приложение \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\", установите флажок рядом с его названием в настройках языка и ввода."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Приложение \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" уже включено в настройках языка и ввода. Перейдите к следующему шагу."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Включить в настройках"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>: активация"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Выберите приложение \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" как текущий способ ввода."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Установить"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Отмена"</string>
     <string name="delete_dict" msgid="756853268088330054">"Удалить"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Доступен словарь для проверки правописания (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>).&lt;br/&gt;Рекомендуем &lt;b&gt;установить&lt;/b&gt; его, чтобы быстрее вводить текст.&lt;br/&gt;&lt;br/&gt;Если вашим тарифом предусмотрена &lt;b&gt;безлимитная передача данных&lt;/b&gt;, словарь можно загрузить через сеть 3G (это займет всего пару минут).&lt;br/&gt;Если вы не помните подробностей своего тарифного плана, лучше подключитесь к сети Wi-Fi (загрузка начнется автоматически).&lt;br/&gt;&lt;br/&gt;Совет. Чтобы добавлять, удалять и настраивать словари, откройте раздел &lt;b&gt;Язык и ввод&lt;/b&gt; в настройках устройства."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Доступен словарь для проверки правописания (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>).&lt;br/&gt;Рекомендуем &lt;b&gt;установить&lt;/b&gt; его – вам будет удобнее набирать тексты.&lt;br/&gt;&lt;br/&gt;Если у вас безлимитный &lt;b&gt;мобильный Интернет&lt;/b&gt;, словарь можно скачать по сети 3G. Это займет всего пару минут.&lt;br/&gt;Если вы не помните подробностей своего тарифного плана, лучше подключитесь к сети Wi-Fi (скачивание начнется автоматически).&lt;br/&gt;&lt;br/&gt;Совет. Чтобы добавлять, удалять и настраивать словари, откройте раздел &lt;b&gt;Язык и ввод&lt;/b&gt; в настройках устройства."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Загрузить (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> МБ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Загрузить через Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Доступен словарь: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Изменение слова"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Изменить"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Удалить"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"В словаре пользователя пока ничего нет. Добавлять слова можно с помощью кнопки \"Добавить ( + )\"."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"В пользовательском словаре пока ничего нет. Добавлять слова можно с помощью кнопки \"Добавить (+)\"."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Для всех языков"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Другой язык"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Удалить"</string>

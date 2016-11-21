@@ -23,9 +23,9 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"इनपुट पर्याय"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"संपर्क नावे शोधा"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"शब्दलेखन तपासक आपल्या संपर्क सूचीमधील प्रविष्ट्या वापरतो"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"कीप्रेस करताना होणारे कंपन"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"कीप्रेस करताना होणारा ध्वनी"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"कीप्रेस करताना पॉपअप"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"की दाबताना कंपन"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"की दाबताना आवाज"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"की दाबताना पॉपअप"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"प्राधान्ये"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"खाती आणि गोपनीयता"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"स्वरूप आणि लेआउट"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश जेश्चर"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"स्पेस की वर ग्लायडिंग करून जेश्चर दरम्यान स्थाने इनपुट करा"</string>
     <string name="voice_input" msgid="3583258583521397548">"व्हॉइस इनपुट की"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"व्हॉइस इनपुट पद्धती सक्षम केल्या नाहीत. भाषा आणि इनपुट सेटिंग्ज तपासा."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"कोणत्याही व्हॉइस इनपुट पद्धती सक्षम केल्या नाहीत. भाषा आणि इनपुट सेटिंग्ज तपासा."</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धती कॉन्फिगर करा"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"भाषा"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"मदत आणि अभिप्राय"</string>
     <string name="select_language" msgid="5709487854987078367">"भाषा"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"जतन करण्यासाठी पुन्हा स्पर्श करा"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"जतन करण्यासाठी येथे स्पर्श करा"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"जतन करण्यासाठी पुन्हा टॅप करा"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"जतन करण्यासाठी येथे टॅप करा"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"शब्दकोश उपलब्ध"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"खाती स्विच करा"</string>
@@ -134,8 +134,8 @@
     <string name="enable" msgid="5031294444630523247">"सक्षम करा"</string>
     <string name="not_now" msgid="6172462888202790482">"आता नाही"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"समान इनपुट शैली आधीपासूनच अस्तित्वात आहे: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कीप्रेस कंपन कालावधी"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कीप्रेस ध्वनी तीव्रता"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"की दाबल्यावर कंपन कालावधी"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"की दाबल्यावर आवाजाची तीव्रता"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"की जास्त दाबण्यात विलंब"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"वास्तविक कीबोर्डसाठी इमोजी"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"वास्तविक Alt की इमोजी पॅलेट दर्शविते"</string>
@@ -146,13 +146,13 @@
     <string name="setup_next_action" msgid="371821437915144603">"पुढील चरण"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> सेट अप करत आहे"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> सक्षम करा"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"कृपया आपल्या भाषेमध्ये आणि इनपुट सेटिंग्जमध्ये \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" तपासा. हे त्याचे आपल्या डिव्हाइसवर चालणे अधिकृत करेल."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> आपल्या भाषेत आणि इनपुट सेटिंग्जमध्ये आधीपासून सक्षम केले आहे, म्हणून हे चरण पूर्ण झाले आहे. पुढच्या चरणावर!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"कृपया आपल्या भाषांमध्ये आणि इनपुट सेटिंग्जमध्ये \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" तपासा. आपल्या डिव्हाइसवर चालण्यासाठी त्यास हे अधिकृत करेल."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> आपल्या भाषांमध्ये आणि इनपुट सेटिंग्जमध्ये आधीपासून सक्षम केला आहे, त्यामुळे हे चरण पूर्ण झाले आहे. पुढील चरणावर!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"सेटिंग्जमध्ये सक्षम करा"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> वर स्विच करा"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"पुढे, आपली सक्रिय मजकूर-इनपुट पद्धत म्हणून \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" निवडा."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"इनपुट पद्धती स्विच करा"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"अभिनंदन, आता आपण सज्ज आहात!"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"अभिनंदन, आता आपण तयार आहात!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"आता आपण <xliff:g id="APPLICATION_NAME">%s</xliff:g> सह आपल्या सर्व आवडत्या अॅप्समध्ये टाइप करू शकता."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"अतिरिक्त भाषा कॉन्फिगर करा"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"स्‍थापित करा"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द करा"</string>
     <string name="delete_dict" msgid="756853268088330054">"हटवा"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"आपल्या मोबाईल डिव्हाइसवर निवडलेल्या भाषेमध्ये शब्दकोश उपलब्ध आहे.&lt;br/&gt; आम्ही आपला टायपिंग अनुभव सुधारण्यासाठी <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोश &lt;b&gt;डाउनलोड करण्याची&lt;/b&gt; शिफारस करतो.&lt;br/&gt; &lt;br/&gt; डाउनलोड कऱण्यास 3G वर एक किंवा दोन मिनिट लागू शकतात. आपल्याकडे &lt;b&gt;अमर्यादित डेटा योजना&lt;/b&gt; नसल्यास शुल्क लागू शकते. आपल्याकडे असलेल्या डेटा योजनेबद्दल आपण सुनिश्चित नसल्यास, डाउनलोड स्वयंचलितपणे प्रारंभ करण्यासाठी वाय-फाय कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टीप: आपण आपल्या मोबाईल डिव्हाइसच्या &lt;b&gt;सेटिंग्ज&lt;/b&gt;मेनूमधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन शब्दकोश डाउनलोड करू आणि काढू शकता."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"आपल्या मोबाइल डिव्हाइस वरील निवडलेल्या भाषेमध्ये उपलब्ध असलेला शब्दकोश आहे.&lt;br/&gt; आपला टायपिंग अनुभव सुधारित करण्यासाठी <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोश &lt;b&gt;डाउनलोड&lt;/b&gt; करण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; 3G वरून डाउनलोड होण्यास एक किंवा दोन मिनिटे लागू शकतात. आपल्याकडे &lt;b&gt;अमर्यादित डेटा योजना&lt;/b&gt;.&lt;br/&gt; नसल्यास शुल्क लागू शकतात आपल्याकडे कोणती डेटा योजना आहे त्याबद्दल आपल्याला खात्री नसल्यास, डाउनलोड करण्यास स्वयंचलितपणे प्रारंभ करण्यासाठी वाय-फाय कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टीप: आपण आपल्या मोबाइल डिव्हाइसच्या <b>सेटिंग्ज</b> मेनू मधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन शब्दकोश डाउनलोड करू शकता आणि ते काढू शकता."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"आता डाउनलोड करा (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाय-फाय वर डाउनलोड करा"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> साठी शब्दकोश उपलब्ध आहे"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"शब्द संपादित करा"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"संपादित करा"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"हटवा"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"आपल्याकडे वापरकर्ता शब्दकोशात कोणतेही शब्द नाहीत. जोडा (+) बटणास स्पर्श करून शब्द जोडा."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"वापरकर्ता शब्दकोशात आपल्याकडे कोणतेही शब्द नाहीत. एक शब्द जोडण्यासाठी, जोडा (+) बटण टॅप करा."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"सर्व भाषांसाठी"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"अधिक भाषा..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"हटवा"</string>

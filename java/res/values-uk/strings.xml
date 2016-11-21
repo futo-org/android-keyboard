@@ -79,20 +79,20 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Пропозиції наступного слова"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Використовувати попереднє слово, щоб надавати пропозиції"</string>
     <string name="gesture_input" msgid="826951152254563827">"Увімкнути ввід жестами"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Вводити слово, пересуваючи палець по буквах"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Вводьте слова, проводячи пальцем по літерах"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Показувати слід жестів"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Показувати підказки"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Показувати пропоноване слово під час введення тексту жестами"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Безперервний ввід фраз"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Вставляйте пробіли, проводячи пальцем по клавіші пробілу"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ключ голосового вводу"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Способи голосового вводу не ввімкнено. Перейдіть у налаштування \"Мова та введення\"."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Способи голосового вводу не ввімкнено. Перейдіть у налаштування мови та введення."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Налаштування методів введення"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Мови"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Довідка й відгуки"</string>
     <string name="select_language" msgid="5709487854987078367">"Мови"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Торкніться знову, щоб зберегти"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Торкніться тут, щоб зберегти"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Торкніться ще раз, щоб зберегти"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Торкніться тут, щоб зберегти"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Словник доступний"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавіатури"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Змінити облік. запис"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Наступний крок"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Налаштування програми <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Увімкніть програму <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Виберіть \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" у налаштуваннях \"Мова та введення\", щоб дозволити запуск цієї програми на пристрої."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Програму <xliff:g id="APPLICATION_NAME">%s</xliff:g> уже ввімкнено в налаштуваннях мови та введення. Перейдіть до наступного кроку."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Виберіть додаток <xliff:g id="APPLICATION_NAME">%s</xliff:g> у налаштуваннях мови та введення, щоб дозволити його запуск на пристрої."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Додаток <xliff:g id="APPLICATION_NAME">%s</xliff:g> уже ввімкнено в налаштуваннях мови та введення. Перейдіть до наступного кроку."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Увімкнути в налаштуваннях"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Перейдіть до програми <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Далі виберіть \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" як поточний метод введення тексту."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Установити"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Скасувати"</string>
     <string name="delete_dict" msgid="756853268088330054">"Видалити"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Для вибраної на вашому мобільному пристрої мови доступний словник.&lt;br/&gt; Радимо &lt;b&gt;завантажити&lt;/b&gt; словник для цієї мови (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>), щоб покращити введення тексту.&lt;br/&gt; &lt;br/&gt; У мережі 3G завантаження триває 1–2 хвилини. Якщо у вас не &lt;b&gt;безлімітний тарифний план Інтернету&lt;/b&gt;, може стягуватися плата.&lt;br/&gt; Якщо ви не впевнені щодо тарифного плану, радимо скористатися з’єднанням Wi-Fi, щоб автоматично почати завантаження.&lt;br/&gt; &lt;br/&gt; Порада: завантажувати та видаляти словники можна в меню &lt;b&gt;Налаштування&lt;/b&gt; в розділі &lt;b&gt;Мова та введення&lt;/b&gt; вашого мобільного пристрою."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Для мови, яку ви вибрали на мобільному пристрої, доступний словник.&lt;br/&gt; Радимо &lt;b&gt;завантажити&lt;/b&gt; словник для цієї мови (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>), щоб покращити введення тексту.&lt;br/&gt; &lt;br/&gt; У мережі 3G завантаження триває 1–2 хвилини. Якщо у вас не &lt;b&gt;безлімітний тарифний план&lt;/b&gt;, може стягуватися плата.&lt;br/&gt; Якщо ви не знаєте, який у вас тарифний план, радимо скористатися з’єднанням Wi-Fi, щоб автоматично почати завантаження.&lt;br/&gt; &lt;br/&gt; Порада: завантажувати та видаляти словники можна в розділі &lt;b&gt;Мова та введення&lt;/b&gt; в меню &lt;b&gt;налаштувань&lt;/b&gt; мобільного пристрою."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Завантажити зараз (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> Mб)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Завантажити через Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Доступний словник для такої мови: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Редагувати слово"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Редагувати"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Видалити"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"У словнику користувача нічого немає. Додавати слова можна за допомогою кнопки \"Додати\" (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"У словнику користувача нічого немає. Щоб додати слово, торкніться кнопки \"Додати\" (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Для всіх мов"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Інші мови…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Видалити"</string>

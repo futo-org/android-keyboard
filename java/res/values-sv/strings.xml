@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frasrörelse"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Infoga blanksteg genom att dra fingret över blankstegstangenten"</string>
     <string name="voice_input" msgid="3583258583521397548">"Röstinmatningsknapp"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Ingen röstinmatningsmetod har aktiverats. Kontrollera språk- och inmatningsinställningarna."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Ingen röstinmatningsmetod har aktiverats. Kontrollera språk- och inmatningsinställningarna."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurera inmatningsmetoder"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Språk"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Hjälp och feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Språk"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Spara genom att trycka igen"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Tryck här om du vill spara"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Tryck igen om du vill spara"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Tryck här om du vill spara"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"En ordlista är tillgänglig"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tangentbordstema"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Byt konto"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Nästa steg"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Konfigurera <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Aktivera <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Markera <xliff:g id="APPLICATION_NAME">%s</xliff:g> i inställningarna för språk och inmatning så att appen kan köras."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> har redan aktiverats i inställningarna för Språk och inmatning och det här steget är färdigt. Fortsätt till nästa steg."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Markera <xliff:g id="APPLICATION_NAME">%s</xliff:g> i inställningarna för Språk och inmatning så att appen kan köras."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> har redan aktiverats i inställningarna för Språk och inmatning och det här steget är färdigt. Fortsätt till nästa steg."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktivera i inställningarna"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Byt till <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Välj sedan <xliff:g id="APPLICATION_NAME">%s</xliff:g> som din aktiva textinmatningsmetod."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Installera"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Avbryt"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ta bort"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Det finns en ordbok för språket du har valt på din mobila enhet.&lt;br/&gt; Vi rekommenderar att du &lt;b&amp;gtladdar ned&lt;/b&gt; ordboken på <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>. Då blir det enklare och smidigare att skriva.&lt;br/&gt; &lt;br/&gt; Laddningen tar en minut eller två om du använder 3G. Avgifter kan tillkomma om du inte har ett &lt;b&gt;abonnemang med obegränsad data&lt;/b&gt;.&lt;br/&gt; Om du inte är säker på vad som ingår i ditt abonnemang rekommenderar vi att du hittar en Wi-Fi-anslutning och påbörjar nedladdningen automatiskt.&lt;br/&gt; &lt;br/&gt; Tips: Du kan ladda ned och ta bort ordböcker via &lt;b&gt;Språk och inmatning&lt;/b&gt; i menyn &lt;b&gt;Inställningar&lt;/b&gt; på din mobila enhet."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Det finns en ordbok för språket du har valt på din mobila enhet.&lt;br/&gt; Vi rekommenderar att du &lt;b&gt;laddar ned&lt;/b&gt; ordboken på <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>. Då blir det enklare och smidigare att skriva.&lt;br/&gt; &lt;br/&gt; Nedladdningen tar en minut eller två om du använder 3G. Avgifter kan tillkomma om du inte har ett &lt;b&gt;abonnemang med obegränsad data&lt;/b&gt;.&lt;br/&gt; Om du inte är säker på vad som ingår i ditt abonnemang rekommenderar vi att du hittar en Wi-Fi-anslutning och påbörjar nedladdningen automatiskt.&lt;br/&gt; &lt;br/&gt; Tips: Du kan ladda ned och ta bort ordböcker via &lt;b&gt;Språk och inmatning&lt;/b&gt; i menyn &lt;b&gt;Inställningar&lt;/b&gt; på din mobila enhet."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Ladda ned nu (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Ladda ned via Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"En ordlista för <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> är tillgänglig"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Redigera ord"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Redigera"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Ta bort"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Det finns inga ord i användarordlistan. Du kan lägga till ord med knappen Lägg till (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Du har inga ord i din egen ordlista. Tryck på knappen Lägg till (+) om du vill lägga till ett ord."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"För alla språk"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Fler språk ..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Ta bort"</string>

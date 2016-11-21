@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"אפשרויות קלט"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"חפש שמות של אנשי קשר"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"חיפוש שמות של אנשי קשר"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"בודק האיות משתמש בערכים מרשימת אנשי הקשר שלך"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"רטט בלחיצה על מקשים"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"צלילים בעת לחיצה על מקשים"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"הקלדה רציפה של משפט"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"הזן רווחים במהלך התנועה על ידי החלקה אל מקש הרווח"</string>
     <string name="voice_input" msgid="3583258583521397548">"מקש קלט קולי"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"לא הופעלו שיטות של קלט קולי. בדוק את הגדרות השפה והקלט."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"לא הופעלו שיטות של קלט קולי. בדוק את הגדרות השפה והקלט."</string>
     <string name="configure_input_method" msgid="373356270290742459">"הגדרת שיטות קלט"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"שפות"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"עזרה ומשוב"</string>
     <string name="select_language" msgid="5709487854987078367">"שפות"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"גע שוב כדי לשמור"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"גע כאן כדי לשמור"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"הקש שוב כדי לשמור"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"הקש כאן כדי לשמור"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"מילון זמין"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"עיצוב מקלדת"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"החלף חשבונות"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"השלב הבא"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"הגדרת <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"הפעל את <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"סמן את \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" בהגדרות השפה והקלט שלך. פעולה זו תאפשר לו לפעול במכשיר שלך."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> כבר פועל בשפה שלך ובהגדרות הקלט, כך שהשלב הזה הסתיים. הלאה אל השלב הבא!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"סמן את \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" בהגדרות השפה והקלט שלך. פעולה זו תאפשר לה לפעול במכשיר."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"האפליקציה <xliff:g id="APPLICATION_NAME">%s</xliff:g> כבר פועלת בהגדרות השפה והקלט שלך, אז השלב הזה הסתיים. ממשיכים הלאה לשלב הבא!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"הפעל בהגדרות"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"עבור אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"בשלב הבא, בחר ב-\'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' כאמצעי הקלט הפעיל להזנת טקסט."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"התקן"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"בטל"</string>
     <string name="delete_dict" msgid="756853268088330054">"מחק"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"‏יש מילון זמין עבור השפה הנבחרת במכשיר הנייד שלך.&lt;br/&gt; אנחנו ממליצים &lt;b&gt;להוריד&lt;/b&gt; את המילון ב<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> לשיפור חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; ייתכן שההורדה תארך דקה או שתיים ברשת דור שלישי. ייתכנו חיובים אם אין לך &lt;b&gt;תכנית נתונים ללא הגבלה&lt;/b&gt;.&lt;br/&gt; אם אינך בטוח איזו תכנית נתונים יש לך, אנחנו ממליצים למצוא חיבור Wi-Fi כדי להתחיל את ההורדה באופן אוטומטי.&lt;br/&gt; &lt;br/&gt; טיפ: ניתן להוריד ולהסיר מילונים על ידי מעבר אל &lt;b&gt;שפה וקלט&lt;/b&gt; בתפריט &lt;b&gt;הגדרות&lt;/b&gt; של המכשיר הנייד."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"‏לשפה הנבחרת בנייד שלך יש מילון זמין.&lt;br/&gt; אנחנו ממליצים &lt;br/&gt;להוריד&lt;br/&gt; את המילון בשפה ה<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> כדי לשפר את חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; תהליך ההורדה עשוי לקחת כדקה או שתיים ברשת 3G. ייתכן שתחויב בתשלום אם אין לך &lt;b&gt;תוכנית נתונים ללא הגבלה&lt;b&gt;&lt;b&gt; אם אינך בטוח איזו תוכנית נתונים יש לך, אנחנו ממליצים למצוא חיבור Wi-Fi כדי להתחיל בהורדה באופן אוטומטי.&lt;br/&gt;&lt;br/&gt; טיפ: ניתן להוריד מילונים ולהסיר אותם על ידי מעבר אל &lt;b&gt;שפות וקלט&lt;b&gt; בתפריט &lt;b&gt;הגדרות&lt;b&gt; בנייד."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"‏הורד עכשיו (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏הורד באמצעות Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"יש מילון זמין עבור <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"עריכת מילה"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ערוך"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"מחק"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"לא מוגדרות מילים במילון המשתמש. הוסף מילה על ידי נגיעה בלחצן \'הוסף\' (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"לא מוגדרות מילים במילון המשתמש. הוסף מילה על ידי הקשה על לחצן \'הוסף\' (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"לכל השפות"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"עוד שפות…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"מחק"</string>
