@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Igama lokuthinta"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Faka izikhala ngesikhathi sokuthinta ngokushelelela kukhiye wesikhala"</string>
     <string name="voice_input" msgid="3583258583521397548">"Inkinobho yokufaka izwi"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Azikho izindlela zokufaka zezwi ezinikwe amandla. Hlola izilungiselelo zolimi kanye nezokufaka."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Azikho izindlela zokufaka zezwi ezinikwe amandla. Hlola izilungiselelo zolimi kanye nezokufaka."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Misa izindlela zokufakwayo"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Izilimi"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Usizo nempendulo"</string>
     <string name="select_language" msgid="5709487854987078367">"Izilimi"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Thinta futhi ukuze ulondoloze"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Thinta lapha ukuze ulondoloze"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Thepha futhi ukuze ulondoloze"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Thepha lapha ukuze ulondoloze"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Isichazamazwi siyatholakala"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Indikimba yekhibhodi"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Shintshanisa ama-akhawunti"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Isinyathelo esilandelayo"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Kusethwa i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Nika amandla i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Sicela uhlole i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ngolimi lwakho nezilungiselelo zokokufaka. Lokhu kuzoyigunyaza ukuthi isebenze kudivayisi yakho."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"I-<xliff:g id="APPLICATION_NAME">%s</xliff:g> isivele inikwe amandla kulimi lwakho nakuzilungiselelo zokufaka, ngakho-ke lesi sinyathelo senziwe. Qhubekela kwesilandelayo!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Sicela uhlole i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kulimi lwakho nezilungiselelo zokokufaka. Lokhu kuzoyigunyaza ukuthi isebenze kudivayisi yakho."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"I-<xliff:g id="APPLICATION_NAME">%s</xliff:g> isivele inikwe amandla kulimi lwakho nakuzilungiselelo zokufaka, ngakho-ke lesi sinyathelo senziwe. Qhubekela kwesilandelayo!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Nika amandla kuzilungiselelo"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Shintshela ku-<xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Okulandelayo, khetha i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" njengendlela yakho yokufaka umbhalo osebenzayo."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Faka"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Khansela"</string>
     <string name="delete_dict" msgid="756853268088330054">"Susa"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ulimi olukhethiwe kudivayisi yakho yeselula lunesichazamazwi esitholakalayo.&lt;br/&gt; Sincoma &lt;b&gt;ukulanda&lt;/b&gt; isichazamazwi se-<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ukuze sithuthukise umuzwa wakho wokuthayipha.&lt;br/&gt; &lt;br/&gt; Ukulanda kungathatha iminithi noma amabili ngaphezulu kwe-3G. Ukukhokhiswa kungasebenza uma unganalo &lt;b&gt;uhlelo lwedatha elingenamkhawulo&lt;/b&gt;.&lt;br/&gt; Uma ungenaso isiqiniseko sokuthi ukuliphi uhlelo lwedatha, sincoma ukuthi uthole ukuxhumeka kwe-Wi-Fi ukuze uqale ukulanda ngokuzenzakalela.&lt;br/&gt; &lt;br/&gt; Ithiphu: Ungalanda uphinde ususe izichazamazwi ngokuya ku-&lt;b&gt;Ulimi nokokufaka&lt;/b&gt; kumenyu ye-&lt;b&gt;Izilungiselelo&lt;/b&gt; zedivayisi yakho yeselula."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Ulimi olukhethiwe kudivayisi yakho yeselula lunesichazamazwi.&lt;br/&gt; Sincoma ukuthi &lt;b&gt;ulande&lt;/b&gt; isichazamazwi se-<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ukuze uthuthukise umuzwa wakho wokuthayipha.&lt;br/&gt; &lt;br/&gt; Ukulanda kungathatha iminithi noma amabili nge-3G. Izindleko zingasebenza uma ungenalo &lt;b&gt;icebo ledatha elingakhawulelwe&lt;/b&gt;.&lt;br/&gt; Uma ungenasiqiniseko sokuthi iliphi icebo ledatha onalo, sincoma ukuthi uthole uxhumo lwe-Wi-Fi ukuze uqale ukulanda ngokuzenzakalela.&lt;br/&gt; &lt;br/&gt; Ithiphu: Ungalanda futhi ususe izichazamazwi ngokuya kokuthi &lt;b&gt;Izilimi nokufaka&lt;/b&gt; kumenyu &lt;b&gt;izilungiselelo&lt;/b&gt; kudivayisi yakho yeselula."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Landa manje (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Landa nge-Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Isichazamazwi sitholakalela i-<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Hlela igama"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Hlela"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Susa"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Awunawo amagama kwisichazamazwi somsebenzisi. Ungafaka igama ngokuthinta inkinobho yokufaka (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Awunawo amagama kwisichazamazwi somsebenzisi. Ukuze ungeze igama, thepha inkinobho (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Okwazo zonke izilimi"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Izilimi eziningi…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Susa"</string>

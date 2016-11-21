@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gebaar voor woordgroep"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Spaties invoeren door naar de spatietoets te bewegen"</string>
     <string name="voice_input" msgid="3583258583521397548">"Toets voor spraakinvoer"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Geen spraakinvoermethoden ingeschakeld. Ga naar \'Instellingen voor taal en invoer\'."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Geen spraakinvoermethoden ingeschakeld. Bekijk de instellingen bij \'Talen en invoer\'."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Invoermethoden configureren"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Talen"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Help en feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Talen"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tik nogmaals om op te slaan"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Tik hier om op te slaan"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Tik nogmaals om op te slaan"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Tik hier om op te slaan"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Woordenboek beschikbaar"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Toetsenbordthema"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Schakelen tussen accounts"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Volgende stap"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> instellen"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> inschakelen"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Vink \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' aan in \'Instellingen voor taal en invoer\'. De app kan dan worden uitgevoerd op je apparaat."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is al ingeschakeld in \'Instellingen voor taal en invoer\', dus deze stap is voltooid. Op naar de volgende!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Vink \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' aan in de instellingen bij \'Talen en invoer\'. De app kan dan worden uitgevoerd op je apparaat."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is al ingeschakeld in de instellingen bij \'Talen en invoer\', dus deze stap is voltooid. Op naar de volgende!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Inschakelen in \'Instellingen\'"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Overschakelen naar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Selecteer vervolgens \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' als actieve tekstinvoermethode."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Installeren"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Annuleren"</string>
     <string name="delete_dict" msgid="756853268088330054">"Verwijderen"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Er is een woordenboek beschikbaar voor de geselecteerde taal op je mobiele apparaat.&lt;br/&gt; We raden je aan het woordenboek voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> te &lt;b&gt;downloaden&lt;/b&gt; om je typvaardigheid te verbeteren.&lt;br/&gt; &lt;br/&gt; De download kan één of twee minuten duren via 3G. Er kunnen kosten worden berekend als je geen &lt;b&gt;onbeperkt gegevensabonnement&lt;/b&gt; hebt.&lt;br/&gt; Als je niet zeker weet welk gegevensabonnement je hebt, raden we je aan een wifi-verbinding te zoeken om de download automatisch te starten.&lt;br/&gt; &lt;br/&gt; Tip: je kunt woordenboeken downloaden en verwijderen via &lt;b&gt;Taal en invoer&lt;/b&gt; in het menu &lt;b&gt;Instellingen&lt;/b&gt; van je mobiele apparaat."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Er is een woordenboek voor de geselecteerde taal beschikbaar op je mobiele apparaat.&lt;br/&gt; We raden je aan het woordenboek voor <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> te &lt;b&gt;downloaden&lt;/b&gt; om je typvaardigheid te verbeteren.&lt;br/&gt; &lt;br/&gt; De download kan één of twee minuten duren via 3G. Er kunnen kosten worden berekend als je geen &lt;b&gt;onbeperkt gegevensabonnement&lt;/b&gt; hebt.&lt;br/&gt; Als je niet zeker weet welk gegevensabonnement je hebt, raden we je aan een wifi-verbinding te zoeken om de download automatisch te starten.&lt;br/&gt; &lt;br/&gt; Tip: je kunt woordenboeken downloaden en verwijderen via &lt;b&gt;Talen en invoer&lt;/b&gt; in het menu &lt;b&gt;Instellingen&lt;/b&gt; van je mobiele apparaat."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Nu downloaden (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Downloaden via wifi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Er is een woordenboek beschikbaar voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Woord bewerken"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Bewerken"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Verwijderen"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Er staan geen woorden in het gebruikerswoordenboek. Je kunt een woord toevoegen door op de knop \'Toevoegen\' (+) te tikken."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Er staan geen woorden in het gebruikerswoordenboek. Tik op de knop Toevoegen (+) om een woord toe te voegen."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Voor alle talen"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Meer talen…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Verwijderen"</string>

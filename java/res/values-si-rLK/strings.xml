@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ජේද ඉංගිතය"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ඉංගිතයන් අතරතුර space යතුර වෙත ලිස්සීම මඟින් ඉඩ ඇතුල් කරන්න"</string>
     <string name="voice_input" msgid="3583258583521397548">"හඬ ආදාන යතුර"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"හඬ ආදාන සබල කර නැත. භාෂාව සහ ආදාන සැකසීම් පරීක්ෂා කරන්න."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"හඬ ආදාන ක්‍රම සබල කර නැත. භාෂාව සහ ආදාන සැකසීම් පරීක්ෂා කරන්න."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ආදාන ක්‍රම වින්‍යාස කරන්න"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"භාෂා"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"උදවු සහ ප්‍රතිපෝෂණ"</string>
     <string name="select_language" msgid="5709487854987078367">"භාෂා"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"සුරැකීමට නැවත ස්පර්ශ කරන්න"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"සුරැකීමට මෙතැන ස්පර්ෂ කරන්න"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"සුරැකීමට නැවත තට්ටු කරන්න"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"සුරැකීමට මෙහි තට්ටු කරන්න"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ශබ්ද කෝෂය ලබාගත හැක"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"යතුරු පුවරු තේමාව"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"ගිණුම් මාරු කරන්න"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"ඊළඟ පියවර"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> සැකසෙමින් පවතී"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> සබල කරන්න"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"කරණාකර ඔබගේ භාෂවෙහි සහ ආදාන සැකසීම් වල \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" පරික්ෂා කරන්න. මෙය ඔබගේ උපාංගය මත එයට ධාවනය වීමට අනුමැතිය දෙනු ඇත."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> දැනටමත් ඔබගේ භාෂාවෙන් සහ ආදාන සැකසීම්වල සබල කර ඇත, එම නිසා මෙම පියවර නිමයි. ඊළග එක වෙතට!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"කරණාකර ඔබගේ භාෂාව සහ ආදාන සැකසීම් තුළ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" පරීක්ෂා කරන්න. මෙය ඔබගේ උපාංගය මත එයට ධාවනය වීමට අනුමැතිය දෙනු ඇත."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> දැනටමත් ඔබගේ භාෂාව සහ ආදාන සැකසීම් තුළ සබල කර ඇත, එම නිසා මෙම පියවර නිමයි. ඊළඟ එක වෙතට!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"සැකසීම් තුළ සබල කරන්න"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> වෙත මාරුවන්න"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ඊළඟට, ඔබගේ සක්‍රිය පෙළ-ආදාන ක්‍රමය ලෙස \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" තෝරන්න."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ස්ථාපනය"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"අවලංගු කරන්න"</string>
     <string name="delete_dict" msgid="756853268088330054">"මකන්න"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ඔබගේ ජංගම උපාංගය මත තෝරාගත් භාෂාවට ලබාගත හැකි ශබ්ද කෝෂයක් ඇත.&lt;br/&gt; අප ඔබගේ ටයිප් කිරීමේ පළපුරුද්ද වැඩි දියුණු කිරීමට <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ශබ්ද කෝෂය &lt;b&gt;බාගැනීම&lt;/b&gt; නිර්දේශ කරමු.&lt;br/&gt; &lt;br/&gt; 3G හරහා බාගැනීම මිනිත්තුවක් හෝ දෙකක් ගත හැකිය. ඔබට &lt;b&gt;සීමාරහිත දත්ත සැලසුමක්&lt;/b&gt; නොමැති නම් ගාස්තු අදාළ විය හැක.&lt;br/&gt; ඔබට තිබෙන්නේ කුමන දත්ත සැලසුමක්ද යන්න පිළිබඳ විශ්වාසයක් නොමැති නම්, බාගැනීම ස්වයංක්‍රියව ආරම්භ කිරීමට Wi-Fi සම්බන්ධයක් සොයා ගැනීම අප නිර්දේශ කරමු.&lt;br/&gt; &lt;br/&gt; ඉඟිය: ඔබට ඔබගේ ජංගම උපාංගයේ &lt;b&gt;සැකසීම්&lt;/b&gt; මෙනුව තුළ &lt;b&gt;භාෂාව සහ ආදානය&lt;/b&gt; වෙත යාම මගින් ශබ්දකෝෂ බාගැනීමට සහ ඉවත් කිරීමට හැක."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"ඔබේ ජංගම දුරකථනය මත ඔබ තෝරන ලද භාෂාවට ලබා ගත හැකි ශබ්ද කෝෂයක් ඇත.&lt;br/&gt; ඔබේ ටයිප් කිරීමේ අත්දැකීම වැඩි දියුණු කර ගැනීමට <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ශබ්ද කෝෂය &lt;b&gt;බාගැනීම&lt;/b&gt; කරන ලෙස අපි ඔබට නිර්දේශ කරමු.&lt;br/&gt; &lt;br/&gt; 3G හරහා බාගැනීම විනාඩියක් හෝ දෙකක් ගත හැකිය. ඔබට &lt;b&gt;සීමා රහිත දත්ත සැලසුමක්&lt;/b&gt; නැති නම් දත්ත ගාස්තු අදාළ විය හැකිය.&lt;br/&gt; ඔබට තිබෙන්නේ කුමන දත්ත සැලසුමක්ද යන්න ගැන ඔබට විශ්වාස නැති නම්, බාගැනීම ස්වයංක්‍රියව ඇරඹීමට Wi-Fi සබැඳුමක් භාවිත කරන්න.&lt;br/&gt; &lt;br/&gt; ඉඟිය: ඔබට ඔබේ ජංගම උපාංගයෙහි &lt;b&gt;සැකසීම්&lt;/b&gt; මෙනුව තුළ &lt;b&gt;භාෂා සහ ආදානය&lt;/b&gt; වෙත යාමෙන් ශබ්ද කෝෂ බාගැනීමට සහ ඉවත් කිරීමට හැකිය."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"දැන් බාගන්න (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi හරහා බාගන්න"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> සඳහා ශබ්දකෝෂයක් නොමැත"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"වචනය සංස්කරණය කරන්න"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"සංස්කරණය කරන්න"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"මකන්න"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"ඔබට පරිශීලක ශබ්ද කෝෂය තුළ වචන කිසිවක් නැත. එක් කරන්න (+) බොත්තම ස්පර්ශ කිරීම මගින් වචනයක් එක් කරන්න."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ඔබට පරිශීලක ශබ්ද කෝෂය තුළ වචන කිසිවක් නැත. වචනයක් එක් කිරීමට, එක් කිරීමේ (+) බොත්තම තට්ටු කරන්න."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"සියලු භාෂාවන් සඳහා"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"තවත් භාෂා…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"මකන්න"</string>

@@ -63,7 +63,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ກົດທີ່ປຸ່ມຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດແລ້ວຕາມດ້ວຍການຍະຫວ່າງ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ເຮັດໂຕພິມໃຫຍ່ອັດຕະໂນມັດ"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ເຮັດໂຕພິມໃຫຍ່ໃຫ້ໂຕອັກສອນທຳອິດຂອງແຕ່ລໃນປະໂຫຍກ"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ວັດຈະນານຸກົມສ່ວນໂຕ"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ວັດຈະນານຸກົມສ່ວນຕົວ"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ໂຕເສີມວັດຈະນານຸກົມ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ວັດຈະນານຸກົມຫຼັກ"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ສະແດງການແນະນຳຄຳທີ່ຖືກຕ້ອງ"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ການສະແດງທ່າທາງດ້ວຍປະໂຫຍກ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ໃສ່ຍະຫວ່າງເຂົ້າໄປໃນຂະນະທີ່ສະແດງທ່າທາງ ໂດຍການເລື່ອນໄປທີ່ປຸ່ມຍະຫວ່າງ"</string>
     <string name="voice_input" msgid="3583258583521397548">"ປຸ່ມປ້ອນຂໍ້ມູນດ້ວຍສຽງ"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ບໍ່ມີວິທີການປ້ອນສຽງເປີດນໍາໃຊ້. ໃຫ້ກວດເບິ່ງການຕັ້ງຄ່າໃນເມນູ ພາສາ &amp; ການປ້ອນຂໍ້ມູນ."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ບໍ່ມີວິທີການປ້ອນສຽງເປີດນໍາໃຊ້. ໃຫ້ກວດເບິ່ງການຕັ້ງຄ່າໃນເມນູ ພາສາ ແລະ ການປ້ອນຂໍ້ມູນ."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ຕັ້ງຄ່າຮູບແບບການປ້ອນຂໍ້ມູນ"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ພາ​ສາ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"ຊ່ວຍ​ເຫຼືອ &amp; ຄຳ​ຕິ​ຊົມ"</string>
     <string name="select_language" msgid="5709487854987078367">"ພາ​ສາ"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"ກົດອີກຄັ້ງເພື່ອບັນທຶກ"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"ແຕະ​ບ່ອນ​ນີ້​ເພື່ອ​ບັນ​ທຶກ"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"ແຕະອີກຄັ້ງເພື່ອບັນທຶກ"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"ແຕະບ່ອນນີ້ເພື່ອບັນທຶກ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ມີວັດຈະນານຸກົມ"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"ສີສັນແປ້ນພິມ"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"ສະລັບບັນຊີ"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"ຂັ້ນຕອນຕໍ່ໄປ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"ຕັ້ງຄ່າ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"ເປີດນຳໃຊ້ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"ກະລຸນາກວດເບິ່ງ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ໃນການຕັ້ງຄ່າພາສາ &amp; ການປ້ອນຂໍ້ມູນຂອງທ່ານ. ນີ້ຈະເປັນການອະນຸຍາດໃຫ້ມັນເຮັດວຽກໃນອຸປະກອນຂອງທ່ານ"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ຖືກເປີດນຳໃຊ້ໃນການຕັ້ງຄ່າພາສາ &amp; ການປ້ອນຂໍ້ມູນຂອງທ່ານແລ້ວ, ສະນັ້ນຂັ້ນຕອນນີ້ແມ່ນສຳເລັດໄປແລ້ວ. ໄປທີ່ຂັ້ນຕອນຕໍ່ໄປ!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"ກະລຸນາກວດເບິ່ງ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ໃນການຕັ້ງຄ່າພາສາ ແລະ ການປ້ອນຂໍ້ມູນຂອງທ່ານ. ນີ້ຈະເປັນການອະນຸຍາດໃຫ້ມັນເຮັດວຽກໃນອຸປະກອນຂອງທ່ານ."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ຖືກເປີດນຳໃຊ້ໃນການຕັ້ງຄ່າພາສາ ແລະ ການປ້ອນຂໍ້ມູນຂອງທ່ານແລ້ວ, ສະນັ້ນຂັ້ນຕອນນີ້ແມ່ນສຳເລັດໄປແລ້ວ. ໄປທີ່ຂັ້ນຕອນຕໍ່ໄປ!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"ເປີດນຳໃຊ້ໃນການຕັ້ງຄ່າ"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"ປ່ຽນເປັນ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ຕໍ່ໄປ, ເລືອກເອົາ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ເປັນຮູບແບບການປ້ອນຂໍ້ມູນຂອງທ່ານ."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ຕິດຕັ້ງ"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ຍົກເລີກ"</string>
     <string name="delete_dict" msgid="756853268088330054">"ລຶບ"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ພາ​ສາ​ທີ່​ເລືອກ​ໃນ​ອຸ​ປະ​ກອນ​ມື​ຖື​ຂອງ​ທ່າ​ນັ້ນ​ມີ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ທີ່​ສາ​ມາດ​ໃຊ້​ໄດ້.&lt;br/&gt; ພວ​ກ​ເຮົາ​ຂໍ​ແນະ​ນຳ​ໃຫ້ &lt;b&gt;ດາວ​ໂຫລດ&lt;/b&gt; ວັດ​ຈ​ະ​ນາ​ນຸ​ກົມ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ເພື່ອ​ປັບ​ປຸງ​ປະ​ສົບ​ການ​ໃນ​ການ​ພິມ​ຂອງ​ທ່ານ.&lt;br/&gt; &lt;br/&gt; ການ​ດາວ​ໂຫລດ​ອາດ​ໃຊ້​ເວ​ລາ​ສອງ​ສາມ​ນາ​ທີ​ຜ່ານ​ເຄືອ​ຂ່າຍ 3G. ທ່ານ​ອາ​ດ​ຖືກ​ຮຽກ​ເກັບ​ຄ່າ​ຂໍ້​ມູນ​ໄດ້​ຫາກ​ທ່ານບໍ່​ໄດ້​ໃຊ້ &lt;b&gt;ແພັກ​ເກດ​ຂໍ້​ມູນ​ແບບບໍ່​ຈຳ​ກັດ&lt;/b&gt;.&lt;br/&gt; ຫາກ​ທ່ານບໍ່​ແນ່​ໃຈ​ວ່າ​ທ່ານ​ໃຊ້​ແພັກ​ເກດ​ແບບ​ໃດ​ຢູ່ ພວກ​ເຮົາ​ຂໍ​ແນະ​ນຳ​ໃຫ້​ທ່ານ​ເຊື່ອມ​ຕໍ່ເຄືອ​ຂ່າຍ Wi-Fi ໃດ​ນຶ່ງ​ແທນ​ເພື່ອ​ເລີ່ມ​ຕົ້ນ​ການ​ດາວ​ໂຫລດ​ໂດຍ​ອັດ​ຕະ​ໂນ​ມັດ.&lt;br/&gt; &lt;br/&gt; ເຄັດ​ລັບ: ທ່ານ​ສາ​ມາ​ດ​ດາວ​ໂຫລດ ແລະ​ລຶບ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ອອກ​ໄດ້​ໂດຍ​ການ​ໄປ​ທີ່ &lt;b&gt;ພາ​ສາ &amp; ການ​ປ້ອນ​ຂໍ້​ມູນ&lt;/b&gt; ໃນ​ເມ​ນູ &lt;b&gt;ການ​ຕັ້ງ​ຄ່າ&lt;/b&gt; ຂອງ​ອຸ​ປະ​ກອນ​ມື​ຖື​ຂອງ​ທ່ານ."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"ພາສາທີ່ເລືອກໃນອຸປະກອນມືຖືຂອງທ່ານມີວັດຈະນານຸກົມທີ່ສາມາດໃຊ້ໄດ້.&lt;br/&gt; ພວກເຮົາແນະນຳໃຫ້ &lt;b&gt;ດາວໂຫລດ&lt;/b&gt; ວັດຈະນານຸກົມ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ເພື່ອປັບປຸງປະສົບການການພິມຂອງທ່ານ.&lt;br/&gt; &lt;br/&gt; ການດາວໂຫລດອາດໃຊ້ເວລາສອງສາມນາທີຜ່ານ 3G ເຊິ່ງອາດມີການຮຽກເກັບຄ່າຂໍ້ມູນໃນການດາວໂຫລດຫາກທ່ານບໍ່ມີ &lt;b&gt;ແພັກເກດແບບອັນລິມິດ&lt;/b&gt;.&lt;br/&gt; ຫາກທ່ານບໍ່ແນ່ໃຈວ່າໃຊ້ແພັກເກດໃດຢູ່, ພວກເຮົາແນະນຳໃຫ້ທ່ານຊອກຫາການເຊື່ອມຕໍ່ Wi-Fi ເພື່ອດາວໂຫລດໂດຍອັດຕະໂນມັດແທນ.&lt;br/&gt; &lt;br/&gt; ເຄັດລັບ: ທ່ານສາມາດດາວໂຫລດ ແລະ ລຶບວັດຈະນານຸກົມອອກໄດ້ໂດຍການໄປທີ່ &lt;b&gt;ພາສາ ແລະ ການປ້ອນຂໍ້ມູນເຂົ້າ&lt;/b&gt; ໃນເມນູ &lt;b&gt;ການຕັ້ງຄ່າ&lt;/b&gt; ຂອງອຸປະກອນມືຖືຂອງທ່ານ."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ດາວໂຫລດດຽວນີ້ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ດາວ​ໂຫລດຜ່ານ Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"ມີ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ທີ່​ສາ​ມາດ​ໃຊ້​ໄດ້​ກັບ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -200,11 +200,11 @@
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"ທາງລັດ:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ພາສາ:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"ພິມ​ຄໍາ​ສັບ​ໃດ​ນຶ່ງ"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ໂຕເລືອກທາງລັດ"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ຕົວເລືອກທາງລັດ"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ແກ້ໄຂຄຳສັບ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ແກ້ໄຂ"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ລຶບ"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"ທ່ານບໍ່ມີຄຳສັບໃດໆໃນວັດຈະນານຸກົມຜູ່ໃຊ້ເທື່ອ. ເພີ່ມຄຳສັບໄດ້ໂດຍການສຳພັດທີ່ປຸ່ມ ເພີ່ມ (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ທ່ານບໍ່ມີຄຳສັບໃດໆໃນວັດຈະນານຸກົມຜູ້ໃຊ້ເທື່ອ. ເພື່ອເພີ່ມຄຳສັບ, ໃຫ້ແຕະປຸ່ມເພີ່ມ (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"ສໍາ​ລັບ​ທຸກໆ​ພາ​ສາ"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ພາສາອື່ນໆ..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"ລຶບ"</string>

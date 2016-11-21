@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Setningabending"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Setja inn bil í bendingum með því að renna yfir á bilslána"</string>
     <string name="voice_input" msgid="3583258583521397548">"Raddinntakslykill"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Engar innsláttaraðferðir fyrir rödd virkar. Kannaðu stillingar tungumáls og innsláttar."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Engar innsláttaraðferðir fyrir rödd eru virkar. Kannaðu stillingar tungumáls og innsláttar."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Stilla innsláttaraðferðir"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Tungumál"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Hjálp og ábendingar"</string>
     <string name="select_language" msgid="5709487854987078367">"Tungumál"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Snertu aftur til að vista"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Snertu hér til að vista"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Ýttu aftur til að vista"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Ýttu hér til að vista"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Orðabók í boði"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Þema lyklaborðs"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Skipta um reikning"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Næsta skref"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Uppsetning <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Virkjaðu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Hakaðu við „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ í stillingum tungumáls og innsláttar. Þetta veitir því heimild til að keyra í tækinu."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> er þegar virkt í stillingum tungumáls og innsláttar og lokið hefur verið við þetta skref. Vindum okkur í næsta!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Hakaðu við „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ í stillingum tungumáls og innsláttar. Þetta veitir því heimild til að keyra í tækinu."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> er þegar virkt í stillingum tungumáls og innsláttar og lokið hefur verið við þetta skref. Vindum okkur í næsta!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Virkja í stillingum"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Skiptu yfir í <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Næst skaltu velja „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ sem virka innsláttaraðferð fyrir texta."</string>
@@ -183,12 +183,12 @@
     <string name="install_dict" msgid="180852772562189365">"Setja upp"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Hætta við"</string>
     <string name="delete_dict" msgid="756853268088330054">"Eyða"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Orðabók er í boði fyrir tungumálið sem valið er í fartækinu.&lt;br/&gt; Við mælum með því að þú &lt;b&gt;sækir&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> orðabók til að auðvelda þér innslátt.&lt;br/&gt; &lt;br/&gt; Niðurhalið gæti tekið nokkrar mínútur yfir 3G-kerfi. Kostnaður kann að hljótast af niðurhalinu ef þú ert ekki með &lt;b&gt;ótakmarkaða gagnaáskrift&lt;/b&gt;.&lt;br/&gt; Ef þú ert ekki viss um hvernig gagnaáskrift þú ert með er mælt með að þú tengist Wi-Fi til að hefja niðurhalið sjálfkrafa.&lt;br/&gt; &lt;br/&gt; Ábending: Þú getur sótt og fjarlægt orðabækur undir &lt;b&gt;Tungumál og innsláttur&lt;/b&gt; í valmyndinni &lt;b&gt;Stillingar&lt;/b&gt; í fartækinu."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Orðabók er í boði fyrir tungumálið sem valið er í fartækinu.&lt;br/&gt; Við mælum með því að þú &lt;b&gt;sækir&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> orðabók til að auðvelda þér innslátt.&lt;br/&gt; &lt;br/&gt; Niðurhalið gæti tekið nokkrar mínútur yfir 3G-kerfi. Kostnaður kann að hljótast af niðurhalinu ef þú ert ekki með &lt;b&gt;ótakmarkaða gagnaáskrift&lt;/b&gt;.&lt;br/&gt; Ef þú ert ekki viss um hvernig gagnaáskrift þú ert með er mælt með að þú tengist Wi-Fi til að hefja niðurhalið sjálfkrafa.&lt;br/&gt; &lt;br/&gt; Ábending: Þú getur sótt og fjarlægt orðabækur undir &lt;b&gt;Tungumál og innsláttur&lt;/b&gt; í valmyndinni &lt;b&gt;Stillingar&lt;/b&gt; í fartækinu."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Sækja núna (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Sækja í gegnum Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Orðabók er í boði fyrir <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Ýttu til að skoða og sækja"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Sækir: Tillögur fyrir <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> verða tilbúnar fljótlega."</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Sækir tillögur fyrir: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="version_text" msgid="2715354215568469385">"Útgáfa <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Bæta við"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Bæta við orðabók"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Breyta orði"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Breyta"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Eyða"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Engin orð eru í orðabók notanda. Bættu við orðum með því að snerta hnappinn Bæta við (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Engin orð eru í orðabók notanda. Bættu við orðum með því að ýta á hnappinn Bæta við (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Fyrir öll tungumál"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Fleiri tungumál…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Eyða"</string>

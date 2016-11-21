@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frazės gestas"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Atlikdami gestus įveskite tarpus perbraukę tarpo klavišą"</string>
     <string name="voice_input" msgid="3583258583521397548">"Įvesties balsu klavišas"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nėra jokių įgalintų įvesties balsu metodų. Patikrinkite kalbos ir įvesties nustatymus."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nėra jokių įgalintų įvesties balsu metodų. Patikrinkite nustatymus skiltyje „Kalba ir įvestis“."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigūruoti įvesties metodus"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Kalbos"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pagalba ir atsiliepimai"</string>
     <string name="select_language" msgid="5709487854987078367">"Kalbos"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Jei norite išsaugoti, palieskite dar kartą"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Palieskite čia, kad išsaugotumėte"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Palieskite dar kartą, kad išsaugotumėte"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Palieskite čia, kad išsaugotumėte"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Žodynas galimas"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klaviatūros tema"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Perjungti paskyras"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Kitas veiksmas"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"„<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ sąranka"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Įgalinkite „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Skiltyje „Kalbos ir įvesties nustatymai“ žr. „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ (progr. bus įgal. veikti įr.)."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"„<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ jau įgalinta jūsų „Kalbos ir įvesties nustatymuose“, todėl šis veiksmas yra atliktas. Galite pereiti prie kito!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Skiltyje „Kalbos ir įvesties nustatymai“ žr. „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“. Programa bus įgalinta veikti įrenginyje."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"„<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ jau įgalinta jūsų „Kalbos ir įvesties nustatymuose“, todėl šis veiksmas yra atliktas. Galite pereiti prie kito!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Įgalinti nustatymuose"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Perjungimas į „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Toliau pasirinkite „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ kaip aktyvų teksto įvesties metodą."</string>
@@ -183,7 +183,8 @@
     <string name="install_dict" msgid="180852772562189365">"Įdiegti"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Atšaukti"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ištrinti"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Galimas jūsų mobiliajame įrenginyje pasirinktos kalbos žodynas.&lt;br/&gt; Rekomenduojame &lt;b&gt;atsisiųsti&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> žodyną, kad patobulintumėte teksto įvedimą.&lt;br/&gt; &lt;br/&gt; Naudojant 3G ryšį atsisiuntimas užtruks vieną ar dvi minutes. Jei naudojate ne &lt;b&gt;neribotų duomenų planą&lt;/b&gt;, gali būti taikomi mokesčiai.&lt;br/&gt; Jei nesate tikri, kurį duomenų planą naudojate, rekomenduojame rasti „Wi-Fi“ ryšį, kad atsisiuntimas būtų pradėtas automatiškai.&lt;br/&gt; &lt;br/&gt; Patarimas: žodynus galite atsisiųsti ir pašalinti apsilankę mobiliojo įrenginio skiltyje &lt;b&gt;Kalba ir įvestis&lt;/b&gt;, esančioje meniu &lt;b&gt;Nustatymai&lt;/b&gt;."</string>
+    <!-- syntax error in translation for should_download_over_metered_prompt (6737084685073734292) org.xmlpull.v1.XmlPullParserException: expected: /string read: b (position:END_TAG </b>@1:781 in     <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Pasiekiamas mobiliajame įrenginyje pasirinktos kalbos žodynas.&lt;br/&gt; Rekomenduojame &lt;b&gt;atsisiųsti&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> žodyną, kad pagerintumėte savo teksto vedimo įgūdžius.&lt;br/&gt; &lt;br/&gt; Jei naudojamas 3G ryšys, atsisiuntimas truks kelias minutes. Jei neturite &lt;b&gt;neribotų duomenų plano&lt;/b&gt;, gali būti taikomi mokesčiai.&lt;br/&gt; Jei nežinote, kokį duomenų planą naudojate, rekomenduojame prisijungti prie „Wi-Fi“ ryšio, kad atsisiuntimas būtų pradėtas automatiškai.&lt;br/&gt; &lt;br/&gt; Patarimas: žodynus galite atsisiųsti ir pridėti mobiliajame įrenginyje nuėję į meniu <b>Nustatymai</b> skiltį &lt;b&gt;Kalbos ir įvestis</b>."</string>
+)  -->
     <string name="download_over_metered" msgid="1643065851159409546">"Atsisiųsti dabar (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Atsisiųsti per „Wi-Fi“"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Galimas <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> žodynas"</string>
@@ -204,7 +205,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Redaguoti žodį"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Redaguoti"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Ištrinti"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Neturite jokių žodžių naudotojo žodyne. Žodį galite pridėti paliesdami mygtuką „Pridėti“ (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Neturite jokių žodžių naudotojo žodyne. Kad pridėtumėte žodį, palieskite mygtuką „Pridėti“ (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Visos kalbos"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Daugiau kalbų..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Ištrinti"</string>

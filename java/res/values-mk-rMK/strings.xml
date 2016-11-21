@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Движење за фрази"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Внеси празни места при движења со лизгање до тоа копче"</string>
     <string name="voice_input" msgid="3583258583521397548">"Копче за влез на глас"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Не се овозможени методи за гласовно внесување. Проверете ги поставките за Јазик и внесување."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Не се овозможени методи за гласовен запис. Проверете ги поставките за Јазици и внесување."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Конфигурирај методи на влез"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Јазици"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Помош и повратни информации"</string>
     <string name="select_language" msgid="5709487854987078367">"Јазици"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Допрете повторно за да се зачува"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Допри тука да се зачува"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Допрете повторно за да се зачува"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Допрете тука за да се зачува"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Речникот е достапен"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема на тастатурата"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Префрли сметки"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Следен чекор"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Се поставува <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Овозможи <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Означете „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ во поставките за јазик и влез. Со тоа ќе авторизирате да се активира на уредот."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> веќе е овозможена во поставките за јазик и влез, така што завршивте со овој чекор. Одете на следниот!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Означете ја апликацијата „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ во поставките за Јазици и внесување. Со тоа ќе авторизирате да се активира на уредот."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> веќе е овозможена во поставките за Jазици и внесување, така што завршивте со овој чекор. Одете на следниот."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Овозможи во Поставки"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Префрлете се на <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Следно, изберете „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ како активен метод за внесување текст."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Инсталирај"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Откажи"</string>
     <string name="delete_dict" msgid="756853268088330054">"Избриши"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"За избраниот јазик на мобилниот уред има достапен речник.&lt;br/&gt; Препорачуваме да го &lt;b&gt;преземете&lt;/b&gt; речникот за <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> јазик за да имате подобро искуство при пишувањето.&lt;br/&gt; &lt;br/&gt; Преземањето ќе трае една до две минути преку 3G. Можно е да имате трошоци доколку немате &lt;b&gt;план со неограничени податоци&lt;/b&gt;.&lt;br/&gt; Доколку не сте сигурни каков план на податоци имате, препорачуваме да најдете поврзување преку Wi-Fi за автоматски да започнете со преземање.&lt;br/&gt; &lt;br/&gt; Совет: може да преземате и отстранувате речници со одење на &lt;b&gt;Јазик и внесување&lt;/b&gt; во менито &lt;b&gt;Поставки&lt;/b&gt; во вашиот мобилен уред."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"За избраниот јазик на вашиот мобилен уред има достапен речник.&lt;br/&gt; Препорачуваме &lt;b&gt;да го преземете&lt;/b&gt; речникот за <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> јазик за да имате подобро искуство при пишувањето.&lt;br/&gt; &lt;br/&gt; Преземањето може да трае една до две минути преку 3G. Можно е да имате трошоци, доколку немате &lt;b&gt;план со неограничени податоци&lt;/b&gt;.&lt;br/&gt; Ако не сте сигурни каков план на податоци имате, ви препорачуваме да најдете врска преку Wi-Fi за да започнете со преземањето автоматски.&lt;br/&gt; &lt;br/&gt; Совет: може да преземате и да отстранувате речници со одење во &lt;b&gt;Јазици и внесување&lt;/b&gt; во менито &lt;b&gt;Поставки&lt;/b&gt; на вашиот мобилен уред."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Преземи сега (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> МБ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Преземено преку Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Достапен е речник за <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Уреди збор"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Уреди"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Избриши"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Немате зборови во корисничкиот речник. Додајте збор со допирање на копчето Додај (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Немате зборови во корисничкиот речник. За да додадете збор, допрете го копчето Додај (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"За сите јазици"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Повеќе јазици..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Избриши"</string>
