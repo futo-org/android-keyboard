@@ -77,7 +77,7 @@ LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(call all-java-files-under, \
                 tests $(DICTTOOL_COMPAT_TESTS_DIR) $(DICTTOOL_ONDEVICE_TESTS_DIR))
 
-LOCAL_JAVA_LIBRARIES := junit
+LOCAL_JAVA_LIBRARIES := junit-host
 LOCAL_STATIC_JAVA_LIBRARIES := jsr305lib latinime-common-host
 LOCAL_REQUIRED_MODULES := $(LATINIME_HOST_NATIVE_LIBNAME)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
