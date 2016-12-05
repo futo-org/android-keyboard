@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Tùy chọn nhập"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Tra cứu tên liên hệ"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Trình kiểm tra chính tả sử dụng các mục nhập từ danh bạ của bạn"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rung khi nhấn phím"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Âm thanh khi nhấn phím"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Bật lên khi nhấn phím"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Tùy chọn"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"Tài khoản và bảo mật"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"Giao diện và bố cục"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Nhập bằng cử chỉ"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Sửa văn bản"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Nâng cao"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"Chủ đề"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"Bật chia bàn phím"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Đồng bộ hóa Bàn phím Google"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"Đã bật tính năng đồng bộ hóa"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Đồng bộ hóa từ điển cá nhân của bạn trên các thiết bị"</string>
+    <string name="sync_now_title" msgid="3088838136743277721">"Đồng bộ hóa ngay bây giờ"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Xóa dữ liệu đám mây"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Xóa dữ liệu đã được đồng bộ hóa của bạn khỏi Google"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Dữ liệu đã đồng bộ hóa của bạn sẽ bị xóa khỏi đám mây. Bạn có chắc chắn không?"</string>
+    <string name="clear_sync_data_ok" msgid="613104067705915132">"Xóa"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Hủy"</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Từ điển cá nhân của bạn sẽ được đồng bộ hóa và sao lưu vào máy chủ Google. Chúng tôi có thể thu thập thông tin thống kê về tần suất của từ để giúp cải thiện sản phẩm của mình. Việc thu thập và sử dụng tất cả thông tin sẽ tuân thủ "<a href="https://www.google.com/policies/privacy">"Chính sách bảo mật của Google"</a>"."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Vui lòng thêm một tài khoản Google vào thiết bị này để bật tính năng này"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Tính năng đồng bộ hóa không khả dụng cho các thiết bị có tài khoản Google Apps for Business"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Phương thức nhập khác"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Khóa chuyển ngôn ngữ bao gồm cả các phương thức nhập liệu khác"</string>
+    <string name="show_language_switch_key" msgid="5915478828318774384">"Phím chuyển đổi ngôn ngữ"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Hiển thị khi nhiều ngôn ngữ đầu vào được bật"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Độ trễ ẩn phím bật lên"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Không trễ"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Mặc định"</string>
+    <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> mili giây"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"Mặc định của hệ thống"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Đề xuất tên liên hệ"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Sử dụng tên từ Danh bạ cho các đề xuất và chỉnh sửa"</string>
+    <string name="use_personalized_dicts" msgid="5167396352105467626">"Đề xuất được cá nhân hóa"</string>
+    <string name="enable_metrics_logging" msgid="5506372337118822837">"Cải thiện <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Đúp phím cách chèn dấu chấm"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Nhấn đúp phím cách sẽ chèn một dấu chấm, theo sau là dấu cách"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Tự động viết hoa"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Viết hoa chữ đầu tiên của mỗi câu"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Từ điển cá nhân"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Thêm từ điển"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"Từ điển chính"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Hiển thị gợi ý sửa"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Hiển thị từ được đề xuất khi nhập"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Chặn các từ xúc phạm"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Không đề xuất các từ có thể gây xúc phạm"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"Tự động sửa"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Phím cách và dấu câu tự động sửa từ nhập sai"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Tắt"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Đơn giản"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Linh hoạt"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Rất linh hoạt"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Đề xuất từ tiếp theo"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Sử dụng từ trước đó khi đưa ra đề xuất"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Bật nhập bằng cử chỉ"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Nhập từ bằng cách trượt qua các chữ cái"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Hiển thị vệt cử chỉ"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Xem trước nổi động"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Xem từ được đề xuất trong khi dùng cử chỉ"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"Cử chỉ nhập cụm từ"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Nhập dấu cách khi thực hiện cử chỉ bằng cách trượt tới phím cách"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Khóa nhập giọng nói"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Không có phương thức nhập bằng giọng nói nào được bật. Kiểm tra cài đặt Ngôn ngữ và phương thức nhập."</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Định cấu hình phương thức nhập"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"Ngôn ngữ"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Trợ giúp và phản hồi"</string>
+    <string name="select_language" msgid="5709487854987078367">"Ngôn ngữ"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Nhấn lại để lưu"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Nhấn vào đây để lưu"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Có sẵn từ điển"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Chuyển đổi tài khoản"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"Chưa chọn tài khoản nào"</string>
+    <string name="account_selected" msgid="2846876462199625974">"Hiện đang sử dụng <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"OK"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"Hủy"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"Đăng xuất"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"Chọn một tài khoản để sử dụng"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Tiếng Anh (Anh)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Tiếng Anh (Mỹ)"</string>
+    <string name="subtype_es_US" msgid="5583145191430180200">"Tiếng Tây Ban Nha (Mỹ)"</string>
+    <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Tiếng Anh-Hindi"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Tiếng Serbia (La tinh)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Tiếng Anh (Anh) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Tiếng Anh (Mỹ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Tiếng Tây Ban Nha (Mỹ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"Tiếng Anh-Hindi (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"Tiếng Serbia (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Truyền thống)"</string>
+    <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Viết tắt)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"Không ngôn ngữ nào (Bảng chữ cái)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Bảng chữ cái (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Bảng chữ cái (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Bảng chữ cái (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Bảng chữ cái (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Bảng chữ cái (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Bảng chữ cái (PC)"</string>
+    <string name="subtype_emoji" msgid="7483586578074549196">"Biểu tượng cảm xúc"</string>
+    <string name="keyboard_theme" msgid="4909551808526178852">"Chủ đề bàn phím"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Kiểu nhập tùy chỉnh"</string>
+    <string name="add_style" msgid="6163126614514489951">"Thêm kiểu"</string>
+    <string name="add" msgid="8299699805688017798">"Thêm"</string>
+    <string name="remove" msgid="4486081658752944606">"Xóa"</string>
+    <string name="save" msgid="7646738597196767214">"Lưu"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"Ngôn ngữ"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Bố cục"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Bạn cần phải bật kiểu nhập tùy chỉnh trước khi bắt đầu sử dụng nó. Bạn có muốn bật kiểu nhập tùy chỉnh ngay bây giờ không?"</string>
+    <string name="enable" msgid="5031294444630523247">"Bật"</string>
+    <string name="not_now" msgid="6172462888202790482">"Để sau"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Đã tồn tại kiểu nhập tương tự: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Thời gian rung khi nhấn phím"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Âm lượng khi nhấn phím"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Thời gian trễ nhấn và giữ phím"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Biểu tượng cảm xúc cho bàn phím thực"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Phím Alt thực hiển thị bảng biểu tượng cảm xúc"</string>
+    <string name="button_default" msgid="3988017840431881491">"Mặc định"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Chào mừng bạn đến với <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"với Nhập bằng cử chỉ"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Bắt đầu"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"Bước tiếp theo"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"Thiết lập <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Bật <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Hãy chọn \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" trong cài đặt Ngôn ngữ và phương thức nhập. Thao tác này sẽ cho phép ứng dụng chạy trên thiết bị của bạn."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> đã được bật trong cài đặt Ngôn ngữ và phương thức nhập, do đó bước này đã hoàn tất. Hãy chuyển sang bước tiếp theo!"</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"Bật trong Cài đặt"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"Chuyển sang <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"Tiếp theo, chọn \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" làm phương thức nhập văn bản hoạt động của bạn."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Chuyển phương thức nhập"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"Xin chúc mừng, bạn đã cài đặt xong!"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Bây giờ bạn có thể nhập vào tất cả ứng dụng yêu thích của mình với <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Định cấu hình các ngôn ngữ khác"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Đã xong"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Hiển thị biểu tượng ứng dụng"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Hiển thị biểu tượng ứng dụng trong trình chạy"</string>
+    <string name="app_name" msgid="6320102637491234792">"Nhà cung cấp từ điển"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Nhà cung cấp từ điển"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Dịch vụ từ điển"</string>
+    <string name="download_description" msgid="6014835283119198591">"Thông tin cập nhật từ điển"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Từ điển bổ sung"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Từ điển có sẵn"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Cài đặt cho từ điển"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Từ điển người dùng"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Từ điển người dùng"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Từ điển có sẵn"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Hiện đang tải xuống"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Đã cài đặt"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Đã cài đặt, bị tắt"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Lỗi kết nối DV từ điển"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Không có từ điển nào"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Làm mới"</string>
+    <string name="last_update" msgid="730467549913588780">"Cập nhật lần cuối"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Đang kiểm tra cập nhật"</string>
+    <string name="message_loading" msgid="5638680861387748936">"Đang tải..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Từ điển chính"</string>
+    <string name="cancel" msgid="6830980399865683324">"Hủy"</string>
+    <string name="go_to_settings" msgid="3876892339342569259">"Cài đặt"</string>
+    <string name="install_dict" msgid="180852772562189365">"Cài đặt"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Hủy"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Xóa"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Ngôn ngữ đã chọn trên thiết bị di động của bạn hiện có từ điển.&lt;br/&gt; Chúng tôi khuyên bạn nên &lt;b&gt;tải xuống&lt;/b&gt; từ điển <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> để cải thiện trải nghiệm nhập của mình.&lt;br/&gt; &lt;br/&gt; Quá trình tải xuống có thể mất vài phút qua 3G. Có thể mất phí nếu bạn không có &lt;b&gt;gói dữ liệu không giới hạn&lt;/b&gt;.&lt;br/&gt; Nếu bạn không chắc mình có gói dữ liệu nào, bạn nên tìm kết nối Wi-Fi để bắt đầu tải xuống tự động.&lt;br/&gt; &lt;br/&gt; Mẹo: Bạn có thể tải xuống và xóa từ điển bằng cách chuyển tới &lt;b&gt;Ngôn ngữ và phương thức nhập&lt;/b&gt; trong menu &lt;b&gt;Cài đặt&lt;/b&gt; trên thiết bị di động của mình."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Tải xuống bây giờ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Tải xuống qua Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"Hiện có từ điển cho <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Nhấn để xem lại và tải xuống"</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Đang tải xuống: đề xuất cho <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> sẽ sớm sẵn sàng."</string>
+    <string name="version_text" msgid="2715354215568469385">"Phiên bản <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Thêm"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Thêm vào từ điển"</string>
+    <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Cụm từ"</string>
+    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Thêm tùy chọn"</string>
+    <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Bớt tùy chọn"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"OK"</string>
+    <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Từ:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Phím tắt:"</string>
+    <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Ngôn ngữ:"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Nhập một từ"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Phím tắt tùy chọn"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Chỉnh sửa từ"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Chỉnh sửa"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Xóa"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Bạn không có bất kỳ từ nào trong từ điển người dùng. Để thêm từ, hãy nhấn vào nút Thêm (+)."</string>
+    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Cho tất cả ngôn ngữ"</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Ngôn ngữ khác…"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"Xóa"</string>
+    <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
+</resources>
