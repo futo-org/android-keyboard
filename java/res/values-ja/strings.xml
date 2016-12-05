@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_input_options" msgid="3909945612939668554">"入力オプション"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"連絡先名の検索"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"スペルチェッカーでは連絡先リストのエントリを使用します"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"キー操作バイブ"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"キー操作音"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"キー押下時ポップアップ"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"設定"</string>
+    <string name="settings_screen_accounts" msgid="2786418968536696670">"アカウントとプライバシー"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"外観とレイアウト"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"ジェスチャー入力"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"テキストの修正"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"詳細設定"</string>
+    <string name="settings_screen_theme" msgid="2137262503543943871">"テーマ"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"スプリットキーボードを有効にする"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Googleキーボードの同期"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"同期はON"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"端末間で単語リストを同期する"</string>
+    <string name="sync_now_title" msgid="3088838136743277721">"今すぐ同期"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"クラウドデータの削除"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Googleから同期データを削除する"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"クラウドから同期データを削除します。よろしいですか？"</string>
+    <string name="clear_sync_data_ok" msgid="613104067705915132">"削除"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"キャンセル"</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"単語リストがGoogleのサーバーと同期され、サーバーにバックアップされます。Googleのサービス改善を目的として、語句の使用頻度に関する統計情報が収集される場合があります。収集した情報およびその利用方法は、"<a href="https://www.google.com/policies/privacy">"Googleプライバシーポリシー"</a>"に準拠します。"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"この機能を有効にするには端末にGoogleアカウントを追加してください"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"同期は、Google Apps for Businessアカウントの端末ではご利用いただけません"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"他の入力方法に切り替え"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"言語切り替えキーは他の入力方法にも対応しています"</string>
+    <string name="show_language_switch_key" msgid="5915478828318774384">"言語切り替えキー"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"複数の入力言語が有効なときに表示"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"キーのポップアップ時間"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"すぐに消去"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"デフォルト"</string>
+    <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>ミリ秒"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"システムのデフォルト"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"連絡先の名前を候補に表示"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"連絡先の名前を使用して候補表示や自動修正を行う"</string>
+    <string name="use_personalized_dicts" msgid="5167396352105467626">"入力候補のカスタマイズ"</string>
+    <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>を改善"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"ダブルスペースピリオド"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"スペースバーをダブルタップするとピリオドとスペースを挿入できます"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"自動大文字変換"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"英字入力で各文の最初の単語を大文字にします"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"単語リスト"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"アドオン辞書"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"メイン辞書"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"修正候補を表示する"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"入力中に入力候補を表示する"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"不適切な語句をブロック"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"不適切な可能性がある語句を候補にしない"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"自動修正"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"誤入力をスペースまたは句読点キーで修正する"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"OFF"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"中"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"強"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"最も強い"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"次の入力候補"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"前の単語に基づいて入力候補を表示する"</string>
+    <string name="gesture_input" msgid="826951152254563827">"ジェスチャー入力を有効にする"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"文字間をスライドして単語を入力できます"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"ジェスチャートレイルを表示"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"動的フローティングプレビュー"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ジェスチャーで入力候補を表示できます"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"フレーズジェスチャー"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Spaceキーに指を滑らせると、ジェスチャー中にスペースを入力できます"</string>
+    <string name="voice_input" msgid="3583258583521397548">"音声入力キー"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"有効になっている音声入力方法がありません。[言語と入力] 設定をご確認ください。"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"入力方法を設定"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"言語"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"ヘルプとフィードバック"</string>
+    <string name="select_language" msgid="5709487854987078367">"言語"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"保存するにはもう一度タップします"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"保存するにはここをタップします"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"辞書を利用できます"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"キーボードのテーマ"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"アカウントの切り替え"</string>
+    <string name="no_accounts_selected" msgid="2073821619103904330">"アカウントが選択されていません"</string>
+    <string name="account_selected" msgid="2846876462199625974">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> を使用中"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"OK"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"キャンセル"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"ログアウト"</string>
+    <string name="account_select_title" msgid="6279711684772922649">"使用するアカウントの選択"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"英語 (英国)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"英語 (米国)"</string>
+    <string name="subtype_es_US" msgid="5583145191430180200">"スペイン語 (米国)"</string>
+    <string name="subtype_hi_ZZ" msgid="8860448146262798623">"ヒングリッシュ"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"セルビア語（ラテン文字）"</string>
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"英語（英国）（<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"英語（米国）（<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"スペイン語（米国）（<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"ヒングリッシュ（<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"セルビア語（<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g>（伝統言語）"</string>
+    <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g>（コンパクト）"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"言語なし（アルファベット）"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"アルファベット（QWERTY）"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"アルファベット（QWERTZ）"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"アルファベット（AZERTY）"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"アルファベット（Dvorak）"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"アルファベット（Colemak）"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"アルファベット（PC）"</string>
+    <string name="subtype_emoji" msgid="7483586578074549196">"絵文字"</string>
+    <string name="keyboard_theme" msgid="4909551808526178852">"キーボードのテーマ"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"カスタム入力スタイル"</string>
+    <string name="add_style" msgid="6163126614514489951">"スタイル追加"</string>
+    <string name="add" msgid="8299699805688017798">"追加"</string>
+    <string name="remove" msgid="4486081658752944606">"削除"</string>
+    <string name="save" msgid="7646738597196767214">"保存"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"言語"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"レイアウト"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"カスタム入力スタイルは、使用を開始する前に有効にする必要があります。今すぐ有効にしますか？"</string>
+    <string name="enable" msgid="5031294444630523247">"有効にする"</string>
+    <string name="not_now" msgid="6172462888202790482">"後で行う"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"同じ入力スタイルが既に存在します: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"キー操作バイブの振動時間"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"キー操作音の音量"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"キーの長押し時間"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"物理キーボードの絵文字"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"物理Altキーによって絵文字パレットが表示されます"</string>
+    <string name="button_default" msgid="3988017840431881491">"デフォルト"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>へようこそ"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"新しいジェスチャー入力をお試しください"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"開始"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"次のステップ"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>の設定"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>の有効化"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"[言語と入力] 設定で「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」のチェックボックスをオンにしてください。これで、この端末で利用できるようになります。"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"[言語と入力] 設定で「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」は既に有効になっているため、このステップは完了です。次のステップに進んでください。"</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"設定での有効化"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>への切り替え"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"次に、有効なテキスト入力方法として「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」を選択します。"</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"入力方法を切り替える"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"設定完了"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"これで、お気に入りのすべてのアプリで<xliff:g id="APPLICATION_NAME">%s</xliff:g>を使用して入力できます。"</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"別の言語を設定する"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"完了"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"アプリアイコンを表示"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"ランチャーにアプリアイコンを表示します"</string>
+    <string name="app_name" msgid="6320102637491234792">"辞書提供元"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"辞書提供元"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"辞書"</string>
+    <string name="download_description" msgid="6014835283119198591">"辞書のアップデート情報"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"アドオン辞書"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"辞書を利用できます"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"辞書の設定"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"単語リスト"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"単語リスト"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"辞書を利用できます"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"ダウンロード中"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"インストール済み"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"インストール済み、無効"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"辞書に接続できません"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"辞書はありません"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"更新"</string>
+    <string name="last_update" msgid="730467549913588780">"最終更新"</string>
+    <string name="message_updating" msgid="4457761393932375219">"アップデートを確認しています"</string>
+    <string name="message_loading" msgid="5638680861387748936">"読み込んでいます…"</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"メイン辞書"</string>
+    <string name="cancel" msgid="6830980399865683324">"キャンセル"</string>
+    <string name="go_to_settings" msgid="3876892339342569259">"設定"</string>
+    <string name="install_dict" msgid="180852772562189365">"インストール"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"キャンセル"</string>
+    <string name="delete_dict" msgid="756853268088330054">"削除"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"お使いのモバイル端末で選択した言語には対応する辞書があります。&lt;br/&gt;入力機能をより快適にご利用いただくため、<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>の辞書の&lt;b&gt;ダウンロード&lt;/b&gt;をおすすめします。&lt;br/&gt; &lt;br/&gt;3G をご利用の場合、ダウンロードに要する時間は 1～2 分です。&lt;b&gt;定額制のデータプラン&lt;/b&gt;をご利用でない場合は通信料が発生する可能性があります。&lt;br/&gt;ご利用のデータプランが不明な場合は、自動的にダウンロードが開始される Wi-Fi 接続のご利用をおすすめします。&lt;br/&gt; &lt;br/&gt;ヒント: 辞書のダウンロードや削除は、お使いのモバイル端末の [&lt;b&gt;設定&lt;/b&gt;] メニューの [&lt;b&gt;言語と入力&lt;/b&gt;] で行えます。"</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"今すぐダウンロード（<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB）"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi経由でダウンロード"</string>
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>の辞書を利用できます"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"押すと確認/ダウンロードできます"</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ダウンロード中: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>の入力候補をまもなく利用できます。"</string>
+    <string name="version_text" msgid="2715354215568469385">"バージョン<xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"追加"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"辞書に追加"</string>
+    <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"フレーズ"</string>
+    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"詳細設定を表示"</string>
+    <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"詳細設定を隠す"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"OK"</string>
+    <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"単語:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"ショートカット:"</string>
+    <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"言語:"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"単語を入力します"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"オプションのショートカット"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"語句の編集"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"編集"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"削除"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"単語リストに登録がありません。単語を追加するには、追加ボタン [+] をタップします。"</string>
+    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"すべての言語用"</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"その他の言語…"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"削除"</string>
+    <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
+</resources>
