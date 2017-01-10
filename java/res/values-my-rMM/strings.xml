@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"ထည့်သွင်းရန် နည်းလမ်းများ"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"အဆက်အသွယ်အမည်များကို ရှာ"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"သင့်အဆက်အသွယ်စာရင်း မှအကြောင်းအရာများကို စာလုံးပေါင်းစစ်ကိရိယာမှ ယူသုံးသည်"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"စာလုံးပေါင်းစစ်စနစ်က သင့်အဆက်အသွယ်စာရင်းမှ ရယူအသုံးပြုသည်"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ခလုတ်နှိပ်သည်နှင့် တုံခါစေပါ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ခလုတ်နှိပ်လျှင် အသံမြည်"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ကီးနှိပ်လိုက်သည်နှင့် ပေါ်လာရန်"</string>
