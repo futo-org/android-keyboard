@@ -31,7 +31,7 @@
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"বিস্ময়বোধক ও প্রশ্ন চিহ্ন"</string>
     <string name="spoken_emoji_2122" msgid="9188440722954720429">"ট্রেড মার্ক চিহ্ন"</string>
     <string name="spoken_emoji_2139" msgid="9114342638917304327">"তথ্য উৎস"</string>
-    <string name="spoken_emoji_2194" msgid="8055202727034946680">"বাম-ডান তীর"</string>
+    <string name="spoken_emoji_2194" msgid="8055202727034946680">"বাঁ-ডান তীর"</string>
     <string name="spoken_emoji_2195" msgid="8028122253301087407">"উপর-নীচ তীর"</string>
     <string name="spoken_emoji_2196" msgid="4019164898967854363">"উত্তর-পশ্চিম নির্দেশকারী তীর"</string>
     <string name="spoken_emoji_2197" msgid="4255723717709017801">"উত্তর-পূর্ব নির্দেশকারী তীর"</string>
@@ -817,7 +817,7 @@
     <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"পোস্টাল শিঙা"</string>
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"খবরের কাগজ"</string>
     <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"মোবাইল ফোন"</string>
-    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"বাম দিকে ডানমুখী তীরযুক্ত মোবাইল ফোন"</string>
+    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"বাঁ দিকে ডানমুখী তীরযুক্ত মোবাইল ফোন"</string>
     <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"কম্পন মোড"</string>
     <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"মোবাইল ফোন বন্ধ"</string>
     <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"মোবাইল ফোন নিষেধ"</string>
