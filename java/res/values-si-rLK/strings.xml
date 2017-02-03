@@ -23,7 +23,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"ආදාන විකල්ප"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"සබඳතා නම් විමසන්න"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"අක්ෂර වින්‍යාස පරික්ෂකය ඔබගේ සබඳතා ලැයිස්තුව වෙතින් ඇතුළත් කිරීම් භාවිතා කරයි"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"යතුර එබීමට කම්පනය කිරීම සක්‍රියයි"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"යතුර ඔබන විට කම්පනය"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"යතුරු එබිම මත හඬ"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"යතුරු එබීම මත උත්පතනය"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"අභිරුචි"</string>
@@ -202,7 +202,7 @@
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"වචනයක් ටයිප් කරන්න"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"විකල්පමය කෙටිමග"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"වචනය සංස්කරණය කරන්න"</string>
-    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"සංස්කරණය කරන්න"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"සංස්කරණය"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"මකන්න"</string>
     <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ඔබට පරිශීලක ශබ්ද කෝෂය තුළ වචන කිසිවක් නැත. වචනයක් එක් කිරීමට, එක් කිරීමේ (+) බොත්තම තට්ටු කරන්න."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"සියලු භාෂාවන් සඳහා"</string>

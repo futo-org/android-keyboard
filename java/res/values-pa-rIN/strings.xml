@@ -189,7 +189,7 @@
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਲਈ ਇੱਕ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਹੈ"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"ਸਮੀਖਿਆ ਕਰਨ ਅਤੇ ਡਾਊਨਲੋਡ ਕਰਨ ਲਈ ਦਬਾਓ"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ਡਾਊਨਲੋਡਿੰਗ: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਲਈ ਸੁਝਾਅ ਜਲਦੀ ਹੀ ਤਿਆਰ ਹੋਣਗੇ।"</string>
-    <string name="version_text" msgid="2715354215568469385">"ਵਰਜਨ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="version_text" msgid="2715354215568469385">"ਰੂਪ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"ਜੋੜੋ"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"ਸ਼ਬਦਕੋਸ਼ ਵਿੱਚ ਜੋੜੋ"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"ਵਾਕਾਂਸ਼"</string>
