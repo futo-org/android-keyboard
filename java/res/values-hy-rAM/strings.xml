@@ -165,8 +165,8 @@
     <string name="dictionary_settings_title" msgid="8091417676045693313">"Հավելյալ բառարաններ"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Բառարանն առկա է"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"Բառարանների կարգավորումներ"</string>
-    <string name="user_dictionaries" msgid="3582332055892252845">"Օգտվողի բառարաններ"</string>
-    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Օգտվողի բառարան"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Օգտատիրոջ բառարաններ"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Օգտատիրոջ բառարան"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Բառարանն առկա է"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"Այս պահին ներբեռնվում է"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Տեղադրված է"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Խմբագրել բառը"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Խմբագրել"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Ջնջել"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Օգտվողի բառարանում ոչ մի բառ չկա: Բառեր ավելացնելու համար հպեք Ավելացնել (+) կոճակին:"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Օգտատիրոջ բառարանում ոչ մի բառ չկա: Բառեր ավելացնելու համար հպեք Ավելացնել (+) կոճակին:"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Բոլոր լեզուներով"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Ավելի շատ լեզուներով..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Ջնջել"</string>

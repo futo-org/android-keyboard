@@ -95,7 +95,7 @@
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Gordetzeko, sakatu hau"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hiztegia erabilgarri"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Teklatuaren gaia"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"Aldatu kontuz"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Aldatu beste kontu batera"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"Ez da konturik hautatu"</string>
     <string name="account_selected" msgid="2846876462199625974">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> helbidea ari zara erabiltzen"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"Ados"</string>

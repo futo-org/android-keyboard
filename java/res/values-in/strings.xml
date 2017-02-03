@@ -168,7 +168,7 @@
     <string name="user_dictionaries" msgid="3582332055892252845">"Kamus pengguna"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Kamus pengguna"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Kamus yang tersedia"</string>
-    <string name="dictionary_downloading" msgid="2982650524622620983">"Saat ini sedang mengunduh"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Saat ini sedang mendownload"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Terpasang"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Terpasang, dinonaktifkan"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Problem koneksi kamus"</string>
@@ -183,12 +183,12 @@
     <string name="install_dict" msgid="180852772562189365">"Pasang"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Batal"</string>
     <string name="delete_dict" msgid="756853268088330054">"Hapus"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Bahasa yang dipilih di perangkat seluler memiliki kamus.&lt;br/&gt; Sebaiknya &lt;b&gt;unduh&lt;/b&gt; kamus <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> untuk menyempurnakan pengalaman mengetik.&lt;br/&gt; &lt;br/&gt; Unduhan memerlukan waktu satu atau dua menit melalui 3G. Tagihan mungkin berlaku jika Anda tidak menggunakan &lt;b&gt;paket data tak terbatas&lt;/b&gt;.&lt;br/&gt; Jika Anda tidak yakin paket data mana yang digunakan, sebaiknya cari sambungan Wi-Fi untuk memulai unduhan secara otomatis.&lt;br/&gt; &lt;br/&gt; Kiat: Anda dapat mengunduh dan menghapus kamus dengan membuka &lt;b&gt;Bahasa &amp; masukan&lt;/b&gt; di menu &lt;b&gt;Setelan&lt;/b&gt; pada perangkat seluler."</string>
-    <string name="download_over_metered" msgid="1643065851159409546">"Unduh sekarang (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Unduh melalui Wi-Fi"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Bahasa yang dipilih di perangkat seluler memiliki kamus.&lt;br/&gt; Sebaiknya &lt;b&gt;download&lt;/b&gt; kamus <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> untuk menyempurnakan pengalaman mengetik.&lt;br/&gt; &lt;br/&gt; Download memerlukan waktu satu atau dua menit melalui 3G. Tagihan mungkin berlaku jika Anda tidak menggunakan &lt;b&gt;paket data tak terbatas&lt;/b&gt;.&lt;br/&gt; Jika Anda tidak yakin paket data mana yang digunakan, sebaiknya cari sambungan Wi-Fi untuk memulai download secara otomatis.&lt;br/&gt; &lt;br/&gt; Kiat: Anda dapat mendownload dan menghapus kamus dengan membuka &lt;b&gt;Bahasa &amp; masukan&lt;/b&gt; di menu &lt;b&gt;Setelan&lt;/b&gt; pada perangkat seluler."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Download sekarang (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Download melalui Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Kamus tersedia untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="1075194169443163487">"Tekan untuk meninjau dan mengunduh"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Mengunduh: saran untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> akan segera tersedia."</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Tekan untuk meninjau dan mendownload"</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Mendownload: saran untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> akan segera tersedia."</string>
     <string name="version_text" msgid="2715354215568469385">"Versi <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Tambahkan"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Tambahkan ke kamus"</string>
