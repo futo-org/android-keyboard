@@ -45,7 +45,7 @@
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ਰੱਦ ਕਰੋ"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"ਤੁਹਾਡਾ ਨਿੱਜੀ ਸ਼ਬਦਕੋਸ਼ ਸਿੰਕ ਕੀਤਾ ਜਾਏਗਾ ਅਤੇ Google ਸਰਵਰਾਂ ਤੇ ਬੈਕ ਅਪ ਕੀਤਾ ਜਾਏਗਾ। ਸ਼ਬਦ ਬਾਰੰਬਾਰਤਾ ਦੀ ਅੰਕੜੇ ਸੰਬੰਧੀ ਜਾਣਕਾਰੀ ਸਾਡੇ ਉਤਪਾਦਾਂ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ ਇਕੱਤਰ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ। ਸਾਰੀ ਜਾਣਕਾਰੀ ਦਾ ਇਕੱਤਰੀਕਰਨ ਅਤੇ ਵਰਤੋਂ "<a href="https://www.google.com/policies/privacy">"Google ਦੀ ਪ੍ਰਾਈਵੇਸੀ ਨੀਤੀ"</a>"ਦੇ ਮੁਤਾਬਕ ਹੋਵੇਗੀ।"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"ਕਿਰਪਾ ਕਰਕੇ ਇਸ ਵਿਸ਼ੇਸ਼ਤਾ ਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣ ਲਈ ਇਸ ਡੀਵਾਈਸ ਤੇ ਇੱਕ Google ਖਾਤਾ ਸ਼ਾਮਲ ਕਰੋ।"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ਬਿਜਨਸ ਖਾਤਿਆਂ ਲਈ Google ਐਪਸ ਵਾਲੀਆਂ ਡਿਵਾਈਸਾਂ ਲਈ ਸਿੰਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ਬਿਜਨਸ ਖਾਤਿਆਂ ਲਈ Google ਐਪਾਂ ਵਾਲੀਆਂ ਡਿਵਾਈਸਾਂ ਲਈ ਸਿੰਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ਹੋਰਾਂ ਇਨਪੁਟ ਵਿਧੀਆਂ ਤੇ ਸਵਿਚ ਕਰੋ"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"ਭਾਸ਼ਾ ਸਵਿਚ ਕੁੰਜੀ ਹੋਰਾਂ ਇਨਪੁਟ ਵਿਧੀਆਂ ਨੂੰ ਵੀ ਸ਼ਾਮਲ ਕਰਦੀ ਹੈ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"ਭਾਸ਼ਾ ਸਵਿਚ ਕੁੰਜੀ"</string>
