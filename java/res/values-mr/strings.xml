@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"संकालन चालू केले आहे"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"डिव्‍हाइसेस वरून आपला वैयक्तिक शब्दकोश संकालित करा"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"आता संकालन करा"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"मेघ डेटा हटवा"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"क्लाउड डेटा हटवा"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google वरून आपला संकालित केलेला डेटा हटविते"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपला संकालित केलेला डेटा मेघवरून हटविला जाईल. आपल्‍याला खात्री आहे?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"हटवा"</string>
