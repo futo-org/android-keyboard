@@ -135,7 +135,7 @@
     <string name="not_now" msgid="6172462888202790482">"Ոչ հիմա"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Մուտքագրման այսպիսի ոճ արդեն գոյություն ունի՝ <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Սեղմման թրթռոցի տևողություն"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Սեղմման ձայնի բարձրությունը"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Սեղմման ձայնի ուժգնությունը"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Ստեղնի երկար սեղմման ուշացում"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Ֆիզիկական ստեղնաշարի զմայլիկ"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Alt ստեղնը ցուցադրում է զմայլիկների պնակը"</string>
