@@ -40,7 +40,7 @@
     <string name="sync_now_title" msgid="3088838136743277721">"अहिले सिंक गर्नुहोस्"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"क्लाउड डेटा मेटाउनुहोस्"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google बाट तपाईँको सिंक गरिएको डाटा मेटाउँछ"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईँको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईँ निश्चित हुनुहुन्छ?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तपाईंको सिंक गरिएको डेटालाई क्लाउडबाट मेटाइनेछ। के तपाईं निश्चित हुनुहुन्छ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"मेटाउनुहोस्"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द गर्नुहोस्"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"तपाईँको व्यक्तिगत शब्दकोश सिंक गरेर Google सर्भरहरूमा जगेडा राखिने छ। शब्द आवृत्तिको तथ्याङ्क जानकारी हाम्रो उत्पादनहरू सुधार गर्न मद्दतका लागि संकलन हुन सक्छ। संग्रह र सबै जानकारीको प्रयोग  "<a href="https://www.google.com/policies/privacy">" Google को गोपनीयता नीति "</a>" अनुरूप हुने छ।"</string>
@@ -130,7 +130,7 @@
     <string name="save" msgid="7646738597196767214">"बचत गर्नुहोस्"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"भाषा"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"लेआउट"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"तपाईँले प्रयोग गर्न सुरु गर्न अघि तपाईँको आफू अनुकूल इनपुट शैली सक्षम पारिनु पर्छ। के तपाईँ यसलाई अहिले सक्षम पार्न चाहनु हुन्छ?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"तपाईंले प्रयोग गर्न सुरु गर्न अघि तपाईंको आफू अनुकूल इनपुट शैली सक्षम पारिनु पर्छ। के तपाईं यसलाई अहिले सक्षम पार्न चाहनु हुन्छ?"</string>
     <string name="enable" msgid="5031294444630523247">"सक्षम पार्नुहोस्"</string>
     <string name="not_now" msgid="6172462888202790482">"अहिले होइन"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"यस्तो इनपुट शैली पहिले नै अवस्थित छ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
@@ -153,7 +153,7 @@
     <string name="setup_step2_instruction" msgid="9141481964870023336">"त्यसपछि, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" लाई तपाईँको सक्रिय पाठ इनपुट विधिका रूपमा चयन गर्नुहोस्।"</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"इनपुट विधि स्विच गर्नुहोस्"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"बधाई छ, तपाईँले सेट पुरा गर्नुभयो!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"अब तपाईँ <xliff:g id="APPLICATION_NAME">%s</xliff:g>का साथ तपाईँका सम्पूर्ण मनपर्ने अनुप्रयोगहरू टाइप गर्न सक्नुहुन्छ।"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"अब तपाईं <xliff:g id="APPLICATION_NAME">%s</xliff:g>का साथ तपाईंका सम्पूर्ण मनपर्ने अनुप्रयोगहरू टाइप गर्न सक्नुहुन्छ।"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"थप भाषाहरू कन्फिगर गर्नुहोस्"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त भयो"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"अनुप्रयोग आइकन देखाउनुहोस्"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"स्थापना गर्नुहोस्"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द गर्नुहोस्"</string>
     <string name="delete_dict" msgid="756853268088330054">"मेट्नुहोस्"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"तपाईँको मोबाइल यन्त्रमा चयन गरिएको भाषाको शब्दकोष उपलब्ध छ।&lt;br/&gt; आफ्नो टाइपिङ सम्बन्धी अनुभवलाई सुधार गर्नका लागि हामी तपाईँलाई <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोष &lt;b&gt;डाउनलोड गर्न&lt;/b&gt; सिफारिस गर्छौं।&lt;br/&gt; &lt;br/&gt; यसलाई 3G मार्फत डाउनलोड गर्न एक वा दुई मिनेट लाग्न सक्छ। तपाईँसँग &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; छैन भने शुल्क लाग्न सक्छ।&lt;br/&gt; यदि तपाईँ आफूसँग कुन डेटा योजना छ भन्ने बारे निश्चित हुनुहुन्न भने हामी स्वचालित रूपमा डाउनलोड गर्नका लागि Wi-Fi जडान पत्ता लगाउन सिफारिस गर्दछौँ।<br/> <br/> जुक्ति: तपाईँ आफ्नो मोबाइल यन्त्रको &lt;b&gt;भाषा र इनपुट&lt;/b&gt; &lt;b&gt;सेटिङहरू&lt;/b&gt; को मेनुमा गएर शब्दकोषलाई डाउनलोड गर्न र हटाउन सक्नुहुन्छ।"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"तपाईंको मोबाइल यन्त्रमा चयन गरिएको भाषाको शब्दकोष उपलब्ध छ।&lt;br/&gt; आफ्नो टाइपिङ सम्बन्धी अनुभवलाई सुधार गर्नका लागि हामी तपाईंलाई <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोष &lt;b&gt;डाउनलोड गर्न&lt;/b&gt; सिफारिस गर्छौं।&lt;br/&gt; &lt;br/&gt; यसलाई 3G मार्फत डाउनलोड गर्न एक वा दुई मिनेट लाग्न सक्छ। तपाईंसँग &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; छैन भने शुल्क लाग्न सक्छ।&lt;br/&gt; यदि तपाईं आफूसँग कुन डेटा योजना छ भन्ने बारे निश्चित हुनुहुन्न भने हामी स्वचालित रूपमा डाउनलोड गर्नका लागि Wi-Fi जडान पत्ता लगाउन सिफारिस गर्दछौँ।<br/> <br/> जुक्ति: तपाईं आफ्नो मोबाइल यन्त्रको &lt;b&gt;भाषा र इनपुट&lt;/b&gt; &lt;b&gt;सेटिङहरू&lt;/b&gt; को मेनुमा गएर शब्दकोषलाई डाउनलोड गर्न र हटाउन सक्नुहुन्छ।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"(अब डाउनलोड गर्नुहोस्<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाइ-फाइको माध्ययमद्वार डाउनलोड गर्नुहोस्"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>को लागि एउटा शब्दकोश उपलब्ध छ"</string>
