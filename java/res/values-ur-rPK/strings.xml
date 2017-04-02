@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"جملہ کا اشارہ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"اسپیس کلید کو گلائیڈ کر کے اشاروں کے درمیان خالی جگہیں درج کریں"</string>
     <string name="voice_input" msgid="3583258583521397548">"صوتی ان پٹ کلید"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"کوئی صوتی اندراج کے طریقے فعال نہیں ہیں۔ زبان اور ان پٹ ترتیبات کو چیک کریں۔"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"کوئی صوتی اندراج کے طریقے فعال نہیں ہیں۔ زبانوں اور ان پٹ ترتیبات کو چیک کریں۔"</string>
     <string name="configure_input_method" msgid="373356270290742459">"اندراج کے طریقے کنفیگر کریں"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"زبانیں"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"مدد اور تاثرات"</string>
     <string name="select_language" msgid="5709487854987078367">"زبانیں"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"محفوظ کرنے کیلئے دوبارہ ٹچ کریں"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"محفوظ کرنے کیلئے یہاں ٹچ کریں"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"محفوظ کرنے کیلئے دوبارہ تھپتھپائیں"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"محفوظ کرنے کیلئے یہاں تھپتھپائیں"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"لغت دستیاب ہے"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"کی بورڈ تھیم"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"اکاؤنٹس سوئچ کریں"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"اگلا مرحلہ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ترتیب دینا"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> کو فعال کریں"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"براہ کرم \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" کو اپنی زبان اور ان پٹ ترتیبات میں چیک کریں۔ اس سے اس کو آپ کے آلہ پر چلانے کی اجازت مل جائے گی۔"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"‏<xliff:g id="APPLICATION_NAME">%s</xliff:g> پہلے ہی آپ کی زبان ‎اور‎ ان پٹ ترتیبات میں فعال ہے، لہذا یہ مرحلہ مکمل ہو گیا ہے۔ اگلے پر!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"براہ کرم \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" کو اپنی زبانوں اور ان پٹ ترتیبات میں چیک کریں۔ اس سے اس کو آپ کے آلہ پر چلنے کی اجازت مل جائے گی۔"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"‏<xliff:g id="APPLICATION_NAME">%s</xliff:g> پہلے ہی آپ کی زبانوں ‎اور‎ ان پٹ ترتیبات میں فعال ہے، لہذا یہ مرحلہ مکمل ہو گیا ہے۔ اگلے پر چلتے ہیں!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"ترتیبات میں فعال کریں"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> پر سوئچ کریں"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"آگے، \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" کو اپنے فعال متنی اندراج کے طریقہ کے بطور منتخب کریں۔"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"انسٹال کریں"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"منسوخ کریں"</string>
     <string name="delete_dict" msgid="756853268088330054">"حذف کریں"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"‏آپ کے موبائل آلہ پر منتخب کردہ زبان کیلئے ایک لغت دستیاب ہے۔&lt;br/&gt; آپ کے ٹائپنگ تجربہ کو بہتر بنانے کیلئے ہم <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> لغت کو &lt;b&gt;ڈاؤن لوڈ کرنے&lt;/b&gt; کی تجویز کرتے ہیں۔&lt;br/&gt; &lt;br/&gt; ڈاؤن لوڈ میں 3G پر ایک یا دو منٹ لگ سکتے ہیں۔ اگر آپ کے پاس &lt;b&gt;غیر محدود ڈیٹا پلان&lt;/b&gt; نہیں ہے تو چارجز لاگو ہو سکتے ہیں۔&lt;br/&gt; اگر آپ کو یقین نہیں ہے کہ آپ کے پاس کون سا ڈیٹا پلان ہے تو ہم ڈاؤن لوڈ خود کار طور پر شروع کرنے کیلئے ایک Wi-Fi کنکشن تلاش کرنے کی تجویز کرتے ہیں۔&lt;br/&gt; &lt;br/&gt; تجویز: آپ اپنے موبائل آلہ کے &lt;b&gt;ترتیبات&lt;/b&gt; مینو میں <b>زبان اور ان پٹ</b> پر جا کر لغات کو ڈاؤن لوڈ کر سکتے اور ہٹا سکتے ہیں"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"‏آپ کے موبائل آلہ پر منتخب کردہ زبان کیلئے ایک لغت دستیاب ہے۔&lt;br/&gt; آپ کے ٹائپنگ تجربہ کو بہتر بنانے کیلئے ہم <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> لغت کو &lt;br/&gt;ڈاؤن لوڈ کرنے&lt;br/&gt; کی تجویز کرتے ہیں۔&lt;br/&gt; &lt;br/&gt; ڈاؤن لوڈ میں 3G پر ایک یا دو منٹ لگ سکتے ہیں۔ اگر آپ کے پاس &lt;br/&gt;لا محدود ڈیٹا پلان&lt;br/&gt; نہیں ہے تو چارجز لاگو ہو سکتے ہیں&lt;br/&gt;۔&lt;br/&gt; اگر آپ کو یقین نہیں ہے کہ آپ کے پاس کون سا ڈیٹا پلان ہے تو ہم ڈاؤن لوڈ خود کار طور پر شروع کرنے کیلئے ایک Wi-Fi کنکشن تلاش کرنے کی تجویز کرتے ہیں۔&lt;br/&gt; &lt;br/&gt; تجویز: آپ اپنے موبائل آلہ کے &lt;br/&gt;ترتیبات&lt;br/&gt; مینو میں &lt;b&gt;زبانیں اور ان پٹ&lt;/b&gt; پر جا کر لغات کو ڈاؤن لوڈ کر سکتے اور ہٹا سکتے ہیں۔"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"‏ابھی ڈاؤن لوڈ کریں (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏Wi-Fi پر ڈاؤن لوڈ کریں"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> کیلئے ایک لغت دستیاب ہے"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"لفظ میں ترمیم کریں"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ترمیم کریں"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"حذف کریں"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"صارف لغت میں آپ کے پاس کوئی الفاظ نہيں ہیں۔ شامل کریں (+) بٹن کو ٹچ کر کے ایک لفظ شامل کریں۔"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"صارف لغت میں آپ کے پاس کوئی الفاظ نہيں ہیں۔ کوئی لفظ شامل کرنے کیلئے شامل کریں (+) بٹن تھپتھپائیں۔"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"سبھی زبانوں کیلئے"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"مزید زبانیں…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"حذف کریں"</string>

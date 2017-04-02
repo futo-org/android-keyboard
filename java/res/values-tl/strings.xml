@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Phrase gesture"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Maglagay ng espasyo sa pamamagitan ng pag-glide sa space key"</string>
     <string name="voice_input" msgid="3583258583521397548">"Voice input key"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Walang naka-enable na pamamaraan ng pag-input ng boses. Suriin ang mga setting ng Pag-input ng wika."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Walang naka-enable na paraan ng pag-input gamit ang boses. Tingnan ang Mga setting ng wika at input."</string>
     <string name="configure_input_method" msgid="373356270290742459">"I-configure ang mga pamamaraan ng pag-input"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Mga Wika"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Tulong at feedback"</string>
     <string name="select_language" msgid="5709487854987078367">"Mga Wika"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Pinduting muli upang i-save"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Pumindot dito upang mag-save"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"I-tap muli upang i-save"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Mag-tap dito upang i-save"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Available ang diksyunaryo"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema ng keyboard"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Lumipat ng account"</string>
@@ -102,13 +102,13 @@
     <string name="account_select_cancel" msgid="5181012062618504340">"Kanselahin"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Mag-sign out"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Pumili ng account na gagamitin"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Ingles (UK)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Ingles (Estados Unidos)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"English (UK)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"English (United States)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Spanish (US)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hinglish"</string>
     <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbian (Latin)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Ingles (UK) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Ingles (US) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"English (UK) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"English (US) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Spanish (US) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"Hinglish (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"Serbian (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Susunod na hakbang"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Sine-set up ang <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Paganahin ang <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Paki-check ang \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" sa mga setting mo ng Wika at input. Mapapahintulutan itong tumakbo sa device mo."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Naka-enable na ang <xliff:g id="APPLICATION_NAME">%s</xliff:g> sa iyong Wika at mga setting ng pag-input, kaya tapos na ang hakbang na ito. Magpatuloy sa susunod!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Pakitingnan ang \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" sa iyong Mga setting ng wika at input. Papahintulutan nitong gumana ito sa iyong device."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Naka-enable na ang <xliff:g id="APPLICATION_NAME">%s</xliff:g> sa iyong Mga setting ng wika at input, kaya tapos na ang hakbang na ito. Magpatuloy sa susunod!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"I-enable sa Mga Setting"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Lumipat sa <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Susunod, piliin ang \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" bilang iyong aktibong pamamaraan ng pag-input ng teksto."</string>
@@ -170,7 +170,7 @@
     <string name="dictionary_available" msgid="4728975345815214218">"Available ang diksyunaryo"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"Kasalukuyang dina-download"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Na-install na"</string>
-    <string name="dictionary_disabled" msgid="8950383219564621762">"Naka-install, hindi pinagana"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Naka-install, naka-disable"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Di makakonekta sa serbisyong diksyunaryo"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"Walang mga diksyunaryo"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"I-refresh"</string>
@@ -182,8 +182,8 @@
     <string name="go_to_settings" msgid="3876892339342569259">"Mga Setting"</string>
     <string name="install_dict" msgid="180852772562189365">"I-install"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Kanselahin"</string>
-    <string name="delete_dict" msgid="756853268088330054">"Tanggalin"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"May available na diksyunaryo ang napiling wika sa iyong mobile device.&lt;br/&gt; Inirerekomenda naming &lt;b&gt;i-download&lt;/b&gt; ang diksyunaryo ng <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> upang pagbutihin ang iyong karanasan sa pagta-type.&lt;br/&gt; &lt;br/&gt; Maaaring magtagal nang ilang minuto ang pag-download sa 3G. Maaaring magkaroon ng mga pagsingil kung wala kang &lt;b&gt;unlimited data plan&lt;/b&gt;.&lt;br/&gt; Kung hindi ka sigurado kung anong data plan ang mayroon ka, inirerekomenda naming maghanap ng koneksyon sa Wi-Fi upang awtomatikong masimulan ang pag-download.&lt;br/&gt; &lt;br/&gt; Tip: Maaari kang mag-download at mag-alis ng mga diksyunaryo sa pamamagitan ng pagpunta sa &lt;b&gt;Wika &amp; input&lt;/b&gt; sa menu ng &lt;b&gt;Mga Setting&lt;/b&gt; ng iyong mobile device."</string>
+    <string name="delete_dict" msgid="756853268088330054">"I-delete"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"May available na diksyunaryo ang piniling wika sa mobile device mo.&lt;br/&gt; Inirerekomendang &lt;b&gt;i-download&lt;/b&gt; ang <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> na diksyunaryo para mapaganda ang iyong karanasan sa pagta-type.&lt;br/&gt; &lt;br/&gt; Maaaring abutin nang 1 o 2 minuto ang pagda-download sa pamamagitan ng 3G. Maaaring magkaroon ng mga singil kung wala kang &lt;b&gt;plan na walang limitasyong data&lt;/b&gt;.&lt;br/&gt; Kung hindi mo tiyak kung aling plan ng data ang mayroon ka, kumonekta sa Wi-Fi upang awtomatikong mag-download.&lt;br/&gt; &lt;br/&gt; Tip: Maaari kang mag-download at mag-alis ng mga diksyunaryo sa pamamagitan ng pagpunta sa &lt;b&gt;Mga wika at input&lt;/b&gt; sa menu ng &lt;b&gt;Mga Setting&lt;/b&gt; ng iyong mobile device."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"I-download ngayon (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"I-download gamit ang Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"May available na diksyunaryo para sa <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -203,10 +203,10 @@
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Opsyonal na shortcut"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"I-edit ang salita"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"I-edit"</string>
-    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Tanggalin"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Wala kang anumang mga salita sa diksyunaryo ng user. Magdagdag ng salita sa pamamagitan ng pagpindot sa button na Magdagdag (+)."</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"I-delete"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Wala kang anumang mga salita sa diksyunaryo ng user. Upang magdagdag ng salita, i-tap ang button na Magdagdag (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Para sa lahat ng wika"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Higit pang mga wika..."</string>
-    <string name="user_dict_settings_delete" msgid="110413335187193859">"Tanggalin"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"I-delete"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>

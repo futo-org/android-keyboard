@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"フレーズジェスチャー"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Spaceキーに指を滑らせると、ジェスチャー中にスペースを入力できます"</string>
     <string name="voice_input" msgid="3583258583521397548">"音声入力キー"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"有効になっている音声入力方法がありません。[言語と入力]設定をご確認ください。"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"有効になっている音声入力方法がありません。[言語と入力] 設定をご確認ください。"</string>
     <string name="configure_input_method" msgid="373356270290742459">"入力方法を設定"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"言語"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"ヘルプとフィードバック"</string>
     <string name="select_language" msgid="5709487854987078367">"言語"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"保存するにはもう一度タップ"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"ここをタップして保存します"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"保存するにはもう一度タップします"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"保存するにはここをタップします"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"辞書を利用できます"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"キーボードのテーマ"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"アカウントの切り替え"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"次のステップ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>の設定"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>の有効化"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"[言語と入力]で[<xliff:g id="APPLICATION_NAME">%s</xliff:g>]のチェックボックスをオンにしてください。これで、端末でキーボードを使用できるようになります。"</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>は[言語と入力]で既に有効になっているので、このステップは完了です。次のステップに進んでください。"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"[言語と入力] 設定で「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」のチェックボックスをオンにしてください。これで、この端末で利用できるようになります。"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"[言語と入力] 設定で「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」は既に有効になっているため、このステップは完了です。次のステップに進んでください。"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"設定での有効化"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>への切り替え"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"次に、有効なテキスト入力方法として「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」を選択します。"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"インストール"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"キャンセル"</string>
     <string name="delete_dict" msgid="756853268088330054">"削除"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"お使いの携帯端末で選択した言語に対応する辞書があります。&lt;br/&gt;入力機能をより快適にご利用いただくため、<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>の辞書の&lt;b&gt;ダウンロード&lt;/b&gt;をおすすめします。&lt;br/&gt; &lt;br/&gt;3G経由の場合、ダウンロードに要する時間は1～2分です。&lt;b&gt;定額制のデータプラン&lt;/b&gt;をご利用でない場合は通信料が発生する可能性があります。&lt;br/&gt;ご利用のデータプランが不明な場合は、自動的にダウンロードが開始されるWi-Fi接続を探すことをおすすめします。&lt;br/&gt; &lt;br/&gt;ヒント: 辞書のダウンロードや削除は、お使いの携帯端末の[&lt;b&gt;設定&lt;/b&gt;]メニューの[&lt;b&gt;言語と入力&lt;/b&gt;]で行えます。"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"お使いのモバイル端末で選択した言語には対応する辞書があります。&lt;br/&gt;入力機能をより快適にご利用いただくため、<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>の辞書の&lt;b&gt;ダウンロード&lt;/b&gt;をおすすめします。&lt;br/&gt; &lt;br/&gt;3G をご利用の場合、ダウンロードに要する時間は 1～2 分です。&lt;b&gt;定額制のデータプラン&lt;/b&gt;をご利用でない場合は通信料が発生する可能性があります。&lt;br/&gt;ご利用のデータプランが不明な場合は、自動的にダウンロードが開始される Wi-Fi 接続のご利用をおすすめします。&lt;br/&gt; &lt;br/&gt;ヒント: 辞書のダウンロードや削除は、お使いのモバイル端末の [&lt;b&gt;設定&lt;/b&gt;] メニューの [&lt;b&gt;言語と入力&lt;/b&gt;] で行えます。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"今すぐダウンロード（<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB）"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi経由でダウンロード"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>の辞書を利用できます"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"語句の編集"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"編集"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"削除"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"単語リストに登録がありません。追加ボタン[+]をタップすると単語を追加できます。"</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"単語リストに登録がありません。単語を追加するには、追加ボタン [+] をタップします。"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"すべての言語用"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"その他の言語…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"削除"</string>

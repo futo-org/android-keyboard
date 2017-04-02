@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"ფრაზის ჟესტი"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"შეიყვანეთ შორისები ჟესტიკულაციისას შორისის კლავიშზე გასრიალებით"</string>
     <string name="voice_input" msgid="3583258583521397548">"ხმოვანი შეყვანის კლავიში"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ხმოვანი შეყვანის მეთოდები ჩართული არ არის. შეამოწმეთ ენის &amp; შეყვანის პარამეტრები."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ხმოვანი შეყვანის მეთოდები ჩართული არ არის. შეამოწმეთ ენის და შეყვანის პარამეტრები."</string>
     <string name="configure_input_method" msgid="373356270290742459">"შეყვანის მეთოდების კონფიგურაცია"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ენები"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"დახმარება და უკუკავშირი"</string>
     <string name="select_language" msgid="5709487854987078367">"ენები"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"შეეხეთ ისევ შესანახად"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"აქ შეეხეთ, რომ შეინახოს"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"შესანახად, შეეხეთ ხელახლა"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"შესანახად, შეეხეთ აქ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ხელმისაწვდომია ლექსიკონი"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"კლავიატურის თემა"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"ანგარიშების გადართვა"</string>
@@ -114,7 +114,7 @@
     <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"სერბული (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ტრადიციული)"</string>
     <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (კომპაქტური)"</string>
-    <string name="subtype_no_language" msgid="7137390094240139495">"ენის გარეშე (ანბანი)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"ენის გარეშე (ლათინური ანბანი)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ანბანი (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ანბანი (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8144348527575640087">"ანბანი (AZERTY)"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"შემდეგი საფეხური"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"მიმდინარეობს <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ის დაყენება"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>-ის ჩართვა"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"გთხოვთ მონიშნოთ „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ თქვენი ენის და შეყვანის პარამეტრებში. ეს უფლებას მიცემს მას გაეშვას თქვენს მოწყობილობაზე."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> უკვე გააქტიურებულია თქვენი ენის შეყვანის პარამეტრებში, ასე რომ ეს საფეხური დასრულებულია. გადადით შემდეგ საფეხურზე!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"გთხოვთ, ენის და შეყვანის პარამეტრებში მონიშნოთ „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“. ამით მას თქვენს მოწყობილობაზე გაშვების უფლება მიეცემა."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> უკვე ჩართულია ენის და შეყვანის პარამეტრებში. ასე რომ, ეს საფეხური დასრულებულია. გადადით შემდეგ საფეხურზე!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"პარამეტრებში გააქტიურება"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"გადართეთ <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ზე"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"შემდეგ, აირჩიეთ „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ თქვენს აქტიურ შეყვანის მეთოდად."</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"დამატებითი ენების კონფიგურაცია"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"დასრულებული"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"აპის ხატულის ჩვენება"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"გაშვების ხატულის ჩვენება გამშვებში"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"აპის ხატულის ჩვენება გამშვებში"</string>
     <string name="app_name" msgid="6320102637491234792">"ლექსიკონის პროვაიდერი"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ლექსიკონის პროვაიდერი"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"ლექსიკონის სერვისი"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ინსტალაცია"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"გაუქმება"</string>
     <string name="delete_dict" msgid="756853268088330054">"წაშლა"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"თქვენ მიერ მობილურ მოწყობილობაზე არჩეული ენისთვის ხელმისაწვდომია ლექსიკონი.&lt;br/&gt; გირჩევთ, &lt;b&gt;ჩამოტვირთოთ&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ლექსიკონი, რათა გაიმარტივოთ ტექსტის შეყვანა.&lt;br/&gt; &lt;br/&gt; ჩამოტვირთვას შესაძლოა დასჭირდეს ერთი ან ორი წუთი 3G სისწრაფეზე. თუ &lt;b&gt; მობილური ინტერნეტის ტარიფი&lt;/b&gt;.&lt;br/&amp;gt ულიმიტო არ გაქვთ, შესაძლოა გადახდა მოგიწიოთ; თუ არ ხართ დარწმუნებული მობილური ინტერნეტის აქტიური ტარიფის შესახებ, გირჩევთ, იპოვოთ Wi-Fi კავშირი და ავტომატურად დაიწყოთ ჩამოტვირთვა.&lt;br/&gt; &lt;br/&gt; რჩევა: ლექსიკონების ჩამოტვირთვა და ამოშლა შეიძლება სექციიდან &lt;b&gt;ენა და შეყვანა&lt;/b&gt; თქვენი მობილური მოწყობილობის &lt;b&gt;პარამეტრების&lt;/b&gt; მენიუში."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"თქვენს მობილურ მოწყობილობაზე არჩეული ენისთვის ხელმისაწვდომია ლექსიკონი.&lt;br/&gt; გირჩევთ, &lt;b&gt;ჩამოტვირთოთ&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ლექსიკონი, რათა გაიმარტივოთ ტექსტის შეყვანა.&lt;br/&gt; &lt;br/&gt; 3G კავშირის მეშვეობით ჩამოტვირთვას შესაძლოა ერთი ან ორი წუთი დასჭირდეს. თუ &lt;b&gt;მობილური ინტერნეტის ულიმიტო&lt;/b&gt; ტარიფით არ სარგებლობთ, შეიძლება გადახდა მოგიწიოთ.&lt;br/&gt; თუ არ ხართ დარწმუნებული, მობილური ინტერნეტის რომელი ტარიფი გაქვთ გააქტიურებული, გირჩევთ, გამოიყენოთ Wi-Fi კავშირი და ჩამოტვირთვა ავტომატურად დაიწყება.&lt;br/&gt; &lt;br/&gt; მინიშნება: ლექსიკონების ჩამოტვირთვა და ამოშლა შეგიძლიათ თქვენი მობილური მოწყობილობის &lt;b&gt;პარამეტრების&lt;/b&gt; მენიუს სექციაში — &lt;b&gt;ენა და შეყვანა&lt;/b&gt;."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ახლა ჩამოტვირთვა (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>მბაიტი)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi კავშირზე ჩამოტვირთვა"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-სთვის ხელმისაწვდომია ლექსიკონი"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"სიტყვის შესწორება"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"რედაქტირება"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"წაშლა"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"თქვენ არ გაქვთ სიტყვები მომხმარებლის ლექსიკონში. დაამატეთ სიტყვები ღილაკ Add (+) შეხებით."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"მომხმარებლის ლექსიკონში სიტყვები არ არის. სიტყვის დასამატებლად, შეეხეთ დამატების (+) ღილაკს."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"ყველა ენისთვის"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"სხვა ენები…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"წაშლა"</string>

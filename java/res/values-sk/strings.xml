@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Možnosti zadávania textu a údajov"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Hľadať mená kontaktov"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Kontrola pravopisu používa záznamy z vášho zoznamu kontaktov"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Kontrola pravopisu používa záznamy z vášho zoznamu kontaktov"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Pri stlačení klávesu vibrovať"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk pri stlačení klávesu"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Detail znaku pri stlačení"</string>
@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frázové gestá"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Zadávanie medzier prechádzaním cez kláves medzerníka"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kláves hlasového vstupu"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nie sú povolené žiadne metódy hlasového vstupu. Skontrolujte nastavenia položky Jazyk a vstup."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nie sú povolené žiadne metódy hlasového vstupu. Skontrolujte nastavenia Jazyky a vstup."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurovať metódy vstupu"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Jazyky"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pomocník a spätná väzba"</string>
     <string name="select_language" msgid="5709487854987078367">"Jazyky"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Opätovným dotykom uložíte"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Klepnutím tu uložíte"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Uložte slovo opätovným klepnutím"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Uložte klepnutím tu"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"K dispozícii je slovník"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motív klávesnice"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Prepnúť účty"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Ďalší krok"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Nastavenie aplikácie <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Povoľte aplikáciu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"V nastaveniach vstupu a jazyka začiarknite políčko <xliff:g id="APPLICATION_NAME">%s</xliff:g>. Týmto aplikácii povolíte spustenie v zariadení."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Aplikácia <xliff:g id="APPLICATION_NAME">%s</xliff:g> je už povolená v Nastaveniach jazyka a vstupu. Prejdite na ďalší krok."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"V nastaveniach Jazyky a vstup začiarknite políčko <xliff:g id="APPLICATION_NAME">%s</xliff:g>. Týmto aplikácii povolíte spustenie v zariadení."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Aplikácia <xliff:g id="APPLICATION_NAME">%s</xliff:g> je už v nastaveniach Jazyky a vstup povolená. Prejdite na ďalší krok."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Povoliť v Nastaveniach"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Prepnite na aplikáciu <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Potom vyberte aplikáciu <xliff:g id="APPLICATION_NAME">%s</xliff:g> ako aktívnu metódu textového vstupu."</string>
@@ -176,14 +176,14 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Obnoviť"</string>
     <string name="last_update" msgid="730467549913588780">"Posledná aktualizácia"</string>
     <string name="message_updating" msgid="4457761393932375219">"Prebieha kontrola aktualizácií"</string>
-    <string name="message_loading" msgid="5638680861387748936">"Prebieha načítavanie..."</string>
+    <string name="message_loading" msgid="5638680861387748936">"Načítava sa…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Hlavný slovník"</string>
     <string name="cancel" msgid="6830980399865683324">"Zrušiť"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"Nastavenia"</string>
     <string name="install_dict" msgid="180852772562189365">"Inštalovať"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Zrušiť"</string>
     <string name="delete_dict" msgid="756853268088330054">"Odstrániť"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Pre vybratý jazyk mobilného zariadenia je k dispozícii slovník.&lt;br/&gt; Slovník jazyka <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> vám odporúčame &lt;b&gt;stiahnuť&lt;/b&gt;. Pomôže vám pri zadávaní textu.&lt;br/&gt; &lt;br/&gt; V sieti 3G môže sťahovanie trvať jednu až dve minúty. Ak nemáte &lt;b&gt;neobmedzený dátový program&lt;/b&gt;, môžu sa účtovať poplatky.&lt;br/&gt; Ak s určitosťou neviete aký dátový program používate, vyhľadajte pripojenie k sieti Wi-Fi a sťahovanie sa spustí automaticky.&lt;br/&gt; &lt;br/&gt; Tip: Slovníky môžete v mobilnom zariadení sťahovať a odstraňovať v časti &lt;b&gt;Jazyk a vstup&lt;/b&gt; ponuky &lt;b&gt;Nastavenia&lt;/b&gt;."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Pre vybratý jazyk mobilného zariadenia je k dispozícii slovník.&lt;br/&gt; Odporúčame vám &lt;b&gt;stiahnuť&lt;/b&gt; slovník jazyka <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>. Pomôže vám pri zadávaní textu.&lt;br/&gt; &lt;br/&gt; V sieti 3G môže sťahovanie chvíľu trvať. Ak nemáte &lt;b&gt;neobmedzenú dátovú tarifu&lt;/b&gt;, môžu sa účtovať poplatky.&lt;br/&gt; Ak s určitosťou neviete, aký dátový program používate, vyhľadajte pripojenie k sieti Wi-Fi a sťahovanie sa spustí automaticky.&lt;br/&gt; &lt;br/&gt; Slovníky môžete v mobilnom zariadení sťahovať a odstraňovať v časti &lt;b&gt;Jazyk a vstup&lt;/b&gt; v ponuke &lt;b&gt;Nastavenia&lt;/b&gt;."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Stiahnuť (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Stiahnuť cez sieť Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"K dispozícii je slovník pre jazyk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Upraviť slovo"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Upraviť"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Odstrániť"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"V používateľskom slovníku nie sú žiadne slová. Slovo pridáte klepnutím na tlačidlo Pridať (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"V používateľskom slovníku nie sú žiadne slová. Slovo pridáte klepnutím na tlačidlo Pridať (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"pre všetky jazyky"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Ďalšie jazyky…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Odstrániť"</string>

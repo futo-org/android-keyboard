@@ -86,13 +86,13 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gerak isyarat frasa"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Luncur ke kekunci ruang untuk masukkan ruang semasa gerak isyarat"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kunci input suara"</string>
-    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Tiada kaedah input suara didayakan. Semak Bahasa &amp; tetapan input."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Tiada kaedah input suara didayakan. Semak tetapan Bahasa &amp; input."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurasikan kaedah input"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Bahasa"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Bantuan &amp; m/balas"</string>
     <string name="select_language" msgid="5709487854987078367">"Bahasa"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Sentuh lagi untuk menyimpan"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="3040385779511255101">"Sentuh di sini untuk menyimpan"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Ketik sekali lagi untuk menyimpan"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Ketik di sini untuk menyimpan"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamus tersedia"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema papan kekunci"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Beralih akaun"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Langkah seterusnya"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Menyediakan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Dayakan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Sila semak \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" dlm ttpn Bhs &amp; input. Ini mbnarkn apl djlnkn pd pranti anda."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> sudah didayakan dalam tetapan Bahasa &amp; input anda, jadi langkah ini telah selesai. Beralih ke langkah seterusnya!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Sila tandai \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" dalam tetapan Bahasa &amp; input anda. Tindakan ini akan membenarkan apl itu dijalankan pada peranti anda."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> sudah didayakan dalam tetapan Bahasa &amp; input anda, jadi langkah ini telah selesai. Beralih ke langkah seterusnya!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Dayakan dalam Tetapan"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Beralih ke <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Seterusnya, pilih \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" sebagai kaedah input teks aktif anda."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Pasang"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Batal"</string>
     <string name="delete_dict" msgid="756853268088330054">"Padam"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Bahasa pilihan pada peranti mudah alih anda sudah mempunyai kamus yang tersedia.&lt;br/&gt; Kami mengesyorkan &lt;b&gt;memuat turun&lt;/b&gt; kamus <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> untuk memperbaik pengalaman menaip anda.&lt;br/&gt; &lt;br/&gt; Muat turun boleh mengambil masa satu atau dua minit melalui 3G. Caj mungkin dikenakan jika anda tidak mempunyai &lt;b&gt;pelan data tanpa had&lt;/b&gt;.&lt;br/&gt; Jika anda tidak pasti jenis pelan data yang anda gunakan, kami mengesyorkan agar anda mencari sambungan Wi-Fi untuk mula memuat turun secara automatik.&lt;br/&gt; &lt;br/&gt; Petua: Anda boleh memuat turun dan mengalih keluar kamus dengan pergi ke menu &lt;b&gt;Bahasa&amp; input&lt;/b&gt; dalam &lt;b&gt;Tetapan&lt;/b&gt; peranti mudah alih anda."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Bahasa yang dipilih pada peranti mudah alih anda disediakan dengan kamus.&lt;br/&gt; Kami syorkan anda &lt;b&gt;memuat turun&lt;/b&gt; kamus <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> untuk meningkatkan pengalaman penaipan anda.&lt;br/&gt; &lt;br/&gt; Proses muat turun boleh mengambil masa seminit dua melalui 3G. Caj mungkin dikenakan jika anda tiada &lt;b&gt;pelan data tanpa had&lt;/b&gt;.&lt;br/&gt; Jika anda tidak pasti pelan data yang dilanggani, kami syorkan anda mencari sambungan Wi-Fi untuk memulakan muat turun secara automatik.&lt;br/&gt; &lt;br/&gt; Petua: Anda boleh memuat turun dan mengalih keluar kamus dengan melawati &lt;b&gt;Bahasa &amp; input&lt;/b&gt; dalam menu &lt;b&gt;Tetapan&lt;/b&gt; peranti mudah alih anda."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Muat turun sekarang (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Muat turun melalui Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Kamus tersedia untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Edit perkataan"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Edit"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Padam"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Anda tidak mempunyai sebarang perkataan dalam kamus pengguna. Tambahkan perkataan dengan menyentuh butang Tambah (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Anda tiada sebarang perkataan dalam kamus pengguna. Untuk menambahkan perkataan, ketik butang Tambah (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Untuk semua bahasa"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Lebih banyak bahasa..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Padam"</string>
