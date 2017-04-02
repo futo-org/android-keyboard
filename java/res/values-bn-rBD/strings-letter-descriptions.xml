@@ -128,52 +128,52 @@
     <string name="spoken_accented_letter_017F" msgid="317501463253362415">"দীর্ঘ S"</string>
     <string name="spoken_accented_letter_01A1" msgid="630186564859044196">"O, শিং"</string>
     <string name="spoken_accented_letter_01B0" msgid="8544012177684640443">"U, শিং"</string>
-    <string name="spoken_accented_letter_0219" msgid="1960371842020076066">"S, নীচে কমা"</string>
-    <string name="spoken_accented_letter_021B" msgid="1398418662032919032">"T, নীচে কমা"</string>
+    <string name="spoken_accented_letter_0219" msgid="1960371842020076066">"S, নিচে কমা"</string>
+    <string name="spoken_accented_letter_021B" msgid="1398418662032919032">"T, নিচে কমা"</string>
     <string name="spoken_accented_letter_0259" msgid="2464085263158415898">"শোহয়া"</string>
-    <string name="spoken_accented_letter_1EA1" msgid="688124877202887630">"A, নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1EA1" msgid="688124877202887630">"A, নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1EA3" msgid="327960130366386256">"A, উপরে হুক"</string>
     <string name="spoken_accented_letter_1EA5" msgid="637406363453769610">"A, সারকামফ্লেক্স এবং অ্যাকুইট"</string>
     <string name="spoken_accented_letter_1EA7" msgid="1419591804181615409">"A, সারকামফ্লেক্স এবং গ্রেভ"</string>
     <string name="spoken_accented_letter_1EA9" msgid="6068887382734896756">"A, সারকামফ্লেক্স এবং উপরে হুক"</string>
     <string name="spoken_accented_letter_1EAB" msgid="7236523151662538333">"A,সারকামফ্লেক্স এবং টিল্ডা"</string>
-    <string name="spoken_accented_letter_1EAD" msgid="2363364864106332076">"A, সারকামফ্লেক্স এবং নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1EAD" msgid="2363364864106332076">"A, সারকামফ্লেক্স এবং নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1EAF" msgid="1576329511464272935">"A, ব্রীভ এবং অ্যাকুইট"</string>
     <string name="spoken_accented_letter_1EB1" msgid="4634735072816076592">"A, ব্রীভ এবং গ্রেভ"</string>
     <string name="spoken_accented_letter_1EB3" msgid="2325245849038771534">"A, ব্রীভ এবং উপরে হুক"</string>
     <string name="spoken_accented_letter_1EB5" msgid="3720427596242746295">"A, ব্রীভ এবং টিল্ডা"</string>
-    <string name="spoken_accented_letter_1EB7" msgid="700415535653646695">"A, ব্রীভ এবং নীচে ডট"</string>
-    <string name="spoken_accented_letter_1EB9" msgid="3901338692305890487">"E, নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1EB7" msgid="700415535653646695">"A, ব্রীভ এবং নিচে ডট"</string>
+    <string name="spoken_accented_letter_1EB9" msgid="3901338692305890487">"E, নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1EBB" msgid="4028688699415417302">"E, উপরে হুক"</string>
     <string name="spoken_accented_letter_1EBD" msgid="181253633045931897">"E, টিল্ডাা"</string>
     <string name="spoken_accented_letter_1EBF" msgid="3309618845007944963">"E, সারকামফ্লেক্স এবং অ্যাকুইট"</string>
     <string name="spoken_accented_letter_1EC1" msgid="8139046749226332542">"E, সারকামফ্লেক্স এবং গ্রেভ"</string>
     <string name="spoken_accented_letter_1EC3" msgid="3239674223053133383">"E, সারকামফ্লেক্স এবং উপরে হুক"</string>
     <string name="spoken_accented_letter_1EC5" msgid="2216559244705714587">"E, সারকামফ্লেক্স এবং টিল্ডা"</string>
-    <string name="spoken_accented_letter_1EC7" msgid="9012731468253986792">"E, সারকামফ্লেক্স এবং নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1EC7" msgid="9012731468253986792">"E, সারকামফ্লেক্স এবং নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1EC9" msgid="2901917620195717034">"I, উপরে হুক"</string>
-    <string name="spoken_accented_letter_1ECB" msgid="5470387489820034621">"I, নীচে বিন্দু"</string>
-    <string name="spoken_accented_letter_1ECD" msgid="1340122876914839806">"O, নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1ECB" msgid="5470387489820034621">"I, নিচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1ECD" msgid="1340122876914839806">"O, নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1ECF" msgid="2326921263882559755">"O, উপরে হুক"</string>
     <string name="spoken_accented_letter_1ED1" msgid="2885683296042774958">"O, সারকামফ্লেক্স এবং অ্যাকুইট"</string>
     <string name="spoken_accented_letter_1ED3" msgid="6857664926477376178">"O, সারকামফ্লেক্স এবং গ্রেভ"</string>
     <string name="spoken_accented_letter_1ED5" msgid="2015209467290624062">"O, সারকামফ্লেক্স এবং উপরে হুক"</string>
     <string name="spoken_accented_letter_1ED7" msgid="7924481354960306389">"O, সারকামফ্লেক্স এবং টিল্ডা"</string>
-    <string name="spoken_accented_letter_1ED9" msgid="7023315590332365554">"O, সারকামফ্লেক্স এবং নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1ED9" msgid="7023315590332365554">"O, সারকামফ্লেক্স এবং নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1EDB" msgid="2379438944917634496">"O, শিং ও অ্যাকুইট"</string>
     <string name="spoken_accented_letter_1EDD" msgid="8107077534204404085">"O, শিং ও গ্রেভ"</string>
     <string name="spoken_accented_letter_1EDF" msgid="1846880105528347966">"O, শিং ও উপরে হুক"</string>
     <string name="spoken_accented_letter_1EE1" msgid="1520037313389776718">"O, শিং ও টিল্ডা"</string>
-    <string name="spoken_accented_letter_1EE3" msgid="907964027171008963">"O, শিং ও নীচে বিন্দু"</string>
-    <string name="spoken_accented_letter_1EE5" msgid="1522024630360038700">"U, নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1EE3" msgid="907964027171008963">"O, শিং ও নিচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1EE5" msgid="1522024630360038700">"U, নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1EE7" msgid="7815412228302952637">"U, উপরে হুক"</string>
     <string name="spoken_accented_letter_1EE9" msgid="4219119671251485651">"U, হর্ন ও অ্যাকুইট"</string>
     <string name="spoken_accented_letter_1EEB" msgid="4086009841269002231">"U, হর্ন ও গ্রেভ"</string>
     <string name="spoken_accented_letter_1EED" msgid="3528151733528719847">"U, হর্ন ও উপরে হুক"</string>
     <string name="spoken_accented_letter_1EEF" msgid="3508548229409072119">"U, হর্ন ও টিল্ডা"</string>
-    <string name="spoken_accented_letter_1EF1" msgid="1912816350401931115">"U, হর্ন ও নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1EF1" msgid="1912816350401931115">"U, হর্ন ও নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1EF3" msgid="7211760439435946494">"Y, গ্রেভ"</string>
-    <string name="spoken_accented_letter_1EF5" msgid="8998864482764007384">"Y, নীচে বিন্দু"</string>
+    <string name="spoken_accented_letter_1EF5" msgid="8998864482764007384">"Y, নিচে বিন্দু"</string>
     <string name="spoken_accented_letter_1EF7" msgid="922043627252869200">"Y, উপরে হুক"</string>
     <string name="spoken_accented_letter_1EF9" msgid="6213977100552260366">"Y, টিল্ডা"</string>
     <string name="spoken_symbol_00A1" msgid="4281758332905123408">"উল্টানো বিস্ময়বোধক চিহ্ন"</string>
@@ -182,10 +182,10 @@
     <string name="spoken_symbol_00B9" msgid="8026257165451461231">"ঊর্ধ্বলিপি এক"</string>
     <string name="spoken_symbol_00BB" msgid="1102740075655373928">"ডানদিকে-নির্দেশিত যুগ্ম কোণ সমেত উদ্ধৃতি চিহ্ন"</string>
     <string name="spoken_symbol_00BF" msgid="6233794752573788098">"উল্টানো প্রশ্ন চিহ্ন"</string>
-    <string name="spoken_symbol_2018" msgid="4886476295598930225">"বাম একক উদ্ধৃতি চিহ্ন"</string>
+    <string name="spoken_symbol_2018" msgid="4886476295598930225">"বাঁ একক উদ্ধৃতি চিহ্ন"</string>
     <string name="spoken_symbol_2019" msgid="8892530161598134083">"ডান একক উদ্ধৃতি চিহ্ন"</string>
     <string name="spoken_symbol_201A" msgid="2072987157683446644">"একটি, নিচু স্থানে লেখা-৯ এর মতো উদ্ধৃতি চিহ্ন"</string>
-    <string name="spoken_symbol_201C" msgid="4588048378803665427">"বাম যুগ্ম উদ্ধৃতি চিহ্ন"</string>
+    <string name="spoken_symbol_201C" msgid="4588048378803665427">"বাঁ যুগ্ম উদ্ধৃতি চিহ্ন"</string>
     <string name="spoken_symbol_201D" msgid="1642776849495925895">"ডান যুগ্ম উদ্ধৃতি চিহ্ন"</string>
     <string name="spoken_symbol_2020" msgid="9084628638189344431">"ছুরি"</string>
     <string name="spoken_symbol_2021" msgid="5081396468559426475">"জোড়া ছুরি"</string>
