@@ -45,7 +45,7 @@
     <string name="spoken_description_search" msgid="5099937658231911288">"Qidiruv"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"Qora nuqta"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"Tilni o‘zgartirish"</string>
-    <string name="spoken_description_action_next" msgid="431761808119616962">"Keyingi"</string>
+    <string name="spoken_description_action_next" msgid="431761808119616962">"Keyingisi"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"Avvalgi"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Yuqori registr yoqildi"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Caps Lock yoqildi"</string>
@@ -74,7 +74,7 @@
     <string name="spoken_descrption_emoji_category_flags" msgid="5971573825866381472">"Bayroqchalar"</string>
     <string name="spoken_descrption_emoji_category_eight_smiley_people" msgid="5682663819532433464">"Kulgichlar va odamlar"</string>
     <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="5844950234883716704">"Hayvonot va tabiat"</string>
-    <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"Taom va ichimlik"</string>
+    <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"Taom va ichimliklar"</string>
     <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="3834085499381434611">"Sayohat va joylar"</string>
     <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"Harakat"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"Kulgichlar"</string>
