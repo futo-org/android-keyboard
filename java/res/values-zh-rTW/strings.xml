@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"輸入選項"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"查詢聯絡人姓名"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"拼字檢查程式使用您的聯絡人清單項目"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"拼字檢查程式使用你的聯絡人清單項目"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按鍵時震動"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"按鍵聲音"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"按鍵時彈出"</string>
@@ -36,14 +36,14 @@
     <string name="enable_split_keyboard" msgid="4177264923999493614">"啟用分離式鍵盤"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google 鍵盤同步處理"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"同步處理功能已開啟"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"在各裝置上同步處理您的個人字典"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"在各裝置上同步處理你的個人字典"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"立即同步處理"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"刪除雲端資料"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"將已同步處理的資料從 Google 刪除"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"已同步處理的資料將從雲端中刪除。您確定嗎？"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"已同步處理的資料將從雲端中刪除。你確定嗎？"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"刪除"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"取消"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"系統將會同步處理您的個人字典並備份至 Google 伺服器，同時也會收集字詞頻率的統計資訊，藉此改善我們的產品品質。所有資訊的收集和使用方式都會遵守《"<a href="https://www.google.com/policies/privacy">"Google 隱私權政策"</a>"》的規定。"</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"系統將會同步處理你的個人字典並備份至 Google 伺服器，同時也會收集字詞頻率的統計資訊，藉此改善我們的產品品質。所有資訊的收集和使用方式都會遵守《"<a href="https://www.google.com/policies/privacy">"Google 隱私權政策"</a>"》的規定。"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"請將 Google 帳戶新增到這個裝置以啟用這項功能"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"採用 Google Apps for Business 帳戶的裝置無法使用同步處理功能"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切換到其他輸入法"</string>
@@ -130,7 +130,7 @@
     <string name="save" msgid="7646738597196767214">"儲存"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"語言"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"配置"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"您必須先啟用自訂輸入樣式，才能開始使用。您要立即啟用嗎？"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"你必須先啟用自訂輸入樣式，才能開始使用。你要立即啟用嗎？"</string>
     <string name="enable" msgid="5031294444630523247">"啟用"</string>
     <string name="not_now" msgid="6172462888202790482">"暫時不要"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"已存在相同的輸入樣式：<xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
@@ -146,14 +146,14 @@
     <string name="setup_next_action" msgid="371821437915144603">"下一步"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"正在設定「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"啟用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"請在 [語言與輸入設定] 中勾選 [<xliff:g id="APPLICATION_NAME">%s</xliff:g>]，授權該應用程式在您的裝置上執行。"</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"您已在 [語言與輸入設定] 中啟用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>，因此這個步驟已經完成。請進行下一個步驟！"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"請在 [語言與輸入設定] 中勾選 [<xliff:g id="APPLICATION_NAME">%s</xliff:g>]，授權該應用程式在你的裝置上執行。"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"你已在 [語言與輸入設定] 中啟用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>，因此這個步驟已經完成。請進行下一個步驟！"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"在設定中啟用"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"切換至「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"接著，請選取「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」做為目前使用的文字輸入法。"</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"切換輸入法"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"恭喜，您已完成設定！"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"現在，您可以在自己喜愛的所有應用程式中使用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」輸入文字。"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"恭喜，你已完成設定！"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"現在，你可以在自己喜愛的所有應用程式中使用「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」輸入文字。"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"設定其他語言"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"完成"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"顯示應用程式圖示"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"安裝"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"取消"</string>
     <string name="delete_dict" msgid="756853268088330054">"刪除"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"您在行動裝置上選用的語言現有可用的字典。&lt;br/&gt; 建議您&lt;b&gt;下載&lt;/b&gt;<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典，藉此強化輸入功能。&lt;br/&gt; &lt;br/&gt; 透過 3G 網路下載約需一兩分鐘。如果您未使用&lt;b&gt;無限行動上網資費方案&lt;/b&gt;，可能必須另外付費。&lt;br/&gt; 假使您不確定自己的行動上網資費方案為何，建議您連上 Wi-Fi 網路後再自動下載。&lt;br/&gt; &lt;br/&gt; 提示：前往行動裝置的 [設定]&lt;b&gt;&lt;/b&gt; 選單並選擇 [語言與輸入設定]&lt;b&gt;&lt;/b&gt;，即可下載及移除字典。"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"你在行動裝置上選用的語言現有可用的字典。&lt;br/&gt; 建議你&lt;b&gt;下載&lt;/b&gt;<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典，藉此強化輸入功能。&lt;br/&gt; &lt;br/&gt; 透過 3G 網路下載約需一兩分鐘。如果你未使用&lt;b&gt;無限行動上網資費方案&lt;/b&gt;，可能必須另外付費。&lt;br/&gt; 假使你不確定自己的行動上網資費方案為何，建議你連上 Wi-Fi 網路後再自動下載。&lt;br/&gt; &lt;br/&gt; 提示：前往行動裝置的 [設定]&lt;b&gt;&lt;/b&gt; 選單並選擇 [語言與輸入設定]&lt;b&gt;&lt;/b&gt;，即可下載及移除字典。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下載 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"透過 Wi-Fi 下載"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"支援<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典"</string>

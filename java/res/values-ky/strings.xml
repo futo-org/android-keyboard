@@ -169,7 +169,7 @@
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Колдонуучунун сөздүгү"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Сөздүк бар"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"Учурда жүктөлүп алынууда"</string>
-    <string name="dictionary_installed" msgid="8081558343559342962">"Орнотулду"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Орнотулган"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Орнотулду, өчүрүлдү"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Сөздүк кызматына туташуу көйгөйү"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"Сөздүктөр жок"</string>
@@ -178,7 +178,7 @@
     <string name="message_updating" msgid="4457761393932375219">"Жаңыртуулар изделүүдө"</string>
     <string name="message_loading" msgid="5638680861387748936">"Жүктөлүүдө…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Негизги сөздүк"</string>
-    <string name="cancel" msgid="6830980399865683324">"Жокко чыгаруу"</string>
+    <string name="cancel" msgid="6830980399865683324">"Жок"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"Жөндөөлөр"</string>
     <string name="install_dict" msgid="180852772562189365">"Орнотуу"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Жокко чыгаруу"</string>
