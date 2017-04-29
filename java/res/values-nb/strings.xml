@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Rediger ord"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Rediger"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Slett"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Du har ingen ord i brukerordlisten. For å legge til ord, trykk på Legg til-knappen (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Du har ingen ord i brukerordlisten. Du kan legge til ord ved å trykke på Legg til-knappen (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"For alle språk"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Flere språk"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Slett"</string>
