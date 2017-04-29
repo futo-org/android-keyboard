@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Дайндрд киргзүү парамтрлр"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Байланыш ысымдарын издөө"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Орфографияны текшергич байланыштар тизмеңиздги жазуулрды пайдалнт"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Орфография текшерилип жатканда байланыштар тизмеси колдонулат"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Баскыч басылганда дирилдесин"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Баскыч басылганда чыккан үн"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Баскыч басылганда калкып чыкма"</string>
@@ -89,7 +89,7 @@
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Үн менен киргизүү ыкмаларынын бири да иштетилген эмес. Тилдер жана киргизүү жөндөөлөрүн текшериңиз."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Дайндрд киргзүү ыкмалрн конфигрцлоо"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тилдер"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"Жардам жана жооп пикир"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Жардам жана пикир билдирүү"</string>
     <string name="select_language" msgid="5709487854987078367">"Тилдер"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Сактоо үчүн кайра таптап коюңуз"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Сактоо үчүн бул жерди таптаңыз"</string>
@@ -169,7 +169,7 @@
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Колдонуучунун сөздүгү"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Сөздүк бар"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"Учурда жүктөлүп алынууда"</string>
-    <string name="dictionary_installed" msgid="8081558343559342962">"Орнотулду"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Орнотулган"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Орнотулду, өчүрүлдү"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Сөздүк кызматына туташуу көйгөйү"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"Сөздүктөр жок"</string>
@@ -178,7 +178,7 @@
     <string name="message_updating" msgid="4457761393932375219">"Жаңыртуулар изделүүдө"</string>
     <string name="message_loading" msgid="5638680861387748936">"Жүктөлүүдө…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Негизги сөздүк"</string>
-    <string name="cancel" msgid="6830980399865683324">"Жокко чыгаруу"</string>
+    <string name="cancel" msgid="6830980399865683324">"Жок"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"Жөндөөлөр"</string>
     <string name="install_dict" msgid="180852772562189365">"Орнотуу"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Жокко чыгаруу"</string>

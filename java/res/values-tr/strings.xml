@@ -91,8 +91,8 @@
     <string name="language_selection_title" msgid="3666971864764478269">"Diller"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Yardım ve geri bildirim"</string>
     <string name="select_language" msgid="5709487854987078367">"Diller"</string>
-    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Kaydetmek için tekrar hafifçe dokunun"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Kaydetmek için buraya hafifçe dokunun"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Kaydetmek için tekrar dokunun"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Kaydetmek için buraya dokunun"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sözlük kullanılabilir"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klavye teması"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Hesap değiştir"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Kelimeyi düzenle"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Düzenle"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Sil"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Kullanıcı sözlüğünde kelime yok. Kelime eklemek için Ekle (+) düğmesine hafifçe dokunun."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Kullanıcı sözlüğünde kelime yok. Kelime eklemek için Ekle (+) düğmesine dokunun."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Tüm diller için"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Diğer diller…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Sil"</string>
