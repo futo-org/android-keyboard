@@ -72,7 +72,7 @@
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No sugerir palabras que pueden ser ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Pulsar la tecla de espacio o punto para corregir errores"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"No"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivado"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Parcial"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Total"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Casi total"</string>
