@@ -188,7 +188,7 @@
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi аркылуу жүктөп алуу"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> тилинде сөздүк бар"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Карап көрүү жана жүктөп алуу үчүн басыңыз"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Жүктөлүп алынууда: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> үчүн сунуштар жакында даяр болот."</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Жүктөлүп алынууда: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> тилиндеги сунуштар жакында даяр болот."</string>
     <string name="version_text" msgid="2715354215568469385">"Версиясы <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Кошуу"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Сөздүккө кошуу"</string>
