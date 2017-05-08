@@ -50,8 +50,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A tecla de cambio de idioma inclúe outros métodos de entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de cambio de idioma"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostra cando hai varios idiomas de entrada activados"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso ao ampliar tecla"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sen retraso"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retardo ao ampliar tecla"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sen retardo"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminado"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"Predeterminado do sistema"</string>
@@ -86,7 +86,7 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Xesto de frase"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Para introducir espazos nos xestos, pasa o dedo cara a tecla de espazo"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tecla de entrada de voz"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Non hai métodos de entrada de voz activado. Comproba a configuración Idioma e entrada de texto."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Non hai métodos de entrada de voz activado. Comproba a configuración Idioma e introdución de texto."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Idiomas"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Axuda e suxerencias"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Xa existe o mesmo estilo de entrada: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Duración vibración ao premer teclas"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume do son ao premer teclas"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Retraso de pulsación prolongada"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Retardo de pulsación prolongada"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emojis para o teclado físico"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"A tecla Alt física mostra a paleta de emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Seguinte paso"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurando <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Activar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"Comproba a aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> na configuración Idioma e entrada de texto para que se poida executar no teu dispositivo."</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"A aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> xa está activada na configuración Idioma e entrada de texto. Podes pasar ao seguinte paso."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Comproba a aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> na configuración Idioma e introdución de texto para que se poida executar no teu dispositivo."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"A aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> xa está activada na configuración Idioma e introdución de texto. Podes pasar ao seguinte paso."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Activar en Configuración"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Cambiar a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de entrada de texto activo."</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalar"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancelar"</string>
     <string name="delete_dict" msgid="756853268088330054">"Eliminar"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"O idioma seleccionado no teu dispositivo móbil ten un dicionario dispoñible.&lt;br/&gt; É recomendable &lt;b&gt;descargar&lt;/b&gt; o dicionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mellorar a experiencia de escritura.&lt;br/&gt; &lt;br/&gt; A descarga pode tardar un ou dous minutos en redes 3G. É posible que se apliquen tarifas se non tes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;.&lt;br/&gt; Se non estás seguro de que plan de datos tes, é recomendable buscar unha conexión wifi para iniciar a descarga automaticamente.&lt;br/&gt; &lt;br/&gt; Consello: podes descargar e eliminar dicionarios en &lt;b&gt;Idioma e entrada de texto&lt;/b&gt; no menú &lt;b&gt;Configuración&lt;/b&gt; do dispositivo móbil."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"O idioma seleccionado no teu dispositivo móbil ten un dicionario dispoñible.&lt;br/&gt; É recomendable &lt;b&gt;descargar&lt;/b&gt; o dicionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mellorar a experiencia de escritura.&lt;br/&gt; &lt;br/&gt; A descarga pode tardar un ou dous minutos en redes 3G. É posible que se apliquen tarifas se non tes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;.&lt;br/&gt; Se non estás seguro de que plan de datos tes, é recomendable buscar unha conexión wifi para iniciar a descarga automaticamente.&lt;br/&gt; &lt;br/&gt; Consello: podes descargar e eliminar dicionarios en &lt;b&gt;Idiomas e introdución de texto&lt;/b&gt; no menú &lt;b&gt;Configuración&lt;/b&gt; do dispositivo móbil."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Descargar agora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Descargar a través da wifi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Hai un dicionario dispoñible para <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

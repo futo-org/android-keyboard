@@ -52,9 +52,9 @@
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"ਜਦੋਂ ਮਲਟੀਪਲ ਭਾਸਾਵਾਂ ਸਮਰਥਿਤ ਹੋਣ ਤਾਂ ਦਿਖਾਓ"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"ਕੁੰਜੀ ਪੌਪਅਪ ਬਰਖਾਸਤ ਦੇਰੀ"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ਕੋਈ ਦੇਰੀ ਨਹੀਂ"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ਡਿਫੌਲਟ"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ਪੂਰਵ-ਨਿਰਧਾਰਤ"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
-    <string name="settings_system_default" msgid="6268225104743331821">"ਸਿਸਟਮ ਡਿਫੌਲਟ"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"ਸਿਸਟਮ ਪੂਰਵ-ਨਿਰਧਾਰਤ"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"ਸੰਪਰਕ ਨਾਵਾਂ ਦਾ ਸੁਝਾਅ ਦਿਓ"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"ਸੁਝਾਵਾਂ ਅਤੇ ਸੋਧਾਂ ਲਈ ਸੰਪਰਕਾਂ ਵਿੱਚੋਂ ਨਾਮ ਵਰਤੋ"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"ਨਿੱਜੀ ਬਣਾਏ ਸੁਝਾਅ"</string>
@@ -139,7 +139,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ਕੁੰਜੀ ਦਬਾਈ ਰੱਖਣ ਦੀ ਮਿਆਦ"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"ਭੌਤਿਕ ਕੀ-ਬੋਰਡ ਲਈ ਈਮੋਜੀ"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ਭੌਤਿਕ Alt ਕੁੰਜੀ ਇਮੋਜੀ ਪੈਲੇਟ ਦਿਖਾਉਂਦੀ ਹੈ"</string>
-    <string name="button_default" msgid="3988017840431881491">"ਡਿਫੌਲਟ"</string>
+    <string name="button_default" msgid="3988017840431881491">"ਪੂਰਵ-ਨਿਰਧਾਰਤ"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਤੇ ਸੁਆਗਤ ਹੈ"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ਸੰਕੇਤ ਟਾਈਪਿੰਗ ਨਾਲ"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"ਸ਼ੁਰੂਆਤ ਕਰੋ"</string>
