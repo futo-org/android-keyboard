@@ -180,7 +180,7 @@
     <string name="main_dict_description" msgid="3072821352793492143">"Kamus utama"</string>
     <string name="cancel" msgid="6830980399865683324">"Batal"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"Setelan"</string>
-    <string name="install_dict" msgid="180852772562189365">"Pasang"</string>
+    <string name="install_dict" msgid="180852772562189365">"Instal"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Batal"</string>
     <string name="delete_dict" msgid="756853268088330054">"Hapus"</string>
     <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Bahasa yang dipilih di perangkat seluler memiliki kamus.&lt;br/&gt; Sebaiknya &lt;b&gt;download&lt;/b&gt; kamus <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> untuk menyempurnakan pengalaman mengetik.&lt;br/&gt; &lt;br/&gt; Download memerlukan waktu satu atau dua menit melalui 3G. Tagihan mungkin berlaku jika Anda tidak menggunakan &lt;b&gt;paket data tak terbatas&lt;/b&gt;.&lt;br/&gt; Jika Anda tidak yakin paket data mana yang digunakan, sebaiknya cari sambungan Wi-Fi untuk memulai download secara otomatis.&lt;br/&gt; &lt;br/&gt; Kiat: Anda dapat mendownload dan menghapus kamus dengan membuka &lt;b&gt;Bahasa &amp; masukan&lt;/b&gt; di menu &lt;b&gt;Setelan&lt;/b&gt; pada perangkat seluler."</string>

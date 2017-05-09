@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Vaši snihronizirani podaci bit će izbrisani iz oblaka. Sigurno?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Izbriši"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Otkaži"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Vaš lični rječnik bit će sinhroniziran i sigurno pohranjen na Google servere. Moguće je da će se prikupljati statističke informacije o učestalosti riječi, u cilju poboljšanja naših proizvoda. Prikupljanje i upotreba svih informacija bit će u skladu s "<a href="https://www.google.com/policies/privacy">"Googleovim pravilima privatnosti"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Vaš lični rječnik bit će sinhroniziran i sigurno pohranjen na Google servere. Moguće je da će se prikupljati statističke informacije o učestalosti riječi, u cilju poboljšanja naših proizvoda. Prikupljanje i korištenje svih informacija bit će u skladu s "<a href="https://www.google.com/policies/privacy">"Googleovim pravilima privatnosti"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Dodajte Google račun u ovaj uređaj da biste omogućili tu funkciju"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinhronizacija nije moguća na uređajima s Google aplikacijama za poslovne račune"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Prebacite na druge načine unosa"</string>

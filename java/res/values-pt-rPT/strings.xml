@@ -140,7 +140,7 @@
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji para teclado físico"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"A tecla Alt física mostra a paleta de emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Predefinido"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"Bem-vindo(a) a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Bem-vindo a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"com a Escrita com Gestos"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Começar"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Passo seguinte"</string>
