@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"입력 옵션"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"연락처 이름 조회"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"맞춤법 검사기가 주소록의 항목을 사용합니다."</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"맞춤법 검사기가 연락처 목록의 항목을 사용합니다."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"키를 누를 때 진동 발생"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"키를 누를 때 소리 발생"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"키를 누를 때 팝업"</string>

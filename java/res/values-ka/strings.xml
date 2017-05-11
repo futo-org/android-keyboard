@@ -115,7 +115,7 @@
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ტრადიციული)"</string>
     <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (კომპაქტური)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ენის გარეშე (ლათინური ანბანი)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ანბანი (QWERTY)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ლათ. ანბანი (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ანბანი (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8144348527575640087">"ანბანი (AZERTY)"</string>
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"ანბანი (Dvorak)"</string>
