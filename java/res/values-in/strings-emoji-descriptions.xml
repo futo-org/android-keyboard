@@ -534,8 +534,8 @@
     <string name="spoken_emoji_1F3E0" msgid="6277213201655811842">"Bangunan rumah"</string>
     <string name="spoken_emoji_1F3E1" msgid="233476176077538885">"Rumah dengan kebun"</string>
     <string name="spoken_emoji_1F3E2" msgid="919736380093964570">"Bangunan kantor"</string>
-    <string name="spoken_emoji_1F3E3" msgid="6177606081825094184">"Kantor postingan Jepang"</string>
-    <string name="spoken_emoji_1F3E4" msgid="717377871070970293">"Kantor postingan Eropa"</string>
+    <string name="spoken_emoji_1F3E3" msgid="6177606081825094184">"Kantor pos Jepang"</string>
+    <string name="spoken_emoji_1F3E4" msgid="717377871070970293">"Kantor pos Eropa"</string>
     <string name="spoken_emoji_1F3E5" msgid="1350532500431776780">"Rumah sakit"</string>
     <string name="spoken_emoji_1F3E6" msgid="342132788513806214">"Bank"</string>
     <string name="spoken_emoji_1F3E7" msgid="6322352038284944265">"Mesin kasir otomatis"</string>
@@ -814,7 +814,7 @@
     <string name="spoken_emoji_1F4EC" msgid="7369517138779988438">"Kotak postingan terbuka dengan bendera terangkat"</string>
     <string name="spoken_emoji_1F4ED" msgid="5657520436285454241">"Kotak postingan terbuka dengan bendera turun"</string>
     <string name="spoken_emoji_1F4EE" msgid="8464138906243608614">"Kotak postingan"</string>
-    <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"Terompet kantor postingan"</string>
+    <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"Terompet kantor pos"</string>
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"Koran"</string>
     <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"Ponsel"</string>
     <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"Ponsel dengan panah ke kanan di sebelah kiri"</string>
