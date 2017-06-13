@@ -140,7 +140,7 @@
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji za fizičku tastaturu"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tipka Alt na fizičkoj tastaturi aktivira paletu za emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Zadano"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"Dobrodošli u aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Dobro došli u aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"s kucanjem pokretima"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Započnite"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Sljedeći korak"</string>
