@@ -26,8 +26,9 @@ LOCAL_AAPT_FLAGS += -0 .txt
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-test \
-    mockito-target \
-    legacy-android-test
+    mockito-target
+
+LOCAL_JAVA_LIBRARIES := android.test.mock.sdk legacy-android-test
 
 # Include all test java files.
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
