@@ -25,7 +25,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_emoji_00A9" msgid="2859822817116803638">"Símbolo de direitos de autor"</string>
+    <string name="spoken_emoji_00A9" msgid="2859822817116803638">"Símbolo de Direitos de Autor"</string>
     <string name="spoken_emoji_00AE" msgid="7708335454134589027">"Símbolo de marca registada"</string>
     <string name="spoken_emoji_203C" msgid="153340916701508663">"Duplo ponto de exclamação"</string>
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"Pontos de exclamação e de interrogação"</string>
