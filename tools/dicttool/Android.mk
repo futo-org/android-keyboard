@@ -16,12 +16,6 @@
 # Only build if it's explicitly requested, or running mm/mmm.
 ifneq ($(ONE_SHOT_MAKEFILE)$(filter $(MAKECMDGOALS),dicttool_aosp),)
 
-# HACK: Temporarily disable host tool build on Mac until the build system is ready for C++11.
-LATINIME_HOST_OSNAME := $(shell uname -s)
-ifeq ($(LATINIME_HOST_OSNAME), Darwin) # TODO: Remove this
-$(warning dicttool_aosp is not supported on $(LATINIME_HOST_OSNAME))
-else # TODO: Remove this
-
 LATINIME_DICTTOOL_AOSP_LOCAL_PATH := $(call my-dir)
 LOCAL_PATH := $(LATINIME_DICTTOOL_AOSP_LOCAL_PATH)
 LATINIME_HOST_NATIVE_LIBNAME := liblatinime-aosp-dicttool-host
@@ -86,11 +80,8 @@ LOCAL_MODULE := dicttool_aosp
 include $(BUILD_HOST_JAVA_LIBRARY)
 include $(LOCAL_PATH)/etc/Android.mk
 
-endif # Darwin - TODO: Remove this
-
 # Clear our private variables
 LATINIME_DICTTOOL_AOSP_LOCAL_PATH :=
 LATINIME_LOCAL_DIR :=
-LATINIME_HOST_OSNAME :=
 
 endif
