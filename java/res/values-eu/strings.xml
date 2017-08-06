@@ -142,7 +142,7 @@
     <string name="button_default" msgid="3988017840431881491">"Lehenetsia"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Ongi etorri <xliff:g id="APPLICATION_NAME">%s</xliff:g> aplikaziora"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Idazketa lerrakorrarekin"</string>
-    <string name="setup_start_action" msgid="8936036460897347708">"Lehen urratsak"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Hasi erabiltzen"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Hurrengo urratsa"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> konfiguratzen"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Gaitu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
