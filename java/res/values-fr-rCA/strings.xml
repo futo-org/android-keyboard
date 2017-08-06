@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Modifier le mot"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Modifier"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Supprimer"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Votre dictionnaire personnel ne contient aucun mot. Ajoutez un mot en touchant le bouton d\'ajout (« + »)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Votre dictionnaire personnel ne contient aucun mot. Pour ajouter un mot, touchez le bouton d\'ajout (« + »)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Pour toutes les langues"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Plus de langues…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Supprimer"</string>

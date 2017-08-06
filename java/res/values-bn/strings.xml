@@ -88,9 +88,9 @@
     <string name="voice_input" msgid="3583258583521397548">"ভয়েস ইনপুট কী"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"কোনো ভয়েস ইনপুট পদ্ধতি সক্ষম নয়। ভাষা এবং ইনপুট সেটিংস পরীক্ষা করুন।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ইনপুট পদ্ধতি কনফিগার করুন"</string>
-    <string name="language_selection_title" msgid="3666971864764478269">"ভাষাগুলি"</string>
+    <string name="language_selection_title" msgid="3666971864764478269">"ভাষা"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"সহায়তা এবং প্রতিক্রিয়া"</string>
-    <string name="select_language" msgid="5709487854987078367">"ভাষাগুলি"</string>
+    <string name="select_language" msgid="5709487854987078367">"ভাষা"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"সংরক্ষণ করতে আবার আলতো চাপুন"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"সংরক্ষণ করতে এখানে আলতো চাপুন"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"অভিধান উপলব্ধ"</string>

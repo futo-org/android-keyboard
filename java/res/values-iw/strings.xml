@@ -31,7 +31,7 @@
     <string name="settings_screen_appearance" msgid="7358046399111611615">"מראה ופריסות"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"הקלדה רציפה"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"תיקון טקסט"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"מתקדם"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"אפשרויות מתקדמות"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"עיצוב"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"הפעל מקלדת מפוצלת"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"‏סנכרון מקלדת Google"</string>
