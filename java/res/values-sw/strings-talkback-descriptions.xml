@@ -59,7 +59,7 @@
     <string name="keyboard_mode_date" msgid="6597407244976713364">"tarehe"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"tarehe na wakati"</string>
     <string name="keyboard_mode_email" msgid="1239682082047693644">"barua pepe"</string>
-    <string name="keyboard_mode_im" msgid="3812086215529493501">"utumaji ujumbe"</string>
+    <string name="keyboard_mode_im" msgid="3812086215529493501">"kutuma ujumbe"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"nambari"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"simu"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"maandishi"</string>
