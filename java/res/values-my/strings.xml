@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"အဓိကအဘိဓါန်"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"အမှားပြင်ခြင်း အကြံပေးချက်များပြရန်"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ရိုက်နေစဉ် အကြံပြုထားသည့် စကားလုံးများ ပြပါ"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ရိုင်းစိုင်းစကားများပိတ်"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ရိုင်းစိုင်းစကားများပိတ်ရန်"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"ရိုင်းစိုင်းသည့် စကားလုံးများအား အကြံမပြုပါနှင့်"</string>
     <string name="auto_correction" msgid="7630720885194996950">"အလိုလျောက် အမှားပြင်ခြင်း"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"မှားယွင်းစွာ ရိုက်ခဲ့သည့် စာလုံးများကို နေရာခြားခလုတ်နှင့် သတ်ပုံမှန်ကန်ခြင်းသည် အလိုအလျောက် ပြုပြင်ပေးသည်"</string>
@@ -86,7 +86,7 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"စကားစု အမူယာ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"နေရာခြားသည့်ကီးကိုနှိပ်ခြင်းဖြင့် အမူအယာပြုလုပ်စဉ်တွင် နေရာခြား ထည့်သွင်းရန်"</string>
     <string name="voice_input" msgid="3583258583521397548">"အသံထည့်သွင်းရန် ခလုတ်"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"အသံထည့်သွင်းမှုစနစ် မဖွင့်ထားပါ။ ဘာသာစကားနှင့် ထည့်သွင်းမှုဆက်တင်များကို စစ်ဆေးပါ။"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"အသံဖြင့် စရိုက်စနစ် ဖွင့်မထားပါ။ ဘာသာစကားနှင့် စာရိုက်စနစ်ဆက်တင်များကို ပြန်စစ်ပါ။"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ထည့်သွင်းရန် နည်းလမ်းကို ပြုပြင်မည်"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ဘာသာစကားများ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"အကူအညီနှင့် အကြံပြုချက်"</string>
@@ -132,7 +132,7 @@
     <string name="keyboard_layout_set" msgid="4309233698194565609">"အဆင်အပြင်"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"သင့်စိတ်ကြိုက် ထည့်သွင်းမှုစတိုင်လ်အား စတင် အသုံးမပြုမှီ ဖွင့်ရပါမည်။ ၎င်းအားယခု ဖွင့်လိုပါသလား?"</string>
     <string name="enable" msgid="5031294444630523247">"ဖွင့်ရန်"</string>
-    <string name="not_now" msgid="6172462888202790482">"ယခု မဟုတ်"</string>
+    <string name="not_now" msgid="6172462888202790482">"ယခုမလုပ်ပါ"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"တူညီသည့် ထည့်သွင်းရန် စတိုင်လ် ရှိပြီးဖြစ်: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ခလုတ်နှိပ်တုန်ခါမှု ကြာမြင့်ချိန်"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"ခလုတ်နှိပ်သည့် အသံအတိုးကျယ်"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"နောက်တစ်ဆင့်"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> တပ်ဆင်ရန်"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ဖွင့်ရန်"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ကိုသင့်ဘာသာစကားနှင့် ထည့်သွင်းမှုဆက်တင်များတွင် စစ်ဆေးပါ။ ထိုသို့ပြုလုပ်ခြင်းဖြင့် သင့်စက်ပစ္စည်းပေါ်တွင် ၎င်းကိုဖွင့်ရန် အတည်ပြုပေးပါလိမ့်မည်။"</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ကို သင့်ဘာသာစကားနှင့် ထည့်သွင်းမှု ဆက်တင်များတွင် ဖွင့်ပြီးသားဖြစ်ပါသည်။ ထို့ကြောင့် ဤအဆင့် ပြီးပါပြီ။ နောက်တစ်ခုသို့ သွားပါ။"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ကို ဘာသာစကားနှင့် စာရိုက်စနစ်တွင် စစ်ပါ။ ဤသို့ဖြင့် သင့်စက်ပစ္စည်းပေါ်တွင် ၎င်းကိုဖွင့်ရန်အတည်ပြုပေးပါလိမ့်မည်။"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ကို သင့်ဘာသာစကားနှင့် စာရိုက်စနစ်ဆက်တင်များတွင် ဖွင့်ထားပြီးဖြစ်၍ ဤအဆင့်ပြီးပါပြီ။ နောက်တစ်ခုသို့ သွားပါ။"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"ဆက်တင်များတွင် ဖွင့်ရန်"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> သို့ပြောင်းမည်"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ရှေ့၊ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" အားသင်၏ ပွင့်နေသည့်ထည့်သွင်းမှု နည်းလမ်းအဖြစ်ရွေးပါ။"</string>

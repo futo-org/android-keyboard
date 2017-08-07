@@ -188,7 +188,7 @@
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Downloaden via wifi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Er is een woordenboek beschikbaar voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Druk om te controleren en te downloaden"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Downloaden: suggesties voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> zijn straks beschikbaar."</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Downloaden: suggesties voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> zijn binnenkort beschikbaar."</string>
     <string name="version_text" msgid="2715354215568469385">"Versie <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Toevoegen"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Toevoegen aan woordenboek"</string>

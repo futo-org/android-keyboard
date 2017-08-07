@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"ตัวเลือกการป้อนข้อมูล"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ค้นหารายชื่อติดต่อ"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"เครื่องมือตรวจการสะกดใช้รายการจากรายชื่อติดต่อของคุณ"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"เครื่องตรวจตัวสะกดใช้รายการจากรายชื่อติดต่อของคุณ"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"สั่นเมื่อกดปุ่ม"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ส่งเสียงเมื่อกดปุ่ม"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ป๊อปอัปเมื่อกดแป้น"</string>
@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ลบ"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ยกเลิก"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"พจนานุกรมส่วนตัวของคุณจะซิงค์และสำรองข้อมูลไปยังเซิร์ฟเวอร์ Google ข้อมูลเชิงสถิติของความถี่ในการใช้คำอาจได้รับการเก็บรวบรวมเพื่อใช้ปรับปรุงผลิตภัณฑ์ของเรา การเก็บรวบรวมและการใช้งานข้อมูลทั้งหมดจะเป็นไปอย่างสอดคล้องกับ"<a href="https://www.google.com/policies/privacy">"นโยบายความเป็นส่วนตัวของ Google"</a></string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"โปรดเพิ่มบัญชี Google ไปยังอุปกรณ์นี้เพื่อเปิดใช้คุณลักษณะนี้"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"โปรดเพิ่มบัญชี Google ไปยังอุปกรณ์นี้เพื่อเปิดใช้ฟีเจอร์นี้"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"การซิงค์ไม่พร้อมใช้งานสำหรับอุปกรณ์ที่มีบัญชี Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ใช้วิธีการป้อนข้อมูลอื่น"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"แป้นสลับภาษาครอบคลุมวิธีการป้อนข้อมูลอื่นๆ ด้วย"</string>

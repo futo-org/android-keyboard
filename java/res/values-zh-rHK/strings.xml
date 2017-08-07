@@ -175,7 +175,7 @@
     <string name="no_dictionaries_available" msgid="8039920716566132611">"沒有可用的字典"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"重新整理"</string>
     <string name="last_update" msgid="730467549913588780">"上次更新日期"</string>
-    <string name="message_updating" msgid="4457761393932375219">"正在查看更新"</string>
+    <string name="message_updating" msgid="4457761393932375219">"正在檢查更新"</string>
     <string name="message_loading" msgid="5638680861387748936">"正在載入…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"主要字典"</string>
     <string name="cancel" msgid="6830980399865683324">"取消"</string>
