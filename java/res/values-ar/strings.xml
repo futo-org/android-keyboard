@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="613104067705915132">"حذف"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"إلغاء"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏ستتم مزامنة قاموسك الشخصي والاحتفاظ بنسخة احتياطية منه على خوادم Google، وقد يتم جمع المعلومات الإحصائية لتكرار الكلمات للمساعدة في تحسين منتجاتنا هذا وسيتوافق جمع كل المعلومات واستخدامها مع "<a href="https://www.google.com/policies/privacy">"سياسة خصوصية Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏الرجاء إضافة حساب Google إلى هذا الجهاز لتمكين هذه الميزة."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏يُرجى إضافة حساب Google إلى هذا الجهاز لتمكين هذه الميزة."</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"‏لا تتوفر إمكانية المزامنة للأجهزة التي تتضمن حسابات Google Apps للأنشطة التجارية"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"التبديل إلى أسلوب إدخال آخر"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"يغطي مفتاح تبديل اللغات أساليب الإدخال الأخرى أيضًا"</string>
