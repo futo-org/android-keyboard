@@ -26,9 +26,9 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"स्त्रीलिंगी क्रमवाचक सूचक"</string>
+    <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"स्त्रीलिंगी क्रमवाचक इंडिकेटर"</string>
     <string name="spoken_accented_letter_00B5" msgid="9031387673828823891">"सूक्ष्म चिन्ह"</string>
-    <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"पुल्लिंगी क्रमवाचक सूचक"</string>
+    <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"पुल्लिंगी क्रमवाचक इंडिकेटर"</string>
     <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"अणकुचीदार एस"</string>
     <string name="spoken_accented_letter_00E0" msgid="2234515772182387086">"ए, अनुदात्त"</string>
     <string name="spoken_accented_letter_00E1" msgid="7780174500802535063">"ए, तीक्ष्ण"</string>
