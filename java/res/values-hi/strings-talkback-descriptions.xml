@@ -20,7 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_use_headphones" msgid="4313642710742229868">"जोर से बोली जाने वाली पासवर्ड कुंजियां सुनने के लिए हैडसेट प्‍लग करें."</string>
+    <string name="spoken_use_headphones" msgid="4313642710742229868">"पासवर्ड कुंजियों को सुनने के लिए, हेडसेट प्‍लग-इन करें."</string>
     <string name="spoken_current_text_is" msgid="4240549866156675799">"वर्तमान लेख %s है"</string>
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"कोई लेख नहीं डाला गया"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> को सुधार कर <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> करता है"</string>
@@ -39,7 +39,7 @@
     <string name="spoken_description_settings" msgid="7281251004003143204">"सेटिंग"</string>
     <string name="spoken_description_tab" msgid="8210782459446866716">"टैब"</string>
     <string name="spoken_description_space" msgid="5908716896642059145">"स्पेस"</string>
-    <string name="spoken_description_mic" msgid="6153138783813452464">"ध्‍वनि इनपुट"</string>
+    <string name="spoken_description_mic" msgid="6153138783813452464">"बोलकर फ़ोन को निर्देश"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"ईमोजी"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"रिटर्न"</string>
     <string name="spoken_description_search" msgid="5099937658231911288">"खोजें"</string>

@@ -20,7 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_use_headphones" msgid="4313642710742229868">"પાસવર્ડ કીઝ મોટેથી બોલાતી સાંભળવા માટે હેડસેટ પ્લગ ઇન કરો."</string>
+    <string name="spoken_use_headphones" msgid="4313642710742229868">"પાસવર્ડ કીઝ મોટેથી બોલાતી સાંભળવા માટે હૅડસેટ પ્લગ ઇન કરો."</string>
     <string name="spoken_current_text_is" msgid="4240549866156675799">"વર્તમાન ટેક્સ્ટ %s છે"</string>
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"કોઈ ટેક્સ્ટ દાખલ કરેલ નથી"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g>, <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> ને <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> થી સુધારે છે"</string>
