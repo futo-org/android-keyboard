@@ -29,14 +29,14 @@
     <string name="settings_screen_preferences" msgid="2696713156722014624">"પસંદગી"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"એકાઉન્ટ્સ અને ગોપનીયતા"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"દેખાવ અને લેઆઉટ્સ"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"હાવભાવથી ટાઇપિંગ"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"સાંકેતિક ટાઇપિંગ"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"ટેક્સ્ટ સુધારણા"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"વિગતવાર"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"થીમ"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"વિભાજિત કીબોર્ડ સક્ષમ કરો"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google કીબોર્ડ સમન્વયન"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"સમન્વયન ચાલુ કરેલ છે"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"સમગ્ર ઉપકરણો પર તમારા વ્યક્તિગત શબ્દકોશને સમન્વયિત કરો"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"સમગ્ર ઉપકરણો પર તમારા વ્યક્તિગત શબ્દકોશને સિંક કરો"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"હમણા સમન્વયન"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"મેઘ ડેટા કાઢી નાખો"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google માંથી તમારો સમન્વયિત ડેટા કાઢી નાખે છે"</string>
@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"મુખ્ય શબ્દકોશ"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"સુધારણા સૂચનો બતાવો"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"લખતી વખતે સૂચિત શબ્દો પ્રદર્શિત કરો"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"વાંધાજનક શબ્દો અવરોધિત કરો"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"વાંધાજનક શબ્દો બ્લૉક કરો"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"સંભવિત વાંધાજનક શબ્દો સૂચવશો નહીં"</string>
     <string name="auto_correction" msgid="7630720885194996950">"સ્વતઃ-સુધારો"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"સ્પેસબાર અને વિરામચિહ્ન ખોટી રીતે લખાયેલ શબ્દોને આપમેળે સુધારે છે"</string>
@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"ખૂબ ફરજ પાડીને"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"આગલા શબ્દનું સૂચન"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"સૂચનો બનાવવા માટે પહેલાનાં શબ્દનો ઉપયોગ કરો"</string>
-    <string name="gesture_input" msgid="826951152254563827">"હાવભાવથી ટાઇપિંગ સક્ષમ કરો"</string>
+    <string name="gesture_input" msgid="826951152254563827">"સાંકેતિક ટાઇપિંગ સક્ષમ કરો"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"અક્ષરો મારફતે સ્લાઇડ કરીને એક શબ્દ ઇનપુટ કરો"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"હાવભાવ ટ્રેલ બતાવો"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ગતિશીલ ફ્લોટિંગ પૂર્વાવલોકન"</string>
@@ -141,7 +141,7 @@
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ભૌતિક Alt કી ઇમોજી પેલેટ દર્શાવે છે"</string>
     <string name="button_default" msgid="3988017840431881491">"ડિફોલ્ટ"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> પર સ્વાગત છે"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"હાવભાવથી ટાઇપિંગ દ્વારા"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"સાંકેતિક ટાઇપિંગ દ્વારા"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"પ્રારંભ કરો"</string>
     <string name="setup_next_action" msgid="371821437915144603">"આગલું પગલું"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> સેટ કરી રહ્યું છે"</string>

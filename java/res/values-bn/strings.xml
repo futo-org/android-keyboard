@@ -83,7 +83,7 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"অঙ্গভঙ্গির ট্রেল দেখান"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ডায়নামিক ভাসমান পূর্বরূপ"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"অঙ্গভঙ্গির সময় প্রস্তাবিত শব্দ দেখুন"</string>
-    <string name="gesture_space_aware" msgid="2078291600664682496">"শব্দবন্ধ অঙ্গভঙ্গি"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"শব্দবন্ধ ইঙ্গিত"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"অঙ্গভঙ্গির সময় ব্যবধান ইনপুট করতে স্পেস কীতে যান"</string>
     <string name="voice_input" msgid="3583258583521397548">"ভয়েস ইনপুট কী"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"কোনো ভয়েস ইনপুট পদ্ধতি সক্ষম নয়। ভাষা এবং ইনপুট সেটিংস পরীক্ষা করুন।"</string>
@@ -141,7 +141,7 @@
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ফিজিক্যাল Alt কী ইমোজি প্যালেট দেখায়"</string>
     <string name="button_default" msgid="3988017840431881491">"ডিফল্ট"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> এ স্বাগতম"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"অঙ্গভঙ্গি টাইপিং এর মাধ্যমে"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ইঙ্গিত টাইপিং এর মাধ্যমে"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"শুরু করুন"</string>
     <string name="setup_next_action" msgid="371821437915144603">"পরবর্তী পদক্ষেপ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সেট আপ হচ্ছে"</string>
