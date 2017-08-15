@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="613104067705915132">"हटवा"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द करा"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"आपली वैयक्तिक निर्देशिका Google सर्व्हरवर संकालित केली जाईल आणि बॅकअप घेतला जाईल. आमचे उत्पादन सुधारित करण्यात मदत करण्यासाठी शब्दाच्या वारंवारतेची आकडेवारी माहिती गोळा केली जाऊ शकते. सर्व माहितीचे संकलन आणि वापर "<a href="https://www.google.com/policies/privacy">"Google चे गोपनीयता धोरण"</a>" शी सुसंगत असेल."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"या डिव्हाइसमध्ये हे वैशिष्ट्य सक्षम करण्यासाठी कृपया एक Google खाते जोडा"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"या डीव्हाइसमध्ये हे वैशिष्ट्य सक्षम करण्यासाठी कृपया एक Google खाते जोडा"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Google Apps for Business खात्यांसह डिव्हाइसेससाठी संकालन उपलब्ध नाही"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्य इनपुट पद्धतींवर स्विच करा"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्विच की अन्य इनपुट पद्धती देखील समाविष्ट करते"</string>
@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"मु्ख्य शब्दकोश"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधारणा सूचना दर्शवा"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"टाइप करताना सुचविलेले शब्द प्रदर्शित करा"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"आक्षेपार्ह शब्द अवरोधित करा"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"आक्षेपार्ह शब्द ब्लॉक करा"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"संभाव्य आक्षेपार्ह शब्द सुचवू नका"</string>
     <string name="auto_correction" msgid="7630720885194996950">"स्‍वयं-सुधारणा"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"चुकीचे टाइप केलेले शब्द स्पेसबार आणि विरामचिन्हे स्वयंचलितपणे सुधारते"</string>
@@ -124,7 +124,7 @@
     <string name="subtype_emoji" msgid="7483586578074549196">"इमोजी"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"कीबोर्ड थीम"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"सानुकूल इनपुट शैली"</string>
-    <string name="add_style" msgid="6163126614514489951">"शैली जोडा"</string>
+    <string name="add_style" msgid="6163126614514489951">"स्टाइल जोडा"</string>
     <string name="add" msgid="8299699805688017798">"जोडा"</string>
     <string name="remove" msgid="4486081658752944606">"काढा"</string>
     <string name="save" msgid="7646738597196767214">"जतन करा"</string>
@@ -161,7 +161,7 @@
     <string name="app_name" msgid="6320102637491234792">"शब्दकोश प्रदाता"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"शब्दकोश प्रदाता"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"शब्दकोश सेवा"</string>
-    <string name="download_description" msgid="6014835283119198591">"शब्दकोश अद्यतन माहिती"</string>
+    <string name="download_description" msgid="6014835283119198591">"डिक्शनरी अपडेट माहिती"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"अॅड-ऑन शब्दकोश"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"शब्दकोश उपलब्ध"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"शब्दकोशांसाठी सेटिंग्ज"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"स्‍थापित करा"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द करा"</string>
     <string name="delete_dict" msgid="756853268088330054">"हटवा"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"आपल्या मोबाइल डिव्हाइस वरील निवडलेल्या भाषेमध्ये उपलब्ध असलेला शब्दकोश आहे.&lt;br/&gt; आपला टायपिंग अनुभव सुधारित करण्यासाठी <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोश &lt;b&gt;डाउनलोड&lt;/b&gt; करण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; 3G वरून डाउनलोड होण्यास एक किंवा दोन मिनिटे लागू शकतात. आपल्याकडे &lt;b&gt;अमर्यादित डेटा योजना&lt;/b&gt;.&lt;br/&gt; नसल्यास शुल्क लागू शकतात आपल्याकडे कोणती डेटा योजना आहे त्याबद्दल आपल्याला खात्री नसल्यास, डाउनलोड करण्यास स्वयंचलितपणे प्रारंभ करण्यासाठी वाय-फाय कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टीप: आपण आपल्या मोबाइल डिव्हाइसच्या <b>सेटिंग्ज</b> मेनू मधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन शब्दकोश डाउनलोड करू शकता आणि ते काढू शकता."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"तुमच्या मोबाइल डीव्हाइस वर निवडलेल्या भाषेमध्ये उपलब्ध असलेली डिक्शनरी आहे.&lt;br/&gt; तुमचा टायपिंग अनुभव सुधारण्यासाठी आम्ही <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> डिक्शनरी &lt;b&gt;डाउनलोड&lt;/b&gt; करण्याची शिफारस करतो.&lt;br/&gt; &lt;br/&gt; 3G वरून डाउनलोड होण्यास एक किंवा दोन मिनिटे लागू शकतात. तुमच्याकडे &lt;b&gt;अमर्यादित डेटा योजना&lt;/b&gt;.&lt;br/&gt; नसल्यास शुल्क लागू शकते. तुमच्याकडे कोणती डेटा योजना आहे त्याबद्दल खात्री नसल्यास, डाउनलोड करण्यास अापोआप सुरूवात करण्यासाठी वाय-फाय कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टिप: तुम्ही तुमच्या मोबाइल डीव्हाइस च्या <b>सेटिंग्ज</b> मेनू मधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन डिक्शनरी डाउनलोड करू शकता आणि ते काढू शकता."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"आता डाउनलोड करा (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाय-फाय वर डाउनलोड करा"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> साठी शब्दकोश उपलब्ध आहे"</string>
@@ -191,7 +191,7 @@
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"डाउनलोड करत आहे: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> साठी सूचना लवकरच तयार होतील."</string>
     <string name="version_text" msgid="2715354215568469385">"आवृत्ती <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"जोडा"</string>
-    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"शब्दकोशात जोडा"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"डिक्शनरीत जोडा"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"वाक्यांश"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"अधिक पर्याय"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"कमी पर्याय"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"शब्द संपादित करा"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"संपादित करा"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"हटवा"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"वापरकर्ता शब्दकोशात आपल्याकडे कोणतेही शब्द नाहीत. एक शब्द जोडण्यासाठी, जोडा (+) बटण टॅप करा."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"वापरकर्ता डिक्शनरीमध्ये तुमच्याकडे कोणतेही शब्द नाहीत. एखादा शब्द जोडण्यासाठी, जोडा (+) बटणावर टॅप करा."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"सर्व भाषांसाठी"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"अधिक भाषा..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"हटवा"</string>

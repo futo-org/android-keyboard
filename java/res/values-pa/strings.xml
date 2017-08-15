@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"ਮੁੱਖ ਸ਼ਬਦਕੋਸ਼"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ਸੁਧਾਈ ਸੁਝਾਅ ਦਿਖਾਓ"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ਟਾਈਪਿੰਗ ਕਰਦੇ ਸਮੇਂ ਸੁਝਾਏ ਗਏ ਸ਼ਬਦ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ਅਪਮਾਨਜਨਕ ਸ਼ਬਦਾਂ ਨੂੰ ਬਲੌਕ ਕਰੋ"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ਅਪਮਾਨਜਨਕ ਸ਼ਬਦਾਂ ਨੂੰ ਬਲਾਕ ਕਰੋ"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"ਸੰਭਾਵੀ ਅਪਮਾਨਜਨਕ ਸ਼ਬਦਾਂ ਦਾ ਸੁਝਾਅ ਨਾ ਦਿਓ"</string>
     <string name="auto_correction" msgid="7630720885194996950">"ਆਟੋ-ਸੁਧਾਈ"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"ਸਪੇਸਬਾਰ ਅਤੇ ਵਿਸ਼ਰਾਮ ਚਿੰਨ੍ਹ ਗ਼ਲਤ ਟਾਈਪ ਕੀਤੇ ਸ਼ਬਦਾਂ ਨੂੰ ਆਟੋਮੈਟਿਕਲੀ ਠੀਕ ਕਰਦੇ ਹਨ"</string>
@@ -146,7 +146,7 @@
     <string name="setup_next_action" msgid="371821437915144603">"ਅਗਲਾ ਸਟੈਪ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਸੈਟ ਅਪ ਕਰ ਰਿਹਾ ਹੈ"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀਆਂ ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ ਸੈਟਿੰਗਾਂ ਵਿੱਚ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" \'ਤੇ ਸਹੀ ਦਾ ਨਿਸ਼ਾਨ ਲਗਾਓ। ਇਹ ਉਸ ਨੂੰ ਤੁਹਾਡੀ ਡੀਵਾਈਸ \'ਤੇ ਚੱਲਣ ਲਈ ਅਧਿਕਾਰਿਤ ਕਰੇਗਾ।"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀਆਂ ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ ਸੈਟਿੰਗਾਂ ਵਿੱਚ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" \'ਤੇ ਸਹੀ ਦਾ ਨਿਸ਼ਾਨ ਲਗਾਓ। ਇਹ ਉਸ ਨੂੰ ਤੁਹਾਡੇ ਡੀਵਾਈਸ \'ਤੇ ਚੱਲਣ ਲਈ ਅਧਿਕਾਰਿਤ ਕਰੇਗਾ।"</string>
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਤੁਹਾਡੀਆਂ ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਯੋਗ ਬਣਾਇਆ ਗਿਆ ਹੈ, ਇਸ ਲਈ ਇਹ ਪੜਾਅ ਪੂਰਾ ਹੋ ਗਿਆ ਹੈ। ਅਗਲੇ ਪੜਾਅ \'ਤੇ ਜਾਓ!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸਮਰੱਥ ਬਣਾਓ"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਤੇ ਸਵਿਚ ਕਰੋ"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ਇੰਸਟੌਲ ਕਰੋ"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ਰੱਦ ਕਰੋ"</string>
     <string name="delete_dict" msgid="756853268088330054">"ਮਿਟਾਓ"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"ਤੁਹਾਡੀ ਮੋਬਾਈਲ ਡੀਵਾਈਸ \'ਤੇ ਚੁਣੀ ਗਈ ਭਾਸ਼ਾ ਵਿੱਚ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਹੈ।&lt;br/&gt; ਅਸੀਂ ਤੁਹਾਡੇ ਟਾਈਪਿੰਗ ਅਨੁਭਵ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਸ਼ਬਦਕੋਸ਼ ਨੂੰ &lt;b&gt;ਡਾਊਨਲੋਡ ਕਰਨ&lt;/b&gt; ਦੀ ਸਿਫ਼ਾਰਸ਼ ਕਰਦੇ ਹਾਂ।&lt;br/&gt; &lt;br/&gt; 3G \'ਤੇ ਡਾਊਨਲੋਡ ਕਰਨ ਵਿੱਚ ਇੱਕ ਜਾਂ ਦੋ ਮਿੰਟਾਂ ਦਾ ਸਮਾਂ ਲੱਗ ਸਕਦਾ ਹੈ। ਜੇਕਰ ਤੁਹਾਡੇ ਕੋਲ &lt;b&gt;ਅਸੀਮਤ ਡੈਟਾ ਪਲਾਨ&lt;/b&gt; ਨਹੀਂ ਹੈ ਤਾਂ ਖ਼ਰਚਾ ਲਿਆ ਜਾ ਸਕਦਾ ਹੈ।&lt;br/&gt; ਜੇਕਰ ਤੁਸੀਂ ਨਹੀਂ ਯਕੀਨੀ ਨਹੀਂ ਹੋ ਕਿ ਤੁਹਾਡੇ ਕੋਲ ਕਿਹੜਾ ਡੈਟਾ ਪਲਾਨ ਹੈ, ਤਾਂ ਅਸੀਂ ਡਾਊਨਲੋਡ ਨੂੰ ਆਪਣੇ ਆਪ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਕਿਸੇ Wi-Fi ਕਨੈਕਸ਼ਨ ਨੂੰ ਲੱਭਣ ਦੀ ਸਿਫ਼ਾਰਸ਼ ਕਰਦੇ ਹਾਂ।&lt;br/&gt; &lt;br/&gt; ਨੁਕਤਾ: ਤੁਸੀਂ ਆਪਣੀ ਮੋਬਾਈਲ ਡੀਵਾਈਸ \'ਤੇ &lt;b&gt;ਸੈਟਿੰਗਾਂ&lt;/b&gt; ਮੀਨੂ ਵਿੱਚ  &lt;b&gt;ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ&lt;/b&gt; ਵਿੱਚ ਜਾਣ ਦੁਆਰਾ ਸ਼ਬਦਕੋਸ਼ਾਂ ਨੂੰ ਡਾਊਨਲੋਡ ਕਰ ਅਤੇ ਹਟਾ ਸਕਦੇ ਹੋ।"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"ਤੁਹਾਡੇ ਮੋਬਾਈਲ ਡੀਵਾਈਸ \'ਤੇ ਚੁਣੀ ਗਈ ਭਾਸ਼ਾ ਵਿੱਚ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਹੈ।&lt;br/&gt; ਅਸੀਂ ਤੁਹਾਡੇ ਟਾਈਪਿੰਗ ਅਨੁਭਵ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਸ਼ਬਦਕੋਸ਼ ਨੂੰ &lt;b&gt;ਡਾਊਨਲੋਡ ਕਰਨ&lt;/b&gt; ਦੀ ਸਿਫ਼ਾਰਸ਼ ਕਰਦੇ ਹਾਂ।&lt;br/&gt; &lt;br/&gt; 3G \'ਤੇ ਡਾਊਨਲੋਡ ਕਰਨ ਵਿੱਚ ਇੱਕ ਜਾਂ ਦੋ ਮਿੰਟਾਂ ਦਾ ਸਮਾਂ ਲੱਗ ਸਕਦਾ ਹੈ। ਜੇਕਰ ਤੁਹਾਡੇ ਕੋਲ &lt;b&gt;ਅਸੀਮਤ ਡਾਟਾ ਪਲਾਨ&lt;/b&gt; ਨਹੀਂ ਹੈ ਤਾਂ ਖ਼ਰਚਾ ਲਿਆ ਜਾ ਸਕਦਾ ਹੈ।&lt;br/&gt; ਜੇਕਰ ਤੁਸੀਂ ਯਕੀਨੀ ਨਹੀਂ ਹੋ ਕਿ ਤੁਹਾਡੇ ਕੋਲ ਕਿਹੜਾ ਡਾਟਾ ਪਲਾਨ ਹੈ, ਤਾਂ ਅਸੀਂ ਡਾਊਨਲੋਡ ਨੂੰ ਆਪਣੇ ਆਪ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਕਿਸੇ ਵਾਈ-ਫਾਈ ਕਨੈਕਸ਼ਨ ਨੂੰ ਲੱਭਣ ਦੀ ਸਿਫ਼ਾਰਸ਼ ਕਰਦੇ ਹਾਂ।&lt;br/&gt; &lt;br/&gt; ਨੁਕਤਾ: ਤੁਸੀਂ ਆਪਣੇ ਮੋਬਾਈਲ ਡੀਵਾਈਸ \'ਤੇ &lt;b&gt;ਸੈਟਿੰਗਾਂ&lt;/b&gt; ਮੀਨੂ ਵਿੱਚ &lt;b&gt;ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ&lt;/b&gt; ਵਿੱਚ ਜਾ ਕੇ ਸ਼ਬਦਕੋਸ਼ਾਂ ਨੂੰ ਡਾਊਨਲੋਡ ਕਰ ਅਤੇ ਹਟਾ ਸਕਦੇ ਹੋ।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"(<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB) ਹੁਣ ਡਾਊਨਲੋਡ ਕਰੋ"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi ਤੇ ਡਾਊਨਲੋਡ ਕਰੋ"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਲਈ ਇੱਕ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਹੈ"</string>

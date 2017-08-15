@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="613104067705915132">"حذف"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"إلغاء"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏ستتم مزامنة قاموسك الشخصي والاحتفاظ بنسخة احتياطية منه على خوادم Google، وقد يتم جمع المعلومات الإحصائية لتكرار الكلمات للمساعدة في تحسين منتجاتنا هذا وسيتوافق جمع كل المعلومات واستخدامها مع "<a href="https://www.google.com/policies/privacy">"سياسة خصوصية Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏الرجاء إضافة حساب Google إلى هذا الجهاز لتمكين هذه الميزة."</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏يُرجى إضافة حساب Google إلى هذا الجهاز لتمكين هذه الميزة."</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"‏لا تتوفر إمكانية المزامنة للأجهزة التي تتضمن حسابات Google Apps للأنشطة التجارية"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"التبديل إلى أسلوب إدخال آخر"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"يغطي مفتاح تبديل اللغات أساليب الإدخال الأخرى أيضًا"</string>
@@ -52,7 +52,7 @@
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"يظهر عندما يتم تمكين لغات الإدخال متعددة"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"تأخير إزالة النافذة المنبثقة الأساسية"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"بلا تأخير"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"افتراضي"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"تلقائي"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> مللي ثانية"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"الإعداد الافتراضي للنظام"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"اقتراح أسماء جهات الاتصال"</string>
