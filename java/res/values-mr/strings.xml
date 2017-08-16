@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"अतिरिक्त भाषा कॉन्फिगर करा"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"अॅप चिन्ह दर्शवा"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लाँचर मध्ये अनुप्रयोग चिन्ह प्रदर्शित करा"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लाँचर मध्ये अॅप्लिकेशन चिन्ह प्रदर्शित करा"</string>
     <string name="app_name" msgid="6320102637491234792">"शब्दकोश प्रदाता"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"शब्दकोश प्रदाता"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"शब्दकोश सेवा"</string>
@@ -169,12 +169,12 @@
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"वापरकर्ता शब्दकोश"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"शब्दकोश उपलब्ध"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"सध्या डाउनलोड करत आहे"</string>
-    <string name="dictionary_installed" msgid="8081558343559342962">"स्थापित केले"</string>
-    <string name="dictionary_disabled" msgid="8950383219564621762">"स्थापित केले, अक्षम केले"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"इंस्टॉल केले"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"इंस्टॉल केले, अक्षम केले"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"शब्दकोश सेवेस कनेक्ट करताना समस्या"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"कोणतेही शब्दकोश उपलब्ध नाहीत"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"रीफ्रेश करा"</string>
-    <string name="last_update" msgid="730467549913588780">"अंतिम अद्यतनित"</string>
+    <string name="last_update" msgid="730467549913588780">"अंतिम अपडेट"</string>
     <string name="message_updating" msgid="4457761393932375219">"अद्यतनांसाठी तपासत आहे"</string>
     <string name="message_loading" msgid="5638680861387748936">"लोड करीत आहे..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"मु्ख्य शब्दकोश"</string>
