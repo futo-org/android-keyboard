@@ -25,7 +25,7 @@
     <string name="label_previous_key" msgid="1421141755779895275">"पिछला"</string>
     <string name="label_done_key" msgid="7564866296502630852">"पूर्ण"</string>
     <string name="label_send_key" msgid="482252074224462163">"भेजें"</string>
-    <string name="label_search_key" msgid="7965186050435796642">"खोजें"</string>
+    <string name="label_search_key" msgid="7965186050435796642">"सर्च"</string>
     <string name="label_pause_key" msgid="2225922926459730642">"रोकें"</string>
     <string name="label_wait_key" msgid="5891247853595466039">"प्रतीक्षा करें"</string>
 </resources>
