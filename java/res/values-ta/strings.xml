@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"ஒத்திசைவு இயக்கப்பட்டது"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"எல்லா சாதனங்களிலும் தனிப்பட்ட அகராதியை ஒத்திசைக்கவும்"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"இப்போது ஒத்திசைத்தல்"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"மேகக்கணி தரவை நீக்கவும்"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"கிளவுடு தரவை நீக்கவும்"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google இலிருந்து ஒத்திசைத்த தரவை நீக்கும்"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ஒத்திசைத்தத் தரவு மேகக்கணியிலிருந்து நீக்கப்படும். நிச்சயமாக நீக்கவா?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"நீக்கு"</string>
