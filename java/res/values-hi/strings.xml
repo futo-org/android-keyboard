@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"इनपुट विकल्‍प"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"संपर्कों को सर्च करें"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"वर्तनी परीक्षक आपकी संपर्क सूची की प्रविष्टियों का उपयोग करता है"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"स्पेलिंग जांचने वाली सेवा आपकी संपर्क सूची के संपर्कों इस्तेमाल करता है"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"बटन दबाने पर कंपन (वाइब्रेशन) करे"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"बटन दबाने पर आवाज़"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"कुंजी दबाने पर पॉपअप दिखाएं"</string>
@@ -81,7 +81,7 @@
     <string name="gesture_input" msgid="826951152254563827">"संकेतोें द्वारा टाइपिंग सक्रिय करें"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरों से स्लाइड करते हुए शब्द इनपुट करें"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"हाथ के जेस्चर का ट्रेल दिखाएं"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"गतिशील फ़्लोटिंग पूर्वावलोकन"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"डायनामिक फ़्लोटिंग की झलक"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"संकेतोें द्वारा टाइपिंग करते समय सुझाया गया शब्द देखें"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश जेस्चर"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"स्पेस कुंजी तक ग्लाइड करके जेस्चर के दौरान रिक्तियां इनपुट करें"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"इंस्टॉल करें"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द करें"</string>
     <string name="delete_dict" msgid="756853268088330054">"हटाएं"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"आपके मोबाइल पर चुनी गई भाषा के लिए एक डिक्शनरी मौजूद है.&lt;br/&gt; हमारी सलाह है<br/> कि अपने टाइप करने के अनुभव को बेहतर बनाने के लिए आप <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> डिक्शनरी को &lt;b&gt;डाउनलोड कर लें&lt;/b&gt;. &lt;br/&gt; 3G पर डाउनलोड करने में एक-दो मिनट का समय लग सकता है. अगर आपके पास &lt;b&gt;असीमित डेटा प्लान&lt;/b&gt; नहीं है तो इससे आपके पैसे खर्च हो सकते हैं.&lt;br/&gt; अगर आपको ये पक्का पता नहीं है कि आपके पास कौन सा डेटा प्लान है, तो हमारी सलाह है कि आप अपने आप डाउनलोड शुरू करने के लिए वाई-फ़ाई कनेक्शन ढूंढ लें. &lt;br/&gt; &lt;br/&gt; सलाह: आप अपने मोबाइल डिवाइस के <b>सेटिंग</b> मेन्यू में &lt;b&gt;भाषा और इनपुट&lt;/b&gt; पर जाकर डिक्शनरी डाउनलोड कर सकते हैं और उन्हें निकाल भी सकते हैं."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"आपके मोबाइल पर चुनी हुई भाषा में एक डिक्शनरी मौजूद है.&lt;br/&gt; आपके लिखने के अनुभव को बेहतर बनाने के लिए हम आपको<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> की डिक्शनरी को &lt;b&gt;डाउनलोड करने&lt;/b&gt; की सलाह देते हैं.&lt;br/&gt; &lt;br/&gt; 3G पर  डाउनलोड करने में एक-दो मिनट का समय लग सकता है. अगर आपके पास &lt;b&gt;असीमित डेटा प्लान&lt;/b&gt; नहीं है तो शुल्क लग सकता है.&lt;br/&gt; अगर आपको पक्का नहीं पता कि आपके पास कौन सा डेटा प्लान है, तो हमारी सलाह है कि डाउनलोड अपने आप शुरू करने के लिए आप किसी वाई-फ़ाई कनेक्शन से जुड़ जाएं.&lt;br/&gt; &lt;br/&gt; सलाह: आप अपने मोबाइल के <b>सेटिंग</b> मेन्यू में &lt;b&gt;भाषा और इनपुट&lt;/b&gt; पर जाकर डिक्शनरी डाउनलोड कर सकते हैं और निकाल सकते हैं."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"अभी डाउनलोड करें (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>एमबी)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाई-फ़ाई  से डाउनलोड करें"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> के लिए एक शब्‍दकोश उपलब्‍ध है"</string>
