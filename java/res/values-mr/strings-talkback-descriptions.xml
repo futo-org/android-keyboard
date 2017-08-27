@@ -90,7 +90,7 @@
     <string name="spoken_emoticon_3A_2D_2A_20" msgid="5612342617244114291">"चुंबन घेणारा चेहरा"</string>
     <string name="spoken_emoticon_3A_2D_5B_20" msgid="2223507987759905920">"अत्यंत संतापलेला चेहरा"</string>
     <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"वैकल्पिक वर्ण उपलब्ध आहेत"</string>
-    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"वैकल्पिक वर्ण डिसमिस केलेले आहेत"</string>
+    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"वैकल्पिक वर्ण डिसमिस केले आहेत"</string>
     <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"वैकल्पिक सूचना उपलब्ध आहेत"</string>
     <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"वैकल्पिक सूचना डिसमिस केलेल्या आहेत"</string>
 </resources>
