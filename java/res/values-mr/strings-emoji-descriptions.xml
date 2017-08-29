@@ -846,8 +846,8 @@
     <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"तीन ध्वनी लहरींसह स्पीकर"</string>
     <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"बॅटरी"</string>
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"इलेक्ट्रिक प्लग"</string>
-    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"डाव्या-दिशेने निर्देशित करणारा भिंगकाच"</string>
-    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"उजव्या-दिशेने निर्देशित करणारा भिंगकाच"</string>
+    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"डाव्या-दिशेने निर्देश करणारे भिंग"</string>
+    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"उजव्या-दिशेने निर्देश करणारे भिंग"</string>
     <string name="spoken_emoji_1F50F" msgid="915079280472199605">"शाईच्या पेनसह कुलुप"</string>
     <string name="spoken_emoji_1F510" msgid="7658381761691758318">"किल्लीसह बंद कुलुप"</string>
     <string name="spoken_emoji_1F511" msgid="262319867774655688">"किल्ली"</string>
@@ -943,10 +943,8 @@
     <skip />
     <!-- no translation found for spoken_emoji_1F576 (6510040886626337527) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F577 (1745605672232546738) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F578 (5843261607004481128) -->
-    <skip />
+    <string name="spoken_emoji_1F577" msgid="1745605672232546738">"Spider"</string>
+    <string name="spoken_emoji_1F578" msgid="5843261607004481128">"Spider web"</string>
     <!-- no translation found for spoken_emoji_1F579 (356353388497335187) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F587 (1529578701645787678) -->
