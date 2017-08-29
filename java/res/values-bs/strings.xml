@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Mogućnosti unosa"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Pogledajte u imena kontakata"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Korištenje imena kontakata"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Alat za provjeru pravopisa koristi upise iz vaše liste kontakata"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibracija pri pritisku na tipku"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk pri pritisku tipke"</string>
@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Glavni rječnik"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Prikaži prijedloge za ispravak"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Prikaži predložene riječi prilikom kucanja"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blokiraj uvrjedljive riječi"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blokiranje uvredljivih riječi"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Ne predlaži potencijalno uvrjedljive riječi"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Automatsko ispravljanje"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Automatsko ispravljanje grešaka nakon razmaka i interpunkcije"</string>
