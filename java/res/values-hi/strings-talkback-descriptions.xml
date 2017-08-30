@@ -42,7 +42,7 @@
     <string name="spoken_description_mic" msgid="6153138783813452464">"बोलकर फ़ोन को निर्देश"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"ईमोजी"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"रिटर्न"</string>
-    <string name="spoken_description_search" msgid="5099937658231911288">"खोजें"</string>
+    <string name="spoken_description_search" msgid="5099937658231911288">"सर्च करें"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"डॉट"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"भाषा स्विच करें"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"आगे"</string>
@@ -64,7 +64,7 @@
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"फ़ोन"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"लेख"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"समय"</string>
-    <string name="keyboard_mode_url" msgid="8072011652949962550">"URL"</string>
+    <string name="keyboard_mode_url" msgid="8072011652949962550">"यूआरएल"</string>
     <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"हाल ही के"</string>
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"लोग"</string>
     <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"ऑब्जेक्ट"</string>
