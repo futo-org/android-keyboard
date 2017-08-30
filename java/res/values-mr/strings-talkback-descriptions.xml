@@ -71,7 +71,7 @@
     <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"निसर्ग"</string>
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"ठिकाणे"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"चिन्हे"</string>
-    <string name="spoken_descrption_emoji_category_flags" msgid="5971573825866381472">"ध्वजांकित करा"</string>
+    <string name="spoken_descrption_emoji_category_flags" msgid="5971573825866381472">"झेंडे"</string>
     <string name="spoken_descrption_emoji_category_eight_smiley_people" msgid="5682663819532433464">"हसरा आणि लोक"</string>
     <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="5844950234883716704">"प्राणी आणि निसर्ग"</string>
     <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"भोजन आणि पेय"</string>
@@ -90,7 +90,7 @@
     <string name="spoken_emoticon_3A_2D_2A_20" msgid="5612342617244114291">"चुंबन घेणारा चेहरा"</string>
     <string name="spoken_emoticon_3A_2D_5B_20" msgid="2223507987759905920">"अत्यंत संतापलेला चेहरा"</string>
     <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"वैकल्पिक वर्ण उपलब्ध आहेत"</string>
-    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"वैकल्पिक वर्ण डिसमिस केलेले आहेत"</string>
+    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"वैकल्पिक वर्ण डिसमिस केले आहेत"</string>
     <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"वैकल्पिक सूचना उपलब्ध आहेत"</string>
     <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"वैकल्पिक सूचना डिसमिस केलेल्या आहेत"</string>
 </resources>
