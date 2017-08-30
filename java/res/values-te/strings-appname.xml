@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="5940510615957428904">"Android కీబోర్డ్ (AOSP)"</string>
-    <string name="spell_checker_service_name" msgid="1254221805440242662">"Android అక్షరక్రమ తనిఖీ (AOSP)"</string>
+    <string name="spell_checker_service_name" msgid="1254221805440242662">"Android స్పెల్ చెకర్ (AOSP)"</string>
     <string name="english_ime_settings" msgid="5760361067176802794">"Android కీబోర్డ్ సెట్టింగ్‌లు (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="6123949487832861885">"Android అక్షరక్రమ తనిఖీ సెట్టింగ్‌లు (AOSP)"</string>
+    <string name="android_spell_checker_settings" msgid="6123949487832861885">"Android స్పెల్ చెకర్ సెట్టింగ్‌లు (AOSP)"</string>
 </resources>
