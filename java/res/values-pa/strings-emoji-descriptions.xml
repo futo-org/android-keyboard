@@ -156,8 +156,7 @@
     <string name="spoken_emoji_26BE" msgid="8959760533076498209">"ਬੇਸਬਾਲ"</string>
     <string name="spoken_emoji_26C4" msgid="3045791757044255626">"ਬਰਫ਼ ਤੋਂ ਬਿਨਾਂ ਬਰਫ਼ ਦਾ ਪੁਤਲਾ"</string>
     <string name="spoken_emoji_26C5" msgid="5580129409712578639">"ਬੱਦਲਾਂ ਦੇ ਪਿੱਛੇ ਸੂਰਜ"</string>
-    <!-- no translation found for spoken_emoji_26C8 (4641925705576445058) -->
-    <skip />
+    <string name="spoken_emoji_26C8" msgid="4641925705576445058">"ਗਰਜਦੇ ਬੱਦਲ ਅਤੇ ਬਾਰਸ਼"</string>
     <string name="spoken_emoji_26CE" msgid="8963656417276062998">"ਓਫੀਉਚਸ"</string>
     <!-- no translation found for spoken_emoji_26CF (1048987245528185548) -->
     <skip />
@@ -265,7 +264,7 @@
     <string name="spoken_emoji_1F237" msgid="6741807001205851437">"ਵਰਗਾਕਾਰ ਭਾਵ ਚਿੱਤਰ ਮਾਸਿਕ"</string>
     <string name="spoken_emoji_1F238" msgid="5504414186438196912">"ਵਰਗਾਕਾਰ ਭਾਵ ਚਿੱਤਰ ਐਪਲੀਕੇਸ਼ਨ"</string>
     <string name="spoken_emoji_1F239" msgid="1634067311597618959">"ਵਰਗਾਕਾਰ ਭਾਵ ਚਿੱਤਰ ਕਟੌਤੀ"</string>
-    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"ਵਰਗਾਕਾਰ ਭਾਵ ਚਿੱਤਰ ਇਨ ਬਿਜਨਸ"</string>
+    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"ਕਾਰੋਬਾਰ ਵਿੱਚ ਵਰਗਾਕਾਰ ਭਾਵ ਚਿੱਤਰ"</string>
     <string name="spoken_emoji_1F250" msgid="6586943922806727907">"ਗੋਲ ਭਾਵ ਚਿੱਤਰ ਲਾਭ"</string>
     <string name="spoken_emoji_1F251" msgid="9099032855993346948">"ਗੋਲ ਭਾਵ ਚਿੱਤਰ ਸਵੀਕਾਰ ਕਰੋ"</string>
     <string name="spoken_emoji_1F300" msgid="4720098285295840383">"ਸਮੁੰਦਰੀ ਝੱਖੜ"</string>
@@ -303,20 +302,13 @@
     <string name="spoken_emoji_1F320" msgid="5450591979068216115">"ਉਲਕਾ"</string>
     <!-- no translation found for spoken_emoji_1F321 (581288529301493075) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F324 (2930891297836314896) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F325 (5282092301688177705) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F326 (165046788529872891) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F327 (4384791469343260600) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F328 (1991614733939171872) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F329 (6016235695016510649) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F32A (5889026615334911758) -->
-    <skip />
+    <string name="spoken_emoji_1F324" msgid="2930891297836314896">"ਛੋਟੇ ਬੱਦਲ ਨਾਲ ਸਫ਼ੈਦ ਸੂਰਜ"</string>
+    <string name="spoken_emoji_1F325" msgid="5282092301688177705">"ਬੱਦਲ ਦੇ ਪਿੱਛੇ ਸਫ਼ੈਦ ਸੂਰਜ"</string>
+    <string name="spoken_emoji_1F326" msgid="165046788529872891">"ਬਾਰਸ਼ ਨਾਲ ਬੱਦਲ ਦੇ ਪਿੱਛੇ ਸਫ਼ੈਜ ਸੂਰਜ"</string>
+    <string name="spoken_emoji_1F327" msgid="4384791469343260600">"ਬਾਰਸ਼ ਦੇ ਨਾਲ ਬੱਦਲ"</string>
+    <string name="spoken_emoji_1F328" msgid="1991614733939171872">"ਬਰਫ਼ਬਾਰੀ ਦੇ ਨਾਲ ਬੱਦਲ"</string>
+    <string name="spoken_emoji_1F329" msgid="6016235695016510649">"ਬਿਜਲੀ ਦੇ ਨਾਲ ਬੱਦਲ"</string>
+    <string name="spoken_emoji_1F32A" msgid="5889026615334911758">"ਬਵੰਡਰ ਦੇ ਨਾਲ ਬੱਦਲ"</string>
     <!-- no translation found for spoken_emoji_1F32B (3223192457131343118) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F32C (3479270390051226956) -->
@@ -505,8 +497,7 @@
     <skip />
     <!-- no translation found for spoken_emoji_1F3D2 (9113415091165206322) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F3D3 (5392602379011857837) -->
-    <skip />
+    <string name="spoken_emoji_1F3D3" msgid="5392602379011857837">"Table tennis paddle and ball"</string>
     <!-- no translation found for spoken_emoji_1F3D4 (5682806162641888464) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F3D5 (485622019934191893) -->
@@ -562,16 +553,11 @@
     <skip />
     <!-- no translation found for spoken_emoji_1F3FA (972388608151034163) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F3FB (2482905976407635663) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F3FC (2438230702000819552) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F3FD (8205610118230779658) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F3FE (2707903021796601195) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F3FF (12056714027518795) -->
-    <skip />
+    <string name="spoken_emoji_1F3FB" msgid="2482905976407635663">"ਇਮੋਜੀ ਸੋਧਕ Fitzpatrick ਕਿਸਮ-1-2"</string>
+    <string name="spoken_emoji_1F3FC" msgid="2438230702000819552">"ਇਮੋਜੀ ਸੋਧਕ Fitzpatrick ਕਿਸਮ-3"</string>
+    <string name="spoken_emoji_1F3FD" msgid="8205610118230779658">"ਇਮੋਜੀ ਸੋਧਕ Fitzpatrick ਕਿਸਮ-4"</string>
+    <string name="spoken_emoji_1F3FE" msgid="2707903021796601195">"ਇਮੋਜੀ ਸੋਧਕ Fitzpatrick ਕਿਸਮ-5"</string>
+    <string name="spoken_emoji_1F3FF" msgid="12056714027518795">"ਇਮੋਜੀ ਸੋਧਕ Fitzpatrick ਕਿਸਮ-6"</string>
     <string name="spoken_emoji_1F400" msgid="2063034795679578294">"ਚੂਹਾ"</string>
     <string name="spoken_emoji_1F401" msgid="6736421616217369594">"ਚੂਹਾ"</string>
     <string name="spoken_emoji_1F402" msgid="7276670995895485604">"ਬਲਦ"</string>
@@ -795,7 +781,7 @@
     <string name="spoken_emoji_1F4D9" msgid="3874664073186440225">"ਸੰਤਰੀ ਕਿਤਾਬ"</string>
     <string name="spoken_emoji_1F4DA" msgid="872212072924287762">"ਕਿਤਾਬਾਂ"</string>
     <string name="spoken_emoji_1F4DB" msgid="2015183603583392969">"ਨਾਮ ਦਾ ਬਿੱਲਾ"</string>
-    <string name="spoken_emoji_1F4DC" msgid="5075845110932456783">"ਸਕ੍ਰੌਲ ਕਰੋ"</string>
+    <string name="spoken_emoji_1F4DC" msgid="5075845110932456783">"ਸਕ੍ਰੋਲ ਕਰੋ"</string>
     <string name="spoken_emoji_1F4DD" msgid="2494006707147586786">"ਮੀਮੋ"</string>
     <string name="spoken_emoji_1F4DE" msgid="7883008605002117671">"ਟੈਲੀਫੋਨ ਰਿਸੀਵਰ"</string>
     <string name="spoken_emoji_1F4DF" msgid="3538610110623780465">"ਪੇਜਰ"</string>
@@ -816,11 +802,11 @@
     <string name="spoken_emoji_1F4EE" msgid="8464138906243608614">"ਪੋਸਟਬੌਕਸ"</string>
     <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"ਪੋਸਟਲ ਹੌਰਨ"</string>
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"ਅਖ਼ਬਾਰ"</string>
-    <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"ਮੋਬਾਈਲ ਫੋਨ"</string>
-    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"ਖੱਬੇ ਪਾਸੇ ਸੱਜੇ ਪਾਸੇ ਵੱਲ ਤੀਰ ਦੇ ਨਿਸ਼ਾਨ ਵਾਲਾ ਮੋਬਾਈਲ ਫੋਨ"</string>
+    <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"ਮੋਬਾਈਲ ਫ਼ੋਨ"</string>
+    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"ਮੋਬਾਈਲ ਫ਼ੋਨ ਦੇ ਨਾਲ ਸੱਜੇ ਪਾਸੇ ਵੱਲ ਮੁੜਿਆ ਤੀਰ"</string>
     <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"ਵਾਈਬ੍ਰੇਸ਼ਨ ਮੋਡ"</string>
-    <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"ਮੋਬਾਈਲ ਫੋਨ ਬੰਦ"</string>
-    <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"ਕੋਈ ਮੋਬਾਈਲ ਫੋਨ ਨਹੀਂ"</string>
+    <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"ਮੋਬਾਈਲ ਫ਼ੋਨ ਬੰਦ"</string>
+    <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"ਕੋਈ ਮੋਬਾਈਲ ਫ਼ੋਨ ਨਹੀਂ"</string>
     <string name="spoken_emoji_1F4F6" msgid="2676974903233268860">"ਬਾਰਸ ਵਾਲਾ ਐਂਟੀਨਾ"</string>
     <string name="spoken_emoji_1F4F7" msgid="2643891943105989039">"ਕੈਮਰਾ"</string>
     <!-- no translation found for spoken_emoji_1F4F8 (6874216216317936645) -->
@@ -846,8 +832,8 @@
     <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"ਤਿੰਨ ਅਵਾਜ਼ ਤਰੰਗਾਂ ਵਾਲਾ ਸਪੀਕਰ"</string>
     <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"ਬੈਟਰੀ"</string>
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"ਇਲੈਕਟ੍ਰਿਕ ਪਲਗ"</string>
-    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"ਖੱਬੇ-ਪਾਸੇ ਸੰਕੇਤ ਦੇਣ ਵਾਲਾ ਵਡਦਰਸ਼ੀ ਸ਼ੀਸ਼ਾ"</string>
-    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"ਸੱਜੇ-ਪਾਸੇ ਸੰਕੇਤ ਦੇਣ ਵਾਲਾ ਵਡਦਰਸ਼ੀ ਸ਼ੀਸ਼ਾ"</string>
+    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"ਖੱਬੇ-ਪਾਸੇ ਸੰਕੇਤ ਦੇਣ ਵਾਲਾ ਵੱਡਦਰਸ਼ੀ ਸ਼ੀਸ਼ਾ"</string>
+    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"ਸੱਜੇ-ਪਾਸੇ ਸੰਕੇਤ ਦੇਣ ਵਾਲਾ ਵੱਡਦਰਸ਼ੀ ਸ਼ੀਸ਼ਾ"</string>
     <string name="spoken_emoji_1F50F" msgid="915079280472199605">"ਸਿਆਹੀ ਦੇ ਪੈਨ ਨਾਲ ਤਾਲਾ"</string>
     <string name="spoken_emoji_1F510" msgid="7658381761691758318">"ਕੁੰਜੀ ਨਾਲ ਬੰਦ ਤਾਲਾ"</string>
     <string name="spoken_emoji_1F511" msgid="262319867774655688">"ਕੁੰਜੀ"</string>
@@ -937,16 +923,13 @@
     <skip />
     <!-- no translation found for spoken_emoji_1F573 (1039753319384915644) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F574 (1370973157808858727) -->
-    <skip />
+    <string name="spoken_emoji_1F574" msgid="1370973157808858727">"Man in business suit levitating"</string>
     <!-- no translation found for spoken_emoji_1F575 (3393287560881832534) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F576 (6510040886626337527) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F577 (1745605672232546738) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F578 (5843261607004481128) -->
-    <skip />
+    <string name="spoken_emoji_1F577" msgid="1745605672232546738">"ਮੱਕੜੀ"</string>
+    <string name="spoken_emoji_1F578" msgid="5843261607004481128">"ਮੱਕੜੀ ਦਾ ਜਾਲਾ"</string>
     <!-- no translation found for spoken_emoji_1F579 (356353388497335187) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F587 (1529578701645787678) -->
@@ -975,8 +958,7 @@
     <skip />
     <!-- no translation found for spoken_emoji_1F5BC (2406817930103032256) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F5C2 (5722791826015378721) -->
-    <skip />
+    <string name="spoken_emoji_1F5C2" msgid="5722791826015378721">"ਕਾਰਡ ਇੰਡੈਕਸ ਡਿਵਾਈਡਰ"</string>
     <!-- no translation found for spoken_emoji_1F5C3 (2361411623100608566) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F5C4 (5699005642361736394) -->
