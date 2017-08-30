@@ -36,7 +36,7 @@
     <string name="enable_split_keyboard" msgid="4177264923999493614">"I-enable ang split keyboard"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Pag-sync ng Google Keyboard"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Naka-on ang pag-sync"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"I-sync ang iyong personal na diksyunaryo sa mga device"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"I-sync ang iyong personal na diksyonaryo sa mga device"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"I-sync ngayon"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"I-delete ang cloud data"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Dine-delete ang iyong naka-sync na data sa Google"</string>
@@ -63,9 +63,9 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Naglalagay ng tuldok na may puwang ang pag-double tap sa spacebar"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalization"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"I-capitalize ang unang salita ng bawat pangungusap"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Personal na diksyunaryo"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Mga add-on na diksyunaryo"</string>
-    <string name="main_dictionary" msgid="4798763781818361168">"Pangunahing diksyunaryo"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Personal na diksyonaryo"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Mga add-on na diksyonaryo"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"Pangunahing diksyonaryo"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Ipakita ang mga suhestiyon sa pagwawasto"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Ipakita ang mga iminumungkahing salita habang nagta-type"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"I-block ang nakakapanakit na salita"</string>
@@ -93,7 +93,7 @@
     <string name="select_language" msgid="5709487854987078367">"Mga Wika"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"I-tap muli upang i-save"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Mag-tap dito upang i-save"</string>
-    <string name="has_dictionary" msgid="6071847973466625007">"Available ang diksyunaryo"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Available ang diksyonaryo"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema ng keyboard"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Lumipat ng account"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"Walang mga account na pinili"</string>
@@ -158,40 +158,40 @@
     <string name="setup_finish_action" msgid="276559243409465389">"Tapos na"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Ipakita ang icon ng app"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Ipakita ang icon ng application sa launcher"</string>
-    <string name="app_name" msgid="6320102637491234792">"Provider ng Diksyunaryo"</string>
-    <string name="dictionary_provider_name" msgid="3027315045397363079">"Provider ng Diksyunaryo"</string>
-    <string name="dictionary_service_name" msgid="6237472350693511448">"Serbisyo ng Diksyunaryo"</string>
-    <string name="download_description" msgid="6014835283119198591">"Impormasyon ng update sa diksyunaryo"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"Mga add-on na diksyunaryo"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Available ang diksyunaryo"</string>
-    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Mga setting para sa mga diksyunaryo"</string>
-    <string name="user_dictionaries" msgid="3582332055892252845">"Mga diksyunaryo ng user"</string>
-    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Diksyunaryo ng user"</string>
-    <string name="dictionary_available" msgid="4728975345815214218">"Available ang diksyunaryo"</string>
+    <string name="app_name" msgid="6320102637491234792">"Provider ng Diksyonaryo"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Provider ng Diksyonaryo"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Serbisyo ng Diksyonaryo"</string>
+    <string name="download_description" msgid="6014835283119198591">"Impormasyon ng update sa diksyonaryo"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Mga add-on na diksyonaryo"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Available ang diksyonaryo"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Mga setting para sa mga diksyonaryo"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Mga diksyonaryo ng user"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Diksyonaryo ng user"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Available ang diksyonaryo"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"Kasalukuyang dina-download"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Na-install na"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Naka-install, naka-disable"</string>
-    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Di makakonekta sa serbisyong diksyunaryo"</string>
-    <string name="no_dictionaries_available" msgid="8039920716566132611">"Walang mga diksyunaryo"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Di makakonekta sa serbisyong diksyonaryo"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Walang mga diksyonaryo"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"I-refresh"</string>
     <string name="last_update" msgid="730467549913588780">"Huling na-update"</string>
     <string name="message_updating" msgid="4457761393932375219">"Tumitingin ng mga update"</string>
     <string name="message_loading" msgid="5638680861387748936">"Naglo-load…"</string>
-    <string name="main_dict_description" msgid="3072821352793492143">"Pangunahing diksyunaryo"</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Pangunahing diksyonaryo"</string>
     <string name="cancel" msgid="6830980399865683324">"Kanselahin"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"Mga Setting"</string>
     <string name="install_dict" msgid="180852772562189365">"I-install"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Kanselahin"</string>
     <string name="delete_dict" msgid="756853268088330054">"I-delete"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"May available na diksyunaryo ang piniling wika sa mobile device mo.&lt;br/&gt; Inirerekomendang &lt;b&gt;i-download&lt;/b&gt; ang <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> na diksyunaryo para mapaganda ang iyong karanasan sa pagta-type.&lt;br/&gt; &lt;br/&gt; Maaaring abutin nang 1 o 2 minuto ang pagda-download sa pamamagitan ng 3G. Maaaring magkaroon ng mga singil kung wala kang &lt;b&gt;plan na walang limitasyong data&lt;/b&gt;.&lt;br/&gt; Kung hindi mo tiyak kung aling plan ng data ang mayroon ka, kumonekta sa Wi-Fi upang awtomatikong mag-download.&lt;br/&gt; &lt;br/&gt; Tip: Maaari kang mag-download at mag-alis ng mga diksyunaryo sa pamamagitan ng pagpunta sa &lt;b&gt;Mga wika at input&lt;/b&gt; sa menu ng &lt;b&gt;Mga Setting&lt;/b&gt; ng iyong mobile device."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"May available na diksyonaryo ang piniling wika sa mobile device mo.&lt;br/&gt; Inirerekomendang &lt;b&gt;i-download&lt;/b&gt; ang <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> na diksyonaryo para mapaganda ang iyong karanasan sa pagta-type.&lt;br/&gt; &lt;br/&gt; Maaaring abutin nang 1 o 2 minuto ang pagda-download sa pamamagitan ng 3G. Maaaring magkaroon ng mga singil kung wala kang &lt;b&gt;plan na walang limitasyong data&lt;/b&gt;.&lt;br/&gt; Kung hindi mo tiyak kung aling plan ng data ang mayroon ka, kumonekta sa Wi-Fi upang awtomatikong mag-download.&lt;br/&gt; &lt;br/&gt; Tip: Maaari kang mag-download at mag-alis ng mga diksyonaryo sa pamamagitan ng pagpunta sa &lt;b&gt;Mga wika at input&lt;/b&gt; sa menu ng &lt;b&gt;Mga Setting&lt;/b&gt; ng iyong mobile device."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"I-download ngayon (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"I-download gamit ang Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4583842811218581658">"May available na diksyunaryo para sa <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"May available na diksyonaryo para sa <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Pindutin upang suriin at i-download"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Nagda-download: magkakaron ng mga suhestiyon para sa <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> sa lalong madaling panahon."</string>
     <string name="version_text" msgid="2715354215568469385">"Bersyon <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Idagdag"</string>
-    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Idagdag sa diksyunaryo"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Idagdag sa diksyonaryo"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Parirala"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Higit pa"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Mas kaunti"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"I-edit ang salita"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"I-edit"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"I-delete"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Wala kang anumang mga salita sa diksyunaryo ng user. Upang magdagdag ng salita, i-tap ang button na Magdagdag (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Wala kang anumang mga salita sa diksyonaryo ng user. Upang magdagdag ng salita, i-tap ang button na Magdagdag (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Para sa lahat ng wika"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Higit pang mga wika..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"I-delete"</string>
