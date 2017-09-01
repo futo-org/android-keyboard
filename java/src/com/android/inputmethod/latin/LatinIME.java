@@ -124,6 +124,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     static final long DELAY_DEALLOCATE_MEMORY_MILLIS = TimeUnit.SECONDS.toMillis(10);
 
     /**
+     * A broadcast intent action to hide the software keyboard.
+     */
+    static final String ACTION_HIDE_SOFT_INPUT =
+            "com.android.inputmethod.latin.HIDE_SOFT_INPUT";
+
+    /**
+     * A custom permission for external apps to send {@link #ACTION_HIDE_SOFT_INPUT}.
+     */
+    static final String PERMISSION_HIDE_SOFT_INPUT =
+            "com.android.inputmethod.latin.HIDE_SOFT_INPUT";
+
+    /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
      * replacement or removal.
      */
@@ -159,6 +171,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
+
+    final static class HideSoftInputReceiver extends BroadcastReceiver {
+        private final InputMethodService mIms;
+
+        public HideSoftInputReceiver(InputMethodService ims) {
+            mIms = ims;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (ACTION_HIDE_SOFT_INPUT.equals(action)) {
+                mIms.requestHideSelf(0 /* flags */);
+            } else {
+                Log.e(TAG, "Unexpected intent " + intent);
+            }
+        }
+    }
+    final HideSoftInputReceiver mHideSoftInputReceiver = new HideSoftInputReceiver(this);
 
     private AlertDialog mOptionsDialog;
 
@@ -595,6 +626,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         dictDumpFilter.addAction(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
         registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
 
+        final IntentFilter hideSoftInputFilter = new IntentFilter();
+        hideSoftInputFilter.addAction(ACTION_HIDE_SOFT_INPUT);
+        registerReceiver(mHideSoftInputReceiver, hideSoftInputFilter, PERMISSION_HIDE_SOFT_INPUT,
+                null /* scheduler */);
+
         StatsUtils.onCreate(mSettings.getCurrent(), mRichImm);
     }
 
@@ -699,6 +735,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onDestroy() {
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
+        unregisterReceiver(mHideSoftInputReceiver);
         unregisterReceiver(mRingerModeChangeReceiver);
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
