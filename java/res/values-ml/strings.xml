@@ -137,8 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"കീ അമർത്തുമ്പോഴുള്ള വൈബ്രേഷൻ ദൈർഘ്യം"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"കീ അമർത്തുമ്പോഴുള്ള ശബ്‌ദ വോളിയം"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"കീ അമർത്തിപ്പിടിക്കുന്നതിലെ കാലതാമസം"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"ഭൗതിക കീബോർഡിനുള്ള ഇമോജി"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ഭൗതിക Alt കീ ഇമോജി പാലറ്റിനെ കാണിക്കുന്നു"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"പ്രത്യക്ഷ കീബോഡിനുള്ള ഇമോജി"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"പ്രത്യക്ഷ Alt കീ ഇമോജി പാലറ്റിനെ കാണിക്കുന്നു"</string>
     <string name="button_default" msgid="3988017840431881491">"സ്ഥിരമായത്"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> എന്നതിലേക്ക് സ്വാഗതം"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"വിരൽചലിത ടൈപ്പിംഗിനൊപ്പം"</string>
@@ -183,11 +183,11 @@
     <string name="install_dict" msgid="180852772562189365">"ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"റദ്ദാക്കുക"</string>
     <string name="delete_dict" msgid="756853268088330054">"ഇല്ലാതാക്കുക"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"നിങ്ങളുടെ മൊബൈൽ ഉപകരണത്തിൽ തിരഞ്ഞെടുത്ത ഭാഷയ്‌ക്ക് നിഘണ്ടു ലഭ്യമാണ്.&lt;br/&gt; നിങ്ങളുടെ ടൈപ്പുചെയ്യൽ അനുഭവം മെച്ചപ്പെടുത്തുന്നതിനായി <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> നിഘണ്ടു &lt;b&gt;ഡൗൺലോഡുചെയ്യാൻ&lt;/b&gt; ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; 3G-യിൽ ഡൗൺലോഡ് ചെയ്യാൻ ഒന്നോ രണ്ടോ മിനിറ്റെടുത്തേക്കാം. നിങ്ങൾക്ക് &lt;b&gt;പരിധിയില്ലാത്ത ഡാറ്റാ പ്ലാൻ&lt;/b&gt; ഇല്ലെങ്കിൽ നിരക്കുകൾ ബാധകമാകാം.&lt;br/&gt; നിങ്ങൾക്ക് ഏത് ഡാറ്റ പ്ലാനാണ് ഉള്ളതെന്ന് തീർച്ചയില്ലെങ്കിൽ, ഡൗൺലോഡ് സ്വയമേവ ആരംഭിക്കുന്നതിന് ഒരു വൈഫൈ കണക്ഷൻ കണ്ടെത്താൻ ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; നുറുങ്ങുവിവരം: നിങ്ങളുടെ മൊബൈലിലെ &lt;b&gt;ക്രമീകരണം&lt;/b&gt; മെനുവിലുള്ള &lt;b&gt;ഭാഷയും ഇൻപുട്ടും&lt;/b&gt; എന്നതിലേക്ക് പോയി നിങ്ങൾക്ക് നിഘണ്ടുകൾ ഡൗൺലോഡ് ചെയ്യാനും നീക്കംചെയ്യാനുമാകും."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"മൊബൈൽ ഉപകരണത്തിൽ തിരഞ്ഞെടുത്ത ഭാഷയ്‌ക്ക് നിഘണ്ടു ലഭ്യം.&lt;br/&gt; നിങ്ങളുടെ ടൈപ്പുചെയ്യൽ അനുഭവം മെച്ചപ്പെടുത്താന്‍ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> നിഘണ്ടു &lt;b&gt;ഡൗണ്‍ലോഡ് ചെയ്യാൻ&lt;/b&gt; ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; 3G-യിൽ ഡൗൺലോഡ് ചെയ്യാൻ ഒന്നോ രണ്ടോ മിനിറ്റെടുക്കാം. നിങ്ങൾക്ക് &lt;b&gt;പരിധിയില്ലാത്ത ഡാറ്റാ പ്ലാൻ&lt;/b&gt; ഇല്ലെങ്കിൽ നിരക്കുകൾ ബാധകമാകാം.&lt;br/&gt; ഏത് ഡാറ്റ പ്ലാനാണ് ഉള്ളതെന്ന് തീർച്ചയില്ലെങ്കിൽ, ഡൗൺലോഡ് സ്വമേധയാ ആരംഭിക്കുന്നതിന് വൈഫൈ കണക്ഷൻ കണ്ടെത്താൻ ഞങ്ങൾ ശുപാർശ ചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; നുറുങ്ങുവിവരം: മൊബൈലിലെ &lt;b&gt;ക്രമീകരണം&lt;/b&gt; മെനുവിലുള്ള &lt;b&gt;ഭാഷയും ഇൻപുട്ടും&lt;/b&gt; എന്നതിലേക്ക് പോയി നിങ്ങൾക്ക് നിഘണ്ടുകൾ ഡൗൺലോഡ് ചെയ്യാനും നീക്കം ചെയ്യാനുമാകും."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ഇപ്പോൾ ഡൗൺലോഡുചെയ്യുക (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"വൈഫൈ മുഖേന ഡൗൺലോഡ് ചെയ്യുക"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ഭാഷയ്‌ക്കായി ഒരു നിഘണ്ടു ലഭ്യമാണ്"</string>
-    <string name="dict_available_notification_description" msgid="1075194169443163487">"അവലോകനം ചെയ്‌ത് ഡൗൺലോഡ് ചെയ്യാൻ അമർത്തുക"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"അവലോകനം ചെയ്യാനും ഡൗൺലോഡ് ചെയ്യാനും അമർത്തുക"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ഡൗൺലോഡുചെയ്യുന്നു: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ഭാഷയ്‌ക്കുള്ള നിർദ്ദേശങ്ങൾ ഉടൻതന്നെ തയ്യാറാകും."</string>
     <string name="version_text" msgid="2715354215568469385">"പതിപ്പ് <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"ചേര്‍ക്കുക"</string>
