@@ -46,7 +46,7 @@
     <string name="spoken_description_dot" msgid="5644176501632325560">"डॉट"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"भाषा स्विच करें"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"आगे"</string>
-    <string name="spoken_description_action_previous" msgid="2919072174697865110">"पिछला"</string>
+    <string name="spoken_description_action_previous" msgid="2919072174697865110">"पीछे जाएं"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"शिफ़्ट सक्षम किया गया"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"कैप्स लॉक सक्षम किया गया"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"प्रतीक मोड"</string>
@@ -69,13 +69,13 @@
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"लोग"</string>
     <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"ऑब्जेक्ट"</string>
     <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"प्रकृति"</string>
-    <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"स्थान"</string>
+    <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"जगह"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"प्रतीक"</string>
     <string name="spoken_descrption_emoji_category_flags" msgid="5971573825866381472">"फ़्लैग"</string>
     <string name="spoken_descrption_emoji_category_eight_smiley_people" msgid="5682663819532433464">"स्माइली और लोग"</string>
     <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="5844950234883716704">"प्राणी और प्रकृति"</string>
     <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"भोजन और पेय"</string>
-    <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="3834085499381434611">"यात्रा और स्थान"</string>
+    <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="3834085499381434611">"यात्रा और जगह"</string>
     <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"गतिविधि"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"इमोटिकॉन्स"</string>
     <string name="spoken_description_upper_case" msgid="4904835255229433916">"बड़ा <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
