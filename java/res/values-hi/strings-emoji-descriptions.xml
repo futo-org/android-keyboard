@@ -265,7 +265,7 @@
     <string name="spoken_emoji_1F237" msgid="6741807001205851437">"चौकोर आइडियोग्राफ़़ मासिक"</string>
     <string name="spoken_emoji_1F238" msgid="5504414186438196912">"चौकोर आइडियोग्राफ़़ ऐप्लिकेशन"</string>
     <string name="spoken_emoji_1F239" msgid="1634067311597618959">"चौकोर आइडियोग्राफ़़ छूट"</string>
-    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"व्यवसाय में चौकोर आइडियोग्राफ़़"</string>
+    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"कारोबार के लिए इस्तेमाल होने वाली चौकोर आइडियोग्राफ़़ वाली इमोजी"</string>
     <string name="spoken_emoji_1F250" msgid="6586943922806727907">"गोल आइडियोग्राफ़़ लाभ"</string>
     <string name="spoken_emoji_1F251" msgid="9099032855993346948">"गोल आइडियोग्राफ़़ स्वीकार"</string>
     <string name="spoken_emoji_1F300" msgid="4720098285295840383">"चक्रवात"</string>
@@ -1138,7 +1138,7 @@
     <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"प्रवेश नहीं चिह्न"</string>
     <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"धुम्रपान करता हुआ व्यक्ति"</string>
     <string name="spoken_emoji_1F6AD" msgid="6320088669185507241">"धूम्रपान निषेध प्रतीक"</string>
-    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"इस स्थान पर कचरा रखें वाला प्रतीक"</string>
+    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"इस जगह पर कचरा रखें वाला निशान"</string>
     <string name="spoken_emoji_1F6AF" msgid="2286668056123642208">"कचरा न करें वाला प्रतीक"</string>
     <string name="spoken_emoji_1F6B0" msgid="179424763882990952">"पेयजल प्रतीक"</string>
     <string name="spoken_emoji_1F6B1" msgid="5585212805429161877">"अपेयजल प्रतीक"</string>
