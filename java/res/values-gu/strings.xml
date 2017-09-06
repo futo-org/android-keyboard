@@ -135,7 +135,7 @@
     <string name="not_now" msgid="6172462888202790482">"હમણાં નહીં"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"સમાન ઇનપુટ શૈલી પહેલાથી જ અસ્તિત્વમાં છે: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"કીપ્રેસ વાઇબ્રેશન અવધિ"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"કીપ્રેસ ધ્વનિ વોલ્યુમ"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"કીપ્રેસ ધ્વનિ વૉલ્યૂમ"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"લાંબા કી પ્રેસનો વિલંબ"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"ભૌતિક કીબોર્ડ માટે ઇમોજી"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ભૌતિક Alt કી ઇમોજી પેલેટ દર્શાવે છે"</string>
