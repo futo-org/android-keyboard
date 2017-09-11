@@ -31,7 +31,6 @@ include $(LATIN_IME_CORE_PATH)/NativeFileList.mk
 LATIN_IME_SRC_DIR := src
 LOCAL_ADDRESS_SANITIZER := true
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
-LOCAL_CLANG := true
 LOCAL_CXX_STL := libc++
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_DICT_TOOLKIT_SRC_DIR) \
     $(LATIN_IME_CORE_PATH)/$(LATIN_IME_CORE_SRC_DIR)
@@ -46,7 +45,6 @@ include $(CLEAR_VARS)
 
 LOCAL_ADDRESS_SANITIZER := true
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
-LOCAL_CLANG := true
 LOCAL_CXX_STL := libc++
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_DICT_TOOLKIT_SRC_DIR) \
     $(LATIN_IME_CORE_PATH)/$(LATIN_IME_CORE_SRC_DIR)
