@@ -85,7 +85,7 @@
     <!-- no translation found for spoken_emoji_2604 (8632808648689048735) -->
     <skip />
     <string name="spoken_emoji_260E" msgid="8670395193046424238">"ਕਾਲਾ ਟੈਲੀਫੋਨ"</string>
-    <string name="spoken_emoji_2611" msgid="4530550203347054611">"ਸਹੀ ਦੇ ਨਿਸ਼ਾਨ ਵਾਲਾ ਬੈਲਟ ਬੌਕਸ"</string>
+    <string name="spoken_emoji_2611" msgid="4530550203347054611">"ਸਹੀ ਦੇ ਨਿਸ਼ਾਨ ਵਾਲਾ ਬੈਲਟ ਬਾਕਸ"</string>
     <string name="spoken_emoji_2614" msgid="1612791247861229500">"ਵਰਖਾ ਦੀਆਂ ਬੂੰਦਾਂ ਵਾਲੀ ਛਤਰੀ"</string>
     <string name="spoken_emoji_2615" msgid="3320562382424018588">"ਗਰਮ ਪੀਣ ਵਾਲਾ ਪਦਾਰਥ"</string>
     <!-- no translation found for spoken_emoji_2618 (5581533965699965354) -->
@@ -99,8 +99,7 @@
     <skip />
     <!-- no translation found for spoken_emoji_2626 (2857954123507187408) -->
     <skip />
-    <!-- no translation found for spoken_emoji_262A (6726891928565290372) -->
-    <skip />
+    <string name="spoken_emoji_262A" msgid="6726891928565290372">"Star and crescent"</string>
     <!-- no translation found for spoken_emoji_262E (3189887039765290178) -->
     <skip />
     <!-- no translation found for spoken_emoji_262F (7138150472623738307) -->
@@ -199,8 +198,7 @@
     <string name="spoken_emoji_2716" msgid="511941294762977228">"ਵੱਡਾ ਗੁਣਾ x"</string>
     <!-- no translation found for spoken_emoji_271D (2367275551961395862) -->
     <skip />
-    <!-- no translation found for spoken_emoji_2721 (4150694777322944905) -->
-    <skip />
+    <string name="spoken_emoji_2721" msgid="4150694777322944905">"Star of David"</string>
     <string name="spoken_emoji_2728" msgid="5650330815808691881">"ਲਿਸ਼ਕਾਰੇ"</string>
     <string name="spoken_emoji_2733" msgid="8915809595141157327">"ਅੱਠ ਸਪੋਕਡ ਤਾਰਾ ਚਿੰਨ੍ਹ"</string>
     <string name="spoken_emoji_2734" msgid="4846583547980754332">"ਅੱਠ ਦਾ ਸੰਕੇਤ ਦੇਣ ਵਾਲਾ ਕਾਲਾ ਤਾਰਾ"</string>
@@ -228,7 +226,7 @@
     <string name="spoken_emoji_2B07" msgid="1599124424746596150">"ਹੇਠਾਂ ਵੱਲ ਕਾਲਾ ਤੀਰ ਦਾ ਨਿਸ਼ਾਨ"</string>
     <string name="spoken_emoji_2B1B" msgid="3461247311988501626">"ਕਾਲਾ ਵੱਡਾ ਵਰਗ"</string>
     <string name="spoken_emoji_2B1C" msgid="5793146430145248915">"ਚਿੱਟਾ ਵੱਡਾ ਵਰਗ"</string>
-    <string name="spoken_emoji_2B50" msgid="3850845519526950524">"ਚਿੱਟਾ ਦਰਮਿਆਨਾ ਤਾਰਾ"</string>
+    <string name="spoken_emoji_2B50" msgid="3850845519526950524">"ਸਫੈਦ ਦਰਮਿਆਨਾ ਤਾਰਾ"</string>
     <string name="spoken_emoji_2B55" msgid="9137882158811541824">"ਹੈਵੀ ਵੱਡਾ ਗੋਲਾ"</string>
     <string name="spoken_emoji_3030" msgid="4609172241893565639">"ਲਹਿਰਦਾਰ ਡੈਸ਼"</string>
     <string name="spoken_emoji_303D" msgid="2545833934975907505">"ਭਾਗ ਤਬਦੀਲੀ ਚਿੰਨ੍ਹ"</string>
@@ -244,7 +242,7 @@
     <string name="spoken_emoji_1F191" msgid="5386969264431429221">"ਵਰਗਾਕਾਰ CL"</string>
     <string name="spoken_emoji_1F192" msgid="8324226436829162496">"ਵਰਗਾਕਾਰ ਕੂਲ"</string>
     <string name="spoken_emoji_1F193" msgid="4731758603321515364">"ਵਰਗਾਕਾਰ ਫ੍ਰੀ"</string>
-    <string name="spoken_emoji_1F194" msgid="4903128609556175887">"ਵਰਗਾਕਾਰ ID"</string>
+    <string name="spoken_emoji_1F194" msgid="4903128609556175887">"ਵਰਗਾਕਾਰ ਆਈ.ਡੀ."</string>
     <string name="spoken_emoji_1F195" msgid="1433142500411060924">"ਵਰਗਾਕਾਰ ਨਵਾਂ"</string>
     <string name="spoken_emoji_1F196" msgid="8825160701159634202">"ਵਰਗਾਕਾਰ N G"</string>
     <string name="spoken_emoji_1F197" msgid="7841079241554176535">"ਵਰਗਾਕਾਰ ਠੀਕ"</string>
@@ -428,8 +426,7 @@
     <skip />
     <!-- no translation found for spoken_emoji_1F399 (6087019010423147017) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F39A (1627914548345466924) -->
-    <skip />
+    <string name="spoken_emoji_1F39A" msgid="1627914548345466924">"Level slider"</string>
     <!-- no translation found for spoken_emoji_1F39B (648039433701743585) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F39E (2918731924907952534) -->
