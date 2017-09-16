@@ -33,15 +33,15 @@
     <string name="settings_screen_correction" msgid="1616818407747682955">"लेख सुधार"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"बेहतर सेटिंग"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"थीम"</string>
-    <string name="enable_split_keyboard" msgid="4177264923999493614">"स्प्लिट कीबोर्ड सक्षम करें"</string>
+    <string name="enable_split_keyboard" msgid="4177264923999493614">"स्प्लिट कीबोर्ड चालू करें"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google कीबोर्ड समन्‍वयन"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"समन्‍वयन चालू किया गया है"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"अपना व्‍यक्‍तिगत शब्‍दकोश सभी डिवाइसों से सिंक करें"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"अभी समन्वयन करें"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"क्‍लाउड डेटा हटाएं"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"क्‍लाउड डेटा मिटाएं"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google से आपका समन्वयित डेटा हटाता है"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपका समन्‍वयित डेटा क्‍लाउड से हटा दिया जाएगा. आप सुनिश्‍चित हैं?"</string>
-    <string name="clear_sync_data_ok" msgid="613104067705915132">"हटाएं"</string>
+    <string name="clear_sync_data_ok" msgid="613104067705915132">"मिटाएं"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द करें"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"आपकी निजी डिक्शनरी को Google सर्वर से सिंक किया जाएगा और उसका बैक अप लिया जाएगा. हमारे उत्पादों को बेहतर बनाने में मदद करने के लिए हो सकता है कि इस बात के आंकड़े इकट्ठा किये जाएं कि एक शब्द को कितनी बार दोहराया गया है. सभी जानकारी को इकट्ठा करना और उसका इस्तेमाल करना "<a href="https://www.google.com/policies/privacy">"Google की निजता नीति"</a>" के अनुपालन में होगा."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"यह सुविधा सक्षम करने के लिए इस डिवाइस पर एक Google खाता जोड़ें"</string>
@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"बहुत तेज़"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"अगले शब्द के सुझाव"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"सुझाव बनाने में पिछले शब्द का उपयोग करें"</string>
-    <string name="gesture_input" msgid="826951152254563827">"संकेतोें द्वारा टाइपिंग सक्रिय करें"</string>
+    <string name="gesture_input" msgid="826951152254563827">"जेश्चर टाइपिंग चालू करें"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरों से स्लाइड करते हुए शब्द इनपुट करें"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"हाथ के जेस्चर का ट्रेल दिखाएं"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"डायनामिक फ़्लोटिंग की झलक"</string>
@@ -131,7 +131,7 @@
     <string name="subtype_locale" msgid="8576443440738143764">"भाषा"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"लेआउट"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"अपने मुताबिक इनपुट के तरीके का इस्तेमाल करने से पहले उसे चालू करना होगा. उसे चालू करना चाहते हैं?"</string>
-    <string name="enable" msgid="5031294444630523247">"सक्षम करें"</string>
+    <string name="enable" msgid="5031294444630523247">"चालू करें"</string>
     <string name="not_now" msgid="6172462888202790482">"रद्द करें"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ऐसी ही इनपुट शैली पहले से मौजूद है: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"बटन दबाने पर कंपन (वाइब्रेशन) का समय"</string>
@@ -145,10 +145,10 @@
     <string name="setup_start_action" msgid="8936036460897347708">"आरंभ करें"</string>
     <string name="setup_next_action" msgid="371821437915144603">"अगला चरण"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> सेट करना"</string>
-    <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> को सक्षम करें"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"कृपया अपनी भाषा और इनपुट सेटिंग में \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" को सही का निशान लगाकर चुनें. इससे वह आपके डिवाइस पर चलने के लिए अधिकृत हो जाएगा."</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> को चालू करें"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"कृपया अपनी भाषा और इनपुट सेटिंग में \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" को सही का निशान लगाकर चुनें. इससे उसे आपके डिवाइस पर चलने की अनुमति मिल जाएगी."</string>
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> आपकी भाषा और इनपुट सेटिंग में पहले से सक्षम है, इसलिए यह चरण पूरा हो गया है. अगले चरण पर जाएं!"</string>
-    <string name="setup_step1_action" msgid="4366513534999901728">"सेटिंग में सक्षम करें"</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"सेटिंग में चालू करें"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> पर स्विच करें"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"इसके बाद, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" को अपने सक्रिय पाठ-इनपुट के तरीके के तौर पर चुनें."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"इनपुट पद्धतियां स्विच करें"</string>
@@ -182,7 +182,7 @@
     <string name="go_to_settings" msgid="3876892339342569259">"सेटिंग"</string>
     <string name="install_dict" msgid="180852772562189365">"इंस्टॉल करें"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द करें"</string>
-    <string name="delete_dict" msgid="756853268088330054">"हटाएं"</string>
+    <string name="delete_dict" msgid="756853268088330054">"मिटाएं"</string>
     <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"आपके मोबाइल पर चुनी हुई भाषा में एक डिक्शनरी मौजूद है.&lt;br/&gt; आपके लिखने के अनुभव को बेहतर बनाने के लिए हम आपको<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> की डिक्शनरी को &lt;b&gt;डाउनलोड करने&lt;/b&gt; की सलाह देते हैं.&lt;br/&gt; &lt;br/&gt; 3G पर  डाउनलोड करने में एक-दो मिनट का समय लग सकता है. अगर आपके पास &lt;b&gt;असीमित डेटा प्लान&lt;/b&gt; नहीं है तो शुल्क लग सकता है.&lt;br/&gt; अगर आपको पक्का नहीं पता कि आपके पास कौन सा डेटा प्लान है, तो हमारी सलाह है कि डाउनलोड अपने आप शुरू करने के लिए आप किसी वाई-फ़ाई कनेक्शन से जुड़ जाएं.&lt;br/&gt; &lt;br/&gt; सलाह: आप अपने मोबाइल के <b>सेटिंग</b> मेन्यू में &lt;b&gt;भाषा और इनपुट&lt;/b&gt; पर जाकर डिक्शनरी डाउनलोड कर सकते हैं और निकाल सकते हैं."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"अभी डाउनलोड करें (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>एमबी)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाई-फ़ाई  से डाउनलोड करें"</string>
@@ -201,12 +201,12 @@
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"भाषा:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"कोई शब्द लिखें"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"वैकल्पिक शॉर्टकट"</string>
-    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"शब्‍द संपादित करें"</string>
-    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"संपादित करें"</string>
-    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"हटाएं"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"शब्द बदलें"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"बदलाव करें"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"मिटाएं"</string>
     <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"आपके पास उपयोगकर्ता डिक्शनरी में कोई भी शब्द नहीं है. कोई शब्द जोड़ने के लिए, जोड़ें (+) बटन छूएं."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"सभी भाषाओं के लिए"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"अधिक भाषाएं…"</string>
-    <string name="user_dict_settings_delete" msgid="110413335187193859">"हटाएं"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"मिटाएं"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>
