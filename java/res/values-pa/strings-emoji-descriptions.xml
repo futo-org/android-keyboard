@@ -552,7 +552,7 @@
     <string name="spoken_emoji_1F3FE" msgid="2707903021796601195">"ਇਮੋਜੀ ਸੋਧਕ Fitzpatrick ਕਿਸਮ-5"</string>
     <string name="spoken_emoji_1F3FF" msgid="12056714027518795">"ਇਮੋਜੀ ਸੋਧਕ Fitzpatrick ਕਿਸਮ-6"</string>
     <string name="spoken_emoji_1F400" msgid="2063034795679578294">"ਚੂਹਾ"</string>
-    <string name="spoken_emoji_1F401" msgid="6736421616217369594">"ਚੂਹਾ"</string>
+    <string name="spoken_emoji_1F401" msgid="6736421616217369594">"ਮਾਊਸ"</string>
     <string name="spoken_emoji_1F402" msgid="7276670995895485604">"ਬਲਦ"</string>
     <string name="spoken_emoji_1F403" msgid="8045709541897118928">"ਮੱਝ"</string>
     <string name="spoken_emoji_1F404" msgid="5240777285676662335">"ਗਊ"</string>
@@ -597,7 +597,7 @@
     <string name="spoken_emoji_1F42A" msgid="4681926706404032484">"ਅਰਬੀ ਊਠ"</string>
     <string name="spoken_emoji_1F42B" msgid="2725166074981558322">"ਬੈਕਟਰੀਅਨ ਊਠ"</string>
     <string name="spoken_emoji_1F42C" msgid="6764791873413727085">"ਡਾਲਫਿਨ ਮੱਛੀ"</string>
-    <string name="spoken_emoji_1F42D" msgid="1033643138546864251">"ਚੂਹੇ ਦਾ ਮੂੰਹ"</string>
+    <string name="spoken_emoji_1F42D" msgid="1033643138546864251">"ਮਾਊਸ ਫੇਸ"</string>
     <string name="spoken_emoji_1F42E" msgid="8099223337120508820">"ਗਊ ਦਾ ਮੂੰਹ"</string>
     <string name="spoken_emoji_1F42F" msgid="2104743989330781572">"ਚੀਤੇ ਦਾ ਮੂੰਹ"</string>
     <string name="spoken_emoji_1F430" msgid="525492897063150160">"ਖ਼ਰਗੋਸ਼ ਦਾ ਮੂੰਹ"</string>
@@ -756,7 +756,7 @@
     <string name="spoken_emoji_1F4C7" msgid="2665313547987324495">"ਕਾਰਡ ਕ੍ਰਮ-ਸੂਚੀ"</string>
     <string name="spoken_emoji_1F4C8" msgid="8007686702282833600">"ਉੱਪਰ ਵੱਲ ਟ੍ਰੈਂਡ ਵਾਲਾ ਚਾਰਟ"</string>
     <string name="spoken_emoji_1F4C9" msgid="2271951411192893684">"ਹੇਠਾਂ ਵੱਲ ਟ੍ਰੈਂਡ ਵਾਲਾ ਚਾਰਟ"</string>
-    <string name="spoken_emoji_1F4CA" msgid="3525692829622381444">"ਬਾਰ ਚਾਰਟ"</string>
+    <string name="spoken_emoji_1F4CA" msgid="3525692829622381444">"ਛੜ ਚਾਰਟ"</string>
     <string name="spoken_emoji_1F4CB" msgid="977639227554095521">"ਕਲਿਪਬੋਰਡ"</string>
     <string name="spoken_emoji_1F4CC" msgid="156107396088741574">"ਪੁਸ਼ਪਿਨ"</string>
     <string name="spoken_emoji_1F4CD" msgid="4266572175361190231">"ਗੋਲ ਪੁਸ਼ਪਿਨ"</string>
@@ -944,8 +944,7 @@
     <string name="spoken_emoji_1F5A5" msgid="5652785146334053695">"Desktop computer"</string>
     <!-- no translation found for spoken_emoji_1F5A8 (1431495880490623659) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F5B1 (5175363198176970281) -->
-    <skip />
+    <string name="spoken_emoji_1F5B1" msgid="5175363198176970281">"Three button mouse"</string>
     <string name="spoken_emoji_1F5B2" msgid="638466571223781802">"ਟਰੈਕਬਾਲ"</string>
     <string name="spoken_emoji_1F5BC" msgid="2406817930103032256">"Frame with picture"</string>
     <string name="spoken_emoji_1F5C2" msgid="5722791826015378721">"Card index dividers"</string>
