@@ -62,7 +62,7 @@
     <string name="keyboard_mode_im" msgid="3812086215529493501">"poruke"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"broj"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"telefon"</string>
-    <string name="keyboard_mode_text" msgid="9138789594969187494">"Pošalji tekstualnu poruku"</string>
+    <string name="keyboard_mode_text" msgid="9138789594969187494">"Pošalji SMS"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"vrijeme"</string>
     <string name="keyboard_mode_url" msgid="8072011652949962550">"URL"</string>
     <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Nedavni"</string>
