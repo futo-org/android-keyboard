@@ -30,7 +30,7 @@
     <string name="spoken_emoji_203C" msgid="153340916701508663">"दोहरा विस्मयादिबोधक चिह्न"</string>
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"विस्मयादिबोधक प्रश्नवाचक चिह्न"</string>
     <string name="spoken_emoji_2122" msgid="9188440722954720429">"ट्रेडमार्क चिह्न"</string>
-    <string name="spoken_emoji_2139" msgid="9114342638917304327">"जानकारी स्रोत"</string>
+    <string name="spoken_emoji_2139" msgid="9114342638917304327">"जानकारी का स्रोत"</string>
     <string name="spoken_emoji_2194" msgid="8055202727034946680">"बायां दायां तीर"</string>
     <string name="spoken_emoji_2195" msgid="8028122253301087407">"ऊपर नीचे तीर"</string>
     <string name="spoken_emoji_2196" msgid="4019164898967854363">"उत्तर पश्चिम तीर"</string>
@@ -265,7 +265,7 @@
     <string name="spoken_emoji_1F237" msgid="6741807001205851437">"चौकोर आइडियोग्राफ़़ मासिक"</string>
     <string name="spoken_emoji_1F238" msgid="5504414186438196912">"चौकोर आइडियोग्राफ़़ ऐप्लिकेशन"</string>
     <string name="spoken_emoji_1F239" msgid="1634067311597618959">"चौकोर आइडियोग्राफ़़ छूट"</string>
-    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"व्यवसाय में चौकोर आइडियोग्राफ़़"</string>
+    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"कारोबार के लिए इस्तेमाल होने वाली चौकोर आइडियोग्राफ़़ वाली इमोजी"</string>
     <string name="spoken_emoji_1F250" msgid="6586943922806727907">"गोल आइडियोग्राफ़़ लाभ"</string>
     <string name="spoken_emoji_1F251" msgid="9099032855993346948">"गोल आइडियोग्राफ़़ स्वीकार"</string>
     <string name="spoken_emoji_1F300" msgid="4720098285295840383">"चक्रवात"</string>
@@ -447,7 +447,7 @@
     <skip />
     <string name="spoken_emoji_1F3A0" msgid="3572095190082826057">"घोड़े वाला झूला"</string>
     <string name="spoken_emoji_1F3A1" msgid="4300565511681058798">"फ़ेरिस झूला"</string>
-    <string name="spoken_emoji_1F3A2" msgid="15486093912232140">"घुमावदार रेल-पथ"</string>
+    <string name="spoken_emoji_1F3A2" msgid="15486093912232140">"रोलर कॉस्टर"</string>
     <string name="spoken_emoji_1F3A3" msgid="921739319504942924">"मछली पकड़ने का डंडा और मछली"</string>
     <string name="spoken_emoji_1F3A4" msgid="7497596355346856950">"माइक्रोफ़ोन"</string>
     <string name="spoken_emoji_1F3A5" msgid="4290497821228183002">"मूवी कैमरा"</string>
@@ -600,7 +600,7 @@
     <string name="spoken_emoji_1F418" msgid="7926161463897783691">"हाथी"</string>
     <string name="spoken_emoji_1F419" msgid="1055233959755784186">"ऑक्टोपस"</string>
     <string name="spoken_emoji_1F41A" msgid="5195666556511558060">"सर्पिल आवरण"</string>
-    <string name="spoken_emoji_1F41B" msgid="7652480167465557832">"बग"</string>
+    <string name="spoken_emoji_1F41B" msgid="7652480167465557832">"गड़बड़ी"</string>
     <string name="spoken_emoji_1F41C" msgid="1123461148697574239">"चींटी"</string>
     <string name="spoken_emoji_1F41D" msgid="718579308764058851">"मधुमक्खी"</string>
     <string name="spoken_emoji_1F41E" msgid="6766305509608115467">"मादा भौंरा"</string>
@@ -704,7 +704,7 @@
     <string name="spoken_emoji_1F47E" msgid="3642607168625579507">"एलियन राक्षस"</string>
     <string name="spoken_emoji_1F47F" msgid="441605977269926252">"बौना"</string>
     <string name="spoken_emoji_1F480" msgid="3696253485164878739">"खोपड़ी"</string>
-    <string name="spoken_emoji_1F481" msgid="320408708521966893">"जानकारी डेस्क पर मौजूद व्यक्ति"</string>
+    <string name="spoken_emoji_1F481" msgid="320408708521966893">"सूचना डेस्क पर मौजूद व्यक्ति"</string>
     <string name="spoken_emoji_1F482" msgid="3424354860245608949">"संतरी"</string>
     <string name="spoken_emoji_1F483" msgid="3221113594843849083">"नर्तक"</string>
     <string name="spoken_emoji_1F484" msgid="7348014979080444885">"लिपस्टिक"</string>
@@ -774,7 +774,7 @@
     <string name="spoken_emoji_1F4C4" msgid="4382570710795501612">"पेज का सामने वाला भाग"</string>
     <string name="spoken_emoji_1F4C5" msgid="8693944622627762487">"कैलेंडर"</string>
     <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"टीयर-ऑफ़ कैलेंडर"</string>
-    <string name="spoken_emoji_1F4C7" msgid="2665313547987324495">"कार्ड अनुक्रमणिका"</string>
+    <string name="spoken_emoji_1F4C7" msgid="2665313547987324495">"कार्ड इंडेक्स"</string>
     <string name="spoken_emoji_1F4C8" msgid="8007686702282833600">"ऊपरी रूझान वाला चार्ट"</string>
     <string name="spoken_emoji_1F4C9" msgid="2271951411192893684">"नीचे रूझान वाला चार्ट"</string>
     <string name="spoken_emoji_1F4CA" msgid="3525692829622381444">"बार चार्ट"</string>
@@ -818,7 +818,7 @@
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"समाचारपत्र"</string>
     <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"मोबाइल फ़ोन"</string>
     <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"बाईं ओर तीर वाला मोबाइल फ़ोन"</string>
-    <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"कंपन मोड"</string>
+    <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"कंपन (वाइब्रेशन) मोड"</string>
     <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"बंद मोबाइल फोन"</string>
     <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"कोई मोबाइल फ़ोन नहीं"</string>
     <string name="spoken_emoji_1F4F6" msgid="2676974903233268860">"बार वाला एंटीना"</string>
@@ -1138,7 +1138,7 @@
     <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"प्रवेश नहीं चिह्न"</string>
     <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"धुम्रपान करता हुआ व्यक्ति"</string>
     <string name="spoken_emoji_1F6AD" msgid="6320088669185507241">"धूम्रपान निषेध प्रतीक"</string>
-    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"इस स्थान पर कचरा रखें वाला प्रतीक"</string>
+    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"इस जगह पर कचरा रखें वाला निशान"</string>
     <string name="spoken_emoji_1F6AF" msgid="2286668056123642208">"कचरा न करें वाला प्रतीक"</string>
     <string name="spoken_emoji_1F6B0" msgid="179424763882990952">"पेयजल प्रतीक"</string>
     <string name="spoken_emoji_1F6B1" msgid="5585212805429161877">"अपेयजल प्रतीक"</string>

@@ -731,7 +731,7 @@
     <string name="spoken_emoji_1F499" msgid="4453235040265550009">"নীল হৃদয়"</string>
     <string name="spoken_emoji_1F49A" msgid="6262178648366971405">"সবুজ হৃদয়"</string>
     <string name="spoken_emoji_1F49B" msgid="8085384999750714368">"হলুদ হৃদয়"</string>
-    <string name="spoken_emoji_1F49C" msgid="453829540120898698">"বেগুনি হৃদয়"</string>
+    <string name="spoken_emoji_1F49C" msgid="453829540120898698">"পার্পল হার্ট"</string>
     <string name="spoken_emoji_1F49D" msgid="3460534750224161888">"ফিতে সহ হৃদয়"</string>
     <string name="spoken_emoji_1F49E" msgid="4490636226072523867">"ঘূর্ণনরত হৃদয়"</string>
     <string name="spoken_emoji_1F49F" msgid="2059319756421226336">"হৃদয় ডেকোরেশন"</string>
@@ -818,7 +818,7 @@
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"খবরের কাগজ"</string>
     <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"মোবাইল ফোন"</string>
     <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"বাঁ দিকে ডানমুখী তীরযুক্ত মোবাইল ফোন"</string>
-    <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"কম্পন মোড"</string>
+    <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"ভাইব্রেশন মোড"</string>
     <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"মোবাইল ফোন বন্ধ"</string>
     <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"মোবাইল ফোন নিষেধ"</string>
     <string name="spoken_emoji_1F4F6" msgid="2676974903233268860">"বারযুক্ত এন্টেনা"</string>
@@ -840,7 +840,7 @@
     <string name="spoken_emoji_1F504" msgid="708290317843535943">"ঘড়ির কাঁটার বিপরীত দিকে নিম্নমুখী ও উর্ধ্বমুখী উম্মুক্ত বৃত্ত তীরগুলি"</string>
     <string name="spoken_emoji_1F505" msgid="6348909939004951860">"কম উজ্জ্বলতার প্রতীক"</string>
     <string name="spoken_emoji_1F506" msgid="4449609297521280173">"বেশী উজ্জ্বলতার প্রতীক"</string>
-    <string name="spoken_emoji_1F507" msgid="7136386694923708448">"বাতিল দাগ দেয়া স্পিকার"</string>
+    <string name="spoken_emoji_1F507" msgid="7136386694923708448">"বাতিল দাগ দেওয়া স্পিকার"</string>
     <string name="spoken_emoji_1F508" msgid="5063567689831527865">"স্পিকার"</string>
     <string name="spoken_emoji_1F509" msgid="3948050077992370791">"একটি সাউন্ড ওয়েভ যুক্ত স্পিকার"</string>
     <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"তিনটি সাউন্ড ওয়েভ যুক্ত স্পিকার"</string>
@@ -854,7 +854,7 @@
     <string name="spoken_emoji_1F512" msgid="5628688337255115175">"তালা"</string>
     <string name="spoken_emoji_1F513" msgid="8579201846619420981">"খোলা তালা"</string>
     <string name="spoken_emoji_1F514" msgid="7027268683047322521">"ঘণ্টা"</string>
-    <string name="spoken_emoji_1F515" msgid="8903179856036069242">"বাতিল দাগ দেয়া ঘণ্টা"</string>
+    <string name="spoken_emoji_1F515" msgid="8903179856036069242">"বাতিল দাগ দেওয়া ঘণ্টা"</string>
     <string name="spoken_emoji_1F516" msgid="108097933937925381">"বুকমার্ক"</string>
     <string name="spoken_emoji_1F517" msgid="2450846665734313397">"লিঙ্ক প্রতীক"</string>
     <string name="spoken_emoji_1F518" msgid="7028220286841437832">"রেডিও বোতাম"</string>
@@ -883,8 +883,8 @@
     <string name="spoken_emoji_1F52F" msgid="8899031001317442792">"মাঝে বিন্দু সহ ছয় কোণা তারা"</string>
     <string name="spoken_emoji_1F530" msgid="3572898444281774023">"শিক্ষানবিসের জন্য জাপানি প্রতীক"</string>
     <string name="spoken_emoji_1F531" msgid="5225633376450025396">"ত্রিশূল প্রতীক"</string>
-    <string name="spoken_emoji_1F532" msgid="9169568490485180779">"ব্ল্যাক চৌকোণা বোতাম"</string>
-    <string name="spoken_emoji_1F533" msgid="6554193837201918598">"সাদা চৌকোণা বোতাম"</string>
+    <string name="spoken_emoji_1F532" msgid="9169568490485180779">"ব্ল্যাক চৌকো বোতাম"</string>
+    <string name="spoken_emoji_1F533" msgid="6554193837201918598">"সাদা চৌকো বোতাম"</string>
     <string name="spoken_emoji_1F534" msgid="8339298801331865340">"বড় লাল বৃত্ত"</string>
     <string name="spoken_emoji_1F535" msgid="1227403104835533512">"বড় নীল বৃত্ত"</string>
     <string name="spoken_emoji_1F536" msgid="5477372445510469331">"বড় কমলা ডায়মন্ড"</string>
