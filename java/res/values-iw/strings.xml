@@ -42,7 +42,7 @@
     <string name="clear_sync_data_summary" msgid="993477139012576584">"‏מוחק את הנתונים המסונכרנים שלך מ-Google"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"הנתונים המסונכרנים שלך יימחקו מהענן. האם אתה בטוח?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"מחק"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"בטל"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"ביטול"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏המילון האישי שלך יסונכרן ויגובה בשרתי Google. ייתכן שהמידע הסטטיסטי לגבי תדירות מילים ייאסף כדי לעזור בשיפור המוצרים שלנו. איסוף המידע והשימוש בו ייעשו בהתאם ל"<a href="https://www.google.com/policies/privacy">"מדיניות הפרטיות של Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"‏הוסף חשבון Google במכשיר הזה כדי להפעיל את התכונה הזו"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"‏סנכרון אינו זמין במכשירים עם חשבונות Google Apps for Business"</string>
@@ -99,7 +99,7 @@
     <string name="no_accounts_selected" msgid="2073821619103904330">"לא נבחרו חשבונות"</string>
     <string name="account_selected" msgid="2846876462199625974">"משתמש כרגע ב-<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"אישור"</string>
-    <string name="account_select_cancel" msgid="5181012062618504340">"בטל"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"ביטול"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"צא"</string>
     <string name="account_select_title" msgid="6279711684772922649">"בחר באיזה חשבון להשתמש"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"אנגלית (בריטניה)"</string>
@@ -178,10 +178,10 @@
     <string name="message_updating" msgid="4457761393932375219">"מחפש עדכונים"</string>
     <string name="message_loading" msgid="5638680861387748936">"טוען…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"מילון ראשי"</string>
-    <string name="cancel" msgid="6830980399865683324">"בטל"</string>
+    <string name="cancel" msgid="6830980399865683324">"ביטול"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"הגדרות"</string>
     <string name="install_dict" msgid="180852772562189365">"התקן"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"בטל"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"ביטול"</string>
     <string name="delete_dict" msgid="756853268088330054">"מחק"</string>
     <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"‏לשפה הנבחרת בנייד שלך יש מילון זמין.&lt;br/&gt; אנחנו ממליצים &lt;br/&gt;להוריד&lt;br/&gt; את המילון בשפה ה<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> כדי לשפר את חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; תהליך ההורדה עשוי לקחת כדקה או שתיים ברשת 3G. ייתכן שתחויב בתשלום אם אין לך &lt;b&gt;תוכנית נתונים ללא הגבלה&lt;b&gt;&lt;b&gt; אם אינך בטוח איזו תוכנית נתונים יש לך, אנחנו ממליצים למצוא חיבור Wi-Fi כדי להתחיל בהורדה באופן אוטומטי.&lt;br/&gt;&lt;br/&gt; טיפ: ניתן להוריד מילונים ולהסיר אותם על ידי מעבר אל &lt;b&gt;שפות וקלט&lt;b&gt; בתפריט &lt;b&gt;הגדרות&lt;b&gt; בנייד."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"‏הורד עכשיו (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
@@ -202,7 +202,7 @@
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"הקלד מילה"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"קיצור דרך אופציונלי"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"עריכת מילה"</string>
-    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ערוך"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"עריכה"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"מחק"</string>
     <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"לא מוגדרות מילים במילון המשתמש. הוסף מילה על ידי הקשה על לחצן \'הוסף\' (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"לכל השפות"</string>

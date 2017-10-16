@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"ఇన్‌పుట్ ఎంపికలు"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"పరిచయ పేర్లను వెతకండి"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"అక్షరక్రమ తనిఖీ మీ పరిచయ జాబితా నుండి నమోదులను ఉపయోగిస్తుంది"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"స్పెల్ చెకర్ మీ పరిచయ జాబితా నుండి నమోదులను ఉపయోగిస్తుంది"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"కీని నొక్కినప్పుడు వైబ్రేట్"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"కీని నొక్కినప్పుడు ధ్వని"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"కీని నొక్కినప్పుడు పాప్‌అప్ చూపు"</string>
@@ -76,7 +76,7 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"మధ్యస్థం"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"తీవ్రం"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"చాలా తీవ్రం"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"తదుపరి-పదం సూచనలు"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"తర్వాత-పదం సూచనలు"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"సూచనలను రూపొందించడంలో మునుపటి పదాన్ని ఉపయోగించు"</string>
     <string name="gesture_input" msgid="826951152254563827">"సంజ్ఞ టైపింగ్‌ను ప్రారంభించండి"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"అక్షరాల గుండా స్లైడ్ చేయడం ద్వారా పదాన్ని ఇన్‌పుట్ చేయండి"</string>
@@ -143,11 +143,11 @@
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>కు స్వాగతం"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"సంజ్ఞ టైపింగ్‌తో"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"ప్రారంభించండి"</string>
-    <string name="setup_next_action" msgid="371821437915144603">"తదుపరి దశ"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"తర్వాత దశ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ని సెటప్ చేయడం"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ని ప్రారంభించండి"</string>
     <string name="setup_step1_instruction" msgid="4295448056733329661">"దయచేసి మీ భాషలు &amp; ఇన్‌పుట్ సెట్టింగ్‌ల్లో \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" తనిఖీ చేయండి. ఇది మీ పరికరంలో అమలు కావడానికి దీన్ని ప్రామాణీకరిస్తుంది."</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ఇప్పటికే మీ భాషలు &amp; ఇన్‌పుట్ సెట్టింగ్‌ల్లో ప్రారంభించబడింది, కనుక ఈ దశ పూర్తయింది. తదుపరి దశకు వెళ్లండి!"</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ఇప్పటికే మీ భాషలు &amp; ఇన్‌పుట్ సెట్టింగ్‌ల్లో ప్రారంభించబడింది, కనుక ఈ దశ పూర్తయింది. తర్వాత దశకు వెళ్లండి!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"సెట్టింగ్‌ల్లో ప్రారంభించండి"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>కు మారండి"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"తర్వాత, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\"ని మీ సక్రియ వచన-ఇన్‌పుట్ పద్ధతిగా ఎంచుకోండి."</string>
@@ -161,7 +161,7 @@
     <string name="app_name" msgid="6320102637491234792">"నిఘంటువు ప్రదాత"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"నిఘంటువు ప్రదాత"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"నిఘంటువు సేవ"</string>
-    <string name="download_description" msgid="6014835283119198591">"నిఘంటువు నవీకరణ సమాచారం"</string>
+    <string name="download_description" msgid="6014835283119198591">"నిఘంటువు అప్‌డేట్ సమాచారం"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"ఇతర నిఘంటువులు"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"నిఘంటువు అందుబాటులో ఉంది"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"నిఘంటువుల కోసం సెట్టింగ్‌లు"</string>
@@ -175,7 +175,7 @@
     <string name="no_dictionaries_available" msgid="8039920716566132611">"నిఘంటువులు ఏవీ అందుబాటులో లేవు"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"రీఫ్రెష్ చేయండి"</string>
     <string name="last_update" msgid="730467549913588780">"చివరిగా నవీకరించబడినది"</string>
-    <string name="message_updating" msgid="4457761393932375219">"నవీకరణల కోసం తనిఖీ చేస్తోంది"</string>
+    <string name="message_updating" msgid="4457761393932375219">"అప్‌డేట్‌ల కోసం తనిఖీ చేస్తోంది"</string>
     <string name="message_loading" msgid="5638680861387748936">"లోడ్ చేస్తోంది…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"ప్రధాన నిఘంటువు"</string>
     <string name="cancel" msgid="6830980399865683324">"రద్దు చేయి"</string>
@@ -189,7 +189,7 @@
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> కోసం నిఘంటువు అందుబాటులో ఉంది"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"సమీక్షించి, డౌన్‌లోడ్ చేయడానికి నొక్కండి"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"డౌన్‌లోడ్ చేస్తోంది: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> కోసం సూచనలు త్వరలో సిద్ధం చేయబడతాయి."</string>
-    <string name="version_text" msgid="2715354215568469385">"సంస్కరణ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="version_text" msgid="2715354215568469385">"వెర్షన్ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"జోడించు"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"నిఘంటువుకి జోడించు"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"పదబంధం"</string>
@@ -197,10 +197,10 @@
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"తక్కువ ఎంపికలు"</string>
     <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"సరే"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"పదం:"</string>
-    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"సత్వరమార్గం:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"షార్ట్‌కట్:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"భాష:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"పదాన్ని టైప్ చేయండి"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ఐచ్ఛిక సత్వరమార్గం"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ఐచ్ఛిక షార్ట్‌కట్"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"పదాన్ని సవరించు"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"సవరించు"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"తొలగించు"</string>
