@@ -42,10 +42,10 @@
     <string name="spoken_description_mic" msgid="6153138783813452464">"వాయిస్ ఇన్‌పుట్"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"ఎమోజి"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"తిరిగి వెళ్లు"</string>
-    <string name="spoken_description_search" msgid="5099937658231911288">"శోధించు"</string>
+    <string name="spoken_description_search" msgid="5099937658231911288">"వెతుకు"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"చుక్క"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"భాషను మార్చండి"</string>
-    <string name="spoken_description_action_next" msgid="431761808119616962">"తదుపరి"</string>
+    <string name="spoken_description_action_next" msgid="431761808119616962">"తర్వాత"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"మునుపటి"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"షిఫ్ట్ ప్రారంభించబడింది"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Caps lock ప్రారంభించబడింది"</string>
@@ -76,7 +76,7 @@
     <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="5844950234883716704">"జంతువులు &amp; ప్రకృతి"</string>
     <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"ఆహారం &amp; పానీయం"</string>
     <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="3834085499381434611">"ప్రయాణం &amp; స్థలాలు"</string>
-    <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"కార్యాచరణ"</string>
+    <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"కార్యకలాపం"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"ఎమోటికాన్‌లు"</string>
     <string name="spoken_description_upper_case" msgid="4904835255229433916">"క్యాపిటల్ <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
     <string name="spoken_letter_0049" msgid="4743162182646977944">"క్యాపిటల్ I"</string>

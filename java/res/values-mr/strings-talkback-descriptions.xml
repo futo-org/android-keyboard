@@ -59,10 +59,10 @@
     <string name="keyboard_mode_date" msgid="6597407244976713364">"तारीख"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"तारीख आणि वेळ"</string>
     <string name="keyboard_mode_email" msgid="1239682082047693644">"ईमेल"</string>
-    <string name="keyboard_mode_im" msgid="3812086215529493501">"संदेशन"</string>
+    <string name="keyboard_mode_im" msgid="3812086215529493501">"मेसेजिंग"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"नंबर"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"फोन"</string>
-    <string name="keyboard_mode_text" msgid="9138789594969187494">"मजकूर पाठवा"</string>
+    <string name="keyboard_mode_text" msgid="9138789594969187494">"मजकूर"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"वेळ"</string>
     <string name="keyboard_mode_url" msgid="8072011652949962550">"URL"</string>
     <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"अलीकडील"</string>
@@ -71,12 +71,12 @@
     <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"निसर्ग"</string>
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"ठिकाणे"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"चिन्हे"</string>
-    <string name="spoken_descrption_emoji_category_flags" msgid="5971573825866381472">"ध्वजांकित करा"</string>
+    <string name="spoken_descrption_emoji_category_flags" msgid="5971573825866381472">"झेंडे"</string>
     <string name="spoken_descrption_emoji_category_eight_smiley_people" msgid="5682663819532433464">"हसरा आणि लोक"</string>
     <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="5844950234883716704">"प्राणी आणि निसर्ग"</string>
     <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"भोजन आणि पेय"</string>
     <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="3834085499381434611">"प्रवास आणि ठिकाणे"</string>
-    <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"क्रियाकलाप"</string>
+    <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"अॅक्टिव्हिटी"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"इमोटिकॉन"</string>
     <string name="spoken_description_upper_case" msgid="4904835255229433916">"कॅपिटल <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
     <string name="spoken_letter_0049" msgid="4743162182646977944">"कॅपिटल आय"</string>
@@ -90,7 +90,7 @@
     <string name="spoken_emoticon_3A_2D_2A_20" msgid="5612342617244114291">"चुंबन घेणारा चेहरा"</string>
     <string name="spoken_emoticon_3A_2D_5B_20" msgid="2223507987759905920">"अत्यंत संतापलेला चेहरा"</string>
     <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"वैकल्पिक वर्ण उपलब्ध आहेत"</string>
-    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"वैकल्पिक वर्ण डिसमिस केलेले आहेत"</string>
+    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"वैकल्पिक वर्ण डिसमिस केले आहेत"</string>
     <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"वैकल्पिक सूचना उपलब्ध आहेत"</string>
     <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"वैकल्पिक सूचना डिसमिस केलेल्या आहेत"</string>
 </resources>

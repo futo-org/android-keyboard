@@ -42,7 +42,7 @@
     <string name="spoken_description_mic" msgid="6153138783813452464">"קלט הקול"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"אמוג\'י"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"Enter"</string>
-    <string name="spoken_description_search" msgid="5099937658231911288">"חפש"</string>
+    <string name="spoken_description_search" msgid="5099937658231911288">"חיפוש"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"נקודה"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"החלף שפה"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"הבא"</string>
