@@ -39,7 +39,7 @@
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ਡਿਵਾਈਸਾਂ ਵਿੱਚ ਆਪਣਾ ਨਿੱਜੀ ਸ਼ਬਦਕੋਸ਼ ਸਿੰਕ ਕਰੋ"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"ਹੁਣ ਸਮਕਾਲੀਕਰਨ ਕਰੋ"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"ਕਲਾਉਡ ਡਾਟਾ ਮਿਟਾਓ"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google ਤੋਂ ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ ਡੈਟਾ ਮਿਟਾਉਂਦਾ ਹੈ"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google ਤੋਂ ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ  ਡਾਟਾ  ਮਿਟਾਉਂਦਾ ਹੈ"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ ਡਾਟਾ ਕਲਾਊਡ ਤੋਂ ਮਿਟਾ ਦਿੱਤਾ ਜਾਏਗਾ। ਕੀ ਤੁਸੀਂ ਨਿਸ਼ਚਿਤ ਹੋ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ਮਿਟਾਓ"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ਰੱਦ ਕਰੋ"</string>
@@ -174,7 +174,7 @@
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"ਸ਼ਬਦਕੋਸ਼ ਸੇਵਾ ਕਨੈਕਟ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"ਕੋਈ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਨਹੀਂ"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"ਤਾਜ਼ਾ"</string>
-    <string name="last_update" msgid="730467549913588780">"ਆਖਰੀ ਵਾਰ ਅਪਡੇਟ ਕੀਤਾ"</string>
+    <string name="last_update" msgid="730467549913588780">"ਆਖਰੀ ਵਾਰ ਅੱਪਡੇਟ ਕੀਤਾ"</string>
     <string name="message_updating" msgid="4457761393932375219">"ਅਪਡੇਟਸ ਦੀ ਜਾਂਚ ਕਰ ਰਿਹਾ ਹੈ"</string>
     <string name="message_loading" msgid="5638680861387748936">"ਲੋਡ ਕਰ ਰਿਹਾ ਹੈ…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"ਮੁੱਖ ਸ਼ਬਦਕੋਸ਼"</string>

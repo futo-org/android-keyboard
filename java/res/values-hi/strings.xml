@@ -98,7 +98,7 @@
     <string name="switch_accounts" msgid="3321216593719006162">"खाते स्‍विच करें"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"कोई खाता नहीं चुना गया"</string>
     <string name="account_selected" msgid="2846876462199625974">"वर्तमान में <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> का उपयोग कर रहा है"</string>
-    <string name="account_select_ok" msgid="9141195141763227797">"ठीक"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"ठीक है"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"रद्द करें"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"प्रस्थान करें"</string>
     <string name="account_select_title" msgid="6279711684772922649">"उपयोग करने के लिए कोई खाता चुनें"</string>
