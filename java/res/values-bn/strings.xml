@@ -23,12 +23,12 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"ইনপুট বিকল্পগুলি"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"পরিচিতি নাম খুঁজুন"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"বানান পরীক্ষক আপনার পরিচিতি তালিকা থেকে এন্ট্রি ব্যবহার করে"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"কীপ্রেস এর সময় কম্পন"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"কীপ্রেস এর সময় ভাইব্রেট"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"কীপ্রেস এর সময়ের শব্দ"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"কীপ্রেস এর ফলে পপআপ"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"পছন্দসমূহ"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"অ্যাকাউন্টগুলি ও গোপনীয়তা"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"প্রদর্শন ও লেআউটগুলি"</string>
+    <string name="settings_screen_appearance" msgid="7358046399111611615">"চেহারা ও লে-আউট"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"অঙ্গভঙ্গির মাধ্যমে টাইপিং"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"পাঠ্য সংশোধন"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"উন্নত"</string>
@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"আপনার সিঙ্ক করা ডেটা ক্লাউড থেকে মুছে ফেলার ব্যাপারে আপনি কি নিশ্চিত?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"মুছুন"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"বাতিল"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"আপনার ব্যক্তিগত অভিধান Google সার্ভারগুলিতে সিঙ্ক এবং ব্যাকআপ নেওয়া হবে৷ শব্দ ফ্রিকোয়েন্সির পরিসংখ্যানগত তথ্য আমাদের পণ্য উন্নতিতে সহায়তার জন্য সংগ্রহ করা হতে পারে৷ এই সংগ্রহ এবং সমস্ত তথ্যের ব্যবহার "<a href="https://www.google.com/policies/privacy">"Google এর গোপনীয়তা নীতি"</a>"-র সাথে সঙ্গতিশীল হবে৷"</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"আপনার ব্যক্তিগত অভিধান Google সার্ভারগুলিতে সিঙ্ক এবং ব্যাক-আপ নেওয়া হবে৷ শব্দ ফ্রিকোয়েন্সির পরিসংখ্যানগত তথ্য আমাদের প্রোডাক্টের উন্নতিতে সাহায্যের জন্য সংগ্রহ করা হতে পারে৷ এই সংগ্রহ এবং সমস্ত তথ্যের ব্যবহার "<a href="https://www.google.com/policies/privacy">" এর গোপনীয়তা নীতি"</a>"-র সাথে সঙ্গতিশীল হবে৷"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"এই বৈশিষ্ট্যটি সক্ষম করার জন্য অনুগ্রহ করে এই ডিভাইসে একটি Google অ্যাকাউন্ট যোগ করুন"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"ব্যবসা অ্যাকাউন্টগুলির জন্য Google Apps এর সাথে ডিভাইসগুলির জন্য সিঙ্ক অনুপলব্ধ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"অন্য ইনপুট পদ্ধতিতে স্যুইচ করুন"</string>
@@ -83,13 +83,13 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"অঙ্গভঙ্গির ট্রেল দেখান"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ডায়নামিক ভাসমান পূর্বরূপ"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"অঙ্গভঙ্গির সময় প্রস্তাবিত শব্দ দেখুন"</string>
-    <string name="gesture_space_aware" msgid="2078291600664682496">"শব্দবন্ধ অঙ্গভঙ্গি"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"শব্দবন্ধ ইঙ্গিত"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"অঙ্গভঙ্গির সময় ব্যবধান ইনপুট করতে স্পেস কীতে যান"</string>
     <string name="voice_input" msgid="3583258583521397548">"ভয়েস ইনপুট কী"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"কোনো ভয়েস ইনপুট পদ্ধতি সক্ষম নয়। ভাষা এবং ইনপুট সেটিংস পরীক্ষা করুন।"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"কোনও ভয়েস ইনপুট পদ্ধতি সক্ষম নয়। ভাষা এবং ইনপুট সেটিংস পরীক্ষা করুন।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ইনপুট পদ্ধতি কনফিগার করুন"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ভাষা"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"সহায়তা এবং প্রতিক্রিয়া"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"সহায়তা ও মতামত"</string>
     <string name="select_language" msgid="5709487854987078367">"ভাষা"</string>
     <string name="hint_add_to_dictionary" msgid="2645988432867033007">"সংরক্ষণ করতে আবার আলতো চাপুন"</string>
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"সংরক্ষণ করতে এখানে আলতো চাপুন"</string>
@@ -100,7 +100,7 @@
     <string name="account_selected" msgid="2846876462199625974">"বর্তমানে <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> ব্যবহার করা হচ্ছে"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"ঠিক আছে"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"বাতিল করুন"</string>
-    <string name="account_select_sign_out" msgid="3299651159390187933">"প্রস্থান করুন"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"সাইন-আউট করুন"</string>
     <string name="account_select_title" msgid="6279711684772922649">"ব্যবহার করার জন্য একটি অ্যাকাউন্ট বাছুন"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ইংরেজি (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ইংরেজি (US)"</string>
@@ -127,22 +127,22 @@
     <string name="add_style" msgid="6163126614514489951">"শৈলী জুড়ুন"</string>
     <string name="add" msgid="8299699805688017798">"জুড়ুন"</string>
     <string name="remove" msgid="4486081658752944606">"সরান"</string>
-    <string name="save" msgid="7646738597196767214">"সংরক্ষণ করুন"</string>
+    <string name="save" msgid="7646738597196767214">"সেভ করুন"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"ভাষা"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"লেআউট"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"আপনার কাস্টম ইনপুট শৈলী ব্যবহার শুরু করার আগে এটি সক্ষম করা প্রয়োজন। আপনি কি এখন এটি সক্ষম করতে চান?"</string>
     <string name="enable" msgid="5031294444630523247">"সক্ষম করুন"</string>
     <string name="not_now" msgid="6172462888202790482">"এখন নয়"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"একই ইনপুট শৈলী ইতোমধ্যে বিদ্যমান: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"কীপ্রেস কম্পন সময়কাল"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"কীপ্রেস ভাইব্রেট সময়কাল"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"কীপ্রেস সাউন্ড ভলিউম"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"কী প্রেসে দীর্ঘ বিলম্ব"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"ফিজিক্যাল কীবোর্ডের জন্য ইমোজি"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ফিজিক্যাল Alt কী ইমোজি প্যালেট দেখায়"</string>
     <string name="button_default" msgid="3988017840431881491">"ডিফল্ট"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> এ স্বাগতম"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"অঙ্গভঙ্গি টাইপিং এর মাধ্যমে"</string>
-    <string name="setup_start_action" msgid="8936036460897347708">"শুরু করুন"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ইঙ্গিত টাইপিং এর মাধ্যমে"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"শুরু করা যাক"</string>
     <string name="setup_next_action" msgid="371821437915144603">"পরবর্তী পদক্ষেপ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সেট আপ হচ্ছে"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করুন"</string>
@@ -150,14 +150,14 @@
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"আপনার ভাষা ও ইনপুট সেটিংসে ইতিমধ্যে <xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করা হয়েছে, তাই এই পদক্ষেপটি সমাপ্ত হয়েছে। পরবর্তীটিতে যান!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"সেটিংসে সক্ষম করুন"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> এ স্যুইচ করুন"</string>
-    <string name="setup_step2_instruction" msgid="9141481964870023336">"এখন, সক্রিয় পাঠ্য-ইনপুট পদ্ধতি হিসেবে \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" নির্বাচন করুন।"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"এখন, সক্রিয় পাঠ্য-ইনপুট পদ্ধতি হিসেবে \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" বেছে নিন।"</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"ইনপুট পদ্ধতি স্যুইচ করুন"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"অভিনন্দন, আপনি পুরোপুরি প্রস্তুত!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"এখন <xliff:g id="APPLICATION_NAME">%s</xliff:g> এর সাহায্যে আপনার সব পছন্দসই অ্যাপ্লিকেশানে লিখতে পারবেন।"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"অতিরিক্ত ভাষাগুলি কনফিগার করুন"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"শেষ হয়েছে"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"অ্যাপ্লিকেশান আইকন দেখান"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"লঞ্চারে অ্যাপ্লিকেশান আইকন প্রদর্শন"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"লঞ্চারে অ্যাপ্লিকেশন আইকন প্রদর্শন"</string>
     <string name="app_name" msgid="6320102637491234792">"অভিধান প্রদানকারী"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"অভিধান প্রদানকারী"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"অভিধান পরিষেবা"</string>
@@ -183,17 +183,17 @@
     <string name="install_dict" msgid="180852772562189365">"ইনস্টল করুন"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"বাতিল করুন"</string>
     <string name="delete_dict" msgid="756853268088330054">"মুছুন"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"আপনার মোবাইল ডিভাইসে নির্বাচিত ভাষার জন্য একটি অভিধান উপলভ্য আছে। &lt;br/&gt; আপনার টাইপিং এর অভিজ্ঞতা ভালো করার জন্য আমরা <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> অভিধান &lt;b&gt;ডাউনলোড করার&lt;/b&gt; পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt; 3G-র মাধ্যমে ডাউনলোড হতে এক বা দুই মিনিট সময় লাগতে পারে। আপনার কাছে কোন &lt;b&gt;আনলিমিটেড ডেটা প্ল্যান&lt;/b&gt;.&lt;br/&gt; না থাকলে চার্জ প্রযোজ্য হতে পারে, আপনার কাছে কোন ডেটা প্ল্যান আছে তা নিয়ে আপনি নিশ্চিত না থাকলে সেক্ষেত্রে আমরা ডাউনলোড স্বয়ংক্রিয়ভাবে শুরু করার জন্য একটি ওয়াই-ফাই সংযোগ খোঁজার পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt;টিপ: আপনি আপনার মোবাইল ডিভাইসে &lt;b&gt;সেটিংস&lt;/b&gt; মেনুতে &lt;b&gt;ভাষা এবং ইনপুট&lt;/b&gt; এর মধ্যে গিয়ে অভিধান ডাউনলোড করতে ও মুছতে পারবেন।"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"আপনার মোবাইল ডিভাইসে নির্বাচিত ভাষার জন্য একটি অভিধান উপলভ্য আছে। &lt;br/&gt; আপনার টাইপিং এর অভিজ্ঞতা ভালো করার জন্য আমরা <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> অভিধান &lt;b&gt;ডাউনলোড করার&lt;/b&gt; পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt; 3G-র মাধ্যমে ডাউনলোড হতে এক বা দুই মিনিট সময় লাগতে পারে। আপনার কাছে কোন &lt;b&gt;আনলিমিটেড ডেটা প্ল্যান&lt;/b&gt;.&lt;br/&gt; না থাকলে চার্জ প্রযোজ্য হতে পারে, আপনার কাছে কোন ডেটা প্ল্যান আছে তা নিয়ে আপনি নিশ্চিত না থাকলে সেক্ষেত্রে আমরা ডাউনলোড স্বয়ংক্রিয়ভাবে শুরু করার জন্য একটি Wi-Fi সংযোগ খোঁজার পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt;টিপ: আপনি আপনার মোবাইল ডিভাইসে &lt;b&gt;সেটিংস&lt;/b&gt; মেনুতে &lt;b&gt;ভাষা এবং ইনপুট&lt;/b&gt; এর মধ্যে গিয়ে অভিধান ডাউনলোড করতে ও মুছতে পারবেন।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"এখন ডাউনলোড করুন (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>মেবা)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ওয়াই-ফাই মাধ্যমে ডাউনলোড করুন"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ভাষার জন্য একটি অভিধান উপলব্ধ"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"পর্যালোচনা ও ডাউনলোড করতে টিপুন"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ডাউনলোড হচ্ছে: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> এর জন্য পরামর্শগুলি দ্রুত প্রস্তুত হবে।"</string>
-    <string name="version_text" msgid="2715354215568469385">"সংস্করণ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="version_text" msgid="2715354215568469385">"ভার্সন<xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"জুড়ুন"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"অভিধানে জুড়ুন"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"শব্দবন্ধ"</string>
-    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"আরো বিকল্প"</string>
+    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"আরও বিকল্প"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"কম বিকল্প"</string>
     <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"ঠিক আছে"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"শব্দ:"</string>
@@ -206,7 +206,7 @@
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"মুছুন"</string>
     <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ব্যবহারকারীর অভিধানে আপনার কোনো শব্দ নেই। একটি শব্দ যোগ করতে (+) বোতামটি আলতো চাপুন।"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"সব ভাষার জন্য"</string>
-    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"আরো ভাষা..."</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"আরও ভাষা..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"মুছুন"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>
