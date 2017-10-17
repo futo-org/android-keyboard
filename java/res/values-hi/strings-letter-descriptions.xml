@@ -26,9 +26,9 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"स्त्रीलिंग क्रमसूचक संकेतक"</string>
+    <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"स्त्रीलिंग बताने वाला संकेत"</string>
     <string name="spoken_accented_letter_00B5" msgid="9031387673828823891">"माइक्रो चिह्न"</string>
-    <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"पुल्लिंग क्रमसूचक संकेतक"</string>
+    <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"पुल्लिंग बताने वाला संकेत"</string>
     <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"शार्प एस"</string>
     <string name="spoken_accented_letter_00E0" msgid="2234515772182387086">"ए, ग्रेव"</string>
     <string name="spoken_accented_letter_00E1" msgid="7780174500802535063">"ए, एक्यूट"</string>
