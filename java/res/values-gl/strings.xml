@@ -106,7 +106,7 @@
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglés (EUA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Español (EUA)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hinglish"</string>
-    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbio (latino)"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbio (alfabeto latino)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Inglés (Reino Unido) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Inglés (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Español (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
