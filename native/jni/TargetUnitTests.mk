@@ -21,7 +21,7 @@ include $(LOCAL_PATH)/NativeFileList.mk
 
 #################### Target library for unit test
 LATIN_IME_SRC_DIR := src
-LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
+LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wall -Werror
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 LOCAL_MODULE := liblatinime_target_static_for_unittests
 LOCAL_MODULE_TAGS := optional
@@ -33,7 +33,7 @@ include $(BUILD_STATIC_LIBRARY)
 #################### Target native tests
 include $(CLEAR_VARS)
 LATIN_IME_TEST_SRC_DIR := tests
-LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
+LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wall -Werror
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 LOCAL_MODULE := liblatinime_target_unittests
 LOCAL_MODULE_TAGS := tests
