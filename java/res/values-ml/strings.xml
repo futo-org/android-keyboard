@@ -30,7 +30,7 @@
     <string name="settings_screen_accounts" msgid="2786418968536696670">"അക്കൗണ്ടുകളും സമന്വയവും"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"രൂപഭാവവും ലേഔട്ടുകളും"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"ഗെസ്ചർ ടൈപ്പിംഗ്"</string>
-    <string name="settings_screen_correction" msgid="1616818407747682955">"വാചകം തിരുത്തൽ"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"ടെക്സ്റ്റ് തിരുത്തൽ"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"വിപുലം"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"തീം"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"സ്‌പ്‌ലിറ്റ് കീബോർഡ് പ്രവർത്തനക്ഷമമാക്കുക"</string>
@@ -80,11 +80,11 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"നിർദ്ദേശങ്ങൾ സൃഷ്‌ടിക്കാൻ മുമ്പത്തെ പദം ഉപയോഗിക്കുക"</string>
     <string name="gesture_input" msgid="826951152254563827">"ജെസ്റ്റർടൈപ്പിംഗ് സജീവമാക്കൂ"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"അക്ഷരങ്ങളിലൂടെ സ്ലൈഡ് ചെയ്‌തുകൊണ്ട് ഒരു പദം ടൈപ്പുചെയ്യുക"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"ജെസ്റ്റർ ട്രെയിൽ കാണിക്കുക"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"വിരൽചലന ട്രെയിൽ കാണിക്കുക"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ചലനാത്മക ഫ്ലോട്ടിംഗ് പ്രിവ്യൂ"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ജെസ്റ്റർ ചെയ്യുമ്പോൾ നിർദ്ദേശിച്ച പദം കാണുക"</string>
-    <string name="gesture_space_aware" msgid="2078291600664682496">"ഫ്രെയ്‌സ് ജെസ്റ്റർ"</string>
-    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"സ്‌പെയ്‌സ് കീയിലേക്ക് ഗ്ലൈഡുചെയ്യുന്നതിലൂടെ ജെസ്റ്റർ ചെയ്യുന്നതിനിടെ സ്‌പെയ്‌സുകൾ നൽകുക"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"വിരൽചലിത ടൈപ്പിംഗ് ചെയ്യുമ്പോൾ നിർദ്ദേശിക്കപ്പെടുന്ന പദം നോക്കുക"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"ഫ്രെയ്‌സ് വിരൽചലനം"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"വിരൽചലിത ടൈപ്പിംഗിൽ, സ്പെയ്‌സ് കീയിലേക്ക് വിരലുകൾ ചലിപ്പിച്ച് സ്‌പെയ്‌സുകൾ നൽകുക"</string>
     <string name="voice_input" msgid="3583258583521397548">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ കീ"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"വോയ്‌സ് ഇൻപുട്ട് രീതികളൊന്നും പ്രവർത്തനക്ഷമമാക്കിയിട്ടില്ല. ഭാഷയും ഇൻപുട്ടും ക്രമീകരണം പരിശോധിക്കുക."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ടൈപ്പുചെയ്യൽ രീതികൾ കോൺഫിഗർ ചെയ്യുക"</string>
@@ -137,11 +137,11 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"കീ അമർത്തുമ്പോഴുള്ള വൈബ്രേഷൻ ദൈർഘ്യം"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"കീ അമർത്തുമ്പോഴുള്ള ശബ്‌ദ വോളിയം"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"കീ അമർത്തിപ്പിടിക്കുന്നതിലെ കാലതാമസം"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"ഭൗതിക കീബോർഡിനുള്ള ഇമോജി"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"ഭൗതിക Alt കീ ഇമോജി പാലറ്റിനെ കാണിക്കുന്നു"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"പ്രത്യക്ഷ കീബോഡിനുള്ള ഇമോജി"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"പ്രത്യക്ഷ Alt കീ ഇമോജി പാലറ്റിനെ കാണിക്കുന്നു"</string>
     <string name="button_default" msgid="3988017840431881491">"സ്ഥിരമായത്"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> എന്നതിലേക്ക് സ്വാഗതം"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ജെസ്റ്റർ ടൈപ്പുചെയ്യലിനൊപ്പം"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"വിരൽചലിത ടൈപ്പിംഗിനൊപ്പം"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"ആരംഭിക്കുക"</string>
     <string name="setup_next_action" msgid="371821437915144603">"അടുത്ത ചുവട്"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> സജ്ജമാക്കുന്നു"</string>
@@ -183,11 +183,11 @@
     <string name="install_dict" msgid="180852772562189365">"ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"റദ്ദാക്കുക"</string>
     <string name="delete_dict" msgid="756853268088330054">"ഇല്ലാതാക്കുക"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"നിങ്ങളുടെ മൊബൈൽ ഉപകരണത്തിൽ തിരഞ്ഞെടുത്ത ഭാഷയ്‌ക്ക് നിഘണ്ടു ലഭ്യമാണ്.&lt;br/&gt; നിങ്ങളുടെ ടൈപ്പുചെയ്യൽ അനുഭവം മെച്ചപ്പെടുത്തുന്നതിനായി <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> നിഘണ്ടു &lt;b&gt;ഡൗൺലോഡുചെയ്യാൻ&lt;/b&gt; ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; 3G-യിൽ ഡൗൺലോഡ് ചെയ്യാൻ ഒന്നോ രണ്ടോ മിനിറ്റെടുത്തേക്കാം. നിങ്ങൾക്ക് &lt;b&gt;പരിധിയില്ലാത്ത ഡാറ്റാ പ്ലാൻ&lt;/b&gt; ഇല്ലെങ്കിൽ നിരക്കുകൾ ബാധകമാകാം.&lt;br/&gt; നിങ്ങൾക്ക് ഏത് ഡാറ്റ പ്ലാനാണ് ഉള്ളതെന്ന് തീർച്ചയില്ലെങ്കിൽ, ഡൗൺലോഡ് സ്വയമേവ ആരംഭിക്കുന്നതിന് ഒരു വൈഫൈ കണക്ഷൻ കണ്ടെത്താൻ ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; നുറുങ്ങുവിവരം: നിങ്ങളുടെ മൊബൈലിലെ &lt;b&gt;ക്രമീകരണം&lt;/b&gt; മെനുവിലുള്ള &lt;b&gt;ഭാഷയും ഇൻപുട്ടും&lt;/b&gt; എന്നതിലേക്ക് പോയി നിങ്ങൾക്ക് നിഘണ്ടുകൾ ഡൗൺലോഡ് ചെയ്യാനും നീക്കംചെയ്യാനുമാകും."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"മൊബൈൽ ഉപകരണത്തിൽ തിരഞ്ഞെടുത്ത ഭാഷയ്‌ക്ക് നിഘണ്ടു ലഭ്യം.&lt;br/&gt; നിങ്ങളുടെ ടൈപ്പുചെയ്യൽ അനുഭവം മെച്ചപ്പെടുത്താന്‍ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> നിഘണ്ടു &lt;b&gt;ഡൗണ്‍ലോഡ് ചെയ്യാൻ&lt;/b&gt; ഞങ്ങൾ ശുപാർശചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; 3G-യിൽ ഡൗൺലോഡ് ചെയ്യാൻ ഒന്നോ രണ്ടോ മിനിറ്റെടുക്കാം. നിങ്ങൾക്ക് &lt;b&gt;പരിധിയില്ലാത്ത ഡാറ്റാ പ്ലാൻ&lt;/b&gt; ഇല്ലെങ്കിൽ നിരക്കുകൾ ബാധകമാകാം.&lt;br/&gt; ഏത് ഡാറ്റ പ്ലാനാണ് ഉള്ളതെന്ന് തീർച്ചയില്ലെങ്കിൽ, ഡൗൺലോഡ് സ്വമേധയാ ആരംഭിക്കുന്നതിന് വൈഫൈ കണക്ഷൻ കണ്ടെത്താൻ ഞങ്ങൾ ശുപാർശ ചെയ്യുന്നു.&lt;br/&gt; &lt;br/&gt; നുറുങ്ങുവിവരം: മൊബൈലിലെ &lt;b&gt;ക്രമീകരണം&lt;/b&gt; മെനുവിലുള്ള &lt;b&gt;ഭാഷയും ഇൻപുട്ടും&lt;/b&gt; എന്നതിലേക്ക് പോയി നിങ്ങൾക്ക് നിഘണ്ടുകൾ ഡൗൺലോഡ് ചെയ്യാനും നീക്കം ചെയ്യാനുമാകും."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ഇപ്പോൾ ഡൗൺലോഡുചെയ്യുക (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"വൈഫൈ മുഖേന ഡൗൺലോഡ് ചെയ്യുക"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ഭാഷയ്‌ക്കായി ഒരു നിഘണ്ടു ലഭ്യമാണ്"</string>
-    <string name="dict_available_notification_description" msgid="1075194169443163487">"അവലോകനം ചെയ്‌ത് ഡൗൺലോഡ് ചെയ്യാൻ അമർത്തുക"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"അവലോകനം ചെയ്യാനും ഡൗൺലോഡ് ചെയ്യാനും അമർത്തുക"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ഡൗൺലോഡുചെയ്യുന്നു: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ഭാഷയ്‌ക്കുള്ള നിർദ്ദേശങ്ങൾ ഉടൻതന്നെ തയ്യാറാകും."</string>
     <string name="version_text" msgid="2715354215568469385">"പതിപ്പ് <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"ചേര്‍ക്കുക"</string>

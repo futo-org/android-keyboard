@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"設定其他語言"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"完成"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"顯示應用程式圖示"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"在應用程式啟動器中顯示圖示"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"在啟動器中顯示圖示"</string>
     <string name="app_name" msgid="6320102637491234792">"字典供應商"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"字典供應商"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"字典服務"</string>
