@@ -25,11 +25,11 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_emoji_00A9" msgid="2859822817116803638">"कॉपीराइट चिन्ह"</string>
-    <string name="spoken_emoji_00AE" msgid="7708335454134589027">"नोंदणीकृत चिन्ह"</string>
-    <string name="spoken_emoji_203C" msgid="153340916701508663">"दुहेरी उदगार चिन्ह"</string>
+    <string name="spoken_emoji_00A9" msgid="2859822817116803638">"कॉपीराइट आयकन"</string>
+    <string name="spoken_emoji_00AE" msgid="7708335454134589027">"नोंदणीकृत आयकन"</string>
+    <string name="spoken_emoji_203C" msgid="153340916701508663">"दुहेरी उदगार आयकन"</string>
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"उदगार प्रश्नचिन्ह"</string>
-    <string name="spoken_emoji_2122" msgid="9188440722954720429">"व्यापार चिन्ह"</string>
+    <string name="spoken_emoji_2122" msgid="9188440722954720429">"व्यापार आयकन"</string>
     <string name="spoken_emoji_2139" msgid="9114342638917304327">"माहितीचा स्त्रोत"</string>
     <string name="spoken_emoji_2194" msgid="8055202727034946680">"डावा उजवा बाण"</string>
     <string name="spoken_emoji_2195" msgid="8028122253301087407">"वर खाली बाण"</string>
@@ -60,7 +60,7 @@
     <skip />
     <!-- no translation found for spoken_emoji_23F2 (2178084138229786936) -->
     <skip />
-    <string name="spoken_emoji_23F3" msgid="166900119581024371">"वाहणार्‍या वाळूसह वाळूचे घड्याळ"</string>
+    <string name="spoken_emoji_23F3" msgid="166900119581024371">"वाहणार्‍या वाळूचे घड्याळ"</string>
     <!-- no translation found for spoken_emoji_23F8 (1924914079210161141) -->
     <skip />
     <!-- no translation found for spoken_emoji_23F9 (1268967989320035023) -->
@@ -127,8 +127,8 @@
     <string name="spoken_emoji_2665" msgid="6347941599683765843">"काळ्या बदाम पत्त्याच्या पानांच संच"</string>
     <string name="spoken_emoji_2666" msgid="8296769213401115999">"काळ्या चौकट च्या पत्त्याच्या पानांचा संच"</string>
     <string name="spoken_emoji_2668" msgid="7063148281053820386">"गरम पाण्याचा झरा"</string>
-    <string name="spoken_emoji_267B" msgid="21716857176812762">"काळे वैश्विक पुनश्चक्रण चिन्ह"</string>
-    <string name="spoken_emoji_267F" msgid="8833496533226475443">"व्हीलचेअर चिन्ह"</string>
+    <string name="spoken_emoji_267B" msgid="21716857176812762">"काळे वैश्विक पुनश्चक्रण आयकन"</string>
+    <string name="spoken_emoji_267F" msgid="8833496533226475443">"व्हीलचेअर आयकन"</string>
     <!-- no translation found for spoken_emoji_2692 (633276166375803852) -->
     <skip />
     <string name="spoken_emoji_2693" msgid="7443148847598433088">"अँकर"</string>
@@ -145,7 +145,7 @@
     <!-- no translation found for spoken_emoji_269C (1883421369883009835) -->
     <skip />
     <string name="spoken_emoji_26A0" msgid="6272635532992727510">"चेतावणी दृश्य"</string>
-    <string name="spoken_emoji_26A1" msgid="5604749644693339145">"उच्च विद्युतदाब चिन्ह"</string>
+    <string name="spoken_emoji_26A1" msgid="5604749644693339145">"उच्च विद्युतदाब आयकन"</string>
     <string name="spoken_emoji_26AA" msgid="8005748091690377153">"मध्यम पांढरे वर्तुळ"</string>
     <string name="spoken_emoji_26AB" msgid="1655910278422753244">"मध्यम काळे वर्तुळ"</string>
     <!-- no translation found for spoken_emoji_26B0 (5742048235215593821) -->
@@ -208,18 +208,18 @@
     <string name="spoken_emoji_2734" msgid="4846583547980754332">"आठ टोकांचा काळा तारा"</string>
     <string name="spoken_emoji_2744" msgid="4350636647760161042">"हिमवर्षाव"</string>
     <string name="spoken_emoji_2747" msgid="3718282973916474455">"चमक"</string>
-    <string name="spoken_emoji_274C" msgid="2752145886733295314">"फुलीचे चिन्ह"</string>
-    <string name="spoken_emoji_274E" msgid="4262918689871098338">"नकारार्थी चौरस फुलीचे चिन्ह"</string>
+    <string name="spoken_emoji_274C" msgid="2752145886733295314">"फुलीचा आयकन"</string>
+    <string name="spoken_emoji_274E" msgid="4262918689871098338">"नकारार्थी चौरस फुलीचा आयकन"</string>
     <string name="spoken_emoji_2753" msgid="6935897159942119808">"काळ्या प्रश्न चिन्हाचा अलंकार"</string>
     <string name="spoken_emoji_2754" msgid="7277504915105532954">"पांढर्‍या प्रश्न चिन्हाचा अलंकार"</string>
     <string name="spoken_emoji_2755" msgid="6853076969826960210">"पांढर्‍या उदगार चिन्हाचा दागिना"</string>
-    <string name="spoken_emoji_2757" msgid="3707907828776912174">"ठळक उदगार चिन्ह"</string>
+    <string name="spoken_emoji_2757" msgid="3707907828776912174">"ठळक उदगार आयकन"</string>
     <!-- no translation found for spoken_emoji_2763 (3255858123691890971) -->
     <skip />
     <string name="spoken_emoji_2764" msgid="4214257843609432167">"ठळक काळे हृदय"</string>
-    <string name="spoken_emoji_2795" msgid="6563954833786162168">"ठळक अधिक चिन्ह"</string>
-    <string name="spoken_emoji_2796" msgid="5990926508250772777">"ठळक वजा चिन्ह"</string>
-    <string name="spoken_emoji_2797" msgid="24694184172879174">"ठळक भागाकार चिन्ह"</string>
+    <string name="spoken_emoji_2795" msgid="6563954833786162168">"ठळक अधिक आयकन"</string>
+    <string name="spoken_emoji_2796" msgid="5990926508250772777">"ठळक वजा आयकन"</string>
+    <string name="spoken_emoji_2797" msgid="24694184172879174">"ठळक भागाकार आयकन"</string>
     <string name="spoken_emoji_27A1" msgid="3513434778263100580">"काळा उजवीकडे बाण"</string>
     <string name="spoken_emoji_27B0" msgid="203395646864662198">"पीळदार लूप"</string>
     <string name="spoken_emoji_27BF" msgid="4940514642375640510">"दुहेरी पिळदार लूप"</string>
@@ -263,7 +263,7 @@
     <string name="spoken_emoji_1F235" msgid="5320186982841793711">"चौरसातील कल्पनाचित्र पूर्ण ताबा"</string>
     <string name="spoken_emoji_1F236" msgid="879755752069393034">"चौरसातील कल्पनाचित्र सशुल्क"</string>
     <string name="spoken_emoji_1F237" msgid="6741807001205851437">"चौरसातील कल्पनाचित्र मासिक"</string>
-    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"चौरसातील कल्पनाचित्र अनुप्रयोग"</string>
+    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"चौरसातील कल्पनाचित्र अॅप्लिकेशन"</string>
     <string name="spoken_emoji_1F239" msgid="1634067311597618959">"चौरसातील कल्पनाचित्र सवलत"</string>
     <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"चौरसातील व्यवसायातील कल्पनाचित्र"</string>
     <string name="spoken_emoji_1F250" msgid="6586943922806727907">"वर्तुळाकृती कल्पनाचित्र फायदा"</string>
@@ -285,14 +285,14 @@
     <string name="spoken_emoji_1F30E" msgid="5278512600749223671">"पृथ्वीचा गोल अमेरिका"</string>
     <string name="spoken_emoji_1F30F" msgid="5718144880978707493">"पृथ्वीचा गोल आशिया-ऑस्ट्रेलिया"</string>
     <string name="spoken_emoji_1F310" msgid="2959618582975247601">"रेखावृत्तांसह पृथ्वीचा गोल"</string>
-    <string name="spoken_emoji_1F311" msgid="623906380914895542">"अमावस्येच्या चंद्राचे चिन्ह"</string>
-    <string name="spoken_emoji_1F312" msgid="4458575672576125401">"कृष्ण पक्षातील कलेकलेने वाढणार्‍या चंद्रकोरीचे चिन्ह"</string>
-    <string name="spoken_emoji_1F313" msgid="7599181787989497294">"चतुर्थीच्या चंद्राचे चिन्ह"</string>
-    <string name="spoken_emoji_1F314" msgid="4898293184964365413">"कृष्ण पक्षातील कलेकलेने वाढणार्‍या चंद्राचे चिन्ह"</string>
-    <string name="spoken_emoji_1F315" msgid="3218117051779496309">"पौर्णिमेच्या चंद्राचे चिन्ह"</string>
-    <string name="spoken_emoji_1F316" msgid="2061317145777689569">"शुक्ल पक्षातील कलेकलेने कमी होणार्‍या चंद्राचे चिन्ह"</string>
-    <string name="spoken_emoji_1F317" msgid="2721090687319539049">"अष्टमीच्या चंद्राचे चिन्ह"</string>
-    <string name="spoken_emoji_1F318" msgid="3814091755648887570">"शुक्ल पक्षातील कलेकलेने कमी होणार्‍या चंद्रकोरीचे चिन्ह"</string>
+    <string name="spoken_emoji_1F311" msgid="623906380914895542">"अमावस्येच्या चंद्राचा आयकन"</string>
+    <string name="spoken_emoji_1F312" msgid="4458575672576125401">"कृष्ण पक्षातील कलेकलेने वाढणार्‍या चंद्रकोरीचा आयकन"</string>
+    <string name="spoken_emoji_1F313" msgid="7599181787989497294">"चतुर्थीच्या चंद्राचा आयकन"</string>
+    <string name="spoken_emoji_1F314" msgid="4898293184964365413">"कृष्ण पक्षातील कलेकलेने वाढणार्‍या चंद्राचा आयकन"</string>
+    <string name="spoken_emoji_1F315" msgid="3218117051779496309">"पौर्णिमेच्या चंद्राचा आयकन"</string>
+    <string name="spoken_emoji_1F316" msgid="2061317145777689569">"शुक्ल पक्षातील कलेकलेने कमी होणार्‍या चंद्राचा आयकन"</string>
+    <string name="spoken_emoji_1F317" msgid="2721090687319539049">"अष्टमीच्या चंद्राचा आयकन"</string>
+    <string name="spoken_emoji_1F318" msgid="3814091755648887570">"शुक्ल पक्षातील कलेकलेने कमी होणार्‍या चंद्रकोरीचा आयकन"</string>
     <string name="spoken_emoji_1F319" msgid="4074299824890459465">"चंद्रकोर"</string>
     <string name="spoken_emoji_1F31A" msgid="3092285278116977103">"अमावस्येच्या चंद्राचा चेहरा"</string>
     <string name="spoken_emoji_1F31B" msgid="2658562138386927881">"चतुर्थीच्या चंद्राचा चेहरा"</string>
@@ -649,13 +649,13 @@
     <string name="spoken_emoji_1F447" msgid="8794022344940891388">"उलट्या हाताने स्पष्ट खाली निर्देशित करणारी तर्जनी"</string>
     <string name="spoken_emoji_1F448" msgid="3261812959215550650">"उलट्या हाताने स्पष्ट डावीकडे निर्देशित करणारी तर्जनी"</string>
     <string name="spoken_emoji_1F449" msgid="4764447975177805991">"उलट्या हाताने स्पष्ट उजवीकडे निर्देशित करणारी तर्जनी"</string>
-    <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"मूठ आवळलेल्या हाताचे चिन्ह"</string>
-    <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"हलविणार्‍या हाताचे चिन्ह"</string>
-    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"ठीक आहे हाताचे चिन्ह"</string>
-    <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"हाताचा अंगठा वर केलेले चिन्ह"</string>
-    <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"हाताचा अंगठा खाली केलेले चिन्ह"</string>
-    <string name="spoken_emoji_1F44F" msgid="5148753662268213389">"टाळ्या वाजविणार्‍या हातांचे चिन्ह"</string>
-    <string name="spoken_emoji_1F450" msgid="1012021072085157054">"मोकळ्या हातांचे चिन्ह"</string>
+    <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"मूठ आवळलेल्या हाताचा आयकन"</string>
+    <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"हलविणार्‍या हाताचा आयकन"</string>
+    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"ठीक आहे हाताचा आयकन"</string>
+    <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"हाताचा अंगठा वर केलेला आयकन"</string>
+    <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"हाताचा अंगठा खाली केलेला आयकन"</string>
+    <string name="spoken_emoji_1F44F" msgid="5148753662268213389">"टाळ्या वाजविणार्‍या हातांचा आयकन"</string>
+    <string name="spoken_emoji_1F450" msgid="1012021072085157054">"मोकळ्या हातांचा आयकन"</string>
     <string name="spoken_emoji_1F451" msgid="8257466714629051320">"मुकुट"</string>
     <string name="spoken_emoji_1F452" msgid="4567394011149905466">"महिलेचा टोप"</string>
     <string name="spoken_emoji_1F453" msgid="5978410551173163010">"चष्मा"</string>
@@ -714,7 +714,7 @@
     <string name="spoken_emoji_1F488" msgid="6922559285234100252">"बार्बर पोल"</string>
     <string name="spoken_emoji_1F489" msgid="8114863680950147305">"सिरिंज"</string>
     <string name="spoken_emoji_1F48A" msgid="8526843630145963032">"गोळी"</string>
-    <string name="spoken_emoji_1F48B" msgid="2538528967897640292">"चुंबन चिन्ह"</string>
+    <string name="spoken_emoji_1F48B" msgid="2538528967897640292">"चुंबन आयकन"</string>
     <string name="spoken_emoji_1F48C" msgid="1681173271652890232">"प्रेम पत्र"</string>
     <string name="spoken_emoji_1F48D" msgid="8259886164999042373">"अंगठी"</string>
     <string name="spoken_emoji_1F48E" msgid="8777981696011111101">"मौल्यवान खडा"</string>
@@ -737,28 +737,28 @@
     <string name="spoken_emoji_1F49F" msgid="2059319756421226336">"हृदयाची सजावट"</string>
     <string name="spoken_emoji_1F4A0" msgid="1954850380550212038">"आतमध्ये बिंदू असलेला हिर्‍याचा आकार"</string>
     <string name="spoken_emoji_1F4A1" msgid="403137413540909021">"इलेक्ट्रिक लाइट बल्ब"</string>
-    <string name="spoken_emoji_1F4A2" msgid="2604192053295622063">"रागाचे चिन्ह"</string>
+    <string name="spoken_emoji_1F4A2" msgid="2604192053295622063">"रागाचा आयकन"</string>
     <string name="spoken_emoji_1F4A3" msgid="6378351742957821735">"बॉम्ब"</string>
-    <string name="spoken_emoji_1F4A4" msgid="7217736258870346625">"झोपल्याचे चिन्ह"</string>
-    <string name="spoken_emoji_1F4A5" msgid="5401995723541239858">"आघात चिन्ह"</string>
-    <string name="spoken_emoji_1F4A6" msgid="3837802182716483848">"पाणी उडालेल्या घामाचे चिन्ह"</string>
+    <string name="spoken_emoji_1F4A4" msgid="7217736258870346625">"झोपल्याचा आयकन"</string>
+    <string name="spoken_emoji_1F4A5" msgid="5401995723541239858">"आघात आयकन"</string>
+    <string name="spoken_emoji_1F4A6" msgid="3837802182716483848">"पाणी उडालेल्या घामाचा आयकन"</string>
     <string name="spoken_emoji_1F4A7" msgid="5718438987757885141">"लहान थेंब"</string>
-    <string name="spoken_emoji_1F4A8" msgid="4472108229720006377">"डॅश चिन्ह"</string>
+    <string name="spoken_emoji_1F4A8" msgid="4472108229720006377">"डॅश आयकन"</string>
     <string name="spoken_emoji_1F4A9" msgid="1240958472788430032">"शी चा ढीग"</string>
     <string name="spoken_emoji_1F4AA" msgid="8427525538635146416">"आकुंचित बेटकुळ्या"</string>
-    <string name="spoken_emoji_1F4AB" msgid="5484114759939427459">"चक्कर आल्याचे चिन्ह"</string>
+    <string name="spoken_emoji_1F4AB" msgid="5484114759939427459">"चक्कर आल्याचा आयकन"</string>
     <string name="spoken_emoji_1F4AC" msgid="5571196638219612682">"भाषणाचा फुगा"</string>
     <string name="spoken_emoji_1F4AD" msgid="353174619257798652">"विचाराचा फुगा"</string>
     <string name="spoken_emoji_1F4AE" msgid="1223142786927162641">"पांढरे फुल"</string>
-    <string name="spoken_emoji_1F4AF" msgid="3526278354452138397">"शंभर गुणांचे चिन्ह"</string>
+    <string name="spoken_emoji_1F4AF" msgid="3526278354452138397">"शंभर गुणांचा आयकन"</string>
     <string name="spoken_emoji_1F4B0" msgid="4124102195175124156">"पैशांची पिशवी"</string>
     <string name="spoken_emoji_1F4B1" msgid="8339494003418572905">"चलन विनिमय"</string>
-    <string name="spoken_emoji_1F4B2" msgid="3179159430187243132">"ठळक डॉलरचे चिन्ह"</string>
+    <string name="spoken_emoji_1F4B2" msgid="3179159430187243132">"ठळक डॉलरचा आयकन"</string>
     <string name="spoken_emoji_1F4B3" msgid="5375412518221759596">"क्रेडिट कार्ड"</string>
-    <string name="spoken_emoji_1F4B4" msgid="1068592463669453204">"येन चिन्ह असलेली बँकनोट"</string>
-    <string name="spoken_emoji_1F4B5" msgid="1426708699891832564">"डॉलर चिन्ह असलेली बँकनोट"</string>
-    <string name="spoken_emoji_1F4B6" msgid="8289249930736444837">"युरो चिन्ह असलेली बँकनोट"</string>
-    <string name="spoken_emoji_1F4B7" msgid="5245100496860739429">"पाऊंड चिन्ह असलेली बँकनोट"</string>
+    <string name="spoken_emoji_1F4B4" msgid="1068592463669453204">"येन आयकन असलेली बँकनोट"</string>
+    <string name="spoken_emoji_1F4B5" msgid="1426708699891832564">"डॉलर आयकन असलेली बँकनोट"</string>
+    <string name="spoken_emoji_1F4B6" msgid="8289249930736444837">"युरो आयकन असलेली बँकनोट"</string>
+    <string name="spoken_emoji_1F4B7" msgid="5245100496860739429">"पाऊंड आयकन असलेली बँकनोट"</string>
     <string name="spoken_emoji_1F4B8" msgid="4401099580477164440">"पंखांसह पैसे"</string>
     <string name="spoken_emoji_1F4B9" msgid="647509393536679903">"वरच्या दिशेसह आणि येन चिन्हासह चार्ट"</string>
     <string name="spoken_emoji_1F4BA" msgid="1269737854891046321">"आसन"</string>
@@ -806,7 +806,7 @@
     <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"आउटबॉक्स ट्रे"</string>
     <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"इनबॉक्स ट्रे"</string>
     <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"पॅकेज"</string>
-    <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"ई-मेल चिन्ह"</string>
+    <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"ई-मेल आयकन"</string>
     <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"येणारा लिफाफा"</string>
     <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"वर असलेला खालच्या दिशेने जाणारा बाण असलेला लिफाफा"</string>
     <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"अनुदात्त ध्वजासह बंद मेलबॉक्स"</string>
@@ -838,16 +838,16 @@
     <string name="spoken_emoji_1F502" msgid="2361976580513178391">"एका वलयांकित आच्छादनासह घड्याळाच्या दिशेने उजवीकडे आणि डावीकडे उघडे मंडळ बाण"</string>
     <string name="spoken_emoji_1F503" msgid="8936283551917858793">"घड्याळाच्या दिशेने खाली आणि वर उघडे मंडळ बाण"</string>
     <string name="spoken_emoji_1F504" msgid="708290317843535943">"घड्याळाच्या विरुद्ध दिशेने खाली आणि वर उघडे मंडळ बाण"</string>
-    <string name="spoken_emoji_1F505" msgid="6348909939004951860">"कमी चमक चिन्ह"</string>
-    <string name="spoken_emoji_1F506" msgid="4449609297521280173">"प्रखर चमक चिन्ह"</string>
+    <string name="spoken_emoji_1F505" msgid="6348909939004951860">"कमी चमक आयकन"</string>
+    <string name="spoken_emoji_1F506" msgid="4449609297521280173">"प्रखर चमक आयकन"</string>
     <string name="spoken_emoji_1F507" msgid="7136386694923708448">"रद्द करण्याच्या स्ट्रोकसह स्पीकर"</string>
     <string name="spoken_emoji_1F508" msgid="5063567689831527865">"स्पीकर"</string>
     <string name="spoken_emoji_1F509" msgid="3948050077992370791">"एका ध्वनी लहरीसह स्पीकर"</string>
     <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"तीन ध्वनी लहरींसह स्पीकर"</string>
     <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"बॅटरी"</string>
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"इलेक्ट्रिक प्लग"</string>
-    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"डाव्या-दिशेने निर्देशित करणारा भिंगकाच"</string>
-    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"उजव्या-दिशेने निर्देशित करणारा भिंगकाच"</string>
+    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"डाव्या-दिशेने निर्देश करणारे भिंग"</string>
+    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"उजव्या-दिशेने निर्देश करणारे भिंग"</string>
     <string name="spoken_emoji_1F50F" msgid="915079280472199605">"शाईच्या पेनसह कुलुप"</string>
     <string name="spoken_emoji_1F510" msgid="7658381761691758318">"किल्लीसह बंद कुलुप"</string>
     <string name="spoken_emoji_1F511" msgid="262319867774655688">"किल्ली"</string>
@@ -856,20 +856,20 @@
     <string name="spoken_emoji_1F514" msgid="7027268683047322521">"घंटा"</string>
     <string name="spoken_emoji_1F515" msgid="8903179856036069242">"रद्द करण्याच्या स्ट्रोकसह घंटा"</string>
     <string name="spoken_emoji_1F516" msgid="108097933937925381">"बुकमार्क"</string>
-    <string name="spoken_emoji_1F517" msgid="2450846665734313397">"साखळी चिन्ह"</string>
+    <string name="spoken_emoji_1F517" msgid="2450846665734313397">"साखळी आयकन"</string>
     <string name="spoken_emoji_1F518" msgid="7028220286841437832">"रेडिओ बटण"</string>
     <string name="spoken_emoji_1F519" msgid="8211189165075445687">"वर असलेल्या डावीकडील बाणासह परत"</string>
     <string name="spoken_emoji_1F51A" msgid="823966751787338892">"वर असलेल्या डावीकडील बाणासह समाप्त"</string>
     <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"वर असलेल्या उजवीकडील बाणासह उदगार चिन्हासह चालू"</string>
     <string name="spoken_emoji_1F51C" msgid="110609810659826676">"वर असलेल्या उजवीकडील बाणासह लवकर"</string>
     <string name="spoken_emoji_1F51D" msgid="4087697222026095447">"वर असलेल्या वरच्या बाणासह वर"</string>
-    <string name="spoken_emoji_1F51E" msgid="8512873526157201775">"अठरा वर्षाखालील कोणीही नाही चिन्ह"</string>
+    <string name="spoken_emoji_1F51E" msgid="8512873526157201775">"अठरा वर्षाखालील कोणीही नाही आयकन"</string>
     <string name="spoken_emoji_1F51F" msgid="8673370823728653973">"कीकॅप दहा"</string>
-    <string name="spoken_emoji_1F520" msgid="7335109890337048900">"लॅटिन कॅपिटल अक्षरांसाठी इनपुट चिन्ह"</string>
-    <string name="spoken_emoji_1F521" msgid="2693185864450925778">"लॅटिन लहान अक्षरांसाठी इनपुट चिन्ह"</string>
-    <string name="spoken_emoji_1F522" msgid="8419130286280673347">"संख्यांसाठी लॅटिन चिन्ह"</string>
-    <string name="spoken_emoji_1F523" msgid="3318053476401719421">"चिन्हांसाठी इनपुट चिन्ह"</string>
-    <string name="spoken_emoji_1F524" msgid="1625073997522316331">"लॅटिन अक्षरांसाठी इनपुट चिन्ह"</string>
+    <string name="spoken_emoji_1F520" msgid="7335109890337048900">"लॅटिन कॅपिटल अक्षरांसाठी इनपुट आयकन"</string>
+    <string name="spoken_emoji_1F521" msgid="2693185864450925778">"लॅटिन लहान अक्षरांसाठी इनपुट आयकन"</string>
+    <string name="spoken_emoji_1F522" msgid="8419130286280673347">"संख्यांसाठी लॅटिन आयकन"</string>
+    <string name="spoken_emoji_1F523" msgid="3318053476401719421">"आयकनांसाठी इनपुट आयकन"</string>
+    <string name="spoken_emoji_1F524" msgid="1625073997522316331">"लॅटिन अक्षरांसाठी इनपुट आयकन"</string>
     <string name="spoken_emoji_1F525" msgid="4083884189172963790">"आग"</string>
     <string name="spoken_emoji_1F526" msgid="2035494936742643580">"इलेक्ट्रिक टॉर्च"</string>
     <string name="spoken_emoji_1F527" msgid="134257142354034271">"पाना"</string>
@@ -881,8 +881,8 @@
     <string name="spoken_emoji_1F52D" msgid="7549551775445177140">"टेलिस्कोप"</string>
     <string name="spoken_emoji_1F52E" msgid="4457099417872625141">"स्फटिकाचा चेंडू"</string>
     <string name="spoken_emoji_1F52F" msgid="8899031001317442792">"मध्यबिंदूसह सहा बिंदूंचा तारा"</string>
-    <string name="spoken_emoji_1F530" msgid="3572898444281774023">"नवशिक्या साठी जपानी चिन्ह"</string>
-    <string name="spoken_emoji_1F531" msgid="5225633376450025396">"त्रिशूळ चिन्ह"</string>
+    <string name="spoken_emoji_1F530" msgid="3572898444281774023">"नवशिक्या साठी जपानी आयकन"</string>
+    <string name="spoken_emoji_1F531" msgid="5225633376450025396">"त्रिशूळ आयकन"</string>
     <string name="spoken_emoji_1F532" msgid="9169568490485180779">"काळे चौरस बटण"</string>
     <string name="spoken_emoji_1F533" msgid="6554193837201918598">"पांढरे चौरस बटण"</string>
     <string name="spoken_emoji_1F534" msgid="8339298801331865340">"मोठे लाल मंडळ"</string>
@@ -943,10 +943,8 @@
     <skip />
     <!-- no translation found for spoken_emoji_1F576 (6510040886626337527) -->
     <skip />
-    <!-- no translation found for spoken_emoji_1F577 (1745605672232546738) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_1F578 (5843261607004481128) -->
-    <skip />
+    <string name="spoken_emoji_1F577" msgid="1745605672232546738">"Spider"</string>
+    <string name="spoken_emoji_1F578" msgid="5843261607004481128">"Spider web"</string>
     <!-- no translation found for spoken_emoji_1F579 (356353388497335187) -->
     <skip />
     <!-- no translation found for spoken_emoji_1F587 (1529578701645787678) -->
@@ -1014,7 +1012,7 @@
     <string name="spoken_emoji_1F603" msgid="3861022912544159823">"उघड्या तोंडाचा हसणारा चेहरा"</string>
     <string name="spoken_emoji_1F604" msgid="5119021072966343531">"उघड्या तोंडाचा आणि हसणार्‍या डोळ्यांचा हसणारा चेहरा"</string>
     <string name="spoken_emoji_1F605" msgid="6140813923973561735">"उघड्या तोंडाचा आणि थंड घामाचा हसणारा चेहरा"</string>
-    <string name="spoken_emoji_1F606" msgid="3549936813966832799">"उघड्या तोंडाचा हसरा चेहरा आणि घट्टपणे मिटलेले डोळे"</string>
+    <string name="spoken_emoji_1F606" msgid="3549936813966832799">"उघड्या तोंडाचा आणि घट्ट डोळे मिटलेला हसरा चेहरा"</string>
     <string name="spoken_emoji_1F607" msgid="2826424078212384817">"तेजोवलयासह हसणारा चेहरा"</string>
     <string name="spoken_emoji_1F608" msgid="7343559595089811640">"शिंगांसह हसणारा चेहरा"</string>
     <string name="spoken_emoji_1F609" msgid="5481030187207504405">"डोळे मारणारा चेहरा"</string>
@@ -1131,17 +1129,17 @@
     <string name="spoken_emoji_1F6A4" msgid="8867571300266339211">"वेगवान नाव"</string>
     <string name="spoken_emoji_1F6A5" msgid="7650260812741963884">"क्षैतिज रहदारी लाइट"</string>
     <string name="spoken_emoji_1F6A6" msgid="485575967773793454">"अनुलंब रहदारी लाइट"</string>
-    <string name="spoken_emoji_1F6A7" msgid="6411048933816976794">"बांधकाम चिन्ह"</string>
+    <string name="spoken_emoji_1F6A7" msgid="6411048933816976794">"बांधकाम आयकन"</string>
     <string name="spoken_emoji_1F6A8" msgid="6345717218374788364">"पोलिस कारचा परिभ्रमी लाइट"</string>
     <string name="spoken_emoji_1F6A9" msgid="6586380356807600412">"पोस्टवरील त्रिकोणी ध्वज"</string>
     <string name="spoken_emoji_1F6AA" msgid="8954448167261738885">"दरवाजा"</string>
-    <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"प्रवेश बंद चिन्ह"</string>
-    <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"धुम्रपान चिन्ह"</string>
-    <string name="spoken_emoji_1F6AD" msgid="6320088669185507241">"धुम्रपान करू नका चिन्ह"</string>
-    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"कचरा त्याच्या जागेवरच टाकण्याचे चिन्ह"</string>
-    <string name="spoken_emoji_1F6AF" msgid="2286668056123642208">"कचरा टाकू नका चिन्ह"</string>
-    <string name="spoken_emoji_1F6B0" msgid="179424763882990952">"पिण्यास योग्य पाणी चिन्ह"</string>
-    <string name="spoken_emoji_1F6B1" msgid="5585212805429161877">"पिण्यास योग्य नसलेले पाणी चिन्ह"</string>
+    <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"प्रवेश बंद आयकन"</string>
+    <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"धुम्रपान आयकन"</string>
+    <string name="spoken_emoji_1F6AD" msgid="6320088669185507241">"धुम्रपान करू नका आयकन"</string>
+    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"कचरा त्याच्या जागेवरच टाकण्याचा आयकन"</string>
+    <string name="spoken_emoji_1F6AF" msgid="2286668056123642208">"कचरा टाकू नका आयकन"</string>
+    <string name="spoken_emoji_1F6B0" msgid="179424763882990952">"पिण्यास योग्य पाणी आयकन"</string>
+    <string name="spoken_emoji_1F6B1" msgid="5585212805429161877">"पिण्यास योग्य नसलेले पाणी आयकन"</string>
     <string name="spoken_emoji_1F6B2" msgid="1771885082068421875">"सायकल"</string>
     <string name="spoken_emoji_1F6B3" msgid="8033779581263314408">"सायकली नाहीत"</string>
     <string name="spoken_emoji_1F6B4" msgid="1999538449018476947">"सायकलस्वार"</string>
@@ -1149,10 +1147,10 @@
     <string name="spoken_emoji_1F6B6" msgid="4351024386495098336">"पादचारी"</string>
     <string name="spoken_emoji_1F6B7" msgid="4564800655866838802">"पादचार्‍यांसाठी नाही"</string>
     <string name="spoken_emoji_1F6B8" msgid="3020531906940267349">"मुले ओलांडत आहेत"</string>
-    <string name="spoken_emoji_1F6B9" msgid="1207095844125041251">"माणसे चिन्ह"</string>
-    <string name="spoken_emoji_1F6BA" msgid="2346879310071017531">"स्त्रीया चिन्ह"</string>
+    <string name="spoken_emoji_1F6B9" msgid="1207095844125041251">"माणसे आयकन"</string>
+    <string name="spoken_emoji_1F6BA" msgid="2346879310071017531">"स्त्रीया आयकन"</string>
     <string name="spoken_emoji_1F6BB" msgid="2370172469642078526">"शौचालय"</string>
-    <string name="spoken_emoji_1F6BC" msgid="5558827593563530851">"तान्ह्या मुलाचे चिन्ह"</string>
+    <string name="spoken_emoji_1F6BC" msgid="5558827593563530851">"तान्ह्या मुलाचा आयकन"</string>
     <string name="spoken_emoji_1F6BD" msgid="9213590243049835957">"शौचालय"</string>
     <string name="spoken_emoji_1F6BE" msgid="394016533781742491">"शौचघर"</string>
     <string name="spoken_emoji_1F6BF" msgid="906336365928291207">"शॉवर"</string>
