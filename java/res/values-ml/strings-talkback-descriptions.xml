@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_use_headphones" msgid="4313642710742229868">"ഉറക്കെ പറയുന്ന പാസ്‌വേഡ് കീകൾ കേൾക്കുന്നതിന് ഒരു ഹെഡ്‌സെറ്റ് പ്ലഗ്ഗുചെയ്യുക"</string>
-    <string name="spoken_current_text_is" msgid="4240549866156675799">"നിലവിലെ വാചകം %s ആണ്"</string>
+    <string name="spoken_current_text_is" msgid="4240549866156675799">"നിലവിലെ ടെക്സ്റ്റ് ചെയ്യൽ %s ആണ്"</string>
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"വാചകമൊന്നും നൽകിയിട്ടില്ല"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g>, <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> എന്നത് <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> എന്നതായി തിരുത്തുന്നു"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> യാന്ത്രിക-തിരുത്തൽ നിർവഹിക്കുന്നു"</string>
