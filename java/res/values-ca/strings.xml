@@ -86,7 +86,7 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gest de frase"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Per afegir espais als gestos, apropa el dit a la tecla d\'espai"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tecla d\'entrada de veu"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"No hi ha cap mètode d\'entrada de veu activat. Comprova la configuració d\'Idioma i introducció de text."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"No hi ha cap mètode d\'introducció de veu activat. Comprova la configuració d\'Idioma i introducció de text."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura mètodes d\'introducció"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Idiomes"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Ajuda i suggeriments"</string>
@@ -147,7 +147,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"S\'està configurant <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Activa <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="4295448056733329661">"Marca <xliff:g id="APPLICATION_NAME">%s</xliff:g> a la configuració d\'Idioma i introducció de text. D\'aquesta manera, es podrà executar al dispositiu."</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"L\'aplicació <xliff:g id="APPLICATION_NAME">%s</xliff:g> ja està activada a la configuració d\'Idioma i introducció de text. Vés al pas següent."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"L\'aplicació <xliff:g id="APPLICATION_NAME">%s</xliff:g> ja està activada a la configuració d\'Idioma i introducció de text. Ves al pas següent."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Activa a la configuració"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Canvi a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuació, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" com a mètode d\'introducció de text actiu."</string>

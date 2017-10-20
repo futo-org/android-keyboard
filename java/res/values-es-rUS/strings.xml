@@ -23,9 +23,9 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones de entrada"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Nombres de contactos"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"El corrector ortográfico usa entradas de tu lista de contactos."</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar teclas"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Sonar al pulsar las teclas"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Aviso emergente al pulsar tecla"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al presionar teclas"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al presionar teclas"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Ampliar al presionar teclas"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferencias"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Cuentas y privacidad"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Apariencia y diseños"</string>
@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Muy intensa"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Suger. de próxima palabra"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar la palabra anterior para hacer sugerencias"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Activar escritura gestual"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Habilitar escritura gestual"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Ingresa una palabra deslizando el dedo sobre las letras."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar recorrido de gesto"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Vista previa dinámica flotante"</string>

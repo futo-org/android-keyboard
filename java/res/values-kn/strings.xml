@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"ಸಿಂಕ್‌ ಆನ್‌ ಆಗಿದೆ"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ನಿಘಂಟನ್ನು ಸಾಧನಗಳಲ್ಲಿ ಸಿಂಕ್ ಮಾಡಿ"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"ಈಗ ಸಿಂಕ್ ಮಾಡು"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"ಮೇಘ ಡೇಟಾವನ್ನು ಅಳಿಸಿ"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"ಕ್ಲೌಡ್ ಡೇಟಾವನ್ನು ಅಳಿಸಿ"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google ನಿಂದ ನಿಮ್ಮ ಸಿಂಕ್ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತದೆ"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"ಸಿಂಕ್‌ ಮಾಡಲಾದ ಡೇಟಾವನ್ನು ಮೇಘದಿಂದ ಅಳಿಸಲಾಗುತ್ತದೆ. ಇದು ಖಚಿತವೇ?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"ಅಳಿಸಿ"</string>
@@ -173,14 +173,14 @@
     <string name="dictionary_disabled" msgid="8950383219564621762">"ಸ್ಥಾಪಿಸಲಾಗಿದೆ, ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"ನಿಘಂಟು ಸೇವೆಗೆ ಸಂಪರ್ಕಗೊಳಿಸುವಾಗ ಸಮಸ್ಯೆ"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"ನಿಘಂಟುಗಳು ಲಭ್ಯವಿಲ್ಲ"</string>
-    <string name="check_for_updates_now" msgid="8087688440916388581">"ರೀಫ್ರೆಶ್ ಮಾಡಿ"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"ರಿಫ್ರೆಶ್ ಮಾಡಿ"</string>
     <string name="last_update" msgid="730467549913588780">"ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಿರುವುದು"</string>
     <string name="message_updating" msgid="4457761393932375219">"ನವೀಕರಣಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ"</string>
     <string name="message_loading" msgid="5638680861387748936">"ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"ಮುಖ್ಯ ನಿಘಂಟು"</string>
     <string name="cancel" msgid="6830980399865683324">"ರದ್ದುಮಾಡಿ"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
-    <string name="install_dict" msgid="180852772562189365">"ಸ್ಥಾಪಿಸು"</string>
+    <string name="install_dict" msgid="180852772562189365">"ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ರದ್ದುಮಾಡಿ"</string>
     <string name="delete_dict" msgid="756853268088330054">"ಅಳಿಸಿ"</string>
     <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"ನಿಮ್ಮ ಮೊಬೈಲ್‌ನಲ್ಲಿನ ಆಯ್ದ ಭಾಷೆಯು ಲಭ್ಯವಿರುವ ನಿಘಂಟನ್ನು ಹೊಂದಿರುತ್ತದೆ.&lt;br/&gt; ನಿಮ್ಮ ಟೈಪಿಂಗ್ ಅನುಭವವನ್ನು ಸುಧಾರಿಸಲು <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ನಿಘಂಟನ್ನು &lt;b&gt;ಡೌನ್‌ಲೋಡ್ ಮಾಡಿಕೊಳ್ಳುವಂತೆ&lt;/b&gt; ನಾವು ಸಲಹೆ ನೀಡುತ್ತೇವೆ.&lt;br/&gt; &lt;br/&gt; 3G ಸಂಪರ್ಕದಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಆಗಲು ಒಂದು ಅಥವಾ ಎರಡು ನಿಮಿಷಗಳಾಗಬಹುದು. ನಿಮ್ಮ ಬಳಿ &lt;b&gt;ಅನಿಯಮಿತ ಡೇಟಾ ಯೋಜನೆ&lt;/b&gt; ಇಲ್ಲದಿದ್ದರೆ ಶುಲ್ಕಗಳು ಅನ್ವಯಿಸಬಹುದು.&lt;br/&gt; ನಿಮ್ಮ ಬಳಿ ಯಾವ ಡೇಟಾ ಯೋಜನೆ ಇದೆ ಎಂಬುದರ ಕುರಿತು ನಿಮಗೆ ಖಚಿತತೆ ಇಲ್ಲದಿದ್ದರೆ, ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಡೌನ್‌ಲೋಡ್ ಪ್ರಾರಂಭಿಸಲು ವೈ-ಫೈ ಸಂಪರ್ಕವನ್ನು ಹುಡುಕುವಂತೆ ನಾವು ಸಲಹೆ ನೀಡುತ್ತೇವೆ.&lt;br/&gt; &lt;br/&gt; ಸುಳಿವು: ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಾಧನದ &lt;b&gt;ಸೆಟ್ಟಿಂಗ್‌ಗಳು&lt;/b&gt; ಮೆನುವಿಲ್ಲಿ &lt;b&gt;ಭಾಷೆಗಳು &amp; ಇನ್‌ಪುಟ್&lt;/b&gt; ಗೆ ಹೋಗುವ ಮೂಲಕ ನಿಘಂಟುಗಳನ್ನು ನೀವು ಡೌನ್‌ಲೋಡ್ ಮಾಡಬಹುದು ಮತ್ತು ತೆಗೆದುಹಾಕಬಹುದು."</string>
