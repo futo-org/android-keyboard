@@ -336,11 +336,11 @@
     <!-- no translation found for spoken_emoji_1F336 (5912660172314184275) -->
     <skip />
     <string name="spoken_emoji_1F337" msgid="3839107352363566289">"तुलिप"</string>
-    <string name="spoken_emoji_1F338" msgid="6389970364260468490">"चेरी फूल"</string>
+    <string name="spoken_emoji_1F338" msgid="6389970364260468490">"चेरी फुल"</string>
     <string name="spoken_emoji_1F339" msgid="9128891447985256151">"गुलाब"</string>
     <string name="spoken_emoji_1F33A" msgid="2025828400095233078">"जाभाकुसुम"</string>
     <string name="spoken_emoji_1F33B" msgid="8163868254348448552">"सूर्यमुखी"</string>
-    <string name="spoken_emoji_1F33C" msgid="6850371206262335812">"फूल"</string>
+    <string name="spoken_emoji_1F33C" msgid="6850371206262335812">"फुल"</string>
     <string name="spoken_emoji_1F33D" msgid="9033484052864509610">"काने मकै"</string>
     <string name="spoken_emoji_1F33E" msgid="2540173396638444120">"काने धान"</string>
     <string name="spoken_emoji_1F33F" msgid="4384823344364908558">"जडिबुटी"</string>
@@ -352,7 +352,7 @@
     <string name="spoken_emoji_1F345" msgid="6135288642349085554">"गोलभेंडा"</string>
     <string name="spoken_emoji_1F346" msgid="2075395322785406367">"डल्लो भन्टा"</string>
     <string name="spoken_emoji_1F347" msgid="7753453754963890571">"अंगूर"</string>
-    <string name="spoken_emoji_1F348" msgid="1247076837284932788">"तरबूजा"</string>
+    <string name="spoken_emoji_1F348" msgid="1247076837284932788">"खरबुजो"</string>
     <string name="spoken_emoji_1F349" msgid="5563054555180611086">"खरबूजा"</string>
     <string name="spoken_emoji_1F34A" msgid="4688661208570160524">"सुन्तले रङ"</string>
     <string name="spoken_emoji_1F34B" msgid="4335318423164185706">"लेमन"</string>
@@ -374,7 +374,7 @@
     <string name="spoken_emoji_1F35B" msgid="62530406745717835">"करी र भात"</string>
     <string name="spoken_emoji_1F35C" msgid="7537756539198945509">"उमालेको कचौरा"</string>
     <string name="spoken_emoji_1F35D" msgid="8173523083861875196">"स्पैगेट्टी"</string>
-    <string name="spoken_emoji_1F35E" msgid="2935428307894662571">"रोटी"</string>
+    <string name="spoken_emoji_1F35E" msgid="2935428307894662571">"पाउरोटी"</string>
     <string name="spoken_emoji_1F35F" msgid="4840297386785728443">"फ्रान्सेली फ्राइज"</string>
     <string name="spoken_emoji_1F360" msgid="4094659855684686801">"रोस्ट गरेको मिठो आलु"</string>
     <string name="spoken_emoji_1F361" msgid="6475486395784096109">"जापानी मिठाई"</string>
@@ -465,7 +465,7 @@
     <string name="spoken_emoji_1F3B1" msgid="545544382391379234">"बिलियर्ड्स"</string>
     <string name="spoken_emoji_1F3B2" msgid="8302262034774787493">"पोट"</string>
     <string name="spoken_emoji_1F3B3" msgid="5180870610771027520">"बलिङ"</string>
-    <string name="spoken_emoji_1F3B4" msgid="4723852033266071564">"फूलछापे तास"</string>
+    <string name="spoken_emoji_1F3B4" msgid="4723852033266071564">"फुलछापे तास"</string>
     <string name="spoken_emoji_1F3B5" msgid="1998470239850548554">"साङ्गीतिक अक्षर"</string>
     <string name="spoken_emoji_1F3B6" msgid="3827730457113941705">"बहु साङ्गीतिक अक्षर"</string>
     <string name="spoken_emoji_1F3B7" msgid="5503403099445042180">"सेक्सोफोन"</string>
@@ -749,7 +749,7 @@
     <string name="spoken_emoji_1F4AB" msgid="5484114759939427459">"तारा प्रतीक"</string>
     <string name="spoken_emoji_1F4AC" msgid="5571196638219612682">"भाषण बेलुन"</string>
     <string name="spoken_emoji_1F4AD" msgid="353174619257798652">"बैचारिक बेलुन"</string>
-    <string name="spoken_emoji_1F4AE" msgid="1223142786927162641">"सेतो फूल"</string>
+    <string name="spoken_emoji_1F4AE" msgid="1223142786927162641">"सेतो फुल"</string>
     <string name="spoken_emoji_1F4AF" msgid="3526278354452138397">"सय अंक प्रतीक"</string>
     <string name="spoken_emoji_1F4B0" msgid="4124102195175124156">"पैसाको थैली"</string>
     <string name="spoken_emoji_1F4B1" msgid="8339494003418572905">"मुद्रा विनिमय"</string>

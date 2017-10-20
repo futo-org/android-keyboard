@@ -459,7 +459,7 @@
     <string name="spoken_emoji_1F3AB" msgid="1657997517193216284">"ટિકિટ"</string>
     <string name="spoken_emoji_1F3AC" msgid="4317366554314492152">"ક્લેપર બોર્ડ"</string>
     <string name="spoken_emoji_1F3AD" msgid="607157286336130470">"અભિનય કળાઓ"</string>
-    <string name="spoken_emoji_1F3AE" msgid="2902308174671548150">"વિડિઓ રમત"</string>
+    <string name="spoken_emoji_1F3AE" msgid="2902308174671548150">"વીડિઓ રમત"</string>
     <string name="spoken_emoji_1F3AF" msgid="5420539221790296407">"ડાયરેક્ટ હિટ"</string>
     <string name="spoken_emoji_1F3B0" msgid="7440244806527891956">"સ્લોટ મશીન"</string>
     <string name="spoken_emoji_1F3B1" msgid="545544382391379234">"બિલિયર્ડ્સ"</string>
@@ -716,7 +716,7 @@
     <string name="spoken_emoji_1F48A" msgid="8526843630145963032">"ગોળી"</string>
     <string name="spoken_emoji_1F48B" msgid="2538528967897640292">"ચુંબનનું ચિહ્ન"</string>
     <string name="spoken_emoji_1F48C" msgid="1681173271652890232">"પ્રેમ પત્ર"</string>
-    <string name="spoken_emoji_1F48D" msgid="8259886164999042373">"રિંગ કરો"</string>
+    <string name="spoken_emoji_1F48D" msgid="8259886164999042373">"રિંગ વગાડો"</string>
     <string name="spoken_emoji_1F48E" msgid="8777981696011111101">"નગીનો"</string>
     <string name="spoken_emoji_1F48F" msgid="741593675183677907">"ચુંબન"</string>
     <string name="spoken_emoji_1F490" msgid="4482549128959806736">"કલગી"</string>
@@ -825,7 +825,7 @@
     <string name="spoken_emoji_1F4F7" msgid="2643891943105989039">"કૅમેરો"</string>
     <!-- no translation found for spoken_emoji_1F4F8 (6874216216317936645) -->
     <skip />
-    <string name="spoken_emoji_1F4F9" msgid="4475626303058218048">"વિડિઓ કૅમેરા"</string>
+    <string name="spoken_emoji_1F4F9" msgid="4475626303058218048">"વીડિઓ કૅમેરા"</string>
     <string name="spoken_emoji_1F4FA" msgid="1079796186652960775">"ટેલિવિઝન"</string>
     <string name="spoken_emoji_1F4FB" msgid="3848729587403760645">"રેડિઓ"</string>
     <string name="spoken_emoji_1F4FC" msgid="8370432508874310054">"વિડિઓકૅસેટ"</string>
