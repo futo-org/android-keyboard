@@ -55,6 +55,7 @@ TEST(TrieMapTest, TestRemove) {
     EXPECT_TRUE(trieMap.remove(10, trieMap.getRootBitmapEntryIndex()));
     EXPECT_FALSE(trieMap.getRoot(10).mIsValid);
     for (const auto &element : trieMap.getEntriesInRootLevel()) {
+        (void)element; // not used
         EXPECT_TRUE(false);
     }
     EXPECT_TRUE(trieMap.putRoot(10, 0x3FFFFF));
