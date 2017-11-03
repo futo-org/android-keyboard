@@ -42,6 +42,7 @@ include $(CLEAR_VARS)
 LATIN_IME_TEST_SRC_DIR := tests
 LOCAL_ADDRESS_SANITIZER := true
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
+LOCAL_CFLAGS += -Wall -Werror
 LOCAL_CXX_STL := libc++
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 LOCAL_MODULE := liblatinime_host_unittests
