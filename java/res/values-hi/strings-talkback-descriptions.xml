@@ -57,7 +57,7 @@
     <string name="announce_keyboard_hidden" msgid="2313574218950517779">"कीबोर्ड छिपा हुआ है"</string>
     <string name="announce_keyboard_mode" msgid="6698257917367823205">"<xliff:g id="KEYBOARD_MODE">%s</xliff:g> कीबोर्ड दिखाया जा रहा है"</string>
     <string name="keyboard_mode_date" msgid="6597407244976713364">"दिनांक"</string>
-    <string name="keyboard_mode_date_time" msgid="3642804408726668808">"दिनांक और समय"</string>
+    <string name="keyboard_mode_date_time" msgid="3642804408726668808">"तारीख और समय"</string>
     <string name="keyboard_mode_email" msgid="1239682082047693644">"ईमेल"</string>
     <string name="keyboard_mode_im" msgid="3812086215529493501">"संदेश सेवा"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"संख्या"</string>
