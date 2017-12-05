@@ -28,7 +28,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-test \
     mockito-target-minus-junit4
 
-LOCAL_JAVA_LIBRARIES := android.test.mock.stubs legacy-android-test
+LOCAL_JAVA_LIBRARIES := android.test.mock.stubs android.test.runner.stubs
 
 # Include all test java files.
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
