@@ -100,7 +100,7 @@
     <string name="account_selected" msgid="2846876462199625974">"Trenutno koristite račun <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"Uredu"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"Otkaži"</string>
-    <string name="account_select_sign_out" msgid="3299651159390187933">"Odjavi me"</string>
+    <string name="account_select_sign_out" msgid="3299651159390187933">"Odjava"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Odaberite račun koji ćete koristiti"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"engleski (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"engleski (SAD)"</string>
@@ -140,7 +140,7 @@
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji za fizičku tastaturu"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tipka Alt na fizičkoj tastaturi aktivira paletu za emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Zadano"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"Dobrodošli u aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Dobro došli u aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"s kucanjem pokretima"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Započnite"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Sljedeći korak"</string>
@@ -153,7 +153,7 @@
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Zatim odaberite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kao vaš aktivni način unosa teksta."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"Zamijeni načine unosa"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Odlično, sve je spremno!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"Sada možete kucati u svim omiljenim aplikacijama pomoću aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Sada možete upisivati u svim omiljenim aplikacijama pomoću aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Konfiguriraj dodatne jezike"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Završeno"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Prikaži ikonu aplikacije"</string>
