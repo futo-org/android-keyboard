@@ -150,7 +150,7 @@
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"A aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> xa está activada na configuración Idioma e introdución de texto. Podes pasar ao seguinte paso."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Activar en Configuración"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Cambiar a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de entrada de texto activo."</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de introdución de texto activo."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"Cambiar métodos de entrada"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Parabéns, está todo listo!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Agora podes escribir en todas as túas aplicacións favoritas con <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
