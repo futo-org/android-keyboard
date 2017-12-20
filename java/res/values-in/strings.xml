@@ -50,7 +50,7 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tombol beralih bahasa juga mencakup metode masukan lain"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tombol pengalih bahasa"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Tampilkan saat beberapa bahasa masukan diaktifkan"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tundaan singkir munculan kunci"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Jeda tutup pop-up utama"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Tanpa penundaan"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Default"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> md"</string>

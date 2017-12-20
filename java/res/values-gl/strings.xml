@@ -106,7 +106,7 @@
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglés (EUA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Español (EUA)"</string>
     <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hinglish"</string>
-    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbio (latino)"</string>
+    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbio (alfabeto latino)"</string>
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Inglés (Reino Unido) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Inglés (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Español (EUA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
@@ -150,7 +150,7 @@
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"A aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> xa está activada na configuración Idioma e introdución de texto. Podes pasar ao seguinte paso."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Activar en Configuración"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Cambiar a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de entrada de texto activo."</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de introdución de texto activo."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"Cambiar métodos de entrada"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Parabéns, está todo listo!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Agora podes escribir en todas as túas aplicacións favoritas con <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
