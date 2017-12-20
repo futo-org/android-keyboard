@@ -20,9 +20,9 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_use_headphones" msgid="4313642710742229868">"मोठ्याने बोललेल्या संकेतशब्द की ऐकण्यासाठी हेडसेट प्लग इन करा."</string>
+    <string name="spoken_use_headphones" msgid="4313642710742229868">"मोठ्याने बोललेल्या पासवर्ड की ऐकण्यासाठी हेडसेट प्लग इन करा."</string>
     <string name="spoken_current_text_is" msgid="4240549866156675799">"वर्तमान मजकूर %s आहे"</string>
-    <string name="spoken_no_text_entered" msgid="1711276837961785646">"मजकूर प्रविष्ट केला नाही"</string>
+    <string name="spoken_no_text_entered" msgid="1711276837961785646">"मजकूर एंटर केला नाही"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> ला <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> मध्ये सुधारणा करते"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> स्वयं-सुधारणा करते"</string>
     <string name="spoken_empty_suggestion" msgid="4250215619373459752">"कोणतीही सूचना नाही"</string>
@@ -55,7 +55,7 @@
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"फोन मोड"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"फोन चिन्हे मोड"</string>
     <string name="announce_keyboard_hidden" msgid="2313574218950517779">"कीबोर्ड लपविलेला आहे"</string>
-    <string name="announce_keyboard_mode" msgid="6698257917367823205">"<xliff:g id="KEYBOARD_MODE">%s</xliff:g> कीबोर्ड दर्शवित आहे"</string>
+    <string name="announce_keyboard_mode" msgid="6698257917367823205">"<xliff:g id="KEYBOARD_MODE">%s</xliff:g> कीबोर्ड दाखवत आहे"</string>
     <string name="keyboard_mode_date" msgid="6597407244976713364">"तारीख"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"तारीख आणि वेळ"</string>
     <string name="keyboard_mode_email" msgid="1239682082047693644">"ईमेल"</string>
