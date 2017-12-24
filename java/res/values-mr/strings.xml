@@ -97,7 +97,7 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"खाती स्विच करा"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"कोणतीही खाती निवडली नाहीत"</string>
-    <string name="account_selected" msgid="2846876462199625974">"सध्‍या <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> चा वापर करीत आहे"</string>
+    <string name="account_selected" msgid="2846876462199625974">"सध्‍या <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> चा वापर करत आहे"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"ठीक आहे"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"रद्द करा"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"साइन आउट करा"</string>
@@ -176,7 +176,7 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"रीफ्रेश करा"</string>
     <string name="last_update" msgid="730467549913588780">"अंतिम अपडेट"</string>
     <string name="message_updating" msgid="4457761393932375219">"अद्यतनांसाठी तपासत आहे"</string>
-    <string name="message_loading" msgid="5638680861387748936">"लोड करीत आहे..."</string>
+    <string name="message_loading" msgid="5638680861387748936">"लोड करत आहे..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"मु्ख्य शब्दकोश"</string>
     <string name="cancel" msgid="6830980399865683324">"रद्द करा"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"सेटिंग्ज"</string>
