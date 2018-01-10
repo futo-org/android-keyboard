@@ -29,7 +29,7 @@
     <string name="spoken_emoji_00AE" msgid="7708335454134589027">"दर्ता चिन्ह"</string>
     <string name="spoken_emoji_203C" msgid="153340916701508663">"दोहोरो उद्गार मार्क"</string>
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"विस्मयादिबोधक प्रश्न चिन्ह"</string>
-    <string name="spoken_emoji_2122" msgid="9188440722954720429">"व्यापार प्रतिक चिन्ह"</string>
+    <string name="spoken_emoji_2122" msgid="9188440722954720429">"व्यापार प्रतीक चिन्ह"</string>
     <string name="spoken_emoji_2139" msgid="9114342638917304327">"सूचना स्रोत"</string>
     <string name="spoken_emoji_2194" msgid="8055202727034946680">"दायाँ तीर बाँयामा"</string>
     <string name="spoken_emoji_2195" msgid="8028122253301087407">"तल तीर माथिमा"</string>
@@ -213,7 +213,7 @@
     <string name="spoken_emoji_2753" msgid="6935897159942119808">"कालो प्रश्न चिन्ह आभूषण"</string>
     <string name="spoken_emoji_2754" msgid="7277504915105532954">"श्वेत प्रश्न चिन्ह आभूषण"</string>
     <string name="spoken_emoji_2755" msgid="6853076969826960210">"श्वेत उद्गार चिन्ह आभूषण"</string>
-    <string name="spoken_emoji_2757" msgid="3707907828776912174">"भारी उद्गार चिन्ह प्रतिक"</string>
+    <string name="spoken_emoji_2757" msgid="3707907828776912174">"भारी उद्गार चिन्ह प्रतीक"</string>
     <!-- no translation found for spoken_emoji_2763 (3255858123691890971) -->
     <skip />
     <string name="spoken_emoji_2764" msgid="4214257843609432167">"दह्रो कालो हृदय"</string>
