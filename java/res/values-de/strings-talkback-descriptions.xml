@@ -59,7 +59,7 @@
     <string name="keyboard_mode_date" msgid="6597407244976713364">"Datum"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"Datum und Uhrzeit"</string>
     <string name="keyboard_mode_email" msgid="1239682082047693644">"E-Mail-Adresse"</string>
-    <string name="keyboard_mode_im" msgid="3812086215529493501">"SMS/MMS"</string>
+    <string name="keyboard_mode_im" msgid="3812086215529493501">"Messaging"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"Zahl"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"Telefonnummer"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"Text"</string>
