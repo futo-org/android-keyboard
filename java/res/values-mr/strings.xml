@@ -173,7 +173,7 @@
     <string name="dictionary_disabled" msgid="8950383219564621762">"इंस्टॉल केले, अक्षम केले"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"शब्दकोश सेवेस कनेक्ट करताना समस्या"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"कोणतेही शब्दकोश उपलब्ध नाहीत"</string>
-    <string name="check_for_updates_now" msgid="8087688440916388581">"रीफ्रेश करा"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"रिफ्रेश करा"</string>
     <string name="last_update" msgid="730467549913588780">"अंतिम अपडेट"</string>
     <string name="message_updating" msgid="4457761393932375219">"अद्यतनांसाठी तपासत आहे"</string>
     <string name="message_loading" msgid="5638680861387748936">"लोड करत आहे..."</string>
