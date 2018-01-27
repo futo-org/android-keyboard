@@ -172,7 +172,7 @@
     <string name="dictionary_installed" msgid="8081558343559342962">"تم التثبيت"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"مثبت، معطل"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"مشكلة في الاتصال بخدمة القاموس"</string>
-    <string name="no_dictionaries_available" msgid="8039920716566132611">"لا تتوفر أية قواميس"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"لا تتوفر أي قواميس"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"تحديث"</string>
     <string name="last_update" msgid="730467549913588780">"تاريخ آخر تحديث"</string>
     <string name="message_updating" msgid="4457761393932375219">"جارٍ البحث عن تحديثات"</string>
