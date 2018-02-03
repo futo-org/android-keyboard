@@ -179,11 +179,11 @@
     <string name="message_loading" msgid="5638680861387748936">"लोड हुँदै..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"मुख्य शब्दकोश"</string>
     <string name="cancel" msgid="6830980399865683324">"रद्द गर्नुहोस्"</string>
-    <string name="go_to_settings" msgid="3876892339342569259">"सेटिङ्हरू"</string>
+    <string name="go_to_settings" msgid="3876892339342569259">"सेटिङहरू"</string>
     <string name="install_dict" msgid="180852772562189365">"स्थापना गर्नुहोस्"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द गर्नुहोस्"</string>
     <string name="delete_dict" msgid="756853268088330054">"मेट्नुहोस्"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"तपाईंको मोबाइल यन्त्रमा चयन गरिएको भाषाको शब्दकोष उपलब्ध छ।&lt;br/&gt; आफ्नो टाइपिङ सम्बन्धी अनुभवलाई सुधार गर्नका लागि हामी तपाईंलाई <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोष &lt;b&gt;डाउनलोड गर्न&lt;/b&gt; सिफारिस गर्छौं।&lt;br/&gt; &lt;br/&gt; यसलाई 3G मार्फत डाउनलोड गर्न एक वा दुई मिनेट लाग्न सक्छ। तपाईंसँग &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; छैन भने शुल्क लाग्न सक्छ।&lt;br/&gt; यदि तपाईं आफूसँग कुन डेटा योजना छ भन्ने बारे निश्चित हुनुहुन्न भने हामी स्वचालित रूपमा डाउनलोड गर्नका लागि Wi-Fi जडान पत्ता लगाउन सिफारिस गर्दछौँ।<br/> <br/> जुक्ति: तपाईं आफ्नो मोबाइल यन्त्रको &lt;b&gt;भाषा र इनपुट&lt;/b&gt; &lt;b&gt;सेटिङहरू&lt;/b&gt; को मेनुमा गएर शब्दकोषलाई डाउनलोड गर्न र हटाउन सक्नुहुन्छ।"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"तपाईंको मोबाइल यन्त्रमा चयन गरिएको भाषाको शब्दकोष उपलब्ध छ।&lt;br/&gt; आफ्नो टाइपिङसम्बन्धी अनुभवलाई सुधार गर्नका लागि हामी तपाईंलाई <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> शब्दकोष &lt;b&gt;डाउनलोड गर्न&lt;/b&gt; सिफारिस गर्छौं।&lt;br/&gt; &lt;br/&gt; यसलाई 3G मार्फत डाउनलोड गर्न एक वा दुई मिनेट लाग्न सक्छ। तपाईंसँग &lt;b&gt;असीमित डेटा योजना&lt;/b&gt; छैन भने शुल्क लाग्न सक्छ।&lt;br/&gt; यदि तपाईं आफूसँग कुन डेटा योजना छ भन्ने बारे निश्चित हुनुहुन्न भने हामी स्वचालित रूपमा डाउनलोड गर्नका लागि Wi-Fi जडान पत्ता लगाउन सिफारिस गर्दछौँ।<br/> <br/> जुक्ति: तपाईं आफ्नो मोबाइल यन्त्रको &lt;b&gt;भाषा र इनपुट&lt;/b&gt; &lt;b&gt;सेटिङहरू&lt;/b&gt; को मेनुमा गएर शब्दकोषलाई डाउनलोड गर्न र हटाउन सक्नुहुन्छ।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"(अब डाउनलोड गर्नुहोस्<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाइ-फाइको माध्ययमद्वार डाउनलोड गर्नुहोस्"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>को लागि एउटा शब्दकोश उपलब्ध छ"</string>
