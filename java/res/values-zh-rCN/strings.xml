@@ -189,7 +189,7 @@
     <string name="dict_available_notification_title" msgid="4583842811218581658">"有一个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典可供下载"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"按此通知即可查看和下载"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"正在下载：<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>输入建议功能马上就可以使用了！"</string>
-    <string name="version_text" msgid="2715354215568469385">"版本<xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="version_text" msgid="2715354215568469385">"版本：<xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"添加"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"添加到字典"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"词组"</string>
