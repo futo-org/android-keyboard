@@ -25,10 +25,8 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"কোনো পাঠ লিখা হোৱা নাই"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g>এ <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>ৰ পৰা <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>লৈ শুদ্ধ কৰে"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g>এ স্বয়ংক্ৰিয়ভাৱে শুদ্ধ কৰে"</string>
-    <!-- no translation found for spoken_empty_suggestion (4250215619373459752) -->
-    <skip />
-    <!-- no translation found for spoken_description_unknown (5139930082759824442) -->
-    <skip />
+    <string name="spoken_empty_suggestion" msgid="4250215619373459752">"কোনো পৰামর্শ নাই"</string>
+    <string name="spoken_description_unknown" msgid="5139930082759824442">"অজ্ঞাত বর্ণ"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"শ্বিফ্ট"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"অধিক চিহ্ন"</string>
     <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"শ্বিফ্ট"</string>
@@ -86,34 +84,19 @@
     <!-- no translation found for spoken_descrption_emoji_category_eight_activity (4795281669042975993) -->
     <skip />
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"ইম\'টিকন"</string>
-    <!-- no translation found for spoken_description_upper_case (4904835255229433916) -->
-    <skip />
-    <!-- no translation found for spoken_letter_0049 (4743162182646977944) -->
-    <skip />
-    <!-- no translation found for spoken_letter_0130 (4766619646231612274) -->
-    <skip />
-    <!-- no translation found for spoken_symbol_unknown (717298227061173706) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_unknown (5981009928135394306) -->
-    <skip />
-    <!-- no translation found for spoken_emoticon_3A_2D_21_20 (2410905667389534573) -->
-    <skip />
-    <!-- no translation found for spoken_emoticon_3A_2D_24_20 (2481260475945560438) -->
-    <skip />
-    <!-- no translation found for spoken_emoticon_42_2D_29_20 (1063205250387128068) -->
-    <skip />
-    <!-- no translation found for spoken_emoticon_3A_4F_20 (532695091593447238) -->
-    <skip />
-    <!-- no translation found for spoken_emoticon_3A_2D_2A_20 (5612342617244114291) -->
-    <skip />
-    <!-- no translation found for spoken_emoticon_3A_2D_5B_20 (2223507987759905920) -->
-    <skip />
-    <!-- no translation found for spoken_open_more_keys_keyboard (6832897688371903747) -->
-    <skip />
-    <!-- no translation found for spoken_close_more_keys_keyboard (3524914657934712026) -->
-    <skip />
-    <!-- no translation found for spoken_open_more_suggestions (4231720702882969760) -->
-    <skip />
-    <!-- no translation found for spoken_close_more_suggestions (9118455416075032839) -->
-    <skip />
+    <string name="spoken_description_upper_case" msgid="4904835255229433916">"বৰফলা <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
+    <string name="spoken_letter_0049" msgid="4743162182646977944">"বৰফলা l"</string>
+    <string name="spoken_letter_0130" msgid="4766619646231612274">"ওপৰত বিন্দুৰ সৈতে লেটিন বৰফলা I"</string>
+    <string name="spoken_symbol_unknown" msgid="717298227061173706">"অজ্ঞাত চিহ্ন"</string>
+    <string name="spoken_emoji_unknown" msgid="5981009928135394306">"অজ্ঞাত ইম\'জি"</string>
+    <string name="spoken_emoticon_3A_2D_21_20" msgid="2410905667389534573">"আমনি পোৱা ভংগীৰ মুখমণ্ডল"</string>
+    <string name="spoken_emoticon_3A_2D_24_20" msgid="2481260475945560438">"লজ্জিত ভংগীৰ মুখমণ্ডল"</string>
+    <string name="spoken_emoticon_42_2D_29_20" msgid="1063205250387128068">"ছানগ্লাছ পৰিহিত মুখমণ্ডল"</string>
+    <string name="spoken_emoticon_3A_4F_20" msgid="532695091593447238">"আচৰিত হোৱা ভংগীৰ মুখমণ্ডল"</string>
+    <string name="spoken_emoticon_3A_2D_2A_20" msgid="5612342617244114291">"চুমা খোৱা ভংগীৰ মুখমণ্ডল"</string>
+    <string name="spoken_emoticon_3A_2D_5B_20" msgid="2223507987759905920">"দুখী মুখমণ্ডল"</string>
+    <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"বিকল্প বৰ্ণ আছে"</string>
+    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"বিকল্প বৰ্ণবোৰ অগ্ৰাহ্য কৰা হৈছে"</string>
+    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"বিকল্প পৰামর্শ আছে"</string>
+    <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"বিকল্প পৰামর্শবোৰ অগ্ৰাহ্য কৰা হৈছে"</string>
 </resources>
