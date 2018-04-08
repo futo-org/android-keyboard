@@ -58,7 +58,7 @@
     <string name="announce_keyboard_mode" msgid="6698257917367823205">"Viser tastatur til <xliff:g id="KEYBOARD_MODE">%s</xliff:g>"</string>
     <string name="keyboard_mode_date" msgid="6597407244976713364">"dato"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"dato og klokkeslæt"</string>
-    <string name="keyboard_mode_email" msgid="1239682082047693644">"e-mail"</string>
+    <string name="keyboard_mode_email" msgid="1239682082047693644">"mail"</string>
     <string name="keyboard_mode_im" msgid="3812086215529493501">"beskeder"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"tal"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"telefonnummer"</string>
