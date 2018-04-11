@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinhronizacija je uključena"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sinhronizirajte vlastiti rječnik na svim uređajima"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sinhroniziraj sada"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"Obriši podatke iz oblaka"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Brisanje podataka iz oblaka"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Briše vaše sinhronizirane podatke s Googlea"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Vaši snihronizirani podaci bit će izbrisani iz oblaka. Sigurno?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Izbriši"</string>
@@ -86,7 +86,7 @@
     <string name="gesture_space_aware" msgid="2078291600664682496">"Pokret za fraze"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Klizanjem na tipku za razmak umetni razmake tokom pokreta"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tipka za govorni unos"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nisu omogućeni načini za glasovni unos. Provjerite postavke sekcije Jezici i unos."</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Nisu omogućeni načini za glasovni unos. Provjerite postavke odjeljka Jezici i unos."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguriraj načine unosa"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Jezici"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Pomoć i povratne informacije"</string>
@@ -146,8 +146,8 @@
     <string name="setup_next_action" msgid="371821437915144603">"Sljedeći korak"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Postavljanje aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Omogući aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"Označite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" u postavkama sekcije Jezici i unos. Na taj način ćete joj dozvoliti da se pokrene na vašem uređaju."</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> je već omogućena u vašim postavkama sekcije Jezici i unos, tako da je ovaj korak završen. Pređite na sljedeći!"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Označite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" u postavkama odjeljka Jezici i unos. Na taj način ćete joj dozvoliti da se pokrene na vašem uređaju."</string>
+    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> je već omogućena u vašim postavkama odjeljka Jezici i unos, tako da je ovaj korak završen. Pređite na sljedeći!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Omogući u Postavkama"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Prebacite se na aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Zatim odaberite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kao vaš aktivni način unosa teksta."</string>
