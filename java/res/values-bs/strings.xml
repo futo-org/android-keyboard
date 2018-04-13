@@ -38,7 +38,7 @@
     <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinhronizacija je uključena"</string>
     <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Sinhronizirajte vlastiti rječnik na svim uređajima"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Sinhroniziraj sada"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"Obriši podatke iz oblaka"</string>
+    <string name="clear_sync_data_title" msgid="8582001557037069154">"Brisanje podataka iz oblaka"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Briše vaše sinhronizirane podatke s Googlea"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Vaši snihronizirani podaci bit će izbrisani iz oblaka. Sigurno?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Izbriši"</string>
