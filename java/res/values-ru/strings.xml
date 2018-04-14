@@ -72,7 +72,7 @@
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Не предлагать слова, которые могут быть сочтены оскорбительными"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Автоисправление"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Автоматическое исправление опечаток при вводе знака препинания или пробела"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Откл."</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Отключено"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Активно"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Очень активно"</string>
