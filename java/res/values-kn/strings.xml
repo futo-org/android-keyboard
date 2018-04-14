@@ -80,7 +80,7 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"ಸಲಹೆಗಳನ್ನು ಮಾಡುವಾಗ ಹಿಂದಿನ ಪದವನ್ನು ಬಳಸು"</string>
     <string name="gesture_input" msgid="826951152254563827">"ಗೆಶ್ಚರ್ ಟೈಪಿಂಗ್ ಸಕ್ರಿಯಗೊಳಿಸು"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"ಅಕ್ಷರಗಳ ಮೇಲೆ ಸರಿಸುವ ಮೂಲಕ ಪದವೊಂದನ್ನು ನಮೂದಿಸಿ"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"ಗೆಶ್ಚರ್ ಟ್ರಯಲ್ ತೋರಿಸು"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"ಗೆಶ್ಚರ್ ಟ್ರೇಲ್ ತೋರಿಸು"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ಡೈನಮಿಕ್ ಫ್ಲೋಟಿಂಗ್ ಪೂರ್ವವೀಕ್ಷಣೆ"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ಗೆಸ್ಟರ್ ಮಾಡುವಾಗ ಸೂಚಿಸಿದ ಪದವನ್ನು ನೋಡಿ"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"ಪದಗುಚ್ಛದ ಗೆಶ್ಚರ್"</string>
