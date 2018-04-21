@@ -70,8 +70,8 @@
     <string name="spoken_emoji_24C2" msgid="3948348737566038470">"M letra larri latindarra zirkulu batean"</string>
     <string name="spoken_emoji_25AA" msgid="7865181015100227349">"Karratu beltz txikia"</string>
     <string name="spoken_emoji_25AB" msgid="6446532820937381457">"Karratu zuri txikia"</string>
-    <string name="spoken_emoji_25B6" msgid="2423897708496040947">"Triangelu beltza gorantz begira"</string>
-    <string name="spoken_emoji_25C0" msgid="3595083440074484934">"Triangelu beltza ezkerrerantz begira"</string>
+    <string name="spoken_emoji_25B6" msgid="2423897708496040947">"Triangelu beltza gora begira"</string>
+    <string name="spoken_emoji_25C0" msgid="3595083440074484934">"Triangelu beltza ezkerrera begira"</string>
     <string name="spoken_emoji_25FB" msgid="4838691986881215419">"Karratu zuri ertaina"</string>
     <string name="spoken_emoji_25FC" msgid="7008859564991191050">"Karratu beltz ertaina"</string>
     <string name="spoken_emoji_25FD" msgid="7673439755069217479">"Karratu zuri txiki-ertaina"</string>
@@ -220,14 +220,14 @@
     <string name="spoken_emoji_2795" msgid="6563954833786162168">"Gehi ikur lodia"</string>
     <string name="spoken_emoji_2796" msgid="5990926508250772777">"Ken ikur lodia"</string>
     <string name="spoken_emoji_2797" msgid="24694184172879174">"Zatiketa ikur lodia"</string>
-    <string name="spoken_emoji_27A1" msgid="3513434778263100580">"Gezi beltza eskuinerantz"</string>
+    <string name="spoken_emoji_27A1" msgid="3513434778263100580">"Gezi beltza eskuinera"</string>
     <string name="spoken_emoji_27B0" msgid="203395646864662198">"Kiribila"</string>
     <string name="spoken_emoji_27BF" msgid="4940514642375640510">"Kiribil bikoitza"</string>
-    <string name="spoken_emoji_2934" msgid="9062130477982973457">"Gezia eskuinerantz begira eta gero gorantz biratuta"</string>
-    <string name="spoken_emoji_2935" msgid="6198710960720232074">"Gezia eskuinerantz begira eta gero beherantz biratuta"</string>
-    <string name="spoken_emoji_2B05" msgid="4813405635410707690">"Gezi beltza ezkerrerantz"</string>
-    <string name="spoken_emoji_2B06" msgid="1223172079106250748">"Gezi beltza gorantz"</string>
-    <string name="spoken_emoji_2B07" msgid="1599124424746596150">"Gezi beltza beherantz"</string>
+    <string name="spoken_emoji_2934" msgid="9062130477982973457">"Gezia eskuinera begira eta gero gora biratuta"</string>
+    <string name="spoken_emoji_2935" msgid="6198710960720232074">"Gezia eskuinera begira eta gero behera biratuta"</string>
+    <string name="spoken_emoji_2B05" msgid="4813405635410707690">"Gezi beltza ezkerrera"</string>
+    <string name="spoken_emoji_2B06" msgid="1223172079106250748">"Gezi beltza gora"</string>
+    <string name="spoken_emoji_2B07" msgid="1599124424746596150">"Gezi beltza behera"</string>
     <string name="spoken_emoji_2B1B" msgid="3461247311988501626">"Karratu beltz handia"</string>
     <string name="spoken_emoji_2B1C" msgid="5793146430145248915">"Karratu zuri handia"</string>
     <string name="spoken_emoji_2B50" msgid="3850845519526950524">"Izar zuri ertaina"</string>
@@ -645,10 +645,10 @@
     <string name="spoken_emoji_1F443" msgid="1491504447758933115">"Sudurra"</string>
     <string name="spoken_emoji_1F444" msgid="3654613047946080332">"Ahoa"</string>
     <string name="spoken_emoji_1F445" msgid="7024905244040509204">"Mihia"</string>
-    <string name="spoken_emoji_1F446" msgid="2150365643636471745">"Esku zuri baten atzeko aldea, hatz erakuslearekin gorantz seinalatzen duela"</string>
-    <string name="spoken_emoji_1F447" msgid="8794022344940891388">"Esku zuri baten atzeko aldea, hatz erakuslearekin beherantz seinalatzen duela"</string>
-    <string name="spoken_emoji_1F448" msgid="3261812959215550650">"Esku zuri baten atzeko aldea, hatz erakuslearekin ezkerrerantz seinalatzen duela"</string>
-    <string name="spoken_emoji_1F449" msgid="4764447975177805991">"Esku zuri baten atzeko aldea, hatz erakuslearekin eskuinerantz seinalatzen duela"</string>
+    <string name="spoken_emoji_1F446" msgid="2150365643636471745">"Esku zuri baten atzeko aldea, hatz erakuslearekin gora seinalatzen duela"</string>
+    <string name="spoken_emoji_1F447" msgid="8794022344940891388">"Esku zuri baten atzeko aldea, hatz erakuslearekin behera seinalatzen duela"</string>
+    <string name="spoken_emoji_1F448" msgid="3261812959215550650">"Esku zuri baten atzeko aldea, hatz erakuslearekin ezkerrera seinalatzen duela"</string>
+    <string name="spoken_emoji_1F449" msgid="4764447975177805991">"Esku zuri baten atzeko aldea, hatz erakuslearekin eskuinera seinalatzen duela"</string>
     <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"Ukabila"</string>
     <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"Eskua agurtzen"</string>
     <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"Ados keinua eskuarekin"</string>
@@ -833,7 +833,7 @@
     <skip />
     <!-- no translation found for spoken_emoji_1F4FF (6566102135671766103) -->
     <skip />
-    <string name="spoken_emoji_1F500" msgid="2389947994502144547">"Elkar gurutzatzen diren geziak eskuinerantz"</string>
+    <string name="spoken_emoji_1F500" msgid="2389947994502144547">"Elkar gurutzatzen diren geziak eskuinera"</string>
     <string name="spoken_emoji_1F501" msgid="2132188352433347009">"Erlojuaren noranzkoan doazen zirkulu irekiko gezi horizontalak"</string>
     <string name="spoken_emoji_1F502" msgid="2361976580513178391">"Erlojuaren noranzkoan doazen zirkulu irekiko gezi horizontalak, 1 zenbakiarekin"</string>
     <string name="spoken_emoji_1F503" msgid="8936283551917858793">"Erlojuaren noranzkoan doazen zirkulu irekiko gezi bertikalak"</string>
@@ -846,8 +846,8 @@
     <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"Bozgorailua, hiru soinu-uhinekin"</string>
     <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"Bateria"</string>
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"Entxufe elektrikoa"</string>
-    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Lupa ezkerrerantz"</string>
-    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"Lupa eskuinerantz"</string>
+    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Lupa ezkerrera"</string>
+    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"Lupa eskuinera"</string>
     <string name="spoken_emoji_1F50F" msgid="915079280472199605">"Giltzarrapoa eta bolaluma"</string>
     <string name="spoken_emoji_1F510" msgid="7658381761691758318">"Giltzarrapoa itxita eta giltza"</string>
     <string name="spoken_emoji_1F511" msgid="262319867774655688">"Giltza"</string>
@@ -858,11 +858,11 @@
     <string name="spoken_emoji_1F516" msgid="108097933937925381">"Orri-markatzailea"</string>
     <string name="spoken_emoji_1F517" msgid="2450846665734313397">"Estekaren ikurra"</string>
     <string name="spoken_emoji_1F518" msgid="7028220286841437832">"Aukera-botoia"</string>
-    <string name="spoken_emoji_1F519" msgid="8211189165075445687">"\"Back\" hitza eta ezkerrerantz gezia gainean"</string>
-    <string name="spoken_emoji_1F51A" msgid="823966751787338892">"\"End\" hitza eta ezkerrerantz gezia gainean"</string>
-    <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"\"On\" hitza harridura markarekin eta ezkerrerantz gezia gainean"</string>
-    <string name="spoken_emoji_1F51C" msgid="110609810659826676">"\"Soon\" hitza eta eskuinerantz gezia gainean"</string>
-    <string name="spoken_emoji_1F51D" msgid="4087697222026095447">"\"Top\" hitza eta gorantz gezia gainean"</string>
+    <string name="spoken_emoji_1F519" msgid="8211189165075445687">"\"Back\" hitza eta ezkerrera gezia gainean"</string>
+    <string name="spoken_emoji_1F51A" msgid="823966751787338892">"\"End\" hitza eta ezkerrera gezia gainean"</string>
+    <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"\"On\" hitza harridura markarekin eta ezkerrera gezia gainean"</string>
+    <string name="spoken_emoji_1F51C" msgid="110609810659826676">"\"Soon\" hitza eta eskuinera gezia gainean"</string>
+    <string name="spoken_emoji_1F51D" msgid="4087697222026095447">"\"Top\" hitza eta gora gezia gainean"</string>
     <string name="spoken_emoji_1F51E" msgid="8512873526157201775">"Hemezortzi urte beherakorik ez ikurra"</string>
     <string name="spoken_emoji_1F51F" msgid="8673370823728653973">"Hamar tekla"</string>
     <string name="spoken_emoji_1F520" msgid="7335109890337048900">"Letra larri latindarren idazketa-ikurra"</string>
