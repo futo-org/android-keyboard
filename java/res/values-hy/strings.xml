@@ -59,10 +59,10 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Օգտագործել կոնտակտների անունները՝ առաջարկների և ուղղումների համար"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Անհատականացված առաջարկներ"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Բարելավել <xliff:g id="APPLICATION_NAME">%s</xliff:g>-ը"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Կրկնաբացակի վերջակետ"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Բացակի ստեղնի կրկնակի հպումը բացակից հետո վերջակետ է դնում"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Կրկնաբացատով վերջակետ"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Բացատի ստեղնի կրկնակի հպումը բացատից հետո վերջակետ է դնում"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Ավտոմատ գլխատառացում"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Գլխատառել յուրաքանչյուր նախադասության առաջին բառը"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Մեծատառով գրել յուրաքանչյուր նախադասության առաջին բառը"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Անհատական բառարան"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Հավելյալ բառարաններ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Հիմնական բառարան"</string>
@@ -79,7 +79,7 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Հաջորդ բառի առաջարկներ"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Առաջարկներ կազմելու համար օգտագործել նախորդ բառը"</string>
     <string name="gesture_input" msgid="826951152254563827">"Միացնել ժեստերով մուտքագրումը"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Մուտքագրեք բառ` սահեցնելով տառերը"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Մուտքագրեք բառ` մատը տառից տառ սահեցնելով"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Ցույց տալ ժեստի հետագիծը"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Դինամիկ սահող նախատեսք"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Տեսեք առաջարկված բառը՝ ժեստի միջոցով"</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"Կարգավորել լրացուցիչ լեզուները"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Ավարտված"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Ցույց տալ հավելվածի պատկերակը"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Ցուցադրել հավելվածի պատկերակը թողարկչում"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Ցուցադրել հավելվածի պատկերակը գործարկիչում"</string>
     <string name="app_name" msgid="6320102637491234792">"Բառարանի մատակարար"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Բառարանի մատակարար"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Բառարանի ծառայություն"</string>
