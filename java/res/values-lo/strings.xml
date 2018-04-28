@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"ຕົວເລືອກການປ້ອນຂໍ້ມູນ"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ເບິ່ງທີ່ຊື່ຂອງລາຍຊື່ຜູ່ຕິດຕໍ່"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ຊອກຫາລາຍຊື່ຜູ້ຕິດຕໍ່"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"ໂຕຊ່ວຍສະກົດໃຊ້ຂໍ້ມູນຈາກລາຍການຂອງລາຍຊື່ຜູ່ຕິດຕໍ່ຂອງທ່ານ"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ສັ່ນເຕືອນເມື່ອພິມ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ສຽງໃນການກົດປຸ່ມ"</string>

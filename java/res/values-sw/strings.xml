@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Mfumo sawa wa maingizo tayari upo: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Bonyeza kitufe cha muda wa kutetema"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Bonyeza kitufe cha kiwango cha sauti"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Ucheleweshaji wa kubofya kitufe na kushikilia"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Ucheleweshaji unapobofya kitufe na kushikilia"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji za kibodi halisi"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Kitufe halisi cha Alt huonyesha kibao cha emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Chaguo-msingi"</string>

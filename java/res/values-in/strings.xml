@@ -29,7 +29,7 @@
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferensi"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Akun &amp; Privasi"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Tampilan &amp; Tata Letak"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"Ketikan Isyarat"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Ketikan Gestur"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Koreksi teks"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Lanjutan"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
@@ -78,12 +78,12 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Sangat agresif"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Saran kata berikutnya"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Gunakan kata sebelumnya dalam membuat saran"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Aktifkan pengetikan isyarat"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Aktifkan pengetikan gestur"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Masukkan kata dengan menggeser huruf ke kanan/kiri"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Tampilkan jejak isyarat"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Tampilkan jejak gestur"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Pratinjau mengambang dinamis"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Lihat kata yang disarankan saat melakukan isyarat"</string>
-    <string name="gesture_space_aware" msgid="2078291600664682496">"Isyarat frasa"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"Gesture frasa"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Masukkan spasi dalam isyarat dengan meluncur ke tombol spasi"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tombol masukan suara"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Tidak ada metode masukan suara yang diaktifkan. Periksa setelan Bahasan &amp; masukan."</string>
@@ -91,8 +91,8 @@
     <string name="language_selection_title" msgid="3666971864764478269">"Bahasa"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Bantuan &amp; masukan"</string>
     <string name="select_language" msgid="5709487854987078367">"Bahasa"</string>
-    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Ketuk sekali lagi untuk menyimpan"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Ketuk di sini untuk menyimpan"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Tap sekali lagi untuk menyimpan"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Tap di sini untuk menyimpan"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamus yang tersedia"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema keyboard"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"Beralih akun"</string>
@@ -141,7 +141,7 @@
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tombol Alt fisik menampilkan palet emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Default"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Selamat datang di <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"dengan Ketikan Isyarat"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"dengan Ketikan Gestur"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Memulai"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Langkah berikutnya"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Menyiapkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Edit kata"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Edit"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Hapus"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Tidak ada kata-kata dalam kamus pengguna. Untuk menambahkan kata, ketuk tombol Tambahkan (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Tidak ada kata-kata dalam kamus pengguna. Untuk menambahkan kata, tap tombol Tambahkan (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Untuk semua bahasa"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Bahasa lainnya..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Hapus"</string>

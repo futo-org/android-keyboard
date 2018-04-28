@@ -26,7 +26,7 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibracija pri pritisku na tipku"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk pri pritisku tipke"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Iskačuči prozor pri pritisku na tipku"</string>
-    <string name="settings_screen_preferences" msgid="2696713156722014624">"Karakteristike"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"Postavke"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Računi i privatnost"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Izgled i rasporedi tipki"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Kucanje pokretima"</string>
@@ -183,9 +183,9 @@
     <string name="install_dict" msgid="180852772562189365">"Instaliraj"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Otkaži"</string>
     <string name="delete_dict" msgid="756853268088330054">"Izbriši"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Za odabrani jezik na vašem uređaju postoji dostupan rječnik.&lt;br/&gt; Predlažemo da &lt;b&gt;preuzmete&lt;/b&gt; rječnik za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> kako biste poboljšali svoje iskustvo tipkanja.&lt;br/&gt; &lt;br/&gt; Preuzimanje putem 3G mreže može potrajati minut-dva. Mogući su troškovi ukoliko nemate &lt;b&gt;paket s neograničenim prijenosom podataka&lt;/b&gt;.&lt;br/&gt; Ako ne znate koji paket za prijenos podataka imate, preporučujemo da pronađete Wi-Fi mrežu kako biste počeli automatsko preuzimanje.&lt;br/&gt; &lt;br/&gt; Savjet: Rječnike možete preuzimati i uklanjati ako odete na &lt;b&gt;Jezici i unos&lt;/b&gt; u meniju &lt;b&gt;Postavke&lt;/b&gt; na vašem mobilnom uređaju."</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Za odabrani jezik na vašem uređaju postoji dostupan rječnik.&lt;br/&gt; Predlažemo da &lt;b&gt;preuzmete&lt;/b&gt; rječnik za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> kako biste poboljšali svoje iskustvo tipkanja.&lt;br/&gt; &lt;br/&gt; Preuzimanje putem 3G mreže može potrajati minut-dva. Mogući su troškovi ukoliko nemate &lt;b&gt;paket s neograničenim prijenosom podataka&lt;/b&gt;.&lt;br/&gt; Ako ne znate koji paket za prijenos podataka imate, preporučujemo da pronađete WiFi mrežu kako biste počeli automatsko preuzimanje.&lt;br/&gt; &lt;br/&gt; Savjet: Rječnike možete preuzimati i uklanjati ako odete na &lt;b&gt;Jezici i unos&lt;/b&gt; u meniju &lt;b&gt;Postavke&lt;/b&gt; na vašem mobilnom uređaju."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Preuzmi odmah (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Preuzmi putem Wi-Fi mreže"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Preuzmi putem WiFi mreže"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Rječnik je dostupan za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Pritisnite za pregled i preuzimanje"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Preuzimanje: prijedlozi za <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> bit će uskoro spremni."</string>
