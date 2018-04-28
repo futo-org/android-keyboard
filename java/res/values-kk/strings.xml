@@ -31,7 +31,7 @@
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Сыртқы түр және орналасулар"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Қимыл арқылы теру"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Мәтінді түзету"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"Кеңейтілген"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Қосымша"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Тақырып"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Бөлінген пернетақтаны қосу"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google пернетақтасын синхрондау"</string>
@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Негізгі сөздік"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Түзету ұсыныстарын көрсету"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Теру кезінде ұсынылған сөздерді көрсету"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Қорлаушы сөздерді тыю"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Балағат сөздерге тыйым салу"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Қорлаушы сөздерді ұсынбау"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Авто түзету"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Бос орын және тыныс белгі автоматты түрде қателерді түзетеді"</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"Қосымша тілдерді теңшеу"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Аяқталған"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Қолданба белгішесін көрсету"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Іске қосу құралындағы қолданба белгішесін көрсету"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Іске қосу құралында қолданба белгішесін көрсету"</string>
     <string name="app_name" msgid="6320102637491234792">"Сөздік провайдері"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Сөздік провайдері"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Сөздік қызметі"</string>

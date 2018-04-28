@@ -30,7 +30,7 @@
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Хаяг &amp; Нууцлал"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Харагдах байдал &amp; Зураглал"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Зангаагаар бичих"</string>
-    <string name="settings_screen_correction" msgid="1616818407747682955">"Текст залруулалт"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Текст засварлах"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Дэлгэрэнгүй"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Загвар"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Хуваагдмал гарыг идэвхжүүлэх"</string>
