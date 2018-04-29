@@ -69,7 +69,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"শুধৰণিৰ পৰামৰ্শবোৰ দেখুৱাওক"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"টাইপ কৰি থাকোঁতে পৰামৰ্শৰ শব্দবোৰ দেখুৱাওক"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"আপত্তিজনক শব্দবোৰ অৱৰোধ কৰক"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"সম্ভাব্য আপত্তিজনক শব্দবোৰৰ পৰামৰ্শ নিদিব"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"সাম্ভাব্য আপত্তিজনক শব্দবোৰৰ পৰামৰ্শ নিদিব"</string>
     <string name="auto_correction" msgid="7630720885194996950">"স্বয়ং-সংশোধন"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"স্পেচবাৰ আৰু যতিচিহ্নই ভুলকৈ টাইপ কৰা শব্দবোৰ স্বয়ংক্ৰিয়ভাৱে শুদ্ধ কৰে"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"অফ কৰক"</string>
