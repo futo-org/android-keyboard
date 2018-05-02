@@ -46,7 +46,7 @@
     <string name="spoken_description_dot" msgid="5644176501632325560">"Qora nuqta"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"Tilni almashtirish"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"Keyingisi"</string>
-    <string name="spoken_description_action_previous" msgid="2919072174697865110">"Avvalgi"</string>
+    <string name="spoken_description_action_previous" msgid="2919072174697865110">"Orqaga"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Yuqori registr yoqildi"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Caps Lock yoqildi"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Belgilar rejimi"</string>
