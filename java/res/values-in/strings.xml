@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Data yang disinkronkan akan dihapus dari awan. Anda yakin?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Hapus"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Batal"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Kamus pribadi akan disinkronkan dan dicadangkan ke server Google. Informasi statistik tentang frekuensi kata dapat dikumpulkan untuk membantu menyempurnakan produk kami. Pengumpulan dan penggunaan data tunduk pada "<a href="https://www.google.com/policies/privacy">"Kebijakan Privasi Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Kamus pribadi akan disinkronkan dan di-backup ke server Google. Informasi statistik tentang frekuensi kata dapat dikumpulkan untuk membantu menyempurnakan produk kami. Pengumpulan dan penggunaan data tunduk pada "<a href="https://www.google.com/policies/privacy">"Kebijakan Privasi Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Tambahkan akun Google ke perangkat ini untuk mengaktifkan fitur ini"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinkronisasi tidak tersedia untuk perangkat yang memiliki akun Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Beralih ke metode masukan lain"</string>
