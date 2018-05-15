@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.emoji;
 
-import android.support.v4.view.PagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
