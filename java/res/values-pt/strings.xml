@@ -121,7 +121,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Alfabeto (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabeto (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabeto (PC)"</string>
-    <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
+    <string name="subtype_emoji" msgid="7483586578074549196">"Emojis"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Tema do teclado"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos personalizados"</string>
     <string name="add_style" msgid="6163126614514489951">"Adic. estilo"</string>
@@ -137,8 +137,8 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Duração da vibração ao tocar"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume ao tocar na tela"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Atraso ao pressionar teclas"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoticons para teclado físico"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tecla Alt física mostra a paleta de emoticons"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emojis para teclado físico"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Exibe o teclado de emojis ao pressionar a tecla Alt"</string>
     <string name="button_default" msgid="3988017840431881491">"Padrão"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Bem-vindo ao <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"com entrada por gestos"</string>
