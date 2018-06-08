@@ -130,7 +130,7 @@
     <string name="save" msgid="7646738597196767214">"Salvar"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Idioma"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Layout"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Deseja ativar e usar o estilo de entrada personalizado?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Quer ativar e usar o estilo de entrada personalizado?"</string>
     <string name="enable" msgid="5031294444630523247">"Ativar"</string>
     <string name="not_now" msgid="6172462888202790482">"Agora não"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"O estilo de entrada já existe: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>

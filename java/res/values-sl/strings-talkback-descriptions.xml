@@ -40,7 +40,7 @@
     <string name="spoken_description_tab" msgid="8210782459446866716">"Tab"</string>
     <string name="spoken_description_space" msgid="5908716896642059145">"Preslednica"</string>
     <string name="spoken_description_mic" msgid="6153138783813452464">"Glasovni vnos"</string>
-    <string name="spoken_description_emoji" msgid="7990051553008088470">"Znaki »emoji«"</string>
+    <string name="spoken_description_emoji" msgid="7990051553008088470">"Emodžiji"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"Return"</string>
     <string name="spoken_description_search" msgid="5099937658231911288">"Iskanje"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"Pika"</string>
@@ -82,7 +82,7 @@
     <string name="spoken_letter_0049" msgid="4743162182646977944">"Velika črka I"</string>
     <string name="spoken_letter_0130" msgid="4766619646231612274">"Velika črka I s piko zgoraj"</string>
     <string name="spoken_symbol_unknown" msgid="717298227061173706">"Neznan simbol"</string>
-    <string name="spoken_emoji_unknown" msgid="5981009928135394306">"Neznan znak »emoji«"</string>
+    <string name="spoken_emoji_unknown" msgid="5981009928135394306">"Neznan emodži"</string>
     <string name="spoken_emoticon_3A_2D_21_20" msgid="2410905667389534573">"Zdolgočasen obraz"</string>
     <string name="spoken_emoticon_3A_2D_24_20" msgid="2481260475945560438">"Obraz v zadregi"</string>
     <string name="spoken_emoticon_42_2D_29_20" msgid="1063205250387128068">"Obraz s sončnimi očali"</string>
