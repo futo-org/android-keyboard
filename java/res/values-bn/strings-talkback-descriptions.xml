@@ -42,7 +42,7 @@
     <string name="spoken_description_mic" msgid="6153138783813452464">"ভয়েস ইনপুট"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"ইমোজি"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"ফেরত যান"</string>
-    <string name="spoken_description_search" msgid="5099937658231911288">"অনুসন্ধান"</string>
+    <string name="spoken_description_search" msgid="5099937658231911288">"সার্চ"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"ডট"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"ভাষা স্যুইচ করুন"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"পরবর্তী"</string>
@@ -76,7 +76,7 @@
     <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="5844950234883716704">"জীবজন্তু ও প্রকৃতি"</string>
     <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"খাদ্য ও পানীয়"</string>
     <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="3834085499381434611">"ভ্রমণ ও স্থানগুলি"</string>
-    <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"কার্যকলাপ"</string>
+    <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"অ্যাক্টিভিটি"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"ইমোটিকনগুলি"</string>
     <string name="spoken_description_upper_case" msgid="4904835255229433916">"বড় হাতের <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
     <string name="spoken_letter_0049" msgid="4743162182646977944">"বড় হাতের I"</string>
