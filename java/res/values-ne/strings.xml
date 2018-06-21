@@ -153,7 +153,7 @@
     <string name="setup_step2_instruction" msgid="9141481964870023336">"त्यसपछि, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" लाई तपाईँको सक्रिय पाठ इनपुट विधिका रूपमा चयन गर्नुहोस्।"</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"इनपुट विधि स्विच गर्नुहोस्"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"बधाई छ, तपाईँले सेट पुरा गर्नुभयो!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"अब तपाईं <xliff:g id="APPLICATION_NAME">%s</xliff:g>का साथ तपाईंका सम्पूर्ण मनपर्ने अनुप्रयोगहरू टाइप गर्न सक्नुहुन्छ।"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"अब तपाईं <xliff:g id="APPLICATION_NAME">%s</xliff:g>का साथ तपाईंका सम्पूर्ण मन पर्ने अनुप्रयोगहरू टाइप गर्न सक्नुहुन्छ।"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"थप भाषाहरू कन्फिगर गर्नुहोस्"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त भयो"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"अनुप्रयोग आइकन देखाउनुहोस्"</string>
