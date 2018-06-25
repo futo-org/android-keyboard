@@ -26,7 +26,7 @@ LOCAL_CERTIFICATE := shared
 LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
-        android-common inputmethod-common jsr305 latinime-common
+        android-common jsr305 latinime-common
 
 LOCAL_STATIC_ANDROID_LIBRARIES := \
         androidx.legacy_legacy-support-v4
