@@ -16,18 +16,29 @@
 
 package com.android.inputmethod.compat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import android.graphics.Typeface;
 import android.os.Build;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 
 import java.util.Locale;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class LocaleSpanCompatUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class LocaleSpanCompatUtilsTests {
+    @Test
     public void testInstantiatable() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             // LocaleSpan isn't yet available.
@@ -61,6 +72,7 @@ public class LocaleSpanCompatUtilsTests extends AndroidTestCase {
         assertEquals(expectedCount, spans.length);
     }
 
+    @Test
     public void testUpdateLocaleSpan() {
         if (!LocaleSpanCompatUtils.isLocaleSpanAvailable()) {
             return;

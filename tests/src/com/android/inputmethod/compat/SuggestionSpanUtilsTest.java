@@ -16,10 +16,15 @@
 
 package com.android.inputmethod.compat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
@@ -33,8 +38,16 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class SuggestionSpanUtilsTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SuggestionSpanUtilsTest {
+
+    private Context getContext() {
+        return InstrumentationRegistry.getTargetContext();
+    }
 
     /**
      * Helper method to create a dummy {@link SuggestedWordInfo}.
@@ -91,6 +104,7 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
+    @Test
     public void testGetTextWithAutoCorrectionIndicatorUnderline() {
         final String ORIGINAL_TEXT = "Hey!";
         final Locale NONNULL_LOCALE = new Locale("en", "GB");
@@ -107,6 +121,7 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
+    @Test
     public void testGetTextWithAutoCorrectionIndicatorUnderlineRootLocale() {
         final String ORIGINAL_TEXT = "Hey!";
         final CharSequence text = SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
@@ -121,6 +136,7 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
                 new String[]{}, Locale.ROOT, text);
     }
 
+    @Test
     public void testGetTextWithSuggestionSpan() {
         final SuggestedWordInfo prediction1 =
                 createWordInfo("Quality", SuggestedWordInfo.KIND_PREDICTION);
@@ -218,6 +234,7 @@ public class SuggestionSpanUtilsTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testFindFirstLocaleFromSuggestionSpans() {
         final String[] suggestions = new String[] {"Quality", "Speed", "Price"};
         final SuggestionSpan nullLocaleSpan = new SuggestionSpan((Locale)null, suggestions, 0);

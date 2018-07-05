@@ -16,10 +16,12 @@
 
 package com.android.inputmethod.compat;
 
+import static org.junit.Assert.assertTrue;
+
 import android.graphics.Typeface;
 import android.os.Parcel;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -29,8 +31,13 @@ import android.view.textservice.TextInfo;
 
 import java.util.Arrays;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class TextInfoCompatUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class TextInfoCompatUtilsTests {
     final private static String TEST_TEXT = "0123456789";
     final private static int TEST_COOKIE = 0x1234;
     final private static int TEST_SEQUENCE_NUMBER = 0x4321;
@@ -45,6 +52,7 @@ public class TextInfoCompatUtilsTests extends AndroidTestCase {
     final private static int TEST_URL_SPAN_END = 7;
     final private static int TEST_URL_SPAN_FLAGS = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 
+    @Test
     public void testGetCharSequence() {
         final SpannableString text = new SpannableString(TEST_TEXT);
         text.setSpan(TEST_STYLE_SPAN, TEST_STYLE_SPAN_START, TEST_STYLE_SPAN_END,
