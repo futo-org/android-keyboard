@@ -16,12 +16,18 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.MediumTest;
+import static org.junit.Assert.assertEquals;
+
+import android.support.test.filters.MediumTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @MediumTest
-public class AsyncResultHolderTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class AsyncResultHolderTests {
     static final String TAG = AsyncResultHolderTests.class.getSimpleName();
 
     private static final int TIMEOUT_IN_MILLISECONDS = 500;
@@ -44,12 +50,14 @@ public class AsyncResultHolderTests extends AndroidTestCase {
         }).start();
     }
 
+    @Test
     public void testGetWithoutSet() {
         final AsyncResultHolder<Integer> holder = new AsyncResultHolder<>("Test");
         final int resultValue = holder.get(DEFAULT_VALUE, TIMEOUT_IN_MILLISECONDS);
         assertEquals(DEFAULT_VALUE, resultValue);
     }
 
+    @Test
     public void testGetBeforeSet() {
         final AsyncResultHolder<Integer> holder = new AsyncResultHolder<>("Test");
         setAfterGivenTime(holder, SET_VALUE, TIMEOUT_IN_MILLISECONDS + MARGIN_IN_MILLISECONDS);
@@ -57,6 +65,7 @@ public class AsyncResultHolderTests extends AndroidTestCase {
         assertEquals(DEFAULT_VALUE, resultValue);
     }
 
+    @Test
     public void testGetAfterSet() {
         final AsyncResultHolder<Integer> holder = new AsyncResultHolder<>("Test");
         holder.set(SET_VALUE);
@@ -64,6 +73,7 @@ public class AsyncResultHolderTests extends AndroidTestCase {
         assertEquals(SET_VALUE, resultValue);
     }
 
+    @Test
     public void testGetBeforeTimeout() {
         final AsyncResultHolder<Integer> holder = new AsyncResultHolder<>("Test");
         setAfterGivenTime(holder, SET_VALUE, TIMEOUT_IN_MILLISECONDS - MARGIN_IN_MILLISECONDS);

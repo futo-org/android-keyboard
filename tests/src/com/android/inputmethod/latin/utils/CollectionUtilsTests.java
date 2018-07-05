@@ -16,10 +16,15 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.android.inputmethod.latin.common.CollectionUtils;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,15 +33,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 /**
  * Tests for {@link CollectionUtils}.
  */
 @SmallTest
-public class CollectionUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class CollectionUtilsTests {
     /**
      * Tests that {@link CollectionUtils#arrayAsList(Object[],int,int)} fails as expected
      * with some invalid inputs.
      */
+    @Test
     public void testArrayAsListFailure() {
         final String[] array = { "0", "1" };
         // Negative start
@@ -66,6 +76,7 @@ public class CollectionUtilsTests extends AndroidTestCase {
      * Tests that {@link CollectionUtils#arrayAsList(Object[],int,int)} gives the expected
      * results for a few valid inputs.
      */
+    @Test
     public void testArrayAsList() {
         final ArrayList<String> empty = new ArrayList<>();
         assertEquals(empty, CollectionUtils.arrayAsList(new String[] {}, 0, 0));
@@ -81,6 +92,7 @@ public class CollectionUtilsTests extends AndroidTestCase {
      * Tests that {@link CollectionUtils#isNullOrEmpty(java.util.Collection)} gives the expected
      * results for a few cases.
      */
+    @Test
     public void testIsNullOrEmpty() {
         assertTrue(CollectionUtils.isNullOrEmpty((List<String>) null));
         assertTrue(CollectionUtils.isNullOrEmpty((Map<String, String>) null));

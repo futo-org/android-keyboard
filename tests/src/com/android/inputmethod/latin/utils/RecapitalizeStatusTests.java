@@ -16,17 +16,24 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.common.Constants;
 
 import java.util.Locale;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class RecapitalizeStatusTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class RecapitalizeStatusTests {
     private static final int[] SPACE = { Constants.CODE_SPACE };
 
+    @Test
     public void testTrim() {
         final RecapitalizeStatus status = new RecapitalizeStatus();
         status.start(30, 40, "abcdefghij", Locale.ENGLISH, SPACE);
@@ -54,6 +61,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         assertEquals(43, status.getNewCursorEnd());
     }
 
+    @Test
     public void testRotate() {
         final RecapitalizeStatus status = new RecapitalizeStatus();
         status.start(29, 40, "abcd efghij", Locale.ENGLISH, SPACE);

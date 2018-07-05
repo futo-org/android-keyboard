@@ -16,10 +16,16 @@
 
 package com.android.inputmethod.latin.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Context;
 import android.content.res.Resources;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -30,8 +36,14 @@ import com.android.inputmethod.latin.RichInputMethodSubtype;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class SubtypeLocaleUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SubtypeLocaleUtilsTests {
     // All input method subtypes of LatinIME.
     private final ArrayList<RichInputMethodSubtype> mSubtypesList = new ArrayList<>();
 
@@ -64,10 +76,9 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     InputMethodSubtype HI_LATN_DVORAK; // Hinglis Dvorak
     InputMethodSubtype SR_LATN_QWERTY; // Serbian Latin Qwerty
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        final Context context = getContext();
+    @Before
+    public void setUp() throws Exception {
+        final Context context = InstrumentationRegistry.getTargetContext();
         mRes = context.getResources();
         RichInputMethodManager.init(context);
         mRichImm = RichInputMethodManager.getInstance();
@@ -136,13 +147,13 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         // Restore additional subtypes.
         mRichImm.setAdditionalInputMethodSubtypes(mSavedAddtionalSubtypes);
-        super.tearDown();
     }
 
+    @Test
     public void testAllFullDisplayName() {
         for (final RichInputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
@@ -159,6 +170,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testKeyboardLayoutSetName() {
         assertEquals("en_US", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(EN_US));
         assertEquals("en_GB", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(EN_GB));
@@ -223,6 +235,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  sr_ZZ qwerty         T  Serbian (QWERTY)        exception
     //  zz    pc             T  Alphabet (PC)
 
+    @Test
     public void testPredefinedSubtypesInEnglishSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
@@ -264,6 +277,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         tests.runInLocale(mRes, Locale.ENGLISH);
     }
 
+    @Test
     public void testAdditionalSubtypesInEnglishSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
@@ -323,6 +337,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  sr_ZZ qwerty         T  Serbe (QWERTY)                   exception
     //  zz    pc             T  Alphabet latin (PC)
 
+    @Test
     public void testPredefinedSubtypesInFrenchSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
@@ -364,6 +379,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         tests.runInLocale(mRes, Locale.FRENCH);
     }
 
+    @Test
     public void testAdditionalSubtypesInFrenchSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
@@ -405,6 +421,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  hi_ZZ qwerty  F  हिंग्लिश
     //  hi_ZZ dvorak  T  हिंग्लिश (Dvorak)
 
+    @Test
     public void testHinglishSubtypesInHindiSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
@@ -432,6 +449,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  sr_ZZ serbian_qwertz F  Српски (латиница)
     //  sr_ZZ qwerty         T  Српски (QWERTY)
 
+    @Test
     public void testSerbianLatinSubtypesInSerbianSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
@@ -451,6 +469,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         tests.runInLocale(mRes, new Locale("sr"));
     }
 
+    @Test
     public void testIsRtlLanguage() {
         // Known Right-to-Left language subtypes.
         final InputMethodSubtype ARABIC = mRichImm

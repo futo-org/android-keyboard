@@ -16,14 +16,23 @@
 
 package com.android.inputmethod.latin.utils;
 
+import static org.junit.Assert.assertEquals;
+
 import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class JsonUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class JsonUtilsTests {
+    @Test
     public void testJsonUtils() {
         final Object[] objs = new Object[] { 1, "aaa", "bbb", 3 };
         final List<Object> objArray = Arrays.asList(objs);

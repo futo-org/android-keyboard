@@ -19,10 +19,12 @@ package com.android.inputmethod.latin.utils;
 import static com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils.FORMAT_TYPE_FULL_LOCALE;
 import static com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils.FORMAT_TYPE_LANGUAGE_ONLY;
 import static com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils.FORMAT_TYPE_NONE;
+import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.RichInputMethodManager;
@@ -36,8 +38,13 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class LanguageOnSpacebarUtilsTests {
     private RichInputMethodManager mRichImm;
 
     RichInputMethodSubtype EN_US_QWERTY;
@@ -50,10 +57,9 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
     RichInputMethodSubtype IW_HEBREW;
     RichInputMethodSubtype ZZ_QWERTY;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        final Context context = getContext();
+    @Before
+    public void setUp() throws Exception {
+        final Context context = InstrumentationRegistry.getTargetContext();
         RichInputMethodManager.init(context);
         mRichImm = RichInputMethodManager.getInstance();
 
@@ -99,6 +105,7 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
                 LanguageOnSpacebarUtils.getLanguageOnSpacebarFormatType(subtype));
     }
 
+    @Test
     public void testOneSubtypeImplicitlyEnabled() {
         enableSubtypes(EN_US_QWERTY);
         assertFormatType(EN_US_QWERTY, true, Locale.US,            FORMAT_TYPE_NONE);
@@ -113,6 +120,7 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
         assertFormatType(FR_CA_QWERTY, true, Locale.CANADA_FRENCH, FORMAT_TYPE_NONE);
     }
 
+    @Test
     public void testOneSubtypeExplicitlyEnabled() {
         enableSubtypes(EN_US_QWERTY);
         assertFormatType(EN_US_QWERTY, false, Locale.UK,     FORMAT_TYPE_LANGUAGE_ONLY);
@@ -131,6 +139,7 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
         assertFormatType(FR_CA_QWERTY, false, Locale.FRANCE,        FORMAT_TYPE_LANGUAGE_ONLY);
     }
 
+    @Test
     public void testOneSubtypeImplicitlyEnabledWithNoLanguageSubtype() {
         final Locale Locale_IW = new Locale("iw");
         enableSubtypes(IW_HEBREW, ZZ_QWERTY);
@@ -140,6 +149,7 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
         assertFormatType(ZZ_QWERTY,    true, Locale_IW, FORMAT_TYPE_FULL_LOCALE);
     }
 
+    @Test
     public void testTwoSubtypesExplicitlyEnabled() {
         enableSubtypes(EN_US_QWERTY, FR_AZERTY);
         assertFormatType(EN_US_QWERTY, false, Locale.US,     FORMAT_TYPE_LANGUAGE_ONLY);
@@ -157,6 +167,7 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
 
     }
 
+    @Test
     public void testMultiSubtypeWithSameLanuageAndSameLayout() {
         // Explicitly enable en_US, en_GB, fr_FR, and no language keyboards.
         enableSubtypes(EN_US_QWERTY, EN_GB_QWERTY, FR_CA_QWERTY, ZZ_QWERTY);
@@ -172,6 +183,7 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
         assertFormatType(ZZ_QWERTY,    false, Locale.JAPAN, FORMAT_TYPE_FULL_LOCALE);
     }
 
+    @Test
     public void testMultiSubtypesWithSameLanguageButHaveDifferentLayout() {
         enableSubtypes(FR_AZERTY, FR_CA_QWERTY, FR_CH_SWISS, FR_CH_QWERTZ);
 
@@ -191,6 +203,7 @@ public class LanguageOnSpacebarUtilsTests extends AndroidTestCase {
         assertFormatType(FR_CH_QWERTZ, false, Locale.JAPAN, FORMAT_TYPE_LANGUAGE_ONLY);
     }
 
+    @Test
     public void testMultiSubtypesWithSameLanguageAndMayHaveSameLayout() {
         enableSubtypes(FR_AZERTY, FR_CA_QWERTY, FR_CH_SWISS, FR_CH_QWERTY, FR_CH_QWERTZ);
 

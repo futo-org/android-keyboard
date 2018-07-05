@@ -17,32 +17,39 @@
 package com.android.inputmethod.latin.utils;
 
 import static com.android.inputmethod.latin.utils.ImportantNoticeUtils.KEY_TIMESTAMP_OF_CONTACTS_NOTICE;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.MediumTest;
-import android.text.TextUtils;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.MediumTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.settings.SettingsValues;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.concurrent.TimeUnit;
-
 @MediumTest
-public class ImportantNoticeUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class ImportantNoticeUtilsTests {
 
     private ImportantNoticePreferences mImportantNoticePreferences;
 
     @Mock private SettingsValues mMockSettingsValues;
 
+    private Context getContext() {
+        return InstrumentationRegistry.getTargetContext();
+    }
+
     private static class ImportantNoticePreferences {
         private final SharedPreferences mPref;
 
-        private Integer mVersion;
         private Long mLastTime;
 
         public ImportantNoticePreferences(final Context context) {
@@ -96,21 +103,20 @@ public class ImportantNoticeUtilsTests extends AndroidTestCase {
         }
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         mImportantNoticePreferences = new ImportantNoticePreferences(getContext());
         mImportantNoticePreferences.save();
         when(mMockSettingsValues.isPersonalizationEnabled()).thenReturn(true);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         mImportantNoticePreferences.restore();
     }
 
+    @Test
     public void testPersonalizationSetting() {
         mImportantNoticePreferences.clear();
 

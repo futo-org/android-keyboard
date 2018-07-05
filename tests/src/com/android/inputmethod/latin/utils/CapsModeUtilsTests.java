@@ -16,18 +16,26 @@
 
 package com.android.inputmethod.latin.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.content.res.Resources;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.text.TextUtils;
 
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Locale;
 
 @SmallTest
-public class CapsModeUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class CapsModeUtilsTests {
     private static void onePathForCaps(final CharSequence cs, final int expectedResult,
             final int mask, final SpacingAndPunctuations sp, final boolean hasSpaceBefore) {
         final int oneTimeResult = expectedResult & mask;
@@ -49,6 +57,7 @@ public class CapsModeUtilsTests extends AndroidTestCase {
         onePathForCaps(cs, expectedResult, s, sp, hasSpaceBefore);
     }
 
+    @Test
     public void testGetCapsMode() {
         final int c = TextUtils.CAP_MODE_CHARACTERS;
         final int w = TextUtils.CAP_MODE_WORDS;
@@ -59,7 +68,7 @@ public class CapsModeUtilsTests extends AndroidTestCase {
                 return new SpacingAndPunctuations(res);
             }
         };
-        final Resources res = getContext().getResources();
+        final Resources res = InstrumentationRegistry.getTargetContext().getResources();
         SpacingAndPunctuations sp = job.runInLocale(res, Locale.ENGLISH);
         allPathsForCaps("", c | w | s, sp, false);
         allPathsForCaps("Word", c, sp, false);

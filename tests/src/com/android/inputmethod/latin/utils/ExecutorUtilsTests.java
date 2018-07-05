@@ -16,24 +16,31 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.MediumTest;
+import static org.junit.Assert.assertEquals;
+
+import android.support.test.filters.MediumTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 /**
  * Unit tests for {@link ExecutorUtils}.
  */
 @MediumTest
-public class ExecutorUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class ExecutorUtilsTests {
     private static final String TAG = ExecutorUtilsTests.class.getSimpleName();
 
     private static final int NUM_OF_TASKS = 10;
     private static final int DELAY_FOR_WAITING_TASKS_MILLISECONDS = 500;
 
+    @Test
     public void testExecute() {
         final ExecutorService executor =
                 ExecutorUtils.getBackgroundExecutor(ExecutorUtils.KEYBOARD);

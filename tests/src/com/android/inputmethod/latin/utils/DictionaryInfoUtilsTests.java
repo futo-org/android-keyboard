@@ -16,17 +16,27 @@
 
 package com.android.inputmethod.latin.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import android.content.res.Resources;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.Locale;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class DictionaryInfoUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class DictionaryInfoUtilsTests {
+    @Test
     public void testLooksValidForDictionaryInsertion() {
         final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
             @Override
@@ -34,7 +44,7 @@ public class DictionaryInfoUtilsTests extends AndroidTestCase {
                 return new SpacingAndPunctuations(res);
             }
         };
-        final Resources res = getContext().getResources();
+        final Resources res = InstrumentationRegistry.getTargetContext().getResources();
         final SpacingAndPunctuations sp = job.runInLocale(res, Locale.ENGLISH);
         assertTrue(DictionaryInfoUtils.looksValidForDictionaryInsertion("aochaueo", sp));
         assertFalse(DictionaryInfoUtils.looksValidForDictionaryInsertion("", sp));
@@ -46,6 +56,7 @@ public class DictionaryInfoUtilsTests extends AndroidTestCase {
         assertFalse(DictionaryInfoUtils.looksValidForDictionaryInsertion("!!!", sp));
     }
 
+    @Test
     public void testGetMainDictId() {
         assertEquals("main:en",
                 DictionaryInfoUtils.getMainDictId(LocaleUtils.constructLocaleFromString("en")));
