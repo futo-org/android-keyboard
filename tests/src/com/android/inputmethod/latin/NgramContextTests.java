@@ -16,15 +16,26 @@
 
 package com.android.inputmethod.latin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.NgramContextUtils;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
-public class NgramContextTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class NgramContextTests {
+
+    @Test
     public void testConstruct() {
         assertEquals(new NgramContext(new WordInfo("a")), new NgramContext(new WordInfo("a")));
         assertEquals(new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO),
@@ -35,6 +46,7 @@ public class NgramContextTests extends AndroidTestCase {
                 new NgramContext(WordInfo.EMPTY_WORD_INFO));
     }
 
+    @Test
     public void testIsBeginningOfSentenceContext() {
         assertFalse(new NgramContext().isBeginningOfSentenceContext());
         assertTrue(new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO)
@@ -52,6 +64,7 @@ public class NgramContextTests extends AndroidTestCase {
                 .isBeginningOfSentenceContext());
     }
 
+    @Test
     public void testGetNextNgramContext() {
         final NgramContext ngramContext_a = new NgramContext(new WordInfo("a"));
         final NgramContext ngramContext_b_a =
@@ -67,6 +80,7 @@ public class NgramContextTests extends AndroidTestCase {
         assertEquals("c", ngramContext_c_bos.getNthPrevWord(1));
     }
 
+    @Test
     public void testExtractPrevWordsContextTest() {
         final NgramContext ngramContext_bos =
                 new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
@@ -92,6 +106,7 @@ public class NgramContextTests extends AndroidTestCase {
         assertEquals("a", ngramContext_a_empty.extractPrevWordsContext());
     }
 
+    @Test
     public void testExtractPrevWordsContextArray() {
         final NgramContext ngramContext_bos =
                 new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
@@ -123,9 +138,10 @@ public class NgramContextTests extends AndroidTestCase {
         assertEquals("a", ngramContext_a_empty.extractPrevWordsContextArray()[0]);
     }
 
+    @Test
     public void testGetNgramContextFromNthPreviousWord() {
         SpacingAndPunctuations spacingAndPunctuations = new SpacingAndPunctuations(
-                mContext.getResources());
+                InstrumentationRegistry.getTargetContext().getResources());
         assertEquals("<S>", NgramContextUtils.getNgramContextFromNthPreviousWord("",
                 spacingAndPunctuations, 1).extractPrevWordsContext());
         assertEquals("<S> b", NgramContextUtils.getNgramContextFromNthPreviousWord("a. b ",

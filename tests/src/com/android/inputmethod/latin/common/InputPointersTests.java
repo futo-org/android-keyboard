@@ -16,15 +16,27 @@
 
 package com.android.inputmethod.latin.common;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
 @SmallTest
-public class InputPointersTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class InputPointersTests {
     private static final int DEFAULT_CAPACITY = 48;
 
+    @Test
     public void testNewInstance() {
         final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         assertEquals("new instance size", 0, src.getPointerSize());
@@ -34,6 +46,7 @@ public class InputPointersTests extends AndroidTestCase {
         assertNotNull("new instance times", src.getTimes());
     }
 
+    @Test
     public void testReset() {
         final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int[] xCoordinates = src.getXCoordinates();
@@ -49,6 +62,7 @@ public class InputPointersTests extends AndroidTestCase {
         assertNotSame("times after reset", times, src.getTimes());
     }
 
+    @Test
     public void testAdd() {
         final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = src.getXCoordinates().length * 2 + 10;
@@ -72,6 +86,7 @@ public class InputPointersTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAddAt() {
         final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = 1000, step = 100;
@@ -95,6 +110,7 @@ public class InputPointersTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testSet() {
         final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = src.getXCoordinates().length * 2 + 10;
@@ -114,6 +130,7 @@ public class InputPointersTests extends AndroidTestCase {
         assertSame("times after set", dst.getTimes(), src.getTimes());
     }
 
+    @Test
     public void testCopy() {
         final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = 100;
@@ -142,6 +159,7 @@ public class InputPointersTests extends AndroidTestCase {
                 dst.getTimes(), 0, src.getTimes(), 0, size);
     }
 
+    @Test
     public void testAppend() {
         final int dstLength = 50;
         final InputPointers dst = new InputPointers(DEFAULT_CAPACITY);
@@ -211,6 +229,7 @@ public class InputPointersTests extends AndroidTestCase {
                 srcTimes.getPrimitiveArray(), startPos, dst.getTimes(), dstLength, srcLength);
     }
 
+    @Test
     public void testAppendResizableIntArray() {
         final int dstLength = 50;
         final InputPointers dst = new InputPointers(DEFAULT_CAPACITY);
@@ -296,6 +315,7 @@ public class InputPointersTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testShift() {
         final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = 100;

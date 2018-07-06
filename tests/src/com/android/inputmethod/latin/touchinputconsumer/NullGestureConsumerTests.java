@@ -16,18 +16,26 @@
 
 package com.android.inputmethod.latin.touchinputconsumer;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Tests for GestureConsumer.NULL_GESTURE_CONSUMER.
  */
 @SmallTest
-public class NullGestureConsumerTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class NullGestureConsumerTests {
     /**
      * Tests that GestureConsumer.NULL_GESTURE_CONSUMER indicates that it won't consume gesture data
      * and that its methods don't raise exceptions even for invalid data.
      */
+    @Test
     public void testNullGestureConsumer() {
         assertFalse(GestureConsumer.NULL_GESTURE_CONSUMER.willConsume());
         GestureConsumer.NULL_GESTURE_CONSUMER.onInit(null, null);
@@ -40,6 +48,7 @@ public class NullGestureConsumerTests extends AndroidTestCase {
     /**
      * Tests that newInstance returns NULL_GESTURE_CONSUMER for invalid input.
      */
+    @Test
     public void testNewInstanceGivesNullGestureConsumerForInvalidInputs() {
         assertSame(GestureConsumer.NULL_GESTURE_CONSUMER,
                 GestureConsumer.newInstance(null, null, null, null));

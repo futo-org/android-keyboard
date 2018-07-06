@@ -16,15 +16,27 @@
 
 package com.android.inputmethod.latin.common;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import java.util.Arrays;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class ResizableIntArrayTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class ResizableIntArrayTests {
     private static final int DEFAULT_CAPACITY = 48;
 
+    @Test
     public void testNewInstance() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int[] array = src.getPrimitiveArray();
@@ -33,6 +45,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertEquals("new instance array length", DEFAULT_CAPACITY, array.length);
     }
 
+    @Test
     public void testAdd() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int[] array = src.getPrimitiveArray();
@@ -62,6 +75,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAddAt() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int limit = DEFAULT_CAPACITY * 10, step = DEFAULT_CAPACITY * 2;
@@ -76,6 +90,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testGet() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         try {
@@ -105,6 +120,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testReset() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int[] array = src.getPrimitiveArray();
@@ -136,6 +152,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testSetLength() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int[] array = src.getPrimitiveArray();
@@ -172,6 +189,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testSet() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int limit = DEFAULT_CAPACITY * 2 + 10;
@@ -186,6 +204,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertSame("array after set", dst.getPrimitiveArray(), src.getPrimitiveArray());
     }
 
+    @Test
     public void testCopy() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         for (int i = 0; i < DEFAULT_CAPACITY; i++) {
@@ -214,6 +233,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
                 dst.getPrimitiveArray(), 0, src.getPrimitiveArray(), 0, dst.getLength());
     }
 
+    @Test
     public void testAppend() {
         final int srcLength = DEFAULT_CAPACITY;
         final ResizableIntArray src = new ResizableIntArray(srcLength);
@@ -264,6 +284,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
                 srcLength);
     }
 
+    @Test
     public void testFill() {
         final int srcLength = DEFAULT_CAPACITY;
         final ResizableIntArray src = new ResizableIntArray(srcLength);
@@ -359,6 +380,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testShift() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int limit = DEFAULT_CAPACITY * 10;

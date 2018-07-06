@@ -16,13 +16,22 @@
 
 package com.android.inputmethod.latin.suggestions;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static junit.framework.TestCase.assertEquals;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.SuggestedWords;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class SuggestionStripLayoutHelperTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SuggestionStripLayoutHelperTests {
     private static void confirmShowTypedWord(final String message, final int inputType) {
         assertFalse(message, SuggestionStripLayoutHelper.shouldOmitTypedWord(
                 inputType,
@@ -42,6 +51,7 @@ public class SuggestionStripLayoutHelperTests extends AndroidTestCase {
                 true /* shouldShowUiToAcceptTypedWord */));
     }
 
+    @Test
     public void testShouldShowTypedWord() {
         confirmShowTypedWord("no input style",
                 SuggestedWords.INPUT_STYLE_NONE);
@@ -51,7 +61,8 @@ public class SuggestionStripLayoutHelperTests extends AndroidTestCase {
                 SuggestedWords.INPUT_STYLE_RECORRECTION);
     }
 
-    public void testshouldOmitTypedWordWhileTyping() {
+    @Test
+    public void testShouldOmitTypedWordWhileTyping() {
         assertFalse("typing", SuggestionStripLayoutHelper.shouldOmitTypedWord(
                 SuggestedWords.INPUT_STYLE_TYPING,
                 false /* gestureFloatingPreviewTextEnabled */,
@@ -70,7 +81,8 @@ public class SuggestionStripLayoutHelperTests extends AndroidTestCase {
                 true /* shouldShowUiToAcceptTypedWord */));
     }
 
-    public void testshouldOmitTypedWordWhileGesturing() {
+    @Test
+    public void testShouldOmitTypedWordWhileGesturing() {
         assertFalse("gesturing", SuggestionStripLayoutHelper.shouldOmitTypedWord(
                 SuggestedWords.INPUT_STYLE_UPDATE_BATCH,
                 false /* gestureFloatingPreviewTextEnabled */,
@@ -89,7 +101,8 @@ public class SuggestionStripLayoutHelperTests extends AndroidTestCase {
                 true /* shouldShowUiToAcceptTypedWord */));
     }
 
-    public void testshouldOmitTypedWordWhenGestured() {
+    @Test
+    public void testShouldOmitTypedWordWhenGestured() {
         assertFalse("gestured", SuggestionStripLayoutHelper.shouldOmitTypedWord(
                 SuggestedWords.INPUT_STYLE_TAIL_BATCH,
                 false /* gestureFloatingPreviewTextEnabled */,
@@ -115,6 +128,7 @@ public class SuggestionStripLayoutHelperTests extends AndroidTestCase {
     private static final int POSITION_CENTER = 1;
     private static final int POSITION_RIGHT = 2;
 
+    @Test
     public void testGetPositionInSuggestionStrip() {
         assertEquals("1st word without auto correction", POSITION_CENTER,
                 SuggestionStripLayoutHelper.getPositionInSuggestionStrip(

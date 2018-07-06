@@ -16,8 +16,12 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.LargeTest;
+import static org.junit.Assert.assertTrue;
+
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
@@ -27,16 +31,26 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Random;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 /**
  * Unit tests for UserHistoryDictionary
  */
 @LargeTest
-public class UserHistoryDictionaryTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class UserHistoryDictionaryTests {
     private static final String TAG = UserHistoryDictionaryTests.class.getSimpleName();
     private static final int WAIT_FOR_WRITING_FILE_IN_MILLISECONDS = 3000;
     private static final String TEST_ACCOUNT = "account@example.com";
 
     private int mCurrentTime = 0;
+
+    private Context getContext() {
+        return InstrumentationRegistry.getTargetContext();
+    }
 
     private static void printAllFiles(final File dir) {
         Log.d(TAG, dir.getAbsolutePath());
@@ -62,20 +76,18 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         assertTrue("Following dictionary file doesn't exist: " + dictFile, dictFile.exists());
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         resetCurrentTimeForTestMode();
         UserHistoryDictionaryTestsHelper.removeAllTestDictFiles(
-                UserHistoryDictionaryTestsHelper.TEST_LOCALE_PREFIX, mContext);
+                UserHistoryDictionaryTestsHelper.TEST_LOCALE_PREFIX, getContext());
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         UserHistoryDictionaryTestsHelper.removeAllTestDictFiles(
-                UserHistoryDictionaryTestsHelper.TEST_LOCALE_PREFIX, mContext);
+                UserHistoryDictionaryTestsHelper.TEST_LOCALE_PREFIX, getContext());
         stopTestModeInNativeCode();
-        super.tearDown();
     }
 
     private void resetCurrentTimeForTestMode() {
@@ -111,7 +123,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                 null /* dictFile */,
                 testAccount /* account */);
         final File dictFile = ExpandableBinaryDictionary.getDictFile(
-                mContext, dictName, null /* dictFile */);
+                getContext(), dictName, null /* dictFile */);
         final UserHistoryDictionary dict = PersonalizationHelper.getUserHistoryDictionary(
                 getContext(), dummyLocale, testAccount);
         clearHistory(dict);
@@ -123,18 +135,22 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         assertDictionaryExists(dict, dictFile);
     }
 
+    @Test
     public void testRandomWords_NullAccount() {
         doTestRandomWords(null /* testAccount */);
     }
 
+    @Test
     public void testRandomWords() {
         doTestRandomWords(TEST_ACCOUNT);
     }
 
+    @Test
     public void testStressTestForSwitchingLanguagesAndAddingWords() {
         doTestStressTestForSwitchingLanguagesAndAddingWords(TEST_ACCOUNT);
     }
 
+    @Test
     public void testStressTestForSwitchingLanguagesAndAddingWords_NullAccount() {
         doTestStressTestForSwitchingLanguagesAndAddingWords(null /* testAccount */);
     }
@@ -158,7 +174,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                         UserHistoryDictionary.NAME, dummyLocale, null /* dictFile */,
                         testAccount /* account */);
                 dictFiles[i] = ExpandableBinaryDictionary.getDictFile(
-                        mContext, dictName, null /* dictFile */);
+                        getContext(), dictName, null /* dictFile */);
                 dicts[i] = PersonalizationHelper.getUserHistoryDictionary(getContext(),
                         dummyLocale, testAccount);
                 clearHistory(dicts[i]);
@@ -186,10 +202,12 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAddManyWords() {
         doTestAddManyWords(TEST_ACCOUNT);
     }
 
+    @Test
     public void testAddManyWords_NullAccount() {
         doTestAddManyWords(null /* testAccount */);
     }
@@ -200,7 +218,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final String dictName = UserHistoryDictionary.getUserHistoryDictName(
                 UserHistoryDictionary.NAME, dummyLocale, null /* dictFile */, testAccount);
         final File dictFile = ExpandableBinaryDictionary.getDictFile(
-                mContext, dictName, null /* dictFile */);
+                getContext(), dictName, null /* dictFile */);
         final int numberOfWords = 10000;
         final Random random = new Random(123456);
         final UserHistoryDictionary dict = PersonalizationHelper.getUserHistoryDictionary(

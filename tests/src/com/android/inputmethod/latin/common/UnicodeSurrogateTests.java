@@ -16,18 +16,28 @@
 
 package com.android.inputmethod.latin.common;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
-public class UnicodeSurrogateTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class UnicodeSurrogateTests {
 
+    @Test
     public void testIsLowSurrogate() {
         assertFalse(UnicodeSurrogate.isLowSurrogate('\uD7FF'));
         assertTrue(UnicodeSurrogate.isLowSurrogate('\uD83D'));
         assertFalse(UnicodeSurrogate.isLowSurrogate('\uDC00'));
     }
 
+    @Test
     public void testIsHighSurrogate() {
         assertFalse(UnicodeSurrogate.isHighSurrogate('\uDBFF'));
         assertTrue(UnicodeSurrogate.isHighSurrogate('\uDE25'));

@@ -16,16 +16,24 @@
 
 package com.android.inputmethod.latin;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 @SmallTest
-public class SuggestedWordsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SuggestedWordsTests {
 
     /**
      * Helper method to create a dummy {@link SuggestedWordInfo} with specifying
@@ -80,30 +88,35 @@ public class SuggestedWordsTests extends AndroidTestCase {
         return returnedWordInfo;
     }
 
+    @Test
     public void testRemoveDupesNoDupes() {
         final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "c");
         assertEquals(-1, SuggestedWordInfo.removeDups("b", infos));
         assertEquals(2, infos.size());
     }
 
+    @Test
     public void testRemoveDupesTypedWordNotDupe() {
         final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "a", "c");
         assertEquals(-1, SuggestedWordInfo.removeDups("b", infos));
         assertEquals(2, infos.size());
     }
 
+    @Test
     public void testRemoveDupesTypedWordOnlyDupe() {
         final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "b", "c");
         assertEquals(1, SuggestedWordInfo.removeDups("b", infos));
         assertEquals(2, infos.size());
     }
 
+    @Test
     public void testRemoveDupesTypedWordNotOnlyDupe() {
         final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "b", "b", "c");
         assertEquals(1, SuggestedWordInfo.removeDups("b", infos));
         assertEquals(2, infos.size());
     }
 
+    @Test
     public void testGetTransformedSuggestedWordInfo() {
         SuggestedWordInfo result = transformWordInfo("word", 0);
         assertEquals(result.mWord, "word");
@@ -119,6 +132,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
         assertEquals(result.mWord, "didn't''");
     }
 
+    @Test
     public void testGetTypedWordInfoOrNull() {
         final String TYPED_WORD = "typed";
         final SuggestedWordInfo TYPED_WORD_INFO = createTypedWordInfo(TYPED_WORD);

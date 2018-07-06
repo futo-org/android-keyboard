@@ -16,12 +16,16 @@
 
 package com.android.inputmethod.latin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.Parcel;
-import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
@@ -40,23 +44,27 @@ import com.android.inputmethod.latin.utils.TextRange;
 
 import java.util.Locale;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class RichInputConnectionAndTextRangeTests {
 
     // The following is meant to be a reasonable default for
     // the "word_separators" resource.
     private SpacingAndPunctuations mSpacingAndPunctuations;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
             @Override
             protected SpacingAndPunctuations job(final Resources res) {
                 return new SpacingAndPunctuations(res);
             }
         };
-        final Resources res = getContext().getResources();
+        final Resources res = InstrumentationRegistry.getTargetContext().getResources();
         mSpacingAndPunctuations = job.runInLocale(res, Locale.ENGLISH);
     }
 
@@ -156,6 +164,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
     /**
      * Test for getting previous word (for bigram suggestions)
      */
+    @Test
     public void testGetPreviousWord() {
         // If one of the following cases breaks, the bigram suggestions won't work.
         assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
@@ -218,6 +227,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
                 "abc 'def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
     }
 
+    @Test
     public void testGetWordRangeAtCursor() {
         /**
          * Test logic in getting the word range at the cursor.
@@ -282,6 +292,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
     /**
      * Test logic in getting the word range at the cursor.
      */
+    @Test
     public void testGetSuggestionSpansAtWord() {
         helpTestGetSuggestionSpansAtWord(10);
         helpTestGetSuggestionSpansAtWord(12);
@@ -309,7 +320,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
-        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+        assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
 
         // Test the case with 2 suggestion spans in the same place.
         text = new SpannableString("This is a string for test");
@@ -321,8 +332,8 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 2);
-        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
-        MoreAsserts.assertEquals(suggestions[1].getSuggestions(), SUGGESTIONS2);
+        assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+        assertEquals(suggestions[1].getSuggestions(), SUGGESTIONS2);
 
         // Test a case with overlapping spans, 2nd extending past the start of the word
         text = new SpannableString("This is a string for test");
@@ -334,7 +345,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
-        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+        assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
 
         // Test a case with overlapping spans, 2nd extending past the end of the word
         text = new SpannableString("This is a string for test");
@@ -346,7 +357,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
-        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+        assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
 
         // Test a case with overlapping spans, 2nd extending past both ends of the word
         text = new SpannableString("This is a string for test");
@@ -358,7 +369,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
-        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+        assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
 
         // Test a case with overlapping spans, none right on the word
         text = new SpannableString("This is a string for test");
@@ -372,6 +383,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         assertEquals(suggestions.length, 0);
     }
 
+    @Test
     public void testCursorTouchingWord() {
         final MockInputMethodService ims = new MockInputMethodService();
         final RichInputConnection ic = new RichInputConnection(ims);

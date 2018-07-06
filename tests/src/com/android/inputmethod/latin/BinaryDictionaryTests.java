@@ -16,8 +16,14 @@
 
 package com.android.inputmethod.latin;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.LargeTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -38,27 +44,31 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Random;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @LargeTest
-public class BinaryDictionaryTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class BinaryDictionaryTests {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final String TEST_LOCALE = "test";
     private static final String DICTIONARY_ID = "TestBinaryDictionary";
 
     private HashSet<File> mDictFilesToBeDeleted = new HashSet<>();
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         mDictFilesToBeDeleted.clear();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         for (final File dictFile : mDictFilesToBeDeleted) {
             dictFile.delete();
         }
         mDictFilesToBeDeleted.clear();
-        super.tearDown();
     }
 
     private File createEmptyDictionaryAndGetFile(final int formatVersion) {
@@ -82,7 +92,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     private File createEmptyVer4DictionaryAndGetFile(final int formatVersion,
             final HashMap<String, String> attributeMap) throws IOException {
         final File file = File.createTempFile(DICTIONARY_ID, TEST_DICT_FILE_EXTENSION,
-                getContext().getCacheDir());
+                InstrumentationRegistry.getTargetContext().getCacheDir());
         file.delete();
         file.mkdir();
         if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), formatVersion,
@@ -106,6 +116,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
     }
 
+    @Test
     public void testIsValidDictionary() {
         final File dictFile = createEmptyDictionaryAndGetFile(FormatSpec.VERSION403);
         BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
@@ -121,6 +132,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
     }
 
+    @Test
     public void testConstructingDictionaryOnMemory() {
         final File dictFile = createEmptyDictionaryAndGetFile(FormatSpec.VERSION403);
         FileUtils.deleteRecursively(dictFile);
@@ -142,6 +154,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
     }
 
+    @Test
     public void testAddTooLongWord() {
         final BinaryDictionary binaryDictionary = getEmptyBinaryDictionary(FormatSpec.VERSION403);
         final StringBuffer stringBuilder = new StringBuffer();
@@ -209,6 +222,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 new NgramContext(new WordInfo(word1), new WordInfo(word0)), word2);
     }
 
+    @Test
     public void testAddUnigramWord() {
         final BinaryDictionary binaryDictionary = getEmptyBinaryDictionary(FormatSpec.VERSION403);
         final int probability = 100;
@@ -236,6 +250,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(updatedProbability, binaryDictionary.getFrequency("aaa"));
     }
 
+    @Test
     public void testRandomlyAddUnigramWord() {
         final int wordCount = 1000;
         final int codePointSetSize = 50;
@@ -258,6 +273,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAddBigramWords() {
         final BinaryDictionary binaryDictionary = getEmptyBinaryDictionary(FormatSpec.VERSION403);
 
@@ -311,6 +327,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 getBigramProbability(binaryDictionary, "abcde", "fghij"));
     }
 
+    @Test
     public void testRandomlyAddBigramWords() {
         final int wordCount = 100;
         final int bigramCount = 1000;
@@ -357,6 +374,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAddTrigramWords() {
         final BinaryDictionary binaryDictionary = getEmptyBinaryDictionary(FormatSpec.VERSION403);
         final int unigramProbability = 100;
@@ -383,6 +401,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 getTrigramProbability(binaryDictionary, "bcc", "abb", "aaa"));
     }
 
+    @Test
     public void testFlushDictionary() {
         final File dictFile = createEmptyDictionaryAndGetFile(FormatSpec.VERSION403);
         BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
@@ -417,6 +436,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
     }
 
+    @Test
     public void testFlushWithGCDictionary() {
         final File dictFile = createEmptyDictionaryAndGetFile(FormatSpec.VERSION403);
         BinaryDictionary binaryDictionary = getBinaryDictionary(dictFile);
@@ -447,6 +467,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
     }
 
+    @Test
     public void testAddBigramWordsAndFlashWithGC() {
         final int wordCount = 100;
         final int bigramCount = 1000;
@@ -499,6 +520,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testRandomOperationsAndFlashWithGC() {
         final int maxUnigramCount = 5000;
         final int maxBigramCount = 10000;
@@ -593,6 +615,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAddManyUnigramsAndFlushWithGC() {
         final int flashWithGCIterationCount = 3;
         final int codePointSetSize = 50;
@@ -628,6 +651,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testUnigramAndBigramCount() {
         final int maxUnigramCount = 5000;
         final int maxBigramCount = 10000;
@@ -684,6 +708,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testGetWordProperties() {
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
@@ -769,6 +794,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testIterateAllWords() {
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
@@ -852,6 +878,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertTrue(bigramSet.isEmpty());
     }
 
+    @Test
     public void testPossiblyOffensiveAttributeMaintained() {
         final BinaryDictionary binaryDictionary =
                 getEmptyBinaryDictionary(FormatSpec.VERSION403);
@@ -860,6 +887,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(true, wordProperty.mIsPossiblyOffensive);
     }
 
+    @Test
     public void testBeginningOfSentence() {
         final BinaryDictionary binaryDictionary = getEmptyBinaryDictionary(FormatSpec.VERSION403);
         final int dummyProbability = 0;

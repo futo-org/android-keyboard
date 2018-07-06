@@ -16,12 +16,18 @@
 
 package com.android.inputmethod.latin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Context;
 import android.content.res.Resources;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
@@ -33,8 +39,14 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class RichInputMethodSubtypeTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class RichInputMethodSubtypeTests {
     // All input method subtypes of LatinIME.
     private final ArrayList<RichInputMethodSubtype> mSubtypesList = new ArrayList<>();
 
@@ -67,10 +79,9 @@ public class RichInputMethodSubtypeTests extends AndroidTestCase {
     RichInputMethodSubtype HI_LATN_DVORAK;
     RichInputMethodSubtype SR_LATN_QWERTY;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        final Context context = getContext();
+    @Before
+    public void setUp() throws Exception {
+        final Context context = InstrumentationRegistry.getTargetContext();
         mRes = context.getResources();
         RichInputMethodManager.init(context);
         mRichImm = RichInputMethodManager.getInstance();
@@ -152,13 +163,13 @@ public class RichInputMethodSubtypeTests extends AndroidTestCase {
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         // Restore additional subtypes.
         mRichImm.setAdditionalInputMethodSubtypes(mSavedAddtionalSubtypes);
-        super.tearDown();
     }
 
+    @Test
     public void testAllFullDisplayNameForSpacebar() {
         for (final RichInputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
@@ -174,7 +185,8 @@ public class RichInputMethodSubtypeTests extends AndroidTestCase {
         }
     }
 
-   public void testAllMiddleDisplayNameForSpacebar() {
+    @Test
+    public void testAllMiddleDisplayNameForSpacebar() {
         for (final RichInputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
                     .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
@@ -293,22 +305,27 @@ public class RichInputMethodSubtypeTests extends AndroidTestCase {
         }
     };
 
+    @Test
     public void testPredefinedSubtypesForSpacebarInEnglish() {
         testsPredefinedSubtypesForSpacebar.runInLocale(mRes, Locale.ENGLISH);
     }
 
+    @Test
     public void testAdditionalSubtypeForSpacebarInEnglish() {
         testsAdditionalSubtypesForSpacebar.runInLocale(mRes, Locale.ENGLISH);
     }
 
+    @Test
     public void testPredefinedSubtypesForSpacebarInFrench() {
         testsPredefinedSubtypesForSpacebar.runInLocale(mRes, Locale.FRENCH);
     }
 
+    @Test
     public void testAdditionalSubtypeForSpacebarInFrench() {
         testsAdditionalSubtypesForSpacebar.runInLocale(mRes, Locale.FRENCH);
     }
 
+    @Test
     public void testRichInputMethodSubtypeForNullInputMethodSubtype() {
         RichInputMethodSubtype subtype = RichInputMethodSubtype.getRichInputMethodSubtype(null);
         assertNotNull(subtype);

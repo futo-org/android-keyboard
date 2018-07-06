@@ -16,13 +16,21 @@
 
 package com.android.inputmethod.latin.common;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import java.util.Locale;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class StringUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class StringUtilsTests {
     private static final Locale US = Locale.US;
     private static final Locale GERMAN = Locale.GERMAN;
     private static final Locale TURKEY = new Locale("tr", "TR");
@@ -34,6 +42,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.toTitleCaseOfKeyLabel(lowerCase, locale));
     }
 
+    @Test
     public void test_toTitleCaseOfKeyLabel() {
         assert_toTitleCaseOfKeyLabel(US, null, null);
         assert_toTitleCaseOfKeyLabel(US, "", "");
@@ -116,6 +125,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.toTitleCaseOfKeyCode(lowerCase, locale));
     }
 
+    @Test
     public void test_toTitleCaseOfKeyCode() {
         assert_toTitleCaseOfKeyCode(US, Constants.CODE_ENTER, Constants.CODE_ENTER);
         assert_toTitleCaseOfKeyCode(US, Constants.CODE_SPACE, Constants.CODE_SPACE);
@@ -148,6 +158,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.capitalizeFirstCodePoint(text, locale));
     }
 
+    @Test
     public void test_capitalizeFirstCodePoint() {
         assert_capitalizeFirstCodePoint(US, "", "");
         assert_capitalizeFirstCodePoint(US, "a", "A");
@@ -167,6 +178,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.capitalizeFirstAndDowncaseRest(text, locale));
     }
 
+    @Test
     public void test_capitalizeFirstAndDowncaseRest() {
         assert_capitalizeFirstAndDowncaseRest(US, "", "");
         assert_capitalizeFirstAndDowncaseRest(US, "a", "A");
@@ -185,6 +197,7 @@ public class StringUtilsTests extends AndroidTestCase {
         assert_capitalizeFirstAndDowncaseRest(GREECE, "ΆΝΕΣΗ", "Άνεση");
     }
 
+    @Test
     public void testContainsInArray() {
         assertFalse("empty array", StringUtils.containsInArray("key", new String[0]));
         assertFalse("not in 1 element", StringUtils.containsInArray("key", new String[] {
@@ -202,6 +215,7 @@ public class StringUtilsTests extends AndroidTestCase {
         }));
     }
 
+    @Test
     public void testContainsInCommaSplittableText() {
         assertFalse("null", StringUtils.containsInCommaSplittableText("key", null));
         assertFalse("empty", StringUtils.containsInCommaSplittableText("key", ""));
@@ -214,6 +228,7 @@ public class StringUtilsTests extends AndroidTestCase {
         assertTrue("in 2 elements", StringUtils.containsInCommaSplittableText("key", "key1,key"));
     }
 
+    @Test
     public void testRemoveFromCommaSplittableTextIfExists() {
         assertEquals("null", "", StringUtils.removeFromCommaSplittableTextIfExists("key", null));
         assertEquals("empty", "", StringUtils.removeFromCommaSplittableTextIfExists("key", ""));
@@ -239,7 +254,7 @@ public class StringUtilsTests extends AndroidTestCase {
                         "key", "key1,key,key3,key,key5"));
     }
 
-
+    @Test
     public void testCapitalizeFirstCodePoint() {
         assertEquals("SSaa",
                 StringUtils.capitalizeFirstCodePoint("ßaa", Locale.GERMAN));
@@ -259,6 +274,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.capitalizeFirstCodePoint("A", Locale.ENGLISH));
     }
 
+    @Test
     public void testCapitalizeFirstAndDowncaseRest() {
         assertEquals("SSaa",
                 StringUtils.capitalizeFirstAndDowncaseRest("ßaa", Locale.GERMAN));
@@ -278,6 +294,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.capitalizeFirstAndDowncaseRest("A", Locale.ENGLISH));
     }
 
+    @Test
     public void testGetCapitalizationType() {
         assertEquals(StringUtils.CAPITALIZE_NONE,
                 StringUtils.getCapitalizationType("capitalize"));
@@ -301,6 +318,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.getCapitalizationType(""));
     }
 
+    @Test
     public void testIsIdenticalAfterUpcaseIsIdenticalAfterDowncase() {
         assertFalse(StringUtils.isIdenticalAfterUpcase("capitalize"));
         assertTrue(StringUtils.isIdenticalAfterDowncase("capitalize"));
@@ -337,6 +355,7 @@ public class StringUtilsTests extends AndroidTestCase {
             StringUtils.toSortedCodePointArray(" \n.!?*()&");
     private static final int[] WORD_SEPARATORS = StringUtils.toSortedCodePointArray(" \n.!?*,();&");
 
+    @Test
     public void testCapitalizeEachWord() {
         checkCapitalize("", "", SPACE, Locale.ENGLISH);
         checkCapitalize("test", "Test", SPACE, Locale.ENGLISH);
@@ -367,6 +386,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 WORD_SEPARATORS, Locale.ENGLISH);
     }
 
+    @Test
     public void testLooksLikeURL() {
         assertTrue(StringUtils.lastPartLooksLikeURL("http://www.google."));
         assertFalse(StringUtils.lastPartLooksLikeURL("word wo"));
@@ -389,6 +409,7 @@ public class StringUtilsTests extends AndroidTestCase {
         assertTrue(StringUtils.lastPartLooksLikeURL(".abc/def"));
     }
 
+    @Test
     public void testHexStringUtils() {
         final byte[] bytes = new byte[] { (byte)0x01, (byte)0x11, (byte)0x22, (byte)0x33,
                 (byte)0x55, (byte)0x88, (byte)0xEE };
@@ -401,6 +422,7 @@ public class StringUtilsTests extends AndroidTestCase {
         assertTrue(bytesStr.equals(bytesStr2));
     }
 
+    @Test
     public void testToCodePointArray() {
         final String STR_WITH_SUPPLEMENTARY_CHAR = "abcde\uD861\uDED7fgh\u0000\u2002\u2003\u3000xx";
         final int[] EXPECTED_RESULT = new int[] { 'a', 'b', 'c', 'd', 'e', 0x286D7, 'f', 'g', 'h',
@@ -414,6 +436,7 @@ public class StringUtilsTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testCopyCodePointsAndReturnCodePointCount() {
         final String STR_WITH_SUPPLEMENTARY_CHAR = "AbcDE\uD861\uDED7fGh\u0000\u2002\u3000あx";
         final int[] EXPECTED_RESULT = new int[] { 'A', 'b', 'c', 'D', 'E', 0x286D7,
@@ -465,6 +488,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 exceptionHappened);
     }
 
+    @Test
     public void testGetTrailingSingleQuotesCount() {
         assertEquals(0, StringUtils.getTrailingSingleQuotesCount(""));
         assertEquals(1, StringUtils.getTrailingSingleQuotesCount("'"));

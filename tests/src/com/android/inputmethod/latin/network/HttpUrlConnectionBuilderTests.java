@@ -20,25 +20,28 @@ import static com.android.inputmethod.latin.network.HttpUrlConnectionBuilder.MOD
 import static com.android.inputmethod.latin.network.HttpUrlConnectionBuilder.MODE_DOWNLOAD_ONLY;
 import static com.android.inputmethod.latin.network.HttpUrlConnectionBuilder.MODE_UPLOAD_ONLY;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Tests for {@link HttpUrlConnectionBuilder}.
  */
 @SmallTest
-public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+@RunWith(AndroidJUnit4.class)
+public class HttpUrlConnectionBuilderTests {
+    @Test
     public void testSetUrl_malformed() {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         try {
@@ -49,6 +52,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testSetConnectTimeout_invalid() {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         try {
@@ -59,6 +63,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testSetConnectTimeout() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("https://www.example.com");
@@ -67,6 +72,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertEquals(8765, connection.getConnectTimeout());
     }
 
+    @Test
     public void testSetReadTimeout_invalid() {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         try {
@@ -77,6 +83,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testSetReadTimeout() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("https://www.example.com");
@@ -85,6 +92,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertEquals(8765, connection.getReadTimeout());
     }
 
+    @Test
     public void testAddHeader() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("http://www.example.com");
@@ -93,6 +101,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertEquals("some-random-value", connection.getRequestProperty("some-random-key"));
     }
 
+    @Test
     public void testSetUseCache_notSet() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("http://www.example.com");
@@ -100,6 +109,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertFalse(connection.getUseCaches());
     }
 
+    @Test
     public void testSetUseCache_false() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("http://www.example.com");
@@ -108,6 +118,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertFalse(connection.getUseCaches());
     }
 
+    @Test
     public void testSetUseCache_true() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("http://www.example.com");
@@ -116,6 +127,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertTrue(connection.getUseCaches());
     }
 
+    @Test
     public void testSetMode_uploadOnly() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("http://www.example.com");
@@ -125,6 +137,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertFalse(connection.getDoOutput());
     }
 
+    @Test
     public void testSetMode_downloadOnly() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("https://www.example.com");
@@ -134,6 +147,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertTrue(connection.getDoOutput());
     }
 
+    @Test
     public void testSetMode_bidirectional() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("https://www.example.com");
@@ -143,6 +157,7 @@ public class HttpUrlConnectionBuilderTests extends AndroidTestCase {
         assertTrue(connection.getDoOutput());
     }
 
+    @Test
     public void testSetAuthToken() throws IOException {
         HttpUrlConnectionBuilder builder = new HttpUrlConnectionBuilder();
         builder.setUrl("https://www.example.com");
