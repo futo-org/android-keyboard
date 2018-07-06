@@ -16,9 +16,14 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import android.content.Context;
 import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -30,14 +35,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public final class KeyboardTextsSetTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public final class KeyboardTextsSetTests {
     // All input method subtypes of LatinIME.
     private List<InputMethodSubtype> mAllSubtypesList;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    private Context getContext() {
+        return InstrumentationRegistry.getTargetContext();
+    }
+
+    @Before
+    public void setUp() throws Exception {
         RichInputMethodManager.init(getContext());
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
 
@@ -54,6 +67,7 @@ public final class KeyboardTextsSetTests extends AndroidTestCase {
     // Test that the text {@link KeyboardTextsSet#SWITCH_TO_ALPHA_KEY_LABEL} exists for all
     // subtypes. The text is needed to implement Emoji Keyboard, see
     // {@link KeyboardSwitcher#setEmojiKeyboard()}.
+    @Test
     public void testSwitchToAlphaKeyLabel() {
         final Context context = getContext();
         final KeyboardTextsSet textsSet = new KeyboardTextsSet();
@@ -80,6 +94,7 @@ public final class KeyboardTextsSetTests extends AndroidTestCase {
     };
 
     // Test that the text from resources are correctly loaded for all subtypes.
+    @Test
     public void testTextFromResources() {
         final Context context = getContext();
         final KeyboardTextsSet textsSet = new KeyboardTextsSet();

@@ -16,16 +16,24 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.android.inputmethod.keyboard.internal.MatrixUtils.MatrixOperationFailedException;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
-public class SmoothingUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SmoothingUtilsTests {
     // "run tests" -c com.android.inputmethod.keyboard.internal.SmoothingUtilsTests
     private static final boolean DEBUG = false;
 
+    @Test
     public void testGet3DParamaters() {
         final float[] xs = new float[] {0, 1, 2, 3, 4};
         final float[] ys = new float[] {1, 4, 15, 40, 85}; // y = x^3 + x^2 + x + 1
@@ -36,7 +44,7 @@ public class SmoothingUtilsTests extends AndroidTestCase {
                 MatrixUtils.dump("3d", retval);
             }
             for (int i = 0; i < 4; ++i) {
-                MatrixUtilsTests.assertEqualsFloat(retval[i][0], 1.0f, 0.001f);
+                assertEquals(retval[i][0], 1.0f, 0.001f);
             }
         } catch (MatrixOperationFailedException e) {
             assertTrue(false);

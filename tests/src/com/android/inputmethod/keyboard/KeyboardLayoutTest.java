@@ -18,15 +18,17 @@ package com.android.inputmethod.keyboard;
 
 import static org.junit.Assert.assertEquals;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
+@RunWith(AndroidJUnit4.class)
 public class KeyboardLayoutTest {
-
     @Test
     public void testNewKeyboardLayout() {
         KeyboardLayout keyboardLayout = KeyboardLayout

@@ -16,26 +16,33 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import android.content.Context;
 import android.content.res.Resources;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.R;
 
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class MoreKeySpecSplitTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class MoreKeySpecSplitTests {
     private static final Locale TEST_LOCALE = Locale.ENGLISH;
     private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        final Context targetContext = getContext();
+    @Before
+    public void setUp() throws Exception {
+        final Context targetContext = InstrumentationRegistry.getTargetContext();
         final Resources targetRes = targetContext.getResources();
         final String targetPackageName = targetRes.getResourcePackageName(
                 R.string.english_ime_name);
@@ -90,6 +97,7 @@ public class MoreKeySpecSplitTests extends AndroidTestCase {
     private static final String SURROGATE1 = PAIR1 + PAIR2;
     private static final String SURROGATE2 = PAIR1 + PAIR2 + PAIR3;
 
+    @Test
     public void testSplitZero() {
         assertTextArray("Empty string", "");
         assertTextArray("Empty entry", ",");
@@ -99,6 +107,7 @@ public class MoreKeySpecSplitTests extends AndroidTestCase {
         assertTextArray("Empty entries with escape", ",a,b\\,c,,d,", "a", "b\\,c", "d");
     }
 
+    @Test
     public void testSplitSingle() {
         assertTextArray("Single char", "a", "a");
         assertTextArray("Surrogate pair", PAIR1, PAIR1);
@@ -128,6 +137,7 @@ public class MoreKeySpecSplitTests extends AndroidTestCase {
         assertTextArray("Incomplete resource reference 4", "!" + SURROGATE2, "!" + SURROGATE2);
     }
 
+    @Test
     public void testSplitSingleEscaped() {
         assertTextArray("Escaped char", "\\a", "\\a");
         assertTextArray("Escaped surrogate pair", "\\" + PAIR1, "\\" + PAIR1);
@@ -163,6 +173,7 @@ public class MoreKeySpecSplitTests extends AndroidTestCase {
         assertTextArray("Escaped !TEXT/NAME", "\\!TEXT/EMPTY_STRING", "\\!TEXT/EMPTY_STRING");
     }
 
+    @Test
     public void testSplitMulti() {
         assertTextArray("Multiple chars", "a,b,c", "a", "b", "c");
         assertTextArray("Multiple chars", "a,b,\\c", "a", "b", "\\c");
@@ -178,6 +189,7 @@ public class MoreKeySpecSplitTests extends AndroidTestCase {
                 " abc ", " def ", " ghi ");
     }
 
+    @Test
     public void testSplitMultiEscaped() {
         assertTextArray("Multiple chars with comma", "a,\\,,c", "a", "\\,", "c");
         assertTextArray("Multiple chars with comma surrounded by spaces", " a , \\, , c ",
@@ -197,16 +209,19 @@ public class MoreKeySpecSplitTests extends AndroidTestCase {
                 "\\!", "\\!TEXT/EMPTY_STRING");
     }
 
+    @Test
     public void testSplitTextReferenceError() {
         assertError("Incomplete text name", "!text/", "!text/");
         assertError("Non existing text", "!text/non_existing");
     }
 
+    @Test
     public void testSplitEmptyTextReference() {
         // Note that morekeys_q of English locale is empty.
         assertTextArray("Empty string", "!text/morekeys_q");
     }
 
+    @Test
     public void testLabelReferece() {
         assertTextArray("Label time am", "!text/keylabel_time_am", "AM");
 
@@ -217,6 +232,7 @@ public class MoreKeySpecSplitTests extends AndroidTestCase {
                 "!icon/settings_key|!code/key_settings");
     }
 
+    @Test
     public void testUselessUpperCaseSpecifier() {
         assertTextArray("EMPTY STRING",
                 "!TEXT/EMPTY_STRING", "!TEXT/EMPTY_STRING");

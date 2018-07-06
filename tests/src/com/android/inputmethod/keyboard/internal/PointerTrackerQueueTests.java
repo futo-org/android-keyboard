@@ -16,11 +16,19 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
-public class PointerTrackerQueueTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class PointerTrackerQueueTests {
     public static class Element implements PointerTrackerQueue.Element {
         public static int sPhantomUpCount;
         public static final long NOT_HAPPENED = -1;
@@ -65,11 +73,13 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
     private final Element mElement4 = new Element(4);
     private final PointerTrackerQueue mQueue = new PointerTrackerQueue();
 
+    @Test
     public void testEmpty() {
         assertEquals(0, mQueue.size());
         assertEquals("[]", mQueue.toString());
     }
 
+    @Test
     public void testAdd() {
         mQueue.add(mElement1);
         assertEquals(1, mQueue.size());
@@ -85,6 +95,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals("[1 2 3 4]", mQueue.toString());
     }
 
+    @Test
     public void testRemove() {
         Element.sPhantomUpCount = 0;
 
@@ -119,6 +130,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(Element.NOT_HAPPENED, mElement4.mPhantomUpEventTime);
     }
 
+    @Test
     public void testAddAndRemove() {
         Element.sPhantomUpCount = 0;
 
@@ -158,6 +170,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(Element.NOT_HAPPENED, mElement4.mPhantomUpEventTime);
     }
 
+    @Test
     public void testReleaseAllPointers() {
         mElement2.mIsModifier = true;
         mQueue.add(mElement1);
@@ -177,6 +190,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(eventTime + 4, mElement4.mPhantomUpEventTime);
     }
 
+    @Test
     public void testReleaseAllPointersOlderThanFirst() {
         mElement2.mIsModifier = true;
         mQueue.add(mElement1);
@@ -194,6 +208,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(Element.NOT_HAPPENED, mElement3.mPhantomUpEventTime);
     }
 
+    @Test
     public void testReleaseAllPointersOlderThanLast() {
         mElement2.mIsModifier = true;
         mQueue.add(mElement1);
@@ -213,6 +228,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(Element.NOT_HAPPENED, mElement4.mPhantomUpEventTime);
     }
 
+    @Test
     public void testReleaseAllPointersOlderThanWithoutModifierMiddle() {
         mQueue.add(mElement1);
         mQueue.add(mElement2);
@@ -231,6 +247,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(Element.NOT_HAPPENED, mElement4.mPhantomUpEventTime);
     }
 
+    @Test
     public void testReleaseAllPointersOlderThanWithoutModifierLast() {
         mQueue.add(mElement1);
         mQueue.add(mElement2);
@@ -249,6 +266,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(Element.NOT_HAPPENED, mElement4.mPhantomUpEventTime);
     }
 
+    @Test
     public void testReleaseAllPointersExcept() {
         mElement2.mIsModifier = true;
         mQueue.add(mElement1);
@@ -268,6 +286,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(eventTime + 3, mElement4.mPhantomUpEventTime);
     }
 
+    @Test
     public void testHasModifierKeyOlderThan() {
         Element.sPhantomUpCount = 0;
         assertFalse("hasModifierKeyOlderThan empty", mQueue.hasModifierKeyOlderThan(mElement1));
@@ -297,6 +316,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(Element.NOT_HAPPENED, mElement4.mPhantomUpEventTime);
     }
 
+    @Test
     public void testIsAnyInDraggingFinger() {
         Element.sPhantomUpCount = 0;
         assertFalse(mQueue.isAnyInDraggingFinger());

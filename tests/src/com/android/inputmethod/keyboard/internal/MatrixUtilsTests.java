@@ -16,25 +16,26 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.android.inputmethod.keyboard.internal.MatrixUtils.MatrixOperationFailedException;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 
 @SmallTest
-public class MatrixUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class MatrixUtilsTests {
     // "run tests" -c com.android.inputmethod.keyboard.internal.MatrixUtilsTests
     private static final boolean DEBUG = false;
     private static final float EPSILON = 0.00001f;
 
-    private static void assertEqualsFloat(float f0, float f1) {
-        assertEqualsFloat(f0, f1, EPSILON);
-    }
-
-    /* package */ static void assertEqualsFloat(float f0, float f1, float error) {
-        assertTrue(Math.abs(f0 - f1) < error);
-    }
-
+    @Test
     public void testMulti() {
         final float[][] matrixA = {{1, 2}, {3, 4}};
         final float[][] matrixB = {{5, 6}, {7, 8}};
@@ -47,12 +48,13 @@ public class MatrixUtilsTests extends AndroidTestCase {
         if (DEBUG) {
             MatrixUtils.dump("multi", retval);
         }
-        assertEqualsFloat(retval[0][0], 19);
-        assertEqualsFloat(retval[0][1], 22);
-        assertEqualsFloat(retval[1][0], 43);
-        assertEqualsFloat(retval[1][1], 50);
+        assertEquals(retval[0][0], 19, EPSILON);
+        assertEquals(retval[0][1], 22, EPSILON);
+        assertEquals(retval[1][0], 43, EPSILON);
+        assertEquals(retval[1][1], 50, EPSILON);
     }
 
+    @Test
     public void testInverse() {
         final int N = 4;
         final float[][] matrix =
@@ -77,7 +79,7 @@ public class MatrixUtilsTests extends AndroidTestCase {
         }
         for (int i = 0; i < N; ++i) {
             for (int j = 0; j < N; ++j) {
-                assertEqualsFloat(((i == j) ? 1.0f : 0.0f), retval[i][j]);
+                assertEquals(((i == j) ? 1.0f : 0.0f), retval[i][j], EPSILON);
             }
         }
     }
