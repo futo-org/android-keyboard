@@ -16,26 +16,33 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.res.Resources;
-import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.tests.R;
 
 import java.util.Locale;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @SmallTest
-public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
+@RunWith(AndroidJUnit4.class)
+public class MoreKeySpecStringReferenceTests {
     private static final Locale TEST_LOCALE = Locale.ENGLISH;
     private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        final Instrumentation instrumentation = getInstrumentation();
+    @Before
+    public void setUp() throws Exception {
+        final Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         final Context testContext = instrumentation.getContext();
         final Resources testRes = testContext.getResources();
         final String testPackageName = testRes.getResourcePackageName(R.string.empty_string);
@@ -59,16 +66,19 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
         }
     }
 
+    @Test
     public void testResolveNullText() {
         assertEquals("resolve null",
                 mTextsSet.resolveTextReference(null), null);
     }
 
+    @Test
     public void testResolveEmptyText() {
         assertEquals("resolve empty text",
                 mTextsSet.resolveTextReference("!string/empty_string"), null);
     }
 
+    @Test
     public void testSplitSingleEscaped() {
         assertTextArray("Escaped !string", "\\!string",
                 "\\!string");
@@ -82,6 +92,7 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 "\\!STRING/EMPTY_STRING");
     }
 
+    @Test
     public void testSplitMultiEscaped() {
         assertTextArray("Multiple escaped !string", "\\!,\\!string/empty_string",
                 "\\!", "\\!string/empty_string");
@@ -89,15 +100,18 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 "\\!", "\\!STRING/EMPTY_STRING");
     }
 
+    @Test
     public void testSplitStringReferenceError() {
         assertError("Incomplete resource name", "!string/", "!string/");
         assertError("Non existing resource", "!string/non_existing");
     }
 
+    @Test
     public void testSplitEmptyStringReference() {
         assertTextArray("Empty string", "!string/empty_string");
     }
 
+    @Test
     public void testSplitResourceSingle() {
         assertTextArray("Single char", "!string/single_char",
                 "a");
@@ -119,6 +133,7 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 "\\\\a");
     }
 
+    @Test
     public void testSplitResourceSingleEscaped() {
         assertTextArray("Escaped char",
                 "!string/escaped_char", "\\a");
@@ -146,6 +161,7 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 "!string/escaped_label_with_escape", "a\\\\c");
     }
 
+    @Test
     public void testSplitResourceMulti() {
         assertTextArray("Multiple chars",
                 "!string/multiple_chars", "a", "b", "c");
@@ -158,6 +174,7 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 "!string/multiple_labels_surrounded_by_spaces", " abc ", " def ", " ghi ");
     }
 
+    @Test
     public void testSplitResourcetMultiEscaped() {
         assertTextArray("Multiple chars with comma",
                 "!string/multiple_chars_with_comma",
@@ -179,6 +196,7 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 " ab\\\\ ", " d\\\\\\, ", " g\\,i ");
     }
 
+    @Test
     public void testSplitMultipleResources() {
         assertTextArray("Literals and resources",
                 "1,!string/multiple_chars,z",
@@ -203,6 +221,7 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 "abcabc", "def", "ghi");
     }
 
+    @Test
     public void testSplitIndirectReference() {
         assertTextArray("Indirect",
                 "!string/indirect_string", "a", "b", "c");
@@ -212,11 +231,13 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 "!string/indirect2_string", "a", "b", "c");
     }
 
+    @Test
     public void testSplitInfiniteIndirectReference() {
         assertError("Infinite indirection",
                 "1,!string/infinite_indirection,2", "1", "infinite", "<infinite>", "loop", "2");
     }
 
+    @Test
     public void testLabelReferece() {
         assertTextArray("Indirect naviagte actions as more key",
                 "!string/keyspec_indirect_navigate_actions",
@@ -225,6 +246,7 @@ public class MoreKeySpecStringReferenceTests extends InstrumentationTestCase {
                 "!hasLabels!", "ActionNext|!code/key_action_next");
     }
 
+    @Test
     public void testUselessUpperCaseSpecifier() {
         assertTextArray("EMPTY STRING",
                 "!STRING/EMPTY_STRING", "!STRING/EMPTY_STRING");

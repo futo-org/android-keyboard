@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin.settings;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -23,13 +26,18 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.MediumTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.MediumTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.widget.ListView;
 
 import com.android.inputmethod.latin.utils.ManagedProfileUtils;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -37,36 +45,41 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @MediumTest
-public class AccountsSettingsFragmentTests
-        extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
+@RunWith(AndroidJUnit4.class)
+public class AccountsSettingsFragmentTests {
     private static final String FRAG_NAME = AccountsSettingsFragment.class.getName();
     private static final long TEST_TIMEOUT_MILLIS = 5000;
 
     @Mock private ManagedProfileUtils mManagedProfileUtils;
 
-    public AccountsSettingsFragmentTests() {
-        super(TestFragmentActivity.class);
+    private TestFragmentActivity mActivity;
+    private TestFragmentActivity getActivity() {
+        return mActivity;
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         // Initialize the mocks.
         MockitoAnnotations.initMocks(this);
         ManagedProfileUtils.setTestInstance(mManagedProfileUtils);
 
-        Intent intent = new Intent();
-        intent.putExtra(TestFragmentActivity.EXTRA_SHOW_FRAGMENT, FRAG_NAME);
-        setActivityIntent(intent);
+        final Intent intent = new Intent()
+                .setAction(Intent.ACTION_MAIN)
+                .setClass(InstrumentationRegistry.getTargetContext(), TestFragmentActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                .putExtra(TestFragmentActivity.EXTRA_SHOW_FRAGMENT, FRAG_NAME);
+        mActivity = (TestFragmentActivity) InstrumentationRegistry.getInstrumentation()
+                .startActivitySync(intent);
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
         ManagedProfileUtils.setTestInstance(null);
-        super.tearDown();
+        mActivity = null;
     }
 
+    @Test
     public void testEmptyAccounts() {
         final AccountsSettingsFragment fragment =
                 (AccountsSettingsFragment) getActivity().mFragment;
@@ -83,6 +96,7 @@ public class AccountsSettingsFragmentTests
         DialogHolder() {}
     }
 
+    @Test
     public void testMultipleAccounts_noSettingsForManagedProfile() {
         when(mManagedProfileUtils.hasWorkProfile(any(Context.class))).thenReturn(true);
 
@@ -95,6 +109,7 @@ public class AccountsSettingsFragmentTests
         assertNull(fragment.findPreference(AccountsSettingsFragment.PREF_ACCCOUNT_SWITCHER));
     }
 
+    @Test
     public void testMultipleAccounts_noCurrentAccount() {
         when(mManagedProfileUtils.hasWorkProfile(any(Context.class))).thenReturn(false);
 
@@ -116,6 +131,7 @@ public class AccountsSettingsFragmentTests
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).getVisibility());
     }
 
+    @Test
     public void testMultipleAccounts_currentAccount() {
         when(mManagedProfileUtils.hasWorkProfile(any(Context.class))).thenReturn(false);
 
@@ -164,7 +180,7 @@ public class AccountsSettingsFragmentTests
         } catch (InterruptedException ex) {
             fail();
         }
-        getInstrumentation().waitForIdleSync();
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         return dialogHolder;
     }
 }
