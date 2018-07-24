@@ -18,14 +18,12 @@ package com.android.inputmethod.latin.utils;
 
 import static org.junit.Assert.assertEquals;
 
-import android.test.AndroidTestCase;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
