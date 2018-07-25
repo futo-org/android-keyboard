@@ -19,6 +19,10 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := tests
 LOCAL_CERTIFICATE := shared
 
+LOCAL_FULL_LIBS_MANIFEST_FILES := \
+    $(LOCAL_PATH)/AndroidManifest.xml \
+    $(LOCAL_PATH)/AndroidManifest_SdkVersion.xml
+
 # Do not compress dictionary files to mmap dict data runtime
 LOCAL_AAPT_FLAGS += -0 .dict
 # Do not compress test data file

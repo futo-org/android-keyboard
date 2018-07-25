@@ -23,6 +23,10 @@ LOCAL_PACKAGE_NAME := LatinIME
 
 LOCAL_CERTIFICATE := shared
 
+LOCAL_FULL_LIBS_MANIFEST_FILES := \
+    $(LOCAL_PATH)/AndroidManifest.xml \
+    $(LOCAL_PATH)/AndroidManifest_SdkVersion.xml
+
 LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
