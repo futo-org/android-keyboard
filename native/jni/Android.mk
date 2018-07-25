@@ -95,9 +95,6 @@ include $(BUILD_SHARED_LIBRARY)
 #################### Clean up the tmp vars
 include $(LOCAL_PATH)/CleanupNativeFileList.mk
 
-#################### Unit test on host environment
-include $(LOCAL_PATH)/HostUnitTests.mk
-
 #################### Unit test on target environment
 include $(LOCAL_PATH)/TargetUnitTests.mk
 //LOCAL_CFLAGS += -Wall -Werror
