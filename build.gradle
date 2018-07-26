@@ -32,6 +32,14 @@ android {
         testApplicationId 'com.android.inputmethod.latin.tests'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = false
+
+        signingConfig signingConfigs.debug
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("java/shared.keystore")
+        }
     }
 
     buildTypes {
