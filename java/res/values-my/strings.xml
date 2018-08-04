@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"စာလုံးပေါင်းစစ်စနစ်က သင့်အဆက်အသွယ်စာရင်းမှ ရယူအသုံးပြုသည်"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ခလုတ်နှိပ်သည်နှင့် တုံခါစေပါ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ခလုတ်နှိပ်လျှင် အသံမြည်"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"ကီးနှိပ်လိုက်သည်နှင့် ပေါ်လာရန်"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"ခလုတ်နှိပ်လိုက်သည်နှင့် ပေါ်လာရန်"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"ရွေးချယ်စရာများ"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"အကောင့်များ &amp; ကိုယ်ပိုင်ကိစ္စ"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"ပုံပန်းသွင်ပြင် &amp; အပြင်အဆင်များ"</string>
@@ -156,7 +156,7 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ဖြင့်သင့် ကြိုက်နှစ်သက်ရာ အပလီကေးရှင်းများအားလုံးအား ရိုက်ထည့်နိုင်ပါပြီ။"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"ထပ်ပေါင်းဘာသာစကားများ ပြုပြင်မည်"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"ပြီးဆုံးသွားပြီ"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"အက်ပ်သင်္ကေတ ပြပါ"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"အက်ပ်သင်္ကေတပြခြင်း"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"launcher တွင် အပလီကေးရှင်း သင်္ကေတကိုပြရန်"</string>
     <string name="app_name" msgid="6320102637491234792">"အဘိဓါန် ထောက်ပံ့သူ"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"အဘိဓါန် ထောက်ပံ့သူ"</string>

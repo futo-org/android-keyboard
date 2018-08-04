@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Datuak hodeitik ezabatuko dira. Ziur hori egin nahi duzula?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Ezabatu"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Utzi"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Hiztegi pertsonalizatua sinkronizatu egingo da eta Google zerbitzarietan gordeko da babeskopia gisa. Hitzak erabiltzeko maiztasunari buruzko estatistikak bil daitezke produktuak hobetzen laguntzeko. Informazioaren bilketak eta erabilerak "<a href="https://www.google.com/policies/privacy">"Google Pribatutasun-gidalerroak"</a>" gordeko ditu uneoro."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Hiztegi pertsonalizatua sinkronizatu egingo da eta Google zerbitzarietan gordeko da babeskopia gisa. Hitzak erabiltzeko maiztasunari buruzko estatistikak bil daitezke produktuak hobetzen laguntzeko. Informazioaren bilketak eta erabilerak "<a href="https://www.google.com/policies/privacy">"Google Pribatutasun-gidalerroak"</a>" gordeko ditu une oro."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Eginbidea gaitzeko, gehitu Google kontua gailuan"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinkronizazioa ez dago erabilgarri Google Apps for Business kontuak dituzten gailuetan"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Aldatu idazketa-metodoa"</string>

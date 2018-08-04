@@ -30,7 +30,7 @@
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Хаяг &amp; Нууцлал"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Харагдах байдал &amp; Зураглал"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Зангаагаар бичих"</string>
-    <string name="settings_screen_correction" msgid="1616818407747682955">"Текст залруулалт"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Текст засварлах"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Дэлгэрэнгүй"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Загвар"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Хуваагдмал гарыг идэвхжүүлэх"</string>
@@ -135,7 +135,7 @@
     <string name="not_now" msgid="6172462888202790482">"Одоо биш"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ижилхэн оруулах загвар байна: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Товч дарах чичиргээний хугацаа"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Товчны дууны хэмжээ"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Товчны дууны түвшин"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Товчны удаан даралтын тохиргоо"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Бодит гарт зориулсан эможи"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Бодит Alt товчлуур нь эможи палитрыг харуулдаг"</string>
