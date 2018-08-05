@@ -47,8 +47,8 @@
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"تبديل اللغة"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"التالي"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"السابق"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"‏تم تمكين Shift"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"‏تم تمكين Caps lock"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"‏تم تفعيل Shift"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"‏تم تفعيل Caps lock"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"وضع الرموز"</string>
     <string name="spoken_description_mode_symbol_shift" msgid="4305607977537665389">"المزيد من وضع الرموز"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"وضع الأحرف"</string>
