@@ -31,7 +31,7 @@
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Aparência e layouts"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Escrita com gestos"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Correção de texto"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"Avançadas"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Avançado"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Ativar teclado dividido"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Sincronização Teclado do Google"</string>
@@ -62,14 +62,14 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"Duplo espaço para ponto"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Toque duplo na barra de espaço insere um ponto seguido de espaço"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Capitalização automática"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Inicia a primeira palavra de cada frase com letra maiúscula"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Iniciar a primeira palavra de cada frase com letra maiúscula"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dicionário pessoal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicionários complementares"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dicionário principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar sugestões de correção"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Exibir sugestões de palavras durante a digitação"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palavras ofensivas"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Não sugere palavras potencialmente ofensivas"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Não sugerir palavras potencialmente ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Correção automática"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"A barra de espaço e a pontuação corrigem automaticamente palavras com erro de digitação"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desativado"</string>
@@ -77,7 +77,7 @@
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agressivo"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Muito agressivo"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Sugerir palavra seguinte"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usa a palavra anterior ao fazer sugestões"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar a palavra anterior ao fazer sugestões"</string>
     <string name="gesture_input" msgid="826951152254563827">"Ativar a escrita com gestos"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Insere uma palavra deslizando os dedos pelas letras"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar percurso do gesto"</string>
@@ -121,7 +121,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Alfabeto (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabeto (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabeto (PC)"</string>
-    <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
+    <string name="subtype_emoji" msgid="7483586578074549196">"Emojis"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Tema do teclado"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos personalizados"</string>
     <string name="add_style" msgid="6163126614514489951">"Adic. estilo"</string>
@@ -130,15 +130,15 @@
     <string name="save" msgid="7646738597196767214">"Salvar"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Idioma"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Layout"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Deseja ativar e usar o estilo de entrada personalizado?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Quer ativar e usar o estilo de entrada personalizado?"</string>
     <string name="enable" msgid="5031294444630523247">"Ativar"</string>
     <string name="not_now" msgid="6172462888202790482">"Agora não"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"O estilo de entrada já existe: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Duração da vibração ao tocar"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume ao tocar na tela"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Atraso ao pressionar teclas"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoticons para teclado físico"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tecla Alt física mostra a paleta de emoticons"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emojis para teclado físico"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Exibe o teclado de emojis ao pressionar a tecla Alt"</string>
     <string name="button_default" msgid="3988017840431881491">"Padrão"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Bem-vindo ao <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"com entrada por gestos"</string>

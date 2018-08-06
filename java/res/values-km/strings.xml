@@ -156,8 +156,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"ឥឡូវ​​អ្នក​អាច​​វាយ​បញ្ចូល​នៅ​ក្នុង​​កម្មវិធី​​ពេញ​ចិត្ត​របស់​អ្នក​ទាំងអស់​ជាមួយ <xliff:g id="APPLICATION_NAME">%s</xliff:g> ។"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"កំណត់​រចនា​សម្ព័ន្ធ​ភាសា​បន្ថែម"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"បាន​បញ្ចប់"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"បង្ហាញ​រូប​តំណាង​កម្មវិធី"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"បង្ហាញ​រូប​តំណាង​កម្មវិធី​នៅ​ក្នុង​កម្ម​​វិធី​ចាប់ផ្ដើម"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"បង្ហាញ​រូប​កម្មវិធី"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"បង្ហាញ​រូប​កម្មវិធី​នៅ​ក្នុង​កម្ម​​វិធី​ចាប់ផ្ដើម"</string>
     <string name="app_name" msgid="6320102637491234792">"កម្មវិធី​ផ្ដល់​វចនានុក្រម"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"កម្មវិធី​ផ្ដល់​វចនានុក្រម"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"សេវាកម្ម​​វចនានុក្រម"</string>

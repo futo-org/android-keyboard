@@ -29,7 +29,7 @@
     <string name="spoken_emoji_00AE" msgid="7708335454134589027">"दर्ता चिन्ह"</string>
     <string name="spoken_emoji_203C" msgid="153340916701508663">"दोहोरो उद्गार मार्क"</string>
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"विस्मयादिबोधक प्रश्न चिन्ह"</string>
-    <string name="spoken_emoji_2122" msgid="9188440722954720429">"व्यापार प्रतिक चिन्ह"</string>
+    <string name="spoken_emoji_2122" msgid="9188440722954720429">"व्यापार प्रतीक चिन्ह"</string>
     <string name="spoken_emoji_2139" msgid="9114342638917304327">"सूचना स्रोत"</string>
     <string name="spoken_emoji_2194" msgid="8055202727034946680">"दायाँ तीर बाँयामा"</string>
     <string name="spoken_emoji_2195" msgid="8028122253301087407">"तल तीर माथिमा"</string>
@@ -213,7 +213,7 @@
     <string name="spoken_emoji_2753" msgid="6935897159942119808">"कालो प्रश्न चिन्ह आभूषण"</string>
     <string name="spoken_emoji_2754" msgid="7277504915105532954">"श्वेत प्रश्न चिन्ह आभूषण"</string>
     <string name="spoken_emoji_2755" msgid="6853076969826960210">"श्वेत उद्गार चिन्ह आभूषण"</string>
-    <string name="spoken_emoji_2757" msgid="3707907828776912174">"भारी उद्गार चिन्ह प्रतिक"</string>
+    <string name="spoken_emoji_2757" msgid="3707907828776912174">"भारी उद्गार चिन्ह प्रतीक"</string>
     <!-- no translation found for spoken_emoji_2763 (3255858123691890971) -->
     <skip />
     <string name="spoken_emoji_2764" msgid="4214257843609432167">"दह्रो कालो हृदय"</string>
@@ -249,7 +249,7 @@
     <string name="spoken_emoji_1F194" msgid="4903128609556175887">"चारपाते ID"</string>
     <string name="spoken_emoji_1F195" msgid="1433142500411060924">"चारपाते नयाँ"</string>
     <string name="spoken_emoji_1F196" msgid="8825160701159634202">"चारपाते N G"</string>
-    <string name="spoken_emoji_1F197" msgid="7841079241554176535">"चारपाते ठीक"</string>
+    <string name="spoken_emoji_1F197" msgid="7841079241554176535">"चारपाते ठिक"</string>
     <string name="spoken_emoji_1F198" msgid="7020298909426960622">"चारपाते SOS"</string>
     <string name="spoken_emoji_1F199" msgid="5971252667136235630">"उद्गार चिन्ह साथ चारपाते"</string>
     <string name="spoken_emoji_1F19A" msgid="4557270135899843959">"चारपाते बिरुद्ध"</string>
@@ -539,8 +539,8 @@
     <string name="spoken_emoji_1F3E5" msgid="1350532500431776780">"अस्पताल"</string>
     <string name="spoken_emoji_1F3E6" msgid="342132788513806214">"बैंक"</string>
     <string name="spoken_emoji_1F3E7" msgid="6322352038284944265">"स्वचालित पारंगत मिसिन"</string>
-    <string name="spoken_emoji_1F3E8" msgid="5864918444350599907">"होटल"</string>
-    <string name="spoken_emoji_1F3E9" msgid="7830416185375326938">"मायालु होटल"</string>
+    <string name="spoken_emoji_1F3E8" msgid="5864918444350599907">"होटेल"</string>
+    <string name="spoken_emoji_1F3E9" msgid="7830416185375326938">"मायालु होटेल"</string>
     <string name="spoken_emoji_1F3EA" msgid="5081084413084360479">"सुविधाजनक स्टोर"</string>
     <string name="spoken_emoji_1F3EB" msgid="7010966528205150525">"स्कूल"</string>
     <string name="spoken_emoji_1F3EC" msgid="4845978861878295154">"डिपार्टमेन्ट स्टोर"</string>
@@ -651,7 +651,7 @@
     <string name="spoken_emoji_1F449" msgid="4764447975177805991">"औंला इशारा पछाडिबाट सूचकांक दायाँ"</string>
     <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"मुठी चिन्ह"</string>
     <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"हल्लाएको हात चिन्ह"</string>
-    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"ठीक हात चिन्ह"</string>
+    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"ठिक हात चिन्ह"</string>
     <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"औंठा माथी चिन्ह"</string>
     <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"औंठा तल चिन्ह"</string>
     <string name="spoken_emoji_1F44F" msgid="5148753662268213389">"ताली चिन्ह"</string>
@@ -1082,7 +1082,7 @@
     <!-- no translation found for spoken_emoji_1F644 (446284817942609022) -->
     <skip />
     <string name="spoken_emoji_1F645" msgid="5202090629227587076">"कुनै राम्रो सङ्केत बिना साथ अनुहार"</string>
-    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"ठीक इशारा साथ अनुहार"</string>
+    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"ठिक इशारा साथ अनुहार"</string>
     <string name="spoken_emoji_1F647" msgid="1090285518444205483">"गहिरो निहुरेको व्यक्ति"</string>
     <string name="spoken_emoji_1F648" msgid="8978535230610522356">"हेर्नुहोस्-कुनै-दुष्ट बाँदर"</string>
     <string name="spoken_emoji_1F649" msgid="8486145279809495102">"सुन-कुनै-दुष्ट बाँदर"</string>
