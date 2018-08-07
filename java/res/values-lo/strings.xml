@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"ຕົວເລືອກການປ້ອນຂໍ້ມູນ"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ເບິ່ງທີ່ຊື່ຂອງລາຍຊື່ຜູ່ຕິດຕໍ່"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ຊອກຫາລາຍຊື່ຜູ້ຕິດຕໍ່"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"ໂຕຊ່ວຍສະກົດໃຊ້ຂໍ້ມູນຈາກລາຍການຂອງລາຍຊື່ຜູ່ຕິດຕໍ່ຂອງທ່ານ"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ສັ່ນເຕືອນເມື່ອພິມ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ສຽງໃນການກົດປຸ່ມ"</string>
@@ -156,8 +156,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"ຕອນນີ້ທ່ານສາມາດພິມໃນແອັບຯທີ່ທ່ານມັກໄດ້ທຸກແອັບຯດ້ວຍ <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"ປັບຄ່າພາສາເພີ່ມເຕີມ"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"ສຳເລັດແລ້ວ"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ສະແດງໄອຄອນຂອງແອັບຯ"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"ສະແດງໄອຄອນຂອງແອັບຯໃນ Launcher"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ສະແດງໄອຄອນຂອງແອັບ"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"ສະແດງໄອຄອນຂອງແອັບໃນ Launcher"</string>
     <string name="app_name" msgid="6320102637491234792">"ຜູ່​ສະ​ຫນອງ​ວັດຈະ​ນາ​ນຸ​ກົມ"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ຜູ່​ສະ​ຫນອງ​ວັດຈະ​ນາ​ນຸ​ກົມ"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"ບໍລິການວັດຈະນານຸກົມ"</string>

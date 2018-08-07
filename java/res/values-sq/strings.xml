@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Redakto fjalën"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Redakto"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Fshi"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Nuk ke asnjë fjalë në fjalorin e përdoruesit. Për të shtuar një fjalë, trokit te butoni Shto (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Nuk ke asnjë fjalë në fjalorin e përdoruesit. Për të shtuar një fjalë, trokit te butoni \"Shto (+)\"."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Për të gjitha gjuhët"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Gjuhë të tjera…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Fshi"</string>

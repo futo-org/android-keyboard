@@ -29,9 +29,9 @@
     <string name="spoken_description_unknown" msgid="5139930082759824442">"Unbekanntes Zeichen"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Umschalttaste"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Weitere Symbole"</string>
-    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift-Taste"</string>
+    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Umschalttaste-Taste"</string>
     <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"Symbole"</string>
-    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Shift-Taste"</string>
+    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Umschalttaste-Taste"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"Löschen"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"Symbole"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Buchstaben"</string>
@@ -59,7 +59,7 @@
     <string name="keyboard_mode_date" msgid="6597407244976713364">"Datum"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"Datum und Uhrzeit"</string>
     <string name="keyboard_mode_email" msgid="1239682082047693644">"E-Mail-Adresse"</string>
-    <string name="keyboard_mode_im" msgid="3812086215529493501">"SMS/MMS"</string>
+    <string name="keyboard_mode_im" msgid="3812086215529493501">"Messaging"</string>
     <string name="keyboard_mode_number" msgid="5395042245837996809">"Zahl"</string>
     <string name="keyboard_mode_phone" msgid="2486230278064523665">"Telefonnummer"</string>
     <string name="keyboard_mode_text" msgid="9138789594969187494">"Text"</string>

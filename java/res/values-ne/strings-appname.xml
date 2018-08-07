@@ -22,6 +22,6 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="5940510615957428904">"एन्ड्रोइड किबोर्ड (AOSP)"</string>
     <string name="spell_checker_service_name" msgid="1254221805440242662">"एन्ड्रोइड हिज्जे जाँचकी (AOSP)"</string>
-    <string name="english_ime_settings" msgid="5760361067176802794">"एन्ड्रोइड किबोर्ड सेटिङ्हरू (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="6123949487832861885">"एन्ड्रोइड हिज्जे परीक्षक सेटिङ्हरू(AOSP)"</string>
+    <string name="english_ime_settings" msgid="5760361067176802794">"एन्ड्रोइड किबोर्ड सेटिङहरू (AOSP)"</string>
+    <string name="android_spell_checker_settings" msgid="6123949487832861885">"एन्ड्रोइड हिज्जे परीक्षक सेटिङहरू(AOSP)"</string>
 </resources>

@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"വളരെ നിർബന്ധിതമായി"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"അടുത്ത-പദ നിർദ്ദേശങ്ങൾ"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"നിർദ്ദേശങ്ങൾ സൃഷ്‌ടിക്കാൻ മുമ്പത്തെ പദം ഉപയോഗിക്കുക"</string>
-    <string name="gesture_input" msgid="826951152254563827">"ജെസ്റ്റർടൈപ്പിംഗ് സജീവമാക്കൂ"</string>
+    <string name="gesture_input" msgid="826951152254563827">"ജെസ്റ്റർടൈപ്പിംഗ് സജീവമാക്കുക"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"അക്ഷരങ്ങളിലൂടെ സ്ലൈഡ് ചെയ്‌തുകൊണ്ട് ഒരു പദം ടൈപ്പുചെയ്യുക"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"വിരൽചലന ട്രെയിൽ കാണിക്കുക"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ചലനാത്മക ഫ്ലോട്ടിംഗ് പ്രിവ്യൂ"</string>

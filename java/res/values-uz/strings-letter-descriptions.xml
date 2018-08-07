@@ -29,15 +29,15 @@
     <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"Ayol jinsiga oid tartib ko‘rsatkichi"</string>
     <string name="spoken_accented_letter_00B5" msgid="9031387673828823891">"Mikro belgisi"</string>
     <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"Erkak jinsiga oid tartib ko‘rsatkichi"</string>
-    <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"O‘tkir S"</string>
+    <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"Esset"</string>
     <string name="spoken_accented_letter_00E0" msgid="2234515772182387086">"Gravisli A"</string>
     <string name="spoken_accented_letter_00E1" msgid="7780174500802535063">"Akutli A"</string>
     <string name="spoken_accented_letter_00E2" msgid="7054108480488102631">"Sirkumfleksli A"</string>
     <string name="spoken_accented_letter_00E3" msgid="8252569677935693343">"Tildali A"</string>
     <string name="spoken_accented_letter_00E4" msgid="6610118430986969466">"Diyerezisli A"</string>
     <string name="spoken_accented_letter_00E5" msgid="7630449270070348394">"Tepasida halqasi bor A"</string>
-    <string name="spoken_accented_letter_00E6" msgid="701838036007000032">"AE-ligatura"</string>
-    <string name="spoken_accented_letter_00E7" msgid="2991289211702135310">"Sedillali C"</string>
+    <string name="spoken_accented_letter_00E6" msgid="701838036007000032">"A va E ligaturasi"</string>
+    <string name="spoken_accented_letter_00E7" msgid="2991289211702135310">"Sedilli C"</string>
     <string name="spoken_accented_letter_00E8" msgid="2080035251848179782">"Gravisli E"</string>
     <string name="spoken_accented_letter_00E9" msgid="2708473976407506968">"Akutli E"</string>
     <string name="spoken_accented_letter_00EA" msgid="1898848081635119449">"Sirkumfleksli E"</string>
@@ -53,7 +53,7 @@
     <string name="spoken_accented_letter_00F4" msgid="2415494299699717276">"Sirkumfleksli O"</string>
     <string name="spoken_accented_letter_00F5" msgid="7320512716652765243">"Tildali O"</string>
     <string name="spoken_accented_letter_00F6" msgid="9101179351242478555">"Diyerezisli O"</string>
-    <string name="spoken_accented_letter_00F8" msgid="1488324280918884122">"O‘rtasi chizilgan O"</string>
+    <string name="spoken_accented_letter_00F8" msgid="1488324280918884122">"Diagonaliga chizilgan O"</string>
     <string name="spoken_accented_letter_00F9" msgid="2823570256527173278">"Gravisli U"</string>
     <string name="spoken_accented_letter_00FA" msgid="6883092085077298608">"Akutli U"</string>
     <string name="spoken_accented_letter_00FB" msgid="4948239400399514418">"Sirkumfleksli U"</string>
@@ -78,7 +78,7 @@
     <string name="spoken_accented_letter_011D" msgid="1181326600595482369">"Sirkumfleksli G"</string>
     <string name="spoken_accented_letter_011F" msgid="6843415389823096647">"Brevisli G"</string>
     <string name="spoken_accented_letter_0121" msgid="6205288708713306903">"Tepasida nuqtasi bor G"</string>
-    <string name="spoken_accented_letter_0123" msgid="2394277128105386261">"Sedillali G"</string>
+    <string name="spoken_accented_letter_0123" msgid="2394277128105386261">"Sedilli G"</string>
     <string name="spoken_accented_letter_0125" msgid="6575866461277751345">"Sirkumfleksli H"</string>
     <string name="spoken_accented_letter_0127" msgid="1316971762214091641">"O‘rtasi chizilgan H"</string>
     <string name="spoken_accented_letter_0129" msgid="7824912405885325754">"Tildali I"</string>
@@ -86,32 +86,32 @@
     <string name="spoken_accented_letter_012D" msgid="2933871131556503448">"Brevisli I"</string>
     <string name="spoken_accented_letter_012F" msgid="1340511254985181663">"Dumli I"</string>
     <string name="spoken_accented_letter_0131" msgid="5635600720566083969">"Nuqtasiz I"</string>
-    <string name="spoken_accented_letter_0133" msgid="7593704176516791941">"IJ-ligatura"</string>
+    <string name="spoken_accented_letter_0133" msgid="7593704176516791941">"I va J ligaturasi"</string>
     <string name="spoken_accented_letter_0135" msgid="4521109674238248436">"Sirkumfleksli J"</string>
-    <string name="spoken_accented_letter_0137" msgid="5886444641003852175">"Sedillali K"</string>
+    <string name="spoken_accented_letter_0137" msgid="5886444641003852175">"Sedilli K"</string>
     <string name="spoken_accented_letter_0138" msgid="4200294389170924853">"Kra"</string>
     <string name="spoken_accented_letter_013A" msgid="3558015385412543517">"Akutli L"</string>
-    <string name="spoken_accented_letter_013C" msgid="1853639924813858734">"Sedillali L"</string>
+    <string name="spoken_accented_letter_013C" msgid="1853639924813858734">"Sedilli L"</string>
     <string name="spoken_accented_letter_013E" msgid="7489345561739421886">"Gajakli L"</string>
     <string name="spoken_accented_letter_0140" msgid="7946718707268270589">"O‘rtasida nuqtasi bor L"</string>
     <string name="spoken_accented_letter_0142" msgid="752931798111122240">"O‘rtasi chizilgan L"</string>
     <string name="spoken_accented_letter_0144" msgid="201843550323875352">"Akutli N"</string>
-    <string name="spoken_accented_letter_0146" msgid="3403847152606051818">"Sedillali N"</string>
+    <string name="spoken_accented_letter_0146" msgid="3403847152606051818">"Sedilli N"</string>
     <string name="spoken_accented_letter_0148" msgid="9215300786722209338">"Gajakli N"</string>
-    <string name="spoken_accented_letter_0149" msgid="3191850286630154063">"Apostrofli N"</string>
+    <string name="spoken_accented_letter_0149" msgid="3191850286630154063">"Chap tomonida apostrof bor N"</string>
     <string name="spoken_accented_letter_014B" msgid="8503022408522837410">"Ng"</string>
     <string name="spoken_accented_letter_014D" msgid="4452323602550610641">"Makronli O"</string>
     <string name="spoken_accented_letter_014F" msgid="2795957717094385336">"Brevisli O"</string>
     <string name="spoken_accented_letter_0151" msgid="8013704745216410244">"Qo‘sh akutli O"</string>
-    <string name="spoken_accented_letter_0153" msgid="8410582495993285221">"OE-ligatura"</string>
+    <string name="spoken_accented_letter_0153" msgid="8410582495993285221">"O va E ligaturasi"</string>
     <string name="spoken_accented_letter_0155" msgid="7601517174689798560">"Akutli R"</string>
-    <string name="spoken_accented_letter_0157" msgid="9071455715455643810">"Sedillali R"</string>
+    <string name="spoken_accented_letter_0157" msgid="9071455715455643810">"Sedilli R"</string>
     <string name="spoken_accented_letter_0159" msgid="7726911392381543439">"Gajakli R"</string>
     <string name="spoken_accented_letter_015B" msgid="1854129531164494117">"Akutli S"</string>
     <string name="spoken_accented_letter_015D" msgid="4743571603550582530">"Sirkumfleksli S"</string>
-    <string name="spoken_accented_letter_015F" msgid="1519945638631588761">"Sedillali S"</string>
+    <string name="spoken_accented_letter_015F" msgid="1519945638631588761">"Sedilli S"</string>
     <string name="spoken_accented_letter_0161" msgid="7493478552029144246">"Gajakli S"</string>
-    <string name="spoken_accented_letter_0163" msgid="9103547637928833069">"Sedillali T"</string>
+    <string name="spoken_accented_letter_0163" msgid="9103547637928833069">"Sedilli T"</string>
     <string name="spoken_accented_letter_0165" msgid="7306159398214872062">"Gajakli T"</string>
     <string name="spoken_accented_letter_0167" msgid="5578767705098672443">"O‘rtasi chizilgan T"</string>
     <string name="spoken_accented_letter_0169" msgid="413046581387735371">"Tildali U"</string>
@@ -197,7 +197,7 @@
     <string name="spoken_symbol_2074" msgid="2116717717093306894">"Darajada joylashgan to‘rt"</string>
     <string name="spoken_symbol_207F" msgid="1706731172134246659">"Darajada joylashgan lotincha kichik n harfi"</string>
     <string name="spoken_symbol_20B1" msgid="2159994270622444689">"Peso belgisi"</string>
-    <string name="spoken_symbol_2105" msgid="7289404939366976829">"Orqali (c/o) belgisi"</string>
+    <string name="spoken_symbol_2105" msgid="7289404939366976829">"c/o belgisi"</string>
     <string name="spoken_symbol_2192" msgid="827804523596125414">"O‘ngga qaragan ko‘rsatkichli chiziqcha"</string>
     <string name="spoken_symbol_2193" msgid="2659541693445985717">"Pastga qaragan ko‘rsatkichli chiziqcha"</string>
     <string name="spoken_symbol_2205" msgid="4457188084269117343">"Bo‘sh to‘plam"</string>
