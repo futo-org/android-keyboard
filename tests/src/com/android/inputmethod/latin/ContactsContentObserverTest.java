@@ -24,11 +24,13 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.provider.ContactsContract.Contacts;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -38,6 +40,7 @@ import java.util.ArrayList;
  * Tests for {@link ContactsContentObserver}.
  */
 @SmallTest
+@RunWith(AndroidJUnit4.class)
 public class ContactsContentObserverTest {
     private static final int UPDATED_CONTACT_COUNT = 10;
     private static final int STALE_CONTACT_COUNT = 8;
