@@ -62,14 +62,14 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"Çift boşlukla nokta ekle"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Boşluk çubuğuna iki kez dokunmak nokta ve ardından bir boşluk ekler"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Otomatik büyük harf yap"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Her cümlenin ilk harfini büyük harf yap"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Her cümlenin ilk harfini büyük harf yapar"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Kişisel sözlük"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ek sözlükler"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Ana sözlük"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Düzeltme önerilerini göster"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Yazarken, önerilen kelimeleri görüntüle"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Rahatsız edici kelimeleri engelle"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Rahatsız edici olabilecek kelimeleri önerme"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Rahatsız edici olabilecek kelimeleri önermez"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Otomatik düzelt"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Boşluk tuşu ve noktalama işaretleri yanlış yazılan kelimeleri otomatikman düzeltir"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Kapalı"</string>
@@ -77,7 +77,7 @@
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Geniş ölçekte"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Çok geniş ölçekte"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Sonraki kelime önerileri"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Öneride bulunurken önceki kelimeyi kullan"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Öneride bulunurken önceki kelimeyi kullanır"</string>
     <string name="gesture_input" msgid="826951152254563827">"Hareketle yazmayı etkinleştir"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Kelime girmek için parmağınızı harflerin üzerinde kaydırın"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Hareket izini göster"</string>
