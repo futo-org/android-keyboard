@@ -31,7 +31,7 @@ class BinaryDictionaryShortcutIterator {
               mPos(shortcutStructurePolicy->getStartPos(shortcutPos)),
               mHasNextShortcutTarget(shortcutPos != NOT_A_DICT_POS) {}
 
-    BinaryDictionaryShortcutIterator(const BinaryDictionaryShortcutIterator &&shortcutIterator)
+    BinaryDictionaryShortcutIterator(const BinaryDictionaryShortcutIterator &&shortcutIterator) noexcept
             : mShortcutStructurePolicy(shortcutIterator.mShortcutStructurePolicy),
               mPos(shortcutIterator.mPos),
               mHasNextShortcutTarget(shortcutIterator.mHasNextShortcutTarget) {}
