@@ -35,7 +35,7 @@ class BinaryDictionaryBigramsIterator {
               mBigramPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
               mHasNext(pos != NOT_A_DICT_POS) {}
 
-    BinaryDictionaryBigramsIterator(BinaryDictionaryBigramsIterator &&bigramsIterator)
+    BinaryDictionaryBigramsIterator(BinaryDictionaryBigramsIterator &&bigramsIterator) noexcept
             : mBigramsStructurePolicy(bigramsIterator.mBigramsStructurePolicy),
               mPos(bigramsIterator.mPos), mBigramPos(bigramsIterator.mBigramPos),
               mProbability(bigramsIterator.mProbability), mHasNext(bigramsIterator.mHasNext) {}
