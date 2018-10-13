@@ -74,7 +74,7 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Corriger l\'orthographe (pression sur barre espace/signes ponctuation)"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Désactiver"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Simple"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Proactive"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Forcée"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Très proactive"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Suggestions pour mot suivant"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utiliser le mot précédent pour les suggestions"</string>

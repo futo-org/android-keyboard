@@ -71,12 +71,12 @@
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"అభ్యంతరకరమైన పదాలను బ్లాక్ చేయి"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"సంభావ్యంగా అభ్యంతరకరమైన పదాలను సూచించవద్దు"</string>
     <string name="auto_correction" msgid="7630720885194996950">"స్వీయ-సవరణ"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"స్పేస్ బార్ మరియు విరామ చిహ్నాలు తప్పుగా టైప్ చేసిన పదాలను స్వయంచాలకంగా సరి చేస్తాయి"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"స్పేస్ బార్ మరియు విరామ చిహ్నాలు తప్పుగా టైప్ చేసిన పదాలను ఆటోమేటిక్‌గా సరి చేస్తాయి"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ఆఫ్‌ చేయి"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"మధ్యస్థం"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"తీవ్రం"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"చాలా తీవ్రం"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"తర్వాత-పదం సూచనలు"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"తర్వాతి-పదం సూచనలు"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"సూచనలను రూపొందించడంలో మునుపటి పదాన్ని ఉపయోగించు"</string>
     <string name="gesture_input" msgid="826951152254563827">"సంజ్ఞ టైపింగ్‌ను ప్రారంభించండి"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"అక్షరాల గుండా స్లైడ్ చేయడం ద్వారా పదాన్ని ఇన్‌పుట్ చేయండి"</string>
@@ -156,8 +156,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"ఇప్పుడు మీరు <xliff:g id="APPLICATION_NAME">%s</xliff:g>తో మీకు ఇష్టమైన అన్ని అనువర్తనాల్లో టైప్ చేయవచ్చు."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"అదనపు భాషలను కాన్ఫిగర్ చేయండి"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"పూర్తయింది"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"అనువర్తన చిహ్నాన్ని చూపు"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"లాంచర్‌లో అనువర్తన చిహ్నాన్ని ప్రదర్శించు"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"యాప్‌ చిహ్నాన్ని చూపు"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"లాంచర్‌లో యాప్‌ చిహ్నాన్ని ప్రదర్శించు"</string>
     <string name="app_name" msgid="6320102637491234792">"నిఘంటువు ప్రదాత"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"నిఘంటువు ప్రదాత"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"నిఘంటువు సేవ"</string>
