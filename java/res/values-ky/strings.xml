@@ -24,7 +24,7 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Байланыш ысымдарын издөө"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Орфография текшерилип жатканда байланыштар тизмеси колдонулат"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Баскыч басылганда дирилдесин"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Баскыч басылганда чыккан үн"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Баскычты басканда үн чыгат"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Баскыч басылганда калкып чыкма"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Мүмкүнчүлүктөрдү тандоо"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Каттоо эсептери жана купуялык"</string>
@@ -69,7 +69,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Оңдоо сунуштары көрсөтүлсүн"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Терүү учурунда сунушталган сөздөрдү көрсөтүү"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Адепсиз сөздөрдү бөгөттө"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Адепсиз сөздөр сунушталбасын"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Адепсиз сөздөр сунушталбайт"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Авто оңдоо"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Боштук жана тыныш белгиси автоматтык түрдө туура эмес терилген сөздөрдү оңдойт"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Өчүк"</string>
@@ -79,7 +79,7 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Кийинки сөздү сунуштоо"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Сунуштоодо мурунку сөздү пайдалануу"</string>
     <string name="gesture_input" msgid="826951152254563827">"Жаңсап терүүнү иштетүү"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Тамгаларды сүрүп сөз киргизүү"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Сөздү тамгаларды сүрүп киргизесиз"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Жаңсоо изи көрүнүп турсун"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Динамикалык калкыма алдын-ала көрүү"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Жаңсалганда сунушталган сөздү көрүү"</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"Кошумча тилдерди конфигурациялоо"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Аяктады"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Колдонмонун сүрөтчөсүн көрсөтүү"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Колдонмонун сүрөтчөсүн иштетүү тактасында көрсөтүү"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Колдонмонун сүрөтчөсү иштетүү тактасында көрүнөт"</string>
     <string name="app_name" msgid="6320102637491234792">"Сөздүк жабдуучусу"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Сөздүк жабдуучусу"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Сөздүк кызматы"</string>

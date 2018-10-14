@@ -60,7 +60,7 @@
     <string name="use_personalized_dicts" msgid="5167396352105467626">"맞춤 추천 검색어"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 개선"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"더블스페이스 마침표"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"스페이스바를 두 번 탭하면 마침표와 공백 한 개가 삽입됩니다."</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"스페이스바를 두 번 탭하면 마침표와 공백 한 개가 삽입됨"</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"문장의 첫 단어를 대문자로 표시"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"개인 사전"</string>

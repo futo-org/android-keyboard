@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Pangunahing diksyonaryo"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Ipakita ang mga suhestiyon sa pagwawasto"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Ipakita ang mga iminumungkahing salita habang nagta-type"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"I-block ang nakakapanakit na salita"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"I-block ang masakit na salita"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Huwag magmungkahi ng mga maaaring nakakapanakit na salita"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Auto na pagwawasto"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Awtomatikong tinatama ng spacebar at bantas ang maling na-type"</string>
@@ -85,7 +85,7 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Tingnan ang iminungkahing salita habang gumagalaw"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Phrase gesture"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Maglagay ng espasyo sa pamamagitan ng pag-glide sa space key"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Voice input key"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Key sa voice input"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Walang naka-enable na paraan ng pag-input gamit ang boses. Tingnan ang Mga setting ng wika at input."</string>
     <string name="configure_input_method" msgid="373356270290742459">"I-configure ang mga pamamaraan ng pag-input"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Mga Wika"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"I-edit ang salita"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"I-edit"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"I-delete"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Wala kang anumang mga salita sa diksyonaryo ng user. Upang magdagdag ng salita, i-tap ang button na Magdagdag (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Wala kang anumang salita sa diksyonaryo ng user. Para magdagdag ng salita, i-tap ang button na Magdagdag (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Para sa lahat ng wika"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Higit pang mga wika..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"I-delete"</string>
