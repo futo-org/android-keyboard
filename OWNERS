@@ -4,6 +4,3 @@
 #
 # Recommended reviewers for non-trivial build rule changes.
 # dwillemsen@google.com
-#
-# Recommended reviewers for testing library dependencies.
-# paulduffin@google.com
