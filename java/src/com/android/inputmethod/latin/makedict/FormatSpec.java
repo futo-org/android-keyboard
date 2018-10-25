@@ -174,6 +174,9 @@ public final class FormatSpec {
     public static final int VERSION202 = 202;
     // format version for Fava Dictionaries.
     public static final int VERSION_DELIGHT3 = 86736212;
+    public static final int MINIMUM_SUPPORTED_VERSION_OF_CODE_POINT_TABLE = VERSION201;
+    // Dictionary version used for testing.
+    public static final int VERSION4_ONLY_FOR_TESTING = 399;
     public static final int VERSION402 = 402;
     public static final int VERSION403 = 403;
     public static final int VERSION4 = VERSION403;
