@@ -91,8 +91,8 @@
     <string name="language_selection_title" msgid="3666971864764478269">"ဘာသာစကားများ"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"အကူအညီနှင့် အကြံပြုချက်"</string>
     <string name="select_language" msgid="5709487854987078367">"ဘာသာစကားများ"</string>
-    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"သိမ်းဆည်းရန် နောက်တစ်ကြိမ် တို့ပါ"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"သိမ်းဆည်းရန် ဤနေရာတွင် တို့ပါ"</string>
+    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"သိမ်းရန် နောက်တစ်ကြိမ် တို့ပါ"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"သိမ်းရန် ဤနေရာတွင် တို့ပါ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"အဘိဓါန်ရနိုင်"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"ကီးဘုတ်အရောင်"</string>
     <string name="switch_accounts" msgid="3321216593719006162">"အကောင့်များကို ပြောင်းရန်"</string>
