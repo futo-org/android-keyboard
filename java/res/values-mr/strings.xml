@@ -36,11 +36,11 @@
     <string name="enable_split_keyboard" msgid="4177264923999493614">"विभाजित कीबोर्ड सुरू करा"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Google कीबोर्ड सिंक"</string>
     <string name="cloud_sync_summary" msgid="7684887161145650857">"सिंक चालू केले आहे"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"डिव्‍हाइसेस वरून आपला वैयक्तिक शब्दकोश संकालित करा"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"डिव्‍हाइसेस वरून तुमचा वैयक्तिक शब्दकोश संकालित करा"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"आता सिंक करा"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"क्लाउड डेटा हटवा"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google वरून आपला संकालित केलेला डेटा हटविते"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपला संकालित केलेला डेटा मेघवरून हटवला जाईल. आपल्‍याला खात्री आहे?"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google वरून तुमचा संकालित केलेला डेटा हटविते"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"तुमचा संकालित केलेला डेटा मेघवरून हटवला जाईल. आपल्‍याला खात्री आहे?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"हटवा"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द करा"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"तुमची वैयक्तिक डिरेक्टरी Google सर्व्हरवर सिंक केली जाईल आणि बॅकअप घेतला जाईल. आमचे उत्पादन सुधारित करण्यात मदत करण्यासाठी शब्दाच्या वारंवारतेची आकडेवारी माहिती गोळा केली जाऊ शकते. सर्व माहितीचे संकलन आणि वापर "<a href="https://www.google.com/policies/privacy">"Google चे गोपनीयता धोरण"</a>" शी सुसंगत असेल."</string>
