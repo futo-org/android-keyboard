@@ -85,15 +85,15 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, LOCALE);
         testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_ID_KEY, ID);
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(), testOptions);
-        dict.add("foo", new ProbabilityInfo(TEST_FREQ), null, false /* isNotAWord */,
+        dict.add("foo", new ProbabilityInfo(TEST_FREQ), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
-        dict.add("fta", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("fta", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
-        dict.add("ftb", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("ftb", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
-        dict.add("bar", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("bar", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
-        dict.add("fool", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("fool", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
 
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
@@ -171,8 +171,8 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         for (int i = 0; i < sWords.size(); ++i) {
             final String word = sWords.get(i);
-            dict.add(word, new ProbabilityInfo(TEST_FREQ), null /* shortcuts */,
-                    false /* isNotAWord */, false /* isPossiblyOffensive */);
+            dict.add(word, new ProbabilityInfo(TEST_FREQ), false /* isNotAWord */,
+                     false /* isPossiblyOffensive */);
         }
 
         File file = File.createTempFile(dictName, ".tmp");
