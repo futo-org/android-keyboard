@@ -33,15 +33,15 @@ public class BinaryDictEncoderFlattenTreeTests extends TestCase {
     public void testFlattenNodes() {
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new DictionaryOptions(new HashMap<String, String>()));
-        dict.add("foo", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("foo", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
-        dict.add("fta", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("fta", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
-        dict.add("ftb", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("ftb", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
-        dict.add("bar", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("bar", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
-        dict.add("fool", new ProbabilityInfo(1), null, false /* isNotAWord */,
+        dict.add("fool", new ProbabilityInfo(1), false /* isNotAWord */,
                 false /* isPossiblyOffensive */);
         final ArrayList<PtNodeArray> result =
                 BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
