@@ -47,10 +47,14 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/utils/JniUtils.java
 
 LATINIME_OVERRIDABLE_SRC_FILES_FOR_DICTTOOL := \
-        latin/define/DebugFlags.java
+        latin/define/DebugFlags.java \
+        latin/define/DecoderSpecificConstants.java
 
 LATINIME_TEST_SRC_FILES_FOR_DICTTOOL := \
-        utils/ByteArrayDictBuffer.java
+        utils/ByteArrayDictBuffer.java \
+        makedict/Ver2DictEncoder.java \
+        makedict/Ver4DictEncoder.java \
+        makedict/BinaryDictDecoderEncoderTests.java
 
 USED_TARGETED_SRC_FILES := \
         $(addprefix $(LATINIME_BASE_SRC_DIR)/, $(LATINIME_SRC_FILES_FOR_DICTTOOL)) \

@@ -48,15 +48,6 @@ public class Info extends Dicttool.Command {
             if (wordProperty.mHasNgrams) {
                 bigramCount += wordProperty.mNgrams.size();
             }
-            if (null != wordProperty.mShortcutTargets) {
-                shortcutCount += wordProperty.mShortcutTargets.size();
-                for (WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
-                    if (FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
-                            == shortcutTarget.getProbability()) {
-                        ++whitelistCount;
-                    }
-                }
-            }
         }
         System.out.println("Words in the dictionary : " + wordCount);
         System.out.println("Bigram count : " + bigramCount);
@@ -77,17 +68,6 @@ public class Info extends Dicttool.Command {
         }
         if (ptNode.getIsPossiblyOffensive()) {
             System.out.println("  Is possibly offensive");
-        }
-        final ArrayList<WeightedString> shortcutTargets = ptNode.getShortcutTargets();
-        if (null == shortcutTargets || shortcutTargets.isEmpty()) {
-            System.out.println("  No shortcuts");
-        } else {
-            for (final WeightedString shortcutTarget : shortcutTargets) {
-                System.out.println("  Shortcut target: " + shortcutTarget.mWord + " ("
-                        + (FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
-                                == shortcutTarget.getProbability() ?
-                                        "whitelist" : shortcutTarget.getProbability()) + ")");
-            }
         }
         final ArrayList<WeightedString> bigrams = ptNode.getBigrams();
         if (null == bigrams || bigrams.isEmpty()) {
