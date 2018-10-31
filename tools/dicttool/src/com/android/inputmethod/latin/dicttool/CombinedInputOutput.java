@@ -106,8 +106,7 @@ public class CombinedInputOutput {
             final String args[] = line.trim().split(",");
             if (args[0].matches(CombinedFormatUtils.WORD_TAG + "=.*")) {
                 if (null != word) {
-                    dict.add(word, probabilityInfo, shortcuts.isEmpty() ? null : shortcuts,
-                            isNotAWord, isPossiblyOffensive);
+                    dict.add(word, probabilityInfo, isNotAWord, isPossiblyOffensive);
                     for (WeightedString s : bigrams) {
                         dict.setBigram(word, s.mWord, s.mProbabilityInfo);
                     }
@@ -148,25 +147,6 @@ public class CombinedInputOutput {
                             break;
                     }
                 }
-            } else if (args[0].matches(CombinedFormatUtils.SHORTCUT_TAG + "=.*")) {
-                String shortcut = null;
-                int shortcutFreq = 0;
-                for (String param : args) {
-                    final String params[] = param.split("=", 2);
-                    if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
-                    if (CombinedFormatUtils.SHORTCUT_TAG.equals(params[0])) {
-                        shortcut = params[1];
-                    } else if (CombinedFormatUtils.PROBABILITY_TAG.equals(params[0])) {
-                        shortcutFreq = WHITELIST_TAG.equals(params[1])
-                                ? FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
-                                : Integer.parseInt(params[1]);
-                    }
-                }
-                if (null != shortcut) {
-                    shortcuts.add(new WeightedString(shortcut, shortcutFreq));
-                } else {
-                    throw new RuntimeException("Wrong format : " + line);
-                }
             } else if (args[0].matches(CombinedFormatUtils.BIGRAM_TAG + "=.*")) {
                 String secondWordOfBigram = null;
                 ProbabilityInfo bigramProbabilityInfo = new ProbabilityInfo(0);
@@ -200,8 +180,7 @@ public class CombinedInputOutput {
             }
         }
         if (null != word) {
-            dict.add(word, probabilityInfo, shortcuts.isEmpty() ? null : shortcuts, isNotAWord,
-                    isPossiblyOffensive);
+            dict.add(word, probabilityInfo, isNotAWord, isPossiblyOffensive);
             for (WeightedString s : bigrams) {
                 dict.setBigram(word, s.mWord, s.mProbabilityInfo);
             }

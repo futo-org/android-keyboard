@@ -136,9 +136,6 @@ public class Diff extends Dicttool.Command {
                 }
                 hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0Property.mWord,
                         "Bigram", word0Property.getBigrams(), word1PtNode.getBigrams());
-                hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0Property.mWord,
-                        "Shortcut", word0Property.mShortcutTargets,
-                        word1PtNode.getShortcutTargets());
             }
         }
         for (final WordProperty word1Property : dict1) {
