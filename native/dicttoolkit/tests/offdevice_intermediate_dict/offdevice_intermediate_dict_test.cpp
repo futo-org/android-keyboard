@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include "suggest/core/dictionary/property/word_property.h"
+#include "dictionary/property/word_property.h"
 #include "utils/int_array_view.h"
 
 namespace latinime {
