@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Se eliminarán los datos sincronizados de la nube. ¿Estás seguro?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Eliminar"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancelar"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Se creará una copia de tu diccionario personal y se sincronizará con los servidores de Google. Es posible que se recopile información estadística de la frecuencia de palabras para mejorar nuestros productos. La recopilación y el uso de toda la información se realizará conforme a la "<a href="https://www.google.com/policies/privacy">"Política de privacidad de Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Se creará una copia de tu diccionario personal y se sincronizará con los servidores de Google. Es posible que se recopile información estadística de la frecuencia de palabras para mejorar nuestros productos. La recopilación y el uso de toda la información se realizará conforme a la "<a href="https://www.google.com/policies/privacy">"Política de Privacidad de Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Para habilitar esta función, agrega una cuenta de Google."</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinc. no disponible en dispositivos con cuentas de Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de entrada"</string>
