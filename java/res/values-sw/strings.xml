@@ -52,9 +52,9 @@
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Onyesha wakati lugha ingizo mbalimbali zinapowezeshwa"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Kuchelewesha kutupa kitufe ibukizi"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Hakuna kuchelewa"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Chaguo msingi"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Chaguomsingi"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"Milisekunde <xliff:g id="MILLISECONDS">%s</xliff:g>"</string>
-    <string name="settings_system_default" msgid="6268225104743331821">"Chaguo msingi la mfumo"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"Chaguomsingi la mfumo"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Pendekeza majini ya Anwani"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Tumia majina kutoka kwa Anwani kama mapendekezo na marekebisho"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Mapendekezo yaliyobadilishwa kukufaa"</string>
@@ -139,7 +139,7 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Ucheleweshaji unapobofya kitufe na kushikilia"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji za kibodi halisi"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Kitufe halisi cha Alt huonyesha kibao cha emoji"</string>
-    <string name="button_default" msgid="3988017840431881491">"Chaguo msingi"</string>
+    <string name="button_default" msgid="3988017840431881491">"Chaguomsingi"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Karibu kwenye <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"kwa Kuandika kwa ishara"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Anza kutumia"</string>
