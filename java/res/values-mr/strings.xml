@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"इनपुट पर्याय"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"संपर्क नावे शोधा"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"शब्दलेखन तपासक आपल्या संपर्क सूचीमधील प्रविष्ट्या वापरतो"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"शब्दलेखन तपासक आपल्या संपर्क सूचीमधील एंट्री वापरतो"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"की दाबताना व्हायब्रेट"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"की दाबताना आवाज"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"की दाबताना पॉपअप"</string>
