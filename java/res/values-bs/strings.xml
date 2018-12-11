@@ -29,7 +29,7 @@
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Postavke"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Računi i privatnost"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Izgled i rasporedi tipki"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"Kucanje pokretima"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Pisanje pokretima"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Ispravka teksta"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Napredno"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
@@ -78,7 +78,7 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Veoma napadno"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Prijedlozi za sljedeću riječ"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Prilikom odlučivanja koristi prethodno"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Omogućite kucanje pokretima"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Omogućite pisanje pokretima"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Unesite riječ klizanjem prstom preko slova"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Prikaži trag pokreta"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Pregled dinamičkim lebdenjem"</string>
@@ -141,7 +141,7 @@
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tipka Alt na fizičkoj tastaturi aktivira paletu za emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Zadano"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Dobro došli u aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"s kucanjem pokretima"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"s Pisanjem pokretima"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Započnite"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Sljedeći korak"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Postavljanje aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
