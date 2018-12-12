@@ -80,7 +80,7 @@ TEST(LanguageModelDictContentTest, TestIterateProbabilityEntry) {
         languageModelDictContent.setProbabilityEntry(wordId, &originalEntry);
     }
     std::unordered_set<int> wordIdSet(std::begin(wordIds), std::end(wordIds));
-    for (const auto entry : languageModelDictContent.getProbabilityEntries(WordIdArrayView())) {
+    for (const auto& entry : languageModelDictContent.getProbabilityEntries(WordIdArrayView())) {
         EXPECT_EQ(originalEntry.getFlags(), entry.getProbabilityEntry().getFlags());
         EXPECT_EQ(originalEntry.getProbability(), entry.getProbabilityEntry().getProbability());
         wordIdSet.erase(entry.getWordId());

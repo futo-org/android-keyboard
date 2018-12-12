@@ -93,7 +93,7 @@ const WordProperty *OffdeviceIntermediateDict::getWordProperty(
     const OffdeviceIntermediateDictPtNodeArray *ptNodeArray = &mRootPtNodeArray;
     for (size_t i = 0; i < codePoints.size();) {
         bool foundNext = false;
-        for (const auto ptNode : ptNodeArray->getPtNodeList()) {
+        for (const auto& ptNode : ptNodeArray->getPtNodeList()) {
             const CodePointArrayView ptNodeCodePoints = ptNode->getPtNodeCodePoints();
             if (codePoints[i] < ptNodeCodePoints[0]) {
                 continue;
