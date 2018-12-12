@@ -141,7 +141,7 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const WordIdArrayView prevWordI
     }
     const auto languageModelDictContent = mBuffers->getLanguageModelDictContent();
     for (size_t i = 1; i <= prevWordIds.size(); ++i) {
-        for (const auto entry : languageModelDictContent->getProbabilityEntries(
+        for (const auto& entry : languageModelDictContent->getProbabilityEntries(
                 prevWordIds.limit(i))) {
             const ProbabilityEntry &probabilityEntry = entry.getProbabilityEntry();
             if (!probabilityEntry.isValid()) {
@@ -516,7 +516,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(
     int ngramPrevWordsCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM][MAX_WORD_LENGTH];
     int ngramPrevWordsCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     bool ngramPrevWordIsBeginningOfSentense[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    for (const auto entry : languageModelDictContent->exportAllNgramEntriesRelatedToWord(
+    for (const auto& entry : languageModelDictContent->exportAllNgramEntriesRelatedToWord(
             mHeaderPolicy, wordId)) {
         const int codePointCount = getCodePointsAndReturnCodePointCount(entry.getTargetWordId(),
                 MAX_WORD_LENGTH, ngramTargetCodePoints);
