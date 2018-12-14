@@ -26,7 +26,7 @@ android_test {
     ],
 
     static_libs: [
-        "android-support-test",
+        "androidx.test.rules",
         "mockito-target-minus-junit4",
     ],
     libs: [

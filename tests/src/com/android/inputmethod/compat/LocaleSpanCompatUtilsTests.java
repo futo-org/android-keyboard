@@ -22,18 +22,17 @@ import static org.junit.Assert.assertTrue;
 
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 
-import java.util.Locale;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Locale;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

@@ -19,10 +19,10 @@ package com.android.inputmethod.keyboard.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.android.inputmethod.keyboard.internal.MatrixUtils.MatrixOperationFailedException;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
+import com.android.inputmethod.keyboard.internal.MatrixUtils.MatrixOperationFailedException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

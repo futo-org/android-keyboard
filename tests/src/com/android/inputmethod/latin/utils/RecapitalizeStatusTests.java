@@ -18,15 +18,15 @@ package com.android.inputmethod.latin.utils;
 
 import static org.junit.Assert.assertEquals;
 
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.common.Constants;
 
-import java.util.Locale;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Locale;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
