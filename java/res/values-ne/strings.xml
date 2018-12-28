@@ -146,7 +146,7 @@
     <string name="setup_next_action" msgid="371821437915144603">"अर्को चरण"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"स्थापना गर्दै <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"सक्षम पार्नुहोस् <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"कृपया आफ्नो भाषा र इनपुट सम्बन्धी सेटिङहरूमा \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" अनुप्रयोगलाई जाँच गर्नुहोस्। यस कारबाहीले अनुप्रयोगलाई तपाईँको यन्त्रमा सञ्चालन हुन आधिकार प्रदान गर्नेछ।"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"कृपया आफ्नो भाषा र इनपुट सम्बन्धी सेटिङहरूमा \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" अनुप्रयोगलाई जाँच गर्नुहोस्। यस कारबाहीले अनुप्रयोगलाई तपाईँको यन्त्रमा सञ्चालन हुन आधिकार प्रदान गर्ने छ।"</string>
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"तपाईँको भाषा र इनपुट सम्बन्धी सेटिङहरूमा <xliff:g id="APPLICATION_NAME">%s</xliff:g> लाई पहिले नै सक्रिय गरिएको छ, त्यसैले यो चरण सम्पन्न भइसकेको छ। अर्को चरणमा जानुहोस्!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"सेटिङहरूमा सक्षम पार्नुहोस्"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>मा स्विच गर्नुहोस्"</string>
