@@ -20,8 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 import android.graphics.Typeface;
 import android.os.Parcel;
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -29,11 +27,13 @@ import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.view.textservice.TextInfo;
 
-import java.util.Arrays;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Arrays;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
