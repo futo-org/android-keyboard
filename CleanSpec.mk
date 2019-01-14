@@ -52,6 +52,9 @@ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/obj/SHARED_LIBRARIES/libjni_latinim
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/obj/SHARED_LIBRARIES/libjni_latinime_intermediates)
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/obj/SHARED_LIBRARIES/libjni_latinime_intermediates)
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/obj/SHARED_LIBRARIES/libjni_latinime_intermediates)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/app/LatinIME)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/lib*/libjni_latinime.so)
+
 # ************************************************
 # NEWER CLEAN STEPS MUST BE AT THE END OF THE LIST
 # ************************************************
