@@ -38,6 +38,8 @@ android_app {
     target_sdk_version: "23",
     sdk_version: "current",
 
+    product_specific: true,
+
     optimize: {
         proguard_flags_files: ["proguard.flags"],
     },

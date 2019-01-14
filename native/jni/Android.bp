@@ -105,6 +105,7 @@ filegroup {
 cc_library {
     name: "libjni_latinime",
     host_supported: true,
+    product_specific: true,
 
     sdk_version: "14",
     cflags: [
