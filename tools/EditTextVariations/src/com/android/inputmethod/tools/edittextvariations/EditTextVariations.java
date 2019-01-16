@@ -60,6 +60,7 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
     private static final int MENU_NAVIGATE_OFF = 3;
     private static final int MENU_SOFTINPUT_VISIBLE = 4;
     private static final int MENU_SOFTINPUT_HIDDEN = 5;
+    private static final int MENU_DIRECT_REPLY = 6;
     private static final String PREF_THEME = "theme";
     private static final String PREF_NAVIGATE = "navigate";
     private static final String PREF_SOFTINPUT = "softinput";
@@ -162,9 +163,12 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
         menu.add(Menu.NONE, MENU_SOFTINPUT_VISIBLE, 2, getString(R.string.menu_softinput_visible));
         menu.add(Menu.NONE, MENU_SOFTINPUT_HIDDEN, 3, getString(R.string.menu_softinput_hidden));
         menu.add(Menu.NONE, MENU_CHANGE_THEME, 4, R.string.menu_change_theme);
+        if (NotificationUtils.DIRECT_REPLY_SUPPORTED) {
+            menu.add(Menu.NONE, MENU_DIRECT_REPLY, 5, R.string.menu_direct_reply);
+        }
         try {
             final PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            menu.add(Menu.NONE, MENU_VERSION, 5,
+            menu.add(Menu.NONE, MENU_VERSION, 6,
                     getString(R.string.menu_version, pinfo.versionName))
                     .setEnabled(false);
         } catch (NameNotFoundException e) {
@@ -194,6 +198,8 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
         } else if (itemId == MENU_SOFTINPUT_VISIBLE || itemId == MENU_SOFTINPUT_HIDDEN) {
             saveSoftInputMode(itemId == MENU_SOFTINPUT_VISIBLE);
             restartActivity();
+        } else if (itemId == MENU_DIRECT_REPLY) {
+            NotificationUtils.sendDirectReplyNotification(this);
         }
         return true;
     }

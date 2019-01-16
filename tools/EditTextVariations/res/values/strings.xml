@@ -33,6 +33,8 @@
     <string name="menu_softinput_visible" translatable="false">Keyboard Visible</string>
     <!-- The menu title to stay hidden software keyboard when the application is launched. [CHAR LIMIT=20] -->
     <string name="menu_softinput_hidden" translatable="false">Keyboard Hidden</string>
+    <!-- The menu title to send a notification to test direct reply. [CHAR LIMIT=20] -->
+    <string name="menu_direct_reply">Direct Reply</string>
     <!-- The example of custom action key label. Must be short to fit on key. 5 chars or less is preferable.  [CHAR LIMIT=7] -->
     <string name="custom_action_label">Custom</string>
 </resources>
