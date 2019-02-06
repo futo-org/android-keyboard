@@ -38,28 +38,33 @@ final class NotificationUtils {
     private static final String CHANNEL_NAME = "Channel Name";
     private static final String CHANNEL_DESCRIPTION = "Channel Description";
     private static final String CHANNEL_ID = "Channel ID";
-    private static final AtomicBoolean sNotificationChannelInitialized = new AtomicBoolean();
     private static final AtomicInteger sNextNotificationId = new AtomicInteger(1);
 
+    private static final Object sLock = new Object();
+    private static boolean sNotificationChannelInitialized = false;
+
+    static final boolean NOTIFICATION_CHANNEL_REQUIRED =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     static final boolean DIRECT_REPLY_SUPPORTED = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
 
-    static void ensureNotificationChannel(Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+    private static Notification.Builder createNotificationBuilder(Context context) {
+        if (!NOTIFICATION_CHANNEL_REQUIRED) {
             // NotificationChannel is not implemented.  No need to set up notification channel.
-            return;
-        }
-        if (!sNotificationChannelInitialized.compareAndSet(false, true)) {
-            // Already initialized.
-            return;
+            return new Notification.Builder(context);
         }
 
-        // Create the NotificationChannel
-        final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription(CHANNEL_DESCRIPTION);
-        // Register the channel with the system; you can't change the importance
-        // or other notification behaviors after this
-        context.getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        // Make sure that a notification channel is created *before* we send a notification.
+        synchronized (sLock) {
+            if (!sNotificationChannelInitialized) {
+                final NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                        CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+                channel.setDescription(CHANNEL_DESCRIPTION);
+                context.getSystemService(NotificationManager.class)
+                        .createNotificationChannel(channel);
+                sNotificationChannelInitialized = true;
+            }
+        }
+        return new Notification.Builder(context, CHANNEL_ID);
     }
 
     static void sendDirectReplyNotification(Context context) {
@@ -67,8 +72,6 @@ final class NotificationUtils {
             // DirectReply is not supported.
             return;
         }
-
-        ensureNotificationChannel(context);
 
         RemoteInput remoteInput = new RemoteInput.Builder(KEY_REPLY)
                 .setLabel("Reply Label")
@@ -80,7 +83,7 @@ final class NotificationUtils {
                 new Notification.Action.Builder(null, "Direct Reply Test", pendingIntent)
                         .addRemoteInput(remoteInput)
                         .build();
-        final Notification notification = new Notification.Builder(context, CHANNEL_ID)
+        final Notification notification = createNotificationBuilder(context)
                 .setContentText("Content Title")
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentText("Message from " + UserHandle.getUserHandleForUid(Process.myUid()))
