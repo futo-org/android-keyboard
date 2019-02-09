@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Elimina"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Annulla"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Il tuo dizionario personale verrà sincronizzato sui server di Google e ne verrà effettuato il backup. Potrebbero essere raccolte informazioni statistiche relative alla frequenza delle parole per migliorare i nostri prodotti. La raccolta e l\'utilizzo di tutte le informazioni saranno conformi alle "<a href="https://www.google.com/policies/privacy">"Norme sulla privacy di Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Per attivare la funzione, aggiungi un account Google al dispositivo"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Per attivare la funzione, aggiungi un Account Google al dispositivo"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"La sincronizzazione non è disponibile per i dispositivi con account Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Altri metodi immissione"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Il tasto per cambiare lingua offre altri metodi di immissione"</string>

@@ -23,7 +23,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"入力オプション"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"連絡先名の検索"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"スペルチェッカーでは連絡先リストのエントリを使用します"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"キー操作バイブ"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"キー操作バイブレーション"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"キー操作音"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"キー押下時ポップアップ"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"設定"</string>
@@ -134,7 +134,7 @@
     <string name="enable" msgid="5031294444630523247">"有効にする"</string>
     <string name="not_now" msgid="6172462888202790482">"後で行う"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"同じ入力スタイルが既に存在します: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"キー操作バイブの振動時間"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"キー操作バイブレーションの振動時間"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"キー操作音の音量"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"キーの長押し時間"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"物理キーボードの絵文字"</string>
