@@ -809,11 +809,11 @@
     <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"Simbol email"</string>
     <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Amplop yang masuk"</string>
     <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"Amplop dengan panah ke bawah di atas"</string>
-    <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"Kotak postingan tertutup dengan bendera turun"</string>
-    <string name="spoken_emoji_1F4EB" msgid="6491414165464146137">"Kotak postingan tertutup dengan bendera terangkat"</string>
-    <string name="spoken_emoji_1F4EC" msgid="7369517138779988438">"Kotak postingan terbuka dengan bendera terangkat"</string>
-    <string name="spoken_emoji_1F4ED" msgid="5657520436285454241">"Kotak postingan terbuka dengan bendera turun"</string>
-    <string name="spoken_emoji_1F4EE" msgid="8464138906243608614">"Kotak postingan"</string>
+    <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"Kotak pos tertutup dengan bendera turun"</string>
+    <string name="spoken_emoji_1F4EB" msgid="6491414165464146137">"Kotak pos tertutup dengan bendera terangkat"</string>
+    <string name="spoken_emoji_1F4EC" msgid="7369517138779988438">"Kotak pos terbuka dengan bendera terangkat"</string>
+    <string name="spoken_emoji_1F4ED" msgid="5657520436285454241">"Kotak pos terbuka dengan bendera turun"</string>
+    <string name="spoken_emoji_1F4EE" msgid="8464138906243608614">"Kotak pos"</string>
     <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"Terompet kantor pos"</string>
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"Koran"</string>
     <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"Ponsel"</string>
