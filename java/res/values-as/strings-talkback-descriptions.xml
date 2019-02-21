@@ -47,14 +47,14 @@
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"ভাষা সলনি কৰক"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"পৰৱৰ্তী"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"পূৰ্বৱৰ্তী"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"শ্বিফ্ট সক্ষম কৰা হ\'ল"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"কেপছ্ লক সক্ষম কৰা হ\'ল"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"শ্বিফ্ট সক্ষম কৰা হ’ল"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"কেপছ্ লক সক্ষম কৰা হ’ল"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"চিহ্ন ম\'ড"</string>
     <string name="spoken_description_mode_symbol_shift" msgid="4305607977537665389">"অধিক প্ৰতীক ম\'ড"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"বৰ্ণ ম\'ড"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"ফ\'ন ম\'ড"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"ফ\'নৰ চিহ্নৰ ম\'ড"</string>
-    <string name="announce_keyboard_hidden" msgid="2313574218950517779">"কীব\'ৰ্ড লুকুওৱা হ\'ল"</string>
+    <string name="announce_keyboard_hidden" msgid="2313574218950517779">"কীব\'ৰ্ড লুকুওৱা হ’ল"</string>
     <string name="announce_keyboard_mode" msgid="6698257917367823205">"<xliff:g id="KEYBOARD_MODE">%s</xliff:g> কীব\'ৰ্ড দেখুওৱা হৈছে"</string>
     <string name="keyboard_mode_date" msgid="6597407244976713364">"তাৰিখ"</string>
     <string name="keyboard_mode_date_time" msgid="3642804408726668808">"তাৰিখ আৰু সময়"</string>
