@@ -160,27 +160,27 @@
     <string name="setup_step3_title" msgid="3154757183631490281">"আপোনাক অভিনন্দন জনাইছোঁ, আপুনি এতিয়া সাজু!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"আপুনি এতিয়া আপোনাৰ প্ৰিয় এপসমূহত <xliff:g id="APPLICATION_NAME">%s</xliff:g>ৰ সৈতে লিখিব পাৰিব৷"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"অতিৰিক্ত ভাষা কনফিগাৰ কৰক"</string>
-    <string name="setup_finish_action" msgid="276559243409465389">"সম্পূৰ্ণ হ\'ল"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"সম্পূৰ্ণ হ’ল"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"এপৰ আইকন দেখুৱাওক"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"লঞ্চাৰত এপ্লিকেশ্বন আইকন দেখুৱাওক"</string>
     <string name="app_name" msgid="6320102637491234792">"অভিধান প্ৰদানকাৰী"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"অভিধান প্ৰদানকাৰী"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"অভিধান সেৱা"</string>
-    <string name="download_description" msgid="6014835283119198591">"অভিধান আপডেট কৰাৰ তথ্য"</string>
+    <string name="download_description" msgid="6014835283119198591">"অভিধান আপডে’ট কৰাৰ তথ্য"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"অতিৰিক্ত অভিধান"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"অভিধান উপলব্ধ"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"অভিধানসমূহৰ বাবে ছেটিংসমূহ"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"ব্যৱহাৰকাৰীৰ অভিধানসমূহ"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"ব্যৱহাৰকাৰীৰ অভিধান"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"অভিধান উপলব্ধ"</string>
-    <string name="dictionary_downloading" msgid="2982650524622620983">"বৰ্তমান ডাউনল\'ড হৈ আছে"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"বৰ্তমান ডাউনল’ড হৈ আছে"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"ইনষ্টল কৰা হ’ল"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"ফাইল ইনষ্টল হৈছে কিন্তু অভিধান অক্ষম হৈ আছে"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"অভিধান সেৱাৰ লগত সংযোগ কৰোঁতে সমস্যাৰ সৃষ্টি হৈছে"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"কোনো অভিধান নাই"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"ৰিফ্ৰেশ্ব কৰক"</string>
-    <string name="last_update" msgid="730467549913588780">"অন্তিমবাৰ আপডেট কৰা হৈছিল"</string>
-    <string name="message_updating" msgid="4457761393932375219">"আপডেট আছে নেকি পৰীক্ষা কৰি থকা হৈছে"</string>
+    <string name="last_update" msgid="730467549913588780">"অন্তিমবাৰ আপডে’ট কৰা হৈছিল"</string>
+    <string name="message_updating" msgid="4457761393932375219">"আপডে’ট আছে নেকি পৰীক্ষা কৰি থকা হৈছে"</string>
     <string name="message_loading" msgid="5638680861387748936">"ল\'ড হৈ আছে…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"মুখ্য অভিধান"</string>
     <string name="cancel" msgid="6830980399865683324">"বাতিল কৰক"</string>
@@ -190,11 +190,11 @@
     <string name="delete_dict" msgid="756853268088330054">"মচক"</string>
     <!-- no translation found for should_download_over_metered_prompt (6737084685073734292) -->
     <skip />
-    <string name="download_over_metered" msgid="1643065851159409546">"এতিয়াই ডাউনল\'ড কৰক (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>এম. বি.)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"ৱাই-ফাইৰ যোগেৰে ডাউনল\'ড কৰক"</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"এতিয়াই ডাউনল’ড কৰক (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>এম. বি.)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"ৱাই-ফাইৰ যোগেৰে ডাউনল’ড কৰক"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>ৰ বাবে এখন অভিধান উপলব্ধ"</string>
-    <string name="dict_available_notification_description" msgid="1075194169443163487">"সমীক্ষা আৰু ডাউনল\'ড কৰিবলৈ হেঁচক"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ডাউনল\'ড কৰি থকা হৈছে: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>ৰ বাবে পৰামৰ্শবোৰ সোনকালে সাজু হ\'ব।"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"সমীক্ষা আৰু ডাউনল’ড কৰিবলৈ হেঁচক"</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ডাউনল’ড কৰি থকা হৈছে: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>ৰ বাবে পৰামৰ্শবোৰ সোনকালে সাজু হ\'ব।"</string>
     <string name="version_text" msgid="2715354215568469385">"সংস্কৰণ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"যোগ কৰক"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"অভিধানত যোগ কৰক"</string>
