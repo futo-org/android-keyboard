@@ -249,7 +249,7 @@
     <string name="spoken_emoji_1F194" msgid="4903128609556175887">"Quadrat mit \"ID\""</string>
     <string name="spoken_emoji_1F195" msgid="1433142500411060924">"Quadrat mit \"New\""</string>
     <string name="spoken_emoji_1F196" msgid="8825160701159634202">"Quadrat mit \"NG\" (No Good)"</string>
-    <string name="spoken_emoji_1F197" msgid="7841079241554176535">"Quadrat mit \"OK\""</string>
+    <string name="spoken_emoji_1F197" msgid="7841079241554176535">"Quadrat mit \"Ok\""</string>
     <string name="spoken_emoji_1F198" msgid="7020298909426960622">"Quadrat mit \"SOS\""</string>
     <string name="spoken_emoji_1F199" msgid="5971252667136235630">"Quadrat mit \"UP\" und Ausrufezeichen"</string>
     <string name="spoken_emoji_1F19A" msgid="4557270135899843959">"Quadrat mit \"VS\" (Versus)"</string>
@@ -651,7 +651,7 @@
     <string name="spoken_emoji_1F449" msgid="4764447975177805991">"Handrückseite mit nach rechts deutendem Zeigefinger"</string>
     <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"Faust"</string>
     <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"Winkende Hand"</string>
-    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"Handzeichen für \"OK\""</string>
+    <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"Handzeichen für \"Ok\""</string>
     <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"Daumen hoch"</string>
     <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"Daumen runter"</string>
     <string name="spoken_emoji_1F44F" msgid="5148753662268213389">"Klatschende Hände"</string>
@@ -1082,7 +1082,7 @@
     <!-- no translation found for spoken_emoji_1F644 (446284817942609022) -->
     <skip />
     <string name="spoken_emoji_1F645" msgid="5202090629227587076">"Gesicht mit Nicht in Ordnung-Geste"</string>
-    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"Gesicht mit OK-Geste"</string>
+    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"Gesicht mit Ok-Geste"</string>
     <string name="spoken_emoji_1F647" msgid="1090285518444205483">"Sich tief verneigende Person"</string>
     <string name="spoken_emoji_1F648" msgid="8978535230610522356">"Nichts-Sehen-Affe"</string>
     <string name="spoken_emoji_1F649" msgid="8486145279809495102">"Nichts-Hören-Affe"</string>
