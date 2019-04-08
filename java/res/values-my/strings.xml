@@ -200,7 +200,7 @@
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"အတိုကောက်:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ဘာသာစကား:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"စကားလုံးတစ်လုံး ရိုက်ပါ"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"စိတ်ကြိုက်ရွေးစရာအတိုကောက်"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ရွေးစရာအတိုကောက်"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"စာလုံးကို ပြင်ဆင်မည်"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"တည်းဖြတ်ရန်"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ဖျက်ရန်"</string>
