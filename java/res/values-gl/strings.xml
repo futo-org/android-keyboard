@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcións de entrada"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Buscar nomes de contactos"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Verificar nomes de contactos"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"O corrector ortográfico utiliza entradas da lista de contactos"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao premer as teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son ao premer as teclas"</string>
@@ -59,7 +59,7 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utiliza nomes de contactos para as suxestións e correccións"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Suxestións personalizadas"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Mellorar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Dobre espazo e punto"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Dobre espazo insire punto"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Ao tocar dúas veces a barra de espazo insire un punto e un espazo"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Maiúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Pon en maiúscula a primeira palabra de cada frase"</string>
@@ -69,7 +69,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar suxestións de corrección"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra palabras suxeridas mentres escribes"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palabras ofensivas"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Non suxerir palabras potencialmente ofensivas"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Evita suxerir palabras potencialmente ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Premer a barra espazo e teclas de puntuación para corrixir erros"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivada"</string>

@@ -59,7 +59,7 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"सूचनांसाठी आणि सुधारणांसाठी संपर्कांमधील नावे वापरा"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"पर्सनलाइझ केलेल्या सूचना"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> मध्ये सुधारणा करा"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"डबल-स्पेस पूर्णविरामचिन्ह"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"डबल-स्पेस मोकळी जागा"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"स्पेसबारवर डबल टॅप केल्याने पूर्णविरामचिन्ह व त्यापाठोपाठ स्पेस घातली जाते"</string>
     <string name="auto_cap" msgid="1719746674854628252">"स्‍वयं-कॅपिटलायझेशन"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"प्रत्येक वाक्याचा पहिला शब्द कॅपिटल करा"</string>
