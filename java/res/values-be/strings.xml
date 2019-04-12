@@ -60,7 +60,7 @@
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Персанальныя прапановы"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Палепшыць <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Падвойны iнтэрвал"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Падвойнае нацiсканне на прабел ўстаўляе iнтэрвал з наступным прабелам"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Падвойнае нацiсканне на клавішу прабелу ўстаўляе кропку з наступным прабелам"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Аўтаматычна рабіць літары вялікімі"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Пісаць з загалоўнай літары першае слова ў кожным сказе"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Асабісты слоўнік"</string>

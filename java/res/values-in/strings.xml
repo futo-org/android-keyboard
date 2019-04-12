@@ -169,8 +169,8 @@
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Kamus pengguna"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Kamus yang tersedia"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"Saat ini sedang mendownload"</string>
-    <string name="dictionary_installed" msgid="8081558343559342962">"Terpasang"</string>
-    <string name="dictionary_disabled" msgid="8950383219564621762">"Terpasang, dinonaktifkan"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Terinstal"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Terinstal, dinonaktifkan"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Problem koneksi kamus"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"Tidak tersedia kamus"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"Segarkan"</string>

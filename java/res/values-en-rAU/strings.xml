@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Delete"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Cancel"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Your personal dictionary will be synced and backed up to Google servers. The statistical information of word frequency may be collected to help improve our products. The collection and usage of all the information will be compliant with "<a href="https://www.google.com/policies/privacy">"Google\'s Privacy Policy"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Please add a Google account to this device to enable this feature"</string>
+    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Please add a Google Account to this device to enable this feature"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sync is not available for devices with Google Apps for Business accounts"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Switch to other input methods"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Language switch key also covers other input methods"</string>

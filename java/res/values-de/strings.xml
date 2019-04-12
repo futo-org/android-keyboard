@@ -21,11 +21,11 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Eingabeoptionen"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontaktnamen prüfen"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontakte erkennen"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Rechtschreibprüfung kann Einträge aus meiner Kontaktliste verwenden"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Bei Tastendruck vibrieren"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Ton bei Tastendruck"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up bei Tastendruck"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Bei Tastendruck Pop-up"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Einstellungen"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Konten &amp; Datenschutz"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Darstellung &amp; Layouts"</string>
@@ -60,7 +60,7 @@
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Personalisierte Vorschläge"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> verbessern"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Punkt plus Leerzeichen"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Für Punkt plus Leerzeichen doppelt auf die Leertaste tippen﻿﻿"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Doppeltippen auf Leertaste fügt Punkt und Leerzeichen ein"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Autom. Groß-/Kleinschreibung"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Das erste Wort jedes Satzes großschreiben"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Mein Wörterbuch"</string>
@@ -77,7 +77,7 @@
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Stark"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Sehr stark"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Vorschläge für nächstes Wort"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Vorschläge anhand des vorherigen Wortes machen"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Anhand des vorherigen Wortes Vorschläge machen"</string>
     <string name="gesture_input" msgid="826951152254563827">"Bewegungseingabe aktivieren"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Durch Bewegen der Finger über die Buchstaben ein Wort eingeben"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Spur der Bewegung anzeigen"</string>
@@ -98,7 +98,7 @@
     <string name="switch_accounts" msgid="3321216593719006162">"Konto wechseln"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"Keine Konten ausgewählt"</string>
     <string name="account_selected" msgid="2846876462199625974">"Momentan wird <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> verwendet."</string>
-    <string name="account_select_ok" msgid="9141195141763227797">"OK"</string>
+    <string name="account_select_ok" msgid="9141195141763227797">"Ok"</string>
     <string name="account_select_cancel" msgid="5181012062618504340">"Abbrechen"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Abmelden"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Zu verwendendes Konto auswählen"</string>
@@ -136,9 +136,9 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Der gleiche Eingabestil ist bereits vorhanden: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrationsdauer bei Tastendruck"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tonlautstärke bei Tastendruck"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Verzögerung für langes Drücken"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Dauer für langen Tastendruck"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji für physische Tastatur"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Emoji-Palette mithilfe der physischen Alt-Taste aufrufen"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Emoji-Palette auf physischen Tastaturen über Alt-Taste aufrufen"</string>
     <string name="button_default" msgid="3988017840431881491">"Standard"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Willkommen bei <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"mit Bewegungseingabe"</string>
@@ -195,7 +195,7 @@
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Wortgruppe"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Weitere Optionen"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Weniger Optionen"</string>
-    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"OK"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"Ok"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Wort:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Tastaturkürzel:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Sprache:"</string>
