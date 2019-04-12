@@ -59,7 +59,7 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"നിർദ്ദേശങ്ങൾക്കും തിരുത്തലുകൾക്കുമായി കോൺടാക്‌റ്റുകളിൽ നിന്നുള്ള പേരുകൾ ഉപയോഗിക്കുക"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"വ്യക്തിഗത നിർദ്ദേശങ്ങൾ"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> മെച്ചപ്പെടുത്തുക"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"ഡബിൾ സ്പേസ് പിരീഡ്"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"ഡബിൾ സ്പേസ് പീരിഡ്"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"സ്‌പെയ്‌സ് ബാറിൽ ഇരട്ട ടാപ്പുചെയ്യുന്നത്, ഒരു സ്‌പെയ്‌സിന് മുമ്പായി വിരാമം ഇടുന്നു"</string>
     <string name="auto_cap" msgid="1719746674854628252">"സ്വയം വലിയക്ഷരമാക്കുക"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"ഓരോ വാക്യത്തിന്റെയും ആദ്യ പദം വലിയക്ഷരമാക്കുക"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"പദം എഡിറ്റുചെയ്യുക"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"എഡിറ്റുചെയ്യുക"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ഇല്ലാതാക്കുക"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ഉപയോക്തൃ നിഘണ്ടുവിൽ നിങ്ങൾക്ക് പദങ്ങളൊന്നുമില്ല. ഒരു പദം ചേർക്കുന്നതിന്, ചേർക്കുക (+) ബട്ടൺ ടാപ്പുചെയ്യുക."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"ഉപയോക്തൃ നിഘണ്ടുവിൽ നിങ്ങൾക്ക് പദങ്ങളൊന്നുമില്ല. ഒരു പദം ചേർക്കുന്നതിന്, ചേർക്കുക (+) ബട്ടൺ ടാപ്പ് ചെയ്യുക."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"എല്ലാ ഭാഷകൾക്കുമായി"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"കൂടുതൽ ഭാഷകൾ…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"ഇല്ലാതാക്കുക"</string>

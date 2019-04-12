@@ -40,7 +40,7 @@
     <string name="sync_now_title" msgid="3088838136743277721">"סנכרן עכשיו"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"מחק נתונים בענן"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"‏מוחק את הנתונים המסונכרנים שלך מ-Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"הנתונים המסונכרנים שלך יימחקו מהענן. האם אתה בטוח?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"הנתונים המסונכרנים שלך יימחקו מהענן. להמשיך?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"מחק"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"ביטול"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"‏המילון האישי שלך יסונכרן ויגובה בשרתי Google. ייתכן שהמידע הסטטיסטי לגבי תדירות מילים ייאסף כדי לעזור בשיפור המוצרים שלנו. איסוף המידע והשימוש בו ייעשו בהתאם ל"<a href="https://www.google.com/policies/privacy">"מדיניות הפרטיות של Google"</a>"."</string>
