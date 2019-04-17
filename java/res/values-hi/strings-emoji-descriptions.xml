@@ -839,7 +839,7 @@
     <string name="spoken_emoji_1F503" msgid="8936283551917858793">"घड़ी की सुई की दिशा में नीचे एवं ऊपर की ओर खुले चक्रिय तीर"</string>
     <string name="spoken_emoji_1F504" msgid="708290317843535943">"घड़ी की विपरीत दिशा में नीचे एवं ऊपर की ओर खुले चक्र तीर"</string>
     <string name="spoken_emoji_1F505" msgid="6348909939004951860">"कम चमकीले वाले प्रतीक"</string>
-    <string name="spoken_emoji_1F506" msgid="4449609297521280173">"अधिक चमकीले प्रतीक"</string>
+    <string name="spoken_emoji_1F506" msgid="4449609297521280173">"ज़्यादा चमकीले प्रतीक"</string>
     <string name="spoken_emoji_1F507" msgid="7136386694923708448">"रद्दीकारण स्ट्रोक वाले स्पीकर"</string>
     <string name="spoken_emoji_1F508" msgid="5063567689831527865">"स्‍पीकर"</string>
     <string name="spoken_emoji_1F509" msgid="3948050077992370791">"एकल ध्वनि तरंग वाले स्पीकर"</string>
@@ -1083,7 +1083,7 @@
     <skip />
     <string name="spoken_emoji_1F645" msgid="5202090629227587076">"बिना अच्छी मुद्रा वाला चेहरा"</string>
     <string name="spoken_emoji_1F646" msgid="6734425134415138134">"ठीक है कि मुद्रा वाला चेहरा"</string>
-    <string name="spoken_emoji_1F647" msgid="1090285518444205483">"बहुत अधिक झुकता हुआ व्यक्ति"</string>
+    <string name="spoken_emoji_1F647" msgid="1090285518444205483">"बहुत ज़्यादा झुकता हुआ व्यक्ति"</string>
     <string name="spoken_emoji_1F648" msgid="8978535230610522356">"बूरा न देखो वाला बंदर"</string>
     <string name="spoken_emoji_1F649" msgid="8486145279809495102">"बूरा न सुनो वाला बंदर"</string>
     <string name="spoken_emoji_1F64A" msgid="1237524974033228660">"बूरा न बोलो वाला बंदर"</string>
@@ -1096,7 +1096,7 @@
     <string name="spoken_emoji_1F681" msgid="9201341783850525339">"हैलीकॉप्टर"</string>
     <string name="spoken_emoji_1F682" msgid="8046933583867498698">"भाप लोकोमोटीव"</string>
     <string name="spoken_emoji_1F683" msgid="8772750354339223092">"रेलवे कार"</string>
-    <string name="spoken_emoji_1F684" msgid="346396777356203608">"अधिक गति वाली ट्रेन"</string>
+    <string name="spoken_emoji_1F684" msgid="346396777356203608">"ज़्यादा गति वाली ट्रेन"</string>
     <string name="spoken_emoji_1F685" msgid="1237059817190832730">"गोली जैसी नाक वाली उच्च गति की ट्रेन"</string>
     <string name="spoken_emoji_1F686" msgid="3525197227223620343">"रेलगाड़ी"</string>
     <string name="spoken_emoji_1F687" msgid="5110143437960392837">"मेट्रो"</string>
