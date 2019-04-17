@@ -179,7 +179,7 @@
     <string name="spoken_symbol_00A1" msgid="4281758332905123408">"Շրջած բացականչական նշան"</string>
     <string name="spoken_symbol_00AB" msgid="4093069643313064892">"Բացող հայկական չակերտ"</string>
     <string name="spoken_symbol_00B7" msgid="2447718728927874920">"Մեջտեղի կետիկ"</string>
-    <string name="spoken_symbol_00B9" msgid="8026257165451461231">"Վերգիր մեկ"</string>
+    <string name="spoken_symbol_00B9" msgid="8026257165451461231">"Վերտողային տեքստ մեկ"</string>
     <string name="spoken_symbol_00BB" msgid="1102740075655373928">"Փակող հայկական չակերտ"</string>
     <string name="spoken_symbol_00BF" msgid="6233794752573788098">"Շրջած հարցական նշան"</string>
     <string name="spoken_symbol_2018" msgid="4886476295598930225">"Ձախ վերին չակերտ"</string>
@@ -194,8 +194,8 @@
     <string name="spoken_symbol_2033" msgid="1251022699713475088">"Կրկնակի շտրիխ"</string>
     <string name="spoken_symbol_2039" msgid="6989616457213775957">"Ձախ անկյունային փակագիծ"</string>
     <string name="spoken_symbol_203A" msgid="31245095449823701">"Աջ անկյունային փակագիծ"</string>
-    <string name="spoken_symbol_2074" msgid="2116717717093306894">"Վերգիր չորս"</string>
-    <string name="spoken_symbol_207F" msgid="1706731172134246659">"Վերգիր լատիներեն փոքրատառ n"</string>
+    <string name="spoken_symbol_2074" msgid="2116717717093306894">"Վերտողային տեքստ չորս"</string>
+    <string name="spoken_symbol_207F" msgid="1706731172134246659">"Վերտողային տեքստ լատիներեն փոքրատառ n"</string>
     <string name="spoken_symbol_20B1" msgid="2159994270622444689">"Պեսոյի նշան"</string>
     <string name="spoken_symbol_2105" msgid="7289404939366976829">"Միջոցով"</string>
     <string name="spoken_symbol_2192" msgid="827804523596125414">"Աջ սլաք"</string>
