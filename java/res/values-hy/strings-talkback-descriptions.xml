@@ -91,6 +91,6 @@
     <string name="spoken_emoticon_3A_2D_5B_20" msgid="2223507987759905920">"Խոժոռված դեմք"</string>
     <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"Լրացուցիչ տառանշաններով ստեղնաշարը հասանելի է"</string>
     <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"Լրացուցիչ տառանշաններով ստեղնաշարը փակված է"</string>
-    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"Լրացուցիչ առաջարկներով վահանակը հասանելի է"</string>
-    <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"Լրացուցիչ առաջարկներով վահանակը փակված է"</string>
+    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"Լրացուցիչ հուշումներով վահանակը հասանելի է"</string>
+    <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"Լրացուցիչ հուշումներով վահանակը փակված է"</string>
 </resources>
