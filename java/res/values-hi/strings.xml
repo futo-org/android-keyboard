@@ -155,7 +155,7 @@
     <string name="setup_step3_title" msgid="3154757183631490281">"बधाई हो, आप बिल्कुल तैयार हैं!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"अब आप <xliff:g id="APPLICATION_NAME">%s</xliff:g> के साथ अपने सभी पसंदीदा ऐप्स  में लिख सकते हैं."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"अतिरिक्त भाषाएं कॉन्फ़िगर करें"</string>
-    <string name="setup_finish_action" msgid="276559243409465389">"समाप्त"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"खत्म"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ऐप्लिकेशन का आइकॉन दिखाएं"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लॉन्चर में ऐप आइकॉन दिखाएं"</string>
     <string name="app_name" msgid="6320102637491234792">"डिक्‍शनरी प्रदाता"</string>
@@ -206,7 +206,7 @@
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"मिटाएं"</string>
     <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"आपके पास उपयोगकर्ता डिक्शनरी में कोई भी शब्द नहीं है. कोई शब्द जोड़ने के लिए, जोड़ें (+) बटन छूएं."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"सभी भाषाओं के लिए"</string>
-    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"अधिक भाषाएं…"</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ज़्यादा भाषाएं…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"मिटाएं"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>

@@ -156,8 +156,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாடு மூலம் உங்களுக்கு விருப்பமான எல்லா பயன்பாடுகளிலும் நீங்கள் உள்ளிடலாம்."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"கூடுதல் மொழிகளை உள்ளமை"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"முடிந்தது"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"பயன்பாட்டு ஐகானைக் காட்டு"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"துவக்கியில் பயன்பாட்டு ஐகானைக் காட்டும்"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ஆப்ஸ் ஐகானைக் காட்டு"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"துவக்கியில் ஆப்ஸ் ஐகானைக் காட்டும்"</string>
     <string name="app_name" msgid="6320102637491234792">"அகராதி வழங்கி"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"அகராதி வழங்கி"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"அகராதி சேவை"</string>

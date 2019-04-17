@@ -41,8 +41,8 @@
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Булут дайындарын жок кылуу"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Шайкештештирилген дайындарыңыз Google\'дан жок кылынат"</string>
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Шайкештирилген дайындарыңыз булуттан жок кылынат. Макулсузбу?"</string>
-    <string name="clear_sync_data_ok" msgid="613104067705915132">"Жок кылуу"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Жокко чыгаруу"</string>
+    <string name="clear_sync_data_ok" msgid="613104067705915132">"Ооба"</string>
+    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Жок"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Жеке сөздүгүңүз шайкештирилет жана Google серверлерине сакталат. Өндүрүмдөрүбүздү жакшыртууга жардамдашуу максатында сөз жыштыгынын статистикалык маалыматы топтолушу мүмкүн. Бардык маалыматты топтоо жана колдонуу "<a href="https://www.google.com/policies/privacy">"Google\'дун Купуялык Саясатына"</a>" ылайык болот."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Бул өзгөчөлүктү иштт ү-н ушул түзмөккө Google каттоо эсбн кошңз"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Ишкердик каттоо эсептери үчүн Google Apps\'те шайкештирүү жеткиликтүү эмес"</string>
@@ -85,8 +85,8 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Жаңсалганда сунушталган сөздү көрүү"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Сөз айкашын жаңсоо"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Боштук баскычын сылоо менен боштуктарды жаңсап киргизиңиз"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Үн менен киргизүү баскычы"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Үн менен киргизүү ыкмаларынын бири да иштетилген эмес. Тилдер жана киргизүү жөндөөлөрүн текшериңиз."</string>
+    <string name="voice_input" msgid="3583258583521397548">"Айтып киргизүү баскычы"</string>
+    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Айтып киргизүү ыкмасы иштетилген эмес. Тилдер жана киргизүү жөндөөлөрүн текшериңиз."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Дайндрд киргзүү ыкмалрн конфигрцлоо"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Тилдер"</string>
     <string name="help_and_feedback" msgid="5328219371839879161">"Жардам жана пикир билдирүү"</string>
@@ -99,7 +99,7 @@
     <string name="no_accounts_selected" msgid="2073821619103904330">"Бир дагы каттоо эсеби тандалган жок"</string>
     <string name="account_selected" msgid="2846876462199625974">"Учурда <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> колдонулууда"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"OK"</string>
-    <string name="account_select_cancel" msgid="5181012062618504340">"Жокко чыгаруу"</string>
+    <string name="account_select_cancel" msgid="5181012062618504340">"Жок"</string>
     <string name="account_select_sign_out" msgid="3299651159390187933">"Чыгуу"</string>
     <string name="account_select_title" msgid="6279711684772922649">"Колдонуу үчүн каттоо эсебин тандаңыз"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англисче (UK)"</string>

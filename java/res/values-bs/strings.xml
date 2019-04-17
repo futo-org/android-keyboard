@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Mogućnosti unosa"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Korištenje imena kontakata"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Alat za provjeru pravopisa koristi upise iz vaše liste kontakata"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Provjera pravopisa koristi upise s vaše liste kontakata"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibracija pri pritisku na tipku"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk pri pritisku tipke"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Iskačuči prozor pri pritisku na tipku"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Već postoji isti stil unosa: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Trajanje vibracije pritisnute tipke"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Jačina zvuka pritisnute tipke"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Odgoda dugog pritiska tipke"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Odgoda dugim pritiskom tipke"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji za fizičku tastaturu"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tipka Alt na fizičkoj tastaturi aktivira paletu za emoji"</string>
     <string name="button_default" msgid="3988017840431881491">"Zadano"</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"Konfiguriraj dodatne jezike"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Završeno"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Prikaži ikonu aplikacije"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Prikaži ikonu aplikacije na pokretaču"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Prikazivanje ikone aplikacije na pokretaču"</string>
     <string name="app_name" msgid="6320102637491234792">"Pružalac usluge rječnika"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Pružalac usluge rječnika"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Usluga rječnika"</string>
