@@ -24,7 +24,7 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Tra cứu tên liên hệ"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Trình kiểm tra chính tả sử dụng các mục nhập từ danh bạ của bạn"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rung khi nhấn phím"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Âm thanh khi nhấn phím"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Phát âm thanh khi nhấn phím"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Phông chữ lớn hơn bật lên khi nhấn phím"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Tùy chọn"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Tài khoản và bảo mật"</string>
@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Từ điển chính"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Hiển thị gợi ý sửa"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Hiển thị từ được đề xuất khi nhập"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Chặn các từ xúc phạm"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Chặn các từ phản cảm"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Không đề xuất các từ có thể gây xúc phạm"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Tự động sửa"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Phím cách và dấu câu tự động sửa từ nhập sai"</string>
@@ -136,8 +136,8 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Đã tồn tại kiểu nhập tương tự: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Thời gian rung khi nhấn phím"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Âm lượng khi nhấn phím"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Thời gian trễ nhấn và giữ phím"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Biểu tượng cảm xúc cho bàn phím thực"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Thời gian nhấn và giữ phím"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Biểu tượng cảm xúc cho bàn phím vật lý"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Phím Alt thực hiển thị bảng biểu tượng cảm xúc"</string>
     <string name="button_default" msgid="3988017840431881491">"Mặc định"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Chào mừng bạn đến với <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
