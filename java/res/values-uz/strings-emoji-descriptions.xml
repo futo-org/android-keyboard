@@ -328,7 +328,7 @@
     <!-- no translation found for spoken_emoji_1F32F (6730078269862769637) -->
     <skip />
     <string name="spoken_emoji_1F330" msgid="3115760035618051575">"Kashtan yong‘og‘i"</string>
-    <string name="spoken_emoji_1F331" msgid="5658888205290008691">"Ko‘chat"</string>
+    <string name="spoken_emoji_1F331" msgid="5658888205290008691">"Nihol"</string>
     <string name="spoken_emoji_1F332" msgid="2935650450421165938">"Archa"</string>
     <string name="spoken_emoji_1F333" msgid="5898847427062482675">"Bargli daraxt"</string>
     <string name="spoken_emoji_1F334" msgid="6183375224678417894">"Palma daraxti"</string>
@@ -800,13 +800,13 @@
     <string name="spoken_emoji_1F4DE" msgid="7883008605002117671">"Telefon go‘shagi"</string>
     <string name="spoken_emoji_1F4DF" msgid="3538610110623780465">"Peyjer"</string>
     <string name="spoken_emoji_1F4E0" msgid="2960778342609543077">"Faks apparati"</string>
-    <string name="spoken_emoji_1F4E1" msgid="6269733703719242108">"Sun’iy yo‘ldoshli antenna"</string>
+    <string name="spoken_emoji_1F4E1" msgid="6269733703719242108">"Sputnikli antenna"</string>
     <string name="spoken_emoji_1F4E2" msgid="1987535386302883116">"E’lon qiluvchi karnay"</string>
     <string name="spoken_emoji_1F4E3" msgid="5588916572878599224">"Ovozni kuchaytiruvchi karnay"</string>
     <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"Chiquvchi xat qutisi"</string>
     <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"Kiruvchi xat qutisi"</string>
     <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"O‘ralgan sovg‘a"</string>
-    <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"E-pochta belgisi"</string>
+    <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"Email belgisi"</string>
     <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Kiruvchi konvert"</string>
     <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"Tepasida pastga qaragan ko‘rsatkichli chizig‘i bor konvert"</string>
     <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"Pastga qaragan bayroqli yopiq pochta qutisi"</string>
