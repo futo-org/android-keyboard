@@ -26,7 +26,7 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"اهتزاز عند ضغط مفتاح"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"صوت عند الضغط على مفتاح"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"انبثاق عند ضغط مفتاح"</string>
-    <string name="settings_screen_preferences" msgid="2696713156722014624">"التفضيلات"</string>
+    <string name="settings_screen_preferences" msgid="2696713156722014624">"الإعدادات المفضّلة"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"الحسابات والخصوصية"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"المظهر والتنسيقات"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"الكتابة بالإشارة"</string>
@@ -54,7 +54,7 @@
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"بلا تأخير"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"تلقائي"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> مللي ثانية"</string>
-    <string name="settings_system_default" msgid="6268225104743331821">"الإعداد التلقائي للنظام"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"الضبط التلقائي للنظام"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"اقتراح أسماء جهات الاتصال"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"استخدام الأسماء من جهات الاتصال للاقتراحات والتصحيحات"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"اقتراحات مخصصة"</string>
@@ -62,7 +62,7 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"نقطة المسافة المزدوجة"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"يؤدي النقر مرّتين على مفتاح المسافة إلى إدخال نقطة متبوعة بمسافة"</string>
     <string name="auto_cap" msgid="1719746674854628252">"أحرف كبيرة تلقائيًا"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"كتابة الحرف الأول من كل جملة بحرف كبير."</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"كتابة الحرف الأول من كل جملة بحرف كبير"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"القاموس الشخصي"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"القواميس الإضافية"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"القاموس الرئيسي"</string>
@@ -77,7 +77,7 @@
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"صارم"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"شديد الصرامة"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"اقتراحات الكلمات التالية"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"استخدام الكلمة السابقة في تقديم الاقتراحات"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"استخدام الكلمة السابقة لتقديم الاقتراحات"</string>
     <string name="gesture_input" msgid="826951152254563827">"تفعيل الكتابة بالإيماءة"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"إدخال كلمة من خلال التمرير على الأحرف"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"عرض مسار الإيماءة"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"نمط الإدخال ذاته موجود من قبل: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"مدة اهتزاز الضغط على المفاتيح"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"مستوى صوت الضغط على المفاتيح"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"مهلة الضغط الطويل على المفاتيح"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"مهلة الضغط مع الاستمرار على المفاتيح"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"الرموز التعبيرية للوحة مفاتيح فعلية"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"‏مفتاح Alt الفعلي يعرض لوحة الرموز التعبيرية"</string>
     <string name="button_default" msgid="3988017840431881491">"التلقائية"</string>

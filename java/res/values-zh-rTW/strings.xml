@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"拼字檢查程式使用你的聯絡人清單項目"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按鍵時震動"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"按鍵聲音"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"按鍵時彈出"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"按鍵時顯示大型字體"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"偏好設定"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"帳戶與隱私權"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"外觀與版面配置"</string>
