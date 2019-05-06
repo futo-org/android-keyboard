@@ -21,6 +21,7 @@ import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROP
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
 import android.Manifest.permission;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -1781,6 +1782,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     };
 
+    /**
+     * Starts {@link android.app.Activity} on the same display where the IME is shown.
+     *
+     * @param intent {@link Intent} to be used to start {@link android.app.Activity}.
+     */
+    private void startActivityOnTheSameDisplay(Intent intent) {
+        // Note that WindowManager#getDefaultDisplay() returns the display ID associated with the
+        // Context from which the WindowManager instance was obtained. Therefore the following code
+        // returns the display ID for the window where the IME is shown.
+        final int currentDisplayId = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay().getDisplayId();
+
+        startActivity(intent,
+                ActivityOptions.makeBasic().setLaunchDisplayId(currentDisplayId).toBundle());
+    }
+
     void launchSettings(final String extraEntryValue) {
         mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
@@ -1795,7 +1812,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(SettingsActivity.EXTRA_SHOW_HOME_AS_UP, false);
         intent.putExtra(SettingsActivity.EXTRA_ENTRY_KEY, extraEntryValue);
-        startActivity(intent);
+        startActivityOnTheSameDisplay(intent);
     }
 
     private void showSubtypeSelectorAndSettings() {
@@ -1819,7 +1836,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                                     | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra(Intent.EXTRA_TITLE, languageSelectionTitle);
-                    startActivity(intent);
+                    startActivityOnTheSameDisplay(intent);
                     break;
                 case 1:
                     launchSettings(SettingsActivity.EXTRA_ENTRY_VALUE_LONG_PRESS_COMMA);
