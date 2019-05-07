@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"इनपुट पर्याय"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"संपर्क नावे शोधा"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"शब्दलेखन तपासक आपल्या संपर्क सूचीमधील प्रविष्ट्या वापरतो"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"शब्दलेखन तपासक आपल्या संपर्क सूचीमधील एंट्री वापरतो"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"की दाबताना व्हायब्रेट"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"की दाबताना आवाज"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"की दाबताना पॉपअप"</string>
@@ -156,7 +156,7 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"आता तुम्ही <xliff:g id="APPLICATION_NAME">%s</xliff:g> सह आपल्या सर्व आवडत्या अॅप्समध्ये टाइप करू शकता."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"अतिरिक्त भाषा कॉन्फिगर करा"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"अॅप आयकन दर्शवा"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"अ‍ॅप आयकन दर्शवा"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लाँचर मध्ये अॅप्लिकेशन आयकन दाखवा"</string>
     <string name="app_name" msgid="6320102637491234792">"शब्दकोश प्रदाता"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"शब्दकोश प्रदाता"</string>

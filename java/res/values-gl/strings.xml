@@ -31,7 +31,7 @@
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Aparencia e deseños"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Escritura por xestos"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Corrección de texto"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"Opcións avanzadas"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Configuración avanzada"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Activar teclado dividido"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Sincronización do teclado Google"</string>
@@ -166,7 +166,7 @@
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Dicionario dispoñible"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"Configuración dos dicionarios"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"Dicionarios de usuario"</string>
-    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Dicionario de usuario"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Dicionario do usuario"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Dicionario dispoñible"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"Descarga en curso"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Instalado"</string>
