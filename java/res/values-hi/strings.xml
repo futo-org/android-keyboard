@@ -61,7 +61,7 @@
     <string name="enable_metrics_logging" msgid="5506372337118822837">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> को बेहतर बनाएं"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"दोहरे स्पेस वाला पीरियड"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"स्पेसबार पर डबल टैप करने से पीरियड शामिल हो जाता है जिसके बाद एक रिक्ति होती है"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"स्‍वत: अक्षर बड़े करना"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"अपने-आप अक्षर बड़े करना"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"प्रत्येक वाक्य के पहले शब्द को बड़ा लिखें"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"निजी शब्दकोश"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"एड-ऑन शब्दकोश"</string>
@@ -70,7 +70,7 @@
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"लिखते समय सुझाए गए शब्‍द दिखाएं"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"आपत्तिजनक शब्द रोकें"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"संभावित आपत्तिजनक शब्दों का सुझाव न दें"</string>
-    <string name="auto_correction" msgid="7630720885194996950">"स्‍वत: सुधार"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"अपने-आप सुधार"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Spacebar और विराम चिह्न गलत लिखे गए शब्‍दों को स्‍वचालित रूप से ठीक करते हैं"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"बंद"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"साधारण"</string>
