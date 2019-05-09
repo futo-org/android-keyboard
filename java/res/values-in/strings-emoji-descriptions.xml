@@ -677,8 +677,8 @@
     <string name="spoken_emoji_1F463" msgid="5850772903593010699">"Jejak kaki"</string>
     <string name="spoken_emoji_1F464" msgid="1228335905487734913">"Siluet patung dada"</string>
     <string name="spoken_emoji_1F465" msgid="4461307702499679879">"Siluet patung dada"</string>
-    <string name="spoken_emoji_1F466" msgid="1938873085514108889">"Laki-laki"</string>
-    <string name="spoken_emoji_1F467" msgid="8237080594860144998">"Perempuan"</string>
+    <string name="spoken_emoji_1F466" msgid="1938873085514108889">"Anak laki-laki"</string>
+    <string name="spoken_emoji_1F467" msgid="8237080594860144998">"Anak perempuan"</string>
     <string name="spoken_emoji_1F468" msgid="6081300722526675382">"Pria"</string>
     <string name="spoken_emoji_1F469" msgid="1090140923076108158">"Wanita"</string>
     <string name="spoken_emoji_1F46A" msgid="5063570981942606595">"Keluarga"</string>
@@ -809,11 +809,11 @@
     <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"Simbol email"</string>
     <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Amplop yang masuk"</string>
     <string name="spoken_emoji_1F4E9" msgid="5947550337678643166">"Amplop dengan panah ke bawah di atas"</string>
-    <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"Kotak pos tertutup dengan bendera turun"</string>
-    <string name="spoken_emoji_1F4EB" msgid="6491414165464146137">"Kotak pos tertutup dengan bendera terangkat"</string>
-    <string name="spoken_emoji_1F4EC" msgid="7369517138779988438">"Kotak pos terbuka dengan bendera terangkat"</string>
-    <string name="spoken_emoji_1F4ED" msgid="5657520436285454241">"Kotak pos terbuka dengan bendera turun"</string>
-    <string name="spoken_emoji_1F4EE" msgid="8464138906243608614">"Kotak pos"</string>
+    <string name="spoken_emoji_1F4EA" msgid="772614045207213751">"Kotak postingan tertutup dengan bendera turun"</string>
+    <string name="spoken_emoji_1F4EB" msgid="6491414165464146137">"Kotak postingan tertutup dengan bendera terangkat"</string>
+    <string name="spoken_emoji_1F4EC" msgid="7369517138779988438">"Kotak postingan terbuka dengan bendera terangkat"</string>
+    <string name="spoken_emoji_1F4ED" msgid="5657520436285454241">"Kotak postingan terbuka dengan bendera turun"</string>
+    <string name="spoken_emoji_1F4EE" msgid="8464138906243608614">"Kotak postingan"</string>
     <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"Terompet kantor pos"</string>
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"Koran"</string>
     <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"Ponsel"</string>
@@ -1082,7 +1082,7 @@
     <!-- no translation found for spoken_emoji_1F644 (446284817942609022) -->
     <skip />
     <string name="spoken_emoji_1F645" msgid="5202090629227587076">"Wajah dengan isyarat tidak setuju"</string>
-    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"Wajah dengan gestur oke"</string>
+    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"Wajah dengan isyarat oke"</string>
     <string name="spoken_emoji_1F647" msgid="1090285518444205483">"Orang yang membungkuk dalam-dalam"</string>
     <string name="spoken_emoji_1F648" msgid="8978535230610522356">"Monyet menutup mata"</string>
     <string name="spoken_emoji_1F649" msgid="8486145279809495102">"Monyet menutup telinga"</string>
