@@ -144,16 +144,16 @@
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ஸ்வைப் உள்ளீடு மூலம்"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"தொடங்குக"</string>
     <string name="setup_next_action" msgid="371821437915144603">"அடுத்த கட்டம்"</string>
-    <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டை அமைக்கிறது"</string>
-    <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாட்டை இயக்கவும்"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"மொழி &amp; உள்ளீட்டு அமைப்புகளில் \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" பயன்பாட்டைத் தேர்வு செய்யவும். இதனால், சாதனத்தில் பயன்பாட்டை இயக்கலாம்."</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ஆப்ஸை அமைக்கிறது"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ஆப்ஸை இயக்கவும்"</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"மொழி &amp; உள்ளீட்டு அமைப்புகளில் \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ஆப்ஸைத் தேர்வு செய்யவும். இதனால், சாதனத்தில் ஆப்ஸை இயக்கலாம்."</string>
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"மொழி &amp; உள்ளீட்டு அமைப்புகளில் <xliff:g id="APPLICATION_NAME">%s</xliff:g> ஏற்கனவே இயக்கப்பட்டுள்ளதால் இப்படிமுறை முடிந்தது. அடுத்த படிமுறைக்குச் செல்லவும்!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"அமைப்புகளில் இயக்கு"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> க்கு மாறவும்"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"அடுத்து, உங்கள் செயலில் உள்ள உரை உள்ளீட்டு முறையாக \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" பயன்பாட்டைத் தேர்ந்தெடுக்கவும்."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"உள்ளீட்டு முறைகளை மாற்றவும்"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"வாழ்த்துகள், தயாராகிவிட்டீர்கள்!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> பயன்பாடு மூலம் உங்களுக்கு விருப்பமான எல்லா பயன்பாடுகளிலும் நீங்கள் உள்ளிடலாம்."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ஆப்ஸ் மூலம் உங்களுக்கு விருப்பமான எல்லா ஆப்ஸ்களிலும் நீங்கள் உள்ளிடலாம்."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"கூடுதல் மொழிகளை உள்ளமை"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"முடிந்தது"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ஆப்ஸ் ஐகானைக் காட்டு"</string>
