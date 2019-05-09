@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcións de entrada"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Verificar nomes de contactos"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Buscar nomes de contactos"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"O corrector ortográfico utiliza entradas da lista de contactos"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao premer as teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son ao premer as teclas"</string>
@@ -31,7 +31,7 @@
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Aparencia e deseños"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Escritura por xestos"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Corrección de texto"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"Configuración avanzada"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Opcións avanzadas"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Activar teclado dividido"</string>
     <string name="cloud_sync_title" msgid="8579271074443847055">"Sincronización do teclado Google"</string>
@@ -59,7 +59,7 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utiliza nomes de contactos para as suxestións e correccións"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Suxestións personalizadas"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Mellorar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Dobre espazo insire punto"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Dobre espazo e punto"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Ao tocar dúas veces a barra de espazo insire un punto e un espazo"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Maiúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Pon en maiúscula a primeira palabra de cada frase"</string>
@@ -69,7 +69,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar suxestións de corrección"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra palabras suxeridas mentres escribes"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palabras ofensivas"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Evita suxerir palabras potencialmente ofensivas"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Non suxerir palabras potencialmente ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Premer a barra espazo e teclas de puntuación para corrixir erros"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivada"</string>
@@ -157,7 +157,7 @@
     <string name="setup_step3_action" msgid="600879797256942259">"Configurar idiomas adicionais"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Finalizado"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Mostrar icona da aplicación"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Mostra a icona da aplicación no Launcher"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Mostra a icona da aplicación no menú de aplicacións"</string>
     <string name="app_name" msgid="6320102637491234792">"Fornecedor do dicionario"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Fornecedor do dicionario"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Servizo de dicionario"</string>
@@ -166,7 +166,7 @@
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Dicionario dispoñible"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"Configuración dos dicionarios"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"Dicionarios de usuario"</string>
-    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Dicionario do usuario"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Dicionario de usuario"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Dicionario dispoñible"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"Descarga en curso"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Instalado"</string>
