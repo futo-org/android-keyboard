@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Dữ liệu đã đồng bộ hóa của bạn sẽ bị xóa khỏi đám mây. Bạn có chắc chắn không?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Xóa"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Hủy"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Từ điển cá nhân của bạn sẽ được đồng bộ hóa và sao lưu vào máy chủ Google. Chúng tôi có thể thu thập thông tin thống kê về tần suất của từ để giúp cải thiện sản phẩm của mình. Việc thu thập và sử dụng tất cả thông tin sẽ tuân thủ "<a href="https://www.google.com/policies/privacy">"Chính sách bảo mật của Google"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Từ điển cá nhân của bạn sẽ được đồng bộ hóa và sao lưu vào máy chủ Google. Chúng tôi có thể thu thập thông tin thống kê về tần suất của từ để giúp cải thiện sản phẩm của mình. Việc thu thập và sử dụng tất cả thông tin sẽ tuân thủ "<a href="https://www.google.com/policies/privacy">"Chính sách quyền riêng tư của Google"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Vui lòng thêm một tài khoản Google vào thiết bị này để bật tính năng này"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Tính năng đồng bộ hóa không khả dụng cho các thiết bị có tài khoản Google Apps for Business"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Phương thức nhập khác"</string>
