@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import static android.view.Display.INVALID_DISPLAY;
+
 import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASCII;
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
@@ -107,6 +109,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -164,6 +167,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Working variable for {@link #startShowingInputView()} and
     // {@link #onEvaluateInputViewShown()}.
     private boolean mIsExecutingStartShowingInputView;
+
+    // Used for re-initialize keyboard layout after onConfigurationChange.
+    @Nullable private Context mDisplayContext;
+    private int mCurDisplayId = INVALID_DISPLAY;
 
     // Object for reacting to adding/removing a dictionary pack.
     private final BroadcastReceiver mDictionaryPackInstallReceiver =
@@ -593,10 +600,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         DebugFlags.init(PreferenceManager.getDefaultSharedPreferences(this));
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
-        KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
         mStatsUtilsManager.onCreate(this /* context */, mDictionaryFacilitator);
+        final WindowManager wm = getSystemService(WindowManager.class);
+        mDisplayContext = createDisplayContext(wm.getDefaultDisplay());
+        mCurDisplayId = wm.getDefaultDisplay().getDisplayId();
+        KeyboardSwitcher.init(this);
         super.onCreate();
 
         mHandler.onCreate();
@@ -784,9 +794,27 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
+    public void onInitializeInterface() {
+        // TODO (b/133825283): Non-activity components Resources / DisplayMetrics update when
+        //  moving to external display.
+        // An issue in Q that non-activity components Resources / DisplayMetrics in
+        // Context doesn't well updated when moving to external display.
+        // Currently we do a workaround is to check if IME is moving to new display, if so,
+        // create new display context and re-init keyboard layout with this context.
+        final WindowManager wm = getSystemService(WindowManager.class);
+        final int newDisplayId = wm.getDefaultDisplay().getDisplayId();
+        if (mCurDisplayId != newDisplayId) {
+            mCurDisplayId = newDisplayId;
+            mDisplayContext = createDisplayContext(wm.getDefaultDisplay());
+            mKeyboardSwitcher.updateKeyboardTheme(mDisplayContext);
+        }
+    }
+
+    @Override
     public View onCreateInputView() {
         StatsUtils.onCreateInputView();
-        return mKeyboardSwitcher.onCreateInputView(mIsHardwareAcceleratedDrawingEnabled);
+        return mKeyboardSwitcher.onCreateInputView(mDisplayContext,
+                mIsHardwareAcceleratedDrawingEnabled);
     }
 
     @Override
@@ -869,7 +897,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
         mRichImm.refreshSubtypeCaches();
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        switcher.updateKeyboardTheme();
+        switcher.updateKeyboardTheme(mDisplayContext);
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
         // If we are starting input in a different text field from before, we'll have to reload
         // settings, so currentSettingsValues can't be final.
