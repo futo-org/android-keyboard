@@ -24,8 +24,8 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"കോണ്ടാക്റ്റ് പേരുകൾ തിരയൂ"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"നിങ്ങളുടെ കോൺടാക്‌റ്റ് ലിസ്‌റ്റിൽ നിന്നുള്ള എൻട്രികൾ സ്പെൽചെക്കർ ഉപയോഗിക്കുന്നു"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"കീ അമർത്തുമ്പോൾ വൈബ്രേറ്റുചെയ്യുക"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"കീയമർത്തുമ്പോൾ ശബ്ദം"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"കീയമർത്തുമ്പോൾ പോപ്പപ്പ്"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"കീ അമർത്തുമ്പോൾ ശബ്‌ദം"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"കീ അമർത്തുമ്പോൾ പോപ്പപ്പ്"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"മുൻഗണനകൾ"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"അക്കൗണ്ടുകളും സമന്വയവും"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"രൂപഭാവവും ലേഔട്ടുകളും"</string>

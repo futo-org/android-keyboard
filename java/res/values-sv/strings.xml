@@ -24,8 +24,8 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Slå upp kontaktnanmn"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"I stavningskontrollen används poster från kontaktlistan"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrera vid tangenttryck"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Knappljud"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Popup vid knapptryck"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Ljud vid tangenttryck"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Popup vid tangenttryck"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Inställningar"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Konton och sekretess"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Utseende och layouter"</string>
@@ -43,7 +43,7 @@
     <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Din synkroniserade data raderas från molnet. Vill du fortsätta?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Radera"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Avbryt"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Den egna ordboken synkroniseras och säkerhetskopieras till Googles servrar. Statistisk information om ordfrekvens kan samlas in och användas för att förbättra våra produkter. Insamlingen och användningen av all information sker i enlighet med "<a href="https://www.google.com/policies/privacy">"Googles sekretesspolicy"</a>"."</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Den personliga ordlistan synkroniseras och säkerhetskopieras till Googles servrar. Statistisk information om ordfrekvens kan samlas in och användas för att förbättra våra produkter. Insamlingen och användningen av all information sker i enlighet med "<a href="https://www.google.com/policies/privacy">"Googles sekretesspolicy"</a>"."</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Lägg till ett Google-konto på enheten om du vill aktivera detta"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Synkronisering är inte tillgänglig för enheter med Google Apps for Business-konton"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Byt till annan inmatning"</string>
@@ -62,8 +62,8 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"Dubbelt blanksteg = punkt"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dubbelt blanksteg ger en punkt följt av mellanslag"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatiska versaler"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Automatisk stor bokstav först i varje mening"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Egen ordlista"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Inled varje mening med stor bokstav"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Personlig ordlista"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Tilläggsordlistor"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Huvudordlistan"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Visa rättningsförslag"</string>
@@ -134,8 +134,8 @@
     <string name="enable" msgid="5031294444630523247">"Aktivera"</string>
     <string name="not_now" msgid="6172462888202790482">"Inte nu"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Samma indatastil finns redan: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrationslängd för tangenter"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Ljudvolym för tangenter"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrationslängd vid tangenttryck"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volym vid tangenttryck"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Fördröjning vid långt tryck"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji för fysiskt tangentbord"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Den fysiska Alt-tangenten visar emoji-paletten"</string>
