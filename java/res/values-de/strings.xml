@@ -69,7 +69,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Änderungsvorschläge"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Vorgeschlagene Wörter während des Tippens anzeigen"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Anstößige Wörter sperren"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Keine potenziell anstößigen Wörter vervollständigen"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Keine Vorschläge für potenziell anstößige Wörter unterbreiten"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autokorrektur"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Korrektur fehlerhafter Wörter durch Leertaste und Satzzeichen"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Aus"</string>
@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Wort bearbeiten"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Bearbeiten"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Löschen"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Es sind noch keine Wörter in deinem Wörterbuch vorhanden. Du kannst Wörter hinzufügen, indem du auf das Symbol \"+\" tippst."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Es sind noch keine Wörter in deinem Wörterbuch vorhanden. Du kannst Wörter hinzufügen, indem du auf das \"+\"-Symbol tippst."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Für alle Sprachen"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Weitere Sprachen..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Löschen"</string>

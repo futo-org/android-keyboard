@@ -117,8 +117,7 @@
     <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
     <skip />
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ଅପମାନଜନକ ଶବ୍ଦଗୁଡ଼ିକୁ ବ୍ଲକ୍ କରନ୍ତୁ"</string>
-    <!-- no translation found for prefs_block_potentially_offensive_summary (2371835479734991364) -->
-    <skip />
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"ସମ୍ଭାବ୍ୟ ଅପମାନଜନକ ଶବ୍ଦଗୁଡ଼ିକର ପ୍ରସ୍ତାବ ଦିଅନ୍ତୁ ନାହିଁ"</string>
     <!-- no translation found for auto_correction (7630720885194996950) -->
     <skip />
     <!-- no translation found for auto_correction_summary (5625751551134658006) -->
@@ -133,8 +132,7 @@
     <skip />
     <!-- no translation found for bigram_prediction (1084449187723948550) -->
     <skip />
-    <!-- no translation found for bigram_prediction_summary (3896362682751109677) -->
-    <skip />
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"ପ୍ରସ୍ତାବ ପ୍ରସ୍ତୁତ କରିବାରେ ପୂର୍ବବର୍ତ୍ତୀ ଶବ୍ଦ ବ୍ୟବହାର କରନ୍ତୁ"</string>
     <!-- no translation found for gesture_input (826951152254563827) -->
     <skip />
     <!-- no translation found for gesture_input_summary (9180350639305731231) -->

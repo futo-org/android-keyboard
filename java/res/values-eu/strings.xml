@@ -138,7 +138,7 @@
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tekla sakatzearen bolumena"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Luze sakatzearen atzerapena"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Teklatu fisikorako emotikonoak"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Teklatu fisikoko Alt tekla sakatuta emotikonoak agertzen dira"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Teklatu fisikoko Alt tekla sakatuta emojiak agertzen dira"</string>
     <string name="button_default" msgid="3988017840431881491">"Lehenetsia"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Ongi etorri <xliff:g id="APPLICATION_NAME">%s</xliff:g> aplikaziora"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"Idazketa lerrakorrarekin"</string>
