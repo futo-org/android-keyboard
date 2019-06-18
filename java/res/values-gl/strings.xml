@@ -30,7 +30,7 @@
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Contas e privacidade"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Aparencia e deseños"</string>
     <string name="settings_screen_gesture" msgid="8826372746901183556">"Escritura por xestos"</string>
-    <string name="settings_screen_correction" msgid="1616818407747682955">"Corrección de texto"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Corrección ortográfica"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Configuración avanzada"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Activar teclado dividido"</string>
@@ -95,7 +95,7 @@
     <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Toca aquí para gardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionario dispoñible"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema do teclado"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"Cambiar contas"</string>
+    <string name="switch_accounts" msgid="3321216593719006162">"Cambiar de conta"</string>
     <string name="no_accounts_selected" msgid="2073821619103904330">"Non se seleccionou ningunha conta"</string>
     <string name="account_selected" msgid="2846876462199625974">"Actualmente utilizando <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="account_select_ok" msgid="9141195141763227797">"Aceptar"</string>

@@ -68,8 +68,8 @@
     <string name="main_dictionary" msgid="4798763781818361168">"ప్రధాన నిఘంటువు"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"సవరణ సూచనలను చూపు"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"టైప్ చేసేటప్పుడు సూచిత పదాలను ప్రదర్శించు"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"అభ్యంతరకరమైన పదాలను బ్లాక్ చేయి"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"సంభావ్యంగా అభ్యంతరకరమైన పదాలను సూచించవద్దు"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"కించపరిచే పదాలను బ్లాక్ చేయి"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"కించ‌ప‌ర‌చ‌డానికి అవకాశం ఇచ్చే పదాలను సూచించవద్దు"</string>
     <string name="auto_correction" msgid="7630720885194996950">"స్వీయ-సవరణ"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"స్పేస్ బార్ మరియు విరామ చిహ్నాలు తప్పుగా టైప్ చేసిన పదాలను ఆటోమేటిక్‌గా సరి చేస్తాయి"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ఆఫ్‌ చేయి"</string>

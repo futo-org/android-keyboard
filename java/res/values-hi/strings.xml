@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"स्पेलिंग जाँचने वाली सेवा आपकी संपर्क सूची के संपर्कों इस्तेमाल करता है"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"बटन दबाने पर कंपन (वाइब्रेशन) करे"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"बटन दबाने पर आवाज़"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"कुंजी दबाने पर पॉपअप दिखाएं"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"बटन दबाने पर पॉपअप दिखाएं"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"प्राथमिकताएं"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"खाते और निजता"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"दिखावट और सज्जा"</string>
@@ -136,7 +136,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ऐसी ही इनपुट शैली पहले से मौजूद है: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"बटन दबाने पर कंपन (वाइब्रेशन) का समय"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"बटन दबाने पर आवाज़ का स्तर"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"बटन दबाए रखने की समयाविधि"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"देर तक बटन दबाए रखने का समय"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"कीबोर्ड के लिए स्माइलीज़"</string>
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"भौतिक Alt कुंजी इमोजी पैलेट दिखाती है"</string>
     <string name="button_default" msgid="3988017840431881491">"सामान्य"</string>
