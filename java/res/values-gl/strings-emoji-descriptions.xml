@@ -220,12 +220,12 @@
     <string name="spoken_emoji_2795" msgid="6563954833786162168">"Signo máis de trazo groso"</string>
     <string name="spoken_emoji_2796" msgid="5990926508250772777">"Signo menos de trazo groso"</string>
     <string name="spoken_emoji_2797" msgid="24694184172879174">"Signo de división de trazo groso"</string>
-    <string name="spoken_emoji_27A1" msgid="3513434778263100580">"Frecha negra cara a dereita"</string>
+    <string name="spoken_emoji_27A1" msgid="3513434778263100580">"Frecha negra cara á dereita"</string>
     <string name="spoken_emoji_27B0" msgid="203395646864662198">"Lazo"</string>
     <string name="spoken_emoji_27BF" msgid="4940514642375640510">"Lazo dobre"</string>
-    <string name="spoken_emoji_2934" msgid="9062130477982973457">"Frecha cara a dereita e curvada cara arriba"</string>
-    <string name="spoken_emoji_2935" msgid="6198710960720232074">"Frecha cara a dereita e curvada cara abaixo"</string>
-    <string name="spoken_emoji_2B05" msgid="4813405635410707690">"Frecha negra cara a esquerda"</string>
+    <string name="spoken_emoji_2934" msgid="9062130477982973457">"Frecha cara á dereita e curvada cara arriba"</string>
+    <string name="spoken_emoji_2935" msgid="6198710960720232074">"Frecha cara á dereita e curvada cara abaixo"</string>
+    <string name="spoken_emoji_2B05" msgid="4813405635410707690">"Frecha negra cara á esquerda"</string>
     <string name="spoken_emoji_2B06" msgid="1223172079106250748">"Frecha negra cara arriba"</string>
     <string name="spoken_emoji_2B07" msgid="1599124424746596150">"Frecha negra cara abaixo"</string>
     <string name="spoken_emoji_2B1B" msgid="3461247311988501626">"Cadrado negro grande"</string>
@@ -817,7 +817,7 @@
     <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"Corneta de posta"</string>
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"Prensa"</string>
     <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"Teléfono móbil"</string>
-    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"Teléfono móbil con frecha cara a dereita na esquerda"</string>
+    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"Teléfono móbil con frecha cara á dereita na esquerda"</string>
     <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"Modo de vibración"</string>
     <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"Teléfono móbil apagado"</string>
     <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"Prohibido teléfonos móbiles"</string>
@@ -834,9 +834,9 @@
     <!-- no translation found for spoken_emoji_1F4FF (6566102135671766103) -->
     <skip />
     <string name="spoken_emoji_1F500" msgid="2389947994502144547">"Frechas cara á dereita enroscadas"</string>
-    <string name="spoken_emoji_1F501" msgid="2132188352433347009">"Frechas en círculo cara a dereita e cara a esquerda que xiran no sentido das agullas do reloxo"</string>
-    <string name="spoken_emoji_1F502" msgid="2361976580513178391">"Frechas en círculo cara a dereita e cara a esquerda que xiran no sentido das agullas do reloxo co número 1 en círculo superposto"</string>
-    <string name="spoken_emoji_1F503" msgid="8936283551917858793">"Frechas en círculos abertos que xira cara a dereita e cara arriba e abaixo"</string>
+    <string name="spoken_emoji_1F501" msgid="2132188352433347009">"Frechas en círculo cara á dereita e cara á esquerda que xiran no sentido das agullas do reloxo"</string>
+    <string name="spoken_emoji_1F502" msgid="2361976580513178391">"Frechas en círculo cara á dereita e cara á esquerda que xiran no sentido das agullas do reloxo co número 1 en círculo superposto"</string>
+    <string name="spoken_emoji_1F503" msgid="8936283551917858793">"Frechas en círculos abertos que xira cara á dereita e cara arriba e abaixo"</string>
     <string name="spoken_emoji_1F504" msgid="708290317843535943">"Frechas en círculo cara arriba e cara abaixo que xiran no sentido contrario das agullas do reloxo"</string>
     <string name="spoken_emoji_1F505" msgid="6348909939004951860">"Símbolo de luminosidade baixa"</string>
     <string name="spoken_emoji_1F506" msgid="4449609297521280173">"Símbolo de luminosidade alta"</string>
@@ -846,8 +846,8 @@
     <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"Altofalante con tres ondas de son"</string>
     <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"Batería"</string>
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"Enchufe"</string>
-    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Lupa inclinada cara a esquerda"</string>
-    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"Lupa inclinada cara a dereita"</string>
+    <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Lupa inclinada cara á esquerda"</string>
+    <string name="spoken_emoji_1F50E" msgid="4751821352839693365">"Lupa inclinada cara á dereita"</string>
     <string name="spoken_emoji_1F50F" msgid="915079280472199605">"Cadeado con estilográfica"</string>
     <string name="spoken_emoji_1F510" msgid="7658381761691758318">"Cadeado pechado coa chave"</string>
     <string name="spoken_emoji_1F511" msgid="262319867774655688">"Chave"</string>
@@ -858,10 +858,10 @@
     <string name="spoken_emoji_1F516" msgid="108097933937925381">"Marcador"</string>
     <string name="spoken_emoji_1F517" msgid="2450846665734313397">"Símbolo de ligazón"</string>
     <string name="spoken_emoji_1F518" msgid="7028220286841437832">"Botón de opción"</string>
-    <string name="spoken_emoji_1F519" msgid="8211189165075445687">"\"Back\" cunha frecha cara a esquerda enriba"</string>
-    <string name="spoken_emoji_1F51A" msgid="823966751787338892">"\"End\" cunha frecha cara a esquerda enriba"</string>
-    <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"\"On\" cun signo de exclamación e cunha frecha dobre cara a esquerda e cara a dereita enriba"</string>
-    <string name="spoken_emoji_1F51C" msgid="110609810659826676">"\"Soon\" cunha frecha cara a dereita enriba"</string>
+    <string name="spoken_emoji_1F519" msgid="8211189165075445687">"\"Back\" cunha frecha cara á esquerda enriba"</string>
+    <string name="spoken_emoji_1F51A" msgid="823966751787338892">"\"End\" cunha frecha cara á esquerda enriba"</string>
+    <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"\"On\" cun signo de exclamación e cunha frecha dobre cara á esquerda e cara á dereita enriba"</string>
+    <string name="spoken_emoji_1F51C" msgid="110609810659826676">"\"Soon\" cunha frecha cara á dereita enriba"</string>
     <string name="spoken_emoji_1F51D" msgid="4087697222026095447">"\"Top\" cunha frecha cara arriba enriba"</string>
     <string name="spoken_emoji_1F51E" msgid="8512873526157201775">"Símbolo de prohibido a menores de dezaoito"</string>
     <string name="spoken_emoji_1F51F" msgid="8673370823728653973">"Tecla co número dez"</string>

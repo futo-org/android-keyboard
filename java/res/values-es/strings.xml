@@ -74,8 +74,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Pulsar la tecla de espacio o punto para corregir errores"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivado"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Parcial"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Total"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Casi total"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agresiva"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Muy agresiva"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Sugerir siguiente palabra"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar la palabra anterior para hacer sugerencias"</string>
     <string name="gesture_input" msgid="826951152254563827">"Habilitar escritura gestual"</string>

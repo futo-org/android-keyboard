@@ -59,7 +59,7 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Sử dụng tên từ Danh bạ cho các đề xuất và chỉnh sửa"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Đề xuất được cá nhân hóa"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Cải thiện <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Đúp phím cách chèn dấu chấm"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Thêm dấu chấm khi nhấn hai phím cách"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Nhấn đúp phím cách sẽ chèn một dấu chấm, theo sau là dấu cách"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Tự động viết hoa"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Viết hoa chữ đầu tiên của mỗi câu"</string>
@@ -199,7 +199,7 @@
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Từ:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Phím tắt:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Ngôn ngữ:"</string>
-    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Nhập một từ"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Nhập từ"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Phím tắt tùy chọn"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Chỉnh sửa từ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Chỉnh sửa"</string>
