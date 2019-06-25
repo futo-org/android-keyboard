@@ -40,7 +40,7 @@
     <string name="sync_now_title" msgid="3088838136743277721">"अभी समन्वयन करें"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"क्‍लाउड डेटा मिटाएं"</string>
     <string name="clear_sync_data_summary" msgid="993477139012576584">"Google से आपका समन्वयित डेटा हटाता है"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपका समन्‍वयित डेटा क्‍लाउड से हटा दिया जाएगा. आप सुनिश्‍चित हैं?"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"आपका समन्‍वयित डेटा क्‍लाउड से हटा दिया जाएगा. इसके बारे में पक्का हैं?"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"मिटाएं"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"रद्द करें"</string>
     <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"आपकी निजी डिक्शनरी को Google सर्वर से सिंक किया जाएगा और उसका बैक अप लिया जाएगा. हमारे उत्पादों को बेहतर बनाने में मदद करने के लिए हो सकता है कि इस बात के आंकड़े इकट्ठा किये जाएं कि एक शब्द को कितनी बार दोहराया गया है. सभी जानकारी को इकट्ठा करना और उसका इस्तेमाल करना "<a href="https://www.google.com/policies/privacy">"Google की निजता नीति"</a>" के अनुपालन में होगा."</string>
