@@ -1,0 +1,96 @@
+<!--
+/*
+**
+** Copyright 2011, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<html>
+    <head>
+        <script type="text/javascript">
+            (function(d, name) {
+                var css = document.createElement('link');
+                css.rel = 'stylesheet';
+                css.href = name + ".css";
+                d.head.appendChild(css);
+            })(document, theme.name());
+        </script>
+    </head>
+    <body>
+    <div
+        class="input"
+        style="margin-top:-8px"
+    >
+        <input
+            type="text"
+            size="80%"
+            name="webtext"
+            placeholder="&lt;input type=&quot;text&quot;/&gt;" />
+    </div>
+    <div class="input">
+        <input
+            type="email"
+            size="80%"
+            name="webemail"
+            placeholder="&lt;input type=&quot;email&quot;/&gt;" />
+    </div>
+    <div class="input">
+        <input
+            type="password"
+            size="80%"
+            name="webpassword"
+            placeholder="&lt;input type=&quot;password&quot;/&gt;" />
+    </div>
+    <div class="input">
+        <input
+            type="url"
+            size="80%"
+            name="weburl"
+            placeholder="&lt;input type=&quot;url&quot;/&gt;" />
+    </div>
+    <div class="input">
+        <input
+            type="number"
+            size="80%"
+            name="webnumber"
+            placeholder="&lt;input type=&quot;number&quot;/&gt;" />
+    </div>
+    <div class="input">
+        <input
+            type="tel"
+            size="80%"
+            name="webtel"
+            placeholder="&lt;input type=&quot;tel&quot;/&gt;" />
+    </div>
+    <div class="input">
+        <input
+            type="search"
+            size="80%"
+            name="websearch"
+            placeholder="&lt;input type=&quot;search&quot;/&gt;" />
+    </div>
+    <div
+        class="input"
+        style="margin-bottom:-4px"
+    >
+        <textarea
+            rows="2"
+            cols="80%"
+            name="webtextarea"
+            placeholder="&lt;textarea&gt;&lt/textarea&gt;"
+        ></textarea>
+    </div>
+  </body>
+</html>

@@ -46,7 +46,7 @@
     <string name="spoken_description_dot" msgid="5644176501632325560">"Tačka"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"Prebaci jezik"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"Prethodno"</string>
-    <string name="spoken_description_action_previous" msgid="2919072174697865110">"Sledeće"</string>
+    <string name="spoken_description_action_previous" msgid="2919072174697865110">"Nazad"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Shift je omogućen"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Caps lock je omogućen"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Režim simbola"</string>

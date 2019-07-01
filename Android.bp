@@ -30,8 +30,8 @@ filegroup {
         "java/src/com/android/inputmethod/latin/utils/CombinedFormatUtils.java",
         "java/src/com/android/inputmethod/latin/utils/JniUtils.java",
 
-        "java-overridable/src/com/android/inputmethod/latin/define/DebugFlags.java",
-        "java-overridable/src/com/android/inputmethod/latin/define/DecoderSpecificConstants.java",
+        "java/src/com/android/inputmethod/latin/define/DebugFlags.java",
+        "java/src/com/android/inputmethod/latin/define/DecoderSpecificConstants.java",
 
         "tests/src/com/android/inputmethod/latin/utils/ByteArrayDictBuffer.java",
         "tests/src/com/android/inputmethod/latin/makedict/**/*.java",

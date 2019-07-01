@@ -45,7 +45,7 @@
     <string name="spoken_description_search" msgid="5099937658231911288">"सर्च करें"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"डॉट"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"भाषा स्विच करें"</string>
-    <string name="spoken_description_action_next" msgid="431761808119616962">"आगे"</string>
+    <string name="spoken_description_action_next" msgid="431761808119616962">"आगे बढ़ें"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"पीछे जाएं"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"शिफ़्ट सक्षम किया गया"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"कैप्स लॉक सक्षम किया गया"</string>

@@ -124,6 +124,7 @@ cc_library {
         "-Woverloaded-virtual",
         "-Wsign-promo",
         "-Wno-system-headers",
+        "-Wno-format-nonliteral",
 
         // To suppress compiler warnings for unused variables/functions used for debug features etc.
         "-Wno-unused-parameter",

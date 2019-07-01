@@ -18,9 +18,9 @@ package com.android.inputmethod.accessibility;
 
 import android.content.Context;
 import android.os.SystemClock;
-import android.support.v4.view.AccessibilityDelegateCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.AccessibilityDelegateCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;

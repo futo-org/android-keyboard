@@ -16,18 +16,28 @@
 
 package com.android.inputmethod.latin;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.common.StringUtils;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 /**
  * Unit tests for WordComposer.
  */
 @SmallTest
-public class WordComposerTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class WordComposerTests {
+
+    @Test
     public void testMoveCursor() {
         final WordComposer wc = new WordComposer();
         // BMP is the Basic Multilingual Plane, as defined by Unicode. This includes
