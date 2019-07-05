@@ -117,7 +117,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
 
-    private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
     private static final int PENDING_IMS_CALLBACK_DURATION_MILLIS = 800;
     static final long DELAY_WAIT_FOR_DICTIONARY_LOAD_MILLIS = TimeUnit.SECONDS.toMillis(2);
@@ -1211,9 +1210,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final int touchLeft = 0;
             final int touchTop = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
             final int touchRight = visibleKeyboardView.getWidth();
-            final int touchBottom = inputHeight
-                    // Extend touchable region below the keyboard.
-                    + EXTENDED_TOUCHABLE_REGION_HEIGHT;
+            final int touchBottom = inputHeight;
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
             outInsets.touchableRegion.set(touchLeft, touchTop, touchRight, touchBottom);
         }
