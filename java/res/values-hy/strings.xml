@@ -34,16 +34,16 @@
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Հավելյալ"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Թեմա"</string>
     <string name="enable_split_keyboard" msgid="4177264923999493614">"Միացնել բաժանված ստեղնաշարը"</string>
-    <string name="cloud_sync_title" msgid="8579271074443847055">"Google Ստեղնաշարի համաժամեցում"</string>
-    <string name="cloud_sync_summary" msgid="7684887161145650857">"Համաժամեցումը միացված է"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Համաժամեցնել ձեր անհատական բառարանը սարքերի միջև"</string>
+    <string name="cloud_sync_title" msgid="8579271074443847055">"Google Ստեղնաշարի համաժամացում"</string>
+    <string name="cloud_sync_summary" msgid="7684887161145650857">"Համաժամացումը միացված է"</string>
+    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Համաժամացնել ձեր անհատական բառարանը սարքերի միջև"</string>
     <string name="sync_now_title" msgid="3088838136743277721">"Համաժամացնել հիմա"</string>
     <string name="clear_sync_data_title" msgid="8582001557037069154">"Ջնջել ամպի տվյալները"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google- ից ջնջում է ձեր համաժամեցրած տվյալները"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Ձեր համաժամեցրած տվյալները ջնջվելու են ամպից: Շարունակե՞լ:"</string>
+    <string name="clear_sync_data_summary" msgid="993477139012576584">"Google- ից ջնջում է ձեր համաժամացրած տվյալները"</string>
+    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Ձեր համաժամացրած տվյալները ջնջվելու են ամպից: Շարունակե՞լ:"</string>
     <string name="clear_sync_data_ok" msgid="613104067705915132">"Ջնջել"</string>
     <string name="cloud_sync_cancel" msgid="5877481252150919037">"Չեղարկել"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Ձեր անհատական բառարանը համաժամեցվելու և կրկնօրինակվելու է Google սերվերներում: Կարող են հավաքվել բառերի օգտագործման հաճախականության վիճակագրական տվյալներ՝ մեր արտադրանքների որակը բարելավելու նպատակով: Բոլոր տվյալները հավաքվելու և օգտագործվելու են "<a href="https://www.google.com/policies/privacy">"Google-ի Գաղտնիության քաղաքականության"</a>" դրույթների համաձայն:"</string>
+    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Ձեր անհատական բառարանը համաժամացվելու և կրկնօրինակվելու է Google սերվերներում: Կարող են հավաքվել բառերի օգտագործման հաճախականության վիճակագրական տվյալներ՝ մեր արտադրանքների որակը բարելավելու նպատակով: Բոլոր տվյալները հավաքվելու և օգտագործվելու են "<a href="https://www.google.com/policies/privacy">"Google-ի Գաղտնիության քաղաքականության"</a>" դրույթների համաձայն:"</string>
     <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Այս հնարավորությունն ընձեռելու համար սարքում հավելեք Google հաշիվ"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Google Apps for Business հաշիվներով սարքերում համաժամացումը հասանելի չէ"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Անցնել մուտքագրման այլ եղանակների"</string>
