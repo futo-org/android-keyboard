@@ -204,7 +204,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Edit kata"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Edit"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Hapus"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Tidak ada kata-kata dalam kamus pengguna. Untuk menambahkan kata, tap tombol Tambahkan (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Tidak ada kata-kata dalam kamus pengguna. Untuk menambahkan kata, ketuk Tambahkan (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Untuk semua bahasa"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Bahasa lainnya..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Hapus"</string>
