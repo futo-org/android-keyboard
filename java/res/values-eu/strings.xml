@@ -146,7 +146,7 @@
     <string name="setup_next_action" msgid="371821437915144603">"Hurrengo urratsa"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> konfiguratzen"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Gaitu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"Hautatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> Hizkuntza eta idazketa ataleko ezarpenetan. Horrek gailuan exekutatzea baimenduko dio."</string>
+    <string name="setup_step1_instruction" msgid="4295448056733329661">"Hautatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> Hizkuntza eta idazketa ataleko ezarpenetan. Horrek gailuan abiaraztea baimenduko dio."</string>
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> gaituta duzu Hizkuntza eta idazketa ataleko ezarpenetan; beraz, urratsa eginda dago. Ekin hurrengoari!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Gaitu Ezarpenak atalean"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Aldatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> aplikaziora"</string>
