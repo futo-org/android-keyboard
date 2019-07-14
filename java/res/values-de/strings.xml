@@ -29,7 +29,7 @@
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Einstellungen"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Konten &amp; Datenschutz"</string>
     <string name="settings_screen_appearance" msgid="7358046399111611615">"Darstellung &amp; Layouts"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"Bewegungseingabe"</string>
+    <string name="settings_screen_gesture" msgid="8826372746901183556">"Gesteneingabe"</string>
     <string name="settings_screen_correction" msgid="1616818407747682955">"Textkorrektur"</string>
     <string name="settings_screen_advanced" msgid="7472408607625972994">"Erweitert"</string>
     <string name="settings_screen_theme" msgid="2137262503543943871">"Design"</string>
@@ -80,10 +80,10 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Anhand des vorherigen Wortes Vorschläge machen"</string>
     <string name="gesture_input" msgid="826951152254563827">"Bewegungseingabe aktivieren"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Durch Bewegen der Finger über die Buchstaben ein Wort eingeben"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Spur der Bewegung anzeigen"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Spur der Touch-Geste anzeigen"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dyn. unverankerter Vorschlag"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Vorgeschlagenes Wort bei Bewegung anzeigen"</string>
-    <string name="gesture_space_aware" msgid="2078291600664682496">"Phrasenbewegung"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"Phrasengeste"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Leerzeichen durch Bewegung über die Leertaste einfügen"</string>
     <string name="voice_input" msgid="3583258583521397548">"Taste für Spracheingabe"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Keine Spracheingabemethoden aktiviert. Rufe die Einstellungen für \"Sprache &amp; Eingabe\" auf."</string>
@@ -141,7 +141,7 @@
     <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Emoji-Palette auf physischen Tastaturen über Alt-Taste aufrufen"</string>
     <string name="button_default" msgid="3988017840431881491">"Standard"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Willkommen bei <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"mit Bewegungseingabe"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"mit Gesteneingabe"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Jetzt starten"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Nächster Schritt"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> einrichten"</string>

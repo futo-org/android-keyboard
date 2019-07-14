@@ -152,7 +152,7 @@
     <string name="setup_step2_title" msgid="6860725447906690594">"جابجایی به <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"در مرحله بعد، با انتخاب «<xliff:g id="APPLICATION_NAME">%s</xliff:g>» به عنوان روش ورودی نوشتار خود آن را فعال نمایید."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"تغییر روش‌های ورودی"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"تبریک می‌گوییم، اکنون کاملاً آماده هستید!"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"تبریک می‌گوییم، همه چیز مرتب است."</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"اکنون می‌توانید در همه برنامه‌های دلخواه خود با <xliff:g id="APPLICATION_NAME">%s</xliff:g> تایپ کنید."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"پیکربندی زبان‌های دیگر"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"تمام شد"</string>
