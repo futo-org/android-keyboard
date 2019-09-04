@@ -59,15 +59,15 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilizar nombres de contactos para sugerencias y correcciones"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Sugerencias personalizadas"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Mejorar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Punto y espacio"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Si tocas dos veces el espacio, se inserta un punto seguido de un espacio"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Doble espacio inserta punto"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Insertar un punto seguido de un espacio al tocar dos veces la barra espaciadora"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Escribir la primera letra de cada frase en mayúscula"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Diccionario personal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionarios complementarios"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionario principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Sugerencias de correcciones"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostrar las palabras sugeridas mientras se escribe"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostrar las palabras sugeridas mientras escribes"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palabras ofensivas"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No sugerir palabras que pueden ser ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>

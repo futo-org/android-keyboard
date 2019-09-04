@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- This test application name. -->
+    <string name="app_name" translatable="false">EditTextVariations</string>
+    <!-- The menu title to change color theme of this application. [CHAR LIMIT=20] -->
+    <string name="menu_change_theme">Change Theme</string>
+    <!-- The menu title to display the version name of this application. [CHAR LIMIT=20] -->
+    <string name="menu_version">Version <xliff:g id="VERSION_NAME" example="0.56">%s</xliff:g></string>
+    <!-- The menu title to turn on the text field focus navigation. [CHAR LIMIT=20] -->
+    <string name="menu_navigate_on" translatable="false">Navigate On</string>
+    <!-- The menu title to turn off the text field focus navigation. [CHAR LIMIT=20] -->
+    <string name="menu_navigate_off" translatable="false">Navigate Off</string>
+    <!-- The menu title to show software keyboard when the application is launched. [CHAR LIMIT=20] -->
+    <string name="menu_softinput_visible" translatable="false">Keyboard Visible</string>
+    <!-- The menu title to stay hidden software keyboard when the application is launched. [CHAR LIMIT=20] -->
+    <string name="menu_softinput_hidden" translatable="false">Keyboard Hidden</string>
+    <!-- The menu title to send a notification to test direct reply. [CHAR LIMIT=20] -->
+    <string name="menu_direct_reply">Direct Reply</string>
+    <!-- The example of custom action key label. Must be short to fit on key. 5 chars or less is preferable.  [CHAR LIMIT=7] -->
+    <string name="custom_action_label">Custom</string>
+</resources>

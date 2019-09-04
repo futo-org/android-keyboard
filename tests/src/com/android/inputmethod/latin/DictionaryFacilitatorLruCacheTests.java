@@ -16,16 +16,26 @@
 
 package com.android.inputmethod.latin;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Locale;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.LargeTest;
-
 @LargeTest
-public class DictionaryFacilitatorLruCacheTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class DictionaryFacilitatorLruCacheTests {
+
+    @Test
     public void testGetFacilitator() {
         final DictionaryFacilitatorLruCache cache =
-                new DictionaryFacilitatorLruCache(getContext(), "");
+                new DictionaryFacilitatorLruCache(InstrumentationRegistry.getTargetContext(), "");
 
         final DictionaryFacilitator dictionaryFacilitatorEnUs = cache.get(Locale.US);
         assertNotNull(dictionaryFacilitatorEnUs);

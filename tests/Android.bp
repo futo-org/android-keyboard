@@ -26,7 +26,7 @@ android_test {
     ],
 
     static_libs: [
-        "android-support-test",
+        "androidx.test.rules",
         "mockito-target-minus-junit4",
     ],
     libs: [
@@ -40,5 +40,7 @@ android_test {
 
     instrumentation_for: "LatinIME",
 
+    min_sdk_version: "14",
+    target_sdk_version: "21",
     sdk_version: "current",
 }

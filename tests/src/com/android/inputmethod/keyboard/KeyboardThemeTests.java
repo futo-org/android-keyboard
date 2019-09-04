@@ -21,17 +21,30 @@ import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_KLP;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_DARK;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_LIGHT;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
 @SmallTest
-public class KeyboardThemeTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class KeyboardThemeTests {
     private SharedPreferences mPrefs;
 
     private static final int THEME_ID_NULL = -1;
@@ -39,9 +52,12 @@ public class KeyboardThemeTests extends AndroidTestCase {
     private static final int THEME_ID_ILLEGAL = -3;
     private static final String ILLEGAL_THEME_ID_STRING = "ThisCausesNumberFormatExecption";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    private Context getContext() {
+        return InstrumentationRegistry.getTargetContext();
+    }
+
+    @Before
+    public void setUp() throws Exception {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
     }
 
@@ -110,6 +126,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertKeyboardThemePreference(sdkVersion, THEME_ID_ILLEGAL, defaultThemeId);
     }
 
+    @Test
     public void testKeyboardThemePreferenceOnKlp() {
         assertKeyboardThemePreferenceOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH);
         assertKeyboardThemePreferenceOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
@@ -130,6 +147,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertKeyboardThemePreference(sdkVersion, THEME_ID_ILLEGAL, defaultThemeId);
     }
 
+    @Test
     public void testKeyboardThemePreferenceOnLxx() {
         assertKeyboardThemePreferenceOnLxx(Build.VERSION_CODES.LOLLIPOP);
     }
@@ -165,6 +183,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_KLP);
     }
 
+    @Test
     public void testDefaultKeyboardThemeOnKlp() {
         assertDefaultKeyboardThemeOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH);
         assertDefaultKeyboardThemeOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
@@ -183,6 +202,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
     }
 
+    @Test
     public void testDefaultKeyboardThemeOnLxx() {
         assertDefaultKeyboardThemeOnLxx(Build.VERSION_CODES.LOLLIPOP);
     }
@@ -231,6 +251,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     // Upgrading keyboard on I,J and K.
+    @Test
     public void testUpgradeKeyboardToLxxOnKlp() {
         assertUpgradeKeyboardToLxxOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH);
         assertUpgradeKeyboardToLxxOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
@@ -250,6 +271,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     // Upgrading keyboard on L.
+    @Test
     public void testUpgradeKeyboardToLxxOnLxx() {
         assertUpgradeKeyboardToLxxOnLxx(Build.VERSION_CODES.LOLLIPOP);
     }
@@ -293,6 +315,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     // Update platform from I,J, and K to I,J, and K
+    @Test
     public void testUpgradePlatformToKlpFromKlp() {
         assertUpgradePlatformToKlpFrom(VERSION_CODES.ICE_CREAM_SANDWICH);
         assertUpgradePlatformToKlpFrom(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
@@ -318,6 +341,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     // Update platform from I,J, and K to L
+    @Test
     public void testUpgradePlatformToLxx() {
         assertUpgradePlatformToLxxFrom(VERSION_CODES.ICE_CREAM_SANDWICH);
         assertUpgradePlatformToLxxFrom(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
@@ -328,6 +352,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     // Update platform from L to L.
+    @Test
     public void testUpgradePlatformToLxxFromLxx() {
         final int oldSdkVersion = Build.VERSION_CODES.LOLLIPOP;
         final int newSdkVersion = Build.VERSION_CODES.LOLLIPOP;
@@ -364,10 +389,12 @@ public class KeyboardThemeTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testSortedKeyboardTheme() {
         assertSortedKeyboardThemeArray(KeyboardTheme.KEYBOARD_THEMES);
     }
 
+    @Test
     public void testSortedAvailableKeyboardTheme() {
         assertSortedKeyboardThemeArray(KeyboardTheme.getAvailableThemeArray(getContext()));
     }
@@ -384,6 +411,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertSortedKeyboardThemeArray(LIMITED_THEMES);
     }
 
+    @Test
     public void testMissingSelectedThemeIcs() {
         // Clean up preferences.
         setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);
@@ -399,6 +427,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertEquals(THEME_ID_KLP, actualTheme.mThemeId);
     }
 
+    @Test
     public void testMissingSelectedThemeKlp() {
         // Clean up preferences.
         setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);
@@ -414,6 +443,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertEquals(THEME_ID_KLP, actualTheme.mThemeId);
     }
 
+    @Test
     public void testMissingSelectedThemeLxx() {
         // Clean up preferences.
         setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);

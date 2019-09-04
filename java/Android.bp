@@ -15,10 +15,7 @@
 android_app {
     name: "LatinIME",
 
-    srcs: [
-        "src/**/*.java",
-        ":LatinIME_java-overridable",
-    ],
+    srcs: ["src/**/*.java"],
 
     certificate: "shared",
 
@@ -26,10 +23,9 @@ android_app {
 
     static_libs: [
         "android-common",
-        "inputmethod-common",
         "jsr305",
         "latinime-common",
-        "android-support-v4",
+        "androidx.legacy_legacy-support-v4",
     ],
 
     // Do not compress dictionary files to mmap dict data runtime
@@ -38,6 +34,8 @@ android_app {
     // Include all the resources regardless of system supported locales
     aapt_include_all_resources: true,
 
+    min_sdk_version: "14",
+    target_sdk_version: "23",
     sdk_version: "current",
 
     product_specific: true,

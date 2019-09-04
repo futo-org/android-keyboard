@@ -20,9 +20,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Locale;
 
@@ -30,6 +32,7 @@ import java.util.Locale;
  * Tests for {@link ContactsDictionaryUtils}
  */
 @SmallTest
+@RunWith(AndroidJUnit4.class)
 public class ContactsDictionaryUtilsTest {
 
     @Test

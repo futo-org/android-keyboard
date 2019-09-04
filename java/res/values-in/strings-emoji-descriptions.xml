@@ -677,8 +677,8 @@
     <string name="spoken_emoji_1F463" msgid="5850772903593010699">"Jejak kaki"</string>
     <string name="spoken_emoji_1F464" msgid="1228335905487734913">"Siluet patung dada"</string>
     <string name="spoken_emoji_1F465" msgid="4461307702499679879">"Siluet patung dada"</string>
-    <string name="spoken_emoji_1F466" msgid="1938873085514108889">"Anak laki-laki"</string>
-    <string name="spoken_emoji_1F467" msgid="8237080594860144998">"Anak perempuan"</string>
+    <string name="spoken_emoji_1F466" msgid="1938873085514108889">"Laki-laki"</string>
+    <string name="spoken_emoji_1F467" msgid="8237080594860144998">"Perempuan"</string>
     <string name="spoken_emoji_1F468" msgid="6081300722526675382">"Pria"</string>
     <string name="spoken_emoji_1F469" msgid="1090140923076108158">"Wanita"</string>
     <string name="spoken_emoji_1F46A" msgid="5063570981942606595">"Keluarga"</string>
@@ -1082,7 +1082,7 @@
     <!-- no translation found for spoken_emoji_1F644 (446284817942609022) -->
     <skip />
     <string name="spoken_emoji_1F645" msgid="5202090629227587076">"Wajah dengan isyarat tidak setuju"</string>
-    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"Wajah dengan isyarat oke"</string>
+    <string name="spoken_emoji_1F646" msgid="6734425134415138134">"Wajah dengan gestur oke"</string>
     <string name="spoken_emoji_1F647" msgid="1090285518444205483">"Orang yang membungkuk dalam-dalam"</string>
     <string name="spoken_emoji_1F648" msgid="8978535230610522356">"Monyet menutup mata"</string>
     <string name="spoken_emoji_1F649" msgid="8486145279809495102">"Monyet menutup telinga"</string>

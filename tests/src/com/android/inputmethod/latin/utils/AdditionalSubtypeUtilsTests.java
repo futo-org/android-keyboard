@@ -16,25 +16,36 @@
 
 package com.android.inputmethod.latin.utils;
 
-import static com.android.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MODE;
 import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
 import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
 import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.IS_ADDITIONAL_SUBTYPE;
 import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
+import static com.android.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MODE;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 import android.os.Build;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 import android.view.inputmethod.InputMethodSubtype;
 
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
+
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Locale;
 
 @SmallTest
-public class AdditionalSubtypeUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class AdditionalSubtypeUtilsTests {
 
     /**
      * Predictable subtype ID for en_US dvorak layout. This is actually a hash code calculated as
@@ -98,10 +109,9 @@ public class AdditionalSubtypeUtilsTests extends AndroidTestCase {
             ",EmojiCapable" +
             ",isAdditionalSubtype";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        final Context context = getContext();
+    @Before
+    public void setUp() throws Exception {
+        final Context context = InstrumentationRegistry.getTargetContext();
         SubtypeLocaleUtils.init(context);
     }
 
@@ -149,6 +159,7 @@ public class AdditionalSubtypeUtilsTests extends AndroidTestCase {
         assertEquals(SUBTYPE_ID_ZZ_AZERTY, subtype.hashCode());
     }
 
+    @Test
     public void testRestorable() {
         final InputMethodSubtype EN_US_DVORAK =
                 AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(

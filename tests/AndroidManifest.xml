@@ -15,9 +15,10 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.inputmethod.latin.tests">
+    package="com.android.inputmethod.latin.tests"
+    android:versionCode="28">
 
-    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="21" />
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="28" />
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
@@ -27,7 +28,7 @@
         <!-- meta-data android:name="com.android.contacts.iconset" android:resource="@xml/iconset" /-->
     </application>
 
-    <instrumentation android:name="android.support.test.runner.AndroidJUnitRunner"
+    <instrumentation android:name="androidx.test.runner.AndroidJUnitRunner"
         android:targetPackage="com.android.inputmethod.latin"
         android:label="LatinIME tests">
     </instrumentation>

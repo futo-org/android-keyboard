@@ -71,7 +71,7 @@
             android:soundEffectsEnabled="false"
             android:contentDescription="@string/spoken_description_delete" />
     </LinearLayout>
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/emoji_keyboard_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
