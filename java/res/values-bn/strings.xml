@@ -71,7 +71,7 @@
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"আপত্তিজনক শব্দ অবরোধ করুন"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"সম্ভাব্য অশোভন শব্দ সুপারিশ করবেন না"</string>
     <string name="auto_correction" msgid="7630720885194996950">"স্বত:সংশোধন"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"স্পেসবার ও যতিচিহ্ন ভুলভাবে টাইপ করা শব্দ স্বয়ংক্রিয়ভাবে সংশোধন করে"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"স্পেসবার ও যতিচিহ্ন ভুলভাবে টাইপ করা শব্দ অটোমেটিক সংশোধন করে"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"বন্ধ করুন"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"মাঝারি"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"আক্রমণাত্মক"</string>
@@ -123,17 +123,17 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"বর্ণমালা (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"ইমোজি"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"কীবোর্ড থিম"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"কাস্টম ইনপুট শৈলীগুলি"</string>
-    <string name="add_style" msgid="6163126614514489951">"শৈলী জুড়ুন"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"কাস্টম ইনপুট স্টাইলগুলি"</string>
+    <string name="add_style" msgid="6163126614514489951">"স্টাইল জুড়ুন"</string>
     <string name="add" msgid="8299699805688017798">"জুড়ুন"</string>
     <string name="remove" msgid="4486081658752944606">"সরান"</string>
     <string name="save" msgid="7646738597196767214">"সেভ করুন"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"ভাষা"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"লেআউট"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"আপনার কাস্টম ইনপুট শৈলী ব্যবহার শুরু করার আগে এটি সক্ষম করা প্রয়োজন। আপনি কি এখন এটি সক্ষম করতে চান?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"আপনার কাস্টম ইনপুট স্টাইল ব্যবহার শুরু করার আগে এটি সক্ষম করা প্রয়োজন। আপনি কি এখন এটি সক্ষম করতে চান?"</string>
     <string name="enable" msgid="5031294444630523247">"সক্ষম করুন"</string>
     <string name="not_now" msgid="6172462888202790482">"এখন নয়"</string>
-    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"একই ইনপুট শৈলী ইতোমধ্যে বিদ্যমান: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"একই ইনপুট স্টাইল ইতোমধ্যে বিদ্যমান: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"কীপ্রেস ভাইব্রেট সময়কাল"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"কীপ্রেস সাউন্ড ভলিউম"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"কী প্রেসে দীর্ঘ বিলম্ব"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="180852772562189365">"ইনস্টল করুন"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"বাতিল করুন"</string>
     <string name="delete_dict" msgid="756853268088330054">"মুছুন"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"আপনার মোবাইল ডিভাইসে নির্বাচিত ভাষার জন্য একটি অভিধান উপলভ্য আছে। &lt;br/&gt; আপনার টাইপিং এর অভিজ্ঞতা ভালো করার জন্য আমরা <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> অভিধান &lt;b&gt;ডাউনলোড করার&lt;/b&gt; পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt; 3G-র মাধ্যমে ডাউনলোড হতে এক বা দুই মিনিট সময় লাগতে পারে। আপনার কাছে কোন &lt;b&gt;আনলিমিটেড ডেটা প্ল্যান&lt;/b&gt;.&lt;br/&gt; না থাকলে চার্জ প্রযোজ্য হতে পারে, আপনার কাছে কোন ডেটা প্ল্যান আছে তা নিয়ে আপনি নিশ্চিত না থাকলে সেক্ষেত্রে আমরা ডাউনলোড স্বয়ংক্রিয়ভাবে শুরু করার জন্য একটি Wi-Fi সংযোগ খোঁজার পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt;টিপ: আপনি আপনার মোবাইল ডিভাইসে &lt;b&gt;সেটিংস&lt;/b&gt; মেনুতে &lt;b&gt;ভাষা এবং ইনপুট&lt;/b&gt; এর মধ্যে গিয়ে অভিধান ডাউনলোড করতে ও মুছতে পারবেন।"</string>
+    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"আপনার মোবাইল ডিভাইসে নির্বাচিত ভাষার জন্য একটি অভিধান উপলভ্য আছে। &lt;br/&gt; আপনার টাইপিং এর অভিজ্ঞতা ভালো করার জন্য আমরা <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> অভিধান &lt;b&gt;ডাউনলোড করার&lt;/b&gt; পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt; 3G-র মাধ্যমে ডাউনলোড হতে এক বা দুই মিনিট সময় লাগতে পারে। আপনার কাছে কোন &lt;b&gt;আনলিমিটেড ডেটা প্ল্যান&lt;/b&gt;.&lt;br/&gt; না থাকলে চার্জ প্রযোজ্য হতে পারে, আপনার কাছে কোন ডেটা প্ল্যান আছে তা নিয়ে আপনি নিশ্চিত না থাকলে সেক্ষেত্রে আমরা ডাউনলোড অটোমেটিক শুরু করার জন্য একটি Wi-Fi সংযোগ খোঁজার পরামর্শ দিই। &lt;br/&gt; &lt;br/&gt;টিপ: আপনি আপনার মোবাইল ডিভাইসে &lt;b&gt;সেটিংস&lt;/b&gt; মেনুতে &lt;b&gt;ভাষা এবং ইনপুট&lt;/b&gt; এর মধ্যে গিয়ে অভিধান ডাউনলোড করতে ও মুছতে পারবেন।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"এখন ডাউনলোড করুন (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>মেবা)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ওয়াই-ফাই মাধ্যমে ডাউনলোড করুন"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ভাষার জন্য একটি অভিধান উপলব্ধ"</string>

@@ -20,7 +20,7 @@ import android.view.View;
 
 import java.lang.reflect.Method;
 
-// TODO: Use {@link android.support.v4.view.ViewCompat} instead of this utility class.
+// TODO: Use {@link androidx.core.view.ViewCompat} instead of this utility class.
 // Currently {@link #getPaddingEnd(View)} and {@link #setPaddingRelative(View,int,int,int,int)}
 // are missing from android-support-v4 static library in KitKat SDK.
 public final class ViewCompatUtils {

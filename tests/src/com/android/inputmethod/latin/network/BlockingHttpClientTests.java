@@ -16,16 +16,22 @@
 
 package com.android.inputmethod.latin.network;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.network.BlockingHttpClient.ResponseProcessor;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -44,15 +50,16 @@ import java.util.Random;
  * Tests for {@link BlockingHttpClient}.
  */
 @SmallTest
-public class BlockingHttpClientTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class BlockingHttpClientTests {
     @Mock HttpURLConnection mMockHttpConnection;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test
     public void testError_badGateway() throws IOException, AuthException {
         when(mMockHttpConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_BAD_GATEWAY);
         final BlockingHttpClient client = new BlockingHttpClient(mMockHttpConnection);
@@ -67,6 +74,7 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testError_clientTimeout() throws Exception {
         when(mMockHttpConnection.getResponseCode()).thenReturn(
                 HttpURLConnection.HTTP_CLIENT_TIMEOUT);
@@ -82,6 +90,7 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testError_forbiddenWithRequest() throws Exception {
         final OutputStream mockOutputStream = Mockito.mock(OutputStream.class);
         when(mMockHttpConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_FORBIDDEN);
@@ -98,6 +107,7 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         verify(mockOutputStream).write(any(byte[].class), eq(0), eq(100));
     }
 
+    @Test
     public void testSuccess_emptyRequest() throws Exception {
         final Random rand = new Random();
         byte[] response = new byte[100];
@@ -112,6 +122,7 @@ public class BlockingHttpClientTests extends AndroidTestCase {
         assertTrue("ResponseProcessor was not invoked", processor.mInvoked);
     }
 
+    @Test
     public void testSuccess() throws Exception {
         final OutputStream mockOutputStream = Mockito.mock(OutputStream.class);
         final Random rand = new Random();

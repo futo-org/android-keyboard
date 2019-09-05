@@ -16,9 +16,17 @@
 
 package com.android.inputmethod.latin.settings;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import android.content.Context;
 import android.content.res.Resources;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.common.Constants;
@@ -26,14 +34,23 @@ import com.android.inputmethod.latin.utils.RunInLocale;
 
 import junit.framework.AssertionFailedError;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Locale;
 
 @SmallTest
-public class SpacingAndPunctuationsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SpacingAndPunctuationsTests {
     private static final int ARMENIAN_FULL_STOP = '\u0589';
     private static final int ARMENIAN_COMMA = '\u055D';
 
     private int mScreenMetrics;
+
+    private Context getContext() {
+        return InstrumentationRegistry.getTargetContext();
+    }
 
     private boolean isPhone() {
         return Constants.isPhone(mScreenMetrics);
@@ -63,10 +80,8 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
     private SpacingAndPunctuations CAMBODIA_KHMER;
     private SpacingAndPunctuations LAOS_LAO;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         mScreenMetrics = Settings.readScreenMetrics(getContext().getResources());
 
         // Language only
@@ -140,6 +155,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertFalse("Tilde",      sp.isWordSeparator('~'));
     }
 
+    @Test
     public void testWordSeparator() {
         testingStandardWordSeparator(ENGLISH);
         testingStandardWordSeparator(FRENCH);
@@ -192,6 +208,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
 
     }
 
+    @Test
     public void testWordConnector() {
         testingStandardWordConnector(ENGLISH);
         testingStandardWordConnector(FRENCH);
@@ -245,6 +262,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertFalse("Question",    sp.isUsuallyPrecededBySpace('?'));
     }
 
+    @Test
     public void testIsUsuallyPrecededBySpace() {
         testingStandardPrecededBySpace(ENGLISH);
         testingCommonPrecededBySpace(FRENCH);
@@ -298,6 +316,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertFalse("Tilde",       sp.isUsuallyFollowedBySpace('~'));
     }
 
+    @Test
     public void testIsUsuallyFollowedBySpace() {
         testingStandardFollowedBySpace(ENGLISH);
         testingStandardFollowedBySpace(FRENCH);
@@ -345,7 +364,8 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertFalse("Tilde",       sp.isUsuallyFollowedBySpace('~'));
     }
 
-    public void isSentenceSeparator() {
+    @Test
+    public void testIsSentenceSeparator() {
         testingStandardSentenceSeparator(ENGLISH);
         try {
             testingStandardSentenceSeparator(ARMENIA_ARMENIAN);
@@ -357,6 +377,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertFalse(ARMENIA_ARMENIAN.isSentenceSeparator(ARMENIAN_COMMA));
     }
 
+    @Test
     public void testLanguageHasSpace() {
         assertTrue(ENGLISH.mCurrentLanguageHasSpaces);
         assertTrue(FRENCH.mCurrentLanguageHasSpaces);
@@ -369,6 +390,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertTrue(LAO.mCurrentLanguageHasSpaces);
     }
 
+    @Test
     public void testUsesAmericanTypography() {
         assertTrue(ENGLISH.mUsesAmericanTypography);
         assertTrue(UNITED_STATES.mUsesAmericanTypography);
@@ -379,6 +401,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertFalse(SWISS_GERMAN.mUsesAmericanTypography);
     }
 
+    @Test
     public void testUsesGermanRules() {
         assertFalse(ENGLISH.mUsesGermanRules);
         assertFalse(FRENCH.mUsesGermanRules);
@@ -436,6 +459,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testPhonePunctuationSuggestions() {
         if (!isPhone()) {
             return;
@@ -454,6 +478,7 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
                 PUNCTUATION_LABELS_PHONE, PUNCTUATION_WORDS_PHONE_HEBREW);
     }
 
+    @Test
     public void testTabletPunctuationSuggestions() {
         if (!isTablet()) {
             return;

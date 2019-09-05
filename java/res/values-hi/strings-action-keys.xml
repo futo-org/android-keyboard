@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="label_go_key" msgid="4033615332628671065">"जाएं"</string>
-    <string name="label_next_key" msgid="5586407279258592635">"आगे"</string>
+    <string name="label_next_key" msgid="5586407279258592635">"अगला"</string>
     <string name="label_previous_key" msgid="1421141755779895275">"पीछे जाएं"</string>
     <string name="label_done_key" msgid="7564866296502630852">"हो गया"</string>
     <string name="label_send_key" msgid="482252074224462163">"भेजें"</string>

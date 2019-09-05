@@ -62,7 +62,7 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"ਡਬਲ-ਸਪੇਸ ਡੰਡੀ"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ਸਪੇਸਬਾਰ ’ਤੇ ਡਬਲ ਟੈਪ ਕਰਨਾ ਇੱਕ ਡੰਡੀ ਤੋਂ ਬਾਅਦ ਇੱਕ ਸਪੇਸ ਦਾਖਲ ਕਰਦਾ ਹੈ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ਆਟੋ-ਕੈਪਿਟਲਾਈਜ਼ੇਸ਼ਨ"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"ਹਰੇਕ ਵਾਕ ਦਾ ਪਹਿਲਾ ਸ਼ਬਦ ਕੈਪੀਟਲਾਈਜ਼ ਕਰੋ"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"ਹਰੇਕ ਵਾਕ ਦਾ ਪਹਿਲਾ ਅੱਖਰ ਵੱਡਾ ਕਰੋ"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"ਨਿੱਜੀ ਸ਼ਬਦਕੋਸ਼"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ਐਡ-ਆਨ ਸ਼ਬਦਕੋਸ਼"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ਮੁੱਖ ਸ਼ਬਦਕੋਸ਼"</string>
@@ -80,12 +80,12 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"ਸੁਝਾਅ ਦੇਣ ਵਿੱਚ ਪਿਛਲਾ ਸ਼ਬਦ ਵਰਤੋ"</string>
     <string name="gesture_input" msgid="826951152254563827">"ਸੰਕੇਤ ਟਾਈਪਿੰਗ ਚਾਲੂ ਕਰੋ"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"ਅੱਖਰਾਂ ਰਾਹੀਂ ਸਲਾਈਡ ਕਰਕੇ ਇੱਕ ਸ਼ਬਦ ਦਾਖਲ ਕਰੋ"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"ਸੰਕੇਤ ਲੀਹ  ਦਿਖਾਓ"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"ਸੰਕੇਤ ਲੀਹ ਦਿਖਾਓ"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ਸਕਿਰਿਆ ਫਲੋਟਿੰਗ ਪੂਰਵ-ਝਲਕ"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ਸੰਕੇਤ ਦਿੰਦੇ ਸਮੇਂ ਸੁਝਾਇਆ ਗਿਆ ਸ਼ਬਦ ਦੇਖੋ"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"ਵਾਕਾਂਸ਼ ਸੰਕੇਤ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ਸਪੇਸ ਕੁੰਜੀ ਸਰਕਾ ਕੇ ਸੰਕੇਤਾਂ ਦੇ ਦੌਰਾਨ ਸਪੇਸ ਇਨਪੁਟ ਕਰੋ"</string>
-    <string name="voice_input" msgid="3583258583521397548">"ਵੌਇਸ ਇਨਪੁਟ ਕੁੰਜੀ"</string>
+    <string name="voice_input" msgid="3583258583521397548">"ਅਵਾਜ਼ੀ ਇਨਪੁੱਟ ਕੁੰਜੀ"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"ਕੋਈ ਵੌਇਸ ਇਨਪੁੱਟ ਵਿਧੀਆਂ ਚਾਲੂ ਨਹੀਂ ਕੀਤੀਆਂ ਹਨ। ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ ਸੈਟਿੰਗਾਂ ਦੀ ਜਾਂਚ ਕਰੋ।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ਇਨਪੁੱਟ ਵਿਧੀਆਂ ਦੀ ਰੂਪ-ਰੇਖਾ ਬਦਲੋ"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"ਭਾਸ਼ਾਵਾਂ"</string>

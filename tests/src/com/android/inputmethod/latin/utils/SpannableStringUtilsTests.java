@@ -16,17 +16,33 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
-import android.text.style.SuggestionSpan;
-import android.text.style.URLSpan;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import android.content.Context;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
+import android.text.style.SuggestionSpan;
+import android.text.style.URLSpan;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
-public class SpannableStringUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SpannableStringUtilsTests {
+
+    private Context getContext() {
+        return InstrumentationRegistry.getTargetContext();
+    }
+
+    @Test
     public void testConcatWithSuggestionSpansOnly() {
         SpannableStringBuilder s = new SpannableStringBuilder("test string\ntest string\n"
                 + "test string\ntest string\ntest string\ntest string\ntest string\ntest string\n"
@@ -87,6 +103,7 @@ public class SpannableStringUtilsTests extends AndroidTestCase {
         assertTrue(false);
     }
 
+    @Test
     public void testSplitCharSequenceWithSpan() {
         // text:  " a bcd efg hij  "
         // span1:  ^^^^^^^
@@ -182,6 +199,7 @@ public class SpannableStringUtilsTests extends AndroidTestCase {
         assertSpanCount(0, charSequencesFromSpanned[6]);
     }
 
+    @Test
     public void testSplitCharSequencePreserveTrailingEmptySegmengs() {
         assertEquals(1, SpannableStringUtils.split("", " ",
                 false /* preserveTrailingEmptySegmengs */).length);

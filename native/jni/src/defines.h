@@ -17,6 +17,8 @@
 #ifndef LATINIME_DEFINES_H
 #define LATINIME_DEFINES_H
 
+#include <cstdint>
+
 #ifdef __GNUC__
 #define AK_FORCE_INLINE __attribute__((always_inline)) __inline__
 #else // __GNUC__
@@ -51,7 +53,7 @@ AK_FORCE_INLINE static int intArrayToCharArray(const int *const source, const in
     int si = 0;
     int di = 0;
     while (si < sourceSize && di < destLimit && 0 != source[si]) {
-        const int codePoint = source[si++];
+        const uint32_t codePoint = static_cast<uint32_t>(source[si++]);
         if (codePoint < 0x7F) { // One byte
             dest[di++] = codePoint;
         } else if (codePoint < 0x7FF) { // Two bytes

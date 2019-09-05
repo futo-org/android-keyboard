@@ -16,13 +16,21 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
 @SmallTest
-public class ResourceUtilsTests extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class ResourceUtilsTests {
+    @Test
     public void testFindConstantForKeyValuePairsSimple() {
         final HashMap<String,String> anyKeyValue = new HashMap<>();
         anyKeyValue.put("anyKey", "anyValue");
@@ -69,6 +77,7 @@ public class ResourceUtilsTests extends AndroidTestCase {
         assertNull(ResourceUtils.findConstantForKeyValuePairs(emptyKeyValue, array));
     }
 
+    @Test
     public void testFindConstantForKeyValuePairsCombined() {
         final String HARDWARE_KEY = "HARDWARE";
         final String MODEL_KEY = "MODEL";
@@ -113,6 +122,7 @@ public class ResourceUtilsTests extends AndroidTestCase {
         assertEquals("0.2", ResourceUtils.findConstantForKeyValuePairs(keyValues, failArray));
     }
 
+    @Test
     public void testFindConstantForKeyValuePairsRegexp() {
         final String HARDWARE_KEY = "HARDWARE";
         final String MODEL_KEY = "MODEL";

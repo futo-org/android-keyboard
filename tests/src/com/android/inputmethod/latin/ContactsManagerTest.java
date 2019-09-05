@@ -16,6 +16,10 @@
 
 package com.android.inputmethod.latin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -23,17 +27,20 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
-import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import android.test.mock.MockContentProvider;
 import android.test.mock.MockContentResolver;
-import android.test.suitebuilder.annotation.SmallTest;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.inputmethod.latin.ContactsDictionaryConstants;
 import com.android.inputmethod.latin.ContactsManager;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,14 +50,16 @@ import java.util.concurrent.TimeUnit;
  * Tests for {@link ContactsManager}
  */
 @SmallTest
-public class ContactsManagerTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class ContactsManagerTest {
 
     private ContactsManager mManager;
     private FakeContactsContentProvider mFakeContactsContentProvider;
     private MatrixCursor mMatrixCursor;
 
+    private final static float EPSILON = 0.00001f;
+
     @Before
-    @Override
     public void setUp() throws Exception {
         // Fake content provider
         mFakeContactsContentProvider = new FakeContactsContentProvider();
@@ -59,7 +68,8 @@ public class ContactsManagerTest extends AndroidTestCase {
         final MockContentResolver contentResolver = new MockContentResolver();
         contentResolver.addProvider(ContactsContract.AUTHORITY, mFakeContactsContentProvider);
         // Add the fake content resolver to a fake context.
-        final ContextWithMockContentResolver context = new ContextWithMockContentResolver(mContext);
+        final ContextWithMockContentResolver context =
+                new ContextWithMockContentResolver(InstrumentationRegistry.getTargetContext());
         context.setContentResolver(contentResolver);
 
         mManager = new ContactsManager(context);
@@ -113,9 +123,10 @@ public class ContactsManagerTest extends AndroidTestCase {
         cursor.moveToFirst();
         ContactsManager.RankedContact contact = new ContactsManager.RankedContact(cursor);
         contact.computeAffinity(1, month_ago);
-        assertEquals(contact.getAffinity(), 1.0f);
+        assertEquals(contact.getAffinity(), 1.0f, EPSILON);
         contact.computeAffinity(2, now);
-        assertEquals(contact.getAffinity(), (2.0f/3.0f + (float)Math.pow(0.5, 3) + 1.0f) / 3);
+        assertEquals(contact.getAffinity(), (2.0f/3.0f + (float)Math.pow(0.5, 3) + 1.0f) / 3,
+                EPSILON);
     }
 
     @Test
