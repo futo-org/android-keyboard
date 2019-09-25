@@ -85,7 +85,7 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Показывать подсказки при вводе текста"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Непрерывный ввод фраз"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Проводите по клавише пробела после каждого слова"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Кнопка голосового ввода"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Клавиша голосового ввода"</string>
     <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Голосовой способ ввода не включен. Проверьте раздел настроек \"Язык и ввод\"."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Настройка способов ввода"</string>
     <string name="language_selection_title" msgid="3666971864764478269">"Выберите язык"</string>

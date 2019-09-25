@@ -144,7 +144,7 @@
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ইঙ্গিত টাইপিং এর মাধ্যমে"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"শুরু করা যাক"</string>
     <string name="setup_next_action" msgid="371821437915144603">"পরবর্তী পদক্ষেপ"</string>
-    <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সেট আপ হচ্ছে"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সেট-আপ হচ্ছে"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করুন"</string>
     <string name="setup_step1_instruction" msgid="4295448056733329661">"অনুগ্রহ করে আপনার ভাষা ও ইনপুট সেটিংসে <xliff:g id="APPLICATION_NAME">%s</xliff:g> পরীক্ষা করুন। এর ফলে এটি আপনার ডিভাইসে চলার জন্য অনুমোদন পাবে।"</string>
     <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"আপনার ভাষা ও ইনপুট সেটিংসে ইতিমধ্যে <xliff:g id="APPLICATION_NAME">%s</xliff:g> সক্ষম করা হয়েছে, তাই এই পদক্ষেপটি সমাপ্ত হয়েছে। পরবর্তীটিতে যান!"</string>

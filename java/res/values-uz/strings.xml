@@ -24,7 +24,7 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontaktlar ichidan qidirish"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Imloni tekshirishda kontaktlar ro‘yxatiga murojaat qilish"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Tugma bosilganda tebranish"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Tugma bosilganda ovoz"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Tugmalar tovushi"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Tugma bosilganda qalqib chiqish"</string>
     <string name="settings_screen_preferences" msgid="2696713156722014624">"Sozlamalar"</string>
     <string name="settings_screen_accounts" msgid="2786418968536696670">"Hisoblar va maxfiylik"</string>
@@ -68,7 +68,7 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Asosiy lug‘at"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Tuzatma variantlari"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Matn kiritishda so‘z variantlarini taklif qilish"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Haqoratomuz so‘zlarni taqiqlash"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Senzuraga moyil iboralarni taqiqlash"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Haqoratomuz so‘zlar taklif qilinmasin"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Avtomatik tuzatish"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Tinish belgisi kiritilganda yoki bo‘sh joy qoldirilganda, xato so‘zni avtomatik tuzatish"</string>
@@ -129,7 +129,7 @@
     <string name="remove" msgid="4486081658752944606">"Olib tashlash"</string>
     <string name="save" msgid="7646738597196767214">"Saqlash"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Til"</string>
-    <string name="keyboard_layout_set" msgid="4309233698194565609">"Sxema"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Terilma"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"Moslashtirilgan matn kiritish usulini yoqish lozim. Uni hozir yoqmoqchimisiz?"</string>
     <string name="enable" msgid="5031294444630523247">"Yoqish"</string>
     <string name="not_now" msgid="6172462888202790482">"Hozir emas"</string>
@@ -138,7 +138,7 @@
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Tugma bosilgandagi ovoz"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tugmani bosib turish"</string>
     <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Tashqi klaviatura uchun kulgichlar"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tashqi klaviaturadagi Alt tugmasi kulgichlar ro‘yxatini ko‘rsatadi"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Jismoniy klaviaturadagi Alt tugmasi emojilarni ochadi"</string>
     <string name="button_default" msgid="3988017840431881491">"Standart"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ilovasiga xush kelibsiz!"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"qo‘l uzmasdan yozish"</string>
@@ -156,8 +156,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Endi, matn kiritish uchun “<xliff:g id="APPLICATION_NAME">%s</xliff:g>” ilovasidan foydalanishingiz mumkin."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Qo‘shimcha tillarni sozlash"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Tugallandi"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Ilova nishonchasini ko‘rsatish"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Ilova nishonchasini ishga tushirish panelida ko‘rsatish"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Ilova ikonkasini chiqarish"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Launcherga ilova ikonkasini chiqarish"</string>
     <string name="app_name" msgid="6320102637491234792">"Lug‘atlar ta’minotchisi"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Lug‘atlar ta’minotchisi"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Lug‘atlar xizmati"</string>
@@ -191,7 +191,7 @@
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Yuklab olinmoqda: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> tili uchun so‘zlarni taklif qilish xususiyati tez orada tayyor bo‘ladi."</string>
     <string name="version_text" msgid="2715354215568469385">"<xliff:g id="VERSION_NUMBER">%1$s</xliff:g> versiya"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Qo‘shish"</string>
-    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Lug‘atga qo‘shish"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Lug‘atga kiritish"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Ibora"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Ko‘proq soz-lar"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Kamroq sozlamalar"</string>
