@@ -26,183 +26,183 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"Indikator ordinal feminin"</string>
-    <string name="spoken_accented_letter_00B5" msgid="9031387673828823891">"Simbol mikro"</string>
-    <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"Indikator ordinal maskulin"</string>
-    <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"Eszett"</string>
-    <string name="spoken_accented_letter_00E0" msgid="2234515772182387086">"A dengan aksen nontirus (tanda coret miring ke arah kiri di bagian atas)"</string>
-    <string name="spoken_accented_letter_00E1" msgid="7780174500802535063">"A dengan aksen tirus (tanda coret miring ke arah kanan di bagian atas)"</string>
-    <string name="spoken_accented_letter_00E2" msgid="7054108480488102631">"A dengan aksen sirkumfleks (tanda aksen di bagian atas)"</string>
-    <string name="spoken_accented_letter_00E3" msgid="8252569677935693343">"A dengan aksen tilda (tanda gelombang di bagian atas)"</string>
-    <string name="spoken_accented_letter_00E4" msgid="6610118430986969466">"A dengan aksen diaeresis (titik dua di bagian atas)"</string>
-    <string name="spoken_accented_letter_00E5" msgid="7630449270070348394">"A dengan aksen lingkaran di bagian atas"</string>
-    <string name="spoken_accented_letter_00E6" msgid="701838036007000032">"A E ligatur (Karakter A dan E yang digabungkan menjadi satu kesatuan unit)"</string>
-    <string name="spoken_accented_letter_00E7" msgid="2991289211702135310">"C dengan aksen cedilla (tanda kait di bagian bawah)"</string>
-    <string name="spoken_accented_letter_00E8" msgid="2080035251848179782">"E dengan aksen nontirus"</string>
-    <string name="spoken_accented_letter_00E9" msgid="2708473976407506968">"E dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_00EA" msgid="1898848081635119449">"E dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_00EB" msgid="8318942663983499634">"E dengan aksen diaeresis"</string>
-    <string name="spoken_accented_letter_00EC" msgid="7643810590358306098">"I dengan aksen nontirus"</string>
-    <string name="spoken_accented_letter_00ED" msgid="8288035355103120759">"I dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_00EE" msgid="1137417730211688894">"I dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_00EF" msgid="8993714322731956785">"I dengan aksen diaeresis"</string>
-    <string name="spoken_accented_letter_00F0" msgid="3427567511221967857">"Eth"</string>
-    <string name="spoken_accented_letter_00F1" msgid="6983294908255378605">"N dengan aksen tilda"</string>
-    <string name="spoken_accented_letter_00F2" msgid="2623804069332183695">"O dengan aksen nontirus"</string>
-    <string name="spoken_accented_letter_00F3" msgid="8945987631729216917">"O dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_00F4" msgid="2415494299699717276">"O dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_00F5" msgid="7320512716652765243">"O dengan aksen tilda"</string>
-    <string name="spoken_accented_letter_00F6" msgid="9101179351242478555">"O dengan aksen diaeresis"</string>
-    <string name="spoken_accented_letter_00F8" msgid="1488324280918884122">"O coret"</string>
-    <string name="spoken_accented_letter_00F9" msgid="2823570256527173278">"U dengan aksen nontirus"</string>
-    <string name="spoken_accented_letter_00FA" msgid="6883092085077298608">"U dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_00FB" msgid="4948239400399514418">"U dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_00FC" msgid="2496066211694000442">"U dengan aksen diaeresis"</string>
-    <string name="spoken_accented_letter_00FD" msgid="2400529610834233890">"Y dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_00FE" msgid="8788160115017853040">"Thorn (sekarang diganti dengan huruf th)"</string>
-    <string name="spoken_accented_letter_00FF" msgid="5225610161025124830">"Y dengan aksen diaeresis"</string>
-    <string name="spoken_accented_letter_0101" msgid="5573209280917268157">"A dengan aksen makron (tanda pengulur/makron di bagian atas)"</string>
-    <string name="spoken_accented_letter_0103" msgid="2469151120095164730">"A dengan aksen breve (tanda breve di bagian atas)"</string>
-    <string name="spoken_accented_letter_0105" msgid="8312689789855786427">"A dengan aksen ogonek (tanda ekor di sebelah kanan bawah untuk menunjukkan bunyi sengau)"</string>
-    <string name="spoken_accented_letter_0107" msgid="5708507895287798642">"C dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_0109" msgid="7008112603489583335">"C dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_010B" msgid="5641359473019753216">"C dengan titik di bagian atas"</string>
-    <string name="spoken_accented_letter_010D" msgid="1048661826408437168">"C dengan aksen caron (tanda caron di bagian atas)"</string>
-    <string name="spoken_accented_letter_010F" msgid="603374318657992205">"D dengan aksen caron"</string>
-    <string name="spoken_accented_letter_0111" msgid="5517997642285938260">"D coret"</string>
-    <string name="spoken_accented_letter_0113" msgid="2326009009311798997">"E dengan aksen makron"</string>
-    <string name="spoken_accented_letter_0115" msgid="3964545407091037747">"E dengan aksen breve"</string>
-    <string name="spoken_accented_letter_0117" msgid="8799753183781089777">"E dengan titik di bagian atas"</string>
-    <string name="spoken_accented_letter_0119" msgid="3772451226935709136">"E dengan aksen ogonek"</string>
-    <string name="spoken_accented_letter_011B" msgid="7663481332351461288">"E dengan aksen caron"</string>
-    <string name="spoken_accented_letter_011D" msgid="1181326600595482369">"G dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_011F" msgid="6843415389823096647">"G dengan aksen breve"</string>
-    <string name="spoken_accented_letter_0121" msgid="6205288708713306903">"G dengan aksen titik di bagian atas"</string>
-    <string name="spoken_accented_letter_0123" msgid="2394277128105386261">"G dengan aksen cedilla"</string>
-    <string name="spoken_accented_letter_0125" msgid="6575866461277751345">"H dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_0127" msgid="1316971762214091641">"H coret"</string>
-    <string name="spoken_accented_letter_0129" msgid="7824912405885325754">"I dengan aksen tilda"</string>
-    <string name="spoken_accented_letter_012B" msgid="6772690258769905270">"I dengan aksen makron"</string>
-    <string name="spoken_accented_letter_012D" msgid="2933871131556503448">"I dengan aksen breve"</string>
-    <string name="spoken_accented_letter_012F" msgid="1340511254985181663">"I dengan aksen ogonek"</string>
-    <string name="spoken_accented_letter_0131" msgid="5635600720566083969">"I tanpa titik"</string>
-    <string name="spoken_accented_letter_0133" msgid="7593704176516791941">"I dan J ligatur"</string>
-    <string name="spoken_accented_letter_0135" msgid="4521109674238248436">"J dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_0137" msgid="5886444641003852175">"K dengan aksen cedilla"</string>
-    <string name="spoken_accented_letter_0138" msgid="4200294389170924853">"Kra"</string>
-    <string name="spoken_accented_letter_013A" msgid="3558015385412543517">"L dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_013C" msgid="1853639924813858734">"L dengan aksen cedilla"</string>
-    <string name="spoken_accented_letter_013E" msgid="7489345561739421886">"L dengan aksen caron"</string>
-    <string name="spoken_accented_letter_0140" msgid="7946718707268270589">"L dengan titik di tengah"</string>
-    <string name="spoken_accented_letter_0142" msgid="752931798111122240">"L coret"</string>
-    <string name="spoken_accented_letter_0144" msgid="201843550323875352">"N dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_0146" msgid="3403847152606051818">"N dengan aksen cedilla"</string>
-    <string name="spoken_accented_letter_0148" msgid="9215300786722209338">"N dengan aksen caron"</string>
-    <string name="spoken_accented_letter_0149" msgid="3191850286630154063">"N yang didahului tanda apostrof"</string>
-    <string name="spoken_accented_letter_014B" msgid="8503022408522837410">"Eng"</string>
-    <string name="spoken_accented_letter_014D" msgid="4452323602550610641">"O dengan aksen makron"</string>
-    <string name="spoken_accented_letter_014F" msgid="2795957717094385336">"O dengan aksen breve"</string>
-    <string name="spoken_accented_letter_0151" msgid="8013704745216410244">"O dengan aksen tirus ganda"</string>
-    <string name="spoken_accented_letter_0153" msgid="8410582495993285221">"O dan E ligatur"</string>
-    <string name="spoken_accented_letter_0155" msgid="7601517174689798560">"R dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_0157" msgid="9071455715455643810">"R dengan aksen cedilla"</string>
-    <string name="spoken_accented_letter_0159" msgid="7726911392381543439">"R dengan aksen caron"</string>
-    <string name="spoken_accented_letter_015B" msgid="1854129531164494117">"S dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_015D" msgid="4743571603550582530">"S dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_015F" msgid="1519945638631588761">"S dengan aksen cedilla"</string>
-    <string name="spoken_accented_letter_0161" msgid="7493478552029144246">"S dengan aksen caron"</string>
-    <string name="spoken_accented_letter_0163" msgid="9103547637928833069">"T dengan aksen cedilla"</string>
-    <string name="spoken_accented_letter_0165" msgid="7306159398214872062">"T dengan aksen caron"</string>
-    <string name="spoken_accented_letter_0167" msgid="5578767705098672443">"T coret"</string>
-    <string name="spoken_accented_letter_0169" msgid="413046581387735371">"U dengan aksen tilda"</string>
-    <string name="spoken_accented_letter_016B" msgid="3209778874978859441">"U dengan aksen makron"</string>
-    <string name="spoken_accented_letter_016D" msgid="2983326533258602840">"U dengan aksen breve"</string>
-    <string name="spoken_accented_letter_016F" msgid="4416532499516387231">"U dengan aksen lingkaran di bagian atas"</string>
-    <string name="spoken_accented_letter_0171" msgid="3435171971353200807">"U dengan aksen tirus ganda"</string>
-    <string name="spoken_accented_letter_0173" msgid="4494154432483553480">"U dengan aksen ogonek"</string>
-    <string name="spoken_accented_letter_0175" msgid="2154545579611918513">"W dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_0177" msgid="4034463827306904781">"Y dengan aksen sirkumfleks"</string>
-    <string name="spoken_accented_letter_017A" msgid="3368292232292925369">"Z dengan aksen tirus"</string>
-    <string name="spoken_accented_letter_017C" msgid="2834484584505860430">"Z dengan titik di bagian atas"</string>
-    <string name="spoken_accented_letter_017E" msgid="1209240442434887098">"Z dengan aksen caron"</string>
-    <string name="spoken_accented_letter_017F" msgid="317501463253362415">"S Panjang"</string>
-    <string name="spoken_accented_letter_01A1" msgid="630186564859044196">"O dengan aksen tanduk"</string>
-    <string name="spoken_accented_letter_01B0" msgid="8544012177684640443">"U dengan aksen tanduk"</string>
-    <string name="spoken_accented_letter_0219" msgid="1960371842020076066">"S dengan aksen koma di bagian bawah"</string>
-    <string name="spoken_accented_letter_021B" msgid="1398418662032919032">"T dengan aksen koma di bagian bawah"</string>
-    <string name="spoken_accented_letter_0259" msgid="2464085263158415898">"Schwa (aksen pepet)"</string>
-    <string name="spoken_accented_letter_1EA1" msgid="688124877202887630">"A dengan aksen titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EA3" msgid="327960130366386256">"A dengan aksen kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EA5" msgid="637406363453769610">"A dengan aksen sirkumfleks dan tirus"</string>
-    <string name="spoken_accented_letter_1EA7" msgid="1419591804181615409">"A dengan aksen sirkumfleks dan nontirus"</string>
-    <string name="spoken_accented_letter_1EA9" msgid="6068887382734896756">"A dengan aksen sirkumfleks dan kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EAB" msgid="7236523151662538333">"A dengan aksen sirkumfleks dan tilda"</string>
-    <string name="spoken_accented_letter_1EAD" msgid="2363364864106332076">"A dengan aksen sirkumfleks dan titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EAF" msgid="1576329511464272935">"A dengan aksen breve dan tirus"</string>
-    <string name="spoken_accented_letter_1EB1" msgid="4634735072816076592">"A dengan aksen breve dan nontirus"</string>
-    <string name="spoken_accented_letter_1EB3" msgid="2325245849038771534">"A dengan aksen breve dan kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EB5" msgid="3720427596242746295">"A dengan aksen breve dan tilda"</string>
-    <string name="spoken_accented_letter_1EB7" msgid="700415535653646695">"A dengan aksen breve dan titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EB9" msgid="3901338692305890487">"E dengan aksen titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EBB" msgid="4028688699415417302">"E dengan aksen kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EBD" msgid="181253633045931897">"E dengan aksen tilda"</string>
-    <string name="spoken_accented_letter_1EBF" msgid="3309618845007944963">"E dengan aksen sirkumfleks dan tirus"</string>
-    <string name="spoken_accented_letter_1EC1" msgid="8139046749226332542">"E dengan aksen sirkumfleks dan nontirus"</string>
-    <string name="spoken_accented_letter_1EC3" msgid="3239674223053133383">"E dengan aksen sirkumfleks dan kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EC5" msgid="2216559244705714587">"E dengan aksen sirkumfleks dan tilda"</string>
-    <string name="spoken_accented_letter_1EC7" msgid="9012731468253986792">"E dengan aksen sirkumfleks dan titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EC9" msgid="2901917620195717034">"I dengan aksen kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1ECB" msgid="5470387489820034621">"I dengan aksen titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1ECD" msgid="1340122876914839806">"O dengan aksen titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1ECF" msgid="2326921263882559755">"O dengan aksen kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1ED1" msgid="2885683296042774958">"O dengan aksen sirkumfleks dan tirus"</string>
-    <string name="spoken_accented_letter_1ED3" msgid="6857664926477376178">"O dengan aksen sirkumfleks dan nontirus"</string>
-    <string name="spoken_accented_letter_1ED5" msgid="2015209467290624062">"O dengan aksen sirkumfleks dan kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1ED7" msgid="7924481354960306389">"O dengan aksen sirkumfleks dan tilda"</string>
-    <string name="spoken_accented_letter_1ED9" msgid="7023315590332365554">"O dengan aksen sirkumfleks dan titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EDB" msgid="2379438944917634496">"O dengan aksen tanduk dan tirus"</string>
-    <string name="spoken_accented_letter_1EDD" msgid="8107077534204404085">"O dengan aksen tanduk dan nontirus"</string>
-    <string name="spoken_accented_letter_1EDF" msgid="1846880105528347966">"O dengan aksen tanduk dan kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EE1" msgid="1520037313389776718">"O dengan aksen tanduk dan tilda"</string>
-    <string name="spoken_accented_letter_1EE3" msgid="907964027171008963">"O dengan aksen tanduk dan titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EE5" msgid="1522024630360038700">"U dengan aksen titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EE7" msgid="7815412228302952637">"U dengan aksen kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EE9" msgid="4219119671251485651">"U dengan aksen tanduk dan tirus"</string>
-    <string name="spoken_accented_letter_1EEB" msgid="4086009841269002231">"U dengan aksen tanduk dan nontirus"</string>
-    <string name="spoken_accented_letter_1EED" msgid="3528151733528719847">"U dengan aksen tanduk dan kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EEF" msgid="3508548229409072119">"U dengan aksen tanduk dan tilda"</string>
-    <string name="spoken_accented_letter_1EF1" msgid="1912816350401931115">"U dengan aksen tanduk dan titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EF3" msgid="7211760439435946494">"Y dengan aksen nontirus"</string>
-    <string name="spoken_accented_letter_1EF5" msgid="8998864482764007384">"Y dengan aksen titik di bagian bawah"</string>
-    <string name="spoken_accented_letter_1EF7" msgid="922043627252869200">"Y dengan aksen kait di bagian atas"</string>
-    <string name="spoken_accented_letter_1EF9" msgid="6213977100552260366">"Y dengan aksen tilda"</string>
-    <string name="spoken_symbol_00A1" msgid="4281758332905123408">"Tanda seru terbalik"</string>
-    <string name="spoken_symbol_00AB" msgid="4093069643313064892">"Dua tanda kurung sudut kiri"</string>
-    <string name="spoken_symbol_00B7" msgid="2447718728927874920">"Titik tengah"</string>
-    <string name="spoken_symbol_00B9" msgid="8026257165451461231">"Superscript satu"</string>
-    <string name="spoken_symbol_00BB" msgid="1102740075655373928">"Dua tanda kurung sudut kanan"</string>
-    <string name="spoken_symbol_00BF" msgid="6233794752573788098">"Tanda tanya terbalik"</string>
-    <string name="spoken_symbol_2018" msgid="4886476295598930225">"Tanda petik tunggal kiri"</string>
-    <string name="spoken_symbol_2019" msgid="8892530161598134083">"Tanda petik tunggal kanan"</string>
-    <string name="spoken_symbol_201A" msgid="2072987157683446644">"Tanda petik tunggal di bagian bawah"</string>
-    <string name="spoken_symbol_201C" msgid="4588048378803665427">"Tanda petik ganda kiri"</string>
-    <string name="spoken_symbol_201D" msgid="1642776849495925895">"Tanda petik ganda kanan"</string>
-    <string name="spoken_symbol_2020" msgid="9084628638189344431">"Dagger (Tanda belati)"</string>
-    <string name="spoken_symbol_2021" msgid="5081396468559426475">"Dagger ganda"</string>
-    <string name="spoken_symbol_2030" msgid="9068837172419431755">"Simbol per mil"</string>
-    <string name="spoken_symbol_2032" msgid="3014506329156664396">"Tanda petik"</string>
-    <string name="spoken_symbol_2033" msgid="1251022699713475088">"Tanda petik ganda"</string>
-    <string name="spoken_symbol_2039" msgid="6989616457213775957">"Tanda kurung sudut kiri tunggal"</string>
-    <string name="spoken_symbol_203A" msgid="31245095449823701">"Tanda kurung sudut kanan tunggal"</string>
-    <string name="spoken_symbol_2074" msgid="2116717717093306894">"Superscript empat"</string>
-    <string name="spoken_symbol_207F" msgid="1706731172134246659">"Superscript huruf latin kecil n"</string>
-    <string name="spoken_symbol_20B1" msgid="2159994270622444689">"Simbol peso"</string>
-    <string name="spoken_symbol_2105" msgid="7289404939366976829">"Dengan alamat"</string>
-    <string name="spoken_symbol_2192" msgid="827804523596125414">"Panah ke kanan"</string>
-    <string name="spoken_symbol_2193" msgid="2659541693445985717">"Panah ke bawah"</string>
-    <string name="spoken_symbol_2205" msgid="4457188084269117343">"Himpunan kosong"</string>
-    <string name="spoken_symbol_2206" msgid="4856786565708380687">"Penambahan"</string>
-    <string name="spoken_symbol_2264" msgid="5092061257745123554">"Kurang dari atau sama dengan"</string>
-    <string name="spoken_symbol_2265" msgid="1907966479878036357">"Lebih dari atau sama dengan"</string>
-    <string name="spoken_symbol_2605" msgid="5202920479405857753">"Bintang hitam"</string>
+    <string name="spoken_accented_letter_00AA" msgid="1429204792762885085">"Indikator ordinal feminin"</string>
+    <string name="spoken_accented_letter_00B5" msgid="7868294865559331588">"Simbol mikro"</string>
+    <string name="spoken_accented_letter_00BA" msgid="6130566166610759347">"Indikator ordinal maskulin"</string>
+    <string name="spoken_accented_letter_00DF" msgid="7710831757384261616">"Eszett"</string>
+    <string name="spoken_accented_letter_00E0" msgid="8359362590979941845">"A dengan aksen nontirus (tanda coret miring ke arah kiri di bagian atas)"</string>
+    <string name="spoken_accented_letter_00E1" msgid="2671495856337880810">"A dengan aksen tirus (tanda coret miring ke arah kanan di bagian atas)"</string>
+    <string name="spoken_accented_letter_00E2" msgid="4087084704351663503">"A dengan aksen sirkumfleks (tanda aksen di bagian atas)"</string>
+    <string name="spoken_accented_letter_00E3" msgid="7975329965802415596">"A dengan aksen tilda (tanda gelombang di bagian atas)"</string>
+    <string name="spoken_accented_letter_00E4" msgid="208598292868336905">"A dengan aksen diaeresis (titik dua di bagian atas)"</string>
+    <string name="spoken_accented_letter_00E5" msgid="4228925932500129556">"A dengan aksen lingkaran di bagian atas"</string>
+    <string name="spoken_accented_letter_00E6" msgid="7323940543942149954">"A E ligatur (Karakter A dan E yang digabungkan menjadi satu kesatuan unit)"</string>
+    <string name="spoken_accented_letter_00E7" msgid="4049466573783395785">"C dengan aksen cedilla (tanda kait di bagian bawah)"</string>
+    <string name="spoken_accented_letter_00E8" msgid="6177875281261539527">"E dengan aksen nontirus"</string>
+    <string name="spoken_accented_letter_00E9" msgid="2175044698947400318">"E dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_00EA" msgid="2086137690252658024">"E dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_00EB" msgid="6302438512201996209">"E dengan aksen diaeresis"</string>
+    <string name="spoken_accented_letter_00EC" msgid="5062003793705929129">"I dengan aksen nontirus"</string>
+    <string name="spoken_accented_letter_00ED" msgid="6694774041240192339">"I dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_00EE" msgid="5136204093260797544">"I dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_00EF" msgid="8307231501441468703">"I dengan aksen diaeresis"</string>
+    <string name="spoken_accented_letter_00F0" msgid="4239778544582693104">"Eth"</string>
+    <string name="spoken_accented_letter_00F1" msgid="4987892928889057170">"N dengan aksen tilda"</string>
+    <string name="spoken_accented_letter_00F2" msgid="5077323275299574759">"O dengan aksen nontirus"</string>
+    <string name="spoken_accented_letter_00F3" msgid="9079538247216003650">"O dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_00F4" msgid="4895596839992601302">"O dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_00F5" msgid="3532023196307928021">"O dengan aksen tilda"</string>
+    <string name="spoken_accented_letter_00F6" msgid="7749387914189798954">"O dengan aksen diaeresis"</string>
+    <string name="spoken_accented_letter_00F8" msgid="8281419747498267561">"O coret"</string>
+    <string name="spoken_accented_letter_00F9" msgid="1170214579674533510">"U dengan aksen nontirus"</string>
+    <string name="spoken_accented_letter_00FA" msgid="1876191144394927321">"U dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_00FB" msgid="4924009576739820941">"U dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_00FC" msgid="6495614390944597426">"U dengan aksen diaeresis"</string>
+    <string name="spoken_accented_letter_00FD" msgid="3492105815141862669">"Y dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_00FE" msgid="8691066174200751006">"Thorn (sekarang diganti dengan huruf th)"</string>
+    <string name="spoken_accented_letter_00FF" msgid="2687674423034966788">"Y dengan aksen diaeresis"</string>
+    <string name="spoken_accented_letter_0101" msgid="1254633067802891111">"A dengan aksen makron (tanda pengulur/makron di bagian atas)"</string>
+    <string name="spoken_accented_letter_0103" msgid="3688796653637498600">"A dengan aksen breve (tanda breve di bagian atas)"</string>
+    <string name="spoken_accented_letter_0105" msgid="3134851467217320032">"A dengan aksen ogonek (tanda ekor di sebelah kanan bawah untuk menunjukkan bunyi sengau)"</string>
+    <string name="spoken_accented_letter_0107" msgid="5660625243852495210">"C dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_0109" msgid="6274117230259531470">"C dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_010B" msgid="6063571229543007312">"C dengan titik di bagian atas"</string>
+    <string name="spoken_accented_letter_010D" msgid="3450443416935694439">"C dengan aksen caron (tanda caron di bagian atas)"</string>
+    <string name="spoken_accented_letter_010F" msgid="6745744655665327534">"D dengan aksen caron"</string>
+    <string name="spoken_accented_letter_0111" msgid="6503055322642812531">"D coret"</string>
+    <string name="spoken_accented_letter_0113" msgid="5612700209421224569">"E dengan aksen makron"</string>
+    <string name="spoken_accented_letter_0115" msgid="2395715219714820980">"E dengan aksen breve"</string>
+    <string name="spoken_accented_letter_0117" msgid="4951272010293834033">"E dengan titik di bagian atas"</string>
+    <string name="spoken_accented_letter_0119" msgid="8712770118846720521">"E dengan aksen ogonek"</string>
+    <string name="spoken_accented_letter_011B" msgid="7899382512008649409">"E dengan aksen caron"</string>
+    <string name="spoken_accented_letter_011D" msgid="341326313179445327">"G dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_011F" msgid="2447869333691111889">"G dengan aksen breve"</string>
+    <string name="spoken_accented_letter_0121" msgid="1238160107693159713">"G dengan aksen titik di bagian atas"</string>
+    <string name="spoken_accented_letter_0123" msgid="6178849075218185914">"G dengan aksen cedilla"</string>
+    <string name="spoken_accented_letter_0125" msgid="4692241198279662525">"H dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_0127" msgid="4720255318728960504">"H coret"</string>
+    <string name="spoken_accented_letter_0129" msgid="9157168186081954638">"I dengan aksen tilda"</string>
+    <string name="spoken_accented_letter_012B" msgid="375585010195736343">"I dengan aksen makron"</string>
+    <string name="spoken_accented_letter_012D" msgid="4106308258543638970">"I dengan aksen breve"</string>
+    <string name="spoken_accented_letter_012F" msgid="1452578280482403979">"I dengan aksen ogonek"</string>
+    <string name="spoken_accented_letter_0131" msgid="5937673538326272342">"I tanpa titik"</string>
+    <string name="spoken_accented_letter_0133" msgid="277563648654762150">"I dan J ligatur"</string>
+    <string name="spoken_accented_letter_0135" msgid="2779870638617435461">"J dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_0137" msgid="8455545193949287181">"K dengan aksen cedilla"</string>
+    <string name="spoken_accented_letter_0138" msgid="9011034155609255386">"Kra"</string>
+    <string name="spoken_accented_letter_013A" msgid="6362476433982975663">"L dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_013C" msgid="2681322379412226799">"L dengan aksen cedilla"</string>
+    <string name="spoken_accented_letter_013E" msgid="8461168633186195677">"L dengan aksen caron"</string>
+    <string name="spoken_accented_letter_0140" msgid="4080829239481462178">"L dengan titik di tengah"</string>
+    <string name="spoken_accented_letter_0142" msgid="5847973091715644967">"L coret"</string>
+    <string name="spoken_accented_letter_0144" msgid="3651802585231558">"N dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_0146" msgid="4199445347237532836">"N dengan aksen cedilla"</string>
+    <string name="spoken_accented_letter_0148" msgid="58935040893678407">"N dengan aksen caron"</string>
+    <string name="spoken_accented_letter_0149" msgid="20055877995806511">"N yang didahului tanda apostrof"</string>
+    <string name="spoken_accented_letter_014B" msgid="9134611171368422907">"Eng"</string>
+    <string name="spoken_accented_letter_014D" msgid="965954484606707266">"O dengan aksen makron"</string>
+    <string name="spoken_accented_letter_014F" msgid="8110337151682568175">"O dengan aksen breve"</string>
+    <string name="spoken_accented_letter_0151" msgid="4985198246715436875">"O dengan aksen tirus ganda"</string>
+    <string name="spoken_accented_letter_0153" msgid="5048546969963218488">"O dan E ligatur"</string>
+    <string name="spoken_accented_letter_0155" msgid="5139403444775251743">"R dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_0157" msgid="9060230171835456811">"R dengan aksen cedilla"</string>
+    <string name="spoken_accented_letter_0159" msgid="3782854434017992897">"R dengan aksen caron"</string>
+    <string name="spoken_accented_letter_015B" msgid="3085286648020508804">"S dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_015D" msgid="5074291323151484913">"S dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_015F" msgid="5193866302469375998">"S dengan aksen cedilla"</string>
+    <string name="spoken_accented_letter_0161" msgid="8393253516113135791">"S dengan aksen caron"</string>
+    <string name="spoken_accented_letter_0163" msgid="3338244832255179350">"T dengan aksen cedilla"</string>
+    <string name="spoken_accented_letter_0165" msgid="8987768863591268935">"T dengan aksen caron"</string>
+    <string name="spoken_accented_letter_0167" msgid="8920128556019924058">"T coret"</string>
+    <string name="spoken_accented_letter_0169" msgid="4907691546517947733">"U dengan aksen tilda"</string>
+    <string name="spoken_accented_letter_016B" msgid="901672217821836813">"U dengan aksen makron"</string>
+    <string name="spoken_accented_letter_016D" msgid="1565897080674698164">"U dengan aksen breve"</string>
+    <string name="spoken_accented_letter_016F" msgid="3757096999173707468">"U dengan aksen lingkaran di bagian atas"</string>
+    <string name="spoken_accented_letter_0171" msgid="6714863197999325550">"U dengan aksen tirus ganda"</string>
+    <string name="spoken_accented_letter_0173" msgid="7410814847627853645">"U dengan aksen ogonek"</string>
+    <string name="spoken_accented_letter_0175" msgid="339235903820054218">"W dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_0177" msgid="2941315939930277636">"Y dengan aksen sirkumfleks"</string>
+    <string name="spoken_accented_letter_017A" msgid="4714572902688921072">"Z dengan aksen tirus"</string>
+    <string name="spoken_accented_letter_017C" msgid="2833396869222884032">"Z dengan titik di bagian atas"</string>
+    <string name="spoken_accented_letter_017E" msgid="4554566832243631717">"Z dengan aksen caron"</string>
+    <string name="spoken_accented_letter_017F" msgid="888899188556708687">"S Panjang"</string>
+    <string name="spoken_accented_letter_01A1" msgid="2981828105139279447">"O dengan aksen tanduk"</string>
+    <string name="spoken_accented_letter_01B0" msgid="2629226342652632511">"U dengan aksen tanduk"</string>
+    <string name="spoken_accented_letter_0219" msgid="8645226763076655106">"S dengan aksen koma di bagian bawah"</string>
+    <string name="spoken_accented_letter_021B" msgid="8866011193954339675">"T dengan aksen koma di bagian bawah"</string>
+    <string name="spoken_accented_letter_0259" msgid="5905439489534279827">"Schwa (aksen pepet)"</string>
+    <string name="spoken_accented_letter_1EA1" msgid="8505976060756867417">"A dengan aksen titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EA3" msgid="2788352532160807472">"A dengan aksen kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EA5" msgid="2292693679156098920">"A dengan aksen sirkumfleks dan tirus"</string>
+    <string name="spoken_accented_letter_1EA7" msgid="8417536722845681229">"A dengan aksen sirkumfleks dan nontirus"</string>
+    <string name="spoken_accented_letter_1EA9" msgid="2578279336601294022">"A dengan aksen sirkumfleks dan kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EAB" msgid="7374135434062109962">"A dengan aksen sirkumfleks dan tilda"</string>
+    <string name="spoken_accented_letter_1EAD" msgid="1474480343541533775">"A dengan aksen sirkumfleks dan titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EAF" msgid="2200325846558733243">"A dengan aksen breve dan tirus"</string>
+    <string name="spoken_accented_letter_1EB1" msgid="9106179683756690965">"A dengan aksen breve dan nontirus"</string>
+    <string name="spoken_accented_letter_1EB3" msgid="4065739316471720816">"A dengan aksen breve dan kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EB5" msgid="1770105416022788250">"A dengan aksen breve dan tilda"</string>
+    <string name="spoken_accented_letter_1EB7" msgid="8792260248587042181">"A dengan aksen breve dan titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EB9" msgid="6106301654737736106">"E dengan aksen titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EBB" msgid="2212685394846524242">"E dengan aksen kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EBD" msgid="2807714536689435520">"E dengan aksen tilda"</string>
+    <string name="spoken_accented_letter_1EBF" msgid="8454808514594026786">"E dengan aksen sirkumfleks dan tirus"</string>
+    <string name="spoken_accented_letter_1EC1" msgid="5019511373362431084">"E dengan aksen sirkumfleks dan nontirus"</string>
+    <string name="spoken_accented_letter_1EC3" msgid="5719085507413798816">"E dengan aksen sirkumfleks dan kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EC5" msgid="3419169573905751004">"E dengan aksen sirkumfleks dan tilda"</string>
+    <string name="spoken_accented_letter_1EC7" msgid="1277744171696272674">"E dengan aksen sirkumfleks dan titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EC9" msgid="6329641087936952362">"I dengan aksen kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1ECB" msgid="3327046611713033242">"I dengan aksen titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1ECD" msgid="5645946423555657021">"O dengan aksen titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1ECF" msgid="6430101687743339581">"O dengan aksen kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1ED1" msgid="3542223744518083869">"O dengan aksen sirkumfleks dan tirus"</string>
+    <string name="spoken_accented_letter_1ED3" msgid="5633582508617044483">"O dengan aksen sirkumfleks dan nontirus"</string>
+    <string name="spoken_accented_letter_1ED5" msgid="6489014380143700648">"O dengan aksen sirkumfleks dan kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1ED7" msgid="376703009449231814">"O dengan aksen sirkumfleks dan tilda"</string>
+    <string name="spoken_accented_letter_1ED9" msgid="6737319443248179778">"O dengan aksen sirkumfleks dan titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EDB" msgid="6819739418527680766">"O dengan aksen tanduk dan tirus"</string>
+    <string name="spoken_accented_letter_1EDD" msgid="8441862499254128566">"O dengan aksen tanduk dan nontirus"</string>
+    <string name="spoken_accented_letter_1EDF" msgid="6740676097223638958">"O dengan aksen tanduk dan kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EE1" msgid="1645775585720722502">"O dengan aksen tanduk dan tilda"</string>
+    <string name="spoken_accented_letter_1EE3" msgid="7867735542899859419">"O dengan aksen tanduk dan titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EE5" msgid="9180116754354569560">"U dengan aksen titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EE7" msgid="2767129138874029066">"U dengan aksen kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EE9" msgid="4579407710103850368">"U dengan aksen tanduk dan tirus"</string>
+    <string name="spoken_accented_letter_1EEB" msgid="9092276653886577084">"U dengan aksen tanduk dan nontirus"</string>
+    <string name="spoken_accented_letter_1EED" msgid="1967931200947380386">"U dengan aksen tanduk dan kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EEF" msgid="8446824374207720775">"U dengan aksen tanduk dan tilda"</string>
+    <string name="spoken_accented_letter_1EF1" msgid="6698470815077489739">"U dengan aksen tanduk dan titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EF3" msgid="2443614715758900063">"Y dengan aksen nontirus"</string>
+    <string name="spoken_accented_letter_1EF5" msgid="6415139004635224094">"Y dengan aksen titik di bagian bawah"</string>
+    <string name="spoken_accented_letter_1EF7" msgid="8043497255841518190">"Y dengan aksen kait di bagian atas"</string>
+    <string name="spoken_accented_letter_1EF9" msgid="1694289744737814265">"Y dengan aksen tilda"</string>
+    <string name="spoken_symbol_00A1" msgid="5790009556085890120">"Tanda seru terbalik"</string>
+    <string name="spoken_symbol_00AB" msgid="5511510090088597396">"Dua tanda kurung sudut kiri"</string>
+    <string name="spoken_symbol_00B7" msgid="2229465280092246747">"Titik tengah"</string>
+    <string name="spoken_symbol_00B9" msgid="569656106787361413">"Superscript satu"</string>
+    <string name="spoken_symbol_00BB" msgid="1034542082006355758">"Dua tanda kurung sudut kanan"</string>
+    <string name="spoken_symbol_00BF" msgid="2593494842934706144">"Tanda tanya terbalik"</string>
+    <string name="spoken_symbol_2018" msgid="3752105271943839375">"Tanda petik tunggal kiri"</string>
+    <string name="spoken_symbol_2019" msgid="573485083281273993">"Tanda petik tunggal kanan"</string>
+    <string name="spoken_symbol_201A" msgid="5266122937974689382">"Tanda petik tunggal di bagian bawah"</string>
+    <string name="spoken_symbol_201C" msgid="258649836949624565">"Tanda petik ganda kiri"</string>
+    <string name="spoken_symbol_201D" msgid="2263084205088083519">"Tanda petik ganda kanan"</string>
+    <string name="spoken_symbol_2020" msgid="8808522468746727018">"Dagger (Tanda belati)"</string>
+    <string name="spoken_symbol_2021" msgid="4826738438425587522">"Dagger ganda"</string>
+    <string name="spoken_symbol_2030" msgid="4220618342788098709">"Simbol per mil"</string>
+    <string name="spoken_symbol_2032" msgid="5601856861977171913">"Tanda petik"</string>
+    <string name="spoken_symbol_2033" msgid="5929762716995207957">"Tanda petik ganda"</string>
+    <string name="spoken_symbol_2039" msgid="5066534608558700563">"Tanda kurung sudut kiri tunggal"</string>
+    <string name="spoken_symbol_203A" msgid="5227807616001958272">"Tanda kurung sudut kanan tunggal"</string>
+    <string name="spoken_symbol_2074" msgid="2007314687882920646">"Superscript empat"</string>
+    <string name="spoken_symbol_207F" msgid="3090229039527496614">"Superscript huruf latin kecil n"</string>
+    <string name="spoken_symbol_20B1" msgid="1667597325548864311">"Simbol peso"</string>
+    <string name="spoken_symbol_2105" msgid="5668256285251569417">"Dengan alamat"</string>
+    <string name="spoken_symbol_2192" msgid="5322328119737591799">"Panah ke kanan"</string>
+    <string name="spoken_symbol_2193" msgid="9032686072837441720">"Panah ke bawah"</string>
+    <string name="spoken_symbol_2205" msgid="5968285323513580406">"Himpunan kosong"</string>
+    <string name="spoken_symbol_2206" msgid="3376690118863943544">"Penambahan"</string>
+    <string name="spoken_symbol_2264" msgid="8876219179743627125">"Kurang dari atau sama dengan"</string>
+    <string name="spoken_symbol_2265" msgid="131323661511836175">"Lebih dari atau sama dengan"</string>
+    <string name="spoken_symbol_2605" msgid="6865705201241850682">"Bintang hitam"</string>
 </resources>
