@@ -20,8 +20,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="5940510615957428904">"Teclado Android (AOSP)"</string>
-    <string name="spell_checker_service_name" msgid="1254221805440242662">"Corrector de Android (AOSP)"</string>
-    <string name="english_ime_settings" msgid="5760361067176802794">"Ajustes del teclado de Android (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="6123949487832861885">"Ajustes del corrector de Android (AOSP)"</string>
+    <string name="english_ime_name" msgid="4475547506953371028">"Teclado Android (AOSP)"</string>
+    <string name="spell_checker_service_name" msgid="7417621022652876777">"Corrector de Android (AOSP)"</string>
+    <string name="english_ime_settings" msgid="1497566567404939275">"Ajustes del teclado de Android (AOSP)"</string>
+    <string name="android_spell_checker_settings" msgid="2821003654878860820">"Ajustes del corrector de Android (AOSP)"</string>
 </resources>
