@@ -20,12 +20,12 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="label_go_key" msgid="4033615332628671065">"යන්න"</string>
-    <string name="label_next_key" msgid="5586407279258592635">"මීළඟ"</string>
-    <string name="label_previous_key" msgid="1421141755779895275">"පෙර"</string>
-    <string name="label_done_key" msgid="7564866296502630852">"හරි"</string>
-    <string name="label_send_key" msgid="482252074224462163">"යවන්න"</string>
-    <string name="label_search_key" msgid="7965186050435796642">"සොයන්න"</string>
-    <string name="label_pause_key" msgid="2225922926459730642">"විරාමය"</string>
-    <string name="label_wait_key" msgid="5891247853595466039">"රැඳීම"</string>
+    <string name="label_go_key" msgid="3122611885957309462">"යන්න"</string>
+    <string name="label_next_key" msgid="6928583184397561625">"මීළඟ"</string>
+    <string name="label_previous_key" msgid="4577844656911214877">"පෙර"</string>
+    <string name="label_done_key" msgid="1681854263629409301">"හරි"</string>
+    <string name="label_send_key" msgid="1326090749003557962">"යවන්න"</string>
+    <string name="label_search_key" msgid="1862446085742754093">"සොයන්න"</string>
+    <string name="label_pause_key" msgid="1679062123519160171">"විරාමය"</string>
+    <string name="label_wait_key" msgid="6039179696350776268">"රැඳීම"</string>
 </resources>
