@@ -20,193 +20,193 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_input_options" msgid="3909945612939668554">"Opsi masukan"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Cari nama kontak"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Pemeriksa ejaan menggunakan entri dari daftar kontak Anda"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Getar jika tombol ditekan"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Berbunyi jika tombol ditekan"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Muncul saat tombol ditekan"</string>
-    <string name="settings_screen_preferences" msgid="2696713156722014624">"Preferensi"</string>
-    <string name="settings_screen_accounts" msgid="2786418968536696670">"Akun &amp; Privasi"</string>
-    <string name="settings_screen_appearance" msgid="7358046399111611615">"Tampilan &amp; Tata Letak"</string>
-    <string name="settings_screen_gesture" msgid="8826372746901183556">"Ketikan Gestur"</string>
-    <string name="settings_screen_correction" msgid="1616818407747682955">"Koreksi teks"</string>
-    <string name="settings_screen_advanced" msgid="7472408607625972994">"Lanjutan"</string>
-    <string name="settings_screen_theme" msgid="2137262503543943871">"Tema"</string>
-    <string name="enable_split_keyboard" msgid="4177264923999493614">"Aktifkan keyboard terpisah"</string>
-    <string name="cloud_sync_title" msgid="8579271074443847055">"Sinkronisasi Google Keyboard"</string>
-    <string name="cloud_sync_summary" msgid="7684887161145650857">"Sinkronisasi diaktifkan"</string>
-    <string name="cloud_sync_summary_disabled" msgid="4553338970382825796">"Menyinkronkan kamus pribadi di perangkat"</string>
-    <string name="sync_now_title" msgid="3088838136743277721">"Sinkronkan sekarang"</string>
-    <string name="clear_sync_data_title" msgid="8582001557037069154">"Menghapus data awan"</string>
-    <string name="clear_sync_data_summary" msgid="993477139012576584">"Menghapus data yang disinkronkan dari Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="2811931135574727678">"Data yang disinkronkan akan dihapus dari awan. Anda yakin?"</string>
-    <string name="clear_sync_data_ok" msgid="613104067705915132">"Hapus"</string>
-    <string name="cloud_sync_cancel" msgid="5877481252150919037">"Batal"</string>
-    <string name="cloud_sync_opt_in_text" msgid="9176039655776298248">"Kamus pribadi akan disinkronkan dan dicadangkan ke server Google. Informasi statistik tentang frekuensi kata dapat dikumpulkan untuk membantu menyempurnakan produk kami. Pengumpulan dan penggunaan data tunduk pada "<a href="https://www.google.com/policies/privacy">"Kebijakan Privasi Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="7836932571852055265">"Tambahkan akun Google ke perangkat ini untuk mengaktifkan fitur ini"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="1381770407303129164">"Sinkronisasi tidak tersedia untuk perangkat yang memiliki akun Google Apps for Business"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Beralih ke metode masukan lain"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tombol beralih bahasa juga mencakup metode masukan lain"</string>
-    <string name="show_language_switch_key" msgid="5915478828318774384">"Tombol pengalih bahasa"</string>
-    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Tampilkan saat beberapa bahasa masukan diaktifkan"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Jeda tutup pop-up utama"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Tanpa penundaan"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Default"</string>
-    <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> md"</string>
-    <string name="settings_system_default" msgid="6268225104743331821">"Default sistem"</string>
-    <string name="use_contacts_dict" msgid="4435317977804180815">"Sarankan nama Kontak"</string>
-    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Menggunakan nama dari Kontak untuk saran dan koreksi"</string>
-    <string name="use_personalized_dicts" msgid="5167396352105467626">"Saran hasil personalisasi"</string>
-    <string name="enable_metrics_logging" msgid="5506372337118822837">"Tingkatkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Titik spasi ganda"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Mengetuk tombol spasi dua kali akan memasukkan titik diikuti satu spasi"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Kapitalisasi otomatis"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Kapitalisasi kata pertama di setiap kalimat"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Kamus pribadi"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Kamus pengaya"</string>
-    <string name="main_dictionary" msgid="4798763781818361168">"Kamus utama"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Tampilkan saran koreksi"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Tampilkan kata yang disarankan ketika mengetik"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blokir kata tak pantas"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Jangan sarankan kata yang berpotensi menyinggung"</string>
-    <string name="auto_correction" msgid="7630720885194996950">"Koreksi otomatis"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Bilah spasi dan tanda baca secara otomatis dikoreksi pada kata yang salah ketik"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Mati"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Sederhana"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agresif"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Sangat agresif"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Saran kata berikutnya"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Gunakan kata sebelumnya dalam membuat saran"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Aktifkan pengetikan gestur"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Masukkan kata dengan menggeser huruf ke kanan/kiri"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Tampilkan jejak gestur"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Pratinjau mengambang dinamis"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Lihat kata yang disarankan saat melakukan isyarat"</string>
-    <string name="gesture_space_aware" msgid="2078291600664682496">"Gesture frasa"</string>
-    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Masukkan spasi dalam isyarat dengan meluncur ke tombol spasi"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Tombol masukan suara"</string>
-    <string name="voice_input_disabled_summary" msgid="6323489602945135165">"Tidak ada metode masukan suara yang diaktifkan. Periksa setelan Bahasan &amp; masukan."</string>
-    <string name="configure_input_method" msgid="373356270290742459">"Konfigurasikan metode masukan"</string>
-    <string name="language_selection_title" msgid="3666971864764478269">"Bahasa"</string>
-    <string name="help_and_feedback" msgid="5328219371839879161">"Bantuan &amp; masukan"</string>
-    <string name="select_language" msgid="5709487854987078367">"Bahasa"</string>
-    <string name="hint_add_to_dictionary" msgid="2645988432867033007">"Ketuk sekali lagi untuk menyimpan"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="6710206006427574423">"Ketuk di sini untuk menyimpan"</string>
-    <string name="has_dictionary" msgid="6071847973466625007">"Kamus yang tersedia"</string>
-    <string name="keyboard_layout" msgid="8451164783510487501">"Tema keyboard"</string>
-    <string name="switch_accounts" msgid="3321216593719006162">"Beralih akun"</string>
-    <string name="no_accounts_selected" msgid="2073821619103904330">"Tidak ada akun yang dipilih"</string>
-    <string name="account_selected" msgid="2846876462199625974">"Saat ini menggunakan <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="9141195141763227797">"Oke"</string>
-    <string name="account_select_cancel" msgid="5181012062618504340">"Batal"</string>
-    <string name="account_select_sign_out" msgid="3299651159390187933">"Keluar"</string>
-    <string name="account_select_title" msgid="6279711684772922649">"Pilih akun yang akan digunakan"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Inggris (Inggris)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Inggris (AS)"</string>
-    <string name="subtype_es_US" msgid="5583145191430180200">"Spanyol (AS)"</string>
-    <string name="subtype_hi_ZZ" msgid="8860448146262798623">"Hinglish"</string>
-    <string name="subtype_sr_ZZ" msgid="9059219552986034343">"Serbia (Latin)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"(<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>) Inggris (Inggris)"</string>
-    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"(<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>) Inggris (AS)"</string>
-    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"(<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>) Spanyol (AS)"</string>
-    <string name="subtype_with_layout_hi_ZZ" msgid="6827402953860547044">"Hinglish (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_sr_ZZ" msgid="2859024772719772407">"Serbia (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Tradisional)"</string>
-    <string name="subtype_generic_compact" msgid="3353673321203202922">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Rapat)"</string>
-    <string name="subtype_no_language" msgid="7137390094240139495">"Tidak ada bahasa (Abjad)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Abjad (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Abjad (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Abjad (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Abjad (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Abjad (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Abjad (PC)"</string>
-    <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
-    <string name="keyboard_theme" msgid="4909551808526178852">"Tema keyboard"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Gaya masukan khusus"</string>
-    <string name="add_style" msgid="6163126614514489951">"Tambah gaya"</string>
-    <string name="add" msgid="8299699805688017798">"Tambahkan"</string>
-    <string name="remove" msgid="4486081658752944606">"Hapus"</string>
-    <string name="save" msgid="7646738597196767214">"Simpan"</string>
-    <string name="subtype_locale" msgid="8576443440738143764">"Bahasa"</string>
-    <string name="keyboard_layout_set" msgid="4309233698194565609">"Tata Letak"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Gaya masukan khusus harus aktif sebelum digunakan. Aktifkan?"</string>
-    <string name="enable" msgid="5031294444630523247">"Aktifkan"</string>
-    <string name="not_now" msgid="6172462888202790482">"Nanti saja"</string>
-    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Sudah ada gaya masukan yang sama: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durasi getar saat tekan tombol"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume suara saat tekan tombol"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Penundaan tekan lama tombol"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="5963640002335470112">"Emoji untuk keyboard fisik"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="5259484820941627827">"Tombol Alt fisik menampilkan palet emoji"</string>
-    <string name="button_default" msgid="3988017840431881491">"Default"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"Selamat datang di <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"dengan Ketikan Gestur"</string>
-    <string name="setup_start_action" msgid="8936036460897347708">"Memulai"</string>
-    <string name="setup_next_action" msgid="371821437915144603">"Langkah berikutnya"</string>
-    <string name="setup_steps_title" msgid="6400373034871816182">"Menyiapkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="3147967630253462315">"Aktifkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="4295448056733329661">"Centang \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" di setelan Bahasa &amp; masukan. Tindakan ini akan mengizinkannya berjalan di perangkat Anda."</string>
-    <string name="setup_step1_finished_instruction" msgid="8701441895377434947">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> telah diaktifkan di setelan Bahasa &amp; masukan Anda, jadi langkah ini sudah diselesaikan. Lanjut langkah selanjutnya!"</string>
-    <string name="setup_step1_action" msgid="4366513534999901728">"Aktifkan dalam Setelan"</string>
-    <string name="setup_step2_title" msgid="6860725447906690594">"Beralih ke <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="9141481964870023336">"Lalu, pilih \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" sebagai metode masukan teks aktif Anda."</string>
-    <string name="setup_step2_action" msgid="1660330307159824337">"Alihkan metode masukan"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"Selamat, Anda sudah siap!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"Sekarang Anda dapat mengetik di semua aplikasi favorit Anda dengan <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step3_action" msgid="600879797256942259">"Konfigurasikan bahasa tambahan"</string>
-    <string name="setup_finish_action" msgid="276559243409465389">"Selesai"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Tampilkan ikon aplikasi"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Menampillkan ikon aplikasi di peluncur"</string>
-    <string name="app_name" msgid="6320102637491234792">"Penyedia Kamus"</string>
-    <string name="dictionary_provider_name" msgid="3027315045397363079">"Penyedia Kamus"</string>
-    <string name="dictionary_service_name" msgid="6237472350693511448">"Layanan Kamus"</string>
-    <string name="download_description" msgid="6014835283119198591">"Informasi pembaruan kamus"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"Kamus pengaya"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Kamus yang tersedia"</string>
-    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Setelan untuk kamus"</string>
-    <string name="user_dictionaries" msgid="3582332055892252845">"Kamus pengguna"</string>
-    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Kamus pengguna"</string>
-    <string name="dictionary_available" msgid="4728975345815214218">"Kamus yang tersedia"</string>
-    <string name="dictionary_downloading" msgid="2982650524622620983">"Saat ini sedang mendownload"</string>
-    <string name="dictionary_installed" msgid="8081558343559342962">"Terinstal"</string>
-    <string name="dictionary_disabled" msgid="8950383219564621762">"Terinstal, dinonaktifkan"</string>
-    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Problem koneksi kamus"</string>
-    <string name="no_dictionaries_available" msgid="8039920716566132611">"Tidak tersedia kamus"</string>
-    <string name="check_for_updates_now" msgid="8087688440916388581">"Segarkan"</string>
-    <string name="last_update" msgid="730467549913588780">"Terakhir diperbarui"</string>
-    <string name="message_updating" msgid="4457761393932375219">"Memeriksa pembaruan"</string>
-    <string name="message_loading" msgid="5638680861387748936">"Memuat…"</string>
-    <string name="main_dict_description" msgid="3072821352793492143">"Kamus utama"</string>
-    <string name="cancel" msgid="6830980399865683324">"Batal"</string>
-    <string name="go_to_settings" msgid="3876892339342569259">"Setelan"</string>
-    <string name="install_dict" msgid="180852772562189365">"Instal"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"Batal"</string>
-    <string name="delete_dict" msgid="756853268088330054">"Hapus"</string>
-    <string name="should_download_over_metered_prompt" msgid="6737084685073734292">"Bahasa yang dipilih di perangkat seluler memiliki kamus.&lt;br/&gt; Sebaiknya &lt;b&gt;download&lt;/b&gt; kamus <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> untuk menyempurnakan pengalaman mengetik.&lt;br/&gt; &lt;br/&gt; Download memerlukan waktu satu atau dua menit melalui 3G. Tagihan mungkin berlaku jika Anda tidak menggunakan &lt;b&gt;paket data tak terbatas&lt;/b&gt;.&lt;br/&gt; Jika Anda tidak yakin paket data mana yang digunakan, sebaiknya cari sambungan Wi-Fi untuk memulai download secara otomatis.&lt;br/&gt; &lt;br/&gt; Kiat: Anda dapat mendownload dan menghapus kamus dengan membuka &lt;b&gt;Bahasa &amp; masukan&lt;/b&gt; di menu &lt;b&gt;Setelan&lt;/b&gt; pada perangkat seluler."</string>
-    <string name="download_over_metered" msgid="1643065851159409546">"Download sekarang (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Download melalui Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4583842811218581658">"Kamus tersedia untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="1075194169443163487">"Tekan untuk meninjau dan mendownload"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Mendownload: saran untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> akan segera tersedia."</string>
-    <string name="version_text" msgid="2715354215568469385">"Versi <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
-    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Tambahkan"</string>
-    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Tambahkan ke kamus"</string>
-    <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Frasa"</string>
-    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Opsi lainnya"</string>
-    <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Sedikit opsi"</string>
-    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"Oke"</string>
-    <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Kata:"</string>
-    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Pintasan:"</string>
-    <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Bahasa:"</string>
-    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Ketik kata"</string>
-    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Pintasan opsional"</string>
-    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Edit kata"</string>
-    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Edit"</string>
-    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Hapus"</string>
-    <string name="user_dict_settings_empty_text" msgid="6889278304342592383">"Tidak ada kata-kata dalam kamus pengguna. Untuk menambahkan kata, ketuk Tambahkan (+)."</string>
-    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Untuk semua bahasa"</string>
-    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Bahasa lainnya..."</string>
-    <string name="user_dict_settings_delete" msgid="110413335187193859">"Hapus"</string>
-    <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
+    <string name="english_ime_input_options" msgid="4262655277902459172">"Opsi masukan"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Cari nama kontak"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"Pemeriksa ejaan menggunakan entri dari daftar kontak Anda"</string>
+    <string name="vibrate_on_keypress" msgid="4198642474308147572">"Getar jika tombol ditekan"</string>
+    <string name="sound_on_keypress" msgid="961585885443836044">"Berbunyi jika tombol ditekan"</string>
+    <string name="popup_on_keypress" msgid="8957173605079893697">"Muncul saat tombol ditekan"</string>
+    <string name="settings_screen_preferences" msgid="2651344303433215540">"Preferensi"</string>
+    <string name="settings_screen_accounts" msgid="6532292577269658674">"Akun &amp; Privasi"</string>
+    <string name="settings_screen_appearance" msgid="5433429477750100471">"Tampilan &amp; Tata Letak"</string>
+    <string name="settings_screen_gesture" msgid="6549199069124022556">"Ketikan Gestur"</string>
+    <string name="settings_screen_correction" msgid="5457740749558200546">"Koreksi teks"</string>
+    <string name="settings_screen_advanced" msgid="2905347720063899478">"Lanjutan"</string>
+    <string name="settings_screen_theme" msgid="6744206826660778092">"Tema"</string>
+    <string name="enable_split_keyboard" msgid="7299522384075400050">"Aktifkan keyboard terpisah"</string>
+    <string name="cloud_sync_title" msgid="2648120016215337960">"Sinkronisasi Google Keyboard"</string>
+    <string name="cloud_sync_summary" msgid="457868413134165923">"Sinkronisasi diaktifkan"</string>
+    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Menyinkronkan kamus pribadi di perangkat"</string>
+    <string name="sync_now_title" msgid="8083126086065968727">"Sinkronkan sekarang"</string>
+    <string name="clear_sync_data_title" msgid="2871211805506563252">"Menghapus data awan"</string>
+    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Menghapus data yang disinkronkan dari Google"</string>
+    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Data yang disinkronkan akan dihapus dari awan. Anda yakin?"</string>
+    <string name="clear_sync_data_ok" msgid="1809712111627111859">"Hapus"</string>
+    <string name="cloud_sync_cancel" msgid="3437544314029636750">"Batal"</string>
+    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Kamus pribadi akan disinkronkan dan dicadangkan ke server Google. Informasi statistik tentang frekuensi kata dapat dikumpulkan untuk membantu menyempurnakan produk kami. Pengumpulan dan penggunaan data tunduk pada "<a href="https://www.google.com/policies/privacy">"Kebijakan Privasi Google"</a>"."</string>
+    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Tambahkan akun Google ke perangkat ini untuk mengaktifkan fitur ini"</string>
+    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Sinkronisasi tidak tersedia untuk perangkat yang memiliki akun Google Apps for Business"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Beralih ke metode masukan lain"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Tombol beralih bahasa juga mencakup metode masukan lain"</string>
+    <string name="show_language_switch_key" msgid="8756330695904259459">"Tombol pengalih bahasa"</string>
+    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Tampilkan saat beberapa bahasa masukan diaktifkan"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Jeda tutup pop-up utama"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Tanpa penundaan"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"Default"</string>
+    <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> md"</string>
+    <string name="settings_system_default" msgid="677003402757146199">"Default sistem"</string>
+    <string name="use_contacts_dict" msgid="1625971825786907643">"Sarankan nama Kontak"</string>
+    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Menggunakan nama dari Kontak untuk saran dan koreksi"</string>
+    <string name="use_personalized_dicts" msgid="7400413665774169711">"Saran hasil personalisasi"</string>
+    <string name="enable_metrics_logging" msgid="5113593293708535701">"Tingkatkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="use_double_space_period" msgid="7172135098923900609">"Titik spasi ganda"</string>
+    <string name="use_double_space_period_summary" msgid="7812112507596640969">"Mengetuk tombol spasi dua kali akan memasukkan titik diikuti satu spasi"</string>
+    <string name="auto_cap" msgid="525628419128036324">"Kapitalisasi otomatis"</string>
+    <string name="auto_cap_summary" msgid="1688974089712873396">"Kapitalisasi kata pertama di setiap kalimat"</string>
+    <string name="edit_personal_dictionary" msgid="7587143150525708396">"Kamus pribadi"</string>
+    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Kamus pengaya"</string>
+    <string name="main_dictionary" msgid="3935990491324466154">"Kamus utama"</string>
+    <string name="prefs_show_suggestions" msgid="1283142612397683159">"Tampilkan saran koreksi"</string>
+    <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Tampilkan kata yang disarankan ketika mengetik"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Blokir kata tak pantas"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Jangan sarankan kata yang berpotensi menyinggung"</string>
+    <string name="auto_correction" msgid="4585482324756913868">"Koreksi otomatis"</string>
+    <string name="auto_correction_summary" msgid="2460455056470633907">"Bilah spasi dan tanda baca secara otomatis dikoreksi pada kata yang salah ketik"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"Mati"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"Sederhana"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Agresif"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Sangat agresif"</string>
+    <string name="bigram_prediction" msgid="3973898748907276589">"Saran kata berikutnya"</string>
+    <string name="bigram_prediction_summary" msgid="9119170359306430265">"Gunakan kata sebelumnya dalam membuat saran"</string>
+    <string name="gesture_input" msgid="3172130834412003008">"Aktifkan pengetikan gestur"</string>
+    <string name="gesture_input_summary" msgid="2654809358251269108">"Masukkan kata dengan menggeser huruf ke kanan/kiri"</string>
+    <string name="gesture_preview_trail" msgid="1614914802819472106">"Tampilkan jejak gestur"</string>
+    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Pratinjau mengambang dinamis"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Lihat kata yang disarankan saat melakukan isyarat"</string>
+    <string name="gesture_space_aware" msgid="7169910298165673388">"Gesture frasa"</string>
+    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"Masukkan spasi dalam isyarat dengan meluncur ke tombol spasi"</string>
+    <string name="voice_input" msgid="7725046107052037926">"Tombol masukan suara"</string>
+    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Tidak ada metode masukan suara yang diaktifkan. Periksa setelan Bahasan &amp; masukan."</string>
+    <string name="configure_input_method" msgid="4444925520298518217">"Konfigurasikan metode masukan"</string>
+    <string name="language_selection_title" msgid="6121948605923246957">"Bahasa"</string>
+    <string name="help_and_feedback" msgid="5021534846181310255">"Bantuan &amp; masukan"</string>
+    <string name="select_language" msgid="3379792010205373078">"Bahasa"</string>
+    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Ketuk sekali lagi untuk menyimpan"</string>
+    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Ketuk di sini untuk menyimpan"</string>
+    <string name="has_dictionary" msgid="1325233223608273869">"Kamus yang tersedia"</string>
+    <string name="keyboard_layout" msgid="1709024226955326813">"Tema keyboard"</string>
+    <string name="switch_accounts" msgid="1213242182459397913">"Beralih akun"</string>
+    <string name="no_accounts_selected" msgid="5770301395973322552">"Tidak ada akun yang dipilih"</string>
+    <string name="account_selected" msgid="2929764293361296224">"Saat ini menggunakan <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="account_select_ok" msgid="2319402914890345072">"Oke"</string>
+    <string name="account_select_cancel" msgid="8877103220502603643">"Batal"</string>
+    <string name="account_select_sign_out" msgid="9208156165797411519">"Keluar"</string>
+    <string name="account_select_title" msgid="5355659391942386459">"Pilih akun yang akan digunakan"</string>
+    <string name="subtype_en_GB" msgid="7923165641611861624">"Inggris (Inggris)"</string>
+    <string name="subtype_en_US" msgid="5477258985573018813">"Inggris (AS)"</string>
+    <string name="subtype_es_US" msgid="3224986579031001684">"Spanyol (AS)"</string>
+    <string name="subtype_hi_ZZ" msgid="5025145456877877595">"Hinglish"</string>
+    <string name="subtype_sr_ZZ" msgid="440245129648071485">"Serbia (Latin)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="4220344684463778660">"(<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>) Inggris (Inggris)"</string>
+    <string name="subtype_with_layout_en_US" msgid="4599421650961912769">"(<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>) Inggris (AS)"</string>
+    <string name="subtype_with_layout_es_US" msgid="6866331205974243592">"(<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>) Spanyol (AS)"</string>
+    <string name="subtype_with_layout_hi_ZZ" msgid="5439623653083985558">"Hinglish (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_sr_ZZ" msgid="546465971819327060">"Serbia (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_generic_traditional" msgid="5321023815277210849">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Tradisional)"</string>
+    <string name="subtype_generic_compact" msgid="2858514299576793292">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Rapat)"</string>
+    <string name="subtype_no_language" msgid="3126489367892967889">"Tidak ada bahasa (Abjad)"</string>
+    <string name="subtype_no_language_qwerty" msgid="4388578258275303241">"Abjad (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="1483779599796051141">"Abjad (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="5336702044048354922">"Abjad (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1251504275835405915">"Abjad (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4216315736099391894">"Abjad (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"Abjad (PC)"</string>
+    <string name="subtype_emoji" msgid="3021958791567267290">"Emoji"</string>
+    <string name="keyboard_theme" msgid="6760202984936877690">"Tema keyboard"</string>
+    <string name="custom_input_styles_title" msgid="4825941816075899639">"Gaya masukan khusus"</string>
+    <string name="add_style" msgid="8304208538938230889">"Tambah gaya"</string>
+    <string name="add" msgid="6822705504410731743">"Tambahkan"</string>
+    <string name="remove" msgid="4473717811376496460">"Hapus"</string>
+    <string name="save" msgid="1396012053841537145">"Simpan"</string>
+    <string name="subtype_locale" msgid="705244739623031884">"Bahasa"</string>
+    <string name="keyboard_layout_set" msgid="1637617996906076019">"Tata Letak"</string>
+    <string name="custom_input_style_note_message" msgid="7172574301336711360">"Gaya masukan khusus harus aktif sebelum digunakan. Aktifkan?"</string>
+    <string name="enable" msgid="3465950915897490353">"Aktifkan"</string>
+    <string name="not_now" msgid="6385104011963838405">"Nanti saja"</string>
+    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Sudah ada gaya masukan yang sama: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Durasi getar saat tekan tombol"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Volume suara saat tekan tombol"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Penundaan tekan lama tombol"</string>
+    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Emoji untuk keyboard fisik"</string>
+    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"Tombol Alt fisik menampilkan palet emoji"</string>
+    <string name="button_default" msgid="4824983794085575316">"Default"</string>
+    <string name="setup_welcome_title" msgid="6678758294706106216">"Selamat datang di <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"dengan Ketikan Gestur"</string>
+    <string name="setup_start_action" msgid="4261815646635054773">"Memulai"</string>
+    <string name="setup_next_action" msgid="7388109452671117767">"Langkah berikutnya"</string>
+    <string name="setup_steps_title" msgid="750835620571733090">"Menyiapkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="7160930459489282227">"Aktifkan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="7576103876848322594">"Centang \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" di setelan Bahasa &amp; masukan. Tindakan ini akan mengizinkannya berjalan di perangkat Anda."</string>
+    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> telah diaktifkan di setelan Bahasa &amp; masukan Anda, jadi langkah ini sudah diselesaikan. Lanjut langkah selanjutnya!"</string>
+    <string name="setup_step1_action" msgid="6741430464134100280">"Aktifkan dalam Setelan"</string>
+    <string name="setup_step2_title" msgid="6087917340371885886">"Beralih ke <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step2_instruction" msgid="1656822854161841686">"Lalu, pilih \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" sebagai metode masukan teks aktif Anda."</string>
+    <string name="setup_step2_action" msgid="7850810726169586795">"Alihkan metode masukan"</string>
+    <string name="setup_step3_title" msgid="8037349177063816231">"Selamat, Anda sudah siap!"</string>
+    <string name="setup_step3_instruction" msgid="6738330437227290519">"Sekarang Anda dapat mengetik di semua aplikasi favorit Anda dengan <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_action" msgid="1049832326490515701">"Konfigurasikan bahasa tambahan"</string>
+    <string name="setup_finish_action" msgid="4208185697271120108">"Selesai"</string>
+    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"Tampilkan ikon aplikasi"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"Menampillkan ikon aplikasi di peluncur"</string>
+    <string name="app_name" msgid="1388609705083271907">"Penyedia Kamus"</string>
+    <string name="dictionary_provider_name" msgid="6344594004933902577">"Penyedia Kamus"</string>
+    <string name="dictionary_service_name" msgid="5820737302858072775">"Layanan Kamus"</string>
+    <string name="download_description" msgid="7667377256582305064">"Informasi pembaruan kamus"</string>
+    <string name="dictionary_settings_title" msgid="2110439717145834445">"Kamus pengaya"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Kamus yang tersedia"</string>
+    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Setelan untuk kamus"</string>
+    <string name="user_dictionaries" msgid="4261154182736972314">"Kamus pengguna"</string>
+    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Kamus pengguna"</string>
+    <string name="dictionary_available" msgid="1808541860747006757">"Kamus yang tersedia"</string>
+    <string name="dictionary_downloading" msgid="196314208594985478">"Saat ini sedang mendownload"</string>
+    <string name="dictionary_installed" msgid="7840532191933912708">"Terinstal"</string>
+    <string name="dictionary_disabled" msgid="3991458948275777795">"Terinstal, dinonaktifkan"</string>
+    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Problem koneksi kamus"</string>
+    <string name="no_dictionaries_available" msgid="4187305901152592110">"Tidak tersedia kamus"</string>
+    <string name="check_for_updates_now" msgid="5375846376242975290">"Segarkan"</string>
+    <string name="last_update" msgid="2377094521844654156">"Terakhir diperbarui"</string>
+    <string name="message_updating" msgid="7158989361989504143">"Memeriksa pembaruan"</string>
+    <string name="message_loading" msgid="9151934303930222809">"Memuat…"</string>
+    <string name="main_dict_description" msgid="695289288722079926">"Kamus utama"</string>
+    <string name="cancel" msgid="5611033781118852820">"Batal"</string>
+    <string name="go_to_settings" msgid="3019191145506686424">"Setelan"</string>
+    <string name="install_dict" msgid="8963966683066463555">"Instal"</string>
+    <string name="cancel_download_dict" msgid="8877923127773611502">"Batal"</string>
+    <string name="delete_dict" msgid="293286833341025636">"Hapus"</string>
+    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"Bahasa yang dipilih di perangkat seluler memiliki kamus.&lt;br/&gt; Sebaiknya &lt;b&gt;download&lt;/b&gt; kamus <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> untuk menyempurnakan pengalaman mengetik.&lt;br/&gt; &lt;br/&gt; Download memerlukan waktu satu atau dua menit melalui 3G. Tagihan mungkin berlaku jika Anda tidak menggunakan &lt;b&gt;paket data tak terbatas&lt;/b&gt;.&lt;br/&gt; Jika Anda tidak yakin paket data mana yang digunakan, sebaiknya cari sambungan Wi-Fi untuk memulai download secara otomatis.&lt;br/&gt; &lt;br/&gt; Kiat: Anda dapat mendownload dan menghapus kamus dengan membuka &lt;b&gt;Bahasa &amp; masukan&lt;/b&gt; di menu &lt;b&gt;Setelan&lt;/b&gt; pada perangkat seluler."</string>
+    <string name="download_over_metered" msgid="4261625913263960556">"Download sekarang (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
+    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Download melalui Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="4601321236641174590">"Kamus tersedia untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="5360056805680595057">"Tekan untuk meninjau dan mendownload"</string>
+    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"Mendownload: saran untuk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> akan segera tersedia."</string>
+    <string name="version_text" msgid="3213200439763585436">"Versi <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Tambahkan"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Tambahkan ke kamus"</string>
+    <string name="user_dict_settings_add_screen_title" msgid="3777988967870363317">"Frasa"</string>
+    <string name="user_dict_settings_add_dialog_more_options" msgid="7886545237005649111">"Opsi lainnya"</string>
+    <string name="user_dict_settings_add_dialog_less_options" msgid="8979202725719736727">"Sedikit opsi"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="3186677423073299487">"Oke"</string>
+    <string name="user_dict_settings_add_word_option_name" msgid="3496247524233890907">"Kata:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="7359967823612428231">"Pintasan:"</string>
+    <string name="user_dict_settings_add_locale_option_name" msgid="4267453866893832123">"Bahasa:"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4186108932162183595">"Ketik kata"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="7429655828828922094">"Pintasan opsional"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="2496847143207331651">"Edit kata"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="7274461666869894342">"Edit"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="2615595304309771624">"Hapus"</string>
+    <string name="user_dict_settings_empty_text" msgid="2730443669360549945">"Tidak ada kata-kata dalam kamus pengguna. Untuk menambahkan kata, ketuk Tambahkan (+)."</string>
+    <string name="user_dict_settings_all_languages" msgid="4423377540643689186">"Untuk semua bahasa"</string>
+    <string name="user_dict_settings_more_languages" msgid="4436784162689712198">"Bahasa lainnya..."</string>
+    <string name="user_dict_settings_delete" msgid="7688033506773806537">"Hapus"</string>
+    <string name="user_dict_fast_scroll_alphabet" msgid="6814045626833403178">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>
