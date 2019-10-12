@@ -20,8 +20,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="5940510615957428904">"Android कीबोर्ड (AOSP)"</string>
-    <string name="spell_checker_service_name" msgid="1254221805440242662">"Android स्पेलिंग जाँचने वाली सेवा (AOSP)"</string>
-    <string name="english_ime_settings" msgid="5760361067176802794">"Android कीबोर्ड सेटिंग (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="6123949487832861885">"Android स्पेलिंग जाँचने वाली सेवा के लिए सेटिंग (AOSP)"</string>
+    <string name="english_ime_name" msgid="4475547506953371028">"Android कीबोर्ड (AOSP)"</string>
+    <string name="spell_checker_service_name" msgid="7417621022652876777">"Android स्पेलिंग जाँचने वाली सेवा (AOSP)"</string>
+    <string name="english_ime_settings" msgid="1497566567404939275">"Android कीबोर्ड सेटिंग (AOSP)"</string>
+    <string name="android_spell_checker_settings" msgid="2821003654878860820">"Android स्पेलिंग जाँचने वाली सेवा के लिए सेटिंग (AOSP)"</string>
 </resources>
