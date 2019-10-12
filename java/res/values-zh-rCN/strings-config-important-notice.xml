@@ -20,5 +20,5 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="use_personalized_dicts_summary" msgid="590432261305469627">"根据您的通信记录和以往输入的数据来完善建议"</string>
+    <string name="use_personalized_dicts_summary" msgid="1940820612730039915">"根据您的通信记录和以往输入的数据来完善建议"</string>
 </resources>
