@@ -60,7 +60,7 @@
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Sugestões personalizadas"</string>
     <string name="enable_metrics_logging" msgid="5506372337118822837">"Melhorar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Duplo espaço para ponto"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Toque duplo na barra de espaço insere um ponto seguido de espaço"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tocar duas vezes na barra de espaço insere um ponto seguido de espaço"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Capitalização automática"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Iniciar a primeira palavra de cada frase com letra maiúscula"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dicionário pessoal"</string>
@@ -79,7 +79,7 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Sugerir palavra seguinte"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar a palavra anterior ao fazer sugestões"</string>
     <string name="gesture_input" msgid="826951152254563827">"Ativar a escrita com gestos"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Insere uma palavra deslizando os dedos pelas letras"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Inserir uma palavra deslizando os dedos pelas letras"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar percurso do gesto"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Previsão dinâmica flutuante"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Ver a palavra sugerida ao usar gestos"</string>
