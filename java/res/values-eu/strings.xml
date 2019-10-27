@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="1809712111627111859">"Ezabatu"</string>
     <string name="cloud_sync_cancel" msgid="3437544314029636750">"Utzi"</string>
     <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Hiztegi pertsonalizatua sinkronizatu egingo da eta Google-ren zerbitzarietan gordeko da babeskopia gisa. Hitzak erabiltzeko maiztasunari buruzko estatistikak bil daitezke produktuak hobetzen laguntzeko. Informazioaren bilketak eta erabilerak "<a href="https://www.google.com/policies/privacy">"Google-ren Pribatutasun-gidalerroak"</a>" gordeko ditu une oro."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Eginbidea gaitzeko, gehitu Google kontua gailuan"</string>
+    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Eginbidea gaitzeko, gehitu Google-ko kontua gailuan"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Sinkronizazioa ez dago erabilgarri Google Apps for Business kontuak dituzten gailuetan"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Aldatu idazketa-metodoa"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Hizkuntza aldatzeko teklak beste idazketa-metodoetarako ere balio du"</string>
