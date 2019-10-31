@@ -147,7 +147,7 @@
     <string name="setup_steps_title" msgid="750835620571733090">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> konfiguratzen"</string>
     <string name="setup_step1_title" msgid="7160930459489282227">"Gaitu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="7576103876848322594">"Hautatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> Hizkuntza eta idazketa ataleko ezarpenetan. Horrek gailuan abiaraztea baimenduko dio."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> gaituta duzu Hizkuntza eta idazketa ataleko ezarpenetan; beraz, urratsa eginda dago. Ekin hurrengoari!"</string>
+    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> gaituta daukazu Hizkuntza eta idazketa ataleko ezarpenetan; beraz, urratsa eginda dago. Ekin hurrengoari!"</string>
     <string name="setup_step1_action" msgid="6741430464134100280">"Gaitu Ezarpenak atalean"</string>
     <string name="setup_step2_title" msgid="6087917340371885886">"Aldatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> aplikaziora"</string>
     <string name="setup_step2_instruction" msgid="1656822854161841686">"Ondoren, hautatu \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" idazketa-metodo aktibo gisa."</string>
