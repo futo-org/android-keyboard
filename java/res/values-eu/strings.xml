@@ -44,7 +44,7 @@
     <string name="clear_sync_data_ok" msgid="1809712111627111859">"Ezabatu"</string>
     <string name="cloud_sync_cancel" msgid="3437544314029636750">"Utzi"</string>
     <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Hiztegi pertsonalizatua sinkronizatu egingo da eta Google-ren zerbitzarietan gordeko da babeskopia gisa. Hitzak erabiltzeko maiztasunari buruzko estatistikak bil daitezke produktuak hobetzen laguntzeko. Informazioaren bilketak eta erabilerak "<a href="https://www.google.com/policies/privacy">"Google-ren Pribatutasun-gidalerroak"</a>" gordeko ditu une oro."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Eginbidea gaitzeko, gehitu Google kontua gailuan"</string>
+    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Eginbidea gaitzeko, gehitu Google-ko kontua gailuan"</string>
     <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Sinkronizazioa ez dago erabilgarri Google Apps for Business kontuak dituzten gailuetan"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Aldatu idazketa-metodoa"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Hizkuntza aldatzeko teklak beste idazketa-metodoetarako ere balio du"</string>
@@ -147,7 +147,7 @@
     <string name="setup_steps_title" msgid="750835620571733090">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> konfiguratzen"</string>
     <string name="setup_step1_title" msgid="7160930459489282227">"Gaitu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="7576103876848322594">"Hautatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> Hizkuntza eta idazketa ataleko ezarpenetan. Horrek gailuan abiaraztea baimenduko dio."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> gaituta duzu Hizkuntza eta idazketa ataleko ezarpenetan; beraz, urratsa eginda dago. Ekin hurrengoari!"</string>
+    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> gaituta daukazu Hizkuntza eta idazketa ataleko ezarpenetan; beraz, urratsa eginda dago. Ekin hurrengoari!"</string>
     <string name="setup_step1_action" msgid="6741430464134100280">"Gaitu Ezarpenak atalean"</string>
     <string name="setup_step2_title" msgid="6087917340371885886">"Aldatu <xliff:g id="APPLICATION_NAME">%s</xliff:g> aplikaziora"</string>
     <string name="setup_step2_instruction" msgid="1656822854161841686">"Ondoren, hautatu \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" idazketa-metodo aktibo gisa."</string>

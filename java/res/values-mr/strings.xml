@@ -64,7 +64,7 @@
     <string name="auto_cap" msgid="525628419128036324">"स्‍वयं-कॅपिटलायझेशन"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"प्रत्येक वाक्याचा पहिला शब्द कॅपिटल करा"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"वैयक्तिक शब्दकोश"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"अॅड-ऑन शब्दकोश"</string>
+    <string name="configure_dictionaries_title" msgid="7811017701961083395">"ॲड-ऑन शब्दकोश"</string>
     <string name="main_dictionary" msgid="3935990491324466154">"मु्ख्य शब्दकोश"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"सुधारणा सूचना दर्शवा"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"टाइप करताना सुचविलेले शब्द प्रदर्शित करा"</string>
@@ -153,16 +153,16 @@
     <string name="setup_step2_instruction" msgid="1656822854161841686">"पुढे, तुमची सक्रिय मजकूर-इनपुट पद्धत म्हणून \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" निवडा."</string>
     <string name="setup_step2_action" msgid="7850810726169586795">"इनपुट पद्धती स्विच करा"</string>
     <string name="setup_step3_title" msgid="8037349177063816231">"अभिनंदन, आता तुम्ही तयार आहात!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"आता तुम्ही <xliff:g id="APPLICATION_NAME">%s</xliff:g> सह आपल्या सर्व आवडत्या अॅप्समध्ये टाइप करू शकता."</string>
+    <string name="setup_step3_instruction" msgid="6738330437227290519">"आता तुम्ही <xliff:g id="APPLICATION_NAME">%s</xliff:g> सह आपल्या सर्व आवडत्या ॲप्समध्ये टाइप करू शकता."</string>
     <string name="setup_step3_action" msgid="1049832326490515701">"अतिरिक्त भाषा कॉन्फिगर करा"</string>
     <string name="setup_finish_action" msgid="4208185697271120108">"समाप्त"</string>
     <string name="show_setup_wizard_icon" msgid="2985876024078390815">"अ‍ॅप आयकन दर्शवा"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"लाँचर मध्ये अॅप्लिकेशन आयकन दाखवा"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"लाँचर मध्ये ॲप्लिकेशन आयकन दाखवा"</string>
     <string name="app_name" msgid="1388609705083271907">"शब्दकोश प्रदाता"</string>
     <string name="dictionary_provider_name" msgid="6344594004933902577">"शब्दकोश प्रदाता"</string>
     <string name="dictionary_service_name" msgid="5820737302858072775">"शब्दकोश सेवा"</string>
     <string name="download_description" msgid="7667377256582305064">"डिक्शनरी अपडेट माहिती"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"अॅड-ऑन शब्दकोश"</string>
+    <string name="dictionary_settings_title" msgid="2110439717145834445">"ॲड-ऑन शब्दकोश"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"शब्दकोश उपलब्ध"</string>
     <string name="dictionary_settings_summary" msgid="4592894717259325402">"शब्दकोशांसाठी सेटिंग्ज"</string>
     <string name="user_dictionaries" msgid="4261154182736972314">"वापरकर्ता शब्दकोश"</string>
@@ -183,7 +183,7 @@
     <string name="install_dict" msgid="8963966683066463555">"स्‍थापित करा"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"रद्द करा"</string>
     <string name="delete_dict" msgid="293286833341025636">"हटवा"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"तुमच्या मोबाइल डिव्हाइस वर निवडलेल्या भाषेमध्ये उपलब्ध असलेली डिक्शनरी आहे.&lt;br/&gt; तुमचा टायपिंग अनुभव सुधारण्यासाठी आम्ही <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> डिक्शनरी &lt;b&gt;डाउनलोड&lt;/b&gt; करण्याची शिफारस करतो.&lt;br/&gt; &lt;br/&gt; 3G वरून डाउनलोड होण्यास एक किंवा दोन मिनिटे लागू शकतात. तुमच्याकडे &lt;b&gt;अमर्याद डेटा योजना&lt;/b&gt;.&lt;br/&gt; नसल्यास शुल्क लागू शकते. तुमच्याकडे कोणती डेटा योजना आहे त्याबद्दल खात्री नसल्यास, डाउनलोड करण्यास अापोआप सुरूवात करण्यासाठी वाय-फाय कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टीप: तुम्ही तुमच्या मोबाइल डिव्हाइस च्या <b>सेटिंग्ज</b> मेनू मधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन डिक्शनरी डाउनलोड करू शकता आणि ते काढू शकता."</string>
+    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"तुमच्या मोबाइल डिव्हाइस वर निवडलेल्या भाषेमध्ये उपलब्ध असलेली डिक्शनरी आहे.&lt;br/&gt; तुमचा टायपिंग अनुभव सुधारण्यासाठी आम्ही <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> डिक्शनरी &lt;b&gt;डाउनलोड&lt;/b&gt; करण्याची शिफारस करतो.&lt;br/&gt; &lt;br/&gt; 3G वरून डाउनलोड होण्यास एक किंवा दोन मिनिटे लागू शकतात. तुमच्याकडे &lt;b&gt;अमर्याद डेटा योजना&lt;/b&gt;.&lt;br/&gt; नसल्यास शुल्क लागू शकते. तुमच्याकडे कोणती डेटा योजना आहे त्याबद्दल खात्री नसल्यास, डाउनलोड करण्यास आपोआप सुरूवात करण्यासाठी वाय-फाय कनेक्शन शोधण्याची शिफारस आम्ही करतो.&lt;br/&gt; &lt;br/&gt; टीप: तुम्ही तुमच्या मोबाइल डिव्हाइस च्या <b>सेटिंग्ज</b> मेनू मधील &lt;b&gt;भाषा आणि इनपुट&lt;/b&gt; वर जाऊन डिक्शनरी डाउनलोड करू शकता आणि ते काढू शकता."</string>
     <string name="download_over_metered" msgid="4261625913263960556">"आता डाउनलोड करा (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="3581560726170361477">"वाय-फाय वर डाउनलोड करा"</string>
     <string name="dict_available_notification_title" msgid="4601321236641174590">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> साठी शब्दकोश उपलब्ध आहे"</string>
