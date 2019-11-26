@@ -30,11 +30,55 @@
     <!-- U+03C8: "ψ" GREEK SMALL LETTER PSI -->
     <Key
         latin:keySpec="&#x03C8;" />
-    <!-- U+03C9: "ω" GREEK SMALL LETTER OMEGA
-         U+03CE: "ώ" GREEK SMALL LETTER OMEGA WITH TONOS -->
-    <Key
-        latin:keySpec="&#x03C9;"
-        latin:moreKeys="&#x03CE;" />
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <!-- U+03A9: "Ω" GREEK CAPITAL LETTER OMEGA
+                 U+038F: "Ώ" GREEK CAPITAL LETTER OMEGA WITH TONOS
+                 U+1FFA: "Ὼ" GREEK CAPITAL LETTER OMEGA WITH VARIA
+                 U+1F68: "Ὠ" GREEK CAPITAL LETTER OMEGA WITH PSILI
+                 U+1F69: "Ὡ" GREEK CAPITAL LETTER OMEGA WITH DASIA
+                 U+1F6C: "Ὤ" GREEK CAPITAL LETTER OMEGA WITH PSILI AND OXIA
+                 U+1F6D: "Ὥ" GREEK CAPITAL LETTER OMEGA WITH DASIA AND OXIA
+                 U+1F6A: "Ὢ" GREEK CAPITAL LETTER OMEGA WITH PSILI AND VARIA
+                 U+1F6B: "Ὣ" GREEK CAPITAL LETTER OMEGA WITH DASIA AND VARIA
+                 U+1F6E: "Ὦ" GREEK CAPITAL LETTER OMEGA WITH PSILI AND PERISPOMENI
+                 U+1F6F: "Ὧ" GREEK CAPITAL LETTER OMEGA WITH DASIA AND PERISPOMENI -->
+            <Key
+                latin:keySpec="&#x03C9;"
+                latin:moreKeys="&#x038F;,&#x1FFA;,&#x1F68;,&#x1F69;,&#x1F6C;,&#x1F6D;,&#x1F6A;,&#x1F6B;,&#x1F6E;,&#x1F6F;" />
+        </case>
+        <default>
+            <!-- U+03C9: "ω" GREEK SMALL LETTER OMEGA
+                 U+03CE: "ώ" GREEK SMALL LETTER OMEGA WITH TONOS
+                 U+1F7C: "ὼ" GREEK SMALL LETTER OMEGA WITH VARIA
+                 U+1FF6: "ῶ" GREEK SMALL LETTER OMEGA WITH PERISPOMENI
+                 U+1F60: "ὠ" GREEK SMALL LETTER OMEGA WITH PSILI
+                 U+1F61: "ὡ" GREEK SMALL LETTER OMEGA WITH DASIA
+                 U+1F64: "ὤ" GREEK SMALL LETTER OMEGA WITH PSILI AND OXIA
+                 U+1F65: "ὥ" GREEK SMALL LETTER OMEGA WITH DASIA AND OXIA
+                 U+1F62: "ὢ" GREEK SMALL LETTER OMEGA WITH PSILI AND VARIA
+                 U+1F63: "ὣ" GREEK SMALL LETTER OMEGA WITH DASIA AND VARIA
+                 U+1F66: "ὦ" GREEK SMALL LETTER OMEGA WITH PSILI AND PERISPOMENI
+                 U+1F67: "ὧ" GREEK SMALL LETTER OMEGA WITH DASIA AND PERISPOMENI
+                 U+1FF3: "ῳ" GREEK SMALL LETTER OMEGA WITH YPOGEGRAMMENI
+                 U+1FF4: "ῴ" GREEK SMALL LETTER OMEGA WITH OXIA AND YPOGEGRAMMENI
+                 U+1FF2: "ῲ" GREEK SMALL LETTER OMEGA WITH VARIA AND YPOGEGRAMMENI
+                 U+1FF7: "ῷ" GREEK SMALL LETTER OMEGA WITH PERISPOMENI AND YPOGEGRAMMENI
+                 U+1FA0: "ᾠ" GREEK SMALL LETTER OMEGA WITH PSILI AND YPOGEGRAMMENI
+                 U+1FA1: "ᾡ" GREEK SMALL LETTER OMEGA WITH DASIA AND YPOGEGRAMMENI
+                 U+1FA4: "ᾤ" GREEK SMALL LETTER OMEGA WITH PSILI AND OXIA AND YPOGEGRAMMENI
+                 U+1FA5: "ᾥ" GREEK SMALL LETTER OMEGA WITH DASIA AND OXIA AND YPOGEGRAMMENI
+                 U+1FA2: "ᾢ" GREEK SMALL LETTER OMEGA WITH PSILI AND VARIA AND YPOGEGRAMMENI
+                 U+1FA3: "ᾣ" GREEK SMALL LETTER OMEGA WITH DASIA AND VARIA AND YPOGEGRAMMENI
+                 U+1FA6: "ᾦ" GREEK SMALL LETTER OMEGA WITH PSILI AND PERISPOMENI AND YPOGEGRAMMENI
+                 U+1FA7: "ᾧ" GREEK SMALL LETTER OMEGA WITH DASIA AND PERISPOMENI AND YPOGEGRAMMENI -->
+            <Key
+                latin:keySpec="&#x03C9;"
+                latin:moreKeys="&#x03CE;,&#x1F7C;,&#x1FF6;,&#x1F60;,&#x1F61;,&#x1F64;,&#x1F65;,&#x1F62;,&#x1F63;,&#x1F66;,&#x1F67;,&#x1FF3;,&#x1FF4;,&#x1FF2;,&#x1FF7;,&#x1FA0;,&#x1FA1;,&#x1FA4;,&#x1FA5;,&#x1FA2;,&#x1FA3;,&#x1FA6;,&#x1FA7;" />
+        </default>
+    </switch>
     <!-- U+03B2: "β" GREEK SMALL LETTER BETA -->
     <Key
         latin:keySpec="&#x03B2;" />
