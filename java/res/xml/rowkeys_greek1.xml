@@ -28,14 +28,14 @@
             <Key
                 latin:keySpec=":"
                 latin:keyHintLabel="1"
-                latin:moreKeys=";"
+                latin:moreKeys=";,&#x00B7;"
                 latin:additionalMoreKeys="1" />
         </case>
         <default>
             <Key
                 latin:keySpec=";"
                 latin:keyHintLabel="1"
-                latin:moreKeys=":"
+                latin:moreKeys=":,&#x00B7;"
                 latin:additionalMoreKeys="1" />
         </default>
     </switch>
@@ -64,17 +64,26 @@
     </switch>
         -->
     <!-- U+03B5: "ε" GREEK SMALL LETTER EPSILON
-         U+03AD: "έ" GREEK SMALL LETTER EPSILON WITH TONOS -->
+         U+03AD: "έ" GREEK SMALL LETTER EPSILON WITH TONOS
+         U+1F72: "ὲ" GREEK SMALL LETTER EPSILON WITH VARIA
+         U+1F10: "ἐ" GREEK SMALL LETTER EPSILON WITH PSILI
+         U+1F11: "ἑ" GREEK SMALL LETTER EPSILON WITH DASIA
+         U+1F14: "ἔ" GREEK SMALL LETTER EPSILON WITH PSILI AND OXIA
+         U+1F15: "ἕ" GREEK SMALL LETTER EPSILON WITH DASIA AND OXIA
+         U+1F12: "ἒ" GREEK SMALL LETTER EPSILON WITH PSILI AND VARIA
+         U+1F13: "ἓ" GREEK SMALL LETTER EPSILON WITH DASIA AND VARIA -->
     <Key
         latin:keySpec="&#x03B5;"
         latin:keyHintLabel="3"
         latin:additionalMoreKeys="3"
-        latin:moreKeys="&#x03AD;,%" />
-    <!-- U+03C1: "ρ" GREEK SMALL LETTER RHO -->
+        latin:moreKeys="&#x03AD;,%,&#x1F72;,&#x1F10;,&#x1F11;,&#x1F14;,&#x1F15;,&#x1F12;,&#x1F13;" />
+    <!-- U+03C1: "ρ" GREEK SMALL LETTER RHO
+         U+1FE5: "ῥ" GREEK SMALL LETTER RHO WITH DASIA -->
     <Key
         latin:keySpec="&#x03C1;"
         latin:keyHintLabel="4"
-        latin:additionalMoreKeys="4" />
+        latin:additionalMoreKeys="4"
+        latin:moreKeys="%,&#x1FE5;" />
     <!-- U+03C4: "τ" GREEK SMALL LETTER TAU -->
     <Key
         latin:keySpec="&#x03C4;"
@@ -83,12 +92,24 @@
     <!-- U+03C5: "υ" GREEK SMALL LETTER UPSILON
          U+03CD: "ύ" GREEK SMALL LETTER UPSILON WITH TONOS
          U+03CB: "ϋ" GREEK SMALL LETTER UPSILON WITH DIALYTIKA
-         U+03B0: "ΰ" GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS -->
+         U+03B0: "ΰ" GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS
+         U+1F7A: "ὺ" GREEK SMALL LETTER UPSILON WITH VARIA
+         U+1FE6: "ῦ" GREEK SMALL LETTER UPSILON WITH PERISPOMENI
+         U+1F50: "ὐ" GREEK SMALL LETTER UPSILON WITH PSILI
+         U+1F51: "ὑ" GREEK SMALL LETTER UPSILON WITH DASIA
+         U+1F54: "ὔ" GREEK SMALL LETTER UPSILON WITH PSILI AND OXIA
+         U+1F55: "ὕ" GREEK SMALL LETTER UPSILON WITH DASIA AND OXIA
+         U+1F52: "ὒ" GREEK SMALL LETTER UPSILON WITH PSILI AND VARIA
+         U+1F53: "ὓ" GREEK SMALL LETTER UPSILON WITH DASIA AND VARIA
+         U+1F56: "ὖ" GREEK SMALL LETTER UPSILON WITH PSILI AND PERISPOMENI
+         U+1F57: "ὗ" GREEK SMALL LETTER UPSILON WITH DASIA AND PERISPOMENI
+         U+1FE2: "ῢ" GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND VARIA
+         U+1FE7: "ῧ" GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND PERISPOMENI -->
     <Key
         latin:keySpec="&#x03C5;"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6"
-        latin:moreKeys="&#x03CD;,%,&#x03CB;,&#x03B0;" />
+        latin:moreKeys="&#x03CD;,%,&#x03CB;,&#x03B0;,&#x1F7A;,&#x1FE6;,&#x1F50;,&#x1F51;,&#x1F54;,&#x1F55;,&#x1F52;,&#x1F53;,&#x1F56;,&#x1F57;,&#x1FE2;,&#x1FE7;" />
     <!-- U+03B8: "θ" GREEK SMALL LETTER THETA -->
     <Key
         latin:keySpec="&#x03B8;"
@@ -97,19 +118,38 @@
     <!-- U+03B9: "ι" GREEK SMALL LETTER IOTA
          U+03AF: "ί" GREEK SMALL LETTER IOTA WITH TONOS
          U+03CA: "ϊ" GREEK SMALL LETTER IOTA WITH DIALYTIKA
-         U+0390: "ΐ" GREEK SMALL LETTER IOTA WITH DIALYTIKA AND TONOS -->
+         U+0390: "ΐ" GREEK SMALL LETTER IOTA WITH DIALYTIKA AND TONOS
+         U+1F76: "ὶ" GREEK SMALL LETTER IOTA WITH VARIA
+         U+1FD6: "ῖ" GREEK SMALL LETTER IOTA WITH PERISPOMENI
+         U+1F30: "ἰ" GREEK SMALL LETTER IOTA WITH PSILI
+         U+1F31: "ἱ" GREEK SMALL LETTER IOTA WITH DASIA
+         U+1F34: "ἴ" GREEK SMALL LETTER IOTA WITH PSILI AND OXIA
+         U+1F35: "ἵ" GREEK SMALL LETTER IOTA WITH DASIA AND OXIA
+         U+1F32: "ἲ" GREEK SMALL LETTER IOTA WITH PSILI AND VARIA
+         U+1F33: "ἳ" GREEK SMALL LETTER IOTA WITH DASIA AND VARIA
+         U+1F36: "ἶ" GREEK SMALL LETTER IOTA WITH PSILI AND PERISPOMENI
+         U+1F37: "ἷ" GREEK SMALL LETTER IOTA WITH DASIA AND PERISPOMENI
+         U+1FD2: "ῒ" GREEK SMALL LETTER IOTA WITH DIALYTIKA AND VARIA
+         U+1FD7: "ῗ" GREEK SMALL LETTER IOTA WITH DIALYTIKA AND PERISPOMENI -->
     <Key
         latin:keySpec="&#x03B9;"
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8"
-        latin:moreKeys="&#x03AF;,%,&#x03CA;,&#x0390;" />
+        latin:moreKeys="&#x03AF;,%,&#x03CA;,&#x0390;,&#x1F76;,&#x1FD6;,&#x1F30;,&#x1F31;,&#x1F34;,&#x1F35;,&#x1F32;,&#x1F33;,&#x1F36;,&#x1F37;,&#x1FD2;,&#x1FD7;" />
     <!-- U+03BF: "ο" GREEK SMALL LETTER OMICRON
-         U+03CC: "ό" GREEK SMALL LETTER OMICRON WITH TONOS -->
+         U+03CC: "ό" GREEK SMALL LETTER OMICRON WITH TONOS
+         U+1F78: "ὸ" GREEK SMALL LETTER OMICRON WITH VARIA
+         U+1F40: "ὀ" GREEK SMALL LETTER OMICRON WITH PSILI
+         U+1F41: "ὁ" GREEK SMALL LETTER OMICRON WITH DASIA
+         U+1F44: "ὄ" GREEK SMALL LETTER OMICRON WITH PSILI AND OXIA
+         U+1F45: "ὅ" GREEK SMALL LETTER OMICRON WITH DASIA AND OXIA
+         U+1F42: "ὂ" GREEK SMALL LETTER OMICRON WITH PSILI AND VARIA
+         U+1F43: "ὃ" GREEK SMALL LETTER OMICRON WITH DASIA AND VARIA -->
     <Key
         latin:keySpec="&#x03BF;"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9"
-        latin:moreKeys="&#x03CC;,%" />
+        latin:moreKeys="&#x03CC;,%,&#x1F78;,&#x1F40;,&#x1F41;,&#x1F44;,&#x1F45;,&#x1F42;,&#x1F43;" />
     <!-- U+03C0: "π" GREEK SMALL LETTER PI -->
     <Key
         latin:keySpec="&#x03C0;"
