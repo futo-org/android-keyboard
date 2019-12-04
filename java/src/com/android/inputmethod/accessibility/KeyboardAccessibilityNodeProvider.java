@@ -236,6 +236,7 @@ final class KeyboardAccessibilityNodeProvider<KV extends KeyboardView>
         // Obtain and initialize an AccessibilityNodeInfo with information about the virtual view.
         final AccessibilityNodeInfoCompat info = AccessibilityNodeInfoCompat.obtain();
         info.setPackageName(mKeyboardView.getContext().getPackageName());
+        info.setTextEntryKey(true);
         info.setClassName(key.getClass().getName());
         info.setContentDescription(keyDescription);
         info.setBoundsInParent(boundsInParent);
@@ -244,13 +245,9 @@ final class KeyboardAccessibilityNodeProvider<KV extends KeyboardView>
         info.setSource(mKeyboardView, virtualViewId);
         info.setEnabled(key.isEnabled());
         info.setVisibleToUser(true);
-        // Don't add ACTION_CLICK and ACTION_LONG_CLOCK actions while hovering on the key.
-        // See {@link #onHoverEnterTo(Key)} and {@link #onHoverExitFrom(Key)}.
-        if (virtualViewId != mHoveringNodeId) {
-            info.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
-            if (key.isLongPressEnabled()) {
-                info.addAction(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK);
-            }
+        info.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+        if (key.isLongPressEnabled()) {
+            info.addAction(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK);
         }
 
         if (mAccessibilityFocusedView == virtualViewId) {
