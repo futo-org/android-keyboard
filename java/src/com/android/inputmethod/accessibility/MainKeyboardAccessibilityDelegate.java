@@ -62,13 +62,10 @@ public final class MainKeyboardAccessibilityDelegate
     // The rectangle region to ignore hover events.
     private final Rect mBoundsToIgnoreHoverEvent = new Rect();
 
-    private final AccessibilityLongPressTimer mAccessibilityLongPressTimer;
 
     public MainKeyboardAccessibilityDelegate(final MainKeyboardView mainKeyboardView,
             final KeyDetector keyDetector) {
         super(mainKeyboardView, keyDetector);
-        mAccessibilityLongPressTimer = new AccessibilityLongPressTimer(
-                this /* callback */, mainKeyboardView.getContext());
     }
 
     /**
@@ -233,7 +230,6 @@ public final class MainKeyboardAccessibilityDelegate
             Log.d(TAG, "onHoverEnterTo: key=" + key
                     + " inIgnoreBounds=" + mBoundsToIgnoreHoverEvent.contains(x, y));
         }
-        mAccessibilityLongPressTimer.cancelLongPress();
         if (mBoundsToIgnoreHoverEvent.contains(x, y)) {
             return;
         }
@@ -241,9 +237,6 @@ public final class MainKeyboardAccessibilityDelegate
         // Further hover events should be handled.
         mBoundsToIgnoreHoverEvent.setEmpty();
         super.onHoverEnterTo(key);
-        if (key.isLongPressEnabled()) {
-            mAccessibilityLongPressTimer.startLongPress(key);
-        }
     }
 
     @Override
@@ -254,7 +247,6 @@ public final class MainKeyboardAccessibilityDelegate
             Log.d(TAG, "onHoverExitFrom: key=" + key
                     + " inIgnoreBounds=" + mBoundsToIgnoreHoverEvent.contains(x, y));
         }
-        mAccessibilityLongPressTimer.cancelLongPress();
         super.onHoverExitFrom(key);
     }
 

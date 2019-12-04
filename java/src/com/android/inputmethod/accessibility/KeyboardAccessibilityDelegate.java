@@ -243,7 +243,6 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         // Make sure we're not getting an EXIT event because the user slid
         // off the keyboard area, then force a key press.
         if (key != null) {
-            performClickOn(key);
             onHoverExitFrom(key);
         }
         setLastHoverKey(null);
