@@ -130,6 +130,7 @@ cc_library {
         "-Wno-unused-parameter",
         "-Wno-unused-function",
     ],
+    header_libs: ["jni_headers"],
     local_include_dirs: ["src"],
 
     srcs: [
@@ -167,6 +168,7 @@ cc_library_static {
         "-Wall",
         "-Werror",
     ],
+    header_libs: ["jni_headers"],
     local_include_dirs: ["src"],
     sdk_version: "14",
     stl: "libc++_static",
