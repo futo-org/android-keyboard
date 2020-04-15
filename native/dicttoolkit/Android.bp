@@ -37,6 +37,7 @@ cc_defaults {
         "-Wno-unused-function",
     ],
 
+    header_libs: ["jni_headers"],
     local_include_dirs: ["src"],
     // TODO
     include_dirs: ["packages/inputmethods/LatinIME/native/jni/src"],
