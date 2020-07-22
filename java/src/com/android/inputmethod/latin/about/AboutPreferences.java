@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.about;
 import android.app.Fragment;
 
 /**
- * Dummy class of AboutPreferences. Never use this.
+ * Placeholer class of AboutPreferences. Never use this.
  */
 public final class AboutPreferences extends Fragment {
     private AboutPreferences() {

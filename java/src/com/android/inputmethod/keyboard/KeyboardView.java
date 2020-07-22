@@ -100,7 +100,7 @@ public class KeyboardView extends View {
     private static final float MAX_LABEL_RATIO = 0.90f;
 
     // Main keyboard
-    // TODO: Consider having a dummy keyboard object to make this @Nonnull
+    // TODO: Consider having a base keyboard object to make this @Nonnull
     @Nullable
     private Keyboard mKeyboard;
     @Nonnull

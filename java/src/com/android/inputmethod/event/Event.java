@@ -123,7 +123,7 @@ public class Event {
         mSuggestedWordInfo = suggestedWordInfo;
         mFlags = flags;
         mNextEvent = next;
-        // Sanity checks
+        // Validity checks
         // mSuggestedWordInfo is non-null if and only if the type is SUGGESTION_PICKED
         if (EVENT_TYPE_SUGGESTION_PICKED == mEventType) {
             if (null == mSuggestedWordInfo) {

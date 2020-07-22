@@ -19,7 +19,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     android:title="@string/settings_screen_accounts">
 
-    <!-- This preference is a dummy view of the underlying preference.
+    <!-- This preference is a fake view of the underlying preference.
          This isn't persisted and the summary/title is refreshed by the fragment
          after inspecting the underlying account preference. -->
     <Preference
