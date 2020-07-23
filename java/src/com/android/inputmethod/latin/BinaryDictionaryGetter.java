@@ -196,8 +196,8 @@ final public class BinaryDictionaryGetter {
     }
 
     // ## HACK ## we prevent usage of a dictionary before version 18. The reason for this is, since
-    // those do not include whitelist entries, the new code with an old version of the dictionary
-    // would lose whitelist functionality.
+    // those do not include allowlist entries, the new code with an old version of the dictionary
+    // would lose allowlist functionality.
     private static boolean hackCanUseDictionaryFile(final File file) {
         if (!SHOULD_USE_DICT_VERSION) {
             return true;
@@ -211,7 +211,7 @@ final public class BinaryDictionaryGetter {
                 // No version in the options : the format is unexpected
                 return false;
             }
-            // Version 18 is the first one to include the whitelist
+            // Version 18 is the first one to include the allowlist. 
             // Obviously this is a big ## HACK ##
             return Integer.parseInt(version) >= 18;
         } catch (java.io.FileNotFoundException e) {
