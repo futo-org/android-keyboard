@@ -38,7 +38,7 @@
     <include
         latin:keyboardLayout="@xml/key_styles_settings" />
     <!-- Functional key styles -->
-    <!-- Base style for shift key. A single space is used for dummy label in moreKeys. -->
+    <!-- Base style for shift key. A single space is used for base label in moreKeys. -->
     <key-style
         latin:styleName="baseForShiftKeyStyle"
         latin:keyActionFlags="noKeyPreview"

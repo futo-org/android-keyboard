@@ -81,7 +81,7 @@ public class RecapitalizeStatus {
     private static final int[] EMPTY_STORTED_SEPARATORS = {};
 
     public RecapitalizeStatus() {
-        // By default, initialize with dummy values that won't match any real recapitalize.
+        // By default, initialize with fake values that won't match any real recapitalize.
         start(-1, -1, "", Locale.getDefault(), EMPTY_STORTED_SEPARATORS);
         stop();
     }

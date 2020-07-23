@@ -870,7 +870,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      */
     public static void updateClientInfo(final Context context, final String clientId,
             final ContentValues values) {
-        // Sanity check the content values
+        // Validity check the content values
         final String valuesClientId = values.getAsString(CLIENT_CLIENT_ID_COLUMN);
         final String valuesMetadataUri = values.getAsString(CLIENT_METADATA_URI_COLUMN);
         final String valuesMetadataAdditionalId =

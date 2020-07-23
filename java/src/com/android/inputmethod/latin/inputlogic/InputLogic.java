@@ -805,7 +805,7 @@ public final class InputLogic {
         if (SpaceState.PHANTOM == inputTransaction.mSpaceState
                 && !settingsValues.isWordConnector(codePoint)) {
             if (isComposingWord) {
-                // Sanity check
+                // Validity check
                 throw new RuntimeException("Should not be composing here");
             }
             insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
@@ -1370,7 +1370,7 @@ public final class InputLogic {
      * @return whether it's fine to apply the transformation after this code point.
      */
     private static boolean canBeFollowedByDoubleSpacePeriod(final int codePoint) {
-        // TODO: This should probably be a blacklist rather than a whitelist.
+        // TODO: This should probably be a denylist rather than a allowlist.
         // TODO: This should probably be language-dependant...
         return Character.isLetterOrDigit(codePoint)
                 || codePoint == Constants.CODE_SINGLE_QUOTE
