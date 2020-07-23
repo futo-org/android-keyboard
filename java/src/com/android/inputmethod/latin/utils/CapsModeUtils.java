@@ -194,10 +194,10 @@ public final class CapsModeUtils {
         // English is a special case in that "American typography" rules, which are the most common
         // in English, state that a sentence terminator immediately following a quotation mark
         // should be swapped with it and de-duplicated (included in the quotation mark),
-        // e.g. <<Did he say, "let's go home?">>
+        // e.g. <<Did they say, "let's go home?">>
         // No other language has such a rule as far as I know, instead putting inside the quotation
         // mark as the exact thing quoted and handling the surrounding punctuation independently,
-        // e.g. <<Did he say, "let's go home"?>>
+        // e.g. <<Did they say, "let's go home"?>>
         if (spacingAndPunctuations.mUsesAmericanTypography) {
             for (; j > 0; j--) {
                 // Here we look to go over any closing punctuation. This is because in dominant

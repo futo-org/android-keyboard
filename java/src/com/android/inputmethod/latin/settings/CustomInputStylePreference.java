@@ -330,7 +330,7 @@ final class CustomInputStylePreference extends DialogPreference
                     R.array.predefined_layouts);
             // TODO: Should filter out already existing combinations of locale and layout.
             for (final String layout : predefinedKeyboardLayoutSet) {
-                // This is a dummy subtype with NO_LANGUAGE, only for display.
+                // This is a placeholder for a subtype with NO_LANGUAGE, only for display.
                 final InputMethodSubtype subtype =
                         AdditionalSubtypeUtils.createDummyAdditionalSubtype(
                                 SubtypeLocaleUtils.NO_LANGUAGE, layout);

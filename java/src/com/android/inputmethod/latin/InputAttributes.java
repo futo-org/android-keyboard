@@ -66,7 +66,7 @@ public final class InputAttributes {
                 || InputTypeUtils.isVisiblePasswordInputType(inputType);
         if (inputClass != InputType.TYPE_CLASS_TEXT) {
             // If we are not looking at a TYPE_CLASS_TEXT field, the following strange
-            // cases may arise, so we do a couple sanity checks for them. If it's a
+            // cases may arise, so we do a couple validity checks for them. If it's a
             // TYPE_CLASS_TEXT field, these special cases cannot happen, by construction
             // of the flags.
             if (null == editorInfo) {
