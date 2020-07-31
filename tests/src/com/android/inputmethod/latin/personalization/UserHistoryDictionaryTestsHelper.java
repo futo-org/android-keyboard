@@ -110,7 +110,7 @@ public class UserHistoryDictionaryTestsHelper {
     /**
      * Creates unique test locale for using within tests.
      */
-    public static Locale getDummyLocale(final String name) {
+    public static Locale getFakeLocale(final String name) {
         return new Locale(TEST_LOCALE_PREFIX + name + System.currentTimeMillis());
     }
 
