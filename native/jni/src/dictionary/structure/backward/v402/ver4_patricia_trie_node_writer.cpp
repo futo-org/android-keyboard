@@ -339,7 +339,7 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
         const PtNodeParams *const ptNodeParams, int *const outTerminalId,
         int *const ptNodeWritingPos) {
     const int nodePos = *ptNodeWritingPos;
-    // Write dummy flags. The Node flags are updated with appropriate flags at the last step of the
+    // Write placeholder flags. The Node flags are updated with appropriate flags at the last step of the
     // PtNode writing.
     if (!DynamicPtWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer,
             0 /* nodeFlags */, ptNodeWritingPos)) {
