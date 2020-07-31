@@ -22,7 +22,7 @@
      There is another emoji code point list for JB-MR2 and KLP and later under
      res/xml/values-v1[89].-->
 <resources>
-    <!-- Dummy codeArrays for recents emoji keyboard.
+    <!-- Placeholder codeArrays for recents emoji keyboard.
          Do not remove these keys, because they are used as a template. -->
     <array
         name="emoji_recents"
