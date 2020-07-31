@@ -76,14 +76,14 @@ bool DynamicPtGcEventListeners::TraversePolicyToUpdateBigramProbability
     return true;
 }
 
-// Writes dummy PtNode array size when the head of PtNode array is read.
+// Writes placeholder PtNode array size when the head of PtNode array is read.
 bool DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
         ::onDescend(const int ptNodeArrayPos) {
     mValidPtNodeCount = 0;
     int writingPos = mBufferToWrite->getTailPosition();
     mDictPositionRelocationMap->mPtNodeArrayPositionRelocationMap.insert(
             PtNodeWriter::PtNodeArrayPositionRelocationMap::value_type(ptNodeArrayPos, writingPos));
-    // Writes dummy PtNode array size because arrays can have a forward link or needles PtNodes.
+    // Writes placeholder PtNode array size because arrays can have a forward link or needles PtNodes.
     // This field will be updated later in onReadingPtNodeArrayTail() with actual PtNode count.
     mPtNodeArraySizeFieldPos = writingPos;
     return DynamicPtWritingUtils::writePtNodeArraySizeAndAdvancePosition(

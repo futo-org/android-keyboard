@@ -38,7 +38,7 @@ class ProbabilityEntry {
             : mFlags(probabilityEntry.mFlags), mProbability(probabilityEntry.mProbability),
               mHistoricalInfo(probabilityEntry.mHistoricalInfo) {}
 
-    // Dummy entry
+    // Placeholder entry
     ProbabilityEntry()
             : mFlags(0), mProbability(NOT_A_PROBABILITY), mHistoricalInfo() {}
 

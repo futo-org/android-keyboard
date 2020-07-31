@@ -225,7 +225,7 @@ public final class Suggest {
                 // TODO: now that we have personalization, we may want to re-evaluate this decision
                 || !mDictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
                 // If the first suggestion is a shortcut we never auto-correct to it, regardless
-                // of how strong it is (whitelist entries are not KIND_SHORTCUT but KIND_WHITELIST).
+                // of how strong it is (allowlist entries are not KIND_SHORTCUT but KIND_WHITELIST).
                 // TODO: we may want to have shortcut-only entries auto-correct in the future.
                 || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
             hasAutoCorrection = false;
