@@ -34,7 +34,7 @@ class ProbabilityEntry {
             : mFlags(probabilityEntry.mFlags), mProbability(probabilityEntry.mProbability),
               mHistoricalInfo(probabilityEntry.mHistoricalInfo) {}
 
-    // Dummy entry
+    // Placeholder entry
     ProbabilityEntry()
             : mFlags(Ver4DictConstants::FLAG_NOT_A_VALID_ENTRY), mProbability(NOT_A_PROBABILITY),
               mHistoricalInfo() {}

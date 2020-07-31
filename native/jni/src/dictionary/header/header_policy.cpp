@@ -105,7 +105,7 @@ bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTim
             &writingPos)) {
         return false;
     }
-    // Temporarily writes a dummy header size.
+    // Temporarily writes a placeholder header size.
     int headerSizeFieldPos = writingPos;
     if (!HeaderReadWriteUtils::writeDictionaryHeaderSize(outBuffer, 0 /* size */,
             &writingPos)) {
