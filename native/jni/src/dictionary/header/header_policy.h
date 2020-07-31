@@ -97,7 +97,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       headerPolicy->mForgettingCurveProbabilityValuesTableId),
               mCodePointTable(headerPolicy->mCodePointTable) {}
 
-    // Temporary dummy header.
+    // Temporary placeholder header.
     HeaderPolicy()
             : mDictFormatVersion(FormatUtils::UNKNOWN_VERSION), mDictionaryFlags(0), mSize(0),
               mAttributeMap(), mLocale(CharUtils::EMPTY_STRING), mMultiWordCostMultiplier(0.0f),

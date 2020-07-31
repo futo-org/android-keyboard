@@ -277,7 +277,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
     }
 
     /**
-     * Sanity check for a PtNode array.
+     * Validity check for a PtNode array.
      *
      * This method checks that all PtNodes in a node array are ordered as expected.
      * If they are, nothing happens. If they aren't, an exception is thrown.

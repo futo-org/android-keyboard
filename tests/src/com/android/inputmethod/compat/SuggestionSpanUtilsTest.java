@@ -51,7 +51,7 @@ public class SuggestionSpanUtilsTest {
     }
 
     /**
-     * Helper method to create a dummy {@link SuggestedWordInfo}.
+     * Helper method to create a placeholder {@link SuggestedWordInfo}.
      *
      * @param kindAndFlags the kind and flags to be used to create {@link SuggestedWordInfo}.
      * @param word the word to be used to create {@link SuggestedWordInfo}.

@@ -523,7 +523,7 @@ public final class BinaryDictionaryFileDumper {
         }
 
         // Read from metadata file in resources to get the baseline dictionary info.
-        // This ensures we start with a sane list of available dictionaries.
+        // This ensures we start with a valid list of available dictionaries.
         final int metadataResourceId = context.getResources().getIdentifier("metadata",
                 "raw", DictionaryInfoUtils.RESOURCE_PACKAGE_NAME);
         if (metadataResourceId == 0) {
