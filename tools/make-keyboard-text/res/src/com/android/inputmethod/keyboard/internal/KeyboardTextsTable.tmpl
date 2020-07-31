@@ -60,7 +60,7 @@ public final class KeyboardTextsTable {
         if (text != null) {
             return text;
         }
-        // Sanity check.
+        // Validity check.
         if (index >= 0 && index < TEXTS_DEFAULT.length) {
             return TEXTS_DEFAULT[index];
         }
