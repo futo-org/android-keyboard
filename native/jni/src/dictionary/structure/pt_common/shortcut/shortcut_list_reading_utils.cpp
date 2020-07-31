@@ -27,7 +27,7 @@ const ShortcutListReadingUtils::ShortcutFlags
 const ShortcutListReadingUtils::ShortcutFlags
         ShortcutListReadingUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
 const int ShortcutListReadingUtils::SHORTCUT_LIST_SIZE_FIELD_SIZE = 2;
-// The numeric value of the shortcut probability that means 'whitelist'.
+// The numeric value of the shortcut probability that means 'allowlist'.
 const int ShortcutListReadingUtils::WHITELIST_SHORTCUT_PROBABILITY = 15;
 
 /* static */ ShortcutListReadingUtils::ShortcutFlags

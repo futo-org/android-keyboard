@@ -446,7 +446,7 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Sanity-checking method.
+     * Validity-checking method.
      *
      * This method checks a list of PtNode arrays for juxtaposition, that is, it will do
      * nothing if each node array's cached address is actually the previous node array's address
@@ -664,7 +664,7 @@ public class BinaryDictEncoderUtils {
                         + "of the node : " + dictEncoder.getPosition() + " <> "
                         + ptNode.mCachedAddressAfterUpdate);
             }
-            // Sanity checks.
+            // Validity checks.
             if (DBG && ptNode.getProbability() > FormatSpec.MAX_TERMINAL_FREQUENCY) {
                 throw new RuntimeException("A node has a frequency > "
                         + FormatSpec.MAX_TERMINAL_FREQUENCY

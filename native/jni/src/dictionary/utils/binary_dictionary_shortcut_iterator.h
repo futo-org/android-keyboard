@@ -41,7 +41,7 @@ class BinaryDictionaryShortcutIterator {
     }
 
     // Gets the shortcut target itself as an int string and put it to outTarget, put its length
-    // to outTargetLength, put whether it is whitelist to outIsWhitelist.
+    // to outTargetLength, put whether it is allowlist to outIsWhitelist.
     AK_FORCE_INLINE void nextShortcutTarget(
             const int maxDepth, int *const outTarget, int *const outTargetLength,
             bool *const outIsWhitelist) {

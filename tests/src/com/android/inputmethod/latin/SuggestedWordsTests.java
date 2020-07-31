@@ -36,7 +36,7 @@ import java.util.Locale;
 public class SuggestedWordsTests {
 
     /**
-     * Helper method to create a dummy {@link SuggestedWordInfo} with specifying
+     * Helper method to create a placeholder {@link SuggestedWordInfo} with specifying
      * {@link SuggestedWordInfo#KIND_TYPED}.
      *
      * @param word the word to be used to create {@link SuggestedWordInfo}.
@@ -53,7 +53,7 @@ public class SuggestedWordsTests {
     }
 
     /**
-     * Helper method to create a dummy {@link SuggestedWordInfo} with specifying
+     * Helper method to create a placeholder {@link SuggestedWordInfo} with specifying
      * {@link SuggestedWordInfo#KIND_CORRECTION}.
      *
      * @param word the word to be used to create {@link SuggestedWordInfo}.
