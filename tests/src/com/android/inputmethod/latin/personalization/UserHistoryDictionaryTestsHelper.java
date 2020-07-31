@@ -37,7 +37,7 @@ import java.util.Random;
 public class UserHistoryDictionaryTestsHelper {
 
     /**
-     * Locale prefix for generating dummy locales for tests.
+     * Locale prefix for generating placeholder locales for tests.
      */
     public static final String TEST_LOCALE_PREFIX = "test-";
 

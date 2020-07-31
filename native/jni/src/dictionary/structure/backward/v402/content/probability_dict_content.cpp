@@ -69,7 +69,7 @@ bool ProbabilityDictContent::setProbabilityEntry(const int terminalId,
         // Write new entry.
         int writingPos = getBuffer()->getTailPosition();
         while (writingPos <= entryPos) {
-            // Fulfilling with dummy entries until writingPos.
+            // Fulfilling with placeholder entries until writingPos.
             if (!writeEntry(&dummyEntry, writingPos)) {
                 AKLOGE("Cannot write dummy entry. pos: %d, mSize: %d", writingPos, mSize);
                 return false;
