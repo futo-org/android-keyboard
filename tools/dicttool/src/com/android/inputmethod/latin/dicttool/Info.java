@@ -42,7 +42,7 @@ public class Info extends Dicttool.Command {
         int wordCount = 0;
         int bigramCount = 0;
         int shortcutCount = 0;
-        int whitelistCount = 0;
+        int allowlistCount = 0;
         for (final WordProperty wordProperty : dict) {
             ++wordCount;
             if (wordProperty.mHasNgrams) {
@@ -51,8 +51,8 @@ public class Info extends Dicttool.Command {
         }
         System.out.println("Words in the dictionary : " + wordCount);
         System.out.println("Bigram count : " + bigramCount);
-        System.out.println("Shortcuts : " + shortcutCount + " (out of which " + whitelistCount
-                + " whitelist entries)");
+        System.out.println("Shortcuts : " + shortcutCount + " (out of which " + allowlistCount
+                + " allowlist entries)");
     }
 
     private static void showWordInfo(final FusionDictionary dict, final String word) {

@@ -65,13 +65,15 @@ bool ProbabilityDictContent::setProbabilityEntry(const int terminalId,
     }
     const int entryPos = getEntryPos(terminalId);
     if (terminalId >= mSize) {
-        ProbabilityEntry dummyEntry;
+        ProbabilityEntry placeholderEntry;
         // Write new entry.
         int writingPos = getBuffer()->getTailPosition();
         while (writingPos <= entryPos) {
             // Fulfilling with placeholder entries until writingPos.
-            if (!writeEntry(&dummyEntry, writingPos)) {
-                AKLOGE("Cannot write dummy entry. pos: %d, mSize: %d", writingPos, mSize);
+            if (!writeEntry(&placeholderEntry, writingPos)) {
+                AKLOGE("Cannot write placeholder entry. pos: %d, mSize: %d",
+                    writingPos,
+                    mSize);
                 return false;
             }
             writingPos += getEntrySize();
