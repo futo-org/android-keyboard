@@ -222,7 +222,7 @@ public class RichInputMethodSubtype {
             return noLanguageSubtype;
         }
         Log.w(TAG, "Can't find any language with QWERTY subtype");
-        Log.w(TAG, "No input method subtype found; returning dummy subtype: "
+        Log.w(TAG, "No input method subtype found; returning placeholder subtype: "
                 + PLACEHOLDER_NO_LANGUAGE_SUBTYPE);
         return PLACEHOLDER_NO_LANGUAGE_SUBTYPE;
     }
@@ -243,7 +243,7 @@ public class RichInputMethodSubtype {
             return emojiSubtype;
         }
         Log.w(TAG, "Can't find emoji subtype");
-        Log.w(TAG, "No input method subtype found; returning dummy subtype: "
+        Log.w(TAG, "No input method subtype found; returning placeholder subtype: "
                 + PLACEHOLDER_EMOJI_SUBTYPE);
         return PLACEHOLDER_EMOJI_SUBTYPE;
     }
