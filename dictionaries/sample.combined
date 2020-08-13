@@ -14,7 +14,7 @@
 # should not be considered a typo, but that should never be suggested
 # explicitly. An entry may be made not a word by adding a `not_a_word'
 # field with a value of `true'. The main reason for putting such entries
-# into the dictionary is to add shortcut targets and maybe a whitelist
+# into the dictionary is to add shortcut targets and maybe an allowlist
 # replacement.
 #
 # Each word may or may not have any number of shortcut target lines
