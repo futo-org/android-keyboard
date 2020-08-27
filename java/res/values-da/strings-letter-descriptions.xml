@@ -26,183 +26,183 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"Feminin ordinal"</string>
-    <string name="spoken_accented_letter_00B5" msgid="9031387673828823891">"Mikrotegn"</string>
-    <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"Maskulin ordinal"</string>
-    <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"Dobbelt s"</string>
-    <string name="spoken_accented_letter_00E0" msgid="2234515772182387086">"Lille a med accent grave"</string>
-    <string name="spoken_accented_letter_00E1" msgid="7780174500802535063">"Lille a med accent aigu"</string>
-    <string name="spoken_accented_letter_00E2" msgid="7054108480488102631">"Lille a med cirkumfleks"</string>
-    <string name="spoken_accented_letter_00E3" msgid="8252569677935693343">"Lille a med tilde"</string>
-    <string name="spoken_accented_letter_00E4" msgid="6610118430986969466">"Lille a med omlyd"</string>
-    <string name="spoken_accented_letter_00E5" msgid="7630449270070348394">"Lille å"</string>
-    <string name="spoken_accented_letter_00E6" msgid="701838036007000032">"Lille æ"</string>
-    <string name="spoken_accented_letter_00E7" msgid="2991289211702135310">"Lille c med cedille"</string>
-    <string name="spoken_accented_letter_00E8" msgid="2080035251848179782">"Lille e med accent grave"</string>
-    <string name="spoken_accented_letter_00E9" msgid="2708473976407506968">"Lille e med accent aigu"</string>
-    <string name="spoken_accented_letter_00EA" msgid="1898848081635119449">"Lille e med cirkumfleks"</string>
-    <string name="spoken_accented_letter_00EB" msgid="8318942663983499634">"Lille e med omlyd"</string>
-    <string name="spoken_accented_letter_00EC" msgid="7643810590358306098">"Lille i med accent grave"</string>
-    <string name="spoken_accented_letter_00ED" msgid="8288035355103120759">"Lille i med accent aigu"</string>
-    <string name="spoken_accented_letter_00EE" msgid="1137417730211688894">"Lille i med cirkumfleks"</string>
-    <string name="spoken_accented_letter_00EF" msgid="8993714322731956785">"Lille i med omlyd"</string>
-    <string name="spoken_accented_letter_00F0" msgid="3427567511221967857">"Lille islandsk eth"</string>
-    <string name="spoken_accented_letter_00F1" msgid="6983294908255378605">"Lille n med tilde"</string>
-    <string name="spoken_accented_letter_00F2" msgid="2623804069332183695">"Lille o med accent grave"</string>
-    <string name="spoken_accented_letter_00F3" msgid="8945987631729216917">"Lille o med accent aigu"</string>
-    <string name="spoken_accented_letter_00F4" msgid="2415494299699717276">"Lille o med cirkumfleks"</string>
-    <string name="spoken_accented_letter_00F5" msgid="7320512716652765243">"Lille o med tilde"</string>
-    <string name="spoken_accented_letter_00F6" msgid="9101179351242478555">"Lille o med omlyd"</string>
-    <string name="spoken_accented_letter_00F8" msgid="1488324280918884122">"Lille ø"</string>
-    <string name="spoken_accented_letter_00F9" msgid="2823570256527173278">"Lille u med accent grave"</string>
-    <string name="spoken_accented_letter_00FA" msgid="6883092085077298608">"Lille u med accent aigu"</string>
-    <string name="spoken_accented_letter_00FB" msgid="4948239400399514418">"Lille u med cirkumfleks"</string>
-    <string name="spoken_accented_letter_00FC" msgid="2496066211694000442">"Lille u med omlyd"</string>
-    <string name="spoken_accented_letter_00FD" msgid="2400529610834233890">"Lille y med accent aigu"</string>
-    <string name="spoken_accented_letter_00FE" msgid="8788160115017853040">"Lille islandsk thorn"</string>
-    <string name="spoken_accented_letter_00FF" msgid="5225610161025124830">"Lille y med omlyd"</string>
-    <string name="spoken_accented_letter_0101" msgid="5573209280917268157">"Lille a med makron"</string>
-    <string name="spoken_accented_letter_0103" msgid="2469151120095164730">"Lille a med breve"</string>
-    <string name="spoken_accented_letter_0105" msgid="8312689789855786427">"Lille a med højrekrog"</string>
-    <string name="spoken_accented_letter_0107" msgid="5708507895287798642">"Lille c med accent aigu"</string>
-    <string name="spoken_accented_letter_0109" msgid="7008112603489583335">"Lille c med cirkumfleks"</string>
-    <string name="spoken_accented_letter_010B" msgid="5641359473019753216">"Lille c med prik over"</string>
-    <string name="spoken_accented_letter_010D" msgid="1048661826408437168">"Lille c med hacek"</string>
-    <string name="spoken_accented_letter_010F" msgid="603374318657992205">"Lille d med hacek"</string>
-    <string name="spoken_accented_letter_0111" msgid="5517997642285938260">"Lille d med gennemstregning"</string>
-    <string name="spoken_accented_letter_0113" msgid="2326009009311798997">"Lille e med makron"</string>
-    <string name="spoken_accented_letter_0115" msgid="3964545407091037747">"Lille e med breve"</string>
-    <string name="spoken_accented_letter_0117" msgid="8799753183781089777">"Lille e med prik over"</string>
-    <string name="spoken_accented_letter_0119" msgid="3772451226935709136">"Lille e med højrekrog"</string>
-    <string name="spoken_accented_letter_011B" msgid="7663481332351461288">"Lille e med hacek"</string>
-    <string name="spoken_accented_letter_011D" msgid="1181326600595482369">"Lille g med cirkumfleks"</string>
-    <string name="spoken_accented_letter_011F" msgid="6843415389823096647">"Lille g med breve"</string>
-    <string name="spoken_accented_letter_0121" msgid="6205288708713306903">"Lille g med prik over"</string>
-    <string name="spoken_accented_letter_0123" msgid="2394277128105386261">"Lille g med cedille"</string>
-    <string name="spoken_accented_letter_0125" msgid="6575866461277751345">"Lille h med cirkumfleks"</string>
-    <string name="spoken_accented_letter_0127" msgid="1316971762214091641">"Lille h med gennemstregning"</string>
-    <string name="spoken_accented_letter_0129" msgid="7824912405885325754">"Lille i med tilde"</string>
-    <string name="spoken_accented_letter_012B" msgid="6772690258769905270">"Lille i med makron"</string>
-    <string name="spoken_accented_letter_012D" msgid="2933871131556503448">"Lille i med breve"</string>
-    <string name="spoken_accented_letter_012F" msgid="1340511254985181663">"Lille i med højrekrog"</string>
-    <string name="spoken_accented_letter_0131" msgid="5635600720566083969">"Lille i uden prik"</string>
-    <string name="spoken_accented_letter_0133" msgid="7593704176516791941">"Sammenskrevet I og J"</string>
-    <string name="spoken_accented_letter_0135" msgid="4521109674238248436">"Lille j med cirkumfleks"</string>
-    <string name="spoken_accented_letter_0137" msgid="5886444641003852175">"Lille k med cedille"</string>
-    <string name="spoken_accented_letter_0138" msgid="4200294389170924853">"Kra"</string>
-    <string name="spoken_accented_letter_013A" msgid="3558015385412543517">"Lille l med accent aigu"</string>
-    <string name="spoken_accented_letter_013C" msgid="1853639924813858734">"Lille l med cedille"</string>
-    <string name="spoken_accented_letter_013E" msgid="7489345561739421886">"Lille l med hacek"</string>
-    <string name="spoken_accented_letter_0140" msgid="7946718707268270589">"Lille l med prik midt på linjen"</string>
-    <string name="spoken_accented_letter_0142" msgid="752931798111122240">"Lille l med gennemstregning"</string>
-    <string name="spoken_accented_letter_0144" msgid="201843550323875352">"Lille n med accent aigu"</string>
-    <string name="spoken_accented_letter_0146" msgid="3403847152606051818">"Lille n med cedille"</string>
-    <string name="spoken_accented_letter_0148" msgid="9215300786722209338">"Lille n med hacek"</string>
-    <string name="spoken_accented_letter_0149" msgid="3191850286630154063">"Lille n med apostrof foran"</string>
-    <string name="spoken_accented_letter_014B" msgid="8503022408522837410">"Eng"</string>
-    <string name="spoken_accented_letter_014D" msgid="4452323602550610641">"Lille o med makron"</string>
-    <string name="spoken_accented_letter_014F" msgid="2795957717094385336">"Lille o med breve"</string>
-    <string name="spoken_accented_letter_0151" msgid="8013704745216410244">"Lille o med dobbelt accent aigu"</string>
-    <string name="spoken_accented_letter_0153" msgid="8410582495993285221">"Sammenskrevet O og E"</string>
-    <string name="spoken_accented_letter_0155" msgid="7601517174689798560">"Lille r med accent aigu"</string>
-    <string name="spoken_accented_letter_0157" msgid="9071455715455643810">"Lille r med cedille"</string>
-    <string name="spoken_accented_letter_0159" msgid="7726911392381543439">"Lille r med hacek"</string>
-    <string name="spoken_accented_letter_015B" msgid="1854129531164494117">"Lille s med accent aigu"</string>
-    <string name="spoken_accented_letter_015D" msgid="4743571603550582530">"Lille s med cirkumfleks"</string>
-    <string name="spoken_accented_letter_015F" msgid="1519945638631588761">"Lille s med cedille"</string>
-    <string name="spoken_accented_letter_0161" msgid="7493478552029144246">"Lille s med hacek"</string>
-    <string name="spoken_accented_letter_0163" msgid="9103547637928833069">"Lille t med cedille"</string>
-    <string name="spoken_accented_letter_0165" msgid="7306159398214872062">"Lille t med hacek"</string>
-    <string name="spoken_accented_letter_0167" msgid="5578767705098672443">"Lille t med gennemstregning"</string>
-    <string name="spoken_accented_letter_0169" msgid="413046581387735371">"Lille u med tilde"</string>
-    <string name="spoken_accented_letter_016B" msgid="3209778874978859441">"Lille u med makron"</string>
-    <string name="spoken_accented_letter_016D" msgid="2983326533258602840">"Lille u med breve"</string>
-    <string name="spoken_accented_letter_016F" msgid="4416532499516387231">"Lille u med bolle over"</string>
-    <string name="spoken_accented_letter_0171" msgid="3435171971353200807">"Lille u med dobbelt accent aigu"</string>
-    <string name="spoken_accented_letter_0173" msgid="4494154432483553480">"Lille u med højrekrog"</string>
-    <string name="spoken_accented_letter_0175" msgid="2154545579611918513">"Lille w med cirkumfleks"</string>
-    <string name="spoken_accented_letter_0177" msgid="4034463827306904781">"Lille y med cirkumfleks"</string>
-    <string name="spoken_accented_letter_017A" msgid="3368292232292925369">"Lille z med accent aigu"</string>
-    <string name="spoken_accented_letter_017C" msgid="2834484584505860430">"Lille z med prik over"</string>
-    <string name="spoken_accented_letter_017E" msgid="1209240442434887098">"Lille z med hacek"</string>
-    <string name="spoken_accented_letter_017F" msgid="317501463253362415">"Langt s"</string>
-    <string name="spoken_accented_letter_01A1" msgid="630186564859044196">"Lille o med krog"</string>
-    <string name="spoken_accented_letter_01B0" msgid="8544012177684640443">"Lille u med krog"</string>
-    <string name="spoken_accented_letter_0219" msgid="1960371842020076066">"Lille s med venstrekrog"</string>
-    <string name="spoken_accented_letter_021B" msgid="1398418662032919032">"Lille t med venstrekrog"</string>
-    <string name="spoken_accented_letter_0259" msgid="2464085263158415898">"Schwa"</string>
-    <string name="spoken_accented_letter_1EA1" msgid="688124877202887630">"Lille a med prik over"</string>
-    <string name="spoken_accented_letter_1EA3" msgid="327960130366386256">"Lille a med pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EA5" msgid="637406363453769610">"Lille a med cirkumfleks og accent aigu"</string>
-    <string name="spoken_accented_letter_1EA7" msgid="1419591804181615409">"Lille a med cirkumfleks og accent grave"</string>
-    <string name="spoken_accented_letter_1EA9" msgid="6068887382734896756">"Lille a med cirkumfleks og pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EAB" msgid="7236523151662538333">"Lille a med cirkumfleks og tilde"</string>
-    <string name="spoken_accented_letter_1EAD" msgid="2363364864106332076">"Lille a med cirkumfleks og prik under"</string>
-    <string name="spoken_accented_letter_1EAF" msgid="1576329511464272935">"Lille a med breve og accent aigu"</string>
-    <string name="spoken_accented_letter_1EB1" msgid="4634735072816076592">"Lille a med breve og accent grave"</string>
-    <string name="spoken_accented_letter_1EB3" msgid="2325245849038771534">"Lille a med breve og pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EB5" msgid="3720427596242746295">"Lille a med breve og tilde"</string>
-    <string name="spoken_accented_letter_1EB7" msgid="700415535653646695">"Lille a med breve og prik under"</string>
-    <string name="spoken_accented_letter_1EB9" msgid="3901338692305890487">"Lille e med prik under"</string>
-    <string name="spoken_accented_letter_1EBB" msgid="4028688699415417302">"Lille e med pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EBD" msgid="181253633045931897">"Lille e med tilde"</string>
-    <string name="spoken_accented_letter_1EBF" msgid="3309618845007944963">"Lille e med cirkumfleks og accent aigu"</string>
-    <string name="spoken_accented_letter_1EC1" msgid="8139046749226332542">"Lille e med cirkumfleks og accent grave"</string>
-    <string name="spoken_accented_letter_1EC3" msgid="3239674223053133383">"Lille e med cirkumfleks og pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EC5" msgid="2216559244705714587">"Lille e med cirkumfleks og tilde"</string>
-    <string name="spoken_accented_letter_1EC7" msgid="9012731468253986792">"Lille e med cirkumfleks og prik under"</string>
-    <string name="spoken_accented_letter_1EC9" msgid="2901917620195717034">"Lille i med pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1ECB" msgid="5470387489820034621">"Lille i med prik under"</string>
-    <string name="spoken_accented_letter_1ECD" msgid="1340122876914839806">"Lille o med prik under"</string>
-    <string name="spoken_accented_letter_1ECF" msgid="2326921263882559755">"Lille o med pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1ED1" msgid="2885683296042774958">"Lille o med cirkumfleks og accent aigu"</string>
-    <string name="spoken_accented_letter_1ED3" msgid="6857664926477376178">"Lille o med cirkumfleks og accent grave"</string>
-    <string name="spoken_accented_letter_1ED5" msgid="2015209467290624062">"Lille o med cirkumfleks og pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1ED7" msgid="7924481354960306389">"Lille o med cirkumfleks og tilde"</string>
-    <string name="spoken_accented_letter_1ED9" msgid="7023315590332365554">"Lille o med cirkumfleks og prik under"</string>
-    <string name="spoken_accented_letter_1EDB" msgid="2379438944917634496">"Lille o med krog og accent aigu"</string>
-    <string name="spoken_accented_letter_1EDD" msgid="8107077534204404085">"Lille o med krog og accent grave"</string>
-    <string name="spoken_accented_letter_1EDF" msgid="1846880105528347966">"Lille o med krog og pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EE1" msgid="1520037313389776718">"Lille o med krog og tilde"</string>
-    <string name="spoken_accented_letter_1EE3" msgid="907964027171008963">"Lille o med krog og prik under"</string>
-    <string name="spoken_accented_letter_1EE5" msgid="1522024630360038700">"Lille u med prik under"</string>
-    <string name="spoken_accented_letter_1EE7" msgid="7815412228302952637">"Lille u med pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EE9" msgid="4219119671251485651">"Lille u med krog og accent aigu"</string>
-    <string name="spoken_accented_letter_1EEB" msgid="4086009841269002231">"Lille u med krog og accent grave"</string>
-    <string name="spoken_accented_letter_1EED" msgid="3528151733528719847">"Lille u med krog og pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EEF" msgid="3508548229409072119">"Lille u med krog og tilde"</string>
-    <string name="spoken_accented_letter_1EF1" msgid="1912816350401931115">"Lille u med krog og prik under"</string>
-    <string name="spoken_accented_letter_1EF3" msgid="7211760439435946494">"Lille y med accent grave"</string>
-    <string name="spoken_accented_letter_1EF5" msgid="8998864482764007384">"Lille y med prik under"</string>
-    <string name="spoken_accented_letter_1EF7" msgid="922043627252869200">"Lille y med pseudospørgsmålstegn over"</string>
-    <string name="spoken_accented_letter_1EF9" msgid="6213977100552260366">"Lille y med tilde"</string>
-    <string name="spoken_symbol_00A1" msgid="4281758332905123408">"Omvendt udråbstegn"</string>
-    <string name="spoken_symbol_00AB" msgid="4093069643313064892">"Dobbelt venstrevendt vinkelcitationstegn"</string>
-    <string name="spoken_symbol_00B7" msgid="2447718728927874920">"Prik midt på linjen"</string>
-    <string name="spoken_symbol_00B9" msgid="8026257165451461231">"Hævet ettal"</string>
-    <string name="spoken_symbol_00BB" msgid="1102740075655373928">"Dobbelt højrevendt vinkelcitationstegn"</string>
-    <string name="spoken_symbol_00BF" msgid="6233794752573788098">"Omvendt spørgsmålstegn"</string>
-    <string name="spoken_symbol_2018" msgid="4886476295598930225">"Venstre enkelt citationstegn"</string>
-    <string name="spoken_symbol_2019" msgid="8892530161598134083">"Højre enkelt citationstegn"</string>
-    <string name="spoken_symbol_201A" msgid="2072987157683446644">"Enkelt citationstegn med 9-komma nederst"</string>
-    <string name="spoken_symbol_201C" msgid="4588048378803665427">"Venstre dobbelt citationstegn"</string>
-    <string name="spoken_symbol_201D" msgid="1642776849495925895">"Højre dobbelt citationstegn"</string>
-    <string name="spoken_symbol_2020" msgid="9084628638189344431">"Kors"</string>
-    <string name="spoken_symbol_2021" msgid="5081396468559426475">"Dobbelt kors"</string>
-    <string name="spoken_symbol_2030" msgid="9068837172419431755">"Promilletegn"</string>
-    <string name="spoken_symbol_2032" msgid="3014506329156664396">"Primtegn"</string>
-    <string name="spoken_symbol_2033" msgid="1251022699713475088">"Dobbelt primtegn"</string>
-    <string name="spoken_symbol_2039" msgid="6989616457213775957">"Enkelt venstrevendt vinkelcitationstegn"</string>
-    <string name="spoken_symbol_203A" msgid="31245095449823701">"Enkelt højrevendt vinkelcitationstegn"</string>
-    <string name="spoken_symbol_2074" msgid="2116717717093306894">"Hævet firtal"</string>
-    <string name="spoken_symbol_207F" msgid="1706731172134246659">"Hævet lille n"</string>
-    <string name="spoken_symbol_20B1" msgid="2159994270622444689">"Pesotegn"</string>
-    <string name="spoken_symbol_2105" msgid="7289404939366976829">"C/o"</string>
-    <string name="spoken_symbol_2192" msgid="827804523596125414">"Højrepil"</string>
-    <string name="spoken_symbol_2193" msgid="2659541693445985717">"Pil ned"</string>
-    <string name="spoken_symbol_2205" msgid="4457188084269117343">"Tom mængde"</string>
-    <string name="spoken_symbol_2206" msgid="4856786565708380687">"Inkrement"</string>
-    <string name="spoken_symbol_2264" msgid="5092061257745123554">"Mindre end eller lig med"</string>
-    <string name="spoken_symbol_2265" msgid="1907966479878036357">"Større end eller lig med"</string>
-    <string name="spoken_symbol_2605" msgid="5202920479405857753">"Sort stjerne"</string>
+    <string name="spoken_accented_letter_00AA" msgid="1429204792762885085">"Feminin ordinal"</string>
+    <string name="spoken_accented_letter_00B5" msgid="7868294865559331588">"Mikrotegn"</string>
+    <string name="spoken_accented_letter_00BA" msgid="6130566166610759347">"Maskulin ordinal"</string>
+    <string name="spoken_accented_letter_00DF" msgid="7710831757384261616">"Dobbelt s"</string>
+    <string name="spoken_accented_letter_00E0" msgid="8359362590979941845">"Lille a med accent grave"</string>
+    <string name="spoken_accented_letter_00E1" msgid="2671495856337880810">"Lille a med accent aigu"</string>
+    <string name="spoken_accented_letter_00E2" msgid="4087084704351663503">"Lille a med cirkumfleks"</string>
+    <string name="spoken_accented_letter_00E3" msgid="7975329965802415596">"Lille a med tilde"</string>
+    <string name="spoken_accented_letter_00E4" msgid="208598292868336905">"Lille a med omlyd"</string>
+    <string name="spoken_accented_letter_00E5" msgid="4228925932500129556">"Lille å"</string>
+    <string name="spoken_accented_letter_00E6" msgid="7323940543942149954">"Lille æ"</string>
+    <string name="spoken_accented_letter_00E7" msgid="4049466573783395785">"Lille c med cedille"</string>
+    <string name="spoken_accented_letter_00E8" msgid="6177875281261539527">"Lille e med accent grave"</string>
+    <string name="spoken_accented_letter_00E9" msgid="2175044698947400318">"Lille e med accent aigu"</string>
+    <string name="spoken_accented_letter_00EA" msgid="2086137690252658024">"Lille e med cirkumfleks"</string>
+    <string name="spoken_accented_letter_00EB" msgid="6302438512201996209">"Lille e med omlyd"</string>
+    <string name="spoken_accented_letter_00EC" msgid="5062003793705929129">"Lille i med accent grave"</string>
+    <string name="spoken_accented_letter_00ED" msgid="6694774041240192339">"Lille i med accent aigu"</string>
+    <string name="spoken_accented_letter_00EE" msgid="5136204093260797544">"Lille i med cirkumfleks"</string>
+    <string name="spoken_accented_letter_00EF" msgid="8307231501441468703">"Lille i med omlyd"</string>
+    <string name="spoken_accented_letter_00F0" msgid="4239778544582693104">"Lille islandsk eth"</string>
+    <string name="spoken_accented_letter_00F1" msgid="4987892928889057170">"Lille n med tilde"</string>
+    <string name="spoken_accented_letter_00F2" msgid="5077323275299574759">"Lille o med accent grave"</string>
+    <string name="spoken_accented_letter_00F3" msgid="9079538247216003650">"Lille o med accent aigu"</string>
+    <string name="spoken_accented_letter_00F4" msgid="4895596839992601302">"Lille o med cirkumfleks"</string>
+    <string name="spoken_accented_letter_00F5" msgid="3532023196307928021">"Lille o med tilde"</string>
+    <string name="spoken_accented_letter_00F6" msgid="7749387914189798954">"Lille o med omlyd"</string>
+    <string name="spoken_accented_letter_00F8" msgid="8281419747498267561">"Lille ø"</string>
+    <string name="spoken_accented_letter_00F9" msgid="1170214579674533510">"Lille u med accent grave"</string>
+    <string name="spoken_accented_letter_00FA" msgid="1876191144394927321">"Lille u med accent aigu"</string>
+    <string name="spoken_accented_letter_00FB" msgid="4924009576739820941">"Lille u med cirkumfleks"</string>
+    <string name="spoken_accented_letter_00FC" msgid="6495614390944597426">"Lille u med omlyd"</string>
+    <string name="spoken_accented_letter_00FD" msgid="3492105815141862669">"Lille y med accent aigu"</string>
+    <string name="spoken_accented_letter_00FE" msgid="8691066174200751006">"Lille islandsk thorn"</string>
+    <string name="spoken_accented_letter_00FF" msgid="2687674423034966788">"Lille y med omlyd"</string>
+    <string name="spoken_accented_letter_0101" msgid="1254633067802891111">"Lille a med makron"</string>
+    <string name="spoken_accented_letter_0103" msgid="3688796653637498600">"Lille a med breve"</string>
+    <string name="spoken_accented_letter_0105" msgid="3134851467217320032">"Lille a med højrekrog"</string>
+    <string name="spoken_accented_letter_0107" msgid="5660625243852495210">"Lille c med accent aigu"</string>
+    <string name="spoken_accented_letter_0109" msgid="6274117230259531470">"Lille c med cirkumfleks"</string>
+    <string name="spoken_accented_letter_010B" msgid="6063571229543007312">"Lille c med prik over"</string>
+    <string name="spoken_accented_letter_010D" msgid="3450443416935694439">"Lille c med hacek"</string>
+    <string name="spoken_accented_letter_010F" msgid="6745744655665327534">"Lille d med hacek"</string>
+    <string name="spoken_accented_letter_0111" msgid="6503055322642812531">"Lille d med gennemstregning"</string>
+    <string name="spoken_accented_letter_0113" msgid="5612700209421224569">"Lille e med makron"</string>
+    <string name="spoken_accented_letter_0115" msgid="2395715219714820980">"Lille e med breve"</string>
+    <string name="spoken_accented_letter_0117" msgid="4951272010293834033">"Lille e med prik over"</string>
+    <string name="spoken_accented_letter_0119" msgid="8712770118846720521">"Lille e med højrekrog"</string>
+    <string name="spoken_accented_letter_011B" msgid="7899382512008649409">"Lille e med hacek"</string>
+    <string name="spoken_accented_letter_011D" msgid="341326313179445327">"Lille g med cirkumfleks"</string>
+    <string name="spoken_accented_letter_011F" msgid="2447869333691111889">"Lille g med breve"</string>
+    <string name="spoken_accented_letter_0121" msgid="1238160107693159713">"Lille g med prik over"</string>
+    <string name="spoken_accented_letter_0123" msgid="6178849075218185914">"Lille g med cedille"</string>
+    <string name="spoken_accented_letter_0125" msgid="4692241198279662525">"Lille h med cirkumfleks"</string>
+    <string name="spoken_accented_letter_0127" msgid="4720255318728960504">"Lille h med gennemstregning"</string>
+    <string name="spoken_accented_letter_0129" msgid="9157168186081954638">"Lille i med tilde"</string>
+    <string name="spoken_accented_letter_012B" msgid="375585010195736343">"Lille i med makron"</string>
+    <string name="spoken_accented_letter_012D" msgid="4106308258543638970">"Lille i med breve"</string>
+    <string name="spoken_accented_letter_012F" msgid="1452578280482403979">"Lille i med højrekrog"</string>
+    <string name="spoken_accented_letter_0131" msgid="5937673538326272342">"Lille i uden prik"</string>
+    <string name="spoken_accented_letter_0133" msgid="277563648654762150">"Sammenskrevet I og J"</string>
+    <string name="spoken_accented_letter_0135" msgid="2779870638617435461">"Lille j med cirkumfleks"</string>
+    <string name="spoken_accented_letter_0137" msgid="8455545193949287181">"Lille k med cedille"</string>
+    <string name="spoken_accented_letter_0138" msgid="9011034155609255386">"Kra"</string>
+    <string name="spoken_accented_letter_013A" msgid="6362476433982975663">"Lille l med accent aigu"</string>
+    <string name="spoken_accented_letter_013C" msgid="2681322379412226799">"Lille l med cedille"</string>
+    <string name="spoken_accented_letter_013E" msgid="8461168633186195677">"Lille l med hacek"</string>
+    <string name="spoken_accented_letter_0140" msgid="4080829239481462178">"Lille l med prik midt på linjen"</string>
+    <string name="spoken_accented_letter_0142" msgid="5847973091715644967">"Lille l med gennemstregning"</string>
+    <string name="spoken_accented_letter_0144" msgid="3651802585231558">"Lille n med accent aigu"</string>
+    <string name="spoken_accented_letter_0146" msgid="4199445347237532836">"Lille n med cedille"</string>
+    <string name="spoken_accented_letter_0148" msgid="58935040893678407">"Lille n med hacek"</string>
+    <string name="spoken_accented_letter_0149" msgid="20055877995806511">"Lille n med apostrof foran"</string>
+    <string name="spoken_accented_letter_014B" msgid="9134611171368422907">"Eng"</string>
+    <string name="spoken_accented_letter_014D" msgid="965954484606707266">"Lille o med makron"</string>
+    <string name="spoken_accented_letter_014F" msgid="8110337151682568175">"Lille o med breve"</string>
+    <string name="spoken_accented_letter_0151" msgid="4985198246715436875">"Lille o med dobbelt accent aigu"</string>
+    <string name="spoken_accented_letter_0153" msgid="5048546969963218488">"Sammenskrevet O og E"</string>
+    <string name="spoken_accented_letter_0155" msgid="5139403444775251743">"Lille r med accent aigu"</string>
+    <string name="spoken_accented_letter_0157" msgid="9060230171835456811">"Lille r med cedille"</string>
+    <string name="spoken_accented_letter_0159" msgid="3782854434017992897">"Lille r med hacek"</string>
+    <string name="spoken_accented_letter_015B" msgid="3085286648020508804">"Lille s med accent aigu"</string>
+    <string name="spoken_accented_letter_015D" msgid="5074291323151484913">"Lille s med cirkumfleks"</string>
+    <string name="spoken_accented_letter_015F" msgid="5193866302469375998">"Lille s med cedille"</string>
+    <string name="spoken_accented_letter_0161" msgid="8393253516113135791">"Lille s med hacek"</string>
+    <string name="spoken_accented_letter_0163" msgid="3338244832255179350">"Lille t med cedille"</string>
+    <string name="spoken_accented_letter_0165" msgid="8987768863591268935">"Lille t med hacek"</string>
+    <string name="spoken_accented_letter_0167" msgid="8920128556019924058">"Lille t med gennemstregning"</string>
+    <string name="spoken_accented_letter_0169" msgid="4907691546517947733">"Lille u med tilde"</string>
+    <string name="spoken_accented_letter_016B" msgid="901672217821836813">"Lille u med makron"</string>
+    <string name="spoken_accented_letter_016D" msgid="1565897080674698164">"Lille u med breve"</string>
+    <string name="spoken_accented_letter_016F" msgid="3757096999173707468">"Lille u med bolle over"</string>
+    <string name="spoken_accented_letter_0171" msgid="6714863197999325550">"Lille u med dobbelt accent aigu"</string>
+    <string name="spoken_accented_letter_0173" msgid="7410814847627853645">"Lille u med højrekrog"</string>
+    <string name="spoken_accented_letter_0175" msgid="339235903820054218">"Lille w med cirkumfleks"</string>
+    <string name="spoken_accented_letter_0177" msgid="2941315939930277636">"Lille y med cirkumfleks"</string>
+    <string name="spoken_accented_letter_017A" msgid="4714572902688921072">"Lille z med accent aigu"</string>
+    <string name="spoken_accented_letter_017C" msgid="2833396869222884032">"Lille z med prik over"</string>
+    <string name="spoken_accented_letter_017E" msgid="4554566832243631717">"Lille z med hacek"</string>
+    <string name="spoken_accented_letter_017F" msgid="888899188556708687">"Langt s"</string>
+    <string name="spoken_accented_letter_01A1" msgid="2981828105139279447">"Lille o med krog"</string>
+    <string name="spoken_accented_letter_01B0" msgid="2629226342652632511">"Lille u med krog"</string>
+    <string name="spoken_accented_letter_0219" msgid="8645226763076655106">"Lille s med venstrekrog"</string>
+    <string name="spoken_accented_letter_021B" msgid="8866011193954339675">"Lille t med venstrekrog"</string>
+    <string name="spoken_accented_letter_0259" msgid="5905439489534279827">"Schwa"</string>
+    <string name="spoken_accented_letter_1EA1" msgid="8505976060756867417">"Lille a med prik over"</string>
+    <string name="spoken_accented_letter_1EA3" msgid="2788352532160807472">"Lille a med pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EA5" msgid="2292693679156098920">"Lille a med cirkumfleks og accent aigu"</string>
+    <string name="spoken_accented_letter_1EA7" msgid="8417536722845681229">"Lille a med cirkumfleks og accent grave"</string>
+    <string name="spoken_accented_letter_1EA9" msgid="2578279336601294022">"Lille a med cirkumfleks og pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EAB" msgid="7374135434062109962">"Lille a med cirkumfleks og tilde"</string>
+    <string name="spoken_accented_letter_1EAD" msgid="1474480343541533775">"Lille a med cirkumfleks og prik under"</string>
+    <string name="spoken_accented_letter_1EAF" msgid="2200325846558733243">"Lille a med breve og accent aigu"</string>
+    <string name="spoken_accented_letter_1EB1" msgid="9106179683756690965">"Lille a med breve og accent grave"</string>
+    <string name="spoken_accented_letter_1EB3" msgid="4065739316471720816">"Lille a med breve og pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EB5" msgid="1770105416022788250">"Lille a med breve og tilde"</string>
+    <string name="spoken_accented_letter_1EB7" msgid="8792260248587042181">"Lille a med breve og prik under"</string>
+    <string name="spoken_accented_letter_1EB9" msgid="6106301654737736106">"Lille e med prik under"</string>
+    <string name="spoken_accented_letter_1EBB" msgid="2212685394846524242">"Lille e med pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EBD" msgid="2807714536689435520">"Lille e med tilde"</string>
+    <string name="spoken_accented_letter_1EBF" msgid="8454808514594026786">"Lille e med cirkumfleks og accent aigu"</string>
+    <string name="spoken_accented_letter_1EC1" msgid="5019511373362431084">"Lille e med cirkumfleks og accent grave"</string>
+    <string name="spoken_accented_letter_1EC3" msgid="5719085507413798816">"Lille e med cirkumfleks og pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EC5" msgid="3419169573905751004">"Lille e med cirkumfleks og tilde"</string>
+    <string name="spoken_accented_letter_1EC7" msgid="1277744171696272674">"Lille e med cirkumfleks og prik under"</string>
+    <string name="spoken_accented_letter_1EC9" msgid="6329641087936952362">"Lille i med pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1ECB" msgid="3327046611713033242">"Lille i med prik under"</string>
+    <string name="spoken_accented_letter_1ECD" msgid="5645946423555657021">"Lille o med prik under"</string>
+    <string name="spoken_accented_letter_1ECF" msgid="6430101687743339581">"Lille o med pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1ED1" msgid="3542223744518083869">"Lille o med cirkumfleks og accent aigu"</string>
+    <string name="spoken_accented_letter_1ED3" msgid="5633582508617044483">"Lille o med cirkumfleks og accent grave"</string>
+    <string name="spoken_accented_letter_1ED5" msgid="6489014380143700648">"Lille o med cirkumfleks og pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1ED7" msgid="376703009449231814">"Lille o med cirkumfleks og tilde"</string>
+    <string name="spoken_accented_letter_1ED9" msgid="6737319443248179778">"Lille o med cirkumfleks og prik under"</string>
+    <string name="spoken_accented_letter_1EDB" msgid="6819739418527680766">"Lille o med krog og accent aigu"</string>
+    <string name="spoken_accented_letter_1EDD" msgid="8441862499254128566">"Lille o med krog og accent grave"</string>
+    <string name="spoken_accented_letter_1EDF" msgid="6740676097223638958">"Lille o med krog og pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EE1" msgid="1645775585720722502">"Lille o med krog og tilde"</string>
+    <string name="spoken_accented_letter_1EE3" msgid="7867735542899859419">"Lille o med krog og prik under"</string>
+    <string name="spoken_accented_letter_1EE5" msgid="9180116754354569560">"Lille u med prik under"</string>
+    <string name="spoken_accented_letter_1EE7" msgid="2767129138874029066">"Lille u med pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EE9" msgid="4579407710103850368">"Lille u med krog og accent aigu"</string>
+    <string name="spoken_accented_letter_1EEB" msgid="9092276653886577084">"Lille u med krog og accent grave"</string>
+    <string name="spoken_accented_letter_1EED" msgid="1967931200947380386">"Lille u med krog og pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EEF" msgid="8446824374207720775">"Lille u med krog og tilde"</string>
+    <string name="spoken_accented_letter_1EF1" msgid="6698470815077489739">"Lille u med krog og prik under"</string>
+    <string name="spoken_accented_letter_1EF3" msgid="2443614715758900063">"Lille y med accent grave"</string>
+    <string name="spoken_accented_letter_1EF5" msgid="6415139004635224094">"Lille y med prik under"</string>
+    <string name="spoken_accented_letter_1EF7" msgid="8043497255841518190">"Lille y med pseudospørgsmålstegn over"</string>
+    <string name="spoken_accented_letter_1EF9" msgid="1694289744737814265">"Lille y med tilde"</string>
+    <string name="spoken_symbol_00A1" msgid="5790009556085890120">"Omvendt udråbstegn"</string>
+    <string name="spoken_symbol_00AB" msgid="5511510090088597396">"Dobbelt venstrevendt vinkelcitationstegn"</string>
+    <string name="spoken_symbol_00B7" msgid="2229465280092246747">"Prik midt på linjen"</string>
+    <string name="spoken_symbol_00B9" msgid="569656106787361413">"Hævet ettal"</string>
+    <string name="spoken_symbol_00BB" msgid="1034542082006355758">"Dobbelt højrevendt vinkelcitationstegn"</string>
+    <string name="spoken_symbol_00BF" msgid="2593494842934706144">"Omvendt spørgsmålstegn"</string>
+    <string name="spoken_symbol_2018" msgid="3752105271943839375">"Venstre enkelt citationstegn"</string>
+    <string name="spoken_symbol_2019" msgid="573485083281273993">"Højre enkelt citationstegn"</string>
+    <string name="spoken_symbol_201A" msgid="5266122937974689382">"Enkelt citationstegn med 9-komma nederst"</string>
+    <string name="spoken_symbol_201C" msgid="258649836949624565">"Venstre dobbelt citationstegn"</string>
+    <string name="spoken_symbol_201D" msgid="2263084205088083519">"Højre dobbelt citationstegn"</string>
+    <string name="spoken_symbol_2020" msgid="8808522468746727018">"Kors"</string>
+    <string name="spoken_symbol_2021" msgid="4826738438425587522">"Dobbelt kors"</string>
+    <string name="spoken_symbol_2030" msgid="4220618342788098709">"Promilletegn"</string>
+    <string name="spoken_symbol_2032" msgid="5601856861977171913">"Primtegn"</string>
+    <string name="spoken_symbol_2033" msgid="5929762716995207957">"Dobbelt primtegn"</string>
+    <string name="spoken_symbol_2039" msgid="5066534608558700563">"Enkelt venstrevendt vinkelcitationstegn"</string>
+    <string name="spoken_symbol_203A" msgid="5227807616001958272">"Enkelt højrevendt vinkelcitationstegn"</string>
+    <string name="spoken_symbol_2074" msgid="2007314687882920646">"Hævet firtal"</string>
+    <string name="spoken_symbol_207F" msgid="3090229039527496614">"Hævet lille n"</string>
+    <string name="spoken_symbol_20B1" msgid="1667597325548864311">"Pesotegn"</string>
+    <string name="spoken_symbol_2105" msgid="5668256285251569417">"C/o"</string>
+    <string name="spoken_symbol_2192" msgid="5322328119737591799">"Højrepil"</string>
+    <string name="spoken_symbol_2193" msgid="9032686072837441720">"Pil ned"</string>
+    <string name="spoken_symbol_2205" msgid="5968285323513580406">"Tom mængde"</string>
+    <string name="spoken_symbol_2206" msgid="3376690118863943544">"Inkrement"</string>
+    <string name="spoken_symbol_2264" msgid="8876219179743627125">"Mindre end eller lig med"</string>
+    <string name="spoken_symbol_2265" msgid="131323661511836175">"Større end eller lig med"</string>
+    <string name="spoken_symbol_2605" msgid="6865705201241850682">"Sort stjerne"</string>
 </resources>
