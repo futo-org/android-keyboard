@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- no translation found for english_ime_input_options (4262655277902459172) -->
+    <skip />
+    <!-- no translation found for use_contacts_for_spellchecking_option_title (5006788115094214047) -->
+    <skip />
+    <!-- no translation found for use_contacts_for_spellchecking_option_summary (3637428873952490597) -->
+    <skip />
+    <!-- no translation found for vibrate_on_keypress (4198642474308147572) -->
+    <skip />
+    <!-- no translation found for sound_on_keypress (961585885443836044) -->
+    <skip />
+    <!-- no translation found for popup_on_keypress (8957173605079893697) -->
+    <skip />
+    <!-- no translation found for settings_screen_preferences (2651344303433215540) -->
+    <skip />
+    <!-- no translation found for settings_screen_accounts (6532292577269658674) -->
+    <skip />
+    <!-- no translation found for settings_screen_appearance (5433429477750100471) -->
+    <skip />
+    <!-- no translation found for settings_screen_gesture (6549199069124022556) -->
+    <skip />
+    <!-- no translation found for settings_screen_correction (5457740749558200546) -->
+    <skip />
+    <!-- no translation found for settings_screen_advanced (2905347720063899478) -->
+    <skip />
+    <!-- no translation found for settings_screen_theme (6744206826660778092) -->
+    <skip />
+    <!-- no translation found for enable_split_keyboard (7299522384075400050) -->
+    <skip />
+    <!-- no translation found for cloud_sync_title (2648120016215337960) -->
+    <skip />
+    <!-- no translation found for cloud_sync_summary (457868413134165923) -->
+    <skip />
+    <!-- no translation found for cloud_sync_summary_disabled (3437796499578155725) -->
+    <skip />
+    <!-- no translation found for sync_now_title (8083126086065968727) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_title (2871211805506563252) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_summary (2737229599235212381) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_confirmation (6815059501949766995) -->
+    <skip />
+    <!-- no translation found for clear_sync_data_ok (1809712111627111859) -->
+    <skip />
+    <!-- no translation found for cloud_sync_cancel (3437544314029636750) -->
+    <skip />
+    <!-- no translation found for cloud_sync_opt_in_text (5443081647469720267) -->
+    <skip />
+    <!-- no translation found for add_account_to_enable_sync (1657487000451860348) -->
+    <skip />
+    <!-- no translation found for cloud_sync_summary_disabled_work_profile (4209488085168720952) -->
+    <skip />
+    <!-- no translation found for include_other_imes_in_language_switch_list (2523063290372613355) -->
+    <skip />
+    <!-- no translation found for include_other_imes_in_language_switch_list_summary (478140358131075690) -->
+    <skip />
+    <!-- no translation found for show_language_switch_key (8756330695904259459) -->
+    <skip />
+    <!-- no translation found for show_language_switch_key_summary (8384511980090372506) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_delay (8614997927810442853) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_no_delay (432663218827821108) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_default_delay (5550664463804963104) -->
+    <skip />
+    <!-- no translation found for abbreviation_unit_milliseconds (3255301845626146979) -->
+    <skip />
+    <!-- no translation found for settings_system_default (677003402757146199) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict (1625971825786907643) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (3820744038619192013) -->
+    <skip />
+    <!-- no translation found for use_personalized_dicts (7400413665774169711) -->
+    <skip />
+    <!-- no translation found for enable_metrics_logging (5113593293708535701) -->
+    <skip />
+    <!-- no translation found for use_double_space_period (7172135098923900609) -->
+    <skip />
+    <!-- no translation found for use_double_space_period_summary (7812112507596640969) -->
+    <skip />
+    <!-- no translation found for auto_cap (525628419128036324) -->
+    <skip />
+    <!-- no translation found for auto_cap_summary (1688974089712873396) -->
+    <skip />
+    <!-- no translation found for edit_personal_dictionary (7587143150525708396) -->
+    <skip />
+    <!-- no translation found for configure_dictionaries_title (7811017701961083395) -->
+    <skip />
+    <!-- no translation found for main_dictionary (3935990491324466154) -->
+    <skip />
+    <!-- no translation found for prefs_show_suggestions (1283142612397683159) -->
+    <skip />
+    <!-- no translation found for prefs_show_suggestions_summary (9066941288258400606) -->
+    <skip />
+    <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"ଅପମାନଜନକ ଶବ୍ଦଗୁଡ଼ିକୁ ବ୍ଲକ୍ କରନ୍ତୁ"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"ସମ୍ଭାବ୍ୟ ଅପମାନଜନକ ଶବ୍ଦଗୁଡ଼ିକର ପ୍ରସ୍ତାବ ଦିଅନ୍ତୁ ନାହିଁ"</string>
+    <!-- no translation found for auto_correction (4585482324756913868) -->
+    <skip />
+    <!-- no translation found for auto_correction_summary (2460455056470633907) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_off (3439365513347374953) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_modest (2760377181788020652) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_aggressive (1318808016356749967) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1002799845510475500) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3973898748907276589) -->
+    <skip />
+    <string name="bigram_prediction_summary" msgid="9119170359306430265">"ପ୍ରସ୍ତାବ ପ୍ରସ୍ତୁତ କରିବାରେ ପୂର୍ବବର୍ତ୍ତୀ ଶବ୍ଦ ବ୍ୟବହାର କରନ୍ତୁ"</string>
+    <!-- no translation found for gesture_input (3172130834412003008) -->
+    <skip />
+    <!-- no translation found for gesture_input_summary (2654809358251269108) -->
+    <skip />
+    <!-- no translation found for gesture_preview_trail (1614914802819472106) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text (7266505770073074352) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text_summary (8088162455458685442) -->
+    <skip />
+    <!-- no translation found for gesture_space_aware (7169910298165673388) -->
+    <skip />
+    <!-- no translation found for gesture_space_aware_summary (3761626092188724512) -->
+    <skip />
+    <!-- no translation found for voice_input (7725046107052037926) -->
+    <skip />
+    <!-- no translation found for voice_input_disabled_summary (6419192385407621291) -->
+    <skip />
+    <!-- no translation found for configure_input_method (4444925520298518217) -->
+    <skip />
+    <!-- no translation found for language_selection_title (6121948605923246957) -->
+    <skip />
+    <!-- no translation found for help_and_feedback (5021534846181310255) -->
+    <skip />
+    <!-- no translation found for select_language (3379792010205373078) -->
+    <skip />
+    <!-- no translation found for hint_add_to_dictionary (7401455990016135640) -->
+    <skip />
+    <!-- no translation found for hint_add_to_dictionary_without_word (899422279733408687) -->
+    <skip />
+    <!-- no translation found for has_dictionary (1325233223608273869) -->
+    <skip />
+    <!-- no translation found for keyboard_layout (1709024226955326813) -->
+    <skip />
+    <!-- no translation found for switch_accounts (1213242182459397913) -->
+    <skip />
+    <!-- no translation found for no_accounts_selected (5770301395973322552) -->
+    <skip />
+    <!-- no translation found for account_selected (2929764293361296224) -->
+    <skip />
+    <!-- no translation found for account_select_ok (2319402914890345072) -->
+    <skip />
+    <!-- no translation found for account_select_cancel (8877103220502603643) -->
+    <skip />
+    <!-- no translation found for account_select_sign_out (9208156165797411519) -->
+    <skip />
+    <!-- no translation found for account_select_title (5355659391942386459) -->
+    <skip />
+    <!-- no translation found for subtype_en_GB (7923165641611861624) -->
+    <skip />
+    <!-- no translation found for subtype_en_US (5477258985573018813) -->
+    <skip />
+    <!-- no translation found for subtype_es_US (3224986579031001684) -->
+    <skip />
+    <!-- no translation found for subtype_hi_ZZ (5025145456877877595) -->
+    <skip />
+    <!-- no translation found for subtype_sr_ZZ (440245129648071485) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_en_GB (4220344684463778660) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_en_US (4599421650961912769) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_es_US (6866331205974243592) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_hi_ZZ (5439623653083985558) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_sr_ZZ (546465971819327060) -->
+    <skip />
+    <!-- no translation found for subtype_generic_traditional (5321023815277210849) -->
+    <skip />
+    <!-- no translation found for subtype_generic_compact (2858514299576793292) -->
+    <skip />
+    <!-- no translation found for subtype_no_language (3126489367892967889) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_qwerty (4388578258275303241) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_qwertz (1483779599796051141) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_azerty (5336702044048354922) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_dvorak (1251504275835405915) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_colemak (4216315736099391894) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_pcqwerty (6021681322207866486) -->
+    <skip />
+    <!-- no translation found for subtype_emoji (3021958791567267290) -->
+    <skip />
+    <!-- no translation found for keyboard_theme (6760202984936877690) -->
+    <skip />
+    <!-- no translation found for custom_input_styles_title (4825941816075899639) -->
+    <skip />
+    <!-- no translation found for add_style (8304208538938230889) -->
+    <skip />
+    <!-- no translation found for add (6822705504410731743) -->
+    <skip />
+    <!-- no translation found for remove (4473717811376496460) -->
+    <skip />
+    <!-- no translation found for save (1396012053841537145) -->
+    <skip />
+    <!-- no translation found for subtype_locale (705244739623031884) -->
+    <skip />
+    <!-- no translation found for keyboard_layout_set (1637617996906076019) -->
+    <skip />
+    <!-- no translation found for custom_input_style_note_message (7172574301336711360) -->
+    <skip />
+    <!-- no translation found for enable (3465950915897490353) -->
+    <skip />
+    <!-- no translation found for not_now (6385104011963838405) -->
+    <skip />
+    <!-- no translation found for custom_input_style_already_exists (691995042134481799) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_vibration_duration_settings (1191846765985854173) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_sound_volume_settings (871310008809673416) -->
+    <skip />
+    <!-- no translation found for prefs_key_longpress_timeout_settings (5901254294943018798) -->
+    <skip />
+    <!-- no translation found for prefs_enable_emoji_alt_physical_key (2935264131313540056) -->
+    <skip />
+    <!-- no translation found for prefs_enable_emoji_alt_physical_key_summary (1002326516601127090) -->
+    <skip />
+    <!-- no translation found for button_default (4824983794085575316) -->
+    <skip />
+    <!-- no translation found for setup_welcome_title (6678758294706106216) -->
+    <skip />
+    <!-- no translation found for setup_welcome_additional_description (5109278388931620095) -->
+    <skip />
+    <!-- no translation found for setup_start_action (4261815646635054773) -->
+    <skip />
+    <!-- no translation found for setup_next_action (7388109452671117767) -->
+    <skip />
+    <!-- no translation found for setup_steps_title (750835620571733090) -->
+    <skip />
+    <!-- no translation found for setup_step1_title (7160930459489282227) -->
+    <skip />
+    <!-- no translation found for setup_step1_instruction (7576103876848322594) -->
+    <skip />
+    <!-- no translation found for setup_step1_finished_instruction (9170737556500224736) -->
+    <skip />
+    <!-- no translation found for setup_step1_action (6741430464134100280) -->
+    <skip />
+    <!-- no translation found for setup_step2_title (6087917340371885886) -->
+    <skip />
+    <!-- no translation found for setup_step2_instruction (1656822854161841686) -->
+    <skip />
+    <!-- no translation found for setup_step2_action (7850810726169586795) -->
+    <skip />
+    <!-- no translation found for setup_step3_title (8037349177063816231) -->
+    <skip />
+    <!-- no translation found for setup_step3_instruction (6738330437227290519) -->
+    <skip />
+    <!-- no translation found for setup_step3_action (1049832326490515701) -->
+    <skip />
+    <!-- no translation found for setup_finish_action (4208185697271120108) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon (2985876024078390815) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (714961006007836349) -->
+    <skip />
+    <!-- no translation found for app_name (1388609705083271907) -->
+    <skip />
+    <!-- no translation found for dictionary_provider_name (6344594004933902577) -->
+    <skip />
+    <!-- no translation found for dictionary_service_name (5820737302858072775) -->
+    <skip />
+    <!-- no translation found for download_description (7667377256582305064) -->
+    <skip />
+    <!-- no translation found for dictionary_settings_title (2110439717145834445) -->
+    <skip />
+    <!-- no translation found for dictionary_install_over_metered_network_prompt (4714309383986503474) -->
+    <skip />
+    <!-- no translation found for dictionary_settings_summary (4592894717259325402) -->
+    <skip />
+    <!-- no translation found for user_dictionaries (4261154182736972314) -->
+    <skip />
+    <!-- no translation found for default_user_dict_pref_name (6983281585422145165) -->
+    <skip />
+    <!-- no translation found for dictionary_available (1808541860747006757) -->
+    <skip />
+    <!-- no translation found for dictionary_downloading (196314208594985478) -->
+    <skip />
+    <!-- no translation found for dictionary_installed (7840532191933912708) -->
+    <skip />
+    <!-- no translation found for dictionary_disabled (3991458948275777795) -->
+    <skip />
+    <!-- no translation found for cannot_connect_to_dict_service (2343267566673179104) -->
+    <skip />
+    <!-- no translation found for no_dictionaries_available (4187305901152592110) -->
+    <skip />
+    <!-- no translation found for check_for_updates_now (5375846376242975290) -->
+    <skip />
+    <!-- no translation found for last_update (2377094521844654156) -->
+    <skip />
+    <!-- no translation found for message_updating (7158989361989504143) -->
+    <skip />
+    <!-- no translation found for message_loading (9151934303930222809) -->
+    <skip />
+    <!-- no translation found for main_dict_description (695289288722079926) -->
+    <skip />
+    <!-- no translation found for cancel (5611033781118852820) -->
+    <skip />
+    <!-- no translation found for go_to_settings (3019191145506686424) -->
+    <skip />
+    <!-- no translation found for install_dict (8963966683066463555) -->
+    <skip />
+    <!-- no translation found for cancel_download_dict (8877923127773611502) -->
+    <skip />
+    <!-- no translation found for delete_dict (293286833341025636) -->
+    <skip />
+    <!-- no translation found for should_download_over_metered_prompt (2055970799464394373) -->
+    <skip />
+    <!-- no translation found for download_over_metered (4261625913263960556) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (3581560726170361477) -->
+    <skip />
+    <!-- no translation found for dict_available_notification_title (4601321236641174590) -->
+    <skip />
+    <!-- no translation found for dict_available_notification_description (5360056805680595057) -->
+    <skip />
+    <!-- no translation found for toast_downloading_suggestions (8611681981781082223) -->
+    <skip />
+    <!-- no translation found for version_text (3213200439763585436) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_menu_title (2094235623352820667) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_dialog_title (2721075588858235712) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_screen_title (3777988967870363317) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_dialog_more_options (7886545237005649111) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_dialog_less_options (8979202725719736727) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_dialog_confirm (3186677423073299487) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_word_option_name (3496247524233890907) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_shortcut_option_name (7359967823612428231) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_locale_option_name (4267453866893832123) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_word_hint (4186108932162183595) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_shortcut_hint (7429655828828922094) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_edit_dialog_title (2496847143207331651) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_context_menu_edit_title (7274461666869894342) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_context_menu_delete_title (2615595304309771624) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_empty_text (2730443669360549945) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_all_languages (4423377540643689186) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_more_languages (4436784162689712198) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_delete (7688033506773806537) -->
+    <skip />
+    <!-- no translation found for user_dict_fast_scroll_alphabet (6814045626833403178) -->
+    <skip />
+</resources>
