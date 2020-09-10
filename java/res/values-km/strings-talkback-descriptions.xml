@@ -20,77 +20,77 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_use_headphones" msgid="4313642710742229868">"ដោត​កាស ដើម្បី​ស្ដាប់​ពាក្យ​សម្ងាត់​ដែល​និយាយ​​ឮ​ៗ។"</string>
-    <string name="spoken_current_text_is" msgid="4240549866156675799">"អត្ថបទ​បច្ចុប្បន្ន​គឺ %s"</string>
-    <string name="spoken_no_text_entered" msgid="1711276837961785646">"គ្មាន​អត្ថបទ​​​បាន​បញ្ចូល"</string>
-    <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> កែ <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> ទៅ​ជា <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> អនុវត្ត​ការ​កែ​ស្វ័យ​ប្រវត្តិ"</string>
-    <string name="spoken_empty_suggestion" msgid="4250215619373459752">"គ្មានការផ្តល់យោបល់ទេ"</string>
-    <string name="spoken_description_unknown" msgid="5139930082759824442">"មិន​ស្គាល់​តួអក្សរ"</string>
-    <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
-    <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"និមិត្ត​សញ្ញា​​ច្រើន​ទៀត"</string>
-    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift"</string>
-    <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"និមិត្តសញ្ញា"</string>
-    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Shift"</string>
-    <string name="spoken_description_delete" msgid="3878902286264983302">"លុប"</string>
-    <string name="spoken_description_to_symbol" msgid="8244903740201126590">"និមិត្តសញ្ញា"</string>
-    <string name="spoken_description_to_alpha" msgid="4081215210530031950">"អក្សរ"</string>
-    <string name="spoken_description_to_numeric" msgid="4560261331530795682">"លេខ"</string>
-    <string name="spoken_description_settings" msgid="7281251004003143204">"ការកំណត់"</string>
-    <string name="spoken_description_tab" msgid="8210782459446866716">"Tab"</string>
-    <string name="spoken_description_space" msgid="5908716896642059145">"ដកឃ្លា"</string>
-    <string name="spoken_description_mic" msgid="6153138783813452464">"ការ​បញ្ចូល​សំឡេង"</string>
-    <string name="spoken_description_emoji" msgid="7990051553008088470">"សញ្ញា​អារម្មណ៍"</string>
-    <string name="spoken_description_return" msgid="3183692287397645708">"Return"</string>
-    <string name="spoken_description_search" msgid="5099937658231911288">"ស្វែងរក"</string>
-    <string name="spoken_description_dot" msgid="5644176501632325560">"ចំណុច"</string>
-    <string name="spoken_description_language_switch" msgid="6818666779313544553">"ប្ដូរ​​ភាសា"</string>
-    <string name="spoken_description_action_next" msgid="431761808119616962">"បន្ទាប់"</string>
-    <string name="spoken_description_action_previous" msgid="2919072174697865110">"មុន"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"បាន​បើក Shift"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"បាន​បើក Caps lock"</string>
-    <string name="spoken_description_mode_symbol" msgid="111186851131446691">"របៀប​និមិត្ត​សញ្ញា"</string>
-    <string name="spoken_description_mode_symbol_shift" msgid="4305607977537665389">"របៀប​និមិត្ត​សញ្ញា​​ច្រើន​ទៀត"</string>
-    <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"របៀប​អក្សរ"</string>
-    <string name="spoken_description_mode_phone" msgid="2061220553756692903">"របៀប​ទូរស័ព្ទ"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"​របៀប​និមិត្ត​សញ្ញា​ទូរស័ព្ទ"</string>
-    <string name="announce_keyboard_hidden" msgid="2313574218950517779">"បាន​លាក់​ក្ដារចុច"</string>
-    <string name="announce_keyboard_mode" msgid="6698257917367823205">"បង្ហាញ​ក្ដារ​ចុច <xliff:g id="KEYBOARD_MODE">%s</xliff:g>"</string>
-    <string name="keyboard_mode_date" msgid="6597407244976713364">"កាលបរិច្ឆេទ"</string>
-    <string name="keyboard_mode_date_time" msgid="3642804408726668808">"កាល​បរិច្ឆេទ​ និង​ពេល​វេលា"</string>
-    <string name="keyboard_mode_email" msgid="1239682082047693644">"អ៊ីមែល"</string>
-    <string name="keyboard_mode_im" msgid="3812086215529493501">"ការ​ផ្ញើ​សារ"</string>
-    <string name="keyboard_mode_number" msgid="5395042245837996809">"លេខ"</string>
-    <string name="keyboard_mode_phone" msgid="2486230278064523665">"ទូរស័ព្ទ"</string>
-    <string name="keyboard_mode_text" msgid="9138789594969187494">"អត្ថបទ"</string>
-    <string name="keyboard_mode_time" msgid="8558297845514402675">"ពេលវេលា"</string>
-    <string name="keyboard_mode_url" msgid="8072011652949962550">"URL"</string>
-    <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"ថ្មីៗ"</string>
-    <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"មនុស្ស"</string>
-    <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"វត្ថុ"</string>
-    <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"ធម្មជាតិ"</string>
-    <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"ទីកន្លែង"</string>
-    <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"និមិត្តសញ្ញា"</string>
-    <string name="spoken_descrption_emoji_category_flags" msgid="5971573825866381472">"ទង់"</string>
-    <string name="spoken_descrption_emoji_category_eight_smiley_people" msgid="5682663819532433464">"សញ្ញាអារម្មណ៍ និងមនុស្ស"</string>
-    <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="5844950234883716704">"សត្វ និងធម្មជាតិ"</string>
-    <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="6196944764485349650">"អាហារ និងភេសជ្ជៈ"</string>
-    <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="3834085499381434611">"ការធ្វើដំណើរ និងទីកន្លែង"</string>
-    <string name="spoken_descrption_emoji_category_eight_activity" msgid="4795281669042975993">"សកម្មភាព"</string>
-    <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"សញ្ញា​អារម្មណ៍"</string>
-    <string name="spoken_description_upper_case" msgid="4904835255229433916">"អក្សរ​ធំ <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
-    <string name="spoken_letter_0049" msgid="4743162182646977944">"I ធំ"</string>
-    <string name="spoken_letter_0130" msgid="4766619646231612274">"I ធំមានចំណុចពីលើ"</string>
-    <string name="spoken_symbol_unknown" msgid="717298227061173706">"មិន​ស្គាល់​និមិត្តសញ្ញា"</string>
-    <string name="spoken_emoji_unknown" msgid="5981009928135394306">"មិន​ស្គាល់​សញ្ញា​អារម្មណ៍"</string>
-    <string name="spoken_emoticon_3A_2D_21_20" msgid="2410905667389534573">"មុខ​អផ្សុក"</string>
-    <string name="spoken_emoticon_3A_2D_24_20" msgid="2481260475945560438">"មុខ​ខ្មាស​​អៀន"</string>
-    <string name="spoken_emoticon_42_2D_29_20" msgid="1063205250387128068">"ពាក់​វ៉ែនតា​"</string>
-    <string name="spoken_emoticon_3A_4F_20" msgid="532695091593447238">"មុខ​ភ្ញាក់ផ្អើល"</string>
-    <string name="spoken_emoticon_3A_2D_2A_20" msgid="5612342617244114291">"មុខ​ថើប"</string>
-    <string name="spoken_emoticon_3A_2D_5B_20" msgid="2223507987759905920">"មុខ​ចង​ចិញ្ចើម"</string>
-    <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"តួអក្សរ​ជំនួស​អាច​ប្រើ​បាន"</string>
-    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"បាន​បដិសេធ​តួអក្សរ​ជំនួស"</string>
-    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"ការ​ស្នើ​ជំនួស​អាច​ប្រើ​បាន"</string>
-    <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"បាន​បដិសេធ​ការ​ស្នើ​ជំនួស"</string>
+    <string name="spoken_use_headphones" msgid="2455138206280962514">"ដោត​កាស ដើម្បី​ស្ដាប់​ពាក្យ​សម្ងាត់​ដែល​និយាយ​​ឮ​ៗ។"</string>
+    <string name="spoken_current_text_is" msgid="1642386857389316456">"អត្ថបទ​បច្ចុប្បន្ន​គឺ %s"</string>
+    <string name="spoken_no_text_entered" msgid="3439628354874662101">"គ្មាន​អត្ថបទ​​​បាន​បញ្ចូល"</string>
+    <string name="spoken_auto_correct" msgid="965889269068888859">"<xliff:g id="KEY_NAME">%1$s</xliff:g> កែ <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> ទៅ​ជា <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="7511607899335382699">"<xliff:g id="KEY_NAME">%1$s</xliff:g> អនុវត្ត​ការ​កែ​ស្វ័យ​ប្រវត្តិ"</string>
+    <string name="spoken_empty_suggestion" msgid="2286069969311700210">"គ្មានការផ្តល់យោបល់ទេ"</string>
+    <string name="spoken_description_unknown" msgid="1535681682176891657">"មិន​ស្គាល់​តួអក្សរ"</string>
+    <string name="spoken_description_shift" msgid="5601265304232040160">"Shift"</string>
+    <string name="spoken_description_symbols_shift" msgid="7021554432250713919">"និមិត្ត​សញ្ញា​​ច្រើន​ទៀត"</string>
+    <string name="spoken_description_shift_shifted" msgid="8320892168715414194">"Shift"</string>
+    <string name="spoken_description_symbols_shift_shifted" msgid="2081698143924232950">"និមិត្តសញ្ញា"</string>
+    <string name="spoken_description_caps_lock" msgid="506204541224956885">"Shift"</string>
+    <string name="spoken_description_delete" msgid="4165807821216391895">"លុប"</string>
+    <string name="spoken_description_to_symbol" msgid="7670803518079013389">"និមិត្តសញ្ញា"</string>
+    <string name="spoken_description_to_alpha" msgid="5322272819833640065">"អក្សរ"</string>
+    <string name="spoken_description_to_numeric" msgid="3548068682242334441">"លេខ"</string>
+    <string name="spoken_description_settings" msgid="1073932784786491619">"ការកំណត់"</string>
+    <string name="spoken_description_tab" msgid="568279792087139829">"Tab"</string>
+    <string name="spoken_description_space" msgid="1250020733893233844">"ដកឃ្លា"</string>
+    <string name="spoken_description_mic" msgid="6886663336601712754">"ការ​បញ្ចូល​សំឡេង"</string>
+    <string name="spoken_description_emoji" msgid="6924752370699219433">"សញ្ញា​អារម្មណ៍"</string>
+    <string name="spoken_description_return" msgid="4488063731506261120">"Return"</string>
+    <string name="spoken_description_search" msgid="329378364788556198">"ស្វែងរក"</string>
+    <string name="spoken_description_dot" msgid="3283345286942874246">"ចំណុច"</string>
+    <string name="spoken_description_language_switch" msgid="7746491590433873257">"ប្ដូរ​​ភាសា"</string>
+    <string name="spoken_description_action_next" msgid="3138675495787988738">"បន្ទាប់"</string>
+    <string name="spoken_description_action_previous" msgid="6412781133527225661">"មុន"</string>
+    <string name="spoken_description_shiftmode_on" msgid="3024566466254641378">"បាន​បើក Shift"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="6027866984122644787">"បាន​បើក Caps lock"</string>
+    <string name="spoken_description_mode_symbol" msgid="5625649481044472733">"របៀប​និមិត្ត​សញ្ញា"</string>
+    <string name="spoken_description_mode_symbol_shift" msgid="8519474757011127447">"របៀប​និមិត្ត​សញ្ញា​​ច្រើន​ទៀត"</string>
+    <string name="spoken_description_mode_alpha" msgid="7380668628429082374">"របៀប​អក្សរ"</string>
+    <string name="spoken_description_mode_phone" msgid="6237003101160059429">"របៀប​ទូរស័ព្ទ"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="6466664670028168121">"​របៀប​និមិត្ត​សញ្ញា​ទូរស័ព្ទ"</string>
+    <string name="announce_keyboard_hidden" msgid="7187110892005362010">"បាន​លាក់​ក្ដារចុច"</string>
+    <string name="announce_keyboard_mode" msgid="5314352981874590170">"បង្ហាញ​ក្ដារ​ចុច <xliff:g id="KEYBOARD_MODE">%s</xliff:g>"</string>
+    <string name="keyboard_mode_date" msgid="235656444283809548">"កាលបរិច្ឆេទ"</string>
+    <string name="keyboard_mode_date_time" msgid="5617700011756859256">"កាល​បរិច្ឆេទ​ និង​ពេល​វេលា"</string>
+    <string name="keyboard_mode_email" msgid="1465418232632309379">"អ៊ីមែល"</string>
+    <string name="keyboard_mode_im" msgid="2687516353432386203">"ការ​ផ្ញើ​សារ"</string>
+    <string name="keyboard_mode_number" msgid="7750406274704584360">"លេខ"</string>
+    <string name="keyboard_mode_phone" msgid="2103227851574328305">"ទូរស័ព្ទ"</string>
+    <string name="keyboard_mode_text" msgid="427410634222960176">"អត្ថបទ"</string>
+    <string name="keyboard_mode_time" msgid="2893895457566815909">"ពេលវេលា"</string>
+    <string name="keyboard_mode_url" msgid="2177199890959072136">"URL"</string>
+    <string name="spoken_descrption_emoji_category_recents" msgid="6655576616197579523">"ថ្មីៗ"</string>
+    <string name="spoken_descrption_emoji_category_people" msgid="8088976940627745749">"មនុស្ស"</string>
+    <string name="spoken_descrption_emoji_category_objects" msgid="4773749700438398447">"វត្ថុ"</string>
+    <string name="spoken_descrption_emoji_category_nature" msgid="2697340758574900604">"ធម្មជាតិ"</string>
+    <string name="spoken_descrption_emoji_category_places" msgid="4447033033270598017">"ទីកន្លែង"</string>
+    <string name="spoken_descrption_emoji_category_symbols" msgid="3030366209787208186">"និមិត្តសញ្ញា"</string>
+    <string name="spoken_descrption_emoji_category_flags" msgid="3724827204516816974">"ទង់"</string>
+    <string name="spoken_descrption_emoji_category_eight_smiley_people" msgid="516862607940946567">"សញ្ញាអារម្មណ៍ និងមនុស្ស"</string>
+    <string name="spoken_descrption_emoji_category_eight_animals_nature" msgid="3130039996801924053">"សត្វ និងធម្មជាតិ"</string>
+    <string name="spoken_descrption_emoji_category_eight_food_drink" msgid="1478225385249039378">"អាហារ និងភេសជ្ជៈ"</string>
+    <string name="spoken_descrption_emoji_category_eight_travel_places" msgid="6975340995817905597">"ការធ្វើដំណើរ និងទីកន្លែង"</string>
+    <string name="spoken_descrption_emoji_category_eight_activity" msgid="2520945361841436225">"សកម្មភាព"</string>
+    <string name="spoken_descrption_emoji_category_emoticons" msgid="8240355528013190054">"សញ្ញា​អារម្មណ៍"</string>
+    <string name="spoken_description_upper_case" msgid="548189286451849550">"អក្សរ​ធំ <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
+    <string name="spoken_letter_0049" msgid="6252447769078238049">"I ធំ"</string>
+    <string name="spoken_letter_0130" msgid="6262138104969416204">"I ធំមានចំណុចពីលើ"</string>
+    <string name="spoken_symbol_unknown" msgid="6860905811823108094">"មិន​ស្គាល់​និមិត្តសញ្ញា"</string>
+    <string name="spoken_emoji_unknown" msgid="2806409713621989352">"មិន​ស្គាល់​សញ្ញា​អារម្មណ៍"</string>
+    <string name="spoken_emoticon_3A_2D_21_20" msgid="3779607205210487724">"មុខ​អផ្សុក"</string>
+    <string name="spoken_emoticon_3A_2D_24_20" msgid="5145714270941713949">"មុខ​ខ្មាស​​អៀន"</string>
+    <string name="spoken_emoticon_42_2D_29_20" msgid="7723582638756049066">"ពាក់​វ៉ែនតា​"</string>
+    <string name="spoken_emoticon_3A_4F_20" msgid="8892277380170989139">"មុខ​ភ្ញាក់ផ្អើល"</string>
+    <string name="spoken_emoticon_3A_2D_2A_20" msgid="1762731513574698628">"មុខ​ថើប"</string>
+    <string name="spoken_emoticon_3A_2D_5B_20" msgid="2724383073855048927">"មុខ​ចង​ចិញ្ចើម"</string>
+    <string name="spoken_open_more_keys_keyboard" msgid="6360228862663398420">"តួអក្សរ​ជំនួស​អាច​ប្រើ​បាន"</string>
+    <string name="spoken_close_more_keys_keyboard" msgid="3480477836938343527">"បាន​បដិសេធ​តួអក្សរ​ជំនួស"</string>
+    <string name="spoken_open_more_suggestions" msgid="3086481888103568638">"ការ​ស្នើ​ជំនួស​អាច​ប្រើ​បាន"</string>
+    <string name="spoken_close_more_suggestions" msgid="5065127953274283640">"បាន​បដិសេធ​ការ​ស្នើ​ជំនួស"</string>
 </resources>
