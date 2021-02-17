@@ -179,7 +179,9 @@ cc_library_static {
 cc_test {
     name: "liblatinime_unittests",
     host_supported: true,
-
+    test_options: {
+        unit_test: true,
+    },
     cflags: [
         "-Wno-unused-parameter",
         "-Wno-unused-function",
