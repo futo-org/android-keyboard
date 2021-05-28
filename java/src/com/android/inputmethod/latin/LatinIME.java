@@ -803,7 +803,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // create new display context and re-init keyboard layout with this context.
         final WindowManager wm = getSystemService(WindowManager.class);
         final int newDisplayId = wm.getDefaultDisplay().getDisplayId();
-        if (mCurDisplayId != newDisplayId) {
+        if (mCurDisplayId != newDisplayId || !mDisplayContext.getResources().getConfiguration()
+                        .equals(getResources().getConfiguration())) {
             mCurDisplayId = newDisplayId;
             mDisplayContext = createDisplayContext(wm.getDefaultDisplay());
             mKeyboardSwitcher.updateKeyboardTheme(mDisplayContext);
