@@ -34,6 +34,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".EditorActivity"
+                  android:windowSoftInputMode="stateHidden|adjustPan"
+                  android:theme="@style/defaultActivityTheme"
+                  android:label="@string/app_name"/>
         <receiver android:name=".NotificationBroadcastReceiver"
              android:exported="false"/>
     </application>

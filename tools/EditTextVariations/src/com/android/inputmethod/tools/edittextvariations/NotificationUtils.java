@@ -57,7 +57,7 @@ final class NotificationUtils {
         synchronized (sLock) {
             if (!sNotificationChannelInitialized) {
                 final NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                        CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+                        CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
                 channel.setDescription(CHANNEL_DESCRIPTION);
                 context.getSystemService(NotificationManager.class)
                         .createNotificationChannel(channel);
@@ -79,12 +79,15 @@ final class NotificationUtils {
 
         final int notificationId = sNextNotificationId.getAndIncrement();
         final PendingIntent pendingIntent = getReplyPendingIntent(context, notificationId);
+        final PendingIntent activityIntent = PendingIntent.getActivity(context, 0,
+                new Intent(context, EditorActivity.class), 0);
         final Notification.Action action =
                 new Notification.Action.Builder(null, "Direct Reply Test", pendingIntent)
                         .addRemoteInput(remoteInput)
                         .build();
         final Notification notification = createNotificationBuilder(context)
                 .setContentText("Content Title")
+                .setContentIntent(activityIntent)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentText("Message from " + UserHandle.getUserHandleForUid(Process.myUid()))
                 .setShowWhen(true)
