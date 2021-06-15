@@ -17,10 +17,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
      coreApp="true"
      package="com.android.inputmethod.latin"
-     android:versionCode="28">
+     android:versionCode="30">
 
     <uses-sdk android:minSdkVersion="21"
-         android:targetSdkVersion="28"/>
+         android:targetSdkVersion="30"/>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>

@@ -50,6 +50,6 @@ android_test {
     instrumentation_for: "LatinIME",
 
     min_sdk_version: "14",
-    target_sdk_version: "21",
+    target_sdk_version: "30",
     sdk_version: "current",
 }
