@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.tools.edittextvariations;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,7 +47,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +68,7 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
     private static final String PREF_THEME = "theme";
     private static final String PREF_NAVIGATE = "navigate";
     private static final String PREF_SOFTINPUT = "softinput";
+    private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 0;
 
     private SharedPreferences prefs;
     private View[] fields;
@@ -199,9 +204,33 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
             saveSoftInputMode(itemId == MENU_SOFTINPUT_VISIBLE);
             restartActivity();
         } else if (itemId == MENU_DIRECT_REPLY) {
-            NotificationUtils.sendDirectReplyNotification(this);
+            final boolean needPermissionCheck = isNeedNotificationPermission()
+                    && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                            PackageManager.PERMISSION_GRANTED;
+            if (needPermissionCheck) {
+                requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS },
+                        NOTIFICATION_PERMISSION_REQUEST_CODE);
+            } else {
+                NotificationUtils.sendDirectReplyNotification(this);
+            }
         }
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            int[] grantResults) {
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+                if (grantResults.length == 1 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted. Continue to send the notification.
+                    NotificationUtils.sendDirectReplyNotification(this);
+                }  else {
+                    Log.d(TAG, "POST_NOTIFICATIONS Permissions denied.");
+                    Toast.makeText(this, "Required permission has denied",
+                            Toast.LENGTH_LONG).show();
+                }
+        }
     }
 
     @Override
@@ -475,5 +504,15 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
             return text + "|" + name;
         }
         return text;
+    }
+
+    private static boolean isNeedNotificationPermission() {
+        for(Field field : Manifest.permission.class.getFields()) {
+            if (field.getName().equals("POST_NOTIFICATIONS")) {
+                Log.d(TAG, "Need notification permission.");
+                return true;
+            }
+        }
+        return false;
     }
 }
