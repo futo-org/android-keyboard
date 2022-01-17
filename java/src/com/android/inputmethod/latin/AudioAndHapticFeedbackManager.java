@@ -119,8 +119,7 @@ public final class AudioAndHapticFeedbackManager {
         // Go ahead with the system default
         if (viewToPerformHapticFeedbackOn != null) {
             viewToPerformHapticFeedbackOn.performHapticFeedback(
-                    HapticFeedbackConstants.KEYBOARD_TAP,
-                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                    HapticFeedbackConstants.KEYBOARD_TAP);
         }
     }
 
