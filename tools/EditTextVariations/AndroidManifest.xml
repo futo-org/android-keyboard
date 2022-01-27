@@ -18,6 +18,7 @@
      package="com.android.inputmethod.tools.edittextvariations"
      android:versionName="0.67"
      android:versionCode="67">
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <supports-screens android:resizeable="true"/>
     <uses-sdk android:targetSdkVersion="27"
          android:minSdkVersion="11"/>
