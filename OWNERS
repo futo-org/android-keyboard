@@ -1,6 +1,2 @@
-# Recommended reviewers for general changes.
-# takaoka@google.com
-# yukawa@google.com
-#
-# Recommended reviewers for non-trivial build rule changes.
-# dwillemsen@google.com
+# Bug component: 319003
+include platform/frameworks/base:/services/core/java/com/android/server/inputmethod/OWNERS
