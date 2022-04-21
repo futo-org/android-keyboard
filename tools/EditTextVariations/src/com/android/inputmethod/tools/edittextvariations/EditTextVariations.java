@@ -16,10 +16,19 @@
 
 package com.android.inputmethod.tools.edittextvariations;
 
+import static android.graphics.Color.BLUE;
+import static android.view.Gravity.LEFT;
+import static android.view.Gravity.TOP;
+import static android.view.WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+import static android.view.WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,9 +36,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -65,6 +76,7 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
     private static final int MENU_SOFTINPUT_VISIBLE = 4;
     private static final int MENU_SOFTINPUT_HIDDEN = 5;
     private static final int MENU_DIRECT_REPLY = 6;
+    private static final int MENU_TOGGLE_IME_FOCUSABLE_OVERLAY = 7;
     private static final String PREF_THEME = "theme";
     private static final String PREF_NAVIGATE = "navigate";
     private static final String PREF_SOFTINPUT = "softinput";
@@ -84,6 +96,9 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
                     Build.VERSION.SDK_INT >= /* ICE_CREAM_SANDWICH */14 ? 0x80000000 : 0);
 
     private ArrayAdapter<String> mAutoCompleteAdapter;
+
+    private TextView mOverlayTextView;
+    private boolean mShowOverlay = true;
 
     /** Called when the activity is first created. */
     @SuppressLint("SetJavaScriptEnabled")
@@ -171,9 +186,12 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
         if (NotificationUtils.DIRECT_REPLY_SUPPORTED) {
             menu.add(Menu.NONE, MENU_DIRECT_REPLY, 5, R.string.menu_direct_reply);
         }
+        menu.add(Menu.NONE, MENU_TOGGLE_IME_FOCUSABLE_OVERLAY, 6,
+                mShowOverlay ? getString(R.string.menu_show_ime_focusable_overlay)
+                        : getString(R.string.menu_hide_ime_focusable_overlay));
         try {
             final PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            menu.add(Menu.NONE, MENU_VERSION, 6,
+            menu.add(Menu.NONE, MENU_VERSION, 7,
                     getString(R.string.menu_version, pinfo.versionName))
                     .setEnabled(false);
         } catch (NameNotFoundException e) {
@@ -213,6 +231,16 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
             } else {
                 NotificationUtils.sendDirectReplyNotification(this);
             }
+        } else if (itemId == MENU_TOGGLE_IME_FOCUSABLE_OVERLAY) {
+            if (!Settings.canDrawOverlays(this)) {
+                Toast.makeText(this,
+                        "Not allowed to show overlay.\nCheck \"Settings > "
+                                + "Display over other apps\"", Toast.LENGTH_LONG).show();
+            } else {
+                toggleOverlayView(true /* needsIme */);
+                item.setTitle(mShowOverlay ? getString(R.string.menu_show_ime_focusable_overlay)
+                        : getString(R.string.menu_hide_ime_focusable_overlay));
+            }
         }
         return true;
     }
@@ -230,6 +258,14 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
                     Toast.makeText(this, "Required permission has denied",
                             Toast.LENGTH_LONG).show();
                 }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mOverlayTextView != null) {
+            getWindowManager().removeView(mOverlayTextView);
+            mOverlayTextView = null;
         }
     }
 
@@ -514,5 +550,27 @@ public final class EditTextVariations extends Activity implements TextView.OnEdi
             }
         }
         return false;
+    }
+
+    private void toggleOverlayView(boolean needsIme) {
+        if (mOverlayTextView == null) {
+            Context overlayContext = createDisplayContext(getDisplay())
+                    .createWindowContext(TYPE_APPLICATION_OVERLAY, null /* options */);
+            int focusableFlags = FLAG_NOT_FOCUSABLE | (needsIme ? FLAG_ALT_FOCUSABLE_IM : 0);
+            final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                    TYPE_APPLICATION_OVERLAY, FLAG_WATCH_OUTSIDE_TOUCH | focusableFlags);
+            final Rect windowBounds = getWindowManager().getCurrentWindowMetrics().getBounds();
+            params.width = windowBounds.width() / 3;
+            params.height = windowBounds.height() / 3;
+            params.gravity = TOP | LEFT;
+
+            mOverlayTextView = new TextView(overlayContext);
+            mOverlayTextView.setText("I'm an IME focusable overlay");
+            mOverlayTextView.setBackgroundColor(BLUE);
+            getWindowManager().addView(mOverlayTextView, params);
+        }
+        mOverlayTextView.setVisibility(mShowOverlay ? View.VISIBLE : View.GONE);
+        // Toggle the overlay visibility after the call.
+        mShowOverlay = !mShowOverlay;
     }
 }

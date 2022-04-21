@@ -19,6 +19,7 @@
      android:versionName="0.67"
      android:versionCode="67">
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <supports-screens android:resizeable="true"/>
     <uses-sdk android:targetSdkVersion="27"
          android:minSdkVersion="11"/>
