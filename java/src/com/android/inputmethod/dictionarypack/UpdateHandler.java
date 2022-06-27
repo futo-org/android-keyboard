@@ -19,9 +19,6 @@ package com.android.inputmethod.dictionarypack;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.app.DownloadManager.Request;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -36,10 +33,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.compat.ConnectivityManagerCompatUtils;
-import com.android.inputmethod.compat.NotificationCompatUtils;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
@@ -841,54 +835,6 @@ public final class UpdateHandler {
         final List<WordListMetadata> currentMetadata =
                 MetadataHandler.getCurrentMetadata(context, clientId);
         return compareMetadataForUpgrade(context, clientId, currentMetadata, newMetadata);
-    }
-
-    /**
-     * Shows the notification that informs the user a dictionary is available.
-     *
-     * When this notification is clicked, the dialog for downloading the dictionary
-     * over a metered connection is shown.
-     */
-    private static void showDictionaryAvailableNotification(final Context context,
-            final String clientId, final ContentValues installCandidate) {
-        final String localeString = installCandidate.getAsString(MetadataDbHelper.LOCALE_COLUMN);
-        final Intent intent = new Intent();
-        intent.setClass(context, DownloadOverMeteredDialog.class);
-        intent.putExtra(DownloadOverMeteredDialog.CLIENT_ID_KEY, clientId);
-        intent.putExtra(DownloadOverMeteredDialog.WORDLIST_TO_DOWNLOAD_KEY,
-                installCandidate.getAsString(MetadataDbHelper.WORDLISTID_COLUMN));
-        intent.putExtra(DownloadOverMeteredDialog.SIZE_KEY,
-                installCandidate.getAsInteger(MetadataDbHelper.FILESIZE_COLUMN));
-        intent.putExtra(DownloadOverMeteredDialog.LOCALE_KEY, localeString);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        final PendingIntent notificationIntent = PendingIntent.getActivity(context,
-                0 /* requestCode */, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-        final NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // None of those are expected to happen, but just in case...
-        if (null == notificationIntent || null == notificationManager) return;
-
-        final String language = (null == localeString) ? ""
-                : LocaleUtils.constructLocaleFromString(localeString).getDisplayLanguage();
-        final String titleFormat = context.getString(R.string.dict_available_notification_title);
-        final String notificationTitle = String.format(titleFormat, language);
-        final Notification.Builder builder = new Notification.Builder(context)
-                .setAutoCancel(true)
-                .setContentIntent(notificationIntent)
-                .setContentTitle(notificationTitle)
-                .setContentText(context.getString(R.string.dict_available_notification_description))
-                .setTicker(notificationTitle)
-                .setOngoing(false)
-                .setOnlyAlertOnce(true)
-                .setSmallIcon(R.drawable.ic_notify_dictionary);
-        NotificationCompatUtils.setColor(builder,
-                context.getResources().getColor(R.color.notification_accent_color));
-        NotificationCompatUtils.setPriorityToLow(builder);
-        NotificationCompatUtils.setVisibilityToSecret(builder);
-        NotificationCompatUtils.setCategoryToRecommendation(builder);
-        final Notification notification = NotificationCompatUtils.build(builder);
-        notificationManager.notify(DICT_AVAILABLE_NOTIFICATION_ID, notification);
     }
 
     /**
