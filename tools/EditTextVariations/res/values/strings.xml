@@ -35,6 +35,10 @@
     <string name="menu_softinput_hidden" translatable="false">Keyboard Hidden</string>
     <!-- The menu title to send a notification to test direct reply. [CHAR LIMIT=20] -->
     <string name="menu_direct_reply">Direct Reply</string>
+    <!-- The menu title to show a application overlay with NOT_FOCUSABLE | ALT_FOCUSABLE_IM. [CHAR LIMIT=26] -->
+    <string name="menu_show_ime_focusable_overlay">Show IME focusable overlay</string>
+    <!-- The menu title to hide a application overlay with NOT_FOCUSABLE | ALT_FOCUSABLE_IM. [CHAR LIMIT=26] -->
+    <string name="menu_hide_ime_focusable_overlay">Hide IME focusable overlay</string>
     <!-- The example of custom action key label. Must be short to fit on key. 5 chars or less is preferable.  [CHAR LIMIT=7] -->
     <string name="custom_action_label">Custom</string>
 </resources>
