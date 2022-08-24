@@ -26,6 +26,7 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
@@ -62,7 +63,8 @@ public class DownloadManagerWrapper {
             // We couldn't remove the file from DownloadManager. Apparently, the database can't
             // be opened. It may be a problem with file system corruption. In any case, there is
             // not much we can do apart from avoiding crashing.
-            Log.e(TAG, "Can't remove files with ID " + ids + " from download manager", e);
+            Log.e(TAG, "Can't remove files with ID " + Arrays.toString(ids) +
+                    " from download manager", e);
         }
     }
 
