@@ -131,7 +131,7 @@ abstract class ExpectedKeyOutput {
 
         @Override
         boolean hasSameKeyOutput(final String text) {
-            return text.equals(text);
+            return mText.equals(text);
         }
 
         @Override
