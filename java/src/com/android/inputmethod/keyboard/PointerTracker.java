@@ -281,7 +281,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         if (DEBUG_LISTENER) {
             final String output = code == Constants.CODE_OUTPUT_TEXT
                     ? key.getOutputText() : Constants.printableCode(code);
-            Log.d(TAG, String.format("[%d] onCodeInput: %4d %4d %s%s%s", mPointerId, x, y,
+            Log.d(TAG, String.format("[%d] onCodeInput: %4d %4d %s%s%s%s", mPointerId, x, y,
                     output, ignoreModifierKey ? " ignoreModifier" : "",
                     altersCode ? " altersCode" : "", key.isEnabled() ? "" : " disabled"));
         }

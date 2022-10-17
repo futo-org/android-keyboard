@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 /**
  * An implementation of DictEncoder for version 2 binary dictionary.
@@ -100,7 +101,7 @@ public class Ver2DictEncoder implements DictEncoder {
         Collections.sort(codePointOccurrenceArray, new Comparator<Entry<Integer, Integer>>() {
             @Override
             public int compare(final Entry<Integer, Integer> a, final Entry<Integer, Integer> b) {
-                if (a.getValue() != b.getValue()) {
+                if (!Objects.equals(a.getValue(), b.getValue())) {
                     return b.getValue().compareTo(a.getValue());
                 }
                 return b.getKey().compareTo(a.getKey());
