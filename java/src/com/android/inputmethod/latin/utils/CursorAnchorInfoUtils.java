@@ -216,7 +216,7 @@ public final class CursorAnchorInfoUtils {
                         if (isTopLeftVisible || isBottomRightVisible) {
                             characterBoundsFlags |= CursorAnchorInfo.FLAG_HAS_VISIBLE_REGION;
                         }
-                        if (!isTopLeftVisible || !isTopLeftVisible) {
+                        if (!isTopLeftVisible || !isBottomRightVisible) {
                             characterBoundsFlags |= CursorAnchorInfo.FLAG_HAS_INVISIBLE_REGION;
                         }
                         if (isRtl) {

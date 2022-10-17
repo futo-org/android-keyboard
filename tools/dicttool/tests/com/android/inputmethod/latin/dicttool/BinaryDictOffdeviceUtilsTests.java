@@ -162,7 +162,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         options.put("locale", "en_US");
         options.put("version", Integer.toString(mRandom.nextInt()));
         // Add some random options for test
-        final int numberOfOptionsToAdd = mRandom.nextInt() % (MAX_NUMBER_OF_OPTIONS_TO_ADD + 1);
+        final int numberOfOptionsToAdd = mRandom.nextInt(MAX_NUMBER_OF_OPTIONS_TO_ADD + 1);
         for (int i = 0; i < numberOfOptionsToAdd; ++i) {
             options.put(sWords.get(2 * i), sWords.get(2 * 1 + 1));
         }
