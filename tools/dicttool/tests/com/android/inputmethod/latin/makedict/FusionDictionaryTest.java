@@ -47,7 +47,7 @@ public class FusionDictionaryTest extends TestCase {
      */
     private String generateWord(final Random random) {
         StringBuilder builder = new StringBuilder("a");
-        int count = random.nextInt() % 30;
+        int count = random.nextInt(30);
         while (count > 0) {
             final long r = Math.abs(random.nextInt());
             if (r < 0) continue;
