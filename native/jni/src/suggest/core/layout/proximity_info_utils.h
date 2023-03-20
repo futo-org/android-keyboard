@@ -72,7 +72,7 @@ class ProximityInfoUtils {
             for (int i = 0; i < inputSize; ++i) {
                 AKLOGI("---");
                 for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE; ++j) {
-                    int proximityChar =
+                    [[maybe_unused]] int proximityChar =
                             inputProximities[i * MAX_PROXIMITY_CHARS_SIZE + j];
                     proximityChar += 0;
                     AKLOGI("--- (%d)%c", i, proximityChar);

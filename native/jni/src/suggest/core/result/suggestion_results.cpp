@@ -97,7 +97,7 @@ void SuggestionResults::dumpSuggestions() const {
         suggestedWords.push_back(copyOfSuggestedWords.top());
         copyOfSuggestedWords.pop();
     }
-    int index = 0;
+    [[maybe_unused]] int index = 0;
     for (auto it = suggestedWords.rbegin(); it != suggestedWords.rend(); ++it) {
         DUMP_SUGGESTION(it->getCodePoint(), it->getCodePointCount(), index, it->getScore());
         index++;
