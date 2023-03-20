@@ -490,12 +490,10 @@ namespace latinime {
     const int x0 = (*sampledInputXs)[id];
     const int y0 = (*sampledInputYs)[id];
     const int actualInputIndex = (*sampledInputIndices)[id];
-    int tempTime = 0;
     int tempBeelineDistance = 0;
     int start = actualInputIndex;
     // lookup forward
     while (start > 0 && tempBeelineDistance < lookupRadius) {
-        tempTime += times[start] - times[start - 1];
         --start;
         tempBeelineDistance = GeometryUtils::getDistanceInt(x0, y0, xCoordinates[start],
                 yCoordinates[start]);
@@ -504,12 +502,10 @@ namespace latinime {
     if (start > 0 && start < actualInputIndex) {
         ++start;
     }
-    tempTime= 0;
     tempBeelineDistance = 0;
     int end = actualInputIndex;
     // lookup backward
     while (end < (inputSize - 1) && tempBeelineDistance < lookupRadius) {
-        tempTime += times[end + 1] - times[end];
         ++end;
         tempBeelineDistance = GeometryUtils::getDistanceInt(x0, y0, xCoordinates[end],
                 yCoordinates[end]);
