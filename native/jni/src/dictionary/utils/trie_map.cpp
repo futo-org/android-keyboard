@@ -53,7 +53,7 @@ void TrieMap::dump(const int from, const int to) const {
     for (int i = from; i < to; ++i) {
         AKLOGI("Entry[%d]: %x, %x", i, readField0(i), readField1(i));
     }
-    int unusedRegionSize = 0;
+    [[maybe_unused]] int unusedRegionSize = 0;
     for (int i = 1; i <= MAX_NUM_OF_ENTRIES_IN_ONE_LEVEL; ++i) {
         int index = readEmptyTableLink(i);
         while (index != ROOT_BITMAP_ENTRY_INDEX) {

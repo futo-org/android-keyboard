@@ -71,14 +71,12 @@ bool TerminalPositionLookupTable::flushToFile(FILE *const file) const {
 }
 
 bool TerminalPositionLookupTable::runGCTerminalIds(TerminalIdMap *const terminalIdMap) {
-    int removedEntryCount = 0;
     int nextNewTerminalId = 0;
     for (int i = 0; i < mSize; ++i) {
         const int terminalPos = getBuffer()->readUint(
                 Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE, getEntryPos(i));
         if (terminalPos == Ver4DictConstants::NOT_A_TERMINAL_ADDRESS) {
             // This entry is a garbage.
-            removedEntryCount++;
         } else {
             // Give a new terminal id to the entry.
             if (!getWritableBuffer()->writeUint(terminalPos,
