@@ -14,12 +14,12 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.dicttool;
+package org.futo.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.common.FileUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderEncoderTests;
-import com.android.inputmethod.latin.makedict.BinaryDictEncoderFlattenTreeTests;
-import com.android.inputmethod.latin.makedict.FusionDictionaryTest;
+import org.futo.inputmethod.latin.common.FileUtils;
+import org.futo.inputmethod.latin.makedict.BinaryDictDecoderEncoderTests;
+import org.futo.inputmethod.latin.makedict.BinaryDictEncoderFlattenTreeTests;
+import org.futo.inputmethod.latin.makedict.FusionDictionaryTest;
 
 import java.io.File;
 import java.io.IOException;

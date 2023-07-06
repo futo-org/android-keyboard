@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.tools;
+package org.futo.inputmethod.keyboard.tools;
 
 import java.io.File;
 import java.io.IOException;

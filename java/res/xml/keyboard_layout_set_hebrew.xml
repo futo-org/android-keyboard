@@ -19,7 +19,7 @@
 -->
 
 <KeyboardLayoutSet
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
     <Feature
         latin:supportedScript="hebrew" />
     <Element

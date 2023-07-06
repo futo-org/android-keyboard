@@ -18,7 +18,7 @@
 */
 -->
 
-<com.android.inputmethod.keyboard.emoji.EmojiPageKeyboardView
+<org.futo.inputmethod.keyboard.emoji.EmojiPageKeyboardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/emoji_keyboard_page"
     android:layoutDirection="ltr"

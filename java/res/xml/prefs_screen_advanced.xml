@@ -16,22 +16,22 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
     android:title="@string/settings_screen_advanced"
     android:key="screen_advanced">
     <!-- TODO: consolidate key preview dismiss delay with the key preview animation parameters. -->
     <ListPreference
         android:key="pref_key_preview_popup_dismiss_delay"
         android:title="@string/key_preview_popup_dismiss_delay" />
-    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+    <org.futo.inputmethod.latin.settings.SeekBarDialogPreference
         android:key="pref_vibration_duration_settings"
         android:title="@string/prefs_keypress_vibration_duration_settings"
         latin:maxValue="@integer/config_max_vibration_duration" />
-    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+    <org.futo.inputmethod.latin.settings.SeekBarDialogPreference
         android:key="pref_keypress_sound_volume"
         android:title="@string/prefs_keypress_sound_volume_settings"
         latin:maxValue="100" /> <!-- percent -->
-    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+    <org.futo.inputmethod.latin.settings.SeekBarDialogPreference
         android:key="pref_key_longpress_timeout"
         android:title="@string/prefs_key_longpress_timeout_settings"
         latin:minValue="@integer/config_min_longpress_timeout"
@@ -49,7 +49,7 @@
         android:summary="@string/show_setup_wizard_icon_summary"
         android:persistent="true" />
     <PreferenceScreen
-        android:fragment="com.android.inputmethod.latin.settings.DebugSettingsFragment"
+        android:fragment="org.futo.inputmethod.latin.settings.DebugSettingsFragment"
         android:key="screen_debug"
         android:title="Debug settings"
         android:defaultValue="false"

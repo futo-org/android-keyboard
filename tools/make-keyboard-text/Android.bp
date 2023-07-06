@@ -26,6 +26,6 @@ java_binary_host {
     name: "make-keyboard-text",
 
     srcs: ["src/**/*.java"],
-    main_class: "com.android.inputmethod.keyboard.tools.MakeKeyboardText",
+    main_class: "org.futo.inputmethod.keyboard.tools.MakeKeyboardText",
     java_resource_dirs: ["res"],
 }

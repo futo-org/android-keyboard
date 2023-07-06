@@ -66,7 +66,7 @@
           android:textColor="?android:attr/textColorSecondary"
           android:maxLines="1" />
 
-      <com.android.inputmethod.dictionarypack.DictionaryDownloadProgressBar
+      <org.futo.inputmethod.dictionarypack.DictionaryDownloadProgressBar
           android:id="@+id/dictionary_line_progress_bar"
           style="@android:style/Widget.Holo.ProgressBar.Horizontal"
           android:layout_width="match_parent"
@@ -76,7 +76,7 @@
     </FrameLayout>
   </LinearLayout>
 
-  <com.android.inputmethod.dictionarypack.ButtonSwitcher
+  <org.futo.inputmethod.dictionarypack.ButtonSwitcher
       android:id="@+id/wordlist_button_switcher"
       android:layout_weight="0"
       android:layout_marginStart="13dip"
@@ -107,5 +107,5 @@
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/delete_dict" />
-  </com.android.inputmethod.dictionarypack.ButtonSwitcher>
+  </org.futo.inputmethod.dictionarypack.ButtonSwitcher>
 </LinearLayout>

@@ -24,7 +24,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
 >
-    <com.android.inputmethod.keyboard.MoreKeysKeyboardView
+    <org.futo.inputmethod.keyboard.MoreKeysKeyboardView
         android:id="@+id/more_keys_keyboard_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

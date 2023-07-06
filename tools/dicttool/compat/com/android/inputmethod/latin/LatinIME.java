@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package org.futo.inputmethod.latin;
 
 public class LatinIME {
 }

@@ -51,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp" />
     </LinearLayout>
-    <com.android.inputmethod.latin.setup.SetupStartIndicatorView
+    <org.futo.inputmethod.latin.setup.SetupStartIndicatorView
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </merge>

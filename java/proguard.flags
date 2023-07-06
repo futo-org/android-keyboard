@@ -1,13 +1,13 @@
 # Keep classes and methods that have the @UsedForTesting annotation
--keep @com.android.inputmethod.annotations.UsedForTesting class *
+-keep @org.futo.inputmethod.annotations.UsedForTesting class *
 -keepclassmembers class * {
-    @com.android.inputmethod.annotations.UsedForTesting *;
+    @org.futo.inputmethod.annotations.UsedForTesting *;
 }
 
 # Keep classes and methods that have the @ExternallyReferenced annotation
--keep @com.android.inputmethod.annotations.ExternallyReferenced class *
+-keep @org.futo.inputmethod.annotations.ExternallyReferenced class *
 -keepclassmembers class * {
-    @com.android.inputmethod.annotations.ExternallyReferenced *;
+    @org.futo.inputmethod.annotations.ExternallyReferenced *;
 }
 
 # Keep native methods
@@ -17,12 +17,12 @@
 
 # Keep classes that are used as a parameter type of methods that are also marked as keep
 # to preserve changing those methods' signature.
--keep class com.android.inputmethod.latin.AssetFileAddress
--keep class com.android.inputmethod.latin.Dictionary
--keep class com.android.inputmethod.latin.NgramContext
--keep class com.android.inputmethod.latin.makedict.ProbabilityInfo
--keep class com.android.inputmethod.latin.utils.LanguageModelParam
+-keep class org.futo.inputmethod.latin.AssetFileAddress
+-keep class org.futo.inputmethod.latin.Dictionary
+-keep class org.futo.inputmethod.latin.NgramContext
+-keep class org.futo.inputmethod.latin.makedict.ProbabilityInfo
+-keep class org.futo.inputmethod.latin.utils.LanguageModelParam
 
 # TODO: remove once used in code.
--keep class com.android.inputmethod.keyboard.KeyboardLayout { *; }
+-keep class org.futo.inputmethod.keyboard.KeyboardLayout { *; }
 

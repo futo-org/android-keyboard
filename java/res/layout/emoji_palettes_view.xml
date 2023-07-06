@@ -18,7 +18,7 @@
 */
 -->
 
-<com.android.inputmethod.keyboard.emoji.EmojiPalettesView
+<org.futo.inputmethod.keyboard.emoji.EmojiPalettesView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
         android:id="@+id/emoji_keyboard_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <com.android.inputmethod.keyboard.emoji.EmojiCategoryPageIndicatorView
+    <org.futo.inputmethod.keyboard.emoji.EmojiCategoryPageIndicatorView
         android:id="@+id/emoji_category_page_id_view"
         android:layout_width="match_parent"
         android:layout_height="2dip" />
@@ -129,4 +129,4 @@
             android:hapticFeedbackEnabled="false"
             android:soundEffectsEnabled="false" />
     </LinearLayout>
-</com.android.inputmethod.keyboard.emoji.EmojiPalettesView>
+</org.futo.inputmethod.keyboard.emoji.EmojiPalettesView>

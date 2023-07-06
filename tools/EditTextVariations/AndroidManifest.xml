@@ -15,7 +15,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-     package="com.android.inputmethod.tools.edittextvariations"
+     package="org.futo.inputmethod.tools.edittextvariations"
      android:versionName="0.67"
      android:versionCode="67">
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />

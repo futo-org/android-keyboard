@@ -14,16 +14,16 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.dicttool;
+package org.futo.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.ProbabilityInfo;
-import com.android.inputmethod.latin.makedict.WeightedString;
-import com.android.inputmethod.latin.makedict.WordProperty;
-import com.android.inputmethod.latin.utils.CombinedFormatUtils;
+import org.futo.inputmethod.latin.makedict.FormatSpec;
+import org.futo.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
+import org.futo.inputmethod.latin.makedict.FusionDictionary;
+import org.futo.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
+import org.futo.inputmethod.latin.makedict.ProbabilityInfo;
+import org.futo.inputmethod.latin.makedict.WeightedString;
+import org.futo.inputmethod.latin.makedict.WordProperty;
+import org.futo.inputmethod.latin.utils.CombinedFormatUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -18,7 +18,7 @@
 */
 -->
 
-<com.android.inputmethod.latin.InputView
+<org.futo.inputmethod.latin.InputView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -29,4 +29,4 @@
     <include
         android:id="@+id/emoji_palettes_view"
         layout="@layout/emoji_palettes_view" />
-</com.android.inputmethod.latin.InputView>
+</org.futo.inputmethod.latin.InputView>

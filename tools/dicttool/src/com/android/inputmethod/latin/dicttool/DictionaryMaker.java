@@ -14,18 +14,18 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.dicttool;
+package org.futo.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
-import com.android.inputmethod.latin.makedict.DictDecoder;
-import com.android.inputmethod.latin.makedict.DictEncoder;
-import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.MakedictLog;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
-import com.android.inputmethod.latin.makedict.Ver4DictEncoder;
+import org.futo.inputmethod.latin.makedict.BinaryDictDecoderUtils;
+import org.futo.inputmethod.latin.makedict.BinaryDictIOUtils;
+import org.futo.inputmethod.latin.makedict.DictDecoder;
+import org.futo.inputmethod.latin.makedict.DictEncoder;
+import org.futo.inputmethod.latin.makedict.FormatSpec;
+import org.futo.inputmethod.latin.makedict.FusionDictionary;
+import org.futo.inputmethod.latin.makedict.MakedictLog;
+import org.futo.inputmethod.latin.makedict.UnsupportedFormatException;
+import org.futo.inputmethod.latin.makedict.Ver2DictEncoder;
+import org.futo.inputmethod.latin.makedict.Ver4DictEncoder;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

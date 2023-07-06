@@ -42,14 +42,14 @@
             android:inputType="textMultiLine|textAutoCorrect"
             android:imeOptions="actionSend" />
         <view
-            class="com.android.inputmethod.tools.edittextvariations.MultiLineShortMessageEditText"
+            class="org.futo.inputmethod.tools.edittextvariations.MultiLineShortMessageEditText"
             android:id="@+id/text_short_message_send_multi_lines"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="textShortMessage|textMultiLine|textAutoCorrect|textCapSentences"
             android:imeOptions="actionSend" />
         <view
-            class="com.android.inputmethod.tools.edittextvariations.MultiLineShortMessageEditText"
+            class="org.futo.inputmethod.tools.edittextvariations.MultiLineShortMessageEditText"
             android:id="@+id/text_multi_lines_search"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

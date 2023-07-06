@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.dicttool;
+package org.futo.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.common.CodePointUtils;
-import com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils;
-import com.android.inputmethod.latin.dicttool.Compress;
-import com.android.inputmethod.latin.dicttool.Crypt;
-import com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils.DecoderChainSpec;
-import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictUtils;
-import com.android.inputmethod.latin.makedict.DictDecoder;
-import com.android.inputmethod.latin.makedict.DictEncoder;
-import com.android.inputmethod.latin.makedict.DictionaryHeader;
-import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.ProbabilityInfo;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
+import org.futo.inputmethod.latin.common.CodePointUtils;
+import org.futo.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils;
+import org.futo.inputmethod.latin.dicttool.Compress;
+import org.futo.inputmethod.latin.dicttool.Crypt;
+import org.futo.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils.DecoderChainSpec;
+import org.futo.inputmethod.latin.makedict.BinaryDictIOUtils;
+import org.futo.inputmethod.latin.makedict.BinaryDictUtils;
+import org.futo.inputmethod.latin.makedict.DictDecoder;
+import org.futo.inputmethod.latin.makedict.DictEncoder;
+import org.futo.inputmethod.latin.makedict.DictionaryHeader;
+import org.futo.inputmethod.latin.makedict.FormatSpec;
+import org.futo.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
+import org.futo.inputmethod.latin.makedict.FormatSpec.FormatOptions;
+import org.futo.inputmethod.latin.makedict.FusionDictionary;
+import org.futo.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
+import org.futo.inputmethod.latin.makedict.ProbabilityInfo;
+import org.futo.inputmethod.latin.makedict.UnsupportedFormatException;
+import org.futo.inputmethod.latin.makedict.Ver2DictEncoder;
 
 import junit.framework.TestCase;
 

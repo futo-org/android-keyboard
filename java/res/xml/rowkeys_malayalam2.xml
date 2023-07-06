@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
     <!-- U+0D15: "ക" MALAYALAM LETTER KA
          U+0D16: "ഖ" MALAYALAM LETTER KHA -->
     <Key

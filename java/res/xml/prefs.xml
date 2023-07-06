@@ -16,30 +16,30 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
     android:key="english_ime_settings">
     <PreferenceScreen
-        android:fragment="com.android.inputmethod.latin.settings.PreferencesSettingsFragment"
+        android:fragment="org.futo.inputmethod.latin.settings.PreferencesSettingsFragment"
         android:title="@string/settings_screen_preferences"
         android:key="screen_preferences" />
     <PreferenceScreen
-        android:fragment="com.android.inputmethod.latin.settings.AccountsSettingsFragment"
+        android:fragment="org.futo.inputmethod.latin.settings.AccountsSettingsFragment"
         android:title="@string/settings_screen_accounts"
         android:key="screen_accounts" />
     <PreferenceScreen
-        android:fragment="com.android.inputmethod.latin.settings.AppearanceSettingsFragment"
+        android:fragment="org.futo.inputmethod.latin.settings.AppearanceSettingsFragment"
         android:title="@string/settings_screen_appearance"
         android:key="screen_appearance" />
     <PreferenceScreen
-        android:fragment="com.android.inputmethod.latin.settings.GestureSettingsFragment"
+        android:fragment="org.futo.inputmethod.latin.settings.GestureSettingsFragment"
         android:title="@string/settings_screen_gesture"
         android:key="screen_gesture" />
     <PreferenceScreen
-        android:fragment="com.android.inputmethod.latin.settings.CorrectionSettingsFragment"
+        android:fragment="org.futo.inputmethod.latin.settings.CorrectionSettingsFragment"
         android:title="@string/settings_screen_correction"
         android:key="screen_correction" />
     <PreferenceScreen
-        android:fragment="com.android.inputmethod.latin.settings.AdvancedSettingsFragment"
+        android:fragment="org.futo.inputmethod.latin.settings.AdvancedSettingsFragment"
         android:title="@string/settings_screen_advanced"
         android:key="screen_advanced" />
 </PreferenceScreen>

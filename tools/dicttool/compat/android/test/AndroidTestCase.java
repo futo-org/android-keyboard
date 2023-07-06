@@ -16,7 +16,7 @@
 
 package android.test;
 
-import com.android.inputmethod.latin.dicttool.Test;
+import org.futo.inputmethod.latin.dicttool.Test;
 
 import junit.framework.TestCase;
 

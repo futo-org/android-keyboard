@@ -22,7 +22,7 @@
      API version 16 can't automatically render dotted circle for incomplete combining letter
      of some scripts. The files named res/xml/key_*.xml have this U+25CC hack, although the
      counterpart files named res/xml-v16/key_*.xml don't have this hack. -->
-<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
     <switch>
         <case latin:keyboardLayoutSet="hindi">
             <!-- U+0948/U+0902: "ैं" DEVANAGARI VOWEL SIGN AI/DEVANAGARI SIGN ANUSVARA -->

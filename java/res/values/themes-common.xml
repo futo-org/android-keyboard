@@ -105,9 +105,9 @@
     <style
         name="MainKeyboardView"
         parent="KeyboardView" />
-    <!-- Though {@link com.android.inputmethod.keyboard.emoji.EmojiPalettesView} doesn't extend
-         {@link com.android.inputmethod.keyboard.KeyboardView}, some views inside it, for instance
-         delete button, need themed {@link com.android.inputmethod.keyboard.KeyboardView}
+    <!-- Though {@link org.futo.inputmethod.keyboard.emoji.EmojiPalettesView} doesn't extend
+         {@link org.futo.inputmethod.keyboard.KeyboardView}, some views inside it, for instance
+         delete button, need themed {@link org.futo.inputmethod.keyboard.KeyboardView}
          attributes. -->
     <style name="EmojiPalettesView" />
     <style name="MoreKeysKeyboard" />

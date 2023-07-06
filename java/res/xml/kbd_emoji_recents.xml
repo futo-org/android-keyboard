@@ -19,7 +19,7 @@
 -->
 
 <Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
     latin:keyWidth="@fraction/config_emoji_keyboard_key_width"
     latin:keyLetterSize="@fraction/config_emoji_keyboard_key_letter_size"
     latin:keyLabelSize="60%p"

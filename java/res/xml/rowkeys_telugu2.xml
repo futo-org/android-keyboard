@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
     <!-- U+0C4B: "ో" TELUGU VOWEL SIGN OO
          U+0C13: "ఓ" TELUGU LETTER OO -->
     <Key

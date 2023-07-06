@@ -19,7 +19,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
 >
     <Row
         latin:keyWidth="7.692%p"

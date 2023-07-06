@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.tools.edittextvariations;
+package org.futo.inputmethod.tools.edittextvariations;
 
 import static android.graphics.Color.BLUE;
 import static android.view.Gravity.LEFT;

@@ -7,7 +7,7 @@
         errorLine1="            return paint.hasGlyph(switzerland);"
         errorLine2="                         ~~~~~~~~">
         <location
-            file="packages/inputmethods/LatinIME/java/src/com/android/inputmethod/keyboard/emoji/EmojiCategory.java"
+            file="packages/inputmethods/LatinIME/java/src/org/futo/inputmethod/keyboard/emoji/EmojiCategory.java"
             line="445"
             column="26"/>
     </issue>
@@ -18,7 +18,7 @@
         errorLine1="            return paint.hasGlyph(cheese);"
         errorLine2="                         ~~~~~~~~">
         <location
-            file="packages/inputmethods/LatinIME/java/src/com/android/inputmethod/keyboard/emoji/EmojiCategory.java"
+            file="packages/inputmethods/LatinIME/java/src/org/futo/inputmethod/keyboard/emoji/EmojiCategory.java"
             line="461"
             column="26"/>
     </issue>
@@ -29,7 +29,7 @@
         errorLine1="        final WindowManager wm = getSystemService(WindowManager.class);"
         errorLine2="                                 ~~~~~~~~~~~~~~~~">
         <location
-            file="packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/LatinIME.java"
+            file="packages/inputmethods/LatinIME/java/src/org/futo/inputmethod/latin/LatinIME.java"
             line="606"
             column="34"/>
     </issue>
@@ -40,7 +40,7 @@
         errorLine1="        final WindowManager wm = getSystemService(WindowManager.class);"
         errorLine2="                                 ~~~~~~~~~~~~~~~~">
         <location
-            file="packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/LatinIME.java"
+            file="packages/inputmethods/LatinIME/java/src/org/futo/inputmethod/latin/LatinIME.java"
             line="804"
             column="34"/>
     </issue>
@@ -51,7 +51,7 @@
         errorLine1="                ActivityOptions.makeBasic().setLaunchDisplayId(currentDisplayId).toBundle());"
         errorLine2="                                ~~~~~~~~~">
         <location
-            file="packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/LatinIME.java"
+            file="packages/inputmethods/LatinIME/java/src/org/futo/inputmethod/latin/LatinIME.java"
             line="1823"
             column="33"/>
     </issue>
@@ -62,7 +62,7 @@
         errorLine1="                ActivityOptions.makeBasic().setLaunchDisplayId(currentDisplayId).toBundle());"
         errorLine2="                                            ~~~~~~~~~~~~~~~~~~">
         <location
-            file="packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/LatinIME.java"
+            file="packages/inputmethods/LatinIME/java/src/org/futo/inputmethod/latin/LatinIME.java"
             line="1823"
             column="45"/>
     </issue>
@@ -73,7 +73,7 @@
         errorLine1="        final UserManager userManager = context.getSystemService(UserManager.class);"
         errorLine2="                                                ~~~~~~~~~~~~~~~~">
         <location
-            file="packages/inputmethods/LatinIME/java/src/com/android/inputmethod/compat/UserManagerCompatUtils.java"
+            file="packages/inputmethods/LatinIME/java/src/org/futo/inputmethod/compat/UserManagerCompatUtils.java"
             line="69"
             column="49"/>
     </issue>

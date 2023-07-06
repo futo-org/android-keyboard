@@ -18,7 +18,7 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Note that correctionX is obsolete (See com.android.inputmethod.keyboard.internal.TouchPositionCorrection)
+    <!-- Note that correctionX is obsolete (See org.futo.inputmethod.keyboard.internal.TouchPositionCorrection)
         An entry of the touch_position_correction word should be:
         1. correctionX: (touch_center_x - hitbox_center_x) / hitbox_width
         2. correctionY: (touch_center_y - hitbox_center_y) / hitbox_height
@@ -29,7 +29,7 @@
         name="touch_position_correction_data_default"
         translatable="false"
     >
-        <!-- The default touch position data (See com.android.inputmethod.keyboard.ProximityInfo)
+        <!-- The default touch position data (See org.futo.inputmethod.keyboard.ProximityInfo)
              correctionX = 0.0f
              correctionY = 0.0f
              correctionR = DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS

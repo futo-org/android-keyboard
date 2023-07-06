@@ -16,7 +16,7 @@
 
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
 >
     <!-- Left edge -->
     <item latin:state_left_edge="true" latin:state_has_morekeys="true"

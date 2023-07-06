@@ -32,25 +32,25 @@ license {
 filegroup {
     name: "dicttool_deps",
     srcs: [
-        "java/src/com/android/inputmethod/latin/makedict/**/*.java",
+        "java/src/org/futo/inputmethod/latin/makedict/**/*.java",
 
         // Dependencies for Dicttool. Most of these files are needed by BinaryDictionary.java. Note that
         // a significant part of the dependencies are mocked in the compat/ directory, with empty or
         // nearly-empty implementations, for parts that we don't use in Dicttool.
-        "java/src/com/android/inputmethod/latin/BinaryDictionary.java",
-        "java/src/com/android/inputmethod/latin/DicTraverseSession.java",
-        "java/src/com/android/inputmethod/latin/Dictionary.java",
-        "java/src/com/android/inputmethod/latin/NgramContext.java",
-        "java/src/com/android/inputmethod/latin/SuggestedWords.java",
-        "java/src/com/android/inputmethod/latin/settings/SettingsValuesForSuggestion.java",
-        "java/src/com/android/inputmethod/latin/utils/BinaryDictionaryUtils.java",
-        "java/src/com/android/inputmethod/latin/utils/CombinedFormatUtils.java",
-        "java/src/com/android/inputmethod/latin/utils/JniUtils.java",
+        "java/src/org/futo/inputmethod/latin/BinaryDictionary.java",
+        "java/src/org/futo/inputmethod/latin/DicTraverseSession.java",
+        "java/src/org/futo/inputmethod/latin/Dictionary.java",
+        "java/src/org/futo/inputmethod/latin/NgramContext.java",
+        "java/src/org/futo/inputmethod/latin/SuggestedWords.java",
+        "java/src/org/futo/inputmethod/latin/settings/SettingsValuesForSuggestion.java",
+        "java/src/org/futo/inputmethod/latin/utils/BinaryDictionaryUtils.java",
+        "java/src/org/futo/inputmethod/latin/utils/CombinedFormatUtils.java",
+        "java/src/org/futo/inputmethod/latin/utils/JniUtils.java",
 
-        "java/src/com/android/inputmethod/latin/define/DebugFlags.java",
-        "java/src/com/android/inputmethod/latin/define/DecoderSpecificConstants.java",
+        "java/src/org/futo/inputmethod/latin/define/DebugFlags.java",
+        "java/src/org/futo/inputmethod/latin/define/DecoderSpecificConstants.java",
 
-        "tests/src/com/android/inputmethod/latin/utils/ByteArrayDictBuffer.java",
-        "tests/src/com/android/inputmethod/latin/makedict/**/*.java",
+        "tests/src/org/futo/inputmethod/latin/utils/ByteArrayDictBuffer.java",
+        "tests/src/org/futo/inputmethod/latin/makedict/**/*.java",
     ],
 }

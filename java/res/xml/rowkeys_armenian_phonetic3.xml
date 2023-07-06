@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
     <!-- U+0561: "ա" ARMENIAN SMALL LETTER AYB -->
     <Key latin:keySpec="&#x0561;" />
     <!-- U+057D: "ս" ARMENIAN SMALL LETTER SEH -->

@@ -20,7 +20,7 @@
 <resources>
     <string-array name="phantom_sudden_move_event_device_list" translatable="false">
         <!-- "Build condition,true" that needs "phantom sudden move event" hack.
-             See {@link com.android.inputmethod.keyboard.PointerTracker}. -->
+             See {@link org.futo.inputmethod.keyboard.PointerTracker}. -->
         <!-- Xoom -->
         <item>HARDWARE=stingray,true</item>
     </string-array>

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.makedict;
+package org.futo.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.WordProperty;
+import org.futo.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
+import org.futo.inputmethod.latin.makedict.FusionDictionary;
+import org.futo.inputmethod.latin.makedict.FusionDictionary.PtNode;
+import org.futo.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
+import org.futo.inputmethod.latin.makedict.WordProperty;
 
 import junit.framework.TestCase;
 

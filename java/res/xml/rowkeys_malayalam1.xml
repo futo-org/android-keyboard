@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin" >
+<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin" >
     <!-- U+0D4D: "്" MALAYALAM SIGN VIRAMA
          U+0D05: "അ" MALAYALAM LETTER A -->
     <Key

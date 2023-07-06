@@ -14,9 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.dicttool;
+package org.futo.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.DictionaryHeader;
+import org.futo.inputmethod.latin.makedict.DictionaryHeader;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

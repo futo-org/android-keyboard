@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
     <!-- U+0CCC: "ೌ" KANNADA VOWEL SIGN AU
          U+0C94: "ಔ" KANNADA LETTER AU
          U+0CE7: "೧" KANNADA DIGIT ONE -->

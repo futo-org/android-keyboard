@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.utils;
+package org.futo.inputmethod.latin.utils;
 
 public final class WordInputEventForPersonalization {
 }

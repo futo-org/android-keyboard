@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.tools;
+package org.futo.inputmethod.keyboard.tools;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -22,7 +22,7 @@ import java.util.Locale;
 /**
  * A class to help with handling Locales in string form.
  *
- * This is a subset of com/android/inputmethod/latin/utils/LocaleUtils.java in order to use
+ * This is a subset of org/futo/inputmethod/latin/utils/LocaleUtils.java in order to use
  * for the make-keyboard-text tool.
  */
 public final class LocaleUtils {

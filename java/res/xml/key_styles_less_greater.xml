@@ -19,7 +19,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
 >
     <!-- The less and greater keys' style which may have different label depending on locale. -->
     <!-- Kept as a separate file for cleaner overriding by an overlay.  -->
