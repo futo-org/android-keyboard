@@ -22,6 +22,7 @@
 #include "org_futo_inputmethod_latin_BinaryDictionary.h"
 #include "org_futo_inputmethod_latin_BinaryDictionaryUtils.h"
 #include "org_futo_inputmethod_latin_DicTraverseSession.h"
+#include "org_futo_inputmethod_latin_GGMLDictionary.h"
 #include "defines.h"
 
 /*
@@ -40,6 +41,10 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         return -1;
     }
     if (!latinime::register_BinaryDictionary(env)) {
+        AKLOGE("ERROR: BinaryDictionary native registration failed");
+        return -1;
+    }
+    if (!latinime::register_GGMLDictionary(env)) {
         AKLOGE("ERROR: BinaryDictionary native registration failed");
         return -1;
     }

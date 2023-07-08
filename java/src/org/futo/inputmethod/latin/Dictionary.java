@@ -63,6 +63,8 @@ public abstract class Dictionary {
     public static final String TYPE_USER = "user";
     // User history dictionary internal to LatinIME.
     public static final String TYPE_USER_HISTORY = "history";
+
+    public static final String TYPE_GGML = "ggml";
     public final String mDictType;
     // The locale for this dictionary. May be null if unknown (phony dictionary for example).
     public final Locale mLocale;

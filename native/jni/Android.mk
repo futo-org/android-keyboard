@@ -31,8 +31,12 @@ LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-ali
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls \
     -Woverloaded-virtual -Wsign-promo -Wno-system-headers -Wno-deprecated-copy
 
+
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
+
+# Needed to build with ggml
+LOCAL_CFLAGS += -Wno-cast-align -Wno-format-nonliteral -Wno-float-equal -Wno-sign-compare -Wno-unused-variable -fexceptions -O3
 
 # HACK: -mstackrealign is required for x86 builds running on pre-KitKat devices to avoid crashes
 # with SSE instructions.

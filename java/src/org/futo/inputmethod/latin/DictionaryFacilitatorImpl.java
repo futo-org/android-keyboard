@@ -135,6 +135,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         @Nullable public final String mAccount;
 
         @Nullable private Dictionary mMainDict;
+
+        @Nullable private GGMLDictionary mGGMLDict = null;
+
         // Confidence that the most probable language is actually the language the user is
         // typing in. For now, this is simply the number of times a word from this language
         // has been committed in a row.
@@ -182,6 +185,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 return mMainDict;
             }
+            if (Dictionary.TYPE_GGML.equals(dictType)) {
+                return mGGMLDict;
+            }
             return getSubDict(dictType);
         }
 
@@ -192,6 +198,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         public boolean hasDict(final String dictType, @Nullable final String account) {
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 return mMainDict != null;
+            }
+            if (Dictionary.TYPE_GGML.equals(dictType)) {
+                return mGGMLDict != null;
             }
             if (Dictionary.TYPE_USER_HISTORY.equals(dictType) &&
                     !TextUtils.equals(account, mAccount)) {
@@ -349,6 +358,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         DictionaryGroup newDictionaryGroup =
                 new DictionaryGroup(newLocale, mainDict, account, subDicts);
 
+        newDictionaryGroup.mGGMLDict = new GGMLDictionary(context, Dictionary.TYPE_GGML, newLocale);
         // Replace Dictionaries.
         final DictionaryGroup oldDictionaryGroup;
         synchronized (mLock) {
@@ -406,6 +416,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         synchronized (mLock) {
             if (locale.equals(dictionaryGroup.mLocale)) {
                 dictionaryGroup.setMainDict(mainDict);
+                dictionaryGroup.mGGMLDict = new GGMLDictionary(context, Dictionary.TYPE_GGML, locale);
             } else {
                 // Dictionary facilitator has been reset for another locale.
                 mainDict.close();
