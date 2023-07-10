@@ -336,7 +336,7 @@ void print_tok_vec(std::vector<float> &embd)
  }
 
  void ContextFastForward(std::vector<int> &current_context_tokens, std::vector<int> &embd_inp,
- int &n_past, std::vector<int> &last_n_tokens, const int nctx, std::vector<int> &smartcontext,
+ int &n_past, const int nctx, std::vector<int> &smartcontext,
  bool useSmartContext, const bool requireFullSubset)
  {
      const int SCCtxLenThreshold = nctx * 0.8; //how much context length must be reach to trigger smartcontext
@@ -355,13 +355,11 @@ void print_tok_vec(std::vector<float> &embd)
         if (current_context_tokens[i] == embd_inp[i])
         {
             n_past += 1;
-            last_n_tokens.push_back(current_context_tokens[i]);
         }
         else
         {
             if(requireFullSubset) //RWKV can only do this if embd_inp contains everything in current context
             {
-                last_n_tokens.erase(last_n_tokens.end() - n_past, last_n_tokens.end());
                 n_past = 0;
                 fastforwardok = false;
             }
@@ -372,7 +370,6 @@ void print_tok_vec(std::vector<float> &embd)
         {
             if (i >= embd_inp_len)
             {
-                last_n_tokens.erase(last_n_tokens.end() - n_past, last_n_tokens.end());
                 n_past = 0;
                 fastforwardok = false;
                 break;
@@ -389,7 +386,6 @@ void print_tok_vec(std::vector<float> &embd)
 
     if(fastforwardok)
     {
-        last_n_tokens.erase(last_n_tokens.begin(), last_n_tokens.begin() + n_past);
         embd_inp.erase(embd_inp.begin(), embd_inp.begin() + n_past);
         embd_inp_len = embd_inp.size();
     }
@@ -424,7 +420,6 @@ void print_tok_vec(std::vector<float> &embd)
                     if (current_context_tokens[i] == embd_inp[i-offset_fix])
                     {
                         n_past += 1;
-                        last_n_tokens.push_back(current_context_tokens[i]);
                     }
                     else
                     {
@@ -436,7 +431,6 @@ void print_tok_vec(std::vector<float> &embd)
                     }
                 }
 
-                last_n_tokens.erase(last_n_tokens.begin(), last_n_tokens.begin() + (n_past-old_n_past));
                 embd_inp.erase(embd_inp.begin(), embd_inp.begin() + (n_past-old_n_past));
 
             }else{

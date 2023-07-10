@@ -2,6 +2,7 @@
 #include "otherarch.h"
 
 #include "utils.h"
+#include "defines.h"
 
 #include <cassert>
 #include <cmath>
@@ -23,11 +24,11 @@
 
 // load the model's weights from a file
 ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & model, gpt_vocab & vocab, FileFormat file_format, int gpulayers) {
-    printf("%s: loading model from '%s' - please wait ...\n", __func__, fname.c_str());
+    AKLOGI("%s: loading model from '%s' - please wait ...\n", __func__, fname.c_str());
 
     auto fin = std::ifstream(fname, std::ios::binary);
     if (!fin) {
-        fprintf(stderr, "%s: failed to open '%s'\n", __func__, fname.c_str());
+        AKLOGE("%s: failed to open '%s'\n", __func__, fname.c_str());
         return ModelLoadResult::FAIL;
     }
 
@@ -36,7 +37,7 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
         uint32_t magic;
         fin.read((char *) &magic, sizeof(magic));
         if (magic != 0x67676d6c) {
-            fprintf(stderr, "%s: invalid model file '%s' (bad magic)\n", __func__, fname.c_str());
+            AKLOGE("%s: invalid model file '%s' (bad magic)\n", __func__, fname.c_str());
             return ModelLoadResult::FAIL;
         }
     }
@@ -58,15 +59,15 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
 
         const int32_t qntvr = hparams.ftype / GGML_QNT_VERSION_FACTOR;
 
-        printf("%s: n_vocab = %d\n", __func__, hparams.n_vocab);
-        printf("%s: n_ctx   = %d (%d)\n", __func__, hparams.n_ctx,origmaxctx);
-        printf("%s: n_embd  = %d\n", __func__, hparams.n_embd);
-        printf("%s: n_head  = %d\n", __func__, hparams.n_head);
-        printf("%s: n_layer = %d\n", __func__, hparams.n_layer);
-        printf("%s: n_rot   = %d\n", __func__, hparams.n_rot);
-        printf("%s: par_res = %d\n", __func__, hparams.par_res);
-        printf("%s: ftype   = %d\n", __func__, hparams.ftype);
-        printf("%s: qntvr   = %d\n", __func__, qntvr);
+        AKLOGI("%s: n_vocab = %d\n", __func__, hparams.n_vocab);
+        AKLOGI("%s: n_ctx   = %d (%d)\n", __func__, hparams.n_ctx,origmaxctx);
+        AKLOGI("%s: n_embd  = %d\n", __func__, hparams.n_embd);
+        AKLOGI("%s: n_head  = %d\n", __func__, hparams.n_head);
+        AKLOGI("%s: n_layer = %d\n", __func__, hparams.n_layer);
+        AKLOGI("%s: n_rot   = %d\n", __func__, hparams.n_rot);
+        AKLOGI("%s: par_res = %d\n", __func__, hparams.par_res);
+        AKLOGI("%s: ftype   = %d\n", __func__, hparams.ftype);
+        AKLOGI("%s: qntvr   = %d\n", __func__, qntvr);
 
         hparams.n_ctx = std::max(origmaxctx,hparams.n_ctx);
 
@@ -98,7 +99,7 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
     // in order to save memory and also to speed up the computation
     ggml_type wtype = ggml_ftype_to_ggml_type((ggml_ftype) (model.hparams.ftype));
     if (wtype == GGML_TYPE_COUNT) {
-        fprintf(stderr, "%s: invalid model file '%s' (bad ftype value %d)\n",
+        AKLOGE("%s: invalid model file '%s' (bad ftype value %d)\n",
                 __func__, fname.c_str(), model.hparams.ftype);
         return ModelLoadResult::FAIL;
     }
@@ -146,7 +147,7 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
 
         ctx_size += (6 + 16*n_layer)*1024; // object overhead
 
-        printf("%s: ggml ctx size = %6.2f MB\n", __func__, ctx_size/(1024.0*1024.0));
+        AKLOGI("%s: ggml ctx size = %6.2f MB\n", __func__, ctx_size/(1024.0*1024.0));
     }
 
     // create the ggml context
@@ -158,7 +159,7 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
 
         model.ctx = ggml_init(params);
         if (!model.ctx) {
-            fprintf(stderr, "%s: ggml_init() failed\n", __func__);
+            AKLOGE("%s: ggml_init() failed\n", __func__);
             return ModelLoadResult::FAIL;
         }
     }
@@ -248,7 +249,7 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
 
         const size_t memory_size = ggml_nbytes(model.memory_k) + ggml_nbytes(model.memory_v);
 
-        printf("%s: memory_size = %8.2f MB, n_mem = %" PRId64 "\n", __func__, memory_size/1024.0/1024.0, n_mem);
+        AKLOGI("%s: memory_size = %8.2f MB, n_mem = %" PRId64 "\n", __func__, memory_size/1024.0/1024.0, n_mem);
     }
 
     // load weights
@@ -256,7 +257,7 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
         int n_tensors = 0;
         size_t total_size = 0;
 
-        printf("%s: ", __func__);
+        AKLOGI("%s: ", __func__);
 
         while (true) {
             int32_t n_dims;
@@ -282,31 +283,31 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
             fin.read(&name[0], length);
 
             if (model.tensors.find(name.data()) == model.tensors.end()) {
-                fprintf(stderr, "%s: unknown tensor '%s' in model file\n", __func__, name.data());
+                AKLOGE("%s: unknown tensor '%s' in model file\n", __func__, name.data());
                 return ModelLoadResult::FAIL;
             }
 
             auto tensor = model.tensors[name.data()];
             if (ggml_nelements(tensor) != nelements) {
-                fprintf(stderr, "%s: tensor '%s' has wrong size in model file\n", __func__, name.data());
+                AKLOGE("%s: tensor '%s' has wrong size in model file\n", __func__, name.data());
                 return ModelLoadResult::FAIL;
             }
 
             if (tensor->ne[0] != ne[0] || tensor->ne[1] != ne[1]) {
-                fprintf(stderr, "%s: tensor '%s' has wrong shape in model file: got [%5d, %5d], expected [%5d, %5d]\n",
+                AKLOGE("%s: tensor '%s' has wrong shape in model file: got [%5d, %5d], expected [%5d, %5d]\n",
                         __func__, name.data(), (int) tensor->ne[0], (int) tensor->ne[1], ne[0], ne[1]);
                 return ModelLoadResult::FAIL;
             }
 
             // for debugging
             if (0) {
-                printf("%24s - [%5d, %5d], type = %6s, %6.2f MB, %9zu bytes\n", name.data(), ne[0], ne[1], ggml_type_name(ggml_type(ttype)), ggml_nbytes(tensor)/1024.0/1024.0, ggml_nbytes(tensor));
+                AKLOGI("%24s - [%5d, %5d], type = %6s, %6.2f MB, %9zu bytes\n", name.data(), ne[0], ne[1], ggml_type_name(ggml_type(ttype)), ggml_nbytes(tensor)/1024.0/1024.0, ggml_nbytes(tensor));
             }
 
             const size_t bpe = ggml_type_size(ggml_type(ttype));
 
             if ((nelements*bpe)/ggml_blck_size(tensor->type) != ggml_nbytes(tensor)) {
-                fprintf(stderr, "%s: tensor '%s' has wrong size in model file: got %zu, expected %zu\n",
+                AKLOGE("%s: tensor '%s' has wrong size in model file: got %zu, expected %zu\n",
                         __func__, name.data(), ggml_nbytes(tensor), nelements*bpe);
                  ggml_free(ctx);
                  return ModelLoadResult::RETRY_LOAD;
@@ -316,14 +317,14 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
 
             total_size += ggml_nbytes(tensor);
             if (++n_tensors % 8 == 0) {
-                printf(".");
+                AKLOGI(".");
                 fflush(stdout);
             }
         }
 
-        printf(" done\n");
+        AKLOGI(" done\n");
 
-        printf("%s: model size = %8.2f MB / num tensors = %d\n", __func__, total_size/1024.0/1024.0, n_tensors);
+        AKLOGI("%s: model size = %8.2f MB / num tensors = %d\n", __func__, total_size/1024.0/1024.0, n_tensors);
     }
 
     fin.close();
@@ -335,7 +336,7 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
         const auto & hparams = model.hparams;
         size_t vram_total = 0;
         const int n_gpu = std::min(gpulayers, int(hparams.n_layer));
-        fprintf(stderr, "%s: [opencl] offloading %d layers to GPU\n", __func__, n_gpu);
+        AKLOGE("%s: [opencl] offloading %d layers to GPU\n", __func__, n_gpu);
         for (int i = 0; i < n_gpu; ++i) {
             const auto & layer = model.layers[i];
             layer.c_attn_attn_w->backend = GGML_BACKEND_GPU;
@@ -354,7 +355,7 @@ ModelLoadResult gpt_neox_model_load(const std::string & fname, gpt_neox_model & 
             ggml_cuda_transform_tensor(layer.c_mlp_proj_w->data,layer.c_mlp_proj_w); vram_total += ggml_nbytes(layer.c_mlp_proj_w);
             #endif
         }
-        fprintf(stderr, "%s: [opencl] total VRAM used: %zu MB\n", __func__, vram_total / 1024 / 1024);
+        AKLOGE("%s: [opencl] total VRAM used: %zu MB\n", __func__, vram_total / 1024 / 1024);
     }
     #endif
 
@@ -438,7 +439,7 @@ bool gpt_neox_eval(
 
     if (mem_per_token > 0 && (mem_per_token*N*2 + 64u*1024*1024) > buf_size) {
         const size_t buf_size_new = 360u*1024*1024 + 1.2*(mem_per_token*N); // add 10% to account for ggml object overhead
-        //printf("\n%s: reallocating buffer from %zu to %zu bytes\n", __func__, buf_size, buf_size_new);
+        //AKLOGI("\n%s: reallocating buffer from %zu to %zu bytes\n", __func__, buf_size, buf_size_new);
 
         // reallocate
         if (buf_size_new > buf_size)
@@ -447,7 +448,7 @@ bool gpt_neox_eval(
             buf = realloc(buf, buf_size);
             if (buf == nullptr)
             {
-                fprintf(stderr, "%s: failed to allocate %zu bytes. Try reducing batch size.\n", __func__, buf_size);
+                AKLOGE("%s: failed to allocate %zu bytes. Try reducing batch size.\n", __func__, buf_size);
                 return false;
             }
         }
@@ -656,7 +657,7 @@ bool gpt_neox_eval(
     if (mem_per_token == 0) {
         mem_per_token = ggml_used_mem(ctx0)/N;
     }
-    //printf("used_mem = %zu\n", ggml_used_mem(ctx0));
+    //AKLOGI("used_mem = %zu\n", ggml_used_mem(ctx0));
 
     ggml_free(ctx0);
 

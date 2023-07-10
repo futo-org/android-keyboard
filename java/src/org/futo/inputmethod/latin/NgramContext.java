@@ -47,6 +47,8 @@ public class NgramContext {
         return new NgramContext(maxPrevWordCount, WordInfo.EMPTY_WORD_INFO);
     }
 
+    public String fullContext = "";
+
     /**
      * Word information used to represent previous words information.
      */

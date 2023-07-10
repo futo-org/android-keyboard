@@ -679,8 +679,17 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 }
             }
         }
-        return NgramContextUtils.getNgramContextFromNthPreviousWord(
+        NgramContext ngramContext = NgramContextUtils.getNgramContextFromNthPreviousWord(
                 prev, spacingAndPunctuations, n);
+
+        ngramContext.fullContext = getTextBeforeCursor(4096, 0).toString();
+
+        if(ngramContext.fullContext.length() == 4096) {
+            ngramContext.fullContext = String.join(" ",ngramContext.fullContext.split(" ")).substring(ngramContext.fullContext.split(" ")[0].length()+1);
+
+        }
+
+        return ngramContext;
     }
 
     private static boolean isPartOfCompositionForScript(final int codePoint,
