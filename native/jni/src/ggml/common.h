@@ -1,5 +1,3 @@
-// Various helper functions and utilities
-
 #pragma once
 
 #include <string>
@@ -7,15 +5,6 @@
 #include <vector>
 #include <random>
 #include <thread>
-
-//
-// CLI argument parsing
-//
-
-
-//
-// Vocab utils
-//
 
 struct gpt_vocab {
     using id    = int32_t;
@@ -28,16 +17,7 @@ struct gpt_vocab {
     void add_special_token(const std::string & token);
 };
 
-void utreplace(std::string & str, const std::string & needle, const std::string & replacement);
-
-// poor-man's JSON parsing
-std::map<std::string, int32_t> json_parse(const std::string & fname);
-
-std::string convert_to_utf8(const std::wstring & input);
-
-std::wstring convert_to_wstring(const std::string & input);
-
-void gpt_split_words(std::string str, std::vector<std::string>& words);
+typedef std::vector<gpt_vocab::id> token_sequence;
 
 // split text into tokens
 //
@@ -49,8 +29,5 @@ void gpt_split_words(std::string str, std::vector<std::string>& words);
 // Regex (C++):
 // R"('s|'t|'re|'ve|'m|'ll|'d| ?[[:alpha:]]+| ?[[:digit:]]+| ?[^\s[:alpha:][:digit:]]+|\s+(?!\S)|\s+)"
 //
-std::vector<gpt_vocab::id> gpt_tokenize(const gpt_vocab & vocab, const std::string & text);
+token_sequence gpt_tokenize(const gpt_vocab & vocab, const std::string & text);
 
-
-
-bool should_transpose_layer(std::string name);

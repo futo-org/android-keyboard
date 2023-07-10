@@ -22,9 +22,9 @@ LATIN_IME_JNI_SRC_FILES := \
 
 LATIN_IME_CORE_SRC_FILES := \
     ggml/ggml.c \
-    ggml/utils.cpp \
-    ggml/model_adapter.cpp \
-    ggml/neox_v3.cpp \
+    ggml/common.cpp \
+    ggml/context.cpp \
+    ggml/gpt_neox.cpp \
     $(addprefix dictionary/header/, \
         header_policy.cpp \
         header_read_write_utils.cpp) \

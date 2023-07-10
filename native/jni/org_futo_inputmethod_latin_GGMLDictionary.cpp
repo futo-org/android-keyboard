@@ -38,7 +38,9 @@
 #include "utils/profiler.h"
 #include "utils/time_keeper.h"
 
-#include "ggml/otherarch.h"
+#include "ggml/gpt_neox.h"
+#include "ggml/context.h"
+#include "ggml/common.h"
 
 #include <android/log.h>
 
@@ -81,13 +83,12 @@ class ProximityInfo;
 struct GGMLDictionaryState {
     int n_threads = 3;
 
-    std::vector<int> smartcontext;
-    std::vector<gpt_vocab::id> current_context_tokens;
+    transformer_context t_context;
+
     std::vector<float> logits;
     std::vector<gpt_vocab::id> bad_logits;
 
     size_t mem_per_token = 0;
-    bool use_scratch = true;
 
     gpt_neox_model model;
     gpt_vocab vocab;
@@ -109,12 +110,10 @@ static jlong latinime_GGMLDictionary_open(JNIEnv *env, jclass clazz, jstring sou
     GGMLDictionaryState *state = new GGMLDictionaryState();
 
     std::string fname(sourceDirChars);
-    FileFormat format = check_file_format(fname);
-    assert(format == 405);
 
-    ModelLoadResult result = gpt_neox_model_load(fname, state->model, state->vocab, format, 0);
+    bool result = gpt_neox_model_load(fname, state->model, state->vocab);
 
-    if(result != ModelLoadResult::SUCCESS) {
+    if(!result) {
         AKLOGE("GGMLDict: Could not load model");
         free(state);
         return 0;
@@ -171,33 +170,28 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz, jl
         env->ReleaseStringUTFChars(partialWord, pwstr);
     }
 
-    auto embd_inp = gpt_tokenize(state->vocab, contextString);
+    token_sequence next_context = gpt_tokenize(state->vocab, contextString);
 
     //truncate to front of the prompt if its too long
     int32_t nctx = state->model.hparams.n_ctx;
 
-    if (embd_inp.size() + 2 > nctx) {
-        int offset = embd_inp.size() - nctx + 2;
-        embd_inp = std::vector<int>(embd_inp.begin() + offset, embd_inp.end());
+    if (next_context.size() + 2 > nctx) {
+        int offset = next_context.size() - nctx + 2;
+        next_context = std::vector<int>(next_context.begin() + offset, next_context.end());
     }
 
-    size_t size = env->GetArrayLength(outPredictions);
 
-    int n_past = 0;
+    auto fastforward_info = transformer_context_fastforward(state->t_context, next_context);
 
-    bool useSmartContext = true;
-    ContextFastForward(state->current_context_tokens, embd_inp, n_past, nctx, state->smartcontext, useSmartContext, false);
+    token_sequence &embd_inp = fastforward_info.first;
+    int n_past = fastforward_info.second;
 
     if(embd_inp.empty()) return;
 
-    state->current_context_tokens.resize(n_past);
-
     AKLOGI("npast = %d, size(embd) = %d\n", n_past, (int)embd_inp.size());
-    gpt_neox_eval(state->model, state->n_threads, n_past, embd_inp, state->logits, state->mem_per_token, state->use_scratch);
+    gpt_neox_eval(state->model, state->n_threads, n_past, embd_inp, state->logits, state->mem_per_token);
 
-    for(auto token : embd_inp) {
-        state->current_context_tokens.emplace_back(token);
-    }
+    transformer_context_apply(state->t_context, fastforward_info);
 
     int topid = std::min_element(state->logits.begin(),state->logits.end())-state->logits.begin();
     float zeroValue = (state->logits[topid] < 0 ? state->logits[topid] : 0);
@@ -248,6 +242,8 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz, jl
                   });
     }
 
+
+    size_t size = env->GetArrayLength(outPredictions);
 
     // Get the array elements
     jint *probsArray = env->GetIntArrayElements(outProbabilities, nullptr);
