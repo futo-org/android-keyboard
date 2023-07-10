@@ -20,6 +20,7 @@
 
 #include <cstring> // for memset()
 #include <vector>
+#include <unordered_set>
 
 #include "defines.h"
 #include "dictionary/property/unigram_property.h"
@@ -87,6 +88,7 @@ struct GGMLDictionaryState {
 
     std::vector<float> logits;
     std::vector<gpt_vocab::id> bad_logits;
+    std::unordered_set<gpt_vocab::id> punct_logits;
 
     size_t mem_per_token = 0;
 
@@ -123,17 +125,25 @@ static jlong latinime_GGMLDictionary_open(JNIEnv *env, jclass clazz, jstring sou
         std::string token = state->vocab.id_to_token[i];
 
         bool is_bad = token.empty();
+        bool has_punct = false;
         int num_chars = 0;
         if(!is_bad) {
             for (char c: token) {
-                // TODO: We should allow special symbols for programming, etc
-                if (c == ',' || c == '.' || c == '(' || c == ')' || c == '?' || c == '!' || c == '"' || c == '\'' || c == '[' || c == ']') {
+                // Allow single-character punctuation
+                bool is_punct = c == ',' || c == '.' || c == '?' || c == '!';
+                bool is_letter = ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z'));
+                bool is_number = (c >= '0') && (c <= '9');
+                bool is_special = c == '(' || c == ')' || c == '"' || c == '[' || c == ']' || c == '+' || c == '#';
+
+                if(is_punct || is_special) has_punct = true;
+
+                if((is_punct && token.length() == 1) || is_letter || is_number) {
+                    num_chars++;
+                }else if (is_punct || is_special) {
+                    // TODO: We should allow special symbols for programming, etc
                     is_bad = true;
                     break;
                 }
-
-                if (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')))
-                    num_chars++;
             }
         }
 
@@ -141,6 +151,9 @@ static jlong latinime_GGMLDictionary_open(JNIEnv *env, jclass clazz, jstring sou
 
         if(is_bad) {
             state->bad_logits.emplace_back(i);
+        }
+        if(has_punct) {
+            state->punct_logits.insert(i);
         }
     }
 
@@ -172,6 +185,8 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz, jl
 
     token_sequence next_context = gpt_tokenize(state->vocab, contextString);
 
+    bool allow_punctuation_next = state->punct_logits.count(next_context[next_context.size() - 1]) == 0;
+
     //truncate to front of the prompt if its too long
     int32_t nctx = state->model.hparams.n_ctx;
 
@@ -199,6 +214,13 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz, jl
 
     for(int bad_id : state->bad_logits) {
         state->logits[bad_id] = zeroValue;
+    }
+
+    // Don't allow punctuation after we just wrote punctuation
+    if(!allow_punctuation_next) {
+        for(int bad_id : state->punct_logits) {
+            state->logits[bad_id] = zeroValue;
+        }
     }
 
     // Get a vector of index and value pairs

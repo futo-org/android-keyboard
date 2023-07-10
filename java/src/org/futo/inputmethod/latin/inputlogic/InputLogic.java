@@ -274,9 +274,9 @@ public final class InputLogic {
             final SuggestedWordInfo suggestionInfo, final int keyboardShiftState,
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         final SuggestedWords suggestedWords = mSuggestedWords;
-        final String suggestion = suggestionInfo.mWord;
+        String suggestion = suggestionInfo.mWord;
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
-        if (suggestion.length() == 1 && suggestedWords.isPunctuationSuggestions()) {
+        if (suggestion.length() == 1 && (suggestedWords.isPunctuationSuggestions() || (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_PUNCTUATION))) ) {
             // We still want to log a suggestion click.
             StatsUtils.onPickSuggestionManually(
                     mSuggestedWords, suggestionInfo, mDictionaryFacilitator);
@@ -287,6 +287,12 @@ public final class InputLogic {
                     currentKeyboardScriptId, handler);
         }
 
+        boolean isGGMLSubWordSuggestion = suggestion.charAt(0) == '+';
+        if(isGGMLSubWordSuggestion) {
+            suggestion = suggestion.substring(1);
+            mConnection.removeTrailingSpace();
+        }
+
         final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 event, SystemClock.uptimeMillis(), mSpaceState, keyboardShiftState);
@@ -294,7 +300,7 @@ public final class InputLogic {
         // for the sequence of language switching.
         inputTransaction.setDidAffectContents();
         mConnection.beginBatchEdit();
-        if (SpaceState.PHANTOM == mSpaceState && suggestion.length() > 0
+        if (SpaceState.PHANTOM == mSpaceState && suggestion.length() > 0 && !isGGMLSubWordSuggestion
                 // In the batch input mode, a manually picked suggested word should just replace
                 // the current batch input text and there is no need for a phantom space.
                 && !mWordComposer.isBatchMode()) {
