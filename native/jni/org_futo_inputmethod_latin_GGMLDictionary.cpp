@@ -186,12 +186,13 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz, jl
     token_sequence &embd_inp = fastforward_info.first;
     int n_past = fastforward_info.second;
 
-    if(embd_inp.empty()) return;
+    if(!embd_inp.empty()) {
+        AKLOGI("npast = %d, size(embd) = %d\n", n_past, (int) embd_inp.size());
+        gpt_neox_eval(state->model, state->n_threads, n_past, embd_inp, state->logits,
+                      state->mem_per_token);
 
-    AKLOGI("npast = %d, size(embd) = %d\n", n_past, (int)embd_inp.size());
-    gpt_neox_eval(state->model, state->n_threads, n_past, embd_inp, state->logits, state->mem_per_token);
-
-    transformer_context_apply(state->t_context, fastforward_info);
+        transformer_context_apply(state->t_context, fastforward_info);
+    }
 
     int topid = std::min_element(state->logits.begin(),state->logits.end())-state->logits.begin();
     float zeroValue = (state->logits[topid] < 0 ? state->logits[topid] : 0);

@@ -7,10 +7,16 @@ std::pair<token_sequence, int> transformer_context_fastforward(const transformer
     // Compare the two sequences and find the first index at which they differ.
     int max_length = std::min(ctx.active_context.size(), next_context.size());
     for(int i=0; i<max_length; i++) {
-        npast = i;
         if(ctx.active_context[i] != next_context[i]) {
             break;
         }
+        npast = i + 1;
+    }
+
+    // Handle the case when we have a shorter input than active context, requiring the last
+    // token to be recomputed to get up-to-date logits
+    if((npast == next_context.size()) && (next_context.size() < ctx.active_context.size())) {
+        npast -= 1;
     }
 
     token_sequence new_context(next_context.size() - npast);
