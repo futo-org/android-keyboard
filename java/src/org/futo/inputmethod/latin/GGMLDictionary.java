@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.futo.inputmethod.latin.common.ComposedData;
 import org.futo.inputmethod.latin.common.InputPointers;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 
@@ -105,21 +107,28 @@ public class GGMLDictionary extends Dictionary {
             partialWord = " " + partialWord.trim();
         }
 
-        System.out.println("Context for ggml is " + context);
-        System.out.println("partialWord is " + partialWord);
+        // TODO: We may want to pass times too, and adjust autocorrect confidence
+        // based on time (taking a long time to type a char = trust the typed character
+        // more, speed typing = trust it less)
+        int[] xCoordsI = composedData.mInputPointers.getXCoordinates();
+        int[] yCoordsI = composedData.mInputPointers.getYCoordinates();
 
+        float[] xCoords = new float[composedData.mInputPointers.getPointerSize()];
+        float[] yCoords = new float[composedData.mInputPointers.getPointerSize()];
+
+        for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) xCoords[i] = (float)xCoordsI[i];
+        for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) yCoords[i] = (float)yCoordsI[i];
 
         int maxResults = 128;
-        int[] outProbabilities = new int[maxResults];
+        float[] outProbabilities = new float[maxResults];
         String[] outStrings = new String[maxResults];
 
         // TOOD: Pass multiple previous words information for n-gram.
-        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, outStrings, outProbabilities);
+        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, xCoords, yCoords, outStrings, outProbabilities);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
         for(int i=0; i<maxResults; i++) {
             if(outStrings[i] == null) continue;
-
 
             boolean isPunctuation = outStrings[i].equals("?") || outStrings[i].equals("!") || outStrings[i].equals(",") || outStrings[i].equals(".");
 
@@ -127,7 +136,7 @@ public class GGMLDictionary extends Dictionary {
 
             int kind = isPunctuation ? SuggestedWords.SuggestedWordInfo.KIND_PUNCTUATION : SuggestedWords.SuggestedWordInfo.KIND_CORRECTION;
 
-            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, outProbabilities[i], kind, this, 0, 0 ));
+            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 16384.00f), kind, this, 0, 0 ));
         }
         return suggestions;
     }
@@ -159,5 +168,17 @@ public class GGMLDictionary extends Dictionary {
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
                                           boolean isUpdatable);
     private static native void closeNative(long dict);
-    private static native void getSuggestionsNative(long dict, long proximityInfoHandle, String context, String partialWord, String[] outStrings, int[] outProbs);
+    private static native void getSuggestionsNative(
+            // inputs
+            long dict,
+            long proximityInfoHandle,
+            String context,
+            String partialWord,
+            float[] inComposeX,
+            float[] inComposeY,
+
+            // outputs
+            String[] outStrings,
+            float[] outProbs
+    );
 }
