@@ -57,20 +57,27 @@ public class GGMLDictionary extends Dictionary {
         return outputFile.getAbsolutePath();
     }
 
+    Thread initThread = null;
     public GGMLDictionary(Context context, String dictType, Locale locale) {
         super(dictType, locale);
 
-        String modelPath = getPathToModelResource(context, R.raw.pythia_160m_q4_0, false);
-        mNativeState = openNative(modelPath, 0, 0, false);
+        initThread = new Thread() {
+            @Override public void run() {
+                String modelPath = getPathToModelResource(context, R.raw.pythia_160m_q4_0, false);
+                mNativeState = openNative(modelPath, 0, 0, false);
 
-        if(mNativeState == 0){
-            modelPath = getPathToModelResource(context, R.raw.pythia_160m_q4_0, true);
-            mNativeState = openNative(modelPath, 0, 0, false);
-        }
+                if(mNativeState == 0){
+                    modelPath = getPathToModelResource(context, R.raw.pythia_160m_q4_0, true);
+                    mNativeState = openNative(modelPath, 0, 0, false);
+                }
 
-        if(mNativeState == 0){
-            throw new RuntimeException("Failed to load pythia_160m model");
-        }
+                if(mNativeState == 0){
+                    throw new RuntimeException("Failed to load pythia_160m model");
+                }
+            }
+        };
+
+        initThread.start();
     }
 
     @Override
@@ -83,9 +90,8 @@ public class GGMLDictionary extends Dictionary {
             float weightForLocale,
             float[] inOutWeightOfLangModelVsSpatialModel
     ) {
-        if (mNativeState == 0) {
-            return null;
-        }
+        if (mNativeState == 0) return null;
+        if (initThread != null && initThread.isAlive()) return null;
 
         final InputPointers inputPointers = composedData.mInputPointers;
         final boolean isGesture = composedData.mIsBatchMode;
@@ -143,6 +149,12 @@ public class GGMLDictionary extends Dictionary {
 
 
     private synchronized void closeInternalLocked() {
+        try {
+            if (initThread != null) initThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if (mNativeState != 0) {
             closeNative(mNativeState);
             mNativeState = 0;
