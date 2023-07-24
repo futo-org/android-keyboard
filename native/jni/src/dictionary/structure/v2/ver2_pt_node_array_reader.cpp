@@ -43,7 +43,7 @@ bool Ver2PtNodeArrayReader::readForwardLinkAndReturnIfValid(const int forwordLin
         // Reading invalid position because of bug or broken dictionary.
         AKLOGE("Reading forward link from invalid dictionary position: %d, dict size: %zd",
                 forwordLinkPos, mBuffer.size());
-        ASSERT(false);
+        //ASSERT(false);
         return false;
     }
     // Ver2 dicts don't have forward links.

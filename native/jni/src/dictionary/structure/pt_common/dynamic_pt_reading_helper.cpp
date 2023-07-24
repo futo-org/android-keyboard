@@ -318,4 +318,125 @@ void DynamicPtReadingHelper::followForwardLink() {
     }
 }
 
+
+// TODO
+std::vector<int> strToCodepoints(const char* str) {
+    std::vector<int> codepoints;
+    
+    while (*str) {
+        // ASCII char
+        if (*str < 128) {
+            codepoints.push_back(*str);
+            str++;
+        }
+        // 2 byte UTF-8 char 
+        else if ((*str & 0xE0) == 0xC0) {  
+            int cp = (*str & 0x1F) << 6;       
+            str++;
+            cp += *str & 0x3F;     
+            codepoints.push_back(cp);   
+            str++;
+        } 
+        // 3 byte UTF-8 char
+        else if ((*str & 0xF0) == 0xE0) {   
+            int cp = (*str & 0x0F) << 12;  
+            str++;       
+            cp += (*str & 0x3F) << 6;    
+            str++;       
+            cp += *str & 0x3F;       
+            codepoints.push_back(cp);   
+            str++;      
+        } 
+        // 4 byte UTF-8 char
+        else {  
+            // Handle 4 byte UTF-8 ...
+            str += 4;
+        }    
+    }
+    return codepoints; 
+}
+
+
+// Core idea here:
+// 1. Continue the following steps for the top result until we have obtained three top results
+// 1.1. Convert the token to codepoints
+// 1.2. Traverse through the pt (lowercase or not?) and try to find the word
+// 1.3. If we traverse through the full token and the word is non-terminal, we can do one of the following steps
+// 1.3.1. Check to see how many terminal nodes are there. If there's only one or two, just pick it, no value in added samplng
+// 1.3.2. If there are many terminal nodes, continue sampling with that token to obtain a terminal word (high performance mode)
+// 1.3.3. Pick a random traversal (low performance/battery mode)
+// 1.4. If we traverse through the full token, then great, it's a real word, pick it with no changes
+// 1.5. If we fail to match through the full token, discard it(?)
+// 1.6. Add the picked word to the top result array
+// 2. We can pre-compute most of this and construct an array of size n_vocab explaining which strategy to take with which tokens,
+//    to avoid added latency during runtime
+// 3. This way, the model is forced to never misspell and we never end up with fake or partial words
+// 4. Will need to figure out way to do this for user dictionary, etc
+int DynamicPtReadingHelper::searchWordAndReturnStrategy(const char *word) {
+    bool forceLowerCaseSearch = false;
+
+    std::vector<int> codepoints = strToCodepoints(word);
+    const size_t length = codepoints.size();
+
+    int searchCodePoints[length];
+    for (size_t i = 0; i < length; ++i) {
+        searchCodePoints[i] = forceLowerCaseSearch ? CharUtils::toLowerCase(codepoints[i]) : codepoints[i];
+    }
+
+    while (!isEnd()) {
+        const PtNodeParams ptNodeParams(getPtNodeParams());
+        const size_t matchedCodePointCount = getPrevTotalCodePointCount();
+
+        // Check following merged node code points.
+        const int nodeCodePointCount = ptNodeParams.getCodePointCount();
+
+        bool mismatchedCodePoint = false;
+        bool tooLong = false;
+        for (int j = 0; j < nodeCodePointCount; ++j) {
+            if((matchedCodePointCount + j) > length) {
+                tooLong = true;
+                break;
+            }
+
+            if (!isMatchedCodePoint(ptNodeParams, j, searchCodePoints[matchedCodePointCount + j])) {
+                mismatchedCodePoint = true;
+                break;
+            }
+        }
+
+        if(mismatchedCodePoint) {
+            readNextSiblingNode(ptNodeParams);
+            continue;
+        }else if(tooLong) {
+            // We found a matching word, but it's longer than expected
+            // TODO: We probably don't need to continue sampling here, we can just return the full word (it may be didn -> didn't)
+
+            readNextSiblingNode(ptNodeParams);
+            if(isEnd())
+                return STRATEGY_CONTINUE_SAMPLING;
+            else
+                continue;
+        }else if (length == getTotalCodePointCount(ptNodeParams)) {
+            if (!ptNodeParams.isTerminal()) {
+                // We found a matching word, but this is not a terminal node
+                // Sampling must be continued to find a valid word
+                // TODO: Figure out how many terminal nodes this has, if it's few then it's not worth sampling, return the full word
+                return STRATEGY_CONTINUE_SAMPLING;
+            }
+
+            // Terminal position is found. This is a valid word, and can be committed instantly.
+            return STRATEGY_COMMIT_WORD;
+        }
+
+        if (!ptNodeParams.hasChildren()) {
+            return STRATEGY_INVALID;
+        }
+        // Advance to the children nodes.
+        readChildNode(ptNodeParams);
+    }
+    // If we already traversed the tree further than the word is long, there means
+    // there was no match (or we would have found it).
+    return STRATEGY_INVALID;
+}
+
 } // namespace latinime

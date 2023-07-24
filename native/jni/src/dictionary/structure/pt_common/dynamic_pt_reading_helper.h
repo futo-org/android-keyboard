@@ -216,6 +216,10 @@ class DynamicPtReadingHelper {
     int getTerminalPtNodePositionOfWord(const int *const inWord, const size_t length,
             const bool forceLowerCaseSearch);
 
+#define STRATEGY_COMMIT_WORD 1
+#define STRATEGY_CONTINUE_SAMPLING 2
+#define STRATEGY_INVALID 3
+    int searchWordAndReturnStrategy(const char *word);
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPtReadingHelper);
 

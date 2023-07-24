@@ -47,42 +47,7 @@
 
 #include <android/log.h>
 
-namespace latinime {
-
-// TODO: Make use of proximityInfo
-int levenshtein(std::string a, std::string b) {
-    int a_len = a.length();
-    int b_len = b.length();
-
-    // Initialize matrix of zeros
-    std::vector<std::vector<int>> d(a_len + 1, std::vector<int>(b_len + 1, 0));
-
-    // Initialize edges to incrementing integers
-    for (int i = 1; i <= a_len; i++) d[i][0] = i;
-    for (int j = 1; j <= b_len; j++) d[0][j] = j;
-
-    // Calculate distance
-    for (int i = 1; i <= a_len; i++) {
-        for (int j = 1; j <= b_len; j++) {
-            int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
-
-            int delete_v = d[i - 1][j] + 1;
-            int insert_v = d[i][j - 1] + 1;
-            int substitute_v = d[i - 1][j - 1] + cost;
-
-            d[i][j] = std::min(std::min(delete_v, insert_v), substitute_v);
-
-            // Transposition (swap adjacent characters)
-            if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1])
-                d[i][j] = std::min(d[i][j], d[i - 2][j - 2] + cost);
-        }
-    }
-
-    return d[a_len][b_len];
-}
-
-
-
+/*
 
 typedef int KeyIndex;
 
@@ -181,6 +146,185 @@ float modifiedLevenshtein(const std::vector<KeyCoord>& a, const std::vector<KeyC
     return d[a_len][b_len];
 }
 
+ */
+
+
+// TODO: https://www.npmjs.com/package/fastest-levenshtein?activeTab=code
+int levenshtein(const std::string &a, const std::string &b) {
+    int a_len = a.length();
+    int b_len = b.length();
+
+    // Initialize matrix of zeros
+    std::vector<std::vector<int>> d(a_len + 1, std::vector<int>(b_len + 1, 0));
+
+    // Initialize edges to incrementing integers
+    for (int i = 1; i <= a_len; i++) d[i][0] = i;
+    for (int j = 1; j <= b_len; j++) d[0][j] = j;
+
+    // Calculate distance
+    for (int i = 1; i <= a_len; i++) {
+        for (int j = 1; j <= b_len; j++) {
+            int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
+
+            int delete_v = d[i - 1][j] + 1;
+            int insert_v = d[i][j - 1] + 1;
+            int substitute_v = d[i - 1][j - 1] + cost;
+
+            d[i][j] = std::min(std::min(delete_v, insert_v), substitute_v);
+
+            // Transposition (swap adjacent characters)
+            if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1])
+                d[i][j] = std::min(d[i][j], d[i - 2][j - 2] + cost);
+        }
+    }
+
+    return d[a_len][b_len];
+}
+
+static std::string trim(const std::string &s) {
+    auto start = s.begin();
+    while (start != s.end() && std::isspace(*start)) {
+        start++;
+    }
+
+    auto end = s.end();
+    do {
+        end--;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+
+    return {start, end + 1};
+}
+
+namespace latinime {
+
+struct DictionaryRescorer {
+    std::vector<std::vector<std::string>> id_to_word;
+};
+
+void DictionaryRescorer_addDictionary(Dictionary &dict, gpt_vocab &vocab, DictionaryRescorer &rescorer) {
+    if(rescorer.id_to_word.size() < vocab.id_to_token.size()) {
+        rescorer.id_to_word.resize(vocab.id_to_token.size());
+    }
+    int token = 0;
+
+    int wordCodePoints[MAX_WORD_LENGTH];
+    int wordCodePointCount = 0;
+
+    char word_c[MAX_WORD_LENGTH * 4];
+
+    AKLOGI("Adding words..");
+    int n = 0;
+    do {
+        n++;
+        token = dict.getNextWordAndNextToken(token, wordCodePoints, &wordCodePointCount);
+
+        bool isBeginningOfSentence = false;
+        if (wordCodePointCount > 0 && wordCodePoints[0] == CODE_POINT_BEGINNING_OF_SENTENCE) {
+            isBeginningOfSentence = true;
+        }
+
+        intArrayToCharArray(
+                isBeginningOfSentence ? wordCodePoints + 1 : wordCodePoints,
+                isBeginningOfSentence ? wordCodePointCount - 1 : wordCodePointCount,
+                word_c,
+                MAX_WORD_LENGTH * 4
+        );
+
+        std::string word(word_c);
+
+        word = std::string(" ") + trim(word);
+
+
+        std::vector<gpt_vocab::id> tokens = gpt_tokenize(vocab, word);
+        gpt_vocab::id key = tokens[0];
+
+        rescorer.id_to_word[key].push_back(word);
+    } while(token != 0);
+
+    AKLOGI("Added %d words\n", n);
+}
+
+template<typename T>
+bool sortProbabilityPairDescending(const std::pair<float, T>& a, const std::pair<float, T>& b) {
+    return a.first > b.first;
+}
+
+
+template<typename T>
+static inline void sortProbabilityPairVectorDescending(std::vector<std::pair<float, T>> vec) {
+    std::sort(vec.begin(), vec.end(), sortProbabilityPairDescending<T>);
+}
+
+std::vector<std::pair<float, std::string>> DictionaryRescorer_process(
+        const DictionaryRescorer &rescorer,
+        const std::vector<float> &logits,
+        const std::string &partialWord,
+        gpt_vocab &vocab,
+        int n
+) {
+    std::vector<std::pair<float, std::string>> top_n_results(n);
+
+    // Get a vector of index and value pairs
+    std::vector<std::pair<float, int>> index_value;
+    for (int i = 0; i < logits.size(); i++) {
+        index_value.emplace_back(logits[i], i);
+    }
+
+    // Sort the index_value vector in descending order of value
+    sortProbabilityPairVectorDescending(index_value);
+
+    if(!partialWord.empty()) {
+        // TODO: Figure out a better way
+        index_value.resize(1000);
+        // Adjust probabilities according to levenshtein distance
+        for(auto &v : index_value) {
+            int token_id = v.second;
+
+            // String based
+            std::string token = vocab.id_to_token[token_id];
+
+            unsigned int min_length = std::min(token.length(), partialWord.length());
+
+            float distance = (float)levenshtein(token.substr(0, min_length), partialWord.substr(0, min_length));
+
+            // this assumes the probabilities are all positive
+            v.first = v.first / (1.0f + distance);
+        }
+
+        // Sort the index_value vector in descending order of value again
+        sortProbabilityPairVectorDescending(index_value);
+    }
+
+    index_value.resize(100);
+
+    for(auto & v : index_value){
+        gpt_vocab::id token_id = v.second;
+
+        for(const std::string& str : rescorer.id_to_word[token_id]) {
+            top_n_results.emplace_back(v.first, str);
+        }
+    }
+
+
+    if(!partialWord.empty()) {
+        // Adjust probabilities according to levenshtein distance
+        for(auto &v : top_n_results) {
+            unsigned int min_length = std::min(v.second.length(), partialWord.length());
+
+            float distance = (float)levenshtein(v.second.substr(0, min_length), partialWord.substr(0, min_length));
+
+            // this assumes the probabilities are all positive
+            v.first = v.first / (1.0f + distance);
+        }
+
+        // Sort the top_n_vector vector in descending order of probability
+        sortProbabilityPairVectorDescending(top_n_results);
+    }
+
+    return top_n_results;
+}
+
+
 
 struct GGMLDictionaryState {
     int n_threads = 3;
@@ -191,7 +335,8 @@ struct GGMLDictionaryState {
     std::vector<gpt_vocab::id> bad_logits;
     std::unordered_set<gpt_vocab::id> punct_logits;
 
-    std::map<ProximityInfo *, KeyboardVocab> proximity_info_to_kvoc;
+    //std::map<ProximityInfo *, KeyboardVocab> proximity_info_to_kvoc;
+    DictionaryRescorer rescorer;
 
     size_t mem_per_token = 0;
 
@@ -200,7 +345,7 @@ struct GGMLDictionaryState {
 };
 
 static jlong latinime_GGMLDictionary_open(JNIEnv *env, jclass clazz, jstring sourceDir,
-        jlong dictOffset, jlong dictSize, jboolean isUpdatable) {
+        jlong dict) {
     PROF_INIT;
     PROF_TIMER_START(66);
     const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
@@ -260,6 +405,8 @@ static jlong latinime_GGMLDictionary_open(JNIEnv *env, jclass clazz, jstring sou
         }
     }
 
+
+
     PROF_TIMER_END(66);
     return reinterpret_cast<jlong>(state);
 }
@@ -268,6 +415,18 @@ static void latinime_GGMLDictionary_close(JNIEnv *env, jclass clazz, jlong dict)
     GGMLDictionaryState *state = reinterpret_cast<GGMLDictionaryState *>(dict);
     if(state == nullptr) return;
     delete state;
+}
+
+
+static void latinime_GGMLDictionary_addDict(JNIEnv *env, jclass clazz, jlong statePtr, jlong dict) {
+    AKLOGI("Adding dictionary %ld\n", dict);
+    GGMLDictionaryState *state = reinterpret_cast<GGMLDictionaryState *>(statePtr);
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+
+    AKLOGI("Here is the dictionary we ading:");
+    dictionary->logDictionaryInfo(env);
+
+    DictionaryRescorer_addDictionary(*dictionary, state->vocab, state->rescorer);
 }
 
 static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz,
@@ -286,7 +445,7 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz,
     GGMLDictionaryState *state = reinterpret_cast<GGMLDictionaryState *>(dict);
     ProximityInfo *pInfo = reinterpret_cast<ProximityInfo *>(proximityInfo);
 
-    if(state->proximity_info_to_kvoc.find(pInfo) == state->proximity_info_to_kvoc.end()) {
+    /*if(state->proximity_info_to_kvoc.find(pInfo) == state->proximity_info_to_kvoc.end()) {
         KeyboardVocab vocab;
 
         state->proximity_info_to_kvoc.insert({
@@ -298,6 +457,7 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz,
     }
 
     const KeyboardVocab &keyboardVocab = state->proximity_info_to_kvoc[pInfo];
+     */
 
     const char* cstr = env->GetStringUTFChars(context, nullptr);
     std::string contextString(cstr);
@@ -350,94 +510,7 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz,
         }
     }
 
-    // Get a vector of index and value pairs
-    std::vector<std::pair<float, int>> index_value;
-    for (int i = 0; i < state->logits.size(); i++) {
-        index_value.emplace_back(state->logits[i], i);
-    }
-
-    // Sort the index_value vector in descending order of value
-    std::sort(index_value.begin(), index_value.end(),
-              [](const std::pair<float, int>& a, const std::pair<float, int>& b) {
-                  return a.first > b.first;  // Descending
-              });
-
-    // Adjust probabilities according to the partial word
-    if(!partialWordString.empty()) {
-        int xArrayElems = env->GetArrayLength(inComposeX);
-        int yArrayElems = env->GetArrayLength(inComposeY);
-        assert(xArrayElems == yArrayElems);
-
-        jfloat *xArray = env->GetFloatArrayElements(inComposeX, nullptr);
-        jfloat *yArray = env->GetFloatArrayElements(inComposeY, nullptr);
-
-
-        std::vector<KeyCoord> typeCoords(xArrayElems);
-        for(int i=0; i<xArrayElems; i++){
-            if(xArray[i] == 0.0f && yArray[i] == 0.0f) continue;
-
-            typeCoords.push_back({
-                xArray[i],
-                yArray[i],
-                0.0f
-            });
-        }
-
-        // Consider only the top 5000 predictions
-        index_value.resize(5000);
-
-        // Adjust probabilities according to levenshtein distance
-        for(auto &v : index_value) {
-            int token_id = v.second;
-
-            if(false) {
-                // Distance based (WIP)
-                std::vector<KeyCoord> token = keyboardVocab.vocab_to_coords[token_id];
-
-                int min_length = std::min(typeCoords.size(), typeCoords.size());
-
-                std::vector<KeyCoord> typeCoordsWLen(typeCoords.begin(),
-                                                     typeCoords.begin() + min_length);
-
-                float distance = modifiedLevenshtein(token, typeCoordsWLen) /
-                                 (float) pInfo->getMostCommonKeyWidthSquare();
-
-                // Add a penalty for when the token is too short
-                if (token.size() < typeCoords.size()) {
-                    distance += (float) (typeCoords.size() - token.size()) * 5.0f;
-                }
-
-                // this assumes the probabilities are all positive
-                v.first = v.first / (1.0f + distance);
-            }
-            else {
-                // String based
-                std::string token = state->vocab.id_to_token[token_id];
-
-                int min_length = std::min(token.length(), partialWordString.length());
-
-                float distance = (float)levenshtein(token.substr(0, min_length), partialWordString.substr(0, min_length));
-
-                // Add a penalty for when the token is too short
-                if(token.length() < partialWordString.length()) {
-                    distance += (partialWordString.length() - token.length()) * 2.0f;
-                }
-
-                // this assumes the probabilities are all positive
-                v.first = v.first / (1.0f + distance);
-            }
-        }
-
-        // Sort the index_value vector in descending order of value again
-        std::sort(index_value.begin(), index_value.end(),
-                  [](const std::pair<float, int>& a, const std::pair<float, int>& b) {
-                      return a.first > b.first;  // Descending
-                  });
-
-
-        env->ReleaseFloatArrayElements(inComposeX, xArray, 0);
-        env->ReleaseFloatArrayElements(inComposeY, yArray, 0);
-    }
+    auto results = DictionaryRescorer_process(state->rescorer, state->logits, partialWordString, state->vocab, 10);
 
 
     size_t size = env->GetArrayLength(outPredictions);
@@ -446,16 +519,16 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz,
     jfloat *probsArray = env->GetFloatArrayElements(outProbabilities, nullptr);
 
     // Output predictions for next word
-    for (int i = 0; i < std::min(size, index_value.size()); i++) {
-        int token_id = index_value[i].second;
+    for (int i = 0; i < std::min(size, results.size()); i++) {
+        std::string &word = results[i].second;
         if (i < 8) {
-            AKLOGI(" - prediction[%d]: %s", i, state->vocab.id_to_token[token_id].c_str());
+            AKLOGI(" - prediction[%d]: %s", i, word.c_str());
         }
-        jstring jstr = env->NewStringUTF(state->vocab.id_to_token[token_id].c_str());
+        jstring jstr = env->NewStringUTF(word.c_str());
 
         env->SetObjectArrayElement(outPredictions, i, jstr);
 
-        probsArray[i] = index_value[i].first;
+        probsArray[i] = results[i].first;
 
         env->DeleteLocalRef(jstr);
     }
@@ -466,8 +539,13 @@ static void latinime_GGMLDictionary_getSuggestions(JNIEnv *env, jclass clazz,
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("openNative"),
-        const_cast<char *>("(Ljava/lang/String;JJZ)J"),
+        const_cast<char *>("(Ljava/lang/String;J)J"),
         reinterpret_cast<void *>(latinime_GGMLDictionary_open)
+    },
+    {
+        const_cast<char *>("addDict"),
+        const_cast<char *>("(JJ)V"),
+        reinterpret_cast<void *>(latinime_GGMLDictionary_addDict)
     },
     {
         const_cast<char *>("closeNative"),

@@ -340,6 +340,7 @@ public final class BinaryDictionary extends Dictionary {
         return suggestions;
     }
 
+    public long getNativeDict() { return mNativeDict; }
     public boolean isValidDictionary() {
         return mNativeDict != 0;
     }

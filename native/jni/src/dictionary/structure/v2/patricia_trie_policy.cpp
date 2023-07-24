@@ -290,6 +290,18 @@ int PatriciaTriePolicy::getWordId(const CodePointArrayView wordCodePoints,
     return getWordIdFromTerminalPtNodePos(ptNodePos);
 }
 
+int PatriciaTriePolicy::getWordStrategy(const char *word) const {
+    DynamicPtReadingHelper readingHelper(&mPtNodeReader, &mPtNodeArrayReader);
+    readingHelper.initWithPtNodeArrayPos(getRootPosition());
+    const int strategy = readingHelper.searchWordAndReturnStrategy(word);
+    if (readingHelper.isError()) {
+        mIsCorrupted = true;
+        AKLOGE("Dictionary reading error in getWordId().");
+    }
+    return strategy;
+}
+
+
 const WordAttributes PatriciaTriePolicy::getWordAttributesInContext(
         const WordIdArrayView prevWordIds, const int wordId,
         MultiBigramMap *const multiBigramMap) const {

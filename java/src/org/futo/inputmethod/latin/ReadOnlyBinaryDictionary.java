@@ -45,6 +45,9 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
                 locale, dictType, false /* isUpdatable */);
     }
 
+    public long  getNativeDict() { return mBinaryDictionary.getNativeDict(); }
+    public BinaryDictionary getBinaryDictionary() { return mBinaryDictionary; }
+
     public boolean isValidDictionary() {
         return mBinaryDictionary.isValidDictionary();
     }

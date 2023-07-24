@@ -340,6 +340,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             dictTypesToCleanupForLocale.remove(Dictionary.TYPE_MAIN);
         }
 
+        GGMLDictionary ggmlDictionary = new GGMLDictionary(context, Dictionary.TYPE_GGML, newLocale);
+        ggmlDictionary.addDictionary(mainDict);
         final Map<String, ExpandableBinaryDictionary> subDicts = new HashMap<>();
         for (final String subDictType : subDictTypesToUse) {
             final ExpandableBinaryDictionary subDict;
@@ -354,11 +356,13 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 dictTypesToCleanupForLocale.remove(subDictType);
             }
             subDicts.put(subDictType, subDict);
+            ggmlDictionary.addDictionary(subDict);
         }
         DictionaryGroup newDictionaryGroup =
                 new DictionaryGroup(newLocale, mainDict, account, subDicts);
 
-        newDictionaryGroup.mGGMLDict = new GGMLDictionary(context, Dictionary.TYPE_GGML, newLocale);
+        newDictionaryGroup.mGGMLDict = ggmlDictionary;
+
         // Replace Dictionaries.
         final DictionaryGroup oldDictionaryGroup;
         synchronized (mLock) {
@@ -371,6 +375,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         if (listener != null) {
             listener.onUpdateMainDictionaryAvailability(hasAtLeastOneInitializedMainDictionary());
         }
+        ggmlDictionary.addDictionary(mDictionaryGroup.getDict(Dictionary.TYPE_MAIN));
 
         // Clean up old dictionaries.
         for (final Locale localeToCleanUp : existingDictionariesToCleanup.keySet()) {
@@ -416,7 +421,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         synchronized (mLock) {
             if (locale.equals(dictionaryGroup.mLocale)) {
                 dictionaryGroup.setMainDict(mainDict);
-                dictionaryGroup.mGGMLDict = new GGMLDictionary(context, Dictionary.TYPE_GGML, locale);
             } else {
                 // Dictionary facilitator has been reset for another locale.
                 mainDict.close();
@@ -425,6 +429,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         if (listener != null) {
             listener.onUpdateMainDictionaryAvailability(hasAtLeastOneInitializedMainDictionary());
         }
+        mDictionaryGroup.mGGMLDict.addDictionary(mDictionaryGroup.getDict(Dictionary.TYPE_MAIN));
+
         latchForWaitingLoadingMainDictionary.countDown();
     }
 

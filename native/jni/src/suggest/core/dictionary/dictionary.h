@@ -116,7 +116,9 @@ class Dictionary {
         return mDictionaryStructureWithBufferPolicy.get();
     }
 
- private:
+    void logDictionaryInfo(JNIEnv *const env) const;
+
+private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
     typedef std::unique_ptr<SuggestInterface> SuggestInterfacePtr;
@@ -144,7 +146,6 @@ class Dictionary {
     const SuggestInterfacePtr mGestureSuggest;
     const SuggestInterfacePtr mTypingSuggest;
 
-    void logDictionaryInfo(JNIEnv *const env) const;
 };
 } // namespace latinime
 #endif // LATINIME_DICTIONARY_H

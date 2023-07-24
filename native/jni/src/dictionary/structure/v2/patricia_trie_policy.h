@@ -150,6 +150,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return mIsCorrupted;
     }
 
+    int getWordStrategy(const char *word) const;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 

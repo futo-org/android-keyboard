@@ -58,17 +58,18 @@ public class GGMLDictionary extends Dictionary {
     }
 
     Thread initThread = null;
+    ArrayList<Thread> addDictThreads = new ArrayList<>();
     public GGMLDictionary(Context context, String dictType, Locale locale) {
         super(dictType, locale);
 
         initThread = new Thread() {
             @Override public void run() {
                 String modelPath = getPathToModelResource(context, R.raw.pythia_160m_q4_0, false);
-                mNativeState = openNative(modelPath, 0, 0, false);
+                mNativeState = openNative(modelPath, 0);
 
                 if(mNativeState == 0){
                     modelPath = getPathToModelResource(context, R.raw.pythia_160m_q4_0, true);
-                    mNativeState = openNative(modelPath, 0, 0, false);
+                    mNativeState = openNative(modelPath, 0);
                 }
 
                 if(mNativeState == 0){
@@ -78,6 +79,49 @@ public class GGMLDictionary extends Dictionary {
         };
 
         initThread.start();
+    }
+
+    ArrayList<BinaryDictionary> dictionaries = new ArrayList<>();
+    public void addDictionary(Dictionary dictionary) {
+        long nativeDict = 0;
+        if(dictionary instanceof BinaryDictionary) {
+            dictionaries.add((BinaryDictionary) dictionary);
+            //nativeDict = ((BinaryDictionary) dictionary).getNativeDict();
+        }else if(dictionary instanceof ReadOnlyBinaryDictionary) {
+            dictionaries.add(((ReadOnlyBinaryDictionary) dictionary).getBinaryDictionary());
+            //nativeDict = ((ReadOnlyBinaryDictionary) dictionary).getNativeDict();
+        }else if(dictionary instanceof ExpandableBinaryDictionary) {
+            dictionaries.add(((ExpandableBinaryDictionary) dictionary).getBinaryDictionary());
+        }else if(dictionary instanceof DictionaryCollection) {
+            for(Dictionary subDict : ((DictionaryCollection) dictionary).mDictionaries) {
+                addDictionary(subDict);
+            }
+        }
+
+        if(nativeDict != 0) {
+            Log.e("GGMLDictionary", "Successfully adding dictionary :)");
+
+            long finalNativeDict = nativeDict;
+
+            Thread thread = new Thread() {
+                @Override public void run() {
+                    try {
+                        initThread.join();
+                    } catch(InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(mNativeState == 0){
+                        Log.e("GGMLDictionary", "Adding dictionary failed because mNativeState turned out to be 0");
+                        return;
+                    }
+
+                    addDict(mNativeState, finalNativeDict);
+                }
+            };
+            addDictThreads.add(thread);
+            thread.start();
+        }
     }
 
     @Override
@@ -92,6 +136,15 @@ public class GGMLDictionary extends Dictionary {
     ) {
         if (mNativeState == 0) return null;
         if (initThread != null && initThread.isAlive()) return null;
+
+        for(int i=0; i<dictionaries.size(); i++){
+            if(dictionaries.get(i) != null) {
+                Log.d("GGMLDictionary", "Adding dict :)))");
+                addDict(mNativeState, dictionaries.get(i).getNativeDict());
+                dictionaries.remove(i);
+                break;
+            }
+        }
 
         final InputPointers inputPointers = composedData.mInputPointers;
         final boolean isGesture = composedData.mIsBatchMode;
@@ -151,6 +204,9 @@ public class GGMLDictionary extends Dictionary {
     private synchronized void closeInternalLocked() {
         try {
             if (initThread != null) initThread.join();
+            for (Thread thread : addDictThreads) {
+                thread.join();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -177,12 +233,12 @@ public class GGMLDictionary extends Dictionary {
     }
 
 
-    private static native long openNative(String sourceDir, long dictOffset, long dictSize,
-                                          boolean isUpdatable);
-    private static native void closeNative(long dict);
+    private static native long openNative(String sourceDir, long dictionary);
+    private static native void addDict(long state, long dict);
+    private static native void closeNative(long state);
     private static native void getSuggestionsNative(
             // inputs
-            long dict,
+            long state,
             long proximityInfoHandle,
             String context,
             String partialWord,
