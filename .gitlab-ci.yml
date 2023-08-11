@@ -1,0 +1,19 @@
+default:
+  image: "docker.io/abb128/android-build:latest@sha256:8df16e2badb5e42d2f5e3862683c7ff0ebdcc348affe059385e42eebef79302f"
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+
+build:
+  stage: build
+  tags:
+    - docker
+  script:
+    - ./setUpKeysCI.sh
+    - gradle assembleRelease -s
+    - mv build/outputs/apk/release/LatinIME-release.apk ./LatinIME-release-$CI_COMMIT_SHORT_SHA.apk
+  artifacts:
+    name: "LatinIME-release-$CI_COMMIT_SHORT_SHA"
+    paths: 
+      - ./*.apk
+  when: manual
