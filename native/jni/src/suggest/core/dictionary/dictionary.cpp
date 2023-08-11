@@ -196,6 +196,11 @@ int Dictionary::getNextWordAndNextToken(const int token, int *const outCodePoint
             token, outCodePoints, outCodePointCount);
 }
 
+int Dictionary::getWordStrategy(const char *text) const {
+    TimeKeeper::setCurrentTime();
+    return mDictionaryStructureWithBufferPolicy->getWordStrategy(text);
+}
+
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
     int dictionaryIdCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
     int versionStringCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];

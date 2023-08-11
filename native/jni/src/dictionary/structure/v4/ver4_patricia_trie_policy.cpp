@@ -600,4 +600,15 @@ int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const 
     return nextToken;
 }
 
+int Ver4PatriciaTriePolicy::getWordStrategy(const char *text) const {
+    DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
+    readingHelper.initWithPtNodeArrayPos(getRootPosition());
+    const int strategy = readingHelper.searchWordAndReturnStrategy(text);
+    if (readingHelper.isError()) {
+        mIsCorrupted = true;
+        AKLOGE("Dictionary reading error in createAndGetAllChildDicNodes().");
+    }
+    return strategy;
+}
+
 } // namespace latinime

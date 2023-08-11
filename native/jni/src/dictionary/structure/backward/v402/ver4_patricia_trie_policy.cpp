@@ -657,6 +657,18 @@ int Ver4PatriciaTriePolicy::getTerminalPtNodePosFromWordId(const int wordId) con
     return wordId == NOT_A_WORD_ID ? NOT_A_DICT_POS : wordId;
 }
 
+int Ver4PatriciaTriePolicy::getWordStrategy(const char *text) const {
+    DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
+    readingHelper.initWithPtNodeArrayPos(getRootPosition());
+    const int strategy = readingHelper.searchWordAndReturnStrategy(text);
+    if (readingHelper.isError()) {
+        mIsCorrupted = true;
+        AKLOGE("Dictionary reading error in getWordId().");
+    }
+    return strategy;
+}
+
+
 } // namespace v402
 } // namespace backward
 } // namespace latinime

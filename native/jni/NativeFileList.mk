@@ -25,6 +25,7 @@ LATIN_IME_CORE_SRC_FILES := \
     ggml/common.cpp \
     ggml/context.cpp \
     ggml/gpt_neox.cpp \
+    ggml/LanguageModel.cpp \
     $(addprefix dictionary/header/, \
         header_policy.cpp \
         header_read_write_utils.cpp) \

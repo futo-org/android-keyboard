@@ -118,6 +118,7 @@ class Dictionary {
 
     void logDictionaryInfo(JNIEnv *const env) const;
 
+    int getWordStrategy(const char *word) const;
 private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 

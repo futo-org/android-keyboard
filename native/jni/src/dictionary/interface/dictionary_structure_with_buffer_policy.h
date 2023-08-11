@@ -114,6 +114,8 @@ class DictionaryStructureWithBufferPolicy {
 
     virtual bool isCorrupted() const = 0;
 
+    virtual int getWordStrategy(const char *text) const = 0;
+
  protected:
     DictionaryStructureWithBufferPolicy() {}
 
