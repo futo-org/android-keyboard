@@ -11,8 +11,7 @@ build:
   script:
     - ./setUpKeysCI.sh
     - gradle assembleRelease -s
-    - find .
-    - mv build/outputs/apk/release/LatinIME-release.apk ./LatinIME-release-$CI_COMMIT_SHORT_SHA.apk
+    - mv build/outputs/apk/release/latinime-release.apk ./LatinIME-release-$CI_COMMIT_SHORT_SHA.apk
   artifacts:
     name: "LatinIME-release-$CI_COMMIT_SHORT_SHA"
     paths: 
