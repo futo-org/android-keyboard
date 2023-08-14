@@ -27,20 +27,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
@@ -119,13 +123,35 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         latinIMELegacy.onInitializeInterface()
     }
 
+    private var legacyInputView: View? = null
     override fun onCreateInputView(): View {
-        return latinIMELegacy.onCreateInputView()
+        legacyInputView = latinIMELegacy.onCreateInputView()
+        composeView = ComposeView(this).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setParentCompositionContext(null)
+
+            this@LatinIME.setOwners()
+        }
+
+        composeView?.setContent {
+            Surface(color = Color.Blue) {
+                Column {
+                    Text("Example Compose Element", color = Color.Red)
+                    Text("The keyboard below is wrapped in AndroidView", color = Color.Red)
+
+                    AndroidView(factory = {
+                        legacyInputView!!
+                    }, update = { })
+                }
+            }
+        }
+
+        return composeView!!
     }
 
     override fun setInputView(view: View?) {
         super.setInputView(view)
-        latinIMELegacy.setInputView(view)
+        latinIMELegacy.setInputView(legacyInputView)
     }
 
     override fun setCandidatesView(view: View?) {
@@ -199,10 +225,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         latinIMELegacy.onDisplayCompletions(completions)
     }
 
+    /*
+    // TODO: This seems to not factor in the dimensions of the Compose elements
+    // and bottom parts of the keyboard start to pass input through to the app.
+    // The keyboard seems to work fine without this method. What was it for?
     override fun onComputeInsets(outInsets: Insets?) {
         super.onComputeInsets(outInsets)
         latinIMELegacy.onComputeInsets(outInsets)
     }
+    */
 
     override fun onShowInputRequested(flags: Int, configChange: Boolean): Boolean {
         return latinIMELegacy.onShowInputRequested(flags, configChange) || super.onShowInputRequested(flags, configChange)

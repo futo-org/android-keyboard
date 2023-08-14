@@ -831,6 +831,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     public View onCreateInputView() {
         StatsUtils.onCreateInputView();
+        assert mDisplayContext != null;
         return mKeyboardSwitcher.onCreateInputView(mDisplayContext,
                 mIsHardwareAcceleratedDrawingEnabled);
     }
@@ -1286,6 +1287,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     private void updateSoftInputWindowLayoutParameters() {
+        // TODO: This seems to mess with the compose UI a lot, and the keyboard
+        // works fine without it. What was it for?
+        /*
         // Override layout parameters to expand {@link SoftInputWindow} to the entire screen.
         // See {@link InputMethodService#setinputView(View)} and
         // {@link SoftInputWindow#updateWidthHeight(WindowManager.LayoutParams)}.
@@ -1306,6 +1310,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
             ViewLayoutUtils.updateLayoutGravityOf(inputArea, Gravity.BOTTOM);
             ViewLayoutUtils.updateLayoutHeightOf(mInputView, layoutHeight);
         }
+        */
     }
 
     int getCurrentAutoCapsState() {
