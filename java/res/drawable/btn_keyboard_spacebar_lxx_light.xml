@@ -19,12 +19,12 @@
         <layer-list>
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="@color/key_background_pressed_lxx_dark" />
+                    <solid android:color="@color/key_background_pressed_lxx_light" />
                 </shape>
             </item>
             <item android:left="4dp" android:right="4dp" android:top="4dp" android:bottom="4dp">
                 <shape>
-                    <solid android:color="@color/key_background_pressed_lxx_dark" />
+                    <solid android:color="@color/key_background_pressed_lxx_light" />
                     <corners android:radius="32dp" />
                 </shape>
             </item>

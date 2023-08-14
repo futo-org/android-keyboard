@@ -16,7 +16,7 @@
 <layer-list
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
-    <item android:top="32dp" android:bottom="0dp">
+    <item android:top="50dp" android:bottom="0dp">
         <shape
             android:shape="rectangle"
             >
