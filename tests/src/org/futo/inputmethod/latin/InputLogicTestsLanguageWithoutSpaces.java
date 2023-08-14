@@ -72,9 +72,9 @@ public class InputLogicTestsLanguageWithoutSpaces extends InputTestsBase {
         final int CURSOR_POS = 4;
         changeKeyboardLocaleAndDictLocale("th", "en_US");
         type(WORD_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
+        mLatinIMELegacy.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
         mInputConnection.setSelection(CURSOR_POS, CURSOR_POS);
-        mLatinIME.onUpdateSelection(typedLength, typedLength,
+        mLatinIMELegacy.onUpdateSelection(typedLength, typedLength,
                 CURSOR_POS, CURSOR_POS, -1, -1);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
@@ -95,11 +95,11 @@ public class InputLogicTestsLanguageWithoutSpaces extends InputTestsBase {
         final int CURSOR_POS = 4;
         changeKeyboardLocaleAndDictLocale("th", "en_US");
         type(WORD_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, 0, typedLength);
+        mLatinIMELegacy.onUpdateSelection(0, 0, typedLength, typedLength, 0, typedLength);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
         mInputConnection.setSelection(CURSOR_POS, CURSOR_POS);
-        mLatinIME.onUpdateSelection(typedLength, typedLength,
+        mLatinIMELegacy.onUpdateSelection(typedLength, typedLength,
                 CURSOR_POS, CURSOR_POS, 0, typedLength);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
         runMessages();
@@ -127,7 +127,7 @@ public class InputLogicTestsLanguageWithoutSpaces extends InputTestsBase {
         assertEquals("predictions in lang without spaces", "Barack",
                 mEditText.getText().toString());
         // Test the first prediction is displayed
-        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        final SuggestedWords suggestedWords = mLatinIMELegacy.getSuggestedWordsForTest();
         assertEquals("predictions in lang without spaces", "Obama",
                 suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }

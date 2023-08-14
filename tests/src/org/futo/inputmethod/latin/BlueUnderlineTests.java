@@ -70,7 +70,7 @@ public class BlueUnderlineTests extends InputTestsBase {
         runMessages();
         type(Constants.CODE_SPACE);
         // typedLength + 1 because we also typed a space
-        mLatinIME.onUpdateSelection(0, 0, typedLength + 1, typedLength + 1, -1, -1);
+        mLatinIMELegacy.onUpdateSelection(0, 0, typedLength + 1, typedLength + 1, -1, -1);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
         type(Constants.CODE_DELETE);
@@ -96,13 +96,13 @@ public class BlueUnderlineTests extends InputTestsBase {
         type(STRING_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         // Simulate the onUpdateSelection() event
-        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
+        mLatinIMELegacy.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
         runMessages();
         // Here the blue underline has been set. testBlueUnderline() is testing for this already,
         // so let's not test it here again.
         // Now simulate the user moving the cursor.
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
-        mLatinIME.onUpdateSelection(typedLength, typedLength,
+        mLatinIMELegacy.onUpdateSelection(typedLength, typedLength,
                 NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         runMessages();
@@ -116,7 +116,7 @@ public class BlueUnderlineTests extends InputTestsBase {
         type(STRING_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
         // Simulate the onUpdateSelection() event
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        mLatinIMELegacy.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
         runMessages();
         // Here the blue underline has been set. testBlueUnderline() is testing for this already,
         // so let's not test it here again.

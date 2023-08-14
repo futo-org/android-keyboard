@@ -16,7 +16,11 @@
 
 package org.futo.inputmethod.latin;
 
-public class LatinIMEForTests extends LatinIME {
+public class LatinIMELegacyForTests extends LatinIMELegacy {
+    public LatinIMELegacyForTests() {
+        super(mInputMethodService);
+    }
+
     @Override
     public boolean isInputViewShown() {
         return true;

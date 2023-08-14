@@ -36,7 +36,7 @@ import org.futo.inputmethod.latin.R;
  * Multi-touch unsupported. No gesture support.
  */
 // TODO: Implement key popup preview.
-final class EmojiPageKeyboardView extends KeyboardView implements
+public final class EmojiPageKeyboardView extends KeyboardView implements
         GestureDetector.OnGestureListener {
     private static final long KEY_PRESS_DELAY_TIME = 250;  // msec
     private static final long KEY_RELEASE_DELAY_TIME = 30;  // msec

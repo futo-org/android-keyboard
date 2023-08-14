@@ -33,7 +33,7 @@ public class ShiftModeTests extends InputTestsBase {
     }
 
     private boolean isCapsModeAutoShifted() {
-        return mLatinIME.mKeyboardSwitcher.getKeyboardShiftMode()
+        return mLatinIMELegacy.mKeyboardSwitcher.getKeyboardShiftMode()
                 == WordComposer.CAPS_MODE_AUTO_SHIFTED;
     }
 

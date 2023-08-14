@@ -86,7 +86,7 @@ public interface DictionaryFacilitator {
     }
 
     /**
-     * Called every time {@link LatinIME} starts on a new text field.
+     * Called every time {@link LatinIMELegacy} starts on a new text field.
      * Dot not affect {@link AndroidSpellCheckerService}.
      *
      * WARNING: The service methods that call start/finish are very spammy.
@@ -94,7 +94,7 @@ public interface DictionaryFacilitator {
     void onStartInput();
 
     /**
-     * Called every time the {@link LatinIME} finishes with the current text field.
+     * Called every time the {@link LatinIMELegacy} finishes with the current text field.
      * May be followed by {@link #onStartInput} again in another text field,
      * or it may be done for a while.
      * Dot not affect {@link AndroidSpellCheckerService}.

@@ -44,7 +44,7 @@ import android.util.Log;
 public final class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = DictionaryPackInstallBroadcastReceiver.class.getSimpleName();
 
-    final LatinIME mService;
+    final LatinIMELegacy mService;
 
     public DictionaryPackInstallBroadcastReceiver() {
         // This empty constructor is necessary for the system to instantiate this receiver.
@@ -55,7 +55,7 @@ public final class DictionaryPackInstallBroadcastReceiver extends BroadcastRecei
         mService = null;
     }
 
-    public DictionaryPackInstallBroadcastReceiver(final LatinIME service) {
+    public DictionaryPackInstallBroadcastReceiver(final LatinIMELegacy service) {
         mService = service;
     }
 

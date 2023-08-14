@@ -135,6 +135,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private long mLastSlowInputConnectionTime = -SLOW_INPUTCONNECTION_PERSIST_MS;
 
     public RichInputConnection(final InputMethodService parent) {
+        if(parent == null) throw new NullPointerException("Input Method Service is null");
+
         mParent = parent;
         mIC = null;
         mNestLevel = 0;
@@ -182,7 +184,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                     + "\nActual selection start = " + et.selectionStart
                     + "\nExpected text = " + internal.length() + " " + internal
                     + "\nActual text = " + reference.length() + " " + reference;
-            ((LatinIME)mParent).debugDumpStateAndCrashWithException(context);
+
+            throw new RuntimeException(context);
         } else {
             Log.e(TAG, DebugLogUtils.getStackTrace(2));
             Log.e(TAG, "Exp <> Actual : " + mExpectedSelStart + " <> " + et.selectionStart);
@@ -675,7 +678,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 if (!(reference.equals(internal.toString()))) {
                     final String context =
                             "Expected text = " + internal + "\nActual text = " + reference;
-                    ((LatinIME)mParent).debugDumpStateAndCrashWithException(context);
+
+                    throw new RuntimeException(context);
                 }
             }
         }
