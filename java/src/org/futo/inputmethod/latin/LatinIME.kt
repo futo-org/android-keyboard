@@ -3,55 +3,26 @@ package org.futo.inputmethod.latin
 import android.content.Context
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
-import android.os.Build
-import android.text.InputType
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.CompletionInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.setViewTreeLifecycleOwner
@@ -124,6 +95,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     private var legacyInputView: View? = null
+    private var touchableHeight: Int = 0
     override fun onCreateInputView(): View {
         legacyInputView = latinIMELegacy.onCreateInputView()
         composeView = ComposeView(this).apply {
@@ -134,14 +106,16 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
 
         composeView?.setContent {
-            Surface(color = Color.Blue) {
-                Column {
-                    Text("Example Compose Element", color = Color.Red)
-                    Text("The keyboard below is wrapped in AndroidView", color = Color.Red)
-
-                    AndroidView(factory = {
-                        legacyInputView!!
-                    }, update = { })
+            Column {
+                Spacer(modifier = Modifier.weight(1.0f))
+                Surface(modifier = Modifier.onSizeChanged {
+                    touchableHeight = it.height
+                }, color = MaterialTheme.colorScheme.surface) {
+                    Column {
+                        AndroidView(factory = {
+                            legacyInputView!!
+                        }, update = { })
+                    }
                 }
             }
         }
@@ -151,6 +125,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun setInputView(view: View?) {
         super.setInputView(view)
+        latinIMELegacy.setComposeInputView(composeView!!)
         latinIMELegacy.setInputView(legacyInputView)
     }
 
@@ -225,15 +200,37 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         latinIMELegacy.onDisplayCompletions(completions)
     }
 
-    /*
-    // TODO: This seems to not factor in the dimensions of the Compose elements
-    // and bottom parts of the keyboard start to pass input through to the app.
-    // The keyboard seems to work fine without this method. What was it for?
     override fun onComputeInsets(outInsets: Insets?) {
-        super.onComputeInsets(outInsets)
-        latinIMELegacy.onComputeInsets(outInsets)
+        // This method may be called before {@link #setInputView(View)}.
+        if (legacyInputView == null) {
+            return
+        }
+
+        val inputHeight: Int = composeView!!.height
+        if (latinIMELegacy.isImeSuppressedByHardwareKeyboard && !legacyInputView!!.isShown) {
+            // If there is a hardware keyboard and a visible software keyboard view has been hidden,
+            // no visual element will be shown on the screen.
+            latinIMELegacy.setInsets(outInsets!!.apply {
+                contentTopInsets = inputHeight
+                visibleTopInsets = inputHeight
+            })
+            return
+        }
+
+        val visibleTopY = inputHeight - touchableHeight
+
+        val touchLeft = 0
+        val touchTop = visibleTopY
+        val touchRight = legacyInputView!!.width
+        val touchBottom = inputHeight
+
+        latinIMELegacy.setInsets(outInsets!!.apply {
+            touchableInsets = Insets.TOUCHABLE_INSETS_REGION;
+            touchableRegion.set(touchLeft, touchTop, touchRight, touchBottom);
+            contentTopInsets = visibleTopY
+            visibleTopInsets = visibleTopY
+        })
     }
-    */
 
     override fun onShowInputRequested(flags: Int, configChange: Boolean): Boolean {
         return latinIMELegacy.onShowInputRequested(flags, configChange) || super.onShowInputRequested(flags, configChange)

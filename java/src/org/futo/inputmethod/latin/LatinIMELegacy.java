@@ -158,6 +158,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     // TODO: Move these {@link View}s to {@link KeyboardSwitcher}.
     private View mInputView;
+    private View mComposeInputView;
     private InsetsUpdater mInsetsUpdater;
     private SuggestionStripView mSuggestionStripView;
 
@@ -762,7 +763,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mInputLogic.recycle();
     }
 
-    private boolean isImeSuppressedByHardwareKeyboard() {
+    public boolean isImeSuppressedByHardwareKeyboard() {
         final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
         return !onEvaluateInputViewShown() && switcher.isImeSuppressedByHardwareKeyboard(
                 mSettings.getCurrent(), switcher.getKeyboardSwitchState());
@@ -836,10 +837,15 @@ public class LatinIMELegacy implements KeyboardActionListener,
                 mIsHardwareAcceleratedDrawingEnabled);
     }
 
-    public void setInputView(final View view) {
-        mInputView = view;
+
+    public void setComposeInputView(final View view) {
+        mComposeInputView = view;
         mInsetsUpdater = ViewOutlineProviderCompatUtils.setInsetsOutlineProvider(view);
         updateSoftInputWindowLayoutParameters();
+    }
+
+    public void setInputView(final View view) {
+        mInputView = view;
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
@@ -1196,42 +1202,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
         setSuggestedWords(suggestedWords);
     }
 
-    public void onComputeInsets(final InputMethodService.Insets outInsets) {
-        // This method may be called before {@link #setInputView(View)}.
-        if (mInputView == null) {
-            return;
-        }
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
-        if (visibleKeyboardView == null || !hasSuggestionStripView()) {
-            return;
-        }
-        final int inputHeight = mInputView.getHeight();
-        if (isImeSuppressedByHardwareKeyboard() && !visibleKeyboardView.isShown()) {
-            // If there is a hardware keyboard and a visible software keyboard view has been hidden,
-            // no visual element will be shown on the screen.
-            outInsets.contentTopInsets = inputHeight;
-            outInsets.visibleTopInsets = inputHeight;
-            mInsetsUpdater.setInsets(outInsets);
-            return;
-        }
-        final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
-                && mSuggestionStripView.getVisibility() == View.VISIBLE)
-                ? mSuggestionStripView.getHeight() : 0;
-        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight;
-        mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
-        // Need to set expanded touchable region only if a keyboard view is being shown.
-        if (visibleKeyboardView.isShown()) {
-            final int touchLeft = 0;
-            final int touchTop = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
-            final int touchRight = visibleKeyboardView.getWidth();
-            final int touchBottom = inputHeight;
-            outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
-            outInsets.touchableRegion.set(touchLeft, touchTop, touchRight, touchBottom);
-        }
-        outInsets.contentTopInsets = visibleTopY;
-        outInsets.visibleTopInsets = visibleTopY;
-        mInsetsUpdater.setInsets(outInsets);
+    public void setInsets(final InputMethodService.Insets insets) {
+        mInsetsUpdater.setInsets(insets);
     }
 
     public void startShowingInputView(final boolean needsToLoadKeyboard) {
@@ -1287,16 +1259,13 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     private void updateSoftInputWindowLayoutParameters() {
-        // TODO: This seems to mess with the compose UI a lot, and the keyboard
-        // works fine without it. What was it for?
-        /*
         // Override layout parameters to expand {@link SoftInputWindow} to the entire screen.
         // See {@link InputMethodService#setinputView(View)} and
         // {@link SoftInputWindow#updateWidthHeight(WindowManager.LayoutParams)}.
         final Window window = mInputMethodService.getWindow().getWindow();
         ViewLayoutUtils.updateLayoutHeightOf(window, LayoutParams.MATCH_PARENT);
         // This method may be called before {@link #setInputView(View)}.
-        if (mInputView != null) {
+        if (mComposeInputView != null) {
             // In non-fullscreen mode, {@link InputView} and its parent inputArea should expand to
             // the entire screen and be placed at the bottom of {@link SoftInputWindow}.
             // In fullscreen mode, these shouldn't expand to the entire screen and should be
@@ -1308,9 +1277,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
             final View inputArea = window.findViewById(android.R.id.inputArea);
             ViewLayoutUtils.updateLayoutHeightOf(inputArea, layoutHeight);
             ViewLayoutUtils.updateLayoutGravityOf(inputArea, Gravity.BOTTOM);
-            ViewLayoutUtils.updateLayoutHeightOf(mInputView, layoutHeight);
+            ViewLayoutUtils.updateLayoutHeightOf(mComposeInputView, layoutHeight);
         }
-        */
     }
 
     int getCurrentAutoCapsState() {
