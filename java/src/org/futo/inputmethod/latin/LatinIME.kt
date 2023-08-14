@@ -13,6 +13,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
@@ -105,6 +110,12 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             this@LatinIME.setOwners()
         }
 
+        setContent()
+
+        return composeView!!
+    }
+
+    private fun setContent() {
         composeView?.setContent {
             Column {
                 Spacer(modifier = Modifier.weight(1.0f))
@@ -112,15 +123,24 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                     touchableHeight = it.height
                 }, color = MaterialTheme.colorScheme.surface) {
                     Column {
-                        AndroidView(factory = {
-                            legacyInputView!!
-                        }, update = { })
+                        key(legacyInputView) {
+                            AndroidView(factory = {
+                                legacyInputView!!
+                            }, update = { })
+                        }
                     }
                 }
             }
         }
+    }
 
-        return composeView!!
+    // necessary for when KeyboardSwitcher updates the theme
+    fun updateLegacyView(newView: View) {
+        legacyInputView = newView
+        setContent()
+
+        latinIMELegacy.setComposeInputView(composeView!!)
+        latinIMELegacy.setInputView(legacyInputView)
     }
 
     override fun setInputView(view: View?) {

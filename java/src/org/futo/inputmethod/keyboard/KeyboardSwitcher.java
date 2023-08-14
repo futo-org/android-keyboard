@@ -32,6 +32,7 @@ import org.futo.inputmethod.keyboard.emoji.EmojiPalettesView;
 import org.futo.inputmethod.keyboard.internal.KeyboardState;
 import org.futo.inputmethod.keyboard.internal.KeyboardTextsSet;
 import org.futo.inputmethod.latin.InputView;
+import org.futo.inputmethod.latin.LatinIME;
 import org.futo.inputmethod.latin.LatinIMELegacy;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodManager;
@@ -92,8 +93,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final boolean themeUpdated = updateKeyboardThemeAndContextThemeWrapper(
                 displayContext, KeyboardTheme.getKeyboardTheme(displayContext /* context */));
         if (themeUpdated && mKeyboardView != null) {
-            mLatinIMELegacy.setInputView(
-                    onCreateInputView(displayContext, mIsHardwareAcceleratedDrawingEnabled));
+            ((LatinIME)mLatinIMELegacy.getInputMethodService()).updateLegacyView(onCreateInputView(
+                    displayContext, mIsHardwareAcceleratedDrawingEnabled));
         }
     }
 
