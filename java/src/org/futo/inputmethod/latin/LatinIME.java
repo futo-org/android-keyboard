@@ -61,7 +61,6 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.compat.BuildCompatUtils;
 import org.futo.inputmethod.compat.EditorInfoCompatUtils;
-import org.futo.inputmethod.compat.InputMethodServiceCompatUtils;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
 import org.futo.inputmethod.dictionarypack.DictionaryPackConstants;
@@ -588,8 +587,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSettings = Settings.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mStatsUtilsManager = StatsUtilsManager.getInstance();
-        mIsHardwareAcceleratedDrawingEnabled =
-                InputMethodServiceCompatUtils.enableHardwareAcceleration(this);
+        mIsHardwareAcceleratedDrawingEnabled = true;
         Log.i(TAG, "Hardware accelerated drawing: " + mIsHardwareAcceleratedDrawingEnabled);
     }
 

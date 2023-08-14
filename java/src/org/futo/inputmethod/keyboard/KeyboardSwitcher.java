@@ -26,7 +26,6 @@ import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 
-import org.futo.inputmethod.compat.InputMethodServiceCompatUtils;
 import org.futo.inputmethod.event.Event;
 import org.futo.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import org.futo.inputmethod.keyboard.emoji.EmojiPalettesView;
@@ -86,8 +85,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mLatinIME = latinIme;
         mRichImm = RichInputMethodManager.getInstance();
         mState = new KeyboardState(this);
-        mIsHardwareAcceleratedDrawingEnabled =
-                InputMethodServiceCompatUtils.enableHardwareAcceleration(mLatinIME);
+        mIsHardwareAcceleratedDrawingEnabled = true;
     }
 
     public void updateKeyboardTheme(@NonNull Context displayContext) {
