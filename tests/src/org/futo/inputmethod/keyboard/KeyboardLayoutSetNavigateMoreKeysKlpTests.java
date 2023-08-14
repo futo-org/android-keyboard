@@ -23,6 +23,6 @@ public class KeyboardLayoutSetNavigateMoreKeysKlpTests
         extends KeyboardLayoutSetNavigateMoreKeysBase {
     @Override
     protected int getKeyboardThemeForTests() {
-        return KeyboardTheme.THEME_ID_KLP;
+        return KeyboardTheme.THEME_ID_LXX_LIGHT;
     }
 }

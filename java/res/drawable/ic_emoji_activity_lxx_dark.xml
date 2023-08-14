@@ -30,4 +30,5 @@
         android:drawable="@drawable/ic_emoji_activity_activated_lxx_dark" />
     <item
         android:drawable="@drawable/ic_emoji_activity_normal_lxx_dark" />
+    -->
 </selector>

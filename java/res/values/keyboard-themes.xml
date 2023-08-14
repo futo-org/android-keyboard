@@ -22,15 +22,11 @@
     <string-array name="keyboard_theme_names" translatable="false">
         <item>@string/keyboard_theme_material_light</item>
         <item>@string/keyboard_theme_material_dark</item>
-        <item>@string/keyboard_theme_holo_white</item>
-        <item>@string/keyboard_theme_holo_blue</item>
     </string-array>
     <!-- An element must be a keyboard theme id of
          {@link org.futo.inputmethod.keyboard.KeyboardTheme#THEME_ID_ICS} etc. -->
     <integer-array name="keyboard_theme_ids" translatable="false">
         <item>3</item>
         <item>4</item>
-        <item>2</item>
-        <item>0</item>
     </integer-array>
 </resources>

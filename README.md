@@ -6,4 +6,4 @@ Eventual goals:
 * Improve upon various aspects of the keyboard, such as theming
 * Integrated voice input
 * Transformer language model instead of n-gram
-* On-device finetuning of language model(?)
+* On-device finetuning ofa language model(?)

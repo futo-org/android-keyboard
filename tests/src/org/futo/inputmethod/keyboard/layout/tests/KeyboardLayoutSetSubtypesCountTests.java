@@ -33,7 +33,7 @@ public class KeyboardLayoutSetSubtypesCountTests extends KeyboardLayoutSetTestsB
 
     @Override
     protected int getKeyboardThemeForTests() {
-        return KeyboardTheme.THEME_ID_KLP;
+        return KeyboardTheme.THEME_ID_LXX_LIGHT;
     }
 
     private static String toString(final ArrayList<InputMethodSubtype> subtypeList) {

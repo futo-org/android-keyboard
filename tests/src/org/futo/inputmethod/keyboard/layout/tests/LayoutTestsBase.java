@@ -60,7 +60,7 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
 
     @Override
     protected int getKeyboardThemeForTests() {
-        return KeyboardTheme.THEME_ID_KLP;
+        return KeyboardTheme.THEME_ID_LXX_LIGHT;
     }
 
     // Those helper methods have a lower case name to be readable when defining expected keyboard

@@ -19,27 +19,6 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Color resources for IceCreamSandwich theme. Base color = 33B5E5 -->
-    <!-- android:color/holo_blue_light value is #FF33B5E5 -->
-    <color name="highlight_color_ics">#FF33B5E5</color>
-    <color name="typed_word_color_ics">#D833B5E5</color>
-    <color name="suggested_word_color_ics">#B233B5E5</color>
-    <color name="highlight_translucent_color_ics">#9933B5E5</color>
-    <color name="key_text_color_holo">@android:color/white</color>
-    <color name="key_text_inactivated_color_holo">#66E0E4E5</color>
-    <color name="key_hint_letter_color_holo">#80000000</color>
-    <color name="key_hint_label_color_holo">#A0FFFFFF</color>
-    <color name="key_shifted_letter_hint_inactivated_color_holo">#66E0E4E5</color>
-    <color name="key_shifted_letter_hint_activated_color_holo">@android:color/white</color>
-    <color name="spacebar_text_color_holo">#FFC0C0C0</color>
-    <color name="spacebar_text_shadow_color_holo">#80000000</color>
-    <color name="gesture_floating_preview_color_holo">#C0000000</color>
-    <color name="emoji_tab_page_indicator_background_holo">#111111</color>
-    <!-- Color resources for KLP theme. Base color = F0F0F0 -->
-    <color name="highlight_color_klp">#FFF0F0F0</color>
-    <color name="typed_word_color_klp">#D8F0F0F0</color>
-    <color name="suggested_word_color_klp">#B2F0F0F0</color>
-    <color name="highlight_translucent_color_klp">#99E0E0E0</color>
     <!-- Color resources for LXX_Light theme.
          15%:0x26 70%:0xB3 75%:0xC0 80%:0xCC 85%:0xD9 90%:0xE6 -->
     <color name="key_text_color_lxx_light">#37474F</color>
@@ -54,6 +33,7 @@
     <color name="gesture_trail_color_lxx_light">#4DB6AC</color>
     <color name="sliding_key_input_preview_color_lxx_light">#B34DB6AC</color>
     <color name="key_background_lxx_light">#ECEFF1</color>
+    <color name="keyboard_separator_lxx_light">#f6f7f8</color>
     <color name="key_background_pressed_lxx_light">#2637474F</color>
     <color name="suggested_word_background_selected_lxx_light">#2637474F</color>
     <color name="gesture_floating_preview_color_lxx_light">#E6ECEFF1</color>
@@ -72,6 +52,7 @@
     <color name="gesture_trail_color_lxx_dark">#80CBC4</color>
     <color name="sliding_key_input_preview_color_lxx_dark">#B380CBC4</color>
     <color name="key_background_lxx_dark">#263238</color>
+    <color name="keyboard_separator_lxx_dark">#3c474c</color>
     <color name="key_background_pressed_lxx_dark">#19FFFFFF</color>
     <color name="suggested_word_background_selected_lxx_dark">#19FFFFFF</color>
     <color name="gesture_floating_preview_color_lxx_dark">#E621272B</color>
@@ -84,4 +65,8 @@
     <color name="setup_welcome_video_margin_color">#FFCCCCCC</color>
     <!-- Accent color for the notification. We need to match this to the OS build -->
     <color name="notification_accent_color">#FF607D8B</color>
+
+
+    <color name="key_feedback_color_lxx_dark">#3d484d</color>
+    <color name="key_feedback_color_lxx_light">#d1d6d9</color>
 </resources>

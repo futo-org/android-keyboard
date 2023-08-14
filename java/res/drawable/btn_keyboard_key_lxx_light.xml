@@ -16,29 +16,48 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Action keys. -->
-    <item android:state_active="true" android:state_pressed="true"
-          android:drawable="@drawable/btn_keyboard_key_active_pressed_lxx_light" />
-    <item android:state_active="true"
-          android:drawable="@drawable/btn_keyboard_key_active_lxx_light" />
+    <item android:state_active="true" android:state_pressed="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <corners android:radius="999dp" />
+                    <solid android:color="@color/highlight_color_lxx_light" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="oval">
+                    <corners android:radius="999dp" />
+                    <solid android:color="@color/key_background_pressed_lxx_light" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item android:state_active="true">
+        <shape android:shape="oval">
+            <corners android:radius="999dp" />
+            <solid android:color="@color/highlight_color_lxx_light" />
+        </shape>
+    </item>
+
 
     <!-- Toggle keys. Use checkable/checked state. -->
     <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
-          android:drawable="@drawable/btn_keyboard_key_pressed_on_lxx_light" />
+        android:drawable="@color/key_background_pressed_lxx_light" />
     <item android:state_checkable="true" android:state_pressed="true"
-          android:drawable="@drawable/btn_keyboard_key_pressed_off_lxx_light" />
+        android:drawable="@color/key_background_pressed_lxx_light" />
     <item android:state_checkable="true" android:state_checked="true"
-          android:drawable="@drawable/btn_keyboard_key_normal_on_lxx_light" />
+        android:drawable="@color/key_background_pressed_lxx_light" />
     <item android:state_checkable="true"
-          android:drawable="@drawable/btn_keyboard_key_normal_off_lxx_light" />
+        android:drawable="@color/key_background_lxx_light" />
 
     <!-- Empty background keys. -->
     <item android:state_empty="true" android:state_pressed="true"
-          android:drawable="@color/key_background_pressed_lxx_light" />
+        android:drawable="@color/key_background_pressed_lxx_light" />
     <item android:state_empty="true"
-          android:drawable="@android:color/transparent" />
+        android:drawable="@android:color/transparent" />
 
     <!-- Normal keys. -->
     <item android:state_pressed="true"
-          android:drawable="@color/key_background_pressed_lxx_light" />
+        android:drawable="@color/key_background_pressed_lxx_light" />
     <item android:drawable="@color/key_background_lxx_light" />
 </selector>

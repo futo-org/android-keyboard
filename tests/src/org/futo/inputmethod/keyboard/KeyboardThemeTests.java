@@ -16,8 +16,6 @@
 
 package org.futo.inputmethod.keyboard;
 
-import static org.futo.inputmethod.keyboard.KeyboardTheme.THEME_ID_ICS;
-import static org.futo.inputmethod.keyboard.KeyboardTheme.THEME_ID_KLP;
 import static org.futo.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_DARK;
 import static org.futo.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_LIGHT;
 
@@ -67,8 +65,6 @@ public class KeyboardThemeTests {
 
     private static boolean isValidKeyboardThemeId(final int themeId) {
         switch (themeId) {
-        case THEME_ID_ICS:
-        case THEME_ID_KLP:
         case THEME_ID_LXX_LIGHT:
         case THEME_ID_LXX_DARK:
             return true;
@@ -116,10 +112,8 @@ public class KeyboardThemeTests {
     }
 
     private void assertKeyboardThemePreferenceOnKlp(final int sdkVersion) {
-        final int defaultThemeId = THEME_ID_KLP;
+        final int defaultThemeId = THEME_ID_LXX_LIGHT;
         assertKeyboardThemePreference(sdkVersion, THEME_ID_NULL, defaultThemeId);
-        assertKeyboardThemePreference(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
-        assertKeyboardThemePreference(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX_LIGHT, THEME_ID_LXX_LIGHT);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX_DARK, THEME_ID_LXX_DARK);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_UNKNOWN, defaultThemeId);
@@ -139,8 +133,6 @@ public class KeyboardThemeTests {
     private void assertKeyboardThemePreferenceOnLxx(final int sdkVersion) {
         final int defaultThemeId = THEME_ID_LXX_LIGHT;
         assertKeyboardThemePreference(sdkVersion, THEME_ID_NULL, defaultThemeId);
-        assertKeyboardThemePreference(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
-        assertKeyboardThemePreference(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX_LIGHT, THEME_ID_LXX_LIGHT);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX_DARK, THEME_ID_LXX_DARK);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_UNKNOWN, defaultThemeId);
@@ -176,11 +168,6 @@ public class KeyboardThemeTests {
     }
 
     private void assertDefaultKeyboardThemeOnKlp(final int sdkVersion) {
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_KLP);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_KLP);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_KLP);
     }
 
     @Test
@@ -196,8 +183,6 @@ public class KeyboardThemeTests {
     private void assertDefaultKeyboardThemeOnLxx(final int sdkVersion) {
         // Forced to switch to LXX theme.
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_LXX_LIGHT);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_LXX_LIGHT);
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_LIGHT);
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
     }
@@ -243,11 +228,6 @@ public class KeyboardThemeTests {
     }
 
     private void assertUpgradeKeyboardToLxxOnKlp(final int sdkVersion) {
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_NULL, THEME_ID_KLP);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_KLP);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_KLP);
     }
 
     // Upgrading keyboard on I,J and K.
@@ -264,8 +244,6 @@ public class KeyboardThemeTests {
     private void assertUpgradeKeyboardToLxxOnLxx(final int sdkVersion) {
         // Forced to switch to LXX theme.
         assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ICS, THEME_ID_LXX_LIGHT);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_KLP, THEME_ID_LXX_LIGHT);
         assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_LIGHT);
         assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
     }
@@ -298,11 +276,6 @@ public class KeyboardThemeTests {
 
     private void assertUpgradePlatformFromKlpToKlp(final int oldSdkVersion,
             final int newSdkVersion) {
-        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_KLP);
-        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_ICS);
-        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_KLP);
-        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_KLP);
-        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_KLP);
     }
 
     private void assertUpgradePlatformToKlpFrom(final int oldSdkVersion) {
@@ -331,10 +304,6 @@ public class KeyboardThemeTests {
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_LXX_LIGHT);
-        assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_LXX_LIGHT);
-        assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
@@ -358,10 +327,6 @@ public class KeyboardThemeTests {
         final int newSdkVersion = Build.VERSION_CODES.LOLLIPOP;
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
-        assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_ICS);
-        assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_KLP);
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_LXX_LIGHT, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
@@ -403,8 +368,6 @@ public class KeyboardThemeTests {
      * Test for missing selected theme.
      */
     private static KeyboardTheme[] LIMITED_THEMES = {
-        KeyboardTheme.searchKeyboardThemeById(THEME_ID_ICS, KeyboardTheme.KEYBOARD_THEMES),
-        KeyboardTheme.searchKeyboardThemeById(THEME_ID_KLP, KeyboardTheme.KEYBOARD_THEMES)
     };
     static {
         Arrays.sort(LIMITED_THEMES);
@@ -424,7 +387,6 @@ public class KeyboardThemeTests {
         final KeyboardTheme actualTheme = KeyboardTheme.getKeyboardTheme(
                 mPrefs, sdkVersion, LIMITED_THEMES);
         // LXX_LIGHT is missing, fall-back to KLP.
-        assertEquals(THEME_ID_KLP, actualTheme.mThemeId);
     }
 
     @Test
@@ -440,7 +402,6 @@ public class KeyboardThemeTests {
         final KeyboardTheme actualTheme = KeyboardTheme.getKeyboardTheme(
                 mPrefs, sdkVersion, LIMITED_THEMES);
         // LXX_LIGHT is missing, fall-back to KLP.
-        assertEquals(THEME_ID_KLP, actualTheme.mThemeId);
     }
 
     @Test
@@ -456,6 +417,5 @@ public class KeyboardThemeTests {
         final KeyboardTheme actualTheme = KeyboardTheme.getKeyboardTheme(
                 mPrefs, sdkVersion, LIMITED_THEMES);
         // LXX_DARK is missing, fall-back to KLP.
-        assertEquals(THEME_ID_KLP, actualTheme.mThemeId);
     }
 }

@@ -13,24 +13,16 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<selector
+<layer-list
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
->
-    <!-- Left edge -->
-    <item latin:state_left_edge="true" latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_more_background_lxx_dark" />
-    <item latin:state_left_edge="true"
-          android:drawable="@drawable/keyboard_key_feedback_background_lxx_dark" />
-
-    <!-- Right edge -->
-    <item latin:state_right_edge="true" latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_more_background_lxx_dark" />
-    <item latin:state_right_edge="true"
-          android:drawable="@drawable/keyboard_key_feedback_background_lxx_dark" />
-
-    <item latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_more_background_lxx_dark" />
-    <item android:drawable="@drawable/keyboard_key_feedback_background_lxx_dark" />
-</selector>
+    >
+    <item android:top="50dp" android:bottom="0dp">
+        <shape
+            android:shape="rectangle"
+            >
+            <corners android:radius="8dp" />
+            <size android:width="48dp" android:height="24dp" />
+            <solid android:color="@color/key_feedback_color_lxx_dark" />
+        </shape>
+    </item>
+</layer-list>
