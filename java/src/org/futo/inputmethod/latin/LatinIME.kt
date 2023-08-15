@@ -13,11 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
@@ -37,9 +33,13 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import org.futo.inputmethod.latin.uix.ActionBar
 
-class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner {
-    private val latinIMELegacy = LatinIMELegacy(this as InputMethodService)
+class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner, LatinIMELegacy.SuggestionStripController {
+    private val latinIMELegacy = LatinIMELegacy(
+        this as InputMethodService,
+        this as LatinIMELegacy.SuggestionStripController
+    )
 
     private val mSavedStateRegistryController = SavedStateRegistryController.create(this)
 
@@ -115,6 +115,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         return composeView!!
     }
 
+    private var shouldShowSuggestionStrip: Boolean = true
+    private var suggestedWords: SuggestedWords? = null
     private fun setContent() {
         composeView?.setContent {
             Column {
@@ -123,6 +125,12 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                     touchableHeight = it.height
                 }, color = MaterialTheme.colorScheme.surface) {
                     Column {
+                        if(shouldShowSuggestionStrip) {
+                            ActionBar(
+                                suggestedWords,
+                                latinIMELegacy
+                            )
+                        }
                         key(legacyInputView) {
                             AndroidView(factory = {
                                 legacyInputView!!
@@ -275,5 +283,19 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         return latinIMELegacy.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event)
+    }
+
+    override fun updateVisibility(shouldShowSuggestionsStrip: Boolean, fullscreenMode: Boolean) {
+        this.shouldShowSuggestionStrip = shouldShowSuggestionsStrip
+        setContent()
+    }
+
+    override fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean) {
+        this.suggestedWords = suggestedWords
+        setContent()
+    }
+
+    override fun maybeShowImportantNoticeTitle(): Boolean {
+        return false
     }
 }

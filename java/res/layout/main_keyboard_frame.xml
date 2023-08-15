@@ -24,17 +24,6 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:orientation="vertical" >
-
-    <!-- To ensure that key preview popup is correctly placed when the current system locale is
-         one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
-    <org.futo.inputmethod.latin.suggestions.SuggestionStripView
-        android:id="@+id/suggestion_strip_view"
-        android:layoutDirection="ltr"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/config_suggestions_strip_height"
-        android:gravity="center_vertical"
-        style="?attr/suggestionStripViewStyle" />
-
     <!-- To ensure that key preview popup is correctly placed when the current system locale is
          one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
     <org.futo.inputmethod.keyboard.MainKeyboardView

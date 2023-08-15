@@ -31,8 +31,6 @@ import org.futo.inputmethod.latin.suggestions.SuggestionStripView;
 public final class InputView extends FrameLayout {
     private final Rect mInputViewRect = new Rect();
     private MainKeyboardView mMainKeyboardView;
-    private KeyboardTopPaddingForwarder mKeyboardTopPaddingForwarder;
-    private MoreSuggestionsViewCanceler mMoreSuggestionsViewCanceler;
     private MotionEventForwarder<?, ?> mActiveForwarder;
 
     public InputView(final Context context, final AttributeSet attrs) {
@@ -41,17 +39,11 @@ public final class InputView extends FrameLayout {
 
     @Override
     protected void onFinishInflate() {
-        final SuggestionStripView suggestionStripView =
-                (SuggestionStripView)findViewById(R.id.suggestion_strip_view);
         mMainKeyboardView = (MainKeyboardView)findViewById(R.id.keyboard_view);
-        mKeyboardTopPaddingForwarder = new KeyboardTopPaddingForwarder(
-                mMainKeyboardView, suggestionStripView);
-        mMoreSuggestionsViewCanceler = new MoreSuggestionsViewCanceler(
-                mMainKeyboardView, suggestionStripView);
     }
 
     public void setKeyboardTopPadding(final int keyboardTopPadding) {
-        mKeyboardTopPaddingForwarder.setKeyboardTopPadding(keyboardTopPadding);
+
     }
 
     @Override
@@ -72,20 +64,6 @@ public final class InputView extends FrameLayout {
         final int index = me.getActionIndex();
         final int x = (int)me.getX(index) + rect.left;
         final int y = (int)me.getY(index) + rect.top;
-
-        // The touch events that hit the top padding of keyboard should be forwarded to
-        // {@link SuggestionStripView}.
-        if (mKeyboardTopPaddingForwarder.onInterceptTouchEvent(x, y, me)) {
-            mActiveForwarder = mKeyboardTopPaddingForwarder;
-            return true;
-        }
-
-        // To cancel {@link MoreSuggestionsView}, we should intercept a touch event to
-        // {@link MainKeyboardView} and dismiss the {@link MoreSuggestionsView}.
-        if (mMoreSuggestionsViewCanceler.onInterceptTouchEvent(x, y, me)) {
-            mActiveForwarder = mMoreSuggestionsViewCanceler;
-            return true;
-        }
 
         mActiveForwarder = null;
         return false;

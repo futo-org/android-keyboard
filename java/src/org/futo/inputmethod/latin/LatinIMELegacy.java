@@ -119,6 +119,14 @@ public class LatinIMELegacy implements KeyboardActionListener,
         DictionaryFacilitator.DictionaryInitializationListener,
         PermissionsManager.PermissionsResultCallback {
 
+    public interface SuggestionStripController {
+        public void updateVisibility(boolean shouldShowSuggestionsStrip, boolean fullscreenMode);
+
+        public void setSuggestions(SuggestedWords suggestedWords, boolean rtlSubtype);
+
+        public boolean maybeShowImportantNoticeTitle();
+    }
+    
     private final InputMethodService mInputMethodService;
 
     static final String TAG = LatinIMELegacy.class.getSimpleName();
@@ -160,7 +168,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     private View mInputView;
     private View mComposeInputView;
     private InsetsUpdater mInsetsUpdater;
-    private SuggestionStripView mSuggestionStripView;
+    private final SuggestionStripController mSuggestionStripController;
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
@@ -586,9 +594,10 @@ public class LatinIMELegacy implements KeyboardActionListener,
         JniUtils.loadNativeLibrary();
     }
 
-    public LatinIMELegacy(InputMethodService inputMethodService) {
+    public LatinIMELegacy(InputMethodService inputMethodService, SuggestionStripController suggestionStripController) {
         super();
         mInputMethodService = inputMethodService;
+        mSuggestionStripController = suggestionStripController;
         mSettings = Settings.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mStatsUtilsManager = StatsUtilsManager.getInstance();
@@ -846,10 +855,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     public void setInputView(final View view) {
         mInputView = view;
-        mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
-        if (hasSuggestionStripView()) {
-            mSuggestionStripView.setListener(this, view);
-        }
     }
 
     public void setCandidatesView(final View view) {
@@ -1495,7 +1500,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     public boolean hasSuggestionStripView() {
-        return null != mSuggestionStripView;
+        return null != mSuggestionStripController;
     }
 
     private void setSuggestedWords(final SuggestedWords suggestedWords) {
@@ -1520,7 +1525,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn();
         final boolean shouldShowSuggestionsStrip = shouldShowSuggestionsStripUnlessPassword
                 && !currentSettingsValues.mInputAttributes.mIsPasswordField;
-        mSuggestionStripView.updateVisibility(shouldShowSuggestionsStrip, mInputMethodService.isFullscreenMode());
+        mSuggestionStripController.updateVisibility(shouldShowSuggestionsStrip, mInputMethodService.isFullscreenMode());
         if (!shouldShowSuggestionsStrip) {
             return;
         }
@@ -1536,7 +1541,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         final boolean noSuggestionsToOverrideImportantNotice = noSuggestionsFromDictionaries
                 || isBeginningOfSentencePrediction;
         if (shouldShowImportantNotice && noSuggestionsToOverrideImportantNotice) {
-            if (mSuggestionStripView.maybeShowImportantNoticeTitle()) {
+            if (mSuggestionStripController.maybeShowImportantNoticeTitle()) {
                 return;
             }
         }
@@ -1545,7 +1550,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn()
                 // We should clear the contextual strip if there is no suggestion from dictionaries.
                 || noSuggestionsFromDictionaries) {
-            mSuggestionStripView.setSuggestions(suggestedWords,
+            mSuggestionStripController.setSuggestions(suggestedWords,
                     mRichImm.getCurrentSubtype().isRtlSubtype());
         }
     }

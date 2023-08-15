@@ -18,7 +18,7 @@ package org.futo.inputmethod.latin;
 
 public class LatinIMELegacyForTests extends LatinIMELegacy {
     public LatinIMELegacyForTests() {
-        super(mInputMethodService);
+        super(mInputMethodService, null);
     }
 
     @Override
