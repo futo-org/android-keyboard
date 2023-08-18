@@ -2,22 +2,37 @@ package org.futo.inputmethod.latin
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.InsetDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.StateListDrawable
+import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.shapes.Shape
 import android.inputmethodservice.InputMethodService
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.CompletionInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
+import androidx.annotation.ColorInt
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -34,8 +49,151 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import org.futo.inputmethod.latin.uix.ActionBar
+import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 
-class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner, LatinIMELegacy.SuggestionStripController {
+
+interface KeyboardDrawableProvider {
+    val primaryKeyboardColor: Int
+
+    val keyboardBackground: Drawable
+    val keyBackground: Drawable
+    val spaceBarBackground: Drawable
+
+    val moreKeysKeyboardBackground: Drawable
+    val popupKey: Drawable
+}
+
+// TODO: Expand the number of drawables this provides so it covers the full theme, and
+// build some system to dynamically change these colors
+class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
+    override val primaryKeyboardColor: Int
+
+    override val keyboardBackground: Drawable
+    override val keyBackground: Drawable
+    override val spaceBarBackground: Drawable
+
+    override val moreKeysKeyboardBackground: Drawable
+    override val popupKey: Drawable
+
+    private fun dp(dp: Dp): Float {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.value,
+            context.resources.displayMetrics
+        );
+    }
+
+    private fun coloredRectangle(@ColorInt color: Int): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            setColor(color)
+        }
+    }
+
+    private fun coloredRoundedRectangle(@ColorInt color: Int, radius: Float): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = radius
+            setColor(color)
+        }
+    }
+
+    private fun coloredOval(@ColorInt color: Int): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.OVAL
+            cornerRadius = Float.MAX_VALUE
+            setColor(color)
+        }
+    }
+
+    private fun StateListDrawable.addStateWithHighlightLayerOnPressed(@ColorInt highlight: Int, stateSet: IntArray, drawable: Drawable) {
+        addState(intArrayOf(android.R.attr.state_pressed) + stateSet, LayerDrawable(arrayOf(
+            drawable,
+            coloredRoundedRectangle(highlight, dp(8.dp))
+        )))
+        addState(stateSet, drawable)
+    }
+
+    init {
+        val primary = DarkColorScheme.primary.toArgb()
+        val secondary = DarkColorScheme.secondary.toArgb()
+        val highlight = DarkColorScheme.outline.copy(alpha = 0.33f).toArgb()
+        val background = DarkColorScheme.surface.toArgb()
+        val surface = DarkColorScheme.background.toArgb()
+        val outline = DarkColorScheme.outline.toArgb()
+
+        val transparent = Color.TRANSPARENT
+
+        primaryKeyboardColor = background
+
+        keyboardBackground = LayerDrawable(arrayOf(
+            coloredRectangle(primary),
+            InsetDrawable(coloredRectangle(background),
+                0, 1, 0, 0)
+        ))
+
+        keyBackground = StateListDrawable().apply {
+            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_active),
+                coloredRoundedRectangle(secondary, dp(8.dp)).apply {
+                    setSize(dp(64.dp).toInt(), dp(48.dp).toInt())
+                }
+            )
+
+            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_checkable, android.R.attr.state_checked),
+                coloredRoundedRectangle(secondary, dp(8.dp))
+            )
+
+            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_checkable),
+                coloredRectangle(transparent)
+            )
+
+            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_empty),
+                coloredRectangle(transparent)
+            )
+
+            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(),
+                coloredRectangle(transparent)
+            )
+        }
+
+        spaceBarBackground = StateListDrawable().apply {
+            addState(intArrayOf(android.R.attr.state_pressed),
+                LayerDrawable(arrayOf(
+                    coloredRoundedRectangle(secondary, dp(32.dp)),
+                    coloredRoundedRectangle(highlight, dp(32.dp))
+                ))
+            )
+            addState(intArrayOf(),
+                coloredRoundedRectangle(secondary, dp(32.dp))
+            )
+        }
+
+        moreKeysKeyboardBackground = coloredRoundedRectangle(surface, dp(8.dp)).apply {
+
+        }
+        popupKey = StateListDrawable().apply {
+            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(),
+                coloredRoundedRectangle(surface, dp(8.dp))
+            )
+        }
+    }
+
+}
+
+interface KeyboardDrawableProviderOwner {
+    fun getDrawableProvider(): KeyboardDrawableProvider
+}
+
+class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner, LatinIMELegacy.SuggestionStripController, KeyboardDrawableProviderOwner {
+    private var drawableProvider: KeyboardDrawableProvider? = null
+    override fun getDrawableProvider(): KeyboardDrawableProvider {
+        if(drawableProvider == null) {
+            drawableProvider = BasicThemeProvider(this)
+        }
+
+        return drawableProvider!!
+    }
+
     private val latinIMELegacy = LatinIMELegacy(
         this as InputMethodService,
         this as LatinIMELegacy.SuggestionStripController

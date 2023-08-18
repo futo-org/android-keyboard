@@ -277,7 +277,7 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
     val moreActionsFill = if(isActionsOpen) {
         MaterialTheme.colorScheme.primary
     } else {
-        MaterialTheme.colorScheme.surface
+        MaterialTheme.colorScheme.background
     }
     IconButton(
         onClick = onClick,
@@ -314,7 +314,7 @@ fun ActionBar(
     WhisperVoiceInputTheme {
         Surface(modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp), color = MaterialTheme.colorScheme.surface)
+            .height(40.dp), color = MaterialTheme.colorScheme.background)
         {
             Row {
                 ExpandActionsButton(isActionsOpen.value) { isActionsOpen.value = !isActionsOpen.value }

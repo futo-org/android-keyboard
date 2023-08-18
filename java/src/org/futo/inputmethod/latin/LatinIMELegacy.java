@@ -823,6 +823,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
      * @see android.content.Context#createDisplayContext(Display)
      */
     private @NonNull Context getDisplayContext() {
+        // TODO: We need to pass LatinIME for theming
+        /*
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             // createDisplayContext is not available.
             return mInputMethodService;
@@ -837,6 +839,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // keyboard layout with this context.
         final WindowManager wm = (WindowManager) mInputMethodService.getSystemService(Context.WINDOW_SERVICE);
         return mInputMethodService.createDisplayContext(wm.getDefaultDisplay());
+        */
+        return mInputMethodService;
     }
 
     public View onCreateInputView() {
@@ -1944,11 +1948,12 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     private void setNavigationBarVisibility(final boolean visible) {
+        int color = ((KeyboardDrawableProviderOwner)getInputMethodService()).getDrawableProvider().getPrimaryKeyboardColor();
         if (BuildCompatUtils.EFFECTIVE_SDK_INT > Build.VERSION_CODES.M) {
             // For N and later, IMEs can specify Color.TRANSPARENT to make the navigation bar
             // transparent.  For other colors the system uses the default color.
             mInputMethodService.getWindow().getWindow().setNavigationBarColor(
-                    visible ? Color.BLACK : Color.TRANSPARENT);
+                    visible ? color : Color.TRANSPARENT);
         }
     }
 

@@ -30,10 +30,13 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams;
 import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes;
+import org.futo.inputmethod.latin.KeyboardDrawableProvider;
+import org.futo.inputmethod.latin.KeyboardDrawableProviderOwner;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
@@ -89,9 +92,11 @@ public class KeyboardView extends View {
     private final float mKeyShiftedLetterHintPadding;
     private final float mKeyTextShadowRadius;
     private final float mVerticalCorrection;
+    private final Drawable mKeyboardBackground;
     private final Drawable mKeyBackground;
     private final Drawable mFunctionalKeyBackground;
     private final Drawable mSpacebarBackground;
+    private final KeyboardDrawableProvider mDrawableProvider;
     private final float mSpacebarIconWidthRatio;
     private final Rect mKeyBackgroundPadding = new Rect();
     private static final float KET_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
@@ -131,15 +136,26 @@ public class KeyboardView extends View {
 
         final TypedArray keyboardViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        mKeyBackground = keyboardViewAttr.getDrawable(R.styleable.KeyboardView_keyBackground);
+
+        assert(context instanceof ContextThemeWrapper);
+        assert(((ContextThemeWrapper) context).getBaseContext() instanceof KeyboardDrawableProviderOwner);
+
+        mDrawableProvider = ((KeyboardDrawableProviderOwner) ((ContextThemeWrapper) context).getBaseContext()).getDrawableProvider();
+
+        boolean isMoreKeys = defStyle == R.attr.moreKeysKeyboardViewStyle || defStyle == R.attr.moreKeysKeyboardViewForActionStyle;
+
+        mKeyboardBackground = isMoreKeys ?
+                mDrawableProvider.getMoreKeysKeyboardBackground() : mDrawableProvider.getKeyboardBackground();
+        setBackground(mKeyboardBackground);
+
+        mKeyBackground = isMoreKeys ?
+                mDrawableProvider.getPopupKey() : mDrawableProvider.getKeyBackground();
         mKeyBackground.getPadding(mKeyBackgroundPadding);
-        final Drawable functionalKeyBackground = keyboardViewAttr.getDrawable(
-                R.styleable.KeyboardView_functionalKeyBackground);
-        mFunctionalKeyBackground = (functionalKeyBackground != null) ? functionalKeyBackground
-                : mKeyBackground;
-        final Drawable spacebarBackground = keyboardViewAttr.getDrawable(
-                R.styleable.KeyboardView_spacebarBackground);
-        mSpacebarBackground = (spacebarBackground != null) ? spacebarBackground : mKeyBackground;
+
+        mFunctionalKeyBackground = mKeyBackground;
+
+        mSpacebarBackground = mDrawableProvider.getSpaceBarBackground();
+
         mSpacebarIconWidthRatio = keyboardViewAttr.getFloat(
                 R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
         mKeyHintLetterPadding = keyboardViewAttr.getDimension(
