@@ -1,9 +1,9 @@
 package org.futo.inputmethod.latin.uix
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -12,21 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -47,12 +42,9 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,9 +53,7 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
-import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.WhisperVoiceInputTheme
-import java.lang.Float.max
 import java.lang.IndexOutOfBoundsException
 import java.lang.Integer.min
 import kotlin.math.ceil
@@ -97,36 +87,6 @@ import kotlin.math.roundToInt
  * TODO: Will need to make RTL languages work
  */
 
-val exampleSuggestionsList = arrayListOf(
-    SuggestedWordInfo("verylongword123", "", 100, 1, null, 0, 0),
-    SuggestedWordInfo("world understanding of patience", "",  99, 1, null, 0, 0),
-    SuggestedWordInfo("b", "", 98, 1, null, 0, 0),
-    SuggestedWordInfo("extra1", "", 97, 1, null, 0, 0),
-    SuggestedWordInfo("extra2", "", 96, 1, null, 0, 0),
-    SuggestedWordInfo("extra3", "", 95, 1, null, 0, 0)
-)
-
-val exampleSuggestedWords = SuggestedWords(
-    exampleSuggestionsList,
-    exampleSuggestionsList,
-    exampleSuggestionsList[0],
-    true,
-    true,
-    false,
-    0,
-    0
-)
-
-val exampleSuggestedWordsEmpty = SuggestedWords(
-    arrayListOf(),
-    arrayListOf(),
-    exampleSuggestionsList[0],
-    true,
-    true,
-    false,
-    0,
-    0
-)
 
 val suggestionStylePrimary = TextStyle(
     fontFamily = FontFamily.SansSerif,
@@ -147,8 +107,48 @@ val suggestionStyleAlternative = TextStyle(
 )
 
 
+// Automatically try to fit the given text to the available space in one line.
+// If text is too long, the text gets scaled horizontally to fit.
+// TODO: Could also put ellipsis in the middle
 @OptIn(ExperimentalTextApi::class)
-@Composable fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, onClick: () -> Unit) {
+@Composable
+fun AutoFitText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = TextStyle.Default,
+    layoutDirection: LayoutDirection = LayoutDirection.Ltr
+) {
+    val measurer = rememberTextMeasurer()
+
+    Canvas(modifier = modifier.fillMaxSize()) {
+        val measurement = measurer.measure(
+            text = AnnotatedString(text),
+            style = style,
+            overflow = TextOverflow.Visible,
+            softWrap = false,
+            maxLines = 1,
+            constraints = Constraints(
+                maxWidth = Int.MAX_VALUE,
+                maxHeight = ceil(this.size.height).roundToInt()
+            ),
+            layoutDirection = layoutDirection,
+            density = this
+        )
+
+        val scale = (size.width / measurement.size.width).coerceAtMost(1.0f)
+
+        translate(left = (scale * (size.width - measurement.size.width)) / 2.0f) {
+            scale(scaleX = scale, scaleY = 1.0f) {
+                drawText(
+                    measurement
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, onClick: () -> Unit) {
     val word = try {
          words.getWord(idx)
     } catch(e: IndexOutOfBoundsException) {
@@ -192,43 +192,7 @@ val suggestionStyleAlternative = TextStyle(
         enabled = word != null
     ) {
         if(word != null) {
-            val measurer = rememberTextMeasurer()
-
-            Canvas(modifier = textModifier.fillMaxSize()) {
-                val measurement = measurer.measure(
-                    text = AnnotatedString(word),
-                    style = textStyle,
-                    overflow = TextOverflow.Visible,
-                    softWrap = false,
-                    maxLines = 1,
-                    constraints = Constraints(
-                        maxWidth = Int.MAX_VALUE,
-                        maxHeight = ceil(this.size.height).roundToInt()
-                    ),
-                    layoutDirection = LayoutDirection.Ltr,
-                    density = this
-                )
-
-                val scale = Math.min(1.0f, size.width / measurement.size.width)
-
-                translate(left = (scale * (size.width - measurement.size.width)) / 2.0f) {
-                    scale(scaleX = scale, scaleY = 1.0f) {
-                        drawText(
-                            measurement
-                        )
-                    }
-                }
-            }
-            /*
-            Text(
-                word,
-                modifier = textModifier,
-                style = textStyle,
-                overflow = TextOverflow.Visible,
-                softWrap = false,
-                maxLines = 1
-            )
-            */
+            AutoFitText(word, style = textStyle, modifier = textModifier)
         }
     }
 }
@@ -266,9 +230,13 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
     }
 }
 
+data class Action(
+    @DrawableRes val icon: Int
+    // TODO: How should the actual action abstraction look?
+)
 
 @Composable
-fun RowScope.ActionItem() {
+fun ActionItem() {
     val col = MaterialTheme.colorScheme.secondary
     IconButton(onClick = { /*TODO*/ }, modifier = Modifier
         .drawBehind {
@@ -292,7 +260,7 @@ fun RowScope.ActionItem() {
 
 @Composable
 fun RowScope.ActionItems() {
-
+    // TODO
     ActionItem()
     ActionItem()
     ActionItem()
@@ -301,34 +269,47 @@ fun RowScope.ActionItems() {
     Spacer(modifier = Modifier.weight(1.0f))
 }
 
-class ExampleListener : SuggestionStripView.Listener {
-    override fun showImportantNoticeContents() {
-    }
 
-    override fun pickSuggestionManually(word: SuggestedWordInfo?) {
-    }
+@Composable
+fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
+    val moreActionsColor = MaterialTheme.colorScheme.primary
 
-    override fun onCodeInput(primaryCode: Int, x: Int, y: Int, isKeyRepeat: Boolean) {
+    val moreActionsFill = if(isActionsOpen) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.surface
     }
-
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .width(42.dp)
+            .rotate(
+                if (isActionsOpen) {
+                    180.0f
+                } else {
+                    0.0f
+                }
+            )
+            .fillMaxHeight()
+            .drawBehind {
+                drawCircle(color = moreActionsColor, radius = size.width / 3.0f + 1.0f)
+                drawCircle(color = moreActionsFill, radius = size.width / 3.0f - 2.0f)
+            }
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.chevron_right),
+            contentDescription = "Open Actions"
+        )
+    }
 }
 
 @Composable
-@Preview
 fun ActionBar(
-    words: SuggestedWords? = exampleSuggestedWords,
-    suggestionStripListener: SuggestionStripView.Listener = ExampleListener()
+    words: SuggestedWords?,
+    suggestionStripListener: SuggestionStripView.Listener,
+    forceOpenActionsInitially: Boolean = false
 ) {
-    val isActionsOpen = remember { mutableStateOf(false) }
-    val actionsForcedOpenByUser = remember { mutableStateOf(false) }
-
-    //LaunchedEffect(words?.isEmpty) {
-    //    isActionsOpen.value = actionsForcedOpenByUser.value || words == null || words.isEmpty
-    //}
-
-    LaunchedEffect(actionsForcedOpenByUser.value) {
-        isActionsOpen.value = actionsForcedOpenByUser.value //|| (words == null || words.isEmpty)
-    }
+    val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }
     
     WhisperVoiceInputTheme {
         Surface(modifier = Modifier
@@ -336,35 +317,7 @@ fun ActionBar(
             .height(40.dp), color = MaterialTheme.colorScheme.surface)
         {
             Row {
-                val moreActionsColor = MaterialTheme.colorScheme.primary
-
-                val moreActionsFill = if(isActionsOpen.value) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.surface
-                }
-                IconButton(
-                    onClick = { actionsForcedOpenByUser.value = !actionsForcedOpenByUser.value },
-                    modifier = Modifier
-                        .width(42.dp)
-                        .rotate(
-                            if (isActionsOpen.value) {
-                                180.0f
-                            } else {
-                                0.0f
-                            }
-                        )
-                        .fillMaxHeight()
-                        .drawBehind {
-                            drawCircle(color = moreActionsColor, radius = size.width / 3.0f + 1.0f)
-                            drawCircle(color = moreActionsFill, radius = size.width / 3.0f - 2.0f)
-                        }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.chevron_right),
-                        contentDescription = "Open Actions"
-                    )
-                }
+                ExpandActionsButton(isActionsOpen.value) { isActionsOpen.value = !isActionsOpen.value }
 
                 if(isActionsOpen.value) {
                     ActionItems()
@@ -399,4 +352,69 @@ fun ActionBar(
             }
         }
     }
+}
+
+
+
+
+/* ---- Previews ---- */
+
+class ExampleListener : SuggestionStripView.Listener {
+    override fun showImportantNoticeContents() {
+    }
+
+    override fun pickSuggestionManually(word: SuggestedWordInfo?) {
+    }
+
+    override fun onCodeInput(primaryCode: Int, x: Int, y: Int, isKeyRepeat: Boolean) {
+    }
+}
+
+val exampleSuggestionsList = arrayListOf(
+    SuggestedWordInfo("verylongword123", "", 100, 1, null, 0, 0),
+    SuggestedWordInfo("world understanding of patience", "",  99, 1, null, 0, 0),
+    SuggestedWordInfo("short", "", 98, 1, null, 0, 0),
+    SuggestedWordInfo("extra1", "", 97, 1, null, 0, 0),
+    SuggestedWordInfo("extra2", "", 96, 1, null, 0, 0),
+    SuggestedWordInfo("extra3", "", 95, 1, null, 0, 0)
+)
+
+val exampleSuggestedWords = SuggestedWords(
+    exampleSuggestionsList,
+    exampleSuggestionsList,
+    exampleSuggestionsList[0],
+    true,
+    true,
+    false,
+    0,
+    0
+)
+
+val exampleSuggestedWordsEmpty = SuggestedWords(
+    arrayListOf(),
+    arrayListOf(),
+    exampleSuggestionsList[0],
+    true,
+    true,
+    false,
+    0,
+    0
+)
+
+@Composable
+@Preview
+fun PreviewActionBarWithSuggestions() {
+    ActionBar(words = exampleSuggestedWords, suggestionStripListener = ExampleListener())
+}
+
+@Composable
+@Preview
+fun PreviewActionBarWithEmptySuggestions() {
+    ActionBar(words = exampleSuggestedWordsEmpty, suggestionStripListener = ExampleListener())
+}
+
+@Composable
+@Preview
+fun PreviewExpandedActionBar() {
+    ActionBar(words = exampleSuggestedWordsEmpty, suggestionStripListener = ExampleListener(), forceOpenActionsInitially = true)
 }
