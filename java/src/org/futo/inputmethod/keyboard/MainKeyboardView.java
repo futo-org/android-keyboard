@@ -231,7 +231,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         final int altCodeKeyWhileTypingFadeinAnimatorResId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
-        mKeyPreviewDrawParams = new KeyPreviewDrawParams(mainKeyboardViewAttr);
+        mKeyPreviewDrawParams = new KeyPreviewDrawParams(mainKeyboardViewAttr, mDrawableProvider);
         mKeyPreviewChoreographer = new KeyPreviewChoreographer(mKeyPreviewDrawParams);
 
         final int moreKeysKeyboardLayoutId = mainKeyboardViewAttr.getResourceId(

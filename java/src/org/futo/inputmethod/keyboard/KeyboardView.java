@@ -96,7 +96,7 @@ public class KeyboardView extends View {
     private final Drawable mKeyBackground;
     private final Drawable mFunctionalKeyBackground;
     private final Drawable mSpacebarBackground;
-    private final KeyboardDrawableProvider mDrawableProvider;
+    protected final KeyboardDrawableProvider mDrawableProvider;
     private final float mSpacebarIconWidthRatio;
     private final Rect mKeyBackgroundPadding = new Rect();
     private static final float KET_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;

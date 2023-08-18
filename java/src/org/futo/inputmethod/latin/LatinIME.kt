@@ -10,6 +10,7 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.shapes.RoundRectShape
 import android.graphics.drawable.shapes.Shape
 import android.inputmethodservice.InputMethodService
 import android.util.TypedValue
@@ -50,6 +51,7 @@ import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import org.futo.inputmethod.latin.uix.ActionBar
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import kotlin.math.roundToInt
 
 
 interface KeyboardDrawableProvider {
@@ -58,6 +60,8 @@ interface KeyboardDrawableProvider {
     val keyboardBackground: Drawable
     val keyBackground: Drawable
     val spaceBarBackground: Drawable
+
+    val keyFeedback: Drawable
 
     val moreKeysKeyboardBackground: Drawable
     val popupKey: Drawable
@@ -71,6 +75,8 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
     override val keyboardBackground: Drawable
     override val keyBackground: Drawable
     override val spaceBarBackground: Drawable
+
+    override val keyFeedback: Drawable
 
     override val moreKeysKeyboardBackground: Drawable
     override val popupKey: Drawable
@@ -168,9 +174,20 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
             )
         }
 
-        moreKeysKeyboardBackground = coloredRoundedRectangle(surface, dp(8.dp)).apply {
+        keyFeedback = ShapeDrawable().apply {
+            paint.color = secondary
+            shape = RoundRectShape(floatArrayOf(
+                dp(8.dp),dp(8.dp),dp(8.dp),dp(8.dp),
+                dp(8.dp),dp(8.dp),dp(8.dp),dp(8.dp),
+            ), null, null)
 
+            intrinsicWidth = dp(48.dp).roundToInt()
+            intrinsicHeight = dp(24.dp).roundToInt()
+
+            setPadding(0, 0, 0, dp(50.dp).roundToInt())
         }
+
+        moreKeysKeyboardBackground = coloredRoundedRectangle(surface, dp(8.dp))
         popupKey = StateListDrawable().apply {
             addStateWithHighlightLayerOnPressed(highlight, intArrayOf(),
                 coloredRoundedRectangle(surface, dp(8.dp))

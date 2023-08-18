@@ -21,17 +21,19 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
+import org.futo.inputmethod.latin.KeyboardDrawableProvider;
 import org.futo.inputmethod.latin.R;
 
 public final class KeyPreviewDrawParams {
     // XML attributes of {@link MainKeyboardView}.
     public final int mPreviewOffset;
     public final int mPreviewHeight;
-    public final int mPreviewBackgroundResId;
+    public final Drawable mPreviewBackground;
     private final int mShowUpAnimatorResId;
     private final int mDismissAnimatorResId;
     private boolean mHasCustomAnimationParams;
@@ -69,13 +71,12 @@ public final class KeyPreviewDrawParams {
     // preview background.
     private int mVisibleOffset;
 
-    public KeyPreviewDrawParams(final TypedArray mainKeyboardViewAttr) {
+    public KeyPreviewDrawParams(final TypedArray mainKeyboardViewAttr, final KeyboardDrawableProvider provider) {
         mPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.MainKeyboardView_keyPreviewOffset, 0);
         mPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
                 R.styleable.MainKeyboardView_keyPreviewHeight, 0);
-        mPreviewBackgroundResId = mainKeyboardViewAttr.getResourceId(
-                R.styleable.MainKeyboardView_keyPreviewBackground, 0);
+        mPreviewBackground = provider.getKeyFeedback();
         mLingerTimeout = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_keyPreviewLingerTimeout, 0);
         mShowUpAnimatorResId = mainKeyboardViewAttr.getResourceId(

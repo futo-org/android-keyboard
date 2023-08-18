@@ -16,13 +16,12 @@
 <layer-list
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
-    <item android:top="50dp" android:bottom="0dp">
-        <shape
-            android:shape="rectangle"
-            >
+    <item android:top="0dp" android:bottom="0dp">
+        <shape android:shape="rectangle">
             <corners android:radius="8dp" />
             <size android:width="48dp" android:height="24dp" />
             <solid android:color="@color/key_feedback_color_lxx_dark" />
+            <padding android:bottom="50dp"/>
         </shape>
     </item>
 </layer-list>
