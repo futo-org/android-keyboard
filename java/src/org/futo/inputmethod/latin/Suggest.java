@@ -183,7 +183,7 @@ public final class Suggest {
         }
 
         final int firstOcurrenceOfTypedWordInSuggestions =
-                SuggestedWordInfo.removeDups(typedWordString, suggestionsContainer);
+                SuggestedWordInfo.removeDups("", suggestionsContainer);
 
         final SuggestedWordInfo whitelistedWordInfo =
                 getWhitelistedWordInfoOrNull(suggestionsContainer);

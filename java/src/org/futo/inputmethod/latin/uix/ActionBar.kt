@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -51,10 +50,11 @@ import androidx.compose.ui.unit.sp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
+import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.WhisperVoiceInputTheme
-import java.lang.IndexOutOfBoundsException
 import java.lang.Integer.min
 import kotlin.math.ceil
 import kotlin.math.roundToInt
@@ -148,7 +148,7 @@ fun AutoFitText(
 }
 
 @Composable
-fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, onClick: () -> Unit) {
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit) {
     val word = try {
          words.getWord(idx)
     } catch(e: IndexOutOfBoundsException) {
@@ -156,8 +156,8 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, onClick: () -> Unit
     }
 
     val topSuggestionIcon = painterResource(id = R.drawable.top_suggestion)
-    val textButtonModifier = when (idx) {
-        0 -> Modifier.drawBehind {
+    val textButtonModifier = when (isPrimary) {
+        true -> Modifier.drawBehind {
             with(topSuggestionIcon) {
                 val iconSize = topSuggestionIcon.intrinsicSize
                 translate(
@@ -168,18 +168,17 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, onClick: () -> Unit
                 }
             }
         }
-
-        else -> Modifier
+        false -> Modifier
     }
 
-    val textModifier = when (idx) {
-        0 -> Modifier
-        else -> Modifier.alpha(0.75f)
+    val textModifier = when (isPrimary) {
+        true -> Modifier
+        false -> Modifier.alpha(0.75f)
     }
 
-    val textStyle = when (idx) {
-        0 -> suggestionStylePrimary
-        else -> suggestionStyleAlternative
+    val textStyle = when (isPrimary) {
+        true -> suggestionStylePrimary
+        false -> suggestionStyleAlternative
     }.copy(color = MaterialTheme.colorScheme.onPrimary)
 
     TextButton(
@@ -221,10 +220,28 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
         return
     }
 
+
+    var offset = 0
+
+    // Don't show what the user is typing
+    try {
+        val info = words.getInfo(0)
+        if (info.kind == KIND_TYPED && !info.isExactMatch && !info.isExactMatchWithIntentionalOmission) {
+            offset = 1
+        }
+    } catch(_: IndexOutOfBoundsException) {
+
+    }
+
+
     for (i in 0 until maxSuggestions) {
         val remapped = ORDER_OF_SUGGESTIONS[i]
 
-        SuggestionItem(words, remapped) { onClick(remapped) }
+        SuggestionItem(
+            words,
+            remapped + offset,
+            isPrimary = remapped == 0
+        ) { onClick(remapped + offset) }
 
         if (i < maxSuggestions - 1) SuggestionSeparator()
     }
@@ -265,8 +282,9 @@ fun RowScope.ActionItems() {
     ActionItem()
     ActionItem()
 
-
-    Spacer(modifier = Modifier.weight(1.0f))
+    Box(modifier = Modifier.fillMaxHeight().weight(1.0f)) {
+        AutoFitText("Note: Actions not yet implemented", style = Typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground))
+    }
 }
 
 
