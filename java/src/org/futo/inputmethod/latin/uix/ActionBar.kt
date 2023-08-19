@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
@@ -179,7 +181,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
     val textStyle = when (isPrimary) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = MaterialTheme.colorScheme.onPrimary)
+    }.copy(color = MaterialTheme.colorScheme.onBackground)
 
     TextButton(
         onClick = onClick,
@@ -187,7 +189,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
             .weight(1.0f)
             .fillMaxHeight(),
         shape = RectangleShape,
-        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
         enabled = word != null
     ) {
         if(word != null) {
@@ -202,7 +204,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
             .fillMaxHeight(0.66f)
             .align(CenterVertically)
             .background(color = MaterialTheme.colorScheme.outline)
-            .width((1f / LocalDensity.current.density).dp)
+            .width(1.dp)
     )
 }
 
@@ -255,6 +257,7 @@ data class Action(
 @Composable
 fun ActionItem() {
     val col = MaterialTheme.colorScheme.secondary
+    val contentCol = MaterialTheme.colorScheme.onSecondary
     IconButton(onClick = { /*TODO*/ }, modifier = Modifier
         .drawBehind {
             val radius = size.height / 4.0f
@@ -266,7 +269,9 @@ fun ActionItem() {
             )
         }
         .width(50.dp)
-        .fillMaxHeight()) {
+        .fillMaxHeight(),
+        colors = IconButtonDefaults.iconButtonColors(contentColor = contentCol)
+    ) {
         Icon(
             painter = painterResource(id = R.drawable.mic_fill),
             contentDescription = "Voice Input"
@@ -282,7 +287,9 @@ fun RowScope.ActionItems() {
     ActionItem()
     ActionItem()
 
-    Box(modifier = Modifier.fillMaxHeight().weight(1.0f)) {
+    Box(modifier = Modifier
+        .fillMaxHeight()
+        .weight(1.0f)) {
         AutoFitText("Note: Actions not yet implemented", style = Typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground))
     }
 }
@@ -297,6 +304,13 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
     } else {
         MaterialTheme.colorScheme.background
     }
+
+    val actionsContent = if(isActionsOpen) {
+        MaterialTheme.colorScheme.onPrimary
+    } else {
+        MaterialTheme.colorScheme.onBackground
+    }
+
     IconButton(
         onClick = onClick,
         modifier = Modifier
@@ -312,7 +326,9 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
             .drawBehind {
                 drawCircle(color = moreActionsColor, radius = size.width / 3.0f + 1.0f)
                 drawCircle(color = moreActionsFill, radius = size.width / 3.0f - 2.0f)
-            }
+            },
+
+        colors = IconButtonDefaults.iconButtonColors(contentColor = actionsContent)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.chevron_right),

@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -35,6 +37,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.graphics.toColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -49,6 +52,7 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import com.google.android.material.color.DynamicColors
 import org.futo.inputmethod.latin.uix.ActionBar
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import kotlin.math.roundToInt
@@ -148,43 +152,62 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
     }
 
     init {
-        val primary = DarkColorScheme.primary.toArgb()
-        val secondary = DarkColorScheme.secondary.toArgb()
-        val highlight = DarkColorScheme.outline.copy(alpha = 0.33f).toArgb()
-        val background = DarkColorScheme.surface.toArgb()
-        val surface = DarkColorScheme.background.toArgb()
-        val outline = DarkColorScheme.outline.toArgb()
+        val colorScheme = if(!DynamicColors.isDynamicColorAvailable()) {
+            DarkColorScheme
+        } else {
+            val dCtx = DynamicColors.wrapContextIfAvailable(context)
+
+            dynamicLightColorScheme(dCtx)
+        }
+
+
+        val primary = colorScheme.primary.toArgb()
+        val secondary = colorScheme.secondary.toArgb()
+        val highlight = colorScheme.outline.copy(alpha = 0.33f).toArgb()
+
+        val background = colorScheme.surface.toArgb()
+        val surface = colorScheme.background.toArgb()
+        val outline = colorScheme.outline.toArgb()
+
+        val onSecondary = colorScheme.onSecondary.toArgb()
+        val onBackground = colorScheme.onBackground.toArgb()
+        val onBackgroundHalf = colorScheme.onBackground.copy(alpha = 0.5f).toArgb()
 
         val transparent = Color.TRANSPARENT
 
-        colors[R.styleable.Keyboard_Key_keyTextColor] = DarkColorScheme.onBackground.toArgb()
-        colors[R.styleable.Keyboard_Key_keyTextInactivatedColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
+        colors[R.styleable.Keyboard_Key_keyTextColor] = onBackground
+        colors[R.styleable.Keyboard_Key_keyTextInactivatedColor] = onBackgroundHalf
         colors[R.styleable.Keyboard_Key_keyTextShadowColor] = 0
-        colors[R.styleable.Keyboard_Key_functionalTextColor] = DarkColorScheme.onBackground.toArgb()
-        colors[R.styleable.Keyboard_Key_keyHintLetterColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
-        colors[R.styleable.Keyboard_Key_keyHintLabelColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
-        colors[R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
-        colors[R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
-        colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = DarkColorScheme.onBackground.toArgb()
-        colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
+        colors[R.styleable.Keyboard_Key_functionalTextColor] = onBackground
+        colors[R.styleable.Keyboard_Key_keyHintLetterColor] = onBackgroundHalf
+        colors[R.styleable.Keyboard_Key_keyHintLabelColor] = onBackgroundHalf
+        colors[R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor] = onBackgroundHalf
+        colors[R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor] = onBackgroundHalf
+        colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = onSecondary
+        colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = onBackgroundHalf
 
-        drawables[R.styleable.Keyboard_iconDeleteKey] = AppCompatResources.getDrawable(context, R.drawable.delete)!!
-        drawables[R.styleable.Keyboard_iconLanguageSwitchKey] = AppCompatResources.getDrawable(context, R.drawable.globe)!!
+        drawables[R.styleable.Keyboard_iconDeleteKey] = AppCompatResources.getDrawable(context, R.drawable.delete)!!.apply {
+            setTint(onBackground)
+        }
+        drawables[R.styleable.Keyboard_iconLanguageSwitchKey] = AppCompatResources.getDrawable(context, R.drawable.globe)!!.apply {
+            setTint(onBackground)
+        }
 
-        drawables[R.styleable.Keyboard_iconShiftKey] = AppCompatResources.getDrawable(context, R.drawable.shift)!!
-        drawables[R.styleable.Keyboard_iconShiftKeyShifted] = AppCompatResources.getDrawable(context, R.drawable.shiftshifted)!!
+        drawables[R.styleable.Keyboard_iconShiftKey] = AppCompatResources.getDrawable(context, R.drawable.shift)!!.apply {
+            setTint(onBackground)
+        }
+
+        drawables[R.styleable.Keyboard_iconShiftKeyShifted] = AppCompatResources.getDrawable(context, R.drawable.shiftshifted)!!.apply {
+            setTint(onBackground)
+        }
 
         primaryKeyboardColor = background
 
-        keyboardBackground = LayerDrawable(arrayOf(
-            coloredRectangle(primary),
-            InsetDrawable(coloredRectangle(background),
-                0, 1, 0, 0)
-        ))
+        keyboardBackground = coloredRectangle(background)
 
         keyBackground = StateListDrawable().apply {
             addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_active),
-                coloredRoundedRectangle(secondary, dp(8.dp)).apply {
+                coloredRoundedRectangle(primary, dp(8.dp)).apply {
                     setSize(dp(64.dp).toInt(), dp(48.dp).toInt())
                 }
             )
@@ -209,12 +232,12 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
         spaceBarBackground = StateListDrawable().apply {
             addState(intArrayOf(android.R.attr.state_pressed),
                 LayerDrawable(arrayOf(
-                    coloredRoundedRectangle(secondary, dp(32.dp)),
+                    coloredRoundedRectangle(highlight, dp(32.dp)),
                     coloredRoundedRectangle(highlight, dp(32.dp))
                 ))
             )
             addState(intArrayOf(),
-                coloredRoundedRectangle(secondary, dp(32.dp))
+                coloredRoundedRectangle(highlight, dp(32.dp))
             )
         }
 
@@ -331,6 +354,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         setContent()
 
+        latinIMELegacy.setComposeInputView(composeView)
+
         return composeView!!
     }
 
@@ -366,13 +391,20 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         legacyInputView = newView
         setContent()
 
-        latinIMELegacy.setComposeInputView(composeView!!)
+        if(composeView != null) {
+            latinIMELegacy.setComposeInputView(composeView)
+        }
+
         latinIMELegacy.setInputView(legacyInputView)
     }
 
     override fun setInputView(view: View?) {
         super.setInputView(view)
-        latinIMELegacy.setComposeInputView(composeView!!)
+
+        if(composeView != null) {
+            latinIMELegacy.setComposeInputView(composeView)
+        }
+
         latinIMELegacy.setInputView(legacyInputView)
     }
 
