@@ -402,7 +402,7 @@ public class Key implements Comparable<Key> {
                 : altCodeInAttr;
         mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode,
                 disabledIconId, visualInsetsLeft, visualInsetsRight);
-        mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
+        mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr, null);
         mHashCode = computeHashCode(this);
     }
 

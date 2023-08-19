@@ -26,12 +26,15 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.util.Xml;
+import android.view.ContextThemeWrapper;
 
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardId;
 import org.futo.inputmethod.keyboard.KeyboardTheme;
+import org.futo.inputmethod.latin.KeyboardDrawableProvider;
+import org.futo.inputmethod.latin.KeyboardDrawableProviderOwner;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.StringUtils;
@@ -150,8 +153,19 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private boolean mTopEdge;
     private Key mRightEdgeKey = null;
 
+    private KeyboardDrawableProvider mProvider = null;
+
     public KeyboardBuilder(final Context context, @Nonnull final KP params) {
         mContext = context;
+        if(mContext instanceof KeyboardDrawableProviderOwner) {
+            mProvider = ((KeyboardDrawableProviderOwner) mContext).getDrawableProvider();
+        }else if(mContext instanceof ContextThemeWrapper) {
+            Context baseContext = ((ContextThemeWrapper) mContext).getBaseContext();
+            if(baseContext instanceof KeyboardDrawableProviderOwner) {
+                mProvider = ((KeyboardDrawableProviderOwner) baseContext).getDrawableProvider();
+            }
+        }
+
         final Resources res = context.getResources();
         mResources = res;
 
@@ -272,7 +286,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             params.mDefaultRowHeight = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight, baseHeight, baseHeight / DEFAULT_KEYBOARD_ROWS);
 
-            params.mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
+            params.mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr, mProvider);
 
             params.mMoreKeysTemplate = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_moreKeysTemplate, 0);
@@ -280,7 +294,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Key_maxMoreKeysColumn, 5);
 
             params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
-            params.mIconsSet.loadIcons(keyboardAttr);
+            params.mIconsSet.loadIcons(keyboardAttr, mProvider);
             params.mTextsSet.setLocale(params.mId.getLocale(), mContext);
 
             final int resourceId = keyboardAttr.getResourceId(

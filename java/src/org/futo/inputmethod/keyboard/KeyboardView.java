@@ -175,7 +175,7 @@ public class KeyboardView extends View {
         final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.Keyboard_Key, defStyle, R.style.KeyboardView);
         mDefaultKeyLabelFlags = keyAttr.getInt(R.styleable.Keyboard_Key_keyLabelFlags, 0);
-        mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
+        mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr, mDrawableProvider);
         keyAttr.recycle();
 
         mPaint.setAntiAlias(true);

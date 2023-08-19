@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseIntArray;
 
+import org.futo.inputmethod.latin.KeyboardDrawableProvider;
 import org.futo.inputmethod.latin.R;
 
 import java.util.HashMap;
@@ -92,7 +93,6 @@ public final class KeyboardIconsSet {
     private static int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;
     private static final String[] ICON_NAMES = new String[NUM_ICONS];
     private final Drawable[] mIcons = new Drawable[NUM_ICONS];
-    private final int[] mIconResourceIds = new int[NUM_ICONS];
 
     static {
         int iconId = ICON_UNDEFINED;
@@ -108,16 +108,15 @@ public final class KeyboardIconsSet {
         }
     }
 
-    public void loadIcons(final TypedArray keyboardAttrs) {
+    public void loadIcons(final TypedArray keyboardAttrs, @Nullable KeyboardDrawableProvider provider) {
         final int size = ATTR_ID_TO_ICON_ID.size();
         for (int index = 0; index < size; index++) {
             final int attrId = ATTR_ID_TO_ICON_ID.keyAt(index);
             try {
-                final Drawable icon = keyboardAttrs.getDrawable(attrId);
+                final Drawable icon = KeyboardDrawableProvider.Companion.getDrawableOrDefault(attrId, keyboardAttrs, provider);
                 setDefaultBounds(icon);
                 final Integer iconId = ATTR_ID_TO_ICON_ID.get(attrId);
                 mIcons[iconId] = icon;
-                mIconResourceIds[iconId] = keyboardAttrs.getResourceId(attrId, 0);
             } catch (Resources.NotFoundException e) {
                 Log.w(TAG, "Drawable resource for icon #"
                         + keyboardAttrs.getResources().getResourceEntryName(attrId)
@@ -139,14 +138,6 @@ public final class KeyboardIconsSet {
         Integer iconId = sNameToIdsMap.get(name);
         if (iconId != null) {
             return iconId;
-        }
-        throw new RuntimeException("unknown icon name: " + name);
-    }
-
-    public int getIconResourceId(final String name) {
-        final int iconId = getIconId(name);
-        if (isValidIconId(iconId)) {
-            return mIconResourceIds[iconId];
         }
         throw new RuntimeException("unknown icon name: " + name);
     }

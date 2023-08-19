@@ -20,6 +20,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.SparseIntArray;
 
+import org.futo.inputmethod.latin.KeyboardDrawableProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 
@@ -86,19 +87,19 @@ public final class KeyVisualAttributes {
     }
 
     @Nullable
-    public static KeyVisualAttributes newInstance(@Nonnull final TypedArray keyAttr) {
+    public static KeyVisualAttributes newInstance(@Nonnull final TypedArray keyAttr, @Nullable final KeyboardDrawableProvider provider) {
         final int indexCount = keyAttr.getIndexCount();
         for (int i = 0; i < indexCount; i++) {
             final int attrId = keyAttr.getIndex(i);
             if (sVisualAttributeIds.get(attrId, ATTR_NOT_FOUND) == ATTR_NOT_FOUND) {
                 continue;
             }
-            return new KeyVisualAttributes(keyAttr);
+            return new KeyVisualAttributes(keyAttr, provider);
         }
         return null;
     }
 
-    private KeyVisualAttributes(@Nonnull final TypedArray keyAttr) {
+    private KeyVisualAttributes(@Nonnull final TypedArray keyAttr, @Nullable final KeyboardDrawableProvider provider) {
         if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyTypeface)) {
             mTypeface = Typeface.defaultFromStyle(
                     keyAttr.getInt(R.styleable.Keyboard_Key_keyTypeface, Typeface.NORMAL));
@@ -125,18 +126,24 @@ public final class KeyVisualAttributes {
         mPreviewTextRatio = ResourceUtils.getFraction(keyAttr,
                 R.styleable.Keyboard_Key_keyPreviewTextRatio);
 
-        mTextColor = keyAttr.getColor(R.styleable.Keyboard_Key_keyTextColor, 0);
-        mTextInactivatedColor = keyAttr.getColor(
-                R.styleable.Keyboard_Key_keyTextInactivatedColor, 0);
-        mTextShadowColor = keyAttr.getColor(R.styleable.Keyboard_Key_keyTextShadowColor, 0);
-        mFunctionalTextColor = keyAttr.getColor(R.styleable.Keyboard_Key_functionalTextColor, 0);
-        mHintLetterColor = keyAttr.getColor(R.styleable.Keyboard_Key_keyHintLetterColor, 0);
-        mHintLabelColor = keyAttr.getColor(R.styleable.Keyboard_Key_keyHintLabelColor, 0);
-        mShiftedLetterHintInactivatedColor = keyAttr.getColor(
-                R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor, 0);
-        mShiftedLetterHintActivatedColor = keyAttr.getColor(
-                R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor, 0);
-        mPreviewTextColor = keyAttr.getColor(R.styleable.Keyboard_Key_keyPreviewTextColor, 0);
+        mTextColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyTextColor, 0, keyAttr, provider);
+        mTextInactivatedColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyTextInactivatedColor, 0, keyAttr, provider);
+        mTextShadowColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyTextShadowColor, 0, keyAttr, provider);
+        mFunctionalTextColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_functionalTextColor, 0, keyAttr, provider);
+        mHintLetterColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyHintLetterColor, 0, keyAttr, provider);
+        mHintLabelColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyHintLabelColor, 0, keyAttr, provider);
+        mShiftedLetterHintInactivatedColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor, 0, keyAttr, provider);
+        mShiftedLetterHintActivatedColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor, 0, keyAttr, provider);
+        mPreviewTextColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyPreviewTextColor, 0, keyAttr, provider);
 
         mHintLabelVerticalAdjustment = ResourceUtils.getFraction(keyAttr,
                 R.styleable.Keyboard_Key_keyHintLabelVerticalAdjustment, 0.0f);

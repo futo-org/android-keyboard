@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin
 
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -9,10 +10,9 @@ import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RoundRectShape
-import android.graphics.drawable.shapes.Shape
 import android.inputmethodservice.InputMethodService
+import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
@@ -21,13 +21,13 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
 import androidx.annotation.ColorInt
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
@@ -65,6 +65,22 @@ interface KeyboardDrawableProvider {
 
     val moreKeysKeyboardBackground: Drawable
     val popupKey: Drawable
+
+    @ColorInt
+    fun getColor(i: Int): Int?
+
+    fun getDrawable(i: Int): Drawable?
+
+    companion object {
+        @ColorInt
+        fun getColorOrDefault(i: Int, @ColorInt default: Int, keyAttr: TypedArray, provider: KeyboardDrawableProvider?): Int {
+            return (provider?.getColor(i)) ?: keyAttr.getColor(i, default)
+        }
+
+        fun getDrawableOrDefault(i: Int, keyAttr: TypedArray, provider: KeyboardDrawableProvider?): Drawable? {
+            return (provider?.getDrawable(i)) ?: keyAttr.getDrawable(i)
+        }
+    }
 }
 
 // TODO: Expand the number of drawables this provides so it covers the full theme, and
@@ -80,6 +96,17 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
 
     override val moreKeysKeyboardBackground: Drawable
     override val popupKey: Drawable
+
+    private val colors: HashMap<Int, Int> = HashMap()
+    override fun getColor(i: Int): Int? {
+        return colors[i]
+    }
+
+
+    private val drawables: HashMap<Int, Drawable> = HashMap()
+    override fun getDrawable(i: Int): Drawable? {
+        return drawables[i]
+    }
 
     private fun dp(dp: Dp): Float {
         return TypedValue.applyDimension(
@@ -129,6 +156,23 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
         val outline = DarkColorScheme.outline.toArgb()
 
         val transparent = Color.TRANSPARENT
+
+        colors[R.styleable.Keyboard_Key_keyTextColor] = DarkColorScheme.onBackground.toArgb()
+        colors[R.styleable.Keyboard_Key_keyTextInactivatedColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
+        colors[R.styleable.Keyboard_Key_keyTextShadowColor] = 0
+        colors[R.styleable.Keyboard_Key_functionalTextColor] = DarkColorScheme.onBackground.toArgb()
+        colors[R.styleable.Keyboard_Key_keyHintLetterColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
+        colors[R.styleable.Keyboard_Key_keyHintLabelColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
+        colors[R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
+        colors[R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
+        colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = DarkColorScheme.onBackground.toArgb()
+        colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = DarkColorScheme.onBackground.copy(alpha = 0.5f).toArgb()
+
+        drawables[R.styleable.Keyboard_iconDeleteKey] = AppCompatResources.getDrawable(context, R.drawable.delete)!!
+        drawables[R.styleable.Keyboard_iconLanguageSwitchKey] = AppCompatResources.getDrawable(context, R.drawable.globe)!!
+
+        drawables[R.styleable.Keyboard_iconShiftKey] = AppCompatResources.getDrawable(context, R.drawable.shift)!!
+        drawables[R.styleable.Keyboard_iconShiftKeyShifted] = AppCompatResources.getDrawable(context, R.drawable.shiftshifted)!!
 
         primaryKeyboardColor = background
 

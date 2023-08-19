@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
@@ -374,14 +375,13 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     public void startEmojiPalettes(final String switchToAlphaLabel,
                                    final KeyVisualAttributes keyVisualAttr,
                                    final KeyboardIconsSet iconSet) {
-        final int deleteIconResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_DELETE_KEY);
-        if (deleteIconResId != 0) {
-            mDeleteKey.setImageResource(deleteIconResId);
+        final Drawable deleteDrawable = iconSet.getIconDrawable(KeyboardIconsSet.getIconId(KeyboardIconsSet.NAME_DELETE_KEY));
+        if (deleteDrawable != null) {
+            mDeleteKey.setBackground(deleteDrawable); //?
         }
-        final int spacebarResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_SPACE_KEY);
-        if (spacebarResId != 0) {
-            // TODO: Remove this workaround to place the spacebar icon.
-            mSpacebarIcon.setBackgroundResource(spacebarResId);
+        final Drawable spacebarDrawable = iconSet.getIconDrawable(KeyboardIconsSet.getIconId(KeyboardIconsSet.NAME_SPACE_KEY));
+        if (spacebarDrawable != null) {
+            mSpacebarIcon.setBackground(spacebarDrawable);
         }
         final KeyDrawParams params = new KeyDrawParams();
         params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
