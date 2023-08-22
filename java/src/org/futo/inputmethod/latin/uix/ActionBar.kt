@@ -168,18 +168,18 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         null
     }
 
-    val topSuggestionIcon = painterResource(id = R.drawable.top_suggestion)
+    //val topSuggestionIcon = painterResource(id = R.drawable.top_suggestion)
     val textButtonModifier = when (isPrimary) {
         true -> Modifier.drawBehind {
-            with(topSuggestionIcon) {
+            /*with(topSuggestionIcon) {
                 val iconSize = topSuggestionIcon.intrinsicSize
                 translate(
                     left = (size.width - iconSize.width) / 2.0f,
                     top = size.height - iconSize.height * 2.0f
                 ) {
-                    draw(topSuggestionIcon.intrinsicSize)
+                    draw(topSuggestionIcon.intrinsicSize) // Needs to be tinted
                 }
-            }
+            }*/
         }
         false -> Modifier
     }
