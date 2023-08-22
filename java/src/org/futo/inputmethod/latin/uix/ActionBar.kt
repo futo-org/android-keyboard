@@ -262,8 +262,8 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
 
 @Composable
 fun ActionItem(action: Action, onSelect: (Action) -> Unit) {
-    val col = MaterialTheme.colorScheme.secondary
-    val contentCol = MaterialTheme.colorScheme.onSecondary
+    val col = MaterialTheme.colorScheme.secondaryContainer
+    val contentCol = MaterialTheme.colorScheme.onSecondaryContainer
     IconButton(onClick = { onSelect(action) }, modifier = Modifier
         .drawBehind {
             val radius = size.height / 4.0f
