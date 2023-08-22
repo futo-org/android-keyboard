@@ -50,7 +50,7 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 import org.futo.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import org.futo.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import org.futo.inputmethod.keyboard.internal.TimerHandler;
-import org.futo.inputmethod.latin.DynamicThemeProvider;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
 import org.futo.inputmethod.latin.SuggestedWords;

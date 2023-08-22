@@ -26,7 +26,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
-import org.futo.inputmethod.latin.DynamicThemeProvider;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 
 public final class KeyPreviewDrawParams {

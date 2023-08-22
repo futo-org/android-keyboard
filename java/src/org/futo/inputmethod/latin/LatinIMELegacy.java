@@ -90,6 +90,7 @@ import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import org.futo.inputmethod.latin.touchinputconsumer.GestureConsumer;
+import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner;
 import org.futo.inputmethod.latin.utils.ApplicationUtils;
 import org.futo.inputmethod.latin.utils.DialogUtils;
 import org.futo.inputmethod.latin.utils.ImportantNoticeUtils;

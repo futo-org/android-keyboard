@@ -22,7 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseIntArray;
 
-import org.futo.inputmethod.latin.DynamicThemeProvider;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 
 import java.util.HashMap;

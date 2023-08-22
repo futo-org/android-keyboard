@@ -35,8 +35,8 @@ import android.view.View;
 
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams;
 import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes;
-import org.futo.inputmethod.latin.DynamicThemeProvider;
-import org.futo.inputmethod.latin.DynamicThemeProviderOwner;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
+import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;

@@ -20,7 +20,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.SparseIntArray;
 
-import org.futo.inputmethod.latin.DynamicThemeProvider;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 
