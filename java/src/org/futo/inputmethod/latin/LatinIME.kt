@@ -48,6 +48,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -55,6 +60,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
@@ -63,13 +69,26 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.google.android.material.color.DynamicColors
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBar
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
+import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import kotlin.math.roundToInt
 
 interface DynamicThemeProvider {
@@ -285,14 +304,36 @@ interface DynamicThemeProviderOwner {
 }
 
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+val THEME_KEY = stringPreferencesKey("activeThemeOption")
+
+suspend fun <T> Context.getSetting(key: Preferences.Key<T>, default: T): T {
+    val valueFlow: Flow<T> =
+        this.dataStore.data.map { preferences -> preferences[key] ?: default }.take(1)
+
+    return valueFlow.first()
+}
+
+suspend fun <T> Context.setSetting(key: Preferences.Key<T>, value: T) {
+    this.dataStore.edit { preferences ->
+        preferences[key] = value
+    }
+}
+
 
 class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner, LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner,
     KeyboardManagerForAction {
     private var activeColorScheme = DarkColorScheme
+    private var colorSchemeLoaderJob: Job? = null
 
     private var drawableProvider: DynamicThemeProvider? = null
     override fun getDrawableProvider(): DynamicThemeProvider {
         if(drawableProvider == null) {
+            if(colorSchemeLoaderJob != null && !colorSchemeLoaderJob!!.isCompleted) {
+                runBlocking {
+                    colorSchemeLoaderJob!!.join()
+                }
+            }
             drawableProvider = BasicThemeProvider(this, activeColorScheme)
         }
 
@@ -310,7 +351,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         // recreate the keyboard if not in action window, if we are in action window then
         // it'll be recreated when we exit
-        if(currWindowAction != null) recreateKeyboard()
+        if(currWindowAction == null) recreateKeyboard()
 
         window.window?.navigationBarColor = drawableProvider!!.primaryKeyboardColor
         setContent()
@@ -344,12 +385,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onCreate() {
         super.onCreate()
 
-        activeColorScheme = if(!DynamicColors.isDynamicColorAvailable()) {
-            DarkColorScheme
-        } else {
-            val dCtx = DynamicColors.wrapContextIfAvailable(this)
+        colorSchemeLoaderJob = lifecycleScope.launch {
+            var themeKey = this@LatinIME.getSetting(THEME_KEY, DynamicSystemTheme.key)
+            var themeOption = ThemeOptions[themeKey]
+            if(themeOption == null || !themeOption.available(this@LatinIME)) {
+                themeKey = VoiceInputTheme.key
+                themeOption = ThemeOptions[themeKey]!!
+            }
 
-            dynamicLightColorScheme(dCtx)
+            activeColorScheme = themeOption.obtainColors(this@LatinIME)
         }
 
         mSavedStateRegistryController.performRestore(null)
@@ -566,6 +610,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onWindowShown() {
         super.onWindowShown()
         latinIMELegacy.onWindowShown()
+
+        // TODO: Check here if the dynamic color scheme has changed, reset and rebuild if so
     }
 
     override fun onWindowHidden() {
@@ -685,7 +731,14 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         );
     }
 
-    override fun updateTheme(newTheme: ColorScheme) {
-        updateDrawableProvider(newTheme)
+    override fun updateTheme(newTheme: ThemeOption) {
+        assert(newTheme.available(this))
+        updateDrawableProvider(newTheme.obtainColors(this))
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.Default) {
+                setSetting(THEME_KEY, newTheme.key)
+            }
+        }
     }
 }

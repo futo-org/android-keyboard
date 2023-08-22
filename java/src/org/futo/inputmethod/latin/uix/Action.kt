@@ -3,12 +3,13 @@ package org.futo.inputmethod.latin.uix
 import androidx.annotation.DrawableRes
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
+import org.futo.inputmethod.latin.uix.theme.ThemeOption
 
 
 interface KeyboardManagerForAction {
     fun triggerSystemVoiceInput()
 
-    fun updateTheme(newTheme: ColorScheme)
+    fun updateTheme(newTheme: ThemeOption)
 }
 
 interface ActionWindow {
