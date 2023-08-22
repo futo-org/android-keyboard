@@ -299,18 +299,21 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         return drawableProvider!!
     }
 
-    private fun updateDrawableProvider(colorScheme: ColorScheme) {
-        activeColorScheme = colorScheme
-
-        // ... update drawableProvider with params
-        drawableProvider = BasicThemeProvider(this, overrideColorScheme = colorScheme)
-
-        // ... force change keyboard view
+    private fun recreateKeyboard() {
         legacyInputView = latinIMELegacy.onCreateInputView()
         latinIMELegacy.loadKeyboard()
-        setContent()
+    }
+
+    private fun updateDrawableProvider(colorScheme: ColorScheme) {
+        activeColorScheme = colorScheme
+        drawableProvider = BasicThemeProvider(this, overrideColorScheme = colorScheme)
+
+        // recreate the keyboard if not in action window, if we are in action window then
+        // it'll be recreated when we exit
+        if(currWindowAction != null) recreateKeyboard()
 
         window.window?.navigationBarColor = drawableProvider!!.primaryKeyboardColor
+        setContent()
     }
 
     private val latinIMELegacy = LatinIMELegacy(
@@ -406,8 +409,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private var currWindowAction: Action? = null
     private fun onActionActivated(action: Action) {
         if(action.windowImpl != null) {
-            currWindowAction = action
-            setContent()
+            enterActionWindowView(action)
         } else if(action.simplePressImpl != null) {
             action.simplePressImpl.invoke(this)
         } else {
@@ -444,16 +446,27 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
+    private fun enterActionWindowView(action: Action) {
+        assert(action.windowImpl != null)
+        currWindowAction = action
+
+        setContent()
+    }
+
     private fun returnBackToMainKeyboardViewFromAction() {
         assert(currWindowAction != null)
         currWindowAction = null
 
+        // Keyboard acts buggy in many ways after being detached from window then attached again,
+        // so let's recreate it
+        recreateKeyboard()
+
         setContent()
     }
+
     @Composable
     private fun ActionViewWithHeader(action: Action) {
         val windowImpl = action.windowImpl!!
-        println("The height is $inputViewHeight, which in DP is ${ with(LocalDensity.current) { inputViewHeight.toDp() }}")
         Column {
             Surface(modifier = Modifier
                 .fillMaxWidth()
