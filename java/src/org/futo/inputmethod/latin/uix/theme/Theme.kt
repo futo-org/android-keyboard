@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -45,37 +46,10 @@ val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun WhisperVoiceInputTheme(content: @Composable () -> Unit) {
-    // TODO: Switch light or dark mode
-    val colorScheme = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            dynamicLightColorScheme(context)
-        }
-
-        else -> DarkColorScheme
-    }
-
-    //val colorScheme = DarkColorScheme // TODO: Figure out light/dynamic if it's worth it
-
-
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            if(view.context is Activity) {
-                val window = (view.context as Activity).window
-                window.statusBarColor = colorScheme.primary.toArgb()
-                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
-                    false
-            }
-        }
-    }
-
-
+fun UixThemeWrapper(colorScheme: ColorScheme, content: @Composable () -> Unit) {
     MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,
             content = content,
-
     )
 }

@@ -35,8 +35,8 @@ import android.view.View;
 
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams;
 import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes;
-import org.futo.inputmethod.latin.KeyboardDrawableProvider;
-import org.futo.inputmethod.latin.KeyboardDrawableProviderOwner;
+import org.futo.inputmethod.latin.DynamicThemeProvider;
+import org.futo.inputmethod.latin.DynamicThemeProviderOwner;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
@@ -96,7 +96,7 @@ public class KeyboardView extends View {
     private final Drawable mKeyBackground;
     private final Drawable mFunctionalKeyBackground;
     private final Drawable mSpacebarBackground;
-    protected final KeyboardDrawableProvider mDrawableProvider;
+    protected final DynamicThemeProvider mDrawableProvider;
     private final float mSpacebarIconWidthRatio;
     private final Rect mKeyBackgroundPadding = new Rect();
     private static final float KET_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
@@ -138,9 +138,9 @@ public class KeyboardView extends View {
                 R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
 
         assert(context instanceof ContextThemeWrapper);
-        assert(((ContextThemeWrapper) context).getBaseContext() instanceof KeyboardDrawableProviderOwner);
+        assert(((ContextThemeWrapper) context).getBaseContext() instanceof DynamicThemeProviderOwner);
 
-        mDrawableProvider = ((KeyboardDrawableProviderOwner) ((ContextThemeWrapper) context).getBaseContext()).getDrawableProvider();
+        mDrawableProvider = ((DynamicThemeProviderOwner) ((ContextThemeWrapper) context).getBaseContext()).getDrawableProvider();
 
         boolean isMoreKeys = defStyle == R.attr.moreKeysKeyboardViewStyle || defStyle == R.attr.moreKeysKeyboardViewForActionStyle;
 

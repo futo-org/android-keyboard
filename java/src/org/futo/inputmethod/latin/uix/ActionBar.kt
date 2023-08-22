@@ -1,9 +1,12 @@
 package org.futo.inputmethod.latin.uix
 
-import androidx.annotation.DrawableRes
+import android.os.Build
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -12,14 +15,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,10 +41,11 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -55,8 +66,8 @@ import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
-import org.futo.inputmethod.latin.uix.theme.Typography
-import org.futo.inputmethod.latin.uix.theme.WhisperVoiceInputTheme
+import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import java.lang.Integer.min
 import kotlin.math.ceil
 import kotlin.math.roundToInt
@@ -249,48 +260,54 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
     }
 }
 
-data class Action(
-    @DrawableRes val icon: Int
-    // TODO: How should the actual action abstraction look?
-)
-
 @Composable
-fun ActionItem() {
+fun ActionItem(action: Action, onSelect: (Action) -> Unit) {
     val col = MaterialTheme.colorScheme.secondary
     val contentCol = MaterialTheme.colorScheme.onSecondary
-    IconButton(onClick = { /*TODO*/ }, modifier = Modifier
+    IconButton(onClick = { onSelect(action) }, modifier = Modifier
         .drawBehind {
             val radius = size.height / 4.0f
             drawRoundRect(
                 col,
-                topLeft = Offset(size.width * 0.1f, size.height * 0.1f),
-                size = Size(size.width * 0.8f, size.height * 0.8f),
+                topLeft = Offset(size.width * 0.1f, size.height * 0.05f),
+                size = Size(size.width * 0.8f, size.height * 0.9f),
                 cornerRadius = CornerRadius(radius, radius)
             )
         }
-        .width(50.dp)
+        .width(64.dp)
         .fillMaxHeight(),
         colors = IconButtonDefaults.iconButtonColors(contentColor = contentCol)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.mic_fill),
-            contentDescription = "Voice Input"
+            painter = painterResource(id = action.icon),
+            contentDescription = action.name
         )
     }
-
 }
 
 @Composable
-fun RowScope.ActionItems() {
-    // TODO
-    ActionItem()
-    ActionItem()
-    ActionItem()
+fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit) {
+    IconButton(onClick = {
+        onSelect(action)
+    }, modifier = Modifier
+        .width(42.dp)
+        .fillMaxHeight()) {
+        Icon(
+            painter = painterResource(id = action.icon),
+            contentDescription = action.name
+        )
+    }
+}
+
+@Composable
+fun RowScope.ActionItems(onSelect: (Action) -> Unit) {
+    ActionItem(VoiceInputAction, onSelect)
+    ActionItem(ThemeAction, onSelect)
 
     Box(modifier = Modifier
         .fillMaxHeight()
         .weight(1.0f)) {
-        AutoFitText("Note: Actions not yet implemented", style = Typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground))
+
     }
 }
 
@@ -341,49 +358,31 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
 fun ActionBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
-    forceOpenActionsInitially: Boolean = false
+    onActionActivated: (Action) -> Unit,
+    forceOpenActionsInitially: Boolean = false,
 ) {
     val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }
-    
-    WhisperVoiceInputTheme {
-        Surface(modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp), color = MaterialTheme.colorScheme.background)
-        {
-            Row {
-                ExpandActionsButton(isActionsOpen.value) { isActionsOpen.value = !isActionsOpen.value }
 
-                if(isActionsOpen.value) {
-                    ActionItems()
-                } else if(words != null) {
-                    SuggestionItems(words) {
-                        suggestionStripListener.pickSuggestionManually(
-                            words.getInfo(it)
-                        )
-                    }
-                } else {
-                    Spacer(modifier = Modifier.weight(1.0f))
-                }
+    Surface(modifier = Modifier
+        .fillMaxWidth()
+        .height(40.dp), color = MaterialTheme.colorScheme.background)
+    {
+        Row {
+            ExpandActionsButton(isActionsOpen.value) { isActionsOpen.value = !isActionsOpen.value }
 
-
-                // TODO: For now, this calls CODE_SHORTCUT. In the future, we will want to
-                // ask the main UI to hide the keyboard and show our own voice input menu
-                IconButton(onClick = {
-                     suggestionStripListener.onCodeInput(
-                         Constants.CODE_SHORTCUT,
-                         Constants.SUGGESTION_STRIP_COORDINATE,
-                         Constants.SUGGESTION_STRIP_COORDINATE,
-                        false
-                     );
-                }, modifier = Modifier
-                    .width(42.dp)
-                    .fillMaxHeight()) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.mic_fill),
-                        contentDescription = "Voice Input"
+            if(isActionsOpen.value) {
+                ActionItems(onActionActivated)
+            } else if(words != null) {
+                SuggestionItems(words) {
+                    suggestionStripListener.pickSuggestionManually(
+                        words.getInfo(it)
                     )
                 }
+            } else {
+                Spacer(modifier = Modifier.weight(1.0f))
             }
+
+            ActionItemSmall(VoiceInputAction, onActionActivated)
         }
     }
 }
@@ -437,18 +436,74 @@ val exampleSuggestedWordsEmpty = SuggestedWords(
 
 @Composable
 @Preview
-fun PreviewActionBarWithSuggestions() {
-    ActionBar(words = exampleSuggestedWords, suggestionStripListener = ExampleListener())
+fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) {
+    UixThemeWrapper(colorScheme) {
+        ActionBar(
+            words = exampleSuggestedWords,
+            onActionActivated = { },
+            suggestionStripListener = ExampleListener()
+        )
+    }
 }
 
 @Composable
 @Preview
-fun PreviewActionBarWithEmptySuggestions() {
-    ActionBar(words = exampleSuggestedWordsEmpty, suggestionStripListener = ExampleListener())
+fun PreviewActionBarWithEmptySuggestions(colorScheme: ColorScheme = DarkColorScheme) {
+    UixThemeWrapper(colorScheme) {
+        ActionBar(
+            words = exampleSuggestedWordsEmpty,
+            onActionActivated = { },
+            suggestionStripListener = ExampleListener()
+        )
+    }
 }
 
 @Composable
 @Preview
-fun PreviewExpandedActionBar() {
-    ActionBar(words = exampleSuggestedWordsEmpty, suggestionStripListener = ExampleListener(), forceOpenActionsInitially = true)
+fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
+    UixThemeWrapper(colorScheme) {
+        ActionBar(
+            words = exampleSuggestedWordsEmpty,
+            onActionActivated = { },
+            suggestionStripListener = ExampleListener(),
+            forceOpenActionsInitially = true
+        )
+    }
+}
+
+
+@Composable
+@Preview
+fun PreviewActionBarWithSuggestionsDynamicLight() {
+    PreviewActionBarWithSuggestions(dynamicLightColorScheme(LocalContext.current))
+}
+
+@Composable
+@Preview
+fun PreviewActionBarWithEmptySuggestionsDynamicLight() {
+    PreviewActionBarWithEmptySuggestions(dynamicLightColorScheme(LocalContext.current))
+}
+
+@Composable
+@Preview
+fun PreviewExpandedActionBarDynamicLight() {
+    PreviewExpandedActionBar(dynamicLightColorScheme(LocalContext.current))
+}
+
+@Composable
+@Preview
+fun PreviewActionBarWithSuggestionsDynamicDark() {
+    PreviewActionBarWithSuggestions(dynamicDarkColorScheme(LocalContext.current))
+}
+
+@Composable
+@Preview
+fun PreviewActionBarWithEmptySuggestionsDynamicDark() {
+    PreviewActionBarWithEmptySuggestions(dynamicDarkColorScheme(LocalContext.current))
+}
+
+@Composable
+@Preview
+fun PreviewExpandedActionBarDynamicDark() {
+    PreviewExpandedActionBar(dynamicDarkColorScheme(LocalContext.current))
 }

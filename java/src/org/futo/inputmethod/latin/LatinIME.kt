@@ -6,13 +6,11 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.inputmethodservice.InputMethodService
-import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
@@ -22,22 +20,34 @@ import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.graphics.toColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -53,12 +63,16 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.google.android.material.color.DynamicColors
+import org.futo.inputmethod.latin.common.Constants
+import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBar
+import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import kotlin.math.roundToInt
 
-
-interface KeyboardDrawableProvider {
+interface DynamicThemeProvider {
     val primaryKeyboardColor: Int
 
     val keyboardBackground: Drawable
@@ -77,11 +91,11 @@ interface KeyboardDrawableProvider {
 
     companion object {
         @ColorInt
-        fun getColorOrDefault(i: Int, @ColorInt default: Int, keyAttr: TypedArray, provider: KeyboardDrawableProvider?): Int {
+        fun getColorOrDefault(i: Int, @ColorInt default: Int, keyAttr: TypedArray, provider: DynamicThemeProvider?): Int {
             return (provider?.getColor(i)) ?: keyAttr.getColor(i, default)
         }
 
-        fun getDrawableOrDefault(i: Int, keyAttr: TypedArray, provider: KeyboardDrawableProvider?): Drawable? {
+        fun getDrawableOrDefault(i: Int, keyAttr: TypedArray, provider: DynamicThemeProvider?): Drawable? {
             return (provider?.getDrawable(i)) ?: keyAttr.getDrawable(i)
         }
     }
@@ -89,7 +103,7 @@ interface KeyboardDrawableProvider {
 
 // TODO: Expand the number of drawables this provides so it covers the full theme, and
 // build some system to dynamically change these colors
-class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
+class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorScheme? = null) : DynamicThemeProvider {
     override val primaryKeyboardColor: Int
 
     override val keyboardBackground: Drawable
@@ -152,7 +166,9 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
     }
 
     init {
-        val colorScheme = if(!DynamicColors.isDynamicColorAvailable()) {
+        val colorScheme = if(overrideColorScheme != null) {
+            overrideColorScheme
+        }else if(!DynamicColors.isDynamicColorAvailable()) {
             DarkColorScheme
         } else {
             val dCtx = DynamicColors.wrapContextIfAvailable(context)
@@ -213,7 +229,7 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
             )
 
             addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_checkable, android.R.attr.state_checked),
-                coloredRoundedRectangle(secondary, dp(8.dp))
+                coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(8.dp))
             )
 
             addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_checkable),
@@ -264,18 +280,37 @@ class BasicThemeProvider(val context: Context) : KeyboardDrawableProvider {
 
 }
 
-interface KeyboardDrawableProviderOwner {
-    fun getDrawableProvider(): KeyboardDrawableProvider
+interface DynamicThemeProviderOwner {
+    fun getDrawableProvider(): DynamicThemeProvider
 }
 
-class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner, LatinIMELegacy.SuggestionStripController, KeyboardDrawableProviderOwner {
-    private var drawableProvider: KeyboardDrawableProvider? = null
-    override fun getDrawableProvider(): KeyboardDrawableProvider {
+
+
+class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner, LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner,
+    KeyboardManagerForAction {
+    private var activeColorScheme = DarkColorScheme
+
+    private var drawableProvider: DynamicThemeProvider? = null
+    override fun getDrawableProvider(): DynamicThemeProvider {
         if(drawableProvider == null) {
-            drawableProvider = BasicThemeProvider(this)
+            drawableProvider = BasicThemeProvider(this, activeColorScheme)
         }
 
         return drawableProvider!!
+    }
+
+    private fun updateDrawableProvider(colorScheme: ColorScheme) {
+        activeColorScheme = colorScheme
+
+        // ... update drawableProvider with params
+        drawableProvider = BasicThemeProvider(this, overrideColorScheme = colorScheme)
+
+        // ... force change keyboard view
+        legacyInputView = latinIMELegacy.onCreateInputView()
+        latinIMELegacy.loadKeyboard()
+        setContent()
+
+        window.window?.navigationBarColor = drawableProvider!!.primaryKeyboardColor
     }
 
     private val latinIMELegacy = LatinIMELegacy(
@@ -305,6 +340,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun onCreate() {
         super.onCreate()
+
+        activeColorScheme = if(!DynamicColors.isDynamicColorAvailable()) {
+            DarkColorScheme
+        } else {
+            val dCtx = DynamicColors.wrapContextIfAvailable(this)
+
+            dynamicLightColorScheme(dCtx)
+        }
+
         mSavedStateRegistryController.performRestore(null)
         handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
@@ -359,26 +403,95 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         return composeView!!
     }
 
+    private var currWindowAction: Action? = null
+    private fun onActionActivated(action: Action) {
+        if(action.windowImpl != null) {
+            currWindowAction = action
+            setContent()
+        } else if(action.simplePressImpl != null) {
+            action.simplePressImpl.invoke(this)
+        } else {
+            throw IllegalStateException("An action must have either a window implementation or a simple press implementation")
+        }
+    }
+
+    private var inputViewHeight: Int = -1
     private var shouldShowSuggestionStrip: Boolean = true
     private var suggestedWords: SuggestedWords? = null
+
+    @Composable
+    private fun LegacyKeyboardView() {
+        key(legacyInputView) {
+            AndroidView(factory = {
+                legacyInputView!!
+            }, update = { }, modifier = Modifier.onSizeChanged {
+                inputViewHeight = it.height
+            })
+        }
+    }
+
+    @Composable
+    private fun MainKeyboardViewWithActionBar() {
+        Column {
+            if (shouldShowSuggestionStrip) {
+                ActionBar(
+                    suggestedWords,
+                    latinIMELegacy,
+                    onActionActivated = { onActionActivated(it) }
+                )
+            }
+            LegacyKeyboardView()
+        }
+    }
+
+    private fun returnBackToMainKeyboardViewFromAction() {
+        assert(currWindowAction != null)
+        currWindowAction = null
+
+        setContent()
+    }
+    @Composable
+    private fun ActionViewWithHeader(action: Action) {
+        val windowImpl = action.windowImpl!!
+        println("The height is $inputViewHeight, which in DP is ${ with(LocalDensity.current) { inputViewHeight.toDp() }}")
+        Column {
+            Surface(modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp), color = MaterialTheme.colorScheme.background)
+            {
+                Row {
+                    IconButton(onClick = {
+                        returnBackToMainKeyboardViewFromAction()
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = "Back"
+                        )
+                    }
+
+                    Text(windowImpl.windowName(), style = Typography.titleMedium, modifier = Modifier.align(CenterVertically))
+                }
+            }
+
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(with(LocalDensity.current) { inputViewHeight.toDp() })) {
+                windowImpl.WindowContents(manager = this@LatinIME)
+            }
+        }
+    }
+
     private fun setContent() {
         composeView?.setContent {
-            Column {
-                Spacer(modifier = Modifier.weight(1.0f))
-                Surface(modifier = Modifier.onSizeChanged {
-                    touchableHeight = it.height
-                }, color = MaterialTheme.colorScheme.surface) {
-                    Column {
-                        if(shouldShowSuggestionStrip) {
-                            ActionBar(
-                                suggestedWords,
-                                latinIMELegacy
-                            )
-                        }
-                        key(legacyInputView) {
-                            AndroidView(factory = {
-                                legacyInputView!!
-                            }, update = { })
+            UixThemeWrapper(activeColorScheme) {
+                Column {
+                    Spacer(modifier = Modifier.weight(1.0f))
+                    Surface(modifier = Modifier.onSizeChanged {
+                        touchableHeight = it.height
+                    }) {
+                        when {
+                            currWindowAction != null -> ActionViewWithHeader(currWindowAction!!)
+                            else -> MainKeyboardViewWithActionBar()
                         }
                     }
                 }
@@ -500,7 +613,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         val touchLeft = 0
         val touchTop = visibleTopY
-        val touchRight = legacyInputView!!.width
+        val touchRight = composeView!!.width
         val touchBottom = inputHeight
 
         latinIMELegacy.setInsets(outInsets!!.apply {
@@ -548,5 +661,18 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun maybeShowImportantNoticeTitle(): Boolean {
         return false
+    }
+
+    override fun triggerSystemVoiceInput() {
+        latinIMELegacy.onCodeInput(
+            Constants.CODE_SHORTCUT,
+            Constants.SUGGESTION_STRIP_COORDINATE,
+            Constants.SUGGESTION_STRIP_COORDINATE,
+            false
+        );
+    }
+
+    override fun updateTheme(newTheme: ColorScheme) {
+        updateDrawableProvider(newTheme)
     }
 }

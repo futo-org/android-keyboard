@@ -26,7 +26,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
-import org.futo.inputmethod.latin.KeyboardDrawableProvider;
+import org.futo.inputmethod.latin.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 
 public final class KeyPreviewDrawParams {
@@ -71,7 +71,7 @@ public final class KeyPreviewDrawParams {
     // preview background.
     private int mVisibleOffset;
 
-    public KeyPreviewDrawParams(final TypedArray mainKeyboardViewAttr, final KeyboardDrawableProvider provider) {
+    public KeyPreviewDrawParams(final TypedArray mainKeyboardViewAttr, final DynamicThemeProvider provider) {
         mPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.MainKeyboardView_keyPreviewOffset, 0);
         mPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(

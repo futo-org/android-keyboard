@@ -98,13 +98,19 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
+    private boolean themeSwitchPending = false;
+    public void queueThemeSwitch() {
+        themeSwitchPending = true;
+    }
+
     private boolean updateKeyboardThemeAndContextThemeWrapper(final Context context,
             final KeyboardTheme keyboardTheme) {
-        if (mThemeContext == null || !keyboardTheme.equals(mKeyboardTheme)
+        if (themeSwitchPending || mThemeContext == null || !keyboardTheme.equals(mKeyboardTheme)
                 || !mThemeContext.getResources().equals(context.getResources())) {
             mKeyboardTheme = keyboardTheme;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
             KeyboardLayoutSet.onKeyboardThemeChanged();
+            themeSwitchPending = false;
             return true;
         }
         return false;

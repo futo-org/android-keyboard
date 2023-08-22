@@ -28,7 +28,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,7 +50,7 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 import org.futo.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import org.futo.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import org.futo.inputmethod.keyboard.internal.TimerHandler;
-import org.futo.inputmethod.latin.KeyboardDrawableProvider;
+import org.futo.inputmethod.latin.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
 import org.futo.inputmethod.latin.SuggestedWords;
@@ -61,7 +60,6 @@ import org.futo.inputmethod.latin.settings.DebugSettings;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
 
-import java.util.Locale;
 import java.util.WeakHashMap;
 
 import javax.annotation.Nonnull;
@@ -215,7 +213,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         mBackgroundDimAlphaPaint.setAlpha(backgroundDimAlpha);
         mLanguageOnSpacebarTextRatio = mainKeyboardViewAttr.getFraction(
                 R.styleable.MainKeyboardView_languageOnSpacebarTextRatio, 1, 1, 1.0f);
-        mLanguageOnSpacebarTextColor = KeyboardDrawableProvider.Companion.getColorOrDefault(
+        mLanguageOnSpacebarTextColor = DynamicThemeProvider.Companion.getColorOrDefault(
                 R.styleable.MainKeyboardView_languageOnSpacebarTextColor, 0,
                 mainKeyboardViewAttr, mDrawableProvider
         );
@@ -460,6 +458,10 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         if (windowContentView == null) {
             Log.w(TAG, "Cannot find android.R.id.content view to add DrawingPreviewPlacerView");
             return;
+        }
+
+        if(mDrawingPreviewPlacerView.getParent() != null) {
+            ((ViewGroup)mDrawingPreviewPlacerView.getParent()).removeView(mDrawingPreviewPlacerView);
         }
         windowContentView.addView(mDrawingPreviewPlacerView);
     }

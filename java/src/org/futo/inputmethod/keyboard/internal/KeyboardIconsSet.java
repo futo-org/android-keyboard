@@ -22,7 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseIntArray;
 
-import org.futo.inputmethod.latin.KeyboardDrawableProvider;
+import org.futo.inputmethod.latin.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 
 import java.util.HashMap;
@@ -108,12 +108,12 @@ public final class KeyboardIconsSet {
         }
     }
 
-    public void loadIcons(final TypedArray keyboardAttrs, @Nullable KeyboardDrawableProvider provider) {
+    public void loadIcons(final TypedArray keyboardAttrs, @Nullable DynamicThemeProvider provider) {
         final int size = ATTR_ID_TO_ICON_ID.size();
         for (int index = 0; index < size; index++) {
             final int attrId = ATTR_ID_TO_ICON_ID.keyAt(index);
             try {
-                final Drawable icon = KeyboardDrawableProvider.Companion.getDrawableOrDefault(attrId, keyboardAttrs, provider);
+                final Drawable icon = DynamicThemeProvider.Companion.getDrawableOrDefault(attrId, keyboardAttrs, provider);
                 setDefaultBounds(icon);
                 final Integer iconId = ATTR_ID_TO_ICON_ID.get(attrId);
                 mIcons[iconId] = icon;

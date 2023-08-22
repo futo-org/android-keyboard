@@ -33,8 +33,8 @@ import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardId;
 import org.futo.inputmethod.keyboard.KeyboardTheme;
-import org.futo.inputmethod.latin.KeyboardDrawableProvider;
-import org.futo.inputmethod.latin.KeyboardDrawableProviderOwner;
+import org.futo.inputmethod.latin.DynamicThemeProvider;
+import org.futo.inputmethod.latin.DynamicThemeProviderOwner;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.StringUtils;
@@ -153,16 +153,16 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private boolean mTopEdge;
     private Key mRightEdgeKey = null;
 
-    private KeyboardDrawableProvider mProvider = null;
+    private DynamicThemeProvider mProvider = null;
 
     public KeyboardBuilder(final Context context, @Nonnull final KP params) {
         mContext = context;
-        if(mContext instanceof KeyboardDrawableProviderOwner) {
-            mProvider = ((KeyboardDrawableProviderOwner) mContext).getDrawableProvider();
+        if(mContext instanceof DynamicThemeProviderOwner) {
+            mProvider = ((DynamicThemeProviderOwner) mContext).getDrawableProvider();
         }else if(mContext instanceof ContextThemeWrapper) {
             Context baseContext = ((ContextThemeWrapper) mContext).getBaseContext();
-            if(baseContext instanceof KeyboardDrawableProviderOwner) {
-                mProvider = ((KeyboardDrawableProviderOwner) baseContext).getDrawableProvider();
+            if(baseContext instanceof DynamicThemeProviderOwner) {
+                mProvider = ((DynamicThemeProviderOwner) baseContext).getDrawableProvider();
             }
         }
 

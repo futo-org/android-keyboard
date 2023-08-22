@@ -846,6 +846,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public View onCreateInputView() {
         StatsUtils.onCreateInputView();
         assert mDisplayContext != null;
+        mKeyboardSwitcher.queueThemeSwitch();
         return mKeyboardSwitcher.onCreateInputView(mDisplayContext,
                 mIsHardwareAcceleratedDrawingEnabled);
     }
@@ -1948,7 +1949,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     private void setNavigationBarVisibility(final boolean visible) {
-        int color = ((KeyboardDrawableProviderOwner)getInputMethodService()).getDrawableProvider().getPrimaryKeyboardColor();
+        int color = ((DynamicThemeProviderOwner)getInputMethodService()).getDrawableProvider().getPrimaryKeyboardColor();
         if (BuildCompatUtils.EFFECTIVE_SDK_INT > Build.VERSION_CODES.M) {
             // For N and later, IMEs can specify Color.TRANSPARENT to make the navigation bar
             // transparent.  For other colors the system uses the default color.
