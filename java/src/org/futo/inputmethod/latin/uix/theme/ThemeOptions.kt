@@ -10,6 +10,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 
 data class ThemeOption(
+    val dynamic: Boolean,
     val key: String,
     val name: String, // TODO: @StringRes Int
     val available: (Context) -> Boolean,

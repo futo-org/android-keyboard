@@ -63,11 +63,13 @@ import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
+import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 
@@ -110,6 +112,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         this as LatinIMELegacy.SuggestionStripController
     )
 
+    private var activeThemeOption: ThemeOption? = null
     private var activeColorScheme = DarkColorScheme
     private var colorSchemeLoaderJob: Job? = null
 
@@ -153,6 +156,17 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         return drawableProvider!!
     }
 
+    private fun updateColorsIfDynamicChanged() {
+        if(activeThemeOption?.dynamic == true) {
+            val currColors = activeColorScheme
+            val nextColors = activeThemeOption!!.obtainColors(this)
+
+            if(currColors.differsFrom(nextColors)) {
+                updateDrawableProvider(nextColors)
+            }
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
 
@@ -164,6 +178,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                 themeOption = ThemeOptions[themeKey]!!
             }
 
+            activeThemeOption = themeOption
             activeColorScheme = themeOption.obtainColors(this@LatinIME)
         }
 
@@ -379,7 +394,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         super.onWindowShown()
         latinIMELegacy.onWindowShown()
 
-        // TODO: Check here if the dynamic color scheme has changed, reset and rebuild if so
+        updateColorsIfDynamicChanged()
     }
 
     override fun onWindowHidden() {
@@ -518,6 +533,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun updateTheme(newTheme: ThemeOption) {
         assert(newTheme.available(this))
+        activeThemeOption = newTheme
         updateDrawableProvider(newTheme.obtainColors(this))
 
         deferSetSetting(THEME_KEY, newTheme.key)

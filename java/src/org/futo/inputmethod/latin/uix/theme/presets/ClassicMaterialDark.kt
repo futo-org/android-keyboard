@@ -84,7 +84,7 @@ private val colorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-val ClassicMaterialDark = ThemeOption("ClassicMaterialDark", "AOSP Material Dark", { true }) {
+val ClassicMaterialDark = ThemeOption(false, "ClassicMaterialDark", "AOSP Material Dark", { true }) {
     colorScheme
 }
 

@@ -67,6 +67,6 @@ private val colorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-val AMOLEDDarkPurple = ThemeOption("AMOLEDDarkPurple", "AMOLED Dark Purple", { true }) {
+val AMOLEDDarkPurple = ThemeOption(false, "AMOLEDDarkPurple", "AMOLED Dark Purple", { true }) {
     colorScheme
 }
