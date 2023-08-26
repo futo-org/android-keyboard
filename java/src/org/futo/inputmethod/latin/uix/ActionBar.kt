@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.os.Build
+import android.view.View
 import android.view.inputmethod.InlineSuggestion
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
@@ -27,6 +28,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -55,6 +57,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.Flow
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -353,7 +356,7 @@ fun ActionBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
     onActionActivated: (Action) -> Unit,
-    inlineSuggestions: List<InlineSuggestion>,
+    inlineSuggestions: List<MutableState<View?>>,
     forceOpenActionsInitially: Boolean = false,
 ) {
     val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }

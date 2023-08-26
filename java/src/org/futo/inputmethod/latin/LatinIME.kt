@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -51,6 +52,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
@@ -64,6 +66,7 @@ import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
+import org.futo.inputmethod.latin.uix.inflateInlineSuggestion
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
@@ -123,7 +126,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         return currWindowAction != null
     }
 
-    private var inlineSuggestions: List<InlineSuggestion> = listOf()
+    private var inlineSuggestions: List<MutableState<View?>> = listOf()
 
     private fun recreateKeyboard() {
         legacyInputView = latinIMELegacy.onCreateInputView()
@@ -546,7 +549,9 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
-        inlineSuggestions = response.inlineSuggestions
+        inlineSuggestions = response.inlineSuggestions.map {
+            inflateInlineSuggestion(it)
+        }
         setContent()
 
         return true

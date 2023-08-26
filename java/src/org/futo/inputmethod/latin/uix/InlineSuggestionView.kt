@@ -4,11 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.Size
-import android.util.TypedValue
+import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InlineSuggestion
 import android.view.inputmethod.InlineSuggestionsRequest
-import android.widget.inline.InlineContentView
 import android.widget.inline.InlinePresentationSpec
 import androidx.annotation.RequiresApi
 import androidx.autofill.inline.UiVersions
@@ -21,18 +20,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import kotlin.math.roundToInt
+
 
 @SuppressLint("RestrictedApi")
 @RequiresApi(Build.VERSION_CODES.R)
@@ -41,11 +36,7 @@ fun createInlineSuggestionsRequest(
     activeColorScheme: ColorScheme
 ): InlineSuggestionsRequest {
     val fromDp = { v: Float ->
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            v,
-            context.resources.displayMetrics
-        ).roundToInt()
+        context.fromDp(v).roundToInt()
     }
 
     val stylesBuilder = UiVersions.newStylesBuilder()
@@ -113,30 +104,31 @@ fun createInlineSuggestionsRequest(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.R)
+fun Context.inflateInlineSuggestion(inlineSuggestion: InlineSuggestion): MutableState<View?> {
+    val mutableState: MutableState<View?> = mutableStateOf(null)
+
+    val size = Size(ViewGroup.LayoutParams.WRAP_CONTENT, fromDp(32f).roundToInt())
+
+    try {
+        inlineSuggestion.inflate(this, size, mainExecutor) { inflatedView ->
+            if (inflatedView != null) {
+                mutableState.value = inflatedView
+            }
+        }
+    } catch (e: Exception) {
+        println(e.toString())
+    }
+
+    return mutableState
+}
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
-fun InlineSuggestionView(inlineSuggestion: InlineSuggestion) = with(LocalDensity.current) {
-    val context = LocalContext.current
-
-    val size = Size(ViewGroup.LayoutParams.WRAP_CONTENT, 32.dp.toPx().toInt())
-    var inlineContentView by remember { mutableStateOf<InlineContentView?>(null) }
-
-    LaunchedEffect(Unit) {
-        try {
-            inlineSuggestion.inflate(context, size, context.mainExecutor) { inflatedView ->
-                if (inflatedView != null) {
-                    inlineContentView = inflatedView
-                }
-            }
-        } catch (e: Exception) {
-            println(e.toString())
-        }
-    }
-
-    if (inlineContentView != null) {
+fun InlineSuggestionView(inlineSuggestion: MutableState<View?>) {
+    if (inlineSuggestion.value != null) {
         AndroidView(
-            factory = { inlineContentView!! },
+            factory = { inlineSuggestion.value!! },
             modifier = Modifier.padding(4.dp, 0.dp)
         )
     }
@@ -144,8 +136,10 @@ fun InlineSuggestionView(inlineSuggestion: InlineSuggestion) = with(LocalDensity
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
-fun RowScope.InlineSuggestions(suggestions: List<InlineSuggestion>) {
-    LazyRow(modifier = Modifier.weight(1.0f).padding(0.dp, 4.dp)) {
+fun RowScope.InlineSuggestions(suggestions: List<MutableState<View?>>) {
+    LazyRow(modifier = Modifier
+        .weight(1.0f)
+        .padding(0.dp, 4.dp)) {
         items(suggestions.size) {
             InlineSuggestionView(suggestions[it])
         }
