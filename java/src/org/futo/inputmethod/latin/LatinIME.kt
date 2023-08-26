@@ -2,11 +2,17 @@ package org.futo.inputmethod.latin
 
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
+import android.os.Build
+import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.CompletionInfo
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InlineSuggestion
+import android.view.inputmethod.InlineSuggestionsRequest
+import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputMethodSubtype
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,6 +60,7 @@ import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
@@ -112,6 +119,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private fun isActionWindowOpen(): Boolean {
         return currWindowAction != null
     }
+
+    private var inlineSuggestions: List<InlineSuggestion> = listOf()
 
     private fun recreateKeyboard() {
         legacyInputView = latinIMELegacy.onCreateInputView()
@@ -224,13 +233,20 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     @Composable
     private fun MainKeyboardViewWithActionBar() {
         Column {
-            if (shouldShowSuggestionStrip) {
-                ActionBar(
-                    suggestedWords,
-                    latinIMELegacy,
-                    onActionActivated = { onActionActivated(it) }
-                )
+            // Don't show suggested words when it's not meant to be shown
+            val suggestedWordsOrNull = if(shouldShowSuggestionStrip) {
+                suggestedWords
+            } else {
+                null
             }
+
+            ActionBar(
+                suggestedWordsOrNull,
+                latinIMELegacy,
+                inlineSuggestions = inlineSuggestions,
+                onActionActivated = { onActionActivated(it) }
+            )
+            
             LegacyKeyboardView()
         }
     }
@@ -505,5 +521,18 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         updateDrawableProvider(newTheme.obtainColors(this))
 
         deferSetSetting(THEME_KEY, newTheme.key)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onCreateInlineSuggestionsRequest(uiExtras: Bundle): InlineSuggestionsRequest {
+        return createInlineSuggestionsRequest(this, this.activeColorScheme)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
+        inlineSuggestions = response.inlineSuggestions
+        setContent()
+
+        return true
     }
 }

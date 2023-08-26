@@ -1,12 +1,11 @@
 package org.futo.inputmethod.latin.uix
 
 import android.os.Build
+import android.view.inputmethod.InlineSuggestion
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -14,9 +13,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
@@ -24,12 +23,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +37,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
@@ -64,7 +59,6 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
-import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -359,6 +353,7 @@ fun ActionBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
     onActionActivated: (Action) -> Unit,
+    inlineSuggestions: List<InlineSuggestion>,
     forceOpenActionsInitially: Boolean = false,
 ) {
     val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }
@@ -372,6 +367,8 @@ fun ActionBar(
 
             if(isActionsOpen.value) {
                 ActionItems(onActionActivated)
+            } else if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                InlineSuggestions(inlineSuggestions)
             } else if(words != null) {
                 SuggestionItems(words) {
                     suggestionStripListener.pickSuggestionManually(
@@ -440,8 +437,9 @@ fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) 
     UixThemeWrapper(colorScheme) {
         ActionBar(
             words = exampleSuggestedWords,
+            suggestionStripListener = ExampleListener(),
             onActionActivated = { },
-            suggestionStripListener = ExampleListener()
+            inlineSuggestions = listOf()
         )
     }
 }
@@ -452,8 +450,9 @@ fun PreviewActionBarWithEmptySuggestions(colorScheme: ColorScheme = DarkColorSch
     UixThemeWrapper(colorScheme) {
         ActionBar(
             words = exampleSuggestedWordsEmpty,
+            suggestionStripListener = ExampleListener(),
             onActionActivated = { },
-            suggestionStripListener = ExampleListener()
+            inlineSuggestions = listOf()
         )
     }
 }
@@ -464,8 +463,9 @@ fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
     UixThemeWrapper(colorScheme) {
         ActionBar(
             words = exampleSuggestedWordsEmpty,
-            onActionActivated = { },
             suggestionStripListener = ExampleListener(),
+            onActionActivated = { },
+            inlineSuggestions = listOf(),
             forceOpenActionsInitially = true
         )
     }

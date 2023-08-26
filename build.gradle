@@ -129,6 +129,7 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    implementation 'androidx.autofill:autofill:1.1.0'
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
