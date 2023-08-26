@@ -127,6 +127,8 @@ fun Context.inflateInlineSuggestion(inlineSuggestion: InlineSuggestion): Mutable
 @Composable
 fun InlineSuggestionView(inlineSuggestion: MutableState<View?>) {
     if (inlineSuggestion.value != null) {
+        // TODO: For some reason this appears over top of keyboard key previews
+        // We should also make it animate in and round corners
         AndroidView(
             factory = { inlineSuggestion.value!! },
             modifier = Modifier.padding(4.dp, 0.dp)
