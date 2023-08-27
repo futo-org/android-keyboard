@@ -1,22 +1,35 @@
 package org.futo.inputmethod.latin.uix.actions
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
+import org.futo.inputmethod.latin.uix.PersistentActionState
+import org.futo.voiceinput.shared.RecognizerView
+import org.futo.voiceinput.shared.ml.WhisperModelWrapper
+
+class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : PersistentActionState {
+    var model: WhisperModelWrapper? = null
+
+    override fun cleanUp() {
+        model?.close()
+        model = null
+    }
+}
 
 
-// TODO: For now, this calls CODE_SHORTCUT. In the future, we will want to
-// make this a window
 val VoiceInputAction = Action(
     icon = R.drawable.mic_fill,
     name = "Voice Input",
@@ -24,20 +37,78 @@ val VoiceInputAction = Action(
     //    it.triggerSystemVoiceInput()
     //},
     simplePressImpl = null,
-    windowImpl = object : ActionWindow {
-        @Composable
-        override fun windowName(): String {
-            return "Voice Input"
-        }
+    persistentState = { VoiceInputPersistentState(it) },
 
-        @Composable
-        override fun WindowContents(manager: KeyboardManagerForAction) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Icon(
-                    painter = painterResource(id = R.drawable.mic_fill),
-                    contentDescription = null,
-                    modifier = Modifier.align(Alignment.Center).size(48.dp)
-                )
+    windowImpl = { manager, persistentState ->
+        object : ActionWindow, RecognizerView() {
+            val state = persistentState as VoiceInputPersistentState
+
+            override val context: Context = manager.getContext()
+            override val lifecycleScope: LifecycleCoroutineScope
+                get() = manager.getLifecycleScope()
+
+            val currentContent: MutableState<@Composable () -> Unit> = mutableStateOf({})
+
+            init {
+                this.reset()
+                this.init()
+            }
+
+            override fun setContent(content: @Composable () -> Unit) {
+                currentContent.value = content
+            }
+
+            override fun onCancel() {
+                this.reset()
+                manager.closeActionWindow()
+            }
+
+            override fun sendResult(result: String) {
+                manager.typeText(result)
+                onCancel()
+            }
+
+            override fun sendPartialResult(result: String): Boolean {
+                manager.typePartialText(result)
+                return true
+            }
+
+            override fun requestPermission() {
+                permissionResultRejected()
+            }
+
+            override fun tryRestoreCachedModel(): WhisperModelWrapper? {
+                return state.model
+            }
+
+            override fun cacheModel(model: WhisperModelWrapper) {
+                state.model = model
+            }
+
+            @Composable
+            override fun Window(onClose: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
+                Column {
+                    content()
+                }
+            }
+
+            @Composable
+            override fun windowName(): String {
+                return "Voice Input"
+            }
+
+            @Composable
+            override fun WindowContents() {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Box(modifier = Modifier.align(Alignment.Center)) {
+                        currentContent.value()
+                    }
+                }
+            }
+
+            override fun close() {
+                this.reset()
+                soundPool.release()
             }
         }
     }

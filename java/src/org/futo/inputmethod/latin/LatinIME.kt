@@ -1,11 +1,14 @@
 package org.futo.inputmethod.latin
 
+import android.content.ComponentCallbacks2
+import android.content.Context
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.CompletionInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InlineSuggestion
@@ -19,6 +22,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +34,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
@@ -38,12 +43,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
@@ -57,11 +64,14 @@ import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBar
+import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
+import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
@@ -122,24 +132,24 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private var drawableProvider: DynamicThemeProvider? = null
 
     private var currWindowAction: Action? = null
+    private var currWindowActionWindow: ActionWindow? = null
+    private var persistentStates: HashMap<Action, PersistentActionState?> = hashMapOf()
     private fun isActionWindowOpen(): Boolean {
-        return currWindowAction != null
+        return currWindowActionWindow != null
     }
 
     private var inlineSuggestions: List<MutableState<View?>> = listOf()
 
+    private var lastEditorInfo: EditorInfo? = null
+
     private fun recreateKeyboard() {
-        legacyInputView = latinIMELegacy.onCreateInputView()
-        latinIMELegacy.loadKeyboard()
+        latinIMELegacy.updateTheme()
+        latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(latinIMELegacy.currentAutoCapsState, latinIMELegacy.currentRecapitalizeState);
     }
 
     private fun updateDrawableProvider(colorScheme: ColorScheme) {
         activeColorScheme = colorScheme
         drawableProvider = BasicThemeProvider(this, overrideColorScheme = colorScheme)
-
-        // recreate the keyboard if not in action window, if we are in action window then
-        // it'll be recreated when we exit
-        if (!isActionWindowOpen()) recreateKeyboard()
 
         window.window?.navigationBarColor = drawableProvider!!.primaryKeyboardColor
         setContent()
@@ -227,7 +237,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         if (action.windowImpl != null) {
             enterActionWindowView(action)
         } else if (action.simplePressImpl != null) {
-            action.simplePressImpl.invoke(this)
+            action.simplePressImpl.invoke(this, persistentStates[action])
         } else {
             throw IllegalStateException("An action must have either a window implementation or a simple press implementation")
         }
@@ -238,13 +248,18 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private var suggestedWords: SuggestedWords? = null
 
     @Composable
-    private fun LegacyKeyboardView() {
+    private fun LegacyKeyboardView(hidden: Boolean) {
+        val modifier = if(hidden) {
+            Modifier.clipToBounds().size(0.dp)
+        } else {
+            Modifier.onSizeChanged {
+                inputViewHeight = it.height
+            }
+        }
         key(legacyInputView) {
             AndroidView(factory = {
                 legacyInputView!!
-            }, update = { }, modifier = Modifier.onSizeChanged {
-                inputViewHeight = it.height
-            })
+            }, update = { }, modifier = modifier)
         }
     }
 
@@ -264,32 +279,38 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                 inlineSuggestions = inlineSuggestions,
                 onActionActivated = { onActionActivated(it) }
             )
-            
-            LegacyKeyboardView()
         }
     }
 
     private fun enterActionWindowView(action: Action) {
         assert(action.windowImpl != null)
+
+        latinIMELegacy.mKeyboardSwitcher.saveKeyboardState()
+
         currWindowAction = action
+
+        if (persistentStates[action] == null) {
+            persistentStates[action] = action.persistentState?.let { it(this) }
+        }
+
+        currWindowActionWindow = action.windowImpl?.let { it(this, persistentStates[action]) }
 
         setContent()
     }
 
     private fun returnBackToMainKeyboardViewFromAction() {
-        assert(currWindowAction != null)
-        currWindowAction = null
+        assert(currWindowActionWindow != null)
 
-        // Keyboard acts buggy in many ways after being detached from window then attached again,
-        // so let's recreate it
-        recreateKeyboard()
+        currWindowActionWindow!!.close()
+
+        currWindowAction = null
+        currWindowActionWindow = null
 
         setContent()
     }
 
     @Composable
-    private fun ActionViewWithHeader(action: Action) {
-        val windowImpl = action.windowImpl!!
+    private fun ActionViewWithHeader(windowImpl: ActionWindow) {
         Column {
             Surface(
                 modifier = Modifier
@@ -319,7 +340,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                 .fillMaxWidth()
                 .height(with(LocalDensity.current) { inputViewHeight.toDp() })
             ) {
-                windowImpl.WindowContents(manager = this@LatinIME)
+                windowImpl.WindowContents()
             }
         }
     }
@@ -332,9 +353,18 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                     Surface(modifier = Modifier.onSizeChanged {
                         touchableHeight = it.height
                     }) {
-                        when {
-                            currWindowAction != null -> ActionViewWithHeader(currWindowAction!!)
-                            else -> MainKeyboardViewWithActionBar()
+                        Column {
+                            when {
+                                isActionWindowOpen() -> ActionViewWithHeader(
+                                    currWindowActionWindow!!
+                                )
+
+                                else -> MainKeyboardViewWithActionBar()
+                            }
+
+                            // The keyboard view really doesn't like being detached, so it's always
+                            // shown, but resized to 0 if an action window is open
+                            LegacyKeyboardView(hidden = isActionWindowOpen())
                         }
                     }
                 }
@@ -374,6 +404,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
+        lastEditorInfo = info
+
         super.onStartInputView(info, restarting)
         latinIMELegacy.onStartInputView(info, restarting)
     }
@@ -525,6 +557,49 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         return false
     }
 
+    private fun cleanUpPersistentStates() {
+        println("Cleaning up persistent states")
+        for((key, value) in persistentStates.entries) {
+            if(currWindowAction != key) {
+                value?.cleanUp()
+            }
+        }
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        cleanUpPersistentStates()
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        cleanUpPersistentStates()
+    }
+
+    override fun getContext(): Context {
+        return this
+    }
+
+    override fun getLifecycleScope(): LifecycleCoroutineScope {
+        return lifecycleScope
+    }
+
+    override fun triggerContentUpdate() {
+        setContent()
+    }
+
+    override fun typePartialText(v: String) {
+        latinIMELegacy.mInputLogic.mConnection.setComposingText(v, 1)
+    }
+
+    override fun typeText(v: String) {
+        latinIMELegacy.onTextInput(v)
+    }
+
+    override fun closeActionWindow() {
+        returnBackToMainKeyboardViewFromAction()
+    }
+
     override fun triggerSystemVoiceInput() {
         latinIMELegacy.onCodeInput(
             Constants.CODE_SHORTCUT,
@@ -540,6 +615,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         updateDrawableProvider(newTheme.obtainColors(this))
 
         deferSetSetting(THEME_KEY, newTheme.key)
+
+        recreateKeyboard()
     }
 
     @RequiresApi(Build.VERSION_CODES.R)

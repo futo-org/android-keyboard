@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application' version '8.0.2'
     id 'org.jetbrains.kotlin.android' version '1.8.20'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.20'
+    id 'com.android.library' version '8.0.2' apply false
 }
 
 android {
@@ -130,6 +131,8 @@ dependencies {
 
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
     implementation 'androidx.autofill:autofill:1.1.0'
+
+    implementation project(":voiceinput-shared")
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
