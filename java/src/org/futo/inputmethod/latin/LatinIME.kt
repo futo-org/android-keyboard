@@ -60,6 +60,7 @@ import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
@@ -561,7 +562,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         println("Cleaning up persistent states")
         for((key, value) in persistentStates.entries) {
             if(currWindowAction != key) {
-                value?.cleanUp()
+                lifecycleScope.launch { value?.cleanUp() }
             }
         }
     }

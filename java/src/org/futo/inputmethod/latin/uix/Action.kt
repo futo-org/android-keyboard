@@ -36,7 +36,7 @@ interface ActionWindow {
 }
 
 interface PersistentActionState {
-    fun cleanUp()
+    suspend fun cleanUp()
 }
 
 data class Action(

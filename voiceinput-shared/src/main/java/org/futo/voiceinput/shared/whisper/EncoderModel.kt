@@ -1,4 +1,4 @@
-package org.futo.voiceinput.shared.ml
+package org.futo.voiceinput.shared.whisper
 
 import android.content.Context
 import org.tensorflow.lite.DataType
@@ -6,14 +6,42 @@ import org.tensorflow.lite.support.model.Model
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.nio.MappedByteBuffer
 
-class WhisperEncoderXatn {
+class EncoderModel {
+    companion object {
+        /**
+         * Load the model from a file in the context's assets (model built into the apk)
+         */
+        fun loadFromAssets(
+            context: Context,
+            modelPath: String,
+            options: Model.Options = Model.Options.Builder().build()
+        ): EncoderModel {
+            return EncoderModel(context, modelPath, options)
+        }
+
+        /**
+         * Load the model from a MappedByteBuffer, which can be created from any File
+         */
+        fun loadFromMappedBuffer(
+            modelBuffer: MappedByteBuffer, options: Model.Options = Model.Options.Builder().build()
+        ): EncoderModel {
+            return EncoderModel(modelBuffer, options)
+        }
+    }
+
     private val model: Model
 
-    constructor(context: Context, modelPath: String = "tiny-en-encoder-xatn.tflite", options: Model.Options = Model.Options.Builder().build()) {
+    private constructor(
+        context: Context,
+        modelPath: String,
+        options: Model.Options = Model.Options.Builder().build()
+    ) {
         model = Model.createModel(context, modelPath, options)
     }
 
-    constructor(modelBuffer: MappedByteBuffer, options: Model.Options = Model.Options.Builder().build()) {
+    private constructor(
+        modelBuffer: MappedByteBuffer, options: Model.Options = Model.Options.Builder().build()
+    ) {
         model = Model.createModel(modelBuffer, "", options)
     }
 

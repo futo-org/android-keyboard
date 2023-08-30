@@ -1,4 +1,4 @@
-package org.futo.voiceinput.shared
+package org.futo.voiceinput.shared.util
 
 import org.futo.pocketfft.PocketFFT
 import kotlin.math.cos
@@ -23,18 +23,16 @@ fun createHannWindow(nFFT: Int): DoubleArray {
 }
 
 enum class MelScale {
-    Htk,
-    Slaney
+    Htk, Slaney
 }
 
 enum class Normalization {
-    None,
-    Slaney
+    None, Slaney
 }
 
 
 fun melToFreq(mel: Double, melScale: MelScale): Double {
-    if(melScale == MelScale.Htk) {
+    if (melScale == MelScale.Htk) {
         return 700.0 * (10.0.pow((mel / 2595.0)) - 1.0)
     }
 
@@ -43,7 +41,7 @@ fun melToFreq(mel: Double, melScale: MelScale): Double {
     val logstep = ln(6.4) / 27.0
     var freq = 200.0 * mel / 3.0
 
-    if(mel >= minLogMel) {
+    if (mel >= minLogMel) {
         freq = minLogHertz * exp(logstep * (mel - minLogMel))
     }
 
@@ -51,7 +49,7 @@ fun melToFreq(mel: Double, melScale: MelScale): Double {
 }
 
 fun freqToMel(freq: Double, melScale: MelScale): Double {
-    if(melScale == MelScale.Htk) {
+    if (melScale == MelScale.Htk) {
         return 2595.0 * log10(1.0 + (freq / 700.0))
     }
 
@@ -60,7 +58,7 @@ fun freqToMel(freq: Double, melScale: MelScale): Double {
     val logstep = 27.0 / ln(6.4)
     var mels = 3.0 * freq / 200.0
 
-    if(freq >= minLogHertz) {
+    if (freq >= minLogHertz) {
         mels = minLogMel + ln(freq / minLogHertz) * logstep
     }
 
@@ -79,7 +77,7 @@ fun linspace(min: Double, max: Double, num: Int): DoubleArray {
     val array = DoubleArray(num)
     val spacing = (max - min) / ((num - 1).toDouble())
 
-    for(i in 0 until num) {
+    for (i in 0 until num) {
         array[i] = spacing * i
     }
 
@@ -87,19 +85,22 @@ fun linspace(min: Double, max: Double, num: Int): DoubleArray {
 }
 
 fun diff(array: DoubleArray, n: Int = 1): DoubleArray {
-    if(n != 1){
+    if (n != 1) {
         TODO()
     }
 
     val newArray = DoubleArray(array.size - 1)
-    for(i in 0 until (array.size - 1)) {
-        newArray[i] = array[i+1] - array[i]
+    for (i in 0 until (array.size - 1)) {
+        newArray[i] = array[i + 1] - array[i]
     }
 
     return newArray
 }
 
-fun createTriangularFilterBank(fftFreqs: DoubleArray, filterFreqs: DoubleArray): Array<DoubleArray> {
+fun createTriangularFilterBank(
+    fftFreqs: DoubleArray,
+    filterFreqs: DoubleArray
+): Array<DoubleArray> {
     val filterDiff = diff(filterFreqs)
 
     val slopes = Array(fftFreqs.size) { i ->
@@ -129,24 +130,32 @@ fun createTriangularFilterBank(fftFreqs: DoubleArray, filterFreqs: DoubleArray):
     return result
 }
 
-fun melFilterBank(numFrequencyBins: Int, numMelFilters: Int, minFrequency: Double, maxFrequency: Double, samplingRate: Int, norm: Normalization, melScale: MelScale): Array<DoubleArray> {
+fun melFilterBank(
+    numFrequencyBins: Int,
+    numMelFilters: Int,
+    minFrequency: Double,
+    maxFrequency: Double,
+    samplingRate: Int,
+    norm: Normalization,
+    melScale: MelScale
+): Array<DoubleArray> {
     val fftFreqs = linspace(0.0, (samplingRate / 2).toDouble(), numFrequencyBins)
 
-    val melMin = freqToMel(minFrequency, melScale=melScale)
-    val melMax = freqToMel(maxFrequency, melScale=melScale)
+    val melMin = freqToMel(minFrequency, melScale = melScale)
+    val melMax = freqToMel(maxFrequency, melScale = melScale)
 
     val melFreqs = linspace(melMin, melMax, numMelFilters + 2)
-    val filterFreqs = melToFreq(melFreqs, melScale=melScale)
+    val filterFreqs = melToFreq(melFreqs, melScale = melScale)
 
     val melFilters = createTriangularFilterBank(fftFreqs, filterFreqs)
 
-    if(norm == Normalization.Slaney) {
+    if (norm == Normalization.Slaney) {
         val enorm = DoubleArray(numMelFilters) { i ->
             2.0 / (filterFreqs[i + 2] - filterFreqs[i])
         }
 
-        for(i in 0 until numFrequencyBins) {
-            for(j in 0 until numMelFilters) {
+        for (i in 0 until numFrequencyBins) {
+            for (j in 0 until numMelFilters) {
                 melFilters[i][j] *= enorm[j]
             }
         }
@@ -205,7 +214,7 @@ class AudioFeatureExtraction(
      */
     fun melSpectrogram(y: DoubleArray): FloatArray {
         val paddedWaveform = DoubleArray(min(numSamples, y.size + hopLength)) {
-            if(it < y.size) {
+            if (it < y.size) {
                 y[it]
             } else {
                 paddingValue
@@ -214,7 +223,7 @@ class AudioFeatureExtraction(
 
         val spectro = extractSTFTFeatures(paddedWaveform)
 
-        val yShape = nbMaxFrames+1
+        val yShape = nbMaxFrames + 1
         val yShapeMax = spectro[0].size
 
         assert(melFilters[0].size == spectro.size)
@@ -228,8 +237,8 @@ class AudioFeatureExtraction(
             }
         }
 
-        for(i in melS.indices) {
-            for(j in melS[0].indices) {
+        for (i in melS.indices) {
+            for (j in melS[0].indices) {
                 melS[i][j] = log10(max(1e-10, melS[i][j]))
             }
         }
@@ -241,23 +250,22 @@ class AudioFeatureExtraction(
         }
 
         val maxValue = logSpec.maxOf { it.max() }
-        for(i in logSpec.indices) {
-            for(j in logSpec[0].indices) {
+        for (i in logSpec.indices) {
+            for (j in logSpec[0].indices) {
                 logSpec[i][j] = max(logSpec[i][j], maxValue - 8.0)
                 logSpec[i][j] = (logSpec[i][j] + 4.0) / 4.0
             }
         }
 
         val mel = FloatArray(1 * 80 * 3000)
-        for(i in logSpec.indices) {
-            for(j in logSpec[0].indices) {
+        for (i in logSpec.indices) {
+            for (j in logSpec[0].indices) {
                 mel[i * 3000 + j] = logSpec[i][j].toFloat()
             }
         }
 
         return mel
     }
-
 
 
     /**
@@ -280,7 +288,7 @@ class AudioFeatureExtraction(
         val magSpec = DoubleArray(numFrequencyBins)
         val complx = DoubleArray(nFFT + 1)
         for (k in 0 until numFrames) {
-            for(l in 0 until nFFT) {
+            for (l in 0 until nFFT) {
                 fftFrame[l] = yPad[timestep + l] * window[l]
             }
 
@@ -289,10 +297,10 @@ class AudioFeatureExtraction(
             try {
                 fft.forward(fftFrame, complx)
 
-                for(i in 0 until numFrequencyBins) {
+                for (i in 0 until numFrequencyBins) {
                     val rr = complx[i * 2]
 
-                    val ri = if(i == (numFrequencyBins - 1)) {
+                    val ri = if (i == (numFrequencyBins - 1)) {
                         0.0
                     } else {
                         complx[i * 2 + 1]

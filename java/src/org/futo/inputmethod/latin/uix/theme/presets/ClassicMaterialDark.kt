@@ -23,8 +23,8 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 
 private val md_theme_dark_primary = Color(0xFF80cbc4)
 private val md_theme_dark_onPrimary = Color(0xFFFFFFFF)
-private val md_theme_dark_primaryContainer = Color(0xFF00504B)
-private val md_theme_dark_onPrimaryContainer = Color(0xFF71F7ED)
+private val md_theme_dark_primaryContainer = Color(0xFF34434B)
+private val md_theme_dark_onPrimaryContainer = Color(0xFFF0FFFE)
 private val md_theme_dark_secondary = Color(0xFF80cbc4)
 private val md_theme_dark_onSecondary = Color(0xFFFFFFFF)
 private val md_theme_dark_secondaryContainer = Color(0xFF34434B)
