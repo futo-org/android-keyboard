@@ -65,6 +65,7 @@ import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBar
+import org.futo.inputmethod.latin.uix.ActionInputTransaction
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
@@ -235,6 +236,9 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     private fun onActionActivated(action: Action) {
+        // Finish what we are typing so far
+        latinIMELegacy.onFinishInputViewInternal(false)
+
         if (action.windowImpl != null) {
             enterActionWindowView(action)
         } else if (action.simplePressImpl != null) {
@@ -589,12 +593,46 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         setContent()
     }
 
-    override fun typePartialText(v: String) {
-        latinIMELegacy.mInputLogic.mConnection.setComposingText(v, 1)
+    private class LatinIMEActionInputTransaction(
+        private val latinIME: LatinIME,
+        shouldApplySpace: Boolean
+    ): ActionInputTransaction {
+        private val isSpaceNecessary: Boolean
+        init {
+            val priorText = latinIME.latinIMELegacy.mInputLogic.mConnection.getTextBeforeCursor(1, 0)
+            isSpaceNecessary = shouldApplySpace && !priorText.isNullOrEmpty() && !priorText.last().isWhitespace()
+        }
+
+        private fun transformText(text: String): String {
+            return if(isSpaceNecessary) { " $text" } else { text }
+        }
+
+        override fun updatePartial(text: String) {
+            latinIME.latinIMELegacy.mInputLogic.mConnection.setComposingText(
+                transformText(text),
+                1
+            )
+        }
+
+        override fun commit(text: String) {
+            latinIME.latinIMELegacy.mInputLogic.mConnection.commitText(
+                transformText(text),
+                1
+            )
+        }
+
+        override fun cancel() {
+            // TODO: Do we want to leave the composing text as-is, or delete it?
+            latinIME.latinIMELegacy.mInputLogic.mConnection.finishComposingText()
+        }
+    }
+
+    override fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction {
+        return LatinIMEActionInputTransaction(this, applySpaceIfNeeded)
     }
 
     override fun typeText(v: String) {
-        latinIMELegacy.onTextInput(v)
+        latinIMELegacy.mInputLogic.mConnection.commitText(v, 1)
     }
 
     override fun closeActionWindow() {

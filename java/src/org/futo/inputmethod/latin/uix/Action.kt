@@ -7,6 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 
+interface ActionInputTransaction {
+    fun updatePartial(text: String)
+    fun commit(text: String)
+    fun cancel()
+}
 
 interface KeyboardManagerForAction {
     fun getContext(): Context
@@ -14,7 +19,7 @@ interface KeyboardManagerForAction {
 
     fun triggerContentUpdate()
 
-    fun typePartialText(v: String)
+    fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction
 
     fun typeText(v: String)
 

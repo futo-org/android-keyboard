@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
+import org.futo.inputmethod.latin.uix.ActionInputTransaction
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.PersistentActionState
@@ -67,6 +68,15 @@ val VoiceInputAction = Action(
                 recognizerView.start()
             }
 
+            private var inputTransaction: ActionInputTransaction? = null
+            private fun getOrStartInputTransaction(): ActionInputTransaction {
+                if(inputTransaction == null) {
+                    inputTransaction = manager.createInputTransaction(true)
+                }
+
+                return inputTransaction!!
+            }
+
             @Composable
             override fun windowName(): String {
                 return "Voice Input"
@@ -96,6 +106,7 @@ val VoiceInputAction = Action(
             override fun cancelled() {
                 if(!wasFinished) {
                     state.soundPlayer.playCancelSound()
+                    getOrStartInputTransaction().cancel()
                 }
             }
 
@@ -106,12 +117,12 @@ val VoiceInputAction = Action(
             override fun finished(result: String) {
                 wasFinished = true
 
-                manager.typeText(result)
+                getOrStartInputTransaction().commit(result)
                 manager.closeActionWindow()
             }
 
             override fun partialResult(result: String) {
-                manager.typePartialText(result)
+                getOrStartInputTransaction().updatePartial(result)
             }
 
             override fun requestPermission(onGranted: () -> Unit, onRejected: () -> Unit): Boolean {
