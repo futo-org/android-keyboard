@@ -102,6 +102,7 @@ class AudioRecognizer(
     }
 
     fun finish() {
+        if(!isRecording) return
         onFinishRecording()
     }
 

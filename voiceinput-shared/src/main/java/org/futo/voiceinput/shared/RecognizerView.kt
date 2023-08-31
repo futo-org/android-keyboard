@@ -112,6 +112,10 @@ class RecognizerView(
         }
     }
 
+    fun finish() {
+        recognizer.finish()
+    }
+
     fun cancel() {
         recognizer.cancel()
     }
