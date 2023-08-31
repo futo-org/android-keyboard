@@ -5,3 +5,5 @@
 LatinIME.iml
 build/
 local.properties
+crashreporting.properties
+keystore.properties

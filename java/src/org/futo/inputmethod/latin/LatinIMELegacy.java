@@ -847,9 +847,13 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public View onCreateInputView() {
         StatsUtils.onCreateInputView();
         assert mDisplayContext != null;
-        mKeyboardSwitcher.queueThemeSwitch();
         return mKeyboardSwitcher.onCreateInputView(mDisplayContext,
                 mIsHardwareAcceleratedDrawingEnabled);
+    }
+
+    public void updateTheme() {
+        mKeyboardSwitcher.queueThemeSwitch();
+        mKeyboardSwitcher.updateKeyboardTheme(mDisplayContext);
     }
 
 

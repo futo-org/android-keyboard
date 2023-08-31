@@ -20,32 +20,40 @@ val ThemeAction = Action(
     icon = R.drawable.eye,
     name = "Theme Switcher",
     simplePressImpl = null,
-    windowImpl = object : ActionWindow {
-        @Composable
-        override fun windowName(): String {
-            return "Theme Switcher"
-        }
+    windowImpl = { manager, _ ->
+        object : ActionWindow {
+            @Composable
+            override fun windowName(): String {
+                return "Theme Switcher"
+            }
 
-        @Composable
-        override fun WindowContents(manager: KeyboardManagerForAction) {
-            val context = LocalContext.current
-            LazyColumn(modifier = Modifier
-                .padding(8.dp, 0.dp)
-                .fillMaxWidth())
-            {
-                items(ThemeOptionKeys.count()) {
-                    val key = ThemeOptionKeys[it]
-                    val themeOption = ThemeOptions[key]
-                    if(themeOption != null && themeOption.available(context)) {
-                        Button(onClick = {
-                            manager.updateTheme(
-                                themeOption
-                            )
-                        }) {
-                            Text(themeOption.name)
+            @Composable
+            override fun WindowContents() {
+                val context = LocalContext.current
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(8.dp, 0.dp)
+                        .fillMaxWidth()
+                )
+                {
+                    items(ThemeOptionKeys.count()) {
+                        val key = ThemeOptionKeys[it]
+                        val themeOption = ThemeOptions[key]
+                        if (themeOption != null && themeOption.available(context)) {
+                            Button(onClick = {
+                                manager.updateTheme(
+                                    themeOption
+                                )
+                            }) {
+                                Text(themeOption.name)
+                            }
                         }
                     }
                 }
+            }
+
+            override fun close() {
+
             }
         }
     }

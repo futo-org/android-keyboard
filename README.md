@@ -6,4 +6,18 @@ Eventual goals:
 * Improve upon various aspects of the keyboard, such as theming
 * Integrated voice input
 * Transformer language model instead of n-gram
-* On-device finetuning ofa language model(?)
+* On-device finetuning of a language model(?)
+
+## Building
+
+When cloning the repository, you must perform a recursive clone to fetch all dependencies:
+```
+git clone --recursive git@gitlab.futo.org:alex/latinime.git
+```
+
+You can also initialize this way if you forgot to specify the recursive clone:
+```
+git submodule update --init --recursive
+```
+
+You can then open the project in Android Studio and build it that way.

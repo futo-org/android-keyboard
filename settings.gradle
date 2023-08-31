@@ -10,5 +10,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
+include ':voiceinput-shared'
