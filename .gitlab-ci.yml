@@ -1,6 +1,9 @@
 default:
   image: "docker.io/abb128/android-build:latest@sha256:8df16e2badb5e42d2f5e3862683c7ff0ebdcc348affe059385e42eebef79302f"
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 stages:          # List of stages for jobs, and their order of execution
   - build
 
