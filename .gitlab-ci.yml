@@ -3,6 +3,7 @@ default:
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
 
 stages:          # List of stages for jobs, and their order of execution
   - build
