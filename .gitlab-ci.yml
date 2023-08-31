@@ -1,5 +1,5 @@
 default:
-  image: "docker.io/abb128/android-build:latest@sha256:8df16e2badb5e42d2f5e3862683c7ff0ebdcc348affe059385e42eebef79302f"
+  image: "docker.io/abb128/android-build:v2@sha256:4e544373291dc0866fcfc03a2894eda7e3c939e3686ddf3c45d933433c49b49a"
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -16,6 +16,7 @@ build:
     - ./setUpPropertiesCI.sh
     - gradle assembleRelease -s
     - mv build/outputs/apk/release/latinime-release.apk ./LatinIME-release-$CI_COMMIT_SHORT_SHA.apk
+    - ./sendZulipMessage.sh "Alpha Keyboard Build - https://gitlab.futo.org/alex/latinime/-/jobs/$CI_JOB_ID/artifacts/raw/LatinIME-release-$CI_COMMIT_SHORT_SHA.apk"
   artifacts:
     name: "LatinIME-release-$CI_COMMIT_SHORT_SHA"
     paths: 

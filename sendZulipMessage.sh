@@ -1,0 +1,2 @@
+#!/bin/sh
+curl -X POST https://zulip.futo.org/api/v1/messages -u ${ZULIP_WEBHOOK?Need zulip webhook} --data-urlencode type=stream --data-urlencode 'to="Android Keyboard"' --data-urlencode topic=builds --data-urlencode "content=${1?Need content}"
