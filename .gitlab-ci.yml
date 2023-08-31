@@ -9,7 +9,7 @@ build:
   tags:
     - docker
   script:
-    - ./setUpKeysCI.sh
+    - ./setUpPropertiesCI.sh
     - gradle assembleRelease -s
     - mv build/outputs/apk/release/latinime-release.apk ./LatinIME-release-$CI_COMMIT_SHORT_SHA.apk
   artifacts:
