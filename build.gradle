@@ -51,6 +51,16 @@ android {
     	project.logger.lifecycle('keystore.properties not found, APK may not be signed')
     }
 
+
+    final def crashReportPropertiesFile = rootProject.file("crashreporting.properties")
+    final def crashReportProperties = new Properties()
+    if (crashReportPropertiesFile.exists()) {
+        crashReportProperties.load(new FileInputStream(crashReportPropertiesFile))
+    } else {
+        project.logger.lifecycle('crashreporting.properties not found, crash reporting will be disabled')
+    }
+
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -60,6 +70,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.flags'
             signingConfig releaseSigning
         }
+
+        buildTypes.each {
+            if (crashReportPropertiesFile.exists()) {
+                it.buildConfigField "boolean", "ENABLE_ACRA", crashReportProperties['acraEnabled']
+                it.buildConfigField "String", "ACRA_URL", crashReportProperties['acraUrl']
+                it.buildConfigField "String", "ACRA_USER", crashReportProperties['acraUser']
+                it.buildConfigField "String", "ACRA_PASSWORD", crashReportProperties['acraPassword']
+            } else {
+                it.buildConfigField "boolean", "ENABLE_ACRA", "false"
+                it.buildConfigField "String", "ACRA_URL", ""
+                it.buildConfigField "String", "ACRA_USER", ""
+                it.buildConfigField "String", "ACRA_PASSWORD", ""
+            }
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {
@@ -131,6 +159,9 @@ dependencies {
 
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
     implementation 'androidx.autofill:autofill:1.1.0'
+
+    implementation 'ch.acra:acra-http:5.11.1'
+    implementation 'ch.acra:acra-dialog:5.11.1'
 
     implementation project(":voiceinput-shared")
 
