@@ -15,6 +15,9 @@ import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.voiceinput.shared.RecognizerView
+import org.futo.voiceinput.shared.RecognizerViewListener
+import org.futo.voiceinput.shared.RecognizerViewSettings
+import org.futo.voiceinput.shared.SoundPlayer
 import org.futo.voiceinput.shared.whisper.ModelManager
 
 val SystemVoiceInputAction = Action(
@@ -29,7 +32,8 @@ val SystemVoiceInputAction = Action(
 
 
 class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : PersistentActionState {
-    var modelManager: ModelManager = ModelManager(manager.getContext())
+    val modelManager = ModelManager(manager.getContext())
+    val soundPlayer = SoundPlayer(manager.getContext())
 
     override suspend fun cleanUp() {
         modelManager.cleanUp()
@@ -43,29 +47,21 @@ val VoiceInputAction = Action(
 
     windowImpl = { manager, persistentState ->
         val state = persistentState as VoiceInputPersistentState
-        object : ActionWindow, RecognizerView(manager.getContext(), manager.getLifecycleScope(), state.modelManager) {
+        object : ActionWindow, RecognizerViewListener {
+            private val recognizerView = RecognizerView(
+                context = manager.getContext(),
+                listener = this,
+                settings = RecognizerViewSettings(
+                    shouldShowInlinePartialResult = false,
+                    shouldShowVerboseFeedback = true
+                ),
+                lifecycleScope = manager.getLifecycleScope(),
+                modelManager = state.modelManager
+            )
+
             init {
-                this.reset()
-                this.init()
-            }
-
-            override fun onCancel() {
-                this.reset()
-                manager.closeActionWindow()
-            }
-
-            override fun sendResult(result: String) {
-                manager.typeText(result)
-                onCancel()
-            }
-
-            override fun sendPartialResult(result: String): Boolean {
-                manager.typePartialText(result)
-                return true
-            }
-
-            override fun requestPermission() {
-                permissionResultRejected()
+                recognizerView.reset()
+                recognizerView.start()
             }
 
             @Composable
@@ -77,14 +73,39 @@ val VoiceInputAction = Action(
             override fun WindowContents() {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Box(modifier = Modifier.align(Alignment.Center)) {
-                        Content()
+                        recognizerView.Content()
                     }
                 }
             }
 
             override fun close() {
-                this.reset()
-                //soundPool.release()
+                recognizerView.cancel()
+            }
+
+            private var wasFinished = false
+            override fun cancelled() {
+                if(!wasFinished) {
+                    state.soundPlayer.playCancelSound()
+                }
+            }
+
+            override fun recordingStarted() {
+                state.soundPlayer.playStartSound()
+            }
+
+            override fun finished(result: String) {
+                wasFinished = true
+
+                manager.typeText(result)
+                manager.closeActionWindow()
+            }
+
+            override fun partialResult(result: String) {
+                manager.typePartialText(result)
+            }
+
+            override fun requestPermission(onGranted: () -> Unit, onRejected: () -> Unit): Boolean {
+                return false
             }
         }
     }

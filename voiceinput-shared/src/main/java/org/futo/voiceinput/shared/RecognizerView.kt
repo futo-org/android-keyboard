@@ -10,8 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.launch
+import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
+import org.futo.voiceinput.shared.types.MagnitudeState
 import org.futo.voiceinput.shared.ui.InnerRecognize
 import org.futo.voiceinput.shared.ui.PartialDecodingResult
 import org.futo.voiceinput.shared.ui.RecognizeLoadingCircle
@@ -23,50 +25,49 @@ import org.futo.voiceinput.shared.whisper.DecodingConfiguration
 import org.futo.voiceinput.shared.whisper.ModelManager
 import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
 
-abstract class RecognizerView(
+data class RecognizerViewSettings(
+    val shouldShowVerboseFeedback: Boolean,
+    val shouldShowInlinePartialResult: Boolean
+)
+
+private val VerboseAnnotations = hashMapOf(
+    InferenceState.ExtractingMel to R.string.extracting_features,
+    InferenceState.LoadingModel to R.string.loading_model,
+    InferenceState.Encoding to R.string.encoding,
+    InferenceState.DecodingLanguage to R.string.decoding,
+    InferenceState.SwitchingModel to R.string.switching_model,
+    InferenceState.DecodingStarted to R.string.decoding
+)
+
+private val DefaultAnnotations = hashMapOf(
+    InferenceState.ExtractingMel to R.string.processing,
+    InferenceState.LoadingModel to R.string.processing,
+    InferenceState.Encoding to R.string.processing,
+    InferenceState.DecodingLanguage to R.string.processing,
+    InferenceState.SwitchingModel to R.string.switching_model,
+    InferenceState.DecodingStarted to R.string.processing
+)
+
+interface RecognizerViewListener {
+    fun cancelled()
+
+    fun recordingStarted()
+
+    fun finished(result: String)
+
+    fun partialResult(result: String)
+
+    // Return true if a permission modal was shown, otherwise return false
+    fun requestPermission(onGranted: () -> Unit, onRejected: () -> Unit): Boolean
+}
+
+class RecognizerView(
     private val context: Context,
-    private val lifecycleScope: LifecycleCoroutineScope,
-    private val modelManager: ModelManager
+    private val listener: RecognizerViewListener,
+    private val settings: RecognizerViewSettings,
+    lifecycleScope: LifecycleCoroutineScope,
+    modelManager: ModelManager
 ) {
-    // TODO: Should not get settings here, pass settings to constructor
-    private val shouldPlaySounds: ValueFromSettings<Boolean> = ValueFromSettings(ENABLE_SOUND, true)
-    private val shouldBeVerbose: ValueFromSettings<Boolean> =
-        ValueFromSettings(VERBOSE_PROGRESS, false)
-
-    // TODO: SoundPool should be managed by parent, not by view, as the view is short-lived
-    /* val soundPool: SoundPool = SoundPool.Builder().setMaxStreams(2).setAudioAttributes(
-        AudioAttributes.Builder().setUsage(USAGE_ASSISTANCE_SONIFICATION)
-            .setContentType(CONTENT_TYPE_SONIFICATION).build()
-    ).build()*/
-
-    private var startSoundId: Int = -1
-    private var cancelSoundId: Int = -1
-
-    abstract fun onCancel()
-    abstract fun sendResult(result: String)
-    abstract fun sendPartialResult(result: String): Boolean
-    abstract fun requestPermission()
-
-    companion object {
-        private val verboseAnnotations = hashMapOf(
-            InferenceState.ExtractingMel to R.string.extracting_features,
-            InferenceState.LoadingModel to R.string.loading_model,
-            InferenceState.Encoding to R.string.encoding,
-            InferenceState.DecodingLanguage to R.string.decoding,
-            InferenceState.SwitchingModel to R.string.switching_model,
-            InferenceState.DecodingStarted to R.string.decoding
-        )
-
-        private val defaultAnnotations = hashMapOf(
-            InferenceState.ExtractingMel to R.string.processing,
-            InferenceState.LoadingModel to R.string.processing,
-            InferenceState.Encoding to R.string.processing,
-            InferenceState.DecodingLanguage to R.string.processing,
-            InferenceState.SwitchingModel to R.string.switching_model,
-            InferenceState.DecodingStarted to R.string.processing
-        )
-    }
-
     private val magnitudeState = mutableStateOf(0.0f)
     private val statusState = mutableStateOf(MagnitudeState.NOT_TALKED_YET)
 
@@ -96,7 +97,7 @@ abstract class RecognizerView(
             CurrentView.InnerRecognize -> {
                 Column {
                     InnerRecognize(
-                        onFinish = { recognizer.finishRecognizer() },
+                        onFinish = { recognizer.finish() },
                         magnitude = magnitudeState,
                         state = statusState
                     )
@@ -111,37 +112,17 @@ abstract class RecognizerView(
         }
     }
 
-    fun onClose() {
-        recognizer.cancelRecognizer()
+    fun cancel() {
+        recognizer.cancel()
     }
 
-    private val listener = object : AudioRecognizerListener {
-        // Tries to play a sound. If it's not yet ready, plays it when it's ready
-        private fun playSound(id: Int) {
-            /*
-            lifecycleScope.launch {
-                shouldPlaySounds.load(context) {
-                    if (it) {
-                        if (soundPool.play(id, 1.0f, 1.0f, 0, 0, 1.0f) == 0) {
-                            soundPool.setOnLoadCompleteListener { soundPool, sampleId, status ->
-                                if ((sampleId == id) && (status == 0)) {
-                                    soundPool.play(id, 1.0f, 1.0f, 0, 0, 1.0f)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            */
-        }
-
+    private val audioRecognizerListener = object : AudioRecognizerListener {
         override fun cancelled() {
-            playSound(cancelSoundId)
-            onCancel()
+            listener.cancelled()
         }
 
         override fun finished(result: String) {
-            sendResult(result)
+            listener.finished(result)
         }
 
         override fun languageDetected(language: Language) {
@@ -149,20 +130,19 @@ abstract class RecognizerView(
         }
 
         override fun partialResult(result: String) {
-            if (!sendPartialResult(result)) {
-                if (result.isNotBlank()) {
-                    partialDecodingText.value = result
-                    currentViewState.value = CurrentView.PartialDecodingResult
-                }
+            listener.partialResult(result)
+            if (settings.shouldShowInlinePartialResult && result.isNotBlank()) {
+                partialDecodingText.value = result
+                currentViewState.value = CurrentView.PartialDecodingResult
             }
         }
 
 
         override fun decodingStatus(status: InferenceState) {
             val text = context.getString(
-                when (shouldBeVerbose.value) {
-                    true -> verboseAnnotations[status]!!
-                    false -> defaultAnnotations[status]!!
+                when (settings.shouldShowVerboseFeedback) {
+                    true -> VerboseAnnotations[status]!!
+                    false -> DefaultAnnotations[status]!!
                 }
             )
 
@@ -175,18 +155,25 @@ abstract class RecognizerView(
             currentViewState.value = CurrentView.LoadingCircle
         }
 
-        override fun needPermission() {
-            requestPermission()
-        }
+        override fun needPermission(onResult: (Boolean) -> Unit) {
+            val shown = listener.requestPermission(
+                onGranted = {
+                    onResult(true)
+                },
+                onRejected = {
+                    onResult(false)
+                    currentViewState.value = CurrentView.PermissionError
+                }
+            )
 
-        override fun permissionRejected() {
-            currentViewState.value = CurrentView.PermissionError
+            if(!shown) {
+                currentViewState.value = CurrentView.PermissionError
+            }
         }
 
         override fun recordingStarted() {
             updateMagnitude(0.0f, MagnitudeState.NOT_TALKED_YET)
-
-            playSound(startSoundId)
+            listener.recordingStarted()
         }
 
         override fun updateMagnitude(magnitude: Float, state: MagnitudeState) {
@@ -203,7 +190,7 @@ abstract class RecognizerView(
 
     // TODO: Dummy settings, should get them from constructor
     private val recognizer: AudioRecognizer = AudioRecognizer(
-        context, lifecycleScope, modelManager, listener, AudioRecognizerSettings(
+        context, lifecycleScope, modelManager, audioRecognizerListener, AudioRecognizerSettings(
             modelRunConfiguration = MultiModelRunConfiguration(
                 primaryModel = ENGLISH_MODELS[0], languageSpecificModels = mapOf()
             ), decodingConfiguration = DecodingConfiguration(
@@ -216,22 +203,7 @@ abstract class RecognizerView(
         recognizer.reset()
     }
 
-    fun init() {
-        lifecycleScope.launch {
-            shouldBeVerbose.load(context)
-        }
-
-        //startSoundId = soundPool.load(this.context, R.raw.start, 0)
-        //cancelSoundId = soundPool.load(this.context, R.raw.cancel, 0)
-
-        recognizer.create()
-    }
-
-    fun permissionResultGranted() {
-        recognizer.permissionResultGranted()
-    }
-
-    fun permissionResultRejected() {
-        recognizer.permissionResultRejected()
+    fun start() {
+        recognizer.start()
     }
 }

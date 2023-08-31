@@ -26,8 +26,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
+import org.futo.voiceinput.shared.types.MagnitudeState
 import org.futo.voiceinput.shared.types.ModelInferenceCallback
 import org.futo.voiceinput.shared.types.ModelLoader
 import org.futo.voiceinput.shared.whisper.DecodingConfiguration
@@ -41,27 +43,6 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-enum class MagnitudeState {
-    NOT_TALKED_YET, MIC_MAY_BE_BLOCKED, TALKING
-}
-
-interface AudioRecognizerListener {
-    fun cancelled()
-    fun finished(result: String)
-    fun languageDetected(language: Language)
-    fun partialResult(result: String)
-    fun decodingStatus(status: InferenceState)
-
-    fun loading()
-    fun needPermission()
-    fun permissionRejected()
-
-    fun recordingStarted()
-    fun updateMagnitude(magnitude: Float, state: MagnitudeState)
-
-    fun processing()
-}
-
 data class AudioRecognizerSettings(
     val modelRunConfiguration: MultiModelRunConfiguration,
     val decodingConfiguration: DecodingConfiguration
@@ -69,8 +50,6 @@ data class AudioRecognizerSettings(
 
 class ModelDoesNotExistException(val models: List<ModelLoader>) : Throwable()
 
-// Ideally this shouldn't load the models at all, we should have something else that loads it
-// and gives the model to AudioRecognizer
 class AudioRecognizer(
     val context: Context,
     val lifecycleScope: LifecycleCoroutineScope,
@@ -122,11 +101,11 @@ class AudioRecognizer(
         isRecording = false
     }
 
-    fun finishRecognizer() {
+    fun finish() {
         onFinishRecording()
     }
 
-    fun cancelRecognizer() {
+    fun cancel() {
         reset()
         listener.cancelled()
     }
@@ -142,25 +121,25 @@ class AudioRecognizer(
         myAppSettings.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(myAppSettings)
 
-        cancelRecognizer()
+        cancel()
     }
 
-    fun create() {
+    fun start() {
         listener.loading()
 
         if (context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            listener.needPermission()
+            requestPermission()
         } else {
             startRecording()
         }
     }
 
-    fun permissionResultGranted() {
-        startRecording()
-    }
-
-    fun permissionResultRejected() {
-        listener.permissionRejected()
+    private fun requestPermission() {
+        listener.needPermission { wasGranted ->
+            if(wasGranted) {
+                startRecording()
+            }
+        }
     }
 
     @Throws(SecurityException::class)
@@ -219,7 +198,7 @@ class AudioRecognizer(
             if (isRunningOutOfSpace || hasNotTalkedRecently) {
                 yield()
                 withContext(Dispatchers.Main) {
-                    finishRecognizer()
+                    finish()
                 }
                 return
             }
@@ -305,7 +284,7 @@ class AudioRecognizer(
                     if (floatSamples.remaining() < nRead2) {
                         yield()
                         withContext(Dispatchers.Main) {
-                            finishRecognizer()
+                            finish()
                         }
                         break
                     }
@@ -333,7 +312,7 @@ class AudioRecognizer(
             createAudioRecorder()
         } catch (e: SecurityException) {
             // It's possible we may have lost permission, so let's just ask for permission again
-            listener.needPermission()
+            requestPermission()
             return
         }
 

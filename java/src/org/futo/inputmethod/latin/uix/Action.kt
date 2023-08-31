@@ -36,6 +36,12 @@ interface ActionWindow {
 }
 
 interface PersistentActionState {
+    /**
+     * When called, the device may be on low memory and is requesting the action to clean up its
+     * state. You can close any resources that may not be necessary anymore. This will never be
+     * called when the action window is currently open. The PersistentActionState will stick around
+     * after this.
+     */
     suspend fun cleanUp()
 }
 
