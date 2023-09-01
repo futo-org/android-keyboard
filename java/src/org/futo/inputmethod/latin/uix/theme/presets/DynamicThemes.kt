@@ -6,12 +6,13 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 
 val DynamicSystemTheme = ThemeOption(
     dynamic = true,
     key = "DynamicSystem",
-    name = "Dynamic System",
+    name = R.string.dynamic_system_theme_name,
     available = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
     obtainColors = {
         val uiModeManager = it.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
@@ -34,7 +35,7 @@ val DynamicSystemTheme = ThemeOption(
 val DynamicDarkTheme = ThemeOption(
     dynamic = true,
     key = "DynamicDark",
-    name = "Dynamic Dark",
+    name = R.string.dynamic_dark_theme_name,
     available = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
     obtainColors = {
         dynamicDarkColorScheme(it)
@@ -44,7 +45,7 @@ val DynamicDarkTheme = ThemeOption(
 val DynamicLightTheme = ThemeOption(
     dynamic = true,
     key = "DynamicLight",
-    name = "Dynamic Light",
+    name = R.string.dynamic_light_theme_name,
     available = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
     obtainColors = {
         dynamicLightColorScheme(it)

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 
 
@@ -84,7 +85,12 @@ private val colorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-val ClassicMaterialDark = ThemeOption(false, "ClassicMaterialDark", "AOSP Material Dark", { true }) {
+val ClassicMaterialDark = ThemeOption(
+    dynamic = false,
+    key = "ClassicMaterialDark",
+    name = R.string.classic_material_dark_theme_name,
+    available = { true }
+) {
     colorScheme
 }
 

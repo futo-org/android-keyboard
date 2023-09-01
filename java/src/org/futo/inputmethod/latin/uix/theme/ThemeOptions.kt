@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.material3.ColorScheme
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
@@ -12,7 +13,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 data class ThemeOption(
     val dynamic: Boolean,
     val key: String,
-    val name: String, // TODO: @StringRes Int
+    @StringRes val name: Int,
     val available: (Context) -> Boolean,
     val obtainColors: (Context) -> ColorScheme,
 )

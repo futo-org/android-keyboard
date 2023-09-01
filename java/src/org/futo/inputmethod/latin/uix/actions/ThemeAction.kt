@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
@@ -18,13 +19,13 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 
 val ThemeAction = Action(
     icon = R.drawable.eye,
-    name = "Theme Switcher",
+    name = R.string.theme_switcher_action_title,
     simplePressImpl = null,
     windowImpl = { manager, _ ->
         object : ActionWindow {
             @Composable
             override fun windowName(): String {
-                return "Theme Switcher"
+                return stringResource(R.string.theme_switcher_action_title)
             }
 
             @Composable
@@ -45,7 +46,7 @@ val ThemeAction = Action(
                                     themeOption
                                 )
                             }) {
-                                Text(themeOption.name)
+                                Text(stringResource(themeOption.name))
                             }
                         }
                     }

@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix
 
 import android.content.Context
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -52,7 +53,7 @@ interface PersistentActionState {
 
 data class Action(
     @DrawableRes val icon: Int,
-    val name: String, // TODO: @StringRes Int
+    @StringRes val name: Int,
     val windowImpl: ((KeyboardManagerForAction, PersistentActionState?) -> ActionWindow)?,
     val simplePressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)?,
     val persistentState: ((KeyboardManagerForAction) -> PersistentActionState)? = null,

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="crashed_text">FUTO Keyboard has crashed! Please send a report to help us fix this.</string>
+    <string name="crashed_title">Crash Reporter</string>
+
+    <string name="crash_report_accept">Send Report</string>
+    <string name="crash_report_reject">Ignore</string>
+</resources>

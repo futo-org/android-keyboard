@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
@@ -26,7 +27,7 @@ import org.futo.voiceinput.shared.whisper.ModelManager
 
 val SystemVoiceInputAction = Action(
     icon = R.drawable.mic_fill,
-    name = "Voice Input",
+    name = R.string.voice_input_action_title,
     simplePressImpl = { it, _ ->
         it.triggerSystemVoiceInput()
     },
@@ -45,7 +46,7 @@ class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : Persist
 }
 val VoiceInputAction = Action(
     icon = R.drawable.mic_fill,
-    name = "Voice Input",
+    name = R.string.voice_input_action_title,
     simplePressImpl = null,
     persistentState = { VoiceInputPersistentState(it) },
 
@@ -79,19 +80,21 @@ val VoiceInputAction = Action(
 
             @Composable
             override fun windowName(): String {
-                return "Voice Input"
+                return stringResource(R.string.voice_input_action_title)
             }
 
             @Composable
             override fun WindowContents() {
-                Box(modifier = Modifier.fillMaxSize().clickable(
-                    enabled = true,
-                    onClickLabel = null,
-                    onClick = { recognizerView.finish() },
-                    role = null,
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                )) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        enabled = true,
+                        onClickLabel = null,
+                        onClick = { recognizerView.finish() },
+                        role = null,
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    )) {
                     Box(modifier = Modifier.align(Alignment.Center)) {
                         recognizerView.Content()
                     }

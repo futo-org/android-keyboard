@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -279,7 +280,7 @@ fun ActionItem(action: Action, onSelect: (Action) -> Unit) {
     ) {
         Icon(
             painter = painterResource(id = action.icon),
-            contentDescription = action.name
+            contentDescription = stringResource(action.name)
         )
     }
 }
@@ -293,7 +294,7 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit) {
         .fillMaxHeight()) {
         Icon(
             painter = painterResource(id = action.icon),
-            contentDescription = action.name
+            contentDescription = stringResource(action.name)
         )
     }
 }

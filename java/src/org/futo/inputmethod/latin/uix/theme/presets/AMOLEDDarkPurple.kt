@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.theme.presets
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 
 private val md_theme_dark_primary = Color(0xFFD0BCFF)
@@ -67,6 +68,11 @@ private val colorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-val AMOLEDDarkPurple = ThemeOption(false, "AMOLEDDarkPurple", "AMOLED Dark Purple", { true }) {
+val AMOLEDDarkPurple = ThemeOption(
+    dynamic = false,
+    key = "AMOLEDDarkPurple",
+    name = R.string.amoled_dark_theme_name,
+    available = { true }
+) {
     colorScheme
 }

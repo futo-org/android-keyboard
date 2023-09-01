@@ -17,10 +17,10 @@ class CrashLoggingApplication : Application() {
                 reportFormat = StringFormat.JSON
 
                 dialog {
-                    text = "FUTO Keyboard has crashed! Please send a report to help us fix this."
-                    title = "Crash"
-                    positiveButtonText = "Send Report"
-                    negativeButtonText = "Ignore"
+                    text = getString(R.string.crashed_text)
+                    title = getString(R.string.crashed_title)
+                    positiveButtonText = getString(R.string.crash_report_accept)
+                    negativeButtonText = getString(R.string.crash_report_reject)
                     resTheme = android.R.style.Theme_DeviceDefault_Dialog
                 }
 
