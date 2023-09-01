@@ -2,10 +2,6 @@ package org.futo.voiceinput.shared.types
 
 import org.futo.voiceinput.shared.whisper.stringifyUnicode
 
-enum class SpecialTokenKind {
-    StartOfTranscript, EndOfText, Translate, Transcribe, NoCaptions, NoTimestamps,
-}
-
 // Based on https://github.com/openai/whisper/blob/248b6cb124225dd263bb9bd32d060b6517e067f8/whisper/tokenizer.py#L236
 private val SYMBOLS = "#()*+/:;<=>@[\\]^_`{|}~「」『』".chunked(1) + listOf(
     "<<",

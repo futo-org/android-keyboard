@@ -69,5 +69,22 @@ fun <T> LifecycleOwner.deferSetSetting(key: Preferences.Key<T>, value: T): Job {
     }
 }
 
+data class SettingsKey<T>(
+    val key: Preferences.Key<T>,
+    val default: T
+)
+
+suspend fun <T> Context.getSetting(key: SettingsKey<T>): T {
+    val valueFlow: Flow<T> =
+        this.dataStore.data.map { preferences -> preferences[key.key] ?: key.default }.take(1)
+
+    return valueFlow.first()
+}
+
+suspend fun <T> Context.setSetting(key: SettingsKey<T>, value: T) {
+    this.dataStore.edit { preferences ->
+        preferences[key.key] = value
+    }
+}
 
 val THEME_KEY = stringPreferencesKey("activeThemeOption")

@@ -12,10 +12,6 @@ fun Array<DoubleArray>.shape(): IntArray {
     return arrayOf(size, this[0].size).toIntArray()
 }
 
-fun DoubleArray.toFloatArray(): FloatArray {
-    return this.map { it.toFloat() }.toFloatArray()
-}
-
 fun FloatArray.toDoubleArray(): DoubleArray {
     return this.map { it.toDouble() }.toDoubleArray()
 }

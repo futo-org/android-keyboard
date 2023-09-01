@@ -6,7 +6,6 @@ import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.futo.voiceinput.shared.types.Language
-import org.futo.voiceinput.shared.types.SpecialTokenKind
 import org.futo.voiceinput.shared.types.getLanguageFromWhisperString
 import org.futo.voiceinput.shared.types.getSymbolTokens
 import org.futo.voiceinput.shared.util.loadTextFromFile
@@ -14,8 +13,8 @@ import org.futo.voiceinput.shared.util.loadTextFromResource
 import java.io.File
 
 class Tokenizer(tokenJson: String) {
-    val idToToken: Array<String?>
-    val tokenToId: HashMap<String, Int> = hashMapOf()
+    private val idToToken: Array<String?>
+    private val tokenToId: HashMap<String, Int> = hashMapOf()
 
     val symbolTokens: IntArray
 
@@ -26,8 +25,8 @@ class Tokenizer(tokenJson: String) {
     val noTimestampsToken: Int
     val transcribeToken: Int
 
-    val startOfLanguages: Int
-    val endOfLanguages: Int
+    private val startOfLanguages: Int
+    private val endOfLanguages: Int
 
     init {
         val data = Json.parseToJsonElement(tokenJson)
@@ -63,19 +62,6 @@ class Tokenizer(tokenJson: String) {
 
     fun stringToToken(token: String): Int? {
         return tokenToId[token]
-    }
-
-
-    fun toSpecialToken(token: Int): SpecialTokenKind? {
-        return when (token) {
-            decodeStartToken -> SpecialTokenKind.StartOfTranscript
-            decodeEndToken -> SpecialTokenKind.EndOfText
-            translateToken -> SpecialTokenKind.Translate
-            noCaptionsToken -> SpecialTokenKind.NoCaptions
-            noTimestampsToken -> SpecialTokenKind.NoTimestamps
-            transcribeToken -> SpecialTokenKind.Transcribe
-            else -> null
-        }
     }
 
     fun toLanguage(token: Int): Language? {

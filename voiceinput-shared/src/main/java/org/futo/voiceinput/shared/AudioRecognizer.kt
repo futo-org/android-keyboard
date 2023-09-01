@@ -21,9 +21,7 @@ import com.konovalov.vad.config.SampleRate
 import com.konovalov.vad.models.VadModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
@@ -51,11 +49,11 @@ data class AudioRecognizerSettings(
 class ModelDoesNotExistException(val models: List<ModelLoader>) : Throwable()
 
 class AudioRecognizer(
-    val context: Context,
-    val lifecycleScope: LifecycleCoroutineScope,
-    val modelManager: ModelManager,
-    val listener: AudioRecognizerListener,
-    val settings: AudioRecognizerSettings
+    private val context: Context,
+    private val lifecycleScope: LifecycleCoroutineScope,
+    modelManager: ModelManager,
+    private val listener: AudioRecognizerListener,
+    private val settings: AudioRecognizerSettings
 ) {
     private var isRecording = false
     private var recorder: AudioRecord? = null

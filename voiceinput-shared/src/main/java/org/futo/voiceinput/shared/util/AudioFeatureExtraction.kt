@@ -69,10 +69,6 @@ fun melToFreq(mels: DoubleArray, melScale: MelScale): DoubleArray {
     return mels.map { melToFreq(it, melScale) }.toDoubleArray()
 }
 
-fun freqToMel(freqs: DoubleArray, melScale: MelScale): DoubleArray {
-    return freqs.map { freqToMel(it, melScale) }.toDoubleArray()
-}
-
 fun linspace(min: Double, max: Double, num: Int): DoubleArray {
     val array = DoubleArray(num)
     val spacing = (max - min) / ((num - 1).toDouble())
@@ -170,11 +166,11 @@ fun melFilterBank(
 fun padY(yValues: DoubleArray, nFFT: Int): DoubleArray {
     val ypad = DoubleArray(nFFT + yValues.size)
     for (i in 0 until nFFT / 2) {
-        ypad[nFFT / 2 - i - 1] = yValues[i + 1].toDouble()
-        ypad[nFFT / 2 + yValues.size + i] = yValues[yValues.size - 2 - i].toDouble()
+        ypad[nFFT / 2 - i - 1] = yValues[i + 1]
+        ypad[nFFT / 2 + yValues.size + i] = yValues[yValues.size - 2 - i]
     }
     for (j in yValues.indices) {
-        ypad[nFFT / 2 + j] = yValues[j].toDouble()
+        ypad[nFFT / 2 + j] = yValues[j]
     }
     return ypad
 }

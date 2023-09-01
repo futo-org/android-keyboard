@@ -1,15 +1,10 @@
 package org.futo.voiceinput.shared
 
 import android.content.Context
-import android.media.AudioAttributes
-import android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION
-import android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION
-import android.media.SoundPool
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LifecycleCoroutineScope
-import kotlinx.coroutines.launch
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
@@ -18,16 +13,16 @@ import org.futo.voiceinput.shared.ui.InnerRecognize
 import org.futo.voiceinput.shared.ui.PartialDecodingResult
 import org.futo.voiceinput.shared.ui.RecognizeLoadingCircle
 import org.futo.voiceinput.shared.ui.RecognizeMicError
-import org.futo.voiceinput.shared.util.ENABLE_SOUND
-import org.futo.voiceinput.shared.util.VERBOSE_PROGRESS
-import org.futo.voiceinput.shared.util.ValueFromSettings
 import org.futo.voiceinput.shared.whisper.DecodingConfiguration
 import org.futo.voiceinput.shared.whisper.ModelManager
 import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
 
 data class RecognizerViewSettings(
     val shouldShowVerboseFeedback: Boolean,
-    val shouldShowInlinePartialResult: Boolean
+    val shouldShowInlinePartialResult: Boolean,
+
+    val modelRunConfiguration: MultiModelRunConfiguration,
+    val decodingConfiguration: DecodingConfiguration
 )
 
 private val VerboseAnnotations = hashMapOf(
@@ -192,14 +187,14 @@ class RecognizerView(
         }
     }
 
-    // TODO: Dummy settings, should get them from constructor
     private val recognizer: AudioRecognizer = AudioRecognizer(
-        context, lifecycleScope, modelManager, audioRecognizerListener, AudioRecognizerSettings(
-            modelRunConfiguration = MultiModelRunConfiguration(
-                primaryModel = ENGLISH_MODELS[0], languageSpecificModels = mapOf()
-            ), decodingConfiguration = DecodingConfiguration(
-                languages = setOf(), suppressSymbols = true
-            )
+        context = context,
+        lifecycleScope = lifecycleScope,
+        modelManager = modelManager,
+        listener = audioRecognizerListener,
+        settings = AudioRecognizerSettings(
+            modelRunConfiguration = settings.modelRunConfiguration,
+            decodingConfiguration = settings.decodingConfiguration
         )
     )
 
