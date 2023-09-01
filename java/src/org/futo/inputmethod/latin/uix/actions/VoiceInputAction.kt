@@ -3,7 +3,9 @@ package org.futo.inputmethod.latin.uix.actions
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -111,6 +113,7 @@ private class VoiceInputActionWindow(
     }
 
     private var recognizerView: MutableState<RecognizerView?> = mutableStateOf(null)
+    private var modelException: MutableState<ModelDoesNotExistException?> = mutableStateOf(null)
 
     private val initJob = manager.getLifecycleScope().launch {
         yield()
@@ -128,8 +131,7 @@ private class VoiceInputActionWindow(
                 modelManager = state.modelManager
             )
         } catch(e: ModelDoesNotExistException) {
-            // TODO: Show an error to the user, with an option to download
-            close()
+            modelException.value = e
             return@launch
         }
 
@@ -152,6 +154,15 @@ private class VoiceInputActionWindow(
     }
 
     @Composable
+    private fun ModelDownloader(modelException: ModelDoesNotExistException) {
+        Column {
+            Text("Model Download Required")
+            Text("Not yet implemented")
+            // TODO
+        }
+    }
+
+    @Composable
     override fun windowName(): String {
         return stringResource(R.string.voice_input_action_title)
     }
@@ -167,7 +178,10 @@ private class VoiceInputActionWindow(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() })) {
             Box(modifier = Modifier.align(Alignment.Center)) {
-                recognizerView.value?.Content()
+                when {
+                    modelException.value != null -> ModelDownloader(modelException.value!!)
+                    recognizerView.value != null -> recognizerView.value!!.Content()
+                }
             }
         }
     }
@@ -178,12 +192,14 @@ private class VoiceInputActionWindow(
     }
 
     private var wasFinished = false
+    private var cancelPlayed = false
     override fun cancelled() {
         if (!wasFinished) {
-            if (shouldPlaySounds) {
+            if (shouldPlaySounds && !cancelPlayed) {
                 state.soundPlayer.playCancelSound()
+                cancelPlayed = true
             }
-            getOrStartInputTransaction().cancel()
+            inputTransaction?.cancel()
         }
     }
 

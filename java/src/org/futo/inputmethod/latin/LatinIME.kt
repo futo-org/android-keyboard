@@ -185,12 +185,12 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onCreate() {
         super.onCreate()
 
-        colorSchemeLoaderJob = deferGetSetting(THEME_KEY, DynamicSystemTheme.key) {
-            var themeKey = it
-            var themeOption = ThemeOptions[themeKey]
-            if (themeOption == null || !themeOption.available(this@LatinIME)) {
-                themeKey = VoiceInputTheme.key
-                themeOption = ThemeOptions[themeKey]!!
+        colorSchemeLoaderJob = deferGetSetting(THEME_KEY) {
+            val themeOptionFromSettings = ThemeOptions[it]
+            val themeOption = when {
+                themeOptionFromSettings == null -> VoiceInputTheme
+                !themeOptionFromSettings.available(this@LatinIME) -> VoiceInputTheme
+                else -> themeOptionFromSettings
             }
 
             activeThemeOption = themeOption
@@ -418,11 +418,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
         latinIMELegacy.onFinishInputView(finishingInput)
+
+        closeActionWindow()
     }
 
     override fun onFinishInput() {
         super.onFinishInput()
         latinIMELegacy.onFinishInput()
+
+        closeActionWindow()
     }
 
     override fun onCurrentInputMethodSubtypeChanged(newSubtype: InputMethodSubtype?) {
@@ -440,6 +444,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onWindowHidden() {
         super.onWindowHidden()
         latinIMELegacy.onWindowHidden()
+
+        closeActionWindow()
     }
 
     override fun onUpdateSelection(
@@ -636,6 +642,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun closeActionWindow() {
+        if(currWindowActionWindow == null) return
         returnBackToMainKeyboardViewFromAction()
     }
 
