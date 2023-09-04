@@ -36,7 +36,7 @@ import android.widget.VideoView;
 import org.futo.inputmethod.compat.TextViewCompatUtils;
 import org.futo.inputmethod.compat.ViewCompatUtils;
 import org.futo.inputmethod.latin.R;
-import org.futo.inputmethod.latin.settings.SettingsActivity;
+import org.futo.inputmethod.latin.uix.settings.SettingsActivity;
 import org.futo.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import org.futo.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
 
@@ -265,8 +265,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         intent.setClass(this, SettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(SettingsActivity.EXTRA_ENTRY_KEY,
-                SettingsActivity.EXTRA_ENTRY_VALUE_APP_ICON);
+        //intent.putExtra(SettingsActivity.EXTRA_ENTRY_KEY,
+        //        SettingsActivity.EXTRA_ENTRY_VALUE_APP_ICON);
         startActivity(intent);
     }
 

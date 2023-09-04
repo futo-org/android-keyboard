@@ -11,4 +11,14 @@
     <string name="dynamic_system_theme_name">Dynamic System</string>
     <string name="dynamic_light_theme_name">Dynamic Light</string>
     <string name="dynamic_dark_theme_name">Dynamic Dark</string>
+
+    <string name="download_required">Voice Input Model Downloader</string>
+    <string name="download_required_body">Download of some model files is necessary for voice input functionality. This may incur data fees if you are using Mobile Data instead of Wi-Fi.</string>
+    <string name="continue_">Continue</string>
+
+    <string name="download_progress">Voice Input Model Download Progress</string>
+    <string name="download_failed">Download of one or more resources has failed. Please make sure you\'re connected to a network, the app has network permission, or try again later.</string>
+    <string name="download_in_progress">Downloading models…</string>
+
+    <string name="model_downloader">Model Downloader</string>
 </resources>

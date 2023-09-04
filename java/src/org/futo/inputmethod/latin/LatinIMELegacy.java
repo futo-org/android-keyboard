@@ -85,12 +85,12 @@ import org.futo.inputmethod.latin.inputlogic.InputLogic;
 import org.futo.inputmethod.latin.permissions.PermissionsManager;
 import org.futo.inputmethod.latin.personalization.PersonalizationHelper;
 import org.futo.inputmethod.latin.settings.Settings;
-import org.futo.inputmethod.latin.settings.SettingsActivity;
 import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import org.futo.inputmethod.latin.touchinputconsumer.GestureConsumer;
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner;
+import org.futo.inputmethod.latin.uix.settings.SettingsActivity;
 import org.futo.inputmethod.latin.utils.ApplicationUtils;
 import org.futo.inputmethod.latin.utils.DialogUtils;
 import org.futo.inputmethod.latin.utils.ImportantNoticeUtils;
@@ -1803,8 +1803,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(SettingsActivity.EXTRA_SHOW_HOME_AS_UP, false);
-        intent.putExtra(SettingsActivity.EXTRA_ENTRY_KEY, extraEntryValue);
+        //intent.putExtra(SettingsActivity.EXTRA_SHOW_HOME_AS_UP, false);
+        //intent.putExtra(SettingsActivity.EXTRA_ENTRY_KEY, extraEntryValue);
         startActivityOnTheSameDisplay(intent);
     }
 
@@ -1832,7 +1832,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
                     startActivityOnTheSameDisplay(intent);
                     break;
                 case 1:
-                    launchSettings(SettingsActivity.EXTRA_ENTRY_VALUE_LONG_PRESS_COMMA);
+                    launchSettings("");
                     break;
                 }
             }

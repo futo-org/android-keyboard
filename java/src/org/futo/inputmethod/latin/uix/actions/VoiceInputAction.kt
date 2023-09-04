@@ -1,5 +1,7 @@
 package org.futo.inputmethod.latin.uix.actions
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -12,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -34,6 +37,7 @@ import org.futo.inputmethod.latin.uix.MULTILINGUAL_MODEL_INDEX
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
 import org.futo.voiceinput.shared.ENGLISH_MODELS
 import org.futo.voiceinput.shared.MULTILINGUAL_MODELS
 import org.futo.voiceinput.shared.ModelDoesNotExistException
@@ -155,10 +159,18 @@ private class VoiceInputActionWindow(
 
     @Composable
     private fun ModelDownloader(modelException: ModelDoesNotExistException) {
-        Column {
-            Text("Model Download Required")
-            Text("Not yet implemented")
-            // TODO
+        val context = LocalContext.current
+        Box(modifier = Modifier.fillMaxSize().clickable {
+            val intent = Intent(context, DownloadActivity::class.java)
+            intent.putStringArrayListExtra("models", ArrayList(modelException.models.map { model -> model.getRequiredDownloadList(context) }.flatten()))
+
+            if(context !is Activity) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            context.startActivity(intent)
+        }) {
+            Text("Tap to complete setup", modifier = Modifier.align(Alignment.Center))
         }
     }
 
