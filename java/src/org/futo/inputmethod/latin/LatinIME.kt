@@ -144,6 +144,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     private var lastEditorInfo: EditorInfo? = null
 
+    // TODO: Calling this repeatedly as the theme changes tends to slow everything to a crawl
     private fun recreateKeyboard() {
         latinIMELegacy.updateTheme()
         latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(latinIMELegacy.currentAutoCapsState, latinIMELegacy.currentRecapitalizeState);
@@ -310,6 +311,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         currWindowAction = null
         currWindowActionWindow = null
+
+        if(hasThemeChanged) {
+            hasThemeChanged = false
+            recreateKeyboard()
+        }
 
         setContent()
     }
@@ -655,14 +661,20 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         );
     }
 
+    private var hasThemeChanged: Boolean = false
     override fun updateTheme(newTheme: ThemeOption) {
         assert(newTheme.available(this))
-        activeThemeOption = newTheme
-        updateDrawableProvider(newTheme.obtainColors(this))
 
-        deferSetSetting(THEME_KEY, newTheme.key)
+        if (activeThemeOption != newTheme) {
+            activeThemeOption = newTheme
+            updateDrawableProvider(newTheme.obtainColors(this))
+            deferSetSetting(THEME_KEY, newTheme.key)
 
-        recreateKeyboard()
+            hasThemeChanged = true
+            if(!isActionWindowOpen()) {
+                recreateKeyboard()
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.R)

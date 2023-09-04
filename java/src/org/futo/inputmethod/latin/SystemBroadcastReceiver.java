@@ -143,6 +143,7 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
     }
 
     public static void toggleAppIcon(final Context context) {
+        /*
         final int appInfoFlags = context.getApplicationInfo().flags;
         final boolean isSystemApp = (appInfoFlags & ApplicationInfo.FLAG_SYSTEM) > 0;
         if (Log.isLoggable(TAG, Log.INFO)) {
@@ -155,5 +156,6 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
                         ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
                         : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
+         */
     }
 }
