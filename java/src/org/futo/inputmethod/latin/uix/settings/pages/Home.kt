@@ -59,12 +59,13 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             icon = painterResource(id = R.drawable.eye)
         )
 
+        /*
         NavigationItem(
             title = "Advanced",
             style = NavigationItemStyle.Misc,
-            navigate = { /* TODO */ },
+            navigate = { },
             icon = painterResource(id = R.drawable.delete)
         )
-
+        */
     }
 }
