@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.theme
 
 import android.app.Activity
+import android.content.Context
 import android.os.Build
 import android.view.WindowManager
 import androidx.compose.material3.ColorScheme
@@ -11,6 +12,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -47,18 +49,22 @@ val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = Slate300
 )
 
+fun applyWindowColors(context: Context, backgroundColor: Color) {
+    val window = (context as Activity).window
+    val color = backgroundColor.copy(alpha = 0.75f).toArgb()
+
+    window.statusBarColor = color
+    window.navigationBarColor = color
+
+    window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+}
+
 @Composable
 fun StatusBarColorSetter() {
     val backgroundColor = MaterialTheme.colorScheme.background
     val context = LocalContext.current
     LaunchedEffect(backgroundColor) {
-        val window = (context as Activity).window
-        val color = backgroundColor.copy(alpha = 0.75f).toArgb()
-
-        window.statusBarColor = color
-        window.navigationBarColor = color
-
-        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        applyWindowColors(context, backgroundColor)
     }
 }
 

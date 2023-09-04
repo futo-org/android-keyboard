@@ -179,6 +179,13 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
             if(currColors.differsFrom(nextColors)) {
                 updateDrawableProvider(nextColors)
+                recreateKeyboard()
+            }
+        }
+
+        deferGetSetting(THEME_KEY) { key ->
+            if(key != activeThemeOption?.key) {
+                ThemeOptions[key]?.let { updateTheme(it) }
             }
         }
     }
@@ -305,7 +312,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     private fun returnBackToMainKeyboardViewFromAction() {
-        assert(currWindowActionWindow != null)
+        if(currWindowActionWindow == null) return
 
         currWindowActionWindow!!.close()
 

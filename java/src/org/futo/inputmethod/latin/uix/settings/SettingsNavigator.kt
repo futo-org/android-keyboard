@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
+import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingScreen
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputScreen
 
@@ -22,5 +23,6 @@ fun SettingsNavigator(
         composable("predictiveText") { PredictiveTextScreen(navController) }
         composable("typing") { TypingScreen(navController) }
         composable("voiceInput") { VoiceInputScreen(navController) }
+        composable("themes") { ThemeScreen(navController) }
     }
 }

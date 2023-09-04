@@ -5,7 +5,8 @@
 
     <string name="amoled_dark_theme_name">AMOLED Dark Purple</string>
     <string name="classic_material_dark_theme_name">AOSP Material Dark</string>
-    <string name="voice_input_theme_name">Voice Input Theme</string>
+    <string name="classic_material_light_theme_name">AOSP Material Light</string>
+    <string name="voice_input_theme_name">FUTO VI Theme</string>
 
     <string name="dynamic_system_theme_name">Dynamic System</string>
     <string name="dynamic_light_theme_name">Dynamic Light</string>

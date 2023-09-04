@@ -55,7 +55,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
         NavigationItem(
             title = "Theme",
             style = NavigationItemStyle.HomeTertiary,
-            navigate = { /* TODO */ },
+            navigate = { navController.navigate("themes") },
             icon = painterResource(id = R.drawable.eye)
         )
 

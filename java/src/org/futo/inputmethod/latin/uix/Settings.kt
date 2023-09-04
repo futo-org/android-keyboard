@@ -59,7 +59,10 @@ fun <T> LifecycleOwner.deferGetSetting(key: Preferences.Key<T>, default: T, onOb
     return lifecycleScope.launch {
         withContext(Dispatchers.Default) {
             val value = context.getSetting(key, default)
-            onObtained(value)
+
+            withContext(Dispatchers.Main) {
+                onObtained(value)
+            }
         }
     }
 }

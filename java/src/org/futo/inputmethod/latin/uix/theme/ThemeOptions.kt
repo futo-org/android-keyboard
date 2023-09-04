@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material3.ColorScheme
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
+import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialLight
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
@@ -24,16 +25,18 @@ val ThemeOptions = hashMapOf(
     DynamicLightTheme.key to DynamicLightTheme,
 
     ClassicMaterialDark.key to ClassicMaterialDark,
+    ClassicMaterialLight.key to ClassicMaterialLight,
     VoiceInputTheme.key to VoiceInputTheme,
     AMOLEDDarkPurple.key to AMOLEDDarkPurple,
 )
 
 val ThemeOptionKeys = arrayOf(
-    DynamicSystemTheme.key,
+    VoiceInputTheme.key,
     DynamicDarkTheme.key,
     DynamicLightTheme.key,
+    DynamicSystemTheme.key,
 
     ClassicMaterialDark.key,
-    VoiceInputTheme.key,
+    ClassicMaterialLight.key,
     AMOLEDDarkPurple.key,
 )
