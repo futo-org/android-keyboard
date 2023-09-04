@@ -52,7 +52,8 @@
          android:protectionLevel="signature"/>
 
     <application android:label="@string/english_ime_name"
-         android:icon="@drawable/ic_launcher_keyboard"
+         android:icon="@mipmap/ic_launcher"
+         android:roundIcon="@mipmap/ic_launcher_round"
          android:supportsRtl="true"
          android:allowBackup="true"
          android:defaultToDeviceProtectedStorage="true"
@@ -90,7 +91,8 @@
         <activity android:name=".uix.settings.SettingsActivity"
              android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
              android:label="@string/english_ime_name"
-             android:icon="@drawable/ic_launcher_keyboard"
+             android:icon="@mipmap/ic_launcher"
+             android:roundIcon="@mipmap/ic_launcher_round"
              android:launchMode="singleTask"
              android:noHistory="false"
              android:exported="true">
