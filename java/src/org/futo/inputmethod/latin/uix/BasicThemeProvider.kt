@@ -21,8 +21,6 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import kotlin.math.roundToInt
 
-// TODO: Expand the number of drawables this provides so it covers the full theme, and
-// build some system to dynamically change these colors
 class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorScheme? = null) :
     DynamicThemeProvider {
     override val primaryKeyboardColor: Int

@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
 
 
 private val md_theme_dark_primary = Color(0xFF80cbc4)
@@ -28,11 +29,11 @@ private val md_theme_dark_primaryContainer = Color(0xFF34434B)
 private val md_theme_dark_onPrimaryContainer = Color(0xFFF0FFFE)
 private val md_theme_dark_secondary = Color(0xFF80cbc4)
 private val md_theme_dark_onSecondary = Color(0xFFFFFFFF)
-private val md_theme_dark_secondaryContainer = Color(0xFF34434B)
+private val md_theme_dark_secondaryContainer = Color(0xFF416152)
 private val md_theme_dark_onSecondaryContainer = Color(0xFFFFFFFF)
 private val md_theme_dark_tertiary = Color(0xFF3582A2)
 private val md_theme_dark_onTertiary = Color(0xFFFFFFFF)
-private val md_theme_dark_tertiaryContainer = Color(0xFF004D64)
+private val md_theme_dark_tertiaryContainer = Color(0xFF17516D)
 private val md_theme_dark_onTertiaryContainer = Color(0xFFBDE9FF)
 private val md_theme_dark_error = Color(0xFFFFB4AB)
 private val md_theme_dark_errorContainer = Color(0xFF93000A)
@@ -97,31 +98,5 @@ val ClassicMaterialDark = ThemeOption(
 @Composable
 @Preview
 private fun PreviewTheme() {
-    MaterialTheme(colorScheme) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Spacer(modifier = Modifier.weight(1.5f))
-            Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)) {
-
-            }
-            Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier
-                .fillMaxWidth()
-                .weight(1.0f)) {
-                Box(modifier = Modifier.padding(16.dp)) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.primary, modifier = Modifier
-                            .align(
-                                Alignment.BottomEnd
-                            )
-                            .height(32.dp)
-                            .width(48.dp),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-
-                    }
-                }
-            }
-        }
-    }
+    ThemePreview(ClassicMaterialDark)
 }

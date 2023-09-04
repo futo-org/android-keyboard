@@ -1,15 +1,20 @@
 package org.futo.inputmethod.latin.uix.actions
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -32,6 +37,7 @@ import org.futo.inputmethod.latin.uix.MULTILINGUAL_MODEL_INDEX
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
 import org.futo.voiceinput.shared.ENGLISH_MODELS
 import org.futo.voiceinput.shared.MULTILINGUAL_MODELS
 import org.futo.voiceinput.shared.ModelDoesNotExistException
@@ -111,6 +117,7 @@ private class VoiceInputActionWindow(
     }
 
     private var recognizerView: MutableState<RecognizerView?> = mutableStateOf(null)
+    private var modelException: MutableState<ModelDoesNotExistException?> = mutableStateOf(null)
 
     private val initJob = manager.getLifecycleScope().launch {
         yield()
@@ -128,8 +135,7 @@ private class VoiceInputActionWindow(
                 modelManager = state.modelManager
             )
         } catch(e: ModelDoesNotExistException) {
-            // TODO: Show an error to the user, with an option to download
-            close()
+            modelException.value = e
             return@launch
         }
 
@@ -152,6 +158,23 @@ private class VoiceInputActionWindow(
     }
 
     @Composable
+    private fun ModelDownloader(modelException: ModelDoesNotExistException) {
+        val context = LocalContext.current
+        Box(modifier = Modifier.fillMaxSize().clickable {
+            val intent = Intent(context, DownloadActivity::class.java)
+            intent.putStringArrayListExtra("models", ArrayList(modelException.models.map { model -> model.getRequiredDownloadList(context) }.flatten()))
+
+            if(context !is Activity) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            context.startActivity(intent)
+        }) {
+            Text("Tap to complete setup", modifier = Modifier.align(Alignment.Center))
+        }
+    }
+
+    @Composable
     override fun windowName(): String {
         return stringResource(R.string.voice_input_action_title)
     }
@@ -167,7 +190,10 @@ private class VoiceInputActionWindow(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() })) {
             Box(modifier = Modifier.align(Alignment.Center)) {
-                recognizerView.value?.Content()
+                when {
+                    modelException.value != null -> ModelDownloader(modelException.value!!)
+                    recognizerView.value != null -> recognizerView.value!!.Content()
+                }
             }
         }
     }
@@ -178,12 +204,14 @@ private class VoiceInputActionWindow(
     }
 
     private var wasFinished = false
+    private var cancelPlayed = false
     override fun cancelled() {
         if (!wasFinished) {
-            if (shouldPlaySounds) {
+            if (shouldPlaySounds && !cancelPlayed) {
                 state.soundPlayer.playCancelSound()
+                cancelPlayed = true
             }
-            getOrStartInputTransaction().cancel()
+            inputTransaction?.cancel()
         }
     }
 

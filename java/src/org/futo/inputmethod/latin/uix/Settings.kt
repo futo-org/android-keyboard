@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +17,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -26,6 +26,10 @@ suspend fun <T> Context.getSetting(key: Preferences.Key<T>, default: T): T {
         this.dataStore.data.map { preferences -> preferences[key] ?: default }.take(1)
 
     return valueFlow.first()
+}
+
+fun <T> Context.getSettingFlow(key: Preferences.Key<T>, default: T): Flow<T> {
+    return dataStore.data.map { preferences -> preferences[key] ?: default }.take(1)
 }
 
 suspend fun <T> Context.setSetting(key: Preferences.Key<T>, value: T) {
@@ -55,7 +59,10 @@ fun <T> LifecycleOwner.deferGetSetting(key: Preferences.Key<T>, default: T, onOb
     return lifecycleScope.launch {
         withContext(Dispatchers.Default) {
             val value = context.getSetting(key, default)
-            onObtained(value)
+
+            withContext(Dispatchers.Main) {
+                onObtained(value)
+            }
         }
     }
 }
@@ -75,16 +82,27 @@ data class SettingsKey<T>(
 )
 
 suspend fun <T> Context.getSetting(key: SettingsKey<T>): T {
-    val valueFlow: Flow<T> =
-        this.dataStore.data.map { preferences -> preferences[key.key] ?: key.default }.take(1)
+    return getSetting(key.key, key.default)
+}
 
-    return valueFlow.first()
+fun <T> Context.getSettingFlow(key: SettingsKey<T>): Flow<T> {
+    return getSettingFlow(key.key, key.default)
 }
 
 suspend fun <T> Context.setSetting(key: SettingsKey<T>, value: T) {
-    this.dataStore.edit { preferences ->
-        preferences[key.key] = value
-    }
+    return setSetting(key.key, value)
 }
 
-val THEME_KEY = stringPreferencesKey("activeThemeOption")
+fun <T> LifecycleOwner.deferGetSetting(key: SettingsKey<T>, onObtained: (T) -> Unit): Job {
+    return deferGetSetting(key.key, key.default, onObtained)
+}
+
+fun <T> LifecycleOwner.deferSetSetting(key: SettingsKey<T>, value: T): Job {
+    return deferSetSetting(key.key, value)
+}
+
+
+val THEME_KEY = SettingsKey(
+    key = stringPreferencesKey("activeThemeOption"),
+    default = DynamicSystemTheme.key
+)

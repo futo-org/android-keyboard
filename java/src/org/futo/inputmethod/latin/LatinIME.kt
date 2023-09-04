@@ -144,6 +144,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     private var lastEditorInfo: EditorInfo? = null
 
+    // TODO: Calling this repeatedly as the theme changes tends to slow everything to a crawl
     private fun recreateKeyboard() {
         latinIMELegacy.updateTheme()
         latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(latinIMELegacy.currentAutoCapsState, latinIMELegacy.currentRecapitalizeState);
@@ -178,6 +179,13 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
             if(currColors.differsFrom(nextColors)) {
                 updateDrawableProvider(nextColors)
+                recreateKeyboard()
+            }
+        }
+
+        deferGetSetting(THEME_KEY) { key ->
+            if(key != activeThemeOption?.key) {
+                ThemeOptions[key]?.let { updateTheme(it) }
             }
         }
     }
@@ -185,12 +193,12 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onCreate() {
         super.onCreate()
 
-        colorSchemeLoaderJob = deferGetSetting(THEME_KEY, DynamicSystemTheme.key) {
-            var themeKey = it
-            var themeOption = ThemeOptions[themeKey]
-            if (themeOption == null || !themeOption.available(this@LatinIME)) {
-                themeKey = VoiceInputTheme.key
-                themeOption = ThemeOptions[themeKey]!!
+        colorSchemeLoaderJob = deferGetSetting(THEME_KEY) {
+            val themeOptionFromSettings = ThemeOptions[it]
+            val themeOption = when {
+                themeOptionFromSettings == null -> VoiceInputTheme
+                !themeOptionFromSettings.available(this@LatinIME) -> VoiceInputTheme
+                else -> themeOptionFromSettings
             }
 
             activeThemeOption = themeOption
@@ -304,12 +312,17 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     private fun returnBackToMainKeyboardViewFromAction() {
-        assert(currWindowActionWindow != null)
+        if(currWindowActionWindow == null) return
 
         currWindowActionWindow!!.close()
 
         currWindowAction = null
         currWindowActionWindow = null
+
+        if(hasThemeChanged) {
+            hasThemeChanged = false
+            recreateKeyboard()
+        }
 
         setContent()
     }
@@ -418,11 +431,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
         latinIMELegacy.onFinishInputView(finishingInput)
+
+        closeActionWindow()
     }
 
     override fun onFinishInput() {
         super.onFinishInput()
         latinIMELegacy.onFinishInput()
+
+        closeActionWindow()
     }
 
     override fun onCurrentInputMethodSubtypeChanged(newSubtype: InputMethodSubtype?) {
@@ -440,6 +457,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onWindowHidden() {
         super.onWindowHidden()
         latinIMELegacy.onWindowHidden()
+
+        closeActionWindow()
     }
 
     override fun onUpdateSelection(
@@ -636,6 +655,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun closeActionWindow() {
+        if(currWindowActionWindow == null) return
         returnBackToMainKeyboardViewFromAction()
     }
 
@@ -648,14 +668,20 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         );
     }
 
+    private var hasThemeChanged: Boolean = false
     override fun updateTheme(newTheme: ThemeOption) {
         assert(newTheme.available(this))
-        activeThemeOption = newTheme
-        updateDrawableProvider(newTheme.obtainColors(this))
 
-        deferSetSetting(THEME_KEY, newTheme.key)
+        if (activeThemeOption != newTheme) {
+            activeThemeOption = newTheme
+            updateDrawableProvider(newTheme.obtainColors(this))
+            deferSetSetting(THEME_KEY, newTheme.key)
 
-        recreateKeyboard()
+            hasThemeChanged = true
+            if(!isActionWindowOpen()) {
+                recreateKeyboard()
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.R)

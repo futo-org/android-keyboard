@@ -29,6 +29,7 @@ import android.view.MenuItem;
 
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.define.ProductionFlags;
+import org.futo.inputmethod.latin.uix.settings.SettingsActivity;
 import org.futo.inputmethod.latin.utils.ApplicationUtils;
 import org.futo.inputmethod.latin.utils.FeedbackUtils;
 import org.futo.inputmethodcommon.InputMethodSettingsFragment;

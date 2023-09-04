@@ -52,7 +52,8 @@
          android:protectionLevel="signature"/>
 
     <application android:label="@string/english_ime_name"
-         android:icon="@drawable/ic_launcher_keyboard"
+         android:icon="@mipmap/ic_launcher"
+         android:roundIcon="@mipmap/ic_launcher_round"
          android:supportsRtl="true"
          android:allowBackup="true"
          android:defaultToDeviceProtectedStorage="true"
@@ -87,12 +88,13 @@
         </service>
 
         <!-- Activities -->
-        <activity android:name=".setup.SetupActivity"
-             android:theme="@style/platformActivityTheme"
+        <activity android:name=".uix.settings.SettingsActivity"
+             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
              android:label="@string/english_ime_name"
-             android:icon="@drawable/ic_launcher_keyboard"
+             android:icon="@mipmap/ic_launcher"
+             android:roundIcon="@mipmap/ic_launcher_round"
              android:launchMode="singleTask"
-             android:noHistory="true"
+             android:noHistory="false"
              android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -100,29 +102,18 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".uix.voiceinput.downloader.DownloadActivity"
+            android:exported="false"
+            android:label="@string/model_downloader"
+            android:clearTaskOnLaunch="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
         <activity android:name=".permissions.PermissionsActivity"
              android:theme="@android:style/Theme.Translucent.NoTitleBar"
              android:exported="false"
              android:taskAffinity="">
-        </activity>
-
-        <activity android:name=".setup.SetupWizardActivity"
-             android:theme="@style/platformActivityTheme"
-             android:label="@string/english_ime_name"
-             android:clearTaskOnLaunch="true"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".settings.SettingsActivity"
-             android:theme="@style/platformSettingsTheme"
-             android:label="@string/english_ime_settings"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
         </activity>
 
         <activity android:name=".spellcheck.SpellCheckerSettingsActivity"

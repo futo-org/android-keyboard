@@ -163,6 +163,8 @@ dependencies {
     implementation 'ch.acra:acra-http:5.11.1'
     implementation 'ch.acra:acra-dialog:5.11.1'
 
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
     implementation project(":voiceinput-shared")
 
     debugImplementation 'androidx.compose.ui:ui-tooling'

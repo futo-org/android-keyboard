@@ -16,6 +16,7 @@ import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.theme.ThemeOptionKeys
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
+import org.futo.inputmethod.latin.uix.theme.selector.ThemePicker
 
 val ThemeAction = Action(
     icon = R.drawable.eye,
@@ -31,6 +32,9 @@ val ThemeAction = Action(
             @Composable
             override fun WindowContents() {
                 val context = LocalContext.current
+
+                ThemePicker { manager.updateTheme(it) }
+                /*
                 LazyColumn(
                     modifier = Modifier
                         .padding(8.dp, 0.dp)
@@ -51,6 +55,8 @@ val ThemeAction = Action(
                         }
                     }
                 }
+
+                 */
             }
 
             override fun close() {
