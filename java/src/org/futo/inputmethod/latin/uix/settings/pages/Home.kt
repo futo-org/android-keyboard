@@ -1,9 +1,13 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
@@ -18,6 +22,7 @@ import org.futo.inputmethod.latin.uix.settings.openLanguageSettings
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     ScrollableList {
+        Spacer(modifier = Modifier.height(24.dp))
         ScreenTitle("FUTO Keyboard Settings")
         NavigationItem(
             title = "Languages",

@@ -25,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.deferGetSetting
+import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -109,6 +110,7 @@ class SettingsActivity : ComponentActivity() {
                 val themeIdx = useDataStore(key = THEME_KEY.key, default = themeOption.key)
                 val theme: ThemeOption = ThemeOptions[themeIdx.value] ?: themeOption
                 UixThemeWrapper(theme.obtainColors(LocalContext.current)) {
+                    StatusBarColorSetter()
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
