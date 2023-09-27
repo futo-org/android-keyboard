@@ -12,11 +12,5 @@ private val extractor = AudioFeatureExtraction(
 )
 
 fun extractMelSpectrogramForWhisper(samples: DoubleArray): FloatArray {
-    val paddedSamples = if(samples.size <= 640) {
-        samples + DoubleArray(640) { 0.0 }
-    } else {
-        samples
-    }
-    
-    return extractor.melSpectrogram(paddedSamples)
+    return extractor.melSpectrogram(samples)
 }

@@ -209,7 +209,7 @@ class AudioFeatureExtraction(
      * This function converts input audio samples to 1x80x3000 features
      */
     fun melSpectrogram(y: DoubleArray): FloatArray {
-        val paddedWaveform = DoubleArray(min(numSamples, y.size + hopLength)) {
+        val paddedWaveform = DoubleArray(min(numSamples, y.size + hopLength).coerceAtLeast(nFFT)) {
             if (it < y.size) {
                 y[it]
             } else {

@@ -256,6 +256,8 @@ class DownloadActivity : ComponentActivity() {
 
     private val themeOption: MutableState<ThemeOption?> = mutableStateOf(null)
     private fun updateContent() {
+        // TODO: In some cases seems to cause a crash?
+        // May be related https://github.com/mozilla-mobile/focus-android/issues/7712
         setContent {
             themeOption.value?.let { themeOption ->
                 val themeIdx = useDataStore(key = THEME_KEY.key, default = themeOption.key)
