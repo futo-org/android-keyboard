@@ -185,7 +185,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         deferGetSetting(THEME_KEY) { key ->
             if(key != activeThemeOption?.key) {
-                ThemeOptions[key]?.let { updateTheme(it) }
+                ThemeOptions[key]?.let { if(it.available(this)) updateTheme(it) }
             }
         }
     }
