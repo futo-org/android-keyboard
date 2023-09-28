@@ -17,7 +17,7 @@ LOCAL_PATH := $(call my-dir)
 ############ some local flags
 # If you change any of those flags, you need to rebuild both libjni_latinime_common_static
 # and the shared library that uses libjni_latinime_common_static.
-FLAG_DBG ?= false
+FLAG_DBG ?= true
 FLAG_DO_PROFILE ?= false
 
 ######################################
@@ -27,12 +27,21 @@ LATIN_IME_SRC_DIR := src
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
-LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
+LOCAL_CFLAGS += -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls \
     -Woverloaded-virtual -Wsign-promo -Wno-system-headers -Wno-deprecated-copy
 
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
+
+# Needed to build with ggml
+#LOCAL_CFLAGS += -Wno-cast-align -Wno-format-nonliteral -Wno-float-equal -Wno-sign-compare -Wno-unused-variable -Wno-unused-but-set-variable
+LOCAL_CFLAGS += -fexceptions -O3
+
+
+# protobuf-lite isn't so lite
+LOCAL_CFLAGS += -DHAVE_PTHREAD
+#LOCAL_CFLAGS += -Wno-ignored-qualifiers -Wno-cast-qual
 
 # HACK: -mstackrealign is required for x86 builds running on pre-KitKat devices to avoid crashes
 # with SSE instructions.

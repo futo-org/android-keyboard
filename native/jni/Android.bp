@@ -147,6 +147,7 @@ cc_library {
         "org_futo_inputmethod_latin_BinaryDictionary.cpp",
         "org_futo_inputmethod_latin_BinaryDictionaryUtils.cpp",
         "org_futo_inputmethod_latin_DicTraverseSession.cpp",
+        "org_futo_inputmethod_latin_xlm_LanguageModel.cpp",
         "jni_common.cpp",
 
         ":LATIN_IME_CORE_SRC_FILES",
