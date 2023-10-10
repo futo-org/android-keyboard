@@ -22,15 +22,15 @@ const char *LlamaAdapter::getToken(int id) const {
 
 bool LlamaAdapter::eval(int nPast, token_sequence input, std::vector<float> &outLogits) {
     // TODO
-    ASSERT(nPast + input.size() < llama_model_n_ctx(model));
+    ASSERT(nPast + input.size() < LLAMA_CONTEXT_SIZE);
 
-    if(llama_eval(context, input.data(), input.size(), nPast, numThreads) != 0) {
+    if(llama_eval(context, input.data(), input.size(), nPast) != 0) {
         return false;
     }
 
     // TODO: Zero-copy
-    outLogits.resize(llama_n_vocab(context));
-    memcpy(outLogits.data(), llama_get_logits(context), llama_n_vocab(context) * sizeof(float));
+    outLogits.resize(llama_n_vocab(model));
+    memcpy(outLogits.data(), llama_get_logits(context), llama_n_vocab(model) * sizeof(float));
 
     return true;
 }
@@ -54,8 +54,11 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
     auto adapter = new LlamaAdapter();
 
     llama_context_params ctx_params = llama_context_default_params();
+    ctx_params.n_ctx = LLAMA_CONTEXT_SIZE;
 
-    adapter->model = llama_load_model_from_file(modelPath.c_str(), ctx_params);
+    llama_model_params model_params = llama_model_default_params();
+
+    adapter->model = llama_load_model_from_file(modelPath.c_str(), model_params);
 
     if(adapter->model == nullptr) {
         delete adapter;
@@ -72,6 +75,8 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
         delete adapter;
         return nullptr;
     }
+
+    adapter->batch = llama_batch_init(LLAMA_CONTEXT_SIZE, 0);
 
     return new LanguageModel(adapter);
 }

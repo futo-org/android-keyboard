@@ -82,16 +82,16 @@ public class LanguageModel extends Dictionary {
             @Override public void run() {
                 if(mNativeState != 0) return;
 
-                String modelPath = getPathToModelResource(context, R.raw.l2_steps_12k_w1_s1_1k, R.raw.l2_steps_12k_w1_s1_1k_tokenizer, false);
+                String modelPath = getPathToModelResource(context, R.raw.ml3, R.raw.ml3_tokenizer, true);
                 mNativeState = openNative(modelPath);
 
                 if(mNativeState == 0){
-                    modelPath = getPathToModelResource(context, R.raw.l2_steps_12k_w1_s1_1k, R.raw.l2_steps_12k_w1_s1_1k_tokenizer, true);
+                    modelPath = getPathToModelResource(context, R.raw.ml3, R.raw.ml3_tokenizer, true);
                     mNativeState = openNative(modelPath);
                 }
 
                 if(mNativeState == 0){
-                    throw new RuntimeException("Failed to load R.raw.l2_steps_12k_w1_s1_1k, R.raw.l2_steps_12k_w1_s1_1k_tokenizer model");
+                    throw new RuntimeException("Failed to load R.raw.ml3, R.raw.ml3_tokenizer model");
                 }
             }
         };
@@ -159,9 +159,11 @@ public class LanguageModel extends Dictionary {
 
             String word = outStrings[i].trim();
 
-            if(outProbabilities[i] > 150.0f) {
+            if(!partialWord.isEmpty()) {
                 kind = SuggestedWords.SuggestedWordInfo.KIND_WHITELIST | SuggestedWords.SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION;
             }
+
+            Log.d("LanguageModel", "probability for word [" + word + "] is 100 * " + String.valueOf(outProbabilities[i]));
 
             suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), kind, this, 0, 0 ));
         }

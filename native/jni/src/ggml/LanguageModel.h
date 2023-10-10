@@ -105,14 +105,15 @@ public:
     AK_FORCE_INLINE bool isPendingEvaluation() const {
         return pendingEvaluationSequence.size() > 0;
     }
+
+    LanguageModelAdapter *adapter;
+    transformer_context transformerContext;
 private:
     token_sequence pendingContext;
     token_sequence pendingEvaluationSequence;
     int pendingNPast = 0;
 
-    LanguageModelAdapter *adapter;
 
-    transformer_context transformerContext;
 
     std::vector<float> outLogits;
     std::vector<float> tmpOutLogits;
@@ -121,6 +122,7 @@ private:
 };
 
 
+#define LLAMA_CONTEXT_SIZE 2048
 class LlamaAdapter : public LanguageModelAdapter {
 public:
     int getVocabSize() const;
@@ -131,10 +133,13 @@ public:
     virtual std::string decode(const token_sequence &tokens) const;
 
     static LanguageModel *createLanguageModel(const std::string &paths);
-private:
-    LlamaAdapter();
     llama_context *context;
     llama_model *model;
+    llama_batch batch;
+private:
+    LlamaAdapter();
+
+
     sentencepiece::SentencePieceProcessor spm;
 };
 
