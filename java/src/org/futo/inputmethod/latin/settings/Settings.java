@@ -263,13 +263,13 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static boolean readShowsLanguageSwitchKey(final SharedPreferences prefs) {
         if (prefs.contains(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
             final boolean suppressLanguageSwitchKey = prefs.getBoolean(
-                    PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, false);
+                    PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, true);
             final SharedPreferences.Editor editor = prefs.edit();
             editor.remove(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY);
             editor.putBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, !suppressLanguageSwitchKey);
             editor.apply();
         }
-        return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
+        return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, false);
     }
 
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,

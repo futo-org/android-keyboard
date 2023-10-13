@@ -1362,14 +1362,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mRichImm.setInputMethodAndSubtype(token, subtype);
     }
 
-    // TODO: Revise the language switch key behavior to make it much smarter and more reasonable.
     public void switchToNextSubtype() {
-        final IBinder token = mInputMethodService.getWindow().getWindow().getAttributes().token;
-        if (shouldSwitchToOtherInputMethods()) {
-            mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
-            return;
-        }
-        mSubtypeState.switchSubtype(token, mRichImm);
+        mRichImm.getInputMethodManager().showInputMethodPicker();
     }
 
     // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for

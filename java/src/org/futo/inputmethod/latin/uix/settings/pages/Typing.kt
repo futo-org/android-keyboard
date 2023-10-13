@@ -48,6 +48,13 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             default = booleanResource(R.bool.config_default_key_preview_popup)
         )
 
+        SettingToggleSharedPrefs(
+            title = stringResource(R.string.show_language_switch_key),
+            subtitle = stringResource(R.string.show_language_switch_key_summary),
+            key = Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY,
+            default = false
+        )
+
         // TODO: SeekBarDialogPreference pref_vibration_duration_settings etc
     }
 }

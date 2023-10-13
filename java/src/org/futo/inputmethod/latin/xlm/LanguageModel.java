@@ -195,7 +195,7 @@ public class LanguageModel extends Dictionary {
                 } else {
                     // Otherwise, we cannot autocorrect to the top prediction unless the model is
                     // super confident about this
-                    if(outProbabilities[i] * 8.0f >= outProbabilities[0]) {
+                    if(outProbabilities[i] * 2.5f >= outProbabilities[0]) {
                         mustNotAutocorrect = true;
                     }
                 }
