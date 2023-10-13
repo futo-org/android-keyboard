@@ -190,12 +190,14 @@ public class LanguageModel extends Dictionary {
             if(!partialWord.isEmpty() && partialWord.trim().equalsIgnoreCase(outStrings[i].trim())) {
                 // If this prediction matches the partial word ignoring case, and this is the top
                 // prediction, then we can break.
-                // Otherwise, we cannot autocorrect to the top prediction, as it does not match the
-                // partial word but one of the top ones does.
                 if(i == 0) {
                     break;
                 } else {
-                    mustNotAutocorrect = true;
+                    // Otherwise, we cannot autocorrect to the top prediction unless the model is
+                    // super confident about this
+                    if(outProbabilities[i] * 8.0f >= outProbabilities[0]) {
+                        mustNotAutocorrect = true;
+                    }
                 }
             }
         }

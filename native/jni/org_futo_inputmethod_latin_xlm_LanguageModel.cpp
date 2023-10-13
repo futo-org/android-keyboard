@@ -126,6 +126,7 @@ struct LanguageModelState {
         logits[specialTokens.XBU] = -999.0f;
 
         for(int x : specialTokens.SAMPLING_BAD_TOKENS) {
+            logits[specialTokens.SPACE] += std::max(0.0f, logits[x]);
             logits[x] = -999.0f;
         }
 
