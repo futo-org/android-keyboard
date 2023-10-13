@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.function.IntPredicate;
 
 
 public class LanguageModel extends Dictionary {
@@ -109,8 +110,16 @@ public class LanguageModel extends Dictionary {
             float weightForLocale,
             float[] inOutWeightOfLangModelVsSpatialModel
     ) {
-        if (mNativeState == 0) return null;
-        if (initThread != null && initThread.isAlive()) return null;
+        Log.d("LanguageModel", "getSuggestions called");
+
+        if (mNativeState == 0) {
+            Log.d("LanguageModel", "Exiting becuase mNativeState == 0");
+            return null;
+        }
+        if (initThread != null && initThread.isAlive()){
+            Log.d("LanguageModel", "Exiting because initThread");
+            return null;
+        }
 
         final InputPointers inputPointers = composedData.mInputPointers;
         final boolean isGesture = composedData.mIsBatchMode;
@@ -120,6 +129,26 @@ public class LanguageModel extends Dictionary {
         String context = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
         if(!ngramContext.fullContext.isEmpty()) {
             context = ngramContext.fullContext.trim();
+        }
+
+        // Trim the context
+        while(context.length() > 128) {
+            if(context.contains("\n")) {
+                context = context.substring(context.indexOf("\n") + 1).trim();
+            }else if(context.contains(".") || context.contains("?") || context.contains("!")) {
+                int v = Arrays.stream(
+                        new int[]{
+                                context.indexOf("."),
+                                context.indexOf("?"),
+                                context.indexOf("!")
+                        }).filter(i -> i != -1).min().orElse(-1);
+
+                if(v == -1) break; // should be unreachable
+
+                context = context.substring(v + 1).trim();
+            } else {
+                break;
+            }
         }
 
         String partialWord = composedData.mTypedWord;
@@ -154,16 +183,31 @@ public class LanguageModel extends Dictionary {
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
         int kind = SuggestedWords.SuggestedWordInfo.KIND_PREDICTION;
+
+        boolean mustNotAutocorrect = false;
+        for(int i=0; i<maxResults; i++) {
+            if (outStrings[i] == null) continue;
+            if(!partialWord.isEmpty() && partialWord.trim().equalsIgnoreCase(outStrings[i].trim())) {
+                // If this prediction matches the partial word ignoring case, and this is the top
+                // prediction, then we can break.
+                // Otherwise, we cannot autocorrect to the top prediction, as it does not match the
+                // partial word but one of the top ones does.
+                if(i == 0) {
+                    break;
+                } else {
+                    mustNotAutocorrect = true;
+                }
+            }
+        }
+
+        if(!partialWord.isEmpty() && !mustNotAutocorrect) {
+            kind = SuggestedWords.SuggestedWordInfo.KIND_WHITELIST | SuggestedWords.SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION;
+        }
+
         for(int i=0; i<maxResults; i++) {
             if(outStrings[i] == null) continue;
 
             String word = outStrings[i].trim();
-
-            if(!partialWord.isEmpty()) {
-                kind = SuggestedWords.SuggestedWordInfo.KIND_WHITELIST | SuggestedWords.SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION;
-            }
-
-            Log.d("LanguageModel", "probability for word [" + word + "] is 100 * " + String.valueOf(outProbabilities[i]));
 
             suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), kind, this, 0, 0 ));
         }
@@ -177,6 +221,8 @@ public class LanguageModel extends Dictionary {
                 suggestions.add(new SuggestedWords.SuggestedWordInfo(word, context, 1, kind, this, 0, 0));
             }
         }
+
+        Log.d("LanguageModel", "returning " + String.valueOf(suggestions.size()) + " suggestions");
 
         return suggestions;
     }
