@@ -131,6 +131,19 @@ public class LanguageModel extends Dictionary {
             context = ngramContext.fullContext.trim();
         }
 
+        String partialWord = composedData.mTypedWord;
+        if(!partialWord.isEmpty() && context.endsWith(partialWord)) {
+            context = context.substring(0, context.length() - partialWord.length()).trim();
+        }
+
+        if(!partialWord.isEmpty()) {
+            partialWord = partialWord.trim();
+        }
+
+        if(partialWord.length() > 40) {
+            partialWord = partialWord.substring(partialWord.length() - 40);
+        }
+
         // Trim the context
         while(context.length() > 128) {
             if(context.contains("\n")) {
@@ -146,19 +159,18 @@ public class LanguageModel extends Dictionary {
                 if(v == -1) break; // should be unreachable
 
                 context = context.substring(v + 1).trim();
+            } else if(context.contains(",")) {
+                context = context.substring(context.indexOf(",") + 1).trim();
+            } else if(context.contains(" ")) {
+                context = context.substring(context.indexOf(" ") + 1).trim();
             } else {
                 break;
             }
         }
 
-        String partialWord = composedData.mTypedWord;
-
-        if(!partialWord.isEmpty() && context.endsWith(partialWord)) {
-            context = context.substring(0, context.length() - partialWord.length()).trim();
-        }
-
-        if(!partialWord.isEmpty()) {
-            partialWord = partialWord.trim();
+        if(context.length() > 400) {
+            // This context probably contains some spam without adequate whitespace to trim, set it to blank
+            context = "";
         }
 
         // TODO: We may want to pass times too, and adjust autocorrect confidence

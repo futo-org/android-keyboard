@@ -25,13 +25,14 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
     ScrollableList {
         ScreenTitle("Predictive Text", showBack = true, navController)
 
-        Tip("Note: Transformer LM is in alpha state")
 
         SettingToggleSharedPrefs(
             title = "Transformer LM",
             key = Settings.PREF_KEY_USE_TRANSFORMER_LM,
             default = true
         )
+
+        Tip("Note: Transformer LM is in alpha state. Many of the below options currently have no effect if Transformer LM is enabled.")
 
         NavigationItem(
             title = stringResource(R.string.edit_personal_dictionary),

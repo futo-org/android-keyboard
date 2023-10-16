@@ -97,6 +97,11 @@ struct LanguageModelState {
         };
 
         for(int i = model->tokenToId(".▁"); i < model->tokenToId("0"); i++) {
+            // Specifically allow the standalone dot for acronyms such as "U.S."
+            // otherwise this turns into a space and we get just a nonsensical standalone "U" or similar
+            // TODO: Since ". " is still blocked, we get "U.S" instead of the expected "U.S. "
+            if(i == model->tokenToId(".")) continue;
+
             specialTokens.SAMPLING_BAD_TOKENS.emplace_back(i);
         }
         for(int i = model->tokenToId(":"); i <= model->tokenToId("~"); i++) {
@@ -136,6 +141,7 @@ struct LanguageModelState {
     }
 
     std::vector<std::pair<float, token_sequence>> Sample(const token_sequence &prompt, int n_results) {
+        AKLOGI("Prompt size is %d", prompt.size());
         // TODO: Something seems wrong currently with kv_cache
 
         llama_context *ctx = ((LlamaAdapter *) model->adapter)->context;
@@ -400,7 +406,11 @@ struct LanguageModelState {
     }
 
     std::vector<std::pair<float, std::string>> PredictCorrection(const std::string &context, std::string &word) {
-        token_sequence next_context = model->tokenize(trim(context) + " ");
+        token_sequence next_context;
+        if(context.length() != 0) {
+            next_context = model->tokenize(trim(context) + " ");
+        }
+
         next_context.push_back(specialTokens.XBU);
 
         for(char c : trim(word)) {
