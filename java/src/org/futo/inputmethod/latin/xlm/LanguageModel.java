@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.IntPredicate;
 
-
+// TODO: Avoid loading the LanguageModel if the setting is disabled
 public class LanguageModel extends Dictionary {
     static long mNativeState = 0;
 
@@ -255,6 +255,7 @@ public class LanguageModel extends Dictionary {
 
     @Override
     public boolean isInDictionary(String word) {
+        // TODO: Provide the word spelling to the model and see if the probability of correcting it to that is beyond a certain limit
         return false;
     }
 

@@ -18,8 +18,10 @@ package org.futo.inputmethod.latin.settings;
 
 public class SettingsValuesForSuggestion {
     public final boolean mBlockPotentiallyOffensive;
+    public final boolean mUseTransformerLM;
 
-    public SettingsValuesForSuggestion(final boolean blockPotentiallyOffensive) {
+    public SettingsValuesForSuggestion(final boolean blockPotentiallyOffensive, final boolean useTransformerLM) {
         mBlockPotentiallyOffensive = blockPotentiallyOffensive;
+        mUseTransformerLM = useTransformerLM;
     }
 }

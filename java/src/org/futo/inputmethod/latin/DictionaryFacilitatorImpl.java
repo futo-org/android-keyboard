@@ -635,6 +635,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         final float[] weightOfLangModelVsSpatialModel =
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
         for (final String dictType : ALL_DICTIONARY_TYPES) {
+            if(settingsValuesForSuggestion.mUseTransformerLM && dictType != Dictionary.TYPE_GGML) continue;
+            else if(!settingsValuesForSuggestion.mUseTransformerLM && dictType == Dictionary.TYPE_GGML) continue;
+
             final Dictionary dictionary = mDictionaryGroup.getDict(dictType);
             if (null == dictionary) continue;
             final float weightForLocale = composedData.mIsBatchMode
