@@ -102,10 +102,10 @@ public final class InputAttributes {
         // TODO: Have a helper method in InputTypeUtils
         // Make sure that passwords are not displayed in {@link SuggestionStripView}.
         final boolean shouldSuppressSuggestions = mIsPasswordField
-                || InputTypeUtils.isEmailVariation(variation)
-                || InputType.TYPE_TEXT_VARIATION_URI == variation
-                || InputType.TYPE_TEXT_VARIATION_FILTER == variation
-                || flagNoSuggestions
+                //|| InputTypeUtils.isEmailVariation(variation)
+                //|| InputType.TYPE_TEXT_VARIATION_URI == variation
+                //|| InputType.TYPE_TEXT_VARIATION_FILTER == variation
+                //|| flagNoSuggestions
                 || flagAutoComplete;
         mShouldShowSuggestions = !shouldSuppressSuggestions;
 
@@ -120,14 +120,22 @@ public final class InputAttributes {
         mDisableGestureFloatingPreviewText = InputAttributes.inPrivateImeOptions(
                 mPackageNameForPrivateImeOptions, NO_FLOATING_GESTURE_PREVIEW, editorInfo);
 
+        // TODO: This may need adjustment
+        mInputTypeNoAutoCorrect = shouldSuppressSuggestions
+                || (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
+                || InputTypeUtils.isEmailVariation(variation)
+                || InputType.TYPE_TEXT_VARIATION_URI == variation
+                || InputType.TYPE_TEXT_VARIATION_FILTER == variation
+                || flagNoSuggestions;
+
         // If it's a browser edit field and auto correct is not ON explicitly, then
         // disable auto correction, but keep suggestions on.
         // If NO_SUGGESTIONS is set, don't do prediction.
         // If it's not multiline and the autoCorrect flag is not set, then don't correct
-        mInputTypeNoAutoCorrect =
-                (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
-                || flagNoSuggestions
-                || (!flagAutoCorrect && !flagMultiLine);
+        //mInputTypeNoAutoCorrect =
+        //        (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
+        //        || flagNoSuggestions
+        //        || (!flagAutoCorrect && !flagMultiLine);
 
         mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
 
