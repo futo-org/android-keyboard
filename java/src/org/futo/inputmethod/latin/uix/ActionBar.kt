@@ -42,6 +42,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -168,20 +170,31 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         null
     }
 
-    //val topSuggestionIcon = painterResource(id = R.drawable.top_suggestion)
-    val textButtonModifier = when (isPrimary) {
+    val wordInfo = try {
+        words.getInfo(idx)
+    } catch(e: IndexOutOfBoundsException) {
+        null
+    }
+
+    val iconColor = MaterialTheme.colorScheme.onBackground
+    val topSuggestionIcon = painterResource(id = R.drawable.transformer_suggestion)
+    val textButtonModifier = when (wordInfo?.mOriginatesFromTransformerLM) {
         true -> Modifier.drawBehind {
-            /*with(topSuggestionIcon) {
+            with(topSuggestionIcon) {
                 val iconSize = topSuggestionIcon.intrinsicSize
                 translate(
                     left = (size.width - iconSize.width) / 2.0f,
                     top = size.height - iconSize.height * 2.0f
                 ) {
-                    draw(topSuggestionIcon.intrinsicSize) // Needs to be tinted
+                    draw(
+                        topSuggestionIcon.intrinsicSize,
+                        alpha = if(isPrimary){ 1.0f } else { 0.66f } / 1.25f,
+                        //colorFilter = ColorFilter.tint(color = iconColor, blendMode = BlendMode.Multiply)
+                    )
                 }
-            }*/
+            }
         }
-        false -> Modifier
+        else -> Modifier
     }
 
     val textModifier = when (isPrimary) {

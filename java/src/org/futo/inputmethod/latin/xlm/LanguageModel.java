@@ -75,9 +75,19 @@ public class LanguageModel extends Dictionary {
         return outputFile.getAbsolutePath() + ":" + outputFileTokenizer.getAbsolutePath();
     }
 
+    Context context = null;
     Thread initThread = null;
     public LanguageModel(Context context, String dictType, Locale locale) {
         super(dictType, locale);
+        
+        this.context = context;
+    }
+
+    private void loadModel() {
+        if (initThread != null && initThread.isAlive()){
+            Log.d("LanguageModel", "Cannot load model again, as initThread is still active");
+            return;
+        }
 
         initThread = new Thread() {
             @Override public void run() {
@@ -113,6 +123,7 @@ public class LanguageModel extends Dictionary {
         Log.d("LanguageModel", "getSuggestions called");
 
         if (mNativeState == 0) {
+            loadModel();
             Log.d("LanguageModel", "Exiting becuase mNativeState == 0");
             return null;
         }
@@ -226,6 +237,7 @@ public class LanguageModel extends Dictionary {
             suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), kind, this, 0, 0 ));
         }
 
+        /*
         if(kind == SuggestedWords.SuggestedWordInfo.KIND_PREDICTION) {
             // TODO: Forcing the thing to appear
             for (int i = suggestions.size(); i < 3; i++) {
@@ -234,6 +246,11 @@ public class LanguageModel extends Dictionary {
 
                 suggestions.add(new SuggestedWords.SuggestedWordInfo(word, context, 1, kind, this, 0, 0));
             }
+        }
+        */
+
+        for(SuggestedWords.SuggestedWordInfo suggestion : suggestions) {
+            suggestion.mOriginatesFromTransformerLM = true;
         }
 
         Log.d("LanguageModel", "returning " + String.valueOf(suggestions.size()) + " suggestions");

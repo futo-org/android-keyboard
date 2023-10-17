@@ -280,6 +280,8 @@ public class SuggestedWords {
         public final int mAutoCommitFirstWordConfidence;
         private String mDebugString = "";
 
+        public boolean mOriginatesFromTransformerLM = false;
+
         /**
          * Create a new suggested word info.
          * @param word The string to suggest.
