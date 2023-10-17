@@ -77,10 +77,12 @@ public class LanguageModel extends Dictionary {
 
     Context context = null;
     Thread initThread = null;
+    Locale locale = null;
     public LanguageModel(Context context, String dictType, Locale locale) {
         super(dictType, locale);
-        
+
         this.context = context;
+        this.locale = locale;
     }
 
     private void loadModel() {
@@ -122,9 +124,15 @@ public class LanguageModel extends Dictionary {
     ) {
         Log.d("LanguageModel", "getSuggestions called");
 
+        // Language Model currently only supports English
+        if(locale.getLanguage() != Locale.ENGLISH.getLanguage()) {
+            Log.d("LanguageModel", "Exiting because locale is not English");
+            return null;
+        }
+
         if (mNativeState == 0) {
             loadModel();
-            Log.d("LanguageModel", "Exiting becuase mNativeState == 0");
+            Log.d("LanguageModel", "Exiting because mNativeState == 0");
             return null;
         }
         if (initThread != null && initThread.isAlive()){
