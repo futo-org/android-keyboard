@@ -25,14 +25,31 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
     ScrollableList {
         ScreenTitle("Predictive Text", showBack = true, navController)
 
-
         SettingToggleSharedPrefs(
             title = "Transformer LM",
             key = Settings.PREF_KEY_USE_TRANSFORMER_LM,
             default = true
         )
 
-        Tip("Note: Transformer LM is in alpha state. Many of the below options currently have no effect if Transformer LM is enabled.")
+        Tip("Note: Transformer LM is in alpha state")
+
+        // TODO: It doesn't make a lot of sense in the case of having autocorrect on but show_suggestions off
+
+        SettingToggleSharedPrefs(
+            title = stringResource(R.string.auto_correction),
+            subtitle = stringResource(R.string.auto_correction_summary),
+            key = Settings.PREF_AUTO_CORRECTION,
+            default = true
+        )
+        
+        SettingToggleSharedPrefs(
+            title = stringResource(R.string.prefs_show_suggestions),
+            subtitle = stringResource(R.string.prefs_show_suggestions_summary),
+            key = Settings.PREF_SHOW_SUGGESTIONS,
+            default = true
+        )
+
+        Tip("Many of the below options currently have no effect if Transformer LM is enabled")
 
         NavigationItem(
             title = stringResource(R.string.edit_personal_dictionary),
@@ -62,24 +79,14 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
             key = Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE,
             default = booleanResource(R.bool.config_block_potentially_offensive)
         )
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.auto_correction),
-            subtitle = stringResource(R.string.auto_correction_summary),
-            key = Settings.PREF_AUTO_CORRECTION,
-            default = true
-        )
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.prefs_show_suggestions),
-            subtitle = stringResource(R.string.prefs_show_suggestions_summary),
-            key = Settings.PREF_SHOW_SUGGESTIONS,
-            default = true
-        )
+
         SettingToggleSharedPrefs(
             title = stringResource(R.string.use_personalized_dicts),
             subtitle = stringResource(R.string.use_personalized_dicts_summary),
             key = Settings.PREF_KEY_USE_PERSONALIZED_DICTS,
             default = true
         )
+
         SettingToggleSharedPrefs(
             title = stringResource(R.string.bigram_prediction),
             subtitle = stringResource(R.string.bigram_prediction_summary),
