@@ -189,7 +189,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
                     draw(
                         topSuggestionIcon.intrinsicSize,
                         alpha = if(isPrimary){ 1.0f } else { 0.66f } / 1.25f,
-                        //colorFilter = ColorFilter.tint(color = iconColor, blendMode = BlendMode.Multiply)
+                        colorFilter = ColorFilter.tint(color = iconColor)
                     )
                 }
             }
