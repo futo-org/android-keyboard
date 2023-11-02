@@ -263,7 +263,11 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
 
 
     for (i in 0 until maxSuggestions) {
-        val remapped = ORDER_OF_SUGGESTIONS[i]
+        val remapped = if(offset == 1 && i == 2) {
+            0 - offset
+        } else {
+            ORDER_OF_SUGGESTIONS[i]
+        }
 
         SuggestionItem(
             words,
