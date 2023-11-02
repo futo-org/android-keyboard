@@ -240,9 +240,13 @@ public class LanguageModel extends Dictionary {
         for(int i=0; i<maxResults; i++) {
             if(outStrings[i] == null) continue;
 
+            int currKind = kind;
             String word = outStrings[i].trim();
+            if(word.equals(partialWord)) {
+                currKind |= SuggestedWords.SuggestedWordInfo.KIND_FLAG_EXACT_MATCH;
+            }
 
-            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), kind, this, 0, 0 ));
+            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), currKind, this, 0, 0 ));
         }
 
         /*

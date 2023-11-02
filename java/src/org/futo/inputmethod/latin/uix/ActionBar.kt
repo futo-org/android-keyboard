@@ -176,6 +176,8 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         null
     }
 
+    val actualIsPrimary = isPrimary && (words.mWillAutoCorrect || ((wordInfo?.isExactMatch) == true))
+
     val iconColor = MaterialTheme.colorScheme.onBackground
     val topSuggestionIcon = painterResource(id = R.drawable.transformer_suggestion)
     val textButtonModifier = when (wordInfo?.mOriginatesFromTransformerLM) {
@@ -188,7 +190,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
                 ) {
                     draw(
                         topSuggestionIcon.intrinsicSize,
-                        alpha = if(isPrimary){ 1.0f } else { 0.66f } / 1.25f,
+                        alpha = if(actualIsPrimary){ 1.0f } else { 0.66f } / 1.25f,
                         colorFilter = ColorFilter.tint(color = iconColor)
                     )
                 }
@@ -197,12 +199,12 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         else -> Modifier
     }
 
-    val textModifier = when (isPrimary) {
+    val textModifier = when (actualIsPrimary) {
         true -> Modifier
         false -> Modifier.alpha(0.75f)
     }
 
-    val textStyle = when (isPrimary) {
+    val textStyle = when (actualIsPrimary) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
     }.copy(color = MaterialTheme.colorScheme.onBackground)
