@@ -31,7 +31,8 @@ LATIN_IME_CORE_SRC_FILES := \
     ggml/context.cpp \
     ggml/ggml.c \
     ggml/ggml-alloc.c \
-    ggml/k_quants.c \
+    ggml/ggml-quants.c \
+    ggml/ggml-backend.c \
     ggml/LanguageModel.cpp \
     ggml/llama.cpp \
     third_party/protobuf-lite/arena.cc \

@@ -161,10 +161,12 @@ struct LanguageModelState {
         for (int i = 0; i < prompt_ff.first.size(); i++) {
             batch.token[i] = prompt_ff.first[i];
             batch.pos[i] = prompt_ff.second + i;
-            batch.seq_id[i] = 0;
+            batch.seq_id[i][0] = 0;
+            batch.n_seq_id[i] = 1;
             batch.logits[i] = false;
         }
 
+        //for(int i=0; i<batch.n_tokens; i++) batch.logits[i] = false;
         batch.logits[prompt_ff.first.size() - 1] = true;
 
         if (llama_decode(ctx, batch) != 0) {
@@ -235,11 +237,13 @@ struct LanguageModelState {
             size_t remaining_count = n_results - outputs.size();
             batch.n_tokens = 0;
 
+            //for(int i=0; i<batch.n_tokens; i++) batch.logits[i] = false;
             for (auto &sequence: sequences) {
                 batch.token[batch.n_tokens] = sequence.second.tokens[sequence.second.tokens.size() -
                                                                      1];
                 batch.pos[batch.n_tokens] = prompt.size() + (sequence.second.tokens.size() - 1);
-                batch.seq_id[batch.n_tokens] = sequence.second.seq_id;
+                batch.seq_id[batch.n_tokens][0] = sequence.second.seq_id;
+                batch.n_seq_id[batch.n_tokens] = 1;
                 batch.logits[batch.n_tokens] = true;
 
                 batch.n_tokens += 1;
