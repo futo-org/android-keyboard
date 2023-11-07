@@ -24,6 +24,7 @@
 #include "org_futo_inputmethod_latin_DicTraverseSession.h"
 #include "org_futo_inputmethod_latin_xlm_LanguageModel.h"
 #include "defines.h"
+#include "org_futo_inputmethod_latin_xlm_AdapterTrainer.h"
 
 /*
  * Returns the JNI version on success, -1 on failure.
@@ -58,6 +59,10 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
     if (!latinime::register_LanguageModel(env)) {
         AKLOGE("ERROR: LanguageModel native registration failed");
+        return -1;
+    }
+    if (!latinime::register_AdapterTrainer(env)) {
+        AKLOGE("ERROR: AdapterTrainer native registration failed");
         return -1;
     }
     /* success -- return valid version number */

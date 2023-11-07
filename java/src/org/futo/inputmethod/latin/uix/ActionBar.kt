@@ -251,7 +251,6 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
 
     var offset = 0
 
-    // Don't show what the user is typing
     try {
         val info = words.getInfo(0)
         if (info.kind == KIND_TYPED && !info.isExactMatch && !info.isExactMatchWithIntentionalOmission) {

@@ -59,12 +59,22 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
     ctx_params.n_threads_batch = 1;
 
     llama_model_params model_params = llama_model_default_params();
+    model_params.use_mmap = false;
 
     adapter->model = llama_load_model_from_file(modelPath.c_str(), model_params);
 
     if(adapter->model == nullptr) {
         delete adapter;
         return nullptr;
+    }
+
+    int err = llama_model_apply_lora_from_file(adapter->model,
+                                               "/data/user/0/org.futo.inputmethod.latin/cache/test-adapter.bin",
+                                               1.0,
+                                               NULL,
+                                               4);
+    if(err != 0) {
+        AKLOGE("Failed to apply lora: %d", err);
     }
 
     adapter->context = llama_new_context_with_model(adapter->model, ctx_params);

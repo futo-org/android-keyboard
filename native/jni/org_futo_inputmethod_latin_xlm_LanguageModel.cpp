@@ -397,6 +397,7 @@ struct LanguageModelState {
 
     std::vector<std::pair<float, std::string>> PredictNextWord(const std::string &context) {
         token_sequence next_context = model->tokenize(trim(context) + " ");
+        next_context.insert(next_context.begin(), 1); // BOS
         //model->updateContext(next_context);
 
         auto results = Sample(next_context, 3);
@@ -415,6 +416,7 @@ struct LanguageModelState {
             next_context = model->tokenize(trim(context) + " ");
         }
 
+        next_context.insert(next_context.begin(), 1); // BOS
         next_context.push_back(specialTokens.XBU);
 
         for(char c : trim(word)) {
@@ -458,7 +460,7 @@ namespace latinime {
         LanguageModelState *state = new LanguageModelState();
 
         if(!state->Initialize(sourceDirChars)) {
-            free(state);
+            delete state;
             return 0;
         }
 

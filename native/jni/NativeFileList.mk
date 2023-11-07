@@ -18,6 +18,7 @@ LATIN_IME_JNI_SRC_FILES := \
     org_futo_inputmethod_latin_BinaryDictionaryUtils.cpp \
     org_futo_inputmethod_latin_DicTraverseSession.cpp \
     org_futo_inputmethod_latin_xlm_LanguageModel.cpp \
+    org_futo_inputmethod_latin_xlm_AdapterTrainer.cpp \
     jni_common.cpp
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/sentencepiece/builtin_pb
@@ -33,8 +34,11 @@ LATIN_IME_CORE_SRC_FILES := \
     ggml/ggml-alloc.c \
     ggml/ggml-quants.c \
     ggml/ggml-backend.c \
-    ggml/LanguageModel.cpp \
     ggml/llama.cpp \
+    ggml/finetune.cpp \
+    ggml/train.cpp \
+    ggml/common.cpp \
+    ggml/LanguageModel.cpp \
     third_party/protobuf-lite/arena.cc \
     third_party/protobuf-lite/arenastring.cc \
     third_party/protobuf-lite/bytestream.cc \

@@ -95,16 +95,16 @@ public class LanguageModel extends Dictionary {
             @Override public void run() {
                 if(mNativeState != 0) return;
 
-                String modelPath = getPathToModelResource(context, R.raw.ml3_q8, R.raw.ml3_tokenizer, false);
+                String modelPath = getPathToModelResource(context, R.raw.ml4_f16, R.raw.ml3_tokenizer, true);
                 mNativeState = openNative(modelPath);
 
                 if(mNativeState == 0){
-                    modelPath = getPathToModelResource(context, R.raw.ml3_q8, R.raw.ml3_tokenizer, true);
+                    modelPath = getPathToModelResource(context, R.raw.ml4_f16, R.raw.ml3_tokenizer, true);
                     mNativeState = openNative(modelPath);
                 }
 
                 if(mNativeState == 0){
-                    throw new RuntimeException("Failed to load R.raw.ml3_q8, R.raw.ml3_tokenizer model");
+                    throw new RuntimeException("Failed to load R.raw.ml4_f16, R.raw.ml3_tokenizer model");
                 }
             }
         };
