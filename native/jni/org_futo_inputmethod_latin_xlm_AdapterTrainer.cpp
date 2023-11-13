@@ -42,10 +42,19 @@ namespace latinime {
             params.fn_lora_out = outputPath.c_str();
 
             params.common.fill_with_next_samples = true;
-            params.common.n_threads = 8;
-            params.common.warmup = 4;
+            params.common.n_threads = 6;
+            params.common.n_gradient_accumulation = 2;
+            params.common.n_batch = 2;
+            params.common.n_ctx = 32;
+            params.common.sample_random_offsets = true;
+
+            params.common.warmup = 10;
             params.common.adam_alpha = 1e-3;
-            params.common.adam_n_iter = 32;
+            params.common.adam_n_iter = 64;
+
+            // Increasing/decreasing this doesn't appear to significantly affect training time
+            params.lora_r = 16;
+            params.lora_alpha = 16;
 
             // TODO: Check model path valid / try to pre-load resources?
 
@@ -59,6 +68,10 @@ namespace latinime {
 
         void AddTrainingExample(const std::string &example) {
             std::vector<llama_token> result = spm.EncodeAsIds(example);
+            AKLOGI("Adding training example %s:", example.c_str());
+            for(llama_token t : result) {
+                AKLOGI("token %d [%s]", t, spm.IdToPiece(t).c_str());
+            }
             params.training_data.push_back(result);
         }
 

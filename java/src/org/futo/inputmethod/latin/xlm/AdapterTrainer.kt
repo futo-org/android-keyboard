@@ -25,7 +25,7 @@ class AdapterTrainer(baseModelPath: String, tokenizerPath: String, checkpointPat
 
         examples.forEach {
             if(it.isNotBlank()) {
-                addExample(handle, it.trim())
+                addExample(handle, it.trim() + " ")
             }
         }
     }
@@ -43,6 +43,9 @@ class AdapterTrainerBuilder(val baseModelPath: String, val tokenizerPath: String
     }
 
     fun loadAndPrepare(): AdapterTrainer {
+        println("Preparing AdapterTrainer. Training data:")
+        examples.forEach { println(" - [$it]") }
+
         return AdapterTrainer(baseModelPath, tokenizerPath, checkpointPath, examples)
     }
 }

@@ -125,10 +125,17 @@ struct LanguageModelState {
         return true;
     }
 
-    void transform_logits(float *logits, size_t n_vocab, bool allow_space){
+    void transform_logits(float *logits, size_t n_vocab, bool allow_space, bool allow_correction_token){
         softmax(logits, n_vocab);
 
         logits[specialTokens.XBU] = -999.0f;
+        logits[specialTokens.XBC] = -999.0f;
+        if(!allow_correction_token)
+            logits[specialTokens.XEC] = -999.0f;
+            
+        for(int x : specialTokens.LETTERS_TO_IDS) {
+            logits[x] = -999.0f;
+        }
 
         for(int x : specialTokens.SAMPLING_BAD_TOKENS) {
             logits[specialTokens.SPACE] += std::max(0.0f, logits[x]);
@@ -143,6 +150,8 @@ struct LanguageModelState {
     std::vector<std::pair<float, token_sequence>> Sample(const token_sequence &prompt, int n_results) {
         AKLOGI("Prompt size is %d", prompt.size());
         // TODO: Something seems wrong currently with kv_cache
+
+        bool allow_correction_token = !prompt.empty() && prompt.back() == specialTokens.XBC;
 
         llama_context *ctx = ((LlamaAdapter *) model->adapter)->context;
         llama_batch batch = ((LlamaAdapter *) model->adapter)->batch;
@@ -177,7 +186,7 @@ struct LanguageModelState {
         transformer_context_apply(model->transformerContext, prompt_ff);
 
         float *logits = llama_get_logits_ith(ctx, prompt_ff.first.size() - 1);
-        transform_logits(logits, n_vocab, false);
+        transform_logits(logits, n_vocab, false, allow_correction_token);
 
         std::vector<std::pair<float, int>> index_value;
         index_value.clear();
@@ -260,7 +269,7 @@ struct LanguageModelState {
             for (int seq = 0; seq < remaining_count; seq++) {
                 const potential_sequence &parent_seq = sequences[seq];
                 logits = llama_get_logits_ith(ctx, seq);
-                transform_logits(logits, n_vocab, true);
+                transform_logits(logits, n_vocab, true, allow_correction_token);
 
                 index_value.clear();
                 for (size_t i = 0; i < n_vocab; i++) {
@@ -344,55 +353,6 @@ struct LanguageModelState {
         }
 
         return outputs;
-    }
-
-    std::vector<std::pair<float, token_sequence>> SampleOld(const token_sequence &prompt, int n_results) {
-        model->updateContext(prompt);
-
-        float probability = 1.0f;
-        token_sequence sampled_sequence;
-
-        std::vector<std::pair<float, int>> index_value;
-
-        while(sampled_sequence.size() < 8) {
-            std::vector<float> logits = model->infer();
-            logits[specialTokens.XBU] = -999.0f;
-
-            for(int x : specialTokens.SAMPLING_BAD_TOKENS) {
-                logits[x] = -999.0f;
-            }
-
-            if(sampled_sequence.empty()) {
-                logits[specialTokens.SPACE] = -999.0f;
-            }
-
-            index_value.clear();
-            for (size_t i = 0; i < logits.size(); i++) {
-                index_value.emplace_back(logits[i], i);
-            }
-
-            sortProbabilityPairVectorDescending(index_value, 1);
-
-            int next_token = index_value[0].second;
-            model->pushToContext(next_token);
-
-            // Check if this is the end of correction
-            if(next_token == specialTokens.XEC) {
-                break;
-            }
-
-            probability *= index_value[0].first;
-            sampled_sequence.push_back(next_token);
-
-
-            // Check if this is the end of a word
-            std::string token = model->getToken(next_token);
-            if(token.size() >= 3 && (token[token.size() - 1] == '\x81') && (token[token.size() - 2] == '\x96') && token[token.size() - 3] == '\xe2') {
-                break;
-            }
-        }
-
-        return {{probability, std::move(sampled_sequence)}};
     }
 
     std::vector<std::pair<float, std::string>> PredictNextWord(const std::string &context) {

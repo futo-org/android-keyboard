@@ -1,6 +1,8 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.content.Context
+import android.os.PowerManager
+import android.os.PowerManager.WakeLock
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -27,6 +29,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.xlm.AdapterTrainerBuilder
+import org.futo.inputmethod.latin.xlm.TrainingDataGenerator
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -81,14 +84,18 @@ private fun getPathToModelResource(
 
 
 val exampleText = """
-GrayJay - A universal video app for following creators, not platforms. GrayJay - A universal video app for following creators, not platforms. GrayJay - A universal video app for following creators, not platforms. GrayJay - A universal video app for following creators, not platforms. GrayJay - A universal video app for following creators, not platforms.
-Circles - A private photo sharing feed for families. Circles - A private photo sharing feed for families. Circles - A private photo sharing feed for families. Circles - A private photo sharing feed for families. Circles - A private photo sharing feed for families.
-Live Captions - Accessible live captions that are completely private. Live Captions - Accessible live captions that are completely private. Live Captions - Accessible live captions that are completely private. Live Captions - Accessible live captions that are completely private. Live Captions - Accessible live captions that are completely private.
-Polycentric - A distributed text-based social network centered around communities. Polycentric - A distributed text-based social network centered around communities. Polycentric - A distributed text-based social network centered around communities. Polycentric - A distributed text-based social network centered around communities. Polycentric - A distributed text-based social network centered around communities.
-FUBS - A frictionless and modifiable software development system. FUBS - A frictionless and modifiable software development system. FUBS - A frictionless and modifiable software development system. FUBS - A frictionless and modifiable software development system. FUBS - A frictionless and modifiable software development system.
-Harbor - An app for preserving identity on the internet. Harbor - An app for preserving identity on the internet. Harbor - An app for preserving identity on the internet. Harbor - An app for preserving identity on the internet. Harbor - An app for preserving identity on the internet.
-FUTO Voice Input - A privacy-friendly voice input application. FUTO Voice Input - A privacy-friendly voice input application. FUTO Voice Input - A privacy-friendly voice input application. FUTO Voice Input - A privacy-friendly voice input application. FUTO Voice Input - A privacy-friendly voice input application.
-GrayJay - A universal video app for following creators, not platforms. GrayJay - A universal video app for following creators, not platforms. GrayJay - A universal video app for following creators, not platforms. GrayJay - A universal video app for following creators, not platforms. GrayJay - A universal video app for following creators, not platforms.
+What is FUTO?
+FUTO is an organization dedicated to developing, both through in-house engineering and investment, technologies that frustrate centralization and industry consolidation.
+FUTO believes in the power of individual freedom and economic competition, yet we must concede the free market is failing to challenge the Tech Giants. Anti-trust enforcement has proven impotent to restore a balance that would actually threaten the oligopoly’s domination.
+FUTO Can Help
+GrayJay - A universal video app for following creators, not platforms.
+Circles - A private photo sharing feed for families.
+Live Captions - Accessible live captions that are completely private.
+Polycentric - A distributed text-based social network centered around communities.
+FUBS - A frictionless and modifiable software development system.
+Harbor - An app for preserving identity on the internet.
+FUTO Voice Input - A privacy-friendly voice input application.
+All FUTO companies and FUTO-funded projects are expected to remain fiercely independent.
 """.trimIndent()
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,7 +118,7 @@ fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
 
         val scope = LocalLifecycleOwner.current
         Button(onClick = {
-            val result = getPathToModelResource(context, R.raw.ml4_f16, R.raw.ml3_tokenizer, true)
+            val result = getPathToModelResource(context, R.raw.ml4_1_f16, R.raw.ml3_tokenizer, true)
 
             val outputDir = context.cacheDir
             val outputFile = File(outputDir, "test-adapter.bin")
@@ -122,14 +129,69 @@ fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
                 outputFile.absolutePath
             )
 
+            /*
+            val words = trainText.split(" ").toSet().filter { TrainingDataGenerator.suitableToMisspell(it) }
+
+            for(i in 0 until 16) {
+                builder.addExamples(words.map {
+                    TrainingDataGenerator.wordMisspelling(it)
+                }.toList())
+            }
+
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f) })
+
+            for(i in 0 until 2) {
+                builder.addExamples(
+                    trainText.lines().map { TrainingDataGenerator.randomlyMisspellWords(it) })
+            }
+            */
+
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 64.0f) })
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 32.0f) })
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 16.0f) })
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 8.0f) })
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 4.0f) })
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 2.0f) })
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 1.0f) })
+
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 0.33f, correctness = 1.0f) })
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 0.33f, correctness = 0.8f) })
+            builder.addExamples(
+                trainText.lines()
+                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 0.33f, correctness = 0.6f) })
             builder.addExamples(trainText.lines())
+
 
             val trainer = builder.loadAndPrepare()
 
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "FUTOLatinIME::modelTrainer")
             scope.lifecycleScope.launch {
                 isTraining = true
                 println("Staring to train")
+                wakeLock.acquire(120*60*1000L /*1 hour*/)
                 trainer.train()
+                wakeLock.release()
                 println("Finished training")
                 isTraining = false
             }

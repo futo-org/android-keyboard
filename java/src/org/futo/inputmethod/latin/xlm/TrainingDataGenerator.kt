@@ -173,8 +173,8 @@ private fun tokenizerFormatUserInput(misspelledWord: String): String {
 }
 
 object TrainingDataGenerator {
-    fun wordMisspelling(word: String): String {
-        val misspelled = WordMisspelling.misspellWord(word)
+    fun wordMisspelling(word: String, correctness: Float = 0.8f): String {
+        val misspelled = WordMisspelling.misspellWord(word, correctness)
 
         // Space after word is required for the tokenizer
         return tokenizerFormatUserInput(misspelled) + word.trim() + " " + TOKENIZER_END_CORRECTION
@@ -184,7 +184,7 @@ object TrainingDataGenerator {
     fun suitableToMisspell(word: String): Boolean {
         return permittedCharacters.containsAll(word.lowercase().toList())
     }
-    fun randomlyMisspellWords(text: String, proportion: Float = 0.333f): String {
+    fun randomlyMisspellWords(text: String, proportion: Float = 0.333f, correctness: Float = 0.8f): String {
         val words = text.split(" ").toMutableList()
         val wordsToMisspell = mutableListOf<Int>()
 
@@ -200,7 +200,10 @@ object TrainingDataGenerator {
         }
 
         wordsToMisspell.toSet().forEach { i ->
-            words[i] = wordMisspelling(words[i])
+            val misspelling = wordMisspelling(words[i], correctness)
+            if(!misspelling.contains("<XBU><XBC>") && !misspelling.contains("<XBC><XEC>")) {
+                words[i] = misspelling
+            }
         }
 
         return words.joinToString(separator=" ").trim()
