@@ -58,6 +58,7 @@ import org.futo.inputmethod.latin.utils.InputTypeUtils;
 import org.futo.inputmethod.latin.utils.RecapitalizeStatus;
 import org.futo.inputmethod.latin.utils.StatsUtils;
 import org.futo.inputmethod.latin.utils.TextRange;
+import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -74,7 +75,7 @@ public final class InputLogic {
 
     // TODO : Remove this member when we can.
     final LatinIMELegacy mLatinIMELegacy;
-    private final SuggestionStripViewAccessor mSuggestionStripViewAccessor;
+    public final SuggestionStripViewAccessor mSuggestionStripViewAccessor;
 
     // Never null.
     private InputLogicHandler mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
@@ -88,8 +89,8 @@ public final class InputLogic {
     private final DictionaryFacilitator mDictionaryFacilitator;
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-    // This has package visibility so it can be accessed from InputLogicHandler.
-    /* package */ final WordComposer mWordComposer;
+    
+    public final WordComposer mWordComposer;
     public final RichInputConnection mConnection;
     private final RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus();
 
@@ -1443,62 +1444,90 @@ public final class InputLogic {
                 ngramContext, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
     }
 
+    private void ensureSuggestionStripCompleted(final SettingsValues settingsValues,
+            final String separator, final LatinIMELegacy.UIHandler handler) {
+        if(settingsValues.mTransformerPredictionEnabled) {
+            LanguageModelFacilitator facilitator = handler.getLanguageModelFacilitator();
+            if(facilitator.hasPendingUpdate()) {
+                facilitator.blockUntilComplete();
+            }
+        } else {
+            if (handler.hasPendingUpdateSuggestions()) {
+                handler.cancelUpdateSuggestionStrip();
+                // To know the input style here, we should retrieve the in-flight "update suggestions"
+                // message and read its arg1 member here. However, the Handler class does not let
+                // us retrieve this message, so we can't do that. But in fact, we notice that
+                // we only ever come here when the input style was typing. In the case of batch
+                // input, we update the suggestions synchronously when the tail batch comes. Likewise
+                // for application-specified completions. As for recorrections, we never auto-correct,
+                // so we don't come here either. Hence, the input style is necessarily
+                // INPUT_STYLE_TYPING.
+                performUpdateSuggestionStripSync(settingsValues, SuggestedWords.INPUT_STYLE_TYPING);
+            }
+        }
+    }
+
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
             final int inputStyle) {
-        long startTimeMillis = 0;
-        if (DebugFlags.DEBUG_ENABLED) {
-            startTimeMillis = System.currentTimeMillis();
-            Log.d(TAG, "performUpdateSuggestionStripSync()");
-        }
-        // Check if we have a suggestion engine attached.
-        if (!settingsValues.needsToLookupSuggestions()) {
-            if (mWordComposer.isComposingWord()) {
-                Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
-                        + "requested!");
+        if(settingsValues.mTransformerPredictionEnabled) {
+            throw new IllegalStateException("called performUpdateSuggestionStripSync during TransformerLM");
+        } else {
+            long startTimeMillis = 0;
+            if (DebugFlags.DEBUG_ENABLED) {
+                startTimeMillis = System.currentTimeMillis();
+                Log.d(TAG, "performUpdateSuggestionStripSync()");
             }
-            // Clear the suggestions strip.
-            mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance());
-            return;
-        }
+            // Check if we have a suggestion engine attached.
+            if (!settingsValues.needsToLookupSuggestions()) {
+                if (mWordComposer.isComposingWord()) {
+                    Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
+                            + "requested!");
+                }
+                // Clear the suggestions strip.
+                mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance());
+                return;
+            }
 
-        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
+            if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
+                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+                return;
+            }
+
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-            return;
-        }
-
-        final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<>("Suggest");
-        mInputLogicHandler.getSuggestedWords(inputStyle, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
-                new OnGetSuggestedWordsCallback() {
-                    @Override
-                    public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        final String typedWordString = mWordComposer.getTypedWord();
-                        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
-                                typedWordString, "" /* prevWordsContext */,
-                                SuggestedWordInfo.MAX_SCORE,
-                                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                                SuggestedWordInfo.NOT_A_CONFIDENCE);
-                        // Show new suggestions if we have at least one. Otherwise keep the old
-                        // suggestions with the new typed word. Exception: if the length of the
-                        // typed word is <= 1 (after a deletion typically) we clear old suggestions.
-                        if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
-                            holder.set(suggestedWords);
-                        } else {
-                            holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
+            final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<>("Suggest");
+            mInputLogicHandler.getSuggestedWords(inputStyle, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
+                    new OnGetSuggestedWordsCallback() {
+                        @Override
+                        public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                            final String typedWordString = mWordComposer.getTypedWord();
+                            final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                                    typedWordString, "" /* prevWordsContext */,
+                                    SuggestedWordInfo.MAX_SCORE,
+                                    SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
+                                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                                    SuggestedWordInfo.NOT_A_CONFIDENCE);
+                            // Show new suggestions if we have at least one. Otherwise keep the old
+                            // suggestions with the new typed word. Exception: if the length of the
+                            // typed word is <= 1 (after a deletion typically) we clear old suggestions.
+                            if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
+                                holder.set(suggestedWords);
+                            } else {
+                                holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
+                            }
                         }
                     }
-                }
-        );
+            );
 
-        // This line may cause the current thread to wait.
-        final SuggestedWords suggestedWords = holder.get(null,
-                Constants.GET_SUGGESTED_WORDS_TIMEOUT);
-        if (suggestedWords != null) {
-            mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
-        }
-        if (DebugFlags.DEBUG_ENABLED) {
-            long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
-            Log.d(TAG, "performUpdateSuggestionStripSync() : " + runTimeMillis + " ms to finish");
+            // This line may cause the current thread to wait.
+            final SuggestedWords suggestedWords = holder.get(null,
+                    Constants.GET_SUGGESTED_WORDS_TIMEOUT);
+            if (suggestedWords != null) {
+                mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
+            }
+            if (DebugFlags.DEBUG_ENABLED) {
+                long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
+                Log.d(TAG, "performUpdateSuggestionStripSync() : " + runTimeMillis + " ms to finish");
+            }
         }
     }
 
@@ -2094,18 +2123,7 @@ public final class InputLogic {
     private void commitCurrentAutoCorrection(final SettingsValues settingsValues,
             final String separator, final LatinIMELegacy.UIHandler handler) {
         // Complete any pending suggestions query first
-        if (handler.hasPendingUpdateSuggestions()) {
-            handler.cancelUpdateSuggestionStrip();
-            // To know the input style here, we should retrieve the in-flight "update suggestions"
-            // message and read its arg1 member here. However, the Handler class does not let
-            // us retrieve this message, so we can't do that. But in fact, we notice that
-            // we only ever come here when the input style was typing. In the case of batch
-            // input, we update the suggestions synchronously when the tail batch comes. Likewise
-            // for application-specified completions. As for recorrections, we never auto-correct,
-            // so we don't come here either. Hence, the input style is necessarily
-            // INPUT_STYLE_TYPING.
-            performUpdateSuggestionStripSync(settingsValues, SuggestedWords.INPUT_STYLE_TYPING);
-        }
+        ensureSuggestionStripCompleted(settingsValues, separator, handler);
         final SuggestedWordInfo autoCorrectionOrNull = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
         final String stringToCommit = (autoCorrectionOrNull != null)

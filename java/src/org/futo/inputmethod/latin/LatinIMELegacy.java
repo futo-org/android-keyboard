@@ -101,6 +101,7 @@ import org.futo.inputmethod.latin.utils.StatsUtils;
 import org.futo.inputmethod.latin.utils.StatsUtilsManager;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.latin.utils.ViewLayoutUtils;
+import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -157,7 +158,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     private static final String SCHEME_PACKAGE = "package";
 
     final Settings mSettings;
-    private final DictionaryFacilitator mDictionaryFacilitator =
+    final DictionaryFacilitator mDictionaryFacilitator =
             DictionaryFacilitatorProvider.getDictionaryFacilitator(
                     false /* isNeededForSpellChecking */);
     final InputLogic mInputLogic;
@@ -220,7 +221,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public static final class UIHandler extends LeakGuardHandlerWrapper<LatinIMELegacy> {
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
         private static final int MSG_PENDING_IMS_CALLBACK = 1;
-        private static final int MSG_UPDATE_SUGGESTION_STRIP = 2;
+        private static final int MSG_UPDATE_SUGGESTION_STRIP_LEGACY = 2;
         private static final int MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 3;
         private static final int MSG_RESUME_SUGGESTIONS = 4;
         private static final int MSG_REOPEN_DICTIONARIES = 5;
@@ -266,7 +267,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
             }
             final KeyboardSwitcher switcher = latinImeLegacy.mKeyboardSwitcher;
             switch (msg.what) {
-            case MSG_UPDATE_SUGGESTION_STRIP:
+            case MSG_UPDATE_SUGGESTION_STRIP_LEGACY:
                 cancelUpdateSuggestionStrip();
                 latinImeLegacy.mInputLogic.performUpdateSuggestionStripSync(
                         latinImeLegacy.mSettings.getCurrent(), msg.arg1 /* inputStyle */);
@@ -332,8 +333,13 @@ public class LatinIMELegacy implements KeyboardActionListener,
         }
 
         public void postUpdateSuggestionStrip(final int inputStyle) {
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP, inputStyle,
-                    0 /* ignored */), mDelayInMillisecondsToUpdateSuggestions);
+            final LatinIMELegacy latinImeLegacy = getOwnerInstance();
+            if(latinImeLegacy.mSettings.getCurrent().mTransformerPredictionEnabled) {
+                ((LatinIME)latinImeLegacy.getInputMethodService()).postUpdateSuggestionStrip(inputStyle);
+            } else {
+                sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP_LEGACY, inputStyle,
+                        0 /* ignored */), mDelayInMillisecondsToUpdateSuggestions);
+            }
         }
 
         public void postReopenDictionaries() {
@@ -389,11 +395,16 @@ public class LatinIMELegacy implements KeyboardActionListener,
         }
 
         public void cancelUpdateSuggestionStrip() {
-            removeMessages(MSG_UPDATE_SUGGESTION_STRIP);
+            removeMessages(MSG_UPDATE_SUGGESTION_STRIP_LEGACY);
         }
 
         public boolean hasPendingUpdateSuggestions() {
-            return hasMessages(MSG_UPDATE_SUGGESTION_STRIP);
+            return hasMessages(MSG_UPDATE_SUGGESTION_STRIP_LEGACY);
+        }
+
+        public LanguageModelFacilitator getLanguageModelFacilitator() {
+            final LatinIMELegacy latinImeLegacy = getOwnerInstance();
+            return ((LatinIME)(latinImeLegacy.mInputMethodService)).getLanguageModelFacilitator();
         }
 
         public boolean hasPendingReopenDictionaries() {
@@ -1562,12 +1573,17 @@ public class LatinIMELegacy implements KeyboardActionListener,
     // TODO[IL]: Move this out of LatinIME.
     public void getSuggestedWords(final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
+        SettingsValues settings = mSettings.getCurrent();
+        if(settings.mTransformerPredictionEnabled) {
+            ((LatinIME)getInputMethodService()).postUpdateSuggestionStrip(inputStyle);
+            return;
+        }
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         if (keyboard == null) {
             callback.onGetSuggestedWords(SuggestedWords.getEmptyInstance());
             return;
         }
-        mInputLogic.getSuggestedWords(mSettings.getCurrent(), keyboard,
+        mInputLogic.getSuggestedWords(settings, keyboard,
                 mKeyboardSwitcher.getKeyboardShiftMode(), inputStyle, sequenceNumber, callback);
     }
 

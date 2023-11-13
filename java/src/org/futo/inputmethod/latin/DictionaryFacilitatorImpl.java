@@ -136,8 +136,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         @Nullable public final String mAccount;
 
         @Nullable private Dictionary mMainDict;
-
-        @Nullable private LanguageModel mGGMLDict = null;
         // Confidence that the most probable language is actually the language the user is
         // typing in. For now, this is simply the number of times a word from this language
         // has been committed in a row.
@@ -185,9 +183,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 return mMainDict;
             }
-            if (Dictionary.TYPE_GGML.equals(dictType)) {
-                return mGGMLDict;
-            }
             return getSubDict(dictType);
         }
 
@@ -198,9 +193,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         public boolean hasDict(final String dictType, @Nullable final String account) {
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 return mMainDict != null;
-            }
-            if (Dictionary.TYPE_GGML.equals(dictType)) {
-                return mGGMLDict != null;
             }
             if (Dictionary.TYPE_USER_HISTORY.equals(dictType) &&
                     !TextUtils.equals(account, mAccount)) {
@@ -358,7 +350,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         DictionaryGroup newDictionaryGroup =
                 new DictionaryGroup(newLocale, mainDict, account, subDicts);
 
-        newDictionaryGroup.mGGMLDict = new LanguageModel(context, Dictionary.TYPE_GGML, newLocale);
         // Replace Dictionaries.
         final DictionaryGroup oldDictionaryGroup;
         synchronized (mLock) {
@@ -416,7 +407,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         synchronized (mLock) {
             if (locale.equals(dictionaryGroup.mLocale)) {
                 dictionaryGroup.setMainDict(mainDict);
-                dictionaryGroup.mGGMLDict = new LanguageModel(context, Dictionary.TYPE_GGML, locale);
             } else {
                 // Dictionary facilitator has been reset for another locale.
                 mainDict.close();
@@ -628,6 +618,13 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             NgramContext ngramContext, @Nonnull final Keyboard keyboard,
             SettingsValuesForSuggestion settingsValuesForSuggestion, int sessionId,
             int inputStyle) {
+
+        if(settingsValuesForSuggestion.mUseTransformerLM) {
+            throw new IllegalStateException("Invalid code path TransformerLM");
+        }
+
+
+
         long proximityInfoHandle = keyboard.getProximityInfo().getNativeProximityInfo();
         final SuggestionResults suggestionResults = new SuggestionResults(
                 SuggestedWords.MAX_SUGGESTIONS, ngramContext.isBeginningOfSentenceContext(),
@@ -635,9 +632,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         final float[] weightOfLangModelVsSpatialModel =
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
         for (final String dictType : ALL_DICTIONARY_TYPES) {
-            if(settingsValuesForSuggestion.mUseTransformerLM && dictType != Dictionary.TYPE_GGML) continue;
-            else if(!settingsValuesForSuggestion.mUseTransformerLM && dictType == Dictionary.TYPE_GGML) continue;
-
             final Dictionary dictionary = mDictionaryGroup.getDict(dictType);
             if (null == dictionary) continue;
             final float weightForLocale = composedData.mIsBatchMode

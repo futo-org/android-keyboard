@@ -60,9 +60,19 @@ import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import org.futo.inputmethod.latin.common.Constants
+import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBar
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
@@ -87,6 +97,11 @@ import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import org.futo.inputmethod.latin.settings.SettingsValues;
+import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
+import org.futo.inputmethod.latin.xlm.LanguageModel;
+import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator;
+import org.futo.inputmethod.latin.utils.SuggestionResults
 
 class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner,
     LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner, KeyboardManagerForAction {
@@ -125,6 +140,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private val latinIMELegacy = LatinIMELegacy(
         this as InputMethodService,
         this as LatinIMELegacy.SuggestionStripController
+    )
+
+    public val languageModelFacilitator = LanguageModelFacilitator(
+        this,
+        latinIMELegacy.mInputLogic,
+        latinIMELegacy.mDictionaryFacilitator,
+        latinIMELegacy.mSettings,
+        latinIMELegacy.mKeyboardSwitcher,
+        lifecycleScope
     )
 
     private var activeThemeOption: ThemeOption? = null
@@ -209,6 +233,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
         latinIMELegacy.onCreate()
+
+        languageModelFacilitator.launchProcessor()
     }
 
     override fun onDestroy() {
@@ -697,5 +723,9 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         setContent()
 
         return true
+    }
+
+    fun postUpdateSuggestionStrip(inputStyle: Int) {
+        languageModelFacilitator.updateSuggestionStripAsync(inputStyle);
     }
 }

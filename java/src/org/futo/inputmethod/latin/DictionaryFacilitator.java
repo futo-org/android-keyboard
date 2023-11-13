@@ -45,7 +45,6 @@ import javax.annotation.Nullable;
 public interface DictionaryFacilitator {
 
     public static final String[] ALL_DICTIONARY_TYPES = new String[] {
-            Dictionary.TYPE_GGML,
             Dictionary.TYPE_MAIN,
             Dictionary.TYPE_CONTACTS,
             Dictionary.TYPE_USER_HISTORY,
