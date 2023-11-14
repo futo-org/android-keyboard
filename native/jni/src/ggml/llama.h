@@ -756,4 +756,6 @@ const std::vector<std::pair<std::string, struct ggml_tensor *>> & llama_internal
 
 #endif // LLAMA_API_INTERNAL
 
+LLAMA_API int save_llama_model_file(const char * filename, const char * fn_vocab_model, struct llama_model * model);
+
 #endif // LLAMA_H

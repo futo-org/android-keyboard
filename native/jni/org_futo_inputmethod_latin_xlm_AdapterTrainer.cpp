@@ -23,12 +23,13 @@ std::string jstring2string(JNIEnv *env, jstring jStr) {
     return {stringChars};
 }
 
-
 namespace latinime {
     struct AdapterTrainerState {
         std::string baseModelPath;
         std::string tokenizerPath;
-        std::string outputPath;
+        std::string loraCachePath;
+        std::string outputModelPath;
+        float outputScale;
 
         sentencepiece::SentencePieceProcessor spm;
         struct train_params params;
@@ -61,7 +62,7 @@ namespace latinime {
             params.common.fn_checkpoint_in = "";
             params.common.fn_checkpoint_out = "";
             params.fn_model_base = baseModelPath.c_str();
-            params.fn_lora_out = outputPath.c_str();
+            params.fn_lora_out = loraCachePath.c_str();
 
             params.common.fill_with_next_samples = true;
             params.common.n_threads = 6;
@@ -103,11 +104,13 @@ namespace latinime {
         }
     };
 
-    static jlong xlm_AdapterTrainer_open(JNIEnv *env, jclass clazz, jstring baseModelPathStr, jstring tokenizerPathStr, jstring outputPathStr) {
+    static jlong xlm_AdapterTrainer_open(JNIEnv *env, jclass clazz, jstring baseModelPathStr, jstring tokenizerPathStr, jstring loraCacheStr, jstring outputModelPathStr, float outputScale) {
         auto *state = new AdapterTrainerState();
-        state->baseModelPath = jstring2string(env, baseModelPathStr);
-        state->tokenizerPath = jstring2string(env, tokenizerPathStr);
-        state->outputPath    = jstring2string(env, outputPathStr);
+        state->baseModelPath   = jstring2string(env, baseModelPathStr);
+        state->tokenizerPath   = jstring2string(env, tokenizerPathStr);
+        state->loraCachePath   = jstring2string(env, loraCacheStr);
+        state->outputModelPath = jstring2string(env, outputModelPathStr);
+        state->outputScale = outputScale;
 
         state->env = env;
 
@@ -149,13 +152,47 @@ namespace latinime {
         int result = state->Train();
         if(result != 0) {
             AKLOGE("train returned with non-zero code %d", result);
+            return;
+        }
+
+        // Apply LoRA
+        llama_model_params model_params = llama_model_default_params();
+        model_params.use_mmap = false;
+
+        llama_model *model = llama_load_model_from_file(state->baseModelPath.c_str(), model_params);
+
+        if(model == nullptr) {
+            AKLOGE("failed to load model for exporting LoRA");
+            return;
+        }
+
+        int err = llama_model_apply_lora_from_file(
+                model,
+               state->loraCachePath.c_str(),
+               state->outputScale,
+               nullptr,
+               4
+        );
+        if(err != 0) {
+            AKLOGE("Failed to apply lora: %d", err);
+            return;
+        }
+
+        int status = save_llama_model_file(
+            state->outputModelPath.c_str(),
+            state->baseModelPath.c_str(),
+            model
+        );
+        if(status != 0) {
+            AKLOGE("Failed to save model! %d", status);
+            return;
         }
     }
 
     static const JNINativeMethod sMethods[] = {
             {
                     const_cast<char *>("openNative"),
-                    const_cast<char *>("(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)J"),
+                    const_cast<char *>("(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;F)J"),
                     reinterpret_cast<void *>(xlm_AdapterTrainer_open)
             },
             {

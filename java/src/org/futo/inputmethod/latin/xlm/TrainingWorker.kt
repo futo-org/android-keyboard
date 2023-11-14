@@ -46,54 +46,6 @@ object TrainingWorkerStatus {
     val progress = MutableSharedFlow<Float>(replay = 4)
 }
 
-
-private fun getPathToModelResource(
-    context: Context,
-    modelResource: Int,
-    tokenizerResource: Int,
-    forceDelete: Boolean
-): Pair<String, String> {
-    val outputDir = context.cacheDir
-    val outputFile = File(outputDir, "ggml-model-$modelResource.gguf")
-    val outputFileTokenizer = File(
-        outputDir,
-        "tokenizer-$tokenizerResource.tokenizer"
-    )
-    if (forceDelete && outputFile.exists()) {
-        outputFile.delete()
-        outputFileTokenizer.delete()
-    }
-    if (!outputFile.exists() || forceDelete) {
-        // FIXME: We save this to a random temporary file so that we can have a path instead of an InputStream
-        val `is` = context.resources.openRawResource(modelResource)
-        val is_t = context.resources.openRawResource(tokenizerResource)
-        try {
-            val os: OutputStream = FileOutputStream(outputFile)
-            var read = 0
-            val bytes = ByteArray(1024)
-            while (`is`.read(bytes).also { read = it } != -1) {
-                os.write(bytes, 0, read)
-            }
-            os.flush()
-            os.close()
-            `is`.close()
-            val os_t: OutputStream = FileOutputStream(outputFileTokenizer)
-            read = 0
-            while (is_t.read(bytes).also { read = it } != -1) {
-                os_t.write(bytes, 0, read)
-            }
-            os_t.flush()
-            os_t.close()
-            is_t.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            throw RuntimeException("Failed to write model asset to file")
-        }
-    }
-    return Pair(outputFile.absolutePath, outputFileTokenizer.absolutePath)
-}
-
-
 class TrainingWorker(context: Context, parameters: WorkerParameters) : CoroutineWorker(context, parameters) {
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as
@@ -166,15 +118,13 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
     }
 
     private suspend fun train(): TrainingState {
-        val result = getPathToModelResource(applicationContext, R.raw.ml4_1_f16, R.raw.ml3_tokenizer, true)
-
-        val outputDir = applicationContext.cacheDir
-        val outputFile = File(outputDir, "test-adapter.bin")
+        val cacheLoraPath = File(applicationContext.cacheDir, "adapter.bin")
 
         val builder = AdapterTrainerBuilder(
-            result.first,
-            result.second,
-            outputFile.absolutePath
+            ModelPaths.getPrimaryModel(applicationContext),
+            ModelPaths.getTokenizer(applicationContext),
+            cacheLoraPath.absolutePath,
+            ModelPaths.getFinetunedModelOutput(applicationContext)
         )
 
         builder.setLossFlow(TrainingWorkerStatus.loss)

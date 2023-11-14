@@ -25,56 +25,6 @@ import java.util.function.IntPredicate;
 public class LanguageModel extends Dictionary {
     static long mNativeState = 0;
 
-    private String getPathToModelResource(Context context, int modelResource, int tokenizerResource, boolean forceDelete) {
-        File outputDir = context.getCacheDir();
-        File outputFile = new File(outputDir, "ggml-model-" + String.valueOf(modelResource) + ".gguf");
-        File outputFileTokenizer = new File(outputDir, "tokenizer-" + String.valueOf(tokenizerResource) + ".tokenizer");
-
-        if(forceDelete && outputFile.exists()) {
-            outputFile.delete();
-            outputFileTokenizer.delete();
-        }
-
-        if((!outputFile.exists()) || forceDelete){
-            // FIXME: We save this to a random temporary file so that we can have a path instead of an InputStream
-            InputStream is = context.getResources().openRawResource(modelResource);
-            InputStream is_t = context.getResources().openRawResource(tokenizerResource);
-
-            try {
-                OutputStream os = new FileOutputStream(outputFile);
-
-                int read = 0;
-                byte[] bytes = new byte[1024];
-
-                while ((read = is.read(bytes)) != -1) {
-                    os.write(bytes, 0, read);
-                }
-
-                os.flush();
-                os.close();
-                is.close();
-
-
-                OutputStream os_t = new FileOutputStream(outputFileTokenizer);
-
-                read = 0;
-                while ((read = is_t.read(bytes)) != -1) {
-                    os_t.write(bytes, 0, read);
-                }
-
-                os_t.flush();
-                os_t.close();
-                is_t.close();
-
-            } catch(IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to write model asset to file");
-            }
-        }
-
-        return outputFile.getAbsolutePath() + ":" + outputFileTokenizer.getAbsolutePath();
-    }
-
     Context context = null;
     Thread initThread = null;
     Locale locale = null;
@@ -95,11 +45,13 @@ public class LanguageModel extends Dictionary {
             @Override public void run() {
                 if(mNativeState != 0) return;
 
-                String modelPath = getPathToModelResource(context, R.raw.ml4_1_f16, R.raw.ml3_tokenizer, true);
+                String modelPath = ModelPaths.INSTANCE.getPrimaryModel(context) + ":" + ModelPaths.INSTANCE.getTokenizer(context);
                 mNativeState = openNative(modelPath);
 
                 if(mNativeState == 0){
-                    modelPath = getPathToModelResource(context, R.raw.ml4_1_f16, R.raw.ml3_tokenizer, true);
+                    // TODO: Not sure how to handle finetuned model being corrupt. Maybe have finetunedA.gguf and finetunedB.gguf and swap between them
+                    ModelPaths.INSTANCE.clearCache(context);
+                    modelPath = ModelPaths.INSTANCE.getPrimaryModel(context) + ":" + ModelPaths.INSTANCE.getTokenizer(context);
                     mNativeState = openNative(modelPath);
                 }
 

@@ -148,7 +148,7 @@ struct LanguageModelState {
     }
 
     std::vector<std::pair<float, token_sequence>> Sample(const token_sequence &prompt, int n_results) {
-        AKLOGI("Prompt size is %d", prompt.size());
+        //AKLOGI("Prompt size is %d", prompt.size());
         // TODO: Something seems wrong currently with kv_cache
 
         bool allow_correction_token = !prompt.empty() && prompt.back() == specialTokens.XBC;
@@ -162,7 +162,7 @@ struct LanguageModelState {
 
         auto prompt_ff = transformer_context_fastforward(model->transformerContext, prompt);
 
-        AKLOGI("prompt_ff size = %d, n_past = %d", prompt_ff.first.size(), prompt_ff.second);
+        //AKLOGI("prompt_ff size = %d, n_past = %d", prompt_ff.first.size(), prompt_ff.second);
 
         llama_kv_cache_seq_rm(ctx, 0, prompt_ff.second, -1);
 
@@ -459,23 +459,23 @@ namespace latinime {
             env->ReleaseStringUTFChars(partialWord, pwstr);
         }
 
-        AKLOGI("LanguageModel context [%s]", contextString.c_str());
+        //AKLOGI("LanguageModel context [%s]", contextString.c_str());
 
         bool isAutoCorrect = false;
         std::vector<std::pair<float, std::string>> results;
         if(partialWordString.empty()) {
             results = state->PredictNextWord(contextString);
 
-            for(const auto &result : results) {
-                AKLOGI("LanguageModel suggestion %.2f [%s]", result.first, result.second.c_str());
-            }
+            //for(const auto &result : results) {
+            //    AKLOGI("LanguageModel suggestion %.2f [%s]", result.first, result.second.c_str());
+            //}
         } else {
             isAutoCorrect = true;
             results = state->PredictCorrection(contextString, partialWordString);
 
-            for(const auto &result : results) {
-                AKLOGI("LanguageModel correction %.2f [%s] -> [%s]", result.first, partialWordString.c_str(), result.second.c_str());
-            }
+            //for(const auto &result : results) {
+            //    AKLOGI("LanguageModel correction %.2f [%s] -> [%s]", result.first, partialWordString.c_str(), result.second.c_str());
+            //}
         }
 
         // Output

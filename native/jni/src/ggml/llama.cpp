@@ -9079,3 +9079,166 @@ static void llama_log_callback_default(ggml_log_level level, const char * text, 
     fputs(text, stderr);
     fflush(stderr);
 }
+
+
+
+
+static int save_llama_model_gguf(struct gguf_context * fctx, const char * fn_vocab_model, struct llama_model * model) {
+    const char * arch = "llama";
+    const auto kv = LLM_KV(LLM_ARCH_LLAMA);
+    enum llama_ftype ftype = LLAMA_FTYPE_MOSTLY_F16;
+
+    // set arch
+    gguf_set_val_str(fctx, kv(LLM_KV_GENERAL_ARCHITECTURE).c_str(), arch);
+    gguf_set_val_u32(fctx, "general.file_type", ftype);
+
+    // set hparams
+    gguf_set_val_u32(fctx, kv(LLM_KV_CONTEXT_LENGTH).c_str(),              model->hparams.n_ctx_train                  );
+    gguf_set_val_u32(fctx, kv(LLM_KV_EMBEDDING_LENGTH).c_str(),            model->hparams.n_embd                 );
+    gguf_set_val_u32(fctx, kv(LLM_KV_FEED_FORWARD_LENGTH).c_str(),         model->hparams.n_ff                   );
+    gguf_set_val_u32(fctx, kv(LLM_KV_ATTENTION_HEAD_COUNT).c_str(),        model->hparams.n_head                 );
+    gguf_set_val_u32(fctx, kv(LLM_KV_BLOCK_COUNT).c_str(),                 model->hparams.n_layer                );
+    gguf_set_val_u32(fctx, kv(LLM_KV_ROPE_DIMENSION_COUNT).c_str(),        model->hparams.n_rot                  );
+
+    gguf_set_val_f32(fctx, kv(LLM_KV_ATTENTION_LAYERNORM_RMS_EPS).c_str(), model->hparams.f_norm_rms_eps         );
+    gguf_set_val_f32(fctx, kv(LLM_KV_ROPE_FREQ_BASE).c_str(),              model->hparams.rope_freq_base_train         ); // TODO load in llama.cpp
+    gguf_set_val_f32(fctx, kv(LLM_KV_ROPE_SCALE_LINEAR).c_str(),           1.0f / model->hparams.rope_freq_scale_train );
+
+    // set vocab by copying from vocab_model gguf file
+    {
+        struct gguf_init_params params = {
+                /*.no_alloc = */ false,
+                /*.ctx      = */ NULL,
+        };
+        struct gguf_context * vctx = gguf_init_from_file(fn_vocab_model, params);
+
+        const int token_idx = gguf_find_key(vctx, kv(LLM_KV_TOKENIZER_LIST).c_str());
+        if (token_idx == -1) {
+            LLAMA_LOG_ERROR("cannot find tokenizer vocab in model file");
+            return 1;
+        }
+        const uint32_t n_vocab = gguf_get_arr_n(vctx, token_idx);
+
+        const int score_idx = gguf_find_key(vctx, kv(LLM_KV_TOKENIZER_SCORES).c_str());
+        if (score_idx == -1) {
+            LLAMA_LOG_ERROR("cannot find tokenizer scores in model file");
+            return 1;
+        }
+
+        const float * scores = (const float * ) gguf_get_arr_data(vctx, score_idx);
+
+        const int toktype_idx = gguf_find_key(vctx, kv(LLM_KV_TOKENIZER_TOKEN_TYPE).c_str());
+        if (toktype_idx == -1) {
+            LLAMA_LOG_ERROR("cannot find token type list in GGUF file");
+            return 1;
+        }
+
+        const int * toktypes = (const int * ) gguf_get_arr_data(vctx, toktype_idx);
+
+        std::string tokenizer_name;
+        GGUF_GET_KEY(vctx, tokenizer_name, gguf_get_val_str, GGUF_TYPE_STRING, true, kv(LLM_KV_TOKENIZER_MODEL));
+
+        gguf_set_val_str(fctx, kv(LLM_KV_TOKENIZER_MODEL).c_str(), tokenizer_name.c_str());
+        gguf_set_arr_data(fctx, kv(LLM_KV_TOKENIZER_SCORES).c_str(), GGUF_TYPE_FLOAT32, scores, n_vocab);
+        gguf_set_arr_data(fctx, kv(LLM_KV_TOKENIZER_TOKEN_TYPE).c_str(), GGUF_TYPE_INT32, toktypes, n_vocab);
+
+        int32_t special_bos_id = 1;
+        int32_t special_eos_id = 2;
+        int32_t special_unk_id = 0;
+        int32_t special_sep_id = -1;
+        int32_t special_pad_id = -1;
+        if (tokenizer_name == "llama") {
+            // default special tokens
+            special_bos_id = 1;
+            special_eos_id = 2;
+            special_unk_id = 0;
+            special_sep_id = -1;
+            special_pad_id = -1;
+        } else if (tokenizer_name == "gpt2") {
+            // read and copy bpe merges
+            const int merges_keyidx = gguf_find_key(vctx, kv(LLM_KV_TOKENIZER_MERGES).c_str());
+            if (merges_keyidx == -1) {
+                LLAMA_LOG_ERROR("cannot find tokenizer merges in model file");
+                return 2;
+            }
+
+            const int n_merges = gguf_get_arr_n(vctx, merges_keyidx);
+
+            std::vector<const char*> merges;
+            merges.resize(n_merges);
+            for (int i = 0; i < n_merges; i++) {
+                merges[i] = gguf_get_arr_str(vctx, merges_keyidx, i);
+            }
+            gguf_set_arr_str(fctx, kv(LLM_KV_TOKENIZER_MERGES).c_str(), merges.data(), n_merges);
+
+            // default special tokens
+            special_bos_id = 11;
+            special_eos_id = 11;
+            special_unk_id = -1;
+            special_sep_id = -1;
+            special_pad_id = -1;
+        } else {
+            LLAMA_LOG_ERROR("%s: unknown tokenizer: '%s'", __func__, tokenizer_name.c_str());
+            LLAMA_LOG_ERROR("%s: using default tokenizer: 'llama'", __func__);
+        }
+
+        std::vector<const char*> tokens;
+        tokens.resize(n_vocab);
+        for (uint32_t i = 0; i < n_vocab; i++) {
+            tokens[i] = gguf_get_arr_str(vctx, token_idx, i);
+        }
+        gguf_set_arr_str(fctx, kv(LLM_KV_TOKENIZER_LIST).c_str(), tokens.data(), n_vocab);
+
+        GGUF_GET_KEY(vctx, special_bos_id, gguf_get_val_u32, GGUF_TYPE_UINT32, false, kv(LLM_KV_TOKENIZER_BOS_ID));
+        GGUF_GET_KEY(vctx, special_eos_id, gguf_get_val_u32, GGUF_TYPE_UINT32, false, kv(LLM_KV_TOKENIZER_EOS_ID));
+        GGUF_GET_KEY(vctx, special_unk_id, gguf_get_val_u32, GGUF_TYPE_UINT32, false, kv(LLM_KV_TOKENIZER_UNK_ID));
+        GGUF_GET_KEY(vctx, special_sep_id, gguf_get_val_u32, GGUF_TYPE_UINT32, false, kv(LLM_KV_TOKENIZER_SEP_ID));
+        GGUF_GET_KEY(vctx, special_pad_id, gguf_get_val_u32, GGUF_TYPE_UINT32, false, kv(LLM_KV_TOKENIZER_PAD_ID));
+
+        gguf_set_val_u32(fctx, kv(LLM_KV_TOKENIZER_EOS_ID).c_str(), special_eos_id);
+        gguf_set_val_u32(fctx, kv(LLM_KV_TOKENIZER_BOS_ID).c_str(), special_bos_id);
+        gguf_set_val_u32(fctx, kv(LLM_KV_TOKENIZER_UNK_ID).c_str(), special_unk_id);
+        gguf_set_val_u32(fctx, kv(LLM_KV_TOKENIZER_SEP_ID).c_str(), special_sep_id);
+        gguf_set_val_u32(fctx, kv(LLM_KV_TOKENIZER_PAD_ID).c_str(), special_pad_id);
+
+        gguf_free(vctx);
+    }
+
+    // add tensors
+    gguf_add_tensor(fctx, model->tok_embd);
+    gguf_add_tensor(fctx, model->output_norm);
+    gguf_add_tensor(fctx, model->output);
+    for (uint32_t i = 0; i < model->hparams.n_layer; ++i) {
+        auto & layer = model->layers[i];
+
+        gguf_add_tensor(fctx, layer.attn_norm);
+        gguf_add_tensor(fctx, layer.wq);
+        gguf_add_tensor(fctx, layer.wk);
+        gguf_add_tensor(fctx, layer.wv);
+        gguf_add_tensor(fctx, layer.wo);
+        gguf_add_tensor(fctx, layer.ffn_norm);
+        gguf_add_tensor(fctx, layer.ffn_gate);
+        gguf_add_tensor(fctx, layer.ffn_down);
+        gguf_add_tensor(fctx, layer.ffn_up);
+    }
+
+    return 0;
+}
+
+int save_llama_model_file(const char * filename, const char * fn_vocab_model, struct llama_model * model) {
+    LLAMA_LOG_INFO("%s: saving to %s\n", __func__, filename);
+    struct gguf_context * fctx = gguf_init_empty();
+
+    int result = save_llama_model_gguf(fctx, fn_vocab_model, model);
+    if(result != 0) {
+        gguf_free(fctx);
+        return result;
+    }
+
+    // write file
+    const bool only_meta = false;
+    gguf_write_to_file(fctx, filename, only_meta);
+    gguf_free(fctx);
+
+    return 0;
+}

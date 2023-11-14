@@ -16,12 +16,14 @@ class InadequateDataException() : Exception("Inadequate Training Data")
 class AdapterTrainer(
     baseModelPath: String,
     tokenizerPath: String,
-    checkpointPath: String,
+    checkpointCachePath: String,
+    outputModelPath: String,
+    weight: Float,
     examples: List<String>,
     val lossFlow: MutableSharedFlow<Float>?,
     val progressFlow: MutableSharedFlow<Float>?
 ) {
-    private external fun openNative(baseModelPath: String, tokenizerPath: String, outputPath: String): Long
+    private external fun openNative(baseModelPath: String, tokenizerPath: String, loraCachePath: String, outputModelPath: String, weight: Float): Long
     private external fun closeNative(handle: Long)
     private external fun addExample(handle: Long, example: String)
     private external fun train(handle: Long) // Long-running function
@@ -38,7 +40,7 @@ class AdapterTrainer(
     }
 
     init {
-        handle = openNative(baseModelPath, tokenizerPath, checkpointPath)
+        handle = openNative(baseModelPath, tokenizerPath, checkpointCachePath, outputModelPath, weight)
         if(!isHandleValid()) {
             throw IllegalArgumentException("Failed to initialize AdapterTrainer with given parameters")
         }
@@ -52,8 +54,14 @@ class AdapterTrainer(
         }
 
         if(numAdded == 0) {
+            closeNative(handle)
             throw InadequateDataException()
         }
+    }
+
+    fun close() {
+        closeNative(handle)
+        handle = 0
     }
 
     suspend fun train() = withContext(TrainingContext) {
@@ -62,7 +70,7 @@ class AdapterTrainer(
     }
 }
 
-class AdapterTrainerBuilder(val baseModelPath: String, val tokenizerPath: String, val checkpointPath: String) {
+class AdapterTrainerBuilder(val baseModelPath: String, val tokenizerPath: String, val checkpointPath: String, val outputModelPath: String) {
     private val examples = mutableListOf<String>()
     fun addExamples(newExamples: List<String>) {
         examples.addAll(newExamples)
@@ -78,10 +86,12 @@ class AdapterTrainerBuilder(val baseModelPath: String, val tokenizerPath: String
         progressFlow = flow
     }
 
-    fun loadAndPrepare(): AdapterTrainer {
-        println("Preparing AdapterTrainer. Training data:")
-        examples.forEach { println(" - [$it]") }
+    private var weight = 1.0f;
+    fun setWeight(weight: Float) {
+        this.weight = weight;
+    }
 
-        return AdapterTrainer(baseModelPath, tokenizerPath, checkpointPath, examples, lossFlow = lossFlow, progressFlow = progressFlow)
+    fun loadAndPrepare(): AdapterTrainer {
+        return AdapterTrainer(baseModelPath, tokenizerPath, checkpointPath, outputModelPath, weight, examples, lossFlow = lossFlow, progressFlow = progressFlow)
     }
 }
