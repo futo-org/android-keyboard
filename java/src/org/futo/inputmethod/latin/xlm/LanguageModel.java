@@ -147,7 +147,8 @@ public class LanguageModel extends Dictionary {
 
         String context = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
         if(!ngramContext.fullContext.isEmpty()) {
-            context = ngramContext.fullContext.trim();
+            context = ngramContext.fullContext;
+            context = context.substring(context.lastIndexOf("\n") + 1).trim();
         }
 
         String partialWord = composedData.mTypedWord;
@@ -165,9 +166,7 @@ public class LanguageModel extends Dictionary {
 
         // Trim the context
         while(context.length() > 128) {
-            if(context.contains("\n")) {
-                context = context.substring(context.indexOf("\n") + 1).trim();
-            }else if(context.contains(".") || context.contains("?") || context.contains("!")) {
+            if(context.contains(".") || context.contains("?") || context.contains("!")) {
                 int v = Arrays.stream(
                         new int[]{
                                 context.indexOf("."),

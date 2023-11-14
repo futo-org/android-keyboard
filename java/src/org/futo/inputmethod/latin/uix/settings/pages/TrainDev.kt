@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -30,6 +31,9 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.xlm.AdapterTrainerBuilder
 import org.futo.inputmethod.latin.xlm.TrainingDataGenerator
+import org.futo.inputmethod.latin.xlm.loadHistoryLogBackup
+import org.futo.inputmethod.latin.xlm.HistoryLogForTraining
+import org.futo.inputmethod.latin.uix.theme.Typography
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -106,6 +110,62 @@ fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
     var isTraining by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        val data = mutableListOf<HistoryLogForTraining>()
+        loadHistoryLogBackup(context, data)
+
+        trainText = data.map { entry ->
+            if(entry.misspelledWord != null) {
+                if(entry.importance == 3) {
+                    listOf(
+                        (0 until 4).map {
+                            TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 64.0f)
+                        }.joinToString(separator = "\n"),
+                        (0 until 4).map {
+                            TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 16.0f)
+                        }.joinToString(separator = "\n"),
+                        (0 until 4).map {
+                            TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 4.0f)
+                        }.joinToString(separator = "\n"),
+                        (0 until 4).map {
+                            TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 1.0f)
+                        }.joinToString(separator = "\n"),
+                        (0 until 4).map {
+                            TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 0.8f)
+                        }.joinToString(separator = "\n"),
+                        /*
+                        (0 until 4).map {
+                            TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 0.6f)
+                        }.joinToString(separator = "\n"),
+                        */
+                    ).joinToString(separator = "\n")
+                } else if(entry.importance == 1) {
+                    listOf(
+                        TrainingDataGenerator.concatFormatWordMisspelling(entry.ngramContext, entry.misspelledWord, entry.committedWord),
+                        TrainingDataGenerator.concatFormatWordMisspelling(entry.ngramContext, entry.misspelledWord, entry.committedWord),
+                        TrainingDataGenerator.concatFormatWordMisspelling(entry.ngramContext, entry.misspelledWord, entry.committedWord),
+                        TrainingDataGenerator.concatFormatWordMisspelling(entry.ngramContext, entry.misspelledWord, entry.committedWord),
+                        TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 1.0f),
+                        TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 1.0f),
+                        TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 0.6f),
+                        TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 0.6f)
+                    ).joinToString(separator = "\n")
+                } else {
+                    listOf(
+                        TrainingDataGenerator.concatFormatWordMisspelling(entry.ngramContext, entry.misspelledWord, entry.committedWord),
+                        TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 1.0f),
+                    ).joinToString(separator = "\n")
+                }
+            } else {
+                listOf(
+                    entry.ngramContext.trim() + " " + entry.committedWord,
+                    TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 4.0f),
+                    TrainingDataGenerator.concatWordMisspelling(entry.ngramContext, entry.committedWord, 1.0f)
+                ).joinToString(separator = "\n")
+            }
+        }.map{ it.trim() }.joinToString(separator = "\n")
+    }
+
     ScrollableList {
         ScreenTitle("Training", showBack = true, navController)
 
@@ -113,7 +173,8 @@ fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
         TextField(
             value = trainText,
             onValueChange = { trainText = it },
-            enabled = !isTraining
+            enabled = !isTraining,
+            textStyle = Typography.labelSmall
         )
 
         val scope = LocalLifecycleOwner.current
@@ -129,58 +190,7 @@ fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
                 outputFile.absolutePath
             )
 
-            /*
-            val words = trainText.split(" ").toSet().filter { TrainingDataGenerator.suitableToMisspell(it) }
-
-            for(i in 0 until 16) {
-                builder.addExamples(words.map {
-                    TrainingDataGenerator.wordMisspelling(it)
-                }.toList())
-            }
-
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f) })
-
-            for(i in 0 until 2) {
-                builder.addExamples(
-                    trainText.lines().map { TrainingDataGenerator.randomlyMisspellWords(it) })
-            }
-            */
-
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 64.0f) })
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 32.0f) })
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 16.0f) })
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 8.0f) })
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 4.0f) })
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 2.0f) })
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 4.0f, correctness = 1.0f) })
-
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 0.33f, correctness = 1.0f) })
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 0.33f, correctness = 0.8f) })
-            builder.addExamples(
-                trainText.lines()
-                    .map { TrainingDataGenerator.randomlyMisspellWords(it, proportion = 0.33f, correctness = 0.6f) })
             builder.addExamples(trainText.lines())
-
 
             val trainer = builder.loadAndPrepare()
 

@@ -243,4 +243,100 @@ public class LanguageModelFacilitator(
             sharedFlow.emit(values)
         }
     }
+
+    private val historyLog: MutableList<HistoryLogForTraining> = mutableListOf()
+
+    public fun addToHistory(
+        word: String,
+        wasAutoCapitalized: Boolean,
+        ngramContext: NgramContext,
+        timeStampInSeconds: Long,
+        blockPotentiallyOffensive: Boolean,
+        importance: Int) {
+        
+        val wordCtx = ngramContext.fullContext.trim().lines().last()
+        var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
+        if(committedNgramCtx.isEmpty()) {
+            committedNgramCtx = " "
+        }
+        
+        val lastIdx = wordCtx.lastIndexOf(committedNgramCtx)
+        if(lastIdx == -1) {
+            println("addToHistory: extraction failed, couldn't find ngram ctx in full ctx")
+            return
+        }
+
+        val misspelledWord = wordCtx.substring(
+            lastIdx + committedNgramCtx.length
+        )
+        if(misspelledWord.isNotBlank() && (!(misspelledWord.startsWith(" ") || committedNgramCtx == " ") || misspelledWord.endsWith(" ") || misspelledWord.trim().contains(" "))) {
+            println("addToHistory: extraction failed bad context. wordCtx=[$wordCtx]  --   committedNgramCtx=[$committedNgramCtx]  --  word=[$word]  --  fullNgram=[$ngramContext]")
+            return
+        }
+
+        val ctxBeforeMisspelledWord = wordCtx.dropLast(misspelledWord.length)
+
+        val key = committedNgramCtx.trim() + " " + word.trim()
+        val logToAdd = if(misspelledWord.isNotBlank()) {
+            // Correcting (ctx) misspelled -> word
+            HistoryLogForTraining(
+                key,
+                ctxBeforeMisspelledWord,
+                committedNgramCtx,
+                misspelledWord.trim(),
+                word,
+                importance,
+                timeStampInSeconds
+            )
+        } else {
+            // Predicted (ctx) -> word
+            HistoryLogForTraining(
+                key,
+                ctxBeforeMisspelledWord,
+                committedNgramCtx,
+                null,
+                word,
+                importance,
+                timeStampInSeconds
+            )
+        }
+
+        historyLog.add(logToAdd)
+        println("addToHistory: Adding $logToAdd")
+    }
+
+    public fun unlearnFromHistory(
+        word: String,
+        ngramContext: NgramContext,
+        timeStampInSeconds: Long,
+        eventType: Int
+    ) {
+        val wordCtx = ngramContext.fullContext.trim().lines().last()
+        var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
+        if(committedNgramCtx.isEmpty()) {
+            committedNgramCtx = " "
+        }
+        
+        val keyToSearch = committedNgramCtx.trim() + " " + word.trim()
+
+        val logToRemove = historyLog.indexOfLast {
+            it.key.startsWith(keyToSearch) || it.key == keyToSearch
+        }
+
+        if(logToRemove == -1) {
+            println("addToHistory: UNLEARN Couldn't find key $keyToSearch")
+        } else {
+            println("addToHistory: Unlearning ${historyLog[logToRemove]}")
+            historyLog.removeAt(logToRemove)
+        }
+    }
+
+    public fun saveHistoryLog() {
+        saveHistoryLogBackup(context, historyLog)
+    }
+
+    public fun loadHistoryLog() {
+        assert(historyLog.isEmpty())
+        loadHistoryLogBackup(context, historyLog)
+    }
 }

@@ -49,6 +49,7 @@ namespace latinime {
             params.common.sample_random_offsets = true;
 
             params.common.warmup = 10;
+            params.common.n_epochs = 1;
             params.common.adam_alpha = 1e-3;
             params.common.adam_n_iter = 64;
 

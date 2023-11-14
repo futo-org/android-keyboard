@@ -403,8 +403,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         }
 
         public LanguageModelFacilitator getLanguageModelFacilitator() {
-            final LatinIMELegacy latinImeLegacy = getOwnerInstance();
-            return ((LatinIME)(latinImeLegacy.mInputMethodService)).getLanguageModelFacilitator();
+            return getOwnerInstance().getLanguageModelFacilitator();
         }
 
         public boolean hasPendingReopenDictionaries() {
@@ -1975,5 +1974,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     public InputMethodService getInputMethodService() {
         return mInputMethodService;
+    }
+
+    public LanguageModelFacilitator getLanguageModelFacilitator() {
+        return ((LatinIME)(mInputMethodService)).getLanguageModelFacilitator();
     }
 }

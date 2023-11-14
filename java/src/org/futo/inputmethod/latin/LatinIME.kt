@@ -235,9 +235,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         latinIMELegacy.onCreate()
 
         languageModelFacilitator.launchProcessor()
+        languageModelFacilitator.loadHistoryLog()
     }
 
     override fun onDestroy() {
+        languageModelFacilitator.saveHistoryLog()
         latinIMELegacy.onDestroy()
         super.onDestroy()
     }
@@ -466,6 +468,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         latinIMELegacy.onFinishInput()
 
         closeActionWindow()
+        languageModelFacilitator.saveHistoryLog()
     }
 
     override fun onCurrentInputMethodSubtypeChanged(newSubtype: InputMethodSubtype?) {

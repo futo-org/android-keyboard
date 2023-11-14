@@ -173,12 +173,32 @@ private fun tokenizerFormatUserInput(misspelledWord: String): String {
 }
 
 object TrainingDataGenerator {
-    fun wordMisspelling(word: String, correctness: Float = 0.8f): String {
-        val misspelled = WordMisspelling.misspellWord(word, correctness)
+    fun formatWordMisspelling(misspelled: String, truth: String): String {
+        if(misspelled.filter { it in TOKENIZER_LETTER_MAPPING }.isEmpty() || truth.isBlank()) return ""
 
         // Space after word is required for the tokenizer
-        return tokenizerFormatUserInput(misspelled) + word.trim() + " " + TOKENIZER_END_CORRECTION
+        return tokenizerFormatUserInput(misspelled.trim()) + truth.trim() + " " + TOKENIZER_END_CORRECTION
     }
+    fun wordMisspelling(word: String, correctness: Float = 0.8f): String {
+        if(word.isBlank()) return ""
+        
+        val misspelled = WordMisspelling.misspellWord(word, correctness)
+        return formatWordMisspelling(misspelled, word)
+    }
+
+    fun concatWordMisspelling(context: String, word: String, correctness: Float = 0.8f): String {
+        val misspelledFormatted = wordMisspelling(word, correctness)
+        if(misspelledFormatted.isBlank()) return ""
+
+        return context.trim() + " " + misspelledFormatted
+    }
+    fun concatFormatWordMisspelling(context: String, misspelled: String, truth: String): String {
+        val misspelledFormatted = formatWordMisspelling(misspelled, truth)
+        if(misspelledFormatted.isBlank()) return ""
+
+        return context.trim() + " " + misspelledFormatted
+    }
+
 
     private val permittedCharacters = "abcdefghijklmnopqrstuvwxyz'-".toHashSet()
     fun suitableToMisspell(word: String): Boolean {
@@ -201,7 +221,7 @@ object TrainingDataGenerator {
 
         wordsToMisspell.toSet().forEach { i ->
             val misspelling = wordMisspelling(words[i], correctness)
-            if(!misspelling.contains("<XBU><XBC>") && !misspelling.contains("<XBC><XEC>")) {
+            if(misspelling.isNotBlank()) {
                 words[i] = misspelling
             }
         }

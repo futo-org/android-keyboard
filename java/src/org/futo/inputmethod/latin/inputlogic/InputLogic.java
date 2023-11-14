@@ -321,7 +321,7 @@ public final class InputLogic {
         }
 
         commitChosenWord(settingsValues, suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
-                LastComposedWord.NOT_A_SEPARATOR);
+                LastComposedWord.NOT_A_SEPARATOR, suggestionInfo.isKindOf(SuggestedWordInfo.KIND_TYPED) ? 3 : 1);
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
@@ -401,7 +401,7 @@ public final class InputLogic {
                 final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
                         System.currentTimeMillis());
                 performAdditionToUserHistoryDictionary(settingsValues, mWordBeingCorrectedByCursor,
-                        NgramContext.EMPTY_PREV_WORDS_INFO);
+                        NgramContext.EMPTY_PREV_WORDS_INFO, -1);
             }
         } else {
             // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
@@ -1234,6 +1234,17 @@ public final class InputLogic {
             System.currentTimeMillis());
         mDictionaryFacilitator.unlearnFromUserHistory(
             word, ngramContext, timeStampInSeconds, eventType);
+        
+        // FIXME: For some reason, 2 is the right value some times and 1 is the right value at other times.
+        // To make sure it's deleted from history, we just call it with both and one of them should work
+        if(settingsValues.mTransformerPredictionEnabled) {
+            final NgramContext ngramContext1 = mConnection.getNgramContextFromNthPreviousWord(
+                settingsValues.mSpacingAndPunctuations, 1);
+            mLatinIMELegacy.getLanguageModelFacilitator().unlearnFromHistory(
+                word, ngramContext, timeStampInSeconds, eventType);
+            mLatinIMELegacy.getLanguageModelFacilitator().unlearnFromHistory(
+                word, ngramContext1, timeStampInSeconds, eventType);
+        }
     }
 
     /**
@@ -1423,7 +1434,7 @@ public final class InputLogic {
     }
 
     private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
-            final String suggestion, @Nonnull final NgramContext ngramContext) {
+            final String suggestion, @Nonnull final NgramContext ngramContext, final int importance) {
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
@@ -1442,6 +1453,11 @@ public final class InputLogic {
                 System.currentTimeMillis());
         mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
                 ngramContext, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
+
+        if(settingsValues.mTransformerPredictionEnabled) {
+            mLatinIMELegacy.getLanguageModelFacilitator().addToHistory(suggestion, wasAutoCapitalized,
+                ngramContext, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive, importance);
+        }
     }
 
     private void ensureSuggestionStripCompleted(final SettingsValues settingsValues,
@@ -2099,7 +2115,7 @@ public final class InputLogic {
         if (typedWord.length() > 0) {
             final boolean isBatchMode = mWordComposer.isBatchMode();
             commitChosenWord(settingsValues, typedWord,
-                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
+                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString, -1);
             StatsUtils.onWordCommitUserTyped(typedWord, isBatchMode);
         }
     }
@@ -2135,7 +2151,7 @@ public final class InputLogic {
             }
             final boolean isBatchMode = mWordComposer.isBatchMode();
             commitChosenWord(settingsValues, stringToCommit,
-                    LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator);
+                    LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator, 0);
             if (!typedWord.equals(stringToCommit)) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened. It has no other effect; in particular
@@ -2167,7 +2183,7 @@ public final class InputLogic {
      * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
      */
     private void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
-            final int commitType, final String separatorString) {
+            final int commitType, final String separatorString, final int importance) {
         long startTimeMillis = 0;
         if (DebugFlags.DEBUG_ENABLED) {
             startTimeMillis = System.currentTimeMillis();
@@ -2206,7 +2222,7 @@ public final class InputLogic {
             startTimeMillis = System.currentTimeMillis();
         }
         // Add the word to the user history dictionary
-        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, ngramContext);
+        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, ngramContext, importance);
         if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "

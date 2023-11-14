@@ -164,6 +164,7 @@ dependencies {
     implementation 'ch.acra:acra-dialog:5.11.1'
 
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
 
     implementation project(":voiceinput-shared")
 
