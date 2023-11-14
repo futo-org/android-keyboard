@@ -24,6 +24,7 @@ import org.futo.inputmethod.latin.xlm.TrainingWorker
 import org.futo.inputmethod.latin.xlm.TrainingWorkerStatus
 import org.futo.inputmethod.latin.xlm.loadHistoryLogBackup
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +33,9 @@ import java.util.concurrent.TimeUnit
 fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
     var trainingDataAmount by remember { mutableStateOf(0) }
     val trainingState = TrainingWorkerStatus.state.collectAsState(initial = TrainingState.None)
+
+    val progress = TrainingWorkerStatus.progress.collectAsState(initial = 0.0f)
+    val loss = TrainingWorkerStatus.loss.collectAsState(initial = Float.MAX_VALUE)
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -54,14 +58,14 @@ fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
             WorkManager.getInstance(context).enqueue(workRequest)
         }, enabled = !TrainingWorkerStatus.isTraining.value) {
             if(TrainingWorkerStatus.isTraining.value) {
-                Text("Currently training, check status in logcat")
+                Text("Currently training (${(progress.value * 100.0f).roundToInt()}%, loss ${loss.value})")
             } else {
                 Text("Train model")
             }
         }
 
         when(trainingState.value) {
-            TrainingState.Finished -> Text("Last train finished successfully!")
+            TrainingState.Finished -> Text("Last train finished successfully! Final loss: ${loss.value}")
             TrainingState.ErrorInadequateData -> Text("Last training run failed due to lack of data")
             else -> { }
         }

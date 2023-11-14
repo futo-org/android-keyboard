@@ -2,6 +2,9 @@ package org.futo.inputmethod.latin.xlm
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 
@@ -10,7 +13,14 @@ val TrainingContext = newSingleThreadContext("AdapterTrainingContext")
 
 class InadequateDataException() : Exception("Inadequate Training Data")
 
-class AdapterTrainer(baseModelPath: String, tokenizerPath: String, checkpointPath: String, examples: List<String>) {
+class AdapterTrainer(
+    baseModelPath: String,
+    tokenizerPath: String,
+    checkpointPath: String,
+    examples: List<String>,
+    val lossFlow: MutableSharedFlow<Float>?,
+    val progressFlow: MutableSharedFlow<Float>?
+) {
     private external fun openNative(baseModelPath: String, tokenizerPath: String, outputPath: String): Long
     private external fun closeNative(handle: Long)
     private external fun addExample(handle: Long, example: String)
@@ -18,6 +28,14 @@ class AdapterTrainer(baseModelPath: String, tokenizerPath: String, checkpointPat
 
     private var handle: Long = 0L
     private fun isHandleValid() = handle != 0L
+
+    private fun emitProgress(progress: Float) {
+        progressFlow?.tryEmit(progress)
+    }
+
+    private fun emitLoss(loss: Float) {
+        lossFlow?.tryEmit(loss)
+    }
 
     init {
         handle = openNative(baseModelPath, tokenizerPath, checkpointPath)
@@ -50,10 +68,20 @@ class AdapterTrainerBuilder(val baseModelPath: String, val tokenizerPath: String
         examples.addAll(newExamples)
     }
 
+    private var lossFlow: MutableSharedFlow<Float>? = null
+    fun setLossFlow(flow: MutableSharedFlow<Float>) {
+        lossFlow = flow
+    }
+
+    private var progressFlow: MutableSharedFlow<Float>? = null
+    fun setProgressFlow(flow: MutableSharedFlow<Float>) {
+        progressFlow = flow
+    }
+
     fun loadAndPrepare(): AdapterTrainer {
         println("Preparing AdapterTrainer. Training data:")
         examples.forEach { println(" - [$it]") }
 
-        return AdapterTrainer(baseModelPath, tokenizerPath, checkpointPath, examples)
+        return AdapterTrainer(baseModelPath, tokenizerPath, checkpointPath, examples, lossFlow = lossFlow, progressFlow = progressFlow)
     }
 }

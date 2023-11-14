@@ -41,6 +41,9 @@ object TrainingWorkerStatus {
     val state = MutableSharedFlow<TrainingState>(replay = 1)
     val lmRequest = MutableSharedFlow<LanguageModelFacilitatorRequest>(replay = 0)
     val isTraining = mutableStateOf(false)
+
+    val loss = MutableSharedFlow<Float>(replay = 4)
+    val progress = MutableSharedFlow<Float>(replay = 4)
 }
 
 
@@ -173,6 +176,9 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
             result.second,
             outputFile.absolutePath
         )
+
+        builder.setLossFlow(TrainingWorkerStatus.loss)
+        builder.setProgressFlow(TrainingWorkerStatus.progress)
 
         val data = getTrainingData()
         builder.addExamples(data.lines())

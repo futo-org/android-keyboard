@@ -26,6 +26,13 @@ struct train_state {
     size_t        shuffle_next_sample;
 };
 
+struct train_callbacks {
+    void *userdata;
+
+    void (*loss)(void* userdata, float loss);
+    void (*progress)(void* userdata, float progress);
+};
+
 struct train_params_common {
     const char * fn_train_data;
     const char * fn_checkpoint_in;
@@ -81,6 +88,8 @@ struct train_params_common {
     float adam_beta2;
     float adam_gclip;
     float adam_eps_f;
+
+    struct train_callbacks callbacks;
 };
 
 typedef void (*save_train_files_callback)(void * data, struct train_state * train);

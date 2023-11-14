@@ -33,6 +33,28 @@ namespace latinime {
         sentencepiece::SentencePieceProcessor spm;
         struct train_params params;
 
+        static void OnLossCallback(void *userdata, float loss) {
+            auto *state = reinterpret_cast<AdapterTrainerState *>(userdata);
+            state->OnLoss(loss);
+        }
+
+        static void OnProgressCallback(void *userdata, float progress) {
+            auto *state = reinterpret_cast<AdapterTrainerState *>(userdata);
+            state->OnProgress(progress);
+        }
+
+        JNIEnv *env;
+        jobject callbackObject;
+        jmethodID lossMethodId;
+        jmethodID progressMethodId;
+        void OnLoss(float loss) const {
+            env->CallVoidMethod(callbackObject, lossMethodId, loss);
+        }
+
+        void OnProgress(float progress) const {
+            env->CallVoidMethod(callbackObject, progressMethodId, progress);
+        }
+
         bool Initialize() {
             params = get_default_train_params();
             params.common.fn_train_data = "";
@@ -56,6 +78,10 @@ namespace latinime {
             // Increasing/decreasing this doesn't appear to significantly affect training time
             params.lora_r = 16;
             params.lora_alpha = 16;
+
+            params.common.callbacks.userdata = this;
+            params.common.callbacks.loss     = AdapterTrainerState::OnLossCallback;
+            params.common.callbacks.progress = AdapterTrainerState::OnProgressCallback;
 
             // TODO: Check model path valid / try to pre-load resources?
 
@@ -83,6 +109,8 @@ namespace latinime {
         state->tokenizerPath = jstring2string(env, tokenizerPathStr);
         state->outputPath    = jstring2string(env, outputPathStr);
 
+        state->env = env;
+
         if(!state->Initialize()) {
             delete state;
             return 0;
@@ -103,8 +131,21 @@ namespace latinime {
     }
 
     // TODO: Callback for progress
-    static void xlm_AdapterTrainer_train(JNIEnv *env, jclass clazz, jlong statePtr) {
+    static void xlm_AdapterTrainer_train(JNIEnv *env, jobject instance, jlong statePtr) {
+        jclass clazz = env->GetObjectClass(instance);
+        assert(clazz);
+
+        jmethodID progressMethodId = env->GetMethodID(clazz, "emitProgress", "(F)V");
+        jmethodID lossMethodId = env->GetMethodID(clazz, "emitLoss", "(F)V");
+        assert(progressMethodId);
+        assert(lossMethodId);
+
         auto *state = reinterpret_cast<AdapterTrainerState *>(statePtr);
+        state->env = env;
+        state->lossMethodId = lossMethodId;
+        state->progressMethodId = progressMethodId;
+        state->callbackObject = instance;
+
         int result = state->Train();
         if(result != 0) {
             AKLOGE("train returned with non-zero code %d", result);

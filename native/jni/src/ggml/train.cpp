@@ -1429,10 +1429,22 @@ void train_opt_callback(void * vdata, int accum_step, float * sched, bool * canc
         int impr_plot = -(int)(1 + (opt->loss_before - opt->loss_after) * 10.0f + 0.5f);
         if (impr_plot > 0) impr_plot = 0;
         if (std::isnan(opt->loss_before) || std::isnan(opt->loss_after)) impr_plot = 0;
+
+        size_t sample_curr = std::min(1+train->shuffle_next_sample, train->shuffle_sample_count);
         AKLOGI("%s: iter=%6d sample=%zu/%zu sched=%f loss=%f",
-               __func__, opt->iter, std::min(1+train->shuffle_next_sample, train->shuffle_sample_count), train->shuffle_sample_count,
+               __func__, opt->iter, sample_curr, train->shuffle_sample_count,
                *sched, opt->loss_after);
 
+        // Call our callbacks
+        if(params->callbacks.loss != nullptr) {
+            params->callbacks.loss(params->callbacks.userdata, opt->loss_after);
+        }
+
+        if(params->callbacks.progress != nullptr) {
+            float progress_iterations = ((float)opt->iter) / ((float)params->adam_n_iter);
+            float progress_samples = ((float)sample_curr) / ((float)(train->shuffle_sample_count * params->n_epochs));
+            params->callbacks.progress(params->callbacks.userdata, std::max(progress_iterations, progress_samples));
+        }
 
         if (data->millis_per_iter > 0) {
             AKLOGI(" dt=");
