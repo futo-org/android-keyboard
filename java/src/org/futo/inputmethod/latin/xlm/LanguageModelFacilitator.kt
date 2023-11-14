@@ -71,8 +71,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.withTimeout
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.uix.Action
@@ -138,12 +140,18 @@ public class LanguageModelFacilitator(
 
     public fun blockUntilComplete() {
         runBlocking {
-            computationSemaphore.acquire()
-            computationSemaphore.release()
             try {
-                sequenceIdFinishedFlow.first { it >= currentSequenceId }
-            } catch(ignored: Exception) {
+                withTimeout(1000L) {
+                    computationSemaphore.acquire()
+                    computationSemaphore.release()
+                    try {
+                        sequenceIdFinishedFlow.first { it >= currentSequenceId }
+                    } catch (ignored: Exception) {
 
+                    }
+                }
+            } catch(e: TimeoutCancellationException) {
+                println("Failed to complete prediction within 1000ms!")
             }
         }
     }
@@ -153,7 +161,7 @@ public class LanguageModelFacilitator(
         try {
             val job = Job()
             CoroutineScope(Dispatchers.Default + job).launch {
-                delay(200)
+                delay(500)
                 inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
             }
 
@@ -206,8 +214,29 @@ public class LanguageModelFacilitator(
         }
     }
 
+    public suspend fun destroyModel() {
+        println("LanguageModelFacilitator is destroying model!")
+        computationSemaphore.acquire()
+        languageModel?.closeInternalLocked()
+        languageModel = null
+        computationSemaphore.release()
+    }
+
     public fun launchProcessor() = lifecycleScope.launch {
         println("LatinIME: Starting processor")
+        launch {
+            withContext(Dispatchers.Default) {
+                TrainingWorkerStatus.lmRequest.collect {
+                    if (it == LanguageModelFacilitatorRequest.ResetModel) {
+                        destroyModel()
+                    }else if(it == LanguageModelFacilitatorRequest.ClearTrainingLog) {
+                        historyLog.clear()
+                        saveHistoryLog()
+                    }
+                }
+            }
+        }
+
         withContext(Dispatchers.Default) {
             sharedFlow.conflate().collect { value ->
                 println("LatinIME: Collecting")

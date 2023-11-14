@@ -270,17 +270,17 @@ public class LanguageModel extends Dictionary {
     }
 
 
-    private synchronized void closeInternalLocked() {
+    public synchronized void closeInternalLocked() {
         try {
             if (initThread != null) initThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        /*if (mNativeState != 0) {
+        if (mNativeState != 0) {
             closeNative(mNativeState);
             mNativeState = 0;
-        }*/
+        }
     }
 
 

@@ -8,6 +8,8 @@ import kotlinx.coroutines.withContext
 @OptIn(DelicateCoroutinesApi::class)
 val TrainingContext = newSingleThreadContext("AdapterTrainingContext")
 
+class InadequateDataException() : Exception("Inadequate Training Data")
+
 class AdapterTrainer(baseModelPath: String, tokenizerPath: String, checkpointPath: String, examples: List<String>) {
     private external fun openNative(baseModelPath: String, tokenizerPath: String, outputPath: String): Long
     private external fun closeNative(handle: Long)
@@ -23,10 +25,16 @@ class AdapterTrainer(baseModelPath: String, tokenizerPath: String, checkpointPat
             throw IllegalArgumentException("Failed to initialize AdapterTrainer with given parameters")
         }
 
+        var numAdded = 0
         examples.forEach {
             if(it.isNotBlank()) {
                 addExample(handle, it.trim() + " ")
+                numAdded += 1
             }
+        }
+
+        if(numAdded == 0) {
+            throw InadequateDataException()
         }
     }
 

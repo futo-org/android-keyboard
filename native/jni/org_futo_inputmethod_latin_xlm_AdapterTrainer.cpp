@@ -69,10 +69,6 @@ namespace latinime {
 
         void AddTrainingExample(const std::string &example) {
             std::vector<llama_token> result = spm.EncodeAsIds(example);
-            AKLOGI("Adding training example %s:", example.c_str());
-            for(llama_token t : result) {
-                AKLOGI("token %d [%s]", t, spm.IdToPiece(t).c_str());
-            }
             params.training_data.push_back(result);
         }
 

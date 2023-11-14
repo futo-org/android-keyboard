@@ -240,6 +240,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun onDestroy() {
         languageModelFacilitator.saveHistoryLog()
+
+        runBlocking {
+            languageModelFacilitator.destroyModel()
+        }
+
         latinIMELegacy.onDestroy()
         super.onDestroy()
     }
