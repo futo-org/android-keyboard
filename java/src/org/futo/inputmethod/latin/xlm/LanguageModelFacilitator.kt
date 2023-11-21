@@ -58,6 +58,7 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import androidx.work.WorkManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -237,12 +238,16 @@ public class LanguageModelFacilitator(
             }
         }
 
-        withContext(Dispatchers.Default) {
-            sharedFlow.conflate().collect { value ->
-                println("LatinIME: Collecting")
-                processUpdateSuggestionStrip(value)
+        launch {
+            withContext(Dispatchers.Default) {
+                sharedFlow.conflate().collect { value ->
+                    println("LatinIME: Collecting")
+                    processUpdateSuggestionStrip(value)
+                }
             }
         }
+
+        scheduleTrainingWorkerBackground(context)
     }
 
     public fun updateSuggestionStripAsync(inputStyle: Int) {

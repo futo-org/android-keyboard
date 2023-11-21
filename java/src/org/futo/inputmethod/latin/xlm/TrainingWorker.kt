@@ -13,14 +13,23 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import androidx.work.Constraints
+import androidx.work.PeriodicWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.getSetting
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.util.concurrent.TimeUnit
+
+val NUM_TRAINING_RUNS_KEY = intPreferencesKey("training_runs_count")
 
 const val CHANNEL_ID = "TRAINING"
 const val NOTIFICATION_ID = 1
@@ -52,18 +61,24 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
                 NotificationManager
 
     override suspend fun doWork(): Result {
+        println("TrainingWorker is starting")
         TrainingWorkerStatus.state.emit(TrainingState.Starting)
         TrainingWorkerStatus.isTraining.value = true
         setForeground(createForegroundInfo("Training..."))
 
         TrainingWorkerStatus.state.emit(train())
         TrainingWorkerStatus.isTraining.value = false
+        println("TrainingWorker has ended")
         return Result.success()
     }
 
     private fun getTrainingData(): String {
         val data = mutableListOf<HistoryLogForTraining>()
         loadHistoryLogBackup(applicationContext, data)
+
+        if(data.size < 100) {
+            return ""
+        }
 
         return data.map { entry ->
             if(entry.misspelledWord != null) {
@@ -118,6 +133,11 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
     }
 
     private suspend fun train(): TrainingState {
+        val data = getTrainingData()
+        if(data.isEmpty()) {
+            return TrainingState.ErrorInadequateData
+        }
+
         val cacheLoraPath = File(applicationContext.cacheDir, "adapter.bin")
 
         val builder = AdapterTrainerBuilder(
@@ -132,7 +152,6 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
 
         builder.setWeight(0.75f)
 
-        val data = getTrainingData()
         builder.addExamples(data.lines())
 
         val trainer = try {
@@ -146,13 +165,21 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
         withContext(Dispatchers.Default) {
             println("Staring to train")
             wakeLock.acquire(120*60*1000L /*1 hour*/)
-            trainer.train()
-            wakeLock.release()
+            try {
+                trainer.train()
+            } finally {
+                wakeLock.release()
+            }
             println("Finished training")
         }
 
+        // In case there's no one to receive ClearTrainingLog, save an empty log
+        saveHistoryLogBackup(applicationContext, listOf())
+
         TrainingWorkerStatus.lmRequest.emit(LanguageModelFacilitatorRequest.ResetModel)
         TrainingWorkerStatus.lmRequest.emit(LanguageModelFacilitatorRequest.ClearTrainingLog)
+
+        applicationContext.setSetting(NUM_TRAINING_RUNS_KEY, applicationContext.getSetting(NUM_TRAINING_RUNS_KEY, 0) + 1)
 
         return TrainingState.Finished
     }
@@ -194,4 +221,35 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
 
         notificationManager.createNotificationChannel(channel)
     }
+}
+
+private val WORKER_TAG: String = "TRAINING_WORKER"
+public fun scheduleTrainingWorkerBackground(context: Context) {
+    val workManager = WorkManager.getInstance(context)
+    workManager.cancelAllWorkByTag(WORKER_TAG)
+
+    val constraints = Constraints.Builder()
+        .setRequiresBatteryNotLow(true)
+        .setRequiresCharging(true)
+        .setRequiresDeviceIdle(true)
+        .build()
+    
+    val request = PeriodicWorkRequest.Builder(
+        TrainingWorker::class.java,
+        20L, TimeUnit.HOURS,
+        // 12L, TimeUnit.HOURS
+    ).addTag(WORKER_TAG).setConstraints(constraints).build()
+
+    workManager.enqueue(request)
+}
+
+public fun scheduleTrainingWorkerImmediately(context: Context) {
+    val workManager = WorkManager.getInstance(context)
+
+    val workRequest = OneTimeWorkRequestBuilder<TrainingWorker>()
+        .setInitialDelay(0, TimeUnit.SECONDS) // Run immediately
+        .addTag(WORKER_TAG)
+        .build()
+
+    workManager.enqueue(workRequest)
 }

@@ -23,6 +23,9 @@ import org.futo.inputmethod.latin.xlm.TrainingState
 import org.futo.inputmethod.latin.xlm.TrainingWorker
 import org.futo.inputmethod.latin.xlm.TrainingWorkerStatus
 import org.futo.inputmethod.latin.xlm.loadHistoryLogBackup
+import org.futo.inputmethod.latin.xlm.scheduleTrainingWorkerImmediately
+import org.futo.inputmethod.latin.xlm.NUM_TRAINING_RUNS_KEY
+import org.futo.inputmethod.latin.uix.getSettingFlow
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -45,22 +48,24 @@ fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
         trainingDataAmount = data.size
     }
 
+    val numTrains = context.getSettingFlow(NUM_TRAINING_RUNS_KEY, 0).collectAsState(initial = 0)
+
     ScrollableList {
         ScreenTitle("Training", showBack = true, navController)
 
-        Text("There are $trainingDataAmount pending training examples.")
+        Text("The model has been trained ${numTrains.value} times in total.")
+
+        Text("There are $trainingDataAmount pending training examples (minimum for training is 100)")
 
         Button(onClick = {
-            val workRequest = OneTimeWorkRequestBuilder<TrainingWorker>()
-                .setInitialDelay(0, TimeUnit.SECONDS) // Run immediately
-                .build()
-
-            WorkManager.getInstance(context).enqueue(workRequest)
-        }, enabled = !TrainingWorkerStatus.isTraining.value) {
+            scheduleTrainingWorkerImmediately(context)
+        }, enabled = (!TrainingWorkerStatus.isTraining.value) && (trainingDataAmount >= 100)) {
             if(TrainingWorkerStatus.isTraining.value) {
                 Text("Currently training (${(progress.value * 100.0f).roundToInt()}%, loss ${loss.value})")
-            } else {
+            } else if(trainingDataAmount > 100) {
                 Text("Train model")
+            } else {
+                Text("Train model (not enough data)")
             }
         }
 
