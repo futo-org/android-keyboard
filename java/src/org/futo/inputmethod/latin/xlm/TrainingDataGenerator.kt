@@ -115,12 +115,60 @@ private object WordMisspelling {
         return String(newKeys.toCharArray())
     }
 
+    fun transposeRandomLetters(word: String): String {
+        if (word.length < 2) return word
+
+        val charArray = word.toCharArray()
+        val index1 = Random.nextInt(word.length)
+        var index2: Int
+
+        do {
+            index2 = Random.nextInt(word.length)
+        } while (index1 == index2)
+
+        val temp = charArray[index1]
+        charArray[index1] = charArray[index2]
+        charArray[index2] = temp
+
+        return String(charArray)
+    }
+
+    fun transposeAdjacentLetters(word: String): String {
+        if (word.length < 2) return word
+
+        val charArray = word.toCharArray()
+        val index = Random.nextInt(word.length - 1)
+
+        val temp = charArray[index]
+        charArray[index] = charArray[index + 1]
+        charArray[index + 1] = temp
+
+        return String(charArray)
+    }
+
+    fun deleteRandomCharacter(word: String): String {
+        if (word.isEmpty()) return word
+
+        val index = Random.nextInt(word.length)
+        return word.removeRange(index, index + 1)
+    }
+
     fun misspellWord(word: String, correctness: Float = 0.8f): String {
         var misspelledWord = word.trim().lowercase().replace("'", "")
 
         val getRand = { Random.nextFloat().pow(correctness) }
 
-        // TODO: Random word transformations - substituting letters, deleting, repeating, adding, transposing
+        if(getRand() > 0.5) {
+            misspelledWord = transposeRandomLetters(misspelledWord)
+        }
+
+        if(getRand() > 0.5) {
+            misspelledWord = transposeAdjacentLetters(misspelledWord)
+        }
+
+        if(getRand() > 0.5) {
+            misspelledWord = deleteRandomCharacter(misspelledWord)
+        }
 
         // Substitute the word's characters with nearby ones randomly
         misspelledWord = substituteKeyboardLetters(QWERTYKeyboardLayout, misspelledWord, temperature = 1.0f * getRand())
