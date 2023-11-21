@@ -130,6 +130,8 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
         builder.setLossFlow(TrainingWorkerStatus.loss)
         builder.setProgressFlow(TrainingWorkerStatus.progress)
 
+        builder.setWeight(0.75f)
+
         val data = getTrainingData()
         builder.addExamples(data.lines())
 

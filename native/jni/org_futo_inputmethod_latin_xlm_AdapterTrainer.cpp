@@ -68,13 +68,13 @@ namespace latinime {
             params.common.n_threads = 6;
             params.common.n_gradient_accumulation = 2;
             params.common.n_batch = 2;
-            params.common.n_ctx = 32;
+            params.common.n_ctx = 64;
             params.common.sample_random_offsets = true;
 
             params.common.warmup = 10;
             params.common.n_epochs = 1;
             params.common.adam_alpha = 1e-3;
-            params.common.adam_n_iter = 64;
+            params.common.adam_n_iter = 128;
 
             // Increasing/decreasing this doesn't appear to significantly affect training time
             params.lora_r = 16;
