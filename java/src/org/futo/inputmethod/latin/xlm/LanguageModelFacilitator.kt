@@ -286,8 +286,8 @@ public class LanguageModelFacilitator(
         ngramContext: NgramContext,
         timeStampInSeconds: Long,
         blockPotentiallyOffensive: Boolean,
-        importance: Int) {
-        
+        importance: Int
+    ) {
         val wordCtx = ngramContext.fullContext.trim().lines().last()
         var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
         if(committedNgramCtx.isEmpty()) {
