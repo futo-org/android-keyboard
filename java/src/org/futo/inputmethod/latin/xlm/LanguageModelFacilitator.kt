@@ -296,7 +296,7 @@ public class LanguageModelFacilitator(
         
         val lastIdx = wordCtx.lastIndexOf(committedNgramCtx)
         if(lastIdx == -1) {
-            println("addToHistory: extraction failed, couldn't find ngram ctx in full ctx")
+            //println("addToHistory: extraction failed, couldn't find ngram ctx in full ctx")
             return
         }
 
@@ -304,7 +304,7 @@ public class LanguageModelFacilitator(
             lastIdx + committedNgramCtx.length
         )
         if(misspelledWord.isNotBlank() && (!(misspelledWord.startsWith(" ") || committedNgramCtx == " ") || misspelledWord.endsWith(" ") || misspelledWord.trim().contains(" "))) {
-            println("addToHistory: extraction failed bad context. wordCtx=[$wordCtx]  --   committedNgramCtx=[$committedNgramCtx]  --  word=[$word]  --  fullNgram=[$ngramContext]")
+            //println("addToHistory: extraction failed bad context. wordCtx=[$wordCtx]  --   committedNgramCtx=[$committedNgramCtx]  --  word=[$word]  --  fullNgram=[$ngramContext]")
             return
         }
 
@@ -336,7 +336,7 @@ public class LanguageModelFacilitator(
         }
 
         historyLog.add(logToAdd)
-        println("addToHistory: Adding $logToAdd")
+        //println("addToHistory: Adding $logToAdd")
     }
 
     public fun unlearnFromHistory(
@@ -358,9 +358,9 @@ public class LanguageModelFacilitator(
         }
 
         if(logToRemove == -1) {
-            println("addToHistory: UNLEARN Couldn't find key $keyToSearch")
+            //println("addToHistory: UNLEARN Couldn't find key $keyToSearch")
         } else {
-            println("addToHistory: Unlearning ${historyLog[logToRemove]}")
+            //println("addToHistory: Unlearning ${historyLog[logToRemove]}")
             historyLog.removeAt(logToRemove)
         }
     }

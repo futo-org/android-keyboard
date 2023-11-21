@@ -136,12 +136,12 @@ namespace latinime {
     // TODO: Callback for progress
     static void xlm_AdapterTrainer_train(JNIEnv *env, jobject instance, jlong statePtr) {
         jclass clazz = env->GetObjectClass(instance);
-        assert(clazz);
+        ASSERT(clazz);
 
         jmethodID progressMethodId = env->GetMethodID(clazz, "emitProgress", "(F)V");
         jmethodID lossMethodId = env->GetMethodID(clazz, "emitLoss", "(F)V");
-        assert(progressMethodId);
-        assert(lossMethodId);
+        ASSERT(progressMethodId);
+        ASSERT(lossMethodId);
 
         auto *state = reinterpret_cast<AdapterTrainerState *>(statePtr);
         state->env = env;
