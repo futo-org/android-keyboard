@@ -7,26 +7,22 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import androidx.work.Constraints
-import androidx.work.PeriodicWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.setSetting
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 import java.util.concurrent.TimeUnit
 
 val NUM_TRAINING_RUNS_KEY = intPreferencesKey("training_runs_count")

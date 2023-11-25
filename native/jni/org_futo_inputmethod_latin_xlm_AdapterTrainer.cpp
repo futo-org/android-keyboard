@@ -8,20 +8,7 @@
 #include "jni_common.h"
 #include "ggml/finetune.h"
 #include "sentencepiece/sentencepiece_processor.h"
-
-
-std::string jstring2string(JNIEnv *env, jstring jStr) {
-    const jsize stringUtf8Length = env->GetStringUTFLength(jStr);
-    if (stringUtf8Length <= 0) {
-        AKLOGE("Can't get jStr");
-        return "";
-    }
-    char stringChars[stringUtf8Length + 1];
-    env->GetStringUTFRegion(jStr, 0, env->GetStringLength(jStr), stringChars);
-    stringChars[stringUtf8Length] = '\0';
-
-    return {stringChars};
-}
+#include "jni_utils.h"
 
 namespace latinime {
     struct AdapterTrainerState {

@@ -19,6 +19,7 @@ LATIN_IME_JNI_SRC_FILES := \
     org_futo_inputmethod_latin_DicTraverseSession.cpp \
     org_futo_inputmethod_latin_xlm_LanguageModel.cpp \
     org_futo_inputmethod_latin_xlm_AdapterTrainer.cpp \
+    org_futo_voiceinput_WhisperGGML.cpp \
     jni_common.cpp
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/sentencepiece/builtin_pb
@@ -29,12 +30,14 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/third_party/darts_clone
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/third_party/absl
 
 LATIN_IME_CORE_SRC_FILES := \
+    jni_utils.cpp \
     ggml/context.cpp \
     ggml/ggml.c \
     ggml/ggml-alloc.c \
     ggml/ggml-quants.c \
     ggml/ggml-backend.c \
     ggml/llama.cpp \
+    ggml/whisper.cpp \
     ggml/finetune.cpp \
     ggml/train.cpp \
     ggml/common.cpp \
