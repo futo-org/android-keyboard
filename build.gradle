@@ -79,9 +79,9 @@ android {
                 it.buildConfigField "String", "ACRA_PASSWORD", crashReportProperties['acraPassword']
             } else {
                 it.buildConfigField "boolean", "ENABLE_ACRA", "false"
-                it.buildConfigField "String", "ACRA_URL", ""
-                it.buildConfigField "String", "ACRA_USER", ""
-                it.buildConfigField "String", "ACRA_PASSWORD", ""
+                it.buildConfigField "String", "ACRA_URL", "\"\""
+                it.buildConfigField "String", "ACRA_USER", "\"\""
+                it.buildConfigField "String", "ACRA_PASSWORD", "\"\""
             }
         }
     }
