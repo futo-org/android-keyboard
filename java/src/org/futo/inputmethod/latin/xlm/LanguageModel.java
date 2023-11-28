@@ -3,34 +3,24 @@ package org.futo.inputmethod.latin.xlm;
 import android.content.Context;
 import android.util.Log;
 
-import org.futo.inputmethod.latin.Dictionary;
+import org.futo.inputmethod.keyboard.KeyDetector;
 import org.futo.inputmethod.latin.NgramContext;
-import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.common.ComposedData;
 import org.futo.inputmethod.latin.common.InputPointers;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.function.IntPredicate;
 
-// TODO: Avoid loading the LanguageModel if the setting is disabled
-public class LanguageModel extends Dictionary {
+public class LanguageModel {
     static long mNativeState = 0;
 
     Context context = null;
     Thread initThread = null;
     Locale locale = null;
     public LanguageModel(Context context, String dictType, Locale locale) {
-        super(dictType, locale);
-
         this.context = context;
         this.locale = locale;
     }
@@ -64,11 +54,10 @@ public class LanguageModel extends Dictionary {
         initThread.start();
     }
 
-    @Override
     public ArrayList<SuggestedWords.SuggestedWordInfo> getSuggestions(
             ComposedData composedData,
             NgramContext ngramContext,
-            long proximityInfoHandle,
+            KeyDetector keyDetector,
             SettingsValuesForSuggestion settingsValuesForSuggestion,
             int sessionId,
             float weightForLocale,
@@ -106,6 +95,16 @@ public class LanguageModel extends Dictionary {
         String partialWord = composedData.mTypedWord;
         if(!partialWord.isEmpty() && context.endsWith(partialWord)) {
             context = context.substring(0, context.length() - partialWord.length()).trim();
+        }
+
+        if(isGesture) {
+            // Partial word is gonna be derived from batch data
+            partialWord = BatchInputConverter.INSTANCE.convertToString(
+                composedData.mInputPointers.getXCoordinates(),
+                composedData.mInputPointers.getYCoordinates(),
+                inputSize,
+                keyDetector
+            );
         }
 
         if(!partialWord.isEmpty()) {
@@ -160,7 +159,7 @@ public class LanguageModel extends Dictionary {
         String[] outStrings = new String[maxResults];
 
         // TOOD: Pass multiple previous words information for n-gram.
-        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, xCoords, yCoords, outStrings, outProbabilities);
+        getSuggestionsNative(mNativeState, 0L, context, partialWord, xCoords, yCoords, outStrings, outProbabilities);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
@@ -197,7 +196,7 @@ public class LanguageModel extends Dictionary {
                 currKind |= SuggestedWords.SuggestedWordInfo.KIND_FLAG_EXACT_MATCH;
             }
 
-            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), currKind, this, 0, 0 ));
+            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), currKind, null, 0, 0 ));
         }
 
         /*
@@ -235,7 +234,6 @@ public class LanguageModel extends Dictionary {
         }
     }
 
-
     @Override
     protected void finalize() throws Throwable {
         try {
@@ -244,13 +242,6 @@ public class LanguageModel extends Dictionary {
             super.finalize();
         }
     }
-
-    @Override
-    public boolean isInDictionary(String word) {
-        // TODO: Provide the word spelling to the model and see if the probability of correcting it to that is beyond a certain limit
-        return false;
-    }
-
 
     private static native long openNative(String sourceDir);
     private static native void closeNative(long state);

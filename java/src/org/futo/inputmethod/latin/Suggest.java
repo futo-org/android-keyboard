@@ -124,7 +124,7 @@ public final class Suggest {
                 || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-                final Locale wordLocale = wordInfo.mSourceDict.mLocale;
+                final Locale wordLocale = (wordInfo.mSourceDict != null) ? wordInfo.mSourceDict.mLocale : null;
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
                         wordInfo, null == wordLocale ? defaultLocale : wordLocale,
                         shouldMakeSuggestionsAllUpperCase, isOnlyFirstCharCapitalized,
@@ -318,7 +318,7 @@ public final class Suggest {
         if (isFirstCharCapitalized || isAllUpperCase) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-                final Locale wordlocale = wordInfo.mSourceDict.mLocale;
+                final Locale wordlocale = (wordInfo.mSourceDict != null) ? wordInfo.mSourceDict.mLocale : null;
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
                         wordInfo, null == wordlocale ? locale : wordlocale, isAllUpperCase,
                         isFirstCharCapitalized, 0 /* trailingSingleQuotesCount */);
@@ -407,7 +407,7 @@ public final class Suggest {
      * @return whether it's fine to auto-correct to this.
      */
     private static boolean isAllowedByAutoCorrectionWithSpaceFilter(final SuggestedWordInfo info) {
-        final Locale locale = info.mSourceDict.mLocale;
+        final Locale locale = (info.mSourceDict != null) ? info.mSourceDict.mLocale : null;
         if (null == locale) {
             return true;
         }

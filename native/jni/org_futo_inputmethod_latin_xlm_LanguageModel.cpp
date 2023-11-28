@@ -436,7 +436,7 @@ namespace latinime {
     static void xlm_LanguageModel_getSuggestions(JNIEnv *env, jclass clazz,
          // inputs
          jlong dict,
-         jlong proximityInfo,
+         jlong _unused,
          jstring context,
          jstring partialWord,
          jfloatArray inComposeX,
