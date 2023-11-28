@@ -15,7 +15,7 @@ std::pair<token_sequence, token_sequence::size_type> transformer_context_fastfor
 
     // Handle the case when we have a shorter input than active context, requiring the last
     // token to be recomputed to get up-to-date logits
-    if((npast == next_context.size()) && (next_context.size() < ctx.active_context.size())) {
+    if((npast == next_context.size()) && (next_context.size() <= ctx.active_context.size())) {
         npast -= 1;
     }
 
