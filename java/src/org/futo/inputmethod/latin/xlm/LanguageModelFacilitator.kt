@@ -177,19 +177,29 @@ public class LanguageModelFacilitator(
             return
         }
 
-        val wordComposer = inputLogic.mWordComposer
-        val ngramContext = inputLogic.getNgramContextFromNthPreviousWordForSuggestion(settingsValues.mSpacingAndPunctuations, 2)
+        if(!inputLogic.mConnection.isConnected) return
 
-        val values = PredictionInputValues(
-            wordComposer.getComposedDataSnapshot(),
-            ngramContext,
-            inputStyle,
-            ++currentSequenceId
-        )
+        try {
+            val wordComposer = inputLogic.mWordComposer
+            val ngramContext = inputLogic.getNgramContextFromNthPreviousWordForSuggestion(
+                settingsValues.mSpacingAndPunctuations,
+                2
+            )
 
-        lifecycleScope.launch {
-            println("LatinIME: Emitting values")
-            sharedFlow.emit(values)
+            val values = PredictionInputValues(
+                wordComposer.composedDataSnapshot,
+                ngramContext,
+                inputStyle,
+                ++currentSequenceId
+            )
+
+            lifecycleScope.launch {
+                println("LatinIME: Emitting values")
+                sharedFlow.emit(values)
+            }
+        } catch(e: Exception) {
+            println("Failed to get context, composed data snapshot, etc: $e")
+            e.printStackTrace()
         }
     }
 
