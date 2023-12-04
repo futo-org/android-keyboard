@@ -12,6 +12,7 @@ import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class LanguageModel {
@@ -59,6 +60,7 @@ public class LanguageModel {
             NgramContext ngramContext,
             KeyDetector keyDetector,
             SettingsValuesForSuggestion settingsValuesForSuggestion,
+            long proximityInfoHandle,
             int sessionId,
             float weightForLocale,
             float[] inOutWeightOfLangModelVsSpatialModel
@@ -97,14 +99,35 @@ public class LanguageModel {
             context = context.substring(0, context.length() - partialWord.length()).trim();
         }
 
+        int[] xCoords;
+        int[] yCoords;
+
         if(isGesture) {
+            List<Integer> xCoordsList = new ArrayList<>();
+            List<Integer> yCoordsList = new ArrayList<>();
             // Partial word is gonna be derived from batch data
             partialWord = BatchInputConverter.INSTANCE.convertToString(
                 composedData.mInputPointers.getXCoordinates(),
                 composedData.mInputPointers.getYCoordinates(),
                 inputSize,
-                keyDetector
+                keyDetector,
+                xCoordsList, yCoordsList
             );
+
+            xCoords = new int[xCoordsList.size()];
+            yCoords = new int[yCoordsList.size()];
+
+            for(int i=0; i<xCoordsList.size(); i++) xCoords[i] = xCoordsList.get(i);
+            for(int i=0; i<yCoordsList.size(); i++) yCoords[i] = yCoordsList.get(i);
+        } else {
+            xCoords = new int[composedData.mInputPointers.getPointerSize()];
+            yCoords = new int[composedData.mInputPointers.getPointerSize()];
+
+            int[] xCoordsI = composedData.mInputPointers.getXCoordinates();
+            int[] yCoordsI = composedData.mInputPointers.getYCoordinates();
+
+            for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) xCoords[i] = (int)xCoordsI[i];
+            for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) yCoords[i] = (int)yCoordsI[i];
         }
 
         if(!partialWord.isEmpty()) {
@@ -142,24 +165,12 @@ public class LanguageModel {
             context = "";
         }
 
-        // TODO: We may want to pass times too, and adjust autocorrect confidence
-        // based on time (taking a long time to type a char = trust the typed character
-        // more, speed typing = trust it less)
-        int[] xCoordsI = composedData.mInputPointers.getXCoordinates();
-        int[] yCoordsI = composedData.mInputPointers.getYCoordinates();
-
-        float[] xCoords = new float[composedData.mInputPointers.getPointerSize()];
-        float[] yCoords = new float[composedData.mInputPointers.getPointerSize()];
-
-        for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) xCoords[i] = (float)xCoordsI[i];
-        for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) yCoords[i] = (float)yCoordsI[i];
-
         int maxResults = 128;
         float[] outProbabilities = new float[maxResults];
         String[] outStrings = new String[maxResults];
 
         // TOOD: Pass multiple previous words information for n-gram.
-        getSuggestionsNative(mNativeState, 0L, context, partialWord, xCoords, yCoords, outStrings, outProbabilities);
+        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, xCoords, yCoords, outStrings, outProbabilities);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
@@ -251,8 +262,8 @@ public class LanguageModel {
             long proximityInfoHandle,
             String context,
             String partialWord,
-            float[] inComposeX,
-            float[] inComposeY,
+            int[] inComposeX,
+            int[] inComposeY,
 
             // outputs
             String[] outStrings,

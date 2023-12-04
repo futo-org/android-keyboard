@@ -80,6 +80,13 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
 
     adapter->batch = llama_batch_init(LLAMA_CONTEXT_SIZE, 0, 1);
 
+    // Extract all token embeddings to adapter->embeddings, necessary for embedding interpolation
+    adapter->embeddings.resize(llama_n_embd(adapter->model) * llama_n_vocab(adapter->model));
+
+    auto tensor = llama_get_model_tensor(adapter->model, "token_embd.weight");
+    assert(tensor);
+    ggml_internal_get_type_traits(tensor->type).to_float(tensor->data, adapter->embeddings.data(), adapter->embeddings.size());
+
     return new LanguageModel(adapter);
 }
 

@@ -18,8 +18,8 @@ private fun dot(pair1: Pair<Float, Float>, pair2: Pair<Float, Float>): Float {
 }
 
 object BatchInputConverter {
-    fun convertToString(x: IntArray, y: IntArray, size: Int, keyDetector: KeyDetector): String {
-        var coords = x.zip(y).toMutableList()
+    fun convertToString(x: IntArray, y: IntArray, size: Int, keyDetector: KeyDetector, outX: MutableList<Int>, outY: MutableList<Int>): String {
+        val coords = x.zip(y).toMutableList()
 
         var s = ""
         for(i in 0 until size){
@@ -28,6 +28,8 @@ object BatchInputConverter {
                     keyDetector.detectHitKey(coords[i].first, coords[i].second)?.label ?: continue
                 if(s.isNotEmpty() && s.last() == key.first()) continue
                 s += key
+                outX.add(x[i])
+                outY.add(y[i])
                 continue
             }
 
@@ -49,6 +51,8 @@ object BatchInputConverter {
                     keyDetector.detectHitKey(coords[i].first, coords[i].second)?.label ?: continue
                 if(s.isNotEmpty() && s.last() == key.first()) continue
                 s += key
+                outX.add(x[i])
+                outY.add(y[i])
                 //println("Adding $key, dot $dot, dirs $directionFromLastCoord $directionFromNextCoord, coords $lastCoord $currCoord $nextCoord")
             } else {
                 // Simplify

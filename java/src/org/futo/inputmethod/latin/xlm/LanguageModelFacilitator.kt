@@ -99,6 +99,7 @@ public class LanguageModelFacilitator(
                 values.ngramContext,
                 keyboardSwitcher.mainKeyboardView.mKeyDetector,
                 settingsForPrediction,
+                proximityInfoHandle,
                 -1,
                 0.0f,
                 floatArrayOf())
