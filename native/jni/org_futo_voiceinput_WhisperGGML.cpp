@@ -48,7 +48,7 @@ static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffe
     return reinterpret_cast<jlong>(state);
 }
 
-static void WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloatArray samples_array, jstring prompt) {
+static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloatArray samples_array, jstring prompt) {
     auto *state = reinterpret_cast<WhisperModelState *>(handle);
 
     size_t num_samples = env->GetArrayLength(samples_array);
@@ -102,6 +102,18 @@ static void WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloa
 
     whisper_print_timings(state->context);
 
+    std::string output = "";
+    const int n_segments = whisper_full_n_segments(state->context);
+
+    for (int i = 0; i < n_segments; i++) {
+        auto seg = whisper_full_get_segment_text(state->context, i);
+        output.append(seg);
+    }
+
+    jstring jstr = env->NewStringUTF(output.c_str());
+    return jstr;
+
+
     /*
     ASSERT(mel_count % 80 == 0);
     whisper_set_mel(state->context, mel, (int)(mel_count / 80), 80);
@@ -136,7 +148,7 @@ namespace voiceinput {
         },
         {
             const_cast<char *>("inferNative"),
-            const_cast<char *>("(J[FLjava/lang/String;)V"),
+            const_cast<char *>("(J[FLjava/lang/String;)Ljava/lang/String;"),
             reinterpret_cast<void *>(WhisperGGML_infer)
         },
         {

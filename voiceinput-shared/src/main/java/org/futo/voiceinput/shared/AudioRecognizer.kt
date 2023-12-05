@@ -361,9 +361,23 @@ class AudioRecognizer(
 
     private suspend fun runModel() {
         val floatArray = floatSamples.array().sliceArray(0 until floatSamples.position())
-        println("RUNNING GGML MODEL")
-        ggmlModel.infer(floatArray)
-        println("FINISHED RUNNING GGML MODEL")
+
+        yield()
+        val outputText = ggmlModel.infer(floatArray).trim()
+
+        val text = when {
+            isBlankResult(outputText) -> ""
+            else -> outputText
+        }
+
+        yield()
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main) {
+                yield()
+                listener.finished(text)
+            }
+        }
+
 
         /*
         loadModelJob?.let {

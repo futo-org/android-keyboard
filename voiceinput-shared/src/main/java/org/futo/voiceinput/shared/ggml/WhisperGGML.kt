@@ -20,12 +20,12 @@ class WhisperGGML(
         }
     }
 
-    suspend fun infer(samples: FloatArray) = withContext(inferenceContext) {
-        inferNative(handle, samples, "")
+    suspend fun infer(samples: FloatArray): String = withContext(inferenceContext) {
+        return@withContext inferNative(handle, samples, "")
     }
 
     external fun openNative(path: String): Long
     external fun openFromBufferNative(buffer: Buffer): Long
-    external fun inferNative(handle: Long, samples: FloatArray, prompt: String)
+    external fun inferNative(handle: Long, samples: FloatArray, prompt: String): String
     external fun closeNative(handle: Long)
 }
