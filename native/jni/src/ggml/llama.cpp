@@ -1368,6 +1368,9 @@ struct llama_model {
     llama_hparams hparams = {};
     llama_vocab   vocab;
 
+    struct ggml_tensor * pos_encoder;
+    struct ggml_tensor * pos_encoder_b;
+
     struct ggml_tensor * tok_embd;
     struct ggml_tensor * pos_embd;
     struct ggml_tensor * tok_norm;
@@ -2715,6 +2718,14 @@ static void llm_load_tensors(
             case LLM_ARCH_LLAMA:
             case LLM_ARCH_REFACT:
             {
+                if (strcmp(ml.get_tensor_name(0), "encoder.bias") == 0) {
+                    model.pos_encoder_b = ml.create_tensor(ctx, "encoder.bias", {n_embd}, GGML_BACKEND_CPU);
+                    model.pos_encoder = ml.create_tensor(ctx, "encoder.weight", {2, n_embd}, GGML_BACKEND_CPU);
+                } else {
+                    model.pos_encoder_b = nullptr;
+                    model.pos_encoder = nullptr;
+                }
+
                 model.tok_embd = ml.create_tensor(ctx, tn(LLM_TENSOR_TOKEN_EMBD, "weight"), {n_embd, n_vocab}, GGML_BACKEND_CPU);
 
                 // output

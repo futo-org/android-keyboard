@@ -85,7 +85,44 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
 
     auto tensor = llama_get_model_tensor(adapter->model, "token_embd.weight");
     assert(tensor);
-    ggml_internal_get_type_traits(tensor->type).to_float(tensor->data, adapter->embeddings.data(), adapter->embeddings.size());
+
+    if(tensor->type != GGML_TYPE_F32) {
+        ggml_internal_get_type_traits(tensor->type).to_float(tensor->data,
+                                                             adapter->embeddings.data(),
+                                                             adapter->embeddings.size());
+    } else {
+        ASSERT((tensor->ne[0] * tensor->ne[1]) == adapter->embeddings.size());
+        memcpy(adapter->embeddings.data(), tensor->data, adapter->embeddings.size() * sizeof(float));
+    }
+
+    auto encoder_weight_tensor = llama_get_model_tensor(adapter->model, "encoder.weight");
+    auto encoder_bias_tensor = llama_get_model_tensor(adapter->model, "encoder.bias");
+    if(encoder_weight_tensor && encoder_bias_tensor) {
+        adapter->encoder_weight.resize(llama_n_embd(adapter->model) * 2);
+        adapter->encoder_bias.resize(llama_n_embd(adapter->model));
+
+        if(encoder_weight_tensor->type != GGML_TYPE_F32) {
+            ggml_internal_get_type_traits(encoder_weight_tensor->type).to_float(
+                    encoder_weight_tensor->data,
+                    adapter->encoder_weight.data(),
+                    adapter->encoder_weight.size()
+            );
+        } else {
+            ASSERT((encoder_weight_tensor->ne[0] * encoder_weight_tensor->ne[1]) == adapter->encoder_weight.size());
+            memcpy(adapter->encoder_weight.data(), encoder_weight_tensor->data, adapter->encoder_weight.size() * sizeof(float));
+        }
+
+        if(encoder_bias_tensor->type != GGML_TYPE_F32) {
+            ggml_internal_get_type_traits(encoder_bias_tensor->type).to_float(
+                    encoder_bias_tensor->data,
+                    adapter->encoder_bias.data(),
+                    adapter->encoder_bias.size()
+            );
+        } else {
+            ASSERT(encoder_bias_tensor->ne[0] == adapter->encoder_bias.size());
+            memcpy(adapter->encoder_bias.data(), encoder_bias_tensor->data, adapter->encoder_bias.size() * sizeof(float));
+        }
+    }
 
     return new LanguageModel(adapter);
 }

@@ -46,7 +46,7 @@ object BatchInputConverter {
             val dot = dot(directionFromLastCoord, directionFromNextCoord)
 
             // TODO: Figure out a good threshold
-            if(dot < 0.95) {
+            if(dot < 0.86) {
                 val key =
                     keyDetector.detectHitKey(coords[i].first, coords[i].second)?.label ?: continue
                 if(s.isNotEmpty() && s.last() == key.first()) continue

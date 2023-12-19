@@ -75,6 +75,8 @@ static void softmax(float * input, size_t input_len) {
 
 #define NUM_TOKEN_MIX 4
 struct TokenMix {
+    float x;
+    float y;
     struct {
         float weight;
         llama_token token;
@@ -98,6 +100,8 @@ struct LanguageModelState {
         int XBU;
         int XBC;
         int XEC;
+
+        int XC0_SWIPE_MODE;
 
         int LETTERS_TO_IDS[26];
     } specialTokens;
@@ -132,6 +136,7 @@ struct LanguageModelState {
         specialTokens.XBU = model->tokenToId("<XBU>");
         specialTokens.XBC = model->tokenToId("<XBC>");
         specialTokens.XEC = model->tokenToId("<XEC>");
+        specialTokens.XC0_SWIPE_MODE = model->tokenToId("<XC0>");
         specialTokens.LETTERS_TO_IDS[0] = model->tokenToId("<CHAR_A>");
 
         ASSERT(specialTokens.XBU != 0);
@@ -173,22 +178,8 @@ struct LanguageModelState {
         TIME_START(GetcachedMixAmount)
         int i = 0;
         for(i = 0; i < std::min(past_mixes.size(), mixes.size()); i++) {
-            bool flagged = false;
-            for(int m = 0; m < NUM_TOKEN_MIX; m++) {
-                if(std::abs(past_mixes[i].mixes[m].weight - mixes[i].mixes[m].weight) >= EPS){
-                    flagged = true;
-                    break;
-                }
-            }
-            if(flagged) break;
-
-            for(int m = 0; m < NUM_TOKEN_MIX; m++) {
-                if(past_mixes[i].mixes[m].weight >= EPS && past_mixes[i].mixes[m].token != mixes[i].mixes[m].token){
-                    flagged = true;
-                    break;
-                }
-            }
-            if(flagged) break;
+            if(std::abs(past_mixes[i].x - mixes[i].x) >= EPS) break;
+            if(std::abs(past_mixes[i].y - mixes[i].y) >= EPS) break;
         }
 
         TIME_END(GetcachedMixAmount)
@@ -200,6 +191,7 @@ struct LanguageModelState {
         TIME_START(PromptDecode)
         llama_context *ctx = ((LlamaAdapter *) model->adapter)->context;
         llama_batch batch = ((LlamaAdapter *) model->adapter)->batch;
+        LlamaAdapter *llamaAdapter = ((LlamaAdapter *)model->adapter);
 
         size_t n_embd = llama_n_embd(llama_get_model(ctx));
         size_t n_vocab = llama_n_vocab(llama_get_model(ctx));
@@ -240,22 +232,41 @@ struct LanguageModelState {
 
         std::vector<float> embeds;
 
+        bool useEncoder = !llamaAdapter->encoder_weight.empty();
+        AKLOGI("DecodePromptAndMixes: useEncoder=%d", useEncoder);
+
         for(auto &mix : mixes) {
 
             int num_added = 0;
 
             std::vector<float> mix_f(n_embd, 0.0f);
-            for(auto &t : mix.mixes) {
-                if(t.weight < EPS) break;
 
-                float *src = ((LlamaAdapter *)model->adapter)->embeddings.data() + (t.token * n_embd);
-                float weight = t.weight;
+            if(useEncoder) {
+                num_added = 1;
 
-                for(size_t i = 0; i < n_embd; i++){
-                    mix_f[i] += src[i] * weight;
+                for(size_t i=0; i<n_embd; i++) {
+                    mix_f[i] = llamaAdapter->encoder_bias[i]
+                            + llamaAdapter->encoder_weight[i*2]*mix.x
+                            + llamaAdapter->encoder_weight[i*2 + 1]*mix.y;
                 }
 
-                num_added++;
+                //AKLOGI("DEBUG: pos %.4f %.4f got this: [%.4f %.4f %.4f %.4f %.4f %.4f %.4f ...",
+                //       mix.x, mix.y,
+                //             mix_f[0], mix_f[1], mix_f[2], mix_f[3], mix_f[4], mix_f[5], mix_f[6]);
+            } else {
+                for (auto &t: mix.mixes) {
+                    if (t.weight < EPS) break;
+
+                    float *src = ((LlamaAdapter *) model->adapter)->embeddings.data() +
+                                 (t.token * n_embd);
+                    float weight = t.weight;
+
+                    for (size_t i = 0; i < n_embd; i++) {
+                        mix_f[i] += src[i] * weight;
+                    }
+
+                    num_added++;
+                }
             }
 
             if(num_added == 0){
@@ -290,6 +301,10 @@ struct LanguageModelState {
                         batch.n_seq_id,
                         batch.seq_id,
                         batch.logits,
+
+                        batch.all_pos_0,
+                        batch.all_pos_1,
+                        batch.all_seq_id
                 };
 
                 batch.pos[0] = prompt.size() + h;
@@ -386,7 +401,7 @@ struct LanguageModelState {
             llama_kv_cache_seq_cp(ctx, 0, sequence.second.seq_id, 0, decodeResult.size);
         }
 
-        std::vector<potential_sequence> next_sequences;
+            std::vector<potential_sequence> next_sequences;
 
         std::vector<std::pair<float, token_sequence>> outputs;
 
@@ -543,7 +558,7 @@ struct LanguageModelState {
         return str_results;
     }
 
-    std::vector<std::pair<float, std::string>> PredictCorrection(const std::string &context, std::string &word, const std::vector<TokenMix> &mixes) {
+    std::vector<std::pair<float, std::string>> PredictCorrection(const std::string &context, std::string &word, const std::vector<TokenMix> &mixes, bool swipe_mode) {
         token_sequence next_context;
         if(context.length() != 0) {
             next_context = model->tokenize(trim(context) + " ");
@@ -551,6 +566,10 @@ struct LanguageModelState {
 
         next_context.insert(next_context.begin(), 1); // BOS
         next_context.push_back(specialTokens.XBU);
+
+        if(swipe_mode) {
+            next_context.push_back(specialTokens.XC0_SWIPE_MODE);
+        }
 
         auto decoding_result = DecodePromptAndMixes(next_context, mixes);
         auto results = Sample(decoding_result, 3);
@@ -598,6 +617,7 @@ namespace latinime {
          jlong proximityInfo,
          jstring context,
          jstring partialWord,
+         jint inputMode,
          jintArray inComposeX,
          jintArray inComposeY,
 
@@ -608,9 +628,7 @@ namespace latinime {
         LanguageModelState *state = reinterpret_cast<LanguageModelState *>(dict);
         ProximityInfo *pInfo = reinterpret_cast<ProximityInfo *>(proximityInfo);
 
-
         size_t inputSize = env->GetArrayLength(inComposeX);
-
 
         const char* cstr = env->GetStringUTFChars(context, nullptr);
         std::string contextString(cstr);
@@ -679,13 +697,17 @@ namespace latinime {
                 index_value[j].first /= total_sum;
             }
 
-            AKLOGI("%d | Char %c, nearest is %c at %.2f, then %c at %.2f, finally %c at %.2f", i, partialWordString[i],
+            TokenMix results;
+            results.x = ((float)xCoordinates[i]) / ((float)pInfo->getKeyboardWidth());
+            results.y = ((float)yCoordinates[i]) / ((float)pInfo->getKeyboardHeight());
+
+            AKLOGI("%d | Char %c, pos %.6f %.6f, nearest is %c at %.2f, then %c at %.2f, finally %c at %.2f", i, partialWordString[i],
+                   results.x, results.y,
                    (char)(pInfo->getKeyCodePoint(index_value[0].second)), (float)(index_value[0].first),
                    (char)(pInfo->getKeyCodePoint(index_value[1].second)), (float)(index_value[1].first),
                    (char)(pInfo->getKeyCodePoint(index_value[2].second)), (float)(index_value[2].first)
                );
 
-            TokenMix results;
 
             for(int j=0; j<NUM_TOKEN_MIX; j++) {
                 char c = (char) (pInfo->getKeyCodePoint(index_value[j].second));
@@ -719,7 +741,8 @@ namespace latinime {
             //}
         } else {
             isAutoCorrect = true;
-            results = state->PredictCorrection(contextString, partialWordString, mixes);
+            bool swipeMode = inputMode == 1;
+            results = state->PredictCorrection(contextString, partialWordString, mixes, swipeMode);
 
             //for(const auto &result : results) {
             //    AKLOGI("LanguageModel correction %.2f [%s] -> [%s]", result.first, partialWordString.c_str(), result.second.c_str());
@@ -755,7 +778,7 @@ namespace latinime {
             },
             {
                     const_cast<char *>("getSuggestionsNative"),
-                    const_cast<char *>("(JJLjava/lang/String;Ljava/lang/String;[I[I[Ljava/lang/String;[F)V"),
+                    const_cast<char *>("(JJLjava/lang/String;Ljava/lang/String;I[I[I[Ljava/lang/String;[F)V"),
                     reinterpret_cast<void *>(xlm_LanguageModel_getSuggestions)
             }
     };

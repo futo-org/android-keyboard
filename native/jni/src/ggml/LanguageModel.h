@@ -138,6 +138,10 @@ public:
     llama_batch batch;
 
     std::vector<float> embeddings;
+
+    std::vector<float> encoder_weight = {};
+    std::vector<float> encoder_bias = {};
+
 private:
     LlamaAdapter();
 

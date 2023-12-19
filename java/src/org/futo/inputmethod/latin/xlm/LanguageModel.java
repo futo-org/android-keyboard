@@ -47,7 +47,7 @@ public class LanguageModel {
                 }
 
                 if(mNativeState == 0){
-                    throw new RuntimeException("Failed to load R.raw.ml4_1_f16, R.raw.ml3_tokenizer model");
+                    throw new RuntimeException("Failed to load models " + modelPath);
                 }
             }
         };
@@ -102,7 +102,9 @@ public class LanguageModel {
         int[] xCoords;
         int[] yCoords;
 
+        int inputMode = 0;
         if(isGesture) {
+            inputMode = 1;
             List<Integer> xCoordsList = new ArrayList<>();
             List<Integer> yCoordsList = new ArrayList<>();
             // Partial word is gonna be derived from batch data
@@ -170,7 +172,7 @@ public class LanguageModel {
         String[] outStrings = new String[maxResults];
 
         // TOOD: Pass multiple previous words information for n-gram.
-        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, xCoords, yCoords, outStrings, outProbabilities);
+        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, inputMode, xCoords, yCoords, outStrings, outProbabilities);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
@@ -262,6 +264,7 @@ public class LanguageModel {
             long proximityInfoHandle,
             String context,
             String partialWord,
+            int inputMode,
             int[] inComposeX,
             int[] inComposeY,
 
