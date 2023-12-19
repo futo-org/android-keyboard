@@ -3,7 +3,6 @@ package org.futo.inputmethod.latin.uix
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -23,6 +22,7 @@ interface KeyboardManagerForAction {
     fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction
 
     fun typeText(v: String)
+    fun backspace(amount: Int)
 
     fun closeActionWindow()
 

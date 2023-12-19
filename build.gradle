@@ -67,7 +67,9 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.flags'
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig releaseSigning
         }
 
@@ -79,9 +81,9 @@ android {
                 it.buildConfigField "String", "ACRA_PASSWORD", crashReportProperties['acraPassword']
             } else {
                 it.buildConfigField "boolean", "ENABLE_ACRA", "false"
-                it.buildConfigField "String", "ACRA_URL", ""
-                it.buildConfigField "String", "ACRA_USER", ""
-                it.buildConfigField "String", "ACRA_PASSWORD", ""
+                it.buildConfigField "String", "ACRA_URL", "\"\""
+                it.buildConfigField "String", "ACRA_USER", "\"\""
+                it.buildConfigField "String", "ACRA_PASSWORD", "\"\""
             }
         }
     }
@@ -165,6 +167,7 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1'
 
     def work_version = "2.8.1"
     implementation "androidx.work:work-runtime-ktx:$work_version"

@@ -25,12 +25,13 @@
 #include "org_futo_inputmethod_latin_xlm_LanguageModel.h"
 #include "defines.h"
 #include "org_futo_inputmethod_latin_xlm_AdapterTrainer.h"
+#include "org_futo_voiceinput_WhisperGGML.h"
 
 /*
  * Returns the JNI version on success, -1 on failure.
  */
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
-    JNIEnv *env = 0;
+    JNIEnv *env = nullptr;
 
     if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
         AKLOGE("ERROR: GetEnv failed");
@@ -63,6 +64,10 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
     if (!latinime::register_AdapterTrainer(env)) {
         AKLOGE("ERROR: AdapterTrainer native registration failed");
+        return -1;
+    }
+    if (!voiceinput::register_WhisperGGML(env)) {
+        AKLOGE("ERROR: WhisperGGML native registration failed");
         return -1;
     }
     /* success -- return valid version number */

@@ -3,34 +3,25 @@ package org.futo.inputmethod.latin.xlm;
 import android.content.Context;
 import android.util.Log;
 
-import org.futo.inputmethod.latin.Dictionary;
+import org.futo.inputmethod.keyboard.KeyDetector;
 import org.futo.inputmethod.latin.NgramContext;
-import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.common.ComposedData;
 import org.futo.inputmethod.latin.common.InputPointers;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
-import java.util.function.IntPredicate;
 
-// TODO: Avoid loading the LanguageModel if the setting is disabled
-public class LanguageModel extends Dictionary {
+public class LanguageModel {
     static long mNativeState = 0;
 
     Context context = null;
     Thread initThread = null;
     Locale locale = null;
     public LanguageModel(Context context, String dictType, Locale locale) {
-        super(dictType, locale);
-
         this.context = context;
         this.locale = locale;
     }
@@ -56,7 +47,7 @@ public class LanguageModel extends Dictionary {
                 }
 
                 if(mNativeState == 0){
-                    throw new RuntimeException("Failed to load R.raw.ml4_1_f16, R.raw.ml3_tokenizer model");
+                    throw new RuntimeException("Failed to load models " + modelPath);
                 }
             }
         };
@@ -64,12 +55,12 @@ public class LanguageModel extends Dictionary {
         initThread.start();
     }
 
-    @Override
     public ArrayList<SuggestedWords.SuggestedWordInfo> getSuggestions(
             ComposedData composedData,
             NgramContext ngramContext,
-            long proximityInfoHandle,
+            KeyDetector keyDetector,
             SettingsValuesForSuggestion settingsValuesForSuggestion,
+            long proximityInfoHandle,
             int sessionId,
             float weightForLocale,
             float[] inOutWeightOfLangModelVsSpatialModel
@@ -108,6 +99,39 @@ public class LanguageModel extends Dictionary {
             context = context.substring(0, context.length() - partialWord.length()).trim();
         }
 
+        int[] xCoords;
+        int[] yCoords;
+
+        int inputMode = 0;
+        if(isGesture) {
+            inputMode = 1;
+            List<Integer> xCoordsList = new ArrayList<>();
+            List<Integer> yCoordsList = new ArrayList<>();
+            // Partial word is gonna be derived from batch data
+            partialWord = BatchInputConverter.INSTANCE.convertToString(
+                composedData.mInputPointers.getXCoordinates(),
+                composedData.mInputPointers.getYCoordinates(),
+                inputSize,
+                keyDetector,
+                xCoordsList, yCoordsList
+            );
+
+            xCoords = new int[xCoordsList.size()];
+            yCoords = new int[yCoordsList.size()];
+
+            for(int i=0; i<xCoordsList.size(); i++) xCoords[i] = xCoordsList.get(i);
+            for(int i=0; i<yCoordsList.size(); i++) yCoords[i] = yCoordsList.get(i);
+        } else {
+            xCoords = new int[composedData.mInputPointers.getPointerSize()];
+            yCoords = new int[composedData.mInputPointers.getPointerSize()];
+
+            int[] xCoordsI = composedData.mInputPointers.getXCoordinates();
+            int[] yCoordsI = composedData.mInputPointers.getYCoordinates();
+
+            for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) xCoords[i] = (int)xCoordsI[i];
+            for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) yCoords[i] = (int)yCoordsI[i];
+        }
+
         if(!partialWord.isEmpty()) {
             partialWord = partialWord.trim();
         }
@@ -143,24 +167,12 @@ public class LanguageModel extends Dictionary {
             context = "";
         }
 
-        // TODO: We may want to pass times too, and adjust autocorrect confidence
-        // based on time (taking a long time to type a char = trust the typed character
-        // more, speed typing = trust it less)
-        int[] xCoordsI = composedData.mInputPointers.getXCoordinates();
-        int[] yCoordsI = composedData.mInputPointers.getYCoordinates();
-
-        float[] xCoords = new float[composedData.mInputPointers.getPointerSize()];
-        float[] yCoords = new float[composedData.mInputPointers.getPointerSize()];
-
-        for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) xCoords[i] = (float)xCoordsI[i];
-        for(int i=0; i<composedData.mInputPointers.getPointerSize(); i++) yCoords[i] = (float)yCoordsI[i];
-
         int maxResults = 128;
         float[] outProbabilities = new float[maxResults];
         String[] outStrings = new String[maxResults];
 
         // TOOD: Pass multiple previous words information for n-gram.
-        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, xCoords, yCoords, outStrings, outProbabilities);
+        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, inputMode, xCoords, yCoords, outStrings, outProbabilities);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
@@ -197,7 +209,7 @@ public class LanguageModel extends Dictionary {
                 currKind |= SuggestedWords.SuggestedWordInfo.KIND_FLAG_EXACT_MATCH;
             }
 
-            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), currKind, this, 0, 0 ));
+            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), currKind, null, 0, 0 ));
         }
 
         /*
@@ -235,7 +247,6 @@ public class LanguageModel extends Dictionary {
         }
     }
 
-
     @Override
     protected void finalize() throws Throwable {
         try {
@@ -245,13 +256,6 @@ public class LanguageModel extends Dictionary {
         }
     }
 
-    @Override
-    public boolean isInDictionary(String word) {
-        // TODO: Provide the word spelling to the model and see if the probability of correcting it to that is beyond a certain limit
-        return false;
-    }
-
-
     private static native long openNative(String sourceDir);
     private static native void closeNative(long state);
     private static native void getSuggestionsNative(
@@ -260,8 +264,9 @@ public class LanguageModel extends Dictionary {
             long proximityInfoHandle,
             String context,
             String partialWord,
-            float[] inComposeX,
-            float[] inComposeY,
+            int inputMode,
+            int[] inComposeX,
+            int[] inComposeY,
 
             // outputs
             String[] outStrings,

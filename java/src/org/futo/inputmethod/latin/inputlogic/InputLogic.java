@@ -491,6 +491,11 @@ public final class InputLogic {
         return inputTransaction;
     }
 
+    public void showBatchSuggestions(final SuggestedWords suggestedWordsForBatchInput,
+                                     final boolean isTailBatchInput) {
+        mInputLogicHandler.showGestureSuggestionsWithPreviewVisuals(suggestedWordsForBatchInput, isTailBatchInput);
+    }
+
     public void onStartBatchInput(final SettingsValues settingsValues,
             final KeyboardSwitcher keyboardSwitcher, final LatinIMELegacy.UIHandler handler) {
         mWordBeingCorrectedByCursor = null;
@@ -560,7 +565,9 @@ public final class InputLogic {
      */
     private int mAutoCommitSequenceNumber = 1;
     public void onUpdateBatchInput(final InputPointers batchPointers) {
+        Log.d(TAG, "InputLogic has received batch input update, now we call for " + mInputLogicHandler.toString());
         mInputLogicHandler.onUpdateBatchInput(batchPointers, mAutoCommitSequenceNumber);
+        Log.d(TAG, "Finished calling onUpddateBatchInput");
     }
 
     public void onEndBatchInput(final InputPointers batchPointers) {

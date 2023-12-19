@@ -784,6 +784,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     public boolean isImeSuppressedByHardwareKeyboard() {
+        if(true) return false; // TODO: This function returning true causes some initialization issues
+
         final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
         return !onEvaluateInputViewShown() && switcher.isImeSuppressedByHardwareKeyboard(
                 mSettings.getCurrent(), switcher.getKeyboardSwitchState());

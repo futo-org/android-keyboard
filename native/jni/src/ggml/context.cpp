@@ -1,7 +1,7 @@
 #include "context.h"
 
 
-std::pair<token_sequence, token_sequence::size_type> transformer_context_fastforward(const transformer_context &ctx, const token_sequence &next_context) {
+std::pair<token_sequence, token_sequence::size_type> transformer_context_fastforward(const transformer_context &ctx, const token_sequence &next_context, bool allow_empty) {
     token_sequence::size_type npast = 0;
 
     // Compare the two sequences and find the first index at which they differ.
@@ -13,10 +13,12 @@ std::pair<token_sequence, token_sequence::size_type> transformer_context_fastfor
         npast = i + 1;
     }
 
-    // Handle the case when we have a shorter input than active context, requiring the last
-    // token to be recomputed to get up-to-date logits
-    if((npast == next_context.size()) && (next_context.size() < ctx.active_context.size())) {
-        npast -= 1;
+    if(!allow_empty) {
+        // Handle the case when we have a shorter input than active context, requiring the last
+        // token to be recomputed to get up-to-date logits
+        if ((npast == next_context.size()) && (next_context.size() <= ctx.active_context.size())) {
+            npast -= 1;
+        }
     }
 
     token_sequence new_context(next_context.size() - npast);

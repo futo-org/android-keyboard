@@ -1,6 +1,5 @@
 package org.futo.inputmethod.latin
 
-import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
@@ -8,10 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.CompletionInfo
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InlineSuggestion
 import android.view.inputmethod.InlineSuggestionsRequest
 import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputMethodSubtype
@@ -59,20 +56,9 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import org.futo.inputmethod.latin.common.Constants
-import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBar
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
@@ -83,7 +69,6 @@ import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.THEME_KEY
-import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
@@ -94,14 +79,8 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
-import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
-import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
-import org.futo.inputmethod.latin.settings.SettingsValues;
-import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
-import org.futo.inputmethod.latin.xlm.LanguageModel;
-import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator;
-import org.futo.inputmethod.latin.utils.SuggestionResults
+import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 
 class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner,
     LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner, KeyboardManagerForAction {
@@ -686,6 +665,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun typeText(v: String) {
         latinIMELegacy.mInputLogic.mConnection.commitText(v, 1)
+    }
+
+    override fun backspace(amount: Int) {
+        latinIMELegacy.mInputLogic.mConnection.deleteTextBeforeCursor(amount)
     }
 
     override fun closeActionWindow() {
