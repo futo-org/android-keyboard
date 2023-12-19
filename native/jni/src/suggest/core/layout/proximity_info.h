@@ -36,7 +36,7 @@ namespace insmat {
 
     AK_FORCE_INLINE float section(float h, float r = 1) // returns the positive root of intersection of line y = h with circle centered at the origin and radius r
     {
-        assert(r >= 0); // assume r is positive, leads to some simplifications in the formula below (can factor out r from the square root)
+        ASSERT(r >= 0); // assume r is positive, leads to some simplifications in the formula below (can factor out r from the square root)
         return (h < r)? sqrt(r * r - h * h) : 0; // http://www.wolframalpha.com/input/?i=r+*+sin%28acos%28x+%2F+r%29%29+%3D+h
     }
 
@@ -63,7 +63,7 @@ namespace insmat {
             else
                 return area(x0, x1, 0, -y0, r) + area(x0, x1, 0, y1, r); // the box is both above and below, divide it to two boxes and go again
         } else {
-            assert(y1 >= 0); // y0 >= 0, which means that y1 >= 0 also (y1 >= y0) because of the swap at the beginning
+            ASSERT(y1 >= 0); // y0 >= 0, which means that y1 >= 0 also (y1 >= y0) because of the swap at the beginning
             return area(x0, x1, y0, r) - area(x0, x1, y1, r); // area of the lower box minus area of the higher box
         }
     }

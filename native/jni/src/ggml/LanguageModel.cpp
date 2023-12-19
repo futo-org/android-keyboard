@@ -84,7 +84,7 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
     adapter->embeddings.resize(llama_n_embd(adapter->model) * llama_n_vocab(adapter->model));
 
     auto tensor = llama_get_model_tensor(adapter->model, "token_embd.weight");
-    assert(tensor);
+    ASSERT(tensor);
 
     if(tensor->type != GGML_TYPE_F32) {
         ggml_internal_get_type_traits(tensor->type).to_float(tensor->data,

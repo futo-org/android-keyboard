@@ -271,7 +271,7 @@ struct LanguageModelState {
 
             if(num_added == 0){
                 AKLOGE("Somehow a token mix had 0 weight for everything");
-                assert(false);
+                ASSERT(false);
             }
 
             embeds.insert(embeds.end(), mix_f.begin(), mix_f.end());
@@ -338,11 +338,11 @@ struct LanguageModelState {
 
             TIME_END(DecodeXBC)
 
-            assert(size == prompt.size() + n_tokens + 1);
-            assert(size == prompt.size() + (embeds.size() / n_embd) + 1);
+            ASSERT(size == prompt.size() + n_tokens + 1);
+            ASSERT(size == prompt.size() + (embeds.size() / n_embd) + 1);
         } else {
-            assert(size == prompt.size());
-            assert(head == prompt_ff.first.size() - 1);
+            ASSERT(size == prompt.size());
+            ASSERT(head == prompt_ff.first.size() - 1);
         }
 
         AKLOGI("-- Decode");
