@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.AssetManager
 import android.hardware.SensorPrivacyManager
 import android.media.AudioFormat
 import android.media.AudioRecord
@@ -25,7 +24,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import org.futo.voiceinput.shared.ggml.WhisperGGML
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
@@ -35,16 +33,13 @@ import org.futo.voiceinput.shared.types.ModelLoader
 import org.futo.voiceinput.shared.whisper.DecodingConfiguration
 import org.futo.voiceinput.shared.whisper.ModelManager
 import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
+import org.futo.voiceinput.shared.whisper.MultiModelRunner
 import org.futo.voiceinput.shared.whisper.isBlankResult
-import org.tensorflow.lite.support.common.FileUtil
-import java.io.FileInputStream
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
-import java.nio.channels.FileChannel
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
-
 
 data class AudioRecognizerSettings(
     val modelRunConfiguration: MultiModelRunConfiguration,
@@ -63,15 +58,12 @@ class AudioRecognizer(
     private var isRecording = false
     private var recorder: AudioRecord? = null
 
-    //private val modelRunner = MultiModelRunner(modelManager)
+    private val modelRunner = MultiModelRunner(modelManager)
 
     private val floatSamples: FloatBuffer = FloatBuffer.allocate(16000 * 30)
     private var recorderJob: Job? = null
     private var modelJob: Job? = null
     private var loadModelJob: Job? = null
-
-    private val buffer = FileUtil.loadMappedFile(context, "ggml-model.tflite")
-    private val ggmlModel = WhisperGGML(buffer)
 
     @Throws(ModelDoesNotExistException::class)
     private fun verifyModelsExist() {
@@ -171,7 +163,7 @@ class AudioRecognizer(
     }
 
     private suspend fun preloadModels() {
-        //modelRunner.preload(settings.modelRunConfiguration)
+        modelRunner.preload(settings.modelRunConfiguration)
     }
 
     private suspend fun recordingJob(recorder: AudioRecord, vad: VadModel) {
@@ -360,26 +352,6 @@ class AudioRecognizer(
     }
 
     private suspend fun runModel() {
-        val floatArray = floatSamples.array().sliceArray(0 until floatSamples.position())
-
-        yield()
-        val outputText = ggmlModel.infer(floatArray).trim()
-
-        val text = when {
-            isBlankResult(outputText) -> ""
-            else -> outputText
-        }
-
-        yield()
-        lifecycleScope.launch {
-            withContext(Dispatchers.Main) {
-                yield()
-                listener.finished(text)
-            }
-        }
-
-
-        /*
         loadModelJob?.let {
             if (it.isActive) {
                 println("Model was not finished loading...")
@@ -387,7 +359,7 @@ class AudioRecognizer(
             }
         }
 
-
+        val floatArray = floatSamples.array().sliceArray(0 until floatSamples.position())
 
         yield()
         val outputText = modelRunner.run(
@@ -409,8 +381,6 @@ class AudioRecognizer(
                 listener.finished(text)
             }
         }
-
-         */
     }
 
     private fun onFinishRecording() {
