@@ -59,6 +59,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.common.Constants
+import org.futo.inputmethod.latin.common.Constants.CODE_DELETE
+import org.futo.inputmethod.latin.common.Constants.NOT_A_COORDINATE
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBar
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
@@ -664,11 +666,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun typeText(v: String) {
-        latinIMELegacy.mInputLogic.mConnection.commitText(v, 1)
+        latinIMELegacy.onTextInput(v)
     }
 
     override fun backspace(amount: Int) {
-        latinIMELegacy.mInputLogic.mConnection.deleteTextBeforeCursor(amount)
+        latinIMELegacy.onCodeInput(CODE_DELETE, NOT_A_COORDINATE, NOT_A_COORDINATE, false)
     }
 
     override fun closeActionWindow() {
