@@ -176,6 +176,11 @@ public class KeyboardView extends View {
                 R.styleable.Keyboard_Key, defStyle, R.style.KeyboardView);
         mDefaultKeyLabelFlags = keyAttr.getInt(R.styleable.Keyboard_Key_keyLabelFlags, 0);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr, mDrawableProvider);
+
+        if(isMoreKeys && mKeyVisualAttributes != null) {
+            mKeyVisualAttributes.mTextColor = mDrawableProvider.getMoreKeysTextColor();
+        }
+
         keyAttr.recycle();
 
         mPaint.setAntiAlias(true);
