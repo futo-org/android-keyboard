@@ -302,7 +302,7 @@ public final class KeyboardTextsTable {
         /* ~ additional_morekeys_symbols_0 */
         /* morekeys_tablet_period */ "!text/morekeys_tablet_punctuation",
         /* morekeys_nordic_row2_11 */ EMPTY,
-        /* morekeys_punctuation */ "!autoColumnOrder!8,\\,,?,!,#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,',@,:,-,\",+,\\%,&",
+        /* morekeys_punctuation */ "_,\\\\,|,=",
         /* keyspec_tablet_comma */ ",",
         // Period key
         /* keyspec_period */ ".",

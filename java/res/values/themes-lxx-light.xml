@@ -48,6 +48,7 @@
         <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lxx_light</item>
         <item name="keyTextColor">@color/key_text_color_lxx_light</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactive_color_lxx_light</item>
+        <item name="keyPressedTextColor">@color/key_text_color_lxx_light</item>
         <item name="functionalTextColor">@color/key_functional_text_color_lxx_light</item>
         <item name="keyHintLetterColor">@color/key_hint_letter_color_lxx_light</item>
         <item name="keyHintLabelColor">@color/key_text_inactive_color_lxx_light</item>
