@@ -5,6 +5,8 @@ import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
+import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.CompletionInfo
@@ -277,7 +279,9 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     @Composable
     private fun LegacyKeyboardView(hidden: Boolean) {
         val modifier = if(hidden) {
-            Modifier.clipToBounds().size(0.dp)
+            Modifier
+                .clipToBounds()
+                .size(0.dp)
         } else {
             Modifier.onSizeChanged {
                 inputViewHeight = it.height
@@ -702,6 +706,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             }
         }
     }
+
+    override fun sendCodePointEvent(codePoint: Int) {
+        latinIMELegacy.onCodeInput(codePoint, NOT_A_COORDINATE, NOT_A_COORDINATE, false)
+    }
+
+    override fun sendKeyEvent(keyCode: Int, metaState: Int) {
+        latinIMELegacy.mInputLogic.sendDownUpKeyEvent(keyCode, metaState)
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreateInlineSuggestionsRequest(uiExtras: Bundle): InlineSuggestionsRequest {

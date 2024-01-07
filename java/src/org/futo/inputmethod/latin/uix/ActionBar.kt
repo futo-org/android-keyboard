@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
@@ -60,8 +61,11 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.uix.actions.ClipboardAction
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
+import org.futo.inputmethod.latin.uix.actions.RedoAction
 import org.futo.inputmethod.latin.uix.actions.ThemeAction
+import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -287,7 +291,7 @@ fun ActionItem(action: Action, onSelect: (Action) -> Unit) {
                 cornerRadius = CornerRadius(radius, radius)
             )
         }
-        .width(64.dp)
+        .width(50.dp)
         .fillMaxHeight(),
         colors = IconButtonDefaults.iconButtonColors(contentColor = contentCol)
     ) {
@@ -317,12 +321,9 @@ fun RowScope.ActionItems(onSelect: (Action) -> Unit) {
     ActionItem(EmojiAction, onSelect)
     ActionItem(VoiceInputAction, onSelect)
     ActionItem(ThemeAction, onSelect)
-
-    Box(modifier = Modifier
-        .fillMaxHeight()
-        .weight(1.0f)) {
-
-    }
+    ActionItem(UndoAction, onSelect)
+    ActionItem(RedoAction, onSelect)
+    ActionItem(ClipboardAction, onSelect)
 }
 
 
@@ -386,7 +387,11 @@ fun ActionBar(
             ExpandActionsButton(isActionsOpen.value) { isActionsOpen.value = !isActionsOpen.value }
 
             if(isActionsOpen.value) {
-                ActionItems(onActionActivated)
+                LazyRow {
+                    item {
+                        ActionItems(onActionActivated)
+                    }
+                }
             } else if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 InlineSuggestions(inlineSuggestions)
             } else if(words != null) {
@@ -399,7 +404,9 @@ fun ActionBar(
                 Spacer(modifier = Modifier.weight(1.0f))
             }
 
-            ActionItemSmall(VoiceInputAction, onActionActivated)
+            if(!isActionsOpen.value) {
+                ActionItemSmall(VoiceInputAction, onActionActivated)
+            }
         }
     }
 }

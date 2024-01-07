@@ -29,6 +29,9 @@ interface KeyboardManagerForAction {
     fun triggerSystemVoiceInput()
 
     fun updateTheme(newTheme: ThemeOption)
+
+    fun sendCodePointEvent(codePoint: Int)
+    fun sendKeyEvent(keyCode: Int, metaState: Int)
 }
 
 interface ActionWindow {

@@ -55,6 +55,7 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.PersistentActionState
@@ -293,9 +294,9 @@ val EmojiAction = Action(
                     }, onExit = {
                         manager.closeActionWindow()
                     }, onSpace = {
-                        manager.typeText(" ")
+                        manager.sendCodePointEvent(Constants.CODE_SPACE)
                     }, onBackspace = {
-                        manager.backspace(1)
+                        manager.sendCodePointEvent(Constants.CODE_DELETE)
                     }, bitmaps = state.bitmaps, emojis = emojis)
                 }
             }
