@@ -101,6 +101,11 @@ public interface KeyboardActionListener {
      */
     public boolean onCustomRequest(int requestCode);
 
+    public void onMovePointer(int steps);
+    public void onMoveDeletePointer(int steps);
+    public void onUpWithDeletePointerActive();
+    public void onUpWithPointerActive();
+
     public static final KeyboardActionListener EMPTY_LISTENER = new Adapter();
 
     public static class Adapter implements KeyboardActionListener {
@@ -125,8 +130,14 @@ public interface KeyboardActionListener {
         @Override
         public void onFinishSlidingInput() {}
         @Override
-        public boolean onCustomRequest(int requestCode) {
-            return false;
-        }
+        public boolean onCustomRequest(int requestCode) { return false; }
+        @Override
+        public void onMovePointer(int steps) {}
+        @Override
+        public void onMoveDeletePointer(int steps) {}
+        @Override
+        public void onUpWithDeletePointerActive() {}
+        @Override
+        public void onUpWithPointerActive() {}
     }
 }

@@ -41,6 +41,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -158,6 +159,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     private static final String SCHEME_PACKAGE = "package";
 
     final Settings mSettings;
+    private Locale mLocale;
     final DictionaryFacilitator mDictionaryFacilitator =
             DictionaryFacilitatorProvider.getDictionaryFacilitator(
                     false /* isNeededForSpellChecking */);
@@ -671,18 +673,18 @@ public class LatinIMELegacy implements KeyboardActionListener,
     // Has to be package-visible for unit tests
     @UsedForTesting
     void loadSettings() {
-        final Locale locale = mRichImm.getCurrentSubtypeLocale();
+        mLocale = mRichImm.getCurrentSubtypeLocale();
         final EditorInfo editorInfo = mInputMethodService.getCurrentInputEditorInfo();
         final InputAttributes inputAttributes = new InputAttributes(
                 editorInfo, mInputMethodService.isFullscreenMode(), mInputMethodService.getPackageName());
-        mSettings.loadSettings(mInputMethodService, locale, inputAttributes);
+        mSettings.loadSettings(mInputMethodService, mLocale, inputAttributes);
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(currentSettingsValues);
         // This method is called on startup and language switch, before the new layout has
         // been displayed. Opening dictionaries never affects responsivity as dictionaries are
         // asynchronously loaded.
         if (!mHandler.hasPendingReopenDictionaries()) {
-            resetDictionaryFacilitator(locale);
+            resetDictionaryFacilitator(mLocale);
         }
         refreshPersonalizationDictionarySession(currentSettingsValues);
         resetDictionaryFacilitatorIfNecessary();
@@ -1363,6 +1365,54 @@ public class LatinIMELegacy implements KeyboardActionListener,
             return false;
         }
         return false;
+    }
+
+    @Override
+    public void onMovePointer(int steps) {
+        if (mInputLogic.mConnection.hasCursorPosition()) {
+            if (TextUtils.getLayoutDirectionFromLocale(mLocale) == View.LAYOUT_DIRECTION_RTL)
+                steps = -steps;
+
+            steps = mInputLogic.mConnection.getUnicodeSteps(steps, true);
+            final int end = mInputLogic.mConnection.getExpectedSelectionEnd() + steps;
+            final int start = mInputLogic.mConnection.hasSelection() ? mInputLogic.mConnection.getExpectedSelectionStart() : end;
+
+            mInputLogic.finishInput();
+            mInputLogic.mConnection.setSelection(start, end);
+        } else {
+            for (; steps < 0; steps++)
+                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, 0);
+            for (; steps > 0; steps--)
+                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 0);
+        }
+    }
+
+    @Override
+    public void onMoveDeletePointer(int steps) {
+        if (mInputLogic.mConnection.hasCursorPosition()) {
+            steps = mInputLogic.mConnection.getUnicodeSteps(steps, false);
+            final int end = mInputLogic.mConnection.getExpectedSelectionEnd();
+            final int start = mInputLogic.mConnection.getExpectedSelectionStart() + steps;
+            if (start > end)
+                return;
+
+            mInputLogic.finishInput();
+            mInputLogic.mConnection.setSelection(start, end);
+        } else {
+            for (; steps < 0; steps++)
+                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0);
+        }
+    }
+
+    @Override
+    public void onUpWithDeletePointerActive() {
+        if (mInputLogic.mConnection.hasSelection())
+            mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0);
+    }
+
+    @Override
+    public void onUpWithPointerActive() {
+        mInputLogic.restartSuggestionsOnWordTouchedByCursor(mSettings.getCurrent(), false, mKeyboardSwitcher.getCurrentKeyboardScriptId());
     }
 
     private boolean isShowingOptionDialog() {
