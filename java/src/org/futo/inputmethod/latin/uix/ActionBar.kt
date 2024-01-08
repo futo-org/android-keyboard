@@ -64,6 +64,7 @@ import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.actions.ClipboardAction
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.actions.RedoAction
+import org.futo.inputmethod.latin.uix.actions.TextEditAction
 import org.futo.inputmethod.latin.uix.actions.ThemeAction
 import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
@@ -324,6 +325,7 @@ fun RowScope.ActionItems(onSelect: (Action) -> Unit) {
     ActionItem(UndoAction, onSelect)
     ActionItem(RedoAction, onSelect)
     ActionItem(ClipboardAction, onSelect)
+    ActionItem(TextEditAction, onSelect)
 }
 
 

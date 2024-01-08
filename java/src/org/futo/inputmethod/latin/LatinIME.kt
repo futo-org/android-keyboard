@@ -5,8 +5,6 @@ import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
-import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.CompletionInfo
@@ -359,7 +357,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                         returnBackToMainKeyboardViewFromAction()
                     }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.arrow_left),
+                            painter = painterResource(id = R.drawable.arrow_left_26),
                             contentDescription = "Back"
                         )
                     }

@@ -267,7 +267,7 @@ class PersistentEmojiState: PersistentActionState {
 
 val EmojiAction = Action(
     icon = R.drawable.smile,
-    name = R.string.title_emojis,
+    name = R.string.emoji_action_title,
     simplePressImpl = null,
     persistentState = { manager ->
         val state = PersistentEmojiState()
@@ -283,7 +283,7 @@ val EmojiAction = Action(
         object : ActionWindow {
             @Composable
             override fun windowName(): String {
-                return stringResource(R.string.title_emojis)
+                return stringResource(R.string.emoji_action_title)
             }
 
             @Composable
