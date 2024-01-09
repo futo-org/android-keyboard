@@ -7,36 +7,26 @@ import android.view.inputmethod.InlineSuggestionsResponse
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.futo.inputmethod.latin.LatinIME
-import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
-import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 
 private class LatinIMEActionInputTransaction(
@@ -141,8 +131,11 @@ class UixManager(private val latinIME: LatinIME) {
     private var inlineSuggestions: List<MutableState<View?>> = listOf()
     private val keyboardManagerForAction = UixActionKeyboardManager(this, latinIME)
 
+    private var mainKeyboardHidden = false
+
     var currWindowActionWindow: ActionWindow? = null
-    val isActionWindowOpen get() = currWindowActionWindow != null
+
+    val isMainKeyboardHidden get() = mainKeyboardHidden
 
     private fun onActionActivated(action: Action) {
         latinIME.inputLogic.finishInput()
@@ -178,7 +171,7 @@ class UixManager(private val latinIME: LatinIME) {
     private fun enterActionWindowView(action: Action) {
         assert(action.windowImpl != null)
 
-        //latinIMELegacy.mKeyboardSwitcher.saveKeyboardState()
+        mainKeyboardHidden = true
 
         currWindowAction = action
 
@@ -199,43 +192,62 @@ class UixManager(private val latinIME: LatinIME) {
         currWindowAction = null
         currWindowActionWindow = null
 
+        mainKeyboardHidden = false
+
         latinIME.onKeyboardShown()
+
+        setContent()
+    }
+
+    private fun toggleExpandAction() {
+        mainKeyboardHidden = !mainKeyboardHidden
+        if(!mainKeyboardHidden) {
+            latinIME.onKeyboardShown()
+        }
 
         setContent()
     }
 
     @Composable
     private fun ActionViewWithHeader(windowImpl: ActionWindow) {
+        val heightDiv = if(mainKeyboardHidden) {
+            1
+        } else {
+            1.5
+        }
         Column {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp), color = MaterialTheme.colorScheme.background
-            )
-            {
-                Row {
-                    IconButton(onClick = {
-                        returnBackToMainKeyboardViewFromAction()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_left_26),
-                            contentDescription = "Back"
-                        )
-                    }
-
-                    Text(
-                        windowImpl.windowName(),
-                        style = Typography.titleMedium,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-                }
+            if(mainKeyboardHidden) {
+                ActionWindowBar(
+                    onBack = { returnBackToMainKeyboardViewFromAction() },
+                    canExpand = currWindowAction!!.canShowKeyboard,
+                    onExpand = { toggleExpandAction() },
+                    windowName = windowImpl.windowName()
+                )
             }
 
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .height(with(LocalDensity.current) { latinIME.getInputViewHeight().toDp() })
+                .height(with(LocalDensity.current) {
+                    (latinIME.getInputViewHeight().toFloat() / heightDiv.toFloat()).toDp()
+                })
             ) {
-                windowImpl.WindowContents()
+                windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden)
+            }
+
+            if(!mainKeyboardHidden) {
+                val suggestedWordsOrNull = if (shouldShowSuggestionStrip) {
+                    suggestedWords
+                } else {
+                    null
+                }
+
+                CollapsibleSuggestionsBar(
+                    onCollapse = { toggleExpandAction() },
+                    onClose = { returnBackToMainKeyboardViewFromAction() },
+                    words = suggestedWordsOrNull,
+                    suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripView.Listener,
+                    inlineSuggestions = inlineSuggestions
+                )
             }
         }
     }
@@ -250,14 +262,14 @@ class UixManager(private val latinIME: LatinIME) {
                     }) {
                         Column {
                             when {
-                                isActionWindowOpen -> ActionViewWithHeader(
+                                currWindowActionWindow != null -> ActionViewWithHeader(
                                     currWindowActionWindow!!
                                 )
 
                                 else -> MainKeyboardViewWithActionBar()
                             }
 
-                            latinIME.LegacyKeyboardView(hidden = isActionWindowOpen)
+                            latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                         }
                     }
                 }

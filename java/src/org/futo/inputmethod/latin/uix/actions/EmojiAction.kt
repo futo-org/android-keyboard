@@ -162,7 +162,7 @@ data class BitmapRecycler(
 }
 
 @Composable
-fun EmojiGrid(onClick: (EmojiItem) -> Unit, onExit: () -> Unit, onBackspace: () -> Unit, onSpace: () -> Unit, bitmaps: BitmapRecycler, emojis: List<EmojiItem>) {
+fun EmojiGrid(onClick: (EmojiItem) -> Unit, onExit: () -> Unit, onBackspace: () -> Unit, onSpace: () -> Unit, bitmaps: BitmapRecycler, emojis: List<EmojiItem>, keyboardShown: Boolean) {
     val context = LocalContext.current
     val spToDp = context.resources.displayMetrics.scaledDensity / context.resources.displayMetrics.density
 
@@ -182,41 +182,48 @@ fun EmojiGrid(onClick: (EmojiItem) -> Unit, onExit: () -> Unit, onBackspace: () 
                 }
             }
         }
-        Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)) {
-            Row(modifier = Modifier.padding(2.dp, 8.dp, 2.dp, 0.dp)) {
-                IconButton(onClick = { onExit() }) {
-                    Text("ABC", fontSize = 14.sp)
-                }
 
-                Button(onClick = { onSpace() }, modifier = Modifier
-                    .weight(1.0f)
-                    .padding(8.dp, 2.dp), colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.33f),
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    disabledContainerColor = MaterialTheme.colorScheme.outline,
-                    disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                ), shape = RoundedCornerShape(32.dp)) {
-                    Text("")
-                }
+        if(!keyboardShown) {
+            Surface(
+                color = MaterialTheme.colorScheme.background, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                Row(modifier = Modifier.padding(2.dp, 8.dp, 2.dp, 0.dp)) {
+                    IconButton(onClick = { onExit() }) {
+                        Text("ABC", fontSize = 14.sp)
+                    }
 
-                IconButton(onClick = { onBackspace() }) {
-                    val icon = painterResource(id = R.drawable.delete)
-                    val iconColor = MaterialTheme.colorScheme.onBackground
+                    Button(
+                        onClick = { onSpace() }, modifier = Modifier
+                            .weight(1.0f)
+                            .padding(8.dp, 2.dp), colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.33f),
+                            contentColor = MaterialTheme.colorScheme.onBackground,
+                            disabledContainerColor = MaterialTheme.colorScheme.outline,
+                            disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                        ), shape = RoundedCornerShape(32.dp)
+                    ) {
+                        Text("")
+                    }
 
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        translate(
-                            left = this.size.width / 2.0f - icon.intrinsicSize.width / 2.0f,
-                            top = this.size.height / 2.0f - icon.intrinsicSize.height / 2.0f
-                        ) {
-                            with(icon) {
-                                draw(
-                                    icon.intrinsicSize,
-                                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                                        iconColor
+                    IconButton(onClick = { onBackspace() }) {
+                        val icon = painterResource(id = R.drawable.delete)
+                        val iconColor = MaterialTheme.colorScheme.onBackground
+
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            translate(
+                                left = this.size.width / 2.0f - icon.intrinsicSize.width / 2.0f,
+                                top = this.size.height / 2.0f - icon.intrinsicSize.height / 2.0f
+                            ) {
+                                with(icon) {
+                                    draw(
+                                        icon.intrinsicSize,
+                                        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                                            iconColor
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }
@@ -268,6 +275,7 @@ class PersistentEmojiState: PersistentActionState {
 val EmojiAction = Action(
     icon = R.drawable.smile,
     name = R.string.emoji_action_title,
+    canShowKeyboard = true,
     simplePressImpl = null,
     persistentState = { manager ->
         val state = PersistentEmojiState()
@@ -287,7 +295,7 @@ val EmojiAction = Action(
             }
 
             @Composable
-            override fun WindowContents() {
+            override fun WindowContents(keyboardShown: Boolean) {
                 state.emojis.value?.let { emojis ->
                     EmojiGrid(onClick = {
                         manager.typeText(it.emoji)
@@ -297,7 +305,7 @@ val EmojiAction = Action(
                         manager.sendCodePointEvent(Constants.CODE_SPACE)
                     }, onBackspace = {
                         manager.sendCodePointEvent(Constants.CODE_DELETE)
-                    }, bitmaps = state.bitmaps, emojis = emojis)
+                    }, bitmaps = state.bitmaps, emojis = emojis, keyboardShown = keyboardShown)
                 }
             }
 

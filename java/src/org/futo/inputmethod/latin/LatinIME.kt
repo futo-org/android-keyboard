@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -169,7 +170,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             updateDrawableProvider(newTheme.obtainColors(this))
             deferSetSetting(THEME_KEY, newTheme.key)
 
-            if(!uixManager.isActionWindowOpen) {
+            if(!uixManager.isMainKeyboardHidden) {
                 recreateKeyboard()
             } else {
                 pendingRecreateKeyboard = true
@@ -180,10 +181,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     // Called by UixManager when the intention is to subsequently call LegacyKeyboardView with hidden=false
     // Maybe this can be changed to LaunchedEffect
     fun onKeyboardShown() {
-        if(pendingRecreateKeyboard) {
-            pendingRecreateKeyboard = false
-            recreateKeyboard()
-        }
+        //if(pendingRecreateKeyboard) {
+        //    pendingRecreateKeyboard = false
+        //    recreateKeyboard()
+        //}
     }
 
 
@@ -252,6 +253,17 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     // shown, but resized to 0 if an action window is open
     @Composable
     internal fun LegacyKeyboardView(hidden: Boolean) {
+        LaunchedEffect(hidden) {
+            if(hidden) {
+                latinIMELegacy.mKeyboardSwitcher.saveKeyboardState()
+            } else {
+                if(pendingRecreateKeyboard) {
+                    pendingRecreateKeyboard = false
+                    recreateKeyboard()
+                }
+            }
+        }
+
         val modifier = if(hidden) {
             Modifier
                 .clipToBounds()

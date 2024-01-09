@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -69,6 +70,7 @@ import org.futo.inputmethod.latin.uix.actions.ThemeAction
 import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import java.lang.Integer.min
 import kotlin.math.ceil
@@ -413,6 +415,107 @@ fun ActionBar(
     }
 }
 
+@Composable
+fun ActionWindowBar(
+    windowName: String,
+    canExpand: Boolean,
+    onBack: () -> Unit,
+    onExpand: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp), color = MaterialTheme.colorScheme.background
+    )
+    {
+        Row {
+            IconButton(onClick = onBack) {
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_left_26),
+                    contentDescription = "Back"
+                )
+            }
+
+            Text(
+                windowName,
+                style = Typography.titleMedium,
+                modifier = Modifier.align(CenterVertically)
+            )
+
+            Spacer(modifier = Modifier.weight(1.0f))
+
+            if(canExpand) {
+                IconButton(onClick = onExpand) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_up),
+                        contentDescription = "Show Keyboard"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CollapsibleSuggestionsBar(
+    onClose: () -> Unit,
+    onCollapse: () -> Unit,
+    words: SuggestedWords?,
+    suggestionStripListener: SuggestionStripView.Listener,
+    inlineSuggestions: List<MutableState<View?>>,
+) {
+    Surface(modifier = Modifier
+        .fillMaxWidth()
+        .height(40.dp), color = MaterialTheme.colorScheme.background)
+    {
+        Row {
+            val color = MaterialTheme.colorScheme.primary
+
+            IconButton(
+                onClick = onClose,
+                modifier = Modifier
+                    .width(42.dp)
+                    .fillMaxHeight()
+                    .drawBehind {
+                        drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
+                    },
+
+                colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.close),
+                    contentDescription = "Close"
+                )
+            }
+
+            if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                InlineSuggestions(inlineSuggestions)
+            } else if(words != null) {
+                SuggestionItems(words) {
+                    suggestionStripListener.pickSuggestionManually(
+                        words.getInfo(it)
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.weight(1.0f))
+            }
+
+            IconButton(
+                onClick = onCollapse,
+                modifier = Modifier
+                    .width(42.dp)
+                    .fillMaxHeight(),
+                colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_down),
+                    contentDescription = "Collapse"
+                )
+            }
+        }
+    }
+}
+
 
 
 
@@ -498,6 +601,18 @@ fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
             forceOpenActionsInitially = true
         )
     }
+}
+
+@Composable
+@Preview
+fun PreviewCollapsibleBar(colorScheme: ColorScheme = DarkColorScheme) {
+    CollapsibleSuggestionsBar(
+        onCollapse = { },
+        onClose = { },
+        words = exampleSuggestedWords,
+        suggestionStripListener = ExampleListener(),
+        inlineSuggestions = listOf()
+    )
 }
 
 

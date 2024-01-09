@@ -218,7 +218,7 @@ fun CtrlShiftMetaKeys(modifier: Modifier, ctrlState: MutableState<Boolean>, shif
 }
 
 @Composable
-fun SideKeys(modifier: Modifier, onEvent: (Int, Int) -> Unit, onCodePoint: (Int) -> Unit) {
+fun SideKeys(modifier: Modifier, onEvent: (Int, Int) -> Unit, onCodePoint: (Int) -> Unit, keyboardShown: Boolean) {
     Column(modifier = modifier) {
         ActionKey(
             modifier = Modifier
@@ -248,18 +248,20 @@ fun SideKeys(modifier: Modifier, onEvent: (Int, Int) -> Unit, onCodePoint: (Int)
             )
         }
 
-        ActionKey(
-            modifier = Modifier
-                .weight(1.0f)
-                .fillMaxWidth(),
-            repeatable = true,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            onTrigger = { onCodePoint(Constants.CODE_DELETE) }
-        ) {
-            IconWithColor(
-                iconId = R.drawable.delete,
-                iconColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+        if(!keyboardShown) {
+            ActionKey(
+                modifier = Modifier
+                    .weight(1.0f)
+                    .fillMaxWidth(),
+                repeatable = true,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                onTrigger = { onCodePoint(Constants.CODE_DELETE) }
+            ) {
+                IconWithColor(
+                    iconId = R.drawable.delete,
+                    iconColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
         }
 
 
@@ -298,7 +300,7 @@ fun SideKeys(modifier: Modifier, onEvent: (Int, Int) -> Unit, onCodePoint: (Int)
 }
 
 @Composable
-fun TextEditScreen(onCodePoint: (Int) -> Unit, onEvent: (Int, Int) -> Unit) {
+fun TextEditScreen(onCodePoint: (Int) -> Unit, onEvent: (Int, Int) -> Unit, keyboardShown: Boolean) {
     val shiftState = remember { mutableStateOf(false) }
     val ctrlState = remember { mutableStateOf(false) }
 
@@ -331,7 +333,8 @@ fun TextEditScreen(onCodePoint: (Int) -> Unit, onEvent: (Int, Int) -> Unit) {
                 .fillMaxHeight()
                 .weight(1.0f),
             onEvent = onEvent,
-            onCodePoint = onCodePoint
+            onCodePoint = onCodePoint,
+            keyboardShown = keyboardShown
         )
     }
 }
@@ -341,6 +344,7 @@ val TextEditAction = Action(
     name = R.string.text_edit_action_title,
     simplePressImpl = null,
     persistentState = null,
+    canShowKeyboard = true,
     windowImpl = { manager, persistentState ->
         object : ActionWindow {
             @Composable
@@ -349,8 +353,8 @@ val TextEditAction = Action(
             }
 
             @Composable
-            override fun WindowContents() {
-                TextEditScreen(onCodePoint = { a -> manager.sendCodePointEvent(a)}, onEvent = { a, b -> manager.sendKeyEvent(a, b) })
+            override fun WindowContents(keyboardShown: Boolean) {
+                TextEditScreen(onCodePoint = { a -> manager.sendCodePointEvent(a)}, onEvent = { a, b -> manager.sendKeyEvent(a, b) }, keyboardShown = keyboardShown)
             }
 
             override fun close() {
@@ -363,6 +367,13 @@ val TextEditAction = Action(
 @Preview(showBackground = true)
 fun TextEditScreenPreview() {
     Surface(modifier = Modifier.height(256.dp)) {
-        TextEditScreen(onCodePoint = { }, onEvent = { _, _ -> })
+        TextEditScreen(onCodePoint = { }, onEvent = { _, _ -> }, keyboardShown = false)
+    }
+}
+@Composable
+@Preview(showBackground = true)
+fun TextEditScreenPreviewWithKb() {
+    Surface(modifier = Modifier.height(256.dp)) {
+        TextEditScreen(onCodePoint = { }, onEvent = { _, _ -> }, keyboardShown = true)
     }
 }
