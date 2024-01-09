@@ -222,7 +222,7 @@ public final class SubtypeLocaleUtils {
         }
 
         final String displayName;
-        if (exceptionalNameResId != null) {
+        if (exceptionalNameResId != null && exceptionalNameResId != 0) {
             final RunInLocale<String> getExceptionalName = new RunInLocale<String>() {
                 @Override
                 protected String job(final Resources res) {
