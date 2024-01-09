@@ -651,6 +651,9 @@ namespace latinime {
 
         std::vector<TokenMix> mixes;
         for(int i=0; i<inputSize; i++) {
+            char wc = partialWordString[i];
+            if (!(wc >= 'a' && wc <= 'z') && !(wc >= 'A' && wc <= 'Z')) continue;
+
             std::vector<float> proportions = pInfo->decomposeTapPosition(xCoordinates[i], yCoordinates[i]);
             for(float &f : proportions) {
                 if(f < 0.05f) f = 0.0f;
@@ -701,12 +704,12 @@ namespace latinime {
             results.x = ((float)xCoordinates[i]) / ((float)pInfo->getKeyboardWidth());
             results.y = ((float)yCoordinates[i]) / ((float)pInfo->getKeyboardHeight());
 
-            AKLOGI("%d | Char %c, pos %.6f %.6f, nearest is %c at %.2f, then %c at %.2f, finally %c at %.2f", i, partialWordString[i],
-                   results.x, results.y,
-                   (char)(pInfo->getKeyCodePoint(index_value[0].second)), (float)(index_value[0].first),
-                   (char)(pInfo->getKeyCodePoint(index_value[1].second)), (float)(index_value[1].first),
-                   (char)(pInfo->getKeyCodePoint(index_value[2].second)), (float)(index_value[2].first)
-               );
+            //AKLOGI("%d | Char %c, pos %.6f %.6f, nearest is %c at %.2f, then %c at %.2f, finally %c at %.2f", i, partialWordString[i],
+            //       results.x, results.y,
+            //       (char)(pInfo->getKeyCodePoint(index_value[0].second)), (float)(index_value[0].first),
+            //       (char)(pInfo->getKeyCodePoint(index_value[1].second)), (float)(index_value[1].first),
+            //       (char)(pInfo->getKeyCodePoint(index_value[2].second)), (float)(index_value[2].first)
+            //   );
 
 
             for(int j=0; j<NUM_TOKEN_MIX; j++) {
