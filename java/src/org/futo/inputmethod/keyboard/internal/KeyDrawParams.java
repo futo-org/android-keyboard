@@ -37,6 +37,7 @@ public final class KeyDrawParams {
 
     public int mTextColor;
     public int mTextInactivatedColor;
+    public int mPressedTextColor;
     public int mTextShadowColor;
     public int mFunctionalTextColor;
     public int mHintLetterColor;
@@ -66,6 +67,7 @@ public final class KeyDrawParams {
 
         mTextColor = copyFrom.mTextColor;
         mTextInactivatedColor = copyFrom.mTextInactivatedColor;
+        mPressedTextColor = copyFrom.mPressedTextColor;
         mTextShadowColor = copyFrom.mTextShadowColor;
         mFunctionalTextColor = copyFrom.mFunctionalTextColor;
         mHintLetterColor = copyFrom.mHintLetterColor;
@@ -103,6 +105,7 @@ public final class KeyDrawParams {
 
         mTextColor = selectColor(attr.mTextColor, mTextColor);
         mTextInactivatedColor = selectColor(attr.mTextInactivatedColor, mTextInactivatedColor);
+        mPressedTextColor = selectColor(attr.mPressedTextColor, mPressedTextColor);
         mTextShadowColor = selectColor(attr.mTextShadowColor, mTextShadowColor);
         mFunctionalTextColor = selectColor(attr.mFunctionalTextColor, mFunctionalTextColor);
         mHintLetterColor = selectColor(attr.mHintLetterColor, mHintLetterColor);

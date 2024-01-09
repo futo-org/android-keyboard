@@ -1132,7 +1132,7 @@ public final class InputLogic {
                     // As for the case where we don't know the cursor position, it can happen
                     // because of bugs in the framework. But the framework should know, so the next
                     // best thing is to leave it to whatever it thinks is best.
-                    sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
+                    sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0);
                     int totalDeletedLength = 1;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
                         // If this is an accelerated (i.e., double) deletion, then we need to
@@ -1140,7 +1140,7 @@ public final class InputLogic {
                         // the previous word, and will lose it after next deletion.
                         hasUnlearnedWordBeingDeleted |= unlearnWordBeingDeleted(
                                 inputTransaction.mSettingsValues, currentKeyboardScriptId);
-                        sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
+                        sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0);
                         totalDeletedLength++;
                     }
                     StatsUtils.onBackspacePressed(totalDeletedLength);
@@ -2021,13 +2021,13 @@ public final class InputLogic {
      *
      * @param keyCode the key code to send inside the key event.
      */
-    private void sendDownUpKeyEvent(final int keyCode) {
+    public void sendDownUpKeyEvent(final int keyCode, final int metaState) {
         final long eventTime = SystemClock.uptimeMillis();
         mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
-                KeyEvent.ACTION_DOWN, keyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
         mConnection.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime,
-                KeyEvent.ACTION_UP, keyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
     }
 
@@ -2045,7 +2045,7 @@ public final class InputLogic {
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
         if (codePoint >= '0' && codePoint <= '9') {
-            sendDownUpKeyEvent(codePoint - '0' + KeyEvent.KEYCODE_0);
+            sendDownUpKeyEvent(codePoint - '0' + KeyEvent.KEYCODE_0, 0);
             return;
         }
 
@@ -2055,7 +2055,7 @@ public final class InputLogic {
             // a hardware keyboard event on pressing enter or delete. This is bad for many
             // reasons (there are race conditions with commits) but some applications are
             // relying on this behavior so we continue to support it for older apps.
-            sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
+            sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0);
         } else {
             mConnection.commitText(StringUtils.newSingleCodePointString(codePoint), 1);
         }

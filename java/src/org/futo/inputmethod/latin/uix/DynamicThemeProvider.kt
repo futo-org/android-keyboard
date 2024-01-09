@@ -13,6 +13,7 @@ interface DynamicThemeProvider {
 
     val keyFeedback: Drawable
 
+    val moreKeysTextColor: Int
     val moreKeysKeyboardBackground: Drawable
     val popupKey: Drawable
 

@@ -29,6 +29,9 @@ interface KeyboardManagerForAction {
     fun triggerSystemVoiceInput()
 
     fun updateTheme(newTheme: ThemeOption)
+
+    fun sendCodePointEvent(codePoint: Int)
+    fun sendKeyEvent(keyCode: Int, metaState: Int)
 }
 
 interface ActionWindow {
@@ -36,7 +39,7 @@ interface ActionWindow {
     fun windowName(): String
 
     @Composable
-    fun WindowContents()
+    fun WindowContents(keyboardShown: Boolean)
 
     fun close()
 }
@@ -54,6 +57,8 @@ interface PersistentActionState {
 data class Action(
     @DrawableRes val icon: Int,
     @StringRes val name: Int,
+    val canShowKeyboard: Boolean = false,
+
     val windowImpl: ((KeyboardManagerForAction, PersistentActionState?) -> ActionWindow)?,
     val simplePressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)?,
     val persistentState: ((KeyboardManagerForAction) -> PersistentActionState)? = null,

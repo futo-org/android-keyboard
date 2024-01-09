@@ -1,6 +1,5 @@
 package org.futo.inputmethod.latin
 
-import android.content.Context
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
@@ -13,34 +12,17 @@ import android.view.inputmethod.InlineSuggestionsRequest
 import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputMethodSubtype
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
@@ -56,34 +38,24 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.futo.inputmethod.latin.common.Constants
-import org.futo.inputmethod.latin.uix.Action
-import org.futo.inputmethod.latin.uix.ActionBar
-import org.futo.inputmethod.latin.uix.ActionInputTransaction
-import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
-import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
-import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
-import org.futo.inputmethod.latin.uix.inflateInlineSuggestion
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
-import org.futo.inputmethod.latin.uix.theme.Typography
-import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 
 class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner,
-    LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner, KeyboardManagerForAction {
+    LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner {
 
     private val mSavedStateRegistryController = SavedStateRegistryController.create(this)
 
@@ -101,7 +73,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override val viewModelStore
         get() = store
 
-    private fun setOwners() {
+    fun setOwners() {
         val decorView = window.window?.decorView
         if (decorView?.findViewTreeLifecycleOwner() == null) {
             decorView?.setViewTreeLifecycleOwner(this)
@@ -114,14 +86,14 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
-    private var composeView: ComposeView? = null
-
-    private val latinIMELegacy = LatinIMELegacy(
+    val latinIMELegacy = LatinIMELegacy(
         this as InputMethodService,
         this as LatinIMELegacy.SuggestionStripController
     )
 
-    public val languageModelFacilitator = LanguageModelFacilitator(
+    val inputLogic get() = latinIMELegacy.mInputLogic
+
+    val languageModelFacilitator = LanguageModelFacilitator(
         this,
         latinIMELegacy.mInputLogic,
         latinIMELegacy.mDictionaryFacilitator,
@@ -130,20 +102,17 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         lifecycleScope
     )
 
+    val uixManager = UixManager(this)
+
     private var activeThemeOption: ThemeOption? = null
     private var activeColorScheme = DarkColorScheme
     private var colorSchemeLoaderJob: Job? = null
+    private var pendingRecreateKeyboard: Boolean = false
+
+    val themeOption get() = activeThemeOption
+    val colorScheme get() = activeColorScheme
 
     private var drawableProvider: DynamicThemeProvider? = null
-
-    private var currWindowAction: Action? = null
-    private var currWindowActionWindow: ActionWindow? = null
-    private var persistentStates: HashMap<Action, PersistentActionState?> = hashMapOf()
-    private fun isActionWindowOpen(): Boolean {
-        return currWindowActionWindow != null
-    }
-
-    private var inlineSuggestions: List<MutableState<View?>> = listOf()
 
     private var lastEditorInfo: EditorInfo? = null
 
@@ -158,7 +127,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         drawableProvider = BasicThemeProvider(this, overrideColorScheme = colorScheme)
 
         window.window?.navigationBarColor = drawableProvider!!.primaryKeyboardColor
-        setContent()
+        uixManager.onColorSchemeChanged()
     }
 
     override fun getDrawableProvider(): DynamicThemeProvider {
@@ -192,6 +161,32 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             }
         }
     }
+
+    fun updateTheme(newTheme: ThemeOption) {
+        assert(newTheme.available(this))
+
+        if (activeThemeOption != newTheme) {
+            activeThemeOption = newTheme
+            updateDrawableProvider(newTheme.obtainColors(this))
+            deferSetSetting(THEME_KEY, newTheme.key)
+
+            if(!uixManager.isMainKeyboardHidden) {
+                recreateKeyboard()
+            } else {
+                pendingRecreateKeyboard = true
+            }
+        }
+    }
+
+    // Called by UixManager when the intention is to subsequently call LegacyKeyboardView with hidden=false
+    // Maybe this can be changed to LaunchedEffect
+    fun onKeyboardShown() {
+        //if(pendingRecreateKeyboard) {
+        //    pendingRecreateKeyboard = false
+        //    recreateKeyboard()
+        //}
+    }
+
 
     override fun onCreate() {
         super.onCreate()
@@ -241,41 +236,38 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private var touchableHeight: Int = 0
     override fun onCreateInputView(): View {
         legacyInputView = latinIMELegacy.onCreateInputView()
-        composeView = ComposeView(this).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setParentCompositionContext(null)
 
-            this@LatinIME.setOwners()
-        }
-
-        setContent()
-
+        val composeView = uixManager.createComposeView()
         latinIMELegacy.setComposeInputView(composeView)
 
-        return composeView!!
-    }
-
-    private fun onActionActivated(action: Action) {
-        // Finish what we are typing so far
-        latinIMELegacy.onFinishInputViewInternal(false)
-
-        if (action.windowImpl != null) {
-            enterActionWindowView(action)
-        } else if (action.simplePressImpl != null) {
-            action.simplePressImpl.invoke(this, persistentStates[action])
-        } else {
-            throw IllegalStateException("An action must have either a window implementation or a simple press implementation")
-        }
+        return composeView
     }
 
     private var inputViewHeight: Int = -1
-    private var shouldShowSuggestionStrip: Boolean = true
-    private var suggestedWords: SuggestedWords? = null
 
+    // Both called by UixManager
+    fun updateTouchableHeight(to: Int) { touchableHeight = to }
+    fun getInputViewHeight(): Int = inputViewHeight
+
+    // The keyboard view really doesn't like being detached, so it's always
+    // shown, but resized to 0 if an action window is open
     @Composable
-    private fun LegacyKeyboardView(hidden: Boolean) {
+    internal fun LegacyKeyboardView(hidden: Boolean) {
+        LaunchedEffect(hidden) {
+            if(hidden) {
+                latinIMELegacy.mKeyboardSwitcher.saveKeyboardState()
+            } else {
+                if(pendingRecreateKeyboard) {
+                    pendingRecreateKeyboard = false
+                    recreateKeyboard()
+                }
+            }
+        }
+
         val modifier = if(hidden) {
-            Modifier.clipToBounds().size(0.dp)
+            Modifier
+                .clipToBounds()
+                .size(0.dp)
         } else {
             Modifier.onSizeChanged {
                 inputViewHeight = it.height
@@ -288,127 +280,13 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
-    @Composable
-    private fun MainKeyboardViewWithActionBar() {
-        Column {
-            // Don't show suggested words when it's not meant to be shown
-            val suggestedWordsOrNull = if(shouldShowSuggestionStrip) {
-                suggestedWords
-            } else {
-                null
-            }
-
-            ActionBar(
-                suggestedWordsOrNull,
-                latinIMELegacy,
-                inlineSuggestions = inlineSuggestions,
-                onActionActivated = { onActionActivated(it) }
-            )
-        }
-    }
-
-    private fun enterActionWindowView(action: Action) {
-        assert(action.windowImpl != null)
-
-        latinIMELegacy.mKeyboardSwitcher.saveKeyboardState()
-
-        currWindowAction = action
-
-        if (persistentStates[action] == null) {
-            persistentStates[action] = action.persistentState?.let { it(this) }
-        }
-
-        currWindowActionWindow = action.windowImpl?.let { it(this, persistentStates[action]) }
-
-        setContent()
-    }
-
-    private fun returnBackToMainKeyboardViewFromAction() {
-        if(currWindowActionWindow == null) return
-
-        currWindowActionWindow!!.close()
-
-        currWindowAction = null
-        currWindowActionWindow = null
-
-        if(hasThemeChanged) {
-            hasThemeChanged = false
-            recreateKeyboard()
-        }
-
-        setContent()
-    }
-
-    @Composable
-    private fun ActionViewWithHeader(windowImpl: ActionWindow) {
-        Column {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp), color = MaterialTheme.colorScheme.background
-            )
-            {
-                Row {
-                    IconButton(onClick = {
-                        returnBackToMainKeyboardViewFromAction()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_left),
-                            contentDescription = "Back"
-                        )
-                    }
-
-                    Text(
-                        windowImpl.windowName(),
-                        style = Typography.titleMedium,
-                        modifier = Modifier.align(CenterVertically)
-                    )
-                }
-            }
-
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(with(LocalDensity.current) { inputViewHeight.toDp() })
-            ) {
-                windowImpl.WindowContents()
-            }
-        }
-    }
-
-    private fun setContent() {
-        composeView?.setContent {
-            UixThemeWrapper(activeColorScheme) {
-                Column {
-                    Spacer(modifier = Modifier.weight(1.0f))
-                    Surface(modifier = Modifier.onSizeChanged {
-                        touchableHeight = it.height
-                    }) {
-                        Column {
-                            when {
-                                isActionWindowOpen() -> ActionViewWithHeader(
-                                    currWindowActionWindow!!
-                                )
-
-                                else -> MainKeyboardViewWithActionBar()
-                            }
-
-                            // The keyboard view really doesn't like being detached, so it's always
-                            // shown, but resized to 0 if an action window is open
-                            LegacyKeyboardView(hidden = isActionWindowOpen())
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     // necessary for when KeyboardSwitcher updates the theme
     fun updateLegacyView(newView: View) {
         legacyInputView = newView
-        setContent()
 
-        if (composeView != null) {
-            latinIMELegacy.setComposeInputView(composeView)
+        uixManager.setContent()
+        uixManager.getComposeView()?.let {
+            latinIMELegacy.setComposeInputView(it)
         }
 
         latinIMELegacy.setInputView(legacyInputView)
@@ -417,8 +295,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun setInputView(view: View?) {
         super.setInputView(view)
 
-        if (composeView != null) {
-            latinIMELegacy.setComposeInputView(composeView)
+        uixManager.getComposeView()?.let {
+            latinIMELegacy.setComposeInputView(it)
         }
 
         latinIMELegacy.setInputView(legacyInputView)
@@ -443,15 +321,14 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
         latinIMELegacy.onFinishInputView(finishingInput)
-
-        closeActionWindow()
+        uixManager.onInputFinishing()
     }
 
     override fun onFinishInput() {
         super.onFinishInput()
         latinIMELegacy.onFinishInput()
 
-        closeActionWindow()
+        uixManager.onInputFinishing()
         languageModelFacilitator.saveHistoryLog()
     }
 
@@ -471,7 +348,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         super.onWindowHidden()
         latinIMELegacy.onWindowHidden()
 
-        closeActionWindow()
+        uixManager.onInputFinishing()
     }
 
     override fun onUpdateSelection(
@@ -521,12 +398,14 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onComputeInsets(outInsets: Insets?) {
+        val composeView = uixManager.getComposeView()
+
         // This method may be called before {@link #setInputView(View)}.
         if (legacyInputView == null || composeView == null) {
             return
         }
 
-        val inputHeight: Int = composeView!!.height
+        val inputHeight: Int = composeView.height
         if (latinIMELegacy.isImeSuppressedByHardwareKeyboard && !legacyInputView!!.isShown) {
             // If there is a hardware keyboard and a visible software keyboard view has been hidden,
             // no visual element will be shown on the screen.
@@ -541,7 +420,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         val touchLeft = 0
         val touchTop = visibleTopY
-        val touchRight = composeView!!.width
+        val touchRight = composeView.width
         val touchBottom = inputHeight
 
         latinIMELegacy.setInsets(outInsets!!.apply {
@@ -581,124 +460,25 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun updateVisibility(shouldShowSuggestionsStrip: Boolean, fullscreenMode: Boolean) {
-        this.shouldShowSuggestionStrip = shouldShowSuggestionsStrip
-        setContent()
+        uixManager.updateVisibility(shouldShowSuggestionsStrip, fullscreenMode)
     }
 
     override fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean) {
-        this.suggestedWords = suggestedWords
-        setContent()
+        uixManager.setSuggestions(suggestedWords, rtlSubtype)
     }
 
     override fun maybeShowImportantNoticeTitle(): Boolean {
         return false
     }
 
-    private fun cleanUpPersistentStates() {
-        println("Cleaning up persistent states")
-        for((key, value) in persistentStates.entries) {
-            if(currWindowAction != key) {
-                lifecycleScope.launch { value?.cleanUp() }
-            }
-        }
-    }
-
     override fun onLowMemory() {
         super.onLowMemory()
-        cleanUpPersistentStates()
+        uixManager.cleanUpPersistentStates()
     }
 
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        cleanUpPersistentStates()
-    }
-
-    override fun getContext(): Context {
-        return this
-    }
-
-    override fun getLifecycleScope(): LifecycleCoroutineScope {
-        return lifecycleScope
-    }
-
-    override fun triggerContentUpdate() {
-        setContent()
-    }
-
-    private class LatinIMEActionInputTransaction(
-        private val latinIME: LatinIME,
-        shouldApplySpace: Boolean
-    ): ActionInputTransaction {
-        private val isSpaceNecessary: Boolean
-        init {
-            val priorText = latinIME.latinIMELegacy.mInputLogic.mConnection.getTextBeforeCursor(1, 0)
-            isSpaceNecessary = shouldApplySpace && !priorText.isNullOrEmpty() && !priorText.last().isWhitespace()
-        }
-
-        private fun transformText(text: String): String {
-            return if(isSpaceNecessary) { " $text" } else { text }
-        }
-
-        override fun updatePartial(text: String) {
-            latinIME.latinIMELegacy.mInputLogic.mConnection.setComposingText(
-                transformText(text),
-                1
-            )
-        }
-
-        override fun commit(text: String) {
-            latinIME.latinIMELegacy.mInputLogic.mConnection.commitText(
-                transformText(text),
-                1
-            )
-        }
-
-        override fun cancel() {
-            // TODO: Do we want to leave the composing text as-is, or delete it?
-            latinIME.latinIMELegacy.mInputLogic.mConnection.finishComposingText()
-        }
-    }
-
-    override fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction {
-        return LatinIMEActionInputTransaction(this, applySpaceIfNeeded)
-    }
-
-    override fun typeText(v: String) {
-        latinIMELegacy.mInputLogic.mConnection.commitText(v, 1)
-    }
-
-    override fun backspace(amount: Int) {
-        latinIMELegacy.mInputLogic.mConnection.deleteTextBeforeCursor(amount)
-    }
-
-    override fun closeActionWindow() {
-        if(currWindowActionWindow == null) return
-        returnBackToMainKeyboardViewFromAction()
-    }
-
-    override fun triggerSystemVoiceInput() {
-        latinIMELegacy.onCodeInput(
-            Constants.CODE_SHORTCUT,
-            Constants.SUGGESTION_STRIP_COORDINATE,
-            Constants.SUGGESTION_STRIP_COORDINATE,
-            false
-        );
-    }
-
-    private var hasThemeChanged: Boolean = false
-    override fun updateTheme(newTheme: ThemeOption) {
-        assert(newTheme.available(this))
-
-        if (activeThemeOption != newTheme) {
-            activeThemeOption = newTheme
-            updateDrawableProvider(newTheme.obtainColors(this))
-            deferSetSetting(THEME_KEY, newTheme.key)
-
-            hasThemeChanged = true
-            if(!isActionWindowOpen()) {
-                recreateKeyboard()
-            }
-        }
+        uixManager.cleanUpPersistentStates()
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -708,12 +488,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
-        inlineSuggestions = response.inlineSuggestions.map {
-            inflateInlineSuggestion(it)
-        }
-        setContent()
-
-        return true
+        return uixManager.onInlineSuggestionsResponse(response)
     }
 
     fun postUpdateSuggestionStrip(inputStyle: Int) {

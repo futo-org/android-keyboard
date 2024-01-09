@@ -41,8 +41,9 @@ public final class KeyVisualAttributes {
     public final float mHintLabelRatio;
     public final float mPreviewTextRatio;
 
-    public final int mTextColor;
+    public int mTextColor;
     public final int mTextInactivatedColor;
+    public final int mPressedTextColor;
     public final int mTextShadowColor;
     public final int mFunctionalTextColor;
     public final int mHintLetterColor;
@@ -130,6 +131,8 @@ public final class KeyVisualAttributes {
                 R.styleable.Keyboard_Key_keyTextColor, 0, keyAttr, provider);
         mTextInactivatedColor = DynamicThemeProvider.Companion.getColorOrDefault(
                 R.styleable.Keyboard_Key_keyTextInactivatedColor, 0, keyAttr, provider);
+        mPressedTextColor = DynamicThemeProvider.Companion.getColorOrDefault(
+                R.styleable.Keyboard_Key_keyPressedTextColor, 0, keyAttr, provider);
         mTextShadowColor = DynamicThemeProvider.Companion.getColorOrDefault(
                 R.styleable.Keyboard_Key_keyTextShadowColor, 0, keyAttr, provider);
         mFunctionalTextColor = DynamicThemeProvider.Companion.getColorOrDefault(

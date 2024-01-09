@@ -180,7 +180,7 @@ private class VoiceInputActionWindow(
     }
 
     @Composable
-    override fun WindowContents() {
+    override fun WindowContents(keyboardShown: Boolean) {
         Box(modifier = Modifier
             .fillMaxSize()
             .clickable(enabled = true,

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
@@ -20,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -60,10 +62,15 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.uix.actions.ClipboardAction
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
+import org.futo.inputmethod.latin.uix.actions.RedoAction
+import org.futo.inputmethod.latin.uix.actions.TextEditAction
 import org.futo.inputmethod.latin.uix.actions.ThemeAction
+import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import java.lang.Integer.min
 import kotlin.math.ceil
@@ -287,7 +294,7 @@ fun ActionItem(action: Action, onSelect: (Action) -> Unit) {
                 cornerRadius = CornerRadius(radius, radius)
             )
         }
-        .width(64.dp)
+        .width(50.dp)
         .fillMaxHeight(),
         colors = IconButtonDefaults.iconButtonColors(contentColor = contentCol)
     ) {
@@ -317,12 +324,10 @@ fun RowScope.ActionItems(onSelect: (Action) -> Unit) {
     ActionItem(EmojiAction, onSelect)
     ActionItem(VoiceInputAction, onSelect)
     ActionItem(ThemeAction, onSelect)
-
-    Box(modifier = Modifier
-        .fillMaxHeight()
-        .weight(1.0f)) {
-
-    }
+    ActionItem(UndoAction, onSelect)
+    ActionItem(RedoAction, onSelect)
+    ActionItem(ClipboardAction, onSelect)
+    ActionItem(TextEditAction, onSelect)
 }
 
 
@@ -386,7 +391,11 @@ fun ActionBar(
             ExpandActionsButton(isActionsOpen.value) { isActionsOpen.value = !isActionsOpen.value }
 
             if(isActionsOpen.value) {
-                ActionItems(onActionActivated)
+                LazyRow {
+                    item {
+                        ActionItems(onActionActivated)
+                    }
+                }
             } else if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 InlineSuggestions(inlineSuggestions)
             } else if(words != null) {
@@ -399,7 +408,110 @@ fun ActionBar(
                 Spacer(modifier = Modifier.weight(1.0f))
             }
 
-            ActionItemSmall(VoiceInputAction, onActionActivated)
+            if(!isActionsOpen.value) {
+                ActionItemSmall(VoiceInputAction, onActionActivated)
+            }
+        }
+    }
+}
+
+@Composable
+fun ActionWindowBar(
+    windowName: String,
+    canExpand: Boolean,
+    onBack: () -> Unit,
+    onExpand: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp), color = MaterialTheme.colorScheme.background
+    )
+    {
+        Row {
+            IconButton(onClick = onBack) {
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_left_26),
+                    contentDescription = "Back"
+                )
+            }
+
+            Text(
+                windowName,
+                style = Typography.titleMedium,
+                modifier = Modifier.align(CenterVertically)
+            )
+
+            Spacer(modifier = Modifier.weight(1.0f))
+
+            if(canExpand) {
+                IconButton(onClick = onExpand) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_up),
+                        contentDescription = "Show Keyboard"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CollapsibleSuggestionsBar(
+    onClose: () -> Unit,
+    onCollapse: () -> Unit,
+    words: SuggestedWords?,
+    suggestionStripListener: SuggestionStripView.Listener,
+    inlineSuggestions: List<MutableState<View?>>,
+) {
+    Surface(modifier = Modifier
+        .fillMaxWidth()
+        .height(40.dp), color = MaterialTheme.colorScheme.background)
+    {
+        Row {
+            val color = MaterialTheme.colorScheme.primary
+
+            IconButton(
+                onClick = onClose,
+                modifier = Modifier
+                    .width(42.dp)
+                    .fillMaxHeight()
+                    .drawBehind {
+                        drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
+                    },
+
+                colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.close),
+                    contentDescription = "Close"
+                )
+            }
+
+            if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                InlineSuggestions(inlineSuggestions)
+            } else if(words != null) {
+                SuggestionItems(words) {
+                    suggestionStripListener.pickSuggestionManually(
+                        words.getInfo(it)
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.weight(1.0f))
+            }
+
+            IconButton(
+                onClick = onCollapse,
+                modifier = Modifier
+                    .width(42.dp)
+                    .fillMaxHeight(),
+                colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_down),
+                    contentDescription = "Collapse"
+                )
+            }
         }
     }
 }
@@ -489,6 +601,18 @@ fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
             forceOpenActionsInitially = true
         )
     }
+}
+
+@Composable
+@Preview
+fun PreviewCollapsibleBar(colorScheme: ColorScheme = DarkColorScheme) {
+    CollapsibleSuggestionsBar(
+        onCollapse = { },
+        onClose = { },
+        words = exampleSuggestedWords,
+        suggestionStripListener = ExampleListener(),
+        inlineSuggestions = listOf()
+    )
 }
 
 
