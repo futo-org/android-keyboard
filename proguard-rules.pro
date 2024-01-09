@@ -27,6 +27,30 @@
 -keepclasseswithmembers class * {
     native <methods>;
 }
+# Keep classes and methods that have the @UsedForTesting annotation
+-keep @org.futo.inputmethod.annotations.UsedForTesting class *
+-keepclassmembers class * {
+    @org.futo.inputmethod.annotations.UsedForTesting *;
+}
+
+# Keep classes and methods that have the @ExternallyReferenced annotation
+-keep @org.futo.inputmethod.annotations.ExternallyReferenced class *
+-keepclassmembers class * {
+    @org.futo.inputmethod.annotations.ExternallyReferenced *;
+}
+
+# Keep native methods
+-keepclassmembers class * {
+    native <methods>;
+}
+
+# Keep classes that are used as a parameter type of methods that are also marked as keep
+# to preserve changing those methods' signature.
+-keep class org.futo.inputmethod.latin.AssetFileAddress
+-keep class org.futo.inputmethod.latin.Dictionary
+-keep class org.futo.inputmethod.latin.NgramContext
+-keep class org.futo.inputmethod.latin.makedict.ProbabilityInfo
+-keep class org.futo.inputmethod.keyboard.KeyboardLayout { *; }
 
 -dontobfuscate
 -optimizations !code/allocation/variable

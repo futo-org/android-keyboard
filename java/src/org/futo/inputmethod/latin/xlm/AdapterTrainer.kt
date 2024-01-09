@@ -1,12 +1,10 @@
 package org.futo.inputmethod.latin.xlm
 
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.annotations.ExternallyReferenced
 
 @OptIn(DelicateCoroutinesApi::class)
 val TrainingContext = newSingleThreadContext("AdapterTrainingContext")
@@ -31,10 +29,12 @@ class AdapterTrainer(
     private var handle: Long = 0L
     private fun isHandleValid() = handle != 0L
 
+    @ExternallyReferenced
     private fun emitProgress(progress: Float) {
         progressFlow?.tryEmit(progress)
     }
 
+    @ExternallyReferenced
     private fun emitLoss(loss: Float) {
         lossFlow?.tryEmit(loss)
     }
