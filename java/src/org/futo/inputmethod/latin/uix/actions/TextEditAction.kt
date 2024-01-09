@@ -3,29 +3,26 @@ package org.futo.inputmethod.latin.uix.actions
 import android.view.KeyEvent
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -36,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 
@@ -61,9 +59,43 @@ fun IconWithColor(@DrawableRes iconId: Int, iconColor: Color, modifier: Modifier
 }
 
 @Composable
-fun RepeatableActionKey(
+fun TogglableKey(
+    onToggle: (Boolean) -> Unit,
+    toggled: Boolean,
+    modifier: Modifier = Modifier,
+    contents: @Composable (color: Color) -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    LaunchedEffect(isPressed) {
+        if(isPressed) {
+            onToggle(!toggled)
+        }
+    }
+
+    Surface(
+        modifier = modifier
+            .padding(4.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = { }
+            ),
+        shape = RoundedCornerShape(8.dp),
+        color = if(toggled) { MaterialTheme.colorScheme.secondary } else { MaterialTheme.colorScheme.secondaryContainer }
+    ) {
+        contents(if(toggled) { MaterialTheme.colorScheme.onSecondary } else { MaterialTheme.colorScheme.onSecondaryContainer })
+    }
+
+}
+
+@Composable
+fun ActionKey(
     onTrigger: () -> Unit,
     modifier: Modifier = Modifier,
+    repeatable: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.primary,
     contents: @Composable () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -72,217 +104,235 @@ fun RepeatableActionKey(
     LaunchedEffect(isPressed) {
         if(isPressed) {
             onTrigger()
-            delay(670L)
-            while(isPressed) {
-                onTrigger()
-                delay(50L)
+            if(repeatable) {
+                delay(670L)
+                while (isPressed) {
+                    onTrigger()
+                    delay(50L)
+                }
             }
         }
     }
 
     Surface(
-        modifier = modifier.clickable(
-            interactionSource = interactionSource,
-            indication = null,
-            onClick = { }
-        ),
-        color = MaterialTheme.colorScheme.primary
+        modifier = modifier
+            .padding(4.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = { }
+            ),
+        shape = RoundedCornerShape(8.dp),
+        color = color
     ) {
         contents()
     }
-
 }
 
 @Composable
-@Preview(showBackground = true)
-fun TextEditScreen(onCodePoint: (Int) -> Unit = { _ -> }, onEvent: (Int, Int) -> Unit = { _, _ -> }) {
-    var shiftState by remember { mutableStateOf(false) }
-    var ctrlState by remember { mutableStateOf(false) }
+fun ArrowKeys(modifier: Modifier, sendEvent: (Int) -> Unit) {
+    Row(modifier = modifier) {
+        ActionKey(
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxHeight(),
+            onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_LEFT) }
+        ) {
+            IconWithColor(
+                iconId = R.drawable.arrow_left,
+                iconColor = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+
+        Column(modifier = Modifier
+            .weight(1.0f)
+            .fillMaxHeight()) {
+            ActionKey(
+                modifier = Modifier
+                    .weight(1.0f)
+                    .fillMaxWidth(),
+                onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_UP) }
+            ) {
+                IconWithColor(
+                    iconId = R.drawable.arrow_up,
+                    iconColor = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+
+
+            ActionKey(
+                modifier = Modifier
+                    .weight(1.0f)
+                    .fillMaxWidth(),
+                onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_DOWN) }
+            ) {
+                IconWithColor(
+                    iconId = R.drawable.arrow_down,
+                    iconColor = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
+
+        ActionKey(
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxHeight(),
+            onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_RIGHT) }
+        ) {
+            IconWithColor(
+                iconId = R.drawable.arrow_right,
+                iconColor = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
+
+@Composable
+fun CtrlShiftMetaKeys(modifier: Modifier, ctrlState: MutableState<Boolean>, shiftState: MutableState<Boolean>) {
+    Row(modifier = modifier) {
+        TogglableKey(
+            onToggle = { ctrlState.value = it },
+            toggled = ctrlState.value,
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxHeight()
+        ) {
+            IconWithColor(
+                iconId = R.drawable.ctrl,
+                iconColor = it
+            )
+        }
+        TogglableKey(
+            onToggle = { shiftState.value = it },
+            toggled = shiftState.value,
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxHeight()
+        ) {
+            IconWithColor(
+                iconId = R.drawable.shift,
+                iconColor = it
+            )
+        }
+    }
+}
+
+@Composable
+fun SideKeys(modifier: Modifier, onEvent: (Int, Int) -> Unit, onCodePoint: (Int) -> Unit) {
+    Column(modifier = modifier) {
+        ActionKey(
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxWidth(),
+            repeatable = false,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            onTrigger = { onEvent(KeyEvent.KEYCODE_C, KeyEvent.META_CTRL_ON) }
+        ) {
+            IconWithColor(
+                iconId = R.drawable.copy,
+                iconColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+
+        ActionKey(
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxWidth(),
+            repeatable = false,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            onTrigger = { onEvent(KeyEvent.KEYCODE_V, KeyEvent.META_CTRL_ON) }
+        ) {
+            IconWithColor(
+                iconId = R.drawable.clipboard,
+                iconColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+
+        ActionKey(
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxWidth(),
+            repeatable = true,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            onTrigger = { onCodePoint(Constants.CODE_DELETE) }
+        ) {
+            IconWithColor(
+                iconId = R.drawable.delete,
+                iconColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+
+
+        Row(modifier = Modifier
+            .weight(1.0f)
+            .fillMaxWidth()) {
+            ActionKey(
+                modifier = Modifier
+                    .weight(1.0f)
+                    .fillMaxHeight(),
+                repeatable = false,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                onTrigger = { onEvent(KeyEvent.KEYCODE_Z, KeyEvent.META_CTRL_ON) }
+            ) {
+                IconWithColor(
+                    iconId = R.drawable.undo,
+                    iconColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+
+            ActionKey(
+                modifier = Modifier
+                    .weight(1.0f)
+                    .fillMaxHeight(),
+                repeatable = false,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                onTrigger = { onEvent(KeyEvent.KEYCODE_Y, KeyEvent.META_CTRL_ON) }
+            ) {
+                IconWithColor(
+                    iconId = R.drawable.redo,
+                    iconColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun TextEditScreen(onCodePoint: (Int) -> Unit, onEvent: (Int, Int) -> Unit) {
+    val shiftState = remember { mutableStateOf(false) }
+    val ctrlState = remember { mutableStateOf(false) }
 
     val metaState = 0 or
-            (if(shiftState) { KeyEvent.META_SHIFT_ON } else { 0 }) or
-            (if(ctrlState) { KeyEvent.META_CTRL_ON } else { 0 })
-
-
-    val buttonColorsUntoggled = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-    )
-
-    val buttonColorsToggled = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.secondary,
-        contentColor = MaterialTheme.colorScheme.onSecondary
-    )
+            (if(shiftState.value) { KeyEvent.META_SHIFT_ON } else { 0 }) or
+            (if(ctrlState.value) { KeyEvent.META_CTRL_ON } else { 0 })
 
     val sendEvent = { keycode: Int -> onEvent(keycode, metaState) }
 
-    val keySize = 48.dp
-
-    Column {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Spacer(modifier = Modifier.weight(1.0f))
-
-            Box(
+    Row(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier
+            .fillMaxHeight()
+            .weight(3.0f)) {
+            ArrowKeys(
                 modifier = Modifier
-                    .height(keySize * 2)
-                    .width(keySize * 3)
-            ) {
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_INSERT) }
-                ) {
-                    Text("Ins", modifier = Modifier.padding(4.dp))
-                }
-
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_DEL) }
-                ) {
-                    Text("Del", modifier = Modifier.padding(4.dp))
-                }
-
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_MOVE_HOME) }
-                ) {
-                    Text("Home", modifier = Modifier.padding(4.dp))
-                }
-
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_MOVE_END) }
-                ) {
-                    Text("End", modifier = Modifier.padding(4.dp))
-                }
-
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_PAGE_UP) }
-                ) {
-                    Text("PgUp", modifier = Modifier.padding(4.dp))
-                }
-
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_PAGE_DOWN) }
-                ) {
-                    Text("PgDn", modifier = Modifier.padding(4.dp))
-                }
-            }
-
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Box(modifier = Modifier.height(92.dp)) {
-                Button(
-                    onClick = { shiftState = !shiftState },
-                    colors = if (shiftState) {
-                        buttonColorsToggled
-                    } else {
-                        buttonColorsUntoggled
-                    },
-                    modifier = Modifier.align(Alignment.TopStart).width(keySize * 3)
-                ) {
-                    Row {
-                        Text("Shift")
-                    }
-                }
-                Button(
-                    onClick = { ctrlState = !ctrlState },
-                    colors = if (ctrlState) {
-                        buttonColorsToggled
-                    } else {
-                        buttonColorsUntoggled
-                    },
-                    modifier = Modifier.align(Alignment.BottomStart).width(keySize * 2)
-                ) {
-                    Text("Ctrl")
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1.0f))
-
-
-
-
-            Box(
+                    .weight(3.0f)
+                    .fillMaxWidth(),
+                sendEvent = sendEvent
+            )
+            CtrlShiftMetaKeys(
                 modifier = Modifier
-                    .height(keySize * 2)
-                    .width(keySize * 3)
-            ) {
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_UP) }
-                ) {
-                    IconWithColor(
-                        iconId = R.drawable.arrow_up,
-                        iconColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_DOWN) }
-                ) {
-                    IconWithColor(
-                        iconId = R.drawable.arrow_down,
-                        iconColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_LEFT) }
-                ) {
-                    IconWithColor(
-                        iconId = R.drawable.arrow_left,
-                        iconColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-                RepeatableActionKey(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .width(keySize)
-                        .height(keySize),
-                    onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_RIGHT) }
-                ) {
-                    IconWithColor(
-                        iconId = R.drawable.arrow_right,
-                        iconColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
+                    .weight(1.0f)
+                    .fillMaxWidth(),
+                ctrlState = ctrlState,
+                shiftState = shiftState
+            )
         }
+        SideKeys(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1.0f),
+            onEvent = onEvent,
+            onCodePoint = onCodePoint
+        )
     }
 }
 
@@ -308,3 +358,11 @@ val TextEditAction = Action(
         }
     }
 )
+
+@Composable
+@Preview(showBackground = true)
+fun TextEditScreenPreview() {
+    Surface(modifier = Modifier.height(256.dp)) {
+        TextEditScreen(onCodePoint = { }, onEvent = { _, _ -> })
+    }
+}
