@@ -130,13 +130,16 @@ fun ActionKey(
 }
 
 @Composable
-fun ArrowKeys(modifier: Modifier, sendEvent: (Int) -> Unit) {
+fun ArrowKeys(
+    modifier: Modifier,
+    moveCursor: (direction: Direction) -> Unit
+) {
     Row(modifier = modifier) {
         ActionKey(
             modifier = Modifier
                 .weight(1.0f)
                 .fillMaxHeight(),
-            onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_LEFT) }
+            onTrigger = { moveCursor(Direction.Left) }
         ) {
             IconWithColor(
                 iconId = R.drawable.arrow_left,
@@ -151,7 +154,7 @@ fun ArrowKeys(modifier: Modifier, sendEvent: (Int) -> Unit) {
                 modifier = Modifier
                     .weight(1.0f)
                     .fillMaxWidth(),
-                onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_UP) }
+                onTrigger = { moveCursor(Direction.Up) }
             ) {
                 IconWithColor(
                     iconId = R.drawable.arrow_up,
@@ -164,7 +167,7 @@ fun ArrowKeys(modifier: Modifier, sendEvent: (Int) -> Unit) {
                 modifier = Modifier
                     .weight(1.0f)
                     .fillMaxWidth(),
-                onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_DOWN) }
+                onTrigger = { moveCursor(Direction.Down) }
             ) {
                 IconWithColor(
                     iconId = R.drawable.arrow_down,
@@ -177,7 +180,7 @@ fun ArrowKeys(modifier: Modifier, sendEvent: (Int) -> Unit) {
             modifier = Modifier
                 .weight(1.0f)
                 .fillMaxHeight(),
-            onTrigger = { sendEvent(KeyEvent.KEYCODE_DPAD_RIGHT) }
+            onTrigger = { moveCursor(Direction.Right) }
         ) {
             IconWithColor(
                 iconId = R.drawable.arrow_right,
@@ -299,16 +302,24 @@ fun SideKeys(modifier: Modifier, onEvent: (Int, Int) -> Unit, onCodePoint: (Int)
     }
 }
 
+enum class Direction {
+    Left,
+    Right,
+    Up,
+    Down
+}
+
 @Composable
-fun TextEditScreen(onCodePoint: (Int) -> Unit, onEvent: (Int, Int) -> Unit, keyboardShown: Boolean) {
+fun TextEditScreen(
+    onCodePoint: (Int) -> Unit,
+    onEvent: (Int, Int) -> Unit,
+    moveCursor: (direction: Direction, ctrl: Boolean, shift: Boolean) -> Unit,
+    keyboardShown: Boolean
+) {
     val shiftState = remember { mutableStateOf(false) }
     val ctrlState = remember { mutableStateOf(false) }
 
-    val metaState = 0 or
-            (if(shiftState.value) { KeyEvent.META_SHIFT_ON } else { 0 }) or
-            (if(ctrlState.value) { KeyEvent.META_CTRL_ON } else { 0 })
-
-    val sendEvent = { keycode: Int -> onEvent(keycode, metaState) }
+    val sendMoveCursor = { direction: Direction -> moveCursor(direction, ctrlState.value, shiftState.value) }
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier
@@ -318,7 +329,7 @@ fun TextEditScreen(onCodePoint: (Int) -> Unit, onEvent: (Int, Int) -> Unit, keyb
                 modifier = Modifier
                     .weight(3.0f)
                     .fillMaxWidth(),
-                sendEvent = sendEvent
+                moveCursor = sendMoveCursor
             )
             CtrlShiftMetaKeys(
                 modifier = Modifier
@@ -354,7 +365,23 @@ val TextEditAction = Action(
 
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
-                TextEditScreen(onCodePoint = { a -> manager.sendCodePointEvent(a)}, onEvent = { a, b -> manager.sendKeyEvent(a, b) }, keyboardShown = keyboardShown)
+                TextEditScreen(
+                    onCodePoint = { a -> manager.sendCodePointEvent(a)},
+                    onEvent = { a, b -> manager.sendKeyEvent(a, b) },
+                    moveCursor = { direction, ctrl, shift ->
+                        val keyEventMetaState = 0 or
+                                (if(shift) { KeyEvent.META_SHIFT_ON } else { 0 }) or
+                                (if(ctrl) { KeyEvent.META_CTRL_ON } else { 0 })
+
+                        when(direction) {
+                            Direction.Left -> manager.cursorLeft(1, stepOverWords = ctrl, select = shift)
+                            Direction.Right -> manager.cursorRight(1, stepOverWords = ctrl, select = shift)
+                            Direction.Up -> manager.sendKeyEvent(KeyEvent.KEYCODE_DPAD_UP, keyEventMetaState)
+                            Direction.Down -> manager.sendKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, keyEventMetaState)
+                        }
+                    },
+                    keyboardShown = keyboardShown
+                )
             }
 
             override fun close() {
@@ -367,13 +394,13 @@ val TextEditAction = Action(
 @Preview(showBackground = true)
 fun TextEditScreenPreview() {
     Surface(modifier = Modifier.height(256.dp)) {
-        TextEditScreen(onCodePoint = { }, onEvent = { _, _ -> }, keyboardShown = false)
+        TextEditScreen(onCodePoint = { }, onEvent = { _, _ -> }, moveCursor = { _, _, _ -> }, keyboardShown = false)
     }
 }
 @Composable
 @Preview(showBackground = true)
 fun TextEditScreenPreviewWithKb() {
     Surface(modifier = Modifier.height(256.dp)) {
-        TextEditScreen(onCodePoint = { }, onEvent = { _, _ -> }, keyboardShown = true)
+        TextEditScreen(onCodePoint = { }, onEvent = { _, _ -> }, moveCursor = { _, _, _ -> }, keyboardShown = true)
     }
 }

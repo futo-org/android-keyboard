@@ -32,6 +32,9 @@ interface KeyboardManagerForAction {
 
     fun sendCodePointEvent(codePoint: Int)
     fun sendKeyEvent(keyCode: Int, metaState: Int)
+
+    fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean)
+    fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean)
 }
 
 interface ActionWindow {

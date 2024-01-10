@@ -1081,4 +1081,80 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         return steps;
     }
+
+    private int getCharacterClass(char c) {
+        if(Character.isLetter(c) || c == '_') return 1;
+        else if(Character.isDigit(c)) return 2;
+        else if(Character.isWhitespace(c)) return 3;
+        else return 4;
+    }
+
+    /**
+     * Gets number of steps needed to step by a whole word
+     * @param direction direction to step, only sign is checked
+     * @param rightSidePointer whether or not right side is fixed
+     * @return number of characters to step
+     */
+    public int getWordBoundarySteps(int direction, boolean rightSidePointer) {
+        int steps = 0;
+        if (direction < 0) {
+            CharSequence charsBeforeCursor = !rightSidePointer && hasSelection() ?
+                    getSelectedText(0) :
+                    getTextBeforeCursor(64, 0);
+
+            if (charsBeforeCursor != null) {
+                int i = charsBeforeCursor.length() - 1;
+
+                // Skip trailing whitespace
+                while (i >= 0 && Character.isWhitespace(charsBeforeCursor.charAt(i))) {
+                    i--;
+                    steps--;
+                }
+
+                // Find the last word boundary
+                int charClass = getCharacterClass(charsBeforeCursor.charAt(i));
+                while (i >= 0 && getCharacterClass(charsBeforeCursor.charAt(i)) == charClass) {
+                    i--;
+                    steps--;
+                }
+
+                if(!rightSidePointer) {
+                    // Skip initial whitespace
+                    while (i >= 0 && Character.isWhitespace(charsBeforeCursor.charAt(i))) {
+                        i--;
+                        steps--;
+                    }
+                }
+            }
+        } else if (direction > 0) {
+            CharSequence charsAfterCursor = rightSidePointer && hasSelection() ?
+                    getSelectedText(0) :
+                    getTextAfterCursor(64, 0);
+            if (charsAfterCursor != null) {
+                int i = 0;
+
+                // Skip initial whitespace
+                while (i < charsAfterCursor.length() && Character.isWhitespace(charsAfterCursor.charAt(i))) {
+                    i++;
+                    steps++;
+                }
+
+                // Find the first word boundary
+                int charClass = getCharacterClass(charsAfterCursor.charAt(i));
+                while (i < charsAfterCursor.length() && getCharacterClass(charsAfterCursor.charAt(i)) == charClass) {
+                    i++;
+                    steps++;
+                }
+
+                if(rightSidePointer) {
+                    // Skip trailing whitespace
+                    while (i < charsAfterCursor.length() && Character.isWhitespace(charsAfterCursor.charAt(i))) {
+                        i++;
+                        steps++;
+                    }
+                }
+            }
+        }
+        return steps;
+    }
 }

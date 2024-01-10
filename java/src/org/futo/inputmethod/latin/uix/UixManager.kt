@@ -117,6 +117,14 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun sendKeyEvent(keyCode: Int, metaState: Int) {
         latinIME.inputLogic.sendDownUpKeyEvent(keyCode, metaState)
     }
+
+    override fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean) {
+        latinIME.inputLogic.cursorLeft(steps, stepOverWords, select)
+    }
+
+    override fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean) {
+        latinIME.inputLogic.cursorRight(steps, stepOverWords, select)
+    }
 }
 
 class UixManager(private val latinIME: LatinIME) {

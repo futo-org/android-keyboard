@@ -2394,4 +2394,98 @@ public final class InputLogic {
     public int getComposingLength() {
         return mWordComposer.size();
     }
+
+    /**
+     * Which direction the selection should be expanded/contracted in via cursorLeft/Right methods
+     * If true, the right side of the selection (the end) is fixed and the left side (start) gets
+     * moved around, and vice versa.
+     */
+    private boolean isRightSidePointer = true;
+
+    /**
+     * Shifts the cursor/selection based on isRightSidePointer and the parameters
+     * @param steps How many characters to step over, or the direction if stepOverWords
+     * @param stepOverWords Whether to ignore the magnitude of steps and step over full words
+     * @param select Whether or not to start/continue selection
+     */
+    private void cursorStep(int steps, boolean stepOverWords, boolean select) {
+        if(stepOverWords) {
+            steps = mConnection.getWordBoundarySteps(steps, isRightSidePointer);
+        } else {
+            steps = mConnection.getUnicodeSteps(steps, isRightSidePointer);
+        }
+
+        int cursor = isRightSidePointer ? mConnection.getExpectedSelectionStart() : mConnection.getExpectedSelectionEnd();
+        int start = mConnection.getExpectedSelectionStart();
+        int end = mConnection.getExpectedSelectionEnd();
+        if(isRightSidePointer) {
+            start += steps;
+            cursor += steps;
+        } else {
+            end += steps;
+            cursor += steps;
+        }
+
+        if (!select) {
+            start = cursor;
+            end = cursor;
+        }
+
+        mConnection.setSelection(start, end);
+    }
+
+    /**
+     * Disables recapitalization
+     */
+    public void disableRecapitalization() {
+        mRecapitalizeStatus.disable();
+    }
+
+    /**
+     * Shifts the cursor left by a number of characters
+     * @param steps How many characters to step over, or the direction if stepOverWords
+     * @param stepOverWords Whether to ignore the magnitude of steps and step over full words
+     * @param select Whether or not to start/continue selection
+     */
+    public void cursorLeft(int steps, boolean stepOverWords, boolean select) {
+        steps = Math.abs(steps);
+        if(!mConnection.hasCursorPosition()) {
+            int meta = 0;
+            if(stepOverWords) meta = meta | KeyEvent.META_CTRL_ON;
+            if(select) meta = meta | KeyEvent.META_SHIFT_ON;
+
+            for(int i=0; i<steps; i++)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta);
+        }
+
+        finishInput();
+
+        if(!mConnection.hasSelection()) isRightSidePointer = true;
+
+        cursorStep(-steps, stepOverWords, select);
+    }
+
+    /**
+     * Shifts the cursor right by a number of characters
+     * @param steps How many characters to step over, or the direction if stepOverWords
+     * @param stepOverWords Whether to ignore the magnitude of steps and step over full words
+     * @param select Whether or not to start/continue selection
+     */
+    public void cursorRight(int steps, boolean stepOverWords, boolean select) {
+        steps = Math.abs(steps);
+        if(!mConnection.hasCursorPosition()) {
+            int meta = 0;
+            if(stepOverWords) meta = meta | KeyEvent.META_CTRL_ON;
+            if(select) meta = meta | KeyEvent.META_SHIFT_ON;
+
+            for(int i=0; i<steps; i++)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta);
+        }
+
+        finishInput();
+
+        if(!mConnection.hasSelection()) isRightSidePointer = false;
+
+        cursorStep(steps, stepOverWords, select);
+    }
 }

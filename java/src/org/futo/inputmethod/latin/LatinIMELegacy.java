@@ -1369,21 +1369,17 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void onMovePointer(int steps) {
-        if (mInputLogic.mConnection.hasCursorPosition()) {
-            if (TextUtils.getLayoutDirectionFromLocale(mLocale) == View.LAYOUT_DIRECTION_RTL)
-                steps = -steps;
+        int shiftMode = mKeyboardSwitcher.getKeyboardShiftMode();
+        boolean select = (shiftMode == WordComposer.CAPS_MODE_MANUAL_SHIFTED) || (shiftMode == WordComposer.CAPS_MODE_MANUAL_SHIFT_LOCKED);
 
-            steps = mInputLogic.mConnection.getUnicodeSteps(steps, true);
-            final int end = mInputLogic.mConnection.getExpectedSelectionEnd() + steps;
-            final int start = mInputLogic.mConnection.hasSelection() ? mInputLogic.mConnection.getExpectedSelectionStart() : end;
+        if(select) {
+            mInputLogic.disableRecapitalization();
+        }
 
-            mInputLogic.finishInput();
-            mInputLogic.mConnection.setSelection(start, end);
+        if(steps < 0) {
+            mInputLogic.cursorLeft(steps, false, select);
         } else {
-            for (; steps < 0; steps++)
-                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, 0);
-            for (; steps > 0; steps--)
-                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 0);
+            mInputLogic.cursorRight(steps, false, select);
         }
     }
 
