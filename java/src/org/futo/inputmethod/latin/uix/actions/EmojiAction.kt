@@ -1,7 +1,6 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
-import android.graphics.Rect
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.UiThread
@@ -9,6 +8,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,26 +26,23 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupPositionProvider
-import androidx.compose.ui.window.PopupProperties
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
@@ -102,9 +99,7 @@ class EmojiGridAdapter(
             emojiView.isLongClickable = emoji.skinTones
             if (emoji.skinTones) {
                 emojiView.setOnLongClickListener {
-                    var rect = Rect()
-                    it.getGlobalVisibleRect(rect)
-                    onSelectSkinTone(PopupInfo(emoji, rect.centerX(), rect.centerY()))
+                    onSelectSkinTone(PopupInfo(emoji, it.x.roundToInt() + it.width / 2, it.y.roundToInt() + it.height / 2))
                     emojiView.isLongClickable
                 }
             }
@@ -167,7 +162,7 @@ fun Emojis(
         }
     }
 
-    var activePopup: PopupInfo? by remember { mutableStateOf(null) }
+    var activePopup: PopupInfo? by rememberSaveable { mutableStateOf(null) }
 
     val emojiAdapter = remember {
         EmojiGridAdapter(
@@ -177,59 +172,83 @@ fun Emojis(
             emojiWidth
         )
     }
+
     var viewWidth by remember { mutableStateOf(0) }
+    var viewHeight by remember { mutableStateOf(0) }
 
-    activePopup?.let { popupInfo ->
-        Popup(
-            onDismissRequest = {
-                activePopup = null
-            },
-            properties = PopupProperties(
-                clippingEnabled = false
-            ),
-            popupPositionProvider = object : PopupPositionProvider {
-                override fun calculatePosition(
-                    anchorBounds: IntRect,
-                    windowSize: IntSize,
-                    layoutDirection: LayoutDirection,
-                    popupContentSize: IntSize
-                ): IntOffset {
-                    val posX = popupInfo.x - popupContentSize.width / 2
-                    val posY = popupInfo.y - popupContentSize.height
-
-                    // Calculate the maximum possible x and y values
-                    val maxX = windowSize.width - popupContentSize.width
-                    val maxY = windowSize.height - popupContentSize.height
-
-                    // Calculate the x and y values, clamping them to the maximum values if necessary
-                    val x = min(maxX, max(0, posX))
-                    val y = min(maxY, max(0, posY))
-
-                    return IntOffset(x, y)
+    Box(modifier = modifier) {
+        AndroidView(
+            factory = { context ->
+                RecyclerView(context).apply {
+                    layoutManager = GridLayoutManager(context, 8)
+                    adapter = emojiAdapter
                 }
-            }
-        ) {
-            Surface(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Row {
-                    generateSkinToneVariants(popupInfo.emoji.emoji, emojiMap).map { emoji ->
-                        IconButton(onClick = {
-                            onClick(
-                                EmojiItem(
-                                    emoji = emoji,
-                                    description = popupInfo.emoji.description,
-                                    category = popupInfo.emoji.category,
-                                    skinTones = false
-                                )
-                            )
-                            activePopup = null
-                        }, modifier = Modifier
-                            .width(42.dp)
-                            .height(42.dp)) {
-                            Box {
-                                Text(emoji, modifier = Modifier.align(Alignment.Center))
+            },
+            update = {
+                if (viewWidth > 0) {
+                    (it.layoutManager as GridLayoutManager).spanCount = viewWidth / emojiWidth
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+                .clipToBounds()
+                .onSizeChanged {
+                    viewWidth = it.width
+                    viewHeight = it.height
+                }.pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            if(event.type == PointerEventType.Press) {
+                                activePopup = null
+                            }
+                        }
+                    }
+                }
+        )
+
+        activePopup?.let { popupInfo ->
+            var popupSize by remember { mutableStateOf(IntSize(0, 0)) }
+
+            val posX = popupInfo.x - popupSize.width / 2
+            val posY = popupInfo.y - popupSize.height
+
+            // Calculate the maximum possible x and y values
+            val maxX = viewWidth - popupSize.width
+            val maxY = viewHeight - popupSize.height
+
+            // Calculate the x and y values, clamping them to the maximum values if necessary
+            val x = min(maxX, max(0, posX))
+            val y = min(maxY, max(0, posY))
+
+            Box(modifier = Modifier.onSizeChanged {
+                popupSize = it
+            }.absoluteOffset {
+                IntOffset(x, y)
+            }) {
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Row {
+                        generateSkinToneVariants(popupInfo.emoji.emoji, emojiMap).map { emoji ->
+                            IconButton(
+                                onClick = {
+                                    onClick(
+                                        EmojiItem(
+                                            emoji = emoji,
+                                            description = popupInfo.emoji.description,
+                                            category = popupInfo.emoji.category,
+                                            skinTones = false
+                                        )
+                                    )
+                                    activePopup = null
+                                }, modifier = Modifier
+                                    .width(42.dp)
+                                    .height(42.dp)
+                            ) {
+                                Box {
+                                    Text(emoji, modifier = Modifier.align(Alignment.Center))
+                                }
                             }
                         }
                     }
@@ -237,25 +256,6 @@ fun Emojis(
             }
         }
     }
-
-    AndroidView(
-        factory = { context ->
-            RecyclerView(context).apply {
-                layoutManager = GridLayoutManager(context, 8)
-                adapter = emojiAdapter
-            }
-        },
-        update = {
-            if (viewWidth > 0) {
-                (it.layoutManager as GridLayoutManager).spanCount = viewWidth / emojiWidth
-            }
-        },
-        modifier = modifier
-            .clipToBounds()
-            .onSizeChanged {
-                viewWidth = it.width
-            }
-    )
 }
 
 @Composable
