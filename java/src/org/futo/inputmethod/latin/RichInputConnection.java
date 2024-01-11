@@ -1083,10 +1083,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     private int getCharacterClass(char c) {
-        if(Character.isLetter(c) || c == '_') return 1;
-        else if(Character.isDigit(c)) return 2;
-        else if(Character.isWhitespace(c)) return 3;
-        else return 4;
+        if(Character.isLetter(c) || c == '_' || Character.isDigit(c)) return 1;
+        else if(Character.isWhitespace(c)) return 2;
+        else return 3;
     }
 
     /**
@@ -1112,7 +1111,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 }
 
                 // Find the last word boundary
-                int charClass = getCharacterClass(charsBeforeCursor.charAt(i));
+                int charClass = i >= 0 ? getCharacterClass(charsBeforeCursor.charAt(i)) : -1;
                 while (i >= 0 && getCharacterClass(charsBeforeCursor.charAt(i)) == charClass) {
                     i--;
                     steps--;
@@ -1140,7 +1139,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 }
 
                 // Find the first word boundary
-                int charClass = getCharacterClass(charsAfterCursor.charAt(i));
+                int charClass = i < charsAfterCursor.length() ? getCharacterClass(charsAfterCursor.charAt(i)) : -1;
                 while (i < charsAfterCursor.length() && getCharacterClass(charsAfterCursor.charAt(i)) == charClass) {
                     i++;
                     steps++;
