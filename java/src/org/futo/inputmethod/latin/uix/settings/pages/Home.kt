@@ -1,29 +1,38 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.openLanguageSettings
+import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.updates.ConditionalUpdate
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     ScrollableList {
         Spacer(modifier = Modifier.height(24.dp))
         ScreenTitle("FUTO Keyboard Settings")
+
+        ConditionalUpdate()
+
         NavigationItem(
             title = "Languages",
             style = NavigationItemStyle.HomePrimary,
@@ -59,13 +68,14 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             icon = painterResource(id = R.drawable.eye)
         )
 
-        /*
-        NavigationItem(
-            title = "Advanced",
-            style = NavigationItemStyle.Misc,
-            navigate = { },
-            icon = painterResource(id = R.drawable.delete)
+
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            "v${BuildConfig.VERSION_NAME}",
+            style = Typography.labelSmall,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
         )
-        */
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }

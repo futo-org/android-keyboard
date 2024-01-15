@@ -53,6 +53,7 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
+import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
 
 class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner,
     LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner {
@@ -210,6 +211,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         languageModelFacilitator.launchProcessor()
         languageModelFacilitator.loadHistoryLog()
+
+        scheduleUpdateCheckingJob(this)
     }
 
     override fun onDestroy() {

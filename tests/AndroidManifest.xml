@@ -15,8 +15,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.futo.inputmethod.latin.tests"
-    android:versionCode="30">
+    package="org.futo.inputmethod.latin.tests">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="30" />
 

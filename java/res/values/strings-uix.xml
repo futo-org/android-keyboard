@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="voice_input_action_title">Voice Input</string>
     <string name="theme_switcher_action_title">Theme Switcher</string>
     <string name="emoji_action_title">Emojis</string>
@@ -26,4 +26,8 @@
     <string name="download_in_progress">Downloading models…</string>
 
     <string name="model_downloader">Model Downloader</string>
+
+    <string name="update_checking_service">Update Checking service</string>
+    <string name="update_available">Update Available</string>
+    <string name="update_available_notification">An update is available (<xliff:g name="versionDiff" example="v1 -> v2">%s</xliff:g>). Tap to download</string>
 </resources>
