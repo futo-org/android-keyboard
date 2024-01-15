@@ -1,5 +1,5 @@
 default:
-  image: "docker.io/abb128/android-build:v2@sha256:4e544373291dc0866fcfc03a2894eda7e3c939e3686ddf3c45d933433c49b49a"
+  image: "docker.io/abb128/android-build:v3@sha256:fc062b587302a66902b2abb463d886b53ec173e157d8297d16b9f00bce4633e7"
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
