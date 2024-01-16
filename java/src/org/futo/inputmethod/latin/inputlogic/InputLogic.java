@@ -1469,8 +1469,8 @@ public final class InputLogic {
 
     private void ensureSuggestionStripCompleted(final SettingsValues settingsValues,
             final String separator, final LatinIMELegacy.UIHandler handler) {
-        if(settingsValues.mTransformerPredictionEnabled) {
-            LanguageModelFacilitator facilitator = handler.getLanguageModelFacilitator();
+        LanguageModelFacilitator facilitator = handler.getLanguageModelFacilitator();
+        if(!facilitator.shouldPassThroughToLegacy()) {
             if(facilitator.hasPendingUpdate()) {
                 facilitator.blockUntilComplete();
             }
@@ -1492,65 +1492,61 @@ public final class InputLogic {
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
             final int inputStyle) {
-        if(settingsValues.mTransformerPredictionEnabled) {
-            throw new IllegalStateException("called performUpdateSuggestionStripSync during TransformerLM");
-        } else {
-            long startTimeMillis = 0;
-            if (DebugFlags.DEBUG_ENABLED) {
-                startTimeMillis = System.currentTimeMillis();
-                Log.d(TAG, "performUpdateSuggestionStripSync()");
+        long startTimeMillis = 0;
+        if (DebugFlags.DEBUG_ENABLED) {
+            startTimeMillis = System.currentTimeMillis();
+            Log.d(TAG, "performUpdateSuggestionStripSync()");
+        }
+        // Check if we have a suggestion engine attached.
+        if (!settingsValues.needsToLookupSuggestions()) {
+            if (mWordComposer.isComposingWord()) {
+                Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
+                        + "requested!");
             }
-            // Check if we have a suggestion engine attached.
-            if (!settingsValues.needsToLookupSuggestions()) {
-                if (mWordComposer.isComposingWord()) {
-                    Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
-                            + "requested!");
-                }
-                // Clear the suggestions strip.
-                mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance());
-                return;
-            }
+            // Clear the suggestions strip.
+            mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance());
+            return;
+        }
 
-            if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
-                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-                return;
-            }
-
+        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-            final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<>("Suggest");
-            mInputLogicHandler.getSuggestedWords(inputStyle, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
-                    new OnGetSuggestedWordsCallback() {
-                        @Override
-                        public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                            final String typedWordString = mWordComposer.getTypedWord();
-                            final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
-                                    typedWordString, "" /* prevWordsContext */,
-                                    SuggestedWordInfo.MAX_SCORE,
-                                    SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                                    SuggestedWordInfo.NOT_A_CONFIDENCE);
-                            // Show new suggestions if we have at least one. Otherwise keep the old
-                            // suggestions with the new typed word. Exception: if the length of the
-                            // typed word is <= 1 (after a deletion typically) we clear old suggestions.
-                            if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
-                                holder.set(suggestedWords);
-                            } else {
-                                holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
-                            }
+            return;
+        }
+
+        mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+        final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<>("Suggest");
+        mInputLogicHandler.getSuggestedWords(inputStyle, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
+                new OnGetSuggestedWordsCallback() {
+                    @Override
+                    public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                        final String typedWordString = mWordComposer.getTypedWord();
+                        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                                typedWordString, "" /* prevWordsContext */,
+                                SuggestedWordInfo.MAX_SCORE,
+                                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
+                                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                                SuggestedWordInfo.NOT_A_CONFIDENCE);
+                        // Show new suggestions if we have at least one. Otherwise keep the old
+                        // suggestions with the new typed word. Exception: if the length of the
+                        // typed word is <= 1 (after a deletion typically) we clear old suggestions.
+                        if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
+                            holder.set(suggestedWords);
+                        } else {
+                            holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
                         }
                     }
-            );
+                }
+        );
 
-            // This line may cause the current thread to wait.
-            final SuggestedWords suggestedWords = holder.get(null,
-                    Constants.GET_SUGGESTED_WORDS_TIMEOUT);
-            if (suggestedWords != null) {
-                mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
-            }
-            if (DebugFlags.DEBUG_ENABLED) {
-                long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
-                Log.d(TAG, "performUpdateSuggestionStripSync() : " + runTimeMillis + " ms to finish");
-            }
+        // This line may cause the current thread to wait.
+        final SuggestedWords suggestedWords = holder.get(null,
+                Constants.GET_SUGGESTED_WORDS_TIMEOUT);
+        if (suggestedWords != null) {
+            mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
+        }
+        if (DebugFlags.DEBUG_ENABLED) {
+            long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
+            Log.d(TAG, "performUpdateSuggestionStripSync() : " + runTimeMillis + " ms to finish");
         }
     }
 

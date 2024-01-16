@@ -26,6 +26,10 @@ public class LanguageModel {
         this.locale = locale;
     }
 
+    public Locale getLocale() {
+        return Locale.ENGLISH;
+    }
+
     private void loadModel() {
         if (initThread != null && initThread.isAlive()){
             Log.d("LanguageModel", "Cannot load model again, as initThread is still active");
@@ -66,12 +70,6 @@ public class LanguageModel {
             float[] inOutWeightOfLangModelVsSpatialModel
     ) {
         Log.d("LanguageModel", "getSuggestions called");
-
-        // Language Model currently only supports English
-        if(locale.getLanguage() != Locale.ENGLISH.getLanguage()) {
-            Log.d("LanguageModel", "Exiting because locale is not English");
-            return null;
-        }
 
         if (mNativeState == 0) {
             loadModel();

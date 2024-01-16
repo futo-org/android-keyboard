@@ -494,7 +494,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         return uixManager.onInlineSuggestionsResponse(response)
     }
 
-    fun postUpdateSuggestionStrip(inputStyle: Int) {
+    fun postUpdateSuggestionStrip(inputStyle: Int): Boolean {
+        if(languageModelFacilitator.shouldPassThroughToLegacy()) return false
+
         languageModelFacilitator.updateSuggestionStripAsync(inputStyle);
+        return true
     }
 }

@@ -336,12 +336,18 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
         public void postUpdateSuggestionStrip(final int inputStyle) {
             final LatinIMELegacy latinImeLegacy = getOwnerInstance();
-            if(latinImeLegacy.mSettings.getCurrent().mTransformerPredictionEnabled) {
-                ((LatinIME)latinImeLegacy.getInputMethodService()).postUpdateSuggestionStrip(inputStyle);
-            } else {
-                sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP_LEGACY, inputStyle,
-                        0 /* ignored */), mDelayInMillisecondsToUpdateSuggestions);
+            assert latinImeLegacy != null;
+
+            final LatinIME latinIme = (LatinIME)latinImeLegacy.getInputMethodService();
+
+            if(!latinIme.postUpdateSuggestionStrip(inputStyle)) {
+                updateSuggestionStripLegacy(inputStyle);
             }
+        }
+
+        public void updateSuggestionStripLegacy(final int inputStyle) {
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP_LEGACY, inputStyle,
+                    0 /* ignored */), mDelayInMillisecondsToUpdateSuggestions);
         }
 
         public void postReopenDictionaries() {
@@ -1621,10 +1627,10 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void getSuggestedWords(final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         SettingsValues settings = mSettings.getCurrent();
-        if(settings.mTransformerPredictionEnabled) {
-            ((LatinIME)getInputMethodService()).postUpdateSuggestionStrip(inputStyle);
+        if(((LatinIME)getInputMethodService()).postUpdateSuggestionStrip(inputStyle)) {
             return;
         }
+
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         if (keyboard == null) {
             callback.onGetSuggestedWords(SuggestedWords.getEmptyInstance());

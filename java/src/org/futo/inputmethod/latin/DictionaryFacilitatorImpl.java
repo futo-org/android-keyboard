@@ -618,13 +618,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             NgramContext ngramContext, @Nonnull final Keyboard keyboard,
             SettingsValuesForSuggestion settingsValuesForSuggestion, int sessionId,
             int inputStyle) {
-
-        if(settingsValuesForSuggestion.mUseTransformerLM) {
-            throw new IllegalStateException("Invalid code path TransformerLM");
-        }
-
-
-
         long proximityInfoHandle = keyboard.getProximityInfo().getNativeProximityInfo();
         final SuggestionResults suggestionResults = new SuggestionResults(
                 SuggestedWords.MAX_SUGGESTIONS, ngramContext.isBeginningOfSentenceContext(),

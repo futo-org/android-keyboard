@@ -166,15 +166,16 @@ public class LanguageModelFacilitator(
         scheduleTrainingWorkerBackground(context)
     }
 
+    public fun shouldPassThroughToLegacy(): Boolean =
+        (!settings.current.mTransformerPredictionEnabled) ||
+                (languageModel?.let {
+                    it.getLocale().language != dictionaryFacilitator.locale.language
+                } ?: false)
+
     public fun updateSuggestionStripAsync(inputStyle: Int) {
         val settingsValues = settings.current
         if (!settingsValues.needsToLookupSuggestions()) {
             inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance())
-            return
-        }
-
-        if(!settingsValues.mTransformerPredictionEnabled) {
-            // TODO: Call old path
             return
         }
 
@@ -214,6 +215,8 @@ public class LanguageModelFacilitator(
         blockPotentiallyOffensive: Boolean,
         importance: Int
     ) {
+        if(shouldPassThroughToLegacy()) return
+
         val wordCtx = ngramContext.fullContext.trim().lines().last()
         var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
         if(committedNgramCtx.isEmpty()) {
@@ -271,6 +274,8 @@ public class LanguageModelFacilitator(
         timeStampInSeconds: Long,
         eventType: Int
     ) {
+        if(shouldPassThroughToLegacy()) return
+
         val wordCtx = ngramContext.fullContext.trim().lines().last()
         var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
         if(committedNgramCtx.isEmpty()) {
