@@ -26,6 +26,7 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 
@@ -348,5 +349,11 @@ class UixManager(private val latinIME: LatinIME) {
         setContent()
 
         return true
+    }
+
+    fun openEmojiKeyboard() {
+        if(currWindowAction == null) {
+            onActionActivated(EmojiAction)
+        }
     }
 }
