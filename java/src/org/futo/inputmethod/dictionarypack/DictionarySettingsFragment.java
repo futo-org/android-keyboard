@@ -43,6 +43,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 
+import androidx.core.content.ContextCompat;
+
 import org.futo.inputmethod.latin.R;
 
 import java.util.ArrayList;
@@ -138,7 +140,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         final Activity activity = getActivity();
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        getActivity().registerReceiver(mConnectivityChangedReceiver, filter);
+        ContextCompat.registerReceiver(getContext(), mConnectivityChangedReceiver, filter, ContextCompat.RECEIVER_EXPORTED);
         refreshNetworkState();
 
         new Thread("onResume") {

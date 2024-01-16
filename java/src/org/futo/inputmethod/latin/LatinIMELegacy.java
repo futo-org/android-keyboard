@@ -41,7 +41,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -58,6 +57,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.annotations.UsedForTesting;
@@ -651,27 +651,27 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // Register to receive ringer mode change.
         final IntentFilter filter = new IntentFilter();
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
-        mInputMethodService.registerReceiver(mRingerModeChangeReceiver, filter);
+        ContextCompat.registerReceiver(mInputMethodService, mRingerModeChangeReceiver, filter, ContextCompat.RECEIVER_EXPORTED);
 
         // Register to receive installation and removal of a dictionary pack.
         final IntentFilter packageFilter = new IntentFilter();
         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
         packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         packageFilter.addDataScheme(SCHEME_PACKAGE);
-        mInputMethodService.registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
+        ContextCompat.registerReceiver(mInputMethodService, mDictionaryPackInstallReceiver, packageFilter, ContextCompat.RECEIVER_EXPORTED);
 
         final IntentFilter newDictFilter = new IntentFilter();
         newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
-        mInputMethodService.registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
+        ContextCompat.registerReceiver(mInputMethodService, mDictionaryPackInstallReceiver, newDictFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         final IntentFilter dictDumpFilter = new IntentFilter();
         dictDumpFilter.addAction(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
-        mInputMethodService.registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
+        ContextCompat.registerReceiver(mInputMethodService, mDictionaryDumpBroadcastReceiver, dictDumpFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         final IntentFilter hideSoftInputFilter = new IntentFilter();
         hideSoftInputFilter.addAction(ACTION_HIDE_SOFT_INPUT);
-        mInputMethodService.registerReceiver(mHideSoftInputReceiver, hideSoftInputFilter, PERMISSION_HIDE_SOFT_INPUT,
-                null /* scheduler */);
+        ContextCompat.registerReceiver(mInputMethodService, mHideSoftInputReceiver, hideSoftInputFilter, PERMISSION_HIDE_SOFT_INPUT,
+                null /* scheduler */, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         StatsUtils.onCreate(mSettings.getCurrent(), mRichImm);
     }
