@@ -24,8 +24,7 @@
     TODO: Remove these string resources when TTS/TalkBack support these letters.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_accented_letter_00AA" msgid="1429204792762885085">"Sorszámnévjelölő (nőnemű)"</string>
     <string name="spoken_accented_letter_00B5" msgid="7868294865559331588">"„mű” jel"</string>
     <string name="spoken_accented_letter_00BA" msgid="6130566166610759347">"Sorszámnévjelölő (hímnemű)"</string>

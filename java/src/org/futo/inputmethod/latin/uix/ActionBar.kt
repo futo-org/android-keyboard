@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix
 
 import android.os.Build
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -616,36 +617,42 @@ fun PreviewCollapsibleBar(colorScheme: ColorScheme = DarkColorScheme) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithSuggestionsDynamicLight() {
     PreviewActionBarWithSuggestions(dynamicLightColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicLight() {
     PreviewActionBarWithEmptySuggestions(dynamicLightColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewExpandedActionBarDynamicLight() {
     PreviewExpandedActionBar(dynamicLightColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithSuggestionsDynamicDark() {
     PreviewActionBarWithSuggestions(dynamicDarkColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicDark() {
     PreviewActionBarWithEmptySuggestions(dynamicDarkColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewExpandedActionBarDynamicDark() {

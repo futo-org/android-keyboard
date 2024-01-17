@@ -18,8 +18,7 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="4475547506953371028">"Android tastatūra (AOSP)"</string>
     <string name="spell_checker_service_name" msgid="7417621022652876777">"Android pareizrakstības pārbaudītājs (AOSP)"</string>
     <string name="english_ime_settings" msgid="1497566567404939275">"Android tastatūras iestatījumi (AOSP)"</string>

@@ -18,8 +18,7 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"ইনপুট বিকল্পসমূহ"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"সম্পৰ্কসূচীৰ নামবোৰত চাওক"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"বানান পৰীক্ষকে আপোনাৰ সম্পৰ্কসূচীৰ নামবোৰ ব্যৱহাৰ কৰে"</string>

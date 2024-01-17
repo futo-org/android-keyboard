@@ -100,7 +100,6 @@
         <!-- Activities -->
         <activity android:name=".uix.settings.SettingsActivity"
              android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-             android:label="@string/english_ime_name"
              android:icon="@mipmap/ic_launcher"
              android:roundIcon="@mipmap/ic_launcher_round"
              android:launchMode="singleTask"
@@ -129,17 +128,7 @@
         <activity android:name=".spellcheck.SpellCheckerSettingsActivity"
              android:theme="@style/platformSettingsTheme"
              android:label="@string/android_spell_checker_settings"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-
-        <activity android:name="org.futo.inputmethod.dictionarypack.DictionarySettingsActivity"
-             android:theme="@style/platformSettingsTheme"
-             android:label="@string/dictionary_settings_title"
-             android:uiOptions="splitActionBarWhenNarrow"
-             android:exported="true">
+             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
@@ -153,10 +142,6 @@
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
-
-        <!-- Unexported activity used for tests. -->
-        <activity android:name=".settings.TestFragmentActivity"
-             android:exported="false"/>
 
         <!-- Broadcast receivers -->
         <receiver android:name="SystemBroadcastReceiver"
@@ -173,16 +158,6 @@
              android:exported="false">
             <intent-filter>
                 <action android:name="org.futo.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name="org.futo.inputmethod.dictionarypack.EventHandler"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
-                <action android:name="android.intent.action.DATE_CHANGED"/>
-                <action android:name="org.futo.inputmethod.dictionarypack.aosp.UPDATE_NOW"/>
-                <action android:name="org.futo.inputmethod.dictionarypack.aosp.INIT_AND_UPDATE_NOW"/>
             </intent-filter>
         </receiver>
 

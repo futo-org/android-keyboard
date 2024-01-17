@@ -18,8 +18,7 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- no translation found for english_ime_input_options (4262655277902459172) -->
     <skip />
     <!-- no translation found for use_contacts_for_spellchecking_option_title (5006788115094214047) -->

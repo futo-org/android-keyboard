@@ -18,8 +18,7 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_use_headphones" msgid="2455138206280962514">"插入耳机可听到输入密码时的按键提示音。"</string>
     <string name="spoken_current_text_is" msgid="1642386857389316456">"当前文字为%s"</string>
     <string name="spoken_no_text_entered" msgid="3439628354874662101">"未输入文字"</string>

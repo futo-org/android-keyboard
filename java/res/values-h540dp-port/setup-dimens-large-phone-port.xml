@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
     <!-- Setup wizard dimensions for large-phone/portrait. -->
     <dimen name="setup_title_text_size">48sp</dimen>
     <dimen name="setup_welcome_description_text_size">26sp</dimen>

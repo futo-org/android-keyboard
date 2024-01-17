@@ -22,6 +22,7 @@ const val NOTIFICATION_ID = 1
 
 class UpdateCheckingService : JobService() {
     private var job: Job? = null
+
     override fun onStartJob(params: JobParameters?): Boolean {
         job = CoroutineScope(Dispatchers.IO).launch {
             if(checkForUpdateAndSaveToPreferences(applicationContext)) {

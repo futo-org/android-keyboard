@@ -68,7 +68,7 @@ public class UserDictionaryAddWordFragment extends Fragment
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
             final Bundle savedState) {
-        mRootView = inflater.inflate(R.layout.user_dictionary_add_word_fullscreen, null);
+        mRootView = inflater.inflate(R.layout.user_dictionary_add_word_fullscreen, container, false);
         mIsDeleting = false;
         // If we have a non-null mContents object, it's the old value before a configuration
         // change (eg rotation) so we need to use its values. Otherwise, read from the arguments.

@@ -33,6 +33,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import org.futo.inputmethod.compat.TextViewCompatUtils;
 import org.futo.inputmethod.compat.ViewCompatUtils;
 import org.futo.inputmethod.latin.R;
@@ -223,7 +225,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         mActionNext.setOnClickListener(this);
         mActionFinish = (TextView)findViewById(R.id.setup_finish);
         TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(mActionFinish,
-                getResources().getDrawable(R.drawable.ic_setup_finish), null, null, null);
+                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_setup_finish, getTheme()), null, null, null);
         mActionFinish.setOnClickListener(this);
     }
 
@@ -464,7 +466,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
                 ViewCompatUtils.setPaddingRelative(mActionLabel, paddingEnd, 0, paddingEnd, 0);
             } else {
                 TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                        mActionLabel, res.getDrawable(actionIcon), null, null, null);
+                        mActionLabel, ResourcesCompat.getDrawable(res, actionIcon, null), null, null, null);
             }
         }
 

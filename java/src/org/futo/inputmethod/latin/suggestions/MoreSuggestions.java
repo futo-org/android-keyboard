@@ -21,6 +21,8 @@ import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.internal.KeyboardBuilder;
@@ -57,7 +59,7 @@ public final class MoreSuggestions extends Keyboard {
                 final int maxWidth, final int minWidth, final int maxRow, final Paint paint,
                 final Resources res) {
             clearKeys();
-            mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
+            mDivider = ResourcesCompat.getDrawable(res, R.drawable.more_suggestions_divider, null);
             mDividerWidth = mDivider.getIntrinsicWidth();
             final float padding = res.getDimension(
                     R.dimen.config_more_suggestions_key_horizontal_padding);

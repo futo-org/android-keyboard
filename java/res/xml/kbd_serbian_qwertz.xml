@@ -18,6 +18,6 @@
 */
 -->
 
-<Keyboard xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin" >
+<Keyboard xmlns:latin="http://schemas.android.com/apk/res-auto" >
     <include latin:keyboardLayout="@xml/rows_serbian_qwertz" />
 </Keyboard>

@@ -18,8 +18,7 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"ជម្រើស​​បញ្ចូល"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"រក​មើល​ឈ្មោះ​ទំនាក់ទំនង"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"កម្មវិធី​ពិនិត្យ​អក្ខរាវិរុទ្ធ​ប្រើ​ធាតុ​ពី​​ក្នុង​បញ្ជី​ទំនាក់ទំនង​របស់​អ្នក"</string>

@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
     <!-- U+0636: "ض" ARABIC LETTER DAD
          U+0661: "١" ARABIC-INDIC DIGIT ONE -->
     <Key

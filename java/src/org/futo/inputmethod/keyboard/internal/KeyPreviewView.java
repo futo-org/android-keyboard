@@ -34,7 +34,7 @@ import java.util.HashSet;
 /**
  * The pop up key preview view.
  */
-public class KeyPreviewView extends TextView {
+public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView {
     public static final int POSITION_MIDDLE = 0;
     public static final int POSITION_LEFT = 1;
     public static final int POSITION_RIGHT = 2;

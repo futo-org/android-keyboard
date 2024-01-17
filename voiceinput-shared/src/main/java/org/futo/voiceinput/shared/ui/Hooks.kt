@@ -2,6 +2,7 @@ package org.futo.voiceinput.shared.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.withFrameMillis
@@ -11,13 +12,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun animateValueChanges(value: Float, timeMs: Int): Float {
-    val animatedValue = remember { mutableStateOf(0.0f) }
-    val previousValue = remember { mutableStateOf(0.0f) }
+    val animatedValue = remember { mutableFloatStateOf(0.0f) }
+    val previousValue = remember { mutableFloatStateOf(0.0f) }
 
     LaunchedEffect(value) {
-        val lastValue = previousValue.value
-        if (previousValue.value != value) {
-            previousValue.value = value
+        val lastValue = previousValue.floatValue
+        if (previousValue.floatValue != value) {
+            previousValue.floatValue = value
         }
 
         launch {
@@ -29,7 +30,7 @@ fun animateValueChanges(value: Float, timeMs: Int): Float {
 
                     val t1 = MathUtils.clamp(t * t * (3f - 2f * t), 0.0f, 1.0f)
 
-                    animatedValue.value = lerp(lastValue, value, t1)
+                    animatedValue.floatValue = lerp(lastValue, value, t1)
 
                     frameTime
                 }
@@ -38,5 +39,5 @@ fun animateValueChanges(value: Float, timeMs: Int): Float {
         }
     }
 
-    return animatedValue.value
+    return animatedValue.floatValue
 }

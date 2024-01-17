@@ -21,6 +21,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -40,7 +42,7 @@ public final class SetupStartIndicatorView extends LinearLayout {
         labelView.setIndicatorView(findViewById(R.id.setup_start_indicator));
     }
 
-    public static final class LabelView extends TextView {
+    public static final class LabelView extends androidx.appcompat.widget.AppCompatTextView {
         private View mIndicatorView;
 
         public LabelView(final Context context, final AttributeSet attrs) {
@@ -88,8 +90,8 @@ public final class SetupStartIndicatorView extends LinearLayout {
 
         public IndicatorView(final Context context, final AttributeSet attrs) {
             super(context, attrs);
-            mIndicatorColor = getResources().getColorStateList(
-                    R.color.setup_step_action_background);
+            mIndicatorColor = ResourcesCompat.getColorStateList(getResources(),
+                    R.color.setup_step_action_background, null);
             mIndicatorPaint.setStyle(Paint.Style.FILL);
         }
 

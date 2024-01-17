@@ -53,11 +53,11 @@ import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class InputTestsBase extends ServiceTestCase<LatinIMELegacyForTests> {
+public class InputTestsBase extends ServiceTestCase<LatinIME> {
     private static final String TAG = InputTestsBase.class.getSimpleName();
 
     // Default value for auto-correction threshold. This is the string representation of the
-    // index in the resources array of auto-correction threshold settings.
+    // index in the resources array of auto-correction threshold settings.LatinIMELegacyForTests
     private static final boolean DEFAULT_AUTO_CORRECTION = true;
 
     // The message that sets the underline is posted with a 500 ms delay
@@ -80,6 +80,10 @@ public class InputTestsBase extends ServiceTestCase<LatinIMELegacyForTests> {
     protected InputConnection mInputConnection;
     private boolean mPreviousAutoCorrectSetting;
     private boolean mPreviousBigramPredictionSettings;
+
+    public InputTestsBase(Class<LatinIME> serviceClass) {
+        super(serviceClass);
+    }
 
     // A helper class to ease span tests
     public static class SpanGetter {
@@ -152,13 +156,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIMELegacyForTests> {
 
     }
 
-    public InputTestsBase() {
-        super(LatinIMELegacyForTests.class);
-    }
-
     protected boolean setBooleanPreference(final String key, final boolean value,
             final boolean defaultValue) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mLatinIMELegacy);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getService());
         final boolean previousSetting = prefs.getBoolean(key, defaultValue);
         final SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(key, value);
@@ -167,13 +167,13 @@ public class InputTestsBase extends ServiceTestCase<LatinIMELegacyForTests> {
     }
 
     protected boolean getBooleanPreference(final String key, final boolean defaultValue) {
-        return PreferenceManager.getDefaultSharedPreferences(mLatinIMELegacy)
+        return PreferenceManager.getDefaultSharedPreferences(getService())
                 .getBoolean(key, defaultValue);
     }
 
     protected String setStringPreference(final String key, final String value,
             final String defaultValue) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mLatinIMELegacy);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getService());
         final String previousSetting = prefs.getString(key, defaultValue);
         final SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, value);
@@ -206,13 +206,13 @@ public class InputTestsBase extends ServiceTestCase<LatinIMELegacyForTests> {
             Looper.prepare();
         }
         setupService();
-        mLatinIMELegacy = getService();
+        mLatinIMELegacy = getService().getLatinIMELegacy();
         setDebugMode(true);
         mPreviousBigramPredictionSettings = setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS,
                 true, true /* defaultValue */);
         mPreviousAutoCorrectSetting = setBooleanPreference(Settings.PREF_AUTO_CORRECTION,
                 DEFAULT_AUTO_CORRECTION, DEFAULT_AUTO_CORRECTION);
-        mLatinIMELegacy.onCreate();
+        getService().onCreate();
         EditorInfo ei = new EditorInfo();
         final InputConnection ic = mEditText.onCreateInputConnection(ei);
         final LayoutInflater inflater =
@@ -220,11 +220,11 @@ public class InputTestsBase extends ServiceTestCase<LatinIMELegacyForTests> {
         final ViewGroup vg = new FrameLayout(getContext());
         mInputView = inflater.inflate(R.layout.input_view, vg);
         ei = enrichEditorInfo(ei);
-        mLatinIMELegacy.onCreateInputMethodInterface().startInput(ic, ei);
-        mLatinIMELegacy.setInputView(mInputView);
-        mLatinIMELegacy.onBindInput();
-        mLatinIMELegacy.onCreateInputView();
-        mLatinIMELegacy.onStartInputView(ei, false);
+        getService().onCreateInputMethodInterface().startInput(ic, ei);
+        getService().setInputView(mInputView);
+        getService().onBindInput();
+        getService().onCreateInputView();
+        getService().onStartInputView(ei, false);
         mInputConnection = ic;
         changeLanguage("en_US");
         // Run messages to avoid the messages enqueued by startInputView() and its friends

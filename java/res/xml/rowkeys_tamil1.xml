@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
     <!-- U+0B94: "ஔ" TAMIL LETTER AU
          U+0BCC: "ௌ" TAMIL VOWEL SIGN AU -->
     <Key

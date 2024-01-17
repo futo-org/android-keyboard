@@ -27,7 +27,6 @@ import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.permissions.PermissionsManager;
 import org.futo.inputmethod.latin.permissions.PermissionsUtil;
 import org.futo.inputmethod.latin.settings.SubScreenFragment;
-import org.futo.inputmethod.latin.settings.TwoStatePreferenceHelper;
 import org.futo.inputmethod.latin.utils.ApplicationUtils;
 
 import static org.futo.inputmethod.latin.permissions.PermissionsManager.get;
@@ -48,8 +47,6 @@ public final class SpellCheckerSettingsFragment extends SubScreenFragment
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         preferenceScreen.setTitle(ApplicationUtils.getActivityTitleResId(
                 getActivity(), SpellCheckerSettingsActivity.class));
-        TwoStatePreferenceHelper.replaceCheckBoxPreferencesBySwitchPreferences(preferenceScreen);
-
         mLookupContactsPreference = (SwitchPreference) findPreference(
                 AndroidSpellCheckerService.PREF_USE_CONTACTS_KEY);
         turnOffLookupContactsIfNoPermission();
@@ -67,12 +64,11 @@ public final class SpellCheckerSettingsFragment extends SubScreenFragment
         }
 
         // Check for permissions.
-        if (PermissionsUtil.checkAllPermissionsGranted(
-                getActivity() /* context */, Manifest.permission.READ_CONTACTS)) {
+        if (PermissionsUtil.checkAllPermissionsGranted(getContext(), Manifest.permission.READ_CONTACTS)) {
             return; // all permissions granted, no need to request permissions.
         }
 
-        get(getActivity() /* context */).requestPermissions(this /* PermissionsResultCallback */,
+        get(getContext()).requestPermissions(this /* PermissionsResultCallback */,
                 getActivity() /* activity */, Manifest.permission.READ_CONTACTS);
     }
 
@@ -82,8 +78,7 @@ public final class SpellCheckerSettingsFragment extends SubScreenFragment
     }
 
     private void turnOffLookupContactsIfNoPermission() {
-        if (!PermissionsUtil.checkAllPermissionsGranted(
-                getActivity(), Manifest.permission.READ_CONTACTS)) {
+        if (!PermissionsUtil.checkAllPermissionsGranted(getContext(), Manifest.permission.READ_CONTACTS)) {
             mLookupContactsPreference.setChecked(false);
         }
     }

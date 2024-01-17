@@ -19,7 +19,7 @@
 -->
 
 <Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
     latin:keyboardLeftPadding="10%p"
     latin:keyboardRightPadding="10%p"
     latin:keyWidth="18%p"

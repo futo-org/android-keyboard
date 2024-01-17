@@ -448,11 +448,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             editor.remove(PREF_AUTO_CORRECTION_THRESHOLD_OBSOLETE);
             final String autoCorrectionOff =
                     res.getString(R.string.auto_correction_threshold_mode_index_off);
-            if (thresholdSetting.equals(autoCorrectionOff)) {
-                editor.putBoolean(PREF_AUTO_CORRECTION, false);
-            } else {
-                editor.putBoolean(PREF_AUTO_CORRECTION, true);
-            }
+            editor.putBoolean(PREF_AUTO_CORRECTION, !thresholdSetting.equals(autoCorrectionOff));
             editor.commit();
         }
     }

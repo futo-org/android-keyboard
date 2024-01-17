@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +34,7 @@ import org.futo.voiceinput.shared.ui.theme.Typography
 
 
 @Composable
-fun AnimatedRecognizeCircle(magnitude: MutableState<Float> = mutableStateOf(0.5f)) {
+fun AnimatedRecognizeCircle(magnitude: MutableState<Float> = mutableFloatStateOf(0.5f)) {
     val radius = animateValueChanges(magnitude.value, 100)
     val color = MaterialTheme.colorScheme.primaryContainer
 
@@ -46,7 +47,7 @@ fun AnimatedRecognizeCircle(magnitude: MutableState<Float> = mutableStateOf(0.5f
 @Composable
 fun InnerRecognize(
     onFinish: () -> Unit,
-    magnitude: MutableState<Float> = mutableStateOf(0.5f),
+    magnitude: MutableState<Float> = mutableFloatStateOf(0.5f),
     state: MutableState<MagnitudeState> = mutableStateOf(MagnitudeState.MIC_MAY_BE_BLOCKED)
 ) {
     IconButton(

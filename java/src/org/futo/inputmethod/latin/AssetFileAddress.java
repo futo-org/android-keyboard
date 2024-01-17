@@ -16,9 +16,12 @@
 
 package org.futo.inputmethod.latin;
 
+import androidx.annotation.NonNull;
+
 import org.futo.inputmethod.latin.common.FileUtils;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Immutable class to hold the address of an asset.
@@ -63,8 +66,9 @@ public final class AssetFileAddress {
         FileUtils.deleteRecursively(new File(mFilename));
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return String.format("%s (offset=%d, length=%d)", mFilename, mOffset, mLength);
+        return String.format(Locale.ENGLISH, "%s (offset=%d, length=%d)", mFilename, mOffset, mLength);
     }
 }

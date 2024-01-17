@@ -18,7 +18,6 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="use_personalized_dicts_summary" msgid="1940820612730039915">"ਸੁਝਾਵਾਂ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ ਆਪਣੀਆਂ ਗੱਲਬਾਤਾਂ ਅਤੇ ਟਾਈਪ ਕੀਤੇ  ਡਾਟਾ  ਤੋਂ ਜਾਣਕਾਰੀ ਪ੍ਰਾਪਤ ਕਰੋ"</string>
 </resources>

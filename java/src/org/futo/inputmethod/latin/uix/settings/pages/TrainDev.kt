@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,7 +35,7 @@ import kotlin.math.roundToInt
 @Preview
 @Composable
 fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
-    var trainingDataAmount by remember { mutableStateOf(0) }
+    var trainingDataAmount by remember { mutableIntStateOf(0) }
     val trainingState = TrainingWorkerStatus.state.collectAsState(initial = TrainingState.None)
 
     val progress = TrainingWorkerStatus.progress.collectAsState(initial = 0.0f)

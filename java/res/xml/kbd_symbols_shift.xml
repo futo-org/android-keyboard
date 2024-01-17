@@ -19,7 +19,7 @@
 -->
 
 <Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
     latin:touchPositionCorrectionData="@array/touch_position_correction_data_default"
 >
     <include

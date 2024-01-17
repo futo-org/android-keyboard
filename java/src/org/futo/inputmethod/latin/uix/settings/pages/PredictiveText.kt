@@ -9,7 +9,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import org.futo.inputmethod.dictionarypack.DictionarySettingsActivity
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
@@ -75,6 +74,7 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
                 }
             )
 
+            /*
             NavigationItem(
                 title = stringResource(R.string.configure_dictionaries_title),
                 style = NavigationItemStyle.Misc,
@@ -86,6 +86,7 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
                     context.startActivity(intent)
                 }
             )
+            */
 
             SettingToggleSharedPrefs(
                 title = stringResource(R.string.prefs_block_potentially_offensive_title),

@@ -91,13 +91,6 @@ public abstract class SubScreenFragment extends PreferenceFragment
     }
 
     @Override
-    public void addPreferencesFromResource(final int preferencesResId) {
-        super.addPreferencesFromResource(preferencesResId);
-        TwoStatePreferenceHelper.replaceCheckBoxPreferencesBySwitchPreferences(
-                getPreferenceScreen());
-    }
-
-    @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSharedPreferenceChangeListener = new OnSharedPreferenceChangeListener() {
