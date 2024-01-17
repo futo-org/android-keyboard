@@ -230,7 +230,7 @@ public final class DictionaryService extends Service {
         final long alarmTime = now + new Random().nextInt(MAX_ALARM_DELAY_MILLIS);
         final Intent updateIntent = new Intent(DictionaryPackConstants.UPDATE_NOW_INTENT_ACTION);
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
-                updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                updateIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // We set the alarm in the type that doesn't forcefully wake the device
         // from sleep, but fires the next time the device actually wakes for any

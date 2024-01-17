@@ -187,7 +187,7 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
         val cancel = "Halt"
         // This PendingIntent can be used to cancel the worker
         val intent = WorkManager.getInstance(applicationContext)
-                .createCancelPendingIntent(getId())
+                .createCancelPendingIntent(id)
 
         // Create a Notification channel if necessary
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
