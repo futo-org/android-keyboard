@@ -15,7 +15,8 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-     package="org.futo.inputmethod.latin">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.futo.inputmethod.latin">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
@@ -35,6 +36,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
 
     <!-- A signature-protected permission to ask AOSP Keyboard to close the software keyboard.
                  To use this, add the following line into calling application's AndroidManifest.xml
@@ -200,5 +202,15 @@
              android:multiprocess="false"
              android:label="@string/dictionary_provider_name">
         </provider>
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="specialUse"
+            tools:node="merge">
+
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Neural network model training"/>
+
+        </service>
     </application>
 </manifest>
