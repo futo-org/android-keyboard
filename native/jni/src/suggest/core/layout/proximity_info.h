@@ -147,6 +147,7 @@ class ProximityInfo {
         float tapRadius = MOST_COMMON_KEY_WIDTH / 1.33f;
         float totalArea = M_PI * ((float)(tapRadius * tapRadius));
 
+        bool anySet = false;
         for(int key = 0; key < KEY_COUNT; key++) {
             const int left = mKeyXCoordinates[key];
             const int top = mKeyYCoordinates[key];
@@ -154,6 +155,33 @@ class ProximityInfo {
             const int bottom = top + mKeyHeights[key];
 
             percentages[key] = insmat::area(left, right, bottom, top, tapX, tapY, tapRadius) / totalArea;
+
+            if(percentages[key] > 0.05f) {
+                anySet = true;
+            }
+        }
+
+        if(!anySet) {
+            // Fallback - have to pick the closest key
+            AKLOGE("FALLBACK - Have to pick closest key");
+            int closestKey = -1;
+            int minDistance = 1000000;
+            for(int key = 0; key < KEY_COUNT; key++) {
+                const int keyX = mKeyXCoordinates[key];
+                const int keyY = mKeyYCoordinates[key];
+
+                const int distance = (keyX - tapX) * (keyX - tapX) + (keyY - tapY) * (keyY - tapY);
+                if(distance < minDistance) {
+                    minDistance = distance;
+                    closestKey = key;
+                }
+            }
+
+            if(closestKey != -1) {
+                percentages[closestKey] = 1.0f;
+            } else {
+                AKLOGE("Failed to find even the closest key!");
+            }
         }
 
         return percentages;
