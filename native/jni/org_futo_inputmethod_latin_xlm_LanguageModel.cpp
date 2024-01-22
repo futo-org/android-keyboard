@@ -127,6 +127,10 @@ struct LanguageModelState {
             // TODO: Since ". " is still blocked, we get "U.S" instead of the expected "U.S. "
             if(i == model->tokenToId(".")) continue;
 
+            // Specifically allow ' for words like Wasn't, which may be tokenized as
+            // [Wasn] ['] [t ]
+            if(i == model->tokenToId("'")) continue;
+
             specialTokens.SAMPLING_BAD_TOKENS.emplace_back(i);
         }
         for(int i = model->tokenToId(":"); i <= model->tokenToId("~"); i++) {
