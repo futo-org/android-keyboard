@@ -249,6 +249,7 @@ enum class NavigationItemStyle {
     HomePrimary,
     HomeSecondary,
     HomeTertiary,
+    MiscNoArrow,
     Misc
 }
 
@@ -263,6 +264,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
                     NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.primaryContainer
                     NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.secondaryContainer
                     NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.tertiaryContainer
+                    NavigationItemStyle.MiscNoArrow -> Color.Transparent
                     NavigationItemStyle.Misc -> Color.Transparent
                 }
 
@@ -270,6 +272,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
                     NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.onPrimaryContainer
                     NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.onSecondaryContainer
                     NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.onTertiaryContainer
+                    NavigationItemStyle.MiscNoArrow -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
                     NavigationItemStyle.Misc -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
                 }
 

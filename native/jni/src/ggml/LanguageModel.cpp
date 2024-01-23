@@ -4,10 +4,9 @@
 
 #include <sentencepiece/sentencepiece_processor.h>
 #include "LanguageModel.h"
+#include "ModelMeta.h"
 
-LanguageModelAdapter::~LanguageModelAdapter() {};
-
-LanguageModel::LanguageModel(LanguageModelAdapter *adapter): adapter(adapter) { }
+LanguageModel::LanguageModel(LlamaAdapter *adapter): adapter(adapter) { }
 
 
 int LlamaAdapter::getVocabSize() const {
@@ -47,11 +46,9 @@ std::string LlamaAdapter::decode(const token_sequence &tokens) const {
     return spm.DecodeIds(tokens);
 }
 
-LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
-    std::string modelPath = paths.substr(0,paths.find(':'));
-    std::string tokenizerPath = paths.substr(paths.find(':') + 1);
-
+LanguageModel *LlamaAdapter::createLanguageModel(const std::string &modelPath) {
     auto adapter = new LlamaAdapter();
+    adapter->metadata = loadModelMetadata(modelPath);
 
     llama_context_params ctx_params = llama_context_default_params();
     ctx_params.n_ctx = LLAMA_CONTEXT_SIZE;
@@ -69,9 +66,17 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
 
     adapter->context = llama_new_context_with_model(adapter->model, ctx_params);
 
-    //adapter->spm = sentencepiece::SentencePieceProcessor();
-    auto spm_load_result = adapter->spm.Load(tokenizerPath);
-    if(!spm_load_result.ok()) {
+    if(adapter->metadata.ext_tokenizer_type == ExternalTokenizerType::SentencePiece) {
+        auto spm_load_result = adapter->spm.LoadFromSerializedProto(adapter->metadata.ext_tokenizer_data);
+        if(!spm_load_result.ok()) {
+            AKLOGE("SPM load failed: %s", spm_load_result.ToString().c_str());
+            llama_free(adapter->context);
+            llama_free_model(adapter->model);
+            delete adapter;
+            return nullptr;
+        }
+    } else {
+        AKLOGE("TODO: Non SPM models");
         llama_free(adapter->context);
         llama_free_model(adapter->model);
         delete adapter;
@@ -80,47 +85,31 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &paths) {
 
     adapter->batch = llama_batch_init(LLAMA_CONTEXT_SIZE, 0, 1);
 
-    // Extract all token embeddings to adapter->embeddings, necessary for embedding interpolation
-    adapter->embeddings.resize(llama_n_embd(adapter->model) * llama_n_vocab(adapter->model));
+    if(adapter->metadata.HasFeature(FEATURE_EMBED_MIXING)) {
+        adapter->embeddings.resize(llama_n_embd(adapter->model) * llama_n_vocab(adapter->model));
 
-    auto tensor = llama_get_model_tensor(adapter->model, "token_embd.weight");
-    ASSERT(tensor);
+        auto tensor = llama_get_model_tensor(adapter->model, "token_embd.weight");
+        ASSERT(tensor);
 
-    if(tensor->type != GGML_TYPE_F32) {
-        ggml_internal_get_type_traits(tensor->type).to_float(tensor->data,
-                                                             adapter->embeddings.data(),
-                                                             adapter->embeddings.size());
-    } else {
-        ASSERT((tensor->ne[0] * tensor->ne[1]) == adapter->embeddings.size());
-        memcpy(adapter->embeddings.data(), tensor->data, adapter->embeddings.size() * sizeof(float));
+        if (tensor->type != GGML_TYPE_F32) {
+            ggml_internal_get_type_traits(tensor->type).to_float(tensor->data,
+                                                                 adapter->embeddings.data(),
+                                                                 adapter->embeddings.size());
+        } else {
+            ASSERT((tensor->ne[0] * tensor->ne[1]) == adapter->embeddings.size());
+            memcpy(adapter->embeddings.data(), tensor->data,
+                   adapter->embeddings.size() * sizeof(float));
+        }
     }
 
-    auto encoder_weight_tensor = llama_get_model_tensor(adapter->model, "encoder.weight");
-    auto encoder_bias_tensor = llama_get_model_tensor(adapter->model, "encoder.bias");
-    if(encoder_weight_tensor && encoder_bias_tensor) {
+    if(adapter->metadata.HasFeature(FEATURE_ENCODER)) {
         adapter->encoder_weight.resize(llama_n_embd(adapter->model) * 2);
         adapter->encoder_bias.resize(llama_n_embd(adapter->model));
 
-        if(encoder_weight_tensor->type != GGML_TYPE_F32) {
-            ggml_internal_get_type_traits(encoder_weight_tensor->type).to_float(
-                    encoder_weight_tensor->data,
-                    adapter->encoder_weight.data(),
-                    adapter->encoder_weight.size()
-            );
-        } else {
-            ASSERT((encoder_weight_tensor->ne[0] * encoder_weight_tensor->ne[1]) == adapter->encoder_weight.size());
-            memcpy(adapter->encoder_weight.data(), encoder_weight_tensor->data, adapter->encoder_weight.size() * sizeof(float));
-        }
-
-        if(encoder_bias_tensor->type != GGML_TYPE_F32) {
-            ggml_internal_get_type_traits(encoder_bias_tensor->type).to_float(
-                    encoder_bias_tensor->data,
-                    adapter->encoder_bias.data(),
-                    adapter->encoder_bias.size()
-            );
-        } else {
-            ASSERT(encoder_bias_tensor->ne[0] == adapter->encoder_bias.size());
-            memcpy(adapter->encoder_bias.data(), encoder_bias_tensor->data, adapter->encoder_bias.size() * sizeof(float));
+        for(int i = 0; i < llama_n_embd(adapter->model); i++) {
+            adapter->encoder_weight[i*2]     = adapter->embeddings.data()[FEATURE_ENCODER_W_X_ID * llama_n_embd(adapter->model) + i];
+            adapter->encoder_weight[i*2 + 1] = adapter->embeddings.data()[FEATURE_ENCODER_W_Y_ID * llama_n_embd(adapter->model) + i];
+            adapter->encoder_bias[i]         = adapter->embeddings.data()[FEATURE_ENCODER_B_ID   * llama_n_embd(adapter->model) + i];
         }
     }
 

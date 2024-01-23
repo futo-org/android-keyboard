@@ -6,11 +6,36 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.nio.file.Files
 
-val TOKENIZER_RESOURCE = R.raw.ml3_tokenizer
-val BASE_MODEL_RESOURCE = R.raw.ml4_1_f16
+val BASE_MODEL_RESOURCE = R.raw.ml4_v3mixing_m
+
+data class ModelInfo(
+    val name: String,
+    val description: String,
+    val author: String,
+    val license: String,
+    val features: List<String>,
+    val languages: List<String>,
+    val tokenizer_type: String,
+    val finetune_count: Int
+)
+
+class ModelInfoLoader(
+    val name: String,
+) {
+    fun loadDetails(): ModelInfo {
+        TODO()
+    }
+}
 
 object ModelPaths {
+    fun getModels(context: Context): List<ModelInfoLoader> {
+        val modelDirectory = File(context.filesDir, "transformer-models")
+        TODO()
+    }
+
+
     private fun copyResourceToCache(
         context: Context,
         resource: Int,
@@ -44,32 +69,6 @@ object ModelPaths {
     }
 
     fun clearCache(context: Context) {
-        File(context.cacheDir, "tokenizer-$TOKENIZER_RESOURCE.model").delete()
         File(context.cacheDir, "model-$BASE_MODEL_RESOURCE.gguf").delete()
-    }
-
-    fun getTokenizer(context: Context): String {
-        return copyResourceToCache(context, TOKENIZER_RESOURCE, "tokenizer-$TOKENIZER_RESOURCE.model")
-    }
-
-    fun getBaseModel(context: Context): String {
-        return copyResourceToCache(context, BASE_MODEL_RESOURCE, "model-$BASE_MODEL_RESOURCE.gguf")
-    }
-
-    private fun getFinetunedModelFile(context: Context): File = File(context.filesDir, "trained.gguf")
-
-    fun getFinetunedModelOutput(context: Context): String {
-        return getFinetunedModelFile(context).absolutePath
-    }
-
-    fun getPrimaryModel(context: Context): String {
-        // Prefer fine-tuned model
-        if(getFinetunedModelFile(context).exists()) {
-            return getFinetunedModelFile(context).absolutePath
-        }
-
-        // If it doesn't exist, use the base
-        println("Model ${getFinetunedModelFile(context)} doesn't exist, so falling back to base!")
-        return getBaseModel(context)
     }
 }

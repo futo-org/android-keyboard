@@ -11,25 +11,54 @@
 #include "context.h"
 #include "llama.h"
 #include "../defines.h"
+#include "ModelMeta.h"
 
-class LanguageModelAdapter {
+#define FEATURE_INVERTED_SPACE "inverted_space"
+#define FEATURE_AUTOCORRECT "xbu_char_autocorrect_v1"
+#define FEATURE_SWIPE_TYPING "xc0_swipe_typing_v1"
+#define FEATURE_EMBED_MIXING "char_embed_mixing_v1"
+
+#define FEATURE_ENCODER "experiment_linear_208_209_210"
+#define FEATURE_ENCODER_W_X_ID 208
+#define FEATURE_ENCODER_W_Y_ID 209
+#define FEATURE_ENCODER_B_ID 210
+
+class LanguageModel;
+
+#define LLAMA_CONTEXT_SIZE 2048
+class LlamaAdapter {
 public:
-    int numThreads = 4;
+    int getVocabSize() const;
+    const char *getToken(int id) const;
+    bool eval(int nPast, token_sequence input, std::vector<float> &outLogits);
+    std::vector<int> tokenize(const char *text);
+    int tokenToId(const char *text);
+    std::string decode(const token_sequence &tokens) const;
 
-    virtual int getVocabSize() const = 0;
-    virtual const char *getToken(int id) const = 0;
-    virtual bool eval(int nPast, token_sequence input, std::vector<float> &outLogits) = 0;
+    static LanguageModel *createLanguageModel(const std::string &paths);
+    llama_context *context;
+    llama_model *model;
+    llama_batch batch;
 
-    virtual std::vector<int> tokenize(const char *text) = 0;
-    virtual int tokenToId(const char *text) = 0;
-    virtual std::string decode(const token_sequence &tokens) const = 0;
+    std::vector<float> embeddings;
 
-    virtual ~LanguageModelAdapter() = 0;
+    std::vector<float> encoder_weight = {};
+    std::vector<float> encoder_bias = {};
+
+    ModelMetadata metadata;
+
+    inline bool hasFeature(const std::string &feature) const {
+        return metadata.HasFeature(feature);
+    }
+private:
+    LlamaAdapter();
+    sentencepiece::SentencePieceProcessor spm;
 };
+
 
 class LanguageModel {
 public:
-    LanguageModel(LanguageModelAdapter *adapter);
+    LanguageModel(LlamaAdapter *adapter);
 
     // Tokenizes the given text to tokens
     AK_FORCE_INLINE std::vector<int> tokenize(const char *text) const {
@@ -106,7 +135,7 @@ public:
         return pendingEvaluationSequence.size() > 0;
     }
 
-    LanguageModelAdapter *adapter;
+    LlamaAdapter *adapter;
     transformer_context transformerContext;
 private:
     token_sequence pendingContext;
@@ -119,34 +148,6 @@ private:
     std::vector<float> tmpOutLogits;
 
     std::unordered_set<int> punctIds;
-};
-
-
-#define LLAMA_CONTEXT_SIZE 2048
-class LlamaAdapter : public LanguageModelAdapter {
-public:
-    int getVocabSize() const;
-    const char *getToken(int id) const;
-    bool eval(int nPast, token_sequence input, std::vector<float> &outLogits);
-    virtual std::vector<int> tokenize(const char *text);
-    virtual int tokenToId(const char *text);
-    virtual std::string decode(const token_sequence &tokens) const;
-
-    static LanguageModel *createLanguageModel(const std::string &paths);
-    llama_context *context;
-    llama_model *model;
-    llama_batch batch;
-
-    std::vector<float> embeddings;
-
-    std::vector<float> encoder_weight = {};
-    std::vector<float> encoder_bias = {};
-
-private:
-    LlamaAdapter();
-
-
-    sentencepiece::SentencePieceProcessor spm;
 };
 
 #endif //LATINIME_LANGUAGEMODEL_H

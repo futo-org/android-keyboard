@@ -113,43 +113,55 @@ struct LanguageModelState {
             return false;
         }
 
-        specialTokens.SPACE = 560; //model->tokenToId("▁");
+        specialTokens.SPACE = model->tokenToId("▁"); // ▁
 
-        specialTokens.SAMPLING_BAD_TOKENS = {
-                // TODO: Don't hardcode these
-                // BOS, EOS, etc and some whitespace (linebreak, tab, carriage return)
-                0, 1, 2, 3, 126, 127, 128, 129, 130
-        };
+        if(model->adapter->hasFeature(FEATURE_AUTOCORRECT)) {
+            specialTokens.XBU = model->tokenToId("<XBU>");
+            specialTokens.XBC = model->tokenToId("<XBC>");
+            specialTokens.XEC = model->tokenToId("<XEC>");
 
-        for(int i = model->tokenToId(".▁"); i < model->tokenToId("0"); i++) {
-            // Specifically allow the standalone dot for acronyms such as "U.S."
-            // otherwise this turns into a space and we get just a nonsensical standalone "U" or similar
-            // TODO: Since ". " is still blocked, we get "U.S" instead of the expected "U.S. "
-            if(i == model->tokenToId(".")) continue;
+            specialTokens.LETTERS_TO_IDS[0] = model->tokenToId("<CHAR_A>");
 
-            // Specifically allow ' for words like Wasn't, which may be tokenized as
-            // [Wasn] ['] [t ]
-            if(i == model->tokenToId("'")) continue;
+            ASSERT(specialTokens.XBU != 0);
+            ASSERT(specialTokens.XBC != 0);
+            ASSERT(specialTokens.XEC != 0);
+            ASSERT(specialTokens.LETTERS_TO_IDS[0] != 0);
 
-            specialTokens.SAMPLING_BAD_TOKENS.emplace_back(i);
+            for(int i = 1; i < 26; i++) {
+                specialTokens.LETTERS_TO_IDS[i] = specialTokens.LETTERS_TO_IDS[0] + i;
+            }
+
+            if(model->adapter->hasFeature(FEATURE_SWIPE_TYPING)) {
+                specialTokens.XC0_SWIPE_MODE = model->tokenToId("<XC0>");
+                ASSERT(specialTokens.XC0_SWIPE_MODE != 0);
+            }
+        } else {
+            specialTokens.XBU = -1;
+            specialTokens.XBC = -1;
+            specialTokens.XEC = -1;
         }
-        for(int i = model->tokenToId(":"); i <= model->tokenToId("~"); i++) {
-            specialTokens.SAMPLING_BAD_TOKENS.emplace_back(i);
-        }
 
-        specialTokens.XBU = model->tokenToId("<XBU>");
-        specialTokens.XBC = model->tokenToId("<XBC>");
-        specialTokens.XEC = model->tokenToId("<XEC>");
-        specialTokens.XC0_SWIPE_MODE = model->tokenToId("<XC0>");
-        specialTokens.LETTERS_TO_IDS[0] = model->tokenToId("<CHAR_A>");
+        specialTokens.SAMPLING_BAD_TOKENS = { };
 
-        ASSERT(specialTokens.XBU != 0);
-        ASSERT(specialTokens.XBC != 0);
-        ASSERT(specialTokens.XEC != 0);
-        ASSERT(specialTokens.LETTERS_TO_IDS[0] != 0);
+        int permitted_period_token = model->tokenToId(".");
 
-        for(int i = 1; i < 26; i++) {
-            specialTokens.LETTERS_TO_IDS[i] = specialTokens.LETTERS_TO_IDS[0] + i;
+        const char *blacklist_symbols = "!@#$%^&*()_=?/,\\][{};:\"><'+`~|\r\n\t\x0b\x0c ";
+        for(int i = 0; i < model->getVocabSize(); i++) {
+            if(i == permitted_period_token) continue;
+
+            const char *token = model->getToken(i);
+
+            bool has_symbol = false;
+            for(char c : std::string(token)){
+                if(strchr(blacklist_symbols, c) != nullptr) {
+                    has_symbol = true;
+                    break;
+                }
+            }
+
+            if(has_symbol) {
+                specialTokens.SAMPLING_BAD_TOKENS.emplace_back(i);
+            }
         }
 
         return true;
@@ -158,16 +170,9 @@ struct LanguageModelState {
     void transform_logits(float *logits, size_t n_vocab, bool allow_space, bool allow_correction_token){
         softmax(logits, n_vocab);
 
-        logits[specialTokens.XBU] = -999.0f;
-        logits[specialTokens.XBC] = -999.0f;
-        if(!allow_correction_token)
-            logits[specialTokens.XEC] = -999.0f;
-            
-        for(int x : specialTokens.LETTERS_TO_IDS) {
-            logits[x] = -999.0f;
-        }
-
         for(int x : specialTokens.SAMPLING_BAD_TOKENS) {
+            if(allow_correction_token && x == specialTokens.XEC) continue;
+
             logits[specialTokens.SPACE] += std::max(0.0f, logits[x]);
             logits[x] = -999.0f;
         }
@@ -201,8 +206,6 @@ struct LanguageModelState {
         size_t n_vocab = llama_n_vocab(llama_get_model(ctx));
 
         auto prompt_ff = transformer_context_fastforward(model->transformerContext, prompt, !mixes.empty());
-
-        //AKLOGI("prompt_ff size = %d, n_past = %d", prompt_ff.first.size(), prompt_ff.second);
 
         batch.n_tokens = prompt_ff.first.size();
         if(batch.n_tokens > 0) {

@@ -42,6 +42,7 @@ LATIN_IME_CORE_SRC_FILES := \
     ggml/train.cpp \
     ggml/common.cpp \
     ggml/LanguageModel.cpp \
+    ggml/ModelMeta.cpp \
     third_party/protobuf-lite/arena.cc \
     third_party/protobuf-lite/arenastring.cc \
     third_party/protobuf-lite/bytestream.cc \
