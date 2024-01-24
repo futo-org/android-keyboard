@@ -65,11 +65,12 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled true
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig releaseSigning
         }
