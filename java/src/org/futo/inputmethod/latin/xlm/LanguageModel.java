@@ -194,6 +194,11 @@ public class LanguageModel {
             }
         }
 
+        // Threshold if the model is confident enough
+        if(outProbabilities[0] <= 7.0f * outProbabilities[1]) {
+            mustNotAutocorrect = true;
+        }
+
         if(!partialWord.isEmpty() && !mustNotAutocorrect) {
             kind = SuggestedWords.SuggestedWordInfo.KIND_WHITELIST | SuggestedWords.SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION;
         }
