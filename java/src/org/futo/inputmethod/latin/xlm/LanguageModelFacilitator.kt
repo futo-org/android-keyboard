@@ -78,21 +78,31 @@ public class LanguageModelFacilitator(
             }
 
             val locale = dictionaryFacilitator.locale
-            if(languageModel == null) {
-                languageModel = LanguageModel(context, "lm", locale)
+            if(languageModel == null || (languageModel?.getLocale()?.language != locale.language)) {
+                if(languageModel != null) {
+                    languageModel?.closeInternalLocked()
+                    languageModel = null
+                }
+
+                // TODO: Cache value so we're not hitting this repeatedly
+                val options = ModelPaths.getModelOptions(context)
+                val model = options[locale.language]
+                if(model != null) {
+                    languageModel = LanguageModel(context, model, locale)
+                }
             }
 
             val settingsValues = settings.current
 
-            val keyboard = keyboardSwitcher.getKeyboard()
+            val keyboard = keyboardSwitcher.keyboard
             val settingsForPrediction = SettingsValuesForSuggestion(
                 settingsValues.mBlockPotentiallyOffensive,
                 settingsValues.mTransformerPredictionEnabled
             )
-            val proximityInfoHandle = keyboard.getProximityInfo().getNativeProximityInfo()
+            val proximityInfoHandle = keyboard.proximityInfo.nativeProximityInfo
             
             val suggestionResults = SuggestionResults(
-                3, values.ngramContext.isBeginningOfSentenceContext(), false)
+                3, values.ngramContext.isBeginningOfSentenceContext, false)
 
             val lmSuggestions = languageModel!!.getSuggestions(
                 values.composedData,
@@ -249,6 +259,7 @@ public class LanguageModelFacilitator(
                 misspelledWord.trim(),
                 word,
                 importance,
+                dictionaryFacilitator.locale.language,
                 timeStampInSeconds
             )
         } else {
@@ -260,6 +271,7 @@ public class LanguageModelFacilitator(
                 null,
                 word,
                 importance,
+                dictionaryFacilitator.locale.language,
                 timeStampInSeconds
             )
         }

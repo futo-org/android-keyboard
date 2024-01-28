@@ -26,6 +26,7 @@
 #include "defines.h"
 #include "org_futo_inputmethod_latin_xlm_AdapterTrainer.h"
 #include "org_futo_voiceinput_WhisperGGML.h"
+#include "org_futo_inputmethod_latin_xlm_ModelInfoLoader.h"
 
 /*
  * Returns the JNI version on success, -1 on failure.
@@ -64,6 +65,10 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
     if (!latinime::register_AdapterTrainer(env)) {
         AKLOGE("ERROR: AdapterTrainer native registration failed");
+        return -1;
+    }
+    if (!latinime::register_ModelInfoLoader(env)) {
+        AKLOGE("ERROR: ModelInfoLoader native registration failed");
         return -1;
     }
     if (!voiceinput::register_WhisperGGML(env)) {

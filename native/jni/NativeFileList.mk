@@ -19,6 +19,7 @@ LATIN_IME_JNI_SRC_FILES := \
     org_futo_inputmethod_latin_DicTraverseSession.cpp \
     org_futo_inputmethod_latin_xlm_LanguageModel.cpp \
     org_futo_inputmethod_latin_xlm_AdapterTrainer.cpp \
+    org_futo_inputmethod_latin_xlm_ModelInfoLoader.cpp \
     org_futo_voiceinput_WhisperGGML.cpp \
     jni_common.cpp
 

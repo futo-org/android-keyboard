@@ -69,9 +69,11 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
         return Result.success()
     }
 
-    private fun getTrainingData(): String {
+    private fun getTrainingData(locales: Set<String>): String {
         val data = mutableListOf<HistoryLogForTraining>()
         loadHistoryLogBackup(applicationContext, data)
+
+        data.removeAll { !locales.contains(it.locale) }
 
         if(data.size < 100) {
             return ""
@@ -130,7 +132,9 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
     }
 
     private suspend fun train(): TrainingState {
-        val data = getTrainingData()
+        val modelToTrain: ModelInfo = TODO()
+
+        val data = getTrainingData(modelToTrain.languages.toSet())
         if(data.isEmpty()) {
             return TrainingState.ErrorInadequateData
         }
@@ -138,10 +142,10 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
         val cacheLoraPath = File(applicationContext.cacheDir, "adapter.bin")
 
         val builder = AdapterTrainerBuilder(
-            ModelPaths.getPrimaryModel(applicationContext),
-            ModelPaths.getTokenizer(applicationContext),
+            TODO(),
+            TODO(),
             cacheLoraPath.absolutePath,
-            ModelPaths.getFinetunedModelOutput(applicationContext)
+            TODO()
         )
 
         builder.setLossFlow(TrainingWorkerStatus.loss)

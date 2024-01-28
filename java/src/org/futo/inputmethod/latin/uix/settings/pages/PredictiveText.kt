@@ -37,9 +37,9 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
 
         if(transformerLmEnabled) {
             NavigationItem(
-                title = "Training",
+                title = "Models",
                 style = NavigationItemStyle.HomeTertiary,
-                navigate = { navController.navigate("trainDev") },
+                navigate = { navController.navigate("models") },
                 icon = painterResource(id = R.drawable.cpu)
             )
 

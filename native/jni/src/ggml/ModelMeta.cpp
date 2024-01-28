@@ -31,12 +31,40 @@ struct ModelMetadata loadModelMetadata(const std::string &modelPath) {
     };
 
     struct gguf_context *ctx_gguf = gguf_init_from_file(modelPath.c_str(), params);
+    // TODO: ctx_gguf may be null, and it likely will be null if the user imports a bad model
+
+    GGUF_GET_KEY(ctx_gguf, result.name, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.name");
+    GGUF_GET_KEY(ctx_gguf, result.author, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.author");
+    GGUF_GET_KEY(ctx_gguf, result.description, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.description");
+    GGUF_GET_KEY(ctx_gguf, result.license, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.license");
+    GGUF_GET_KEY(ctx_gguf, result.url, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.url");
+
+    // TODO: move general -> keyboardlm
     GGUF_GET_KEY(ctx_gguf, languages, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.languages");
     GGUF_GET_KEY(ctx_gguf, result.finetuning_count, gguf_get_val_u32, GGUF_TYPE_UINT32, false, "general.finetuning_count");
     GGUF_GET_KEY(ctx_gguf, result.history, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.history");
     GGUF_GET_KEY(ctx_gguf, features, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.features");
     GGUF_GET_KEY(ctx_gguf, ext_tokenizer_type, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.ext_tokenizer_type");
-    GGUF_GET_KEY(ctx_gguf, result.ext_tokenizer_data, gguf_get_val_str, GGUF_TYPE_STRING, false, "general.ext_tokenizer_data");
+
+    // Get tokenizer data
+    do {
+        const int kid = gguf_find_key(ctx_gguf, "general.ext_tokenizer_data");
+        if (kid >= 0) {
+            \
+        enum gguf_type ktype = gguf_get_kv_type(ctx_gguf, kid);
+            if (ktype != GGUF_TYPE_STRING) {
+                AKLOGE("key %s has wrong type: %s", "general.ext_tokenizer_data",
+                       gguf_type_name(ktype));
+            }
+
+            const char *data = gguf_get_val_str(ctx_gguf, kid);
+            size_t len = gguf_get_val_str_n(ctx_gguf, kid);
+            result.ext_tokenizer_data = std::string(data, len);
+        } else {
+            AKLOGE("key not found in model: %s", "general.ext_tokenizer_data");
+        }
+    } while(0);
+
     gguf_free(ctx_gguf);
 
 

@@ -21,9 +21,13 @@ public class LanguageModel {
     Context context = null;
     Thread initThread = null;
     Locale locale = null;
-    public LanguageModel(Context context, String dictType, Locale locale) {
+
+    ModelInfoLoader modelInfoLoader = null;
+
+    public LanguageModel(Context context, ModelInfoLoader modelInfoLoader, Locale locale) {
         this.context = context;
         this.locale = locale;
+        this.modelInfoLoader = modelInfoLoader;
     }
 
     public Locale getLocale() {
@@ -40,15 +44,10 @@ public class LanguageModel {
             @Override public void run() {
                 if(mNativeState != 0) return;
 
-                String modelPath = ModelPaths.INSTANCE.getPrimaryModel(context) + ":" + ModelPaths.INSTANCE.getTokenizer(context);
+                String modelPath = modelInfoLoader.getPath().getAbsolutePath();
                 mNativeState = openNative(modelPath);
 
-                if(mNativeState == 0){
-                    // TODO: Not sure how to handle finetuned model being corrupt. Maybe have finetunedA.gguf and finetunedB.gguf and swap between them
-                    ModelPaths.INSTANCE.clearCache(context);
-                    modelPath = ModelPaths.INSTANCE.getPrimaryModel(context) + ":" + ModelPaths.INSTANCE.getTokenizer(context);
-                    mNativeState = openNative(modelPath);
-                }
+                // TODO: Not sure how to handle finetuned model being corrupt. Maybe have finetunedA.gguf and finetunedB.gguf and swap between them
 
                 if(mNativeState == 0){
                     throw new RuntimeException("Failed to load models " + modelPath);

@@ -19,6 +19,12 @@ enum ExternalTokenizerType {
 
 struct ModelMetadata {
 public:
+    std::string name;
+    std::string description;
+    std::string author;
+    std::string url;
+    std::string license;
+
     std::set<std::string> languages;
     std::set<std::string> features;
 

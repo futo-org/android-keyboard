@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings
 
+import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
@@ -30,6 +31,7 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import org.futo.inputmethod.latin.xlm.ModelPaths
 
 private fun Context.isInputMethodEnabled(): Boolean {
     val packageName = packageName
@@ -50,6 +52,8 @@ private fun Context.isDefaultIMECurrent(): Boolean {
 
     return value.startsWith(packageName)
 }
+
+public const val IMPORT_GGUF_MODEL_REQUEST = 71067309
 
 
 class SettingsActivity : ComponentActivity() {
@@ -156,5 +160,15 @@ class SettingsActivity : ComponentActivity() {
         super.onRestart()
 
         updateSystemState()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == IMPORT_GGUF_MODEL_REQUEST && resultCode == Activity.RESULT_OK) {
+            data?.data?.also { uri ->
+                ModelPaths.importModel(this, uri)
+            }
+        }
     }
 }

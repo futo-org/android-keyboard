@@ -18559,6 +18559,12 @@ const char * gguf_get_val_str(const struct gguf_context * ctx, int key_id) {
     return ctx->kv[key_id].value.str.data;
 }
 
+size_t gguf_get_val_str_n(const struct gguf_context * ctx, int key_id) {
+    GGML_ASSERT(key_id >= 0 && key_id < gguf_get_n_kv(ctx));
+    GGML_ASSERT(ctx->kv[key_id].type == GGUF_TYPE_STRING);
+    return ctx->kv[key_id].value.str.n;
+}
+
 const void * gguf_get_val_data(const struct gguf_context * ctx, int key_id) {
     GGML_ASSERT(key_id >= 0 && key_id < gguf_get_n_kv(ctx));
     GGML_ASSERT(ctx->kv[key_id].type != GGUF_TYPE_ARRAY);

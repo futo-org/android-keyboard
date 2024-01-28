@@ -1,9 +1,9 @@
 package org.futo.inputmethod.latin.xlm
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.encodeToString
 import android.content.Context
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.File
 
 @Serializable
@@ -16,6 +16,8 @@ data class HistoryLogForTraining(
     val committedWord: String,
 
     val importance: Int, // 0 if autocorrected, 1 if manually selected, 3 if third option,
+
+    val locale: String,
 
     val timeStamp: Long
 )
