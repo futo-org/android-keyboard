@@ -176,7 +176,9 @@ public class LanguageModel {
 
         int kind = SuggestedWords.SuggestedWordInfo.KIND_PREDICTION;
 
-        boolean mustNotAutocorrect = false;
+        String resultMode = outStrings[maxResults - 1];
+
+        boolean canAutocorrect = resultMode.equals("autocorrect");
         for(int i=0; i<maxResults; i++) {
             if (outStrings[i] == null) continue;
             if(!partialWord.isEmpty() && partialWord.trim().equalsIgnoreCase(outStrings[i].trim())) {
@@ -188,20 +190,25 @@ public class LanguageModel {
                     // Otherwise, we cannot autocorrect to the top prediction unless the model is
                     // super confident about this
                     if(outProbabilities[i] * 2.5f >= outProbabilities[0]) {
-                        mustNotAutocorrect = true;
+                        canAutocorrect = false;
                     }
                 }
             }
         }
 
-        // Threshold if the model is confident enough
-        if(outProbabilities[0] <= 7.0f * outProbabilities[1]) {
-            mustNotAutocorrect = true;
-        }
-
-        if(!partialWord.isEmpty() && !mustNotAutocorrect) {
+        if(!partialWord.isEmpty() && canAutocorrect) {
             kind = SuggestedWords.SuggestedWordInfo.KIND_WHITELIST | SuggestedWords.SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION;
         }
+
+        // It's a bit ugly to communicate "clueless" with negative score, but then again
+        // it sort of makes sense
+        float probMult = 100.0f;
+        float probOffset = 0.0f;
+        if(resultMode.equals("clueless")) {
+            probMult = 10.0f;
+            probOffset = -100.0f;
+        }
+
 
         for(int i=0; i<maxResults; i++) {
             if(outStrings[i] == null) continue;
@@ -212,7 +219,7 @@ public class LanguageModel {
                 currKind |= SuggestedWords.SuggestedWordInfo.KIND_FLAG_EXACT_MATCH;
             }
 
-            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * 100.0f), currKind, null, 0, 0 ));
+            suggestions.add(new SuggestedWords.SuggestedWordInfo( word, context, (int)(outProbabilities[i] * probMult + probOffset), currKind, null, 0, 0 ));
         }
 
         /*

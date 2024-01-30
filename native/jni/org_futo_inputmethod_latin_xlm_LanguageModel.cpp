@@ -17,6 +17,11 @@
                           const int64_t time_taken_##name = (end_##name - start_##name) / 1000L; \
                           AKLOGI("%s:     Time taken by %s: %d ms\n", __func__, #name, (int)time_taken_##name);
 
+
+#define RETURNVAL_AUTOCORRECT "autocorrect"
+#define RETURNVAL_UNCERTAIN "uncertain"
+#define RETURNVAL_CLUELESS "clueless"
+
 static std::string trim(const std::string &s) {
     auto start = s.begin();
     while (start != s.end() && std::isspace(*start)) {
@@ -89,6 +94,46 @@ struct DecodeResult {
     int size;
 };
 
+enum WordCapitalizeMode {
+    IgnoredCapitals, // partialWord = "t"  or partialWord = "test"
+    FirstCapital,    // partialWord = "T"  or partialWord = "Test"
+    AllCapitals      // partialWord = "TE" or partialWord = "TEST"
+};
+
+
+bool isFirstCharLowercase(const char* str) {
+    if (str == nullptr || str[0] == '\0')
+        return false;
+    return islower(static_cast<unsigned char>(str[0])) != 0;
+}
+
+
+bool hasLowercase(const char* str) {
+    if (str == nullptr)
+        return false;
+
+    for (; *str != '\0'; ++str) {
+        if (islower(static_cast<unsigned char>(*str)))
+            return true;
+    }
+    return false;
+}
+
+bool isExactMatch(const std::string &a, const std::string &b){
+    auto preprocess = [](const std::string &str) -> std::string {
+        std::string result;
+        for(char c : str) {
+            if(c != '\'' && c != '-' && c != ' ') {
+                result += tolower(c);
+            }
+        }
+        return result;
+    };
+
+    return preprocess(a) == preprocess(b);
+}
+
+
 struct LanguageModelState {
     LanguageModel *model;
 
@@ -104,6 +149,10 @@ struct LanguageModelState {
         int XC0_SWIPE_MODE;
 
         int LETTERS_TO_IDS[26];
+
+        std::vector<int> banned_start_of_word_tokens;
+        std::vector<int> banned_tokens_for_first_capital;
+        std::vector<int> banned_tokens_for_all_capitals;
     } specialTokens;
 
     bool Initialize(const std::string &paths){
@@ -152,10 +201,25 @@ struct LanguageModelState {
             specialTokens.LETTERS_TO_IDS[i] = specialTokens.LETTERS_TO_IDS[0] + i;
         }
 
+        size_t n_vocab = llama_n_vocab(llama_get_model( ((LlamaAdapter *) model->adapter)->context ));
+        for(size_t i=0; i < n_vocab; i++) {
+            const char *text = model->adapter->getToken(i);
+            if(isFirstCharLowercase(text)) {
+                specialTokens.banned_tokens_for_first_capital.push_back(i);
+                specialTokens.banned_tokens_for_all_capitals.push_back(i);
+            }else if(hasLowercase(text)){
+                specialTokens.banned_tokens_for_all_capitals.push_back(i);
+            }
+
+            if(text[0] == '\'') {
+                specialTokens.banned_start_of_word_tokens.push_back(i);
+            }
+        }
+
         return true;
     }
 
-    void transform_logits(float *logits, size_t n_vocab, bool allow_space, bool allow_correction_token){
+    void transform_logits(float *logits, size_t n_vocab, bool is_first_token, bool allow_correction_token, WordCapitalizeMode capitals){
         softmax(logits, n_vocab);
 
         logits[specialTokens.XBU] = -999.0f;
@@ -172,8 +236,23 @@ struct LanguageModelState {
             logits[x] = -999.0f;
         }
 
-        if(!allow_space) {
+        if(is_first_token) {
             logits[specialTokens.SPACE] = -999.0f;
+
+            for(int i : specialTokens.banned_start_of_word_tokens) {
+                logits[i] = -999.0f;
+            }
+        }
+
+        if(capitals == WordCapitalizeMode::FirstCapital && is_first_token) {
+            for(int i : specialTokens.banned_tokens_for_first_capital) {
+                logits[i] = -999.0f;
+            }
+        }else if(capitals == WordCapitalizeMode::AllCapitals) {
+            // Note: In case the word is something like "AMD's" we may not wish to ban lowercase completely
+            for(int i : specialTokens.banned_tokens_for_all_capitals) {
+                logits[i] = -999.0f;
+            }
         }
     }
 
@@ -368,7 +447,7 @@ struct LanguageModelState {
         };
     }
 
-    std::vector<std::pair<float, token_sequence>> Sample(DecodeResult decodeResult, int n_results) {
+    std::vector<std::pair<float, token_sequence>> Sample(DecodeResult decodeResult, int n_results, WordCapitalizeMode capitals) {
         llama_context *ctx = ((LlamaAdapter *) model->adapter)->context;
         llama_batch batch = ((LlamaAdapter *) model->adapter)->batch;
 
@@ -379,7 +458,7 @@ struct LanguageModelState {
         bool allow_correction_token = decodeResult.logits_head == 0;
 
         float *logits = llama_get_logits_ith(ctx, decodeResult.logits_head);
-        transform_logits(logits, n_vocab, false, allow_correction_token);
+        transform_logits(logits, n_vocab, true, allow_correction_token, capitals);
 
         std::vector<std::pair<float, int>> index_value;
         index_value.clear();
@@ -405,7 +484,7 @@ struct LanguageModelState {
             llama_kv_cache_seq_cp(ctx, 0, sequence.second.seq_id, 0, decodeResult.size);
         }
 
-            std::vector<potential_sequence> next_sequences;
+        std::vector<potential_sequence> next_sequences;
 
         std::vector<std::pair<float, token_sequence>> outputs;
 
@@ -461,7 +540,7 @@ struct LanguageModelState {
             for (int seq = 0; seq < remaining_count; seq++) {
                 const potential_sequence &parent_seq = sequences[seq];
                 logits = llama_get_logits_ith(ctx, seq);
-                transform_logits(logits, n_vocab, true, allow_correction_token);
+                transform_logits(logits, n_vocab, false, allow_correction_token, capitals);
 
                 index_value.clear();
                 for (size_t i = 0; i < n_vocab; i++) {
@@ -552,7 +631,7 @@ struct LanguageModelState {
         next_context.insert(next_context.begin(), 1); // BOS
 
         auto decoding_result = DecodePromptAndMixes(next_context, { });
-        auto results = Sample(decoding_result, 3);
+        auto results = Sample(decoding_result, 3, WordCapitalizeMode::IgnoredCapitals);
 
         std::vector<std::pair<float, std::string>> str_results;
         for(const auto& result : results) {
@@ -562,7 +641,7 @@ struct LanguageModelState {
         return str_results;
     }
 
-    std::vector<std::pair<float, std::string>> PredictCorrection(const std::string &context, std::string &word, const std::vector<TokenMix> &mixes, bool swipe_mode) {
+    std::vector<std::pair<float, std::string>> PredictCorrection(const std::string &context, std::string &word, const std::vector<TokenMix> &mixes, bool swipe_mode, WordCapitalizeMode capitals) {
         token_sequence next_context;
         if(context.length() != 0) {
             next_context = model->tokenize(trim(context) + " ");
@@ -576,7 +655,7 @@ struct LanguageModelState {
         }
 
         auto decoding_result = DecodePromptAndMixes(next_context, mixes);
-        auto results = Sample(decoding_result, 3);
+        auto results = Sample(decoding_result, 3, capitals);
 
         std::vector<std::pair<float, std::string>> str_results;
         for(const auto& result : results) {
@@ -646,6 +725,16 @@ namespace latinime {
         }
 
         if(partialWordString.size() < inputSize) inputSize = partialWordString.size();
+
+        WordCapitalizeMode capitals = WordCapitalizeMode::IgnoredCapitals;
+
+        if(partialWordString.size() > 0 && !isFirstCharLowercase(partialWordString.c_str())) {
+            if(partialWordString.size() > 1 && !hasLowercase(partialWordString.c_str())) {
+                capitals = WordCapitalizeMode::AllCapitals;
+            } else {
+                capitals = WordCapitalizeMode::FirstCapital;
+            }
+        }
 
         TIME_START(GettingMixes)
         int xCoordinates[inputSize];
@@ -749,15 +838,52 @@ namespace latinime {
         } else {
             isAutoCorrect = true;
             bool swipeMode = inputMode == 1;
-            results = state->PredictCorrection(contextString, partialWordString, mixes, swipeMode);
+            results = state->PredictCorrection(contextString, partialWordString, mixes, swipeMode, capitals);
 
             //for(const auto &result : results) {
             //    AKLOGI("LanguageModel correction %.2f [%s] -> [%s]", result.first, partialWordString.c_str(), result.second.c_str());
             //}
+
+            // Exact match rule
+            bool hasExactMatch = false;
+            for(const auto &result : results) {
+                if(isExactMatch(result.second, partialWordString)) {
+                    hasExactMatch = true;
+                }
+            }
+            if(hasExactMatch){
+                for(auto &result : results) {
+                    if(!isExactMatch(result.second, partialWordString)) {
+                        result.first -= 1.0f;
+                    }
+                }
+            }
+        }
+
+        // Probability check
+        sortProbabilityPairVectorDescending(results);
+
+        const char *result_probability_mode;
+        if(results[0].first > 18.0f * results[1].first) {
+            result_probability_mode = RETURNVAL_AUTOCORRECT;
+        }else if(results[0].first > 1.3 * results[1].first) {
+            result_probability_mode = RETURNVAL_UNCERTAIN;
+        } else {
+            result_probability_mode = RETURNVAL_CLUELESS;
+            // TODO: If we end up here, we could try sampling differently / etc
+        }
+
+        // No way it's correct if it's way shorter! (unless we're swipe typing)
+        if(partialWordString.size() > 0 && (results[0].second.size() * 2 < partialWordString.size()) && inputMode != 1) {
+            result_probability_mode = RETURNVAL_CLUELESS;
         }
 
         // Output
         size_t size = env->GetArrayLength(outPredictions);
+
+        jstring result_str = env->NewStringUTF(result_probability_mode);
+        env->SetObjectArrayElement(outPredictions, size - 1, result_str);
+        env->DeleteLocalRef(result_str);
 
         jfloat *probsArray = env->GetFloatArrayElements(outProbabilities, nullptr);
 
