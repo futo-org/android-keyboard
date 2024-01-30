@@ -210,7 +210,7 @@ public class LanguageModel {
         }
 
 
-        for(int i=0; i<maxResults; i++) {
+        for(int i=0; i<maxResults - 1; i++) {
             if(outStrings[i] == null) continue;
 
             int currKind = kind;
