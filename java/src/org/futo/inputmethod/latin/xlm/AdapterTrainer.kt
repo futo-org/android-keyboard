@@ -13,7 +13,6 @@ class InadequateDataException() : Exception("Inadequate Training Data")
 
 class AdapterTrainer(
     baseModelPath: String,
-    tokenizerPath: String,
     checkpointCachePath: String,
     outputModelPath: String,
     weight: Float,
@@ -21,7 +20,7 @@ class AdapterTrainer(
     val lossFlow: MutableSharedFlow<Float>?,
     val progressFlow: MutableSharedFlow<Float>?
 ) {
-    private external fun openNative(baseModelPath: String, tokenizerPath: String, loraCachePath: String, outputModelPath: String, weight: Float): Long
+    private external fun openNative(baseModelPath: String, loraCachePath: String, outputModelPath: String, weight: Float): Long
     private external fun closeNative(handle: Long)
     private external fun addExample(handle: Long, example: String)
     private external fun train(handle: Long) // Long-running function
@@ -40,7 +39,7 @@ class AdapterTrainer(
     }
 
     init {
-        handle = openNative(baseModelPath, tokenizerPath, checkpointCachePath, outputModelPath, weight)
+        handle = openNative(baseModelPath, checkpointCachePath, outputModelPath, weight)
         if(!isHandleValid()) {
             throw IllegalArgumentException("Failed to initialize AdapterTrainer with given parameters")
         }
@@ -70,7 +69,7 @@ class AdapterTrainer(
     }
 }
 
-class AdapterTrainerBuilder(val baseModelPath: String, val tokenizerPath: String, val checkpointPath: String, val outputModelPath: String) {
+class AdapterTrainerBuilder(val baseModelPath: String, val checkpointPath: String, val outputModelPath: String) {
     private val examples = mutableListOf<String>()
     fun addExamples(newExamples: List<String>) {
         examples.addAll(newExamples)
@@ -92,6 +91,6 @@ class AdapterTrainerBuilder(val baseModelPath: String, val tokenizerPath: String
     }
 
     fun loadAndPrepare(): AdapterTrainer {
-        return AdapterTrainer(baseModelPath, tokenizerPath, checkpointPath, outputModelPath, weight, examples, lossFlow = lossFlow, progressFlow = progressFlow)
+        return AdapterTrainer(baseModelPath, checkpointPath, outputModelPath, weight, examples, lossFlow = lossFlow, progressFlow = progressFlow)
     }
 }

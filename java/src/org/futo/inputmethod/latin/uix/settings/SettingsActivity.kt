@@ -19,11 +19,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.compose.DialogNavigator
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
@@ -31,7 +35,9 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import org.futo.inputmethod.latin.uix.urlEncode
 import org.futo.inputmethod.latin.xlm.ModelPaths
+import java.io.File
 
 private fun Context.isInputMethodEnabled(): Boolean {
     val packageName = packageName
@@ -54,6 +60,7 @@ private fun Context.isDefaultIMECurrent(): Boolean {
 }
 
 public const val IMPORT_GGUF_MODEL_REQUEST = 71067309
+public const val EXPORT_GGUF_MODEL_REQUEST = 80595439
 
 
 class SettingsActivity : ComponentActivity() {
@@ -63,6 +70,12 @@ class SettingsActivity : ComponentActivity() {
     private val inputMethodSelected = mutableStateOf(false)
 
     private var wasImeEverDisabled = false
+
+
+    private var fileBeingSaved: File? = null
+    fun updateFileBeingSaved(to: File) {
+        fileBeingSaved = to
+    }
 
     companion object {
         private var pollJob: Job? = null
@@ -108,6 +121,12 @@ class SettingsActivity : ComponentActivity() {
         }
     }
 
+    val navController = NavHostController(this).apply {
+        //navigatorProvider.addNavigator(ComposeNavGraphNavigator(navigatorProvider))
+        navigatorProvider.addNavigator(ComposeNavigator())
+        navigatorProvider.addNavigator(DialogNavigator())
+    }
+
     private fun updateContent() {
         setContent {
             themeOption.value?.let { themeOption ->
@@ -120,7 +139,7 @@ class SettingsActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background
                     ) {
                         SetupOrMain(inputMethodEnabled.value, inputMethodSelected.value) {
-                            SettingsNavigator()
+                            SettingsNavigator(navController = navController)
                         }
                     }
                 }
@@ -167,7 +186,22 @@ class SettingsActivity : ComponentActivity() {
 
         if(requestCode == IMPORT_GGUF_MODEL_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.data?.also { uri ->
-                ModelPaths.importModel(this, uri)
+                try {
+                    val model = ModelPaths.importModel(this, uri)
+                    navController.navigate("model/${model.absolutePath.urlEncode()}")
+                }catch(error: IllegalArgumentException) {
+                    navController.navigateToError(getString(R.string.model_import_failed), error.message ?: getString(
+                        R.string.failed_to_import_the_selected_model
+                    ))
+                }
+            }
+        } else if(requestCode == EXPORT_GGUF_MODEL_REQUEST && resultCode == Activity.RESULT_OK && fileBeingSaved != null) {
+            data?.data?.also { uri ->
+                ModelPaths.exportModel(this, uri, fileBeingSaved!!)
+                navController.navigateToInfo(
+                    "Model Exported",
+                    "Model saved to file"
+                )
             }
         }
     }

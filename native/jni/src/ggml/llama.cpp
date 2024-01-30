@@ -9773,11 +9773,17 @@ static int save_llama_model_gguf(struct gguf_context * fctx, const char * fn_voc
     return 0;
 }
 
-int save_llama_model_file(const char * filename, const char * fn_vocab_model, struct llama_model * model) {
+int save_llama_model_file(const char * filename, const char * fn_vocab_model, struct llama_model * model, const ModelMetadata &metadata) {
     LLAMA_LOG_INFO("%s: saving to %s\n", __func__, filename);
     struct gguf_context * fctx = gguf_init_empty();
 
     int result = save_llama_model_gguf(fctx, fn_vocab_model, model);
+    if(result != 0) {
+        gguf_free(fctx);
+        return result;
+    }
+
+    result = writeModelMetadata(fctx, metadata);
     if(result != 0) {
         gguf_free(fctx);
         return result;

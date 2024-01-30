@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="crashed_text">FUTO Keyboard has crashed! Please send a report to help us fix this.</string>
+    <string name="crashed_text">FUTO Keyboard has crashed! Please send a report to help us fix this.
+        Note: If you are experiencing repeated crashes, please update the app or contact us.</string>
     <string name="crashed_title">Crash Reporter</string>
 
     <string name="crash_report_accept">Send Report</string>

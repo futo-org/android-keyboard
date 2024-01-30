@@ -10,6 +10,16 @@
 #include <cstdint>
 #include <algorithm>
 #include <set>
+#include "ggml.h"
+
+#define META_KEY_LANGUAGES_STR          "keyboardlm.languages"
+#define META_KEY_FINETUNING_COUNT_U32   "keyboardlm.finetuning_count"
+#define META_KEY_HISTORY_STR            "keyboardlm.history"
+#define META_KEY_FEATURES_STR           "keyboardlm.features"
+#define META_KEY_TOKENIZER_TYPE_STR     "keyboardlm.ext_tokenizer_type"
+#define META_KEY_TOKENIZER_DATA_ARR     "keyboardlm.ext_tokenizer_data"
+
+#define META_TOKENIZER_SENTENCEPIECE "sentencepiece"
 
 enum ExternalTokenizerType {
     None,
@@ -19,6 +29,8 @@ enum ExternalTokenizerType {
 
 struct ModelMetadata {
 public:
+    bool error;
+
     std::string name;
     std::string description;
     std::string author;
@@ -41,5 +53,6 @@ public:
 
 
 struct ModelMetadata loadModelMetadata(const std::string &modelPath);
+int writeModelMetadata(gguf_context *fctx, const ModelMetadata &metadata);
 
 #endif

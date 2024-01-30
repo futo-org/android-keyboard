@@ -79,16 +79,17 @@ public class LanguageModelFacilitator(
 
             val locale = dictionaryFacilitator.locale
             if(languageModel == null || (languageModel?.getLocale()?.language != locale.language)) {
-                if(languageModel != null) {
-                    languageModel?.closeInternalLocked()
-                    languageModel = null
-                }
+
+                languageModel?.closeInternalLocked()
+                languageModel = null
 
                 // TODO: Cache value so we're not hitting this repeatedly
                 val options = ModelPaths.getModelOptions(context)
                 val model = options[locale.language]
                 if(model != null) {
                     languageModel = LanguageModel(context, model, locale)
+                } else {
+                    println("no model for ${locale.language}")
                 }
             }
 
@@ -142,7 +143,6 @@ public class LanguageModelFacilitator(
     }
 
     public suspend fun destroyModel() {
-        println("LanguageModelFacilitator is destroying model!")
         computationSemaphore.acquire()
         languageModel?.closeInternalLocked()
         languageModel = null
@@ -160,6 +160,14 @@ public class LanguageModelFacilitator(
                         historyLog.clear()
                         saveHistoryLog()
                     }
+                }
+            }
+        }
+
+        launch {
+            withContext(Dispatchers.Default) {
+                ModelPaths.modelOptionsUpdated.collect {
+                    destroyModel()
                 }
             }
         }

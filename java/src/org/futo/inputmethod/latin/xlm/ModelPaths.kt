@@ -5,15 +5,17 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.setSetting
 import java.io.File
 import java.io.FileOutputStream
 
 
-val BASE_MODEL_RESOURCE = R.raw.ml4_v3mixing_m
-val BASE_MODEL_NAME = "ml4_v3mixing_m"
+val BASE_MODEL_RESOURCE = R.raw.ml4_v3mixing_m_klm
+val BASE_MODEL_NAME = "ml4_v3mixing_m_klm"
 
 val MODEL_OPTION_KEY = SettingsKey(
     stringSetPreferencesKey("lmModelsByLanguage"),
@@ -30,20 +32,49 @@ data class ModelInfo(
     val tokenizer_type: String,
     val finetune_count: Int,
     val path: String
-)
+) {
+    fun toLoader(): ModelInfoLoader {
+        return ModelInfoLoader(File(path), name)
+    }
+}
 
 class ModelInfoLoader(
     val path: File,
     val name: String,
 ) {
-    fun loadDetails(): ModelInfo {
+    fun loadDetails(): ModelInfo? {
         return loadNative(path.absolutePath)
     }
 
-    external fun loadNative(path: String): ModelInfo
+    external fun loadNative(path: String): ModelInfo?
 }
 
 object ModelPaths {
+    val modelOptionsUpdated = MutableSharedFlow<Unit>(replay = 0)
+
+    fun exportModel(context: Context, uri: Uri, file: File) {
+        context.contentResolver.openOutputStream(uri)!!.use { outputStream ->
+            file.inputStream().use { inputStream ->
+                var read = 0
+                val bytes = ByteArray(1024)
+                while (inputStream.read(bytes).also { read = it } != -1) {
+                    outputStream.write(bytes, 0, read)
+                }
+            }
+        }
+    }
+
+
+    private val supportedFeatures = setOf(
+        "base_v1",
+        "inverted_space",
+        "xbu_char_autocorrect_v1",
+        "lora_finetunable_v1",
+        "xc0_swipe_typing_v1",
+        "char_embed_mixing_v1",
+        "experiment_linear_208_209_210",
+    )
+
     fun importModel(context: Context, uri: Uri): File {
         val modelDirectory = getModelDirectory(context)
 
@@ -63,7 +94,11 @@ object ModelPaths {
 
         val file = File(modelDirectory, fileName)
         if(file.exists()) {
-            throw IllegalArgumentException("Model with that name already exists, refusing to replace")
+            throw IllegalArgumentException("Model with the name \"${file.name}\" already exists, refusing to replace!")
+        }
+
+        if(file.extension != "gguf") {
+            throw IllegalArgumentException("File's extension must equal 'gguf'")
         }
 
         context.contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -79,9 +114,8 @@ object ModelPaths {
                 || bytes[2] != 'U'.code.toByte()
                 || bytes[3] != 'F'.code.toByte()
             ) {
-                throw IllegalArgumentException("File does not appear to be a GGUF file")
+                throw IllegalArgumentException("File \"${file.name}\" does not appear to be a GGUF file")
             }
-
 
             file.outputStream().use { outputStream ->
                 while (read != -1) {
@@ -91,9 +125,53 @@ object ModelPaths {
             }
         }
 
-        // Should attempt to load metadata here and check if it can even load
+        // Attempt to load metadata here and check if it can even load
+        val details = ModelInfoLoader(
+            name = file.nameWithoutExtension,
+            path = file
+        ).loadDetails()
+
+        if(details == null) {
+            file.delete()
+            throw IllegalArgumentException("Failed to load metadata, file \"${file.name}\" may not be a valid GGUF file")
+        }
+
+        // Check that the model has any features at all
+        if(details.features.isEmpty()) {
+            file.delete()
+            throw IllegalArgumentException("Model is a valid GGUF file, but does not support use as a keyboard language model (it lacks KeyboardLM metadata).\n\nIf you are a model creator: models must support specific features and prompt formats; arbitrary gguf models are unsupported at this time. Refer to the model creation documentation for more details.")
+        }
+
+        // Check that we support all features from this model
+        val unsupportedFeatures = details.features.filter {
+            !(supportedFeatures.contains(it) || it.startsWith("opt_") || it.startsWith("_"))
+        }
+        if(unsupportedFeatures.isNotEmpty()) {
+            file.delete()
+            throw IllegalArgumentException("Model has the following unknown features: [${unsupportedFeatures.joinToString(separator=", ")}]\nYou probably need to update FUTO Keyboard.")
+        }
 
         return file
+    }
+
+    suspend fun signalReloadModels() {
+        modelOptionsUpdated.emit(Unit)
+    }
+
+    suspend fun updateModelOption(context: Context, key: String, value: File) {
+        if(!value.absolutePath.startsWith(context.filesDir.absolutePath)) {
+            throw IllegalArgumentException("Model path ${value.absolutePath} does not start with filesDir path ${context.filesDir.absolutePath}")
+        }
+
+        val options = context.getSetting(MODEL_OPTION_KEY).filter {
+            it.split(":", limit = 2)[0] != key
+        }.toMutableSet()
+
+        options.add("$key:${value.nameWithoutExtension}")
+
+        context.setSetting(MODEL_OPTION_KEY, options)
+
+        signalReloadModels()
     }
 
     suspend fun getModelOptions(context: Context): Map<String, ModelInfoLoader> {
@@ -107,6 +185,7 @@ object ModelPaths {
             val language = splits[0]
             val modelName = splits[1]
 
+            // TODO: This assumes the extension is .gguf
             val modelFile = File(modelDirectory, "$modelName.gguf")
             if(modelFile.exists()) {
                 modelOptionsByLanguage[language] = ModelInfoLoader(modelFile, modelName)

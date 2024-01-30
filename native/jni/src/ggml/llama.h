@@ -2,6 +2,8 @@
 #define LLAMA_H
 
 #include "ggml.h"
+#include "ModelMeta.h" // for save_llama_model_file
+
 #ifdef GGML_USE_CUBLAS
 #include "ggml-cuda.h"
 #define LLAMA_MAX_DEVICES GGML_CUDA_MAX_DEVICES
@@ -793,6 +795,6 @@ const std::vector<std::pair<std::string, struct ggml_tensor *>> & llama_internal
 
 #endif // LLAMA_API_INTERNAL
 
-LLAMA_API int save_llama_model_file(const char * filename, const char * fn_vocab_model, struct llama_model * model);
+LLAMA_API int save_llama_model_file(const char * filename, const char * fn_vocab_model, struct llama_model * model, const ModelMetadata &metadata);
 
 #endif // LLAMA_H

@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
@@ -33,10 +34,16 @@ const val NOTIFICATION_ID = 1
 
 enum class TrainingState {
     None,
-    Starting,
+    Training,
     ErrorInadequateData,
-    Finished
+    Finished,
+    FatalError,
 }
+
+data class TrainingStateWithModel(
+    val state: TrainingState,
+    val model: String?
+)
 
 enum class LanguageModelFacilitatorRequest {
     ResetModel,
@@ -44,7 +51,7 @@ enum class LanguageModelFacilitatorRequest {
 }
 
 object TrainingWorkerStatus {
-    val state = MutableSharedFlow<TrainingState>(replay = 1)
+    val state = MutableSharedFlow<TrainingStateWithModel>(replay = 1)
     val lmRequest = MutableSharedFlow<LanguageModelFacilitatorRequest>(replay = 0)
     val isTraining = mutableStateOf(false)
 
@@ -52,18 +59,20 @@ object TrainingWorkerStatus {
     val progress = MutableSharedFlow<Float>(replay = 4)
 }
 
-class TrainingWorker(context: Context, parameters: WorkerParameters) : CoroutineWorker(context, parameters) {
+class TrainingWorker(val context: Context, val parameters: WorkerParameters) : CoroutineWorker(context, parameters) {
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as
                 NotificationManager
 
     override suspend fun doWork(): Result {
         println("TrainingWorker is starting")
-        TrainingWorkerStatus.state.emit(TrainingState.Starting)
         TrainingWorkerStatus.isTraining.value = true
         setForeground(createForegroundInfo("Training..."))
 
-        TrainingWorkerStatus.state.emit(train())
+        val modelToTrain = parameters.inputData.getString("modelToTrain")
+        val trainingData = parameters.inputData.getString("trainingData")
+
+        TrainingWorkerStatus.state.emit(train(customModel = modelToTrain, customTrainingData = trainingData))
         TrainingWorkerStatus.isTraining.value = false
         println("TrainingWorker has ended")
         return Result.success()
@@ -131,21 +140,54 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
         }.map{ it.trim() }.joinToString(separator = "\n")
     }
 
-    private suspend fun train(): TrainingState {
-        val modelToTrain: ModelInfo = TODO()
+    private suspend fun train(customModel: String?, customTrainingData: String?): TrainingStateWithModel {
+        val modelToTrain = if(customModel != null) {
+            val file = File(ModelPaths.getModelDirectory(context), "$customModel.gguf")
+            ModelInfoLoader(
+                file,
+                file.nameWithoutExtension,
+            ).loadDetails() ?: return TrainingStateWithModel(TrainingState.FatalError, customModel)
+        } else {
+            val trainableModels = ModelPaths.getModelOptions(applicationContext)
 
-        val data = getTrainingData(modelToTrain.languages.toSet())
-        if(data.isEmpty()) {
-            return TrainingState.ErrorInadequateData
+            val modelInfo = trainableModels.firstNotNullOfOrNull {
+                val data = getTrainingData(setOf(it.key))
+                if(data.isEmpty()) {
+                    null
+                } else {
+                    it.value
+                }
+            } ?: return TrainingStateWithModel(TrainingState.ErrorInadequateData, null)
+
+            modelInfo.loadDetails() ?: return TrainingStateWithModel(TrainingState.FatalError, model = modelInfo.path.nameWithoutExtension)
         }
 
+        val modelFile = File(modelToTrain.path)
+
+        TrainingWorkerStatus.state.emit(
+            TrainingStateWithModel(
+                TrainingState.Training,
+                model = modelFile.nameWithoutExtension
+            )
+        )
+
+        val data = if(customModel != null && customTrainingData != null) {
+            customTrainingData // TODO: This must be preprocessed into word correction format!
+        } else {
+            getTrainingData(modelToTrain.languages.toSet())
+        }
+
+        if (data.isEmpty()) {
+            return TrainingStateWithModel(TrainingState.ErrorInadequateData, modelFile.nameWithoutExtension)
+        }
+
+        val outputModel = File(applicationContext.cacheDir, modelFile.name + ".tmp")
         val cacheLoraPath = File(applicationContext.cacheDir, "adapter.bin")
 
         val builder = AdapterTrainerBuilder(
-            TODO(),
-            TODO(),
+            modelFile.absolutePath,
             cacheLoraPath.absolutePath,
-            TODO()
+            outputModel.absolutePath
         )
 
         builder.setLossFlow(TrainingWorkerStatus.loss)
@@ -158,7 +200,7 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
         val trainer = try {
              builder.loadAndPrepare()
         } catch(e: InadequateDataException) {
-            return TrainingState.ErrorInadequateData
+            return TrainingStateWithModel(TrainingState.ErrorInadequateData, modelFile.nameWithoutExtension)
         }
 
         val powerManager = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -177,12 +219,19 @@ class TrainingWorker(context: Context, parameters: WorkerParameters) : Coroutine
         // In case there's no one to receive ClearTrainingLog, save an empty log
         saveHistoryLogBackup(applicationContext, listOf())
 
-        TrainingWorkerStatus.lmRequest.emit(LanguageModelFacilitatorRequest.ResetModel)
         TrainingWorkerStatus.lmRequest.emit(LanguageModelFacilitatorRequest.ClearTrainingLog)
 
-        applicationContext.setSetting(NUM_TRAINING_RUNS_KEY, applicationContext.getSetting(NUM_TRAINING_RUNS_KEY, 0) + 1)
+        val fallback = File(
+            modelFile.absolutePath + ".bak"
+        )
 
-        return TrainingState.Finished
+        // TODO: A better solution for backup/reverting, etc
+        //modelFile.copyTo(fallback, overwrite = true)
+        outputModel.copyTo(modelFile, overwrite = true)
+
+        ModelPaths.signalReloadModels()
+
+        return TrainingStateWithModel(TrainingState.Finished, modelFile.nameWithoutExtension)
     }
     // Creates an instance of ForegroundInfo which can be used to update the
     // ongoing notification.
@@ -248,12 +297,23 @@ public fun scheduleTrainingWorkerBackground(context: Context) {
     workManager.enqueue(request)
 }
 
-public fun scheduleTrainingWorkerImmediately(context: Context) {
+public fun scheduleTrainingWorkerImmediately(context: Context, model: ModelInfoLoader? = null, trainingData: String? = null) {
     val workManager = WorkManager.getInstance(context)
+
+    val data = Data.Builder()
+
+    if(model != null) {
+        data.putString("modelToTrain", model.path.nameWithoutExtension)
+    }
+
+    if(trainingData != null) {
+        data.putString("trainingData", trainingData)
+    }
 
     val workRequest = OneTimeWorkRequestBuilder<TrainingWorker>()
         .setInitialDelay(0, TimeUnit.SECONDS) // Run immediately
         .addTag(WORKER_TAG)
+        .setInputData(data.build())
         .build()
 
     workManager.enqueue(workRequest)

@@ -14,6 +14,11 @@ namespace latinime {
         std::string path = jstring2string(env, pathString);
         auto metadata = loadModelMetadata(path);
 
+        if(metadata.error) {
+            AKLOGE("ModelInfoLoader: loading metadata for %s failed", path.c_str());
+            return NULL;
+        }
+
         jclass modelInfoClass = env->FindClass("org/futo/inputmethod/latin/xlm/ModelInfo");
         jmethodID constructor = env->GetMethodID(modelInfoClass, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/lang/String;ILjava/lang/String;)V");
 

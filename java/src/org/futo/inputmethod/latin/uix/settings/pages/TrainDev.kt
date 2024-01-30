@@ -8,26 +8,22 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
+import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.xlm.HistoryLogForTraining
+import org.futo.inputmethod.latin.xlm.NUM_TRAINING_RUNS_KEY
 import org.futo.inputmethod.latin.xlm.TrainingState
-import org.futo.inputmethod.latin.xlm.TrainingWorker
+import org.futo.inputmethod.latin.xlm.TrainingStateWithModel
 import org.futo.inputmethod.latin.xlm.TrainingWorkerStatus
 import org.futo.inputmethod.latin.xlm.loadHistoryLogBackup
 import org.futo.inputmethod.latin.xlm.scheduleTrainingWorkerImmediately
-import org.futo.inputmethod.latin.xlm.NUM_TRAINING_RUNS_KEY
-import org.futo.inputmethod.latin.uix.getSettingFlow
-import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 
@@ -36,7 +32,7 @@ import kotlin.math.roundToInt
 @Composable
 fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
     var trainingDataAmount by remember { mutableIntStateOf(0) }
-    val trainingState = TrainingWorkerStatus.state.collectAsState(initial = TrainingState.None)
+    val trainingState = TrainingWorkerStatus.state.collectAsState(initial = TrainingStateWithModel(TrainingState.None, null))
 
     val progress = TrainingWorkerStatus.progress.collectAsState(initial = 0.0f)
     val loss = TrainingWorkerStatus.loss.collectAsState(initial = Float.MAX_VALUE)
@@ -70,7 +66,7 @@ fun TrainDevScreen(navController: NavHostController = rememberNavController()) {
             }
         }
 
-        when(trainingState.value) {
+        when(trainingState.value.state) {
             TrainingState.Finished -> Text("Last train finished successfully! Final loss: ${loss.value}")
             TrainingState.ErrorInadequateData -> Text("Last training run failed due to lack of data")
             else -> { }

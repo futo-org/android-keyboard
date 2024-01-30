@@ -3,20 +3,26 @@
 //
 
 #include <string>
+#include <iostream>
+#include <sstream>
+#include <chrono>
+#include <iomanip>
 #include "org_futo_inputmethod_latin_xlm_AdapterTrainer.h"
 #include "defines.h"
 #include "jni_common.h"
 #include "ggml/finetune.h"
 #include "sentencepiece/sentencepiece_processor.h"
 #include "jni_utils.h"
+#include "ggml/ModelMeta.h"
 
 namespace latinime {
     struct AdapterTrainerState {
         std::string baseModelPath;
-        std::string tokenizerPath;
         std::string loraCachePath;
         std::string outputModelPath;
         float outputScale;
+
+        ModelMetadata metadata;
 
         sentencepiece::SentencePieceProcessor spm;
         struct train_params params;
@@ -44,6 +50,13 @@ namespace latinime {
         }
 
         bool Initialize() {
+            metadata = loadModelMetadata(baseModelPath.c_str());
+
+            // TODO: Gracefully handle errors
+            ASSERT(!metadata.error);
+            ASSERT(metadata.ext_tokenizer_type == ExternalTokenizerType::SentencePiece);
+
+
             params = get_default_train_params();
             params.common.fn_train_data = "";
             params.common.fn_checkpoint_in = "";
@@ -71,10 +84,8 @@ namespace latinime {
             params.common.callbacks.loss     = AdapterTrainerState::OnLossCallback;
             params.common.callbacks.progress = AdapterTrainerState::OnProgressCallback;
 
-            // TODO: Check model path valid / try to pre-load resources?
-
-            if(!spm.Load(tokenizerPath).ok()){
-                AKLOGE("Failed to load tokenizer at path %s!", tokenizerPath.c_str());
+            if(!spm.LoadFromSerializedProto(metadata.ext_tokenizer_data).ok()){
+                AKLOGE("Failed to load tokenizer!");
                 return false;
             }
 
@@ -89,12 +100,46 @@ namespace latinime {
         int Train() const {
             return finetune_train(params);
         }
+
+        void UpdateHistoryAndCount(std::chrono::system_clock::time_point start, std::chrono::system_clock::time_point end) {
+            std::chrono::duration<double> elapsed_seconds = end - start;
+
+            int num_examples = params.training_data.size();
+            int num_tokens = 0;
+            for(const auto & example: params.training_data) {
+                num_tokens += example.size();
+            }
+
+            time_t rawtime;
+            struct tm * timeinfo;
+            char date_time[32];
+
+            // Convert time_point to time_t
+            rawtime = std::chrono::system_clock::to_time_t(start);
+            // Convert time_t to tm struct
+            timeinfo = localtime(&rawtime);
+
+            // Format the date and time in ISO format
+            strftime(date_time, sizeof(date_time), "%Y-%m-%d %H:%M:%SZ", timeinfo);
+
+            // Create a stringstream object
+            std::stringstream ss;
+
+            // Format the string using the stringstream object
+            ss << "\n" << date_time << ": Fine-tuned on " << num_examples << " examples (" << num_tokens << " tokens), took "
+               << std::fixed << std::setprecision(2) << elapsed_seconds.count() / 60.0 << " minutes";
+
+            // Convert the stringstream object to a std::string
+            std::string result = ss.str();
+
+            metadata.finetuning_count += 1;
+            metadata.history.append(result);
+        }
     };
 
-    static jlong xlm_AdapterTrainer_open(JNIEnv *env, jclass clazz, jstring baseModelPathStr, jstring tokenizerPathStr, jstring loraCacheStr, jstring outputModelPathStr, float outputScale) {
+    static jlong xlm_AdapterTrainer_open(JNIEnv *env, jclass clazz, jstring baseModelPathStr, jstring loraCacheStr, jstring outputModelPathStr, float outputScale) {
         auto *state = new AdapterTrainerState();
         state->baseModelPath   = jstring2string(env, baseModelPathStr);
-        state->tokenizerPath   = jstring2string(env, tokenizerPathStr);
         state->loraCachePath   = jstring2string(env, loraCacheStr);
         state->outputModelPath = jstring2string(env, outputModelPathStr);
         state->outputScale = outputScale;
@@ -122,6 +167,7 @@ namespace latinime {
 
     // TODO: Callback for progress
     static void xlm_AdapterTrainer_train(JNIEnv *env, jobject instance, jlong statePtr) {
+
         jclass clazz = env->GetObjectClass(instance);
         ASSERT(clazz);
 
@@ -136,11 +182,19 @@ namespace latinime {
         state->progressMethodId = progressMethodId;
         state->callbackObject = instance;
 
+        std::chrono::system_clock::time_point start, end;
+        start = std::chrono::system_clock::now();
+
         int result = state->Train();
         if(result != 0) {
             AKLOGE("train returned with non-zero code %d", result);
             return;
         }
+
+        end = std::chrono::system_clock::now();
+
+        // Increment count and add history
+        state->UpdateHistoryAndCount(start, end);
 
         // Apply LoRA
         llama_model_params model_params = llama_model_default_params();
@@ -168,7 +222,8 @@ namespace latinime {
         int status = save_llama_model_file(
             state->outputModelPath.c_str(),
             state->baseModelPath.c_str(),
-            model
+            model,
+            state->metadata
         );
         if(status != 0) {
             AKLOGE("Failed to save model! %d", status);
@@ -179,7 +234,7 @@ namespace latinime {
     static const JNINativeMethod sMethods[] = {
             {
                     const_cast<char *>("openNative"),
-                    const_cast<char *>("(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;F)J"),
+                    const_cast<char *>("(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;F)J"),
                     reinterpret_cast<void *>(xlm_AdapterTrainer_open)
             },
             {
