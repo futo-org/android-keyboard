@@ -440,9 +440,13 @@ public final class Suggest {
         for (int i = quotesToAppend - 1; i >= 0; --i) {
             sb.appendCodePoint(Constants.CODE_SINGLE_QUOTE);
         }
-        return new SuggestedWordInfo(sb.toString(), wordInfo.mPrevWordsContext,
+        SuggestedWordInfo result = new SuggestedWordInfo(sb.toString(), wordInfo.mPrevWordsContext,
                 wordInfo.mScore, wordInfo.mKindAndFlags,
                 wordInfo.mSourceDict, wordInfo.mIndexOfTouchPointOfSecondWord,
                 wordInfo.mAutoCommitFirstWordConfidence);
+
+        result.mOriginatesFromTransformerLM = wordInfo.mOriginatesFromTransformerLM;
+
+        return result;
     }
 }
