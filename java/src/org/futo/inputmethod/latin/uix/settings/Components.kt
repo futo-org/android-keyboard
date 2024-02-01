@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -219,6 +220,27 @@ fun SettingToggleSharedPrefs(
 ) {
     SettingToggleDataStoreItem(
         title, useSharedPrefsBool(key, default), subtitle, disabledSubtitle, disabled, icon)
+}
+
+@Composable
+fun<T> SettingRadio(
+    title: String,
+    options: List<T>,
+    optionNames: List<String>,
+    setting: SettingsKey<T>,
+) {
+    val (value, setValue) = useDataStore(key = setting.key, default = setting.default)
+
+    ScreenTitle(title, showBack = false)
+    Column {
+        options.zip(optionNames).forEach {
+            SettingItem(title = it.second, onClick = { setValue(it.first) }, icon = {
+                RadioButton(selected = value == it.first, onClick = null)
+            }) {
+                
+            }
+        }
+    }
 }
 
 @Composable

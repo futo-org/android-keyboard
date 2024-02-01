@@ -703,6 +703,7 @@ namespace latinime {
          jint inputMode,
          jintArray inComposeX,
          jintArray inComposeY,
+         jfloat autocorrectThreshold,
 
          // outputs
          jobjectArray outPredictions,
@@ -864,9 +865,9 @@ namespace latinime {
         sortProbabilityPairVectorDescending(results);
 
         const char *result_probability_mode;
-        if(results[0].first > 18.0f * results[1].first) {
+        if(results[0].first > autocorrectThreshold * results[1].first) {
             result_probability_mode = RETURNVAL_AUTOCORRECT;
-        }else if(results[0].first > 1.3 * results[1].first) {
+        }else if(results[0].first > (autocorrectThreshold * 0.1f) * results[1].first) {
             result_probability_mode = RETURNVAL_UNCERTAIN;
         } else {
             result_probability_mode = RETURNVAL_CLUELESS;
@@ -911,7 +912,7 @@ namespace latinime {
             },
             {
                     const_cast<char *>("getSuggestionsNative"),
-                    const_cast<char *>("(JJLjava/lang/String;Ljava/lang/String;I[I[I[Ljava/lang/String;[F)V"),
+                    const_cast<char *>("(JJLjava/lang/String;Ljava/lang/String;I[I[IF[Ljava/lang/String;[F)V"),
                     reinterpret_cast<void *>(xlm_LanguageModel_getSuggestions)
             }
     };

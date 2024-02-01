@@ -66,7 +66,7 @@ public class LanguageModel {
             SettingsValuesForSuggestion settingsValuesForSuggestion,
             long proximityInfoHandle,
             int sessionId,
-            float weightForLocale,
+            float autocorrectThreshold,
             float[] inOutWeightOfLangModelVsSpatialModel
     ) {
         Log.d("LanguageModel", "getSuggestions called");
@@ -170,7 +170,7 @@ public class LanguageModel {
         String[] outStrings = new String[maxResults];
 
         // TOOD: Pass multiple previous words information for n-gram.
-        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, inputMode, xCoords, yCoords, outStrings, outProbabilities);
+        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, inputMode, xCoords, yCoords, autocorrectThreshold, outStrings, outProbabilities);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
@@ -277,6 +277,7 @@ public class LanguageModel {
             int inputMode,
             int[] inComposeX,
             int[] inComposeY,
+            float thresholdSetting,
 
             // outputs
             String[] outStrings,
