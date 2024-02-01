@@ -448,6 +448,10 @@ public final class StringUtils {
         int codePoint = 0;
         while (i > 0) {
             codePoint = Character.codePointBefore(text, i);
+            if (Constants.CODE_COMMERCIAL_AT == codePoint) {
+                // If it's an email address, it's essentially a URL, we don't want to correct those
+                return true;
+            }
             if (codePoint < Constants.CODE_PERIOD || codePoint > 'z') {
                 // Handwavy heuristic to see if that's a URL character. Anything between period
                 // and z. This includes all lower- and upper-case ascii letters, period,

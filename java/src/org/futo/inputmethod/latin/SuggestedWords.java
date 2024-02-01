@@ -60,7 +60,7 @@ public class SuggestedWords {
     // Note: this INCLUDES cases where the word will auto-correct to itself. A good definition
     // of what this flag means would be "the top suggestion is strong enough to auto-correct",
     // whether this exactly matches the user entry or not.
-    public final boolean mWillAutoCorrect;
+    public boolean mWillAutoCorrect;
     public final boolean mIsObsoleteSuggestions;
     // How the input for these suggested words was done by the user. Must be one of the
     // INPUT_STYLE_* constants above.

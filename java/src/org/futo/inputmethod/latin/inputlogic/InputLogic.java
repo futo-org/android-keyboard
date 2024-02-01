@@ -585,6 +585,8 @@ public final class InputLogic {
     // Especially, how do we deal with InputMethodService.onDisplayCompletions?
     public void setSuggestedWords(final SuggestedWords suggestedWords) {
         if (!suggestedWords.isEmpty()) {
+            suggestedWords.mWillAutoCorrect = suggestedWords.mWillAutoCorrect
+                    && !mConnection.textBeforeCursorLooksLikeURL();
             final SuggestedWordInfo suggestedWordInfo;
             if (suggestedWords.mWillAutoCorrect) {
                 suggestedWordInfo = suggestedWords.getInfo(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
