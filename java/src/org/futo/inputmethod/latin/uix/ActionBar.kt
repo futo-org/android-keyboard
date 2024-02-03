@@ -263,6 +263,18 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
 
     }
 
+    // Check for "clueless" suggestions, and display typed word in center if so
+    try {
+        if(offset == 1) {
+            val info = words.getInfo(1)
+            if(info.mOriginatesFromTransformerLM && info.mScore < -50) {
+                offset = 0;
+            }
+        }
+    } catch(_: IndexOutOfBoundsException) {
+
+    }
+
 
     for (i in 0 until maxSuggestions) {
         val remapped = if(offset == 1 && i == 2) {

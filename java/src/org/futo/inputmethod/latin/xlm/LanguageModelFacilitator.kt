@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.xlm;
 
 import android.content.Context
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,15 @@ import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
+import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.utils.SuggestionResults
+
+
+val AutocorrectThresholdSetting = SettingsKey(
+    floatPreferencesKey("lm_autocorrect_threshold"),
+    18.0f
+)
 
 public class LanguageModelFacilitator(
     val context: Context,
@@ -70,6 +79,9 @@ public class LanguageModelFacilitator(
 
     private suspend fun processUpdateSuggestionStrip(values: PredictionInputValues) {
         computationSemaphore.acquire()
+
+        val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
+
         try {
             val job = Job()
             CoroutineScope(Dispatchers.Default + job).launch {
@@ -112,7 +124,7 @@ public class LanguageModelFacilitator(
                 settingsForPrediction,
                 proximityInfoHandle,
                 -1,
-                0.0f,
+                autocorrectThreshold,
                 floatArrayOf())
             
             if(lmSuggestions == null) {

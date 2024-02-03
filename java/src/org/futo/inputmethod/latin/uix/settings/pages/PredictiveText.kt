@@ -15,9 +15,11 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
+import org.futo.inputmethod.latin.xlm.AutocorrectThresholdSetting
 
 @Preview
 @Composable
@@ -109,6 +111,31 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
                 subtitle = stringResource(R.string.bigram_prediction_summary),
                 key = Settings.PREF_BIGRAM_PREDICTIONS,
                 default = booleanResource(R.bool.config_default_next_word_prediction)
+            )
+        }
+
+        if(transformerLmEnabled) {
+            Tip("Adjust the autocorrect threshold below. A lower threshold will autocorrect more often (and miscorrect more often), while a higher threshold will autocorrect less often (and miscorrect less often)" )
+            val options = mapOf(
+                0.0f to "none (94.6% : 5.4%)",
+                1.0f to "very low (93.4% : 4.3%)",
+                2.0f to "very low (91.2% : 2.4%)",
+                4.0f to "low (87.3% : 1.4%)",
+                6.0f to "low (no data)",
+                8.0f to "medium (82.3% : 0.9%)",
+                10.0f to "medium (80.1% : 0.8%)",
+                14.0f to "medium (no data)",
+                18.0f to "high (74.8% : 0.5%)",
+                25.0f to "high (71.6% : 0.4%)",
+                50.0f to "very high (63.5% : 0.3%)",
+                100.0f to "very high (54.7% : 0.2%)"
+            )
+            val names = options.map { "T = ${it.key}" }
+            SettingRadio(
+                title = "Autocorrect Threshold",
+                options = options.keys.toList(),
+                optionNames = names,
+                setting = AutocorrectThresholdSetting
             )
         }
     }

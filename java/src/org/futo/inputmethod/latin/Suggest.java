@@ -222,7 +222,9 @@ public final class Suggest {
                 // If the first suggestion is a shortcut we never auto-correct to it, regardless
                 // of how strong it is (allowlist entries are not KIND_SHORTCUT but KIND_WHITELIST).
                 // TODO: we may want to have shortcut-only entries auto-correct in the future.
-                || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
+                || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)
+                // Don't do it if it looks like a URL (or email address)
+                || StringUtils.lastPartLooksLikeURL(typedWordString)) {
             hasAutoCorrection = false;
         } else {
             final SuggestedWordInfo firstSuggestion = suggestionResults.first();
@@ -440,9 +442,13 @@ public final class Suggest {
         for (int i = quotesToAppend - 1; i >= 0; --i) {
             sb.appendCodePoint(Constants.CODE_SINGLE_QUOTE);
         }
-        return new SuggestedWordInfo(sb.toString(), wordInfo.mPrevWordsContext,
+        SuggestedWordInfo result = new SuggestedWordInfo(sb.toString(), wordInfo.mPrevWordsContext,
                 wordInfo.mScore, wordInfo.mKindAndFlags,
                 wordInfo.mSourceDict, wordInfo.mIndexOfTouchPointOfSecondWord,
                 wordInfo.mAutoCommitFirstWordConfidence);
+
+        result.mOriginatesFromTransformerLM = wordInfo.mOriginatesFromTransformerLM;
+
+        return result;
     }
 }
