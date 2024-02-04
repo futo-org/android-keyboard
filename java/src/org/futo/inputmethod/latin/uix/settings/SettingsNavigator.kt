@@ -10,19 +10,14 @@ import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
-import org.futo.inputmethod.latin.uix.settings.pages.FinetuneModelScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
-import org.futo.inputmethod.latin.uix.settings.pages.ModelDeleteConfirmScreen
-import org.futo.inputmethod.latin.uix.settings.pages.ModelManagerScreen
-import org.futo.inputmethod.latin.uix.settings.pages.ModelScreenNav
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
-import org.futo.inputmethod.latin.uix.settings.pages.PrivateModelExportConfirmation
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingScreen
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputScreen
+import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
 import org.futo.inputmethod.latin.uix.urlDecode
 import org.futo.inputmethod.latin.uix.urlEncode
-import java.io.File
 
 // Utility function for quick error messages
 fun NavHostController.navigateToError(title: String, body: String) {
@@ -46,33 +41,6 @@ fun SettingsNavigator(
         composable("typing") { TypingScreen(navController) }
         composable("voiceInput") { VoiceInputScreen(navController) }
         composable("themes") { ThemeScreen(navController) }
-        composable("models") { ModelManagerScreen(navController) }
-        composable("finetune/{modelPath}") {
-            val path = it.arguments!!.getString("modelPath")!!.urlDecode()
-            FinetuneModelScreen(
-                File(path), navController
-            )
-
-        }
-        composable("finetune") {
-            FinetuneModelScreen(file = null, navController = navController)
-        }
-        composable("model/{modelPath}") {
-            val path = it.arguments!!.getString("modelPath")!!.urlDecode()
-            ModelScreenNav(
-                File(path), navController
-            )
-        }
-        dialog("modelExport/{modelPath}") {
-            PrivateModelExportConfirmation(
-                File(it.arguments!!.getString("modelPath")!!.urlDecode()),
-                navController
-            )
-        }
-        dialog("modelDelete/{modelPath}") {
-            val path = it.arguments!!.getString("modelPath")!!.urlDecode()
-            ModelDeleteConfirmScreen(File(path), navController)
-        }
         dialog("error/{title}/{body}") {
             ErrorDialog(
                 it.arguments?.getString("title")?.urlDecode() ?: stringResource(R.string.unknown_error),
@@ -87,5 +55,6 @@ fun SettingsNavigator(
                 navController
             )
         }
+        addModelManagerNavigation(navController)
     }
 }
