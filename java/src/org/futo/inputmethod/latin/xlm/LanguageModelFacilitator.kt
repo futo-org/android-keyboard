@@ -21,18 +21,26 @@ import org.futo.inputmethod.latin.DictionaryFacilitator
 import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.Suggest
 import org.futo.inputmethod.latin.SuggestedWords
+import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.ComposedData
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.utils.SuggestionResults
 
 
 val AutocorrectThresholdSetting = SettingsKey(
     floatPreferencesKey("lm_autocorrect_threshold"),
-    18.0f
+    4.0f
+)
+
+val BinaryDictTransformerWeightSetting = SettingsKey(
+    floatPreferencesKey("binary_dict_result_weight"),
+    1.0f
 )
 
 public class LanguageModelFacilitator(
@@ -81,6 +89,19 @@ public class LanguageModelFacilitator(
         computationSemaphore.acquire()
 
         val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
+        var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
+
+
+        val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
+        inputLogic.getSuggestedWords(
+            settings.current,
+            keyboardSwitcher.keyboard,
+            keyboardSwitcher.keyboardShiftMode,
+            values.inputStyle,
+            SuggestedWords.NOT_A_SEQUENCE_NUMBER
+        ) { suggestedWords ->
+            holder.set(suggestedWords)
+        }
 
         try {
             val job = Job()
@@ -102,6 +123,7 @@ public class LanguageModelFacilitator(
                     languageModel = LanguageModel(context, model, locale)
                 } else {
                     println("no model for ${locale.language}")
+                    return
                 }
             }
 
@@ -133,9 +155,76 @@ public class LanguageModelFacilitator(
                 return
             }
 
-            suggestionResults.addAll(lmSuggestions)
+            val maxWord = lmSuggestions.maxByOrNull { it.mScore }
+
+            val suggestedWordsDict = holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())
+
+            println("LanguageModelFacilitator: suggestedWordsDict = ${suggestedWordsDict?.mSuggestedWordInfoList?.map { "$it ${it.mScore}" }}")
+            println("LanguageModelFacilitator: lmSuggestions = ${lmSuggestions.map { "$it ${it.mScore}" }}")
+
+            val maxWordDict = suggestedWordsDict?.mSuggestedWordInfoList?.maxByOrNull {
+                if(it == suggestedWordsDict.typedWordInfo) { Int.MIN_VALUE } else { it.mScore }
+            }
+
+            val bothAlgorithmsCameToSameConclusion = maxWordDict?.mWord == maxWord?.mWord
+
+            val filtered = mutableListOf<SuggestedWordInfo>()
+            if(bothAlgorithmsCameToSameConclusion && maxWord != null && maxWordDict != null){
+                // We can be pretty confident about autocorrecting this
+                val clone = SuggestedWordInfo(
+                    maxWord.mWord,
+                    maxWord.mPrevWordsContext,
+                    (maxWord.mScore.coerceAtLeast(0).toLong() + maxWordDict.mScore.coerceAtLeast(0).toLong())
+                        .coerceAtMost(
+                            Int.MAX_VALUE.toLong()
+                        ).toInt(),
+                    SuggestedWordInfo.KIND_WHITELIST or SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION,
+                    null,
+                    0,
+                    0
+                )
+                clone.mOriginatesFromTransformerLM = true
+
+                suggestionResults.add(clone)
+                filtered.add(maxWordDict)
+                filtered.add(maxWord)
+            }
+
+            if(transformerWeight <= 0.0f) {
+                if(suggestedWordsDict?.mSuggestedWordInfoList.isNullOrEmpty()) {
+                    transformerWeight = 1.0f
+                }
+            }
+
+            val reweightedSuggestions = lmSuggestions.filter { !filtered.contains(it) }.mapNotNull {
+                if(transformerWeight == Float.NEGATIVE_INFINITY) { null } else {
+                    SuggestedWordInfo(
+                        it.mWord,
+                        it.mPrevWordsContext,
+                        (it.mScore.toFloat() * transformerWeight).coerceAtMost(Int.MAX_VALUE.toFloat())
+                            .toInt(),
+                        it.mKindAndFlags,
+                        it.mSourceDict,
+                        it.mIndexOfTouchPointOfSecondWord,
+                        it.mAutoCommitFirstWordConfidence
+                    ).apply {
+                        this.mOriginatesFromTransformerLM = true
+                    }
+                }
+            }
+            suggestionResults.addAll(reweightedSuggestions)
             if(suggestionResults.mRawSuggestions != null) {
-                suggestionResults.mRawSuggestions.addAll(lmSuggestions)
+                suggestionResults.mRawSuggestions.addAll(reweightedSuggestions)
+            }
+
+            if(transformerWeight != Float.POSITIVE_INFINITY) {
+                suggestedWordsDict?.let { words ->
+                    suggestionResults.addAll(words.mSuggestedWordInfoList.filter {
+                        it != words.typedWordInfo && !filtered.contains(
+                            it
+                        )
+                    })
+                }
             }
 
             val wordComposer = inputLogic.mWordComposer

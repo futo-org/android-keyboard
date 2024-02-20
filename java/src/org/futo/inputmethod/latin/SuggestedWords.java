@@ -67,7 +67,7 @@ public class SuggestedWords {
     public final int mInputStyle;
     public final int mSequenceNumber; // Sequence number for auto-commit.
     @Nonnull
-    protected final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
+    public final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
     @Nullable
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
 

@@ -201,11 +201,11 @@ public class LanguageModel {
 
         // It's a bit ugly to communicate "clueless" with negative score, but then again
         // it sort of makes sense
-        float probMult = 100.0f;
-        float probOffset = 0.0f;
+        float probMult = 500000.0f;
+        float probOffset = 100000.0f;
         if(resultMode.equals("clueless")) {
             probMult = 10.0f;
-            probOffset = -100.0f;
+            probOffset = -100000.0f;
         }
 
 
