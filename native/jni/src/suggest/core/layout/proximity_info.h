@@ -144,7 +144,7 @@ class ProximityInfo {
     AK_FORCE_INLINE std::vector<float> decomposeTapPosition(const int tapX, const int tapY) const {
         std::vector<float> percentages(KEY_COUNT, 0.0f);
 
-        float tapRadius = MOST_COMMON_KEY_WIDTH / 1.33f;
+        float tapRadius = MOST_COMMON_KEY_WIDTH * 0.292f;
         float totalArea = M_PI * ((float)(tapRadius * tapRadius));
 
         bool anySet = false;
