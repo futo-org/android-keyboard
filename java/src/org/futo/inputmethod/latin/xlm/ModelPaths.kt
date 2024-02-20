@@ -4,8 +4,10 @@ import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
+import androidx.annotation.Keep
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.coroutines.flow.MutableSharedFlow
+import org.futo.inputmethod.annotations.ExternallyReferenced
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
@@ -22,6 +24,8 @@ val MODEL_OPTION_KEY = SettingsKey(
     setOf("en:$BASE_MODEL_NAME")
 )
 
+@Keep
+@ExternallyReferenced
 data class ModelInfo(
     val name: String,
     val description: String,
