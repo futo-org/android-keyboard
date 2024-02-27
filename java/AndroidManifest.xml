@@ -105,6 +105,7 @@
              android:roundIcon="@mipmap/ic_launcher_round"
              android:launchMode="singleTask"
              android:noHistory="false"
+             android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
              android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
