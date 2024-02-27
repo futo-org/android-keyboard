@@ -38,6 +38,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
@@ -213,6 +214,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         languageModelFacilitator.loadHistoryLog()
 
         scheduleUpdateCheckingJob(this)
+        lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
     }
 
     override fun onDestroy() {

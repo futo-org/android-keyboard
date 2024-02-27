@@ -30,7 +30,6 @@ suspend fun checkForUpdate(): UpdateResult? {
             val response = httpClient.newCall(request).execute()
 
             val body = response.body
-
             val result = if (body != null) {
                 val data = body.string().lines()
                 body.closeQuietly()
@@ -39,15 +38,18 @@ suspend fun checkForUpdate(): UpdateResult? {
                 val latestVersionUrl = data[1]
                 val latestVersionString = data[2]
                 if(latestVersionUrl.startsWith("https://voiceinput.futo.org/") || latestVersionUrl.startsWith("https://keyboard.futo.org/")){
+                    Log.d("UpdateChecking", "Retrieved update for version ${latestVersionString}")
                     UpdateResult(
                         nextVersion = latestVersion,
                         apkUrl = latestVersionUrl,
                         nextVersionString = latestVersionString
                     )
                 } else {
+                    Log.e("UpdateChecking", "Update URL contains unknown prefix: ${latestVersionUrl}")
                     null
                 }
             } else {
+                Log.e("UpdateChecking", "Body of result is null")
                 null
             }
 
@@ -55,6 +57,8 @@ suspend fun checkForUpdate(): UpdateResult? {
 
             result
         } catch (e: Exception) {
+            Log.e("UpdateChecking", "Checking update failed with exception")
+            e.printStackTrace()
             null
         }
     }

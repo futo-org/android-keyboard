@@ -31,7 +31,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
         Spacer(modifier = Modifier.height(24.dp))
         ScreenTitle("FUTO Keyboard Settings")
 
-        ConditionalUpdate()
+        ConditionalUpdate(navController)
 
         NavigationItem(
             title = "Languages",

@@ -167,6 +167,17 @@ class SettingsActivity : ComponentActivity() {
 
             this.themeOption.value = themeOption
         }
+
+        val intent = intent
+        if(intent != null) {
+            val destination = intent.getStringExtra("navDest")
+            if(destination != null) {
+                lifecycleScope.launch {
+                    delay(1000L)
+                    navController.navigate(destination)
+                }
+            }
+        }
     }
 
     override fun onResume() {

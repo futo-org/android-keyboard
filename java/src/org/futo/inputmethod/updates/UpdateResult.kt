@@ -1,5 +1,6 @@
 package org.futo.inputmethod.updates
 
+import android.util.Log
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -32,8 +33,12 @@ data class UpdateResult(
             try {
                 return Json.decodeFromString<UpdateResult>(value)
             } catch(e: SerializationException) {
+                Log.e("UpdateResult", "Failed to deserialize UpdateResult value $value")
+                e.printStackTrace()
                 return null
             } catch(e: IllegalArgumentException) {
+                Log.e("UpdateResult", "Failed to deserialize UpdateResult value $value")
+                e.printStackTrace()
                 return null
             }
         }

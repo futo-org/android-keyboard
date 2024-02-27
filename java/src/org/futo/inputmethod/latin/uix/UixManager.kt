@@ -1,6 +1,8 @@
 package org.futo.inputmethod.latin.uix
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.view.View
 import android.view.inputmethod.InlineSuggestionsResponse
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
@@ -27,8 +30,12 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
+import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
+import org.futo.inputmethod.updates.checkForUpdateAndSaveToPreferences
+import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
@@ -141,6 +148,7 @@ class UixManager(private val latinIME: LatinIME) {
     private val keyboardManagerForAction = UixActionKeyboardManager(this, latinIME)
 
     private var mainKeyboardHidden = false
+    private var currentNotice: MutableState<ImportantNotice?> = mutableStateOf(null)
 
     var currWindowActionWindow: ActionWindow? = null
 
@@ -172,7 +180,8 @@ class UixManager(private val latinIME: LatinIME) {
                 suggestedWordsOrNull,
                 latinIME.latinIMELegacy as SuggestionStripView.Listener,
                 inlineSuggestions = inlineSuggestions,
-                onActionActivated = { onActionActivated(it) }
+                onActionActivated = { onActionActivated(it) },
+                importantNotice = currentNotice.value
             )
         }
     }
@@ -281,6 +290,35 @@ class UixManager(private val latinIME: LatinIME) {
                             latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                         }
                     }
+                }
+            }
+        }
+    }
+
+    suspend fun showUpdateNoticeIfNeeded() {
+        val updateInfo = retrieveSavedLastUpdateCheckResult(latinIME)
+        if(updateInfo != null && updateInfo.isNewer()) {
+            currentNotice.value = object : ImportantNotice {
+                @Composable
+                override fun getText(): String {
+                    return "Update available: ${updateInfo.nextVersionString}"
+                }
+
+                override fun onDismiss(context: Context) {
+                    currentNotice.value = null
+                }
+
+                override fun onOpen(context: Context) {
+                    currentNotice.value = null
+
+                    val intent = Intent(context, SettingsActivity::class.java)
+                    intent.putExtra("navDest", "update")
+
+                    if(context !is Activity) {
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+
+                    context.startActivity(intent)
                 }
             }
         }

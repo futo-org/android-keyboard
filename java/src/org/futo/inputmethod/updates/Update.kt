@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.navigation.NavHostController
 import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 
@@ -33,7 +34,7 @@ fun Context.openURI(uri: String, newTask: Boolean = false) {
 
 @Composable
 @Preview
-fun ConditionalUpdate() {
+fun ConditionalUpdate(navController: NavHostController) {
     val (updateInfo, _) = useDataStore(key = LAST_UPDATE_CHECK_RESULT, default = "")
 
     val lastUpdateResult = if(!LocalInspectionMode.current){
@@ -48,7 +49,8 @@ fun ConditionalUpdate() {
             title = "Update Available",
             subtitle = "${UpdateResult.currentVersionString()} -> ${lastUpdateResult.nextVersionString}",
             onClick = {
-                context.openURI(lastUpdateResult.apkUrl)
+                navController.navigate("update")
+                //context.openURI(lastUpdateResult.apkUrl)
             }
         ) {
             Icon(Icons.Default.ArrowForward, contentDescription = "Go")

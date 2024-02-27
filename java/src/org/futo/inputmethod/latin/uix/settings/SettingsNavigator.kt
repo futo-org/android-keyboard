@@ -57,6 +57,9 @@ fun SettingsNavigator(
                 navController
             )
         }
+        dialog("update") {
+            UpdateDialog(navController = navController)
+        }
         addModelManagerNavigation(navController)
     }
 }

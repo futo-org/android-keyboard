@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix
 
+import android.content.Context
 import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -104,6 +105,12 @@ import kotlin.math.roundToInt
  *
  * TODO: Will need to make RTL languages work
  */
+
+interface ImportantNotice {
+    @Composable fun getText(): String
+    fun onDismiss(context: Context)
+    fun onOpen(context: Context)
+}
 
 
 val suggestionStylePrimary = TextStyle(
@@ -387,13 +394,54 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
+fun ImportantNoticeView(
+    importantNotice: ImportantNotice
+) {
+    val context = LocalContext.current
+
+    Row {
+        TextButton(
+            onClick = { importantNotice.onOpen(context) },
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxHeight(),
+            shape = RectangleShape,
+            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
+            enabled = true
+        ) {
+            AutoFitText(importantNotice.getText(), style = suggestionStylePrimary.copy(color = MaterialTheme.colorScheme.onBackground))
+        }
+
+        val color = MaterialTheme.colorScheme.primary
+        IconButton(
+            onClick = { importantNotice.onDismiss(context) },
+            modifier = Modifier
+                .width(42.dp)
+                .fillMaxHeight()
+                .drawBehind {
+                    drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
+                },
+
+            colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.close),
+                contentDescription = "Close"
+            )
+        }
+    }
+}
+
+@Composable
 fun ActionBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
     onActionActivated: (Action) -> Unit,
     inlineSuggestions: List<MutableState<View?>>,
     forceOpenActionsInitially: Boolean = false,
+    importantNotice: ImportantNotice? = null
 ) {
+    val context = LocalContext.current
     val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }
 
     Surface(modifier = Modifier
@@ -401,28 +449,38 @@ fun ActionBar(
         .height(40.dp), color = MaterialTheme.colorScheme.background)
     {
         Row {
-            ExpandActionsButton(isActionsOpen.value) { isActionsOpen.value = !isActionsOpen.value }
-
-            if(isActionsOpen.value) {
-                LazyRow {
-                    item {
-                        ActionItems(onActionActivated)
-                    }
+            ExpandActionsButton(isActionsOpen.value) {
+                isActionsOpen.value = !isActionsOpen.value
+                if(isActionsOpen.value && importantNotice != null) {
+                    importantNotice.onDismiss(context)
                 }
-            } else if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                InlineSuggestions(inlineSuggestions)
-            } else if(words != null) {
-                SuggestionItems(words) {
-                    suggestionStripListener.pickSuggestionManually(
-                        words.getInfo(it)
-                    )
-                }
-            } else {
-                Spacer(modifier = Modifier.weight(1.0f))
             }
 
-            if(!isActionsOpen.value) {
-                ActionItemSmall(VoiceInputAction, onActionActivated)
+            if(importantNotice != null && !isActionsOpen.value) {
+                ImportantNoticeView(importantNotice)
+            }else {
+
+                if (isActionsOpen.value) {
+                    LazyRow {
+                        item {
+                            ActionItems(onActionActivated)
+                        }
+                    }
+                } else if (inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    InlineSuggestions(inlineSuggestions)
+                } else if (words != null) {
+                    SuggestionItems(words) {
+                        suggestionStripListener.pickSuggestionManually(
+                            words.getInfo(it)
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.weight(1.0f))
+                }
+
+                if (!isActionsOpen.value) {
+                    ActionItemSmall(VoiceInputAction, onActionActivated)
+                }
             }
         }
     }
@@ -585,6 +643,34 @@ fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) 
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
             inlineSuggestions = listOf()
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewActionBarWithNotice(colorScheme: ColorScheme = DarkColorScheme) {
+    UixThemeWrapper(colorScheme) {
+        ActionBar(
+            words = exampleSuggestedWords,
+            suggestionStripListener = ExampleListener(),
+            onActionActivated = { },
+            inlineSuggestions = listOf(),
+            importantNotice = object : ImportantNotice {
+                @Composable
+                override fun getText(): String {
+                    return "Update available: v1.2.3"
+                }
+
+                override fun onDismiss(context: Context) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onOpen(context: Context) {
+                    TODO("Not yet implemented")
+                }
+
+            }
         )
     }
 }

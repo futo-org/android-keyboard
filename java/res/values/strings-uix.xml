@@ -35,4 +35,5 @@
     <string name="model_import_failed">Model import failed</string>
     <string name="failed_to_import_the_selected_model">Failed to import the selected model</string>
     <string name="dismiss">Dismiss</string>
+    <string name="update">Update</string>
 </resources>
