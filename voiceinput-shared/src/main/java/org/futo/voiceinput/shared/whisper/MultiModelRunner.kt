@@ -64,8 +64,6 @@ class MultiModelRunner(
             ""
         }
 
-        println("This is the GLOSSARY :3 $glossary")
-
         val result = try {
             callback.updateStatus(InferenceState.Encoding)
             primaryModel.infer(

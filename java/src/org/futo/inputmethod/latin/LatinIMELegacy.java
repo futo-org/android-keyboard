@@ -1353,10 +1353,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     public void displaySettingsDialog() {
-        if (isShowingOptionDialog()) {
-            return;
-        }
-        showSubtypeSelectorAndSettings();
+        launchSettings("");
     }
 
     @Override
