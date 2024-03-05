@@ -23,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -95,6 +96,8 @@ fun ManageModelScreen(model: ModelInfo = PreviewModels[0], navController: NavHos
 
     val modelOptions = useDataStore(key = MODEL_OPTION_KEY.key, default = MODEL_OPTION_KEY.default)
 
+    val finetuningEnabled = useDataStore(key = USE_TRANSFORMER_FINETUNING.key, default = USE_TRANSFORMER_FINETUNING.default)
+
     ScrollableList {
         ScreenTitle(name, showBack = true, navController)
 
@@ -116,7 +119,7 @@ fun ManageModelScreen(model: ModelInfo = PreviewModels[0], navController: NavHos
             listOf("Languages", model.languages.joinToString(" ")),
             listOf("Features", model.features.joinToString(" ")),
             listOf("Tokenizer", model.tokenizer_type),
-            listOf("Finetune Count", model.finetune_count.toString()),
+            listOf("Number of finetuning runs", model.finetune_count.toString()),
         )
 
         data.forEach { row ->
@@ -186,13 +189,17 @@ fun ManageModelScreen(model: ModelInfo = PreviewModels[0], navController: NavHos
                 }
             }
         )
-        NavigationItem(
-            title = "Finetune on custom data",
-            style = NavigationItemStyle.Misc,
-            navigate = {
-                navController.navigate("finetune/${model.path.urlEncode()}")
-            }
-        )
+
+        if(finetuningEnabled.value) {
+            NavigationItem(
+                title = "Finetune model",
+                style = NavigationItemStyle.Misc,
+                navigate = {
+                    navController.navigate("finetune/${model.path.urlEncode()}")
+                }
+            )
+        }
+
         NavigationItem(
             title = "Delete",
             style = NavigationItemStyle.Misc,

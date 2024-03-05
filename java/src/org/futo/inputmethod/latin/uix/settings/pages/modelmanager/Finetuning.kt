@@ -138,9 +138,9 @@ fun FinetuneModelScreen(file: File? = null, navController: NavHostController = r
 
             ModelPicker("Model", models, currentModel.value) { currentModel.value = it }
 
-            TextField(value = customData.value, onValueChange = { customData.value = it }, placeholder = {
-                Text("Custom training data. Leave blank for none", color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f))
-            })
+            //TextField(value = customData.value, onValueChange = { customData.value = it }, placeholder = {
+            //    Text("Custom training data. Leave blank for none", color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f))
+            //})
 
             Button(onClick = {
                 println("PATH ${currentModel.value?.toLoader()?.path?.absolutePath}, ${currentModel.value?.toLoader()?.path?.exists()}")

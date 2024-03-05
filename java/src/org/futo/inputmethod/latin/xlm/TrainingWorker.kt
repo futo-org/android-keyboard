@@ -23,6 +23,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
+import org.futo.inputmethod.latin.uix.getSetting
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -65,6 +67,15 @@ class TrainingWorker(val context: Context, val parameters: WorkerParameters) : C
 
     override suspend fun doWork(): Result {
         println("TrainingWorker is starting")
+
+        val shouldTrain = context.getSetting(USE_TRANSFORMER_FINETUNING)
+        if(!shouldTrain) {
+            println("TrainingWorker is exiting as training is disabled")
+            saveHistoryLogBackup(applicationContext, listOf())
+            TrainingWorkerStatus.lmRequest.emit(LanguageModelFacilitatorRequest.ClearTrainingLog)
+            return Result.success()
+        }
+
         TrainingWorkerStatus.isTraining.value = true
         setForeground(createForegroundInfo("Training..."))
 

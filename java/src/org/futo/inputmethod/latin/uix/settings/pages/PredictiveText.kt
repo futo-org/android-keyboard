@@ -11,16 +11,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
-import org.futo.inputmethod.latin.uix.settings.SettingRadio
+import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
-import org.futo.inputmethod.latin.xlm.AutocorrectThresholdSetting
-import org.futo.inputmethod.latin.xlm.BinaryDictTransformerWeightSetting
 
 @Preview
 @Composable
@@ -39,6 +38,12 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
         )
 
         if(transformerLmEnabled) {
+            SettingToggleDataStore(
+                title = "Transformer fine-tuning",
+                subtitle = "This feature is pending more work",
+                setting = USE_TRANSFORMER_FINETUNING
+            )
+
             NavigationItem(
                 title = "Models",
                 style = NavigationItemStyle.HomeTertiary,

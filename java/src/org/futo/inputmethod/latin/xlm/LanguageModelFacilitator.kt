@@ -28,7 +28,9 @@ import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.utils.SuggestionResults
 
@@ -262,6 +264,8 @@ public class LanguageModelFacilitator(
         computationSemaphore.release()
     }
 
+    private var trainingEnabled = true
+
     public fun launchProcessor() = lifecycleScope.launch {
         println("LatinIME: Starting processor")
         launch {
@@ -290,6 +294,17 @@ public class LanguageModelFacilitator(
                 sharedFlow.conflate().collect { value ->
                     println("LatinIME: Collecting")
                     processUpdateSuggestionStrip(value)
+                }
+            }
+        }
+
+        launch {
+            withContext(Dispatchers.Default) {
+                trainingEnabled = context.getSetting(USE_TRANSFORMER_FINETUNING)
+
+                val shouldTrain = context.getSettingFlow(USE_TRANSFORMER_FINETUNING)
+                shouldTrain.collect {
+                    trainingEnabled = it
                 }
             }
         }
@@ -347,6 +362,7 @@ public class LanguageModelFacilitator(
         importance: Int
     ) {
         if(shouldPassThroughToLegacy()) return
+        if(!trainingEnabled) return
 
         val wordCtx = ngramContext.fullContext.trim().lines().last()
         var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
@@ -408,6 +424,7 @@ public class LanguageModelFacilitator(
         eventType: Int
     ) {
         if(shouldPassThroughToLegacy()) return
+        if(!trainingEnabled) return
 
         val wordCtx = ngramContext.fullContext.trim().lines().last()
         var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
