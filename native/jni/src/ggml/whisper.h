@@ -332,7 +332,9 @@ WHISPER_API int whisper_lang_auto_detect_with_state(
         struct whisper_state * state,
         int   offset_ms,
         int   n_threads,
-        float * lang_probs);
+        float * lang_probs,
+        const int * allowed_langs,
+        size_t allowed_langs_size);
 
 WHISPER_API int whisper_n_len           (struct whisper_context * ctx); // mel length
 WHISPER_API int whisper_n_len_from_state(struct whisper_state * state); // mel length
@@ -399,6 +401,9 @@ enum whisper_sampling_strategy {
 // Called on every newly generated text segment
 // Use the whisper_full_...() functions to obtain the text segments
 typedef void (*whisper_new_segment_callback)(struct whisper_context * ctx, struct whisper_state * state, int n_new, void * user_data);
+
+// Partial text callback
+typedef void (*whisper_partial_text_callback)(struct whisper_context * ctx, struct whisper_state * state, const whisper_token_data* tokens, size_t n_tokens, void * user_data);
 
 // Progress callback
 typedef void (*whisper_progress_callback)(struct whisper_context * ctx, struct whisper_state * state, int progress, void * user_data);
@@ -471,6 +476,9 @@ struct whisper_full_params {
     const char * language;
     bool detect_language;
 
+    const int * allowed_langs;
+    size_t allowed_langs_size;
+
     // common decoding parameters:
     bool suppress_blank;    // ref: https://github.com/openai/whisper/blob/f82bc59f5ea234d4b97fb2860842ed38519f7e65/whisper/decoding.py#L89
     bool suppress_non_speech_tokens; // ref: https://github.com/openai/whisper/blob/7858aa9c08d98f75575035ecd6481f462d66ca27/whisper/tokenizer.py#L224-L253
@@ -499,6 +507,9 @@ struct whisper_full_params {
     // called for every newly generated text segment
     whisper_new_segment_callback new_segment_callback;
     void * new_segment_callback_user_data;
+
+    whisper_partial_text_callback partial_text_callback;
+    void * partial_text_callback_user_data;
 
     // called on each progress update
     whisper_progress_callback progress_callback;

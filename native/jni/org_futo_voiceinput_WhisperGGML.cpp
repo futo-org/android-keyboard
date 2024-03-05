@@ -1,18 +1,22 @@
-//
-// Created by hp on 11/22/23.
-//
-
 #include <string>
+#include <vector>
+#include <jni.h>
 #include <bits/sysconf.h>
+#include "ggml/whisper.h"
+#include "defines.h"
 #include "org_futo_voiceinput_WhisperGGML.h"
 #include "jni_common.h"
-#include "defines.h"
-#include "ggml/whisper.h"
 #include "jni_utils.h"
 
+
 struct WhisperModelState {
+    JNIEnv *env;
+    jobject partial_result_instance;
+    jmethodID partial_result_method;
     int n_threads = 4;
     struct whisper_context *context = nullptr;
+
+    std::vector<int> last_forbidden_languages;
 };
 
 static jlong WhisperGGML_open(JNIEnv *env, jclass clazz, jstring model_dir) {
@@ -20,7 +24,7 @@ static jlong WhisperGGML_open(JNIEnv *env, jclass clazz, jstring model_dir) {
 
     auto *state = new WhisperModelState();
 
-    state->context = whisper_init_from_file(model_dir_str.c_str());
+    state->context = whisper_init_from_file_with_params(model_dir_str.c_str(), { .use_gpu = false });
 
     if(!state->context){
         AKLOGE("Failed to initialize whisper_context from path %s", model_dir_str.c_str());
@@ -37,7 +41,7 @@ static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffe
 
     auto *state = new WhisperModelState();
 
-    state->context = whisper_init_from_buffer(buffer_address, buffer_capacity);
+    state->context = whisper_init_from_buffer_with_params(buffer_address, buffer_capacity, { .use_gpu = false });
 
     if(!state->context){
         AKLOGE("Failed to initialize whisper_context from direct buffer");
@@ -48,19 +52,35 @@ static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffe
     return reinterpret_cast<jlong>(state);
 }
 
-static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloatArray samples_array, jstring prompt) {
+static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloatArray samples_array, jstring prompt, jobjectArray languages, jobjectArray bail_languages, jint decoding_mode) {
     auto *state = reinterpret_cast<WhisperModelState *>(handle);
+
+    std::vector<int> allowed_languages;
+    int num_languages = env->GetArrayLength(languages);
+    for (int i=0; i<num_languages; i++) {
+        jstring jstr = static_cast<jstring>(env->GetObjectArrayElement(languages, i));
+        std::string str = jstring2string(env, jstr);
+
+        allowed_languages.push_back(whisper_lang_id(str.c_str()));
+    }
+
+
+    std::vector<int> forbidden_languages;
+    int num_bail_languages = env->GetArrayLength(bail_languages);
+    for (int i=0; i<num_bail_languages; i++) {
+        jstring jstr = static_cast<jstring>(env->GetObjectArrayElement(bail_languages, i));
+        std::string str = jstring2string(env, jstr);
+
+        forbidden_languages.push_back(whisper_lang_id(str.c_str()));
+    }
+
+    state->last_forbidden_languages = forbidden_languages;
 
     size_t num_samples = env->GetArrayLength(samples_array);
     jfloat *samples = env->GetFloatArrayElements(samples_array, nullptr);
 
-    AKLOGI("Received %d samples", (int)num_samples);
-
-
     long num_procs = sysconf(_SC_NPROCESSORS_ONLN);
     if(num_procs < 2 || num_procs > 16) num_procs = 6; // Make sure the number is sane
-
-    AKLOGI("num procs = %d", (int)num_procs);
 
     whisper_full_params wparams = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
     wparams.print_progress = false;
@@ -70,27 +90,80 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
     wparams.max_tokens = 256;
     wparams.n_threads = (int)num_procs;
 
-    //wparams.audio_ctx = (int)ceil((double)num_samples / (double)(160.0 * 2.0));
+    wparams.audio_ctx = std::min(1500, (int)ceil((double)num_samples / (double)(320.0)) + 16);
     wparams.temperature_inc = 0.0f;
 
+    // Replicates old tflite behavior
+    if(decoding_mode == 0) {
+        wparams.strategy = WHISPER_SAMPLING_GREEDY;
+        wparams.greedy.best_of = 1;
+    } else {
+        wparams.strategy = WHISPER_SAMPLING_BEAM_SEARCH;
+        wparams.beam_search.beam_size = decoding_mode;
+        wparams.greedy.best_of = decoding_mode;
+    }
 
 
-    //std::string prompt_str = jstring2string(env, prompt);
-    //wparams.initial_prompt = prompt_str.c_str();
-    //AKLOGI("Initial prompt is [%s]", prompt_str.c_str());
+    wparams.suppress_blank = false;
+    wparams.suppress_non_speech_tokens = true;
+    wparams.no_timestamps = true;
 
-    wparams.new_segment_callback = [](struct whisper_context * ctx, struct whisper_state * state, int n_new, void * user_data) {
-        const int n_segments = whisper_full_n_segments(ctx);
-        const int s0 = n_segments - n_new;
+    if(allowed_languages.size() == 0) {
+        wparams.language = nullptr;
+    }else if(allowed_languages.size() == 1) {
+        wparams.language = whisper_lang_str(allowed_languages[0]);
+    }else{
+        wparams.language = nullptr;
+        wparams.allowed_langs = allowed_languages.data();
+        wparams.allowed_langs_size = allowed_languages.size();
+    }
 
-        if (s0 == 0) {
-            AKLOGI("s0 == 0, \\n");
+    std::string prompt_str = jstring2string(env, prompt);
+    wparams.initial_prompt = prompt_str.c_str();
+    AKLOGI("Initial prompt is [%s]", prompt_str.c_str());
+
+    state->env = env;
+    state->partial_result_instance = instance;
+    state->partial_result_method = env->GetMethodID(
+            env->GetObjectClass(instance),
+            "invokePartialResult",
+            "(Ljava/lang/String;)V");
+
+    wparams.partial_text_callback_user_data = state;
+    wparams.partial_text_callback = [](struct whisper_context * ctx, struct whisper_state * state, const whisper_token_data *tokens, size_t n_tokens, void * user_data) {
+        std::string partial;
+        for(size_t i=0; i < n_tokens; i++) {
+            if(tokens[i].id == whisper_token_beg(ctx) ||
+               tokens[i].id == whisper_token_eot(ctx) ||
+               tokens[i].id == whisper_token_nosp(ctx) ||
+               tokens[i].id == whisper_token_not(ctx) ||
+               tokens[i].id == whisper_token_prev(ctx) ||
+               tokens[i].id == whisper_token_solm(ctx) ||
+               tokens[i].id == whisper_token_sot(ctx) ||
+               tokens[i].id == whisper_token_transcribe(ctx) ||
+               tokens[i].id == whisper_token_translate(ctx)) continue;
+
+            partial += whisper_token_to_str(ctx, tokens[i].id);
         }
 
-        for (int i = s0; i < n_segments; i++) {
-            auto seg = whisper_full_get_segment_text(ctx, i);
-            AKLOGI("WhisperGGML new segment %s", seg);
+        auto *wstate = reinterpret_cast<WhisperModelState *>(user_data);
+
+        jstring pjstr = wstate->env->NewStringUTF(partial.c_str());
+        wstate->env->CallVoidMethod(wstate->partial_result_instance, wstate->partial_result_method, pjstr);
+        wstate->env->DeleteLocalRef(pjstr);
+    };
+
+    wparams.abort_callback_user_data = state;
+    wparams.abort_callback = [](void * user_data) -> bool {
+        auto *wstate = reinterpret_cast<WhisperModelState *>(user_data);
+
+        if(std::find(wstate->last_forbidden_languages.begin(),
+                     wstate->last_forbidden_languages.end(),
+                     whisper_full_lang_id(wstate->context)) != wstate->last_forbidden_languages.end()) {
+            return true;
         }
+
+        return false;
     };
 
     AKLOGI("Calling whisper_full");
@@ -98,7 +171,9 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
     if(res != 0) {
         AKLOGE("WhisperGGML whisper_full failed with non-zero code %d", res);
     }
-    AKLOGI("whisper_full finished :3");
+    AKLOGI("whisper_full finished");
+
+
 
     whisper_print_timings(state->context);
 
@@ -110,54 +185,50 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
         output.append(seg);
     }
 
+    if(std::find(forbidden_languages.begin(),
+                 forbidden_languages.end(),
+                 whisper_full_lang_id(state->context)) != forbidden_languages.end()) {
+        output = "<>CANCELLED<> lang=" + std::string(whisper_lang_str(whisper_full_lang_id(state->context)));
+    }
+
     jstring jstr = env->NewStringUTF(output.c_str());
     return jstr;
-
-
-    /*
-    ASSERT(mel_count % 80 == 0);
-    whisper_set_mel(state->context, mel, (int)(mel_count / 80), 80);
-
-    whisper_encode(state->context, 0, 4);
-
-    whisper_token tokens[512] = { 0 };
-
-    whisper_decode(state->context, tokens, 512, 0, 4);
-    */
 }
 
 static void WhisperGGML_close(JNIEnv *env, jclass clazz, jlong handle) {
     auto *state = reinterpret_cast<WhisperModelState *>(handle);
     if(!state) return;
 
+    whisper_free(state->context);
+
     delete state;
 }
 
 
-namespace voiceinput {
-    static const JNINativeMethod sMethods[] = {
+static const JNINativeMethod sMethods[] = {
         {
-            const_cast<char *>("openNative"),
-            const_cast<char *>("(Ljava/lang/String;)J"),
-            reinterpret_cast<void *>(WhisperGGML_open)
+                const_cast<char *>("openNative"),
+                const_cast<char *>("(Ljava/lang/String;)J"),
+                reinterpret_cast<void *>(WhisperGGML_open)
         },
         {
-            const_cast<char *>("openFromBufferNative"),
-            const_cast<char *>("(Ljava/nio/Buffer;)J"),
-            reinterpret_cast<void *>(WhisperGGML_openFromBuffer)
+                const_cast<char *>("openFromBufferNative"),
+                const_cast<char *>("(Ljava/nio/Buffer;)J"),
+                reinterpret_cast<void *>(WhisperGGML_openFromBuffer)
         },
         {
-            const_cast<char *>("inferNative"),
-            const_cast<char *>("(J[FLjava/lang/String;)Ljava/lang/String;"),
-            reinterpret_cast<void *>(WhisperGGML_infer)
+                const_cast<char *>("inferNative"),
+                const_cast<char *>("(J[FLjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;I)Ljava/lang/String;"),
+                reinterpret_cast<void *>(WhisperGGML_infer)
         },
         {
-            const_cast<char *>("closeNative"),
-            const_cast<char *>("(J)V"),
-            reinterpret_cast<void *>(WhisperGGML_close)
+                const_cast<char *>("closeNative"),
+                const_cast<char *>("(J)V"),
+                reinterpret_cast<void *>(WhisperGGML_close)
         }
-    };
+};
 
+namespace voiceinput {
     int register_WhisperGGML(JNIEnv *env) {
         const char *const kClassPathName = "org/futo/voiceinput/shared/ggml/WhisperGGML";
         return latinime::registerNativeMethods(env, kClassPathName, sMethods, NELEMS(sMethods));

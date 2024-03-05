@@ -1,7 +1,5 @@
-#define TIME_START(name)  const int64_t start_##name = ggml_time_us();
-#define TIME_END(name)    const int64_t end_##name = ggml_time_us(); \
-                          const int64_t time_taken_##name = (end_##name - start_##name) / 1000L; \
-                          AKLOGI("%s:     Time taken by %s: %d ms\n", __func__, #name, (int)time_taken_##name);
+#define TIME_START(v)
+#define TIME_END(v)
 
 #include "whisper.h"
 
@@ -130,7 +128,7 @@ static void whisper_log_callback_default(ggml_log_level level, const char * text
 
 #define WHISPER_LOG_INFO(...)  whisper_log_internal(GGML_LOG_LEVEL_INFO , __VA_ARGS__)
 #define WHISPER_LOG_WARN(...)  whisper_log_internal(GGML_LOG_LEVEL_WARN , __VA_ARGS__)
-#define WHISPER_LOG_ERROR(...) whisper_log_internal(GGML_LOG_LEVEL_ERROR, __VA_ARGS__)
+#define WHISPER_LOG_ERROR(...) AKLOGE(__VA_ARGS__) // whisper_log_internal(GGML_LOG_LEVEL_ERROR, __VA_ARGS__)
 
 #define WHISPER_ASSERT(x) \
     do { \
@@ -152,7 +150,7 @@ static void whisper_log_callback_default(ggml_log_level level, const char * text
 #define WHISPER_PRINT_DEBUG(...)
 #endif
 
-//#define WHISPER_USE_FLASH_ATTN
+#define WHISPER_USE_FLASH_ATTN
 //#define WHISPER_USE_FLASH_FF
 #define WHISPER_MAX_DECODERS 8
 #define WHISPER_MAX_NODES 4096
@@ -1895,27 +1893,27 @@ static struct ggml_cgraph * whisper_build_graph_encoder(
 
 #ifdef WHISPER_USE_FLASH_ATTN
             struct ggml_tensor * Q =
-                ggml_permute(ctx0,
-                        ggml_cpy(ctx0,
-                            Qcur,
-                            ggml_new_tensor_3d(ctx0, wctx.itype, n_state/n_head, n_head, n_ctx)),
-                        0, 2, 1, 3);
+                    ggml_permute(ctx0,
+                                 ggml_cpy(ctx0,
+                                          Qcur,
+                                          ggml_new_tensor_3d(ctx0, wctx.itype, n_state/n_head, n_head, n_ctx)),
+                                 0, 2, 1, 3);
 
             struct ggml_tensor * K =
-                ggml_permute(ctx0,
-                        ggml_cpy(ctx0,
-                            Kcur,
-                            ggml_new_tensor_3d(ctx0, wctx.itype, n_state/n_head, n_head, n_ctx)),
-                        0, 2, 1, 3);
+                    ggml_permute(ctx0,
+                                 ggml_cpy(ctx0,
+                                          Kcur,
+                                          ggml_new_tensor_3d(ctx0, wctx.itype, n_state/n_head, n_head, n_ctx)),
+                                 0, 2, 1, 3);
 
             struct ggml_tensor * V =
-                ggml_cpy(ctx0,
-                        ggml_permute(ctx0,
-                            ggml_reshape_3d(ctx0,
-                                Vcur,
-                                n_state/n_head, n_head, n_ctx),
-                            1, 2, 0, 3),
-                        ggml_new_tensor_3d(ctx0, wctx.itype, n_ctx, n_state/n_head, n_head));
+                    ggml_cpy(ctx0,
+                             ggml_permute(ctx0,
+                                          ggml_reshape_3d(ctx0,
+                                                          Vcur,
+                                                          n_state/n_head, n_head, n_ctx),
+                                          1, 2, 0, 3),
+                             ggml_new_tensor_3d(ctx0, wctx.itype, n_ctx, n_state/n_head, n_head));
 
             struct ggml_tensor * KQV = ggml_flash_attn(ctx0, Q, K, V, false);
 #else
@@ -2143,11 +2141,11 @@ static bool whisper_encode_internal(
     TIME_START(conv)
     // conv
     {
-        auto & alloc = wstate.alloc_conv.alloc;
+        auto &alloc = wstate.alloc_conv.alloc;
 
         ggml_allocr_reset(alloc);
 
-        ggml_cgraph * gf = whisper_build_graph_conv(wctx, wstate, mel_offset);
+        ggml_cgraph *gf = whisper_build_graph_conv(wctx, wstate, mel_offset);
 
         ggml_allocr_alloc_graph(alloc, gf);
 
@@ -2168,22 +2166,22 @@ static bool whisper_encode_internal(
 
         ggml_allocr_alloc_graph(alloc, gf);
 
-        ggml_graph_compute_helper(wstate.backend, gf, n_threads);
+        ggml_graph_compute_helper(wstate.backend, gf, 2); // TODO: Over 2 threads seems to slow things down
     }
     TIME_END(encode)
 
     TIME_START(cross)
     // cross
     {
-        auto & alloc = wstate.alloc_cross.alloc;
+        auto &alloc = wstate.alloc_cross.alloc;
 
         ggml_allocr_reset(alloc);
 
-        ggml_cgraph * gf = whisper_build_graph_cross(wctx, wstate);
+        ggml_cgraph *gf = whisper_build_graph_cross(wctx, wstate);
 
         ggml_allocr_alloc_graph(alloc, gf);
 
-        ggml_graph_compute_helper(wstate.backend, gf, n_threads);
+        ggml_graph_compute_helper(wstate.backend, gf, 2);
     }
     TIME_END(cross)
 
@@ -2572,9 +2570,12 @@ static bool whisper_decode_internal(
         whisper_context & wctx,
         whisper_state & wstate,
         const whisper_batch & batch,
-        const int   n_threads,
+        const int   _n_threads,
         whisper_abort_callback   abort_callback,
         void * abort_callback_data) {
+
+    const int n_threads = 2; // TODO: Higher n_threads appears to significantly hurt performance for some reason
+
     const int64_t t_start_us = ggml_time_us();
 
     const auto & model   = wctx.model;
@@ -3612,7 +3613,9 @@ int whisper_lang_auto_detect_with_state(
         struct whisper_state * state,
         int   offset_ms,
         int   n_threads,
-        float * lang_probs) {
+        float * lang_probs,
+        const int * allowed_langs,
+        size_t allowed_langs_size) {
     const int seek = offset_ms/10;
 
     if (seek < 0) {
@@ -3642,6 +3645,17 @@ int whisper_lang_auto_detect_with_state(
     logits_id.clear();
 
     for (const auto & kv : g_lang) {
+        if(allowed_langs != nullptr && allowed_langs_size >= 0) {
+            bool is_allowed = false;
+            for(size_t i=0; i < allowed_langs_size; i++) {
+                if(allowed_langs[i] == kv.second.first) {
+                    is_allowed = true;
+                    break;
+                }
+            }
+
+            if(!is_allowed) continue;
+        }
         const auto token_lang = whisper_token_lang(ctx, kv.second.first);
         logits_id.emplace_back(state->logits[token_lang], kv.second.first);
     }
@@ -3687,7 +3701,7 @@ int whisper_lang_auto_detect(
         int   offset_ms,
         int   n_threads,
         float * lang_probs) {
-    return whisper_lang_auto_detect_with_state(ctx, ctx->state, offset_ms, n_threads, lang_probs);
+    return whisper_lang_auto_detect_with_state(ctx, ctx->state, offset_ms, n_threads, lang_probs, nullptr, 0);
 }
 
 int whisper_model_n_vocab(struct whisper_context * ctx) {
@@ -4386,6 +4400,9 @@ struct whisper_full_params whisper_full_default_params(enum whisper_sampling_str
             /*.language          =*/ "en",
             /*.detect_language   =*/ false,
 
+            /*.allowed_langs     =*/ nullptr,
+            /*.allowed_langs_size=*/ 0,
+
             /*.suppress_blank    =*/ true,
             /*.suppress_non_speech_tokens =*/ false,
 
@@ -4410,6 +4427,9 @@ struct whisper_full_params whisper_full_default_params(enum whisper_sampling_str
 
             /*.new_segment_callback           =*/ nullptr,
             /*.new_segment_callback_user_data =*/ nullptr,
+
+            /*.partial_text_callback          =*/ nullptr,
+            /*.partial_text_callback_user_data=*/ nullptr,
 
             /*.progress_callback           =*/ nullptr,
             /*.progress_callback_user_data =*/ nullptr,
@@ -4520,7 +4540,7 @@ static int whisper_wrap_segment(struct whisper_context & ctx, struct whisper_sta
 }
 
 static const std::vector<std::string> non_speech_tokens = {
-        "\"", "#", "(", ")", "*", "+", "/", ":", ";", "<", "=", ">", "@", "[", "\\", "]", "^",
+        "\"", "#", "(", ")", "*", "+", "/", ":", ";", "<", "=", ">", /*"@",*/ "[", "\\", "]", "^",
         "_", "`", "{", "|", "}", "~", "「", "」", "『", "』", "<<", ">>", "<<<", ">>>", "--",
         "---", "-(", "-[", "('", "(\"", "((", "))", "(((", ")))", "[[", "]]", "{{", "}}", "♪♪",
         "♪♪♪","♩", "♪", "♫", "♬", "♭", "♮", "♯"
@@ -5004,6 +5024,8 @@ int whisper_full_with_state(
         const float * samples,
         int   n_samples) {
 
+    state->lang_id = -1;
+
     TIME_START(clearing)
     // clear old results
     auto & result_all = state->result_all;
@@ -5028,12 +5050,21 @@ int whisper_full_with_state(
     }
     TIME_END(mel_spectro)
 
+    // overwrite audio_ctx, max allowed is hparams.n_audio_ctx
+    if (params.audio_ctx > whisper_n_audio_ctx(ctx)) {
+        WHISPER_LOG_ERROR("%s: audio_ctx is larger than the maximum allowed (%d > %d)\n", __func__, params.audio_ctx, whisper_n_audio_ctx(ctx));
+        return -5;
+    }
+    state->exp_n_audio_ctx = params.audio_ctx;
+
+    bool encoding_required = true;
     TIME_START(detect_lang)
     // auto-detect language if not specified
     if (params.language == nullptr || strlen(params.language) == 0 || strcmp(params.language, "auto") == 0 || params.detect_language) {
         std::vector<float> probs(whisper_lang_max_id() + 1, 0.0f);
 
-        const auto lang_id = whisper_lang_auto_detect_with_state(ctx, state, 0, params.n_threads, probs.data());
+        const auto lang_id = whisper_lang_auto_detect_with_state(ctx, state, 0, params.n_threads, probs.data(), params.allowed_langs, params.allowed_langs_size);
+        encoding_required = false;
         if (lang_id < 0) {
             WHISPER_LOG_ERROR("%s: failed to auto-detect language\n", __func__);
             return -3;
@@ -5041,7 +5072,7 @@ int whisper_full_with_state(
         state->lang_id = lang_id;
         params.language = whisper_lang_str(lang_id);
 
-        WHISPER_LOG_INFO("%s: auto-detected language: %s (p = %f)\n", __func__, params.language, probs[whisper_lang_id(params.language)]);
+        AKLOGI("%s: auto-detected language: %s (p = %f)\n", __func__, params.language, probs[whisper_lang_id(params.language)]);
         if (params.detect_language) {
             return 0;
         }
@@ -5147,13 +5178,6 @@ int whisper_full_with_state(
         }
     }
 
-    // overwrite audio_ctx, max allowed is hparams.n_audio_ctx
-    if (params.audio_ctx > whisper_n_audio_ctx(ctx)) {
-        WHISPER_LOG_ERROR("%s: audio_ctx is larger than the maximum allowed (%d > %d)\n", __func__, params.audio_ctx, whisper_n_audio_ctx(ctx));
-        return -5;
-    }
-    state->exp_n_audio_ctx = params.audio_ctx;
-
     // these tokens determine the task that will be performed
     std::vector<whisper_token> prompt_init = { whisper_token_sot(ctx), };
     TIME_END(prepare_prompt)
@@ -5226,9 +5250,12 @@ int whisper_full_with_state(
         }
 
         // encode audio features starting at offset seek
-        if (!whisper_encode_internal(*ctx, *state, seek, params.n_threads, params.abort_callback, params.abort_callback_user_data)) {
-            WHISPER_LOG_ERROR("%s: failed to encode\n", __func__);
-            return -6;
+        if(encoding_required || seek > 0) {
+            if (!whisper_encode_internal(*ctx, *state, seek, params.n_threads,
+                                         params.abort_callback, params.abort_callback_user_data)) {
+                WHISPER_LOG_ERROR("%s: failed to encode\n", __func__);
+                return -6;
+            }
         }
 
         // if there is a very short audio segment left to process, we remove any past prompt since it tends
@@ -5384,6 +5411,10 @@ int whisper_full_with_state(
                                     }
 
                                     decoder.sequence.sum_logprobs_all += decoder.sequence.tokens.back().plog;
+
+                                    if(params.partial_text_callback != nullptr) {
+                                        params.partial_text_callback(ctx, state, decoder.sequence.tokens.data(), decoder.sequence.tokens.size(), params.partial_text_callback_user_data);
+                                    }
                                 } break;
                                 case whisper_sampling_strategy::WHISPER_SAMPLING_BEAM_SEARCH:
                                 {
@@ -5394,12 +5425,22 @@ int whisper_full_with_state(
                                         bc_per_dec[j].back().sequence.tokens.push_back(token);
                                         bc_per_dec[j].back().sequence.sum_logprobs_all += token.plog;
                                     }
+
+                                    if(params.partial_text_callback != nullptr && j == 0) {
+                                        params.partial_text_callback(
+                                                ctx,
+                                                state,
+                                                bc_per_dec[j].back().sequence.tokens.data(),
+                                                bc_per_dec[j].back().sequence.tokens.size(),
+                                                params.partial_text_callback_user_data);
+                                    }
                                 } break;
                             };
                         }
                     };
 
-                    const int n_threads = std::min(params.n_threads, n_decoders_cur);
+                    // TODO: This is locked to 1 as we need callbacks to be called from the same thread for JNI
+                    const int n_threads = 1;// std::min(params.n_threads, n_decoders_cur);
 
                     if (n_threads == 1) {
                         process();
@@ -5479,6 +5520,15 @@ int whisper_full_with_state(
                     }
                 }
 
+                int num_completed = 0;
+                for (int j = 0; j < n_decoders_cur; ++j) {
+                    auto & decoder = state->decoders[j];
+
+                    if (decoder.completed) {
+                        num_completed += 1;
+                    }
+                }
+
                 // update the decoder state
                 // - check if the sequence is completed
                 // - check if the sequence is failed
@@ -5551,6 +5601,20 @@ int whisper_full_with_state(
                         if (ctx->model.n_loaded == 0) {
                             seek_delta = 100*WHISPER_CHUNK_SIZE;
                             completed = true;
+                            continue;
+                        }
+                    }
+
+                    // fail this if it's getting repetitive, unlikely and something else already completed
+                    if (num_completed > 0 && j > 0) {
+                        if(
+                                decoder.sequence.result_len > 32 &&
+                                (
+                                        whisper_sequence_score(params, decoder.sequence),
+                                                decoder.sequence.entropy < params.entropy_thold
+                                )
+                                ) {
+                            failed = true;
                             continue;
                         }
                     }
@@ -5642,7 +5706,7 @@ int whisper_full_with_state(
                             }
                         };
 
-                        const int n_threads = std::min(params.n_threads, n_decoders_cur);
+                        const int n_threads = 1;// std::min(params.n_threads, n_decoders_cur);
 
                         if (n_threads == 1) {
                             process();

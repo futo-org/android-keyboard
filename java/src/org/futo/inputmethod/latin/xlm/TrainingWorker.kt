@@ -14,6 +14,7 @@ import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ForegroundInfo
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -22,8 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.getSetting
-import org.futo.inputmethod.latin.uix.setSetting
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -285,7 +284,8 @@ public fun scheduleTrainingWorkerBackground(context: Context) {
     val constraints = Constraints.Builder()
         .setRequiresBatteryNotLow(true)
         .setRequiresCharging(true)
-        .setRequiresDeviceIdle(true)
+        .setRequiredNetworkType(NetworkType.UNMETERED) // If device is on a metered network, the user may be travelling
+        //.setRequiresDeviceIdle(true)
         .build()
     
     val request = PeriodicWorkRequest.Builder(
