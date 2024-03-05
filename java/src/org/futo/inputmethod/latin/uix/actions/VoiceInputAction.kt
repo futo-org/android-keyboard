@@ -38,6 +38,7 @@ import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
+import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
 import org.futo.voiceinput.shared.ENGLISH_MODELS
 import org.futo.voiceinput.shared.MULTILINGUAL_MODELS
 import org.futo.voiceinput.shared.ModelDoesNotExistException
@@ -66,6 +67,7 @@ val SystemVoiceInputAction = Action(
 class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : PersistentActionState {
     val modelManager = ModelManager(manager.getContext())
     val soundPlayer = SoundPlayer(manager.getContext())
+    val userDictionaryObserver = UserDictionaryObserver(manager.getContext())
 
     override suspend fun cleanUp() {
         modelManager.cleanUp()
@@ -108,10 +110,13 @@ private class VoiceInputActionWindow(
             shouldShowInlinePartialResult = false,
             shouldShowVerboseFeedback = verboseFeedback.await(),
             modelRunConfiguration = MultiModelRunConfiguration(
-                primaryModel = primaryModel, languageSpecificModels = languageSpecificModels
+                primaryModel = primaryModel,
+                languageSpecificModels = languageSpecificModels
             ),
             decodingConfiguration = DecodingConfiguration(
-                languages = allowedLanguages.await(), suppressSymbols = disallowSymbols.await()
+                glossary = state.userDictionaryObserver.getWords().map { it.word },
+                languages = allowedLanguages.await(),
+                suppressSymbols = disallowSymbols.await()
             )
         )
     }

@@ -194,7 +194,7 @@ struct LanguageModelState {
 
         int permitted_period_token = model->tokenToId(".");
 
-        const char *blacklist_symbols = "!@#$%^&*()_=?/,\\][{};:\"><'+`~|\r\n\t\x0b\x0c ";
+        const char *blacklist_symbols = "!@#$%^&*()_=?/,\\][{};:\"><+`~|\r\n\t\x0b\x0c ";
         for(int i = 0; i < model->getVocabSize(); i++) {
             if(i == permitted_period_token) continue;
 

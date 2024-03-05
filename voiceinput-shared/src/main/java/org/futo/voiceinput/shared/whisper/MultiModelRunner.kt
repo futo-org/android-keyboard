@@ -15,11 +15,14 @@ import org.futo.voiceinput.shared.types.toWhisperString
 
 
 data class MultiModelRunConfiguration(
-    val primaryModel: ModelLoader, val languageSpecificModels: Map<Language, ModelLoader>
+    val primaryModel: ModelLoader,
+    val languageSpecificModels: Map<Language, ModelLoader>
 )
 
 data class DecodingConfiguration(
-    val languages: Set<Language>, val suppressSymbols: Boolean
+    val glossary: List<String>,
+    val languages: Set<Language>,
+    val suppressSymbols: Boolean
 )
 
 class MultiModelRunner(
@@ -55,11 +58,19 @@ class MultiModelRunner(
         val allowedLanguages = decodingConfiguration.languages.map { it.toWhisperString() }.toTypedArray()
         val bailLanguages = runConfiguration.languageSpecificModels.filter { it.value != runConfiguration.primaryModel }.keys.map { it.toWhisperString() }.toTypedArray()
 
+        val glossary = if(decodingConfiguration.glossary.isNotEmpty()) {
+            "(Glossary: " + decodingConfiguration.glossary.joinToString(separator = ", ") + ")"
+        } else {
+            ""
+        }
+
+        println("This is the GLOSSARY :3 $glossary")
+
         val result = try {
             callback.updateStatus(InferenceState.Encoding)
             primaryModel.infer(
                 samples = samples,
-                prompt = "",
+                prompt = glossary,
                 languages = allowedLanguages,
                 bailLanguages = bailLanguages,
                 decodingMode = DecodingMode.BeamSearch5,
@@ -76,7 +87,7 @@ class MultiModelRunner(
 
             specificModel.infer(
                 samples = samples,
-                prompt = "",
+                prompt = glossary,
                 languages = arrayOf(e.language),
                 bailLanguages = arrayOf(),
                 decodingMode = DecodingMode.BeamSearch5,

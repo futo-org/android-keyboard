@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.uix
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -105,4 +106,9 @@ fun <T> LifecycleOwner.deferSetSetting(key: SettingsKey<T>, value: T): Job {
 val THEME_KEY = SettingsKey(
     key = stringPreferencesKey("activeThemeOption"),
     default = DynamicSystemTheme.key
+)
+
+val USE_SYSTEM_VOICE_INPUT = SettingsKey(
+    key = booleanPreferencesKey("useSystemVoiceInput"),
+    default = false
 )

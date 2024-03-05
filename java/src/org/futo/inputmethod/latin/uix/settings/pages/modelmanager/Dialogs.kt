@@ -12,7 +12,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.xlm.ModelPaths
 import java.io.File
 
 
@@ -36,6 +38,9 @@ fun ModelDeleteConfirmScreen(path: File = File("/example"), navController: NavHo
             TextButton(
                 onClick = {
                     path.delete()
+                    runBlocking {
+                        ModelPaths.signalReloadModels()
+                    }
                     navController.navigateUp()
                     navController.navigateUp()
                 }

@@ -67,10 +67,12 @@ import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.actions.ClipboardAction
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.actions.RedoAction
+import org.futo.inputmethod.latin.uix.actions.SystemVoiceInputAction
 import org.futo.inputmethod.latin.uix.actions.TextEditAction
 import org.futo.inputmethod.latin.uix.actions.ThemeAction
 import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
+import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -341,8 +343,10 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit) {
 
 @Composable
 fun RowScope.ActionItems(onSelect: (Action) -> Unit) {
+    val systemVoiceInput = useDataStore(key = USE_SYSTEM_VOICE_INPUT.key, default = USE_SYSTEM_VOICE_INPUT.default)
+
     ActionItem(EmojiAction, onSelect)
-    ActionItem(VoiceInputAction, onSelect)
+    ActionItem(if(systemVoiceInput.value) { SystemVoiceInputAction } else { VoiceInputAction }, onSelect)
     ActionItem(ThemeAction, onSelect)
     ActionItem(UndoAction, onSelect)
     ActionItem(RedoAction, onSelect)
@@ -443,6 +447,7 @@ fun ActionBar(
 ) {
     val context = LocalContext.current
     val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }
+    val systemVoiceInput = useDataStore(key = USE_SYSTEM_VOICE_INPUT.key, default = USE_SYSTEM_VOICE_INPUT.default)
 
     Surface(modifier = Modifier
         .fillMaxWidth()
@@ -479,7 +484,7 @@ fun ActionBar(
                 }
 
                 if (!isActionsOpen.value) {
-                    ActionItemSmall(VoiceInputAction, onActionActivated)
+                    ActionItemSmall(if(systemVoiceInput.value) { SystemVoiceInputAction } else { VoiceInputAction }, onActionActivated)
                 }
             }
         }

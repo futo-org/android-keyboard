@@ -95,14 +95,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     val inputLogic get() = latinIMELegacy.mInputLogic
 
-    val languageModelFacilitator = LanguageModelFacilitator(
-        this,
-        latinIMELegacy.mInputLogic,
-        latinIMELegacy.mDictionaryFacilitator,
-        latinIMELegacy.mSettings,
-        latinIMELegacy.mKeyboardSwitcher,
-        lifecycleScope
-    )
+    lateinit var languageModelFacilitator: LanguageModelFacilitator
 
     val uixManager = UixManager(this)
 
@@ -192,6 +185,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun onCreate() {
         super.onCreate()
+
+        languageModelFacilitator = LanguageModelFacilitator(
+            this,
+            latinIMELegacy.mInputLogic,
+            latinIMELegacy.mDictionaryFacilitator,
+            latinIMELegacy.mSettings,
+            latinIMELegacy.mKeyboardSwitcher,
+            lifecycleScope
+        )
 
         colorSchemeLoaderJob = deferGetSetting(THEME_KEY) {
             val themeOptionFromSettings = ThemeOptions[it]

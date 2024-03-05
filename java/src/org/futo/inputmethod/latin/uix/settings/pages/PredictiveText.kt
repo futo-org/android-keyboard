@@ -50,12 +50,22 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
                 title = "Advanced Parameters",
                 style = NavigationItemStyle.HomeSecondary,
                 navigate = { navController.navigate("advancedparams") },
-                icon = painterResource(id = R.drawable.cpu)
+                icon = painterResource(id = R.drawable.code)
             )
 
             Tip("Note: Transformer LM is in alpha state")
         }
 
+        NavigationItem(
+            title = stringResource(R.string.edit_personal_dictionary),
+            style = NavigationItemStyle.HomePrimary,
+            icon = painterResource(id = R.drawable.book),
+            navigate = {
+                val intent = Intent("android.settings.USER_DICTIONARY_SETTINGS")
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
+            }
+        )
 
         // TODO: It doesn't make a lot of sense in the case of having autocorrect on but show_suggestions off
 
@@ -74,15 +84,6 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
         )
 
         if(!transformerLmEnabled) {
-            NavigationItem(
-                title = stringResource(R.string.edit_personal_dictionary),
-                style = NavigationItemStyle.Misc,
-                navigate = {
-                    val intent = Intent("android.settings.USER_DICTIONARY_SETTINGS")
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intent)
-                }
-            )
 
             /*
             NavigationItem(

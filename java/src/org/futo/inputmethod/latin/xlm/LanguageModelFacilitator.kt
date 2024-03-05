@@ -43,6 +43,27 @@ val BinaryDictTransformerWeightSetting = SettingsKey(
     1.0f
 )
 
+private fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
+    assert(mWord == other.mWord)
+
+    val result = SuggestedWordInfo(
+        mWord,
+        mPrevWordsContext,
+        (mScore.coerceAtLeast(0).toLong() + other.mScore.coerceAtLeast(0).toLong())
+            .coerceAtMost(
+                Int.MAX_VALUE.toLong()
+            ).toInt(),
+        SuggestedWordInfo.KIND_WHITELIST or SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION,
+        null,
+        0,
+        0
+    )
+
+    result.mOriginatesFromTransformerLM = mOriginatesFromTransformerLM || other.mOriginatesFromTransformerLM
+
+    return result
+}
+
 public class LanguageModelFacilitator(
     val context: Context,
     val inputLogic: InputLogic,
@@ -51,6 +72,8 @@ public class LanguageModelFacilitator(
     val keyboardSwitcher: KeyboardSwitcher,
     val lifecycleScope: LifecycleCoroutineScope
 ) {
+    private val userDictionary = UserDictionaryObserver(context)
+
     private var languageModel: LanguageModel? = null
     data class PredictionInputValues(
         val composedData: ComposedData,
@@ -147,7 +170,9 @@ public class LanguageModelFacilitator(
                 proximityInfoHandle,
                 -1,
                 autocorrectThreshold,
-                floatArrayOf())
+                floatArrayOf(),
+                userDictionary.getWords().map { it.word }
+            )
             
             if(lmSuggestions == null) {
                 job.cancel()
@@ -171,20 +196,7 @@ public class LanguageModelFacilitator(
             val filtered = mutableListOf<SuggestedWordInfo>()
             if(bothAlgorithmsCameToSameConclusion && maxWord != null && maxWordDict != null){
                 // We can be pretty confident about autocorrecting this
-                val clone = SuggestedWordInfo(
-                    maxWord.mWord,
-                    maxWord.mPrevWordsContext,
-                    (maxWord.mScore.coerceAtLeast(0).toLong() + maxWordDict.mScore.coerceAtLeast(0).toLong())
-                        .coerceAtMost(
-                            Int.MAX_VALUE.toLong()
-                        ).toInt(),
-                    SuggestedWordInfo.KIND_WHITELIST or SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION,
-                    null,
-                    0,
-                    0
-                )
-                clone.mOriginatesFromTransformerLM = true
-
+                val clone = maxWord.add(maxWordDict)
                 suggestionResults.add(clone)
                 filtered.add(maxWordDict)
                 filtered.add(maxWord)

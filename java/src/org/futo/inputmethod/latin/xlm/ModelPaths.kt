@@ -16,8 +16,8 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-val BASE_MODEL_RESOURCE = R.raw.ml4_v3mixing_m_klm
-val BASE_MODEL_NAME = "ml4_v3mixing_m_klm"
+val BASE_MODEL_RESOURCE = R.raw.ml4_1_f16_meta_fixed
+val BASE_MODEL_NAME = "ml4_1_f16_meta_fixed"
 
 val MODEL_OPTION_KEY = SettingsKey(
     stringSetPreferencesKey("lmModelsByLanguage"),

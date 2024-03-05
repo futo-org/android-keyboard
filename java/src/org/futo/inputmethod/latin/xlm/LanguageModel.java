@@ -66,7 +66,8 @@ public class LanguageModel {
             long proximityInfoHandle,
             int sessionId,
             float autocorrectThreshold,
-            float[] inOutWeightOfLangModelVsSpatialModel
+            float[] inOutWeightOfLangModelVsSpatialModel,
+            List<String> personalDictionary
     ) {
         Log.d("LanguageModel", "getSuggestions called");
 
@@ -164,11 +165,21 @@ public class LanguageModel {
             context = "";
         }
 
+        if(!personalDictionary.isEmpty()) {
+            StringBuilder glossary = new StringBuilder();
+            for (String s : personalDictionary) {
+                glossary.append(s.trim()).append(", ");
+            }
+
+            if(glossary.length() > 2) {
+                context = "(Glossary: " + glossary.substring(0, glossary.length() - 2) + ")\n\n" + context;
+            }
+        }
+
         int maxResults = 128;
         float[] outProbabilities = new float[maxResults];
         String[] outStrings = new String[maxResults];
 
-        // TOOD: Pass multiple previous words information for n-gram.
         getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, inputMode, xCoords, yCoords, autocorrectThreshold, outStrings, outProbabilities);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
