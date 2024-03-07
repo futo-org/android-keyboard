@@ -868,7 +868,10 @@ namespace latinime {
         sortProbabilityPairVectorDescending(results);
 
         const char *result_probability_mode;
-        if(results[0].first > autocorrectThreshold * results[1].first) {
+        if(results.size() < 2) {
+            // Not sure what to do here
+            result_probability_mode = RETURNVAL_UNCERTAIN;
+        }else if(results[0].first > autocorrectThreshold * results[1].first) {
             result_probability_mode = RETURNVAL_AUTOCORRECT;
         }else if(results[0].first > (autocorrectThreshold * 0.1f) * results[1].first) {
             result_probability_mode = RETURNVAL_UNCERTAIN;
@@ -878,7 +881,7 @@ namespace latinime {
         }
 
         // No way it's correct if it's way shorter! (unless we're swipe typing)
-        if(partialWordString.size() > 0 && (results[0].second.size() * 2 < partialWordString.size()) && inputMode != 1) {
+        if(results.size() > 0 && partialWordString.size() > 0 && (results[0].second.size() * 2 < partialWordString.size()) && inputMode != 1) {
             result_probability_mode = RETURNVAL_CLUELESS;
         }
 
