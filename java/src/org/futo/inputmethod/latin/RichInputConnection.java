@@ -686,11 +686,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         NgramContext ngramContext = NgramContextUtils.getNgramContextFromNthPreviousWord(
                 prev, spacingAndPunctuations, n);
 
-        ngramContext.fullContext = getTextBeforeCursor(4096, 0).toString();
+        CharSequence seq = getTextBeforeCursor(4096, 0);
+        if(seq != null) {
+            ngramContext.fullContext = seq.toString();
 
-        if(ngramContext.fullContext.length() == 4096) {
-            ngramContext.fullContext = String.join(" ",ngramContext.fullContext.split(" ")).substring(ngramContext.fullContext.split(" ")[0].length()+1);
-
+            if (ngramContext.fullContext.length() == 4096) {
+                ngramContext.fullContext = String.join(" ", ngramContext.fullContext.split(" ")).substring(ngramContext.fullContext.split(" ")[0].length() + 1);
+            }
+        } else {
+            ngramContext.fullContext = "";
         }
 
         return ngramContext;
