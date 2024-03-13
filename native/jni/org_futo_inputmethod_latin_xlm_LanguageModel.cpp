@@ -556,6 +556,7 @@ struct LanguageModelState {
             return { };
         }
 
+        // TODO: This should really not be here
         is_bugged = is_bugged && logits[561] < -990.0f && logits[561] > -1100.0f;
         if(is_bugged) {
             AKLOGE("Detected bug!!!! Trying to mitigate. Let's just reset cache and exit");
@@ -591,6 +592,22 @@ struct LanguageModelState {
                     }
             );
         }
+
+        // TODO: This should really not be here
+        is_bugged = true;
+        for(const auto &seq : sequences) {
+            if(seq.second.tokens.front() > 48 || seq.first != sequences[0].first) {
+                is_bugged = false;
+                break;
+            }
+        }
+        if(is_bugged) {
+            AKLOGE("Detected bug2!!!! Trying to mitigate. Let's just reset cache and exit");
+            llama_kv_cache_seq_rm(ctx, -1, -1, -1);
+            model->transformerContext.active_context = { };
+            return { };
+        }
+
 
         for (auto &sequence: sequences) {
             if (sequence.second.seq_id == 0) continue;
