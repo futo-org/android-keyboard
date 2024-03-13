@@ -292,7 +292,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         key(legacyInputView) {
             AndroidView(factory = {
                 legacyInputView!!
-            }, update = { }, modifier = modifier)
+            }, modifier = modifier)
         }
     }
 
@@ -305,7 +305,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             latinIMELegacy.setComposeInputView(it)
         }
 
-        latinIMELegacy.setInputView(legacyInputView)
+        latinIMELegacy.setInputView(newView)
     }
 
     override fun setInputView(view: View?) {

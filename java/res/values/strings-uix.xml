@@ -39,4 +39,5 @@
 
     <string name="blacklist">Blacklist</string>
     <string name="blacklist_from_suggestions">Blacklist \"%1$s\" from being suggested?</string>
+    <string name="try_typing">Try typing here…</string>
 </resources>

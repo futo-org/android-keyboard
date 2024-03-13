@@ -1,9 +1,11 @@
 package org.futo.inputmethod.latin.uix.settings
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
@@ -27,9 +29,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.deferGetSetting
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
@@ -68,9 +73,9 @@ class SettingsActivity : ComponentActivity() {
 
     private val inputMethodEnabled = mutableStateOf(false)
     private val inputMethodSelected = mutableStateOf(false)
+    private val micPermissionGrantedOrUsingSystem = mutableStateOf(false)
 
     private var wasImeEverDisabled = false
-
 
     private var fileBeingSaved: File? = null
     fun updateFileBeingSaved(to: File) {
@@ -82,11 +87,15 @@ class SettingsActivity : ComponentActivity() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun updateSystemState() {
+    fun updateSystemState() {
         val inputMethodEnabled = isInputMethodEnabled()
         val inputMethodSelected = isDefaultIMECurrent()
         this.inputMethodEnabled.value = inputMethodEnabled
         this.inputMethodSelected.value = inputMethodSelected
+
+        this.micPermissionGrantedOrUsingSystem.value = (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) || runBlocking {
+            getSetting(USE_SYSTEM_VOICE_INPUT)
+        }
 
         if(!inputMethodEnabled) {
             wasImeEverDisabled = true
@@ -138,7 +147,7 @@ class SettingsActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        SetupOrMain(inputMethodEnabled.value, inputMethodSelected.value) {
+                        SetupOrMain(inputMethodEnabled.value, inputMethodSelected.value, micPermissionGrantedOrUsingSystem.value) {
                             SettingsNavigator(navController = navController)
                         }
                     }
