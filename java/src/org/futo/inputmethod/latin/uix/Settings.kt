@@ -124,7 +124,7 @@ val SUGGESTION_BLACKLIST = SettingsKey(
     default = setOf()
 )
 
-val BLACKLIST_BADWORDS = SettingsKey(
-    key = booleanPreferencesKey("blacklistBadWords"),
+val SHOW_EMOJI_SUGGESTIONS = SettingsKey(
+    key = booleanPreferencesKey("suggestEmojis"),
     default = true
 )

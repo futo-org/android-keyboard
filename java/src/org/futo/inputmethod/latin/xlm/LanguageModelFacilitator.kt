@@ -29,6 +29,7 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
+import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
 import org.futo.inputmethod.latin.uix.actions.PersistentEmojiState
@@ -81,6 +82,7 @@ public class LanguageModelFacilitator(
     private val userDictionary = UserDictionaryObserver(context)
     private val emojiData = PersistentEmojiState()
 
+    private var shouldSuggestEmojis = SHOW_EMOJI_SUGGESTIONS.default
     private var languageModel: LanguageModel? = null
     data class PredictionInputValues(
         val composedData: ComposedData,
@@ -267,7 +269,7 @@ public class LanguageModelFacilitator(
                 }
             }
 
-            if(values.composedData.mTypedWord.isNotEmpty()) {
+            if(values.composedData.mTypedWord.isNotEmpty() && shouldSuggestEmojis) {
                 (getEmojiCandidate(values.composedData.mTypedWord)
                     ?: maxWord?.let { getEmojiCandidate(it.mWord) }
                     ?: maxWordDict?.let { getEmojiCandidate(it.mWord) })?.let {
@@ -346,6 +348,12 @@ public class LanguageModelFacilitator(
 
         launch {
             emojiData.loadEmojis(context)
+        }
+
+        launch {
+            withContext(Dispatchers.Default) {
+                context.getSettingFlow(SHOW_EMOJI_SUGGESTIONS).collect { shouldSuggestEmojis = it }
+            }
         }
 
         scheduleTrainingWorkerBackground(context)

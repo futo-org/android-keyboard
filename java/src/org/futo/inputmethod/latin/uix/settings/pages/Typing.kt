@@ -9,8 +9,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
 
 @Preview
@@ -20,6 +22,11 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
     ScrollableList {
         ScreenTitle("Typing Preferences", showBack = true, navController)
 
+        SettingToggleDataStore(
+            title = "Emoji Suggestions",
+            subtitle = "Suggest emojis while you're typing",
+            setting = SHOW_EMOJI_SUGGESTIONS
+        )
         SettingToggleSharedPrefs(
             title = stringResource(R.string.auto_cap),
             subtitle = stringResource(R.string.auto_cap_summary),
