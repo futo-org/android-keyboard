@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.xlm;
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +31,7 @@ import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
+import org.futo.inputmethod.latin.uix.actions.PersistentEmojiState
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.utils.AsyncResultHolder
@@ -77,6 +79,7 @@ public class LanguageModelFacilitator(
     val suggestionBlacklist: SuggestionBlacklist
 ) {
     private val userDictionary = UserDictionaryObserver(context)
+    private val emojiData = PersistentEmojiState()
 
     private var languageModel: LanguageModel? = null
     data class PredictionInputValues(
@@ -109,6 +112,25 @@ public class LanguageModelFacilitator(
             } catch(e: TimeoutCancellationException) {
                 println("Failed to complete prediction within 1000ms!")
             }
+        }
+    }
+
+    private fun getEmojiCandidate(word: String): SuggestedWordInfo? {
+        val emoji = emojiData.emojiAliases[word.lowercase()]
+
+        if(emoji != null) {
+            Log.i("LanguageModelFacilitator", "Found emoji ${emoji.emoji} for $word")
+            return SuggestedWordInfo(
+                emoji.emoji,
+                "",
+                100,
+                SuggestedWordInfo.KIND_EMOJI_SUGGESTION,
+                null,
+                SuggestedWordInfo.NOT_AN_INDEX,
+                SuggestedWordInfo.NOT_A_CONFIDENCE
+            )
+        } else {
+            return null
         }
     }
 
@@ -164,7 +186,7 @@ public class LanguageModelFacilitator(
             val proximityInfoHandle = keyboard.proximityInfo.nativeProximityInfo
             
             val suggestionResults = SuggestionResults(
-                3, values.ngramContext.isBeginningOfSentenceContext, false)
+                14, values.ngramContext.isBeginningOfSentenceContext, false)
 
             val lmSuggestions = languageModel!!.getSuggestions(
                 values.composedData,
@@ -241,7 +263,15 @@ public class LanguageModelFacilitator(
                         it != words.typedWordInfo && !filtered.contains(
                             it
                         )
-                    })
+                    }.take(10))
+                }
+            }
+
+            if(values.composedData.mTypedWord.isNotEmpty()) {
+                (getEmojiCandidate(values.composedData.mTypedWord)
+                    ?: maxWord?.let { getEmojiCandidate(it.mWord) }
+                    ?: maxWordDict?.let { getEmojiCandidate(it.mWord) })?.let {
+                    suggestionResults.add(it)
                 }
             }
 
@@ -312,6 +342,10 @@ public class LanguageModelFacilitator(
                     trainingEnabled = it
                 }
             }
+        }
+
+        launch {
+            emojiData.loadEmojis(context)
         }
 
         scheduleTrainingWorkerBackground(context)

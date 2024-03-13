@@ -239,7 +239,9 @@ fun Emojis(
                                             emoji = emoji,
                                             description = popupInfo.emoji.description,
                                             category = popupInfo.emoji.category,
-                                            skinTones = false
+                                            skinTones = false,
+                                            aliases = listOf(),
+                                            tags = listOf()
                                         )
                                     )
                                     activePopup = null
@@ -342,6 +344,7 @@ fun EmojiGrid(
 class PersistentEmojiState : PersistentActionState {
     var emojis: MutableState<List<EmojiItem>?> = mutableStateOf(null)
     var emojiMap: HashMap<String, EmojiItem> = HashMap()
+    var emojiAliases: HashMap<String, EmojiItem> = HashMap()
 
     suspend fun loadEmojis(context: Context) = withContext(Dispatchers.IO) {
         val stream = context.resources.openRawResource(R.raw.gemoji)
@@ -354,7 +357,9 @@ class PersistentEmojiState : PersistentActionState {
                     emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content,
                     description = it.jsonObject["description"]!!.jsonPrimitive.content,
                     category = it.jsonObject["category"]!!.jsonPrimitive.content,
-                    skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull ?: false
+                    skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull ?: false,
+                    tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }?.toList() ?: listOf(),
+                    aliases = it.jsonObject["aliases"]?.jsonArray?.map { it.jsonPrimitive.content }?.toList() ?: listOf(),
                 )
             }
 
@@ -363,6 +368,14 @@ class PersistentEmojiState : PersistentActionState {
                     put(it.emoji, it)
                 }
             }
+
+            emojiAliases = HashMap<String, EmojiItem>().apply {
+                emojis.value!!.forEach { emoji ->
+                    emoji.tags.forEach { put(it, emoji) }
+                    emoji.aliases.forEach { put(it, emoji) }
+                }
+            }
+
         }
     }
 

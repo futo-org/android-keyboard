@@ -295,19 +295,32 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
     }
 
 
-    for (i in 0 until maxSuggestions) {
-        val remapped = if(offset == 1 && i == 2) {
-            0 - offset
-        } else {
-            ORDER_OF_SUGGESTIONS[i]
-        }
+    val suggestionOrder = mutableListOf(
+        ORDER_OF_SUGGESTIONS[0] + offset,
+        ORDER_OF_SUGGESTIONS[1] + offset,
+        if(offset == 1) { 0 - offset } else { ORDER_OF_SUGGESTIONS[2] } + offset,
+    )
 
+    // Find emoji
+    try {
+        for(i in 0 until words.size()) {
+            val info = words.getInfo(i)
+            if(info.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
+                suggestionOrder[0] = i
+            }
+        }
+    } catch(_: IndexOutOfBoundsException) {
+
+    }
+
+
+    for (i in 0 until maxSuggestions) {
         SuggestionItem(
             words,
-            remapped + offset,
-            isPrimary = remapped == 0,
-            onClick = { onClick(remapped + offset) },
-            onLongClick = { onLongClick(remapped + offset) }
+            suggestionOrder[i],
+            isPrimary = i == (maxSuggestions / 2),
+            onClick = { onClick(suggestionOrder[i]) },
+            onLongClick = { onLongClick(suggestionOrder[i]) }
         )
 
         if (i < maxSuggestions - 1) SuggestionSeparator()
