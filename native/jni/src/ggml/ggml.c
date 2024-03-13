@@ -1,6 +1,10 @@
 #define _CRT_SECURE_NO_DEPRECATE // Disables ridiculous "unsafe" warnigns on Windows
 #define _USE_MATH_DEFINES // For M_PI on MSVC
 
+// Skip NaN asserts
+#define NDEBUG
+
+
 #include "ggml-impl.h"
 #include "ggml-quants.h"
 

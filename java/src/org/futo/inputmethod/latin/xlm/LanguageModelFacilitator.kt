@@ -22,6 +22,7 @@ import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.Suggest
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
+import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
@@ -72,7 +73,8 @@ public class LanguageModelFacilitator(
     val dictionaryFacilitator: DictionaryFacilitator,
     val settings: Settings,
     val keyboardSwitcher: KeyboardSwitcher,
-    val lifecycleScope: LifecycleCoroutineScope
+    val lifecycleScope: LifecycleCoroutineScope,
+    val suggestionBlacklist: SuggestionBlacklist
 ) {
     private val userDictionary = UserDictionaryObserver(context)
 
@@ -173,16 +175,34 @@ public class LanguageModelFacilitator(
                 -1,
                 autocorrectThreshold,
                 floatArrayOf(),
-                userDictionary.getWords().map { it.word }
+                userDictionary.getWords().map { it.word },
+                suggestionBlacklist.currentBlacklist.toTypedArray()
             )
-            
+
             if(lmSuggestions == null) {
                 job.cancel()
                 inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
                 return
             }
 
-            val maxWord = lmSuggestions.maxByOrNull { it.mScore }
+            val reweightedSuggestions = lmSuggestions.mapIndexedNotNull { i, it ->
+                if(transformerWeight == Float.NEGATIVE_INFINITY) { null } else {
+                    SuggestedWordInfo(
+                        it.mWord,
+                        it.mPrevWordsContext,
+                        (it.mScore.toFloat() * transformerWeight).toLong().coerceAtMost(Int.MAX_VALUE.toLong() - lmSuggestions.size)
+                            .toInt() - i + (lmSuggestions.size - 1),
+                        it.mKindAndFlags,
+                        it.mSourceDict,
+                        it.mIndexOfTouchPointOfSecondWord,
+                        it.mAutoCommitFirstWordConfidence
+                    ).apply {
+                        this.mOriginatesFromTransformerLM = true
+                    }
+                }
+            }
+
+            val maxWord = reweightedSuggestions.maxByOrNull { it.mScore }
 
             val suggestedWordsDict = holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())
 
@@ -210,25 +230,9 @@ public class LanguageModelFacilitator(
                 }
             }
 
-            val reweightedSuggestions = lmSuggestions.filter { !filtered.contains(it) }.mapNotNull {
-                if(transformerWeight == Float.NEGATIVE_INFINITY) { null } else {
-                    SuggestedWordInfo(
-                        it.mWord,
-                        it.mPrevWordsContext,
-                        (it.mScore.toFloat() * transformerWeight).coerceAtMost(Int.MAX_VALUE.toFloat())
-                            .toInt(),
-                        it.mKindAndFlags,
-                        it.mSourceDict,
-                        it.mIndexOfTouchPointOfSecondWord,
-                        it.mAutoCommitFirstWordConfidence
-                    ).apply {
-                        this.mOriginatesFromTransformerLM = true
-                    }
-                }
-            }
-            suggestionResults.addAll(reweightedSuggestions)
+            suggestionResults.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
             if(suggestionResults.mRawSuggestions != null) {
-                suggestionResults.mRawSuggestions.addAll(reweightedSuggestions)
+                suggestionResults.mRawSuggestions.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
             }
 
             if(transformerWeight != Float.POSITIVE_INFINITY) {
@@ -241,6 +245,7 @@ public class LanguageModelFacilitator(
                 }
             }
 
+            println("LanguageModelFacilitator: final suggestionResults = ${suggestionResults.map { "$it ${it.mScore}" }}")
             val wordComposer = inputLogic.mWordComposer
             val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
                 wordComposer, values.inputStyle, true, -1, locale, suggestionResults, settingsValues.mAutoCorrectionThreshold)

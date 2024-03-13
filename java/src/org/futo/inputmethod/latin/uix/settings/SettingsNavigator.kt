@@ -11,6 +11,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
+import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
@@ -43,6 +44,7 @@ fun SettingsNavigator(
         composable("typing") { TypingScreen(navController) }
         composable("voiceInput") { VoiceInputScreen(navController) }
         composable("themes") { ThemeScreen(navController) }
+        composable("blacklist") { BlacklistScreen(navController) }
         dialog("error/{title}/{body}") {
             ErrorDialog(
                 it.arguments?.getString("title")?.urlDecode() ?: stringResource(R.string.unknown_error),

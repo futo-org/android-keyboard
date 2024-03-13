@@ -10,6 +10,7 @@
 #include "ggml/LanguageModel.h"
 #include "defines.h"
 #include "suggest/core/layout/proximity_info.h"
+#include "jni_utils.h"
 
 #define EPS 0.0001
 #define TIME_START(name)  const int64_t start_##name = ggml_time_us();
@@ -48,6 +49,7 @@ static inline void sortProbabilityPairVectorDescending(std::vector<std::pair<flo
 
 template<typename T>
 static inline void sortProbabilityPairVectorDescending(std::vector<std::pair<float, T>> &vec, int partial) {
+    if(partial > vec.size()) partial = vec.size();
     std::partial_sort(vec.begin(), vec.begin() + partial, vec.end(), sortProbabilityPairDescending<T>);
 }
 
@@ -58,6 +60,25 @@ typedef struct potential_sequence_data {
 
 // P = P(tokens[0]) * P(tokens[1]) * [...]
 typedef std::pair<float, potential_sequence_data> potential_sequence;
+
+
+typedef struct banned_sequence {
+    token_sequence sequence;
+    int hash;
+}; banned_sequence;
+
+int compute_sequence_hash(const token_sequence &seq) {
+    int hash = 0;
+    for(llama_token t : seq) {
+        hash = (hash + t) % 999999999;
+    }
+    return hash;
+}
+
+int append_sequence_hash(int hash, llama_token t) {
+    return (hash + t) % 999999999;
+}
+
 
 static void softmax(float * input, size_t input_len) {
     float m = -INFINITY;
@@ -140,7 +161,6 @@ struct LanguageModelState {
     struct {
         int SPACE;
 
-        std::vector<int> SAMPLING_BAD_TOKENS;
 
         int XBU;
         int XBC;
@@ -148,11 +168,16 @@ struct LanguageModelState {
 
         int XC0_SWIPE_MODE;
 
+        int DASH;
+        int STAR;
+
         int LETTERS_TO_IDS[26];
 
         std::vector<int> banned_start_of_word_tokens;
         std::vector<int> banned_tokens_for_first_capital;
         std::vector<int> banned_tokens_for_all_capitals;
+        std::vector<int> banned_tokens_word_separators; // probabilities add to space token
+        std::vector<int> general_banned_tokens;
     } specialTokens;
 
     bool Initialize(const std::string &paths){
@@ -163,6 +188,8 @@ struct LanguageModelState {
         }
 
         specialTokens.SPACE = model->tokenToId("▁"); // ▁
+        specialTokens.DASH = model->tokenToId("-");
+        specialTokens.STAR = model->tokenToId("*");
 
         if(model->adapter->hasFeature(FEATURE_AUTOCORRECT)) {
             specialTokens.XBU = model->tokenToId("<XBU>");
@@ -190,13 +217,14 @@ struct LanguageModelState {
             specialTokens.XEC = -1;
         }
 
-        specialTokens.SAMPLING_BAD_TOKENS = { };
+        specialTokens.banned_tokens_word_separators = { };
+        specialTokens.general_banned_tokens = { model->tokenToId("-▁") };
 
         int permitted_period_token = model->tokenToId(".");
 
-        const char *blacklist_symbols = "!@#$%^&*()_=?/,\\][{};:\"><+`~|\r\n\t\x0b\x0c ";
+        const char *blacklist_symbols = ".!@#$%^&*()_=?/,\\][{};:\"><+`~|\r\n\t\x0b\x0c";
         for(int i = 0; i < model->getVocabSize(); i++) {
-            if(i == permitted_period_token) continue;
+            //if(i == permitted_period_token) continue;
 
             const char *token = model->getToken(i);
 
@@ -209,7 +237,7 @@ struct LanguageModelState {
             }
 
             if(has_symbol) {
-                specialTokens.SAMPLING_BAD_TOKENS.emplace_back(i);
+                specialTokens.banned_tokens_word_separators.emplace_back(i);
             }
         }
 
@@ -223,7 +251,7 @@ struct LanguageModelState {
                 specialTokens.banned_tokens_for_all_capitals.push_back(i);
             }
 
-            if(text[0] == '\'') {
+            if(text[0] == '\'' || text[0] == '-') {
                 specialTokens.banned_start_of_word_tokens.push_back(i);
             }
         }
@@ -231,10 +259,16 @@ struct LanguageModelState {
         return true;
     }
 
-    void transform_logits(float *logits, size_t n_vocab, bool is_first_token, bool allow_correction_token, WordCapitalizeMode capitals){
+    bool transform_logits(float *logits, size_t n_vocab, bool is_first_token, bool allow_correction_token, WordCapitalizeMode capitals, llama_token prev_token){
+        for(size_t i = 0; i < n_vocab; i++) {
+            if(isnan(logits[i])){
+                return false;
+            }
+        }
+
         softmax(logits, n_vocab);
 
-        for(int x : specialTokens.SAMPLING_BAD_TOKENS) {
+        for(int x : specialTokens.banned_tokens_word_separators) {
             if(allow_correction_token && x == specialTokens.XEC) continue;
 
             logits[specialTokens.SPACE] += std::max(0.0f, logits[x]);
@@ -249,6 +283,14 @@ struct LanguageModelState {
             }
         }
 
+        for(int i : specialTokens.general_banned_tokens) {
+            logits[i] = -999.0f;
+        }
+
+        if(prev_token == specialTokens.DASH) {
+            logits[specialTokens.DASH] = -999.0f;
+        }
+
         if(capitals == WordCapitalizeMode::FirstCapital && is_first_token) {
             for(int i : specialTokens.banned_tokens_for_first_capital) {
                 logits[i] = -999.0f;
@@ -259,6 +301,7 @@ struct LanguageModelState {
                 logits[i] = -999.0f;
             }
         }
+        return true;
     }
 
     std::vector<TokenMix> past_mixes = { };
@@ -450,7 +493,50 @@ struct LanguageModelState {
         };
     }
 
-    std::vector<std::pair<float, token_sequence>> Sample(DecodeResult decodeResult, int n_results, WordCapitalizeMode capitals) {
+    bool MatchesBanned(const token_sequence &prior, int prior_hash, llama_token next, const std::vector<banned_sequence> &banned_sequences) {
+        int new_hash = append_sequence_hash(prior_hash, next);
+        for(const auto &banned_sequence : banned_sequences) {
+            if(banned_sequence.sequence.back() == specialTokens.STAR && (prior.size() >= banned_sequence.sequence.size() - 1)) {
+                bool matches = true;
+                for(size_t i = 0; i < banned_sequence.sequence.size() - 1; i++) {
+                    if(prior[i] != banned_sequence.sequence[i]) {
+                        matches = false;
+                        break;
+                    }
+                }
+
+                if(matches){
+                    auto priorTxt = model->decode(prior);
+                    auto nextTxt = model->decode({next});
+                    auto bannedTxt = model->decode(banned_sequence.sequence);
+                    AKLOGI("Tokens [%s] + [%s] matches banned wildcard [%s]", priorTxt.c_str(), nextTxt.c_str(), bannedTxt.c_str());
+                    return true;
+                }
+            }else if((banned_sequence.sequence.size() == prior.size() + 1) && (banned_sequence.hash == new_hash)) {
+                if(banned_sequence.sequence.back() == next) {
+                    bool matches = true;
+                    for(size_t i = 0; i < prior.size(); i++) {
+                        if(prior[i] != banned_sequence.sequence[i]) {
+                            matches = false;
+                            break;
+                        }
+                    }
+
+                    if(matches) {
+                        auto priorTxt = model->decode(prior);
+                        auto nextTxt = model->decode({next});
+                        auto bannedTxt = model->decode(banned_sequence.sequence);
+                        AKLOGI("Tokens [%s] + [%s] matches banned [%s]", priorTxt.c_str(), nextTxt.c_str(), bannedTxt.c_str());
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    std::vector<std::pair<float, token_sequence>> Sample(DecodeResult decodeResult, int n_results, WordCapitalizeMode capitals, const std::vector<banned_sequence> &banned_sequences) {
         llama_context *ctx = ((LlamaAdapter *) model->adapter)->context;
         llama_batch batch = ((LlamaAdapter *) model->adapter)->batch;
 
@@ -461,7 +547,24 @@ struct LanguageModelState {
         bool allow_correction_token = decodeResult.logits_head == 0;
 
         float *logits = llama_get_logits_ith(ctx, decodeResult.logits_head);
-        transform_logits(logits, n_vocab, true, allow_correction_token, capitals);
+        AKLOGI("Value of [the ] before transform: %f", logits[561]);
+
+        bool is_bugged = logits[561] == 0.0f;
+
+        if(!transform_logits(logits, n_vocab, true, allow_correction_token, capitals, 0)) {
+            AKLOGE("logits have NaN!");
+            return { };
+        }
+
+        is_bugged = is_bugged && logits[561] < -990.0f && logits[561] > -1100.0f;
+        if(is_bugged) {
+            AKLOGE("Detected bug!!!! Trying to mitigate. Let's just reset cache and exit");
+            llama_kv_cache_seq_rm(ctx, -1, -1, -1);
+            model->transformerContext.active_context = { };
+            return { };
+        }
+
+        AKLOGI("Value of [the ] after transform: %f", logits[561]);
 
         std::vector<std::pair<float, int>> index_value;
         index_value.clear();
@@ -469,6 +572,14 @@ struct LanguageModelState {
             index_value.emplace_back(logits[i], i);
         }
 
+
+        sortProbabilityPairVectorDescending(index_value, n_results * 2);
+        const token_sequence blank = {};
+        for(int i = 0; i < n_results * 2; i++) {
+            if(MatchesBanned(blank, 0, index_value[i].second, banned_sequences)) {
+                index_value[i].first = 0.0f;
+            }
+        }
         sortProbabilityPairVectorDescending(index_value, n_results);
 
         for (int i = 0; i < n_results; i++) {
@@ -542,14 +653,29 @@ struct LanguageModelState {
 
             for (int seq = 0; seq < remaining_count; seq++) {
                 const potential_sequence &parent_seq = sequences[seq];
+                auto hash = compute_sequence_hash(parent_seq.second.tokens);
+
+                llama_token prev_token = 0;
+                if(parent_seq.second.tokens.size() > 0) prev_token = parent_seq.second.tokens.back();
+
                 logits = llama_get_logits_ith(ctx, seq);
-                transform_logits(logits, n_vocab, false, allow_correction_token, capitals);
+                if(!transform_logits(logits, n_vocab, false, allow_correction_token, capitals, prev_token)) {
+                    AKLOGE("Logits have NaN!");
+                    return { };
+                }
 
                 index_value.clear();
                 for (size_t i = 0; i < n_vocab; i++) {
                     index_value.emplace_back(logits[i], i);
                 }
 
+
+                sortProbabilityPairVectorDescending(index_value, remaining_count * 2);
+                for(size_t i = 0; i < remaining_count * 2; i++) {
+                    if(MatchesBanned(parent_seq.second.tokens, hash, index_value[i].second, banned_sequences)) {
+                        index_value[i].first = 0.0f;
+                    }
+                }
                 sortProbabilityPairVectorDescending(index_value, remaining_count);
 
                 for (size_t i = 0; i < remaining_count; i++) {
@@ -629,12 +755,21 @@ struct LanguageModelState {
         return outputs;
     }
 
-    std::vector<std::pair<float, std::string>> PredictNextWord(const std::string &context) {
+    std::vector<std::pair<float, std::string>> PredictNextWord(const std::string &context, const std::vector<std::string> &banned_words) {
+        std::vector<banned_sequence> banned_sequences;
+        for(const std::string &bw : banned_words) {
+            auto tokenized = model->tokenize(trim(bw) + " ");
+            banned_sequences.push_back({ tokenized, compute_sequence_hash(tokenized) });
+
+            auto tokenized2 = model->tokenize(trim(bw));
+            banned_sequences.push_back({ tokenized2, compute_sequence_hash(tokenized2) });
+        }
+
         token_sequence next_context = model->tokenize(trim(context) + " ");
         next_context.insert(next_context.begin(), 1); // BOS
 
         auto decoding_result = DecodePromptAndMixes(next_context, { });
-        auto results = Sample(decoding_result, 3, WordCapitalizeMode::IgnoredCapitals);
+        auto results = Sample(decoding_result, 3, WordCapitalizeMode::IgnoredCapitals, banned_sequences);
 
         std::vector<std::pair<float, std::string>> str_results;
         for(const auto& result : results) {
@@ -644,7 +779,18 @@ struct LanguageModelState {
         return str_results;
     }
 
-    std::vector<std::pair<float, std::string>> PredictCorrection(const std::string &context, std::string &word, const std::vector<TokenMix> &mixes, bool swipe_mode, WordCapitalizeMode capitals) {
+    std::vector<std::pair<float, std::string>> PredictCorrection(const std::string &context, std::string &word, const std::vector<TokenMix> &mixes, bool swipe_mode, WordCapitalizeMode capitals, const std::vector<std::string> &banned_words) {
+        if(specialTokens.XBU == -1) return { };
+
+        std::vector<banned_sequence> banned_sequences;
+        for(const std::string &bw : banned_words) {
+            auto tokenized = model->tokenize(trim(bw) + " ");
+            banned_sequences.push_back({ tokenized, compute_sequence_hash(tokenized) });
+
+            auto tokenized2 = model->tokenize(trim(bw));
+            banned_sequences.push_back({ tokenized2, compute_sequence_hash(tokenized2) });
+        }
+
         token_sequence next_context;
         if(context.length() != 0) {
             next_context = model->tokenize(trim(context) + " ");
@@ -658,7 +804,7 @@ struct LanguageModelState {
         }
 
         auto decoding_result = DecodePromptAndMixes(next_context, mixes);
-        auto results = Sample(decoding_result, 3, capitals);
+        auto results = Sample(decoding_result, 3, capitals, banned_sequences);
 
         std::vector<std::pair<float, std::string>> str_results;
         for(const auto& result : results) {
@@ -707,6 +853,7 @@ namespace latinime {
          jintArray inComposeX,
          jintArray inComposeY,
          jfloat autocorrectThreshold,
+         jobjectArray bannedWordsArray,
 
          // outputs
          jobjectArray outPredictions,
@@ -740,6 +887,13 @@ namespace latinime {
             }
         }
 
+        std::vector<std::string> bannedWords;
+        size_t numBannedWords = env->GetArrayLength(bannedWordsArray);
+        for(size_t i=0; i<numBannedWords; i++) {
+            jstring jstr = static_cast<jstring>(env->GetObjectArrayElement(bannedWordsArray, i));
+            bannedWords.push_back(jstring2string(env, jstr));
+        }
+
         TIME_START(GettingMixes)
         int xCoordinates[inputSize];
         int yCoordinates[inputSize];
@@ -750,6 +904,7 @@ namespace latinime {
         for(int i=0; i<inputSize; i++) {
             char wc = partialWordString[i];
             if (!(wc >= 'a' && wc <= 'z') && !(wc >= 'A' && wc <= 'Z')) continue;
+            if (xCoordinates[i] == -1 || yCoordinates[i] == -1) continue;
 
             std::vector<float> proportions = pInfo->decomposeTapPosition(xCoordinates[i], yCoordinates[i]);
             for(float &f : proportions) {
@@ -834,7 +989,7 @@ namespace latinime {
         bool isAutoCorrect = false;
         std::vector<std::pair<float, std::string>> results;
         if(partialWordString.empty()) {
-            results = state->PredictNextWord(contextString);
+            results = state->PredictNextWord(contextString, bannedWords);
 
             //for(const auto &result : results) {
             //    AKLOGI("LanguageModel suggestion %.2f [%s]", result.first, result.second.c_str());
@@ -842,7 +997,7 @@ namespace latinime {
         } else {
             isAutoCorrect = true;
             bool swipeMode = inputMode == 1;
-            results = state->PredictCorrection(contextString, partialWordString, mixes, swipeMode, capitals);
+            results = state->PredictCorrection(contextString, partialWordString, mixes, swipeMode, capitals, bannedWords);
 
             //for(const auto &result : results) {
             //    AKLOGI("LanguageModel correction %.2f [%s] -> [%s]", result.first, partialWordString.c_str(), result.second.c_str());
@@ -918,7 +1073,7 @@ namespace latinime {
             },
             {
                     const_cast<char *>("getSuggestionsNative"),
-                    const_cast<char *>("(JJLjava/lang/String;Ljava/lang/String;I[I[IF[Ljava/lang/String;[F)V"),
+                    const_cast<char *>("(JJLjava/lang/String;Ljava/lang/String;I[I[IF[Ljava/lang/String;[Ljava/lang/String;[F)V"),
                     reinterpret_cast<void *>(xlm_LanguageModel_getSuggestions)
             }
     };

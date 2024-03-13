@@ -36,4 +36,7 @@
     <string name="failed_to_import_the_selected_model">Failed to import the selected model</string>
     <string name="dismiss">Dismiss</string>
     <string name="update">Update</string>
+
+    <string name="blacklist">Blacklist</string>
+    <string name="blacklist_from_suggestions">Blacklist \"%1$s\" from being suggested?</string>
 </resources>

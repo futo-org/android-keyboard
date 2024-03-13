@@ -40,15 +40,20 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
+import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
+import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
@@ -98,6 +103,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     lateinit var languageModelFacilitator: LanguageModelFacilitator
 
     val uixManager = UixManager(this)
+    val suggestionBlacklist = SuggestionBlacklist(latinIMELegacy.mSettings, this, lifecycleScope)
 
     private var activeThemeOption: ThemeOption? = null
     private var activeColorScheme = DarkColorScheme
@@ -192,7 +198,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             latinIMELegacy.mDictionaryFacilitator,
             latinIMELegacy.mSettings,
             latinIMELegacy.mKeyboardSwitcher,
-            lifecycleScope
+            lifecycleScope,
+            suggestionBlacklist
         )
 
         colorSchemeLoaderJob = deferGetSetting(THEME_KEY) {
@@ -217,6 +224,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         scheduleUpdateCheckingJob(this)
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
+
+        suggestionBlacklist.init()
     }
 
     override fun onDestroy() {
@@ -503,5 +512,24 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         languageModelFacilitator.updateSuggestionStripAsync(inputStyle);
         return true
+    }
+
+    fun requestForgetWord(suggestedWordInfo: SuggestedWordInfo) {
+        uixManager.requestForgetWord(suggestedWordInfo)
+    }
+
+    fun forceForgetWord(suggestedWordInfo: SuggestedWordInfo) {
+        lifecycleScope.launch {
+            val existingWords = getSetting(SUGGESTION_BLACKLIST).toMutableSet()
+            existingWords.add(suggestedWordInfo.mWord)
+            setSetting(SUGGESTION_BLACKLIST, existingWords)
+        }
+
+        latinIMELegacy.mDictionaryFacilitator.unlearnFromUserHistory(
+            suggestedWordInfo.mWord, NgramContext.EMPTY_PREV_WORDS_INFO,
+            -1, Constants.NOT_A_CODE
+        )
+
+        latinIMELegacy.mInputLogic.performUpdateSuggestionStripSync(latinIMELegacy.mSettings.current, SuggestedWords.INPUT_STYLE_TYPING)
     }
 }

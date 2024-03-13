@@ -72,6 +72,15 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
             }
         )
 
+        NavigationItem(
+            title = "Blacklisted Suggestions",
+            style = NavigationItemStyle.HomeSecondary,
+            icon = painterResource(id = R.drawable.file_text),
+            navigate = {
+                navController.navigate("blacklist")
+            }
+        )
+
         // TODO: It doesn't make a lot of sense in the case of having autocorrect on but show_suggestions off
 
         SettingToggleSharedPrefs(
@@ -103,13 +112,6 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
                 }
             )
             */
-
-            SettingToggleSharedPrefs(
-                title = stringResource(R.string.prefs_block_potentially_offensive_title),
-                subtitle = stringResource(R.string.prefs_block_potentially_offensive_summary),
-                key = Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE,
-                default = booleanResource(R.bool.config_block_potentially_offensive)
-            )
         }
 
         SettingToggleSharedPrefs(

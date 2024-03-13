@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -30,7 +31,7 @@ suspend fun <T> Context.getSetting(key: Preferences.Key<T>, default: T): T {
 }
 
 fun <T> Context.getSettingFlow(key: Preferences.Key<T>, default: T): Flow<T> {
-    return dataStore.data.map { preferences -> preferences[key] ?: default }.take(1)
+    return dataStore.data.map { preferences -> preferences[key] ?: default }
 }
 
 suspend fun <T> Context.setSetting(key: Preferences.Key<T>, value: T) {
@@ -116,4 +117,14 @@ val USE_SYSTEM_VOICE_INPUT = SettingsKey(
 val USE_TRANSFORMER_FINETUNING = SettingsKey(
     key = booleanPreferencesKey("useTransformerFinetuning"),
     default = false
+)
+
+val SUGGESTION_BLACKLIST = SettingsKey(
+    key = stringSetPreferencesKey("suggestionBlacklist"),
+    default = setOf()
+)
+
+val BLACKLIST_BADWORDS = SettingsKey(
+    key = booleanPreferencesKey("blacklistBadWords"),
+    default = true
 )

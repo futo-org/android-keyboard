@@ -4,28 +4,49 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.View
 import android.view.inputmethod.InlineSuggestionsResponse
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
+import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
@@ -33,9 +54,8 @@ import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
-import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
-import org.futo.inputmethod.updates.checkForUpdateAndSaveToPreferences
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
+
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
@@ -246,7 +266,9 @@ class UixManager(private val latinIME: LatinIME) {
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(with(LocalDensity.current) {
-                    (latinIME.getInputViewHeight().toFloat() / heightDiv.toFloat()).toDp()
+                    (latinIME
+                        .getInputViewHeight()
+                        .toFloat() / heightDiv.toFloat()).toDp()
                 })
             ) {
                 windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden)
@@ -270,6 +292,64 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
+    val wordBeingForgotten: MutableState<SuggestedWordInfo?> = mutableStateOf(null)
+    val forgetWordDismissed: MutableState<Boolean> = mutableStateOf(true)
+
+    @Composable
+    fun BoxScope.ForgetWordDialog() {
+        AnimatedVisibility(
+            visible = forgetWordDismissed.value == false,
+            modifier = Modifier.matchParentSize(),
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            if (wordBeingForgotten.value != null) {
+                Box(modifier = Modifier.matchParentSize()) {
+                    Surface(
+                        color = Color.Black.copy(alpha = 0.66f),
+                        modifier = Modifier.matchParentSize().pointerInput(Unit) {
+                            this.detectTapGestures(onPress = {
+                                forgetWordDismissed.value = true
+                            })
+                        }
+                    ) { }
+
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        modifier = Modifier.align(Alignment.Center)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                stringResource(
+                                    R.string.blacklist_from_suggestions,
+                                    wordBeingForgotten.value?.mWord!!
+                                ))
+                            Row {
+                                TextButton(
+                                    onClick = {
+                                        forgetWordDismissed.value = true
+                                    }
+                                ) {
+                                    Text(stringResource(R.string.cancel))
+                                }
+
+                                TextButton(
+                                    onClick = {
+                                        latinIME.forceForgetWord(wordBeingForgotten.value!!)
+                                        forgetWordDismissed.value = true
+                                    }
+                                ) {
+                                    Text(stringResource(R.string.blacklist))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun setContent() {
         composeView?.setContent {
             UixThemeWrapper(latinIME.colorScheme) {
@@ -278,16 +358,20 @@ class UixManager(private val latinIME: LatinIME) {
                     Surface(modifier = Modifier.onSizeChanged {
                         latinIME.updateTouchableHeight(it.height)
                     }) {
-                        Column {
-                            when {
-                                currWindowActionWindow != null -> ActionViewWithHeader(
-                                    currWindowActionWindow!!
-                                )
+                        Box {
+                            Column {
+                                when {
+                                    currWindowActionWindow != null -> ActionViewWithHeader(
+                                        currWindowActionWindow!!
+                                    )
 
-                                else -> MainKeyboardViewWithActionBar()
+                                    else -> MainKeyboardViewWithActionBar()
+                                }
+
+                                latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                             }
 
-                            latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+                            ForgetWordDialog()
                         }
                     }
                 }
@@ -392,6 +476,18 @@ class UixManager(private val latinIME: LatinIME) {
     fun openEmojiKeyboard() {
         if(currWindowAction == null) {
             onActionActivated(EmojiAction)
+        }
+    }
+
+    fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {
+        wordBeingForgotten.value = suggestedWordInfo
+        forgetWordDismissed.value = false
+
+        val v = latinIME.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v!!.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            v!!.vibrate(50)
         }
     }
 }

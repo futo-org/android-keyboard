@@ -5,7 +5,9 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ButtonDefaults
@@ -21,6 +24,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,9 +32,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -164,7 +170,7 @@ fun AutoFitText(
 
         val scale = (size.width / measurement.size.width).coerceAtMost(1.0f)
 
-        translate(left = (scale * (size.width - measurement.size.width)) / 2.0f) {
+        translate(left = (scale * (size.width - measurement.size.width)) / 2.0f, top = size.height / 2 - measurement.size.height / 2) {
             scale(scaleX = scale, scaleY = 1.0f) {
                 drawText(
                     measurement
@@ -174,8 +180,9 @@ fun AutoFitText(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit) {
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
     val word = try {
          words.getWord(idx)
     } catch(e: IndexOutOfBoundsException) {
@@ -221,17 +228,20 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         false -> suggestionStyleAlternative
     }.copy(color = MaterialTheme.colorScheme.onBackground)
 
-    TextButton(
-        onClick = onClick,
+    Box(
         modifier = textButtonModifier
             .weight(1.0f)
-            .fillMaxHeight(),
-        shape = RectangleShape,
-        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
-        enabled = word != null
+            .fillMaxHeight()
+            .combinedClickable(
+                enabled = word != null,
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
     ) {
-        if(word != null) {
-            AutoFitText(word, style = textStyle, modifier = textModifier)
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
+            if (word != null) {
+                AutoFitText(word, style = textStyle, modifier = textModifier.align(Center).padding(2.dp))
+            }
         }
     }
 }
@@ -252,7 +262,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
 val ORDER_OF_SUGGESTIONS = listOf(1, 0, 2)
 
 @Composable
-fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
+fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
     val maxSuggestions = min(ORDER_OF_SUGGESTIONS.size, words.size())
 
     if(maxSuggestions == 0) {
@@ -295,8 +305,10 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
         SuggestionItem(
             words,
             remapped + offset,
-            isPrimary = remapped == 0
-        ) { onClick(remapped + offset) }
+            isPrimary = remapped == 0,
+            onClick = { onClick(remapped + offset) },
+            onLongClick = { onLongClick(remapped + offset) }
+        )
 
         if (i < maxSuggestions - 1) SuggestionSeparator()
     }
@@ -474,11 +486,11 @@ fun ActionBar(
                 } else if (inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     InlineSuggestions(inlineSuggestions)
                 } else if (words != null) {
-                    SuggestionItems(words) {
+                    SuggestionItems(words, onClick = {
                         suggestionStripListener.pickSuggestionManually(
                             words.getInfo(it)
                         )
-                    }
+                    }, onLongClick = { suggestionStripListener.requestForgetWord(words.getInfo(it)) })
                 } else {
                     Spacer(modifier = Modifier.weight(1.0f))
                 }
@@ -567,11 +579,11 @@ fun CollapsibleSuggestionsBar(
             if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 InlineSuggestions(inlineSuggestions)
             } else if(words != null) {
-                SuggestionItems(words) {
+                SuggestionItems(words, onClick = {
                     suggestionStripListener.pickSuggestionManually(
                         words.getInfo(it)
                     )
-                }
+                }, onLongClick = { suggestionStripListener.requestForgetWord(words.getInfo(it)) })
             } else {
                 Spacer(modifier = Modifier.weight(1.0f))
             }
@@ -602,6 +614,9 @@ class ExampleListener : SuggestionStripView.Listener {
     }
 
     override fun pickSuggestionManually(word: SuggestedWordInfo?) {
+    }
+
+    override fun requestForgetWord(word: SuggestedWordInfo?) {
     }
 
     override fun onCodeInput(primaryCode: Int, x: Int, y: Int, isKeyRepeat: Boolean) {

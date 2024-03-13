@@ -67,7 +67,8 @@ public class LanguageModel {
             int sessionId,
             float autocorrectThreshold,
             float[] inOutWeightOfLangModelVsSpatialModel,
-            List<String> personalDictionary
+            List<String> personalDictionary,
+            String[] bannedWords
     ) {
         Log.d("LanguageModel", "getSuggestions called");
 
@@ -180,7 +181,7 @@ public class LanguageModel {
         float[] outProbabilities = new float[maxResults];
         String[] outStrings = new String[maxResults];
 
-        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, inputMode, xCoords, yCoords, autocorrectThreshold, outStrings, outProbabilities);
+        getSuggestionsNative(mNativeState, proximityInfoHandle, context, partialWord, inputMode, xCoords, yCoords, autocorrectThreshold, bannedWords, outStrings, outProbabilities);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
@@ -288,6 +289,7 @@ public class LanguageModel {
             int[] inComposeX,
             int[] inComposeY,
             float thresholdSetting,
+            String[] bannedWords,
 
             // outputs
             String[] outStrings,

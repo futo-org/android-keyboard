@@ -1638,7 +1638,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     @Override
-    public void showSuggestionStrip(final SuggestedWords suggestedWords) {
+    public void showSuggestionStrip(SuggestedWords suggestedWords) {
+        suggestedWords = ((LatinIME) mInputMethodService).getSuggestionBlacklist().filterBlacklistedSuggestions(suggestedWords);
+
         if (suggestedWords.isEmpty()) {
             setNeutralSuggestionStrip();
         } else {
@@ -1659,6 +1661,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
                 mKeyboardSwitcher.getCurrentKeyboardScriptId(),
                 mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
+    }
+
+    @Override
+    public void requestForgetWord(SuggestedWordInfo word) {
+        ((LatinIME)mInputMethodService).requestForgetWord(word);
     }
 
     // This will show either an empty suggestion strip (if prediction is enabled) or

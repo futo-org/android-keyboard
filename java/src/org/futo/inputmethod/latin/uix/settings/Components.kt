@@ -85,7 +85,7 @@ fun Tip(text: String = "This is an example tip") {
 fun SettingItem(
     title: String,
     subtitle: String? = null,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     icon: (@Composable () -> Unit)? = null,
     disabled: Boolean = false,
     content: @Composable () -> Unit
@@ -94,8 +94,8 @@ fun SettingItem(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(0.dp, 68.dp)
-            .clickable(enabled = !disabled, onClick = {
-                if (!disabled) {
+            .clickable(enabled = !disabled && onClick != null, onClick = {
+                if (!disabled && onClick != null) {
                     onClick()
                 }
             })
