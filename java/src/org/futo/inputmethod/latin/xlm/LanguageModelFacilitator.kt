@@ -70,6 +70,40 @@ private fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
     return result
 }
 
+private fun levenshteinDistance(s1: String, s2: String): Int {
+    val len1 = s1.length
+    val len2 = s2.length
+
+    val dist = Array(len1 + 1) { IntArray(len2 + 1) }
+
+    for (i in 0..len1) {
+        dist[i][0] = i
+    }
+    for (j in 0..len2) {
+        dist[0][j] = j
+    }
+
+    for (j in 1..len2) {
+        for (i in 1..len1) {
+            val cost = if (s1[i - 1] == s2[j - 1]) 0 else 1
+            dist[i][j] = minOf(
+                dist[i - 1][j] + 1,
+                dist[i][j - 1] + 1,
+                dist[i - 1][j - 1] + cost
+            )
+        }
+    }
+
+    return dist[len1][len2]
+}
+
+private fun areWordsRoughlyEqual(word1: String, word2: String, threshold: Int): Boolean {
+    val distance = levenshteinDistance(word1, word2)
+    return distance <= threshold
+}
+
+
+
 public class LanguageModelFacilitator(
     val context: Context,
     val inputLogic: InputLogic,
@@ -239,10 +273,12 @@ public class LanguageModelFacilitator(
 
             val bothAlgorithmsCameToSameConclusion = maxWordDict?.mWord == maxWord?.mWord
 
+            var autocorrectWord: SuggestedWordInfo? = null
             val filtered = mutableListOf<SuggestedWordInfo>()
             if(bothAlgorithmsCameToSameConclusion && maxWord != null && maxWordDict != null){
                 // We can be pretty confident about autocorrecting this
                 val clone = maxWord.add(maxWordDict)
+                autocorrectWord = clone
                 suggestionResults.add(clone)
                 filtered.add(maxWordDict)
                 filtered.add(maxWord)
@@ -271,8 +307,11 @@ public class LanguageModelFacilitator(
 
             if(values.composedData.mTypedWord.isNotEmpty() && shouldSuggestEmojis) {
                 (getEmojiCandidate(values.composedData.mTypedWord)
-                    ?: maxWord?.let { getEmojiCandidate(it.mWord) }
-                    ?: maxWordDict?.let { getEmojiCandidate(it.mWord) })?.let {
+                    ?: autocorrectWord?.let {
+                        if(areWordsRoughlyEqual(autocorrectWord.mWord, values.composedData.mTypedWord, 2))
+                            getEmojiCandidate(it.mWord)
+                        else null
+                    })?.let {
                     suggestionResults.add(it)
                 }
             }
