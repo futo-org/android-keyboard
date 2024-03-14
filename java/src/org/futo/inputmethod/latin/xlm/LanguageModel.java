@@ -70,7 +70,7 @@ public class LanguageModel {
             List<String> personalDictionary,
             String[] bannedWords
     ) {
-        Log.d("LanguageModel", "getSuggestions called");
+        //Log.d("LanguageModel", "getSuggestions called");
 
         if (mNativeState == 0) {
             loadModel();
@@ -249,7 +249,7 @@ public class LanguageModel {
             suggestion.mOriginatesFromTransformerLM = true;
         }
 
-        Log.d("LanguageModel", "returning " + String.valueOf(suggestions.size()) + " suggestions");
+        //Log.d("LanguageModel", "returning " + String.valueOf(suggestions.size()) + " suggestions");
 
         return suggestions;
     }

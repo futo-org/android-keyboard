@@ -155,7 +155,7 @@ public class LanguageModelFacilitator(
         val emoji = emojiData.emojiAliases[word.lowercase()]
 
         if(emoji != null) {
-            Log.i("LanguageModelFacilitator", "Found emoji ${emoji.emoji} for $word")
+            //Log.i("LanguageModelFacilitator", "Found emoji ${emoji.emoji} for $word")
             return SuggestedWordInfo(
                 emoji.emoji,
                 "",
@@ -268,8 +268,8 @@ public class LanguageModelFacilitator(
                 suggestionBlacklist.isSuggestedWordOk(it)
             }
 
-            Log.d("LanguageModelFacilitator", "suggestedWordsDict = ${suggestedWordsDictList?.map { "$it ${it.mScore}" }}")
-            Log.d("LanguageModelFacilitator", "lmSuggestions = ${lmSuggestions.map { "$it ${it.mScore}" }}")
+            //Log.d("LanguageModelFacilitator", "suggestedWordsDict = ${suggestedWordsDictList?.map { "$it ${it.mScore}" }}")
+            //Log.d("LanguageModelFacilitator", "lmSuggestions = ${lmSuggestions.map { "$it ${it.mScore}" }}")
 
             val maxWordDict = suggestedWordsDictList?.maxByOrNull {
                 if(it == suggestedWordsDict.typedWordInfo) { Int.MIN_VALUE } else { it.mScore }
@@ -328,7 +328,7 @@ public class LanguageModelFacilitator(
                 }
             }
 
-            Log.d("LanguageModelFacilitator", "final suggestionResults = ${suggestionResults.map { "$it ${it.mScore}" }}")
+            //Log.d("LanguageModelFacilitator", "final suggestionResults = ${suggestionResults.map { "$it ${it.mScore}" }}")
             val wordComposer = inputLogic.mWordComposer
             val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
                 wordComposer, values.inputStyle, true, -1, locale, suggestionResults, settingsValues.mAutoCorrectionThreshold)
@@ -380,7 +380,7 @@ public class LanguageModelFacilitator(
         launch {
             withContext(Dispatchers.Default) {
                 sharedFlow.conflate().collect { value ->
-                    Log.d("LanguageModelFacilitator", "Collecting")
+                    //Log.d("LanguageModelFacilitator", "Collecting")
                     processUpdateSuggestionStrip(value)
                 }
             }
@@ -440,7 +440,7 @@ public class LanguageModelFacilitator(
             )
 
             lifecycleScope.launch {
-                Log.d("LanguageModelFacilitator", "Emitting values")
+                //Log.d("LanguageModelFacilitator", "Emitting values")
                 sharedFlow.emit(values)
             }
         } catch(e: Exception) {
