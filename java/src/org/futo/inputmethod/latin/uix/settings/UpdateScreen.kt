@@ -1,12 +1,15 @@
 package org.futo.inputmethod.latin.uix.settings
 
+import android.app.Activity
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.PendingIntent.getBroadcast
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageInstaller
 import android.util.Log
+import android.view.WindowManager
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -18,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,9 +49,30 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.updates.InstallReceiver
 import org.futo.inputmethod.updates.LAST_UPDATE_CHECK_RESULT
 import org.futo.inputmethod.updates.UpdateResult
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
+@Composable
+fun KeepScreenOn() {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val window = context.findActivity()?.window
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+}
+
+fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
+}
 
 private fun InputStream.copyToOutputStream(inputStreamLength: Long, outputStream: OutputStream, onProgress: (Float) -> Unit) {
     val buffer = ByteArray(16384);
@@ -63,6 +88,13 @@ private fun InputStream.copyToOutputStream(inputStreamLength: Long, outputStream
 }
 
 
+object UpdateStatus {
+    val isDownloading = mutableStateOf(false)
+    val downloadText = mutableStateOf("")
+
+    var downloadedUpdate: ByteArray? = null
+}
+
 private suspend fun install(scope: CoroutineScope, context: Context, inputStream: InputStream, dataLength: Long, updateStatusText: (String) -> Unit) {
     var lastProgressText = "";
     var session: PackageInstaller.Session? = null;
@@ -76,17 +108,25 @@ private suspend fun install(scope: CoroutineScope, context: Context, inputStream
         val sessionId = packageInstaller.createSession(params);
         session = packageInstaller.openSession(sessionId)
 
-        session.openWrite("package", 0, dataLength).use { sessionStream ->
-            inputStream.copyToOutputStream(dataLength, sessionStream) { progress ->
-                val progressText = "${(progress * 100.0f).toInt()}%";
-                if (lastProgressText != progressText) {
-                    lastProgressText = progressText;
+        if(UpdateStatus.downloadedUpdate == null) {
+            ByteArrayOutputStream(dataLength.toInt()).use { outputStream ->
+                inputStream.copyToOutputStream(dataLength, outputStream) { progress ->
+                    val progressText = "${(progress * 100.0f).toInt()}%";
+                    if (lastProgressText != progressText) {
+                        lastProgressText = progressText
 
-                    //TODO: Use proper scope
-                    //GlobalScope.launch(Dispatchers.Main) {
-                        //_textProgress.text = progressText;
-                    //};
+                        updateStatusText("Downloading... $progressText")
+                    }
                 }
+
+                UpdateStatus.downloadedUpdate = outputStream.toByteArray()
+            }
+        }
+
+
+        session.openWrite("package", 0, dataLength).use { sessionStream ->
+            UpdateStatus.downloadedUpdate!!.inputStream().use { byteStream ->
+                byteStream.copyToOutputStream(dataLength, sessionStream) { }
             }
 
             session.fsync(sessionStream);
@@ -120,6 +160,8 @@ private suspend fun install(scope: CoroutineScope, context: Context, inputStream
 
 @DelicateCoroutinesApi
 private suspend fun downloadAndInstall(scope: CoroutineScope, context: Context, updateResult: UpdateResult, updateStatusText: (String) -> Unit) = GlobalScope.launch(Dispatchers.IO) {
+    UpdateStatus.isDownloading.value = true
+
     var inputStream: InputStream? = null;
     try {
         val httpClient = OkHttpClient()
@@ -141,6 +183,7 @@ private suspend fun downloadAndInstall(scope: CoroutineScope, context: Context, 
         }
     } finally {
         inputStream?.close();
+        UpdateStatus.isDownloading.value = false
     }
 }
 
@@ -158,9 +201,9 @@ fun UpdateDialog(navController: NavHostController) {
         UpdateResult(123, "abc", "1.2.3")
     }
 
-    val isDownloading = remember { mutableStateOf(false) }
+    val isDownloading = UpdateStatus.isDownloading
     val showSpinner = remember { mutableStateOf(true) }
-    val statusText = remember { mutableStateOf("Downloading ${lastUpdateResult?.nextVersionString}") }
+    val statusText = UpdateStatus.downloadText
 
     if(lastUpdateResult == null || !lastUpdateResult.isNewer()) {
         InfoDialog(title = "Up-to-date", body = "As of the last update check, the app is up to date.")
@@ -174,6 +217,7 @@ fun UpdateDialog(navController: NavHostController) {
             },
             text = {
                 if(isDownloading.value) {
+                    KeepScreenOn()
                     Column(modifier = Modifier.fillMaxWidth()) {
                         if(showSpinner.value) {
                             CircularProgressIndicator(
@@ -194,10 +238,12 @@ fun UpdateDialog(navController: NavHostController) {
             },
             confirmButton = {
                 TextButton(onClick = {
-                    isDownloading.value = true
                     GlobalScope.launch { downloadAndInstall(scope.lifecycleScope, context, lastUpdateResult) {
                         statusText.value = it
-                        showSpinner.value = false
+
+                        if(!it.endsWith("%")) {
+                            showSpinner.value = false
+                        }
                     } }
                 }, enabled = !isDownloading.value) {
                     Text(stringResource(R.string.update))
