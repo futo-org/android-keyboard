@@ -11,7 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,30 +38,29 @@ import org.futo.inputmethod.latin.uix.theme.Typography
 
 @Composable
 fun SetupContainer(inner: @Composable () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+    Column(modifier = Modifier.fillMaxSize()) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth(fraction = 1.0f)
-                .fillMaxHeight(fraction = 0.4f)
+                .fillMaxWidth()
+                .weight(0.75f)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.futo_logo),
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "FUTO Logo",
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(0.75f)
-                    .align(Alignment.CenterHorizontally),
+                    .matchParentSize()
+                    .align(Alignment.Center),
                 tint = MaterialTheme.colorScheme.onBackground
             )
         }
 
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(fraction = 0.5f)
                     .align(Alignment.CenterVertically)
                     .padding(32.dp)
             ) {
@@ -70,6 +69,8 @@ fun SetupContainer(inner: @Composable () -> Unit) {
                 }
             }
         }
+
+        Spacer(modifier = Modifier.weight(0.25f))
     }
 }
 
@@ -191,7 +192,7 @@ fun SetupEnableMic(onClick: () -> Unit = { }) {
 
     SetupContainer {
         Column {
-            Step(fraction = 0.9f, text = "Step 3 of 3")
+            Step(fraction = 0.9f, text = "Setup - Step 3 of 3")
             Text(
                 "Choose whether you want to use built-in voice input, or the system voice input.",
                 textAlign = TextAlign.Center,
