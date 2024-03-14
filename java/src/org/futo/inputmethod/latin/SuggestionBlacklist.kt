@@ -24,6 +24,10 @@ class SuggestionBlacklist(val settings: Settings, val context: Context, val life
         }
     }
 
+    fun isSuggestedWordOk(word: SuggestedWordInfo): Boolean {
+        return (word.mWord !in currentBlacklist) && (!offensiveWordsAdded || !isFiltered(word.mWord))
+    }
+
     fun filterBlacklistedSuggestions(suggestions: SuggestedWords): SuggestedWords {
         if(settings.current.mBlockPotentiallyOffensive && !offensiveWordsAdded) {
             currentBlacklist = currentBlacklist + badWords
@@ -35,7 +39,7 @@ class SuggestionBlacklist(val settings: Settings, val context: Context, val life
             offensiveWordsAdded = false
         }
 
-        val filter: (SuggestedWordInfo) -> Boolean = { it -> (it.mWord !in currentBlacklist) && (!offensiveWordsAdded || !isFiltered(it.mWord)) || (it == suggestions.mTypedWordInfo) }
+        val filter: (SuggestedWordInfo) -> Boolean = { it -> isSuggestedWordOk(it) || (it == suggestions.mTypedWordInfo) }
 
         val shouldStillAutocorrect = suggestions.mWillAutoCorrect && filter(suggestions.getInfo(SuggestedWords.INDEX_OF_AUTO_CORRECTION))
 

@@ -518,6 +518,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         uixManager.requestForgetWord(suggestedWordInfo)
     }
 
+    fun refreshSuggestions() {
+        latinIMELegacy.mInputLogic.performUpdateSuggestionStripSync(latinIMELegacy.mSettings.current, SuggestedWords.INPUT_STYLE_TYPING)
+    }
+
     fun forceForgetWord(suggestedWordInfo: SuggestedWordInfo) {
         lifecycleScope.launch {
             val existingWords = getSetting(SUGGESTION_BLACKLIST).toMutableSet()
@@ -530,6 +534,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             -1, Constants.NOT_A_CODE
         )
 
-        latinIMELegacy.mInputLogic.performUpdateSuggestionStripSync(latinIMELegacy.mSettings.current, SuggestedWords.INPUT_STYLE_TYPING)
+        refreshSuggestions()
     }
 }

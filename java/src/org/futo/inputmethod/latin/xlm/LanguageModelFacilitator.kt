@@ -146,7 +146,7 @@ public class LanguageModelFacilitator(
                     }
                 }
             } catch(e: TimeoutCancellationException) {
-                println("Failed to complete prediction within 1000ms!")
+                Log.d("LanguageModelFacilitator", "Failed to complete prediction within 1000ms!")
             }
         }
     }
@@ -207,7 +207,7 @@ public class LanguageModelFacilitator(
                 if(model != null) {
                     languageModel = LanguageModel(context, model, locale)
                 } else {
-                    println("no model for ${locale.language}")
+                    Log.d("LanguageModelFacilitator", "no model for ${locale.language}")
                     return
                 }
             }
@@ -264,10 +264,14 @@ public class LanguageModelFacilitator(
 
             val suggestedWordsDict = holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())
 
-            println("LanguageModelFacilitator: suggestedWordsDict = ${suggestedWordsDict?.mSuggestedWordInfoList?.map { "$it ${it.mScore}" }}")
-            println("LanguageModelFacilitator: lmSuggestions = ${lmSuggestions.map { "$it ${it.mScore}" }}")
+            val suggestedWordsDictList = suggestedWordsDict?.mSuggestedWordInfoList?.filter {
+                suggestionBlacklist.isSuggestedWordOk(it)
+            }
 
-            val maxWordDict = suggestedWordsDict?.mSuggestedWordInfoList?.maxByOrNull {
+            Log.d("LanguageModelFacilitator", "suggestedWordsDict = ${suggestedWordsDictList?.map { "$it ${it.mScore}" }}")
+            Log.d("LanguageModelFacilitator", "lmSuggestions = ${lmSuggestions.map { "$it ${it.mScore}" }}")
+
+            val maxWordDict = suggestedWordsDictList?.maxByOrNull {
                 if(it == suggestedWordsDict.typedWordInfo) { Int.MIN_VALUE } else { it.mScore }
             }
 
@@ -285,7 +289,7 @@ public class LanguageModelFacilitator(
             }
 
             if(transformerWeight <= 0.0f) {
-                if(suggestedWordsDict?.mSuggestedWordInfoList.isNullOrEmpty()) {
+                if(suggestedWordsDictList.isNullOrEmpty()) {
                     transformerWeight = 1.0f
                 }
             }
@@ -296,9 +300,9 @@ public class LanguageModelFacilitator(
             }
 
             if(transformerWeight != Float.POSITIVE_INFINITY) {
-                suggestedWordsDict?.let { words ->
-                    suggestionResults.addAll(words.mSuggestedWordInfoList.filter {
-                        it != words.typedWordInfo && !filtered.contains(
+                suggestedWordsDictList?.let { words ->
+                    suggestionResults.addAll(words.filter {
+                        it != suggestedWordsDict.typedWordInfo && !filtered.contains(
                             it
                         )
                     }.take(10))
@@ -314,9 +318,17 @@ public class LanguageModelFacilitator(
                     })?.let {
                     suggestionResults.add(it)
                 }
+            }else if(shouldSuggestEmojis) {
+                val prevWord =
+                    values.ngramContext.fullContext.split(" ").lastOrNull { it.isNotBlank() }
+                if(prevWord != null) {
+                    getEmojiCandidate(prevWord.trim())?.let {
+                        suggestionResults.add(it)
+                    }
+                }
             }
 
-            println("LanguageModelFacilitator: final suggestionResults = ${suggestionResults.map { "$it ${it.mScore}" }}")
+            Log.d("LanguageModelFacilitator", "final suggestionResults = ${suggestionResults.map { "$it ${it.mScore}" }}")
             val wordComposer = inputLogic.mWordComposer
             val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
                 wordComposer, values.inputStyle, true, -1, locale, suggestionResults, settingsValues.mAutoCorrectionThreshold)
@@ -343,7 +355,7 @@ public class LanguageModelFacilitator(
     private var trainingEnabled = true
 
     public fun launchProcessor() = lifecycleScope.launch {
-        println("LatinIME: Starting processor")
+        Log.d("LanguageModelFacilitator", "Starting processor")
         launch {
             withContext(Dispatchers.Default) {
                 TrainingWorkerStatus.lmRequest.collect {
@@ -368,7 +380,7 @@ public class LanguageModelFacilitator(
         launch {
             withContext(Dispatchers.Default) {
                 sharedFlow.conflate().collect { value ->
-                    println("LatinIME: Collecting")
+                    Log.d("LanguageModelFacilitator", "Collecting")
                     processUpdateSuggestionStrip(value)
                 }
             }
@@ -428,11 +440,11 @@ public class LanguageModelFacilitator(
             )
 
             lifecycleScope.launch {
-                println("LatinIME: Emitting values")
+                Log.d("LanguageModelFacilitator", "Emitting values")
                 sharedFlow.emit(values)
             }
         } catch(e: Exception) {
-            println("Failed to get context, composed data snapshot, etc: $e")
+            Log.d("LanguageModelFacilitator", "Failed to get context, composed data snapshot, etc: $e")
             e.printStackTrace()
         }
     }

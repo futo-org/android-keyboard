@@ -39,10 +39,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
@@ -325,6 +325,7 @@ class UixManager(private val latinIME: LatinIME) {
                                     R.string.blacklist_from_suggestions,
                                     wordBeingForgotten.value?.mWord!!
                                 ))
+
                             Row {
                                 TextButton(
                                     onClick = {
@@ -341,6 +342,18 @@ class UixManager(private val latinIME: LatinIME) {
                                     }
                                 ) {
                                     Text(stringResource(R.string.blacklist))
+                                }
+
+                                if(wordBeingForgotten.value!!.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
+                                    TextButton(
+                                        onClick = {
+                                            runBlocking { latinIME.setSetting(SHOW_EMOJI_SUGGESTIONS, false) }
+                                            forgetWordDismissed.value = true
+                                            latinIME.refreshSuggestions()
+                                        }
+                                    ) {
+                                        Text(stringResource(R.string.disable_emoji))
+                                    }
                                 }
                             }
                         }
