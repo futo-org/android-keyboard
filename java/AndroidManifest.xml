@@ -63,6 +63,7 @@
          android:allowBackup="true"
          android:defaultToDeviceProtectedStorage="true"
          android:directBootAware="true"
+         android:largeHeap="true"
          android:name=".CrashLoggingApplication">
 
         <!-- Services -->

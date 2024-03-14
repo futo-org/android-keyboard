@@ -92,7 +92,7 @@ object UpdateStatus {
     val isDownloading = mutableStateOf(false)
     val downloadText = mutableStateOf("")
 
-    var downloadedUpdate: ByteArray? = null
+    var downloadedUpdate: ByteArrayOutputStream? = null
 }
 
 private suspend fun install(scope: CoroutineScope, context: Context, inputStream: InputStream, dataLength: Long, updateStatusText: (String) -> Unit) {
@@ -109,7 +109,7 @@ private suspend fun install(scope: CoroutineScope, context: Context, inputStream
         session = packageInstaller.openSession(sessionId)
 
         if(UpdateStatus.downloadedUpdate == null) {
-            ByteArrayOutputStream(dataLength.toInt()).use { outputStream ->
+            UpdateStatus.downloadedUpdate = ByteArrayOutputStream(dataLength.toInt()).use { outputStream ->
                 inputStream.copyToOutputStream(dataLength, outputStream) { progress ->
                     val progressText = "${(progress * 100.0f).toInt()}%";
                     if (lastProgressText != progressText) {
@@ -119,17 +119,16 @@ private suspend fun install(scope: CoroutineScope, context: Context, inputStream
                     }
                 }
 
-                UpdateStatus.downloadedUpdate = outputStream.toByteArray()
+                // Note: .use will close the outputStream, but closing has no effect
+                // on ByteArrayOutputStream
+                outputStream
             }
         }
 
 
         session.openWrite("package", 0, dataLength).use { sessionStream ->
-            UpdateStatus.downloadedUpdate!!.inputStream().use { byteStream ->
-                byteStream.copyToOutputStream(dataLength, sessionStream) { }
-            }
-
-            session.fsync(sessionStream);
+            UpdateStatus.downloadedUpdate!!.writeTo(sessionStream)
+            session.fsync(sessionStream)
         };
 
         val intent = Intent(context, InstallReceiver::class.java);
