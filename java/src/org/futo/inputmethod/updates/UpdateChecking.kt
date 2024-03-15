@@ -92,7 +92,7 @@ fun scheduleUpdateCheckingJob(context: Context) {
     }
 
     var jobInfoBuilder = JobInfo.Builder(JOB_ID, ComponentName(context, UpdateCheckingService::class.java))
-        .setPeriodic(1000 * 60 * 60 * 24 * 2) // every two days
+        .setPeriodic(1000L * 60L * 60L * 12L) // every 12 hours
         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) // on unmetered Wi-Fi
         .setPersisted(true) // persist after reboots
 
