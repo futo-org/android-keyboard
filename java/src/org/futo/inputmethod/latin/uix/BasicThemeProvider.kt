@@ -136,6 +136,18 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         )!!.apply {
             setTint(onBackground)
         }
+        drawables[R.styleable.Keyboard_iconSettingsKey] = AppCompatResources.getDrawable(
+            context,
+            R.drawable.settings
+        )!!.apply {
+            setTint(onPrimary)
+        }
+        drawables[R.styleable.Keyboard_iconEnterKey] = AppCompatResources.getDrawable(
+            context,
+            R.drawable.sym_keyboard_return_lxx_light
+        )!!.apply {
+            setTint(onPrimary)
+        }
         drawables[R.styleable.Keyboard_iconLanguageSwitchKey] = AppCompatResources.getDrawable(
             context,
             R.drawable.globe
