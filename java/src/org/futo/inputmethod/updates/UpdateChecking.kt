@@ -71,12 +71,17 @@ suspend fun checkForUpdateAndSaveToPreferences(context: Context): Boolean {
             context.dataStore.edit {
                 it[LAST_UPDATE_CHECK_RESULT] = Json.encodeToString(updateResult)
                 it[LAST_UPDATE_CHECK_FAILED] = false
+                it[DEFER_MANUAL_UPDATE_UNTIL] = System.currentTimeMillis() + MANUAL_UPDATE_PERIOD_MS
             }
         }
         return true
     } else {
         context.dataStore.edit {
             it[LAST_UPDATE_CHECK_FAILED] = true
+
+            if(it[DEFER_MANUAL_UPDATE_UNTIL] == null) {
+                it[DEFER_MANUAL_UPDATE_UNTIL] = System.currentTimeMillis() + MANUAL_UPDATE_PERIOD_MS
+            }
         }
 
         return false

@@ -54,6 +54,9 @@ import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.updates.DEFER_MANUAL_UPDATE_UNTIL
+import org.futo.inputmethod.updates.MANUAL_UPDATE_PERIOD_MS
+import org.futo.inputmethod.updates.openManualUpdateCheck
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 
 
@@ -420,6 +423,34 @@ class UixManager(private val latinIME: LatinIME) {
 
                     context.startActivity(intent)
                 }
+            }
+        } else {
+            val defermentTime = latinIME.getSetting(DEFER_MANUAL_UPDATE_UNTIL, Long.MAX_VALUE)
+            if(System.currentTimeMillis() > defermentTime) {
+                numSuggestionsSinceNotice = 0
+                currentNotice.value = object : ImportantNotice {
+                    @Composable
+                    override fun getText(): String {
+                        return "Please tap to check for updates"
+                    }
+
+                    override fun onDismiss(context: Context) {
+                        currentNotice.value = null
+                    }
+
+                    override fun onOpen(context: Context) {
+                        currentNotice.value = null
+                        context.openManualUpdateCheck()
+
+                        runBlocking {
+                            latinIME.setSetting(
+                                DEFER_MANUAL_UPDATE_UNTIL,
+                                System.currentTimeMillis() + MANUAL_UPDATE_PERIOD_MS
+                            )
+                        }
+                    }
+                }
+
             }
         }
     }

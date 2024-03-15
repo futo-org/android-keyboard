@@ -171,24 +171,25 @@ public class LanguageModelFacilitator(
     }
 
     private suspend fun processUpdateSuggestionStrip(values: PredictionInputValues) {
+        if(keyboardSwitcher.keyboard == null) return
+
         computationSemaphore.acquire()
 
-        val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
-        var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
-
-
-        val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
-        inputLogic.getSuggestedWords(
-            settings.current,
-            keyboardSwitcher.keyboard,
-            keyboardSwitcher.keyboardShiftMode,
-            values.inputStyle,
-            SuggestedWords.NOT_A_SEQUENCE_NUMBER
-        ) { suggestedWords ->
-            holder.set(suggestedWords)
-        }
-
         try {
+            val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
+            var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
+
+            val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
+            inputLogic.getSuggestedWords(
+                settings.current,
+                keyboardSwitcher.keyboard,
+                keyboardSwitcher.keyboardShiftMode,
+                values.inputStyle,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER
+            ) { suggestedWords ->
+                holder.set(suggestedWords)
+            }
+
             val job = Job()
             CoroutineScope(Dispatchers.Default + job).launch {
                 delay(500)
@@ -220,7 +221,7 @@ public class LanguageModelFacilitator(
                 settingsValues.mTransformerPredictionEnabled
             )
             val proximityInfoHandle = keyboard.proximityInfo.nativeProximityInfo
-            
+
             val suggestionResults = SuggestionResults(
                 14, values.ngramContext.isBeginningOfSentenceContext, false)
 
