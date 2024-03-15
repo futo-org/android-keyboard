@@ -73,6 +73,7 @@ import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.actions.ClipboardAction
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.actions.RedoAction
+import org.futo.inputmethod.latin.uix.actions.SettingsAction
 import org.futo.inputmethod.latin.uix.actions.SystemVoiceInputAction
 import org.futo.inputmethod.latin.uix.actions.TextEditAction
 import org.futo.inputmethod.latin.uix.actions.ThemeAction
@@ -370,6 +371,7 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit) {
 fun RowScope.ActionItems(onSelect: (Action) -> Unit) {
     val systemVoiceInput = useDataStore(key = USE_SYSTEM_VOICE_INPUT.key, default = USE_SYSTEM_VOICE_INPUT.default)
 
+    ActionItem(SettingsAction, onSelect)
     ActionItem(EmojiAction, onSelect)
     ActionItem(if(systemVoiceInput.value) { SystemVoiceInputAction } else { VoiceInputAction }, onSelect)
     ActionItem(ThemeAction, onSelect)
