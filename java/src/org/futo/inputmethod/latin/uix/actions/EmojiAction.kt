@@ -371,8 +371,8 @@ class PersistentEmojiState : PersistentActionState {
 
             emojiAliases = HashMap<String, EmojiItem>().apply {
                 emojis.value!!.forEach { emoji ->
-                    emoji.tags.forEach { put(it, emoji) }
-                    emoji.aliases.forEach { put(it, emoji) }
+                    emoji.tags.forEach { put(it.split("_").first(), emoji) }
+                    emoji.aliases.forEach { put(it.split("_").first(), emoji) }
                 }
             }
 
