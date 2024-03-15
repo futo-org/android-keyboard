@@ -42,6 +42,7 @@ import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import org.futo.inputmethod.latin.uix.urlEncode
 import org.futo.inputmethod.latin.xlm.ModelPaths
+import org.futo.inputmethod.updates.checkForUpdateAndSaveToPreferences
 import java.io.File
 
 private fun Context.isInputMethodEnabled(): Boolean {
@@ -164,6 +165,10 @@ class SettingsActivity : ComponentActivity() {
                 updateSystemState()
                 updateContent()
             }
+        }
+
+        lifecycleScope.launch {
+            checkForUpdateAndSaveToPreferences(applicationContext)
         }
 
         deferGetSetting(THEME_KEY) {

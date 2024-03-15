@@ -168,6 +168,8 @@ class UixManager(private val latinIME: LatinIME) {
     private val keyboardManagerForAction = UixActionKeyboardManager(this, latinIME)
 
     private var mainKeyboardHidden = false
+
+    private var numSuggestionsSinceNotice = 0
     private var currentNotice: MutableState<ImportantNotice?> = mutableStateOf(null)
 
     var currWindowActionWindow: ActionWindow? = null
@@ -395,6 +397,7 @@ class UixManager(private val latinIME: LatinIME) {
     suspend fun showUpdateNoticeIfNeeded() {
         val updateInfo = retrieveSavedLastUpdateCheckResult(latinIME)
         if(updateInfo != null && updateInfo.isNewer()) {
+            numSuggestionsSinceNotice = 0
             currentNotice.value = object : ImportantNotice {
                 @Composable
                 override fun getText(): String {
@@ -474,10 +477,19 @@ class UixManager(private val latinIME: LatinIME) {
     fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean) {
         this.suggestedWords = suggestedWords
         setContent()
+
+        if(currentNotice.value != null) {
+            numSuggestionsSinceNotice += 1
+            if(numSuggestionsSinceNotice > 4) {
+                currentNotice.value?.onDismiss(latinIME)
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
+        currentNotice.value?.onDismiss(latinIME)
+
         inlineSuggestions = response.inlineSuggestions.map {
             latinIME.inflateInlineSuggestion(it)
         }

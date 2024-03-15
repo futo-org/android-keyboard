@@ -332,6 +332,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         super.onStartInputView(info, restarting)
         latinIMELegacy.onStartInputView(info, restarting)
+        lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
