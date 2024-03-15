@@ -49,6 +49,7 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.updates.InstallReceiver
 import org.futo.inputmethod.updates.LAST_UPDATE_CHECK_RESULT
 import org.futo.inputmethod.updates.UpdateResult
+import org.futo.inputmethod.updates.openURI
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
@@ -179,6 +180,7 @@ private suspend fun downloadAndInstall(scope: CoroutineScope, context: Context, 
         Log.w("UpdateScreen", "Exception thrown while downloading and installing latest version of app.", e);
         withContext(Dispatchers.Main) {
             updateStatusText("Failed to download update: ${e.message}");
+            context.openURI(updateResult.apkUrl)
         }
     } finally {
         inputStream?.close();

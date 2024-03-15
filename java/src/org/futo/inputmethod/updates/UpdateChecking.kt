@@ -70,12 +70,17 @@ suspend fun checkForUpdateAndSaveToPreferences(context: Context): Boolean {
         withContext(Dispatchers.IO) {
             context.dataStore.edit {
                 it[LAST_UPDATE_CHECK_RESULT] = Json.encodeToString(updateResult)
+                it[LAST_UPDATE_CHECK_FAILED] = false
             }
         }
         return true
-    }
+    } else {
+        context.dataStore.edit {
+            it[LAST_UPDATE_CHECK_FAILED] = true
+        }
 
-    return false
+        return false
+    }
 }
 
 suspend fun retrieveSavedLastUpdateCheckResult(context: Context): UpdateResult? {

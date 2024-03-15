@@ -12,12 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavHostController
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 
 val LAST_UPDATE_CHECK_RESULT = stringPreferencesKey("last_update_check_result")
+val LAST_UPDATE_CHECK_FAILED = booleanPreferencesKey("last_update_check_failed")
 
 fun Context.openURI(uri: String, newTask: Boolean = false) {
     try {
@@ -36,6 +39,7 @@ fun Context.openURI(uri: String, newTask: Boolean = false) {
 @Preview
 fun ConditionalUpdate(navController: NavHostController) {
     val (updateInfo, _) = useDataStore(key = LAST_UPDATE_CHECK_RESULT, default = "")
+    val (lastFailed, _) = useDataStore(key = LAST_UPDATE_CHECK_FAILED, default = false)
 
     val lastUpdateResult = if(!LocalInspectionMode.current){
         UpdateResult.fromString(updateInfo)
@@ -55,6 +59,15 @@ fun ConditionalUpdate(navController: NavHostController) {
         ) {
             Icon(Icons.Default.ArrowForward, contentDescription = "Go")
         }
-
+    } else if(lastFailed) {
+        SettingItem(
+            title = "Failed to check for updates",
+            subtitle = "Tap to check manually",
+            onClick = {
+                context.openURI("https://voiceinput.futo.org/SuperSecretKeyboard/manual_update?version=${BuildConfig.VERSION_CODE}")
+            }
+        ) {
+            Icon(Icons.Default.ArrowForward, contentDescription = "Go")
+        }
     }
 }
