@@ -463,12 +463,25 @@ class PersistentEmojiState : PersistentActionState {
             }
 
             emojiAliases = HashMap<String, EmojiItem>().apply {
+                // Add absolute alias matches first (e.g. "joy") and only later put first-word tag/alias matches (e.g. "joy_cat")
                 emojis.value!!.forEach { emoji ->
-                    emoji.tags.forEach { put(it.split("_").first(), emoji) }
-                    emoji.aliases.forEach { put(it.split("_").first(), emoji) }
+                    emoji.aliases.forEach {
+                        val x = it
+                        if (!containsKey(x)) {
+                            put(x, emoji)
+                        }
+                    }
+                }
+
+                emojis.value!!.forEach { emoji ->
+                    (emoji.tags + emoji.aliases).forEach {
+                        val x = it.split("_").first()
+                        if (!containsKey(x)) {
+                            put(x, emoji)
+                        }
+                    }
                 }
             }
-
         }
     }
 

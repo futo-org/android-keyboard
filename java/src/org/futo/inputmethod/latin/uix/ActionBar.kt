@@ -68,6 +68,7 @@ import androidx.compose.ui.unit.sp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
+import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SUGGESTION
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.actions.ClipboardAction
@@ -306,7 +307,7 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
     try {
         for(i in 0 until words.size()) {
             val info = words.getInfo(i)
-            if(info.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
+            if(info.mKindAndFlags == KIND_EMOJI_SUGGESTION && i > 2) {
                 suggestionOrder[0] = i
             }
         }

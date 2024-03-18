@@ -1661,6 +1661,10 @@ public class LatinIMELegacy implements KeyboardActionListener,
                 mKeyboardSwitcher.getCurrentKeyboardScriptId(),
                 mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
+
+        if(suggestionInfo.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)) {
+            ((LatinIME)mInputMethodService).rememberEmojiSuggestion(suggestionInfo);
+        }
     }
 
     @Override

@@ -18,7 +18,7 @@ object EmojiTracker {
     suspend fun Context.useEmoji(emoji: String) {
         dataStore.edit {
             val combined = emoji + "<|>" + (it[lastUsedEmoji] ?: "")
-            it[lastUsedEmoji] = combined.split("<|>").take(512).joinToString("<|>")
+            it[lastUsedEmoji] = combined.split("<|>").take(128).joinToString("<|>")
         }
     }
 

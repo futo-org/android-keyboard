@@ -45,6 +45,7 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
+import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
@@ -536,5 +537,13 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         )
 
         refreshSuggestions()
+    }
+
+    fun rememberEmojiSuggestion(suggestion: SuggestedWordInfo) {
+        if(suggestion.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
+            lifecycleScope.launch {
+                useEmoji(suggestion.mWord)
+            }
+        }
     }
 }
