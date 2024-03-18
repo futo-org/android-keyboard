@@ -1,12 +1,14 @@
 package org.futo.voiceinput.shared.ui
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,11 +21,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,31 +36,29 @@ import org.futo.voiceinput.shared.R
 import org.futo.voiceinput.shared.types.MagnitudeState
 import org.futo.voiceinput.shared.ui.theme.Typography
 
-
 @Composable
-fun AnimatedRecognizeCircle(magnitude: MutableState<Float> = mutableFloatStateOf(0.5f)) {
-    val radius = animateValueChanges(magnitude.value, 100)
+fun AnimatedRecognizeCircle(magnitude: MutableFloatState = mutableFloatStateOf(0.5f)) {
+    val radius = animateValueChanges(magnitude.floatValue, 100)
     val color = MaterialTheme.colorScheme.primaryContainer
 
+    val radiusMod = with(LocalDensity.current) {
+        80.dp.toPx()
+    }
+
     Canvas(modifier = Modifier.fillMaxSize()) {
-        val drawRadius = size.height * (0.8f + radius * 2.0f)
+        val drawRadius = radiusMod * (0.8f + radius * 2.0f)
         drawCircle(color = color, radius = drawRadius)
     }
 }
 
 @Composable
 fun InnerRecognize(
-    onFinish: () -> Unit,
-    magnitude: MutableState<Float> = mutableFloatStateOf(0.5f),
+    magnitude: MutableFloatState = mutableFloatStateOf(0.5f),
     state: MutableState<MagnitudeState> = mutableStateOf(MagnitudeState.MIC_MAY_BE_BLOCKED)
 ) {
-    IconButton(
-        onClick = onFinish, modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .padding(16.dp)
-    ) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         AnimatedRecognizeCircle(magnitude = magnitude)
+
         Icon(
             painter = painterResource(R.drawable.mic_2_),
             contentDescription = stringResource(R.string.stop_recording),
@@ -64,20 +66,19 @@ fun InnerRecognize(
             tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
 
-    }
+        val text = when (state.value) {
+            MagnitudeState.NOT_TALKED_YET -> stringResource(R.string.try_saying_something)
+            MagnitudeState.MIC_MAY_BE_BLOCKED -> stringResource(R.string.no_audio_detected_is_your_microphone_blocked)
+            MagnitudeState.TALKING -> stringResource(R.string.listening)
+        }
 
-    val text = when (state.value) {
-        MagnitudeState.NOT_TALKED_YET -> stringResource(R.string.try_saying_something)
-        MagnitudeState.MIC_MAY_BE_BLOCKED -> stringResource(R.string.no_audio_detected_is_your_microphone_blocked)
-        MagnitudeState.TALKING -> stringResource(R.string.listening)
+        Text(
+            text,
+            modifier = Modifier.fillMaxWidth().offset(x = 0.dp, y = 48.dp),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
-
-    Text(
-        text,
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onSurface
-    )
 }
 
 

@@ -91,13 +91,10 @@ class RecognizerView(
             }
 
             CurrentView.InnerRecognize -> {
-                Column {
-                    InnerRecognize(
-                        onFinish = { recognizer.finish() },
-                        magnitude = magnitudeState,
-                        state = statusState
-                    )
-                }
+                InnerRecognize(
+                    magnitude = magnitudeState,
+                    state = statusState
+                )
             }
 
             CurrentView.PermissionError -> {
