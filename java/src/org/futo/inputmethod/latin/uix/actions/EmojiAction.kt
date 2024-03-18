@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,6 +80,7 @@ import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.streams.toList
 
 data class PopupInfo(val emoji: EmojiItem, val x: Int, val y: Int)
 
@@ -444,15 +446,27 @@ class PersistentEmojiState : PersistentActionState {
 
         withContext(Dispatchers.Default) {
             val emojiData = Json.parseToJsonElement(text)
-            emojis.value = emojiData.jsonArray.map {
-                EmojiItem(
-                    emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content,
-                    description = it.jsonObject["description"]!!.jsonPrimitive.content,
-                    category = it.jsonObject["category"]!!.jsonPrimitive.content,
-                    skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull ?: false,
-                    tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }?.toList() ?: listOf(),
-                    aliases = it.jsonObject["aliases"]?.jsonArray?.map { it.jsonPrimitive.content }?.toList() ?: listOf(),
-                )
+
+            emojis.value = emojiData.jsonArray.mapNotNull {
+                val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
+                val supported = emoji.codePoints().toList().all { c -> Character.getName(c) != null }
+
+                if(!supported) {
+                    //Log.d("Emoji", "Emoji $emoji is unsupported")
+                    null
+                } else {
+                    EmojiItem(
+                        emoji = emoji,
+                        description = it.jsonObject["description"]!!.jsonPrimitive.content,
+                        category = it.jsonObject["category"]!!.jsonPrimitive.content,
+                        skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull
+                            ?: false,
+                        tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
+                            ?.toList() ?: listOf(),
+                        aliases = it.jsonObject["aliases"]?.jsonArray?.map { it.jsonPrimitive.content }
+                            ?.toList() ?: listOf(),
+                    )
+                }
             }
 
             emojiMap = HashMap<String, EmojiItem>().apply {
