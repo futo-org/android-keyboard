@@ -52,7 +52,7 @@ static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffe
     return reinterpret_cast<jlong>(state);
 }
 
-static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloatArray samples_array, jstring prompt, jobjectArray languages, jobjectArray bail_languages, jint decoding_mode) {
+static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloatArray samples_array, jstring prompt, jobjectArray languages, jobjectArray bail_languages, jint decoding_mode, jboolean suppress_non_speech_tokens) {
     auto *state = reinterpret_cast<WhisperModelState *>(handle);
 
     std::vector<int> allowed_languages;
@@ -90,7 +90,7 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
     wparams.max_tokens = 256;
     wparams.n_threads = (int)num_procs;
 
-    wparams.audio_ctx = std::min(1500, (int)ceil((double)num_samples / (double)(320.0)) + 16);
+    wparams.audio_ctx = std::max(160, std::min(1500, (int)ceil((double)num_samples / (double)(320.0)) + 16));
     wparams.temperature_inc = 0.0f;
 
     // Replicates old tflite behavior
@@ -105,7 +105,7 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
 
 
     wparams.suppress_blank = false;
-    wparams.suppress_non_speech_tokens = true;
+    wparams.suppress_non_speech_tokens = suppress_non_speech_tokens;
     wparams.no_timestamps = true;
 
     if(allowed_languages.size() == 0) {
@@ -218,7 +218,7 @@ static const JNINativeMethod sMethods[] = {
         },
         {
                 const_cast<char *>("inferNative"),
-                const_cast<char *>("(J[FLjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;I)Ljava/lang/String;"),
+                const_cast<char *>("(J[FLjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;IZ)Ljava/lang/String;"),
                 reinterpret_cast<void *>(WhisperGGML_infer)
         },
         {
