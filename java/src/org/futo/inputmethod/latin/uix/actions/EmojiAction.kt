@@ -113,8 +113,10 @@ class EmojiGridAdapter(
         fun bindEmoji(
             emoji: EmojiItem,
             onClick: (EmojiItem) -> Unit,
-            onSelectSkinTone: (PopupInfo) -> Unit
+            onSelectSkinTone: (PopupInfo) -> Unit,
+            color: Int
         ) {
+            emojiView.setTextColor(color)
             emojiView.emoji = emoji
             emojiView.setOnClickListener {
                 it.sendAccessibilityEvent(AccessibilityEvent.TYPE_ANNOUNCEMENT)
@@ -153,7 +155,7 @@ class EmojiGridAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = data[position]
         if(item is EmojiItemItem && holder is EmojiViewHolder) {
-            holder.bindEmoji(item.emoji, onClick, onSelectSkinTone)
+            holder.bindEmoji(item.emoji, onClick, onSelectSkinTone, contentColor.toArgb())
         }else if(item is CategoryItem && holder is CategoryViewHolder) {
             holder.bind(item)
         }

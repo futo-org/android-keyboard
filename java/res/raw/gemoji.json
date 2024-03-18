@@ -23474,5 +23474,27 @@
   ]
 , "unicode_version": "11.0"
 , "ios_version": "12.1"
+},
+  {
+    "emoji": ":)"
+  , "description": "smiley"
+  , "category": "ASCII"
+  , "aliases": [
+  ]
+  , "tags": [
+  ]
+  , "unicode_version": ""
+  , "ios_version": ""
+  }
+, {
+  "emoji": ":3"
+, "description": "cat face"
+, "category": "ASCII"
+, "aliases": [
+  ]
+, "tags": [
+  ]
+, "unicode_version": ""
+, "ios_version": ""
 }
 ]

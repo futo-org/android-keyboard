@@ -60,6 +60,7 @@ import org.futo.inputmethod.latin.utils.StatsUtils;
 import org.futo.inputmethod.latin.utils.TextRange;
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -1072,6 +1073,7 @@ public final class InputLogic {
                 // like the smiley key or the .com key.
                 mConnection.deleteTextBeforeCursor(mEnteredText.length());
                 StatsUtils.onDeleteMultiCharInput(mEnteredText.length());
+                mLatinIMELegacy.onCodePointDeleted(mEnteredText);
                 mEnteredText = null;
                 // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
                 // In addition we know that spaceState is false, and that we should not be
@@ -1159,8 +1161,26 @@ public final class InputLogic {
                         // TODO: Add a new StatsUtils method onBackspaceWhenNoText()
                         return;
                     }
-                    final int lengthToDelete =
+
+                    String textDeleted = new String(Character.toChars(codePointBeforeCursor));
+                    int lengthToDelete =
                             Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
+
+                    // Handle emoji sequences (flags, etc)
+                    CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(8, 0);
+                    if (textBeforeCursor != null && textBeforeCursor.length() > 0) {
+                        BreakIterator breakIterator = BreakIterator.getCharacterInstance();
+                        breakIterator.setText(textBeforeCursor.toString());
+                        int end = breakIterator.last();
+                        int start = breakIterator.previous();
+
+                        if (start != BreakIterator.DONE) {
+                            lengthToDelete = end - start;
+                            textDeleted = textBeforeCursor.subSequence(start, end).toString();
+                        }
+                    }
+
+                    Log.d(TAG, "lengthToDelete=" + lengthToDelete + ", textDeleted=" + textDeleted);
                     mConnection.deleteTextBeforeCursor(lengthToDelete);
                     int totalDeletedLength = lengthToDelete;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
@@ -1179,6 +1199,9 @@ public final class InputLogic {
                         }
                     }
                     StatsUtils.onBackspacePressed(totalDeletedLength);
+
+                    if(codePointBeforeCursor >= 0x1F600)
+                        mLatinIMELegacy.onCodePointDeleted(textDeleted);
                 }
             }
             if (!hasUnlearnedWordBeingDeleted) {

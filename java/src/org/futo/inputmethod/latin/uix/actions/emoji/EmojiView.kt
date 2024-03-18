@@ -67,6 +67,10 @@ class EmojiView @JvmOverloads constructor(
         )
     }
 
+    fun setTextColor(color: Int) {
+        textPaint.color = color
+    }
+
     private val offscreenCanvasBitmap: Bitmap = with(textPaint.fontMetricsInt) {
         val size = bottom - top
         Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)

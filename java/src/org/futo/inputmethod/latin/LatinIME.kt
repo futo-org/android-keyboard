@@ -37,14 +37,17 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
+import org.futo.inputmethod.latin.uix.EmojiTracker.unuseEmoji
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
@@ -542,7 +545,17 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     fun rememberEmojiSuggestion(suggestion: SuggestedWordInfo) {
         if(suggestion.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
             lifecycleScope.launch {
-                useEmoji(suggestion.mWord)
+                withContext(Dispatchers.Default) {
+                    useEmoji(suggestion.mWord)
+                }
+            }
+        }
+    }
+
+    fun onEmojiDeleted(emoji: String) {
+        lifecycleScope.launch {
+            withContext(Dispatchers.Default) {
+                unuseEmoji(emoji)
             }
         }
     }

@@ -2048,4 +2048,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public LanguageModelFacilitator getLanguageModelFacilitator() {
         return ((LatinIME)(mInputMethodService)).getLanguageModelFacilitator();
     }
+
+    public void onCodePointDeleted(String textBeforeCursor) {
+        ((LatinIME)(mInputMethodService)).onEmojiDeleted(textBeforeCursor);
+    }
 }
