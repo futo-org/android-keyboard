@@ -91,13 +91,7 @@ fun TogglableKey(
 }
 
 @Composable
-fun ActionKey(
-    onTrigger: () -> Unit,
-    modifier: Modifier = Modifier,
-    repeatable: Boolean = true,
-    color: Color = MaterialTheme.colorScheme.primary,
-    contents: @Composable () -> Unit
-) {
+fun Modifier.repeatablyClickableAction(repeatable: Boolean = true, onTrigger: () -> Unit): Modifier {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
@@ -114,13 +108,23 @@ fun ActionKey(
         }
     }
 
+    return this.clickable(interactionSource, indication = LocalIndication.current, onClick = { })
+}
+
+@Composable
+fun ActionKey(
+    onTrigger: () -> Unit,
+    modifier: Modifier = Modifier,
+    repeatable: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.primary,
+    contents: @Composable () -> Unit
+) {
     Surface(
         modifier = modifier
             .padding(4.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = LocalIndication.current,
-                onClick = { }
+            .repeatablyClickableAction(
+                repeatable = repeatable,
+                onTrigger = onTrigger
             ),
         shape = RoundedCornerShape(8.dp),
         color = color

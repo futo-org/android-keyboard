@@ -1,26 +1,33 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
+import android.widget.TextView
 import androidx.annotation.UiThread
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -31,11 +38,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,9 +56,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.booleanOrNull
@@ -58,6 +71,8 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
+import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
@@ -67,14 +82,21 @@ import kotlin.math.roundToInt
 
 data class PopupInfo(val emoji: EmojiItem, val x: Int, val y: Int)
 
+sealed class EmojiViewItem
+class CategoryItem(val title: String) : EmojiViewItem()
+class EmojiItemItem(val emoji: EmojiItem) : EmojiViewItem()
+
+const val VIEW_EMOJI = 0
+const val VIEW_CATEGORY = 1
+
 // Note: Using traditional View here, because Android Compose leaves a lot of performance to be desired
 class EmojiGridAdapter(
-    private val emojiList: List<EmojiItem>,
+    private val data: List<EmojiViewItem>,
     private val onClick: (EmojiItem) -> Unit,
     private val onSelectSkinTone: (PopupInfo) -> Unit,
-    private val emojiCellWidth: Int
-) :
-    RecyclerView.Adapter<EmojiGridAdapter.EmojiViewHolder>() {
+    private val emojiCellWidth: Int,
+    private val contentColor: Color
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class EmojiViewHolder(
         context: Context,
@@ -107,17 +129,42 @@ class EmojiGridAdapter(
         }
     }
 
+
+    internal inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(item: CategoryItem) {
+            itemView.layoutParams.width = emojiCellWidth * 9
+            itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            itemView.findViewById<TextView>(R.id.text_section).text = item.title
+            itemView.findViewById<TextView>(R.id.text_section).setTextColor(contentColor.toArgb())
+        }
+    }
+
     @UiThread
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmojiViewHolder {
-        return EmojiViewHolder(parent.context, width = emojiCellWidth, height = emojiCellWidth)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_EMOJI -> EmojiViewHolder(parent.context, width = emojiCellWidth, height = emojiCellWidth)
+            VIEW_CATEGORY -> CategoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.emoji_category, parent, false))
+            else -> throw RuntimeException("Unknown viewType $viewType")
+        }
     }
 
-    override fun onBindViewHolder(holder: EmojiViewHolder, position: Int) {
-        val currentEmoji = emojiList[position]
-        holder.bindEmoji(currentEmoji, onClick, onSelectSkinTone)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = data[position]
+        if(item is EmojiItemItem && holder is EmojiViewHolder) {
+            holder.bindEmoji(item.emoji, onClick, onSelectSkinTone)
+        }else if(item is CategoryItem && holder is CategoryViewHolder) {
+            holder.bind(item)
+        }
     }
 
-    override fun getItemCount() = emojiList.size
+    override fun getItemCount() = data.size
+
+    override fun getItemViewType(position: Int): Int {
+        return when(data[position]) {
+            is CategoryItem -> VIEW_CATEGORY
+            is EmojiItemItem -> VIEW_EMOJI
+        }
+    }
 }
 
 
@@ -152,7 +199,7 @@ fun generateSkinToneVariants(emoji: String, emojiMap: Map<String, EmojiItem>): L
 
 @Composable
 fun Emojis(
-    emojis: List<EmojiItem>,
+    emojis: List<EmojiViewItem>,
     onClick: (EmojiItem) -> Unit,
     modifier: Modifier = Modifier,
     emojiMap: Map<String, EmojiItem>
@@ -165,12 +212,15 @@ fun Emojis(
 
     var activePopup: PopupInfo? by rememberSaveable { mutableStateOf(null) }
 
+    val color = LocalContentColor.current
+
     val emojiAdapter = remember {
         EmojiGridAdapter(
             emojis,
             onClick,
             onSelectSkinTone = { activePopup = it },
-            emojiWidth
+            emojiWidth,
+            color
         )
     }
 
@@ -181,7 +231,16 @@ fun Emojis(
         AndroidView(
             factory = { context ->
                 RecyclerView(context).apply {
-                    layoutManager = GridLayoutManager(context, 8)
+                    layoutManager = GridLayoutManager(context, 8).apply {
+                        spanSizeLookup = object : SpanSizeLookup() {
+                            override fun getSpanSize(position: Int): Int {
+                                return when(emojis[position]) {
+                                    is EmojiItemItem -> 1
+                                    is CategoryItem -> spanCount
+                                }
+                            }
+                        }
+                    }
                     adapter = emojiAdapter
                 }
             },
@@ -266,9 +325,9 @@ fun BottomRowKeyboardNavigation(onExit: () -> Unit, onBackspace: () -> Unit, onS
     Surface(
         color = MaterialTheme.colorScheme.background, modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp)
+            .height(58.dp)
     ) {
-        Row(modifier = Modifier.padding(2.dp, 8.dp, 2.dp, 0.dp)) {
+        Row(modifier = Modifier.padding(2.dp, 8.dp, 2.dp, 2.dp)) {
             IconButton(onClick = { onExit() }) {
                 Text("ABC", fontSize = 14.sp)
             }
@@ -276,6 +335,8 @@ fun BottomRowKeyboardNavigation(onExit: () -> Unit, onBackspace: () -> Unit, onS
             Button(
                 onClick = { onSpace() }, modifier = Modifier
                     .weight(1.0f)
+                    .minimumInteractiveComponentSize()
+                    .fillMaxHeight()
                     .padding(8.dp, 2.dp), colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.33f),
                     contentColor = MaterialTheme.colorScheme.onBackground,
@@ -286,7 +347,14 @@ fun BottomRowKeyboardNavigation(onExit: () -> Unit, onBackspace: () -> Unit, onS
                 Text("")
             }
 
-            IconButton(onClick = { onBackspace() }) {
+//            IconButton(onClick = { onBackspace() }) {
+            Box(modifier = Modifier
+                    .minimumInteractiveComponentSize()
+                    .repeatablyClickableAction { onBackspace() }
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(100)),
+                contentAlignment = Alignment.Center)
+            {
                 val icon = painterResource(id = R.drawable.delete)
                 val iconColor = MaterialTheme.colorScheme.onBackground
 
@@ -320,13 +388,38 @@ fun EmojiGrid(
     keyboardShown: Boolean,
     emojiMap: Map<String, EmojiItem>
 ) {
+    val context = LocalContext.current
+    val recentEmojis = remember {
+        runBlocking { context.getRecentEmojis() }.map {
+            EmojiItem(it, description = "", category = "", skinTones = false, tags = listOf(), aliases = listOf())
+        }
+    }
+
+    val categorizedEmojis = remember {
+        var prevCategory = ""
+        val data = emojis.flatMap { emoji ->
+            listOfNotNull(
+                if (emoji.category != prevCategory) {
+                    prevCategory = emoji.category
+                    CategoryItem(emoji.category)
+                } else {
+                    null
+                },
+                EmojiItemItem(emoji)
+            )
+        }
+
+        data
+    }
+
+
     Column {
         Emojis(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
                 .weight(1.0f),
-            emojis = emojis,
+            emojis = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis,
             onClick = onClick,
             emojiMap = emojiMap
         )
@@ -411,6 +504,9 @@ val EmojiAction = Action(
                 state.emojis.value?.let { emojis ->
                     EmojiGrid(onClick = {
                         manager.typeText(it.emoji)
+                        manager.getLifecycleScope().launch {
+                            manager.getContext().useEmoji(it.emoji)
+                        }
                     }, onExit = {
                         manager.closeActionWindow()
                     }, onSpace = {
