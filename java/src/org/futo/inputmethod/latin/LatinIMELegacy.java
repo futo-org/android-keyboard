@@ -1399,14 +1399,21 @@ public class LatinIMELegacy implements KeyboardActionListener,
             mInputLogic.mConnection.setSelection(start, end);
         } else {
             for (; steps < 0; steps++)
-                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0);
+                onCodeInput(
+                        Constants.CODE_DELETE,
+                        Constants.NOT_A_COORDINATE,
+                        Constants.NOT_A_COORDINATE, false);
         }
     }
 
     @Override
     public void onUpWithDeletePointerActive() {
-        if (mInputLogic.mConnection.hasSelection())
-            mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0);
+        if (mInputLogic.mConnection.hasSelection()) {
+            onCodeInput(
+                    Constants.CODE_DELETE,
+                    Constants.NOT_A_COORDINATE,
+                    Constants.NOT_A_COORDINATE, false);
+        }
     }
 
     @Override

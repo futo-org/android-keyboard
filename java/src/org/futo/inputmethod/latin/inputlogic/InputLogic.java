@@ -2429,6 +2429,9 @@ public final class InputLogic {
             end = cursor;
         }
 
+        start = Math.max(0, start);
+        end = Math.max(0, end);
+
         mConnection.setSelection(start, end);
     }
 

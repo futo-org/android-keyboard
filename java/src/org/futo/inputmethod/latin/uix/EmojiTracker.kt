@@ -22,6 +22,14 @@ object EmojiTracker {
         }
     }
 
+    suspend fun Context.unuseEmoji(emoji: String) {
+        dataStore.edit {
+            val split = (it[lastUsedEmoji] ?: "").split("<|>")
+            val idxToRemove = split.indexOfFirst { v -> v == emoji }
+            it[lastUsedEmoji] = split.filterIndexed { i, _ -> i != idxToRemove}.joinToString("<|>")
+        }
+    }
+
     suspend fun Context.getRecentEmojis(): List<String> {
         return getSetting(lastUsedEmoji, "")
             .split("<|>")
