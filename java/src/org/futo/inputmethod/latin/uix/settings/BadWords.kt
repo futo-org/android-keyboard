@@ -461,7 +461,8 @@ val badWords = listOf(
     "yed",
     "zabourah",
     "fucked",
-    "asdfbadwordasdf"
+    "asdfbadwordasdf",
+    "\uD83D\uDD95"
 ).flatMap { listOf(it, it.lowercase(), it.uppercase(), it.lowercase().capitalize()) }.toSet()
 
 fun isFiltered(word: String): Boolean {
