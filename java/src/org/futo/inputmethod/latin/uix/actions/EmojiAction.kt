@@ -226,6 +226,7 @@ fun Emojis(
 
     var viewWidth by remember { mutableIntStateOf(0) }
     var viewHeight by remember { mutableIntStateOf(0) }
+    var popupSize by remember { mutableStateOf(IntSize(0, 0)) }
 
     Box(modifier = modifier) {
         AndroidView(
@@ -267,8 +268,6 @@ fun Emojis(
         )
 
         activePopup?.let { popupInfo ->
-            var popupSize by remember { mutableStateOf(IntSize(0, 0)) }
-
             val posX = popupInfo.x - popupSize.width / 2
             val posY = popupInfo.y - popupSize.height
 
