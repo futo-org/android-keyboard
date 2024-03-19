@@ -130,44 +130,30 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = onSecondary
         colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = onBackgroundHalf
 
-        drawables[R.styleable.Keyboard_iconDeleteKey] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.delete
-        )!!.apply {
-            setTint(onBackground)
-        }
-        drawables[R.styleable.Keyboard_iconSettingsKey] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.settings
-        )!!.apply {
-            setTint(onPrimary)
-        }
-        drawables[R.styleable.Keyboard_iconEnterKey] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.sym_keyboard_return_lxx_light
-        )!!.apply {
-            setTint(onPrimary)
-        }
-        drawables[R.styleable.Keyboard_iconLanguageSwitchKey] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.globe
-        )!!.apply {
-            setTint(onBackground)
+        val overrideDrawable: (Int, Int, Int) -> Unit = { a, b, color ->
+            drawables[a] = AppCompatResources.getDrawable(
+                context,
+                b
+            )!!.apply {
+                setTint(color)
+            }
         }
 
-        drawables[R.styleable.Keyboard_iconShiftKey] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.shift
-        )!!.apply {
-            setTint(onBackground)
-        }
+        // No good replacements for these cons yet, but we set them anyway for setTint
+        overrideDrawable(R.styleable.Keyboard_iconEnterKey, R.drawable.sym_keyboard_return_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconGoKey, R.drawable.sym_keyboard_go_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconNextKey, R.drawable.sym_keyboard_next_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconDoneKey, R.drawable.sym_keyboard_done_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconPreviousKey, R.drawable.sym_keyboard_previous_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconSearchKey, R.drawable.sym_keyboard_search_lxx_light, onPrimary)
 
-        drawables[R.styleable.Keyboard_iconShiftKeyShifted] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.shiftshifted
-        )!!.apply {
-            setTint(onBackground)
-        }
+        overrideDrawable(R.styleable.Keyboard_iconDeleteKey, R.drawable.delete, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconSettingsKey, R.drawable.settings, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconEmojiActionKey, R.drawable.smile, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconEmojiNormalKey, R.drawable.smile, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconLanguageSwitchKey, R.drawable.globe, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconShiftKey, R.drawable.shift, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconShiftKeyShifted, R.drawable.shiftshifted, onBackground)
 
         primaryKeyboardColor = background
 
