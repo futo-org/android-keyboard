@@ -15,12 +15,13 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-     package="org.futo.inputmethod.latin"
-     android:versionCode="30">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.futo.inputmethod.latin">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
@@ -33,6 +34,10 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- A signature-protected permission to ask AOSP Keyboard to close the software keyboard.
                  To use this, add the following line into calling application's AndroidManifest.xml
@@ -58,6 +63,7 @@
          android:allowBackup="true"
          android:defaultToDeviceProtectedStorage="true"
          android:directBootAware="true"
+         android:largeHeap="true"
          android:name=".CrashLoggingApplication">
 
         <!-- Services -->
@@ -70,6 +76,12 @@
             </intent-filter>
             <meta-data android:name="android.view.im"
                  android:resource="@xml/method"/>
+        </service>
+
+        <service
+            android:name="org.futo.inputmethod.updates.UpdateCheckingService"
+            android:label="@string/update_checking_service"
+            android:permission="android.permission.BIND_JOB_SERVICE" >
         </service>
 
         <service android:name=".spellcheck.AndroidSpellCheckerService"
@@ -90,11 +102,11 @@
         <!-- Activities -->
         <activity android:name=".uix.settings.SettingsActivity"
              android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-             android:label="@string/english_ime_name"
              android:icon="@mipmap/ic_launcher"
              android:roundIcon="@mipmap/ic_launcher_round"
              android:launchMode="singleTask"
              android:noHistory="false"
+             android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
              android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -119,17 +131,7 @@
         <activity android:name=".spellcheck.SpellCheckerSettingsActivity"
              android:theme="@style/platformSettingsTheme"
              android:label="@string/android_spell_checker_settings"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-
-        <activity android:name="org.futo.inputmethod.dictionarypack.DictionarySettingsActivity"
-             android:theme="@style/platformSettingsTheme"
-             android:label="@string/dictionary_settings_title"
-             android:uiOptions="splitActionBarWhenNarrow"
-             android:exported="true">
+             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
@@ -143,10 +145,6 @@
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
-
-        <!-- Unexported activity used for tests. -->
-        <activity android:name=".settings.TestFragmentActivity"
-             android:exported="false"/>
 
         <!-- Broadcast receivers -->
         <receiver android:name="SystemBroadcastReceiver"
@@ -166,16 +164,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="org.futo.inputmethod.dictionarypack.EventHandler"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
-                <action android:name="android.intent.action.DATE_CHANGED"/>
-                <action android:name="org.futo.inputmethod.dictionarypack.aosp.UPDATE_NOW"/>
-                <action android:name="org.futo.inputmethod.dictionarypack.aosp.INIT_AND_UPDATE_NOW"/>
-            </intent-filter>
-        </receiver>
-
         <!-- Broadcast receiver for AccountManager#LOGIN_ACCOUNTS_CHANGED_ACTION. -->
         <receiver android:name=".accounts.AccountsChangedReceiver"
              android:exported="true">
@@ -183,6 +171,8 @@
                 <action android:name="android.accounts.LOGIN_ACCOUNTS_CHANGED"/>
             </intent-filter>
         </receiver>
+
+        <receiver android:name="org.futo.inputmethod.updates.InstallReceiver" />
 
         <!-- Content providers -->
         <provider android:name="org.futo.inputmethod.dictionarypack.DictionaryProvider"
@@ -192,5 +182,15 @@
              android:multiprocess="false"
              android:label="@string/dictionary_provider_name">
         </provider>
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="specialUse"
+            tools:node="merge">
+
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Neural network model training"/>
+
+        </service>
     </application>
 </manifest>

@@ -18,8 +18,7 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_use_headphones" msgid="2455138206280962514">"पासवर्ड कुंजियों को सुनने के लिए, हेडसेट प्‍लग-इन करें."</string>
     <string name="spoken_current_text_is" msgid="1642386857389316456">"वर्तमान लेख %s है"</string>
     <string name="spoken_no_text_entered" msgid="3439628354874662101">"कोई लेख नहीं डाला गया"</string>

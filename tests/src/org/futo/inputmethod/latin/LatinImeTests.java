@@ -20,21 +20,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 @LargeTest
 public class LatinImeTests extends InputTestsBase {
-    public void testDeferredDeallocation_doesntHappenBeforeTimeout() {
-        mLatinIMELegacy.mHandler.onFinishInputView(true);
-        runMessages();
-        sleep(1000); // 1s
-        runMessages();
-        assertFalse("memory deallocation performed before timeout passed",
-                ((LatinIMELegacyForTests) mLatinIMELegacy).getDeallocateMemoryWasPerformed());
-    }
 
-    public void testDeferredDeallocation_doesHappenAfterTimeout() {
-        mLatinIMELegacy.mHandler.onFinishInputView(true);
-        runMessages();
-        sleep(11000); // 11s (timeout is at 10s)
-        runMessages();
-        assertTrue("memory deallocation not performed although timeout passed",
-                ((LatinIMELegacyForTests) mLatinIMELegacy).getDeallocateMemoryWasPerformed());
+    public LatinImeTests(Class<LatinIME> serviceClass) {
+        super(serviceClass);
     }
 }

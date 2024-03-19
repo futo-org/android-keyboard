@@ -442,15 +442,18 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Add a unigram entry to binary dictionary with unigram attributes in native code.
-    public boolean addUnigramEntry(
-            final String word, final int probability, final boolean isBeginningOfSentence,
-            final boolean isNotAWord, final boolean isPossiblyOffensive, final int timestamp) {
+    public boolean addUnigramEntry(final String word, final int probability,
+            final String shortcutTarget, final int shortcutProbability,
+            final boolean isBeginningOfSentence, final boolean isNotAWord,
+           final boolean isPossiblyOffensive, final int timestamp) {
         if (word == null || (word.isEmpty() && !isBeginningOfSentence)) {
             return false;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
+        final int[] shortcutTargetCodePoints = (shortcutTarget != null) ?
+                StringUtils.toCodePointArray(shortcutTarget) : null;
         if (!addUnigramEntryNative(mNativeDict, codePoints, probability,
-                null /* shortcutTargetCodePoints */, 0 /* shortcutProbability */,
+                shortcutTargetCodePoints, shortcutProbability,
                 isBeginningOfSentence, isNotAWord, isPossiblyOffensive, timestamp)) {
             return false;
         }

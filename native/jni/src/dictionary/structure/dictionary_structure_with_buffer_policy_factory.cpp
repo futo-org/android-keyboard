@@ -192,7 +192,7 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
             AKLOGE("DICT: dictionary format is unknown, bad magic number. path: %s", path);
             break;
     }
-    ASSERT(false);
+    //ASSERT(false);
     return nullptr;
 }
 

@@ -23,8 +23,7 @@
     TODO: Remove this file when TTS/TalkBack support these Emoji symbols.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_emoji_00A9" msgid="5177088341413303785">"コピーライトのマーク"</string>
     <string name="spoken_emoji_00AE" msgid="2978406918924914185">"登録商標のマーク"</string>
     <string name="spoken_emoji_203C" msgid="4906509755845300156">"二重感嘆符"</string>

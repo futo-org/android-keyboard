@@ -3,6 +3,7 @@ package org.futo.voiceinput.shared
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
@@ -63,7 +64,7 @@ class RecognizerView(
     lifecycleScope: LifecycleCoroutineScope,
     modelManager: ModelManager
 ) {
-    private val magnitudeState = mutableStateOf(0.0f)
+    private val magnitudeState = mutableFloatStateOf(0.0f)
     private val statusState = mutableStateOf(MagnitudeState.NOT_TALKED_YET)
 
     enum class CurrentView {
@@ -90,13 +91,10 @@ class RecognizerView(
             }
 
             CurrentView.InnerRecognize -> {
-                Column {
-                    InnerRecognize(
-                        onFinish = { recognizer.finish() },
-                        magnitude = magnitudeState,
-                        state = statusState
-                    )
-                }
+                InnerRecognize(
+                    magnitude = magnitudeState,
+                    state = statusState
+                )
             }
 
             CurrentView.PermissionError -> {
@@ -176,7 +174,7 @@ class RecognizerView(
         }
 
         override fun updateMagnitude(magnitude: Float, state: MagnitudeState) {
-            magnitudeState.value = magnitude
+            magnitudeState.floatValue = magnitude
             statusState.value = state
             currentViewState.value = CurrentView.InnerRecognize
         }

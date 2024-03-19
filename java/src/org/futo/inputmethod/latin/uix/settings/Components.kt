@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -45,7 +46,7 @@ fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHost
     val rowModifier = if(showBack) {
         Modifier
             .fillMaxWidth()
-            .clickable { navController.popBackStack() }
+            .clickable { navController.navigateUp() }
     } else {
         Modifier.fillMaxWidth()
     }
@@ -84,7 +85,7 @@ fun Tip(text: String = "This is an example tip") {
 fun SettingItem(
     title: String,
     subtitle: String? = null,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     icon: (@Composable () -> Unit)? = null,
     disabled: Boolean = false,
     content: @Composable () -> Unit
@@ -93,8 +94,8 @@ fun SettingItem(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(0.dp, 68.dp)
-            .clickable(enabled = !disabled, onClick = {
-                if (!disabled) {
+            .clickable(enabled = !disabled && onClick != null, onClick = {
+                if (!disabled && onClick != null) {
                     onClick()
                 }
             })
@@ -222,6 +223,27 @@ fun SettingToggleSharedPrefs(
 }
 
 @Composable
+fun<T> SettingRadio(
+    title: String,
+    options: List<T>,
+    optionNames: List<String>,
+    setting: SettingsKey<T>,
+) {
+    val (value, setValue) = useDataStore(key = setting.key, default = setting.default)
+
+    ScreenTitle(title, showBack = false)
+    Column {
+        options.zip(optionNames).forEach {
+            SettingItem(title = it.second, onClick = { setValue(it.first) }, icon = {
+                RadioButton(selected = value == it.first, onClick = null)
+            }) {
+                
+            }
+        }
+    }
+}
+
+@Composable
 fun ScrollableList(content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
 
@@ -249,6 +271,7 @@ enum class NavigationItemStyle {
     HomePrimary,
     HomeSecondary,
     HomeTertiary,
+    MiscNoArrow,
     Misc
 }
 
@@ -263,6 +286,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
                     NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.primaryContainer
                     NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.secondaryContainer
                     NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.tertiaryContainer
+                    NavigationItemStyle.MiscNoArrow -> Color.Transparent
                     NavigationItemStyle.Misc -> Color.Transparent
                 }
 
@@ -270,6 +294,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
                     NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.onPrimaryContainer
                     NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.onSecondaryContainer
                     NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.onTertiaryContainer
+                    NavigationItemStyle.MiscNoArrow -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
                     NavigationItemStyle.Misc -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
                 }
 

@@ -60,14 +60,14 @@ public class SuggestedWords {
     // Note: this INCLUDES cases where the word will auto-correct to itself. A good definition
     // of what this flag means would be "the top suggestion is strong enough to auto-correct",
     // whether this exactly matches the user entry or not.
-    public final boolean mWillAutoCorrect;
+    public boolean mWillAutoCorrect;
     public final boolean mIsObsoleteSuggestions;
     // How the input for these suggested words was done by the user. Must be one of the
     // INPUT_STYLE_* constants above.
     public final int mInputStyle;
     public final int mSequenceNumber; // Sequence number for auto-commit.
     @Nonnull
-    protected final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
+    public final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
     @Nullable
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
 
@@ -255,6 +255,7 @@ public class SuggestedWords {
         // in java for re-correction)
         public static final int KIND_RESUMED = 9;
         public static final int KIND_OOV_CORRECTION = 10; // Most probable string correction
+        public static final int KIND_EMOJI_SUGGESTION = 11;
 
         public static final int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
         public static final int KIND_FLAG_EXACT_MATCH = 0x40000000;
@@ -279,6 +280,8 @@ public class SuggestedWords {
         // first word of this suggestion.
         public final int mAutoCommitFirstWordConfidence;
         private String mDebugString = "";
+
+        public boolean mOriginatesFromTransformerLM = false;
 
         /**
          * Create a new suggested word info.

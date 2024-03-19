@@ -54,7 +54,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private InputView mCurrentInputView;
     private View mMainKeyboardFrame;
     private MainKeyboardView mKeyboardView;
-    private EmojiPalettesView mEmojiPalettesView;
     private LatinIMELegacy mLatinIMELegacy;
     private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
@@ -292,13 +291,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         // @see #getVisibleKeyboardView() and
         // @see LatinIME#onComputeInset(android.inputmethodservice.InputMethodService.Insets)
         mMainKeyboardFrame.setVisibility(visibility);
-        mEmojiPalettesView.setVisibility(View.GONE);
-        mEmojiPalettesView.stopEmojiPalettes();
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setEmojiKeyboard() {
+        ((LatinIME)mLatinIMELegacy.getInputMethodService()).getUixManager().openEmojiKeyboard();
+        /*
         if (DEBUG_ACTION) {
             Log.d(TAG, "setEmojiKeyboard");
         }
@@ -312,6 +311,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 mKeyboardTextsSet.getText(KeyboardTextsSet.SWITCH_TO_ALPHA_KEY_LABEL),
                 mKeyboardView.getKeyVisualAttribute(), keyboard.mIconsSet);
         mEmojiPalettesView.setVisibility(View.VISIBLE);
+        */
     }
 
     public enum KeyboardSwitchState {
@@ -355,9 +355,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             if (toggleState == KeyboardSwitchState.EMOJI) {
                 setEmojiKeyboard();
             } else {
-                mEmojiPalettesView.stopEmojiPalettes();
-                mEmojiPalettesView.setVisibility(View.GONE);
-
                 mMainKeyboardFrame.setVisibility(View.VISIBLE);
                 mKeyboardView.setVisibility(View.VISIBLE);
                 setKeyboard(toggleState.mKeyboardId, toggleState);
@@ -432,7 +429,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public boolean isShowingEmojiPalettes() {
-        return mEmojiPalettesView != null && mEmojiPalettesView.isShown();
+        return false;
     }
 
     public boolean isShowingMoreKeysPanel() {
@@ -443,9 +440,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public View getVisibleKeyboardView() {
-        if (isShowingEmojiPalettes()) {
-            return mEmojiPalettesView;
-        }
         return mKeyboardView;
     }
 
@@ -458,9 +452,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mKeyboardView.cancelAllOngoingEvents();
             mKeyboardView.deallocateMemory();
         }
-        if (mEmojiPalettesView != null) {
-            mEmojiPalettesView.stopEmojiPalettes();
-        }
     }
 
     public View onCreateInputView(@NonNull Context displayContext,
@@ -472,17 +463,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         updateKeyboardThemeAndContextThemeWrapper(
                 displayContext, KeyboardTheme.getKeyboardTheme(displayContext /* context */));
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
-                R.layout.input_view, null);
+                R.layout.input_view, null, false);
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
-        mEmojiPalettesView = (EmojiPalettesView)mCurrentInputView.findViewById(
-                R.id.emoji_palettes_view);
-
         mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setHardwareAcceleratedDrawingEnabled(isHardwareAcceleratedDrawingEnabled);
         mKeyboardView.setKeyboardActionListener(mLatinIMELegacy);
-        mEmojiPalettesView.setHardwareAcceleratedDrawingEnabled(
-                isHardwareAcceleratedDrawingEnabled);
-        mEmojiPalettesView.setKeyboardActionListener(mLatinIMELegacy);
         return mCurrentInputView;
     }
 

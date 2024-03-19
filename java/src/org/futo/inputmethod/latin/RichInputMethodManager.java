@@ -496,6 +496,8 @@ public class RichInputMethodManager {
 
     public boolean shouldOfferSwitchingToNextInputMethod(final IBinder binder,
             boolean defaultValue) {
+
+        if(true) return defaultValue;
         // Use the default value instead on Jelly Bean MR2 and previous where
         // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} isn't yet available
         // and on KitKat where the API is still just a stub to return true always.

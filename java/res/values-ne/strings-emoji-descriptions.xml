@@ -23,8 +23,7 @@
     TODO: Remove this file when TTS/TalkBack support these Emoji symbols.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_emoji_00A9" msgid="5177088341413303785">"प्रतिलिपि अधिकार चिन्ह"</string>
     <string name="spoken_emoji_00AE" msgid="2978406918924914185">"दर्ता चिन्ह"</string>
     <string name="spoken_emoji_203C" msgid="4906509755845300156">"दोहोरो उद्गार मार्क"</string>

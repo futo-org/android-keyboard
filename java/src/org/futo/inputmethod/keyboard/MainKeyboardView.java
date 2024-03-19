@@ -162,7 +162,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     // TODO: Make this parameter customizable by user via settings.
     private int mGestureFloatingPreviewTextLingerTimeout;
 
-    private final KeyDetector mKeyDetector;
+    public final KeyDetector mKeyDetector;
     private final NonDistinctMultitouchHelper mNonDistinctMultitouchHelper;
 
     private final TimerHandler mTimerHandler;

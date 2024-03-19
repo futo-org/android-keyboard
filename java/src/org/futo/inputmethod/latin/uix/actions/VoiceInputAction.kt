@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +37,7 @@ import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
+import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
 import org.futo.voiceinput.shared.ENGLISH_MODELS
 import org.futo.voiceinput.shared.MULTILINGUAL_MODELS
 import org.futo.voiceinput.shared.ModelDoesNotExistException
@@ -66,6 +66,7 @@ val SystemVoiceInputAction = Action(
 class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : PersistentActionState {
     val modelManager = ModelManager(manager.getContext())
     val soundPlayer = SoundPlayer(manager.getContext())
+    val userDictionaryObserver = UserDictionaryObserver(manager.getContext())
 
     override suspend fun cleanUp() {
         modelManager.cleanUp()
@@ -108,10 +109,13 @@ private class VoiceInputActionWindow(
             shouldShowInlinePartialResult = false,
             shouldShowVerboseFeedback = verboseFeedback.await(),
             modelRunConfiguration = MultiModelRunConfiguration(
-                primaryModel = primaryModel, languageSpecificModels = languageSpecificModels
+                primaryModel = primaryModel,
+                languageSpecificModels = languageSpecificModels
             ),
             decodingConfiguration = DecodingConfiguration(
-                languages = allowedLanguages.await(), suppressSymbols = disallowSymbols.await()
+                glossary = state.userDictionaryObserver.getWords().map { it.word },
+                languages = allowedLanguages.await(),
+                suppressSymbols = disallowSymbols.await()
             )
         )
     }
@@ -180,7 +184,7 @@ private class VoiceInputActionWindow(
     }
 
     @Composable
-    override fun WindowContents() {
+    override fun WindowContents(keyboardShown: Boolean) {
         Box(modifier = Modifier
             .fillMaxSize()
             .clickable(enabled = true,

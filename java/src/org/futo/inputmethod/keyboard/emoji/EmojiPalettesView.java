@@ -163,7 +163,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     @Override
     protected void onFinishInflate() {
-        mTabHost = (TabHost)findViewById(R.id.emoji_category_tabhost);
+        super.onFinishInflate();
+        mTabHost = (TabHost) findViewById(R.id.emoji_category_tabhost);
         mTabHost.setup();
         for (final EmojiCategory.CategoryProperties properties
                 : mEmojiCategory.getShownCategories()) {
@@ -182,7 +183,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         mEmojiPalettesAdapter = new EmojiPalettesAdapter(mEmojiCategory, this);
 
-        mEmojiPager = (ViewPager)findViewById(R.id.emoji_keyboard_pager);
+        mEmojiPager = (ViewPager) findViewById(R.id.emoji_keyboard_pager);
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         mEmojiPager.setOnPageChangeListener(this);
         mEmojiPager.setOffscreenPageLimit(0);
@@ -190,18 +191,18 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mEmojiLayoutParams.setPagerProperties(mEmojiPager);
 
         mEmojiCategoryPageIndicatorView =
-                (EmojiCategoryPageIndicatorView)findViewById(R.id.emoji_category_page_id_view);
+                (EmojiCategoryPageIndicatorView) findViewById(R.id.emoji_category_page_id_view);
         mEmojiCategoryPageIndicatorView.setColors(
                 mCategoryPageIndicatorColor, mCategoryPageIndicatorBackground);
         mEmojiLayoutParams.setCategoryPageIdViewProperties(mEmojiCategoryPageIndicatorView);
 
         setCurrentCategoryId(mEmojiCategory.getCurrentCategoryId(), true /* force */);
 
-        final LinearLayout actionBar = (LinearLayout)findViewById(R.id.emoji_action_bar);
+        final LinearLayout actionBar = (LinearLayout) findViewById(R.id.emoji_action_bar);
         mEmojiLayoutParams.setActionBarProperties(actionBar);
 
         // deleteKey depends only on OnTouchListener.
-        mDeleteKey = (ImageButton)findViewById(R.id.emoji_keyboard_delete);
+        mDeleteKey = (ImageButton) findViewById(R.id.emoji_keyboard_delete);
         mDeleteKey.setBackgroundResource(mFunctionalKeyBackgroundId);
         mDeleteKey.setTag(Constants.CODE_DELETE);
         mDeleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
@@ -213,12 +214,12 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         // if the event is canceled by moving off the finger from the view.
         // The text on alphabet keys are set at
         // {@link #startEmojiPalettes(String,int,float,Typeface)}.
-        mAlphabetKeyLeft = (TextView)findViewById(R.id.emoji_keyboard_alphabet_left);
+        mAlphabetKeyLeft = (TextView) findViewById(R.id.emoji_keyboard_alphabet_left);
         mAlphabetKeyLeft.setBackgroundResource(mFunctionalKeyBackgroundId);
         mAlphabetKeyLeft.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         mAlphabetKeyLeft.setOnTouchListener(this);
         mAlphabetKeyLeft.setOnClickListener(this);
-        mAlphabetKeyRight = (TextView)findViewById(R.id.emoji_keyboard_alphabet_right);
+        mAlphabetKeyRight = (TextView) findViewById(R.id.emoji_keyboard_alphabet_right);
         mAlphabetKeyRight.setBackgroundResource(mFunctionalKeyBackgroundId);
         mAlphabetKeyRight.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         mAlphabetKeyRight.setOnTouchListener(this);

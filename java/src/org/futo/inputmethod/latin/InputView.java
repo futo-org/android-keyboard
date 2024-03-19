@@ -39,7 +39,8 @@ public final class InputView extends FrameLayout {
 
     @Override
     protected void onFinishInflate() {
-        mMainKeyboardView = (MainKeyboardView)findViewById(R.id.keyboard_view);
+        super.onFinishInflate();
+        mMainKeyboardView = (MainKeyboardView) findViewById(R.id.keyboard_view);
     }
 
     public void setKeyboardTopPadding(final int keyboardTopPadding) {

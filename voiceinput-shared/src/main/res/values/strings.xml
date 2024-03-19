@@ -17,6 +17,7 @@
 
     <string name="tiny_en_name">English-39 (default)</string>
     <string name="base_en_name">English-74 (slower, more accurate)</string>
+    <string name="small_en_name">English-244 (slow)</string>
 
     <string name="tiny_name">Multilingual-39 (less accurate)</string>
     <string name="base_name">Multilingual-74 (default)</string>

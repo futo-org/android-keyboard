@@ -34,6 +34,7 @@ import org.futo.inputmethod.latin.personalization.UserHistoryDictionary;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import org.futo.inputmethod.latin.utils.ExecutorUtils;
 import org.futo.inputmethod.latin.utils.SuggestionResults;
+import org.futo.inputmethod.latin.xlm.LanguageModel;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

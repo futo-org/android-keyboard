@@ -31,6 +31,7 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
 
     override val keyFeedback: Drawable
 
+    override val moreKeysTextColor: Int
     override val moreKeysKeyboardBackground: Drawable
     override val popupKey: Drawable
 
@@ -107,6 +108,10 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         val surface = colorScheme.background.toArgb()
         val outline = colorScheme.outline.toArgb()
 
+        val primaryContainer = colorScheme.primaryContainer.toArgb()
+        val onPrimaryContainer = colorScheme.onPrimaryContainer.toArgb()
+
+        val onPrimary = colorScheme.onPrimary.toArgb()
         val onSecondary = colorScheme.onSecondary.toArgb()
         val onBackground = colorScheme.onBackground.toArgb()
         val onBackgroundHalf = colorScheme.onBackground.copy(alpha = 0.5f).toArgb()
@@ -115,6 +120,7 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
 
         colors[R.styleable.Keyboard_Key_keyTextColor] = onBackground
         colors[R.styleable.Keyboard_Key_keyTextInactivatedColor] = onBackgroundHalf
+        colors[R.styleable.Keyboard_Key_keyPressedTextColor] = onPrimary
         colors[R.styleable.Keyboard_Key_keyTextShadowColor] = 0
         colors[R.styleable.Keyboard_Key_functionalTextColor] = onBackground
         colors[R.styleable.Keyboard_Key_keyHintLetterColor] = onBackgroundHalf
@@ -124,32 +130,30 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = onSecondary
         colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = onBackgroundHalf
 
-        drawables[R.styleable.Keyboard_iconDeleteKey] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.delete
-        )!!.apply {
-            setTint(onBackground)
-        }
-        drawables[R.styleable.Keyboard_iconLanguageSwitchKey] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.globe
-        )!!.apply {
-            setTint(onBackground)
+        val overrideDrawable: (Int, Int, Int) -> Unit = { a, b, color ->
+            drawables[a] = AppCompatResources.getDrawable(
+                context,
+                b
+            )!!.apply {
+                setTint(color)
+            }
         }
 
-        drawables[R.styleable.Keyboard_iconShiftKey] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.shift
-        )!!.apply {
-            setTint(onBackground)
-        }
+        // No good replacements for these cons yet, but we set them anyway for setTint
+        overrideDrawable(R.styleable.Keyboard_iconEnterKey, R.drawable.sym_keyboard_return_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconGoKey, R.drawable.sym_keyboard_go_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconNextKey, R.drawable.sym_keyboard_next_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconDoneKey, R.drawable.sym_keyboard_done_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconPreviousKey, R.drawable.sym_keyboard_previous_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconSearchKey, R.drawable.sym_keyboard_search_lxx_light, onPrimary)
 
-        drawables[R.styleable.Keyboard_iconShiftKeyShifted] = AppCompatResources.getDrawable(
-            context,
-            R.drawable.shiftshifted
-        )!!.apply {
-            setTint(onBackground)
-        }
+        overrideDrawable(R.styleable.Keyboard_iconDeleteKey, R.drawable.delete, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconSettingsKey, R.drawable.settings, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconEmojiActionKey, R.drawable.smile, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconEmojiNormalKey, R.drawable.smile, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconLanguageSwitchKey, R.drawable.globe, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconShiftKey, R.drawable.shift, onBackground)
+        overrideDrawable(R.styleable.Keyboard_iconShiftKeyShifted, R.drawable.shiftshifted, onBackground)
 
         primaryKeyboardColor = background
 
@@ -208,10 +212,11 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
             setPadding(0, 0, 0, dp(50.dp).roundToInt())
         }
 
-        moreKeysKeyboardBackground = coloredRoundedRectangle(surface, dp(8.dp))
+        moreKeysTextColor = onPrimaryContainer
+        moreKeysKeyboardBackground = coloredRoundedRectangle(primaryContainer, dp(8.dp))
         popupKey = StateListDrawable().apply {
-            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(),
-                coloredRoundedRectangle(surface, dp(8.dp))
+            addStateWithHighlightLayerOnPressed(primary, intArrayOf(),
+                coloredRoundedRectangle(primaryContainer, dp(8.dp))
             )
         }
     }

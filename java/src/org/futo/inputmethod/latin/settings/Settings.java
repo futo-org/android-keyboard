@@ -67,6 +67,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
     public static final String PREF_KEY_USE_PERSONALIZED_DICTS = "pref_key_use_personalized_dicts";
+    public static final String PREF_KEY_USE_TRANSFORMER_LM = "pref_key_use_transformer_lm";
     public static final String PREF_KEY_USE_DOUBLE_SPACE_PERIOD =
             "pref_key_use_double_space_period";
     public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =
@@ -263,13 +264,13 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static boolean readShowsLanguageSwitchKey(final SharedPreferences prefs) {
         if (prefs.contains(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
             final boolean suppressLanguageSwitchKey = prefs.getBoolean(
-                    PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, false);
+                    PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, true);
             final SharedPreferences.Editor editor = prefs.edit();
             editor.remove(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY);
             editor.putBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, !suppressLanguageSwitchKey);
             editor.apply();
         }
-        return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
+        return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, false);
     }
 
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,
@@ -447,11 +448,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             editor.remove(PREF_AUTO_CORRECTION_THRESHOLD_OBSOLETE);
             final String autoCorrectionOff =
                     res.getString(R.string.auto_correction_threshold_mode_index_off);
-            if (thresholdSetting.equals(autoCorrectionOff)) {
-                editor.putBoolean(PREF_AUTO_CORRECTION, false);
-            } else {
-                editor.putBoolean(PREF_AUTO_CORRECTION, true);
-            }
+            editor.putBoolean(PREF_AUTO_CORRECTION, !thresholdSetting.equals(autoCorrectionOff));
             editor.commit();
         }
     }

@@ -683,8 +683,22 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 }
             }
         }
-        return NgramContextUtils.getNgramContextFromNthPreviousWord(
+        NgramContext ngramContext = NgramContextUtils.getNgramContextFromNthPreviousWord(
                 prev, spacingAndPunctuations, n);
+
+        CharSequence seq = getTextBeforeCursor(4096, 0);
+        if(seq != null) {
+            ngramContext.fullContext = seq.toString();
+
+            if (ngramContext.fullContext.length() == 4096) {
+                ngramContext.fullContext = String.join(" ", ngramContext.fullContext.split(" ")).substring(ngramContext.fullContext.split(" ")[0].length() + 1);
+            }
+        } else {
+            ngramContext.fullContext = "";
+        }
+
+        return ngramContext;
+
     }
 
     private static boolean isPartOfCompositionForScript(final int codePoint,
@@ -1033,5 +1047,117 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         return InputConnectionCompatUtils.requestCursorUpdates(
                 mIC, enableMonitor, requestImmediateCallback);
+    }
+
+    public boolean hasCursorPosition() {
+        return mExpectedSelStart != INVALID_CURSOR_POSITION && mExpectedSelEnd != INVALID_CURSOR_POSITION;
+    }
+
+    /**
+     * Some chars, such as emoji consist of 2 chars (surrogate pairs). We should treat them as one character.
+     */
+    public int getUnicodeSteps(int chars, boolean rightSidePointer) {
+        int steps = 0;
+        if (chars < 0) {
+            CharSequence charsBeforeCursor = rightSidePointer && hasSelection() ?
+                    getSelectedText(0) :
+                    getTextBeforeCursor(-chars * 2, 0);
+            if (charsBeforeCursor != null) {
+                for (int i = charsBeforeCursor.length() - 1; i >= 0 && chars < 0; i--, chars++, steps--) {
+                    if (Character.isSurrogate(charsBeforeCursor.charAt(i))) {
+                        steps--;
+                        i--;
+                    }
+                }
+            }
+        } else if (chars > 0) {
+            CharSequence charsAfterCursor = !rightSidePointer && hasSelection() ?
+                    getSelectedText(0) :
+                    getTextAfterCursor(chars * 2, 0);
+            if (charsAfterCursor != null) {
+                for (int i = 0; i < charsAfterCursor.length() && chars > 0; i++, chars--, steps++) {
+                    if (Character.isSurrogate(charsAfterCursor.charAt(i))) {
+                        steps++;
+                        i++;
+                    }
+                }
+            }
+        }
+        return steps;
+    }
+
+    private int getCharacterClass(char c) {
+        if(Character.isLetter(c) || c == '_' || Character.isDigit(c)) return 1;
+        else if(Character.isWhitespace(c)) return 2;
+        else return 3;
+    }
+
+    /**
+     * Gets number of steps needed to step by a whole word
+     * @param direction direction to step, only sign is checked
+     * @param rightSidePointer whether or not right side is fixed
+     * @return number of characters to step
+     */
+    public int getWordBoundarySteps(int direction, boolean rightSidePointer) {
+        int steps = 0;
+        if (direction < 0) {
+            CharSequence charsBeforeCursor = !rightSidePointer && hasSelection() ?
+                    getSelectedText(0) :
+                    getTextBeforeCursor(64, 0);
+
+            if (charsBeforeCursor != null) {
+                int i = charsBeforeCursor.length() - 1;
+
+                // Skip trailing whitespace
+                while (i >= 0 && Character.isWhitespace(charsBeforeCursor.charAt(i))) {
+                    i--;
+                    steps--;
+                }
+
+                // Find the last word boundary
+                int charClass = i >= 0 ? getCharacterClass(charsBeforeCursor.charAt(i)) : -1;
+                while (i >= 0 && getCharacterClass(charsBeforeCursor.charAt(i)) == charClass) {
+                    i--;
+                    steps--;
+                }
+
+                if(!rightSidePointer) {
+                    // Skip initial whitespace
+                    while (i >= 0 && Character.isWhitespace(charsBeforeCursor.charAt(i))) {
+                        i--;
+                        steps--;
+                    }
+                }
+            }
+        } else if (direction > 0) {
+            CharSequence charsAfterCursor = rightSidePointer && hasSelection() ?
+                    getSelectedText(0) :
+                    getTextAfterCursor(64, 0);
+            if (charsAfterCursor != null) {
+                int i = 0;
+
+                // Skip initial whitespace
+                while (i < charsAfterCursor.length() && Character.isWhitespace(charsAfterCursor.charAt(i))) {
+                    i++;
+                    steps++;
+                }
+
+                // Find the first word boundary
+                int charClass = i < charsAfterCursor.length() ? getCharacterClass(charsAfterCursor.charAt(i)) : -1;
+                while (i < charsAfterCursor.length() && getCharacterClass(charsAfterCursor.charAt(i)) == charClass) {
+                    i++;
+                    steps++;
+                }
+
+                if(rightSidePointer) {
+                    // Skip trailing whitespace
+                    while (i < charsAfterCursor.length() && Character.isWhitespace(charsAfterCursor.charAt(i))) {
+                        i++;
+                        steps++;
+                    }
+                }
+            }
+        }
+        return steps;
     }
 }

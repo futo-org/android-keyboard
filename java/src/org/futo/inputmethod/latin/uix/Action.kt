@@ -1,9 +1,9 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -23,12 +23,21 @@ interface KeyboardManagerForAction {
     fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction
 
     fun typeText(v: String)
+    fun backspace(amount: Int)
 
     fun closeActionWindow()
 
     fun triggerSystemVoiceInput()
 
     fun updateTheme(newTheme: ThemeOption)
+
+    fun sendCodePointEvent(codePoint: Int)
+    fun sendKeyEvent(keyCode: Int, metaState: Int)
+
+    fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean)
+    fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean)
+
+    fun performHapticAndAudioFeedback(code: Int, view: View)
 }
 
 interface ActionWindow {
@@ -36,7 +45,7 @@ interface ActionWindow {
     fun windowName(): String
 
     @Composable
-    fun WindowContents()
+    fun WindowContents(keyboardShown: Boolean)
 
     fun close()
 }
@@ -54,6 +63,8 @@ interface PersistentActionState {
 data class Action(
     @DrawableRes val icon: Int,
     @StringRes val name: Int,
+    val canShowKeyboard: Boolean = false,
+
     val windowImpl: ((KeyboardManagerForAction, PersistentActionState?) -> ActionWindow)?,
     val simplePressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)?,
     val persistentState: ((KeyboardManagerForAction) -> PersistentActionState)? = null,

@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
     <!-- U+0634: "ش" ARABIC LETTER SHEEN -->
     <Key latin:keySpec="&#x0634;" />
     <!-- U+0633: "س" ARABIC LETTER SEEN -->

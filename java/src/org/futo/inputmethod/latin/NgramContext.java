@@ -43,6 +43,8 @@ public class NgramContext {
 
     public static final String CONTEXT_SEPARATOR = " ";
 
+    public String fullContext = "";
+
     public static NgramContext getEmptyPrevWordsContext(int maxPrevWordCount) {
         return new NgramContext(maxPrevWordCount, WordInfo.EMPTY_WORD_INFO);
     }

@@ -17,7 +17,6 @@
 package org.futo.inputmethod.latin.spellcheck;
 
 import org.futo.inputmethod.latin.permissions.PermissionsManager;
-import org.futo.inputmethod.latin.utils.FragmentUtils;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -44,12 +43,6 @@ public final class SpellCheckerSettingsActivity extends PreferenceActivity
         modIntent.putExtra(EXTRA_SHOW_FRAGMENT, DEFAULT_FRAGMENT);
         modIntent.putExtra(EXTRA_NO_HEADERS, true);
         return modIntent;
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    @Override
-    public boolean isValidFragment(String fragmentName) {
-        return FragmentUtils.isValidFragment(fragmentName);
     }
 
     @Override

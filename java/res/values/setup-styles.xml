@@ -18,7 +18,7 @@
 */
 -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
     <style name="setupTitleStyle" parent="setupTitleStyleCommon" />
     <style name="setupStepActionLabelStyle" parent="setupStepActionLabelStyleCommon" />
 </resources>

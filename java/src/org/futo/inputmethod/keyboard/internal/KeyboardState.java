@@ -338,15 +338,6 @@ public final class KeyboardState {
     }
 
     private void setEmojiKeyboard() {
-        if (DEBUG_INTERNAL_ACTION) {
-            Log.d(TAG, "setEmojiKeyboard");
-        }
-        mIsAlphabetMode = false;
-        mIsEmojiMode = true;
-        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
-        // Remember caps lock mode and reset alphabet shift state.
-        mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
-        mAlphabetShiftState.setShiftLocked(false);
         mSwitchActions.setEmojiKeyboard();
     }
 

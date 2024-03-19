@@ -368,6 +368,10 @@ public class DictionaryInfoUtils {
             return resId;
         }
 
+        if ((resId = Dictionaries.INSTANCE.getDictionaryId(locale)) != 0) {
+            return resId;
+        }
+
         // Not found, return 0
         return 0;
     }
@@ -383,8 +387,14 @@ public class DictionaryInfoUtils {
         if (0 != resourceId) {
             return resourceId;
         }
-        return res.getIdentifier(DEFAULT_MAIN_DICT + DecoderSpecificConstants.DECODER_DICT_SUFFIX,
+        resourceId = res.getIdentifier(DEFAULT_MAIN_DICT + DecoderSpecificConstants.DECODER_DICT_SUFFIX,
                 "raw", RESOURCE_PACKAGE_NAME);
+
+        if (0 != resourceId) {
+            return resourceId;
+        }
+
+        return R.raw.main;
     }
 
     /**

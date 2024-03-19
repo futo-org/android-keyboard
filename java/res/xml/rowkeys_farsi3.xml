@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin">
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
     <!-- U+0638: "ظ" ARABIC LETTER ZAH -->
     <Key latin:keySpec="&#x0638;" />
     <!-- U+0637: "ط" ARABIC LETTER TAH -->

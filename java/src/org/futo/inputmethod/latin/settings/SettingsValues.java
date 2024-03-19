@@ -55,7 +55,6 @@ public class SettingsValues {
 
     // From resources:
     public final SpacingAndPunctuations mSpacingAndPunctuations;
-    public final int mDelayInMillisecondsToUpdateOldSuggestions;
     public final long mDoubleSpacePeriodTimeout;
     // From configuration:
     public final Locale mLocale;
@@ -75,6 +74,7 @@ public class SettingsValues {
     public final boolean mBlockPotentiallyOffensive;
     // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
+    public final boolean mTransformerPredictionEnabled;
     public final boolean mGestureInputEnabled;
     public final boolean mGestureTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
@@ -123,8 +123,6 @@ public class SettingsValues {
             @Nonnull final InputAttributes inputAttributes) {
         mLocale = res.getConfiguration().locale;
         // Get the resources
-        mDelayInMillisecondsToUpdateOldSuggestions =
-                res.getInteger(R.integer.config_delay_in_milliseconds_to_update_old_suggestions);
         mSpacingAndPunctuations = new SpacingAndPunctuations(res);
 
         // Store the input attributes
@@ -144,7 +142,7 @@ public class SettingsValues {
                 ? prefs.getBoolean(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false)
                 : true /* forcibly */;
         mShowsLanguageSwitchKey = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
-                ? Settings.readShowsLanguageSwitchKey(prefs) : true /* forcibly */;
+                ? Settings.readShowsLanguageSwitchKey(prefs) : false /* forcibly */;
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)
@@ -155,6 +153,7 @@ public class SettingsValues {
                 ? res.getString(R.string.auto_correction_threshold_mode_index_modest)
                 : res.getString(R.string.auto_correction_threshold_mode_index_off);
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
+        mTransformerPredictionEnabled = readTransformerPredictionEnabled(prefs, res);
         mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
@@ -321,6 +320,11 @@ public class SettingsValues {
                 R.bool.config_default_next_word_prediction));
     }
 
+    private static boolean readTransformerPredictionEnabled(final SharedPreferences prefs,
+            final Resources res) {
+        return prefs.getBoolean(Settings.PREF_KEY_USE_TRANSFORMER_LM, true);
+    }
+
     private static float readAutoCorrectionThreshold(final Resources res,
             final String currentAutoCorrectionSetting) {
         final String[] autoCorrectionThresholdValues = res.getStringArray(
@@ -374,8 +378,6 @@ public class SettingsValues {
         final StringBuilder sb = new StringBuilder("Current settings :");
         sb.append("\n   mSpacingAndPunctuations = ");
         sb.append("" + mSpacingAndPunctuations.dump());
-        sb.append("\n   mDelayInMillisecondsToUpdateOldSuggestions = ");
-        sb.append("" + mDelayInMillisecondsToUpdateOldSuggestions);
         sb.append("\n   mAutoCap = ");
         sb.append("" + mAutoCap);
         sb.append("\n   mVibrateOn = ");
@@ -400,6 +402,8 @@ public class SettingsValues {
         sb.append("" + mBlockPotentiallyOffensive);
         sb.append("\n   mBigramPredictionEnabled = ");
         sb.append("" + mBigramPredictionEnabled);
+        sb.append("\n   mTransformerPredictionEnabled = ");
+        sb.append("" + mTransformerPredictionEnabled);
         sb.append("\n   mGestureInputEnabled = ");
         sb.append("" + mGestureInputEnabled);
         sb.append("\n   mGestureTrailEnabled = ");

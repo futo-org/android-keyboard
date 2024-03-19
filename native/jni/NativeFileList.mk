@@ -17,9 +17,73 @@ LATIN_IME_JNI_SRC_FILES := \
     org_futo_inputmethod_latin_BinaryDictionary.cpp \
     org_futo_inputmethod_latin_BinaryDictionaryUtils.cpp \
     org_futo_inputmethod_latin_DicTraverseSession.cpp \
+    org_futo_inputmethod_latin_xlm_LanguageModel.cpp \
+    org_futo_inputmethod_latin_xlm_AdapterTrainer.cpp \
+    org_futo_inputmethod_latin_xlm_ModelInfoLoader.cpp \
+    org_futo_voiceinput_WhisperGGML.cpp \
     jni_common.cpp
 
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/sentencepiece/builtin_pb
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/third_party
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/third_party/protobuf-lite
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/third_party/esaxx
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/third_party/darts_clone
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/src/third_party/absl
+
 LATIN_IME_CORE_SRC_FILES := \
+    jni_utils.cpp \
+    ggml/context.cpp \
+    ggml/ggml.c \
+    ggml/ggml-alloc.c \
+    ggml/ggml-quants.c \
+    ggml/ggml-backend.c \
+    ggml/llama.cpp \
+    ggml/whisper.cpp \
+    ggml/finetune.cpp \
+    ggml/train.cpp \
+    ggml/common.cpp \
+    ggml/LanguageModel.cpp \
+    ggml/ModelMeta.cpp \
+    third_party/protobuf-lite/arena.cc \
+    third_party/protobuf-lite/arenastring.cc \
+    third_party/protobuf-lite/bytestream.cc \
+    third_party/protobuf-lite/coded_stream.cc \
+    third_party/protobuf-lite/common.cc \
+    third_party/protobuf-lite/extension_set.cc \
+    third_party/protobuf-lite/generated_enum_util.cc \
+    third_party/protobuf-lite/generated_message_table_driven_lite.cc \
+    third_party/protobuf-lite/generated_message_util.cc \
+    third_party/protobuf-lite/implicit_weak_message.cc \
+    third_party/protobuf-lite/int128.cc \
+    third_party/protobuf-lite/io_win32.cc \
+    third_party/protobuf-lite/message_lite.cc \
+    third_party/protobuf-lite/parse_context.cc \
+    third_party/protobuf-lite/repeated_field.cc \
+    third_party/protobuf-lite/status.cc \
+    third_party/protobuf-lite/statusor.cc \
+    third_party/protobuf-lite/stringpiece.cc \
+    third_party/protobuf-lite/stringprintf.cc \
+    third_party/protobuf-lite/structurally_valid.cc \
+    third_party/protobuf-lite/strutil.cc \
+    third_party/protobuf-lite/time.cc \
+    third_party/protobuf-lite/wire_format_lite.cc \
+    third_party/protobuf-lite/zero_copy_stream.cc \
+    third_party/protobuf-lite/zero_copy_stream_impl.cc \
+    third_party/protobuf-lite/zero_copy_stream_impl_lite.cc \
+    sentencepiece/builtin_pb/sentencepiece_model.pb.cc \
+    sentencepiece/builtin_pb/sentencepiece.pb.cc \
+    $(addprefix sentencepiece/, \
+        bpe_model.cc \
+        char_model.cc \
+        error.cc \
+        filesystem.cc \
+        model_factory.cc \
+        model_interface.cc \
+        normalizer.cc \
+        sentencepiece_processor.cc \
+        unigram_model.cc \
+        util.cc \
+        word_model.cc) \
     $(addprefix dictionary/header/, \
         header_policy.cpp \
         header_read_write_utils.cpp) \

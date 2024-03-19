@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="voice_input_action_title">Voice Input</string>
     <string name="theme_switcher_action_title">Theme Switcher</string>
+    <string name="emoji_action_title">Emojis</string>
+    <string name="clipboard_action_title">Paste from Clipboard</string>
+    <string name="undo_action_title">Undo</string>
+    <string name="redo_action_title">Redo</string>
+    <string name="text_edit_action_title">Text Editor</string>
 
     <string name="amoled_dark_theme_name">AMOLED Dark Purple</string>
     <string name="classic_material_dark_theme_name">AOSP Material Dark</string>
@@ -21,4 +26,19 @@
     <string name="download_in_progress">Downloading models…</string>
 
     <string name="model_downloader">Model Downloader</string>
+
+    <string name="update_checking_service">Update Checking service</string>
+    <string name="update_available">Update Available</string>
+    <string name="update_available_notification">An update is available (<xliff:g name="versionDiff" example="v1 -> v2">%s</xliff:g>). Tap to download</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="an_unknown_error_has_occurred">An unknown error has occurred.</string>
+    <string name="model_import_failed">Model import failed</string>
+    <string name="failed_to_import_the_selected_model">Failed to import the selected model</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="update">Update</string>
+
+    <string name="blacklist">Blacklist</string>
+    <string name="blacklist_from_suggestions">Blacklist \"%1$s\" from being suggested?</string>
+    <string name="disable_emoji">Disable emoji suggestions</string>
+    <string name="try_typing">Try typing here…</string>
 </resources>

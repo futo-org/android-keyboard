@@ -60,6 +60,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public interface Listener {
         public void showImportantNoticeContents();
         public void pickSuggestionManually(SuggestedWordInfo word);
+        public void requestForgetWord(SuggestedWordInfo word);
         public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
     }
 
@@ -150,7 +151,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             word.setOnClickListener(this);
             word.setOnLongClickListener(this);
             mWordViews.add(word);
-            final View divider = inflater.inflate(R.layout.suggestion_divider, null);
+            final View divider = inflater.inflate(R.layout.suggestion_divider, this, false);
             mDividerViews.add(divider);
             final TextView info = new TextView(context, null, R.attr.suggestionWordStyle);
             info.setTextColor(Color.WHITE);
@@ -161,7 +162,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mLayoutHelper = new SuggestionStripLayoutHelper(
                 context, attrs, defStyle, mWordViews, mDividerViews, mDebugInfoViews);
 
-        mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
+        mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, this, false);
         mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
                 .findViewById(R.id.more_suggestions_view);
         mMoreSuggestionsBuilder = new MoreSuggestions.Builder(context, mMoreSuggestionsView);

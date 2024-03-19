@@ -124,7 +124,7 @@ public final class Suggest {
                 || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-                final Locale wordLocale = wordInfo.mSourceDict.mLocale;
+                final Locale wordLocale = (wordInfo.mSourceDict != null) ? wordInfo.mSourceDict.mLocale : null;
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
                         wordInfo, null == wordLocale ? defaultLocale : wordLocale,
                         shouldMakeSuggestionsAllUpperCase, isOnlyFirstCharCapitalized,
@@ -147,13 +147,12 @@ public final class Suggest {
         return firstSuggestedWordInfo;
     }
 
-    // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
-    // and calls the callback function with the suggestions.
-    private void getSuggestedWordsForNonBatchInput(final WordComposer wordComposer,
-            final NgramContext ngramContext, final Keyboard keyboard,
-            final SettingsValuesForSuggestion settingsValuesForSuggestion,
-            final int inputStyleIfNotPrediction, final boolean isCorrectionEnabled,
-            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
+    public static SuggestedWords obtainNonBatchedInputSuggestedWords(
+            final WordComposer wordComposer, final int inputStyleIfNotPrediction,
+            final boolean isCorrectionEnabled, final int sequenceNumber,
+            final Locale locale, final SuggestionResults suggestionResults,
+            final float autoCorrectionThreshold
+    ) {
         final String typedWordString = wordComposer.getTypedWord();
         final int trailingSingleQuotesCount =
                 StringUtils.getTrailingSingleQuotesCount(typedWordString);
@@ -161,10 +160,6 @@ public final class Suggest {
                 ? typedWordString.substring(0, typedWordString.length() - trailingSingleQuotesCount)
                 : typedWordString;
 
-        final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
-                settingsValuesForSuggestion, SESSION_ID_TYPING, inputStyleIfNotPrediction);
-        final Locale locale = mDictionaryFacilitator.getLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
                         trailingSingleQuotesCount, locale);
@@ -223,11 +218,13 @@ public final class Suggest {
                 // list, "will" would always auto-correct to "Will" which is unwanted. Hence, no
                 // main dict => no auto-correct. Also, it would probably get obnoxious quickly.
                 // TODO: now that we have personalization, we may want to re-evaluate this decision
-                || !mDictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
+                //|| !mDictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
                 // If the first suggestion is a shortcut we never auto-correct to it, regardless
                 // of how strong it is (allowlist entries are not KIND_SHORTCUT but KIND_WHITELIST).
                 // TODO: we may want to have shortcut-only entries auto-correct in the future.
-                || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
+                || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)
+                // Don't do it if it looks like a URL (or email address)
+                || StringUtils.lastPartLooksLikeURL(typedWordString)) {
             hasAutoCorrection = false;
         } else {
             final SuggestedWordInfo firstSuggestion = suggestionResults.first();
@@ -235,7 +232,7 @@ public final class Suggest {
                     && firstOcurrenceOfTypedWordInSuggestions != 0) {
                 hasAutoCorrection = true;
             } else if (!AutoCorrectionUtils.suggestionExceedsThreshold(
-                    firstSuggestion, consideredWord, mAutoCorrectionThreshold)) {
+                    firstSuggestion, consideredWord, autoCorrectionThreshold)) {
                 // Score is too low for autocorrect
                 hasAutoCorrection = false;
             } else {
@@ -277,11 +274,30 @@ public final class Suggest {
 
         final boolean isTypedWordValid = firstOcurrenceOfTypedWordInSuggestions > -1
                 || (!resultsArePredictions && !allowsToBeAutoCorrected);
-        callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
+        return new SuggestedWords(suggestionsList,
                 suggestionResults.mRawSuggestions, typedWordInfo,
                 isTypedWordValid,
                 hasAutoCorrection /* willAutoCorrect */,
-                false /* isObsoleteSuggestions */, inputStyle, sequenceNumber));
+                false /* isObsoleteSuggestions */, inputStyle, sequenceNumber);
+    }
+
+
+    // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
+    // and calls the callback function with the suggestions.
+    private void getSuggestedWordsForNonBatchInput(final WordComposer wordComposer,
+            final NgramContext ngramContext, final Keyboard keyboard,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
+            final int inputStyleIfNotPrediction, final boolean isCorrectionEnabled,
+            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
+        final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
+                wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
+                settingsValuesForSuggestion, SESSION_ID_TYPING, inputStyleIfNotPrediction);
+        final Locale locale = mDictionaryFacilitator.getLocale();
+
+        callback.onGetSuggestedWords(
+            obtainNonBatchedInputSuggestedWords(wordComposer, inputStyleIfNotPrediction,
+                isCorrectionEnabled, sequenceNumber, locale, suggestionResults, mAutoCorrectionThreshold)
+        );
     }
 
     // Retrieves suggestions for the batch input
@@ -304,7 +320,7 @@ public final class Suggest {
         if (isFirstCharCapitalized || isAllUpperCase) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-                final Locale wordlocale = wordInfo.mSourceDict.mLocale;
+                final Locale wordlocale = (wordInfo.mSourceDict != null) ? wordInfo.mSourceDict.mLocale : null;
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
                         wordInfo, null == wordlocale ? locale : wordlocale, isAllUpperCase,
                         isFirstCharCapitalized, 0 /* trailingSingleQuotesCount */);
@@ -393,7 +409,7 @@ public final class Suggest {
      * @return whether it's fine to auto-correct to this.
      */
     private static boolean isAllowedByAutoCorrectionWithSpaceFilter(final SuggestedWordInfo info) {
-        final Locale locale = info.mSourceDict.mLocale;
+        final Locale locale = (info.mSourceDict != null) ? info.mSourceDict.mLocale : null;
         if (null == locale) {
             return true;
         }
@@ -426,9 +442,13 @@ public final class Suggest {
         for (int i = quotesToAppend - 1; i >= 0; --i) {
             sb.appendCodePoint(Constants.CODE_SINGLE_QUOTE);
         }
-        return new SuggestedWordInfo(sb.toString(), wordInfo.mPrevWordsContext,
+        SuggestedWordInfo result = new SuggestedWordInfo(sb.toString(), wordInfo.mPrevWordsContext,
                 wordInfo.mScore, wordInfo.mKindAndFlags,
                 wordInfo.mSourceDict, wordInfo.mIndexOfTouchPointOfSecondWord,
                 wordInfo.mAutoCommitFirstWordConfidence);
+
+        result.mOriginatesFromTransformerLM = wordInfo.mOriginatesFromTransformerLM;
+
+        return result;
     }
 }

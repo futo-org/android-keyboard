@@ -93,6 +93,7 @@ public class DictionaryDownloadProgressBar extends ProgressBar {
 
     @Override
     protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         mIsCurrentlyAttachedToWindow = true;
         updateReporterThreadRunningStatusAccordingToVisibility();
     }

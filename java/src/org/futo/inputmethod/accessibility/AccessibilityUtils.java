@@ -219,13 +219,7 @@ public final class AccessibilityUtils {
         event.setEnabled(true);
         event.getText().add(text);
 
-        // Platforms starting at SDK version 16 (Build.VERSION_CODES.JELLY_BEAN) should use
-        // announce events.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            event.setEventType(AccessibilityEventCompat.TYPE_ANNOUNCEMENT);
-        } else {
-            event.setEventType(AccessibilityEvent.TYPE_VIEW_FOCUSED);
-        }
+        event.setEventType(AccessibilityEvent.TYPE_ANNOUNCEMENT);
 
         final ViewParent viewParent = view.getParent();
         if ((viewParent == null) || !(viewParent instanceof ViewGroup)) {

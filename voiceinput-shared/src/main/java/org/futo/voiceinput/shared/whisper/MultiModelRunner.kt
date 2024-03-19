@@ -4,20 +4,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
+import org.futo.voiceinput.shared.ggml.BailLanguageException
+import org.futo.voiceinput.shared.ggml.DecodingMode
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
 import org.futo.voiceinput.shared.types.ModelInferenceCallback
 import org.futo.voiceinput.shared.types.ModelLoader
-import org.futo.voiceinput.shared.util.toDoubleArray
+import org.futo.voiceinput.shared.types.getLanguageFromWhisperString
+import org.futo.voiceinput.shared.types.toWhisperString
 
 
 data class MultiModelRunConfiguration(
-    val primaryModel: ModelLoader, val languageSpecificModels: Map<Language, ModelLoader>
+    val primaryModel: ModelLoader,
+    val languageSpecificModels: Map<Language, ModelLoader>
 )
 
 data class DecodingConfiguration(
-    val languages: Set<Language>, val suppressSymbols: Boolean
+    val glossary: List<String>,
+    val languages: Set<Language>,
+    val suppressSymbols: Boolean
 )
 
 class MultiModelRunner(
@@ -47,56 +52,51 @@ class MultiModelRunner(
         decodingConfiguration: DecodingConfiguration,
         callback: ModelInferenceCallback
     ): String = coroutineScope {
-        callback.updateStatus(InferenceState.ExtractingMel)
-        val mel = extractMelSpectrogramForWhisper(samples.toDoubleArray())
-        yield()
-
         callback.updateStatus(InferenceState.LoadingModel)
         val primaryModel = modelManager.obtainModel(runConfiguration.primaryModel)
-        val session = primaryModel.startInferenceSession(decodingConfiguration)
-        yield()
 
-        callback.updateStatus(InferenceState.Encoding)
-        session.melToFeatures(mel)
-        yield()
+        val allowedLanguages = decodingConfiguration.languages.map { it.toWhisperString() }.toTypedArray()
+        val bailLanguages = runConfiguration.languageSpecificModels.filter { it.value != runConfiguration.primaryModel }.keys.map { it.toWhisperString() }.toTypedArray()
 
-        callback.updateStatus(InferenceState.DecodingLanguage)
-        val metadata = session.decodeMetadata()
-        yield()
+        val glossary = if(decodingConfiguration.glossary.isNotEmpty()) {
+            "(Glossary: " + decodingConfiguration.glossary.joinToString(separator = ", ") + ")"
+        } else {
+            ""
+        }
 
-        metadata.detectedLanguage?.let { callback.languageDetected(it) }
-
-        val languageSpecificModel = metadata.detectedLanguage?.let {
-            runConfiguration.languageSpecificModels[it]
-        }?.let {
+        val result = try {
+            callback.updateStatus(InferenceState.Encoding)
+            primaryModel.infer(
+                samples = samples,
+                prompt = glossary,
+                languages = allowedLanguages,
+                bailLanguages = bailLanguages,
+                decodingMode = DecodingMode.BeamSearch5,
+                suppressNonSpeechTokens = true,
+                partialResultCallback = {
+                    callback.partialResult(it)
+                }
+            )
+        } catch(e: BailLanguageException) {
             callback.updateStatus(InferenceState.SwitchingModel)
-            modelManager.obtainModel(it)
+            val language = getLanguageFromWhisperString(e.language)
+
+            val specificModelLoader = runConfiguration.languageSpecificModels[language]!!
+            val specificModel = modelManager.obtainModel(specificModelLoader)
+
+            specificModel.infer(
+                samples = samples,
+                prompt = glossary,
+                languages = arrayOf(e.language),
+                bailLanguages = arrayOf(),
+                decodingMode = DecodingMode.BeamSearch5,
+                suppressNonSpeechTokens = true,
+                partialResultCallback = {
+                    callback.partialResult(it)
+                }
+            )
         }
-        yield()
 
-        return@coroutineScope when {
-            (languageSpecificModel != null) -> {
-                val languageSession =
-                    languageSpecificModel.startInferenceSession(decodingConfiguration)
-
-                languageSession.melToFeatures(mel)
-                yield()
-
-                callback.updateStatus(InferenceState.DecodingStarted)
-                languageSession.decodeMetadata()
-                yield()
-
-                languageSession.decodeOutput {
-                    callback.partialResult(it.trim())
-                }.trim()
-            }
-
-            else -> {
-                callback.updateStatus(InferenceState.DecodingStarted)
-                session.decodeOutput {
-                    callback.partialResult(it.trim())
-                }.trim()
-            }
-        }
+        return@coroutineScope result
     }
 }

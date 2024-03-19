@@ -18,8 +18,7 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"ಇನ್‌ಪುಟ್ ಆಯ್ಕೆಗಳು"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಹುಡುಕಿ"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"ಕಾಗುಣಿತ ಪರೀಕ್ಷಕವು ನಿಮ್ಮ ಸಂಪರ್ಕ ಪಟ್ಟಿಯ ಮಾಹಿತಿಯನ್ನು ಬಳಸಿಕೊಳ್ಳುತ್ತದೆ"</string>

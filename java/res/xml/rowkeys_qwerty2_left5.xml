@@ -19,20 +19,30 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <Key
         latin:keySpec="a"
+        latin:keyHintLabel="\@"
+        latin:additionalMoreKeys="\\@"
         latin:moreKeys="!text/morekeys_a" />
     <Key
         latin:keySpec="s"
+        latin:keyHintLabel="#"
+        latin:additionalMoreKeys="#"
         latin:moreKeys="!text/morekeys_s" />
     <Key
         latin:keySpec="d"
+        latin:keyHintLabel="$"
+        latin:additionalMoreKeys="&#x24;,&#x20AC;,&#x00A3;,&#x00A5;,&#x00A2;"
         latin:moreKeys="!text/morekeys_d" />
     <Key
-        latin:keySpec="f" />
+        latin:keySpec="f"
+        latin:keyHintLabel="%"
+        latin:additionalMoreKeys="%" />
     <Key
         latin:keySpec="g"
+        latin:keyHintLabel="&amp;"
+        latin:additionalMoreKeys="&amp;,|"
         latin:moreKeys="!text/morekeys_g" />
 </merge>

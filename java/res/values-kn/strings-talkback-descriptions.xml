@@ -18,8 +18,7 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="spoken_use_headphones" msgid="2455138206280962514">"ಪಾಸ್‌ವರ್ಡ್ ಕೀಗಳನ್ನು ಗಟ್ಟಿಯಾಗಿ ಕೇಳಲು ಹೆಡ್‌ಸೆಟ್‌ ಪ್ಲಗ್ ಇನ್ ಮಾಡಿ."</string>
     <string name="spoken_current_text_is" msgid="1642386857389316456">"ಪ್ರಸ್ತುತ ಪದವು %s ಆಗಿದೆ"</string>
     <string name="spoken_no_text_entered" msgid="3439628354874662101">"ಯಾವುದೇ ಪಠ್ಯವನ್ನು ನಮೂದಿಸಿಲ್ಲ"</string>

@@ -1,11 +1,13 @@
 package org.futo.inputmethod.latin.uix
 
+import android.content.Context
 import android.os.Build
 import android.view.View
-import android.view.inputmethod.InlineSuggestion
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -22,15 +24,19 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -39,10 +45,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -58,15 +66,25 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.flow.Flow
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
+import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SUGGESTION
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.uix.actions.ClipboardAction
+import org.futo.inputmethod.latin.uix.actions.EmojiAction
+import org.futo.inputmethod.latin.uix.actions.RedoAction
+import org.futo.inputmethod.latin.uix.actions.SettingsAction
+import org.futo.inputmethod.latin.uix.actions.SystemVoiceInputAction
+import org.futo.inputmethod.latin.uix.actions.TextEditAction
 import org.futo.inputmethod.latin.uix.actions.ThemeAction
+import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
+import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import java.lang.Integer.min
 import kotlin.math.ceil
@@ -99,6 +117,12 @@ import kotlin.math.roundToInt
  *
  * TODO: Will need to make RTL languages work
  */
+
+interface ImportantNotice {
+    @Composable fun getText(): String
+    fun onDismiss(context: Context)
+    fun onOpen(context: Context)
+}
 
 
 val suggestionStylePrimary = TextStyle(
@@ -150,7 +174,7 @@ fun AutoFitText(
 
         val scale = (size.width / measurement.size.width).coerceAtMost(1.0f)
 
-        translate(left = (scale * (size.width - measurement.size.width)) / 2.0f) {
+        translate(left = (scale * (size.width - measurement.size.width)) / 2.0f, top = size.height / 2 - measurement.size.height / 2) {
             scale(scaleX = scale, scaleY = 1.0f) {
                 drawText(
                     measurement
@@ -160,51 +184,68 @@ fun AutoFitText(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit) {
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
     val word = try {
          words.getWord(idx)
     } catch(e: IndexOutOfBoundsException) {
         null
     }
 
-    //val topSuggestionIcon = painterResource(id = R.drawable.top_suggestion)
-    val textButtonModifier = when (isPrimary) {
+    val wordInfo = try {
+        words.getInfo(idx)
+    } catch(e: IndexOutOfBoundsException) {
+        null
+    }
+
+    val actualIsPrimary = isPrimary && (words.mWillAutoCorrect || ((wordInfo?.isExactMatch) == true))
+
+    val iconColor = MaterialTheme.colorScheme.onBackground
+    val topSuggestionIcon = painterResource(id = R.drawable.transformer_suggestion)
+    val textButtonModifier = when (wordInfo?.mOriginatesFromTransformerLM) {
         true -> Modifier.drawBehind {
-            /*with(topSuggestionIcon) {
+            with(topSuggestionIcon) {
                 val iconSize = topSuggestionIcon.intrinsicSize
                 translate(
                     left = (size.width - iconSize.width) / 2.0f,
                     top = size.height - iconSize.height * 2.0f
                 ) {
-                    draw(topSuggestionIcon.intrinsicSize) // Needs to be tinted
+                    draw(
+                        topSuggestionIcon.intrinsicSize,
+                        alpha = if(actualIsPrimary){ 1.0f } else { 0.66f } / 1.25f,
+                        colorFilter = ColorFilter.tint(color = iconColor)
+                    )
                 }
-            }*/
+            }
         }
-        false -> Modifier
+        else -> Modifier
     }
 
-    val textModifier = when (isPrimary) {
+    val textModifier = when (actualIsPrimary) {
         true -> Modifier
         false -> Modifier.alpha(0.75f)
     }
 
-    val textStyle = when (isPrimary) {
+    val textStyle = when (actualIsPrimary) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
     }.copy(color = MaterialTheme.colorScheme.onBackground)
 
-    TextButton(
-        onClick = onClick,
+    Box(
         modifier = textButtonModifier
             .weight(1.0f)
-            .fillMaxHeight(),
-        shape = RectangleShape,
-        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
-        enabled = word != null
+            .fillMaxHeight()
+            .combinedClickable(
+                enabled = word != null,
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
     ) {
-        if(word != null) {
-            AutoFitText(word, style = textStyle, modifier = textModifier)
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
+            if (word != null) {
+                AutoFitText(word, style = textStyle, modifier = textModifier.align(Center).padding(2.dp))
+            }
         }
     }
 }
@@ -225,7 +266,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
 val ORDER_OF_SUGGESTIONS = listOf(1, 0, 2)
 
 @Composable
-fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
+fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
     val maxSuggestions = min(ORDER_OF_SUGGESTIONS.size, words.size())
 
     if(maxSuggestions == 0) {
@@ -236,7 +277,6 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
 
     var offset = 0
 
-    // Don't show what the user is typing
     try {
         val info = words.getInfo(0)
         if (info.kind == KIND_TYPED && !info.isExactMatch && !info.isExactMatchWithIntentionalOmission) {
@@ -246,15 +286,46 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit) {
 
     }
 
+    // Check for "clueless" suggestions, and display typed word in center if so
+    try {
+        if(offset == 1) {
+            val info = words.getInfo(1)
+            if(info.mOriginatesFromTransformerLM && info.mScore < -50) {
+                offset = 0;
+            }
+        }
+    } catch(_: IndexOutOfBoundsException) {
+
+    }
+
+
+    val suggestionOrder = mutableListOf(
+        ORDER_OF_SUGGESTIONS[0] + offset,
+        ORDER_OF_SUGGESTIONS[1] + offset,
+        if(offset == 1) { 0 - offset } else { ORDER_OF_SUGGESTIONS[2] } + offset,
+    )
+
+    // Find emoji
+    try {
+        for(i in 0 until words.size()) {
+            val info = words.getInfo(i)
+            if(info.mKindAndFlags == KIND_EMOJI_SUGGESTION && i > 2) {
+                suggestionOrder[0] = i
+            }
+        }
+    } catch(_: IndexOutOfBoundsException) {
+
+    }
+
 
     for (i in 0 until maxSuggestions) {
-        val remapped = ORDER_OF_SUGGESTIONS[i]
-
         SuggestionItem(
             words,
-            remapped + offset,
-            isPrimary = remapped == 0
-        ) { onClick(remapped + offset) }
+            suggestionOrder[i],
+            isPrimary = i == (maxSuggestions / 2),
+            onClick = { onClick(suggestionOrder[i]) },
+            onLongClick = { onLongClick(suggestionOrder[i]) }
+        )
 
         if (i < maxSuggestions - 1) SuggestionSeparator()
     }
@@ -274,7 +345,7 @@ fun ActionItem(action: Action, onSelect: (Action) -> Unit) {
                 cornerRadius = CornerRadius(radius, radius)
             )
         }
-        .width(64.dp)
+        .width(50.dp)
         .fillMaxHeight(),
         colors = IconButtonDefaults.iconButtonColors(contentColor = contentCol)
     ) {
@@ -301,14 +372,16 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit) {
 
 @Composable
 fun RowScope.ActionItems(onSelect: (Action) -> Unit) {
-    ActionItem(VoiceInputAction, onSelect)
+    val systemVoiceInput = useDataStore(key = USE_SYSTEM_VOICE_INPUT.key, default = USE_SYSTEM_VOICE_INPUT.default)
+
+    ActionItem(SettingsAction, onSelect)
+    ActionItem(EmojiAction, onSelect)
+    ActionItem(if(systemVoiceInput.value) { SystemVoiceInputAction } else { VoiceInputAction }, onSelect)
     ActionItem(ThemeAction, onSelect)
-
-    Box(modifier = Modifier
-        .fillMaxHeight()
-        .weight(1.0f)) {
-
-    }
+    ActionItem(UndoAction, onSelect)
+    ActionItem(RedoAction, onSelect)
+    ActionItem(ClipboardAction, onSelect)
+    ActionItem(TextEditAction, onSelect)
 }
 
 
@@ -355,37 +428,203 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
+fun ImportantNoticeView(
+    importantNotice: ImportantNotice
+) {
+    val context = LocalContext.current
+
+    Row {
+        TextButton(
+            onClick = { importantNotice.onOpen(context) },
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxHeight(),
+            shape = RectangleShape,
+            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
+            enabled = true
+        ) {
+            AutoFitText(importantNotice.getText(), style = suggestionStylePrimary.copy(color = MaterialTheme.colorScheme.onBackground))
+        }
+
+        val color = MaterialTheme.colorScheme.primary
+        IconButton(
+            onClick = { importantNotice.onDismiss(context) },
+            modifier = Modifier
+                .width(42.dp)
+                .fillMaxHeight()
+                .drawBehind {
+                    drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
+                },
+
+            colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.close),
+                contentDescription = "Close"
+            )
+        }
+    }
+}
+
+@Composable
 fun ActionBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
     onActionActivated: (Action) -> Unit,
     inlineSuggestions: List<MutableState<View?>>,
     forceOpenActionsInitially: Boolean = false,
+    importantNotice: ImportantNotice? = null,
+    keyboardManagerForAction: KeyboardManagerForAction? = null
 ) {
+    val view = LocalView.current
+    val context = LocalContext.current
     val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }
+    val systemVoiceInput = useDataStore(key = USE_SYSTEM_VOICE_INPUT.key, default = USE_SYSTEM_VOICE_INPUT.default)
 
     Surface(modifier = Modifier
         .fillMaxWidth()
         .height(40.dp), color = MaterialTheme.colorScheme.background)
     {
         Row {
-            ExpandActionsButton(isActionsOpen.value) { isActionsOpen.value = !isActionsOpen.value }
+            ExpandActionsButton(isActionsOpen.value) {
+                isActionsOpen.value = !isActionsOpen.value
+                if(isActionsOpen.value && importantNotice != null) {
+                    importantNotice.onDismiss(context)
+                }
+                keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+            }
 
-            if(isActionsOpen.value) {
-                ActionItems(onActionActivated)
-            } else if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if(importantNotice != null && !isActionsOpen.value) {
+                ImportantNoticeView(importantNotice)
+            }else {
+
+                if (isActionsOpen.value) {
+                    LazyRow {
+                        item {
+                            ActionItems {
+                                keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                onActionActivated(it)
+                            }
+                        }
+                    }
+                } else if (inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    InlineSuggestions(inlineSuggestions)
+                } else if (words != null) {
+                    SuggestionItems(words, onClick = {
+                        suggestionStripListener.pickSuggestionManually(
+                            words.getInfo(it)
+                        )
+                        keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                    }, onLongClick = { suggestionStripListener.requestForgetWord(words.getInfo(it)) })
+                } else {
+                    Spacer(modifier = Modifier.weight(1.0f))
+                }
+
+                if (!isActionsOpen.value) {
+                    ActionItemSmall(if(systemVoiceInput.value) { SystemVoiceInputAction } else { VoiceInputAction }, onActionActivated)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ActionWindowBar(
+    windowName: String,
+    canExpand: Boolean,
+    onBack: () -> Unit,
+    onExpand: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp), color = MaterialTheme.colorScheme.background
+    )
+    {
+        Row {
+            IconButton(onClick = onBack) {
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_left_26),
+                    contentDescription = "Back"
+                )
+            }
+
+            Text(
+                windowName,
+                style = Typography.titleMedium,
+                modifier = Modifier.align(CenterVertically)
+            )
+
+            Spacer(modifier = Modifier.weight(1.0f))
+
+            if(canExpand) {
+                IconButton(onClick = onExpand) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_up),
+                        contentDescription = "Show Keyboard"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CollapsibleSuggestionsBar(
+    onClose: () -> Unit,
+    onCollapse: () -> Unit,
+    words: SuggestedWords?,
+    suggestionStripListener: SuggestionStripView.Listener,
+    inlineSuggestions: List<MutableState<View?>>,
+) {
+    Surface(modifier = Modifier
+        .fillMaxWidth()
+        .height(40.dp), color = MaterialTheme.colorScheme.background)
+    {
+        Row {
+            val color = MaterialTheme.colorScheme.primary
+
+            IconButton(
+                onClick = onClose,
+                modifier = Modifier
+                    .width(42.dp)
+                    .fillMaxHeight()
+                    .drawBehind {
+                        drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
+                    },
+
+                colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.close),
+                    contentDescription = "Close"
+                )
+            }
+
+            if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 InlineSuggestions(inlineSuggestions)
             } else if(words != null) {
-                SuggestionItems(words) {
+                SuggestionItems(words, onClick = {
                     suggestionStripListener.pickSuggestionManually(
                         words.getInfo(it)
                     )
-                }
+                }, onLongClick = { suggestionStripListener.requestForgetWord(words.getInfo(it)) })
             } else {
                 Spacer(modifier = Modifier.weight(1.0f))
             }
 
-            ActionItemSmall(VoiceInputAction, onActionActivated)
+            IconButton(
+                onClick = onCollapse,
+                modifier = Modifier
+                    .width(42.dp)
+                    .fillMaxHeight(),
+                colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_down),
+                    contentDescription = "Collapse"
+                )
+            }
         }
     }
 }
@@ -400,6 +639,9 @@ class ExampleListener : SuggestionStripView.Listener {
     }
 
     override fun pickSuggestionManually(word: SuggestedWordInfo?) {
+    }
+
+    override fun requestForgetWord(word: SuggestedWordInfo?) {
     }
 
     override fun onCodeInput(primaryCode: Int, x: Int, y: Int, isKeyRepeat: Boolean) {
@@ -452,6 +694,34 @@ fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) 
 
 @Composable
 @Preview
+fun PreviewActionBarWithNotice(colorScheme: ColorScheme = DarkColorScheme) {
+    UixThemeWrapper(colorScheme) {
+        ActionBar(
+            words = exampleSuggestedWords,
+            suggestionStripListener = ExampleListener(),
+            onActionActivated = { },
+            inlineSuggestions = listOf(),
+            importantNotice = object : ImportantNotice {
+                @Composable
+                override fun getText(): String {
+                    return "Update available: v1.2.3"
+                }
+
+                override fun onDismiss(context: Context) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onOpen(context: Context) {
+                    TODO("Not yet implemented")
+                }
+
+            }
+        )
+    }
+}
+
+@Composable
+@Preview
 fun PreviewActionBarWithEmptySuggestions(colorScheme: ColorScheme = DarkColorScheme) {
     UixThemeWrapper(colorScheme) {
         ActionBar(
@@ -477,37 +747,55 @@ fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
     }
 }
 
+@Composable
+@Preview
+fun PreviewCollapsibleBar(colorScheme: ColorScheme = DarkColorScheme) {
+    CollapsibleSuggestionsBar(
+        onCollapse = { },
+        onClose = { },
+        words = exampleSuggestedWords,
+        suggestionStripListener = ExampleListener(),
+        inlineSuggestions = listOf()
+    )
+}
 
+
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithSuggestionsDynamicLight() {
     PreviewActionBarWithSuggestions(dynamicLightColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicLight() {
     PreviewActionBarWithEmptySuggestions(dynamicLightColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewExpandedActionBarDynamicLight() {
     PreviewExpandedActionBar(dynamicLightColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithSuggestionsDynamicDark() {
     PreviewActionBarWithSuggestions(dynamicDarkColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicDark() {
     PreviewActionBarWithEmptySuggestions(dynamicDarkColorScheme(LocalContext.current))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewExpandedActionBarDynamicDark() {

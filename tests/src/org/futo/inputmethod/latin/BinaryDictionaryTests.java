@@ -170,7 +170,9 @@ public class BinaryDictionaryTests {
         addUnigramWord(binaryDictionary, validLongWord, probability);
         addUnigramWord(binaryDictionary, invalidLongWord, probability);
         // Too long short cut.
-        binaryDictionary.addUnigramEntry("a", probability, false /* isBeginningOfSentence */,
+        binaryDictionary.addUnigramEntry("a", probability,
+                null, 0,
+                false /* isBeginningOfSentence */,
                 false /* isNotAWord */, false /* isPossiblyOffensive */,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP);
         addUnigramWord(binaryDictionary, "abc", probability);
@@ -189,6 +191,7 @@ public class BinaryDictionaryTests {
     private static void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
             final int probability) {
         binaryDictionary.addUnigramEntry(word, probability,
+                null, 0,
                 false /* isBeginningOfSentence */, false /* isNotAWord */,
                 false /* isPossiblyOffensive */,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
@@ -736,6 +739,7 @@ public class BinaryDictionaryTests {
             final boolean isPossiblyOffensive = random.nextBoolean();
             // TODO: Add tests for historical info.
             binaryDictionary.addUnigramEntry(word, unigramProbability,
+                    null, 0,
                     false /* isBeginningOfSentence */, isNotAWord, isPossiblyOffensive,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP);
             if (binaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
@@ -883,7 +887,9 @@ public class BinaryDictionaryTests {
     public void testPossiblyOffensiveAttributeMaintained() {
         final BinaryDictionary binaryDictionary =
                 getEmptyBinaryDictionary(FormatSpec.VERSION403);
-        binaryDictionary.addUnigramEntry("ddd", 100, false, true, true, 0);
+        binaryDictionary.addUnigramEntry("ddd", 100,
+                null, 0,
+                false, true, true, 0);
         WordProperty wordProperty = binaryDictionary.getWordProperty("ddd", false);
         assertEquals(true, wordProperty.mIsPossiblyOffensive);
     }

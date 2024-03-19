@@ -18,7 +18,7 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/org.futo.inputmethod.latin" >
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto" >
     <include latin:keyboardLayout="@xml/rowkeys_qwerty2" />
     <!-- U+010D: "č" LATIN SMALL LETTER C WITH CARON -->
     <Key latin:keySpec="&#x010D;" />
