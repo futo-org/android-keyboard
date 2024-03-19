@@ -49,6 +49,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
@@ -529,18 +530,23 @@ val EmojiAction = Action(
 
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
+                val view = LocalView.current
                 state.emojis.value?.let { emojis ->
                     EmojiGrid(onClick = {
                         manager.typeText(it.emoji)
                         manager.getLifecycleScope().launch {
                             manager.getContext().useEmoji(it.emoji)
                         }
+                        manager.performHapticAndAudioFeedback(Constants.CODE_EMOJI, view)
                     }, onExit = {
                         manager.closeActionWindow()
+                        manager.performHapticAndAudioFeedback(Constants.CODE_SWITCH_ALPHA_SYMBOL, view)
                     }, onSpace = {
                         manager.sendCodePointEvent(Constants.CODE_SPACE)
+                        manager.performHapticAndAudioFeedback(Constants.CODE_SPACE, view)
                     }, onBackspace = {
                         manager.sendCodePointEvent(Constants.CODE_DELETE)
+                        manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
                     }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap)
                 }
             }

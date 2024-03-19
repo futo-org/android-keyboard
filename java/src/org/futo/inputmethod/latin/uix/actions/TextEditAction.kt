@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -369,9 +370,16 @@ val TextEditAction = Action(
 
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
+                val view = LocalView.current
                 TextEditScreen(
-                    onCodePoint = { a -> manager.sendCodePointEvent(a)},
-                    onEvent = { a, b -> manager.sendKeyEvent(a, b) },
+                    onCodePoint = { a ->
+                        manager.sendCodePointEvent(a)
+                        manager.performHapticAndAudioFeedback(a, view)
+                    },
+                    onEvent = { a, b ->
+                        manager.sendKeyEvent(a, b)
+                        manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                    },
                     moveCursor = { direction, ctrl, shift ->
                         val keyEventMetaState = 0 or
                                 (if(shift) { KeyEvent.META_SHIFT_ON } else { 0 }) or
@@ -383,6 +391,8 @@ val TextEditAction = Action(
                             Direction.Up -> manager.sendKeyEvent(KeyEvent.KEYCODE_DPAD_UP, keyEventMetaState)
                             Direction.Down -> manager.sendKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, keyEventMetaState)
                         }
+
+                        manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                     },
                     keyboardShown = keyboardShown
                 )

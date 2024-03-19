@@ -43,6 +43,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
@@ -156,6 +157,10 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean) {
         latinIME.inputLogic.cursorRight(steps, stepOverWords, select)
     }
+
+    override fun performHapticAndAudioFeedback(code: Int, view: View) {
+        AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(code, view)
+    }
 }
 
 class UixManager(private val latinIME: LatinIME) {
@@ -206,7 +211,8 @@ class UixManager(private val latinIME: LatinIME) {
                 latinIME.latinIMELegacy as SuggestionStripView.Listener,
                 inlineSuggestions = inlineSuggestions,
                 onActionActivated = { onActionActivated(it) },
-                importantNotice = currentNotice.value
+                importantNotice = currentNotice.value,
+                keyboardManagerForAction = keyboardManagerForAction
             )
         }
     }

@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
@@ -35,6 +36,8 @@ interface KeyboardManagerForAction {
 
     fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean)
     fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean)
+
+    fun performHapticAndAudioFeedback(code: Int, view: View)
 }
 
 interface ActionWindow {

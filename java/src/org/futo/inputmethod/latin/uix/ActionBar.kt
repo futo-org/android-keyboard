@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -70,6 +71,7 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SUGGESTION
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.actions.ClipboardAction
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
@@ -471,8 +473,10 @@ fun ActionBar(
     onActionActivated: (Action) -> Unit,
     inlineSuggestions: List<MutableState<View?>>,
     forceOpenActionsInitially: Boolean = false,
-    importantNotice: ImportantNotice? = null
+    importantNotice: ImportantNotice? = null,
+    keyboardManagerForAction: KeyboardManagerForAction? = null
 ) {
+    val view = LocalView.current
     val context = LocalContext.current
     val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }
     val systemVoiceInput = useDataStore(key = USE_SYSTEM_VOICE_INPUT.key, default = USE_SYSTEM_VOICE_INPUT.default)
@@ -487,6 +491,7 @@ fun ActionBar(
                 if(isActionsOpen.value && importantNotice != null) {
                     importantNotice.onDismiss(context)
                 }
+                keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
             }
 
             if(importantNotice != null && !isActionsOpen.value) {
@@ -496,7 +501,10 @@ fun ActionBar(
                 if (isActionsOpen.value) {
                     LazyRow {
                         item {
-                            ActionItems(onActionActivated)
+                            ActionItems {
+                                keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                onActionActivated(it)
+                            }
                         }
                     }
                 } else if (inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -506,6 +514,7 @@ fun ActionBar(
                         suggestionStripListener.pickSuggestionManually(
                             words.getInfo(it)
                         )
+                        keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                     }, onLongClick = { suggestionStripListener.requestForgetWord(words.getInfo(it)) })
                 } else {
                     Spacer(modifier = Modifier.weight(1.0f))
