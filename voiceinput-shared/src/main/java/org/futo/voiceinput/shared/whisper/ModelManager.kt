@@ -18,6 +18,12 @@ class ModelManager(
         return loadedModels[model]!!
     }
 
+    fun cancelAll() {
+        loadedModels.forEach {
+            it.value.cancel()
+        }
+    }
+
     suspend fun cleanUp() {
         for (model in loadedModels.values) {
             model.close()

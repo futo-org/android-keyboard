@@ -17,6 +17,8 @@ struct WhisperModelState {
     struct whisper_context *context = nullptr;
 
     std::vector<int> last_forbidden_languages;
+
+    volatile int cancel_flag = 0;
 };
 
 static jlong WhisperGGML_open(JNIEnv *env, jclass clazz, jstring model_dir) {
@@ -54,6 +56,7 @@ static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffe
 
 static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloatArray samples_array, jstring prompt, jobjectArray languages, jobjectArray bail_languages, jint decoding_mode, jboolean suppress_non_speech_tokens) {
     auto *state = reinterpret_cast<WhisperModelState *>(handle);
+    state->cancel_flag = 0;
 
     std::vector<int> allowed_languages;
     int num_languages = env->GetArrayLength(languages);
@@ -163,6 +166,11 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
             return true;
         }
 
+        if(wstate->cancel_flag) {
+            AKLOGI("cancel flag set! Aborting...");
+            return true;
+        }
+
         return false;
     };
 
@@ -172,8 +180,6 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
         AKLOGE("WhisperGGML whisper_full failed with non-zero code %d", res);
     }
     AKLOGI("whisper_full finished");
-
-
 
     whisper_print_timings(state->context);
 
@@ -191,7 +197,11 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
         output = "<>CANCELLED<> lang=" + std::string(whisper_lang_str(whisper_full_lang_id(state->context)));
     }
 
-    jstring jstr = env->NewStringUTF(output.c_str());
+    if(state->cancel_flag) {
+        output = "<>CANCELLED<> flag";
+    }
+
+    jstring jstr = string2jstring(env, output.c_str());
     return jstr;
 }
 
@@ -202,6 +212,11 @@ static void WhisperGGML_close(JNIEnv *env, jclass clazz, jlong handle) {
     whisper_free(state->context);
 
     delete state;
+}
+
+static void WhisperGGML_cancel(JNIEnv *env, jclass clazz, jlong handle) {
+    auto *state = reinterpret_cast<WhisperModelState *>(handle);
+    state->cancel_flag = 1;
 }
 
 
@@ -220,6 +235,11 @@ static const JNINativeMethod sMethods[] = {
                 const_cast<char *>("inferNative"),
                 const_cast<char *>("(J[FLjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;IZ)Ljava/lang/String;"),
                 reinterpret_cast<void *>(WhisperGGML_infer)
+        },
+        {
+                const_cast<char *>("cancelNative"),
+                const_cast<char *>("(J)V"),
+                reinterpret_cast<void *>(WhisperGGML_cancel)
         },
         {
                 const_cast<char *>("closeNative"),

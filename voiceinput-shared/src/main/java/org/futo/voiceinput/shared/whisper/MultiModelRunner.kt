@@ -6,6 +6,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.futo.voiceinput.shared.ggml.BailLanguageException
 import org.futo.voiceinput.shared.ggml.DecodingMode
+import org.futo.voiceinput.shared.ggml.InferenceCancelledException
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
 import org.futo.voiceinput.shared.types.ModelInferenceCallback
@@ -46,6 +47,7 @@ class MultiModelRunner(
         jobs.forEach { it.join() }
     }
 
+    @Throws(InferenceCancelledException::class)
     suspend fun run(
         samples: FloatArray,
         runConfiguration: MultiModelRunConfiguration,
@@ -98,5 +100,9 @@ class MultiModelRunner(
         }
 
         return@coroutineScope result
+    }
+
+    fun cancelAll() {
+        modelManager.cancelAll()
     }
 }

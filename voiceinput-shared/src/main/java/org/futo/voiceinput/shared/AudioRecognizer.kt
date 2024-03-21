@@ -24,6 +24,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import org.futo.voiceinput.shared.ggml.InferenceCancelledException
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
@@ -97,6 +98,8 @@ class AudioRecognizer(
 
         modelJob?.cancel()
         isRecording = false
+
+        modelRunner.cancelAll()
     }
 
     fun finish() {
@@ -362,12 +365,17 @@ class AudioRecognizer(
         val floatArray = floatSamples.array().sliceArray(0 until floatSamples.position())
 
         yield()
-        val outputText = modelRunner.run(
-            floatArray,
-            settings.modelRunConfiguration,
-            settings.decodingConfiguration,
-            runnerCallback
-        ).trim()
+        val outputText = try {
+             modelRunner.run(
+                floatArray,
+                settings.modelRunConfiguration,
+                settings.decodingConfiguration,
+                runnerCallback
+            ).trim()
+        }catch(e: InferenceCancelledException) {
+            yield()
+            return
+        }
 
         val text = when {
             isBlankResult(outputText) -> ""
