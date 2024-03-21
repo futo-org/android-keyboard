@@ -1060,7 +1060,7 @@ namespace latinime {
         // Output
         size_t size = env->GetArrayLength(outPredictions);
 
-        jstring result_str = env->NewStringUTF(result_probability_mode);
+        jstring result_str = string2jstring(env, result_probability_mode);
         env->SetObjectArrayElement(outPredictions, size - 1, result_str);
         env->DeleteLocalRef(result_str);
 
@@ -1068,7 +1068,7 @@ namespace latinime {
 
         // Output predictions for next word
         for (int i = 0; i < results.size(); i++) {
-            jstring jstr = env->NewStringUTF(results[i].second.c_str());
+            jstring jstr = string2jstring(env, results[i].second.c_str());
             env->SetObjectArrayElement(outPredictions, i, jstr);
             probsArray[i] = results[i].first;
             env->DeleteLocalRef(jstr);

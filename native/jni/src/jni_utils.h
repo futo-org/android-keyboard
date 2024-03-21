@@ -9,5 +9,6 @@
 #include "../jni_common.h"
 
 std::string jstring2string(JNIEnv *env, jstring jStr);
+jstring string2jstring(JNIEnv *env, const char *str);
 
 #endif //LATINIME_JNI_UTILS_H

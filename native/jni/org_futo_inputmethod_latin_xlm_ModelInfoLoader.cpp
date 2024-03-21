@@ -23,10 +23,10 @@ namespace latinime {
         jmethodID constructor = env->GetMethodID(modelInfoClass, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/lang/String;ILjava/lang/String;)V");
 
         // Create example data
-        jstring name = env->NewStringUTF(metadata.name.c_str());
-        jstring description = env->NewStringUTF(metadata.description.c_str());
-        jstring author = env->NewStringUTF(metadata.author.c_str());
-        jstring license = env->NewStringUTF(metadata.license.c_str());
+        jstring name = string2jstring(env, metadata.name.c_str());
+        jstring description = string2jstring(env, metadata.description.c_str());
+        jstring author = string2jstring(env, metadata.author.c_str());
+        jstring license = string2jstring(env, metadata.license.c_str());
 
         const char *tokenizer_type_value;
         switch(metadata.ext_tokenizer_type) {
@@ -41,7 +41,7 @@ namespace latinime {
                 break;
         }
 
-        jstring tokenizer_type = env->NewStringUTF(tokenizer_type_value);
+        jstring tokenizer_type = string2jstring(env, tokenizer_type_value);
         jint finetune_count = metadata.finetuning_count;
 
         // Create example features and languages lists
@@ -53,13 +53,13 @@ namespace latinime {
         jobject languages = env->NewObject(listClass, listConstructor);
 
         for (const auto& feature : metadata.features) {
-            jstring jFeature = env->NewStringUTF(feature.c_str());
+            jstring jFeature = string2jstring(env, feature.c_str());
             env->CallBooleanMethod(features, listAdd, jFeature);
             env->DeleteLocalRef(jFeature);
         }
 
         for (const auto& language : metadata.languages) {
-            jstring jLanguage = env->NewStringUTF(language.c_str());
+            jstring jLanguage = string2jstring(env, language.c_str());
             env->CallBooleanMethod(languages, listAdd, jLanguage);
             env->DeleteLocalRef(jLanguage);
         }
