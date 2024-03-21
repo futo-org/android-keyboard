@@ -64,7 +64,7 @@ class WhisperGGML(
         }
     }
 
-    fun close() {
+    suspend fun close() = withContext(inferenceContext) {
         if(handle != 0L) {
             closeNative(handle)
         }
