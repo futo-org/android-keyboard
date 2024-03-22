@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InlineSuggestionsResponse
@@ -65,30 +64,27 @@ import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
-    shouldApplySpace: Boolean
+    shouldApplySpace: Boolean,
+    private val context: Context
 ): ActionInputTransaction {
     private val isSpaceNecessary: Boolean
     private var isFinished = false
+
     init {
         val priorText = inputLogic.mConnection.getTextBeforeCursor(1, 0)
         isSpaceNecessary = shouldApplySpace && !priorText.isNullOrEmpty() && !priorText.last().isWhitespace()
 
-        Log.i("LatinIMEActionInputTransaction", "Beginning batch edit due to input transaction")
-        inputLogic.mConnection.beginBatchEdit()
-    }
-
-    private fun finish() {
-        isFinished = true
-        inputLogic.mConnection.endBatchEdit()
-        Log.i("LatinIMEActionInputTransaction", "Ending batch edit due to input transaction having been finished or cancelled")
+        inputLogic.startSuppressingLogic()
     }
 
     private fun transformText(text: String): String {
         return if(isSpaceNecessary) { " $text" } else { text }
     }
 
+    private var previousText = ""
     override fun updatePartial(text: String) {
         if(isFinished) return
+        previousText = text
         inputLogic.mConnection.setComposingText(
             transformText(text),
             1
@@ -97,17 +93,16 @@ private class LatinIMEActionInputTransaction(
 
     override fun commit(text: String) {
         if(isFinished) return
+        isFinished = true
         inputLogic.mConnection.commitText(
             transformText(text),
             1
         )
-        finish()
+        inputLogic.endSuppressingLogic()
     }
 
     override fun cancel() {
-        if(isFinished) return
-        inputLogic.mConnection.finishComposingText()
-        finish()
+        commit(previousText)
     }
 }
 
@@ -125,7 +120,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction {
-        return LatinIMEActionInputTransaction(latinIME.inputLogic, applySpaceIfNeeded)
+        return LatinIMEActionInputTransaction(latinIME.inputLogic, applySpaceIfNeeded, latinIME)
     }
 
     override fun typeText(v: String) {

@@ -111,6 +111,14 @@ public final class InputLogic {
     // Note: This does not have a composing span, so it must be handled separately.
     private String mWordBeingCorrectedByCursor = null;
 
+    private boolean isLogicSuppressedByExternalLogic = false;
+    public void startSuppressingLogic() {
+        isLogicSuppressedByExternalLogic = true;
+    }
+    public void endSuppressingLogic() {
+        isLogicSuppressedByExternalLogic = false;
+    }
+
     /**
      * Create a new instance of the input logic.
      * @param latinIMELegacy the instance of the parent LatinIME. We should remove this when we can.
@@ -354,6 +362,8 @@ public final class InputLogic {
      */
     public boolean onUpdateSelection(final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final SettingsValues settingsValues) {
+        if(isLogicSuppressedByExternalLogic) return false;
+
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
             return false;
         }
