@@ -14,11 +14,13 @@ build:
   stage: build
   tags:
     - docker
-  script:
+  before_script:
+    - git fetch origin master:master
     - export VERSION_NAME=`git describe --tags --dirty`
-    - export VERSION_CODE=`git rev-list --first-parent --count HEAD`
+    - export VERSION_CODE=`git rev-list --first-parent --count master`
     - echo $VERSION_CODE $VERSION_NAME
     - ./setUpPropertiesCI.sh
+  script:
     - gradle assembleRelease -s
     - mv build/outputs/apk/release/latinime-release.apk ./keyboard-$VERSION_NAME.apk
     - echo "Keyboard $VERSION_NAME - https://gitlab.futo.org/alex/latinime/-/jobs/$CI_JOB_ID/artifacts/raw/keyboard-$VERSION_NAME.apk"
