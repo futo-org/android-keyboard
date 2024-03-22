@@ -152,14 +152,7 @@ private class VoiceInputActionWindow(
         recognizerView.start()
     }
 
-    private var inputTransaction: ActionInputTransaction? = null
-    private fun getOrStartInputTransaction(): ActionInputTransaction {
-        if (inputTransaction == null) {
-            inputTransaction = manager.createInputTransaction(true)
-        }
-
-        return inputTransaction!!
-    }
+    private var inputTransaction = manager.createInputTransaction(true)
 
     @Composable
     private fun ModelDownloader(modelException: ModelDoesNotExistException) {
@@ -215,7 +208,7 @@ private class VoiceInputActionWindow(
                 state.soundPlayer.playCancelSound()
                 cancelPlayed = true
             }
-            inputTransaction?.cancel()
+            inputTransaction.cancel()
         }
     }
 
@@ -228,12 +221,12 @@ private class VoiceInputActionWindow(
     override fun finished(result: String) {
         wasFinished = true
 
-        getOrStartInputTransaction().commit(result)
+        inputTransaction.commit(result)
         manager.closeActionWindow()
     }
 
     override fun partialResult(result: String) {
-        getOrStartInputTransaction().updatePartial(result)
+        inputTransaction.updatePartial(result)
     }
 
     override fun requestPermission(onGranted: () -> Unit, onRejected: () -> Unit): Boolean {

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InlineSuggestionsResponse
@@ -67,9 +68,19 @@ private class LatinIMEActionInputTransaction(
     shouldApplySpace: Boolean
 ): ActionInputTransaction {
     private val isSpaceNecessary: Boolean
+    private var isFinished = false
     init {
         val priorText = inputLogic.mConnection.getTextBeforeCursor(1, 0)
         isSpaceNecessary = shouldApplySpace && !priorText.isNullOrEmpty() && !priorText.last().isWhitespace()
+
+        Log.i("LatinIMEActionInputTransaction", "Beginning batch edit due to input transaction")
+        inputLogic.mConnection.beginBatchEdit()
+    }
+
+    private fun finish() {
+        isFinished = true
+        inputLogic.mConnection.endBatchEdit()
+        Log.i("LatinIMEActionInputTransaction", "Ending batch edit due to input transaction having been finished or cancelled")
     }
 
     private fun transformText(text: String): String {
@@ -77,6 +88,7 @@ private class LatinIMEActionInputTransaction(
     }
 
     override fun updatePartial(text: String) {
+        if(isFinished) return
         inputLogic.mConnection.setComposingText(
             transformText(text),
             1
@@ -84,14 +96,18 @@ private class LatinIMEActionInputTransaction(
     }
 
     override fun commit(text: String) {
+        if(isFinished) return
         inputLogic.mConnection.commitText(
             transformText(text),
             1
         )
+        finish()
     }
 
     override fun cancel() {
+        if(isFinished) return
         inputLogic.mConnection.finishComposingText()
+        finish()
     }
 }
 
