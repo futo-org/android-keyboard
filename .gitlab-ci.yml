@@ -13,12 +13,15 @@ build:
   tags:
     - docker
   script:
+    - export VERSION_NAME=`git describe --tags --dirty`
+    - export VERSION_CODE=`git rev-list --first-parent --count master`
     - ./setUpPropertiesCI.sh
     - gradle assembleRelease -s
-    - mv build/outputs/apk/release/latinime-release.apk ./LatinIME-release-$CI_COMMIT_SHORT_SHA.apk
-    - ./sendZulipMessage.sh "Alpha Keyboard Build - https://gitlab.futo.org/alex/latinime/-/jobs/$CI_JOB_ID/artifacts/raw/LatinIME-release-$CI_COMMIT_SHORT_SHA.apk"
+    - mv build/outputs/apk/release/latinime-release.apk ./keyboard-$VERSION_NAME.apk
+    - echo "Keyboard $VERSION_NAME - https://gitlab.futo.org/alex/latinime/-/jobs/$CI_JOB_ID/artifacts/raw/keyboard-$VERSION_NAME.apk"
+    - echo $VERSION_CODE $VERSION_NAME
   artifacts:
-    name: "LatinIME-release-$CI_COMMIT_SHORT_SHA"
-    paths: 
+    name: "keyboard-$VERSION_NAME"
+    paths:
       - ./*.apk
   when: manual
