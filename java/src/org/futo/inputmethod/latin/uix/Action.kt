@@ -64,6 +64,7 @@ data class Action(
     @DrawableRes val icon: Int,
     @StringRes val name: Int,
     val canShowKeyboard: Boolean = false,
+    val keepScreenAwake: Boolean = false,
 
     val windowImpl: ((KeyboardManagerForAction, PersistentActionState?) -> ActionWindow)?,
     val simplePressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)?,

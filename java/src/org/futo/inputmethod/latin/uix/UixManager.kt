@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InlineSuggestionsResponse
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -230,6 +231,10 @@ class UixManager(private val latinIME: LatinIME) {
 
         currWindowActionWindow = action.windowImpl?.let { it(keyboardManagerForAction, persistentStates[action]) }
 
+        if(action.keepScreenAwake) {
+            latinIME.window.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+
         setContent()
     }
 
@@ -244,6 +249,8 @@ class UixManager(private val latinIME: LatinIME) {
         mainKeyboardHidden = false
 
         latinIME.onKeyboardShown()
+
+        latinIME.window.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setContent()
     }

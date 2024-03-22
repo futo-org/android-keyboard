@@ -244,6 +244,7 @@ private class VoiceInputActionWindow(
 val VoiceInputAction = Action(icon = R.drawable.mic_fill,
     name = R.string.voice_input_action_title,
     simplePressImpl = null,
+    keepScreenAwake = true,
     persistentState = { VoiceInputPersistentState(it) },
     windowImpl = { manager, persistentState ->
         VoiceInputActionWindow(
