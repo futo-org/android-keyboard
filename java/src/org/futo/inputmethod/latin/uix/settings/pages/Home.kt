@@ -70,7 +70,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             NavigationItem(
                 title = "Languages",
                 style = NavigationItemStyle.HomePrimary,
-                navigate = { context.openLanguageSettings() },
+                navigate = { navController.navigate("languages") },
                 icon = painterResource(id = R.drawable.globe)
             )
 

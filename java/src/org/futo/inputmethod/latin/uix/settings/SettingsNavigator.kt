@@ -13,6 +13,7 @@ import org.futo.inputmethod.latin.uix.InfoDialog
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
+import org.futo.inputmethod.latin.uix.settings.pages.LanguagesScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingScreen
@@ -39,6 +40,7 @@ fun SettingsNavigator(
         startDestination = "home"
     ) {
         composable("home") { HomeScreen(navController) }
+        composable("languages") { LanguagesScreen(navController) }
         composable("predictiveText") { PredictiveTextScreen(navController) }
         composable("advancedparams") { AdvancedParametersScreen(navController) }
         composable("typing") { TypingScreen(navController) }
