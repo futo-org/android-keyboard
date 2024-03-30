@@ -38,7 +38,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             navigate = { context.openLanguageSettings() },
         )
 
-        Tip("Note: The list below will only update after opening the keyboard")
+        Tip("Note: This screen is a WIP, use the above option to toggle languages. The list below only updates after opening the keyboard")
 
         RichInputMethodManager.getInstance().getMyEnabledInputMethodSubtypeList(true).forEach {
             val name = SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(it)
@@ -50,6 +50,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             )
 
             ScreenTitle(name)
+            /*
             NavigationItem(
                 title = dummyOptions.voiceInputModel ?: "None",
                 style = dummyOptions.voiceInputModel?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
@@ -74,6 +75,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 },
                 icon = painterResource(id = R.drawable.cpu)
             )
+            */
         }
     }
 }
