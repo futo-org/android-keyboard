@@ -85,13 +85,13 @@ include $(CLEAR_VARS)
 # All code in LOCAL_WHOLE_STATIC_LIBRARIES will be built into this shared library.
 LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_common_static
 
+LOCAL_LDFLAGS += -llog
+
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
-    LOCAL_LDFLAGS += -llog
 else # FLAG_DO_PROFILE
 ifeq ($(FLAG_DBG), true)
     $(warning Making debug version of native library)
-    LOCAL_LDFLAGS += -llog
 endif # FLAG_DBG
 endif # FLAG_DO_PROFILE
 

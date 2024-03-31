@@ -207,9 +207,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include <android/log.h>
-#define GAKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, "GGML", fmt, ##__VA_ARGS__)
-#define GAKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, "GGML", fmt, ##__VA_ARGS__)
 
 #define GGML_FILE_MAGIC   0x67676d6c // "ggml"
 #define GGML_FILE_VERSION 1
@@ -244,11 +241,11 @@
 
 #define GGML_PAD(x, n) (((x) + (n) - 1) & ~((n) - 1))
 
+#include <android/log.h>
 #define GGML_ASSERT(x) \
     do { \
         if (!(x)) { \
-            GAKLOGE("GGML_ASSERT: %s:%d: %s\n", __FILE__, __LINE__, #x); \
-            ggml_print_backtrace(); \
+            __android_log_assert("", "GGML_ASSERT: ", "%s:%d: %s\n", __FILE__, __LINE__, #x); \
             exit(1); \
         } \
     } while (0)
