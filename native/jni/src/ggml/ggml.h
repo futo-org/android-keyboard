@@ -208,8 +208,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <android/log.h>
-#define GAKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
-#define GAKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
+#define GAKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, "GGML", fmt, ##__VA_ARGS__)
+#define GAKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, "GGML", fmt, ##__VA_ARGS__)
 
 #define GGML_FILE_MAGIC   0x67676d6c // "ggml"
 #define GGML_FILE_VERSION 1
