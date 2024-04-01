@@ -25,6 +25,7 @@ import org.futo.inputmethod.latin.xlm.ModelInfo
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
 import java.net.URLEncoder
+import java.util.Locale
 
 @Composable
 fun ModelNavigationItem(navController: NavHostController, name: String, isPrimary: Boolean, path: String) {
@@ -68,7 +69,7 @@ fun ModelListScreen(navController: NavHostController = rememberNavController()) 
 
         modelsByLanguage.forEach { item ->
             Spacer(modifier = Modifier.height(32.dp))
-            ScreenTitle(item.key)
+            ScreenTitle(Locale(item.key).displayLanguage)
 
             item.value.forEach { model ->
                 val name = if (model.finetune_count > 0) {

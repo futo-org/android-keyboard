@@ -1,7 +1,13 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -20,6 +26,7 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.openLanguageSettings
+import org.futo.inputmethod.latin.uix.youAreImporting
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
@@ -31,11 +38,69 @@ data class LanguageOptions(
     val transformerModel: String?
 )
 
+@Composable
+fun ConfirmDeleteResourceDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+) {
+    AlertDialog(
+        icon = {
+            Icon(painterResource(id = R.drawable.delete), contentDescription = "Example Icon")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Delete")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+data class DeleteInfo(
+    val locale: Locale,
+    val kind: FileKind
+)
 
 @Preview
 @Composable
 fun LanguagesScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
+    val deleteDialogInfo: MutableState<DeleteInfo?> = remember { mutableStateOf(null) }
+    if(deleteDialogInfo.value != null) {
+        val info = deleteDialogInfo.value!!
+        ConfirmDeleteResourceDialog(
+            onDismissRequest = { deleteDialogInfo.value = null },
+            onConfirmation = {
+                ResourceHelper.deleteResourceForLanguage(context, info.kind, info.locale)
+                deleteDialogInfo.value = null
+            },
+            dialogTitle = "Delete ${info.kind.youAreImporting()} for ${info.locale.displayLanguage}?",
+            dialogText = "If deleted, the imported ${info.kind.youAreImporting()} file for ${info.locale.displayLanguage} will be deleted. If there is no built-in fallback for this language, the feature may cease to function. You can always download and re-import a different ${info.kind.youAreImporting()} file."
+        )
+    }
     ScrollableList {
         ScreenTitle("Languages", showBack = true, navController)
 
@@ -55,10 +120,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             val voiceInputModelName = ResourceHelper.tryFindingVoiceInputModelForLocale(context, locale)?.name?.let { stringResource(it) }
             val dictionaryName = runBlocking { ResourceHelper.findFileForKind(context, locale, FileKind.Dictionary) }?.let {
                 "Imported Dictionary"
-            } ?: if(BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).let {
-                println("DICTIONARIES FOR ${locale.displayLanguage}: ${it.toList().map { it.mFilename }.joinToString(",")}")
-                    it
-                }.isNotEmpty()) {
+            } ?: if(BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).isNotEmpty()) {
                     "Built-in Dictionary"
             } else {
                     null
@@ -80,7 +142,11 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 title = options.voiceInputModel ?: "None",
                 style = options.voiceInputModel?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
                 navigate = {
-                    context.openURI("https://keyboard.futo.org/voice-input-models", true)
+                    if(runBlocking { ResourceHelper.findFileForKind(context, locale, FileKind.VoiceInput) } == null) {
+                        context.openURI("https://keyboard.futo.org/voice-input-models", true)
+                    } else {
+                        deleteDialogInfo.value = DeleteInfo(locale, FileKind.VoiceInput)
+                    }
                 },
                 icon = painterResource(id = R.drawable.mic_fill)
             )
@@ -88,7 +154,14 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 title = options.dictionary ?: "None",
                 style = options.dictionary?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
                 navigate = {
-                   context.openURI("https://codeberg.org/Helium314/aosp-dictionaries#dictionaries", true)
+                    if(runBlocking { ResourceHelper.findFileForKind(context, locale, FileKind.Dictionary) } == null) {
+                        context.openURI(
+                            "https://codeberg.org/Helium314/aosp-dictionaries#dictionaries",
+                            true
+                        )
+                    } else {
+                        deleteDialogInfo.value = DeleteInfo(locale, FileKind.Dictionary)
+                    }
                 },
                 icon = painterResource(id = R.drawable.book)
             )
@@ -96,7 +169,11 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 title = options.transformerModel ?: "None",
                 style = options.transformerModel?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
                 navigate = {
-                    context.openURI("https://keyboard.futo.org/models", true)
+                    if(options.transformerModel == null) {
+                        context.openURI("https://keyboard.futo.org/models", true)
+                    } else {
+                        navController.navigate("models")
+                    }
                 },
                 icon = painterResource(id = R.drawable.cpu)
             )

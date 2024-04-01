@@ -266,6 +266,18 @@ object ResourceHelper {
             Dictionary.TYPE_MAIN
         )
     }
+
+    fun deleteResourceForLanguage(context: Context, kind: FileKind, locale: Locale) {
+        val setting = kind.preferencesKeyFor(locale.toString())
+        val value = runBlocking { context.getSetting(setting, "") }
+        if(value.isNotBlank()) {
+            runBlocking { context.setSetting(setting, "") }
+            val file = File(context.getExternalFilesDir(null), value)
+            file.delete()
+        }
+
+        LatinIMELegacy.mPendingDictionaryUpdate = true
+    }
 }
 
 class ImportResourceActivity : ComponentActivity() {
@@ -314,7 +326,7 @@ class ImportResourceActivity : ComponentActivity() {
                     applicationContext.setSetting(key, outputFileName)
                 }
             }
-            LatinIMELegacy.mPendingDictionaryUpdate = true;
+            LatinIMELegacy.mPendingDictionaryUpdate = true
             finish()
         }
     }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -15,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -33,6 +36,7 @@ import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
 import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
+import org.futo.inputmethod.updates.openURI
 import org.futo.voiceinput.shared.ModelDoesNotExistException
 import org.futo.voiceinput.shared.RecognizerView
 import org.futo.voiceinput.shared.RecognizerViewListener
@@ -224,15 +228,18 @@ private class VoiceInputNoModelWindow(val locale: Locale) : ActionWindow {
 
     @Composable
     override fun WindowContents(keyboardShown: Boolean) {
+        val context = LocalContext.current
         Box(modifier = Modifier
             .fillMaxSize()
             .clickable(enabled = true,
                 onClickLabel = null,
-                onClick = { TODO() },
+                onClick = {
+                    context.openURI("https://keyboard.futo.org/voice-input-models", true)
+                },
                 role = null,
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() })) {
-            Text("No model available for ${locale.displayLanguage}, tap to check options?", modifier = Modifier.align(Alignment.Center))
+            Text("No voice input model installed for ${locale.displayLanguage}, tap to check options?", modifier = Modifier.align(Alignment.Center).padding(8.dp), textAlign = TextAlign.Center)
         }
     }
 
