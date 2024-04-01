@@ -2049,6 +2049,10 @@ public class LatinIMELegacy implements KeyboardActionListener,
         return ((LatinIME)(mInputMethodService)).getLanguageModelFacilitator();
     }
 
+    public Locale getLocale() {
+        return mLocale;
+    }
+
     public void onCodePointDeleted(String textBeforeCursor) {
         ((LatinIME)(mInputMethodService)).onEmojiDeleted(textBeforeCursor);
     }

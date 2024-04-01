@@ -61,14 +61,19 @@ internal class ModelBuiltInAsset(
 }
 
 @Throws(IOException::class)
-private fun Context.tryOpenDownloadedModel(pathStr: String): MappedByteBuffer {
-    val fis = File(this.filesDir, pathStr).inputStream()
+private fun tryOpenDownloadedModel(file: File): MappedByteBuffer {
+    val fis = file.inputStream()
     val channel = fis.channel
 
     return channel.map(
         FileChannel.MapMode.READ_ONLY,
         0, channel.size()
     ).load()
+}
+
+@Throws(IOException::class)
+private fun Context.tryOpenDownloadedModel(pathStr: String): MappedByteBuffer {
+    return tryOpenDownloadedModel(File(filesDir, pathStr))
 }
 
 internal class ModelDownloadable(
@@ -88,6 +93,24 @@ internal class ModelDownloadable(
 
     override fun loadGGML(context: Context): WhisperGGML {
         val file = context.tryOpenDownloadedModel(ggmlFile)
+        return WhisperGGML(file)
+    }
+}
+
+public class ModelFileFile(
+    override val name: Int,
+    val file: File,
+) : ModelLoader {
+    override fun exists(context: Context): Boolean {
+        return file.exists()
+    }
+
+    override fun getRequiredDownloadList(context: Context): List<String> {
+        return listOf()
+    }
+
+    override fun loadGGML(context: Context): WhisperGGML {
+        val file = tryOpenDownloadedModel(file)
         return WhisperGGML(file)
     }
 }

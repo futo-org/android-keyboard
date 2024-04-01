@@ -240,7 +240,7 @@ final public class BinaryDictionaryGetter {
      * @return The list of addresses of valid dictionary files, or null.
      */
     public static ArrayList<AssetFileAddress> getDictionaryFiles(final Locale locale,
-            final Context context, boolean notifyDictionaryPackForUpdates) {
+            final Context context, boolean notifyDictionaryPackForUpdates, boolean fallback) {
         if (notifyDictionaryPackForUpdates) {
             final boolean hasDefaultWordList = DictionaryInfoUtils.isDictionaryAvailable(
                     context, locale);
@@ -280,9 +280,12 @@ final public class BinaryDictionaryGetter {
         if (!foundMainDict && dictPackSettings.isWordListActive(mainDictId)) {
             final int fallbackResId =
                     DictionaryInfoUtils.getMainDictionaryResourceId(context.getResources(), locale);
-            final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId);
-            if (null != fallbackAsset) {
-                fileList.add(fallbackAsset);
+
+            if(fallback || fallbackResId != R.raw.main) {
+                final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId);
+                if (null != fallbackAsset) {
+                    fileList.add(fallbackAsset);
+                }
             }
         }
 

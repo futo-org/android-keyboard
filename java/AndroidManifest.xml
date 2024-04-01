@@ -114,6 +114,33 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".uix.ImportResourceActivity"
+            android:label="Import dictionary or model"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:launchMode="singleTask"
+            android:noHistory="false"
+            android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:scheme="content"/>
+                <data android:host="*"/>
+
+                <data android:mimeType="application/octet-stream"/>
+                <data android:mimeType="application/dict"/>
+                <data android:mimeType="application/bin"/>
+                <data android:mimeType="application/gguf"/>
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:name=".uix.voiceinput.downloader.DownloadActivity"
             android:exported="false"

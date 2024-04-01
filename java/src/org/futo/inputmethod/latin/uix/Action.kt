@@ -7,6 +7,7 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import java.util.Locale
 
 interface ActionInputTransaction {
     fun updatePartial(text: String)
@@ -38,6 +39,7 @@ interface KeyboardManagerForAction {
     fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean)
 
     fun performHapticAndAudioFeedback(code: Int, view: View)
+    fun getActiveLocale(): Locale
 }
 
 interface ActionWindow {

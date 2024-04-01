@@ -4,6 +4,10 @@ import org.futo.voiceinput.shared.types.ModelBuiltInAsset
 import org.futo.voiceinput.shared.types.ModelDownloadable
 import org.futo.voiceinput.shared.types.ModelLoader
 
+val BUILTIN_ENGLISH_MODEL: ModelLoader = ModelBuiltInAsset(
+    name = R.string.tiny_en_name,
+    ggmlFile = "tiny_en_acft_q8_0.bin.not.tflite"
+)
 
 val ENGLISH_MODELS: List<ModelLoader> = listOf(
     ModelBuiltInAsset(

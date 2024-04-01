@@ -23,23 +23,16 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
-import org.futo.inputmethod.latin.uix.ActionInputTransaction
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.DISALLOW_SYMBOLS
-import org.futo.inputmethod.latin.uix.ENABLE_ENGLISH
-import org.futo.inputmethod.latin.uix.ENABLE_MULTILINGUAL
 import org.futo.inputmethod.latin.uix.ENABLE_SOUND
-import org.futo.inputmethod.latin.uix.ENGLISH_MODEL_INDEX
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
-import org.futo.inputmethod.latin.uix.LANGUAGE_TOGGLES
-import org.futo.inputmethod.latin.uix.MULTILINGUAL_MODEL_INDEX
 import org.futo.inputmethod.latin.uix.PersistentActionState
+import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
 import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
-import org.futo.voiceinput.shared.ENGLISH_MODELS
-import org.futo.voiceinput.shared.MULTILINGUAL_MODELS
 import org.futo.voiceinput.shared.ModelDoesNotExistException
 import org.futo.voiceinput.shared.RecognizerView
 import org.futo.voiceinput.shared.RecognizerViewListener
@@ -51,6 +44,7 @@ import org.futo.voiceinput.shared.types.getLanguageFromWhisperString
 import org.futo.voiceinput.shared.whisper.DecodingConfiguration
 import org.futo.voiceinput.shared.whisper.ModelManager
 import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
+import java.util.Locale
 
 val SystemVoiceInputAction = Action(
     icon = R.drawable.mic_fill,
@@ -74,7 +68,8 @@ class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : Persist
 }
 
 private class VoiceInputActionWindow(
-    val manager: KeyboardManagerForAction, val state: VoiceInputPersistentState
+    val manager: KeyboardManagerForAction, val state: VoiceInputPersistentState,
+    val model: ModelLoader, val locale: Locale
 ) : ActionWindow, RecognizerViewListener {
     val context = manager.getContext()
 
@@ -83,25 +78,12 @@ private class VoiceInputActionWindow(
         val enableSound = async { context.getSetting(ENABLE_SOUND) }
         val verboseFeedback = async { context.getSetting(VERBOSE_PROGRESS) }
         val disallowSymbols = async { context.getSetting(DISALLOW_SYMBOLS) }
-        val enableEnglish = async { context.getSetting(ENABLE_ENGLISH) }
-        val englishModelIdx = async { context.getSetting(ENGLISH_MODEL_INDEX) }
-        val enableMultilingual = async { context.getSetting(ENABLE_MULTILINGUAL) }
-        val multilingualModelIdx = async { context.getSetting(MULTILINGUAL_MODEL_INDEX) }
-        val allowedLanguages = async {
-            context.getSetting(LANGUAGE_TOGGLES).mapNotNull { getLanguageFromWhisperString(it) }
-                .toSet()
-        }
 
-        val primaryModel = if (enableMultilingual.await()) {
-            MULTILINGUAL_MODELS[multilingualModelIdx.await()]
-        } else {
-            ENGLISH_MODELS[englishModelIdx.await()]
-        }
-
+        val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
-        if (enableEnglish.await()) {
-            languageSpecificModels[Language.English] = ENGLISH_MODELS[englishModelIdx.await()]
-        }
+        val allowedLanguages = setOf(
+            getLanguageFromWhisperString(locale.language)!!
+        )
 
         shouldPlaySounds = enableSound.await()
 
@@ -114,7 +96,7 @@ private class VoiceInputActionWindow(
             ),
             decodingConfiguration = DecodingConfiguration(
                 glossary = state.userDictionaryObserver.getWords().map { it.word },
-                languages = allowedLanguages.await(),
+                languages = allowedLanguages,
                 suppressSymbols = disallowSymbols.await()
             )
         )
@@ -234,14 +216,49 @@ private class VoiceInputActionWindow(
     }
 }
 
+private class VoiceInputNoModelWindow(val locale: Locale) : ActionWindow {
+    @Composable
+    override fun windowName(): String {
+        return stringResource(R.string.voice_input_action_title)
+    }
+
+    @Composable
+    override fun WindowContents(keyboardShown: Boolean) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickable(enabled = true,
+                onClickLabel = null,
+                onClick = { TODO() },
+                role = null,
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() })) {
+            Text("No model available for ${locale.displayLanguage}, tap to check options?", modifier = Modifier.align(Alignment.Center))
+        }
+    }
+
+    override fun close() {
+
+    }
+
+}
+
 val VoiceInputAction = Action(icon = R.drawable.mic_fill,
     name = R.string.voice_input_action_title,
     simplePressImpl = null,
     keepScreenAwake = true,
     persistentState = { VoiceInputPersistentState(it) },
     windowImpl = { manager, persistentState ->
-        VoiceInputActionWindow(
-            manager = manager, state = persistentState as VoiceInputPersistentState
-        )
+        val locale = manager.getActiveLocale()
+
+        val model = ResourceHelper.tryFindingVoiceInputModelForLocale(manager.getContext(), locale)
+
+        if(model == null) {
+            VoiceInputNoModelWindow(locale)
+        } else {
+            VoiceInputActionWindow(
+                manager = manager, state = persistentState as VoiceInputPersistentState,
+                locale = locale, model = model
+            )
+        }
     }
 )

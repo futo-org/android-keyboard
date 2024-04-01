@@ -60,6 +60,7 @@ import org.futo.inputmethod.updates.DEFER_MANUAL_UPDATE_UNTIL
 import org.futo.inputmethod.updates.MANUAL_UPDATE_PERIOD_MS
 import org.futo.inputmethod.updates.openManualUpdateCheck
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
+import java.util.Locale
 
 
 private class LatinIMEActionInputTransaction(
@@ -172,6 +173,10 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun performHapticAndAudioFeedback(code: Int, view: View) {
         AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(code, view)
+    }
+
+    override fun getActiveLocale(): Locale {
+        return latinIME.latinIMELegacy.locale
     }
 }
 

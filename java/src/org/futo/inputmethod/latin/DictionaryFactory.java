@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
+import org.futo.inputmethod.latin.uix.ResourceHelper;
 import org.futo.inputmethod.latin.utils.DictionaryInfoUtils;
 
 import java.io.File;
@@ -52,19 +53,26 @@ public final class DictionaryFactory {
         }
 
         final LinkedList<Dictionary> dictList = new LinkedList<>();
-        final ArrayList<AssetFileAddress> assetFileList =
-                BinaryDictionaryGetter.getDictionaryFiles(locale, context, true);
-        if (null != assetFileList) {
-            for (final AssetFileAddress f : assetFileList) {
-                final ReadOnlyBinaryDictionary readOnlyBinaryDictionary =
-                        new ReadOnlyBinaryDictionary(f.mFilename, f.mOffset, f.mLength,
-                                false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN);
-                if (readOnlyBinaryDictionary.isValidDictionary()) {
-                    dictList.add(readOnlyBinaryDictionary);
-                } else {
-                    readOnlyBinaryDictionary.close();
-                    // Prevent this dictionary to do any further harm.
-                    killDictionary(context, f);
+
+        ReadOnlyBinaryDictionary customDict =
+                ResourceHelper.INSTANCE.tryOpeningCustomMainDictionaryForLocale(context, locale);
+        if(customDict != null) {
+            dictList.add(customDict);
+        } else {
+            final ArrayList<AssetFileAddress> assetFileList =
+                    BinaryDictionaryGetter.getDictionaryFiles(locale, context, true, true);
+            if (null != assetFileList) {
+                for (final AssetFileAddress f : assetFileList) {
+                    final ReadOnlyBinaryDictionary readOnlyBinaryDictionary =
+                            new ReadOnlyBinaryDictionary(f.mFilename, f.mOffset, f.mLength,
+                                    false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN);
+                    if (readOnlyBinaryDictionary.isValidDictionary()) {
+                        dictList.add(readOnlyBinaryDictionary);
+                    } else {
+                        readOnlyBinaryDictionary.close();
+                        // Prevent this dictionary to do any further harm.
+                        killDictionary(context, f);
+                    }
                 }
             }
         }
