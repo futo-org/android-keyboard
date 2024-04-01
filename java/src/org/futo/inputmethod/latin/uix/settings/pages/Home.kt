@@ -102,6 +102,13 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 icon = painterResource(id = R.drawable.eye)
             )
 
+            NavigationItem(
+                title = "Help & Feedback",
+                style = NavigationItemStyle.HomePrimary,
+                navigate = { navController.navigate("help") },
+                icon = painterResource(id = R.drawable.help_circle)
+            )
+
 
             Spacer(modifier = Modifier.height(32.dp))
             Text(

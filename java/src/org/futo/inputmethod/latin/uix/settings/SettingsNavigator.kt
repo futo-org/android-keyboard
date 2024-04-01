@@ -12,6 +12,7 @@ import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
+import org.futo.inputmethod.latin.uix.settings.pages.HelpScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.LanguagesScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
@@ -46,6 +47,7 @@ fun SettingsNavigator(
         composable("typing") { TypingScreen(navController) }
         composable("voiceInput") { VoiceInputScreen(navController) }
         composable("themes") { ThemeScreen(navController) }
+        composable("help") { HelpScreen(navController) }
         composable("blacklist") { BlacklistScreen(navController) }
         dialog("error/{title}/{body}") {
             ErrorDialog(
