@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -34,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.Dictionary
+import org.futo.inputmethod.latin.LatinIMELegacy
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
 import org.futo.inputmethod.latin.RichInputMethodManager
@@ -86,13 +88,14 @@ fun resourceOption(language: InputMethodSubtype, kind: FileKind): DataStoreItem<
 }
 
 @Composable
-fun ImportScreen(fileKind: FileKind, file: String?, onApply: (FileKind, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
+fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKind, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
     val context = LocalContext.current
     val importing = remember { mutableStateOf(false) }
+    val importingLanguage = remember { mutableStateOf("") }
     ScrollableList {
         ScreenTitle(title = "Resource Importer")
 
-        if(fileKind == FileKind.Invalid) {
+        if(fileKind.kind == FileKind.Invalid) {
             Text("This file does not appear to be a dictionary, voice input or transformer model. It may be an invalid file or corrupted. Please try a different file.")
 
             NavigationItem(
@@ -103,7 +106,7 @@ fun ImportScreen(fileKind: FileKind, file: String?, onApply: (FileKind, InputMet
                 }
             )
         } else {
-            Text("You are importing a ${fileKind.youAreImporting()}.", modifier = Modifier.padding(8.dp))
+            Text("You are importing a ${fileKind.kind.youAreImporting()}.", modifier = Modifier.padding(8.dp))
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -113,19 +116,36 @@ fun ImportScreen(fileKind: FileKind, file: String?, onApply: (FileKind, InputMet
                     .padding(32.dp)) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
+                Text("Importing for ${importingLanguage.value}", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             } else {
                 Text(
-                    "Which language would you like to set the ${fileKind.youAreImporting()} for?",
+                    "Which language would you like to set the ${fileKind.kind.youAreImporting()} for?",
                     modifier = Modifier.padding(8.dp)
                 )
 
-                getActiveLanguages(context).forEach {
+                val languages = getActiveLanguages(context).let {
+                    if(fileKind.guessedLanguage != null) {
+                        it.filter { it.tag.lowercase() == fileKind.guessedLanguage.lowercase() || it.tag.split("_")[0].lowercase() == fileKind.guessedLanguage.split("_")[0].lowercase() }.let {
+                            if(it.isEmpty()) {
+                                Text("Warning: This file appears to be intended for a language (${fileKind.guessedLanguage}) which is not active", modifier = Modifier.padding(8.dp))
+                                getActiveLanguages(context)
+                            } else {
+                                it
+                            }
+                        }
+                    } else {
+                        it
+                    }
+                }
+
+                languages.forEach {
                     NavigationItem(
                         title = "${it.name} (${it.tag})",
                         style = NavigationItemStyle.MiscNoArrow,
                         navigate = {
                             importing.value = true
-                            onApply(fileKind, it.inputMethodSubtype)
+                            importingLanguage.value = it.name
+                            onApply(fileKind.kind, it.inputMethodSubtype)
                         }
                     )
                 }
@@ -159,7 +179,12 @@ fun FileKind.extension(): String {
     }
 }
 
-fun determineFileKind(context: Context, file: Uri): FileKind {
+data class FileKindAndInfo(
+    val kind: FileKind,
+    val guessedLanguage: String?
+)
+
+fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
     val contentResolver = context.contentResolver
 
     return contentResolver.openInputStream(file)?.use { inputStream ->
@@ -173,12 +198,28 @@ fun determineFileKind(context: Context, file: Uri): FileKind {
         val magic = ByteBuffer.wrap(array).getInt().toUInt()
 
         when(magic) {
-            voiceInputMagic -> FileKind.VoiceInput
-            transformerMagic -> FileKind.Transformer
-            dictionaryMagic -> FileKind.Dictionary
-            else -> FileKind.Invalid
+            voiceInputMagic -> FileKindAndInfo(FileKind.VoiceInput, null)
+            transformerMagic -> FileKindAndInfo(FileKind.Transformer, null)
+            dictionaryMagic -> {
+                while(array[0] != 0x3A.toByte()) {
+                    inputStream.read(array, 0, 1)
+                }
+
+                val chars: MutableList<Char> = mutableListOf()
+                while(array[0] != 0x1F.toByte()) {
+                    inputStream.read(array, 0, 1)
+                    if(array[0] == 0x1F.toByte()) break
+
+                    chars.add(array[0].toInt().toChar())
+                }
+
+                val language = String(chars.toCharArray())
+
+                FileKindAndInfo(FileKind.Dictionary, language)
+            }
+            else -> FileKindAndInfo(FileKind.Invalid, null)
         }
-    } ?: FileKind.Invalid
+    } ?: FileKindAndInfo(FileKind.Invalid, null)
 }
 
 object ResourceHelper {
@@ -230,7 +271,7 @@ object ResourceHelper {
 class ImportResourceActivity : ComponentActivity() {
     private val themeOption: MutableState<ThemeOption?> = mutableStateOf(null)
     private val fileBeingImported: MutableState<String?> = mutableStateOf(null)
-    private val fileKind: MutableState<FileKind> = mutableStateOf(FileKind.Invalid)
+    private val fileKind: MutableState<FileKindAndInfo> = mutableStateOf(FileKindAndInfo(FileKind.Invalid, null))
     private var uri: Uri? = null
 
     private fun applySetting(fileKind: FileKind, inputMethodSubtype: InputMethodSubtype) {
@@ -244,6 +285,8 @@ class ImportResourceActivity : ComponentActivity() {
                     val contentResolver = applicationContext.contentResolver
                     val outDirectory = ModelPaths.getModelDirectory(applicationContext)
                     val outputFile = File(outDirectory, outputFileName)
+                    if(outputFile.exists()) { outputFile.delete() }
+
                     contentResolver.openInputStream(uri!!)!!.use { inputStream ->
                         outputFile.outputStream().use { outputStream ->
                             inputStream.copyTo(outputStream, 1024)
@@ -259,6 +302,7 @@ class ImportResourceActivity : ComponentActivity() {
                     contentResolver.openInputStream(uri!!)!!.use { inputStream ->
                         val outputFile =
                             File(applicationContext.getExternalFilesDir(null), outputFileName)
+                        if(outputFile.exists()) { outputFile.delete() }
 
                         outputFile.outputStream().use { outputStream ->
                             inputStream.copyTo(outputStream, 1024)
@@ -270,6 +314,7 @@ class ImportResourceActivity : ComponentActivity() {
                     applicationContext.setSetting(key, outputFileName)
                 }
             }
+            LatinIMELegacy.mPendingDictionaryUpdate = true;
             finish()
         }
     }

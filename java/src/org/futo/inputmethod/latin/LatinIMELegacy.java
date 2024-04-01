@@ -158,6 +158,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
      */
     private static final String SCHEME_PACKAGE = "package";
 
+    public static boolean mPendingDictionaryUpdate = false;
     final Settings mSettings;
     private Locale mLocale;
     final DictionaryFacilitator mDictionaryFacilitator =
@@ -892,6 +893,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
+        if(mPendingDictionaryUpdate) {
+            Log.i(TAG, "Pending dictionary update received, posting update dictionaries...");
+            mPendingDictionaryUpdate = false;
+            resetSuggestMainDict();
+        }
         mHandler.onStartInput(editorInfo, restarting);
     }
 

@@ -21,7 +21,7 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
     ScrollableList {
         ScreenTitle("Help & Feedback", showBack = true, navController)
 
-        Tip("We wanna hear from you! If you're reporting an issue, your version may be relevant: zv${BuildConfig.VERSION_NAME}")
+        Tip("We want to hear from you! If you're reporting an issue, your version may be relevant: zv${BuildConfig.VERSION_NAME}")
 
         NavigationItem(title = "Discord Server", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://keyboard.futo.org/discord")
