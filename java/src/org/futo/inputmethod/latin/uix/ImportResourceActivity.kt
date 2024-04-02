@@ -39,7 +39,6 @@ import org.futo.inputmethod.latin.LatinIMELegacy
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
 import org.futo.inputmethod.latin.RichInputMethodManager
-import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -56,6 +55,7 @@ import org.futo.voiceinput.shared.BUILTIN_ENGLISH_MODEL
 import org.futo.voiceinput.shared.types.ModelFileFile
 import org.futo.voiceinput.shared.types.ModelLoader
 import java.io.File
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.Locale
 
@@ -77,18 +77,18 @@ fun getActiveLanguages(context: Context): List<InputLanguage> {
 }
 
 
-fun FileKind.preferencesKeyFor(locale: String): Preferences.Key<String> {
+fun FileKind.preferenceKeyFor(locale: String): Preferences.Key<String> {
     assert(this != FileKind.Invalid)
     return stringPreferencesKey("resource_${name}_${locale}")
 }
 
-@Composable
-fun resourceOption(language: InputMethodSubtype, kind: FileKind): DataStoreItem<String> {
-    return useDataStore(key = kind.preferencesKeyFor(language.locale), default = "")
+fun FileKind.namePreferenceKeyFor(locale: String): Preferences.Key<String> {
+    assert(this != FileKind.Invalid)
+    return stringPreferencesKey("resourcename_${name}_${locale}")
 }
 
 @Composable
-fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKind, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
+fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAndInfo, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
     val context = LocalContext.current
     val importing = remember { mutableStateOf(false) }
     val importingLanguage = remember { mutableStateOf("") }
@@ -106,7 +106,7 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKind, I
                 }
             )
         } else {
-            Text("You are importing a ${fileKind.kind.youAreImporting()}.", modifier = Modifier.padding(8.dp))
+            Text("You are importing a ${fileKind.kind.youAreImporting()}. ${fileKind.name?.let { "Info: $it" } ?: ""}", modifier = Modifier.padding(8.dp))
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -124,10 +124,10 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKind, I
                 )
 
                 val languages = getActiveLanguages(context).let {
-                    if(fileKind.guessedLanguage != null) {
-                        it.filter { it.tag.lowercase() == fileKind.guessedLanguage.lowercase() || it.tag.split("_")[0].lowercase() == fileKind.guessedLanguage.split("_")[0].lowercase() }.let {
+                    if(fileKind.locale != null) {
+                        it.filter { it.tag.lowercase() == fileKind.locale.lowercase() || it.tag.split("_")[0].lowercase() == fileKind.locale.split("_")[0].lowercase() }.let {
                             if(it.isEmpty()) {
-                                Text("Warning: This file appears to be intended for a language (${fileKind.guessedLanguage}) which is not active", modifier = Modifier.padding(8.dp))
+                                Text("Warning: This file appears to be intended for a language (${fileKind.locale}) which is not active", modifier = Modifier.padding(8.dp))
                                 getActiveLanguages(context)
                             } else {
                                 it
@@ -145,7 +145,7 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKind, I
                         navigate = {
                             importing.value = true
                             importingLanguage.value = it.name
-                            onApply(fileKind.kind, it.inputMethodSubtype)
+                            onApply(fileKind, it.inputMethodSubtype)
                         }
                     )
                 }
@@ -181,8 +181,76 @@ fun FileKind.extension(): String {
 
 data class FileKindAndInfo(
     val kind: FileKind,
-    val guessedLanguage: String?
+    val name: String?,
+    val locale: String?
 )
+
+private fun parseDictionaryMetadataKV(inputStream: InputStream): Map<String, String>? {
+    while (inputStream.available() > 0) {
+        val v = inputStream.read()
+        if(v == -1) {
+            return null
+        } else if (v == 'd'.code) {
+            if (inputStream.read() == 'a'.code
+                && inputStream.read() == 't'.code
+                && inputStream.read() == 'e'.code
+                && inputStream.read() == 0x1F
+            ) {
+                break
+            } else {
+                continue
+            }
+        }
+    }
+
+    val readUntilSeparator = {
+        val codes: MutableList<Int> = mutableListOf()
+        while(true) {
+            val v = inputStream.read()
+            if(v == -1) {
+                break
+            } else if(v == 0x1F) {
+                break
+            } else if(v == 0) {
+                // 3 byte character
+                // not 100% sure it's correct to compare to 0 here, but seems to work usually
+                val v1 = v
+                val v2 = inputStream.read()
+                val v3 = inputStream.read()
+
+                // sanity check
+                if(v2 == -1 || v3 == -1 || v2 == 0x1F || v3 == 0x1F) break
+
+                codes.add((v1 shl 16) or (v2 shl 8) or (v3))
+            } else {
+                codes.add(v)
+            }
+        }
+
+        String(codes.toIntArray(), 0, codes.size)
+    }
+
+    val keyValueList = mutableMapOf(
+        "date" to readUntilSeparator()
+    )
+
+    while(true) {
+        val key = readUntilSeparator()
+        val value = readUntilSeparator()
+
+        if(key.isBlank() || value.isBlank()) {
+            break
+        }
+
+        keyValueList[key] = value
+
+        if(key == "version") {
+            break
+        }
+    }
+
+    return keyValueList
+}
 
 fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
     val contentResolver = context.contentResolver
@@ -198,41 +266,41 @@ fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
         val magic = ByteBuffer.wrap(array).getInt().toUInt()
 
         when(magic) {
-            voiceInputMagic -> FileKindAndInfo(FileKind.VoiceInput, null)
-            transformerMagic -> FileKindAndInfo(FileKind.Transformer, null)
+            voiceInputMagic -> FileKindAndInfo(FileKind.VoiceInput, null, null)
+            transformerMagic -> FileKindAndInfo(FileKind.Transformer, null, null)
             dictionaryMagic -> {
-                while(array[0] != 0x3A.toByte()) {
-                    inputStream.read(array, 0, 1)
-                }
+                val metadata = parseDictionaryMetadataKV(inputStream)
 
-                val chars: MutableList<Char> = mutableListOf()
-                while(array[0] != 0x1F.toByte()) {
-                    inputStream.read(array, 0, 1)
-                    if(array[0] == 0x1F.toByte()) break
-
-                    chars.add(array[0].toInt().toChar())
-                }
-
-                val language = String(chars.toCharArray())
-
-                FileKindAndInfo(FileKind.Dictionary, language)
+                FileKindAndInfo(
+                    FileKind.Dictionary,
+                    name = metadata?.get("description"),
+                    locale = metadata?.get("locale")
+                )
             }
-            else -> FileKindAndInfo(FileKind.Invalid, null)
+            else -> FileKindAndInfo(FileKind.Invalid, null, null)
         }
-    } ?: FileKindAndInfo(FileKind.Invalid, null)
+    } ?: FileKindAndInfo(FileKind.Invalid, null, null)
 }
 
 object ResourceHelper {
-    suspend fun findFileForKind(context: Context, locale: Locale, kind: FileKind): File? {
+    suspend fun findKeyForLocaleAndKind(context: Context, locale: Locale, kind: FileKind): String? {
         val keysToTry = listOf(
             locale.language,
             "${locale.language}_${locale.country}",
             "${locale.language.lowercase()}_${locale.country.uppercase()}",
         )
 
-        val settingValue: String = keysToTry.firstNotNullOfOrNull { key ->
-            context.getSetting(kind.preferencesKeyFor(key), "").ifEmpty { null }
+        val key: String = keysToTry.firstNotNullOfOrNull { key ->
+            context.getSetting(kind.preferenceKeyFor(key), "").ifEmpty { null }?.let { key }
         } ?: return null
+
+        return key
+    }
+
+    suspend fun findFileForKind(context: Context, locale: Locale, kind: FileKind): File? {
+        val key = findKeyForLocaleAndKind(context, locale, kind) ?: return null
+
+        val settingValue: String = context.getSetting(kind.preferenceKeyFor(key), "")
 
         val file = File(context.getExternalFilesDir(null), settingValue)
 
@@ -268,13 +336,15 @@ object ResourceHelper {
     }
 
     fun deleteResourceForLanguage(context: Context, kind: FileKind, locale: Locale) {
-        val setting = kind.preferencesKeyFor(locale.toString())
+        val setting = kind.preferenceKeyFor(locale.toString())
         val value = runBlocking { context.getSetting(setting, "") }
         if(value.isNotBlank()) {
-            runBlocking { context.setSetting(setting, "") }
             val file = File(context.getExternalFilesDir(null), value)
             file.delete()
         }
+
+        runBlocking { context.setSetting(kind.preferenceKeyFor(locale.toString()), "") }
+        runBlocking { context.setSetting(kind.namePreferenceKeyFor(locale.toString()), "") }
 
         LatinIMELegacy.mPendingDictionaryUpdate = true
     }
@@ -283,16 +353,16 @@ object ResourceHelper {
 class ImportResourceActivity : ComponentActivity() {
     private val themeOption: MutableState<ThemeOption?> = mutableStateOf(null)
     private val fileBeingImported: MutableState<String?> = mutableStateOf(null)
-    private val fileKind: MutableState<FileKindAndInfo> = mutableStateOf(FileKindAndInfo(FileKind.Invalid, null))
+    private val fileKind: MutableState<FileKindAndInfo> = mutableStateOf(FileKindAndInfo(FileKind.Invalid, null, null))
     private var uri: Uri? = null
 
-    private fun applySetting(fileKind: FileKind, inputMethodSubtype: InputMethodSubtype) {
-        val outputFileName = "${fileKind.name.lowercase()}_${inputMethodSubtype.locale}${fileKind.extension()}"
+    private fun applySetting(fileKind: FileKindAndInfo, inputMethodSubtype: InputMethodSubtype) {
+        val outputFileName = "${fileKind.kind.name.lowercase()}_${inputMethodSubtype.locale}${fileKind.kind.extension()}"
 
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 // This is a special case for now
-                if (fileKind == FileKind.Transformer) {
+                if (fileKind.kind == FileKind.Transformer) {
                     // 1. Copy file
                     val contentResolver = applicationContext.contentResolver
                     val outDirectory = ModelPaths.getModelDirectory(applicationContext)
@@ -322,8 +392,16 @@ class ImportResourceActivity : ComponentActivity() {
                     }
 
                     // 2. Update reference
-                    val key = fileKind.preferencesKeyFor(inputMethodSubtype.locale)
-                    applicationContext.setSetting(key, outputFileName)
+                    applicationContext.setSetting(
+                        fileKind.kind.preferenceKeyFor(inputMethodSubtype.locale),
+                        outputFileName
+                    )
+                    fileKind.name?.let {
+                        applicationContext.setSetting(
+                            fileKind.kind.namePreferenceKeyFor(inputMethodSubtype.locale),
+                            it
+                        )
+                    }
                 }
             }
             LatinIMELegacy.mPendingDictionaryUpdate = true

@@ -20,6 +20,8 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.ResourceHelper
+import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.namePreferenceKeyFor
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -118,8 +120,8 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             val locale = Locale.forLanguageTag(it.locale.replace("_", "-"))
 
             val voiceInputModelName = ResourceHelper.tryFindingVoiceInputModelForLocale(context, locale)?.name?.let { stringResource(it) }
-            val dictionaryName = runBlocking { ResourceHelper.findFileForKind(context, locale, FileKind.Dictionary) }?.let {
-                "Imported Dictionary"
+            val dictionaryName = runBlocking { ResourceHelper.findKeyForLocaleAndKind(context, locale, FileKind.Dictionary) }?.let {
+                runBlocking { context.getSetting(FileKind.Dictionary.namePreferenceKeyFor(it), "Dictionary") } + " (Imported)"
             } ?: if(BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).isNotEmpty()) {
                     "Built-in Dictionary"
             } else {
