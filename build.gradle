@@ -192,6 +192,7 @@ dependencies {
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
     implementation 'androidx.autofill:autofill:1.1.0'
 
+    implementation 'ch.acra:acra-http:5.11.1' // TODO: Remove upon release
     implementation 'ch.acra:acra-mail:5.11.1'
     implementation 'ch.acra:acra-dialog:5.11.1'
 
