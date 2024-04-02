@@ -69,8 +69,8 @@ fun ConditionalUpdate(navController: NavHostController) {
         }
     } else if(lastFailed) {
         SettingItem(
-            title = "Failed to check for updates",
-            subtitle = "Tap to check manually",
+            title = "Unable to check online for updates",
+            subtitle = "Please tap to check manually",
             onClick = {
                 context.openManualUpdateCheck()
             }

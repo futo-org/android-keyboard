@@ -28,7 +28,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
-import org.futo.inputmethod.latin.uix.settings.openLanguageSettings
+import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.ConditionalUpdate
 
@@ -47,7 +47,9 @@ fun AndroidTextInput() {
                 setHintTextColor(fgColor.copy(alpha = 0.7f).toArgb())
             }
         }
-        AndroidView({ editText }, modifier = Modifier.fillMaxWidth().padding(8.dp))
+        AndroidView({ editText }, modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp))
     }
 }
 
@@ -56,10 +58,13 @@ fun AndroidTextInput() {
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val isDeveloper = useDataStore(key = IS_DEVELOPER, default = false)
+
     Column {
         Column(
             modifier = Modifier
-                .weight(1.0f).fillMaxWidth()
+                .weight(1.0f)
+                .fillMaxWidth()
                 .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.height(24.dp))
@@ -108,6 +113,15 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 navigate = { navController.navigate("help") },
                 icon = painterResource(id = R.drawable.help_circle)
             )
+
+            if(isDeveloper.value || LocalInspectionMode.current) {
+                NavigationItem(
+                    title = "Developer Settings",
+                    style = NavigationItemStyle.HomeSecondary,
+                    navigate = { navController.navigate("developer") },
+                    icon = painterResource(id = R.drawable.code)
+                )
+            }
 
 
             Spacer(modifier = Modifier.height(32.dp))
