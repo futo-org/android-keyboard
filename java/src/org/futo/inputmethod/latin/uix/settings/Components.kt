@@ -276,9 +276,10 @@ enum class NavigationItemStyle {
 }
 
 @Composable
-fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Unit, icon: Painter? = null) {
+fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Unit, icon: Painter? = null, subtitle: String? = null) {
     SettingItem(
         title = title,
+        subtitle = subtitle,
         onClick = navigate,
         icon = {
             icon?.let {

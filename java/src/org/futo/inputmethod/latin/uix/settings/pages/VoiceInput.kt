@@ -41,67 +41,6 @@ import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.voiceinput.shared.ENGLISH_MODELS
 import org.futo.voiceinput.shared.types.ModelLoader
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ModelPicker(label: String, options: List<ModelLoader>, setting: SettingsKey<Int>) {
-    val (modelIndex, setModelIndex) = useDataStore(key = setting.key, default = setting.default)
-
-    var expanded by remember { mutableStateOf(false) }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = !expanded
-            },
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            TextField(
-                readOnly = true,
-                value = stringResource(options[modelIndex].name),
-                onValueChange = { },
-                label = { Text(label) },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expanded
-                    )
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
-                modifier = Modifier.menuAnchor()
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                }
-            ) {
-                options.forEachIndexed { i, selectionOption ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(stringResource(selectionOption.name))
-                        },
-                        onClick = {
-                            setModelIndex(i)
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-
 @Preview
 @Composable
 fun VoiceInputScreen(navController: NavHostController = rememberNavController()) {
@@ -146,10 +85,11 @@ fun VoiceInputScreen(navController: NavHostController = rememberNavController())
                 setting = DISALLOW_SYMBOLS
             )
 
-            ModelPicker(
-                "English Model Option",
-                ENGLISH_MODELS,
-                ENGLISH_MODEL_INDEX
+            NavigationItem(
+                title = "Languages",
+                subtitle = "To change the model, visit Languages menu",
+                style = NavigationItemStyle.Misc,
+                navigate = { navController.navigate("languages") }
             )
         }
     }
