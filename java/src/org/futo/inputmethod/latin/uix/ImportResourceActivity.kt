@@ -43,6 +43,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -127,7 +128,7 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
                     if(fileKind.locale != null) {
                         it.filter { it.tag.lowercase() == fileKind.locale.lowercase() || it.tag.split("_")[0].lowercase() == fileKind.locale.split("_")[0].lowercase() }.let {
                             if(it.isEmpty()) {
-                                Text("Warning: This file appears to be intended for a language (${fileKind.locale}) which is not active", modifier = Modifier.padding(8.dp))
+                                Tip("⚠\uFE0F This file appears to be intended for a language (${fileKind.locale}) which is not enabled in settings")
                                 getActiveLanguages(context)
                             } else {
                                 it
@@ -141,7 +142,7 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
                 languages.forEach {
                     NavigationItem(
                         title = "${it.name} (${it.tag})",
-                        style = NavigationItemStyle.MiscNoArrow,
+                        style = NavigationItemStyle.Misc,
                         navigate = {
                             importing.value = true
                             importingLanguage.value = it.name
