@@ -17,7 +17,13 @@ class CrashLoggingApplication : Application() {
             reportFormat = StringFormat.JSON
 
             dialog {
-                text = getString(R.string.crashed_text)
+                text = getString(
+                    if(BuildConfig.ENABLE_ACRA) {
+                        R.string.crashed_text
+                    } else {
+                        R.string.crashed_text_email
+                    }
+                )
                 title = getString(R.string.crashed_title)
                 positiveButtonText = getString(R.string.crash_report_accept)
                 negativeButtonText = getString(R.string.crash_report_reject)
