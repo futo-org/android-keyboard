@@ -26,6 +26,7 @@ static jlong WhisperGGML_open(JNIEnv *env, jclass clazz, jstring model_dir) {
 
     auto *state = new WhisperModelState();
 
+    AKLOGI("Attempting to load model from file...");
     state->context = whisper_init_from_file_with_params(model_dir_str.c_str(), { .use_gpu = false });
 
     if(!state->context){
@@ -43,6 +44,7 @@ static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffe
 
     auto *state = new WhisperModelState();
 
+    AKLOGI("Attempting to load model from buffer...");
     state->context = whisper_init_from_buffer_with_params(buffer_address, buffer_capacity, { .use_gpu = false });
 
     if(!state->context){
@@ -55,6 +57,8 @@ static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffe
 }
 
 static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jfloatArray samples_array, jstring prompt, jobjectArray languages, jobjectArray bail_languages, jint decoding_mode, jboolean suppress_non_speech_tokens) {
+    AKLOGI("Attempting to infer model...");
+
     auto *state = reinterpret_cast<WhisperModelState *>(handle);
     state->cancel_flag = 0;
 

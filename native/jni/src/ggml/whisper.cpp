@@ -126,8 +126,8 @@ WHISPER_ATTRIBUTE_FORMAT(2, 3)
 static void whisper_log_internal        (ggml_log_level level, const char * format, ...);
 static void whisper_log_callback_default(ggml_log_level level, const char * text, void * user_data);
 
-#define WHISPER_LOG_INFO(...)  whisper_log_internal(GGML_LOG_LEVEL_INFO , __VA_ARGS__)
-#define WHISPER_LOG_WARN(...)  whisper_log_internal(GGML_LOG_LEVEL_WARN , __VA_ARGS__)
+#define WHISPER_LOG_INFO(...)  AKLOGI(__VA_ARGS__) // whisper_log_internal(GGML_LOG_LEVEL_INFO , __VA_ARGS__)
+#define WHISPER_LOG_WARN(...)  AKLOGI(__VA_ARGS__) // whisper_log_internal(GGML_LOG_LEVEL_WARN , __VA_ARGS__)
 #define WHISPER_LOG_ERROR(...) AKLOGE(__VA_ARGS__) // whisper_log_internal(GGML_LOG_LEVEL_ERROR, __VA_ARGS__)
 
 #define WHISPER_ASSERT(x) \
@@ -3339,11 +3339,13 @@ struct whisper_context * whisper_init_from_file_with_params(const char * path_mo
 struct whisper_context * whisper_init_from_buffer_with_params(void * buffer, size_t buffer_size, struct whisper_context_params params) {
     whisper_context * ctx = whisper_init_from_buffer_with_params_no_state(buffer, buffer_size, params);
     if (!ctx) {
+        WHISPER_LOG_ERROR("%s: received null context", __func__);
         return nullptr;
     }
 
     ctx->state = whisper_init_state(ctx);
     if (!ctx->state) {
+        WHISPER_LOG_ERROR("%s: received null state", __func__);
         whisper_free(ctx);
         return nullptr;
     }
