@@ -157,10 +157,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 style = options.dictionary?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
                 navigate = {
                     if(runBlocking { ResourceHelper.findFileForKind(context, locale, FileKind.Dictionary) } == null) {
-                        context.openURI(
-                            "https://codeberg.org/Helium314/aosp-dictionaries#dictionaries",
-                            true
-                        )
+                        context.openURI("https://keyboard.futo.org/dictionaries", true)
                     } else {
                         deleteDialogInfo.value = DeleteInfo(locale, FileKind.Dictionary)
                     }
