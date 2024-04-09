@@ -19,7 +19,7 @@ LOCAL_ARM_NEON := true
 ############ some local flags
 # If you change any of those flags, you need to rebuild both libjni_latinime_common_static
 # and the shared library that uses libjni_latinime_common_static.
-FLAG_DBG ?= false
+FLAG_DBG ?= true
 FLAG_DO_PROFILE ?= false
 
 ######################################
@@ -63,7 +63,7 @@ ifeq ($(FLAG_DO_PROFILE), true)
 else # FLAG_DO_PROFILE
 ifeq ($(FLAG_DBG), true)
     $(warning Making debug version of native library)
-    LOCAL_CFLAGS += -DFLAG_DBG -funwind-tables -fno-inline
+    LOCAL_CFLAGS += -DFLAG_DBG #-funwind-tables -fno-inline
 ifeq ($(FLAG_FULL_DBG), true)
     $(warning Making full debug version of native library)
     LOCAL_CFLAGS += -DFLAG_FULL_DBG
