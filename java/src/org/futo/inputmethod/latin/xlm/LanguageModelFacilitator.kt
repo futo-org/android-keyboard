@@ -197,8 +197,8 @@ public class LanguageModelFacilitator(
             }
 
             val locale = dictionaryFacilitator.locale
-            if(languageModel == null || (languageModel?.getLocale()?.language != locale.language)) {
-
+            if(languageModel == null || (languageModel?.locale?.language != locale.language)) {
+                Log.d("LanguageModelFacilitator", "Calling closeInternalLocked on model due to seeming locale change")
                 languageModel?.closeInternalLocked()
                 languageModel = null
 
@@ -206,7 +206,7 @@ public class LanguageModelFacilitator(
                 val options = ModelPaths.getModelOptions(context)
                 val model = options[locale.language]
                 if(model != null) {
-                    languageModel = LanguageModel(context, model, locale)
+                    languageModel = LanguageModel(context, lifecycleScope, model, locale)
                 } else {
                     Log.d("LanguageModelFacilitator", "no model for ${locale.language}")
                     return
@@ -239,8 +239,11 @@ public class LanguageModelFacilitator(
             )
 
             if(lmSuggestions == null) {
-                job.cancel()
-                inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
+                //inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
+                holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())?.let { results ->
+                    job.cancel()
+                    inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(results)
+                }
                 return
             }
 
@@ -347,10 +350,9 @@ public class LanguageModelFacilitator(
     }
 
     public suspend fun destroyModel() {
-        computationSemaphore.acquire()
+        Log.d("LanguageModelFacilitator", "destroyModel called")
         languageModel?.closeInternalLocked()
         languageModel = null
-        computationSemaphore.release()
     }
 
     private var trainingEnabled = true
@@ -361,6 +363,7 @@ public class LanguageModelFacilitator(
             withContext(Dispatchers.Default) {
                 TrainingWorkerStatus.lmRequest.collect {
                     if (it == LanguageModelFacilitatorRequest.ResetModel) {
+                        Log.d("LanguageModelFacilitator", "ResetModel event received, destroying model")
                         destroyModel()
                     }else if(it == LanguageModelFacilitatorRequest.ClearTrainingLog) {
                         historyLog.clear()
@@ -373,6 +376,7 @@ public class LanguageModelFacilitator(
         launch {
             withContext(Dispatchers.Default) {
                 ModelPaths.modelOptionsUpdated.collect {
+                    Log.d("LanguageModelFacilitator", "ModelPaths options updated, destroying model")
                     destroyModel()
                 }
             }
@@ -414,7 +418,7 @@ public class LanguageModelFacilitator(
     public fun shouldPassThroughToLegacy(): Boolean =
         (!settings.current.mTransformerPredictionEnabled) ||
                 (languageModel?.let {
-                    it.getLocale().language != dictionaryFacilitator.locale.language
+                    it.locale.language != dictionaryFacilitator.locale.language
                 } ?: false)
 
     public fun updateSuggestionStripAsync(inputStyle: Int) {

@@ -135,6 +135,14 @@ public:
         return pendingEvaluationSequence.size() > 0;
     }
 
+    AK_FORCE_INLINE void free() {
+        llama_free(adapter->context);
+        llama_free_model(adapter->model);
+        delete adapter;
+        adapter = nullptr;
+        delete this;
+    }
+
     LlamaAdapter *adapter;
     transformer_context transformerContext;
 private:

@@ -855,8 +855,10 @@ namespace latinime {
     }
 
     static void xlm_LanguageModel_close(JNIEnv *env, jclass clazz, jlong statePtr) {
+        AKLOGI("LanguageModel_close called!");
         LanguageModelState *state = reinterpret_cast<LanguageModelState *>(statePtr);
         if(state == nullptr) return;
+        state->model->free();
         delete state;
     }
 
