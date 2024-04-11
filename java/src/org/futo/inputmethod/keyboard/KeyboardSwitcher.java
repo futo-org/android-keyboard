@@ -47,6 +47,7 @@ import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.latin.utils.ScriptUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
@@ -183,6 +184,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 hasMultipleEnabledIMEsOrSubtypes);
     }
 
+    @Nullable
     public Keyboard getKeyboard() {
         if (mKeyboardView != null) {
             return mKeyboardView.getKeyboard();

@@ -170,13 +170,58 @@ public class LanguageModelFacilitator(
         }
     }
 
+    private suspend fun runLanguageModel(values: PredictionInputValues): ArrayList<SuggestedWordInfo>? {
+        val locale = dictionaryFacilitator.locale ?: return null
+        if (languageModel == null || (languageModel?.locale?.language != locale.language)) {
+            Log.d(
+                "LanguageModelFacilitator",
+                "Calling closeInternalLocked on model due to seeming locale change"
+            )
+            languageModel?.closeInternalLocked()
+            languageModel = null
+
+            // TODO: Cache value so we're not hitting this repeatedly
+            val options = ModelPaths.getModelOptions(context)
+            val model = options[locale.language]
+            if (model != null) {
+                languageModel = LanguageModel(context, lifecycleScope, model, locale)
+            } else {
+                Log.d("LanguageModelFacilitator", "no model for ${locale.language}")
+                return null
+            }
+        }
+
+        val settingsValues = settings.current ?: return null
+
+        val keyboard = keyboardSwitcher.keyboard ?: return null
+        val settingsForPrediction = SettingsValuesForSuggestion(
+            settingsValues.mBlockPotentiallyOffensive,
+            settingsValues.mTransformerPredictionEnabled
+        )
+        val proximityInfoHandle = keyboard.proximityInfo.nativeProximityInfo
+
+        val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
+
+        return languageModel!!.getSuggestions(
+            values.composedData,
+            values.ngramContext,
+            keyboardSwitcher.mainKeyboardView.mKeyDetector,
+            settingsForPrediction,
+            proximityInfoHandle,
+            -1,
+            autocorrectThreshold,
+            floatArrayOf(),
+            userDictionary.getWords().map { it.word },
+            suggestionBlacklist.currentBlacklist.toTypedArray<String>()
+        )
+    }
+
     private suspend fun processUpdateSuggestionStrip(values: PredictionInputValues) {
         if(keyboardSwitcher.keyboard == null) return
 
         computationSemaphore.acquire()
 
         try {
-            val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
             var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
 
             val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
@@ -196,50 +241,13 @@ public class LanguageModelFacilitator(
                 inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
             }
 
-            val locale = dictionaryFacilitator.locale
-            if(languageModel == null || (languageModel?.locale?.language != locale.language)) {
-                Log.d("LanguageModelFacilitator", "Calling closeInternalLocked on model due to seeming locale change")
-                languageModel?.closeInternalLocked()
-                languageModel = null
-
-                // TODO: Cache value so we're not hitting this repeatedly
-                val options = ModelPaths.getModelOptions(context)
-                val model = options[locale.language]
-                if(model != null) {
-                    languageModel = LanguageModel(context, lifecycleScope, model, locale)
-                } else {
-                    Log.d("LanguageModelFacilitator", "no model for ${locale.language}")
-                    return
-                }
-            }
-
-            val settingsValues = settings.current
-
-            val keyboard = keyboardSwitcher.keyboard
-            val settingsForPrediction = SettingsValuesForSuggestion(
-                settingsValues.mBlockPotentiallyOffensive,
-                settingsValues.mTransformerPredictionEnabled
-            )
-            val proximityInfoHandle = keyboard.proximityInfo.nativeProximityInfo
 
             val suggestionResults = SuggestionResults(
                 14, values.ngramContext.isBeginningOfSentenceContext, false)
 
-            val lmSuggestions = languageModel!!.getSuggestions(
-                values.composedData,
-                values.ngramContext,
-                keyboardSwitcher.mainKeyboardView.mKeyDetector,
-                settingsForPrediction,
-                proximityInfoHandle,
-                -1,
-                autocorrectThreshold,
-                floatArrayOf(),
-                userDictionary.getWords().map { it.word },
-                suggestionBlacklist.currentBlacklist.toTypedArray()
-            )
+            val lmSuggestions = runLanguageModel(values)
 
             if(lmSuggestions == null) {
-                //inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
                 holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())?.let { results ->
                     job.cancel()
                     inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(results)
@@ -271,9 +279,6 @@ public class LanguageModelFacilitator(
             val suggestedWordsDictList = suggestedWordsDict?.mSuggestedWordInfoList?.filter {
                 suggestionBlacklist.isSuggestedWordOk(it)
             }
-
-            //Log.d("LanguageModelFacilitator", "suggestedWordsDict = ${suggestedWordsDictList?.map { "$it ${it.mScore}" }}")
-            //Log.d("LanguageModelFacilitator", "lmSuggestions = ${lmSuggestions.map { "$it ${it.mScore}" }}")
 
             val maxWordDict = suggestedWordsDictList?.maxByOrNull {
                 if(it == suggestedWordsDict.typedWordInfo) { Int.MIN_VALUE } else { it.mScore }
@@ -332,8 +337,10 @@ public class LanguageModelFacilitator(
                 }
             }
 
-            //Log.d("LanguageModelFacilitator", "final suggestionResults = ${suggestionResults.map { "$it ${it.mScore}" }}")
-            val wordComposer = inputLogic.mWordComposer
+            val settingsValues = settings.current ?: return
+            val locale = dictionaryFacilitator.locale ?: return
+            val wordComposer = inputLogic.mWordComposer ?: return
+
             val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
                 wordComposer, values.inputStyle, true, -1, locale, suggestionResults, settingsValues.mAutoCorrectionThreshold)
 
