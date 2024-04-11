@@ -13,11 +13,16 @@
 #include "jni_utils.h"
 
 #define EPS 0.0001
+
+#if false
 #define TIME_START(name)  const int64_t start_##name = ggml_time_us();
 #define TIME_END(name)    const int64_t end_##name = ggml_time_us(); \
                           const int64_t time_taken_##name = (end_##name - start_##name) / 1000L; \
                           AKLOGI("%s:     Time taken by %s: %d ms\n", __func__, #name, (int)time_taken_##name);
-
+#else
+#define TIME_START(name)
+#define TIME_END(name)
+#endif
 
 #define RETURNVAL_AUTOCORRECT "autocorrect"
 #define RETURNVAL_UNCERTAIN "uncertain"
@@ -349,7 +354,7 @@ struct LanguageModelState {
                 return {};
             }
         } else {
-            AKLOGI("No need to recompute prompt, proceeding to mixes");
+            //AKLOGI("No need to recompute prompt, proceeding to mixes");
         }
 
         transformer_context_apply(model->transformerContext, prompt_ff);
@@ -362,7 +367,7 @@ struct LanguageModelState {
         std::vector<float> embeds;
 
         bool useEncoder = !llamaAdapter->encoder_weight.empty();
-        AKLOGI("DecodePromptAndMixes: useEncoder=%d", useEncoder);
+        //AKLOGI("DecodePromptAndMixes: useEncoder=%d", useEncoder);
 
         for(auto &mix : mixes) {
 
@@ -474,13 +479,13 @@ struct LanguageModelState {
             ASSERT(head == prompt_ff.first.size() - 1);
         }
 
-        AKLOGI("-- Decode");
-        AKLOGI("First we processed the prompt (%d):", prompt_ff.first.size());
-        for(auto t : prompt) {
-            AKLOGI(" - [%s]", model->getToken(t));
-        }
-        AKLOGI("Then %d embeds (cached %d)", embeds.size(), n_past);
-        AKLOGI("The final size is %d and head is %d", size, head);
+        //AKLOGI("-- Decode");
+        //AKLOGI("First we processed the prompt (%d):", prompt_ff.first.size());
+        //for(auto t : prompt) {
+        //    AKLOGI(" - [%s]", model->getToken(t));
+        //}
+        //AKLOGI("Then %d embeds (cached %d)", embeds.size(), n_past);
+        //AKLOGI("The final size is %d and head is %d", size, head);
 
         TIME_START(FinishRm)
 
@@ -509,7 +514,7 @@ struct LanguageModelState {
                     auto priorTxt = model->decode(prior);
                     auto nextTxt = model->decode({next});
                     auto bannedTxt = model->decode(banned_sequence.sequence);
-                    AKLOGI("Tokens [%s] + [%s] matches banned wildcard [%s]", priorTxt.c_str(), nextTxt.c_str(), bannedTxt.c_str());
+                    //AKLOGI("Tokens [%s] + [%s] matches banned wildcard [%s]", priorTxt.c_str(), nextTxt.c_str(), bannedTxt.c_str());
                     return true;
                 }
             }else if((banned_sequence.sequence.size() == prior.size() + 1) && (banned_sequence.hash == new_hash)) {
@@ -526,7 +531,7 @@ struct LanguageModelState {
                         auto priorTxt = model->decode(prior);
                         auto nextTxt = model->decode({next});
                         auto bannedTxt = model->decode(banned_sequence.sequence);
-                        AKLOGI("Tokens [%s] + [%s] matches banned [%s]", priorTxt.c_str(), nextTxt.c_str(), bannedTxt.c_str());
+                        //AKLOGI("Tokens [%s] + [%s] matches banned [%s]", priorTxt.c_str(), nextTxt.c_str(), bannedTxt.c_str());
                         return true;
                     }
                 }
@@ -547,7 +552,7 @@ struct LanguageModelState {
         bool allow_correction_token = decodeResult.logits_head == 0;
 
         float *logits = llama_get_logits_ith(ctx, decodeResult.logits_head);
-        AKLOGI("Value of [the ] before transform: %f", logits[561]);
+        //AKLOGI("Value of [the ] before transform: %f", logits[561]);
 
         bool is_bugged = logits[561] == 0.0f;
 
@@ -565,7 +570,7 @@ struct LanguageModelState {
             return { };
         }
 
-        AKLOGI("Value of [the ] after transform: %f", logits[561]);
+        //AKLOGI("Value of [the ] after transform: %f", logits[561]);
 
         std::vector<std::pair<float, int>> index_value;
         index_value.clear();
@@ -993,7 +998,7 @@ namespace latinime {
                 }else if(c >= 'A' && c <= 'Z') {
                     results.mixes[j].token = (state->specialTokens.LETTERS_TO_IDS[c - 'A']);
                 } else {
-                    AKLOGI("ignoring character in partial word [%c]", c);
+                    //AKLOGI("ignoring character in partial word [%c]", c);
                     results.mixes[j].weight = 0.0f;
                 }
             }
