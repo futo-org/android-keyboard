@@ -46,6 +46,8 @@ fun Context.openManualUpdateCheck() {
 @Composable
 @Preview
 fun ConditionalUpdate(navController: NavHostController) {
+    if(!BuildConfig.UPDATE_CHECKING) return
+
     val (updateInfo, _) = useDataStore(key = LAST_UPDATE_CHECK_RESULT, default = "")
     val (lastFailed, _) = useDataStore(key = LAST_UPDATE_CHECK_FAILED, default = false)
 

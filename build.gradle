@@ -118,16 +118,28 @@ android {
         }
     }
 
-    buildFeatures {
-        buildConfig = true
+    flavorDimensions = ["buildType"]
+
+    productFlavors {
+        stable {
+            dimension "buildType"
+            buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "false"
+            buildConfigField "boolean", "UPDATE_CHECKING", "true"
+        }
+        playstore {
+            dimension "buildType"
+            applicationIdSuffix ".playstore"
+            versionNameSuffix "-playstore"
+
+            buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "true"
+            buildConfigField "boolean", "UPDATE_CHECKING", "false"
+        }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    flavorDimensions "default"
 
     sourceSets {
         main {
@@ -164,6 +176,7 @@ android {
         compose true
         viewBinding true
         mlModelBinding true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.5.5'

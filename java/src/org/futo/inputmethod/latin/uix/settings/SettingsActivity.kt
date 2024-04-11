@@ -62,7 +62,15 @@ private fun Context.isInputMethodEnabled(): Boolean {
 private fun Context.isDefaultIMECurrent(): Boolean {
     val value = Settings.Secure.getString(contentResolver, Settings.Secure.DEFAULT_INPUT_METHOD)
 
-    return value.startsWith(packageName)
+    return value.startsWith("$packageName/")
+}
+
+private fun Context.isDoublePackage(): Boolean {
+    val value = Settings.Secure.getString(contentResolver, Settings.Secure.DEFAULT_INPUT_METHOD)
+    val standalonePackage = "org.futo.inputmethod.latin"
+    val playstorePackage = "org.futo.inputmethod.latin.playstore"
+
+    return (value.startsWith("$standalonePackage/") && packageName == playstorePackage) || (value.startsWith("$playstorePackage/") && packageName == standalonePackage)
 }
 
 public const val IMPORT_GGUF_MODEL_REQUEST = 71067309
@@ -74,6 +82,7 @@ class SettingsActivity : ComponentActivity() {
 
     private val inputMethodEnabled = mutableStateOf(false)
     private val inputMethodSelected = mutableStateOf(false)
+    private val doublePackage = mutableStateOf(false)
     private val micPermissionGrantedOrUsingSystem = mutableStateOf(false)
 
     private var wasImeEverDisabled = false
@@ -93,6 +102,8 @@ class SettingsActivity : ComponentActivity() {
         val inputMethodSelected = isDefaultIMECurrent()
         this.inputMethodEnabled.value = inputMethodEnabled
         this.inputMethodSelected.value = inputMethodSelected
+
+        this.doublePackage.value = this.doublePackage.value || isDoublePackage()
 
         this.micPermissionGrantedOrUsingSystem.value = (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) || runBlocking {
             getSetting(USE_SYSTEM_VOICE_INPUT)
@@ -148,7 +159,7 @@ class SettingsActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        SetupOrMain(inputMethodEnabled.value, inputMethodSelected.value, micPermissionGrantedOrUsingSystem.value) {
+                        SetupOrMain(inputMethodEnabled.value, inputMethodSelected.value, micPermissionGrantedOrUsingSystem.value, doublePackage.value) {
                             SettingsNavigator(navController = navController)
                         }
                     }

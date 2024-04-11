@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import org.futo.inputmethod.latin.utils.UncachedInputMethodManagerUtils
 
 @Composable
-fun SetupOrMain(inputMethodEnabled: Boolean, inputMethodSelected: Boolean, micPermissionGrantedOrUsingSystem: Boolean, main: @Composable () -> Unit) {
+fun SetupOrMain(inputMethodEnabled: Boolean, inputMethodSelected: Boolean, micPermissionGrantedOrUsingSystem: Boolean, doublePackage: Boolean, main: @Composable () -> Unit) {
     if (!inputMethodEnabled) {
         SetupEnableIME()
     } else if (!inputMethodSelected) {
-        SetupChangeDefaultIME()
+        SetupChangeDefaultIME(doublePackage)
     } else if (!micPermissionGrantedOrUsingSystem) {
         SetupEnableMic()
     } else {

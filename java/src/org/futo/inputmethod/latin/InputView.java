@@ -218,14 +218,7 @@ public final class InputView extends FrameLayout {
 
         @Override
         protected boolean needsToForward(final int x, final int y) {
-            return mReceiverView.isShowingMoreSuggestionPanel() && mEventSendingRect.contains(x, y);
-        }
-
-        @Override
-        protected void onForwardingEvent(final MotionEvent me) {
-            if (me.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                mReceiverView.dismissMoreSuggestionsPanel();
-            }
+            return false;
         }
     }
 }

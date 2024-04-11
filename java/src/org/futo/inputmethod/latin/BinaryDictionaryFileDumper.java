@@ -29,7 +29,6 @@ import android.util.Log;
 
 import org.futo.inputmethod.dictionarypack.DictionaryPackConstants;
 import org.futo.inputmethod.dictionarypack.MD5Calculator;
-import org.futo.inputmethod.dictionarypack.UpdateHandler;
 import org.futo.inputmethod.latin.common.FileUtils;
 import org.futo.inputmethod.latin.define.DecoderSpecificConstants;
 import org.futo.inputmethod.latin.utils.DictionaryInfoUtils;
@@ -533,7 +532,7 @@ public final class BinaryDictionaryFileDumper {
         InputStream inputStream = null;
         try {
             inputStream = context.getResources().openRawResource(metadataResourceId);
-            UpdateHandler.handleMetadata(context, inputStream, clientId);
+            // UpdateHandler.handleMetadata(context, inputStream, clientId);
         } catch (Exception e) {
             Log.w(TAG, "Failed to read metadata.json from resources", e);
         } finally {

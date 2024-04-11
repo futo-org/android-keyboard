@@ -16,11 +16,14 @@ import okhttp3.Request
 import okhttp3.internal.closeQuietly
 import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.BuildConfig
 import java.lang.Exception
 
-const val UPDATE_URL = "https://voiceinput.futo.org/SuperSecretKeyboard/keyboard_version"
+const val UPDATE_URL = "https://keyboard.futo.org/keyboard_version"
 
 suspend fun checkForUpdate(): UpdateResult? {
+    if(!BuildConfig.UPDATE_CHECKING) return null
+
     return withContext(Dispatchers.IO) {
         val httpClient = OkHttpClient()
 
@@ -94,6 +97,8 @@ suspend fun retrieveSavedLastUpdateCheckResult(context: Context): UpdateResult? 
 
 const val JOB_ID: Int = 15782788
 fun scheduleUpdateCheckingJob(context: Context) {
+    if(!BuildConfig.UPDATE_CHECKING) return
+
     val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
     if(jobScheduler.getPendingJob(JOB_ID) != null) {

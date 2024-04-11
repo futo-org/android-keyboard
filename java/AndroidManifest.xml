@@ -15,8 +15,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.futo.inputmethod.latin">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
@@ -95,10 +94,6 @@
                  android:resource="@xml/spellchecker"/>
         </service>
 
-        <service android:name="org.futo.inputmethod.dictionarypack.DictionaryService"
-             android:label="@string/dictionary_service_name">
-        </service>
-
         <!-- Activities -->
         <activity android:name=".uix.settings.SettingsActivity"
              android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
@@ -164,15 +159,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="org.futo.inputmethod.dictionarypack.DownloadOverMeteredDialog"
-             android:theme="@style/platformActivityTheme"
-             android:label="@string/dictionary_install_over_metered_network_prompt"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-
         <!-- Broadcast receivers -->
         <receiver android:name="SystemBroadcastReceiver"
              android:exported="true">
@@ -200,15 +186,6 @@
         </receiver>
 
         <receiver android:name="org.futo.inputmethod.updates.InstallReceiver" />
-
-        <!-- Content providers -->
-        <provider android:name="org.futo.inputmethod.dictionarypack.DictionaryProvider"
-             android:grantUriPermissions="true"
-             android:exported="false"
-             android:authorities="@string/authority"
-             android:multiprocess="false"
-             android:label="@string/dictionary_provider_name">
-        </provider>
 
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"

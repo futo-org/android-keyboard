@@ -125,7 +125,7 @@ fun SetupEnableIME() {
 
 @Composable
 @Preview
-fun SetupChangeDefaultIME() {
+fun SetupChangeDefaultIME(doublePackage: Boolean = true) {
     val context = LocalContext.current
 
     val launchImeOptions = {
@@ -139,6 +139,10 @@ fun SetupChangeDefaultIME() {
 
     SetupContainer {
         Column {
+            if(doublePackage) {
+                Tip("Warning: You seem to have both Play Store and Standalone versions installed, we only recommend installing one")
+            }
+
             Step(fraction = 2.0f/3.0f, text = "Setup - Step 2 of 3")
 
             Text(
@@ -146,6 +150,7 @@ fun SetupChangeDefaultIME() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+
             Button(
                 onClick = launchImeOptions,
                 modifier = Modifier

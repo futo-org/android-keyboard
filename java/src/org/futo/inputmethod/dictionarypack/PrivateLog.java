@@ -30,7 +30,7 @@ import java.util.Locale;
  */
 public class PrivateLog {
 
-    public static final boolean DEBUG = DictionaryProvider.DEBUG;
+    public static final boolean DEBUG = false;
 
     private static final String LOG_DATABASE_NAME = "log";
     private static final String LOG_TABLE_NAME = "log";

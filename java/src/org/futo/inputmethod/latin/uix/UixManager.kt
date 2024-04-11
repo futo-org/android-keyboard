@@ -45,6 +45,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
@@ -427,6 +428,8 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     suspend fun showUpdateNoticeIfNeeded() {
+        if(!BuildConfig.UPDATE_CHECKING) return
+
         val updateInfo = retrieveSavedLastUpdateCheckResult(latinIME)
         if(updateInfo != null && updateInfo.isNewer()) {
             numSuggestionsSinceNotice = 0
