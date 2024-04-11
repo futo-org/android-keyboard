@@ -204,7 +204,6 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
             colors[R.styleable.Keyboard_Key_keyTextInactivatedColor] = transparent
             colors[R.styleable.Keyboard_Key_keyHintLetterColor] = transparent
             colors[R.styleable.Keyboard_Key_keyHintLabelColor] = transparent
-            colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = transparent
 
 
             // Note: We don't fully hide some things, but fade them away as they may be important landmarks
