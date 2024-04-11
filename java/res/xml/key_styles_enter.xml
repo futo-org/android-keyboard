@@ -247,13 +247,13 @@
         </case>
         <!-- Smiley in textShortMessage field.
              This <case> should be after Shift + Enter <case> and before any of action <case>. -->
-        <case
+        <!--<case
             latin:mode="im"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:parentStyle="emojiKeyStyle" />
-        </case>
+        </case>-->
         <case
             latin:imeAction="actionGo"
         >
