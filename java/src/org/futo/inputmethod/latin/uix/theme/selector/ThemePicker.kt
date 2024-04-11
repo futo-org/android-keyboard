@@ -194,15 +194,7 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
             item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                 SettingToggleDataStore(
                     title = "Show symbol hints",
-                    subtitle = "",
                     setting = SettingsKey(KeyHintsSetting, false)
-                )
-            }
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                SettingToggleDataStore(
-                    title = "Expert mode",
-                    subtitle = "Hides all keys. Touch typists only",
-                    setting = SettingsKey(HiddenKeysSetting, false)
                 )
             }
             items(availableThemeOptions.count()) {

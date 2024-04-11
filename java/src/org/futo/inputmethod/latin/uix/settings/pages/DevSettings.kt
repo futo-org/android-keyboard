@@ -14,10 +14,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.HiddenKeysSetting
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 
 
 val IS_DEVELOPER = booleanPreferencesKey("isDeveloperMode")
@@ -30,6 +33,12 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
 
     ScrollableList {
         ScreenTitle("Developer", showBack = true, navController)
+
+        SettingToggleDataStore(
+            title = "Touch typing mode",
+            subtitle = "Hides all keys. Touch typists only! Recommended to disable emoji key and enable key borders",
+            setting = SettingsKey(HiddenKeysSetting, false)
+        )
 
         NavigationItem(
             title = "Crash the app",
