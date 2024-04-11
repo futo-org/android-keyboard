@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -32,7 +33,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.futo.inputmethod.latin.uix.HiddenKeysSetting
+import org.futo.inputmethod.latin.uix.KeyBordersSetting
+import org.futo.inputmethod.latin.uix.KeyHintsSetting
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptionKeys
@@ -174,23 +180,49 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
         }
     }
 
-    LazyVerticalGrid(
-        modifier = Modifier.fillMaxWidth(),
-        columns = GridCells.Adaptive(minSize = 172.dp)
-    ) {
-        items(availableThemeOptions.count()) {
-            val themeOption = availableThemeOptions[it].second
-
-            ThemePreview(themeOption, isSelected = themeOption.key == currentTheme) {
-                onSelected(themeOption)
+    Column {
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxWidth(),
+            columns = GridCells.Adaptive(minSize = 172.dp)
+        ) {
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                SettingToggleDataStore(
+                    title = "Key borders",
+                    setting = SettingsKey(KeyBordersSetting, false)
+                )
             }
-        }
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                SettingToggleDataStore(
+                    title = "Show symbol hints",
+                    subtitle = "",
+                    setting = SettingsKey(KeyHintsSetting, false)
+                )
+            }
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                SettingToggleDataStore(
+                    title = "Expert mode",
+                    subtitle = "Hides all keys. Touch typists only",
+                    setting = SettingsKey(HiddenKeysSetting, false)
+                )
+            }
+            items(availableThemeOptions.count()) {
+                val themeOption = availableThemeOptions[it].second
 
-        item {
-            AddCustomThemeButton {
-                // TODO: Custom themes
-                val toast = Toast.makeText(context, "Custom themes coming eventually", Toast.LENGTH_SHORT)
-                toast.show()
+                ThemePreview(themeOption, isSelected = themeOption.key == currentTheme) {
+                    onSelected(themeOption)
+                }
+            }
+
+            item {
+                AddCustomThemeButton {
+                    // TODO: Custom themes
+                    val toast = Toast.makeText(
+                        context,
+                        "Custom themes coming eventually",
+                        Toast.LENGTH_SHORT
+                    )
+                    toast.show()
+                }
             }
         }
     }

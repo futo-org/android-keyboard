@@ -24,8 +24,8 @@
     <!-- Default theme values -->
     <style name="Keyboard">
         <item name="rowHeight">25%p</item>
-        <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
-        <item name="verticalGap">@fraction/config_key_vertical_gap_holo</item>
+        <item name="horizontalGap">0.9%p</item>
+        <item name="verticalGap">4%p</item>
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
         <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
         <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>

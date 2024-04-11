@@ -126,7 +126,8 @@
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="bottomEmojiKeyStyle"
-        latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
+        latin:keySpec="!icon/emoji_normal_key|!code/key_emoji"
+        latin:backgroundType="functional"
         latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="tabKeyStyle"

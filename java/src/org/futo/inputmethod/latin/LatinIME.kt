@@ -49,10 +49,14 @@ import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.EmojiTracker.unuseEmoji
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
+import org.futo.inputmethod.latin.uix.HiddenKeysSetting
+import org.futo.inputmethod.latin.uix.KeyBordersSetting
+import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
+import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
@@ -230,6 +234,28 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
 
         suggestionBlacklist.init()
+
+        lifecycleScope.launch {
+            dataStore.data.collect {
+                drawableProvider?.let { provider ->
+                    if(provider is BasicThemeProvider) {
+                        if (it[HiddenKeysSetting] != provider.expertMode
+                            || it[KeyBordersSetting] != provider.keyBorders
+                            || it[KeyHintsSetting] != provider.showKeyHints
+                        ) {
+                            activeThemeOption?.obtainColors?.let { f ->
+                                updateDrawableProvider(f(this@LatinIME))
+                                if (!uixManager.isMainKeyboardHidden) {
+                                    recreateKeyboard()
+                                } else {
+                                    pendingRecreateKeyboard = true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

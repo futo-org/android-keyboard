@@ -148,7 +148,7 @@ public class Key implements Comparable<Key> {
     private static final String MORE_KEYS_NO_PANEL_AUTO_MORE_KEY = "!noPanelAutoMoreKey!";
 
     /** Background type that represents different key background visual than normal one. */
-    private final int mBackgroundType;
+    private int mBackgroundType;
     public static final int BACKGROUND_TYPE_EMPTY = 0;
     public static final int BACKGROUND_TYPE_NORMAL = 1;
     public static final int BACKGROUND_TYPE_FUNCTIONAL = 2;
@@ -183,8 +183,8 @@ public class Key implements Comparable<Key> {
             mOutputText = outputText;
             mAltCode = altCode;
             mDisabledIconId = disabledIconId;
-            mVisualInsetsLeft = visualInsetsLeft;
-            mVisualInsetsRight = visualInsetsRight;
+            mVisualInsetsLeft = 0;//visualInsetsLeft;
+            mVisualInsetsRight = 0;//visualInsetsRight;
         }
 
         @Nullable
@@ -283,6 +283,10 @@ public class Key implements Comparable<Key> {
                 R.styleable.Keyboard_Key_visualInsetsLeft, baseWidth, baseWidth, 0));
         final int visualInsetsRight = Math.round(keyAttr.getFraction(
                 R.styleable.Keyboard_Key_visualInsetsRight, baseWidth, baseWidth, 0));
+
+        if(visualInsetsLeft > 0 || visualInsetsRight > 0) {
+            mBackgroundType = BACKGROUND_TYPE_FUNCTIONAL;
+        }
 
         mLabelFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
                 | row.getDefaultKeyLabelFlags();
@@ -973,7 +977,7 @@ public class Key implements Comparable<Key> {
             // 1: BACKGROUND_TYPE_NORMAL
             new KeyBackgroundState(),
             // 2: BACKGROUND_TYPE_FUNCTIONAL
-            new KeyBackgroundState(),
+            new KeyBackgroundState(android.R.attr.state_first),
             // 3: BACKGROUND_TYPE_STICKY_OFF
             new KeyBackgroundState(android.R.attr.state_checkable),
             // 4: BACKGROUND_TYPE_STICKY_ON
