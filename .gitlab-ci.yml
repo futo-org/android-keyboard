@@ -21,12 +21,18 @@ build:
     - echo $VERSION_CODE $VERSION_NAME
     - ./setUpPropertiesCI.sh
   script:
-    - gradle assembleRelease -s
-    - mv build/outputs/apk/release/latinime-release.apk ./keyboard-$VERSION_NAME.apk
+    - gradle bundlePlaystoreRelease -s
+    - gradle assembleStableRelease -s
+    - mv build/outputs/apk/stable/release/latinime-stable-release.apk ./keyboard-$VERSION_NAME.apk
+    - mv build/outputs/bundle/playstoreRelease/latinime-playstore-release.aab ./keyboard-playstore-$VERSION_NAME.aab
+    - touch VERSION_CODE_$VERSION_CODE.txt
+    - touch VERSION_NAME_$VERSION_NAME.txt
     - echo "Keyboard $VERSION_NAME - https://gitlab.futo.org/alex/latinime/-/jobs/$CI_JOB_ID/artifacts/raw/keyboard-$VERSION_NAME.apk"
     - echo $VERSION_CODE $VERSION_NAME
   artifacts:
     name: "keyboard-$VERSION_NAME"
     paths:
       - ./*.apk
+      - ./*.aab
+      - ./*.txt
   when: manual
