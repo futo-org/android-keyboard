@@ -42,4 +42,5 @@
     <string name="disable_emoji">Disable emoji suggestions</string>
     <string name="try_typing">Try typing here…</string>
     <string name="externally_imported_model">Externally imported model</string>
+    <string name="spacebar_default_text">Pre-Alpha</string>
 </resources>
