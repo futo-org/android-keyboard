@@ -107,11 +107,11 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         }
     }
 
-    private fun StateListDrawable.addStateWithHighlightLayerOnPressed(@ColorInt highlight: Int, stateSet: IntArray, drawable: Drawable) {
+    private fun StateListDrawable.addStateWithHighlightLayerOnPressed(@ColorInt highlight: Int, stateSet: IntArray, drawable: Drawable, cornerRadius: Dp = 8.dp) {
         addState(intArrayOf(android.R.attr.state_pressed) + stateSet, LayerDrawable(
             arrayOf(
                 drawable,
-                coloredRoundedRectangle(highlight, dp(8.dp))
+                coloredRoundedRectangle(highlight, dp(cornerRadius))
             )
         )
         )
@@ -156,6 +156,31 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         val onBackgroundThird = colorScheme.onBackground.copy(alpha = 0.33f).toArgb()
 
         val transparent = Color.Transparent.toArgb()
+        primaryKeyboardColor = if(keyBorders) {
+            colorScheme.background.toArgb()
+        } else {
+            colorScheme.surface.toArgb()
+        }
+
+        val ratio = 1.5f
+        val keyColor = if(keyBorders) {
+            var c = adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, ratio)
+            if(c == primaryKeyboardColor) {
+                // May happen if the color is already 100% white
+                c = adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, 1.0f / (ratio / 2.0f + 0.5f))
+            }
+            c
+        } else {
+            transparent
+        }
+        val functionalKeyColor = if(keyBorders) {
+            adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, ratio / 2.0f + 0.5f, adjustSaturation = true)
+        } else {
+            transparent
+        }
+
+        val enterKeyBackground = if(expertMode) { functionalKeyColor } else { primary }
+        val enterKeyForeground = if(expertMode) { onBackgroundThird } else { onPrimary }
 
         colors[R.styleable.Keyboard_Key_keyTextColor] = onBackground
         colors[R.styleable.Keyboard_Key_keyTextInactivatedColor] = onBackgroundHalf
@@ -179,12 +204,12 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         }
 
         // No good replacements for these icons yet, but we set them anyway for setTint
-        overrideDrawable(R.styleable.Keyboard_iconEnterKey, R.drawable.sym_keyboard_return_lxx_light, onPrimary)
-        overrideDrawable(R.styleable.Keyboard_iconGoKey, R.drawable.sym_keyboard_go_lxx_light, onPrimary)
-        overrideDrawable(R.styleable.Keyboard_iconNextKey, R.drawable.sym_keyboard_next_lxx_light, onPrimary)
-        overrideDrawable(R.styleable.Keyboard_iconDoneKey, R.drawable.sym_keyboard_done_lxx_light, onPrimary)
-        overrideDrawable(R.styleable.Keyboard_iconPreviousKey, R.drawable.sym_keyboard_previous_lxx_light, onPrimary)
-        overrideDrawable(R.styleable.Keyboard_iconSearchKey, R.drawable.sym_keyboard_search_lxx_light, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconEnterKey, R.drawable.sym_keyboard_return_lxx_light, enterKeyForeground)
+        overrideDrawable(R.styleable.Keyboard_iconGoKey, R.drawable.sym_keyboard_go_lxx_light, enterKeyForeground)
+        overrideDrawable(R.styleable.Keyboard_iconNextKey, R.drawable.sym_keyboard_next_lxx_light, enterKeyForeground)
+        overrideDrawable(R.styleable.Keyboard_iconDoneKey, R.drawable.sym_keyboard_done_lxx_light, enterKeyForeground)
+        overrideDrawable(R.styleable.Keyboard_iconPreviousKey, R.drawable.sym_keyboard_previous_lxx_light, enterKeyForeground)
+        overrideDrawable(R.styleable.Keyboard_iconSearchKey, R.drawable.sym_keyboard_search_lxx_light, enterKeyForeground)
 
         overrideDrawable(R.styleable.Keyboard_iconDeleteKey, R.drawable.delete, onBackground)
         overrideDrawable(R.styleable.Keyboard_iconSettingsKey, R.drawable.settings, onBackground)
@@ -214,49 +239,12 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
             overrideDrawable(R.styleable.Keyboard_iconEmojiNormalKey, R.drawable.smile, transparent)
         }
 
-        /*
-        primaryKeyboardColor = if(keyBorders) {
-            colorScheme.outline.copy(alpha = 0.33f).compositeOver(colorScheme.background).toArgb()
-        } else {
-            background
-        }
-        */
-        primaryKeyboardColor = if(keyBorders) {
-            colorScheme.background.toArgb()
-        } else {
-            colorScheme.surface.toArgb()
-        }
-
-        val ratio = 1.5f
-        val keyColor = if(keyBorders) {
-            var c = adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, ratio)
-            if(c == primaryKeyboardColor) {
-                // May happen if the color is already 100% white
-                c = adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, 1.0f / (ratio / 2.0f + 0.5f))
-            }
-            c
-        } else {
-            transparent
-        }
-        val functionalKeyColor = if(keyBorders) {
-            //var c = adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, 1.0f / ratio, adjustSaturation = true)
-            //if(true || c == primaryKeyboardColor) {
-            //    // May happen if the color is already 100% black
-            var c = adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, ratio / 2.0f + 0.5f, adjustSaturation = true)
-            //}
-            c
-        } else {
-            transparent
-        }
         keyboardBackground = coloredRectangle(primaryKeyboardColor)
 
         keyBackground = StateListDrawable().apply {
             addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_active),
-                coloredRoundedRectangle(primary, dp(128.dp)).apply {
-                    if(!keyBorders) {
-                        setSize(dp(64.dp).toInt(), dp(48.dp).toInt())
-                    }
-                }
+                coloredRoundedRectangle(enterKeyBackground, dp(128.dp)),
+                cornerRadius = 128.dp
             )
 
             addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_checkable, android.R.attr.state_checked),
@@ -304,6 +292,8 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
 
         val spaceDrawable = if(keyBorders) {
             coloredRoundedRectangle(keyColor, dp(spaceCornerRadius))
+        } else if(expertMode) {
+            coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.1f).toArgb(), dp(spaceCornerRadius))
         } else {
             coloredRoundedRectangle(highlight, dp(spaceCornerRadius))
         }
