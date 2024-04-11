@@ -161,7 +161,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight)
                 .setSubtype(RichInputMethodSubtype.getRichInputMethodSubtype(subtype))
                 .setVoiceInputKeyEnabled(voiceInputKeyEnabled)
-                .setLanguageSwitchKeyEnabled(languageSwitchKeyEnabled)
+                .setBottomEmojiKeyEnabled(languageSwitchKeyEnabled)
                 .setSplitLayoutEnabledByUser(splitLayoutEnabled);
         return builder.build();
     }

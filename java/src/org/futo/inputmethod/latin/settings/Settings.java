@@ -76,8 +76,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
     public static final boolean SHOULD_SHOW_LXX_SUGGESTION_UI =
             BuildCompatUtils.EFFECTIVE_SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-    public static final String PREF_SHOW_LANGUAGE_SWITCH_KEY =
-            "pref_show_language_switch_key";
+
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
@@ -101,11 +100,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
 
     public static final String PREF_ENABLE_METRICS_LOGGING = "pref_enable_metrics_logging";
-    // This preference key is deprecated. Use {@link #PREF_SHOW_LANGUAGE_SWITCH_KEY} instead.
-    // This is being used only for the backward compatibility.
-    private static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
-            "pref_suppress_language_switch_key";
 
+    public static final String PREF_SHOW_EMOJI_KEY =
+            "pref_show_emoji_key";
     private static final String PREF_LAST_USED_PERSONALIZATION_TOKEN =
             "pref_last_used_personalization_token";
     private static final String PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME =
@@ -261,16 +258,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
                         R.integer.config_key_preview_linger_timeout))));
     }
 
-    public static boolean readShowsLanguageSwitchKey(final SharedPreferences prefs) {
-        if (prefs.contains(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
-            final boolean suppressLanguageSwitchKey = prefs.getBoolean(
-                    PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, true);
-            final SharedPreferences.Editor editor = prefs.edit();
-            editor.remove(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY);
-            editor.putBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, !suppressLanguageSwitchKey);
-            editor.apply();
-        }
-        return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, false);
+    public static boolean readShowsEmojiKey(final SharedPreferences prefs) {
+        return prefs.getBoolean(PREF_SHOW_EMOJI_KEY, true);
     }
 
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,

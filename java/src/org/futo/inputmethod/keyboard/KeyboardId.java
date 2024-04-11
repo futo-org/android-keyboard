@@ -78,7 +78,7 @@ public final class KeyboardId {
     public final int mElementId;
     public final EditorInfo mEditorInfo;
     public final boolean mClobberSettingsKey;
-    public final boolean mLanguageSwitchKeyEnabled;
+    public final boolean mBottomEmojiKeyEnabled;
     public final String mCustomActionLabel;
     public final boolean mHasShortcutKey;
     public final boolean mIsSplitLayout;
@@ -93,7 +93,7 @@ public final class KeyboardId {
         mElementId = elementId;
         mEditorInfo = params.mEditorInfo;
         mClobberSettingsKey = params.mNoSettingsKey;
-        mLanguageSwitchKeyEnabled = params.mLanguageSwitchKeyEnabled;
+        mBottomEmojiKeyEnabled = params.mBottomEmojiKeyEnabled;
         mCustomActionLabel = (mEditorInfo.actionLabel != null)
                 ? mEditorInfo.actionLabel.toString() : null;
         mHasShortcutKey = params.mVoiceInputKeyEnabled;
@@ -111,7 +111,7 @@ public final class KeyboardId {
                 id.passwordInput(),
                 id.mClobberSettingsKey,
                 id.mHasShortcutKey,
-                id.mLanguageSwitchKeyEnabled,
+                id.mBottomEmojiKeyEnabled,
                 id.isMultiLine(),
                 id.imeAction(),
                 id.mCustomActionLabel,
@@ -132,7 +132,7 @@ public final class KeyboardId {
                 && other.passwordInput() == passwordInput()
                 && other.mClobberSettingsKey == mClobberSettingsKey
                 && other.mHasShortcutKey == mHasShortcutKey
-                && other.mLanguageSwitchKeyEnabled == mLanguageSwitchKeyEnabled
+                && other.mBottomEmojiKeyEnabled == mBottomEmojiKeyEnabled
                 && other.isMultiLine() == isMultiLine()
                 && other.imeAction() == imeAction()
                 && TextUtils.equals(other.mCustomActionLabel, mCustomActionLabel)
@@ -202,7 +202,7 @@ public final class KeyboardId {
                 (mClobberSettingsKey ? " clobberSettingsKey" : ""),
                 (passwordInput() ? " passwordInput" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : ""),
-                (mLanguageSwitchKeyEnabled ? " languageSwitchKeyEnabled" : ""),
+                (mBottomEmojiKeyEnabled ? " languageSwitchKeyEnabled" : ""),
                 (isMultiLine() ? " isMultiLine" : ""),
                 (mIsSplitLayout ? " isSplitLayout" : "")
         );

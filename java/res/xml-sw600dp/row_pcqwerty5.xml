@@ -29,10 +29,11 @@
             latin:keyboardLayout="@xml/key_settings" />
         <switch>
             <case
-                latin:languageSwitchKeyEnabled="true"
+                latin:bottomEmojiKeyEnabled="true"
+                latin:mode="text|im"
             >
                 <Key
-                    latin:keyStyle="languageSwitchKeyStyle"
+                    latin:keyStyle="bottomEmojiKeyStyle"
                     latin:keyXPos="22.0%p"
                     latin:keyWidth="9.0%p" />
                 <Key

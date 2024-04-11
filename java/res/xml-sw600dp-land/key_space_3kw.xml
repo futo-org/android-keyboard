@@ -30,10 +30,11 @@
              te: Telugu -->
         <case
             latin:languageCode="fa|kn|ne|te"
-            latin:languageSwitchKeyEnabled="true"
+            latin:bottomEmojiKeyEnabled="true"
+            latin:mode="text|im"
         >
             <Key
-                latin:keyStyle="languageSwitchKeyStyle" />
+                latin:keyStyle="bottomEmojiKeyStyle" />
             <Key
                 latin:keyStyle="spaceKeyStyle"
                 latin:keyWidth="7.0%p" />
@@ -42,7 +43,7 @@
         </case>
         <case
             latin:languageCode="fa|kn|ne|te"
-            latin:languageSwitchKeyEnabled="false"
+            latin:bottomEmojiKeyEnabled="false"
         >
             <Key
                 latin:keyStyle="spaceKeyStyle"
@@ -51,15 +52,16 @@
                 latin:keyStyle="zwnjKeyStyle" />
         </case>
         <case
-            latin:languageSwitchKeyEnabled="true"
+            latin:bottomEmojiKeyEnabled="true"
+            latin:mode="text|im"
         >
             <Key
-                latin:keyStyle="languageSwitchKeyStyle" />
+                latin:keyStyle="bottomEmojiKeyStyle" />
             <Key
                 latin:keyStyle="spaceKeyStyle"
                 latin:keyWidth="14.0%p" />
         </case>
-        <!-- languageSwitchKeyEnabled="false" -->
+        <!-- bottomEmojiKeyEnabled="false" -->
         <default>
             <Key
                 latin:keyStyle="spaceKeyStyle"

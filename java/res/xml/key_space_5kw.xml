@@ -24,10 +24,11 @@
     <switch>
         <case
             latin:keyboardLayoutSet="bengali_akkhor|farsi|kannada|nepali_romanized|nepali_traditional|telugu"
-            latin:languageSwitchKeyEnabled="true"
+            latin:bottomEmojiKeyEnabled="true"
+            latin:mode="text|im"
         >
             <Key
-                latin:keyStyle="languageSwitchKeyStyle" />
+                latin:keyStyle="bottomEmojiKeyStyle" />
             <Key
                 latin:keyStyle="spaceKeyStyle"
                 latin:keyWidth="30%p" />
@@ -36,7 +37,7 @@
         </case>
         <case
             latin:keyboardLayoutSet="bengali_akkhor|farsi|kannada|nepali_romanized|nepali_traditional|telugu"
-            latin:languageSwitchKeyEnabled="false"
+            latin:bottomEmojiKeyEnabled="false"
         >
             <Key
                 latin:keyStyle="spaceKeyStyle"
@@ -45,15 +46,16 @@
                 latin:keyStyle="zwnjKeyStyle" />
         </case>
         <case
-            latin:languageSwitchKeyEnabled="true"
+            latin:bottomEmojiKeyEnabled="true"
+            latin:mode="text|im"
         >
             <Key
-                latin:keyStyle="languageSwitchKeyStyle" />
+                latin:keyStyle="bottomEmojiKeyStyle" />
             <Key
                 latin:keyStyle="spaceKeyStyle"
                 latin:keyWidth="40%p" />
         </case>
-        <!-- languageSwitchKeyEnabled="false" -->
+        <!-- bottomEmojiKeyEnabled="false" -->
         <default>
             <Key
                 latin:keyStyle="spaceKeyStyle"

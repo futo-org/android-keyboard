@@ -35,17 +35,18 @@
         </switch>
         <switch>
             <case
-                latin:languageSwitchKeyEnabled="true"
+                latin:bottomEmojiKeyEnabled="true"
+                latin:mode="text|im"
             >
                 <Key
-                    latin:keyStyle="languageSwitchKeyStyle"
+                    latin:keyStyle="bottomEmojiKeyStyle"
                     latin:keyXPos="19.231%p"
                     latin:keyWidth="11.538%p" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="42.308%p" />
             </case>
-            <!-- languageSwitchKeyEnabled="false" -->
+            <!-- bottomEmojiKeyEnabled="false" -->
             <default>
                 <Key
                     latin:keyStyle="spaceKeyStyle"

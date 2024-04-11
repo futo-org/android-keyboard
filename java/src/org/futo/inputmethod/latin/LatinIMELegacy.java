@@ -2025,16 +2025,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
         return mRichImm.shouldOfferSwitchingToNextInputMethod(token, fallbackValue);
     }
 
-    public boolean shouldShowLanguageSwitchKey() {
+    public boolean shouldShowEmojiKey() {
         // TODO: Revisit here to reorganize the settings. Probably we can/should use different
         // strategy once the implementation of
         // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} is defined well.
-        final boolean fallbackValue = mSettings.getCurrent().isLanguageSwitchKeyEnabled();
-        final IBinder token = mInputMethodService.getWindow().getWindow().getAttributes().token;
-        if (token == null) {
-            return fallbackValue;
-        }
-        return mRichImm.shouldOfferSwitchingToNextInputMethod(token, fallbackValue);
+        return mSettings.getCurrent().isEmojiKeyEnabled();
     }
 
     private void setNavigationBarVisibility(final boolean visible) {

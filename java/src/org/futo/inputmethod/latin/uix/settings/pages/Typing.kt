@@ -57,6 +57,12 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             setting = SHOW_EMOJI_SUGGESTIONS
         )
         SettingToggleSharedPrefs(
+            title = "Emoji key",
+            subtitle = "Show the emoji key on the bottom row",
+            key = Settings.PREF_SHOW_EMOJI_KEY,
+            default = true
+        )
+        SettingToggleSharedPrefs(
             title = stringResource(R.string.auto_cap),
             subtitle = stringResource(R.string.auto_cap_summary),
             key = Settings.PREF_AUTO_CAP,
@@ -82,13 +88,6 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             title = stringResource(R.string.popup_on_keypress),
             key = Settings.PREF_POPUP_ON,
             default = booleanResource(R.bool.config_default_key_preview_popup)
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.show_language_switch_key),
-            subtitle = stringResource(R.string.show_language_switch_key_summary),
-            key = Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY,
-            default = false
         )
 
         SettingRadio(title = "Vibration Duration", options = listOf(-1, 5, 10, 20, 40), optionNames = listOf("Default", "Low", "Medium", "High", "Higher"), setting = vibrationDurationSetting)
