@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+        <service
+            android:name="org.futo.inputmethod.updates.UpdateCheckingService"
+            android:label="@string/update_checking_service"
+            android:permission="android.permission.BIND_JOB_SERVICE" >
+        </service>
+
+        <receiver android:name="org.futo.inputmethod.updates.InstallReceiver" />
+
+    </application>
+</manifest>

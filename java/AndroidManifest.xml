@@ -16,27 +16,16 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
-    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
+    <!--<uses-permission android:name="android.permission.READ_PROFILE"/>--> <!-- ? -->
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- A signature-protected permission to ask AOSP Keyboard to close the software keyboard.
                  To use this, add the following line into calling application's AndroidManifest.xml
@@ -75,12 +64,6 @@
             </intent-filter>
             <meta-data android:name="android.view.im"
                  android:resource="@xml/method"/>
-        </service>
-
-        <service
-            android:name="org.futo.inputmethod.updates.UpdateCheckingService"
-            android:label="@string/update_checking_service"
-            android:permission="android.permission.BIND_JOB_SERVICE" >
         </service>
 
         <service android:name=".spellcheck.AndroidSpellCheckerService"
@@ -176,16 +159,6 @@
                 <action android:name="org.futo.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT"/>
             </intent-filter>
         </receiver>
-
-        <!-- Broadcast receiver for AccountManager#LOGIN_ACCOUNTS_CHANGED_ACTION. -->
-        <receiver android:name=".accounts.AccountsChangedReceiver"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.accounts.LOGIN_ACCOUNTS_CHANGED"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name="org.futo.inputmethod.updates.InstallReceiver" />
 
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
