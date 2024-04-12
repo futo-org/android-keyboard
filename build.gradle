@@ -149,6 +149,16 @@ android {
             manifest.srcFile 'java/AndroidManifest.xml'
         }
 
+        playstore {
+            java.srcDirs = ['common/src', 'java/src', 'java/playstore/java']
+            manifest.srcFile 'java/playstore/AndroidManifest.xml'
+        }
+
+        stable {
+            java.srcDirs = ['common/src', 'java/src', 'java/stable/java']
+            manifest.srcFile 'java/stable/AndroidManifest.xml'
+        }
+
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src']
