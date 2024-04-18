@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.CompletionInfo
@@ -129,6 +130,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private fun recreateKeyboard() {
         latinIMELegacy.updateTheme()
         latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(latinIMELegacy.currentAutoCapsState, latinIMELegacy.currentRecapitalizeState);
+        Log.w("LatinIME", "Recreating keyboard")
     }
 
     private fun updateDrawableProvider(colorScheme: ColorScheme) {
@@ -239,10 +241,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             dataStore.data.collect {
                 drawableProvider?.let { provider ->
                     if(provider is BasicThemeProvider) {
-                        if (it[HiddenKeysSetting] != provider.expertMode
-                            || it[KeyBordersSetting] != provider.keyBorders
-                            || it[KeyHintsSetting] != provider.showKeyHints
+                        if ((it[HiddenKeysSetting] ?: provider.expertMode) != provider.expertMode
+                            || (it[KeyBordersSetting] ?: provider.keyBorders) != provider.keyBorders
+                            || (it[KeyHintsSetting] ?: provider.showKeyHints) != provider.showKeyHints
                         ) {
+                            Log.w("LatinIME", "One of HiddenKeysSetting, KeyBordersSetting or KeyHintsSetting has changed")
                             activeThemeOption?.obtainColors?.let { f ->
                                 updateDrawableProvider(f(this@LatinIME))
                                 if (!uixManager.isMainKeyboardHidden) {
@@ -270,6 +273,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
+        Log.w("LatinIME", "Configuration changed")
         latinIMELegacy.onConfigurationChanged(newConfig)
         super.onConfigurationChanged(newConfig)
     }
@@ -281,6 +285,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private var legacyInputView: View? = null
     private var touchableHeight: Int = 0
     override fun onCreateInputView(): View {
+        Log.w("LatinIME", "Create input view")
         legacyInputView = latinIMELegacy.onCreateInputView()
 
         val composeView = uixManager.createComposeView()
@@ -328,6 +333,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     // necessary for when KeyboardSwitcher updates the theme
     fun updateLegacyView(newView: View) {
+        Log.w("LatinIME", "Updating legacy view")
         legacyInputView = newView
 
         uixManager.setContent()
