@@ -37,6 +37,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +57,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -350,7 +352,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
     val offsetY = remember { mutableFloatStateOf(0.0f) }
     val haptic = LocalHapticFeedback.current
 
-    val width = 64.dp
+    val width = 56.dp
     val widthPx = with(LocalDensity.current) {
         width.toPx()
     }
@@ -362,7 +364,6 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
     val col = MaterialTheme.colorScheme.secondaryContainer
 
     val modifier = Modifier
-        .offset { IntOffset(offsetX.floatValue.roundToInt(), offsetY.floatValue.roundToInt()) }
         .pointerInput(Unit) {
             detectDragGesturesAfterLongPress(onDragStart = {
                 dragging.value = true
@@ -379,6 +380,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
             }, onDrag = { change, dragAmount ->
                 change.consume()
                 offsetX.floatValue += dragAmount.x
+                offsetY.floatValue += dragAmount.y
 
                 if (offsetX.floatValue >= widthPx) {
                     offsetX.floatValue -= widthPx
@@ -411,6 +413,11 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
                 it.animateItemPlacement()
             } else {
                 it.zIndex(10.0f)
+                    .graphicsLayer {
+                        clip = false
+                        translationX = offsetX.floatValue
+                        translationY = offsetY.floatValue
+                    }
             }
         }
         .drawBehind {
@@ -420,7 +427,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
                 topLeft = Offset(size.width * 0.1f, size.height * 0.05f),
                 size = Size(size.width * 0.8f, size.height * 0.9f),
                 cornerRadius = CornerRadius(radius, radius),
-                style = if(isWindowAction) {
+                style = if (isWindowAction) {
                     Fill
                 } else {
                     Stroke(width = 4.0f)
@@ -501,7 +508,7 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
                 drawCircle(
                     color = moreActionsColor,
                     radius = size.width / 3.0f + 1.0f,
-                    style = if(!isActionsOpen) {
+                    style = if (!isActionsOpen) {
                         Stroke(3.0f)
                     } else {
                         Fill
@@ -574,6 +581,12 @@ fun ActionBar(
     val activateActionWithHaptic: (Action) -> Unit = {
         keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
         onActionActivated(it)
+    }
+
+    LaunchedEffect(words) {
+        if(words != null && !words.isEmpty) {
+            isActionsOpen.value = false
+        }
     }
 
     Surface(modifier = Modifier

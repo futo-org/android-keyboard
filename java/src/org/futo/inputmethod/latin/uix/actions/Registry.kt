@@ -58,12 +58,12 @@ object ActionRegistry {
 
 val DefaultActions = listOf(
     EmojiAction,
-    SettingsAction,
     TextEditAction,
-    ThemeAction,
-    ClipboardAction,
     UndoAction,
     RedoAction,
+    ClipboardAction,
+    SettingsAction,
+    ThemeAction,
 )
 
 val DefaultActionsString = ActionRegistry.actionsToString(DefaultActions)
