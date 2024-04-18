@@ -73,6 +73,11 @@ class TypingTraversal : public Traversal {
         return (currentBaseLowerCodePoint != typedBaseLowerCodePoint);
     }
 
+    AK_FORCE_INLINE bool isTransition(
+            const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
+        return false;
+    }
+
     AK_FORCE_INLINE bool isSpaceSubstitutionTerminal(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
         if (!CORRECT_NEW_WORD_SPACE_SUBSTITUTION) {

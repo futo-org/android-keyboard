@@ -151,7 +151,12 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix suggest/core/result/, \
         suggestion_results.cpp \
         suggestions_output_utils.cpp) \
-    suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
+    $(addprefix suggest/policyimpl/gesture/, \
+        swipe_scoring.cpp \
+        swipe_suggest_policy.cpp \
+        swipe_traversal.cpp \
+        swipe_weighting.cpp \
+        ) \
     $(addprefix suggest/policyimpl/typing/, \
         scoring_params.cpp \
         typing_scoring.cpp \

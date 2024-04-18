@@ -125,6 +125,12 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
             return;
         }
         childDicNodes.clear();
+
+        if(TRAVERSAL->isTransition(traverseSession, &dicNode)) {
+            correctionDicNode.initByCopy(&dicNode);
+            processDicNodeAsTransition(traverseSession, &correctionDicNode);
+        }
+
         const int point0Index = dicNode.getInputIndex(0);
         const bool canDoLookAheadCorrection =
                 TRAVERSAL->canDoLookAheadCorrection(traverseSession, &dicNode);
@@ -172,7 +178,7 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                 DicNode *const childDicNode = childDicNodes[i];
                 if (isCompletion) {
                     // Handle forward lookahead when the lexicon letter exceeds the input size.
-                    processDicNodeAsMatch(traverseSession, childDicNode);
+                    processDicNodeAsMatch(traverseSession, &dicNode, childDicNode);
                     continue;
                 }
                 if (DigraphUtils::hasDigraphForCodePoint(
@@ -196,7 +202,7 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                     // TODO: Consider the difference of proximityType here
                     case MATCH_CHAR:
                     case PROXIMITY_CHAR:
-                        processDicNodeAsMatch(traverseSession, childDicNode);
+                        processDicNodeAsMatch(traverseSession, &dicNode, childDicNode);
                         break;
                     case ADDITIONAL_PROXIMITY_CHAR:
                         if (allowsErrorCorrections) {
@@ -227,7 +233,7 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
 }
 
 void Suggest::processTerminalDicNode(
-        DicTraverseSession *traverseSession, DicNode *dicNode) const {
+        DicTraverseSession *traverseSession, const DicNode *parentDicNode, DicNode *dicNode) const {
     if (dicNode->getCompoundDistance() >= static_cast<float>(MAX_VALUE_FOR_WEIGHTING)) {
         return;
     }
@@ -244,11 +250,15 @@ void Suggest::processTerminalDicNode(
     DicNode terminalDicNode(*dicNode);
     if (TRAVERSAL->needsToTraverseAllUserInput()
             && dicNode->getInputIndex(0) < traverseSession->getInputSize()) {
-        Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL_INSERTION, traverseSession, 0,
+        Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL_INSERTION, traverseSession, parentDicNode,
                 &terminalDicNode, traverseSession->getMultiBigramMap());
     }
-    Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL, traverseSession, 0,
+    Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL, traverseSession, parentDicNode,
             &terminalDicNode, traverseSession->getMultiBigramMap());
+
+    if (terminalDicNode.getCompoundDistance() >= static_cast<float>(MAX_VALUE_FOR_WEIGHTING)) {
+        return;
+    }
     traverseSession->getDicTraverseCache()->copyPushTerminal(&terminalDicNode);
 }
 
@@ -257,8 +267,8 @@ void Suggest::processTerminalDicNode(
  * (by the space omission error correction) search path if input dicNode is on a terminal.
  */
 void Suggest::processExpandedDicNode(
-        DicTraverseSession *traverseSession, DicNode *dicNode) const {
-    processTerminalDicNode(traverseSession, dicNode);
+        DicTraverseSession *traverseSession, const DicNode *parentDicNode, DicNode *dicNode) const {
+    processTerminalDicNode(traverseSession, parentDicNode, dicNode);
     if (dicNode->getCompoundDistance() < static_cast<float>(MAX_VALUE_FOR_WEIGHTING)) {
         if (TRAVERSAL->isSpaceOmissionTerminal(traverseSession, dicNode)) {
             createNextWordDicNode(traverseSession, dicNode, false /* spaceSubstitution */);
@@ -272,9 +282,9 @@ void Suggest::processExpandedDicNode(
 }
 
 void Suggest::processDicNodeAsMatch(DicTraverseSession *traverseSession,
-        DicNode *childDicNode) const {
-    weightChildNode(traverseSession, childDicNode);
-    processExpandedDicNode(traverseSession, childDicNode);
+        const DicNode *parentDicNode, DicNode *childDicNode) const {
+    weightChildNode(traverseSession, parentDicNode, childDicNode);
+    processExpandedDicNode(traverseSession, parentDicNode, childDicNode);
 }
 
 void Suggest::processDicNodeAsAdditionalProximityChar(DicTraverseSession *traverseSession,
@@ -283,14 +293,14 @@ void Suggest::processDicNodeAsAdditionalProximityChar(DicTraverseSession *traver
     // not treat the node as a terminal. There is no need to pass the bigram map in these cases.
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_ADDITIONAL_PROXIMITY,
             traverseSession, dicNode, childDicNode, 0 /* multiBigramMap */);
-    processExpandedDicNode(traverseSession, childDicNode);
+    processExpandedDicNode(traverseSession, 0, childDicNode);
 }
 
 void Suggest::processDicNodeAsSubstitution(DicTraverseSession *traverseSession,
         DicNode *dicNode, DicNode *childDicNode) const {
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_SUBSTITUTION, traverseSession,
             dicNode, childDicNode, 0 /* multiBigramMap */);
-    processExpandedDicNode(traverseSession, childDicNode);
+    processExpandedDicNode(traverseSession, 0, childDicNode);
 }
 
 // Process the DicNode codepoint as a digraph. This means that composite glyphs like the German
@@ -298,9 +308,9 @@ void Suggest::processDicNodeAsSubstitution(DicTraverseSession *traverseSession,
 // the normal non-digraph traversal, so both "uber" and "ueber" can be corrected to "[u-umlaut]ber".
 void Suggest::processDicNodeAsDigraph(DicTraverseSession *traverseSession,
         DicNode *childDicNode) const {
-    weightChildNode(traverseSession, childDicNode);
+    weightChildNode(traverseSession, 0, childDicNode);
     childDicNode->advanceDigraphIndex();
-    processExpandedDicNode(traverseSession, childDicNode);
+    processExpandedDicNode(traverseSession, 0, childDicNode);
 }
 
 /**
@@ -322,11 +332,11 @@ void Suggest::processDicNodeAsOmission(
         // Treat this word as omission
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_OMISSION, traverseSession,
                 dicNode, childDicNode, 0 /* multiBigramMap */);
-        weightChildNode(traverseSession, childDicNode);
+        weightChildNode(traverseSession, 0, childDicNode);
         if (!TRAVERSAL->isPossibleOmissionChildNode(traverseSession, dicNode, childDicNode)) {
             continue;
         }
-        processExpandedDicNode(traverseSession, childDicNode);
+        processExpandedDicNode(traverseSession, 0, childDicNode);
     }
 }
 
@@ -349,9 +359,20 @@ void Suggest::processDicNodeAsInsertion(DicTraverseSession *traverseSession,
         DicNode *const childDicNode = childDicNodes[i];
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_INSERTION, traverseSession,
                 dicNode, childDicNode, 0 /* multiBigramMap */);
-        processExpandedDicNode(traverseSession, childDicNode);
+        processExpandedDicNode(traverseSession, dicNode, childDicNode);
     }
 }
+
+/**
+ * Handle the dicNode as a transition
+ */
+void Suggest::processDicNodeAsTransition(DicTraverseSession *traverseSession,
+                                        DicNode *dicNode) const {
+        Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TRANSITION, traverseSession,
+                                                      0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
+        processExpandedDicNode(traverseSession, 0, dicNode);
+}
+
 
 /**
  * Handle the dicNode as a transposition error (e.g., thsi => this). Swap the next two touch points.
@@ -386,7 +407,7 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
                 }
                 Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TRANSPOSITION,
                         traverseSession, childDicNodes1[i], childDicNode2, 0 /* multiBigramMap */);
-                processExpandedDicNode(traverseSession, childDicNode2);
+                processExpandedDicNode(traverseSession, childDicNodes1[i], childDicNode2);
             }
         }
     }
@@ -395,14 +416,15 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
 /**
  * Weight child dicNode by aligning it to the key
  */
-void Suggest::weightChildNode(DicTraverseSession *traverseSession, DicNode *dicNode) const {
+void Suggest::weightChildNode(DicTraverseSession *traverseSession, const DicNode* parentDicNode,
+          DicNode *dicNode) const {
     const int inputSize = traverseSession->getInputSize();
     if (dicNode->isCompletion(inputSize)) {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_COMPLETION, traverseSession,
-                0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
+                parentDicNode, dicNode, 0 /* multiBigramMap */);
     } else {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_MATCH, traverseSession,
-                0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
+                parentDicNode, dicNode, 0 /* multiBigramMap */);
     }
 }
 

@@ -334,6 +334,7 @@ struct LanguageModelState {
 
         auto prompt_ff = transformer_context_fastforward(model->transformerContext, prompt, !mixes.empty());
 
+        // TODO: Split by n_batch (512) if prompt is bigger
         batch.n_tokens = prompt_ff.first.size();
         if(batch.n_tokens > 0) {
             for (int i = 0; i < prompt_ff.first.size(); i++) {

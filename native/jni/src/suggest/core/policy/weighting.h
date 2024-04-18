@@ -37,20 +37,24 @@ class Weighting {
 
  protected:
     virtual float getTerminalSpatialCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const parentDicNode,
             const DicNode *const dicNode) const = 0;
 
     virtual float getOmissionCost(
          const DicNode *const parentDicNode, const DicNode *const dicNode) const = 0;
 
     virtual float getMatchedCost(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode,
-            DicNode_InputStateG *inputStateG) const = 0;
+            const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
+            const DicNode *const dicNode, DicNode_InputStateG *inputStateG) const = 0;
 
     virtual bool isProximityDicNode(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
 
     virtual float getTranspositionCost(
             const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
+            const DicNode *const dicNode) const = 0;
+
+    virtual float getTransitionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
 
     virtual float getInsertionCost(

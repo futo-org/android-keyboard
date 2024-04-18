@@ -58,9 +58,10 @@ class Suggest : public SuggestInterface {
             const bool spaceSubstitution) const;
     void initializeSearch(DicTraverseSession *traverseSession) const;
     void expandCurrentDicNodes(DicTraverseSession *traverseSession) const;
-    void processTerminalDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
-    void processExpandedDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
-    void weightChildNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
+    void processTerminalDicNode(DicTraverseSession *traverseSession, const DicNode *parentDicNode, DicNode *dicNode) const;
+    void processExpandedDicNode(DicTraverseSession *traverseSession, const DicNode *parentDicNode, DicNode *dicNode) const;
+    void weightChildNode(DicTraverseSession *traverseSession, const DicNode* parentDicNode,
+            DicNode *dicNode) const;
     void processDicNodeAsOmission(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processDicNodeAsDigraph(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processDicNodeAsTransposition(DicTraverseSession *traverseSession,
@@ -70,14 +71,16 @@ class Suggest : public SuggestInterface {
             DicNode *dicNode, DicNode *childDicNode) const;
     void processDicNodeAsSubstitution(DicTraverseSession *traverseSession, DicNode *dicNode,
             DicNode *childDicNode) const;
-    void processDicNodeAsMatch(DicTraverseSession *traverseSession,
+    void processDicNodeAsMatch(DicTraverseSession *traverseSession, const DicNode *parentDicNode,
             DicNode *childDicNode) const;
+    void processDicNodeAsTransition(DicTraverseSession *traverseSession, DicNode *dicNode) const;
 
     static const int MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE;
 
     const Traversal *const TRAVERSAL;
     const Scoring *const SCORING;
     const Weighting *const WEIGHTING;
+
 };
 } // namespace latinime
 #endif // LATINIME_SUGGEST_IMPL_H

@@ -268,7 +268,7 @@ static inline void showStackTrace() {
 
 // Max value for length, distance and probability which are used in weighting
 // TODO: Remove
-#define MAX_VALUE_FOR_WEIGHTING 10000000
+#define MAX_VALUE_FOR_WEIGHTING 10000000.0f
 
 // The max number of the keys in one keyboard layout
 #define MAX_KEY_COUNT_IN_A_KEYBOARD 64
@@ -339,6 +339,8 @@ typedef enum {
     CT_NEW_WORD_SPACE_OMISSION,
     // Create new word with space substitution
     CT_NEW_WORD_SPACE_SUBSTITUTION,
+    // Transition between characters for swipe input
+    CT_TRANSITION
 } CorrectionType;
 
 #endif // LATINIME_DEFINES_H

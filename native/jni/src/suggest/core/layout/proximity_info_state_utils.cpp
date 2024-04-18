@@ -769,7 +769,7 @@ namespace latinime {
                 } else {
                     sstream << it->first
                             << "("
-                            //<< static_cast<char>(mProximityInfo->getCodePointOf(it->first))
+                            << static_cast<char>(proximityInfo->getCodePointOf(it->first))
                             << "):"
                             << it->second
                             << "\n";

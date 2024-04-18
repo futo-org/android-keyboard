@@ -50,8 +50,13 @@ class GeometryUtils {
     }
 
     static AK_FORCE_INLINE int getDistanceInt(const int x1, const int y1, const int x2,
-            const int y2) {
+                                              const int y2) {
         return static_cast<int>(hypotf(static_cast<float>(x1 - x2), static_cast<float>(y1 - y2)));
+    }
+
+    static AK_FORCE_INLINE int getDistanceSq(const int x1, const int y1, const int x2,
+                                              const int y2) {
+        return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
     }
 
  private:

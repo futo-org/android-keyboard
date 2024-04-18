@@ -38,6 +38,7 @@ class TypingWeighting : public Weighting {
 
  protected:
     float getTerminalSpatialCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const parentDicNode,
             const DicNode *const dicNode) const {
         float cost = 0.0f;
         if (dicNode->hasMultipleWords()) {
@@ -73,7 +74,8 @@ class TypingWeighting : public Weighting {
     }
 
     float getMatchedCost(const DicTraverseSession *const traverseSession,
-            const DicNode *const dicNode, DicNode_InputStateG *inputStateG) const {
+            const DicNode *const parentDicNode, const DicNode *const dicNode,
+            DicNode_InputStateG *inputStateG) const {
         const int pointIndex = dicNode->getInputIndex(0);
         const float normalizedSquaredLength = traverseSession->getProximityInfoState(0)
                 ->getPointToKeyLength(pointIndex,
@@ -112,7 +114,7 @@ class TypingWeighting : public Weighting {
     }
 
     float getTranspositionCost(const DicTraverseSession *const traverseSession,
-            const DicNode *const parentDicNode, const DicNode *const dicNode) const {
+                               const DicNode *const parentDicNode, const DicNode *const dicNode) const {
         const int16_t parentPointIndex = parentDicNode->getInputIndex(0);
         const int prevCodePoint = parentDicNode->getNodeCodePoint();
         const float distance1 = traverseSession->getProximityInfoState(0)->getPointToKeyLength(
@@ -124,6 +126,11 @@ class TypingWeighting : public Weighting {
         const float weightedLengthDistance =
                 distance * ScoringParams::DISTANCE_WEIGHT_LENGTH;
         return ScoringParams::TRANSPOSITION_COST + weightedLengthDistance;
+    }
+
+    float getTransitionCost(const DicTraverseSession *const traverseSession,
+                            const DicNode *const dicNode) const {
+        return MAX_VALUE_FOR_WEIGHTING;
     }
 
     float getInsertionCost(const DicTraverseSession *const traverseSession,

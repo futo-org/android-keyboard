@@ -112,20 +112,20 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         // only used for typing
         // TODO: Quit calling getMatchedCost().
         return weighting->getAdditionalProximityCost()
-                + weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
+                + weighting->getMatchedCost(traverseSession, parentDicNode, dicNode, inputStateG);
     case CT_SUBSTITUTION:
         // only used for typing
         // TODO: Quit calling getMatchedCost().
         return weighting->getSubstitutionCost()
-                + weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
+                + weighting->getMatchedCost(traverseSession, parentDicNode, dicNode, inputStateG);
     case CT_NEW_WORD_SPACE_OMISSION:
         return weighting->getSpaceOmissionCost(traverseSession, dicNode, inputStateG);
     case CT_MATCH:
-        return weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
+        return weighting->getMatchedCost(traverseSession, parentDicNode, dicNode, inputStateG);
     case CT_COMPLETION:
         return weighting->getCompletionCost(traverseSession, dicNode);
     case CT_TERMINAL:
-        return weighting->getTerminalSpatialCost(traverseSession, dicNode);
+        return weighting->getTerminalSpatialCost(traverseSession, parentDicNode, dicNode);
     case CT_TERMINAL_INSERTION:
         return weighting->getTerminalInsertionCost(traverseSession, dicNode);
     case CT_NEW_WORD_SPACE_SUBSTITUTION:
@@ -134,6 +134,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return weighting->getInsertionCost(traverseSession, parentDicNode, dicNode);
     case CT_TRANSPOSITION:
         return weighting->getTranspositionCost(traverseSession, parentDicNode, dicNode);
+    case CT_TRANSITION:
+        return weighting->getTransitionCost(traverseSession, dicNode);
     default:
         return 0.0f;
     }
@@ -170,6 +172,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return 0.0f;
     case CT_TRANSPOSITION:
         return 0.0f;
+    case CT_TRANSITION:
+        return 0.0f;
     default:
         return 0.0f;
     }
@@ -199,6 +203,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             return 2; /* look ahead + skip the current char */
         case CT_TRANSPOSITION:
             return 2; /* look ahead + skip the current char */
+        case CT_TRANSITION:
+            return 1;
         default:
             return 0;
     }

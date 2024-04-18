@@ -30,6 +30,8 @@ class Traversal {
     virtual bool isOmission(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, const DicNode *const childDicNode,
             const bool allowsErrorCorrections) const = 0;
+    virtual bool isTransition(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const = 0;
     virtual bool isSpaceSubstitutionTerminal(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
     virtual bool isSpaceOmissionTerminal(const DicTraverseSession *const traverseSession,

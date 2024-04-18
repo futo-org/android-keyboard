@@ -137,6 +137,12 @@ class DicTraverseSession {
         if (!mDicNodesCache.hasCachedDicNodesForContinuousSuggestion()) {
             return false;
         }
+
+        // TODO: Not possible for swipe currently
+        if (mMaxPointerCount == MAX_POINTER_COUNT_G) {
+            return false;
+        }
+
         ASSERT(mMaxPointerCount <= MAX_POINTER_COUNT_G);
         for (int i = 0; i < mMaxPointerCount; ++i) {
             const ProximityInfoState *const pInfoState = getProximityInfoState(i);
