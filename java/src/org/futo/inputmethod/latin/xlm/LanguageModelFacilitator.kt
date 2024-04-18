@@ -251,6 +251,12 @@ public class LanguageModelFacilitator(
                 holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())?.let { results ->
                     job.cancel()
                     inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(results)
+
+                    if(values.composedData.mIsBatchMode) {
+                        inputLogic.showBatchSuggestions(results, values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH);
+                    }
+
+                    sequenceIdFinishedFlow.emit(values.sequenceId)
                 }
                 return
             }

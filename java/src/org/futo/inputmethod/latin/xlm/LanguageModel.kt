@@ -194,6 +194,12 @@ class LanguageModel(
             return@withContext null
         }
 
+        // Disable gesture for now
+        if(composedData.mIsBatchMode) {
+            return@withContext null
+        }
+
+
         var composeInfo = getComposeInfo(composedData, keyDetector)
         var context = getContext(composeInfo, ngramContext)
 
