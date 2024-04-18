@@ -1,0 +1,73 @@
+package org.futo.inputmethod.latin.uix.actions
+
+import android.content.Context
+import androidx.datastore.preferences.core.stringPreferencesKey
+import org.futo.inputmethod.latin.uix.Action
+import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
+import org.futo.inputmethod.latin.uix.getSetting
+
+val ExpandableActionItems = stringPreferencesKey("expandableActions")
+val PinnedActionItems = stringPreferencesKey("pinnedActions")
+
+// Note: indices must stay stable
+val AllActions = listOf(
+    EmojiAction,
+    SettingsAction,
+    ClipboardAction,
+    TextEditAction,
+    ThemeAction,
+    UndoAction,
+    RedoAction,
+    VoiceInputAction,
+    SystemVoiceInputAction,
+)
+
+
+object ActionRegistry {
+    fun stringToActions(string: String): List<Action> {
+        return string.split(",").mapNotNull { idx ->
+            idx.toIntOrNull()?.let { AllActions.getOrNull(it) }
+        }
+    }
+
+    fun actionsToString(actions: List<Action>): String {
+        return actions.map { AllActions.indexOf(it) }.joinToString(separator = ",")
+    }
+
+    fun moveElement(string: String, action: Action, direction: Int): String {
+        val actions = stringToActions(string)
+        val index = actions.indexOf(action)
+        val filtered = actions.filter { it != action }.toMutableList()
+        filtered.add((index + direction).coerceIn(0 .. filtered.size), action)
+        return actionsToString(filtered)
+    }
+
+    suspend fun getActionOverride(context: Context, action: Action): Action {
+        return if(action == VoiceInputAction || action == SystemVoiceInputAction) {
+            val useSystemVoiceInput = context.getSetting(USE_SYSTEM_VOICE_INPUT)
+            if(useSystemVoiceInput) {
+                SystemVoiceInputAction
+            } else {
+                VoiceInputAction
+            }
+        } else {
+            action
+        }
+    }
+}
+
+val DefaultActions = listOf(
+    EmojiAction,
+    SettingsAction,
+    TextEditAction,
+    ThemeAction,
+    ClipboardAction,
+    UndoAction,
+    RedoAction,
+)
+
+val DefaultActionsString = ActionRegistry.actionsToString(DefaultActions)
+
+
+val DefaultPinnedActions = listOf(VoiceInputAction)
+val DefaultPinnedActionsString = ActionRegistry.actionsToString(DefaultPinnedActions)

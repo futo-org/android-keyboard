@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="voice_input_action_title">Voice Input</string>
+    <string name="system_voice_input_action_title">Voice Input (System)</string>
     <string name="theme_switcher_action_title">Theme Switcher</string>
     <string name="emoji_action_title">Emojis</string>
     <string name="clipboard_action_title">Paste from Clipboard</string>

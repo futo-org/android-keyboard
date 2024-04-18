@@ -22,10 +22,32 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.uix.dataStore
+import org.futo.inputmethod.latin.uix.getSetting
 
 data class DataStoreItem<T>(val value: T, val setValue: (T) -> Job)
+
+@Composable
+fun <T> useDataStoreValueNullable(key: Preferences.Key<T>, default: T): T? {
+    val context = LocalContext.current
+
+    val initialValue = remember {
+        runBlocking {
+            context.getSetting(key, default)
+        }
+    }
+
+    val valueFlow: Flow<T> = remember {
+        context.dataStore.data.map { preferences ->
+            preferences[key] ?: default
+        }
+    }
+
+    return valueFlow.collectAsState(initial = initialValue).value
+}
+
 @Composable
 fun <T> useDataStore(key: Preferences.Key<T>, default: T): DataStoreItem<T> {
     val context = LocalContext.current

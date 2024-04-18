@@ -52,7 +52,7 @@ import java.util.Locale
 
 val SystemVoiceInputAction = Action(
     icon = R.drawable.mic_fill,
-    name = R.string.voice_input_action_title,
+    name = R.string.system_voice_input_action_title,
     simplePressImpl = { it, _ ->
         it.triggerSystemVoiceInput()
     },

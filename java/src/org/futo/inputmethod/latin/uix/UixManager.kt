@@ -53,6 +53,7 @@ import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -202,8 +203,12 @@ class UixManager(private val latinIME: LatinIME) {
 
     val isMainKeyboardHidden get() = mainKeyboardHidden
 
-    private fun onActionActivated(action: Action) {
+    private fun onActionActivated(rawAction: Action) {
         latinIME.inputLogic.finishInput()
+
+        val action = runBlocking {
+            ActionRegistry.getActionOverride(latinIME, rawAction)
+        }
 
         if (action.windowImpl != null) {
             enterActionWindowView(action)
