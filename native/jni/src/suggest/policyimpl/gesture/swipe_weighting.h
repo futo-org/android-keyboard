@@ -168,18 +168,29 @@ public:
         float totalDistance = distance * distance;
 
         if(parentDicNode != nullptr) {
-            const int codePoint0 = parentDicNode->getNodeCodePoint();
-            const int codePoint1 = codePoint;
 
-            const int lowerLimit = dicNode->getInputIndex(0);
-            const int upperLimit = traverseSession->getInputSize();
+            int codePoint0;
+            if(parentDicNode->isZeroCostOmission() || parentDicNode->canBeIntentionalOmission()) {
+                codePoint0 = parentDicNode->getPrevCodePointG(0);
+            } else {
+                codePoint0 = parentDicNode->getNodeCodePoint();
+            }
 
-            const float threshold = (distanceThreshold * 86.0f);
+            if(codePoint0 != NOT_A_CODE_POINT) {
+                const int codePoint1 = codePoint;
 
-            const float extraDistance = 8.0f * util::calcLineDeviationPunishment(
-                    traverseSession, codePoint0, codePoint1, lowerLimit, upperLimit, threshold);
+                const int lowerLimit = dicNode->getInputIndex(0);
+                const int upperLimit = traverseSession->getInputSize();
 
-            totalDistance += extraDistance;
+                const float threshold = (distanceThreshold * 86.0f);
+
+                const float extraDistance = 8.0f * util::calcLineDeviationPunishment(
+                        traverseSession, codePoint0, codePoint1, lowerLimit, upperLimit, threshold);
+
+                totalDistance += extraDistance;
+            } else {
+                totalDistance += MAX_VALUE_FOR_WEIGHTING;
+            }
 
             //AKLOGI("Terminal spatial for %c:%c - %d:%d : extra %.2f %.2f", (char)codePoint0, (char)codePoint1, lowerLimit, upperLimit, distance, extraDistance);
             //dicNode->dump("TERMINAL");
@@ -219,12 +230,30 @@ public:
                 inputStateG->mNeedsToUpdateInputStateG = true;
                 inputStateG->mInputIndex = 1;
                 inputStateG->mRawLength = distance;
+                inputStateG->mPrevCodePoint = NOT_A_CODE_POINT;
 
                 return distance;
             } else {
                 return MAX_VALUE_FOR_WEIGHTING;
             }
-        } else if((parentDicNode != nullptr && parentDicNode->getNodeCodePoint() == codePoint) || dicNode->isZeroCostOmission() || dicNode->canBeIntentionalOmission()) {
+        } else if(parentDicNode != nullptr && parentDicNode->getNodeCodePoint() == codePoint) {
+            inputStateG->mNeedsToUpdateInputStateG = true;
+            inputStateG->mInputIndex = dicNode->getInputIndex(0);
+            inputStateG->mRawLength = 0.0f;
+            inputStateG->mPrevCodePoint = parentDicNode->getPrevCodePointG(0);
+
+            return 0.0f;
+        } else if(dicNode->isZeroCostOmission() || dicNode->canBeIntentionalOmission()) {
+            inputStateG->mNeedsToUpdateInputStateG = true;
+            inputStateG->mInputIndex = dicNode->getInputIndex(0);
+            inputStateG->mRawLength = 0.0f;
+
+            if(parentDicNode != nullptr) {
+                inputStateG->mPrevCodePoint = parentDicNode->getNodeCodePoint();
+            } else {
+                inputStateG->mPrevCodePoint = NOT_A_CODE_POINT;
+            }
+
             return 0.0f;
         } else { // Add middle points
             const int inputIndex = dicNode->getInputIndex(0);
@@ -260,28 +289,38 @@ public:
             if(found && parentDicNode != nullptr && minEdgeDistance < MAX_VALUE_FOR_WEIGHTING) {
                 float totalDistance = 24.0f * pow(minEdgeDistance, 1.6f);
 
-                const int codePoint0 = parentDicNode->getNodeCodePoint();
-                const int codePoint1 = codePoint;
-
-                const int lowerLimit = inputIndex;
-                const int upperLimit = minEdgeIndex;
-
-                const float threshold = (distanceThreshold * 86.0f);
-
-                const float punishment = util::calcLineDeviationPunishment(
-                        traverseSession, codePoint0, codePoint1, lowerLimit, upperLimit, threshold);
-
-                if(punishment >= MAX_VALUE_FOR_WEIGHTING) {
-                    //AKLOGI("Culled due to too large distance (%.2f, %.2f)", totalDistance, punishment);
-                    //dicNode->dump("CULLED");
-                    return MAX_VALUE_FOR_WEIGHTING;
+                int codePoint0;
+                if(parentDicNode->isZeroCostOmission() || parentDicNode->canBeIntentionalOmission()) {
+                    codePoint0 = parentDicNode->getPrevCodePointG(0);
+                } else {
+                    codePoint0 = parentDicNode->getNodeCodePoint();
                 }
 
-                totalDistance += punishment;
+                if(codePoint0 != NOT_A_CODE_POINT) {
+                    const int codePoint1 = codePoint;
+
+                    const int lowerLimit = inputIndex;
+                    const int upperLimit = minEdgeIndex;
+
+                    const float threshold = (distanceThreshold * 86.0f);
+
+                    const float punishment = util::calcLineDeviationPunishment(
+                            traverseSession, codePoint0, codePoint1, lowerLimit, upperLimit,
+                            threshold);
+
+                    if (punishment >= MAX_VALUE_FOR_WEIGHTING) {
+                        //AKLOGI("Culled due to too large distance (%.2f, %.2f)", totalDistance, punishment);
+                        //dicNode->dump("CULLED");
+                        return MAX_VALUE_FOR_WEIGHTING;
+                    }
+
+                    totalDistance += punishment;
+                }
 
                 inputStateG->mNeedsToUpdateInputStateG = true;
                 inputStateG->mInputIndex = minEdgeIndex;
                 inputStateG->mRawLength = totalDistance;
+                inputStateG->mPrevCodePoint = codePoint0;
 
                 return totalDistance;
             } else {
