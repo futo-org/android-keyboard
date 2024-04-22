@@ -45,6 +45,8 @@ public:
     std::vector<float> encoder_weight = {};
     std::vector<float> encoder_bias = {};
 
+    int n_batch;
+
     ModelMetadata metadata;
 
     inline bool hasFeature(const std::string &feature) const {
