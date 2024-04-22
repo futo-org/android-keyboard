@@ -1,13 +1,13 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
 import android.widget.TextView
 import androidx.annotation.UiThread
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -216,6 +217,7 @@ fun Emojis(
     }
 
     var activePopup: PopupInfo? by rememberSaveable { mutableStateOf(null) }
+    var popupIsActive by rememberSaveable { mutableStateOf(false) }
 
     val color = LocalContentColor.current
 
@@ -223,7 +225,10 @@ fun Emojis(
         EmojiGridAdapter(
             emojis,
             onClick,
-            onSelectSkinTone = { activePopup = it },
+            onSelectSkinTone = {
+                activePopup = it
+                popupIsActive = true
+            },
             emojiWidth,
             color
         )
@@ -255,65 +260,74 @@ fun Emojis(
                     (it.layoutManager as GridLayoutManager).spanCount = viewWidth / emojiWidth
                 }
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .clipToBounds()
                 .onSizeChanged {
                     viewWidth = it.width
                     viewHeight = it.height
-                }.pointerInput(Unit) {
+                }
+                .pointerInput(Unit) {
                     awaitPointerEventScope {
                         while (true) {
-                            val event = awaitPointerEvent()
-                            if(event.type == PointerEventType.Press) {
-                                activePopup = null
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            if (event.type == PointerEventType.Press && popupIsActive) {
+                                popupIsActive = false
+                                event.changes.firstOrNull()?.consume()
+                            } else if(event.type == PointerEventType.Move && popupIsActive) {
+                                event.changes.firstOrNull()?.consume()
                             }
                         }
                     }
                 }
         )
 
-        activePopup?.let { popupInfo ->
-            val posX = popupInfo.x - popupSize.width / 2
-            val posY = popupInfo.y - popupSize.height
+        val posX = (activePopup?.x ?: 0) - popupSize.width / 2
+        val posY = (activePopup?.y ?: 0) - popupSize.height
 
-            // Calculate the maximum possible x and y values
-            val maxX = viewWidth - popupSize.width
-            val maxY = viewHeight - popupSize.height
+        // Calculate the maximum possible x and y values
+        val maxX = viewWidth - popupSize.width
+        val maxY = viewHeight - popupSize.height
 
-            // Calculate the x and y values, clamping them to the maximum values if necessary
-            val x = min(maxX, max(0, posX))
-            val y = min(maxY, max(0, posY))
+        // Calculate the x and y values, clamping them to the maximum values if necessary
+        val x = min(maxX, max(0, posX))
+        val y = min(maxY, max(0, posY))
 
-            Box(modifier = Modifier.onSizeChanged {
+        AnimatedVisibility(visible = popupIsActive, modifier = Modifier
+            .onSizeChanged {
                 popupSize = it
-            }.absoluteOffset {
+            }
+            .absoluteOffset {
                 IntOffset(x, y)
-            }) {
-                Surface(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Row {
-                        generateSkinToneVariants(popupInfo.emoji.emoji, emojiMap).map { emoji ->
-                            IconButton(
-                                onClick = {
-                                    onClick(
-                                        EmojiItem(
-                                            emoji = emoji,
-                                            description = popupInfo.emoji.description,
-                                            category = popupInfo.emoji.category,
-                                            skinTones = false,
-                                            aliases = listOf(),
-                                            tags = listOf()
+        }) {
+            activePopup?.let { popupInfo ->
+                Box {
+                    Surface(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Row {
+                            generateSkinToneVariants(popupInfo.emoji.emoji, emojiMap).map { emoji ->
+                                IconButton(
+                                    onClick = {
+                                        onClick(
+                                            EmojiItem(
+                                                emoji = emoji,
+                                                description = popupInfo.emoji.description,
+                                                category = popupInfo.emoji.category,
+                                                skinTones = false,
+                                                aliases = listOf(),
+                                                tags = listOf()
+                                            )
                                         )
-                                    )
-                                    activePopup = null
-                                }, modifier = Modifier
-                                    .width(42.dp)
-                                    .height(42.dp)
-                            ) {
-                                Box {
-                                    Text(emoji, modifier = Modifier.align(Alignment.Center))
+                                        popupIsActive = false
+                                    }, modifier = Modifier
+                                        .width(42.dp)
+                                        .height(42.dp)
+                                ) {
+                                    Box {
+                                        Text(emoji, modifier = Modifier.align(Alignment.Center))
+                                    }
                                 }
                             }
                         }
@@ -353,10 +367,10 @@ fun BottomRowKeyboardNavigation(onExit: () -> Unit, onBackspace: () -> Unit, onS
 
 //            IconButton(onClick = { onBackspace() }) {
             Box(modifier = Modifier
-                    .minimumInteractiveComponentSize()
-                    .repeatablyClickableAction { onBackspace() }
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(100)),
+                .minimumInteractiveComponentSize()
+                .repeatablyClickableAction { onBackspace() }
+                .size(40.dp)
+                .clip(RoundedCornerShape(100)),
                 contentAlignment = Alignment.Center)
             {
                 val icon = painterResource(id = R.drawable.delete)
