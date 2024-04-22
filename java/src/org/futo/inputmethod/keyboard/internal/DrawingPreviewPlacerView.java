@@ -61,6 +61,8 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
     }
 
     public void deallocateMemory() {
+        setLayerType(LAYER_TYPE_NONE, null);
+
         final int count = mPreviews.size();
         for (int i = 0; i < count; i++) {
             mPreviews.get(i).onDeallocateMemory();

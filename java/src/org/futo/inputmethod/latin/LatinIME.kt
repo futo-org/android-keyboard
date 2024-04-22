@@ -126,7 +126,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     private var lastEditorInfo: EditorInfo? = null
 
-    // TODO: Calling this repeatedly as the theme changes tends to slow everything to a crawl
     private fun recreateKeyboard() {
         latinIMELegacy.updateTheme()
         latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(latinIMELegacy.currentAutoCapsState, latinIMELegacy.currentRecapitalizeState);
@@ -327,7 +326,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         key(legacyInputView) {
             AndroidView(factory = {
                 legacyInputView!!
-            }, modifier = modifier)
+            }, modifier = modifier, onRelease = {
+                val view = it as InputView
+                view.deallocateMemory()
+                view.removeAllViews()
+            })
         }
     }
 

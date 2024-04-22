@@ -221,4 +221,8 @@ public final class InputView extends FrameLayout {
             return false;
         }
     }
+
+    public void deallocateMemory() {
+        mMainKeyboardView.deallocateMemory();
+    }
 }
