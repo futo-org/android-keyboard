@@ -24,9 +24,15 @@ val AllActions = listOf(
 
 
 object ActionRegistry {
-    fun stringToActions(string: String): List<Action> {
+    fun stringToActions(string: String, defaults: List<Action>): List<Action> {
         return string.split(",").mapNotNull { idx ->
             idx.toIntOrNull()?.let { AllActions.getOrNull(it) }
+        }.let { list ->
+            val notIncluded = defaults.filter { action ->
+                !list.contains(action)
+            }
+
+            list + notIncluded
         }
     }
 
@@ -35,7 +41,7 @@ object ActionRegistry {
     }
 
     fun moveElement(string: String, action: Action, direction: Int): String {
-        val actions = stringToActions(string)
+        val actions = stringToActions(string, listOf())
         val index = actions.indexOf(action)
         val filtered = actions.filter { it != action }.toMutableList()
         filtered.add((index + direction).coerceIn(0 .. filtered.size), action)
@@ -64,6 +70,7 @@ val DefaultActions = listOf(
     ClipboardAction,
     SettingsAction,
     ThemeAction,
+    MemoryDebugAction
 )
 
 val DefaultActionsString = ActionRegistry.actionsToString(DefaultActions)

@@ -90,6 +90,7 @@ import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
+import org.futo.inputmethod.latin.uix.actions.DefaultActions
 import org.futo.inputmethod.latin.uix.actions.DefaultActionsString
 import org.futo.inputmethod.latin.uix.actions.ExpandableActionItems
 import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
@@ -471,7 +472,7 @@ fun ActionItems(onSelect: (Action) -> Unit) {
     val actions = useDataStoreValueNullable(key = ExpandableActionItems, default = DefaultActionsString)
 
     if(actions != null) {
-        val actionItems = ActionRegistry.stringToActions(actions)
+        val actionItems = ActionRegistry.stringToActions(actions, DefaultActions)
 
         LazyRow {
             items(actionItems.size, key = { actionItems[it].name }) {

@@ -64,7 +64,7 @@ namespace latinime {
             if (i > 0) {
                 if (times[i] < times[i - 1]) {
                     AKLOGI("Invalid time sequence. %d, %d", times[i - 1], times[i]);
-                    ASSERT(false);
+                    //ASSERT(false);
                 }
             }
         }

@@ -8,6 +8,7 @@
     <string name="undo_action_title">Undo</string>
     <string name="redo_action_title">Redo</string>
     <string name="text_edit_action_title">Text Editor</string>
+    <string name="mem_debug_action_title">Debug Info</string>
 
     <string name="amoled_dark_theme_name">AMOLED Dark Purple</string>
     <string name="classic_material_dark_theme_name">AOSP Material Dark</string>
