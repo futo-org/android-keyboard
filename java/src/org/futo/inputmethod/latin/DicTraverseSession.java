@@ -27,7 +27,7 @@ public final class DicTraverseSession {
         JniUtils.loadNativeLibrary();
     }
     // Must be equal to MAX_RESULTS in native/jni/src/defines.h
-    private static final int MAX_RESULTS = 18;
+    private static final int MAX_RESULTS = 40;
     public final int[] mInputCodePoints =
             new int[DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH];
     public final int[][] mPrevWordCodePointArrays =

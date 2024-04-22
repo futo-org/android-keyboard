@@ -299,7 +299,7 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
 
         return
     } else if(words.mInputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH && maxSuggestions > 1) {
-        words.mSuggestedWordInfoList.removeAt(0);
+        //words.mSuggestedWordInfoList.removeAt(0);
     }
 
 

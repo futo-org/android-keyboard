@@ -33,7 +33,7 @@
 // Must be equal to Constants.Dictionary.MAX_WORD_LENGTH in Java
 #define MAX_WORD_LENGTH 48
 // Must be equal to BinaryDictionary.MAX_RESULTS in Java
-#define MAX_RESULTS 18
+#define MAX_RESULTS 40
 // Must be equal to ProximityInfo.MAX_PROXIMITY_CHARS_SIZE in Java
 #define MAX_PROXIMITY_CHARS_SIZE 16
 #define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
@@ -175,8 +175,8 @@ static inline void showStackTrace() {
 #endif // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 
 #ifdef FLAG_DBG
-//#define DEBUG_DICT true
-#define DEBUG_DICT false
+#define DEBUG_DICT true
+//#define DEBUG_DICT false
 #define DEBUG_DICT_FULL false
 #define DEBUG_EDIT_DISTANCE false
 #define DEBUG_NODE DEBUG_DICT_FULL

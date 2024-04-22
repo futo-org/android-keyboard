@@ -73,7 +73,7 @@ public:
     }
 
     AK_FORCE_INLINE int getTerminalCacheSize() const override {
-        return 18;
+        return MAX_RESULTS;
     }
 
     AK_FORCE_INLINE bool isPossibleOmissionChildNode(const DicTraverseSession *const traverseSession,

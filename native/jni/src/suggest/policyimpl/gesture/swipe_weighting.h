@@ -129,7 +129,7 @@ namespace util {
                 const float dotDirection = swipedx * linedx + swipedy * linedy;
 
                 if (dotDirection < 0.0) {
-                    totalDistance += swipelen * -dotDirection;
+                    totalDistance += 24.0f * swipelen * -dotDirection;
                 }
             }
 
@@ -165,7 +165,7 @@ public:
             return MAX_VALUE_FOR_WEIGHTING;
         }
 
-        float totalDistance = distance * distance;
+        float totalDistance = distance;// * distance;
 
         if(parentDicNode != nullptr) {
 
@@ -187,7 +187,7 @@ public:
                 const float extraDistance = 8.0f * util::calcLineDeviationPunishment(
                         traverseSession, codePoint0, codePoint1, lowerLimit, upperLimit, threshold);
 
-                totalDistance += extraDistance;
+                totalDistance += pow(extraDistance, 1.8f) * 0.1f;
             } else {
                 totalDistance += MAX_VALUE_FOR_WEIGHTING;
             }
@@ -314,7 +314,7 @@ public:
                         return MAX_VALUE_FOR_WEIGHTING;
                     }
 
-                    totalDistance += punishment;
+                    totalDistance += pow(punishment, 1.4f) * 0.1f;
                 }
 
                 inputStateG->mNeedsToUpdateInputStateG = true;
