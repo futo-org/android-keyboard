@@ -87,9 +87,9 @@
     <!-- Parameter for gesture sampling (keyWidth%/sec) -->
     <fraction name="config_gesture_sampling_minimum_distance">16.6666%</fraction>
     <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
-    <integer name="config_gesture_recognition_minimum_time">100</integer>
-    <integer name="config_gesture_recognition_update_time">100</integer>
-    <fraction name="config_gesture_recognition_speed_threshold">550%</fraction>
+    <integer name="config_gesture_recognition_minimum_time">33</integer>
+    <integer name="config_gesture_recognition_update_time">33</integer>
+    <fraction name="config_gesture_recognition_speed_threshold">3000%</fraction>
 
     <integer name="config_keyboard_grid_width">32</integer>
     <integer name="config_keyboard_grid_height">16</integer>
