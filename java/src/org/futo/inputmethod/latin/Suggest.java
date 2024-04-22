@@ -17,6 +17,7 @@
 package org.futo.inputmethod.latin;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import static org.futo.inputmethod.latin.define.DecoderSpecificConstants.SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION;
 import static org.futo.inputmethod.latin.define.DecoderSpecificConstants.SHOULD_REMOVE_PREVIOUSLY_REJECTED_SUGGESTION;
@@ -333,6 +334,7 @@ public final class Suggest {
                 && TextUtils.equals(suggestionsContainer.get(0).mWord,
                    wordComposer.getRejectedBatchModeSuggestion())) {
             final SuggestedWordInfo rejected = suggestionsContainer.remove(0);
+            Log.i(TAG, "Swipe: Swapping top candidate [ " + rejected.mWord + " ] as it was previously rejected by user");
             suggestionsContainer.add(1, rejected);
         }
         SuggestedWordInfo.removeDups(null /* typedWord */, suggestionsContainer);
