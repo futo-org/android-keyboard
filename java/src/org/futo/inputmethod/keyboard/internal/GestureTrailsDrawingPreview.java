@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.util.SparseArray;
 
 import org.futo.inputmethod.keyboard.PointerTracker;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 
 /**
  * Draw preview graphics of multiple gesture trails during gesture input.
@@ -47,8 +48,8 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview im
 
     private final Handler mDrawingHandler = new Handler();
 
-    public GestureTrailsDrawingPreview(final TypedArray mainKeyboardViewAttr) {
-        mDrawingParams = new GestureTrailDrawingParams(mainKeyboardViewAttr);
+    public GestureTrailsDrawingPreview(final TypedArray mainKeyboardViewAttr, DynamicThemeProvider provider) {
+        mDrawingParams = new GestureTrailDrawingParams(mainKeyboardViewAttr, provider);
         final Paint gesturePaint = new Paint();
         gesturePaint.setAntiAlias(true);
         gesturePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));

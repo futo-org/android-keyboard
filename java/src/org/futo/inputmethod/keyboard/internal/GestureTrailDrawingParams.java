@@ -19,6 +19,7 @@ package org.futo.inputmethod.keyboard.internal;
 import android.content.res.TypedArray;
 
 import org.futo.inputmethod.latin.R;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 
 /**
  * This class holds parameters to control how a gesture trail is drawn and animated on the screen.
@@ -49,9 +50,11 @@ final class GestureTrailDrawingParams {
 
     public final int mTrailLingerDuration;
 
-    public GestureTrailDrawingParams(final TypedArray mainKeyboardViewAttr) {
-        mTrailColor = mainKeyboardViewAttr.getColor(
-                R.styleable.MainKeyboardView_gestureTrailColor, 0);
+    public GestureTrailDrawingParams(final TypedArray mainKeyboardViewAttr, DynamicThemeProvider provider) {
+        mTrailColor = DynamicThemeProvider.Companion.getColorOrDefault(
+                R.styleable.MainKeyboardView_gestureTrailColor, 0,
+                mainKeyboardViewAttr, provider
+        );
         mTrailStartWidth = mainKeyboardViewAttr.getDimension(
                 R.styleable.MainKeyboardView_gestureTrailStartWidth, 0.0f);
         mTrailEndWidth = mainKeyboardViewAttr.getDimension(
