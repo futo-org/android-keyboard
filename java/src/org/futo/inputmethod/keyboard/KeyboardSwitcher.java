@@ -95,6 +95,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (themeUpdated && mKeyboardView != null) {
             ((LatinIME)mLatinIMELegacy.getInputMethodService()).updateLegacyView(onCreateInputView(
                     displayContext, mIsHardwareAcceleratedDrawingEnabled));
+            mLatinIMELegacy.updateMainKeyboardViewSettings();
         }
     }
 

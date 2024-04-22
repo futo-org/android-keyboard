@@ -943,6 +943,22 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mHandler.postSwitchLanguage(newSubtype);
     }
 
+    public void updateMainKeyboardViewSettings() {
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        SettingsValues currentSettingsValues = mSettings.getCurrent();
+
+        mainKeyboardView.setMainDictionaryAvailability(
+                mDictionaryFacilitator.hasAtLeastOneInitializedMainDictionary());
+        mainKeyboardView.setKeyPreviewPopupEnabled(currentSettingsValues.mKeyPreviewPopupOn,
+                currentSettingsValues.mKeyPreviewPopupDismissDelay);
+        mainKeyboardView.setSlidingKeyInputPreviewEnabled(
+                currentSettingsValues.mSlidingKeyInputPreviewEnabled);
+        mainKeyboardView.setGestureHandlingEnabledByUser(
+                currentSettingsValues.mGestureInputEnabled,
+                currentSettingsValues.mGestureTrailEnabled,
+                currentSettingsValues.mGestureFloatingPreviewTextEnabled);
+    }
+
     @SuppressWarnings("deprecation")
     void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
         mDictionaryFacilitator.onStartInput();
@@ -1098,16 +1114,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
         mHandler.cancelUpdateSuggestionStrip();
 
-        mainKeyboardView.setMainDictionaryAvailability(
-                mDictionaryFacilitator.hasAtLeastOneInitializedMainDictionary());
-        mainKeyboardView.setKeyPreviewPopupEnabled(currentSettingsValues.mKeyPreviewPopupOn,
-                currentSettingsValues.mKeyPreviewPopupDismissDelay);
-        mainKeyboardView.setSlidingKeyInputPreviewEnabled(
-                currentSettingsValues.mSlidingKeyInputPreviewEnabled);
-        mainKeyboardView.setGestureHandlingEnabledByUser(
-                currentSettingsValues.mGestureInputEnabled,
-                currentSettingsValues.mGestureTrailEnabled,
-                currentSettingsValues.mGestureFloatingPreviewTextEnabled);
+        updateMainKeyboardViewSettings();
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
