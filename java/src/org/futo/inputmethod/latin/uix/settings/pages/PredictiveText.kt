@@ -40,7 +40,7 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
         if(transformerLmEnabled) {
             SettingToggleDataStore(
                 title = "Transformer fine-tuning",
-                subtitle = "This feature is pending more work",
+                subtitle = "May kill your battery if enabled! This feature is pending more work",
                 setting = USE_TRANSFORMER_FINETUNING
             )
 
