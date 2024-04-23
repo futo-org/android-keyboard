@@ -52,9 +52,8 @@ LanguageModel *LlamaAdapter::createLanguageModel(const std::string &modelPath) {
 
     llama_context_params ctx_params = llama_context_default_params();
     ctx_params.n_ctx = LLAMA_CONTEXT_SIZE;
-    ctx_params.n_threads = 4;
-    ctx_params.n_threads_batch = 4;
-    ctx_params.n_batch = 128;
+    ctx_params.n_threads = 1;
+    ctx_params.n_threads_batch = 1;
 
     adapter->n_batch = ctx_params.n_batch;
 
