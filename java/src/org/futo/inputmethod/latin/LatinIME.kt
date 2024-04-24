@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin
 
 import android.content.res.Configuration
+import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
@@ -66,6 +67,7 @@ import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
+import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
@@ -132,11 +134,26 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         Log.w("LatinIME", "Recreating keyboard")
     }
 
+    private var isNavigationBarVisible = false
+    fun updateNavigationBarVisibility(visible: Boolean? = null) {
+        if(visible != null) isNavigationBarVisible = visible
+
+        val color = drawableProvider?.primaryKeyboardColor
+
+        window.window?.let { window ->
+            if(color == null || !isNavigationBarVisible) {
+                applyWindowColors(window, Color.TRANSPARENT, statusBar = false)
+            } else {
+                applyWindowColors(window, color, statusBar = false)
+            }
+        }
+    }
+
     private fun updateDrawableProvider(colorScheme: ColorScheme) {
         activeColorScheme = colorScheme
         drawableProvider = BasicThemeProvider(this, overrideColorScheme = colorScheme)
 
-        window.window?.navigationBarColor = drawableProvider!!.primaryKeyboardColor
+        updateNavigationBarVisibility()
         uixManager.onColorSchemeChanged()
     }
 

@@ -2040,13 +2040,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     private void setNavigationBarVisibility(final boolean visible) {
-        int color = ((DynamicThemeProviderOwner)getInputMethodService()).getDrawableProvider().getPrimaryKeyboardColor();
-        if (BuildCompatUtils.EFFECTIVE_SDK_INT > Build.VERSION_CODES.M) {
-            // For N and later, IMEs can specify Color.TRANSPARENT to make the navigation bar
-            // transparent.  For other colors the system uses the default color.
-            mInputMethodService.getWindow().getWindow().setNavigationBarColor(
-                    visible ? color : Color.TRANSPARENT);
-        }
+        ((LatinIME)mInputMethodService).updateNavigationBarVisibility(visible);
     }
 
     public InputMethodService getInputMethodService() {

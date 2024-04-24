@@ -1,22 +1,18 @@
 package org.futo.inputmethod.latin.uix.theme
 
 import android.app.Activity
-import android.content.Context
 import android.os.Build
-import android.view.WindowManager
+import android.view.View
+import android.view.Window
+import androidx.annotation.ColorInt
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
+import kotlin.math.sqrt
 
 val DarkColorScheme = darkColorScheme(
     primary = Slate600,
@@ -49,14 +45,28 @@ val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = Slate300
 )
 
-fun applyWindowColors(context: Context, backgroundColor: Color) {
-    val window = (context as Activity).window
-    val color = backgroundColor.copy(alpha = 0.75f).toArgb()
-
-    window.statusBarColor = color
+fun applyWindowColors(window: Window, @ColorInt color: Int, statusBar: Boolean) {
+    if(statusBar) {
+        window.statusBarColor = color
+    }
     window.navigationBarColor = color
 
-    window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val view = window.decorView
+        val uiFlags = view.systemUiVisibility
+
+        val luminance = sqrt(
+            0.299 * android.graphics.Color.red(color) / 255.0
+                    + 0.587 * android.graphics.Color.green(color) / 255.0
+                    + 0.114 * android.graphics.Color.blue(color) / 255.0
+        )
+
+        if (luminance > 0.5 && color != android.graphics.Color.TRANSPARENT) {
+            view.systemUiVisibility = uiFlags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        } else {
+            view.systemUiVisibility = uiFlags and (View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv())
+        }
+    }
 }
 
 @Composable
@@ -64,7 +74,7 @@ fun StatusBarColorSetter() {
     val backgroundColor = MaterialTheme.colorScheme.background
     val context = LocalContext.current
     LaunchedEffect(backgroundColor) {
-        applyWindowColors(context, backgroundColor)
+        applyWindowColors((context as Activity).window, backgroundColor.toArgb(), statusBar = false)
     }
 }
 
