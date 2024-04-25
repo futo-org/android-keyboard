@@ -15,6 +15,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -22,24 +25,41 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.theme.Typography
+import kotlin.math.pow
 
 @Composable
 fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHostController = rememberNavController()) {
@@ -240,6 +260,111 @@ fun<T> SettingRadio(
                 
             }
         }
+    }
+}
+
+@Composable
+fun<T: Number> SettingSlider(
+    title: String,
+    setting: SettingsKey<T>,
+    range: ClosedFloatingPointRange<Float>,
+    transform: (Float) -> T,
+    indicator: (T) -> String = { it.toString() },
+    hardRange: ClosedFloatingPointRange<Float> = range,
+    power: Float = 1.0f,
+    subtitle: String? = null
+) {
+    val context = LocalContext.current
+
+    val (value, setValue) = useDataStore(key = setting.key, default = setting.default)
+    var virtualValue by remember { mutableFloatStateOf((runBlocking { context.getSetting(setting) }).toFloat().let {
+        if(it == Float.POSITIVE_INFINITY || it == Float.NEGATIVE_INFINITY) {
+            it
+        } else {
+            it.pow(1.0f / power)
+        }
+    }) }
+    var isTextFieldVisible by remember { mutableStateOf(false) }
+    var hasTextFieldFocusedYet by remember { mutableStateOf(false) }
+    var textFieldValue by remember(value) {
+        val s = value.toString()
+        mutableStateOf(TextFieldValue(
+            s,
+            selection = TextRange(0, s.length)
+        ))
+    }
+
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(isTextFieldVisible) {
+        if(isTextFieldVisible) focusRequester.requestFocus()
+    }
+
+    ScreenTitle(title, showBack = false)
+    if(subtitle != null) {
+        Text(subtitle, style = Typography.bodyMedium, modifier = Modifier.padding(12.dp, 0.dp))
+    }
+    Row(modifier = Modifier.padding(16.dp, 0.dp)) {
+        if (isTextFieldVisible) {
+            val apply = {
+                if(isTextFieldVisible) {
+                    val number = textFieldValue.text.trim().toFloatOrNull()
+                    val newValue = if (number != null) {
+                        transform(number.coerceIn(hardRange))
+                    } else {
+                        setting.default
+                    }
+
+                    setValue(newValue)
+                    virtualValue = newValue.toFloat().pow(1.0f / power)
+
+                    isTextFieldVisible = false
+                    textFieldValue = TextFieldValue()
+                }
+            }
+            BasicTextField(
+                value = textFieldValue,
+                onValueChange = { textFieldValue = it },
+                modifier = Modifier
+                    .weight(0.33f)
+                    .align(Alignment.CenterVertically)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        if(it.isFocused) hasTextFieldFocusedYet = true
+                        else if(!it.isFocused && hasTextFieldFocusedYet) apply()
+                    },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        apply()
+                    }
+                ),
+                singleLine = true,
+                textStyle = Typography.labelMedium
+            )
+
+        } else {
+            Text(
+                text = indicator(value),
+                modifier = Modifier
+                    .weight(0.33f)
+                    .align(Alignment.CenterVertically)
+                    .clickable {
+                        hasTextFieldFocusedYet = false
+                        isTextFieldVisible = true
+                    },
+                style = Typography.labelMedium
+            )
+        }
+        Slider(
+            value = virtualValue,
+            onValueChange = {
+                virtualValue = it
+                setValue(transform(it.pow(power))) },
+            valueRange = range.start.pow(1.0f / power) .. range.endInclusive.pow(1.0f / power),
+            enabled = !isTextFieldVisible,
+            modifier = Modifier.weight(1.0f)
+        )
     }
 }
 

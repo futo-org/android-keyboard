@@ -3,7 +3,6 @@ package org.futo.inputmethod.latin.uix.settings.pages
 import android.preference.PreferenceManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
@@ -13,7 +12,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.Settings
@@ -22,11 +20,11 @@ import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
-import org.futo.inputmethod.latin.uix.settings.SettingRadio
+import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
+import kotlin.math.roundToInt
 
 val vibrationDurationSetting = SettingsKey(
     intPreferencesKey("vibration_duration"),
@@ -90,6 +88,19 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             default = booleanResource(R.bool.config_default_key_preview_popup)
         )
 
-        SettingRadio(title = "Vibration Duration", options = listOf(-1, 5, 10, 20, 40), optionNames = listOf("Default", "Low", "Medium", "High", "Higher"), setting = vibrationDurationSetting)
+        SettingSlider(
+            title = "Vibration",
+            setting = vibrationDurationSetting,
+            range = -1.0f .. 100.0f,
+            hardRange = -1.0f .. 2000.0f,
+            transform = { it.roundToInt() },
+            indicator = {
+                if(it == -1) {
+                    "Default"
+                } else {
+                    "$it ms"
+                }
+            }
+        )
     }
 }
