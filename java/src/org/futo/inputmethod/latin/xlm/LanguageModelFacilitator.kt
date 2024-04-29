@@ -202,7 +202,7 @@ public class LanguageModelFacilitator(
 
         val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
 
-        return languageModel!!.getSuggestions(
+        return languageModel?.getSuggestions(
             values.composedData,
             values.ngramContext,
             keyboardSwitcher.mainKeyboardView.mKeyDetector,
@@ -250,10 +250,42 @@ public class LanguageModelFacilitator(
             if(lmSuggestions == null) {
                 holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())?.let { results ->
                     job.cancel()
-                    inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(results)
+
+                    val useRescoring = false
+
+                    val finalResults = if(useRescoring && values.composedData.mIsBatchMode) {
+                        val rescored = languageModel?.rescoreSuggestions(
+                            results,
+                            values.composedData,
+                            values.ngramContext,
+                            keyboardSwitcher.mainKeyboardView.mKeyDetector,
+                            userDictionary.getWords().map { it.word }
+                        )
+
+                        if(rescored != null) {
+                            SuggestedWords(
+                                ArrayList(rescored),
+                                // TODO: These should ideally not be null/false
+                                null,
+                                null,
+                                false,
+                                false,
+                                false,
+                                results.mInputStyle,
+                                results.mSequenceNumber
+                            )
+                            // TODO: We need the swapping rejection thing, the rescored array is resorted without the swapping
+                        } else {
+                            results
+                        }
+                    } else {
+                        results
+                    }
+
+                    inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(finalResults)
 
                     if(values.composedData.mIsBatchMode) {
-                        inputLogic.showBatchSuggestions(results, values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH);
+                        inputLogic.showBatchSuggestions(finalResults, values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH);
                     }
 
                     sequenceIdFinishedFlow.emit(values.sequenceId)

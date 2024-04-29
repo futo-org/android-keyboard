@@ -8,10 +8,10 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.keyboard.KeyDetector
 import org.futo.inputmethod.latin.NgramContext
+import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
-import org.futo.inputmethod.latin.xlm.BatchInputConverter.convertToString
 import java.util.Arrays
 import java.util.Locale
 
@@ -53,7 +53,7 @@ class LanguageModel(
         val yCoords: IntArray
         var inputMode = 0
         if (isGesture) {
-            Log.w("LanguageModel", "Using experimental gesture support")
+            /*Log.w("LanguageModel", "Using experimental gesture support")
             inputMode = 1
             val xCoordsList = mutableListOf<Int>()
             val yCoordsList = mutableListOf<Int>()
@@ -69,7 +69,16 @@ class LanguageModel(
             xCoords = IntArray(xCoordsList.size)
             yCoords = IntArray(yCoordsList.size)
             for (i in xCoordsList.indices) xCoords[i] = xCoordsList[i]
-            for (i in yCoordsList.indices) yCoords[i] = yCoordsList[i]
+            for (i in yCoordsList.indices) yCoords[i] = yCoordsList[i]*/
+
+            partialWord = ""
+
+            xCoords = IntArray(composedData.mInputPointers.pointerSize)
+            yCoords = IntArray(composedData.mInputPointers.pointerSize)
+            val xCoordsI = composedData.mInputPointers.xCoordinates
+            val yCoordsI = composedData.mInputPointers.yCoordinates
+            for (i in 0 until composedData.mInputPointers.pointerSize) xCoords[i] = xCoordsI[i]
+            for (i in 0 until composedData.mInputPointers.pointerSize) yCoords[i] = yCoordsI[i]
         } else {
             xCoords = IntArray(composedData.mInputPointers.pointerSize)
             yCoords = IntArray(composedData.mInputPointers.pointerSize)
@@ -174,6 +183,57 @@ class LanguageModel(
         }
 
         return context
+    }
+
+    suspend fun rescoreSuggestions(
+        suggestedWords: SuggestedWords,
+        composedData: ComposedData,
+        ngramContext: NgramContext,
+        keyDetector: KeyDetector,
+        personalDictionary: List<String>,
+    ): List<SuggestedWordInfo>? = withContext(LanguageModelScope) {
+        if (mNativeState == 0L) {
+            loadModel()
+            Log.d("LanguageModel", "Exiting because mNativeState == 0")
+            return@withContext null
+        }
+
+        var composeInfo = getComposeInfo(composedData, keyDetector)
+        var context = getContext(composeInfo, ngramContext)
+
+        composeInfo = safeguardComposeInfo(composeInfo)
+        context = safeguardContext(context)
+        context = addPersonalDictionary(context, personalDictionary)
+
+        val wordStrings = suggestedWords.mSuggestedWordInfoList.map { it.mWord }.toTypedArray()
+        val wordScoresInput = suggestedWords.mSuggestedWordInfoList.map { it.mScore }.toTypedArray().toIntArray()
+        val wordScoresOutput = IntArray(wordScoresInput.size) { 0 }
+
+        rescoreSuggestionsNative(
+            mNativeState,
+            context,
+
+            wordStrings,
+            wordScoresInput,
+
+            wordScoresOutput
+        )
+
+        return@withContext suggestedWords.mSuggestedWordInfoList.mapIndexed { index, suggestedWordInfo ->
+            Log.i("LanguageModel", "Suggestion [${suggestedWordInfo.word}] reweighted, from ${suggestedWordInfo.mScore} to ${wordScoresOutput[index]}")
+            SuggestedWordInfo(
+                suggestedWordInfo.word,
+                suggestedWordInfo.mPrevWordsContext,
+
+                wordScoresOutput[index],
+                suggestedWordInfo.mKindAndFlags,
+
+                suggestedWordInfo.mSourceDict,
+                suggestedWordInfo.mIndexOfTouchPointOfSecondWord,
+
+                suggestedWordInfo.mAutoCommitFirstWordConfidence
+            )
+        }.sortedByDescending { it.mScore }
     }
 
     suspend fun getSuggestions(
@@ -319,5 +379,15 @@ class LanguageModel(
         bannedWords: Array<String>,  // outputs
         outStrings: Array<String?>,
         outProbs: FloatArray
+    )
+
+    private external fun rescoreSuggestionsNative(
+        state: Long,
+        context: String,
+
+        inSuggestedWords: Array<String>,
+        inSuggestedScores: IntArray,
+
+        outSuggestedScores: IntArray
     )
 }

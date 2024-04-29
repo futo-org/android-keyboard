@@ -841,6 +841,16 @@ struct LanguageModelState {
     }
 };
 
+struct SuggestionItemToRescore {
+    int index;
+
+    int originalScore;
+    float transformedScore;
+
+    std::string word;
+    token_sequence tokens;
+};
+
 namespace latinime {
     static jlong xlm_LanguageModel_open(JNIEnv *env, jclass clazz, jstring modelDir) {
         AKLOGI("open LM");
@@ -869,6 +879,81 @@ namespace latinime {
         if(state == nullptr) return;
         state->model->free();
         delete state;
+    }
+
+    // (JLjava/lang/String;[Ljava/lang/String;[I[I)V
+    // TODO: This will also need caching to not make things extremely slow by recomputing every time
+    static void xlm_LanguageModel_rescoreSuggestions(JNIEnv *env, jclass clazz,
+        jlong dict,
+        jstring context,
+        jobjectArray inWords,
+        jintArray inScores,
+
+        jintArray outScores
+    ) {
+        LanguageModelState *state = reinterpret_cast<LanguageModelState *>(dict);
+
+        std::string contextString = jstring2string(env, context);
+
+        size_t inputSize = env->GetArrayLength(inScores);
+        int scores[inputSize];
+        env->GetIntArrayRegion(inScores, 0, inputSize, scores);
+
+        float maxScore = -INFINITY;
+        float minScore = INFINITY;
+        for(int score : scores) {
+            if(score > maxScore) maxScore = score;
+            if(score < minScore) minScore = score;
+        }
+
+        minScore -= (maxScore - minScore) * 0.33f;
+
+        std::vector<SuggestionItemToRescore> words;
+        size_t numWords = env->GetArrayLength(inWords);
+
+        for(size_t i=0; i<numWords; i++) {
+            jstring jstr = static_cast<jstring>(env->GetObjectArrayElement(inWords, i));
+            SuggestionItemToRescore item = {
+                (int) i,
+                scores[i],
+                ((float)scores[i] - minScore) / (maxScore - minScore),
+                jstring2string(env, jstr),
+                {}
+            };
+
+            item.tokens = state->model->tokenize(trim(item.word) + " ");
+            words.push_back(item);
+        }
+
+
+        // TODO: Transform here
+        llama_context *ctx = ((LlamaAdapter *) state->model->adapter)->context;
+        size_t n_vocab = llama_n_vocab(llama_get_model(ctx));
+
+        token_sequence next_context = state->model->tokenize(trim(contextString) + " ");
+        next_context.insert(next_context.begin(), 1); // BOS
+
+        auto decoding_result = state->DecodePromptAndMixes(next_context, { });
+        float *logits = llama_get_logits_ith(ctx, decoding_result.logits_head);
+
+        softmax(logits, n_vocab);
+
+        AKLOGI("Iter");
+        for(auto &entry : words) {
+            float pseudoScore = logits[entry.tokens[0]] / (float)entry.tokens.size();
+            AKLOGI("Word [%s], %d tokens, prob[0] = %.8f", entry.word.c_str(), entry.tokens.size(), pseudoScore);
+            entry.transformedScore *= pseudoScore * 1000.0f;
+        }
+        // TODO: Transform here
+
+        // Output scores
+        jint *outArray = env->GetIntArrayElements(outScores, nullptr);
+
+        for(const auto &entry : words) {
+            outArray[entry.index] = entry.transformedScore * (maxScore - minScore) + minScore;
+        }
+
+        env->ReleaseIntArrayElements(outScores, outArray, 0);
     }
 
     static void xlm_LanguageModel_getSuggestions(JNIEnv *env, jclass clazz,
@@ -1103,6 +1188,11 @@ namespace latinime {
                     const_cast<char *>("getSuggestionsNative"),
                     const_cast<char *>("(JJLjava/lang/String;Ljava/lang/String;I[I[IF[Ljava/lang/String;[Ljava/lang/String;[F)V"),
                     reinterpret_cast<void *>(xlm_LanguageModel_getSuggestions)
+            },
+            {
+                    const_cast<char *>("rescoreSuggestionsNative"),
+                    const_cast<char *>("(JLjava/lang/String;[Ljava/lang/String;[I[I)V"),
+                    reinterpret_cast<void *>(xlm_LanguageModel_rescoreSuggestions)
             }
     };
 
