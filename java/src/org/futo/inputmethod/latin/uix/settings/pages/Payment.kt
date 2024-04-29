@@ -111,8 +111,8 @@ fun useNumberOfDaysInstalled(): MutableIntState {
 }
 
 @Composable
-fun ParagraphText(it: String) {
-    Text(it, modifier = Modifier.padding(16.dp, 8.dp), style = Typography.bodyMedium,
+fun ParagraphText(it: String, modifier: Modifier = Modifier) {
+    Text(it, modifier = modifier.padding(16.dp, 8.dp), style = Typography.bodyMedium,
         color = MaterialTheme.colorScheme.onBackground)
 }
 
