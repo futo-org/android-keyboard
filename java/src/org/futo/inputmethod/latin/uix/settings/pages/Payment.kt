@@ -58,7 +58,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueNullable
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.openURI
 import kotlin.math.absoluteValue
@@ -153,9 +153,9 @@ fun UnpaidNoticeCondition(
     inner: @Composable () -> Unit
 ) {
     val numDaysInstalled = useNumberOfDaysInstalled()
-    val forceShowNotice = useDataStoreValueNullable(FORCE_SHOW_NOTICE)
-    val isAlreadyPaid = useDataStoreValueNullable(IS_ALREADY_PAID)
-    val pushReminderTime = useDataStoreValueNullable(NOTICE_REMINDER_TIME)
+    val forceShowNotice = useDataStoreValueBlocking(FORCE_SHOW_NOTICE)
+    val isAlreadyPaid = useDataStoreValueBlocking(IS_ALREADY_PAID)
+    val pushReminderTime = useDataStoreValueBlocking(NOTICE_REMINDER_TIME)
     val currentTime = System.currentTimeMillis() / 1000L
 
     val reminderTimeIsUp = (currentTime >= pushReminderTime)

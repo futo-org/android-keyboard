@@ -2,13 +2,8 @@ package org.futo.inputmethod.latin.uix.settings
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.provider.Settings
-import android.view.inputmethod.InputMethodManager
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +26,7 @@ import org.futo.inputmethod.latin.uix.getSetting
 data class DataStoreItem<T>(val value: T, val setValue: (T) -> Job)
 
 @Composable
-fun <T> useDataStoreValueNullable(key: Preferences.Key<T>, default: T): T {
+fun <T> useDataStoreValueBlocking(key: Preferences.Key<T>, default: T): T {
     val context = LocalContext.current
 
     val initialValue = remember {
@@ -50,8 +45,8 @@ fun <T> useDataStoreValueNullable(key: Preferences.Key<T>, default: T): T {
 }
 
 @Composable
-fun <T> useDataStoreValueNullable(v: SettingsKey<T>): T {
-    return useDataStoreValueNullable(key = v.key, default = v.default)
+fun <T> useDataStoreValueBlocking(v: SettingsKey<T>): T {
+    return useDataStoreValueBlocking(key = v.key, default = v.default)
 }
 
 @Composable

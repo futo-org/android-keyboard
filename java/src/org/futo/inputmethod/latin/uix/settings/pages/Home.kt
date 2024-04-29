@@ -29,7 +29,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueNullable
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.ConditionalUpdate
 
@@ -59,8 +59,8 @@ fun AndroidTextInput() {
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val isDeveloper = useDataStoreValueNullable(key = IS_DEVELOPER, default = false)
-    val isPaid = useDataStoreValueNullable(IS_ALREADY_PAID)
+    val isDeveloper = useDataStoreValueBlocking(IS_DEVELOPER)
+    val isPaid = useDataStoreValueBlocking(IS_ALREADY_PAID)
     
 
     Column {

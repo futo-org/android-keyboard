@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -76,7 +75,6 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -94,7 +92,7 @@ import org.futo.inputmethod.latin.uix.actions.DefaultActions
 import org.futo.inputmethod.latin.uix.actions.DefaultActionsString
 import org.futo.inputmethod.latin.uix.actions.ExpandableActionItems
 import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueNullable
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -483,7 +481,7 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit) {
 
 @Composable
 fun ActionItems(onSelect: (Action) -> Unit) {
-    val actions = useDataStoreValueNullable(key = ExpandableActionItems, default = DefaultActionsString)
+    val actions = useDataStoreValueBlocking(key = ExpandableActionItems, default = DefaultActionsString)
 
     if(actions != null) {
         val actionItems = ActionRegistry.stringToActions(actions, DefaultActions)

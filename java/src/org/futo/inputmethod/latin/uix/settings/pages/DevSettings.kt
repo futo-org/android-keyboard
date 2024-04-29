@@ -25,7 +25,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 
 
-val IS_DEVELOPER = booleanPreferencesKey("isDeveloperMode")
+val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
 
 @Preview(showBackground = true)
 @Composable
@@ -35,6 +35,8 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
 
     ScrollableList {
         ScreenTitle("Developer", showBack = true, navController)
+
+        SettingToggleDataStore(title = "Developer mode", setting = IS_DEVELOPER)
 
         SettingToggleDataStore(
             title = "Touch typing mode",
@@ -55,6 +57,7 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             },
             icon = painterResource(id = R.drawable.close)
         )
+
 
         ScreenTitle(title = "Payment stuff")
 

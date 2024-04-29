@@ -50,12 +50,12 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
                         it.show()
                     }
                 }
-                if(runBlocking { context.getSetting(IS_DEVELOPER, false) }) {
+                if(runBlocking { context.getSetting(IS_DEVELOPER) }) {
                     makeToast("You're already a developer")
                 } else {
-                    numPresses.value += 1
-                    if (numPresses.value > 3) {
-                        val pressesUntilDeveloper = 8 - numPresses.value
+                    numPresses.intValue += 1
+                    if (numPresses.intValue > 3) {
+                        val pressesUntilDeveloper = 8 - numPresses.intValue
                         if (pressesUntilDeveloper <= 0) {
                             makeToast("You're now a developer")
                             runBlocking { context.setSetting(IS_DEVELOPER, true) }
