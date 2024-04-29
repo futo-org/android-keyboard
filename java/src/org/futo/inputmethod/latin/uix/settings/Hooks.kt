@@ -24,13 +24,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.getSetting
 
 data class DataStoreItem<T>(val value: T, val setValue: (T) -> Job)
 
 @Composable
-fun <T> useDataStoreValueNullable(key: Preferences.Key<T>, default: T): T? {
+fun <T> useDataStoreValueNullable(key: Preferences.Key<T>, default: T): T {
     val context = LocalContext.current
 
     val initialValue = remember {
@@ -46,6 +47,11 @@ fun <T> useDataStoreValueNullable(key: Preferences.Key<T>, default: T): T? {
     }
 
     return valueFlow.collectAsState(initial = initialValue).value
+}
+
+@Composable
+fun <T> useDataStoreValueNullable(v: SettingsKey<T>): T {
+    return useDataStoreValueNullable(key = v.key, default = v.default)
 }
 
 @Composable
@@ -70,6 +76,12 @@ fun <T> useDataStore(key: Preferences.Key<T>, default: T): DataStoreItem<T> {
     }
 
     return DataStoreItem(value, setValue)
+}
+
+
+@Composable
+fun <T> useDataStore(key: SettingsKey<T>): DataStoreItem<T> {
+    return useDataStore(key.key, key.default)
 }
 
 @Composable

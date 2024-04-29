@@ -175,8 +175,8 @@ static inline void showStackTrace() {
 #endif // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 
 #ifdef FLAG_DBG
-#define DEBUG_DICT true
-//#define DEBUG_DICT false
+//#define DEBUG_DICT true
+#define DEBUG_DICT false
 #define DEBUG_DICT_FULL false
 #define DEBUG_EDIT_DISTANCE false
 #define DEBUG_NODE DEBUG_DICT_FULL

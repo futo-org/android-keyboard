@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,7 +29,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
-import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValueNullable
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.ConditionalUpdate
 
@@ -58,7 +59,9 @@ fun AndroidTextInput() {
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val isDeveloper = useDataStore(key = IS_DEVELOPER, default = false)
+    val isDeveloper = useDataStoreValueNullable(key = IS_DEVELOPER, default = false)
+    val isPaid = useDataStoreValueNullable(IS_ALREADY_PAID)
+    
 
     Column {
         Column(
@@ -71,6 +74,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             ScreenTitle("FUTO Keyboard Settings")
 
             ConditionalUpdate(navController)
+            ConditionalUnpaidNoticeWithNav(navController)
 
             NavigationItem(
                 title = "Languages",
@@ -107,6 +111,16 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 icon = painterResource(id = R.drawable.eye)
             )
 
+            UnpaidNoticeCondition(showOnlyIfReminder = true) {
+                NavigationItem(
+                    title = stringResource(R.string.payment),
+                    style = NavigationItemStyle.HomePrimary,
+                    navigate = { navController.navigate("payment") },
+                    icon = painterResource(R.drawable.dollar_sign)
+                )
+            }
+
+
             NavigationItem(
                 title = "Help & Feedback",
                 style = NavigationItemStyle.HomePrimary,
@@ -114,7 +128,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 icon = painterResource(id = R.drawable.help_circle)
             )
 
-            if(isDeveloper.value || LocalInspectionMode.current) {
+            if(isDeveloper || LocalInspectionMode.current) {
                 NavigationItem(
                     title = "Developer Settings",
                     style = NavigationItemStyle.HomeSecondary,
@@ -124,7 +138,18 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             }
 
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if(isPaid || LocalInspectionMode.current) {
+                Text(
+                    stringResource(R.string.thank_you_for_using_paid),
+                    style = Typography.bodyMedium,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
             Text(
                 "v${BuildConfig.VERSION_NAME}",
                 style = Typography.labelSmall,

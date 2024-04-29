@@ -17,7 +17,7 @@ fun AdvancedParametersScreen(navController: NavHostController = rememberNavContr
     ScrollableList {
         ScreenTitle("Advanced Parameters", showBack = true, navController)
 
-        Tip("Options below are experimental and may be removed or changed in the future as internal workings of the app change. Changing these values may have an adverse impact on your experience.")
+        Tip("Options below are experimental and may be removed or changed in the future as internal workings of the app change. Changing these values may have an adverse impact on your experience.\n\nNote: These only affect English")
 
         SettingSlider(
             title = "Transformer LM strength",

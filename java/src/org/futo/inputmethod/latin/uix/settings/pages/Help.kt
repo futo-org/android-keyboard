@@ -78,7 +78,7 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
         NavigationItem(title = "FUTO Chat", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://chat.futo.org/")
         })
-        NavigationItem(title = "Email keyboard@futo.org", style = NavigationItemStyle.Misc, navigate = {
+        NavigationItem(title = "Email keyboard@futo.org", style = NavigationItemStyle.Mail, navigate = {
             context.openURI("mailto:keyboard@futo.org")
         })
     }

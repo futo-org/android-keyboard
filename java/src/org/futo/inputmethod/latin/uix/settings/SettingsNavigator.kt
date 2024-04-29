@@ -17,6 +17,8 @@ import org.futo.inputmethod.latin.uix.settings.pages.DeveloperScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HelpScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.LanguagesScreen
+import org.futo.inputmethod.latin.uix.settings.pages.PaymentScreen
+import org.futo.inputmethod.latin.uix.settings.pages.PaymentThankYouScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingScreen
@@ -54,6 +56,8 @@ fun SettingsNavigator(
         composable("help") { HelpScreen(navController) }
         composable("developer") { DeveloperScreen(navController) }
         composable("blacklist") { BlacklistScreen(navController) }
+        composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }
+        composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
         dialog("error/{title}/{body}") {
             ErrorDialog(
                 it.arguments?.getString("title")?.urlDecode() ?: stringResource(R.string.unknown_error),

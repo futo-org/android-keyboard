@@ -169,5 +169,27 @@
                 android:value="Neural network model training"/>
 
         </service>
+
+        <activity
+            android:name=".payment.PaymentCompleteActivity"
+            android:exported="true"
+            android:label="@string/payment_complete"
+            android:clearTaskOnLaunch="false"
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="futo-voice-input" />
+                <data android:scheme="futo-keyboard" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".payment.PaymentActivity"
+            android:exported="false"
+            android:label="@string/payment"
+            android:clearTaskOnLaunch="false"
+            android:launchMode="singleInstance" />
     </application>
 </manifest>

@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -397,7 +398,8 @@ enum class NavigationItemStyle {
     HomeSecondary,
     HomeTertiary,
     MiscNoArrow,
-    Misc
+    Misc,
+    Mail
 }
 
 @Composable
@@ -412,15 +414,19 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
                     NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.primaryContainer
                     NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.secondaryContainer
                     NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.tertiaryContainer
-                    NavigationItemStyle.MiscNoArrow -> Color.Transparent
-                    NavigationItemStyle.Misc -> Color.Transparent
+
+                    NavigationItemStyle.MiscNoArrow,
+                    NavigationItemStyle.Misc,
+                    NavigationItemStyle.Mail -> Color.Transparent
                 }
 
                 val iconColor = when(style) {
                     NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.onPrimaryContainer
                     NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.onSecondaryContainer
                     NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.onTertiaryContainer
-                    NavigationItemStyle.MiscNoArrow -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
+
+                    NavigationItemStyle.MiscNoArrow,
+                    NavigationItemStyle.Mail,
                     NavigationItemStyle.Misc -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
                 }
 
@@ -440,6 +446,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
     ) {
         when(style) {
             NavigationItemStyle.Misc -> Icon(Icons.Default.ArrowForward, contentDescription = "Go")
+            NavigationItemStyle.Mail -> Icon(Icons.Default.Send, contentDescription = "Send")
             else -> {}
         }
     }

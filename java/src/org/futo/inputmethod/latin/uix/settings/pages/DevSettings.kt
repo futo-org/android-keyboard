@@ -21,6 +21,8 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
+import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
+import org.futo.inputmethod.latin.uix.settings.useDataStore
 
 
 val IS_DEVELOPER = booleanPreferencesKey("isDeveloperMode")
@@ -53,5 +55,49 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             },
             icon = painterResource(id = R.drawable.close)
         )
+
+        ScreenTitle(title = "Payment stuff")
+
+        SettingToggleDataStore(title = "Is paid", setting = IS_ALREADY_PAID)
+        SettingToggleDataStore(title = "Is payment pending", setting = IS_PAYMENT_PENDING)
+        SettingToggleDataStore(title = "Has seen paid notice", setting = HAS_SEEN_PAID_NOTICE)
+        SettingToggleDataStore(title = "Force show notice", setting = FORCE_SHOW_NOTICE)
+
+        val reminder = useDataStore(NOTICE_REMINDER_TIME)
+        val currTime = System.currentTimeMillis() / 1000L
+
+        val subtitleValue = if (reminder.value > currTime) {
+            val diffDays = (reminder.value - currTime) / 60.0 / 60.0 / 24.0
+            "Reminding in ${"%.2f".format(diffDays)} days"
+        } else {
+            "Reminder unset"
+        }
+        SettingToggleRaw(
+            "Reminder Time",
+            reminder.value > currTime,
+            {
+                if (!it) {
+                    reminder.setValue(0L)
+                }
+            },
+            subtitleValue,
+            reminder.value <= currTime,
+            { }
+        )
+
+        val licenseKey = useDataStore(EXT_LICENSE_KEY)
+        SettingToggleRaw(
+            "Ext License Key",
+            licenseKey.value != EXT_LICENSE_KEY.default,
+            {
+                if(!it) {
+                    licenseKey.setValue(EXT_LICENSE_KEY.default)
+                }
+            },
+            licenseKey.value,
+            licenseKey.value == EXT_LICENSE_KEY.default,
+            { }
+        )
+
     }
 }

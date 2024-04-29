@@ -45,4 +45,31 @@
     <string name="try_typing">Try typing here…</string>
     <string name="externally_imported_model">Externally imported model</string>
     <string name="spacebar_default_text">Pre-Alpha</string>
+
+    <string name="payment_text_1">You\'ve been using FUTO Keyboard for <xliff:g name="days" example="30">%d</xliff:g> days. If you find this app useful, please consider paying to support future development of FUTO software.</string>
+    <string name="payment_text_1_alt">Thank you for trying out FUTO Keyboard! If you find this app useful, please consider paying to support future development of FUTO software.</string>
+    <string name="payment_text_2">FUTO is dedicated to making good software that doesn\'t abuse you. This app will never serve you ads or collect your personal data.</string>
+    <string name="thank_you_for_purchasing_keyboard">Thank you for purchasing FUTO Keyboard!</string>
+    <string name="payment_pending_body">Your payment is still pending, but it should clear soon.</string>
+    <string name="purchase_will_help_body">Your purchase will help continued development of FUTO Keyboard, and other FUTO projects.</string>
+    <string name="thank_you">Thank you</string>
+    <string name="payment_pending">Payment Pending</string>
+    <string name="payment_failed_body">Unfortunately, your payment has failed for one reason or another. Please contact us if you need help. You can reach us at keyboard@futo.org, with the button below, or with Send Feedback in Help</string>
+    <string name="payment_failed_body_ex">There may have been a problem with your payment. If it did go through, you should receive an email with a license key. Please contact us if you need help. You can reach us at keyboard@futo.org, with the button below, or with Share Feedback at the main screen.</string>
+    <string name="pay_via_x">Pay via <xliff:g name="paymentMethod" example="Play Store">%s</xliff:g></string>
+    <string name="pay">Pay</string>
+    <string name="i_already_paid">I already paid</string>
+    <string name="i_already_paid_2">I already paid (tap again)</string>
+    <string name="remind_me_in_x">"Remind me in "</string>
+    <string name="in_x_days">" days"</string>
+    <string name="developer_mode_payment_methods">You are on the Developer release, so you are seeing all payment methods</string>
+    <string name="pay_now">Pay Now</string>
+    <string name="unpaid_indicator">Unpaid</string>
+    <string name="unpaid_title">Unpaid FUTO Keyboard</string>
+    <string name="payment_error">Payment Error</string>
+    <string name="payment_complete">Payment Complete</string>
+    <string name="payment_title">Payment</string>
+    <string name="payment">Payment</string>
+    <string name="license_check_failed">Failed to verify license. If you believe this to be an error, please contact us.</string>
+    <string name="thank_you_for_using_paid">Thank you for using the paid version of FUTO Keyboard!</string>
 </resources>
