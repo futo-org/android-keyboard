@@ -95,12 +95,7 @@ class PaymentCompleteActivity : ComponentActivity() {
 
         val targetData = intent.dataString
         if((targetData?.startsWith("futo-keyboard://license/") == true) || (targetData?.startsWith("futo-voice-input://license/") == true)) {
-            /*if(StatePayment.instance.setPaymentLicenseUrl(targetData)) {
-                onPaid(targetData)
-            } else {
-                onInvalidKey()
-            }*/
-            TODO()
+            onPaid("activate")
         } else {
             Log.e("PaymentCompleteActivity", "futo-keyboard launched with invalid targetData $targetData")
             finish()

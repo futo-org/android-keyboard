@@ -126,6 +126,8 @@ android {
             buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "false"
             buildConfigField "boolean", "UPDATE_CHECKING", "true"
             getIsDefault().set(true)
+
+            buildConfigField "String", "PAYMENT_URL", "\"\""
         }
         playstore {
             dimension "buildType"
@@ -134,6 +136,8 @@ android {
 
             buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "true"
             buildConfigField "boolean", "UPDATE_CHECKING", "false"
+
+            buildConfigField "String", "PAYMENT_URL", "\"\""
         }
     }
 

@@ -72,4 +72,6 @@
     <string name="payment">Payment</string>
     <string name="license_check_failed">Failed to verify license. If you believe this to be an error, please contact us.</string>
     <string name="thank_you_for_using_paid">Thank you for using the paid version of FUTO Keyboard!</string>
+    <string name="payment_text_3">Note: If you already paid for either FUTO Keyboard or FUTO Voice Input in the past, feel free to tap I already paid.</string>
+    <string name="payment_processing_note">If you just paid, your payment may still be processing, you should get an email with more information.</string>
 </resources>

@@ -3,11 +3,15 @@ package org.futo.inputmethod.latin.uix.settings.pages
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -117,7 +121,7 @@ fun ParagraphText(it: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PaymentText() {
+fun PaymentText(verbose: Boolean) {
     val numDaysInstalled = useNumberOfDaysInstalled()
 
     // Doesn't make sense to say "You've been using for ... days" if it's less than seven days
@@ -128,6 +132,10 @@ fun PaymentText() {
     }
 
     ParagraphText(stringResource(R.string.payment_text_2))
+
+    if(verbose) {
+        ParagraphText(stringResource(R.string.payment_text_3))
+    }
 }
 
 suspend fun pushNoticeReminderTime(context: Context, days: Float) {
@@ -194,13 +202,15 @@ fun ConditionalUnpaidNoticeInVoiceInputWindow(onClose: (() -> Unit)? = null) {
 
 @Composable
 @Preview
-fun UnpaidNotice(onPay: () -> Unit = { }, onAlreadyPaid: () -> Unit = { }) {
+fun UnpaidNotice(openMenu: () -> Unit = { }) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier
+            .clickable { openMenu() }
             .fillMaxWidth()
-            .padding(24.dp, 8.dp), shape = RoundedCornerShape(4.dp)
+            .padding(24.dp, 8.dp), shape = RoundedCornerShape(24.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp, 0.dp)) {
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 stringResource(R.string.unpaid_title),
                 modifier = Modifier.padding(8.dp),
@@ -208,7 +218,7 @@ fun UnpaidNotice(onPay: () -> Unit = { }, onAlreadyPaid: () -> Unit = { }) {
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            PaymentText()
+            PaymentText(false)
 
             Row(
                 modifier = Modifier
@@ -217,14 +227,14 @@ fun UnpaidNotice(onPay: () -> Unit = { }, onAlreadyPaid: () -> Unit = { }) {
             ) {
 
                 Box(modifier = Modifier.weight(1.0f)) {
-                    Button(onClick = onPay, modifier = Modifier.align(Center)) {
+                    Button(onClick = openMenu, modifier = Modifier.align(Center)) {
                         Text(stringResource(R.string.pay_now))
                     }
                 }
 
                 Box(modifier = Modifier.weight(1.0f)) {
                     Button(
-                        onClick = onAlreadyPaid, colors = ButtonDefaults.buttonColors(
+                        onClick = openMenu, colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondary,
                             contentColor = MaterialTheme.colorScheme.onSecondary
                         ), modifier = Modifier.align(Center)
@@ -242,9 +252,7 @@ fun UnpaidNotice(onPay: () -> Unit = { }, onAlreadyPaid: () -> Unit = { }) {
 @Preview
 fun ConditionalUnpaidNoticeWithNav(navController: NavController = rememberNavController()) {
     UnpaidNoticeCondition {
-        UnpaidNotice(onPay = {
-            navController.navigate("payment")
-        }, onAlreadyPaid = {
+        UnpaidNotice(openMenu = {
             navController.navigate("payment")
         })
     }
@@ -270,6 +278,8 @@ fun PaymentThankYouScreen(onExit: () -> Unit = { }) {
             ParagraphText(stringResource(R.string.payment_pending_body))
         }
         ParagraphText(stringResource(R.string.purchase_will_help_body))
+
+        ParagraphText(stringResource(R.string.payment_processing_note))
 
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -355,14 +365,19 @@ fun PaymentScreen(
 
     ScrollableList {
         ScreenTitle(stringResource(R.string.payment_title), showBack = true, navController = navController)
-        PaymentText()
+        PaymentText(true)
 
         val context = LocalContext.current
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(modifier = Modifier.padding(8.dp, 0.dp)) {
                 Button(
                     onClick = {
-                        TODO()
+                        if(BuildConfig.PAYMENT_URL.isNotBlank()) {
+                            context.openURI(BuildConfig.PAYMENT_URL)
+                        } else {
+                            val toast = Toast.makeText(context, "Payment is unsupported on this build", Toast.LENGTH_SHORT)
+                            toast.show()
+                        }
                     }, modifier = Modifier
                         .weight(1.0f)
                         .padding(8.dp)
