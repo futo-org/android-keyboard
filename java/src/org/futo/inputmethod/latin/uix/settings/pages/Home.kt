@@ -137,6 +137,12 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 )
             }
 
+            NavigationItem(
+                title = "Credits",
+                style = NavigationItemStyle.MiscNoArrow,
+                navigate = { navController.navigate("credits") },
+            )
+
 
             Spacer(modifier = Modifier.height(16.dp))
 

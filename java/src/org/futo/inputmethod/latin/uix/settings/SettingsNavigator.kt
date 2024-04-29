@@ -13,6 +13,7 @@ import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
+import org.futo.inputmethod.latin.uix.settings.pages.CreditsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DeveloperScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HelpScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
@@ -58,6 +59,7 @@ fun SettingsNavigator(
         composable("blacklist") { BlacklistScreen(navController) }
         composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }
         composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
+        composable("credits") { CreditsScreen(navController) }
         dialog("error/{title}/{body}") {
             ErrorDialog(
                 it.arguments?.getString("title")?.urlDecode() ?: stringResource(R.string.unknown_error),
