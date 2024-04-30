@@ -1422,6 +1422,27 @@ public class LatinIMELegacy implements KeyboardActionListener,
     @Override
     public void onUpWithDeletePointerActive() {
         if (mInputLogic.mConnection.hasSelection()) {
+            CharSequence selection = mInputLogic.mConnection.getSelectedText(0);
+            if(selection != null) {
+                ArrayList<SuggestedWordInfo> info = new ArrayList<>();
+                info.add(new SuggestedWordInfo(
+                        selection.toString(),
+                        "",
+                        0,
+                        SuggestedWordInfo.KIND_UNDO,
+                        null,
+                        0,
+                        0));
+                showSuggestionStrip(new SuggestedWords(info,
+                        null,
+                        null,
+                        false,
+                        false,
+                        false,
+                        0,
+                        0));
+                ((LatinIME)mInputMethodService).languageModelFacilitator.ignoreNextUpdate();
+            }
             onCodeInput(
                     Constants.CODE_DELETE,
                     Constants.NOT_A_COORDINATE,

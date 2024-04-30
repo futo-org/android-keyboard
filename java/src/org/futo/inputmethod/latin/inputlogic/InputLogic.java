@@ -303,6 +303,18 @@ public final class InputLogic {
         // Manual pick affects the contents of the editor, so we take note of this. It's important
         // for the sequence of language switching.
         inputTransaction.setDidAffectContents();
+
+        if(suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_UNDO) {
+            inputTransaction.setRequiresUpdateSuggestions();
+
+            mConnection.finishComposingText();
+            mWordComposer.reset();
+
+            mConnection.commitText(suggestionInfo.mWord, 1);
+
+            return inputTransaction;
+        }
+
         mConnection.beginBatchEdit();
         if (SpaceState.PHANTOM == mSpaceState && suggestion.length() > 0
                 // In the batch input mode, a manually picked suggested word should just replace

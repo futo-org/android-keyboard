@@ -398,6 +398,9 @@ public class LanguageModelFacilitator(
                 wordComposer, values.inputStyle, true, -1, locale, suggestionResults, settingsValues.mAutoCorrectionThreshold)
 
             job.cancel()
+
+            // TODO
+            if(values.sequenceId < currentSequenceId) return
             inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords)
 
             if(values.composedData.mIsBatchMode) {
@@ -489,6 +492,11 @@ public class LanguageModelFacilitator(
         }
 
         if(!inputLogic.mConnection.isConnected) return
+
+        if(ignoringNextUpdate) {
+            ignoringNextUpdate = false
+            return
+        }
 
         try {
             val wordComposer = inputLogic.mWordComposer
@@ -621,5 +629,11 @@ public class LanguageModelFacilitator(
     public fun onStartInput() {
         transformerDisabled = false
         numConsecutiveTimeouts = 0
+        ignoringNextUpdate = false
+    }
+
+    var ignoringNextUpdate = false
+    fun ignoreNextUpdate() {
+        ignoringNextUpdate = true
     }
 }

@@ -1002,9 +1002,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         if(mCursorMoved && currentKey.getCode() == Constants.CODE_DELETE) {
             sListener.onUpWithDeletePointerActive();
-        }
-
-        if(mCursorMoved) {
+        } else if(mCursorMoved) {
             sListener.onUpWithPointerActive();
         }
 
