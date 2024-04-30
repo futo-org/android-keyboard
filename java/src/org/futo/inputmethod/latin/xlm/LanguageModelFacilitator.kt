@@ -136,10 +136,10 @@ public class LanguageModelFacilitator(
 
     private var numConsecutiveTimeouts = 0
     private var transformerDisabled = false
-    public fun blockUntilComplete() {
+    public fun blockUntilComplete(): Boolean {
         runBlocking {
             try {
-                withTimeout(1000L) {
+                withTimeout(700L) {
                     computationSemaphore.acquire()
                     computationSemaphore.release()
                     try {
@@ -150,14 +150,16 @@ public class LanguageModelFacilitator(
                 }
                 numConsecutiveTimeouts = 0
             } catch(e: TimeoutCancellationException) {
-                Log.d("LanguageModelFacilitator", "Failed to complete prediction within 1000ms!")
+                Log.d("LanguageModelFacilitator", "Failed to complete prediction within the time!")
                 numConsecutiveTimeouts += 1
                 if(numConsecutiveTimeouts > 5) {
                     transformerDisabled = true
                     Log.w("LanguageModelFacilitator", "Temporarily disabling transformer due to continuous timeouts")
                 }
+                return@runBlocking false
             }
         }
+        return true
     }
 
     private fun getEmojiCandidate(word: String): SuggestedWordInfo? {
@@ -231,6 +233,8 @@ public class LanguageModelFacilitator(
         if(keyboardSwitcher.keyboard == null) return
 
         computationSemaphore.acquire()
+
+        inputLogic.mWordComposer.setAutoCorrection(null)
 
         try {
             var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)

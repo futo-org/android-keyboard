@@ -1502,12 +1502,12 @@ public final class InputLogic {
         }
     }
 
-    private void ensureSuggestionStripCompleted(final SettingsValues settingsValues,
+    private boolean ensureSuggestionStripCompleted(final SettingsValues settingsValues,
             final String separator, final LatinIMELegacy.UIHandler handler) {
         LanguageModelFacilitator facilitator = handler.getLanguageModelFacilitator();
         if(!facilitator.shouldPassThroughToLegacy()) {
             if(facilitator.hasPendingUpdate()) {
-                facilitator.blockUntilComplete();
+                return facilitator.blockUntilComplete();
             }
         } else {
             if (handler.hasPendingUpdateSuggestions()) {
@@ -1523,6 +1523,8 @@ public final class InputLogic {
                 performUpdateSuggestionStripSync(settingsValues, SuggestedWords.INPUT_STYLE_TYPING);
             }
         }
+
+        return true;
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
@@ -2177,7 +2179,8 @@ public final class InputLogic {
     private void commitCurrentAutoCorrection(final SettingsValues settingsValues,
             final String separator, final LatinIMELegacy.UIHandler handler) {
         // Complete any pending suggestions query first
-        ensureSuggestionStripCompleted(settingsValues, separator, handler);
+        if(!ensureSuggestionStripCompleted(settingsValues, separator, handler)) return;
+
         final SuggestedWordInfo autoCorrectionOrNull = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
         final String stringToCommit = (autoCorrectionOrNull != null)
