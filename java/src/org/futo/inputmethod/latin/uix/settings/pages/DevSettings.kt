@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.SettingsKey
@@ -20,6 +22,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.SettingTextField
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.useDataStore
@@ -27,6 +30,8 @@ import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 
 
 val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
+
+val TMP_PAYMENT_URL = SettingsKey(stringPreferencesKey("temporaryPaymentUrl"), BuildConfig.PAYMENT_URL)
 
 @Preview(showBackground = true)
 @Composable
@@ -105,5 +110,6 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             { }
         )
 
+        SettingTextField("Payment URL", "https://example.com", TMP_PAYMENT_URL)
     }
 }

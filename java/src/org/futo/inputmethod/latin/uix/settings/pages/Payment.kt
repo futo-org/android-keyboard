@@ -52,10 +52,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.payment.PaymentActivity
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -160,6 +162,9 @@ fun UnpaidNoticeCondition(
     showOnlyIfReminder: Boolean = false,
     inner: @Composable () -> Unit
 ) {
+    val paymentUrl = useDataStoreValueBlocking(TMP_PAYMENT_URL)
+    if(paymentUrl.isBlank()) return
+
     val numDaysInstalled = useNumberOfDaysInstalled()
     val forceShowNotice = useDataStoreValueBlocking(FORCE_SHOW_NOTICE)
     val isAlreadyPaid = useDataStoreValueBlocking(IS_ALREADY_PAID)
@@ -372,10 +377,11 @@ fun PaymentScreen(
             Row(modifier = Modifier.padding(8.dp, 0.dp)) {
                 Button(
                     onClick = {
-                        if(BuildConfig.PAYMENT_URL.isNotBlank()) {
-                            context.openURI(BuildConfig.PAYMENT_URL)
+                        val url = runBlocking { context.getSetting(TMP_PAYMENT_URL) }
+                        if(url.isNotBlank()) {
+                            context.openURI(url)
                         } else {
-                            val toast = Toast.makeText(context, "Payment is unsupported on this build", Toast.LENGTH_SHORT)
+                            val toast = Toast.makeText(context, "Payment is unsupported on this build (still WIP)", Toast.LENGTH_SHORT)
                             toast.show()
                         }
                     }, modifier = Modifier

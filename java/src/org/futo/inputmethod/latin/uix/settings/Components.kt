@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -30,6 +31,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,6 +61,7 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import kotlin.math.pow
 
@@ -450,4 +453,30 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
             else -> {}
         }
     }
+}
+
+@Composable
+fun SettingTextField(title: String, placeholder: String, field: SettingsKey<String>) {
+    val context = LocalContext.current
+
+    val personalDict = useDataStore(field)
+    val textFieldValue = remember { mutableStateOf(context.getSettingBlocking(
+        field.key, field.default)) }
+
+    LaunchedEffect(textFieldValue.value) {
+        personalDict.setValue(textFieldValue.value)
+    }
+
+    ScreenTitle(title)
+
+    TextField(
+        value = textFieldValue.value,
+        onValueChange = {
+            textFieldValue.value = it
+        },
+        placeholder = { Text(placeholder) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp, 4.dp),
+    )
 }
