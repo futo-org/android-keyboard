@@ -70,7 +70,7 @@ typedef std::pair<float, potential_sequence_data> potential_sequence;
 typedef struct banned_sequence {
     token_sequence sequence;
     int hash;
-}; banned_sequence;
+} banned_sequence;
 
 int compute_sequence_hash(const token_sequence &seq) {
     int hash = 0;

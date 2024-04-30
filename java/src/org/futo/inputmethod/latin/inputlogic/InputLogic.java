@@ -588,9 +588,7 @@ public final class InputLogic {
      */
     private int mAutoCommitSequenceNumber = 1;
     public void onUpdateBatchInput(final InputPointers batchPointers) {
-        Log.d(TAG, "InputLogic has received batch input update, now we call for " + mInputLogicHandler.toString());
         mInputLogicHandler.onUpdateBatchInput(batchPointers, mAutoCommitSequenceNumber);
-        Log.d(TAG, "Finished calling onUpddateBatchInput");
     }
 
     public void onEndBatchInput(final InputPointers batchPointers) {
