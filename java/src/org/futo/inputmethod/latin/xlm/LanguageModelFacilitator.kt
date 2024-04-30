@@ -133,6 +133,9 @@ public class LanguageModelFacilitator(
     public fun hasPendingUpdate(): Boolean =
         computationSemaphore.availablePermits == 0
 
+
+    private var numConsecutiveTimeouts = 0
+    private var transformerDisabled = false
     public fun blockUntilComplete() {
         runBlocking {
             try {
@@ -145,8 +148,14 @@ public class LanguageModelFacilitator(
 
                     }
                 }
+                numConsecutiveTimeouts = 0
             } catch(e: TimeoutCancellationException) {
                 Log.d("LanguageModelFacilitator", "Failed to complete prediction within 1000ms!")
+                numConsecutiveTimeouts += 1
+                if(numConsecutiveTimeouts > 5) {
+                    transformerDisabled = true
+                    Log.w("LanguageModelFacilitator", "Temporarily disabling transformer due to continuous timeouts")
+                }
             }
         }
     }
@@ -171,6 +180,8 @@ public class LanguageModelFacilitator(
     }
 
     private suspend fun runLanguageModel(values: PredictionInputValues): ArrayList<SuggestedWordInfo>? {
+        if(transformerDisabled) return null
+
         val locale = dictionaryFacilitator.locale ?: return null
         if (languageModel == null || (languageModel?.locale?.language != locale.language)) {
             Log.d(
@@ -601,5 +612,10 @@ public class LanguageModelFacilitator(
     public fun loadHistoryLog() {
         assert(historyLog.isEmpty())
         loadHistoryLogBackup(context, historyLog)
+    }
+
+    public fun onStartInput() {
+        transformerDisabled = false
+        numConsecutiveTimeouts = 0
     }
 }

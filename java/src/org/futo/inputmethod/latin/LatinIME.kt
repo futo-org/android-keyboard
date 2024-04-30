@@ -381,6 +381,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
         latinIMELegacy.onStartInput(attribute, restarting)
+        languageModelFacilitator.onStartInput()
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
