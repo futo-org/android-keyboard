@@ -58,8 +58,10 @@ import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
-import org.futo.inputmethod.updates.DEFER_MANUAL_UPDATE_UNTIL
-import org.futo.inputmethod.updates.MANUAL_UPDATE_PERIOD_MS
+import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
+import org.futo.inputmethod.updates.autoDeferManualUpdateIfNeeded
+import org.futo.inputmethod.updates.deferManualUpdate
+import org.futo.inputmethod.updates.isManualUpdateTimeExpired
 import org.futo.inputmethod.updates.openManualUpdateCheck
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 import java.util.Locale
@@ -435,35 +437,38 @@ class UixManager(private val latinIME: LatinIME) {
     suspend fun showUpdateNoticeIfNeeded() {
         if(!BuildConfig.UPDATE_CHECKING) return
 
+        autoDeferManualUpdateIfNeeded(latinIME)
+
         val updateInfo = retrieveSavedLastUpdateCheckResult(latinIME)
         if(updateInfo != null && updateInfo.isNewer()) {
-            numSuggestionsSinceNotice = 0
-            currentNotice.value = object : ImportantNotice {
-                @Composable
-                override fun getText(): String {
-                    return "Update available: ${updateInfo.nextVersionString}"
-                }
-
-                override fun onDismiss(context: Context) {
-                    currentNotice.value = null
-                }
-
-                override fun onOpen(context: Context) {
-                    currentNotice.value = null
-
-                    val intent = Intent(context, SettingsActivity::class.java)
-                    intent.putExtra("navDest", "update")
-
-                    if(context !is Activity) {
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if(!latinIME.getSetting(DISABLE_UPDATE_REMINDER)) {
+                numSuggestionsSinceNotice = 0
+                currentNotice.value = object : ImportantNotice {
+                    @Composable
+                    override fun getText(): String {
+                        return "Update available: ${updateInfo.nextVersionString}"
                     }
 
-                    context.startActivity(intent)
+                    override fun onDismiss(context: Context) {
+                        currentNotice.value = null
+                    }
+
+                    override fun onOpen(context: Context) {
+                        currentNotice.value = null
+
+                        val intent = Intent(context, SettingsActivity::class.java)
+                        intent.putExtra("navDest", "update")
+
+                        if (context !is Activity) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+
+                        context.startActivity(intent)
+                    }
                 }
             }
         } else {
-            val defermentTime = latinIME.getSetting(DEFER_MANUAL_UPDATE_UNTIL, Long.MAX_VALUE)
-            if(System.currentTimeMillis() > defermentTime) {
+            if(isManualUpdateTimeExpired(latinIME)) {
                 numSuggestionsSinceNotice = 0
                 currentNotice.value = object : ImportantNotice {
                     @Composable
@@ -480,10 +485,7 @@ class UixManager(private val latinIME: LatinIME) {
                         context.openManualUpdateCheck()
 
                         runBlocking {
-                            latinIME.setSetting(
-                                DEFER_MANUAL_UPDATE_UNTIL,
-                                System.currentTimeMillis() + MANUAL_UPDATE_PERIOD_MS
-                            )
+                            deferManualUpdate(latinIME)
                         }
                     }
                 }

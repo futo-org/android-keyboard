@@ -17,14 +17,43 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavHostController
 import org.futo.inputmethod.latin.BuildConfig
+import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 
 val LAST_UPDATE_CHECK_RESULT = stringPreferencesKey("last_update_check_result")
 val LAST_UPDATE_CHECK_FAILED = booleanPreferencesKey("last_update_check_failed")
 
+val DISABLE_UPDATE_REMINDER = SettingsKey(booleanPreferencesKey("disable_update_reminder"), false)
+
 val DEFER_MANUAL_UPDATE_UNTIL = longPreferencesKey("defer_manual_update_until")
 const val MANUAL_UPDATE_PERIOD_MS = 1000L * 60L * 60L * 24L * 14L // Every two weeks
+
+suspend fun deferManualUpdate(context: Context) {
+    context.setSetting(
+        DEFER_MANUAL_UPDATE_UNTIL,
+        System.currentTimeMillis() + MANUAL_UPDATE_PERIOD_MS
+    )
+}
+
+suspend fun isManualUpdateTimeExpired(context: Context): Boolean {
+    if(context.getSetting(DISABLE_UPDATE_REMINDER)) {
+        return false
+    }
+
+    val defermentTime = context.getSetting(DEFER_MANUAL_UPDATE_UNTIL, Long.MAX_VALUE)
+    return (System.currentTimeMillis() > defermentTime)
+}
+
+val LAST_VERSION = longPreferencesKey("last_version")
+suspend fun autoDeferManualUpdateIfNeeded(context: Context) {
+    if(context.getSetting(LAST_VERSION, 0L) != BuildConfig.VERSION_CODE.toLong()) {
+        context.setSetting(LAST_VERSION, BuildConfig.VERSION_CODE.toLong())
+        deferManualUpdate(context)
+    }
+}
 
 fun Context.openURI(uri: String, newTask: Boolean = false) {
     try {
@@ -40,7 +69,11 @@ fun Context.openURI(uri: String, newTask: Boolean = false) {
 }
 
 fun Context.openManualUpdateCheck() {
-    openURI("https://voiceinput.futo.org/SuperSecretKeyboard/manual_update?version=${BuildConfig.VERSION_CODE}", newTask = true)
+    if(BuildConfig.IS_PLAYSTORE_BUILD) {
+        openURI("https://keyboard.futo.org/manual_update?version=${BuildConfig.VERSION_CODE}&build=playstore", newTask = true)
+    } else {
+        openURI("https://keyboard.futo.org/manual_update?version=${BuildConfig.VERSION_CODE}", newTask = true)
+    }
 }
 
 @Composable

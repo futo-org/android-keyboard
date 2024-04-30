@@ -23,6 +23,7 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 
 
 val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
@@ -37,6 +38,8 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         ScreenTitle("Developer", showBack = true, navController)
 
         SettingToggleDataStore(title = "Developer mode", setting = IS_DEVELOPER)
+
+        SettingToggleDataStore(title = "Disable all update reminders", setting = DISABLE_UPDATE_REMINDER)
 
         SettingToggleDataStore(
             title = "Touch typing mode",

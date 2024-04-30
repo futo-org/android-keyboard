@@ -92,6 +92,8 @@ suspend fun checkForUpdateAndSaveToPreferences(context: Context): Boolean {
 }
 
 suspend fun retrieveSavedLastUpdateCheckResult(context: Context): UpdateResult? {
+    if(!BuildConfig.UPDATE_CHECKING) return null
+
     return UpdateResult.fromString(context.getSetting(LAST_UPDATE_CHECK_RESULT, ""))
 }
 
