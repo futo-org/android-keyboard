@@ -133,7 +133,7 @@ public final class KeyPreviewChoreographer {
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.
         final int previewY = key.getY() - previewHeight + mParams.mPreviewOffset
-                + CoordinateUtils.y(originCoords);
+                + CoordinateUtils.y(originCoords) + key.getHeight();
 
         ViewLayoutUtils.placeViewAt(
                 keyPreviewView, previewX, previewY, previewWidth, previewHeight);
