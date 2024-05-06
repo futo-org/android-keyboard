@@ -215,8 +215,8 @@ public class KeyboardView extends View {
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         final int keyWidth = keyboard.mMostCommonKeyWidth;
 
-        mKeyDrawParams.updateParams(Math.min(keyWidth, keyHeight), mKeyVisualAttributes);
-        mKeyDrawParams.updateParams(Math.min(keyWidth, keyHeight), keyboard.mKeyVisualAttributes);
+        mKeyDrawParams.updateParams(keyWidth, Math.min(keyWidth, keyHeight), mKeyVisualAttributes);
+        mKeyDrawParams.updateParams(keyWidth, Math.min(keyWidth, keyHeight), keyboard.mKeyVisualAttributes);
         invalidateAllKeys();
         requestLayout();
     }
@@ -242,7 +242,7 @@ public class KeyboardView extends View {
 
     protected void updateKeyDrawParams(final int keyHeight) {
         final int keyWidth = mKeyboard.mMostCommonKeyWidth;
-        mKeyDrawParams.updateParams(Math.min(keyWidth, keyHeight), mKeyVisualAttributes);
+        mKeyDrawParams.updateParams(keyWidth, Math.min(keyWidth, keyHeight), mKeyVisualAttributes);
     }
 
     @Override
@@ -357,7 +357,8 @@ public class KeyboardView extends View {
         canvas.translate(keyDrawX, keyDrawY);
 
         final KeyVisualAttributes attr = key.getVisualAttributes();
-        final KeyDrawParams params = mKeyDrawParams.mayCloneAndUpdateParams(Math.min(key.getHeight(), key.getWidth()), attr);
+        final KeyDrawParams params = mKeyDrawParams.mayCloneAndUpdateParams(key.getWidth(),
+                Math.min(key.getHeight(), key.getWidth()), attr);
         params.mAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
         if (!key.isSpacer()) {

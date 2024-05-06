@@ -711,10 +711,7 @@ public class Key implements Comparable<Key> {
     }
 
     public final int selectPreviewTextSize(final KeyDrawParams params) {
-        if (previewHasLetterSize()) {
-            return params.mPreviewTextSize;
-        }
-        return params.mLetterSize;
+        return params.mPreviewTextSize;
     }
 
     @Nonnull

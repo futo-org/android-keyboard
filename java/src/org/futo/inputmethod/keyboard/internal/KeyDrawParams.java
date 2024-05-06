@@ -83,7 +83,7 @@ public final class KeyDrawParams {
         mAnimAlpha = copyFrom.mAnimAlpha;
     }
 
-    public void updateParams(final int keyHeight, @Nullable final KeyVisualAttributes attr) {
+    public void updateParams(final int keyWidth, final int keyHeight, @Nullable final KeyVisualAttributes attr) {
         if (attr == null) {
             return;
         }
@@ -101,7 +101,7 @@ public final class KeyDrawParams {
         mShiftedLetterHintSize = selectTextSize(keyHeight,
                 attr.mShiftedLetterHintRatio, mShiftedLetterHintSize);
         mHintLabelSize = selectTextSize(keyHeight, attr.mHintLabelRatio, mHintLabelSize);
-        mPreviewTextSize = selectTextSize(keyHeight, attr.mPreviewTextRatio, mPreviewTextSize);
+        mPreviewTextSize = selectTextSize(keyWidth, attr.mPreviewTextRatio, mPreviewTextSize);
 
         mTextColor = selectColor(attr.mTextColor, mTextColor);
         mTextInactivatedColor = selectColor(attr.mTextInactivatedColor, mTextInactivatedColor);
@@ -125,13 +125,13 @@ public final class KeyDrawParams {
     }
 
     @Nonnull
-    public KeyDrawParams mayCloneAndUpdateParams(final int keyHeight,
+    public KeyDrawParams mayCloneAndUpdateParams(final int keyWidth, final int keyHeight,
             @Nullable final KeyVisualAttributes attr) {
         if (attr == null) {
             return this;
         }
         final KeyDrawParams newParams = new KeyDrawParams(this);
-        newParams.updateParams(keyHeight, attr);
+        newParams.updateParams(keyWidth, keyHeight, attr);
         return newParams;
     }
 

@@ -385,7 +385,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             mSpacebarIcon.setBackground(spacebarDrawable);
         }
         final KeyDrawParams params = new KeyDrawParams();
-        params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
+        params.updateParams(0, mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
         setupAlphabetKey(mAlphabetKeyLeft, switchToAlphaLabel, params);
         setupAlphabetKey(mAlphabetKeyRight, switchToAlphaLabel, params);
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
