@@ -512,13 +512,21 @@ public class KeyboardView extends View {
 
         // Draw key icon.
         if (label == null && icon != null) {
-            final int iconWidth;
+            final float size = key.selectTextSize(params) * 1.75f;
+
+            int iconWidth;
             if (key.getCode() == Constants.CODE_SPACE && icon instanceof NinePatchDrawable) {
                 iconWidth = (int)(keyWidth * mSpacebarIconWidthRatio);
             } else {
                 iconWidth = Math.min(icon.getIntrinsicWidth(), keyWidth);
             }
-            final int iconHeight = icon.getIntrinsicHeight();
+            int iconHeight = icon.getIntrinsicHeight();
+
+            if(iconWidth > size) {
+                iconHeight = (int)((float)iconHeight / (float)iconWidth * (float)size);
+                iconWidth = (int)size;
+            }
+
             final int iconY;
             if (key.isAlignIconToBottom()) {
                 iconY = keyHeight - iconHeight;
