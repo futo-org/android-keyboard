@@ -47,8 +47,8 @@
     <dimen name="config_key_preview_offset_lxx">50.0dp</dimen>
     <dimen name="config_key_preview_height_lxx">122dp</dimen>
     <fraction name="config_key_preview_text_ratio">82%</fraction>
-    <fraction name="config_key_letter_ratio_holo">55%</fraction>
-    <fraction name="config_key_letter_ratio_lxx">55%</fraction>
+    <fraction name="config_key_letter_ratio_holo">66%</fraction>
+    <fraction name="config_key_letter_ratio_lxx">66%</fraction>
     <fraction name="config_key_large_letter_ratio_holo">65%</fraction>
     <fraction name="config_key_large_letter_ratio_lxx">90%</fraction>
     <fraction name="config_key_label_ratio_holo">34%</fraction>
@@ -65,7 +65,7 @@
 
     <!-- For 5-row keyboard -->
     <fraction name="config_key_vertical_gap_5row">3.20%p</fraction>
-    <fraction name="config_key_letter_ratio_5row">55%</fraction>
+    <fraction name="config_key_letter_ratio_5row">66%</fraction>
     <fraction name="config_key_shifted_letter_hint_ratio_5row">41%</fraction>
 
     <dimen name="config_suggestions_strip_height">40dp</dimen>

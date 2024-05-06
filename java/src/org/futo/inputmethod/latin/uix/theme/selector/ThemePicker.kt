@@ -226,7 +226,7 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
                 SettingSlider(
                     title = "Keyboard Height",
                     setting = KeyboardHeightMultiplierSetting,
-                    range = 0.1f .. 2.0f, transform = { it },
+                    range = 0.33f .. 1.75f, transform = { it },
                     indicator = { "${(it * 100.0f).roundToInt()}%" }
                 )
             }
