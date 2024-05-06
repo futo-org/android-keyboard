@@ -18,15 +18,20 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
 import com.google.android.material.color.DynamicColors
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import kotlin.math.roundToInt
 
-val KeyBordersSetting = booleanPreferencesKey("keyBorders")
-val HiddenKeysSetting = booleanPreferencesKey("hiddenKeys")
-val KeyHintsSetting = booleanPreferencesKey("keyHints")
+val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), true)
+val HiddenKeysSetting = SettingsKey(booleanPreferencesKey("hiddenKeys"), false)
+val KeyHintsSetting   = SettingsKey(booleanPreferencesKey("keyHints"), false)
+
+val KeyboardHeightMultiplierSetting = SettingsKey(floatPreferencesKey("keyboardHeightMultiplier"), 1.0f)
+val KeyboardBottomOffsetSetting = SettingsKey(floatPreferencesKey("keyboardOffset"), 0.0f)
 
 fun adjustColorBrightnessForContrast(bgColor: Int, fgColor: Int, desiredContrast: Float, adjustSaturation: Boolean = false): Int {
     // Convert RGB colors to HSL
@@ -76,6 +81,14 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         return drawables[i]
     }
 
+    override fun getKeyboardHeightMultiplier(): Float {
+        return keyboardHeight
+    }
+
+    override fun getKeyboardBottomOffset(): Float {
+        return dp(keyboardBottomOffsetValue.dp)
+    }
+
     private fun dp(dp: Dp): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -122,6 +135,22 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
     val keyBorders: Boolean
     val showKeyHints: Boolean
 
+    val keyboardHeight: Float
+    val keyboardBottomOffsetValue: Float
+
+    fun hasUpdated(newPreferences: Preferences): Boolean {
+        return when {
+            newPreferences[HiddenKeysSetting.key] != expertMode -> true
+            newPreferences[KeyBordersSetting.key] != keyBorders -> true
+            newPreferences[KeyHintsSetting.key] != showKeyHints -> true
+
+            newPreferences[KeyboardHeightMultiplierSetting.key] != keyboardHeight -> true
+            newPreferences[KeyboardBottomOffsetSetting.key] != keyboardBottomOffsetValue -> true
+
+            else -> false
+        }
+    }
+
     init {
         val colorScheme = if(overrideColorScheme != null) {
             overrideColorScheme
@@ -133,9 +162,12 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
             dynamicLightColorScheme(dCtx)
         }
 
-        expertMode = context.getSettingBlocking(HiddenKeysSetting, false)
-        keyBorders = context.getSettingBlocking(KeyBordersSetting, false)
-        showKeyHints = context.getSettingBlocking(KeyHintsSetting, false)
+        expertMode = context.getSettingBlocking(HiddenKeysSetting)
+        keyBorders = context.getSettingBlocking(KeyBordersSetting)
+        showKeyHints = context.getSettingBlocking(KeyHintsSetting)
+
+        keyboardHeight = context.getSettingBlocking(KeyboardHeightMultiplierSetting.key, KeyboardHeightMultiplierSetting.default)
+        keyboardBottomOffsetValue = context.getSettingBlocking(KeyboardBottomOffsetSetting.key, KeyboardBottomOffsetSetting.default)
 
         val primary = colorScheme.primary.toArgb()
         val secondary = colorScheme.secondary.toArgb()

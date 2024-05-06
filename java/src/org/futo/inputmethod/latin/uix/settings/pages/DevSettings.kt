@@ -49,7 +49,7 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         SettingToggleDataStore(
             title = "Touch typing mode",
             subtitle = "Hides all keys. Touch typists only! Recommended to disable emoji key and enable key borders",
-            setting = SettingsKey(HiddenKeysSetting, false)
+            setting = HiddenKeysSetting
         )
 
         NavigationItem(

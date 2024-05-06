@@ -22,6 +22,9 @@ interface DynamicThemeProvider {
 
     fun getDrawable(i: Int): Drawable?
 
+    fun getKeyboardHeightMultiplier(): Float
+    fun getKeyboardBottomOffset(): Float
+
     companion object {
         @ColorInt
         fun getColorOrDefault(i: Int, @ColorInt default: Int, keyAttr: TypedArray, provider: DynamicThemeProvider?): Int {

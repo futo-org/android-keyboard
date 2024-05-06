@@ -49,6 +49,10 @@ fun <T> Context.getSettingBlocking(key: Preferences.Key<T>, default: T): T {
     }
 }
 
+fun <T> Context.getSettingBlocking(key: SettingsKey<T>): T {
+    return getSettingBlocking(key.key, key.default)
+}
+
 fun <T> Context.setSettingBlocking(key: Preferences.Key<T>, value: T) {
     val context = this
     runBlocking {

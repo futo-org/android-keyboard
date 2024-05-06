@@ -257,11 +257,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             dataStore.data.collect {
                 drawableProvider?.let { provider ->
                     if(provider is BasicThemeProvider) {
-                        if ((it[HiddenKeysSetting] ?: provider.expertMode) != provider.expertMode
-                            || (it[KeyBordersSetting] ?: provider.keyBorders) != provider.keyBorders
-                            || (it[KeyHintsSetting] ?: provider.showKeyHints) != provider.showKeyHints
-                        ) {
-                            Log.w("LatinIME", "One of HiddenKeysSetting, KeyBordersSetting or KeyHintsSetting has changed")
+                        if (provider.hasUpdated(it)) {
                             activeThemeOption?.obtainColors?.let { f ->
                                 updateDrawableProvider(f(this@LatinIME))
                                 if (!uixManager.isMainKeyboardHidden) {

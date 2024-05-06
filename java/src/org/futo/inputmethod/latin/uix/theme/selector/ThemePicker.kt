@@ -33,11 +33,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
-import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.KeyboardBottomOffsetSetting
+import org.futo.inputmethod.latin.uix.KeyboardHeightMultiplierSetting
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -48,6 +49,7 @@ import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import kotlin.math.roundToInt
 
 // TODO: For Dynamic System we need to show the user that it switches between light/dark
 @Composable
@@ -185,18 +187,6 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Adaptive(minSize = 172.dp)
         ) {
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                SettingToggleDataStore(
-                    title = "Key borders",
-                    setting = SettingsKey(KeyBordersSetting, false)
-                )
-            }
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                SettingToggleDataStore(
-                    title = "Show symbol hints",
-                    setting = SettingsKey(KeyHintsSetting, false)
-                )
-            }
             items(availableThemeOptions.count()) {
                 val themeOption = availableThemeOptions[it].second
 
@@ -215,6 +205,38 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
                     )
                     toast.show()
                 }
+            }
+
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) { }
+
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                SettingToggleDataStore(
+                    title = "Key borders",
+                    setting = KeyBordersSetting
+                )
+            }
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                SettingToggleDataStore(
+                    title = "Show symbol hints",
+                    setting = KeyHintsSetting
+                )
+            }
+
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                SettingSlider(
+                    title = "Keyboard Height",
+                    setting = KeyboardHeightMultiplierSetting,
+                    range = 0.1f .. 2.0f, transform = { it },
+                    indicator = { "${(it * 100.0f).roundToInt()}%" }
+                )
+            }
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                SettingSlider(
+                    title = "Keyboard Offset",
+                    setting = KeyboardBottomOffsetSetting,
+                    range = 0.0f .. 128.0f, transform = { it },
+                    indicator = { "${String.format("%.1f", it)} dp" }
+                )
             }
         }
     }

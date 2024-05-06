@@ -255,14 +255,18 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         final TypedArray keyAttr = mResources.obtainAttributes(attr, R.styleable.Keyboard_Key);
         try {
             final KeyboardParams params = mParams;
-            final int height = params.mId.mHeight;
+
+            final int offset = (int)mProvider.getKeyboardBottomOffset();
+            final int height = (int) (params.mId.mHeight * mProvider.getKeyboardHeightMultiplier() + offset);
             final int width = params.mId.mWidth;
             params.mOccupiedHeight = height;
             params.mOccupiedWidth = width;
             params.mTopPadding = (int)keyboardAttr.getFraction(
                     R.styleable.Keyboard_keyboardTopPadding, height, height, 0);
-            params.mBottomPadding = (int)keyboardAttr.getFraction(
-                    R.styleable.Keyboard_keyboardBottomPadding, height, height, 0);
+            params.mBottomPadding = (int)(keyboardAttr.getFraction(
+                    R.styleable.Keyboard_keyboardBottomPadding, height, height, 0)
+                    + mProvider.getKeyboardBottomOffset()
+            );
             params.mLeftPadding = (int)keyboardAttr.getFraction(
                     R.styleable.Keyboard_keyboardLeftPadding, width, width, 0);
             params.mRightPadding = (int)keyboardAttr.getFraction(
@@ -279,7 +283,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             // rows are determined based on the entire keyboard height including top and bottom
             // paddings.
             params.mVerticalGap = (int)keyboardAttr.getFraction(
-                    R.styleable.Keyboard_verticalGap, height, height, 0);
+                    R.styleable.Keyboard_verticalGap, height - offset, height - offset, 0);
             final int baseHeight = params.mOccupiedHeight - params.mTopPadding
                     - params.mBottomPadding + params.mVerticalGap;
             params.mBaseHeight = baseHeight;

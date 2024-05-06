@@ -304,71 +304,73 @@ fun<T: Number> SettingSlider(
         if(isTextFieldVisible) focusRequester.requestFocus()
     }
 
-    ScreenTitle(title, showBack = false)
-    if(subtitle != null) {
-        Text(subtitle, style = Typography.bodyMedium, modifier = Modifier.padding(12.dp, 0.dp))
-    }
-    Row(modifier = Modifier.padding(16.dp, 0.dp)) {
-        if (isTextFieldVisible) {
-            val apply = {
-                if(isTextFieldVisible) {
-                    val number = textFieldValue.text.trim().toFloatOrNull()
-                    val newValue = if (number != null) {
-                        transform(number.coerceIn(hardRange))
-                    } else {
-                        setting.default
+    Column {
+        ScreenTitle(title, showBack = false)
+        if(subtitle != null) {
+            Text(subtitle, style = Typography.bodyMedium, modifier = Modifier.padding(12.dp, 0.dp))
+        }
+        Row(modifier = Modifier.padding(16.dp, 0.dp)) {
+            if (isTextFieldVisible) {
+                val apply = {
+                    if(isTextFieldVisible) {
+                        val number = textFieldValue.text.trim().toFloatOrNull()
+                        val newValue = if (number != null) {
+                            transform(number.coerceIn(hardRange))
+                        } else {
+                            setting.default
+                        }
+
+                        setValue(newValue)
+                        virtualValue = newValue.toFloat().pow(1.0f / power)
+
+                        isTextFieldVisible = false
+                        textFieldValue = TextFieldValue()
                     }
-
-                    setValue(newValue)
-                    virtualValue = newValue.toFloat().pow(1.0f / power)
-
-                    isTextFieldVisible = false
-                    textFieldValue = TextFieldValue()
                 }
-            }
-            BasicTextField(
-                value = textFieldValue,
-                onValueChange = { textFieldValue = it },
-                modifier = Modifier
-                    .weight(0.33f)
-                    .align(Alignment.CenterVertically)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        if(it.isFocused) hasTextFieldFocusedYet = true
-                        else if(!it.isFocused && hasTextFieldFocusedYet) apply()
-                    },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        apply()
-                    }
-                ),
-                singleLine = true,
-                textStyle = Typography.labelMedium
-            )
+                BasicTextField(
+                    value = textFieldValue,
+                    onValueChange = { textFieldValue = it },
+                    modifier = Modifier
+                        .weight(0.33f)
+                        .align(Alignment.CenterVertically)
+                        .focusRequester(focusRequester)
+                        .onFocusChanged {
+                            if (it.isFocused) hasTextFieldFocusedYet = true
+                            else if (!it.isFocused && hasTextFieldFocusedYet) apply()
+                        },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            apply()
+                        }
+                    ),
+                    singleLine = true,
+                    textStyle = Typography.labelMedium
+                )
 
-        } else {
-            Text(
-                text = indicator(value),
-                modifier = Modifier
-                    .weight(0.33f)
-                    .align(Alignment.CenterVertically)
-                    .clickable {
-                        hasTextFieldFocusedYet = false
-                        isTextFieldVisible = true
-                    },
-                style = Typography.labelMedium
+            } else {
+                Text(
+                    text = indicator(value),
+                    modifier = Modifier
+                        .weight(0.33f)
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            hasTextFieldFocusedYet = false
+                            isTextFieldVisible = true
+                        },
+                    style = Typography.labelMedium
+                )
+            }
+            Slider(
+                value = virtualValue,
+                onValueChange = {
+                    virtualValue = it
+                    setValue(transform(it.pow(power))) },
+                valueRange = range.start.pow(1.0f / power) .. range.endInclusive.pow(1.0f / power),
+                enabled = !isTextFieldVisible,
+                modifier = Modifier.weight(1.0f)
             )
         }
-        Slider(
-            value = virtualValue,
-            onValueChange = {
-                virtualValue = it
-                setValue(transform(it.pow(power))) },
-            valueRange = range.start.pow(1.0f / power) .. range.endInclusive.pow(1.0f / power),
-            enabled = !isTextFieldVisible,
-            modifier = Modifier.weight(1.0f)
-        )
     }
 }
 
