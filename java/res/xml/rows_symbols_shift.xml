@@ -25,6 +25,10 @@
         latin:keyboardLayout="@xml/key_styles_common" />
     <include
         latin:keyboardLayout="@xml/key_styles_currency" />
+    <switch>
+        <case latin:numberRow="true"> <Row /> </case>
+        <default> </default>
+    </switch>
     <Row
         latin:keyWidth="10%p"
     >

@@ -20,6 +20,7 @@
 
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
     <include latin:keyboardLayout="@xml/key_styles_common" />
+    <include latin:keyboardLayout="@xml/row_number_switch" />
     <Row
         latin:keyWidth="8.3333%p"
         latin:keyLabelFlags="fontNormal|autoXScale"

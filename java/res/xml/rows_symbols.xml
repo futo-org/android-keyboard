@@ -31,6 +31,10 @@
         <include
             latin:keyboardLayout="@xml/rowkeys_symbols1" />
     </Row>
+    <switch>
+        <case latin:numberRow="true"> <Row /> </case>
+        <default> </default>
+    </switch>
     <Row
         latin:keyWidth="10%p"
     >

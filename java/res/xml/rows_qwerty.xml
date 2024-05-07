@@ -23,19 +23,7 @@
 >
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
-    <switch>
-        <case latin:numberRow="true">
-            <Row
-                latin:keyWidth="10%p"
-                >
-                <include
-                    latin:keyboardLayout="@xml/rowkeys_numbers" />
-            </Row>
-        </case>
-        <default>
-
-        </default>
-    </switch>
+    <include latin:keyboardLayout="@xml/row_number_switch" />
     <Row
         latin:keyWidth="10%p"
     >
