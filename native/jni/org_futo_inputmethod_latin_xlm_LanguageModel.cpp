@@ -1016,8 +1016,14 @@ namespace latinime {
         std::vector<TokenMix> mixes;
         for(int i=0; i<inputSize; i++) {
             char wc = partialWordString[i];
-            if (!(wc >= 'a' && wc <= 'z') && !(wc >= 'A' && wc <= 'Z')) continue;
-            if (xCoordinates[i] == -1 || yCoordinates[i] == -1) continue;
+            if (!(wc >= 'a' && wc <= 'z') && !(wc >= 'A' && wc <= 'Z')) {
+                //AKLOGI("%d | Char %c skipped due to not within range", i, wc);
+                continue;
+            }
+            if (xCoordinates[i] == -1 || yCoordinates[i] == -1) {
+                //AKLOGI("%d | Char %c skipped due to -1", i, wc);
+                continue;
+            }
 
             std::vector<float> proportions = pInfo->decomposeTapPosition(xCoordinates[i], yCoordinates[i]);
             for(float &f : proportions) {
@@ -1034,14 +1040,15 @@ namespace latinime {
 
             bool needs_resorting = false;
             int num_symbols = 0;
-            for(int s=0; s<100; s++) {
+            for(int s=0; s<4; s++) {
+                num_symbols = 0;
                 for (int j = 0; j < NUM_TOKEN_MIX; j++) {
                     char c = (char) (pInfo->getKeyCodePoint(index_value[j].second));
 
                     if (c >= 'a' && c <= 'z') {
                     } else if (c >= 'A' && c <= 'Z') {
-                    } else {
-                        index_value[j].first = -99999.0f;
+                    } else if(index_value[j].first > 0.0f) {
+                        index_value[j].first = 0.0f;
                         needs_resorting = true;
                         num_symbols++;
                     }
@@ -1050,7 +1057,10 @@ namespace latinime {
                 if(!needs_resorting) break;
                 sortProbabilityPairVectorDescending(index_value, NUM_TOKEN_MIX);
             }
-            if(num_symbols == NUM_TOKEN_MIX) continue; // Skip the symbol character
+            if(num_symbols == NUM_TOKEN_MIX) {
+                //AKLOGI("%d | Char %c skipped due to num_symbols == NUM_TOKEN_MIX", i, wc);
+                continue;
+            }; // Skip the symbol character
 
             float total_sum = 0.0f;
             for(int j=0; j<NUM_TOKEN_MIX; j++) {
