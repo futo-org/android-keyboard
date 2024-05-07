@@ -124,6 +124,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     val themeOption get() = activeThemeOption
     val colorScheme get() = activeColorScheme
+    val keyboardColor get() = drawableProvider?.primaryKeyboardColor?.let { androidx.compose.ui.graphics.Color(it) } ?: colorScheme.surface
 
     private var drawableProvider: DynamicThemeProvider? = null
 

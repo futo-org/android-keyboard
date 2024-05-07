@@ -412,7 +412,7 @@ class UixManager(private val latinIME: LatinIME) {
                     Spacer(modifier = Modifier.weight(1.0f))
                     Surface(modifier = Modifier.onSizeChanged {
                         latinIME.updateTouchableHeight(it.height)
-                    }) {
+                    }, color = latinIME.keyboardColor) {
                         Box {
                             Column {
                                 when {
