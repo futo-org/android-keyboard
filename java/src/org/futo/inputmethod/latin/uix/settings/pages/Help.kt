@@ -69,17 +69,20 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
 
         Tip("We want to hear from you! If you're reporting an issue, your version may be relevant: v${BuildConfig.VERSION_NAME}")
 
-        NavigationItem(title = "Wiki", style = NavigationItemStyle.Misc, navigate = {
+        NavigationItem(title = "Wiki", subtitle = "Wanna read more about the project? Read the wiki", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://gitlab.futo.org/alex/keyboard-wiki/-/wikis/FUTO-Keyboard")
         })
-        NavigationItem(title = "Discord Server", style = NavigationItemStyle.Misc, navigate = {
+        NavigationItem(title = "Discord Server", subtitle = "Wanna talk but don't like Zulip? Chat here", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://keyboard.futo.org/discord")
         })
-        NavigationItem(title = "FUTO Chat", style = NavigationItemStyle.Misc, navigate = {
+        NavigationItem(title = "FUTO Chat", subtitle = "Wanna talk but don't like Discord? Chat here", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://chat.futo.org/")
         })
-        NavigationItem(title = "Email keyboard@futo.org", style = NavigationItemStyle.Mail, navigate = {
+        NavigationItem(title = "Email keyboard@futo.org", subtitle = "Private feedback or help? Email us", style = NavigationItemStyle.Mail, navigate = {
             context.openURI("mailto:keyboard@futo.org")
+        })
+        NavigationItem(title = "Public issue tracker", subtitle = "Specific bug or feature request? Post here", style = NavigationItemStyle.Misc, navigate = {
+            context.openURI("https://github.com/futo-org/android-keyboard/issues")
         })
     }
 }
