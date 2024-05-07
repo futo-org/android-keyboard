@@ -85,10 +85,6 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         return keyboardHeight
     }
 
-    override fun getKeyboardBottomOffset(): Float {
-        return dp(keyboardBottomOffsetValue.dp)
-    }
-
     private fun dp(dp: Dp): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -136,7 +132,6 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
     val showKeyHints: Boolean
 
     val keyboardHeight: Float
-    val keyboardBottomOffsetValue: Float
 
     fun hasUpdated(newPreferences: Preferences): Boolean {
         return when {
@@ -145,7 +140,6 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
             newPreferences[KeyHintsSetting.key] != showKeyHints -> true
 
             newPreferences[KeyboardHeightMultiplierSetting.key] != keyboardHeight -> true
-            newPreferences[KeyboardBottomOffsetSetting.key] != keyboardBottomOffsetValue -> true
 
             else -> false
         }
@@ -167,7 +161,6 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
 
         keyboardHeight = context.getSettingBlocking(KeyboardHeightMultiplierSetting.key, KeyboardHeightMultiplierSetting.default)
-        keyboardBottomOffsetValue = context.getSettingBlocking(KeyboardBottomOffsetSetting.key, KeyboardBottomOffsetSetting.default)
 
         val primary = colorScheme.primary.toArgb()
         val secondary = colorScheme.secondary.toArgb()

@@ -256,8 +256,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         try {
             final KeyboardParams params = mParams;
 
-            final int offset = (int)mProvider.getKeyboardBottomOffset();
-            final int height = (int) (params.mId.mHeight * mProvider.getKeyboardHeightMultiplier() + offset);
+            final int height = (int) (params.mId.mHeight * mProvider.getKeyboardHeightMultiplier());
             final int width = params.mId.mWidth;
             params.mOccupiedHeight = height;
             params.mOccupiedWidth = width;
@@ -265,7 +264,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_keyboardTopPadding, height, height, 0);
             params.mBottomPadding = (int)(keyboardAttr.getFraction(
                     R.styleable.Keyboard_keyboardBottomPadding, height, height, 0)
-                    + mProvider.getKeyboardBottomOffset()
             );
             params.mLeftPadding = (int)keyboardAttr.getFraction(
                     R.styleable.Keyboard_keyboardLeftPadding, width, width, 0);
@@ -283,7 +281,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             // rows are determined based on the entire keyboard height including top and bottom
             // paddings.
             params.mVerticalGap = (int)keyboardAttr.getFraction(
-                    R.styleable.Keyboard_verticalGap, height - offset, height - offset, 0);
+                    R.styleable.Keyboard_verticalGap, height, height, 0);
             final int baseHeight = params.mOccupiedHeight - params.mTopPadding
                     - params.mBottomPadding + params.mVerticalGap;
             params.mBaseHeight = baseHeight;
