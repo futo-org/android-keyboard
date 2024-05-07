@@ -23,6 +23,19 @@
 >
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
+    <switch>
+        <case latin:numberRow="true">
+            <Row
+                latin:keyWidth="10%p"
+                >
+                <include
+                    latin:keyboardLayout="@xml/rowkeys_numbers" />
+            </Row>
+        </case>
+        <default>
+
+        </default>
+    </switch>
     <!-- TODO: Consolidate the layout specification between protrait and landscape.
          Ideally just the keyWidth should be different and the spacer should adjust to fill
          the available space. -->

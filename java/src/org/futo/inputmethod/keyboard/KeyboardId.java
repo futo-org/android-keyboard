@@ -82,6 +82,7 @@ public final class KeyboardId {
     public final String mCustomActionLabel;
     public final boolean mHasShortcutKey;
     public final boolean mIsSplitLayout;
+    public final boolean mNumberRow;
 
     private final int mHashCode;
 
@@ -98,6 +99,7 @@ public final class KeyboardId {
                 ? mEditorInfo.actionLabel.toString() : null;
         mHasShortcutKey = params.mVoiceInputKeyEnabled;
         mIsSplitLayout = params.mIsSplitLayoutEnabled;
+        mNumberRow = params.mNumberRow;
 
         mHashCode = computeHashCode(this);
     }
@@ -118,7 +120,8 @@ public final class KeyboardId {
                 id.navigateNext(),
                 id.navigatePrevious(),
                 id.mSubtype,
-                id.mIsSplitLayout
+                id.mIsSplitLayout,
+                id.mNumberRow
         });
     }
 
@@ -139,7 +142,8 @@ public final class KeyboardId {
                 && other.navigateNext() == navigateNext()
                 && other.navigatePrevious() == navigatePrevious()
                 && other.mSubtype.equals(mSubtype)
-                && other.mIsSplitLayout == mIsSplitLayout;
+                && other.mIsSplitLayout == mIsSplitLayout
+                && other.mNumberRow == mNumberRow;
     }
 
     private static boolean isAlphabetKeyboard(final int elementId) {

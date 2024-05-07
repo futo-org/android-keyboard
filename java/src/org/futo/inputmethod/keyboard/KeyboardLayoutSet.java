@@ -133,6 +133,8 @@ public final class KeyboardLayoutSet {
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
         final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
                 new SparseArray<>();
+
+        boolean mNumberRow;
     }
 
     public static void onSystemLocaleChanged() {
@@ -334,6 +336,11 @@ public final class KeyboardLayoutSet {
 
         public Builder setSplitLayoutEnabledByUser(final boolean enabled) {
             mParams.mIsSplitLayoutEnabledByUser = enabled;
+            return this;
+        }
+
+        public Builder setNumberRow(final boolean enabled) {
+            mParams.mNumberRow = enabled;
             return this;
         }
 

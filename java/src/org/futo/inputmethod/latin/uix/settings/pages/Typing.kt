@@ -55,6 +55,11 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             setting = SHOW_EMOJI_SUGGESTIONS
         )
         SettingToggleSharedPrefs(
+            title = "Number row",
+            key = Settings.PREF_ENABLE_NUMBER_ROW,
+            default = false
+        )
+        SettingToggleSharedPrefs(
             title = "Emoji key",
             subtitle = "Show the emoji key on the bottom row",
             key = Settings.PREF_SHOW_EMOJI_KEY,

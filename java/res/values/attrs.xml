@@ -522,6 +522,7 @@
         <attr name="countryCode" format="string" />
         <!-- Enable split keyboard layout. Disabled by default. -->
         <attr name="isSplitLayout" format="boolean" />
+        <attr name="numberRow" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_KeyStyle">

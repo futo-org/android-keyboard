@@ -130,6 +130,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         builder.setBottomEmojiKeyEnabled(mLatinIMELegacy.shouldShowEmojiKey());
         builder.setSplitLayoutEnabledByUser(ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED
                 && settingsValues.mIsSplitKeyboardEnabled);
+        builder.setNumberRow(settingsValues.mIsNumberRowEnabled);
+
         mKeyboardLayoutSet = builder.build();
         try {
             mState.onLoadKeyboard(currentAutoCapsState, currentRecapitalizeState);

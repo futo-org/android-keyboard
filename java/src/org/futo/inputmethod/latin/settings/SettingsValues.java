@@ -88,6 +88,7 @@ public class SettingsValues {
     public final boolean mShouldShowLxxSuggestionUi;
     // Use split layout for keyboard.
     public final boolean mIsSplitKeyboardEnabled;
+    public final boolean mIsNumberRowEnabled;
     public final int mScreenMetrics;
 
     // From the input box
@@ -142,6 +143,7 @@ public class SettingsValues {
                 ? prefs.getBoolean(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false)
                 : true /* forcibly */;
         mShowsEmojiKey = Settings.readShowsEmojiKey(prefs);
+        mIsNumberRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)
