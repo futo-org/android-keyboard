@@ -56,6 +56,10 @@ fun adjustColorBrightnessForContrast(bgColor: Int, fgColor: Int, desiredContrast
     return ColorUtils.HSLToColor(bgHSL)
 }
 
+fun<T> Preferences.get(key: SettingsKey<T>): T {
+    return this[key.key] ?: key.default
+}
+
 class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorScheme? = null) :
     DynamicThemeProvider {
     override val primaryKeyboardColor: Int
@@ -133,16 +137,11 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
 
     val keyboardHeight: Float
 
-    fun hasUpdated(newPreferences: Preferences): Boolean {
-        return when {
-            newPreferences[HiddenKeysSetting.key] != expertMode -> true
-            newPreferences[KeyBordersSetting.key] != keyBorders -> true
-            newPreferences[KeyHintsSetting.key] != showKeyHints -> true
-
-            newPreferences[KeyboardHeightMultiplierSetting.key] != keyboardHeight -> true
-
-            else -> false
-        }
+    fun hasUpdated(np: Preferences): Boolean {
+        return np.get(HiddenKeysSetting) != expertMode
+                || np.get(KeyBordersSetting) != keyBorders
+                || np.get(KeyHintsSetting) != showKeyHints
+                || np.get(KeyboardHeightMultiplierSetting) != keyboardHeight
     }
 
     init {
@@ -159,8 +158,7 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
         keyBorders = context.getSettingBlocking(KeyBordersSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
-
-        keyboardHeight = context.getSettingBlocking(KeyboardHeightMultiplierSetting.key, KeyboardHeightMultiplierSetting.default)
+        keyboardHeight = context.getSettingBlocking(KeyboardHeightMultiplierSetting)
 
         val primary = colorScheme.primary.toArgb()
         val secondary = colorScheme.secondary.toArgb()

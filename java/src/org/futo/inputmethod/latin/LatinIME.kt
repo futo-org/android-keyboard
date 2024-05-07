@@ -53,9 +53,6 @@ import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.EmojiTracker.unuseEmoji
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
-import org.futo.inputmethod.latin.uix.HiddenKeysSetting
-import org.futo.inputmethod.latin.uix.KeyBordersSetting
-import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardBottomOffsetSetting
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
