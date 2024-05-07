@@ -78,11 +78,11 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
         NavigationItem(title = "FUTO Chat", subtitle = "Wanna talk but don't like Discord? Chat here", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://chat.futo.org/")
         })
-        NavigationItem(title = "Email keyboard@futo.org", subtitle = "Private feedback or help? Email us", style = NavigationItemStyle.Mail, navigate = {
-            context.openURI("mailto:keyboard@futo.org")
-        })
         NavigationItem(title = "Public issue tracker", subtitle = "Specific bug or feature request? Post here", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://github.com/futo-org/android-keyboard/issues")
+        })
+        NavigationItem(title = "Email keyboard@futo.org", subtitle = "Private feedback, help, or don't use GitHub? Email us", style = NavigationItemStyle.Mail, navigate = {
+            context.openURI("mailto:keyboard@futo.org")
         })
     }
 }

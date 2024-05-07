@@ -46,7 +46,7 @@ val AutocorrectThresholdSetting = SettingsKey(
 
 val BinaryDictTransformerWeightSetting = SettingsKey(
     floatPreferencesKey("binary_dict_result_weight"),
-    1.0f
+    3.4f
 )
 
 private fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
