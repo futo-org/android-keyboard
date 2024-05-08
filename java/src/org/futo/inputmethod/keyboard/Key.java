@@ -329,7 +329,14 @@ public class Key implements Comparable<Key> {
                     R.styleable.Keyboard_Key_additionalMoreKeys);
         }
         moreKeys = MoreKeySpec.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
-        if (moreKeys != null) {
+
+        if(params.mId.mNumberRow && moreKeys != null) {
+            moreKeys = Arrays.stream(moreKeys)
+                    .filter(s -> !s.matches("\\d+"))
+                    .toArray(String[]::new);
+        }
+
+        if (moreKeys != null && moreKeys.length > 0) {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
             mMoreKeys = new MoreKeySpec[moreKeys.length];
             for (int i = 0; i < moreKeys.length; i++) {
@@ -361,8 +368,19 @@ public class Key implements Comparable<Key> {
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
             mHintLabel = null;
         } else {
-            final String hintLabel = style.getString(
+            String hintLabel = style.getString(
                     keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
+
+            if(params.mId.mNumberRow && hintLabel != null && hintLabel.matches("\\d+")) {
+                hintLabel = "";
+            }
+
+            if(moreKeys != null && moreKeys.length > 0) {
+                final String hintLabelCandidate = moreKeys[0];
+                if(hintLabelCandidate.length() == 1) {
+                    hintLabel = hintLabelCandidate;
+                }
+            }
             mHintLabel = needsToUpcase
                     ? StringUtils.toTitleCaseOfKeyLabel(hintLabel, localeForUpcasing)
                     : hintLabel;
