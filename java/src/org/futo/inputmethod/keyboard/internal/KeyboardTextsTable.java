@@ -2478,7 +2478,7 @@ public final class KeyboardTextsTable {
         // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
         // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
         // U+00E6: "æ" LATIN SMALL LETTER AE
-        /* morekeys_a */ "\u0105,\u00E4,\u0101,\u00E0,\u00E1,\u00E2,\u00E3,\u00E5,\u00E6",
+        /* morekeys_a */ "\u0105,%,\u00E4,\u0101,\u00E0,\u00E1,\u00E2,\u00E3,\u00E5,\u00E6",
         // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
         // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
         // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
@@ -2523,13 +2523,13 @@ public final class KeyboardTextsTable {
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
-        /* morekeys_c */ "\u010D,\u00E7,\u0107",
+        /* morekeys_c */ "\u010D,%,\u00E7,\u0107",
         /* double_quotes */ "!text/double_9qm_lqm",
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
         // U+015F: "ş" LATIN SMALL LETTER S WITH CEDILLA
-        /* morekeys_s */ "\u0161,\u00DF,\u015B,\u015F",
+        /* morekeys_s */ "\u0161,%,\u00DF,\u015B,\u015F",
         /* single_quotes */ "!text/single_9qm_lqm",
         /* keyspec_currency */ null,
         // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
@@ -2538,7 +2538,7 @@ public final class KeyboardTextsTable {
         // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
-        /* morekeys_z */ "\u017E,\u017C,\u017A",
+        /* morekeys_z */ "\u017E,%,\u017C,\u017A",
         // U+010F: "ď" LATIN SMALL LETTER D WITH CARON
         /* morekeys_d */ "\u010F",
         // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
