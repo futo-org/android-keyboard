@@ -51,17 +51,27 @@ fun <T> useDataStoreValueBlocking(v: SettingsKey<T>): T {
 }
 
 @Composable
-fun <T> useDataStore(key: Preferences.Key<T>, default: T): DataStoreItem<T> {
+fun <T> useDataStore(key: Preferences.Key<T>, default: T, blocking: Boolean = false): DataStoreItem<T> {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val enableSoundFlow: Flow<T> = remember {
-        context.dataStore.data.map {
-                preferences -> preferences[key] ?: default
+    val initialValue = remember {
+        if(blocking) {
+            runBlocking {
+                context.getSetting(key, default)
+            }
+        } else {
+            default
         }
     }
 
-    val value = enableSoundFlow.collectAsState(initial = default).value!!
+    val valueFlow: Flow<T> = remember {
+        context.dataStore.data.map { preferences ->
+            preferences[key] ?: default
+        }
+    }
+
+    val value = valueFlow.collectAsState(initial = initialValue).value!!
 
     val setValue = { newValue: T ->
         coroutineScope.launch {
@@ -76,8 +86,8 @@ fun <T> useDataStore(key: Preferences.Key<T>, default: T): DataStoreItem<T> {
 
 
 @Composable
-fun <T> useDataStore(key: SettingsKey<T>): DataStoreItem<T> {
-    return useDataStore(key.key, key.default)
+fun <T> useDataStore(key: SettingsKey<T>, blocking: Boolean = false): DataStoreItem<T> {
+    return useDataStore(key.key, key.default, blocking)
 }
 
 @Composable

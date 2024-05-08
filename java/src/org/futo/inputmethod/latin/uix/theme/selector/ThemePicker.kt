@@ -227,15 +227,19 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
                     title = "Keyboard Height",
                     setting = KeyboardHeightMultiplierSetting,
                     range = 0.33f .. 1.75f, transform = { it },
-                    indicator = { "${(it * 100.0f).roundToInt()}%" }
+                    indicator = { "${(it * 100.0f).roundToInt()}%" },
+                    steps = 16
                 )
             }
             item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                 SettingSlider(
                     title = "Keyboard Offset",
                     setting = KeyboardBottomOffsetSetting,
-                    range = 0.0f .. 128.0f, transform = { it },
-                    indicator = { "${String.format("%.1f", it)} dp" }
+                    range = 0.0f .. 50.0f,
+                    hardRange = 0.0f .. 250.0f,
+                    transform = { it },
+                    indicator = { "${String.format("%.1f", it)} dp" },
+                    steps = 9
                 )
             }
         }

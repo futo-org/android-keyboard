@@ -392,7 +392,7 @@ fun<T: Number> SettingSlider(
 ) {
     SettingSliderForDataStoreItem(
         title = title,
-        item = useDataStore(setting),
+        item = useDataStore(setting, blocking = true),
         default = setting.default,
         range = range,
         transform = transform,
