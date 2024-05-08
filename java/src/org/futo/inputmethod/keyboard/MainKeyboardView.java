@@ -644,7 +644,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         // aligned with the bottom edge of the visible part of the key preview.
         // {@code mPreviewVisibleOffset} has been set appropriately in
         // {@link KeyboardView#showKeyPreview(PointerTracker)}.
-        final int pointY = key.getY() + mKeyPreviewDrawParams.getVisibleOffset() + key.getHeight();
+        final int pointY = key.getY() + mKeyPreviewDrawParams.getVisibleOffset() + (keyPreviewEnabled ? key.getHeight() : key.getVerticalGap());
         moreKeysKeyboardView.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
         return moreKeysKeyboardView;
     }
