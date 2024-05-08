@@ -302,7 +302,7 @@ public final class KeyboardTextsTable {
         /* ~ additional_morekeys_symbols_0 */
         /* morekeys_tablet_period */ "!text/morekeys_tablet_punctuation",
         /* morekeys_nordic_row2_11 */ EMPTY,
-        /* morekeys_punctuation */ "_,\\\\,|,=",
+        /* morekeys_punctuation */ "?,!,\u203d,\u2026,_,\\\\,|,=",
         /* keyspec_tablet_comma */ ",",
         // Period key
         /* keyspec_period */ ".",
@@ -342,7 +342,7 @@ public final class KeyboardTextsTable {
         /* morekeys_tablet_comma */ EMPTY,
         /* keyhintlabel_period */ EMPTY,
         // U+00BF: "¿" INVERTED QUESTION MARK
-        /* morekeys_question */ "\u00BF",
+        /* morekeys_question */ "\u00BF,\u203d",
         /* morekeys_h ~ */
         EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
         /* ~ keyspec_south_slavic_row3_8 */
@@ -395,7 +395,7 @@ public final class KeyboardTextsTable {
         /* morekeys_less_than */ "!fixedColumnOrder!3,!text/keyspec_left_single_angle_quote,!text/keyspec_less_than_equal,!text/keyspec_left_double_angle_quote",
         /* morekeys_greater_than */ "!fixedColumnOrder!3,!text/keyspec_right_single_angle_quote,!text/keyspec_greater_than_equal,!text/keyspec_right_double_angle_quote",
         // U+00A1: "¡" INVERTED EXCLAMATION MARK
-        /* morekeys_exclamation */ "\u00A1",
+        /* morekeys_exclamation */ "\u00A1,\u203d",
         /* morekeys_currency_generic */ "$,\u00A2,\u20AC,\u00A3,\u00A5,\u20B1",
         // U+00B9: "¹" SUPERSCRIPT ONE
         // U+00BD: "½" VULGAR FRACTION ONE HALF

@@ -24,25 +24,25 @@
     <Key
         latin:keySpec="!text/keyspec_y"
         latin:keyHintLabel="6"
-        latin:additionalMoreKeys="6"
+        latin:additionalMoreKeys="6,!text/keyspec_right_square_bracket"
         latin:moreKeys="!text/morekeys_y" />
     <Key
         latin:keySpec="u"
         latin:keyHintLabel="7"
-        latin:additionalMoreKeys="7"
+        latin:additionalMoreKeys="7,!text/keyspec_less_than"
         latin:moreKeys="!text/morekeys_u" />
     <Key
         latin:keySpec="i"
         latin:keyHintLabel="8"
-        latin:additionalMoreKeys="8"
+        latin:additionalMoreKeys="8,!text/keyspec_greater_than"
         latin:moreKeys="!text/morekeys_i" />
     <Key
         latin:keySpec="o"
         latin:keyHintLabel="9"
-        latin:additionalMoreKeys="9"
+        latin:additionalMoreKeys="9,!text/keyspec_left_curly_bracket"
         latin:moreKeys="!text/morekeys_o" />
     <Key
         latin:keySpec="p"
         latin:keyHintLabel="0"
-        latin:additionalMoreKeys="0" />
+        latin:additionalMoreKeys="0,!text/keyspec_right_curly_bracket" />
 </merge>

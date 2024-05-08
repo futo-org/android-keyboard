@@ -376,7 +376,9 @@ public class Key implements Comparable<Key> {
             }
 
             if(moreKeys != null && moreKeys.length > 0) {
-                final String hintLabelCandidate = moreKeys[0];
+                String hintLabelCandidate = moreKeys[0];
+                if(hintLabelCandidate.startsWith("\\")) hintLabelCandidate = hintLabelCandidate.substring(1);
+
                 if(hintLabelCandidate.length() == 1) {
                     hintLabel = hintLabelCandidate;
                 }

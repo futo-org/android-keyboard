@@ -32,6 +32,6 @@
         latin:moreKeys="!text/morekeys_n" />
     <Key
         latin:keySpec="m"
-        latin:keyHintLabel="?"
-        latin:additionalMoreKeys="?,/" />
+        latin:keyHintLabel="\?"
+        latin:additionalMoreKeys="\?,/" />
 </merge>
