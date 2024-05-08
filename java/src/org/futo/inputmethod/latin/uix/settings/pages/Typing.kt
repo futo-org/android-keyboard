@@ -21,6 +21,7 @@ import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
+import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.settings.useDataStore
@@ -106,6 +107,17 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
                     "$it ms"
                 }
             }
+        )
+
+        SettingSliderSharedPrefsInt(
+            title = "Long Press Duration",
+            key = Settings.PREF_KEY_LONGPRESS_TIMEOUT,
+            default = 300,
+            range = 100.0f .. 700.0f,
+            hardRange = 25.0f .. 1200.0f,
+            transform = { it.roundToInt() },
+            indicator = { "$it ms" },
+            steps = 23
         )
     }
 }

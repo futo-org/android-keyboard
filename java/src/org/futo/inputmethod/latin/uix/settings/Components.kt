@@ -23,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -48,6 +47,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
@@ -58,9 +58,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.uix.SettingsKey
-import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import kotlin.math.pow
@@ -268,20 +266,22 @@ fun<T> SettingRadio(
 }
 
 @Composable
-fun<T: Number> SettingSlider(
+private fun<T: Number> SettingSliderForDataStoreItem(
     title: String,
-    setting: SettingsKey<T>,
+    item: DataStoreItem<T>,
+    default: T,
     range: ClosedFloatingPointRange<Float>,
     transform: (Float) -> T,
     indicator: (T) -> String = { it.toString() },
     hardRange: ClosedFloatingPointRange<Float> = range,
     power: Float = 1.0f,
-    subtitle: String? = null
+    subtitle: String? = null,
+    steps: Int = 0,
 ) {
     val context = LocalContext.current
 
-    val (value, setValue) = useDataStore(key = setting.key, default = setting.default)
-    var virtualValue by remember { mutableFloatStateOf((runBlocking { context.getSetting(setting) }).toFloat().let {
+    val (value, setValue) = item
+    var virtualValue by remember { mutableFloatStateOf(value.toFloat().let {
         if(it == Float.POSITIVE_INFINITY || it == Float.NEGATIVE_INFINITY) {
             it
         } else {
@@ -317,7 +317,7 @@ fun<T: Number> SettingSlider(
                         val newValue = if (number != null) {
                             transform(number.coerceIn(hardRange))
                         } else {
-                            setting.default
+                            default
                         }
 
                         setValue(newValue)
@@ -327,12 +327,13 @@ fun<T: Number> SettingSlider(
                         textFieldValue = TextFieldValue()
                     }
                 }
+
                 BasicTextField(
                     value = textFieldValue,
                     onValueChange = { textFieldValue = it },
                     modifier = Modifier
                         .weight(0.33f)
-                        .align(Alignment.CenterVertically)
+                        .align(CenterVertically)
                         .focusRequester(focusRequester)
                         .onFocusChanged {
                             if (it.isFocused) hasTextFieldFocusedYet = true
@@ -345,9 +346,9 @@ fun<T: Number> SettingSlider(
                         }
                     ),
                     singleLine = true,
-                    textStyle = Typography.labelMedium
+                    textStyle = Typography.labelMedium.copy(color = MaterialTheme.colorScheme.onBackground),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
                 )
-
             } else {
                 Text(
                     text = indicator(value),
@@ -368,10 +369,66 @@ fun<T: Number> SettingSlider(
                     setValue(transform(it.pow(power))) },
                 valueRange = range.start.pow(1.0f / power) .. range.endInclusive.pow(1.0f / power),
                 enabled = !isTextFieldVisible,
-                modifier = Modifier.weight(1.0f)
+                modifier = Modifier.weight(1.0f),
+                steps = steps
             )
         }
     }
+}
+
+
+
+@Composable
+fun<T: Number> SettingSlider(
+    title: String,
+    setting: SettingsKey<T>,
+    range: ClosedFloatingPointRange<Float>,
+    transform: (Float) -> T,
+    indicator: (T) -> String = { it.toString() },
+    hardRange: ClosedFloatingPointRange<Float> = range,
+    power: Float = 1.0f,
+    subtitle: String? = null,
+    steps: Int = 0
+) {
+    SettingSliderForDataStoreItem(
+        title = title,
+        item = useDataStore(setting),
+        default = setting.default,
+        range = range,
+        transform = transform,
+        indicator = indicator,
+        hardRange = hardRange,
+        power = power,
+        subtitle = subtitle,
+        steps = steps
+    )
+}
+
+@Composable
+fun SettingSliderSharedPrefsInt(
+    title: String,
+    key: String,
+    default: Int,
+    range: ClosedFloatingPointRange<Float>,
+    transform: (Float) -> Int,
+    indicator: (Int) -> String = { it.toString() },
+    hardRange: ClosedFloatingPointRange<Float> = range,
+    power: Float = 1.0f,
+    subtitle: String? = null,
+    steps: Int = 0
+) {
+    SettingSliderForDataStoreItem(
+        title = title,
+        item = useSharedPrefsInt(key, default),
+        default = default,
+        range = range,
+        transform = transform,
+        indicator = indicator,
+        hardRange = hardRange,
+        power = power,
+        subtitle = subtitle,
+        steps = steps
+    )
 }
 
 @Composable

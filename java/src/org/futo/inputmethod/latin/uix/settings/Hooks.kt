@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -80,19 +81,19 @@ fun <T> useDataStore(key: SettingsKey<T>): DataStoreItem<T> {
 }
 
 @Composable
-fun useSharedPrefsBool(key: String, default: Boolean): DataStoreItem<Boolean> {
+fun<T> useSharedPrefsGeneric(key: String, default: T, get: (SharedPreferences, String, T) -> T, put: (SharedPreferences, String, T) -> Unit): DataStoreItem<T> {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val sharedPrefs = remember { PreferenceManager.getDefaultSharedPreferences(context) }
 
-    val value = remember { mutableStateOf(sharedPrefs.getBoolean(key, default)) }
+    val value = remember { mutableStateOf(get(sharedPrefs, key, default)) }
 
     // This is not the most efficient way to do this... but it works for a settings menu
     DisposableEffect(Unit) {
         val listener =
             SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
                 if (key == changedKey) {
-                    value.value = sharedPreferences.getBoolean(key, value.value)
+                    value.value = get(sharedPreferences, key, value.value)
                 }
             }
 
@@ -103,15 +104,63 @@ fun useSharedPrefsBool(key: String, default: Boolean): DataStoreItem<Boolean> {
         }
     }
 
-    val setValue = { newValue: Boolean ->
+    val setValue = { newValue: T ->
         coroutineScope.launch {
             withContext(Dispatchers.Main) {
-                sharedPrefs.edit {
-                    putBoolean(key, newValue)
-                }
+                put(sharedPrefs, key, newValue)
             }
         }
     }
 
     return DataStoreItem(value.value, setValue)
+}
+
+
+@Composable
+fun useSharedPrefsBool(key: String, default: Boolean): DataStoreItem<Boolean> {
+    return useSharedPrefsGeneric(key, default,
+        get = { sharedPreferences, k, d ->
+            sharedPreferences.getBoolean(k, d)
+        },
+        put = { sharedPreferences, k, v ->
+            sharedPreferences.edit {
+                putBoolean(k, v)
+            }
+        }
+    )
+}
+
+@Composable
+fun useSharedPrefsInt(key: String, default: Int): DataStoreItem<Int> {
+    return useSharedPrefsGeneric(key, default,
+        get = { sharedPreferences, k, d ->
+            sharedPreferences.getInt(k, d)
+        },
+        put = { sharedPreferences, k, v ->
+            sharedPreferences.edit {
+                putInt(k, v)
+            }
+        }
+    )
+}
+
+
+@Composable
+private fun<T> SyncDataStoreToPreferences(key: SettingsKey<T>, update: (newValue: T, editor: SharedPreferences.Editor) -> Unit) {
+    val context = LocalContext.current
+    val sharedPrefs = remember { PreferenceManager.getDefaultSharedPreferences(context) }
+    val value = useDataStoreValueBlocking(key)
+
+    LaunchedEffect(value) {
+        val edit = sharedPrefs.edit {
+            update(value, this)
+        }
+    }
+}
+
+@Composable
+fun SyncDataStoreToPreferencesInt(key: SettingsKey<Int>, sharedPreference: String) {
+    SyncDataStoreToPreferences(key) { value, editor ->
+        editor.putInt(sharedPreference, value)
+    }
 }
