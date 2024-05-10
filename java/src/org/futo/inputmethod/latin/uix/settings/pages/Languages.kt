@@ -26,6 +26,7 @@ import okhttp3.internal.toImmutableList
 import org.futo.inputmethod.latin.BinaryDictionaryGetter
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.RichInputMethodManager
+import org.futo.inputmethod.latin.saveSubtypes
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.getSetting
@@ -117,6 +118,8 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             RichInputMethodManager.getInstance().inputMethodInfoOfThisIme,
             true
         )
+
+        context.saveSubtypes()
     }
 
 
