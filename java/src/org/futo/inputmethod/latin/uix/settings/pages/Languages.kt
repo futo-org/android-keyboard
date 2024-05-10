@@ -1,20 +1,28 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import okhttp3.internal.toImmutableList
 import org.futo.inputmethod.latin.BinaryDictionaryGetter
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.RichInputMethodManager
@@ -91,6 +99,27 @@ data class DeleteInfo(
 fun LanguagesScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val deleteDialogInfo: MutableState<DeleteInfo?> = remember { mutableStateOf(null) }
+
+    val inputMethodManager = remember { context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
+    val inputMethodList = remember { mutableStateOf(
+        inputMethodManager.getEnabledInputMethodSubtypeList(
+            RichInputMethodManager.getInstance().inputMethodInfoOfThisIme,
+            true
+        ).toImmutableList()
+    ) }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+
+    LaunchedEffect(lifecycleState) {
+        delay(250L)
+        inputMethodList.value = inputMethodManager.getEnabledInputMethodSubtypeList(
+            RichInputMethodManager.getInstance().inputMethodInfoOfThisIme,
+            true
+        )
+    }
+
+
     if(deleteDialogInfo.value != null) {
         val info = deleteDialogInfo.value!!
         ConfirmDeleteResourceDialog(
@@ -112,9 +141,9 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             navigate = { context.openLanguageSettings() },
         )
 
-        Tip("Note: This screen is a WIP, use the above option to toggle languages. The list below only updates after opening the keyboard")
+        Tip("Note: This screen is a WIP, use the above option to toggle languages")
 
-        RichInputMethodManager.getInstance().getMyEnabledInputMethodSubtypeList(true).forEach {
+        inputMethodList.value.forEach {
             val name = SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(it)
 
             val locale = Locale.forLanguageTag(it.locale.replace("_", "-"))
