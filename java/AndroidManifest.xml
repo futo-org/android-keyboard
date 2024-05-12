@@ -192,4 +192,11 @@
             android:clearTaskOnLaunch="false"
             android:launchMode="singleInstance" />
     </application>
+
+    <!-- To query enabled input methods for voice IME detection -->
+    <queries>
+        <intent>
+            <action android:name="android.view.InputMethod" />
+        </intent>
+    </queries>
 </manifest>
