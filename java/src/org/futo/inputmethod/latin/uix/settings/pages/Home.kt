@@ -26,6 +26,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -100,6 +101,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             NavigationItem(
                 title = "Voice Input",
                 style = NavigationItemStyle.HomeSecondary,
+                subtitle = if(useDataStoreValueBlocking(USE_SYSTEM_VOICE_INPUT)) { "Built-in voice input is disabled!" } else { null },
                 navigate = { navController.navigate("voiceInput") },
                 icon = painterResource(id = R.drawable.mic_fill)
             )
