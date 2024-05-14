@@ -63,11 +63,18 @@ object Subtypes {
         val locales = context.resources.configuration.locales
         if(locales.size() == 0) return
 
+        var numAdded = 0
         for(i in 0 until locales.size()) {
             val locale = locales.get(i)
             val layout = findClosestLocaleLayouts(locale).firstOrNull() ?: continue
 
             addLanguage(context, locale, layout)
+            numAdded += 1
+        }
+
+        if(numAdded == 0) {
+            // We need to have something...
+            addLanguage(context, Locale.forLanguageTag("zz"), "qwerty")
         }
 
         context.setSettingBlocking(ActiveSubtype.key, context.getSettingBlocking(SubtypesSetting).first())
