@@ -127,7 +127,7 @@ android {
             buildConfigField "boolean", "UPDATE_CHECKING", "true"
             getIsDefault().set(true)
 
-            buildConfigField "String", "PAYMENT_URL", "\"\""
+            buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
         }
         playstore {
             dimension "buildType"
