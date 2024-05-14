@@ -23,7 +23,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingItem
 
 val QwertyVariants = listOf("qwerty", "qwertz", "dvorak", "azerty", "colemak", "bepo", "pcqwerty")
 
-val locales = mapOf(
+val LocaleLayoutMap = mapOf(
     "af"     to   listOf("qwerty"),
     "ar"     to   listOf("arabic"),
     "az_AZ"  to   listOf("qwerty"),
@@ -114,7 +114,7 @@ fun AddLanguageScreen(navController: NavHostController = rememberNavController()
     val selectedLocale: MutableState<String> = remember { mutableStateOf(context.resources.configuration.locale.toString()) }
     val selectedLayout: MutableState<String> = remember { mutableStateOf("qwerty") }
 
-    val keys = remember { locales.keys.toList() }
+    val keys = remember { LocaleLayoutMap.keys.toList() }
     ScrollableList {
         ScreenTitle("Add Language", showBack = true, navController)
 
@@ -125,7 +125,7 @@ fun AddLanguageScreen(navController: NavHostController = rememberNavController()
                 selectedLocale.value,
                 {
                     selectedLocale.value = it
-                    selectedLayout.value = locales[it]!!.first()
+                    selectedLayout.value = LocaleLayoutMap[it]!!.first()
                 },
                 {
                     Subtypes.getNameForLocale(it)
@@ -137,7 +137,7 @@ fun AddLanguageScreen(navController: NavHostController = rememberNavController()
         SettingItem(title = "Layout") {
             DropDownPicker(
                 "",
-                locales[selectedLocale.value] ?: listOf(),
+                LocaleLayoutMap[selectedLocale.value] ?: listOf(),
                 selectedLayout.value,
                 { selectedLayout.value = it },
                 { Subtypes.getLayoutName(context, it) },

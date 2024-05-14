@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
+import org.futo.inputmethod.latin.uix.settings.pages.LocaleLayoutMap
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
@@ -55,6 +56,36 @@ val ActiveSubtype = SettingsKey(
 )
 
 object Subtypes {
+    fun addDefaultSubtypesIfNecessary(context: Context) {
+        val currentSubtypes = context.getSettingBlocking(SubtypesSetting)
+        if(currentSubtypes.isNotEmpty()) return
+
+        val locales = context.resources.configuration.locales
+        if(locales.size() == 0) return
+
+        for(i in 0 until locales.size()) {
+            val locale = locales.get(i)
+            val layout = findClosestLocaleLayouts(locale).firstOrNull() ?: continue
+
+            addLanguage(context, locale, layout)
+        }
+
+        context.setSettingBlocking(ActiveSubtype.key, context.getSettingBlocking(SubtypesSetting).first())
+    }
+
+    fun findClosestLocaleLayouts(locale: Locale): List<String> {
+        val supportedLocales = LocaleLayoutMap.toList().associate {
+            getLocale(it.first) to it.second
+        }
+
+        val perfectMatch = supportedLocales.keys.find { it.language == locale.language && it.country == locale.country }
+        val languageMatch = supportedLocales.keys.find { it.language == locale.language }
+
+        val match = perfectMatch ?: languageMatch
+
+        return match?.let { supportedLocales[it] } ?: listOf()
+    }
+
     fun convertToSubtype(string: String): InputMethodSubtype {
         val splits = string.split(":")
         val locale = splits[0]

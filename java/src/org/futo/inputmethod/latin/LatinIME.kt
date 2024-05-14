@@ -221,6 +221,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun onCreate() {
         super.onCreate()
 
+        Subtypes.addDefaultSubtypesIfNecessary(this)
+
         languageModelFacilitator = LanguageModelFacilitator(
             this,
             latinIMELegacy.mInputLogic,
