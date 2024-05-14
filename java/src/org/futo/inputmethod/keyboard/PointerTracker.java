@@ -130,6 +130,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private int mLastX;
     private int mLastY;
 
+    private boolean mIsSlidingCursor;
     private int mStartX;
     private int mStartY;
     private long mStartTime;
@@ -702,6 +703,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mStartX = x;
             mStartY = y;
             mStartTime = System.currentTimeMillis();
+
+            mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
         }
     }
 
@@ -904,7 +907,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int lastY = mLastY;
         final Key oldKey = mCurrentKey;
 
-        if (oldKey != null && oldKey.getCode() == Constants.CODE_SPACE) {
+        if (mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_SPACE) {
             int steps = (x - mStartX) / sPointerStep;
             final int swipeIgnoreTime = Settings.getInstance().getCurrent().mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
             if (steps != 0 && mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
@@ -915,7 +918,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
 
-        if (oldKey != null && oldKey.getCode() == Constants.CODE_DELETE) {
+        if (mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_DELETE) {
             int steps = (x - mStartX) / sPointerStep;
             if (steps != 0) {
                 sTimerProxy.cancelKeyTimersOf(this);
