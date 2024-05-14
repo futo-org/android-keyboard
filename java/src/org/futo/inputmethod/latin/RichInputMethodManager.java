@@ -102,9 +102,6 @@ public class RichInputMethodManager {
 
         // Initialize additional subtypes.
         SubtypeLocaleUtils.init(context);
-        final InputMethodSubtype[] additionalSubtypes = getAdditionalSubtypes();
-        mImmWrapper.mImm.setAdditionalInputMethodSubtypes(
-                getInputMethodIdOfThisIme(), additionalSubtypes);
 
         // Initialize the current input method subtype and the shortcut IME.
         refreshSubtypeCaches();
@@ -120,110 +117,6 @@ public class RichInputMethodManager {
     public InputMethodManager getInputMethodManager() {
         checkInitialized();
         return mImmWrapper.mImm;
-    }
-
-    public List<InputMethodSubtype> getMyEnabledInputMethodSubtypeList(
-            boolean allowsImplicitlySelectedSubtypes) {
-        return getEnabledInputMethodSubtypeList(
-                getInputMethodInfoOfThisIme(), allowsImplicitlySelectedSubtypes);
-    }
-
-    public boolean switchToNextInputMethod(final IBinder token, final boolean onlyCurrentIme) {
-        if (mImmWrapper.switchToNextInputMethod(token, onlyCurrentIme)) {
-            return true;
-        }
-        // Was not able to call {@link InputMethodManager#switchToNextInputMethodIBinder,boolean)}
-        // because the current device is running ICS or previous and lacks the API.
-        if (switchToNextInputSubtypeInThisIme(token, onlyCurrentIme)) {
-            return true;
-        }
-        return switchToNextInputMethodAndSubtype(token);
-    }
-
-    private boolean switchToNextInputSubtypeInThisIme(final IBinder token,
-            final boolean onlyCurrentIme) {
-        final InputMethodManager imm = mImmWrapper.mImm;
-        final InputMethodSubtype currentSubtype = imm.getCurrentInputMethodSubtype();
-        final List<InputMethodSubtype> enabledSubtypes = getMyEnabledInputMethodSubtypeList(
-                true /* allowsImplicitlySelectedSubtypes */);
-        final int currentIndex = getSubtypeIndexInList(currentSubtype, enabledSubtypes);
-        if (currentIndex == INDEX_NOT_FOUND) {
-            Log.w(TAG, "Can't find current subtype in enabled subtypes: subtype="
-                    + SubtypeLocaleUtils.getSubtypeNameForLogging(currentSubtype));
-            return false;
-        }
-        final int nextIndex = (currentIndex + 1) % enabledSubtypes.size();
-        if (nextIndex <= currentIndex && !onlyCurrentIme) {
-            // The current subtype is the last or only enabled one and it needs to switch to
-            // next IME.
-            return false;
-        }
-        final InputMethodSubtype nextSubtype = enabledSubtypes.get(nextIndex);
-        setInputMethodAndSubtype(token, nextSubtype);
-        return true;
-    }
-
-    private boolean switchToNextInputMethodAndSubtype(final IBinder token) {
-        final InputMethodManager imm = mImmWrapper.mImm;
-        final List<InputMethodInfo> enabledImis = imm.getEnabledInputMethodList();
-        final int currentIndex = getImiIndexInList(getInputMethodInfoOfThisIme(), enabledImis);
-        if (currentIndex == INDEX_NOT_FOUND) {
-            Log.w(TAG, "Can't find current IME in enabled IMEs: IME package="
-                    + getInputMethodInfoOfThisIme().getPackageName());
-            return false;
-        }
-        final InputMethodInfo nextImi = getNextNonAuxiliaryIme(currentIndex, enabledImis);
-        final List<InputMethodSubtype> enabledSubtypes = getEnabledInputMethodSubtypeList(nextImi,
-                true /* allowsImplicitlySelectedSubtypes */);
-        if (enabledSubtypes.isEmpty()) {
-            // The next IME has no subtype.
-            imm.setInputMethod(token, nextImi.getId());
-            return true;
-        }
-        final InputMethodSubtype firstSubtype = enabledSubtypes.get(0);
-        imm.setInputMethodAndSubtype(token, nextImi.getId(), firstSubtype);
-        return true;
-    }
-
-    private static int getImiIndexInList(final InputMethodInfo inputMethodInfo,
-            final List<InputMethodInfo> imiList) {
-        final int count = imiList.size();
-        for (int index = 0; index < count; index++) {
-            final InputMethodInfo imi = imiList.get(index);
-            if (imi.equals(inputMethodInfo)) {
-                return index;
-            }
-        }
-        return INDEX_NOT_FOUND;
-    }
-
-    // This method mimics {@link InputMethodManager#switchToNextInputMethod(IBinder,boolean)}.
-    private static InputMethodInfo getNextNonAuxiliaryIme(final int currentIndex,
-            final List<InputMethodInfo> imiList) {
-        final int count = imiList.size();
-        for (int i = 1; i < count; i++) {
-            final int nextIndex = (currentIndex + i) % count;
-            final InputMethodInfo nextImi = imiList.get(nextIndex);
-            if (!isAuxiliaryIme(nextImi)) {
-                return nextImi;
-            }
-        }
-        return imiList.get(currentIndex);
-    }
-
-    // Copied from {@link InputMethodInfo}. See how auxiliary of IME is determined.
-    private static boolean isAuxiliaryIme(final InputMethodInfo imi) {
-        final int count = imi.getSubtypeCount();
-        if (count == 0) {
-            return false;
-        }
-        for (int index = 0; index < count; index++) {
-            final InputMethodSubtype subtype = imi.getSubtypeAt(index);
-            if (!subtype.isAuxiliary()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static class InputMethodInfoCache {
@@ -287,38 +180,6 @@ public class RichInputMethodManager {
         return getInputMethodInfoOfThisIme().getId();
     }
 
-    public boolean checkIfSubtypeBelongsToThisImeAndEnabled(final InputMethodSubtype subtype) {
-        return checkIfSubtypeBelongsToList(subtype,
-                getEnabledInputMethodSubtypeList(
-                        getInputMethodInfoOfThisIme(),
-                        true /* allowsImplicitlySelectedSubtypes */));
-    }
-
-    public boolean checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(
-            final InputMethodSubtype subtype) {
-        final boolean subtypeEnabled = checkIfSubtypeBelongsToThisImeAndEnabled(subtype);
-        final boolean subtypeExplicitlyEnabled = checkIfSubtypeBelongsToList(subtype,
-                getMyEnabledInputMethodSubtypeList(false /* allowsImplicitlySelectedSubtypes */));
-        return subtypeEnabled && !subtypeExplicitlyEnabled;
-    }
-
-    private static boolean checkIfSubtypeBelongsToList(final InputMethodSubtype subtype,
-            final List<InputMethodSubtype> subtypes) {
-        return getSubtypeIndexInList(subtype, subtypes) != INDEX_NOT_FOUND;
-    }
-
-    private static int getSubtypeIndexInList(final InputMethodSubtype subtype,
-            final List<InputMethodSubtype> subtypes) {
-        final int count = subtypes.size();
-        for (int index = 0; index < count; index++) {
-            final InputMethodSubtype ims = subtypes.get(index);
-            if (ims.equals(subtype)) {
-                return index;
-            }
-        }
-        return INDEX_NOT_FOUND;
-    }
-
     public void onSubtypeChanged(@Nonnull final InputMethodSubtype newSubtype) {
         updateCurrentSubtype(newSubtype);
         updateShortcutIme();
@@ -355,142 +216,9 @@ public class RichInputMethodManager {
         return SubtypeLocaleUtils.getCombiningRulesExtraValue(getCurrentSubtype().getRawSubtype());
     }
 
-    public boolean hasMultipleEnabledIMEsOrSubtypes(final boolean shouldIncludeAuxiliarySubtypes) {
-        final List<InputMethodInfo> enabledImis = mImmWrapper.mImm.getEnabledInputMethodList();
-        return hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, enabledImis);
-    }
-
-    public boolean hasMultipleEnabledSubtypesInThisIme(
-            final boolean shouldIncludeAuxiliarySubtypes) {
-        final List<InputMethodInfo> imiList = Collections.singletonList(
-                getInputMethodInfoOfThisIme());
-        return hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, imiList);
-    }
-
-    private boolean hasMultipleEnabledSubtypes(final boolean shouldIncludeAuxiliarySubtypes,
-            final List<InputMethodInfo> imiList) {
-        // Number of the filtered IMEs
-        int filteredImisCount = 0;
-
-        for (InputMethodInfo imi : imiList) {
-            // We can return true immediately after we find two or more filtered IMEs.
-            if (filteredImisCount > 1) return true;
-            final List<InputMethodSubtype> subtypes = getEnabledInputMethodSubtypeList(imi, true);
-            // IMEs that have no subtypes should be counted.
-            if (subtypes.isEmpty()) {
-                ++filteredImisCount;
-                continue;
-            }
-
-            int auxCount = 0;
-            for (InputMethodSubtype subtype : subtypes) {
-                if (subtype.isAuxiliary()) {
-                    ++auxCount;
-                }
-            }
-            final int nonAuxCount = subtypes.size() - auxCount;
-
-            // IMEs that have one or more non-auxiliary subtypes should be counted.
-            // If shouldIncludeAuxiliarySubtypes is true, IMEs that have two or more auxiliary
-            // subtypes should be counted as well.
-            if (nonAuxCount > 0 || (shouldIncludeAuxiliarySubtypes && auxCount > 1)) {
-                ++filteredImisCount;
-            }
-        }
-
-        if (filteredImisCount > 1) {
-            return true;
-        }
-        final List<InputMethodSubtype> subtypes = getMyEnabledInputMethodSubtypeList(true);
-        int keyboardCount = 0;
-        // imm.getEnabledInputMethodSubtypeList(null, true) will return the current IME's
-        // both explicitly and implicitly enabled input method subtype.
-        // (The current IME should be LatinIME.)
-        for (InputMethodSubtype subtype : subtypes) {
-            if (KEYBOARD_MODE.equals(subtype.getMode())) {
-                ++keyboardCount;
-            }
-        }
-        return keyboardCount > 1;
-    }
-
-    public InputMethodSubtype findSubtypeByLocaleAndKeyboardLayoutSet(final String localeString,
-            final String keyboardLayoutSetName) {
-        final InputMethodInfo myImi = getInputMethodInfoOfThisIme();
-        final int count = myImi.getSubtypeCount();
-        for (int i = 0; i < count; i++) {
-            final InputMethodSubtype subtype = myImi.getSubtypeAt(i);
-            final String layoutName = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
-            if (localeString.equals(subtype.getLocale())
-                    && keyboardLayoutSetName.equals(layoutName)) {
-                return subtype;
-            }
-        }
-        return null;
-    }
-
-    public InputMethodSubtype findSubtypeByLocale(final Locale locale) {
-        // Find the best subtype based on a straightforward matching algorithm.
-        // TODO: Use LocaleList#getFirstMatch() instead.
-        final List<InputMethodSubtype> subtypes =
-                getMyEnabledInputMethodSubtypeList(true /* allowsImplicitlySelectedSubtypes */);
-        final int count = subtypes.size();
-        for (int i = 0; i < count; ++i) {
-            final InputMethodSubtype subtype = subtypes.get(i);
-            final Locale subtypeLocale = InputMethodSubtypeCompatUtils.getLocaleObject(subtype);
-            if (subtypeLocale.equals(locale)) {
-                return subtype;
-            }
-        }
-        for (int i = 0; i < count; ++i) {
-            final InputMethodSubtype subtype = subtypes.get(i);
-            final Locale subtypeLocale = InputMethodSubtypeCompatUtils.getLocaleObject(subtype);
-            if (subtypeLocale.getLanguage().equals(locale.getLanguage()) &&
-                    subtypeLocale.getCountry().equals(locale.getCountry()) &&
-                    subtypeLocale.getVariant().equals(locale.getVariant())) {
-                return subtype;
-            }
-        }
-        for (int i = 0; i < count; ++i) {
-            final InputMethodSubtype subtype = subtypes.get(i);
-            final Locale subtypeLocale = InputMethodSubtypeCompatUtils.getLocaleObject(subtype);
-            if (subtypeLocale.getLanguage().equals(locale.getLanguage()) &&
-                    subtypeLocale.getCountry().equals(locale.getCountry())) {
-                return subtype;
-            }
-        }
-        for (int i = 0; i < count; ++i) {
-            final InputMethodSubtype subtype = subtypes.get(i);
-            final Locale subtypeLocale = InputMethodSubtypeCompatUtils.getLocaleObject(subtype);
-            if (subtypeLocale.getLanguage().equals(locale.getLanguage())) {
-                return subtype;
-            }
-        }
-        return null;
-    }
-
-    public void setInputMethodAndSubtype(final IBinder token, final InputMethodSubtype subtype) {
-        mImmWrapper.mImm.setInputMethodAndSubtype(
-                token, getInputMethodIdOfThisIme(), subtype);
-    }
-
-    public void setAdditionalInputMethodSubtypes(final InputMethodSubtype[] subtypes) {
-        mImmWrapper.mImm.setAdditionalInputMethodSubtypes(
-                getInputMethodIdOfThisIme(), subtypes);
-        // Clear the cache so that we go read the {@link InputMethodInfo} of this IME and list of
-        // subtypes again next time.
-        refreshSubtypeCaches();
-    }
-
-    private List<InputMethodSubtype> getEnabledInputMethodSubtypeList(final InputMethodInfo imi,
-            final boolean allowsImplicitlySelectedSubtypes) {
-        return mInputMethodInfoCache.getEnabledInputMethodSubtypeList(
-                imi, allowsImplicitlySelectedSubtypes);
-    }
-
     public void refreshSubtypeCaches() {
         mInputMethodInfoCache.clear();
-        updateCurrentSubtype(mImmWrapper.mImm.getCurrentInputMethodSubtype());
+        updateCurrentSubtype(Subtypes.INSTANCE.getActiveSubtype(mContext));
         updateShortcutIme();
     }
 
@@ -545,13 +273,7 @@ public class RichInputMethodManager {
                             mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
         }
         final RichInputMethodSubtype richSubtype = mCurrentRichInputMethodSubtype;
-        final boolean implicitlyEnabledSubtype = checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(
-                richSubtype.getRawSubtype());
         final Locale systemLocale = mContext.getResources().getConfiguration().locale;
-        LanguageOnSpacebarUtils.onSubtypeChanged(
-                richSubtype, implicitlyEnabledSubtype, systemLocale);
-        LanguageOnSpacebarUtils.setEnabledSubtypes(getMyEnabledInputMethodSubtypeList(
-                true /* allowsImplicitlySelectedSubtypes */));
 
         // TODO: Update an icon for shortcut IME
         final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =

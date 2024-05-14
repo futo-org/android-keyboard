@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
+import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
@@ -57,6 +58,7 @@ import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.autoDeferManualUpdateIfNeeded
@@ -65,7 +67,6 @@ import org.futo.inputmethod.updates.isManualUpdateTimeExpired
 import org.futo.inputmethod.updates.openManualUpdateCheck
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 import java.util.Locale
-
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
@@ -334,13 +335,13 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    val wordBeingForgotten: MutableState<SuggestedWordInfo?> = mutableStateOf(null)
-    val forgetWordDismissed: MutableState<Boolean> = mutableStateOf(true)
+    private val wordBeingForgotten: MutableState<SuggestedWordInfo?> = mutableStateOf(null)
+    private val forgetWordDismissed: MutableState<Boolean> = mutableStateOf(true)
 
     @Composable
     fun BoxScope.ForgetWordDialog() {
         AnimatedVisibility(
-            visible = forgetWordDismissed.value == false,
+            visible = !forgetWordDismissed.value,
             modifier = Modifier.matchParentSize(),
             enter = fadeIn(),
             exit = fadeOut()
@@ -349,11 +350,13 @@ class UixManager(private val latinIME: LatinIME) {
                 Box(modifier = Modifier.matchParentSize()) {
                     Surface(
                         color = Color.Black.copy(alpha = 0.66f),
-                        modifier = Modifier.matchParentSize().pointerInput(Unit) {
-                            this.detectTapGestures(onPress = {
-                                forgetWordDismissed.value = true
-                            })
-                        }
+                        modifier = Modifier
+                            .matchParentSize()
+                            .pointerInput(Unit) {
+                                this.detectTapGestures(onPress = {
+                                    forgetWordDismissed.value = true
+                                })
+                            }
                     ) { }
 
                     Surface(
@@ -403,6 +406,23 @@ class UixManager(private val latinIME: LatinIME) {
                 }
             }
         }
+    }
+
+    private var languageSwitcherDialog: DialogComposeView? = null
+    fun showLanguageSwitcher() {
+        // Dismiss old dialog
+        languageSwitcherDialog?.dismiss()
+
+        // Create new dialog
+        languageSwitcherDialog = createDialogComposeView(latinIME) {
+            UixThemeAuto {
+                LanguageSwitcherDialog(
+                    onDismiss = { it.dismiss() }
+                )
+            }
+        }
+
+        languageSwitcherDialog?.show()
     }
 
     fun setContent() {
@@ -522,6 +542,7 @@ class UixManager(private val latinIME: LatinIME) {
 
     fun onInputFinishing() {
         closeActionWindow()
+        languageSwitcherDialog?.dismiss()
     }
 
     fun cleanUpPersistentStates() {

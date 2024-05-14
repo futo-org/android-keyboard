@@ -38,7 +38,8 @@ import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.LatinIMELegacy
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
-import org.futo.inputmethod.latin.RichInputMethodManager
+import org.futo.inputmethod.latin.Subtypes
+import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -68,13 +69,16 @@ data class InputLanguage(
 )
 
 fun getActiveLanguages(context: Context): List<InputLanguage> {
-    RichInputMethodManager.init(context)
-
-    return RichInputMethodManager.getInstance().getMyEnabledInputMethodSubtypeList(true).map {
-        val name = SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(it)
-
-        InputLanguage(it.locale, name, it)
-    }.toList()
+    SubtypeLocaleUtils.init(context)
+    return context.getSettingBlocking(SubtypesSetting)
+        .let { Subtypes.layoutsMappedByLanguage(it) }
+        .map {
+        InputLanguage(
+            it.value.first().locale,
+            Subtypes.getName(it.value.first()),
+            it.value.first()
+        )
+    }
 }
 
 

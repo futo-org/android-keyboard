@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
+import org.futo.inputmethod.latin.uix.settings.pages.AddLanguageScreen
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
 import org.futo.inputmethod.latin.uix.settings.pages.CreditsScreen
@@ -49,6 +50,7 @@ fun SettingsNavigator(
     ) {
         composable("home") { HomeScreen(navController) }
         composable("languages") { LanguagesScreen(navController) }
+        composable("addLanguage") { AddLanguageScreen(navController) }
         composable("predictiveText") { PredictiveTextScreen(navController) }
         composable("advancedparams") { AdvancedParametersScreen(navController) }
         composable("typing") { TypingScreen(navController) }

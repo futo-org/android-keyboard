@@ -209,14 +209,7 @@ public class RichInputMethodSubtype {
     @Nonnull
     public static RichInputMethodSubtype getNoLanguageSubtype() {
         RichInputMethodSubtype noLanguageSubtype = sNoLanguageSubtype;
-        if (noLanguageSubtype == null) {
-            final InputMethodSubtype rawNoLanguageSubtype = RichInputMethodManager.getInstance()
-                    .findSubtypeByLocaleAndKeyboardLayoutSet(
-                            SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.QWERTY);
-            if (rawNoLanguageSubtype != null) {
-                noLanguageSubtype = new RichInputMethodSubtype(rawNoLanguageSubtype);
-            }
-        }
+
         if (noLanguageSubtype != null) {
             sNoLanguageSubtype = noLanguageSubtype;
             return noLanguageSubtype;
@@ -230,14 +223,7 @@ public class RichInputMethodSubtype {
     @Nonnull
     public static RichInputMethodSubtype getEmojiSubtype() {
         RichInputMethodSubtype emojiSubtype = sEmojiSubtype;
-        if (emojiSubtype == null) {
-            final InputMethodSubtype rawEmojiSubtype = RichInputMethodManager.getInstance()
-                    .findSubtypeByLocaleAndKeyboardLayoutSet(
-                            SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.EMOJI);
-            if (rawEmojiSubtype != null) {
-                emojiSubtype = new RichInputMethodSubtype(rawEmojiSubtype);
-            }
-        }
+
         if (emojiSubtype != null) {
             sEmojiSubtype = emojiSubtype;
             return emojiSubtype;

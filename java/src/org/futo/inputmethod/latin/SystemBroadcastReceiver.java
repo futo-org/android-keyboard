@@ -59,12 +59,6 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         final String intentAction = intent.getAction();
         if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intentAction)) {
             Log.i(TAG, "Package has been replaced: " + context.getPackageName());
-            // Need to restore additional subtypes because system always clears additional
-            // subtypes when the package is replaced.
-            RichInputMethodManager.init(context);
-            final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
-            final InputMethodSubtype[] additionalSubtypes = richImm.getAdditionalSubtypes();
-            richImm.setAdditionalInputMethodSubtypes(additionalSubtypes);
         } else if (Intent.ACTION_BOOT_COMPLETED.equals(intentAction)) {
             Log.i(TAG, "Boot has been completed");
         } else if (Intent.ACTION_LOCALE_CHANGED.equals(intentAction)) {

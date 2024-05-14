@@ -23,6 +23,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -538,4 +542,65 @@ fun SettingTextField(title: String, placeholder: String, field: SettingsKey<Stri
             .fillMaxWidth()
             .padding(8.dp, 4.dp),
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun<T> DropDownPicker(
+    label: String,
+    options: List<T>,
+    selection: T?,
+    onSet: (T) -> Unit,
+    getDisplayName: (T) -> String,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        },
+        modifier = modifier
+    ) {
+        TextField(
+            readOnly = true,
+            value = selection?.let(getDisplayName) ?: "None",
+            onValueChange = { },
+            label = if (label.isNotBlank()) {
+                { Text(label) }
+            } else {
+                null
+            },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ),
+            modifier = Modifier.menuAnchor()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            options.forEach { selectionOption ->
+                DropdownMenuItem(
+                    text = {
+                        Text(getDisplayName(selectionOption))
+                    },
+                    onClick = {
+                        onSet(selectionOption)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
 }

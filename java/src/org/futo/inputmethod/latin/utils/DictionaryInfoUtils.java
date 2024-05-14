@@ -574,17 +574,6 @@ public class DictionaryInfoUtils {
             addOrUpdateDictInfo(dictList, dictionaryInfo);
         }
 
-        // Generate the dictionary information from  the enabled subtypes. This will not
-        // overwrite the real records.
-        RichInputMethodManager.init(context);
-        List<InputMethodSubtype> enabledSubtypes = RichInputMethodManager
-                .getInstance().getMyEnabledInputMethodSubtypeList(true);
-        for (InputMethodSubtype subtype : enabledSubtypes) {
-            Locale locale = LocaleUtils.constructLocaleFromString(subtype.getLocale());
-            DictionaryInfo dictionaryInfo = createDictionaryInfoFromLocale(locale);
-            addOrUpdateDictInfo(dictList, dictionaryInfo);
-        }
-
         return dictList;
     }
 

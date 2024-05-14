@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import org.futo.inputmethod.latin.R;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.common.LocaleUtils;
 import org.futo.inputmethod.latin.common.StringUtils;
 
@@ -286,6 +287,19 @@ public final class SubtypeLocaleUtils {
         final String replacementString = getReplacementString(subtype, displayLocale);
         // TODO: rework this for multi-lingual subtypes
         final int nameResId = subtype.getNameResId();
+
+        if(nameResId == 0) {
+            if(replacementString.isEmpty()) {
+                return StringUtils.capitalizeFirstCodePoint(
+                        Subtypes.INSTANCE.getLocale(subtype).getDisplayName(displayLocale),
+                        displayLocale);
+            } else {
+                return StringUtils.capitalizeFirstCodePoint(
+                        replacementString,
+                        displayLocale);
+            }
+        }
+
         final RunInLocale<String> getSubtypeName = new RunInLocale<String>() {
             @Override
             protected String job(final Resources res) {

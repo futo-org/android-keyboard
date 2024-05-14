@@ -32,7 +32,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Build;
@@ -61,8 +60,6 @@ import androidx.core.content.ContextCompat;
 
 import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.annotations.UsedForTesting;
-import org.futo.inputmethod.compat.BuildCompatUtils;
-import org.futo.inputmethod.compat.EditorInfoCompatUtils;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
 import org.futo.inputmethod.dictionarypack.DictionaryPackConstants;
@@ -90,7 +87,7 @@ import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import org.futo.inputmethod.latin.touchinputconsumer.GestureConsumer;
-import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner;
+import org.futo.inputmethod.latin.uix.actions.SwitchLanguageActionKt;
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity;
 import org.futo.inputmethod.latin.utils.ApplicationUtils;
 import org.futo.inputmethod.latin.utils.DialogUtils;
@@ -176,7 +173,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     private final SuggestionStripController mSuggestionStripController;
 
     private RichInputMethodManager mRichImm;
-    @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
+    public final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
     private EmojiAltPhysicalKeyDetector mEmojiAltPhysicalKeyDetector;
     private StatsUtilsManager mStatsUtilsManager;
@@ -329,9 +326,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
             case MSG_DEALLOCATE_MEMORY:
                 latinImeLegacy.deallocateMemory();
                 break;
-            case MSG_SWITCH_LANGUAGE_AUTOMATICALLY:
-                latinImeLegacy.switchLanguage((InputMethodSubtype)msg.obj);
-                break;
             }
         }
 
@@ -465,10 +459,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
             obtainMessage(MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED, suggestedWords).sendToTarget();
         }
 
-        public void postSwitchLanguage(final InputMethodSubtype subtype) {
-            obtainMessage(MSG_SWITCH_LANGUAGE_AUTOMATICALLY, subtype).sendToTarget();
-        }
-
         // Working variables for the following methods.
         private boolean mIsOrientationChanging;
         private boolean mPendingSuccessiveImsCallback;
@@ -589,23 +579,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
             mCurrentSubtypeHasBeenUsed = true;
         }
 
-        public void switchSubtype(final IBinder token, final RichInputMethodManager richImm) {
-            final InputMethodSubtype currentSubtype = richImm.getInputMethodManager()
-                    .getCurrentInputMethodSubtype();
-            final InputMethodSubtype lastActiveSubtype = mLastActiveSubtype;
-            final boolean currentSubtypeHasBeenUsed = mCurrentSubtypeHasBeenUsed;
-            if (currentSubtypeHasBeenUsed) {
-                mLastActiveSubtype = currentSubtype;
-                mCurrentSubtypeHasBeenUsed = false;
-            }
-            if (currentSubtypeHasBeenUsed
-                    && richImm.checkIfSubtypeBelongsToThisImeAndEnabled(lastActiveSubtype)
-                    && !currentSubtype.equals(lastActiveSubtype)) {
-                richImm.setInputMethodAndSubtype(token, lastActiveSubtype);
-                return;
-            }
-            richImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
-        }
     }
 
     // Loading the native library eagerly to avoid unexpected UnsatisfiedLinkError at the initial
@@ -929,18 +902,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
-        // If the primary hint language does not match the current subtype language, then try
-        // to switch to the primary hint language.
-        // TODO: Support all the locales in EditorInfo#hintLocales.
-        final Locale primaryHintLocale = EditorInfoCompatUtils.getPrimaryHintLocale(editorInfo);
-        if (primaryHintLocale == null) {
-            return;
-        }
-        final InputMethodSubtype newSubtype = mRichImm.findSubtypeByLocale(primaryHintLocale);
-        if (newSubtype == null || newSubtype.equals(mRichImm.getCurrentSubtype().getRawSubtype())) {
-            return;
-        }
-        mHandler.postSwitchLanguage(newSubtype);
+
     }
 
     public void updateMainKeyboardViewSettings() {
@@ -1374,11 +1336,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER:
-            if (mRichImm.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
-                mRichImm.getInputMethodManager().showInputMethodPicker();
-                return true;
-            }
-            return false;
+            ((LatinIME)mInputMethodService).getUixManager().showLanguageSwitcher();
+            return true;
         }
         return false;
     }
@@ -1459,13 +1418,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    public void switchLanguage(final InputMethodSubtype subtype) {
-        final IBinder token = mInputMethodService.getWindow().getWindow().getAttributes().token;
-        mRichImm.setInputMethodAndSubtype(token, subtype);
-    }
-
     public void switchToNextSubtype() {
-        mRichImm.getInputMethodManager().showInputMethodPicker();
+        SwitchLanguageActionKt.switchToNextLanguage(mInputMethodService);
     }
 
     // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
@@ -2004,12 +1958,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
     @UsedForTesting
     void clearPersonalizedDictionariesForTest() {
         mDictionaryFacilitator.clearUserHistoryDictionary(mInputMethodService);
-    }
-
-    @UsedForTesting
-    List<InputMethodSubtype> getEnabledSubtypesForTest() {
-        return (mRichImm != null) ? mRichImm.getMyEnabledInputMethodSubtypeList(
-                true /* allowsImplicitlySelectedSubtypes */) : new ArrayList<InputMethodSubtype>();
     }
 
     public void dumpDictionaryForDebug(final String dictName) {

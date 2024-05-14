@@ -20,6 +20,7 @@ val AllActions = listOf(
     RedoAction,
     VoiceInputAction,
     SystemVoiceInputAction,
+    SwitchLanguageAction
 )
 
 
@@ -70,7 +71,8 @@ val DefaultActions = listOf(
     ClipboardAction,
     SettingsAction,
     ThemeAction,
-    MemoryDebugAction
+    MemoryDebugAction,
+    SwitchLanguageAction
 )
 
 val DefaultActionsString = ActionRegistry.actionsToString(DefaultActions)

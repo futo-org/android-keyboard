@@ -52,6 +52,11 @@ fun CreditsScreen(navController: NavHostController = rememberNavController()) {
             modifier = Modifier.clickable {
                 context.openURI("https://github.com/gkonovalov/android-vad")
             })
+        
+        ParagraphText("Some keyboard layouts were taken from the CyanogenMod/LineageOS fork of the LatinIME keyboard. Their fork is Apache-2.0 licensed. Copyright (C) 2015 The CyanogenMod Project",
+            modifier = Modifier.clickable {
+                context.openURI("https://github.com/LineageOS/android_packages_inputmethods_LatinIME")
+            })
 
         Spacer(modifier = Modifier.height(16.dp))
         ParagraphText("Note: The authors listed above are not affiliated with us and do not endorse or promote us")

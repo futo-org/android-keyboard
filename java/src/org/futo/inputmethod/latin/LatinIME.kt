@@ -63,6 +63,7 @@ import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
@@ -275,7 +276,21 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
 
         lifecycleScope.launch {
-            saveSubtypes()
+            val onNewSubtype: (String) -> Unit = {
+                val activeSubtype = it.ifEmpty {
+                    getSettingBlocking(SubtypesSetting).firstOrNull()
+                }
+
+                if(activeSubtype != null) {
+                    changeInputMethodSubtype(Subtypes.convertToSubtype(activeSubtype))
+                }
+            }
+
+            onNewSubtype(getSetting(ActiveSubtype))
+
+            dataStore.data.collect {
+                onNewSubtype(it[ActiveSubtype.key] ?: ActiveSubtype.default)
+            }
         }
     }
 
@@ -411,8 +426,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         languageModelFacilitator.saveHistoryLog()
     }
 
-    override fun onCurrentInputMethodSubtypeChanged(newSubtype: InputMethodSubtype?) {
-        super.onCurrentInputMethodSubtypeChanged(newSubtype)
+    private fun changeInputMethodSubtype(newSubtype: InputMethodSubtype?) {
         latinIMELegacy.onCurrentInputMethodSubtypeChanged(newSubtype)
     }
 

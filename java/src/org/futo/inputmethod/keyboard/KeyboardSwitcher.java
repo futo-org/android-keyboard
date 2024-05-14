@@ -28,7 +28,6 @@ import androidx.annotation.NonNull;
 
 import org.futo.inputmethod.event.Event;
 import org.futo.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
-import org.futo.inputmethod.keyboard.emoji.EmojiPalettesView;
 import org.futo.inputmethod.keyboard.internal.KeyboardState;
 import org.futo.inputmethod.keyboard.internal.KeyboardTextsSet;
 import org.futo.inputmethod.latin.InputView;
@@ -36,6 +35,7 @@ import org.futo.inputmethod.latin.LatinIME;
 import org.futo.inputmethod.latin.LatinIMELegacy;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodManager;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.WordComposer;
 import org.futo.inputmethod.latin.define.ProductionFlags;
 import org.futo.inputmethod.latin.settings.Settings;
@@ -181,8 +181,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 || !newKeyboard.mId.mSubtype.equals(oldKeyboard.mId.mSubtype);
         final int languageOnSpacebarFormatType = LanguageOnSpacebarUtils
                 .getLanguageOnSpacebarFormatType(newKeyboard.mId.mSubtype);
-        final boolean hasMultipleEnabledIMEsOrSubtypes = mRichImm
-                .hasMultipleEnabledIMEsOrSubtypes(true /* shouldIncludeAuxiliarySubtypes */);
+        final boolean hasMultipleEnabledIMEsOrSubtypes = Subtypes.INSTANCE.hasMultipleEnabledSubtypes(mThemeContext);
         keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, languageOnSpacebarFormatType,
                 hasMultipleEnabledIMEsOrSubtypes);
     }
