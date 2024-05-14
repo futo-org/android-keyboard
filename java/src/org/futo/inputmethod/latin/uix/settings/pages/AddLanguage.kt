@@ -103,7 +103,7 @@ val LocaleLayoutMap = mapOf(
     "uz_UZ"  to   listOf("uzbek"),
     "vi"     to   listOf("qwerty"),
     "zu"     to   listOf("qwerty"),
-    "zz"     to   listOf("qwerty"),
+    "zz"     to   QwertyVariants,
 )
 
 @Preview
