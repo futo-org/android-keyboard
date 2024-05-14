@@ -24,6 +24,7 @@ import android.graphics.Path;
 import org.futo.inputmethod.keyboard.PointerTracker;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.CoordinateUtils;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 
 /**
  * Draw rubber band preview graphics during sliding key input.
@@ -44,9 +45,10 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
     private final RoundedLine mRoundedLine = new RoundedLine();
     private final Paint mPaint = new Paint();
 
-    public SlidingKeyInputDrawingPreview(final TypedArray mainKeyboardViewAttr) {
-        final int previewColor = mainKeyboardViewAttr.getColor(
-                R.styleable.MainKeyboardView_slidingKeyInputPreviewColor, 0);
+    public SlidingKeyInputDrawingPreview(final TypedArray mainKeyboardViewAttr, DynamicThemeProvider provider) {
+        final int previewColor = DynamicThemeProvider.Companion.getColorOrDefault(
+                R.styleable.MainKeyboardView_slidingKeyInputPreviewColor, 0,
+                mainKeyboardViewAttr, provider);
         final float previewRadius = mainKeyboardViewAttr.getDimension(
                 R.styleable.MainKeyboardView_slidingKeyInputPreviewWidth, 0) / 2.0f;
         final int PERCENTAGE_INT = 100;

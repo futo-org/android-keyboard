@@ -217,6 +217,7 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = onSecondary
         colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = onBackgroundHalf
         colors[R.styleable.MainKeyboardView_gestureTrailColor] = primary
+        colors[R.styleable.MainKeyboardView_slidingKeyInputPreviewColor] = primary
 
         val overrideDrawable: (Int, Int, Int) -> Unit = { a, b, color ->
             drawables[a] = AppCompatResources.getDrawable(

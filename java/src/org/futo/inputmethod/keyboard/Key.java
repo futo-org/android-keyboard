@@ -284,7 +284,7 @@ public class Key implements Comparable<Key> {
         final int visualInsetsRight = Math.round(keyAttr.getFraction(
                 R.styleable.Keyboard_Key_visualInsetsRight, baseWidth, baseWidth, 0));
 
-        if(visualInsetsLeft > 0 || visualInsetsRight > 0) {
+        if((visualInsetsLeft > 0 || visualInsetsRight > 0) && mBackgroundType != BACKGROUND_TYPE_STICKY_ON) {
             mBackgroundType = BACKGROUND_TYPE_FUNCTIONAL;
         }
 
