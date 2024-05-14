@@ -705,6 +705,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mStartTime = System.currentTimeMillis();
 
             mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
+            mCurrentKey = key;
         }
     }
 
