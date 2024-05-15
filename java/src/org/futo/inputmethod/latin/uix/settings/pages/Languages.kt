@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AlertDialog
@@ -127,18 +129,22 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             dialogText = "If deleted, the imported ${info.kind.youAreImporting()} file for ${info.locale.displayLanguage} will be deleted. If there is no built-in fallback for this language, the feature may cease to function. You can always download and re-import a different ${info.kind.youAreImporting()} file."
         )
     }
-    ScrollableList {
-        ScreenTitle("Languages", showBack = true, navController)
+    LazyColumn {
+        item {
+            ScreenTitle("Languages", showBack = true, navController)
+        }
 
-        NavigationItem(
-            title = "Add language",
-            style = NavigationItemStyle.Misc,
-            navigate = {
-                navController.navigate("addLanguage")
-            },
-        )
+        item {
+            NavigationItem(
+                title = "Add language",
+                style = NavigationItemStyle.Misc,
+                navigate = {
+                    navController.navigate("addLanguage")
+                },
+            )
+        }
 
-        inputMethodKeys.forEach { localeString ->
+        items(inputMethodKeys) { localeString ->
             val subtypes = inputMethodList[localeString]!!
 
             val locale = Subtypes.getLocale(localeString)
@@ -167,7 +173,9 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.width(16.dp))
 
-                Column(modifier = Modifier.align(Alignment.CenterVertically).padding(0.dp, 16.dp)) {
+                Column(modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(0.dp, 16.dp)) {
                     Text(name, style = Typography.titleLarge)
                     if(subtypes.size == 1) {
                         val layout = Subtypes.getLayoutName(context,
@@ -183,7 +191,9 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 Spacer(modifier = Modifier.weight(1.0f))
 
                 if(subtypes.size == 1) {
-                    IconButton(modifier = Modifier.fillMaxHeight().align(Alignment.CenterVertically), onClick = {
+                    IconButton(modifier = Modifier
+                        .fillMaxHeight()
+                        .align(Alignment.CenterVertically), onClick = {
                         Subtypes.removeLanguage(context, subtypes.first())
                     }) {
                         Icon(
