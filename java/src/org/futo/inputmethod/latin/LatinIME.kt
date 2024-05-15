@@ -538,7 +538,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onEvaluateFullscreenMode(): Boolean {
-        return latinIMELegacy.onEvaluateFullscreenMode(super.onEvaluateFullscreenMode())
+        // TODO: Revisit fullscreen mode
+        return false //latinIMELegacy.onEvaluateFullscreenMode(super.onEvaluateFullscreenMode())
     }
 
     override fun updateFullscreenMode() {
