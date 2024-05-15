@@ -294,6 +294,12 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                 onNewSubtype(it[ActiveSubtype.key] ?: ActiveSubtype.default)
             }
         }
+
+        lifecycleScope.launch {
+            dataStore.data.collect {
+                CrashLoggingApplication.logPreferences(it)
+            }
+        }
     }
 
     override fun onDestroy() {

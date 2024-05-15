@@ -2,6 +2,8 @@ package org.futo.inputmethod.latin
 
 import android.app.Application
 import android.content.Context
+import androidx.datastore.preferences.core.Preferences
+import org.acra.ACRA
 import org.acra.config.dialog
 import org.acra.config.httpSender
 import org.acra.config.mailSender
@@ -46,6 +48,14 @@ class CrashLoggingApplication : Application() {
                     body =
                         "I experienced this crash. My version: ${BuildConfig.VERSION_NAME}.\n\n(Enter details here if necessary)"
                 }
+            }
+        }
+    }
+
+    companion object {
+        fun logPreferences(preferences: Preferences) {
+            preferences.asMap().forEach {
+                ACRA.errorReporter.putCustomData(it.key.name, it.value.toString())
             }
         }
     }
