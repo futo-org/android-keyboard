@@ -235,7 +235,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 subtypes.forEach {
                     val layout = Subtypes.getLayoutName(
                         context,
-                        it.getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET)
+                        it.getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET) ?: "default"
                     )
                     SettingItem(title = "Layout $layout") {
                         IconButton(modifier = Modifier.fillMaxHeight(), onClick = {
