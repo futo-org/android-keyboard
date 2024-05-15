@@ -19,48 +19,48 @@
     <Key
         latin:keySpec="b"
         latin:keyHintLabel="1"
-        latin:additionalMoreKeys="1"/>
+        latin:additionalMoreKeys="1,\\%"/>
     <Key
         latin:keySpec="&#xE9;"
         latin:keyHintLabel="2"
-        latin:additionalMoreKeys="2,&#xE8;" />
+        latin:additionalMoreKeys="2,&#xE8;,\\\\" />
     <Key
         latin:keySpec="p"
         latin:keyHintLabel="3"
-        latin:additionalMoreKeys="3" />
+        latin:additionalMoreKeys="3,|" />
     <Key
         latin:keySpec="o"
         latin:keyHintLabel="4"
-        latin:additionalMoreKeys="4"
+        latin:additionalMoreKeys="4,="
         latin:moreKeys="!text/morekeys_o" />
     <Key
         latin:keySpec="v"
         latin:keyHintLabel="5"
-        latin:additionalMoreKeys="5"
+        latin:additionalMoreKeys="5,!text/keyspec_left_square_bracket"
         latin:moreKeys="!text/morekeys_v" />
     <Key
         latin:keySpec="d"
         latin:keyHintLabel="6"
-        latin:additionalMoreKeys="6"
+        latin:additionalMoreKeys="6,!text/keyspec_right_square_bracket"
         latin:moreKeys="!text/morekeys_d" />
     <Key
         latin:keySpec="l"
         latin:keyHintLabel="7"
-        latin:additionalMoreKeys="7"
+        latin:additionalMoreKeys="7,!text/keyspec_less_than"
         latin:moreKeys="!text/morekeys_l" />
     <Key
         latin:keySpec="j"
         latin:keyHintLabel="8"
-        latin:additionalMoreKeys="8"
+        latin:additionalMoreKeys="8,!text/keyspec_greater_than"
         latin:moreKeys="!text/morekeys_j" />
     <Key
         latin:keySpec="z"
         latin:keyHintLabel="9"
-        latin:additionalMoreKeys="9"
+        latin:additionalMoreKeys="9,!text/keyspec_left_curly_bracket"
         latin:moreKeys="!text/morekeys_z" />
     <Key
         latin:keySpec="w"
         latin:keyHintLabel="0"
-        latin:additionalMoreKeys="0"
+        latin:additionalMoreKeys="0,!text/keyspec_right_curly_bracket"
         latin:moreKeys="!text/morekeys_w" />
 </merge>
