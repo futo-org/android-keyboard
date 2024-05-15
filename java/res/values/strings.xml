@@ -585,6 +585,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="layout_colemak">Colemak</string>
     <string name="layout_dvorak">Dvorak</string>
     <string name="layout_east_slavic">East Slavic</string>
+    <string name="layout_east_slavic_phonetic">East Slavic (Phonetic)</string>
     <string name="layout_farsi">Farsi</string>
     <string name="layout_georgian">Georgian</string>
     <string name="layout_greek">Greek</string>
