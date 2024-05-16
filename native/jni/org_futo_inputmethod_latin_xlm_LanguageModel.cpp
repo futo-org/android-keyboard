@@ -393,7 +393,8 @@ struct LanguageModelState {
                 //             mix_f[0], mix_f[1], mix_f[2], mix_f[3], mix_f[4], mix_f[5], mix_f[6]);
             } else {
                 for (auto &t: mix.mixes) {
-                    if (t.weight < EPS) break;
+                    if (t.weight < EPS) continue;
+                    if (t.token < 0 || t.token >= (int)n_vocab) continue;
 
                     float *src = ((LlamaAdapter *) model->adapter)->embeddings.data() +
                                  (t.token * n_embd);
