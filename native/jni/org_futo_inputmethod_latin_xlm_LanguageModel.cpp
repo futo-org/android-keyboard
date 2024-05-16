@@ -1082,7 +1082,7 @@ namespace latinime {
             }
 
             if(total_sum == 0.0f) {
-                AKLOGE("Oh crap");
+                continue;
             }
 
             for(int j=0; j<NUM_TOKEN_MIX; j++) {
