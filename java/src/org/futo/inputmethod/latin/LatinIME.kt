@@ -211,12 +211,13 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     // Called by UixManager when the intention is to subsequently call LegacyKeyboardView with hidden=false
     // Maybe this can be changed to LaunchedEffect
     fun onKeyboardShown() {
-        //if(pendingRecreateKeyboard) {
-        //    pendingRecreateKeyboard = false
-        //    recreateKeyboard()
-        //}
+        if(pendingRecreateKeyboard) {
+            pendingRecreateKeyboard = false
+            recreateKeyboard()
+        }
     }
 
+    private var currentSubtype = ""
 
     override fun onCreate() {
         super.onCreate()
@@ -284,7 +285,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                 }
 
                 if(activeSubtype != null) {
-                    changeInputMethodSubtype(Subtypes.convertToSubtype(activeSubtype))
+                    if(activeSubtype != currentSubtype) {
+                        currentSubtype = activeSubtype
+                        changeInputMethodSubtype(Subtypes.convertToSubtype(activeSubtype))
+                    }
                 }
             }
 
