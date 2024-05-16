@@ -24,7 +24,7 @@ public:
 
     AK_FORCE_INLINE bool isTransition(const DicTraverseSession *const traverseSession,
                     const DicNode *const dicNode) const override {
-        return !dicNode->isFirstLetter();
+        return false;//!dicNode->isFirstLetter();
     }
 
     AK_FORCE_INLINE bool isSpaceSubstitutionTerminal(const DicTraverseSession *const traverseSession,
@@ -48,7 +48,7 @@ public:
 
     AK_FORCE_INLINE bool canDoLookAheadCorrection(const DicTraverseSession *const traverseSession,
                                   const DicNode *const dicNode) const override {
-        return true;
+        return false;
     }
 
     AK_FORCE_INLINE ProximityType getProximityType(const DicTraverseSession *const traverseSession,
