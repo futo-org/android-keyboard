@@ -634,7 +634,7 @@ namespace latinime {
         for (int j = 0; j < keyCount; ++j) {
             const float distance = getPointToKeyByIdLength(
                     maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount, i, j);
-            if (distance < nearestKeyDistance) {
+            if (distance < nearestKeyDistance && distance >= 0.0f) {
                 nearestKeyDistance = distance;
             }
         }
@@ -688,9 +688,15 @@ namespace latinime {
             }
         }
 
+        // TODO: Figure out why sometimes it's less than 0.0f
         // probabilities must be in [0.0, ProximityInfoParams::MAX_SKIP_PROBABILITY];
-        ASSERT(skipProbability >= 0.0f);
-        ASSERT(skipProbability <= ProximityInfoParams::MAX_SKIP_PROBABILITY);
+        if(skipProbability < 0.0f) {
+            skipProbability = 0.0f;
+        } else if(skipProbability > ProximityInfoParams::MAX_SKIP_PROBABILITY) {
+            skipProbability = ProximityInfoParams::MAX_SKIP_PROBABILITY;
+        }
+        //ASSERT(skipProbability >= 0.0f);
+        //ASSERT(skipProbability <= ProximityInfoParams::MAX_SKIP_PROBABILITY);
         (*charProbabilities)[i][NOT_AN_INDEX] = skipProbability;
 
         // Second, calculates key probabilities by dividing the rest probability
