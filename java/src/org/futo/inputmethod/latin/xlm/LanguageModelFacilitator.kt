@@ -297,6 +297,14 @@ public class LanguageModelFacilitator(
                         results
                     }
 
+                    finalResults.mSuggestedWordInfoList.removeAll {
+                        !suggestionBlacklist.isSuggestedWordOk(it)
+                    }
+
+                    finalResults.mRawSuggestions?.removeAll {
+                        !suggestionBlacklist.isSuggestedWordOk(it)
+                    }
+
                     inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(finalResults)
 
                     if(values.composedData.mIsBatchMode) {
