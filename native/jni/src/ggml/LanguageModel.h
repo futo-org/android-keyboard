@@ -36,16 +36,16 @@ public:
     std::string decode(const token_sequence &tokens) const;
 
     static LanguageModel *createLanguageModel(const std::string &paths);
-    llama_context *context;
-    llama_model *model;
-    llama_batch batch;
+    llama_context *context{};
+    llama_model *model{};
+    llama_batch batch{};
 
     std::vector<float> embeddings;
 
     std::vector<float> encoder_weight = {};
     std::vector<float> encoder_bias = {};
 
-    int n_batch;
+    int n_batch{};
 
     ModelMetadata metadata;
 
@@ -64,7 +64,7 @@ private:
 
 class LanguageModel {
 public:
-    LanguageModel(LlamaAdapter *adapter);
+    explicit LanguageModel(LlamaAdapter *adapter);
 
     // Tokenizes the given text to tokens
     AK_FORCE_INLINE std::vector<int> tokenize(const char *text) const {
@@ -141,11 +141,11 @@ public:
         return pendingEvaluationSequence.size() > 0;
     }
 
-    AK_FORCE_INLINE llama_context *context() {
+    AK_FORCE_INLINE llama_context *context() const {
         return adapter->context;
     }
 
-    AK_FORCE_INLINE llama_model *model() {
+    AK_FORCE_INLINE llama_model *model() const {
         return adapter->model;
     }
 
