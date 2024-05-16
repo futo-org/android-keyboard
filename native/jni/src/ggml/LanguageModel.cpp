@@ -8,6 +8,10 @@
 
 LanguageModel::LanguageModel(LlamaAdapter *adapter): adapter(adapter) { }
 
+LlamaAdapter::~LlamaAdapter() {
+    llama_free_model(model);
+    llama_free(context);
+}
 
 int LlamaAdapter::getVocabSize() const {
     // assert(modelVocabSize >= sentencepieceVocabSize)

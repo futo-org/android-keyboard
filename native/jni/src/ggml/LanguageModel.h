@@ -52,8 +52,12 @@ public:
     inline bool hasFeature(const std::string &feature) const {
         return metadata.HasFeature(feature);
     }
+
+    ~LlamaAdapter();
+
 private:
     LlamaAdapter();
+
     sentencepiece::SentencePieceProcessor spm;
 };
 
@@ -137,22 +141,20 @@ public:
         return pendingEvaluationSequence.size() > 0;
     }
 
-    AK_FORCE_INLINE void free() {
-        llama_free(adapter->context);
-        llama_free_model(adapter->model);
-        delete adapter;
-        adapter = nullptr;
-        delete this;
+    AK_FORCE_INLINE llama_context *context() {
+        return adapter->context;
     }
 
-    LlamaAdapter *adapter;
+    AK_FORCE_INLINE llama_model *model() {
+        return adapter->model;
+    }
+
+    std::unique_ptr<LlamaAdapter> adapter;
     transformer_context transformerContext;
 private:
     token_sequence pendingContext;
     token_sequence pendingEvaluationSequence;
     int pendingNPast = 0;
-
-
 
     std::vector<float> outLogits;
     std::vector<float> tmpOutLogits;
