@@ -7,9 +7,13 @@
 #include "defines.h"
 
 std::string jstring2string(JNIEnv *env, jstring jStr) {
+    if(jStr == nullptr) {
+        AKLOGE("jstring is null!");
+        return "";
+    }
+
     const jsize stringUtf8Length = env->GetStringUTFLength(jStr);
     if (stringUtf8Length <= 0) {
-        AKLOGE("Can't get jStr");
         return "";
     }
     char stringChars[stringUtf8Length + 1];

@@ -977,15 +977,14 @@ namespace latinime {
 
         size_t inputSize = env->GetArrayLength(inComposeX);
 
-        const char* cstr = env->GetStringUTFChars(context, nullptr);
-        std::string contextString(cstr);
-        env->ReleaseStringUTFChars(context, cstr);
+        std::string contextString = "";
+        if(context != nullptr) {
+            contextString = jstring2string(env, context);
+        }
 
-        std::string partialWordString;
+        std::string partialWordString = "";
         if(partialWord != nullptr){
-            const char* pwstr = env->GetStringUTFChars(partialWord, nullptr);
-            partialWordString = std::string(pwstr);
-            env->ReleaseStringUTFChars(partialWord, pwstr);
+            partialWordString = jstring2string(env, partialWord);
         }
 
         if(partialWordString.size() < inputSize) inputSize = partialWordString.size();
