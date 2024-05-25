@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,12 +40,14 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.icon
+import org.futo.inputmethod.latin.uix.kindTitle
 import org.futo.inputmethod.latin.uix.namePreferenceKeyFor
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
-import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingItem
+import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.openModelImporter
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.youAreImporting
@@ -59,41 +62,56 @@ data class LanguageOptions(
 )
 
 @Composable
-fun ConfirmDeleteResourceDialog(
+fun ConfirmResourceActionDialog(
     onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-    dialogTitle: String,
-    dialogText: String,
+
+    onExplore: () -> Unit,
+    onDelete: () -> Unit,
+    onImport: () -> Unit,
+
+    resourceKind: FileKind,
+    isCurrentlySet: Boolean,
+    locale: Locale
 ) {
     AlertDialog(
         icon = {
-            Icon(painterResource(id = R.drawable.delete), contentDescription = "Example Icon")
+            Icon(painterResource(id = resourceKind.icon()), contentDescription = "Action")
         },
         title = {
-            Text(text = dialogTitle)
+            Text(text = "${locale.displayLanguage} - ${resourceKind.kindTitle()}")
         },
         text = {
-            Text(text = dialogText)
+            if(isCurrentlySet) {
+                Text(text = "Would you like to delete ${resourceKind.youAreImporting()} for ${locale.displayLanguage}, or replace it with another file?")
+            } else {
+                Text(text = "No ${resourceKind.youAreImporting()} override is set for ${locale.displayLanguage}. You can explore downloads online, or import an existing file.")
+            }
         },
         onDismissRequest = {
             onDismissRequest()
         },
         confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                }
-            ) {
-                Text("Delete")
+            TextButton(onClick = {
+                onImport()
+            }) {
+                Text(
+                    if(isCurrentlySet) {
+                        "Replace"
+                    } else {
+                        "Import"
+                    }
+                )
             }
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
+            if(isCurrentlySet) {
+                TextButton(onClick = { onDelete() }) {
+                    Text("Delete")
                 }
-            ) {
-                Text("Cancel")
+            } else {
+                TextButton(onClick = { onExplore() }) {
+                    Text("Explore")
+                }
             }
         }
     )
@@ -119,14 +137,24 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
 
     if(deleteDialogInfo.value != null) {
         val info = deleteDialogInfo.value!!
-        ConfirmDeleteResourceDialog(
+        ConfirmResourceActionDialog(
             onDismissRequest = { deleteDialogInfo.value = null },
-            onConfirmation = {
+            onExplore = {
+                context.openURI(info.kind.getAddonUrlForLocale(info.locale), true)
+                deleteDialogInfo.value = null
+            },
+            onDelete = {
                 ResourceHelper.deleteResourceForLanguage(context, info.kind, info.locale)
                 deleteDialogInfo.value = null
             },
-            dialogTitle = "Delete ${info.kind.youAreImporting()} for ${info.locale.displayLanguage}?",
-            dialogText = "If deleted, the imported ${info.kind.youAreImporting()} file for ${info.locale.displayLanguage} will be deleted. If there is no built-in fallback for this language, the feature may cease to function. You can always download and re-import a different ${info.kind.youAreImporting()} file."
+            onImport = {
+                openModelImporter(context)
+                deleteDialogInfo.value = null
+            },
+
+            resourceKind = info.kind,
+            locale = info.locale,
+            isCurrentlySet = runBlocking { ResourceHelper.findFileForKind(context, info.locale, info.kind)?.exists() == true }
         )
     }
     LazyColumn {
@@ -209,37 +237,25 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 title = options.voiceInputModel ?: "None",
                 style = options.voiceInputModel?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
                 navigate = {
-                    if(runBlocking { ResourceHelper.findFileForKind(context, locale, FileKind.VoiceInput) } == null) {
-                        context.openURI("https://keyboard.futo.org/voice-input-models", true)
-                    } else {
-                        deleteDialogInfo.value = DeleteInfo(locale, FileKind.VoiceInput)
-                    }
+                    deleteDialogInfo.value = DeleteInfo(locale, FileKind.VoiceInput)
                 },
-                icon = painterResource(id = R.drawable.mic_fill)
+                icon = painterResource(FileKind.VoiceInput.icon())
             )
             NavigationItem(
                 title = options.dictionary ?: "None",
                 style = options.dictionary?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
                 navigate = {
-                    if(runBlocking { ResourceHelper.findFileForKind(context, locale, FileKind.Dictionary) } == null) {
-                        context.openURI("https://keyboard.futo.org/dictionaries", true)
-                    } else {
-                        deleteDialogInfo.value = DeleteInfo(locale, FileKind.Dictionary)
-                    }
+                    deleteDialogInfo.value = DeleteInfo(locale, FileKind.Dictionary)
                 },
-                icon = painterResource(id = R.drawable.book)
+                icon = painterResource(FileKind.Dictionary.icon())
             )
             NavigationItem(
                 title = options.transformerModel ?: "None",
                 style = options.transformerModel?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
                 navigate = {
-                    if(options.transformerModel == null) {
-                        context.openURI("https://keyboard.futo.org/models", true)
-                    } else {
-                        navController.navigate("models")
-                    }
+                    navController.navigate("models")
                 },
-                icon = painterResource(id = R.drawable.cpu)
+                icon = painterResource(FileKind.Transformer.icon())
             )
             if(subtypes.size > 1) {
                 subtypes.forEach {
@@ -260,7 +276,48 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                     }
                 }
             }
+        }
 
+        item {
+            Spacer(modifier = Modifier.height(32.dp))
+            ScreenTitle("Other options")
+            NavigationItem(
+                title = "Import resource file",
+                style = NavigationItemStyle.Misc,
+                navigate = {
+                    openModelImporter(context)
+                },
+            )
+            NavigationItem(
+                title = "Explore voice input models",
+                style = NavigationItemStyle.Misc,
+                navigate = {
+                    context.openURI(
+                        FileKind.VoiceInput.getAddonUrlForLocale(null),
+                        true
+                    )
+                },
+            )
+            NavigationItem(
+                title = "Explore dictionaries",
+                style = NavigationItemStyle.Misc,
+                navigate = {
+                    context.openURI(
+                        FileKind.Dictionary.getAddonUrlForLocale(null),
+                        true
+                    )
+                },
+            )
+            NavigationItem(
+                title = "Explore transformer models",
+                style = NavigationItemStyle.Misc,
+                navigate = {
+                    context.openURI(
+                        FileKind.Transformer.getAddonUrlForLocale(null),
+                        true
+                    )
+                },
+            )
         }
     }
 }

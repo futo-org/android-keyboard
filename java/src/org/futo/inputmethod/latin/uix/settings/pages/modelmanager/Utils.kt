@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings.pages.modelmanager
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.ContextThemeWrapper
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.uix.settings.EXPORT_GGUF_MODEL_REQUEST
+import org.futo.inputmethod.latin.uix.settings.IMPORT_GGUF_MODEL_REQUEST
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.xlm.ModelInfo
 import org.futo.inputmethod.latin.xlm.ModelInfoLoader
@@ -140,4 +142,14 @@ fun ModelPicker(
             }
         }
     }
+}
+
+
+fun openModelImporter(context: Context) {
+    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+        addCategory(Intent.CATEGORY_OPENABLE)
+        type = "application/octet-stream"
+    }
+
+    (context as Activity).startActivityForResult(intent, IMPORT_GGUF_MODEL_REQUEST)
 }

@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
@@ -42,7 +43,7 @@ import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
-import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.settings.ScreenTitleWithIcon
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.useDataStore
@@ -98,7 +99,7 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
     val importing = remember { mutableStateOf(false) }
     val importingLanguage = remember { mutableStateOf("") }
     ScrollableList {
-        ScreenTitle(title = "Resource Importer")
+        ScreenTitleWithIcon(title = "Import ${fileKind.kind.kindTitle()}", painter = painterResource(id = fileKind.kind.icon()))
 
         if(fileKind.kind == FileKind.Invalid) {
             Text("This file does not appear to be a dictionary, voice input or transformer model. It may be an invalid file or corrupted. Please try a different file.")
@@ -111,9 +112,10 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
                 }
             )
         } else {
-            Text("You are importing a ${fileKind.kind.youAreImporting()}. ${fileKind.name?.let { "Info: $it" } ?: ""}", modifier = Modifier.padding(8.dp))
-
-            Spacer(modifier = Modifier.height(32.dp))
+            fileKind.name?.let {
+                Text("Info: $it", modifier = Modifier.padding(16.dp, 8.dp))
+                Spacer(modifier = Modifier.height(32.dp))
+            }
 
             if(importing.value) {
                 Box(modifier = Modifier
@@ -124,8 +126,8 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
                 Text("Importing for ${importingLanguage.value}", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             } else {
                 Text(
-                    "Which language would you like to set the ${fileKind.kind.youAreImporting()} for?",
-                    modifier = Modifier.padding(8.dp)
+                    "Select the language to import for:",
+                    modifier = Modifier.padding(16.dp, 8.dp)
                 )
 
                 val languages = getActiveLanguages(context).let {
@@ -163,7 +165,16 @@ enum class FileKind {
     VoiceInput,
     Transformer,
     Dictionary,
-    Invalid
+    Invalid;
+
+    fun getAddonUrlForLocale(locale: Locale?): String {
+        return when(this) {
+            VoiceInput -> "https://keyboard.futo.org/voice-input-models?locale=${locale?.toLanguageTag() ?: ""}"
+            Transformer -> "https://keyboard.futo.org/models?locale=${locale?.toLanguageTag() ?: ""}"
+            Dictionary -> "https://keyboard.futo.org/dictionaries?locale=${locale?.toLanguageTag() ?: ""}"
+            Invalid -> "https://keyboard.futo.org/"
+        }
+    }
 }
 
 fun FileKind.youAreImporting(): String {
@@ -172,6 +183,25 @@ fun FileKind.youAreImporting(): String {
         FileKind.Transformer -> "transformer model"
         FileKind.Dictionary -> "dictionary"
         FileKind.Invalid -> "invalid file"
+    }
+}
+
+
+fun FileKind.kindTitle(): String {
+    return when(this) {
+        FileKind.VoiceInput -> "Voice Input"
+        FileKind.Transformer -> "Transformer"
+        FileKind.Dictionary -> "Dictionary"
+        FileKind.Invalid -> "(invalid)"
+    }
+}
+
+fun FileKind.icon(): Int {
+    return when(this) {
+        FileKind.VoiceInput -> R.drawable.mic_fill
+        FileKind.Transformer -> R.drawable.cpu
+        FileKind.Dictionary -> R.drawable.book
+        FileKind.Invalid -> R.drawable.close
     }
 }
 

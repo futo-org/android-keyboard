@@ -30,7 +30,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.ImportResourceActivity
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.deferGetSetting
@@ -40,7 +40,6 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
-import org.futo.inputmethod.latin.uix.urlEncode
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.checkForUpdateAndSaveToPreferences
 import java.io.File
@@ -222,14 +221,13 @@ class SettingsActivity : ComponentActivity() {
 
         if(requestCode == IMPORT_GGUF_MODEL_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.data?.also { uri ->
-                try {
-                    val model = ModelPaths.importModel(this, uri)
-                    navController.navigate("model/${model.absolutePath.urlEncode()}")
-                }catch(error: IllegalArgumentException) {
-                    navController.navigateToError(getString(R.string.model_import_failed), error.message ?: getString(
-                        R.string.failed_to_import_the_selected_model
-                    ))
-                }
+                val intent = Intent()
+                intent.setClass(this, ImportResourceActivity::class.java)
+                intent.setFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                )
+                intent.setData(uri)
+                startActivity(intent)
             }
         } else if(requestCode == EXPORT_GGUF_MODEL_REQUEST && resultCode == Activity.RESULT_OK && fileBeingSaved != null) {
             data?.data?.also { uri ->

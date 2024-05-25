@@ -91,6 +91,19 @@ fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHost
 }
 
 @Composable
+fun ScreenTitleWithIcon(title: String, painter: Painter) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Icon(painter, contentDescription = "", modifier = Modifier.align(CenterVertically))
+        Spacer(modifier = Modifier.width(18.dp))
+        Text(title, style = Typography.titleLarge, modifier = Modifier
+            .align(CenterVertically)
+            .padding(0.dp, 16.dp))
+    }
+}
+
+@Composable
 @Preview
 fun Tip(text: String = "This is an example tip") {
     Surface(

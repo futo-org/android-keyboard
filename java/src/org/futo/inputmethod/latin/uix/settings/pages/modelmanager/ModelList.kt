@@ -100,12 +100,7 @@ fun ModelListScreen(navController: NavHostController = rememberNavController()) 
             title = "Import from file",
             style = NavigationItemStyle.Misc,
             navigate = {
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "application/octet-stream"
-                }
-
-                (context as Activity).startActivityForResult(intent, IMPORT_GGUF_MODEL_REQUEST)
+                openModelImporter(context)
             }
         )
     }
