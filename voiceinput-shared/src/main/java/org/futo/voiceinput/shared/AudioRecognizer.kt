@@ -150,7 +150,7 @@ class AudioRecognizer(
             MediaRecorder.AudioSource.VOICE_RECOGNITION,
             16000,
             AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_FLOAT,
+            AudioFormat.ENCODING_PCM_16BIT,
             16000 * 2 * 5
         )
 
@@ -186,7 +186,7 @@ class AudioRecognizer(
         var numConsecutiveNonSpeech = 0
         var numConsecutiveSpeech = 0
 
-        val samples = FloatArray(1600)
+        val samples = ShortArray(1600)
 
         while (isRecording) {
             yield()
@@ -226,14 +226,14 @@ class AudioRecognizer(
                 val samplesToRead = min(min(remainingSamples, 480), vadSampleBuffer.remaining())
                 for (i in 0 until samplesToRead) {
                     vadSampleBuffer.put(
-                        (samples[offset] * 32768.0).toInt().toShort()
+                        samples[offset]
                     )
                     offset += 1
                     remainingSamples -= 1
                 }
             }
 
-            floatSamples.put(samples.sliceArray(0 until nRead))
+            floatSamples.put(samples.sliceArray(0 until nRead).map { it.toFloat() / Short.MAX_VALUE.toFloat() }.toFloatArray())
 
             // Don't set hasTalked if the start sound may still be playing, otherwise on some
             // devices the rms just explodes and `hasTalked` is always true
@@ -243,7 +243,7 @@ class AudioRecognizer(
                 numConsecutiveNonSpeech = 0
             }
 
-            val rms = sqrt(samples.sumOf { (it * it).toDouble() } / samples.size).toFloat()
+            val rms = sqrt(samples.sumOf { (it.toFloat() / Short.MAX_VALUE.toFloat()).pow(2).toDouble() } / samples.size).toFloat()
 
             if (startSoundPassed && ((rms > 0.01) || (numConsecutiveSpeech > 8))) {
                 hasTalked = true
@@ -290,7 +290,7 @@ class AudioRecognizer(
                         }
                         break
                     }
-                    floatSamples.put(samples.sliceArray(0 until nRead2))
+                    floatSamples.put(samples.sliceArray(0 until nRead2).map { it.toFloat() / Short.MAX_VALUE.toFloat() }.toFloatArray())
                 } else {
                     break
                 }
