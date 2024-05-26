@@ -181,11 +181,13 @@ public class LanguageModelFacilitator(
         }
     }
 
+    private var skipLanguage: String? = null
     private suspend fun runLanguageModel(values: PredictionInputValues): ArrayList<SuggestedWordInfo>? {
         if(transformerDisabled) return null
 
         val locale = dictionaryFacilitator.locale ?: return null
-        if (languageModel == null || (languageModel?.locale?.language != locale.language)) {
+        if ((languageModel == null && locale.language != skipLanguage) || (languageModel?.locale?.language != locale.language)) {
+            skipLanguage = null
             Log.d(
                 "LanguageModelFacilitator",
                 "Calling closeInternalLocked on model due to seeming locale change"
@@ -200,6 +202,7 @@ public class LanguageModelFacilitator(
                 languageModel = LanguageModel(context, lifecycleScope, model, locale)
             } else {
                 Log.d("LanguageModelFacilitator", "no model for ${locale.language}")
+                skipLanguage = locale.language
                 return null
             }
         }
@@ -448,6 +451,7 @@ public class LanguageModelFacilitator(
             withContext(Dispatchers.Default) {
                 ModelPaths.modelOptionsUpdated.collect {
                     Log.d("LanguageModelFacilitator", "ModelPaths options updated, destroying model")
+                    skipLanguage = null
                     destroyModel()
                 }
             }
