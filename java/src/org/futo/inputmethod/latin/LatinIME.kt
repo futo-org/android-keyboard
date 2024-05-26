@@ -284,11 +284,9 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                     getSettingBlocking(SubtypesSetting).firstOrNull()
                 }
 
-                if(activeSubtype != null) {
-                    if(activeSubtype != currentSubtype) {
-                        currentSubtype = activeSubtype
-                        changeInputMethodSubtype(Subtypes.convertToSubtype(activeSubtype))
-                    }
+                if(activeSubtype != null && activeSubtype != currentSubtype) {
+                    currentSubtype = activeSubtype
+                    changeInputMethodSubtype(Subtypes.convertToSubtype(activeSubtype))
                 }
             }
 

@@ -62,7 +62,6 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
-import org.futo.inputmethod.dictionarypack.DictionaryPackConstants;
 import org.futo.inputmethod.event.Event;
 import org.futo.inputmethod.event.HardwareEventDecoder;
 import org.futo.inputmethod.event.HardwareKeyboardEventDecoder;
@@ -104,7 +103,6 @@ import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -183,10 +181,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     // Used for re-initialize keyboard layout after onConfigurationChange.
     @Nullable private Context mDisplayContext;
-
-    // Object for reacting to adding/removing a dictionary pack.
-    private final BroadcastReceiver mDictionaryPackInstallReceiver =
-            new DictionaryPackInstallBroadcastReceiver(this);
 
     private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
@@ -627,17 +621,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         ContextCompat.registerReceiver(mInputMethodService, mRingerModeChangeReceiver, filter, ContextCompat.RECEIVER_EXPORTED);
 
-        // Register to receive installation and removal of a dictionary pack.
-        final IntentFilter packageFilter = new IntentFilter();
-        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        packageFilter.addDataScheme(SCHEME_PACKAGE);
-        ContextCompat.registerReceiver(mInputMethodService, mDictionaryPackInstallReceiver, packageFilter, ContextCompat.RECEIVER_EXPORTED);
-
-        final IntentFilter newDictFilter = new IntentFilter();
-        newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
-        ContextCompat.registerReceiver(mInputMethodService, mDictionaryPackInstallReceiver, newDictFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
-
         final IntentFilter dictDumpFilter = new IntentFilter();
         dictDumpFilter.addAction(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
         ContextCompat.registerReceiver(mInputMethodService, mDictionaryDumpBroadcastReceiver, dictDumpFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
@@ -752,14 +735,12 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mSettings.onDestroy();
         mInputMethodService.unregisterReceiver(mHideSoftInputReceiver);
         mInputMethodService.unregisterReceiver(mRingerModeChangeReceiver);
-        mInputMethodService.unregisterReceiver(mDictionaryPackInstallReceiver);
         mInputMethodService.unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         mStatsUtilsManager.onDestroy(mInputMethodService);
     }
 
     @UsedForTesting
     public void recycle() {
-        mInputMethodService.unregisterReceiver(mDictionaryPackInstallReceiver);
         mInputMethodService.unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         mInputMethodService.unregisterReceiver(mRingerModeChangeReceiver);
         mInputLogic.recycle();

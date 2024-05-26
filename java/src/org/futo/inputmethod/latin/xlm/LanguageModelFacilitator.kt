@@ -166,7 +166,6 @@ public class LanguageModelFacilitator(
         val emoji = emojiData.emojiAliases[word.lowercase()]
 
         if(emoji != null) {
-            //Log.i("LanguageModelFacilitator", "Found emoji ${emoji.emoji} for $word")
             return SuggestedWordInfo(
                 emoji.emoji,
                 "",

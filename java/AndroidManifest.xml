@@ -153,13 +153,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="DictionaryPackInstallBroadcastReceiver"
-             android:exported="false">
-            <intent-filter>
-                <action android:name="org.futo.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT"/>
-            </intent-filter>
-        </receiver>
-
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
             android:foregroundServiceType="specialUse"
