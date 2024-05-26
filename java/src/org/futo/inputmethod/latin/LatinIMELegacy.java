@@ -136,18 +136,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
     static final long DELAY_DEALLOCATE_MEMORY_MILLIS = TimeUnit.SECONDS.toMillis(10);
 
     /**
-     * A broadcast intent action to hide the software keyboard.
-     */
-    static final String ACTION_HIDE_SOFT_INPUT =
-            "org.futo.inputmethod.latin.HIDE_SOFT_INPUT";
-
-    /**
-     * A custom permission for external apps to send {@link #ACTION_HIDE_SOFT_INPUT}.
-     */
-    static final String PERMISSION_HIDE_SOFT_INPUT =
-            "org.futo.inputmethod.latin.HIDE_SOFT_INPUT";
-
-    /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
      * replacement or removal.
      */
@@ -184,25 +172,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
-
-    final static class HideSoftInputReceiver extends BroadcastReceiver {
-        private final InputMethodService mIms;
-
-        public HideSoftInputReceiver(InputMethodService ims) {
-            mIms = ims;
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (ACTION_HIDE_SOFT_INPUT.equals(action)) {
-                mIms.requestHideSelf(0 /* flags */);
-            } else {
-                Log.e(TAG, "Unexpected intent " + intent);
-            }
-        }
-    }
-    final HideSoftInputReceiver mHideSoftInputReceiver;
 
     private AlertDialog mOptionsDialog;
 
@@ -591,8 +560,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mIsHardwareAcceleratedDrawingEnabled = true;
         Log.i(TAG, "Hardware accelerated drawing: " + mIsHardwareAcceleratedDrawingEnabled);
 
-        mHideSoftInputReceiver = new HideSoftInputReceiver(mInputMethodService);
-
         mInputLogic = new InputLogic(this /* LatinIME */,
                 this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     }
@@ -624,11 +591,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
         final IntentFilter dictDumpFilter = new IntentFilter();
         dictDumpFilter.addAction(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
         ContextCompat.registerReceiver(mInputMethodService, mDictionaryDumpBroadcastReceiver, dictDumpFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
-
-        final IntentFilter hideSoftInputFilter = new IntentFilter();
-        hideSoftInputFilter.addAction(ACTION_HIDE_SOFT_INPUT);
-        ContextCompat.registerReceiver(mInputMethodService, mHideSoftInputReceiver, hideSoftInputFilter, PERMISSION_HIDE_SOFT_INPUT,
-                null /* scheduler */, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         StatsUtils.onCreate(mSettings.getCurrent(), mRichImm);
     }
@@ -733,7 +695,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void onDestroy() {
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
-        mInputMethodService.unregisterReceiver(mHideSoftInputReceiver);
         mInputMethodService.unregisterReceiver(mRingerModeChangeReceiver);
         mInputMethodService.unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         mStatsUtilsManager.onDestroy(mInputMethodService);
