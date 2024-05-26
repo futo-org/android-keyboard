@@ -1,19 +1,17 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
-import android.widget.EditText
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
@@ -21,11 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.TextEditPopupActivity
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -33,27 +31,6 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.ConditionalUpdate
-
-@Composable
-fun AndroidTextInput() {
-    val context = LocalContext.current
-    val bgColor = MaterialTheme.colorScheme.background
-    val fgColor = MaterialTheme.colorScheme.onBackground
-
-    if(!LocalInspectionMode.current) {
-        val editText = remember {
-            EditText(context).apply {
-                setHint(R.string.try_typing)
-                setBackgroundColor(bgColor.toArgb())
-                setTextColor(fgColor.toArgb())
-                setHintTextColor(fgColor.copy(alpha = 0.7f).toArgb())
-            }
-        }
-        AndroidView({ editText }, modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp))
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
@@ -166,6 +143,15 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             )
             Spacer(modifier = Modifier.height(32.dp))
         }
-        AndroidTextInput()
+        TextButton(onClick = {
+            val intent = Intent()
+            intent.setClass(context, TextEditPopupActivity::class.java)
+            intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            )
+            context.startActivity(intent)
+        }, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.try_typing), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f), modifier = Modifier.fillMaxWidth())
+        }
     }
 }

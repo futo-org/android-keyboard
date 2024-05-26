@@ -167,6 +167,26 @@
             android:label="@string/payment"
             android:clearTaskOnLaunch="false"
             android:launchMode="singleInstance" />
+
+
+        <activity
+            android:name=".uix.TextEditPopupActivity"
+            android:exported="true"
+            android:label="Testing Popup"
+            android:clearTaskOnLaunch="true"
+            android:launchMode="singleInstance"
+            android:visibleToInstantApps="true"
+            android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
+            android:process=":texteditpopup"
+            android:theme="@style/Theme.TextEditPopup">
+
+            <intent-filter>
+                <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
     <!-- To query enabled input methods for voice IME detection -->
