@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -26,7 +27,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
@@ -48,12 +51,16 @@ import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import kotlin.math.roundToInt
 
-// TODO: For Dynamic System we need to show the user that it switches between light/dark
 @Composable
-fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, onClick: () -> Unit = { }) {
+fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: String? = null, modifier: Modifier = Modifier, onClick: () -> Unit = { }) {
+    if(theme == DynamicSystemTheme) return DynamicThemePreview(isSelected, onClick)
+
     val context = LocalContext.current
     val colors = remember { theme.obtainColors(context) }
 
@@ -80,7 +87,7 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, onClick: () ->
     val keyboardShape = RoundedCornerShape(8.dp)
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .padding(12.dp)
             .width(172.dp)
             .height(128.dp)
@@ -92,7 +99,7 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, onClick: () ->
         Box(modifier = Modifier.fillMaxSize()) {
             // Theme name and action bar
             Text(
-                text = stringResource(theme.name),
+                text = overrideName ?: stringResource(theme.name),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -131,6 +138,46 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, onClick: () ->
                 ) { }
             }
         }
+    }
+}
+
+// Special case to demonstrate the light and dark mode
+@Preview
+@Composable
+fun DynamicThemePreview(isSelected: Boolean = false, onClick: () -> Unit = { }) {
+    Box {
+        ThemePreview(
+            DynamicLightTheme,
+            isSelected = isSelected,
+            onClick = onClick,
+            overrideName = stringResource(DynamicSystemTheme.name),
+            modifier = Modifier.clip(GenericShape { size, _ ->
+                val path = Path().apply {
+                    moveTo(0f, 0f)
+                    lineTo(size.width * 0.75f, 0f)
+                    lineTo(size.width * 0.25f, size.height)
+                    lineTo(0f, size.height)
+                    close()
+                }
+                addPath(path)
+            })
+        )
+        ThemePreview(
+            DynamicDarkTheme,
+            isSelected = isSelected,
+            onClick = onClick,
+            overrideName = stringResource(DynamicSystemTheme.name),
+            modifier = Modifier.clip(GenericShape { size, _ ->
+                val path = Path().apply {
+                    moveTo(size.width * 0.75f, 0f)
+                    lineTo(size.width, 0f)
+                    lineTo(size.width, size.height)
+                    lineTo(size.width * 0.25f, size.height)
+                    close()
+                }
+                addPath(path)
+            })
+        )
     }
 }
 
