@@ -23,7 +23,7 @@ val DynamicSystemTheme = ThemeOption(
         when (uiModeManager.nightMode) {
             UiModeManager.MODE_NIGHT_YES -> dynamicDarkColorScheme(it)
             UiModeManager.MODE_NIGHT_NO -> dynamicLightColorScheme(it)
-            UiModeManager.MODE_NIGHT_AUTO -> {
+            else -> {
                 val currentNightMode = it.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
                 if(currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
                     dynamicLightColorScheme(it)
@@ -31,7 +31,6 @@ val DynamicSystemTheme = ThemeOption(
                     dynamicDarkColorScheme(it)
                 }
             }
-            else -> dynamicDarkColorScheme(it)
         }
     }
 )
