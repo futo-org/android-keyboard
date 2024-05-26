@@ -28,13 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
@@ -67,15 +67,15 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
     val currColors = MaterialTheme.colorScheme
 
     val borderWidth = if (isSelected) {
-        2.dp
+        4.dp
     } else {
-        0.dp
+        Dp.Hairline
     }
 
     val borderColor = if (isSelected) {
         currColors.inversePrimary
     } else {
-        Color.Transparent
+        currColors.outline
     }
 
     val textColor = colors.onBackground
@@ -86,10 +86,15 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
 
     val keyboardShape = RoundedCornerShape(8.dp)
 
+    val previewModifier = if(LocalInspectionMode.current) {
+        modifier.width(172.dp)
+    } else {
+        modifier
+    }
+
     Surface(
-        modifier = modifier
+        modifier = previewModifier
             .padding(12.dp)
-            .width(172.dp)
             .height(128.dp)
             .border(borderWidth, borderColor, keyboardShape)
             .clickable { onClick() },
@@ -154,8 +159,8 @@ fun DynamicThemePreview(isSelected: Boolean = false, onClick: () -> Unit = { }) 
             modifier = Modifier.clip(GenericShape { size, _ ->
                 val path = Path().apply {
                     moveTo(0f, 0f)
-                    lineTo(size.width * 0.75f, 0f)
-                    lineTo(size.width * 0.25f, size.height)
+                    lineTo(size.width * 0.66f, 0f)
+                    lineTo(size.width * 0.33f, size.height)
                     lineTo(0f, size.height)
                     close()
                 }
@@ -169,10 +174,10 @@ fun DynamicThemePreview(isSelected: Boolean = false, onClick: () -> Unit = { }) 
             overrideName = stringResource(DynamicSystemTheme.name),
             modifier = Modifier.clip(GenericShape { size, _ ->
                 val path = Path().apply {
-                    moveTo(size.width * 0.75f, 0f)
+                    moveTo(size.width * 0.66f, 0f)
                     lineTo(size.width, 0f)
                     lineTo(size.width, size.height)
-                    lineTo(size.width * 0.25f, size.height)
+                    lineTo(size.width * 0.33f, size.height)
                     close()
                 }
                 addPath(path)
