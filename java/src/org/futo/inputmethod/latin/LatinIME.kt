@@ -41,6 +41,7 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -77,21 +78,12 @@ import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
 class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner,
     LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner {
 
-    private val mSavedStateRegistryController = SavedStateRegistryController.create(this)
 
-    override val savedStateRegistry: SavedStateRegistry
-        get() = mSavedStateRegistryController.savedStateRegistry
+    private lateinit var mLifecycleRegistry: LifecycleRegistry
+    private lateinit var mViewModelStore: ViewModelStore
+    private lateinit var mSavedStateRegistryController: SavedStateRegistryController
 
-    private val mLifecycleRegistry = LifecycleRegistry(this)
-    private fun handleLifecycleEvent(event: Lifecycle.Event) =
-        mLifecycleRegistry.handleLifecycleEvent(event)
 
-    override val lifecycle
-        get() = mLifecycleRegistry
-
-    private val store = ViewModelStore()
-    override val viewModelStore
-        get() = store
 
     fun setOwners() {
         val decorView = window.window?.decorView
@@ -116,7 +108,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     lateinit var languageModelFacilitator: LanguageModelFacilitator
 
     val uixManager = UixManager(this)
-    val suggestionBlacklist = SuggestionBlacklist(latinIMELegacy.mSettings, this, lifecycleScope)
+    lateinit var suggestionBlacklist: SuggestionBlacklist
 
     private var activeThemeOption: ThemeOption? = null
     private var activeColorScheme = DarkColorScheme
@@ -219,8 +211,30 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     private var currentSubtype = ""
 
+    val jobs = mutableListOf<Job>()
+    private fun launchJob(task: suspend CoroutineScope.() -> Unit) {
+        jobs.add(lifecycleScope.launch(block = task))
+    }
+
+    private fun stopJobs() {
+        jobs.forEach { it.cancel() }
+        jobs.clear()
+    }
+
     override fun onCreate() {
         super.onCreate()
+
+        mLifecycleRegistry = LifecycleRegistry(this)
+        mLifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
+
+        mViewModelStore = ViewModelStore()
+
+        mSavedStateRegistryController = SavedStateRegistryController.create(this)
+        mSavedStateRegistryController.performRestore(null)
+
+        mLifecycleRegistry.currentState = Lifecycle.State.CREATED
+
+        suggestionBlacklist = SuggestionBlacklist(latinIMELegacy.mSettings, this, lifecycleScope)
 
         Subtypes.addDefaultSubtypesIfNecessary(this)
 
@@ -246,20 +260,17 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             activeColorScheme = themeOption.obtainColors(this@LatinIME)
         }
 
-        mSavedStateRegistryController.performRestore(null)
-        handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-
         latinIMELegacy.onCreate()
 
         languageModelFacilitator.launchProcessor()
         languageModelFacilitator.loadHistoryLog()
 
         scheduleUpdateCheckingJob(this)
-        lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
+        launchJob { uixManager.showUpdateNoticeIfNeeded() }
 
         suggestionBlacklist.init()
 
-        lifecycleScope.launch {
+        launchJob {
             dataStore.data.collect {
                 drawableProvider?.let { provider ->
                     if(provider is BasicThemeProvider) {
@@ -278,15 +289,18 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             }
         }
 
-        lifecycleScope.launch {
-            val onNewSubtype: (String) -> Unit = {
+        launchJob {
+            val onNewSubtype: suspend (String) -> Unit = {
                 val activeSubtype = it.ifEmpty {
                     getSettingBlocking(SubtypesSetting).firstOrNull()
                 }
 
                 if(activeSubtype != null && activeSubtype != currentSubtype) {
                     currentSubtype = activeSubtype
-                    changeInputMethodSubtype(Subtypes.convertToSubtype(activeSubtype))
+
+                    withContext(Dispatchers.Main) {
+                        changeInputMethodSubtype(Subtypes.convertToSubtype(activeSubtype))
+                    }
                 }
             }
 
@@ -297,7 +311,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             }
         }
 
-        lifecycleScope.launch {
+        launchJob {
             dataStore.data.collect {
                 CrashLoggingApplication.logPreferences(it)
             }
@@ -305,6 +319,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onDestroy() {
+        stopJobs()
+        mLifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+        viewModelStore.clear()
+
         languageModelFacilitator.saveHistoryLog()
 
         runBlocking {
@@ -415,6 +433,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
+        mLifecycleRegistry.currentState = Lifecycle.State.STARTED
+
         lastEditorInfo = info
 
         super.onStartInputView(info, restarting)
@@ -642,4 +662,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             }
         }
     }
+
+    override val lifecycle: Lifecycle
+        get() = mLifecycleRegistry
+    override val savedStateRegistry: SavedStateRegistry
+        get() = mSavedStateRegistryController.savedStateRegistry
+    override val viewModelStore: ViewModelStore
+        get() = mViewModelStore
 }
