@@ -328,8 +328,7 @@ class UixManager(private val latinIME: LatinIME) {
                     onCollapse = { toggleExpandAction() },
                     onClose = { returnBackToMainKeyboardViewFromAction() },
                     words = suggestedWordsOrNull,
-                    suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripView.Listener,
-                    inlineSuggestions = inlineSuggestions
+                    suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripView.Listener
                 )
             }
         }

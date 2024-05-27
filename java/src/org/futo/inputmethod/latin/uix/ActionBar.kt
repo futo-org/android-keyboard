@@ -5,6 +5,8 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -425,7 +427,8 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
             if (!dragging.value) {
                 it.animateItemPlacement()
             } else {
-                it.zIndex(10.0f)
+                it
+                    .zIndex(10.0f)
                     .graphicsLayer {
                         clip = false
                         translationX = offsetX.floatValue
@@ -602,6 +605,12 @@ fun ActionBar(
         }
     }
 
+    LaunchedEffect(inlineSuggestions) {
+        if(inlineSuggestions.isNotEmpty()) {
+            isActionsOpen.value = false
+        }
+    }
+
     Surface(modifier = Modifier
         .fillMaxWidth()
         .height(40.dp), color = MaterialTheme.colorScheme.background)
@@ -624,9 +633,13 @@ fun ActionBar(
                 }
 
                 if(!isActionsOpen.value) {
-                    if (inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        InlineSuggestions(inlineSuggestions)
-                    } else if (words != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        AnimatedVisibility(inlineSuggestions.isNotEmpty(), enter = fadeIn(), exit = fadeOut()) {
+                            InlineSuggestions(inlineSuggestions)
+                        }
+                    }
+
+                    if (words != null && inlineSuggestions.isEmpty()) {
                         SuggestionItems(
                             words,
                             onClick = {
@@ -700,7 +713,6 @@ fun CollapsibleSuggestionsBar(
     onCollapse: () -> Unit,
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
-    inlineSuggestions: List<MutableState<View?>>,
 ) {
     Surface(modifier = Modifier
         .fillMaxWidth()
@@ -726,9 +738,7 @@ fun CollapsibleSuggestionsBar(
                 )
             }
 
-            if(inlineSuggestions.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                InlineSuggestions(inlineSuggestions)
-            } else if(words != null) {
+            if(words != null) {
                 SuggestionItems(words, onClick = {
                     suggestionStripListener.pickSuggestionManually(
                         words.getInfo(it)
@@ -879,8 +889,7 @@ fun PreviewCollapsibleBar(colorScheme: ColorScheme = DarkColorScheme) {
         onCollapse = { },
         onClose = { },
         words = exampleSuggestedWords,
-        suggestionStripListener = ExampleListener(),
-        inlineSuggestions = listOf()
+        suggestionStripListener = ExampleListener()
     )
 }
 

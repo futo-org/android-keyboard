@@ -2,8 +2,10 @@ package org.futo.inputmethod.latin.uix
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.util.Size
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InlineSuggestion
@@ -15,18 +17,33 @@ import androidx.autofill.inline.common.ImageViewStyle
 import androidx.autofill.inline.common.TextViewStyle
 import androidx.autofill.inline.common.ViewStyle
 import androidx.autofill.inline.v1.InlineSuggestionUi
+import androidx.compose.foundation.clipScrollableContainer
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import org.futo.inputmethod.latin.R
 import kotlin.math.roundToInt
+
+
+private const val maxSuggestions = 5
+
+private const val minWidthDp = 32.0f
+private const val minHeightDp = 8.0f
+private const val maxHeightDp = 48.0f
 
 
 @SuppressLint("RestrictedApi")
@@ -39,17 +56,24 @@ fun createInlineSuggestionsRequest(
         context.fromDp(v).roundToInt()
     }
 
+    val drawable = R.drawable.inline_suggestion_chip
+    val bgColor = activeColorScheme.secondaryContainer.toArgb()
+
     val stylesBuilder = UiVersions.newStylesBuilder()
     val suggestionStyle = InlineSuggestionUi.newStyleBuilder()
         .setSingleIconChipStyle(
             ViewStyle.Builder()
-                .setBackgroundColor(activeColorScheme.secondaryContainer.toArgb())
+                .setBackground(
+                    Icon.createWithResource(context, drawable).setTint(bgColor)
+                )
                 .setPadding(0, 0, 0, 0)
                 .build()
         )
         .setChipStyle(
             ViewStyle.Builder()
-                .setBackgroundColor(activeColorScheme.secondaryContainer.toArgb())
+                .setBackground(
+                    Icon.createWithResource(context, drawable).setTint(bgColor)
+                )
                 .setPadding(
                     fromDp(8.0f),
                     fromDp(0.0f),
@@ -93,13 +117,23 @@ fun createInlineSuggestionsRequest(
 
     val stylesBundle = stylesBuilder.build()
 
+    val displayMetrics = context.resources.displayMetrics
+
+    val maxWidthPx = displayMetrics.widthPixels * 2 / 3
+
     val spec = InlinePresentationSpec.Builder(
-        Size(0, 0),
-        Size(Int.MAX_VALUE, Int.MAX_VALUE)
+        Size(
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, minWidthDp, displayMetrics).roundToInt(),
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, minHeightDp, displayMetrics).roundToInt()
+        ),
+        Size(
+            maxWidthPx,
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, maxHeightDp, displayMetrics).roundToInt()
+        ),
     ).setStyle(stylesBundle).build()
 
-    return InlineSuggestionsRequest.Builder(listOf(spec)).let { request ->
-        request.setMaxSuggestionCount(InlineSuggestionsRequest.SUGGESTION_COUNT_UNLIMITED)
+    return InlineSuggestionsRequest.Builder(List(maxSuggestions) { spec }).let { request ->
+        request.setMaxSuggestionCount(maxSuggestions)
         request.build()
     }
 }
@@ -126,24 +160,26 @@ fun Context.inflateInlineSuggestion(inlineSuggestion: InlineSuggestion): Mutable
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun InlineSuggestionView(inlineSuggestion: MutableState<View?>) {
-    if (inlineSuggestion.value != null) {
-        // TODO: For some reason this appears over top of keyboard key previews
-        // We should also make it animate in and round corners
-        AndroidView(
-            factory = { inlineSuggestion.value!! },
-            modifier = Modifier.padding(4.dp, 0.dp)
-        )
+    key(inlineSuggestion.value) {
+        if (inlineSuggestion.value != null) {
+            AndroidView(
+                factory = { inlineSuggestion.value!! },
+                modifier = Modifier.padding(4.dp, 0.dp)
+            )
+        }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun RowScope.InlineSuggestions(suggestions: List<MutableState<View?>>) {
-    LazyRow(modifier = Modifier
+    val scrollState = rememberScrollState()
+    Row(modifier = Modifier
         .weight(1.0f)
-        .padding(0.dp, 4.dp)) {
-        items(suggestions.size) {
-            InlineSuggestionView(suggestions[it])
-        }
+        .padding(0.dp, 4.dp)
+        .horizontalScroll(scrollState)
+        .clipScrollableContainer(Orientation.Horizontal)
+        .clipToBounds()) {
+        suggestions.forEach { InlineSuggestionView(it) }
     }
 }
