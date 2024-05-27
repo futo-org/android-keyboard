@@ -236,6 +236,9 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         overrideDrawable(R.styleable.Keyboard_iconPreviousKey, R.drawable.sym_keyboard_previous_lxx_light, enterKeyForeground)
         overrideDrawable(R.styleable.Keyboard_iconSearchKey, R.drawable.sym_keyboard_search_lxx_light, enterKeyForeground)
 
+        overrideDrawable(R.styleable.Keyboard_iconZwjKey, R.drawable.sym_keyboard_zwj_lxx_dark, onPrimary)
+        overrideDrawable(R.styleable.Keyboard_iconZwnjKey, R.drawable.sym_keyboard_zwnj_lxx_dark, onBackground)
+
         overrideDrawable(R.styleable.Keyboard_iconDeleteKey, R.drawable.delete, onBackground)
         overrideDrawable(R.styleable.Keyboard_iconSettingsKey, R.drawable.settings, onBackground)
         overrideDrawable(R.styleable.Keyboard_iconEmojiActionKey, R.drawable.smile, onPrimary)
