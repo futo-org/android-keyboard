@@ -55,6 +55,7 @@ public final class MoreKeysKeyboard extends Keyboard {
 
         public MoreKeysKeyboardParams() {
             super();
+            mIsMainKeyboard = false;
         }
 
         /**

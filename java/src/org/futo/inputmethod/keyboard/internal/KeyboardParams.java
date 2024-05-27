@@ -34,6 +34,8 @@ public class KeyboardParams {
     public KeyboardId mId;
     public int mThemeId;
 
+    public boolean mIsMainKeyboard = true;
+
     /** Total height and width of the keyboard, including the paddings and keys */
     public int mOccupiedHeight;
     public int mOccupiedWidth;

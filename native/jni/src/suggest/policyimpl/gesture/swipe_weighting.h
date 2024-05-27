@@ -6,6 +6,8 @@
 #include "suggest/core/policy/weighting.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
 
+#define DEBUG_SWIPE false
+
 namespace util {
     static AK_FORCE_INLINE int getDistanceBetweenPoints(const latinime::DicTraverseSession *const traverseSession, int codePoint, int index) {
         auto proximityInfoState = traverseSession->getProximityInfoState(0);
@@ -14,8 +16,8 @@ namespace util {
         int py = proximityInfoState->getInputY(index);
 
         int keyIdx = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint));
-        int kx = proximityInfo->getSweetSpotCenterXAt(keyIdx);
-        int ky = proximityInfo->getSweetSpotCenterYAt(keyIdx);
+        int kx = proximityInfo->getKeyCenterXOfKeyIdG(keyIdx, NOT_A_COORDINATE, false);
+        int ky = proximityInfo->getKeyCenterYOfKeyIdG(keyIdx, NOT_A_COORDINATE, false);
 
         return sqrtf(latinime::GeometryUtils::getDistanceSq(px, py, kx, ky));
     }
@@ -54,8 +56,8 @@ namespace util {
         int l1y = proximityInfoState->getInputY(index1);
 
         int keyIdx = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint));
-        int px = proximityInfo->getSweetSpotCenterXAt(keyIdx);
-        int py = proximityInfo->getSweetSpotCenterYAt(keyIdx);
+        int px = proximityInfo->getKeyCenterXOfKeyIdG(keyIdx, NOT_A_COORDINATE, false);
+        int py = proximityInfo->getKeyCenterYOfKeyIdG(keyIdx, NOT_A_COORDINATE, false);
 
         return findMinimumPointDistance(px, py, l0x, l0y, l1x, l1y);
     }
@@ -68,10 +70,10 @@ namespace util {
 
         int keyIdx0 = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint0));
         int keyIdx1 = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint1));
-        int l0x = proximityInfo->getSweetSpotCenterXAt(keyIdx0);
-        int l0y = proximityInfo->getSweetSpotCenterYAt(keyIdx0);
-        int l1x = proximityInfo->getSweetSpotCenterXAt(keyIdx1);
-        int l1y = proximityInfo->getSweetSpotCenterYAt(keyIdx1);
+        int l0x = proximityInfo->getKeyCenterXOfKeyIdG(keyIdx0, NOT_A_COORDINATE, false);
+        int l0y = proximityInfo->getKeyCenterYOfKeyIdG(keyIdx0, NOT_A_COORDINATE, false);
+        int l1x = proximityInfo->getKeyCenterXOfKeyIdG(keyIdx1, NOT_A_COORDINATE, false);
+        int l1y = proximityInfo->getKeyCenterYOfKeyIdG(keyIdx1, NOT_A_COORDINATE, false);
 
         return findMinimumPointDistance(px, py, l0x, l0y, l1x, l1y);
     }
@@ -91,11 +93,11 @@ namespace util {
         const int ki_0 = traverseSession->getProximityInfo()->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint0));
         const int ki_1 = traverseSession->getProximityInfo()->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint1));
 
-        const float l0x = traverseSession->getProximityInfo()->getSweetSpotCenterXAt(ki_0);
-        const float l0y = traverseSession->getProximityInfo()->getSweetSpotCenterYAt(ki_0);
+        const float l0x = traverseSession->getProximityInfo()->getKeyCenterXOfKeyIdG(ki_0, NOT_A_COORDINATE, false);
+        const float l0y = traverseSession->getProximityInfo()->getKeyCenterYOfKeyIdG(ki_0, NOT_A_COORDINATE, false);
 
-        const float l1x = traverseSession->getProximityInfo()->getSweetSpotCenterXAt(ki_1);
-        const float l1y = traverseSession->getProximityInfo()->getSweetSpotCenterYAt(ki_1);
+        const float l1x = traverseSession->getProximityInfo()->getKeyCenterXOfKeyIdG(ki_1, NOT_A_COORDINATE, false);
+        const float l1y = traverseSession->getProximityInfo()->getKeyCenterYOfKeyIdG(ki_1, NOT_A_COORDINATE, false);
 
         for(int j = lowerLimit; j < upperLimit; j++) {
             const float distance = getDistanceCodePointLine(traverseSession, codePoint0, codePoint1, j);
@@ -159,9 +161,10 @@ public:
                 traverseSession->getInputSize() - 1);
 
         if(distance > (distanceThreshold * 128.0f)) {
-            //AKLOGI("Terminal spatial for %c:%c fails due to exceeding distance", (parentDicNode != nullptr) ? (char)(parentDicNode->getNodeCodePoint()) : '?', (char)codePoint);
-            //dicNode->dump("TERMINAL");
-
+#if(DEBUG_SWIPE)
+            AKLOGI("Terminal spatial for %c:%c fails due to exceeding distance", (parentDicNode != nullptr) ? (char)(parentDicNode->getNodeCodePoint()) : '?', (char)codePoint);
+            dicNode->dump("TERMINAL");
+#endif
             return MAX_VALUE_FOR_WEIGHTING;
         }
 
@@ -188,12 +191,18 @@ public:
                         traverseSession, codePoint0, codePoint1, lowerLimit, upperLimit, threshold);
 
                 totalDistance += pow(extraDistance, 1.8f) * 0.1f;
+#if(DEBUG_SWIPE)
+                AKLOGI("Terminal spatial for %c:%c - %d:%d : extra %.2f %.2f", (char)codePoint0, (char)codePoint1, lowerLimit, upperLimit, distance, extraDistance);
+                dicNode->dump("TERMINAL");
+#endif
             } else {
+#if(DEBUG_SWIPE)
+                AKLOGI("Terminal spatial is max due to NOT_A_CODE_POINT");
+                dicNode->dump("TERMINAL");
+#endif
                 totalDistance += MAX_VALUE_FOR_WEIGHTING;
             }
 
-            //AKLOGI("Terminal spatial for %c:%c - %d:%d : extra %.2f %.2f", (char)codePoint0, (char)codePoint1, lowerLimit, upperLimit, distance, extraDistance);
-            //dicNode->dump("TERMINAL");
 
             return totalDistance;
         } else {
@@ -234,6 +243,10 @@ public:
 
                 return distance;
             } else {
+#if(DEBUG_SWIPE)
+                AKLOGI("Culled %c too large first letter distance %.2f, over threshold %.2f", (char)codePoint, distance, distanceThreshold);
+                dicNode->dump("CULLED");
+#endif
                 return MAX_VALUE_FOR_WEIGHTING;
             }
         } else if(parentDicNode != nullptr && parentDicNode->getNodeCodePoint() == codePoint) {
@@ -266,13 +279,17 @@ public:
 
             const float keyThreshold = (80.0f * distanceThreshold);
 
-            //AKLOGI("commence search for %c", (char)codePoint);
+#if(DEBUG_SWIPE)
+            AKLOGI("commence search for %c", (char)codePoint);
+#endif
             for (int i = inputIndex; i < swipeLength; i++) {
                 if (i == 0) continue;
 
                 const float distance = util::getDistanceLine(traverseSession, codePoint, i - 1, i);
 
-                //AKLOGI("[%c:%d] distance %.2f, min %.2f. thresh %.2f", (char)codePoint, i, distance, minEdgeDistance, keyThreshold);
+#if(DEBUG_SWIPE)
+                AKLOGI("[%c:%d] distance %.2f, min %.2f. thresh %.2f", (char)codePoint, i, distance, minEdgeDistance, keyThreshold);
+#endif
                 if (distance < minEdgeDistance) {
                     if(minEdgeIndex != -1) headedTowardsCharacterYet = true;
                     minEdgeDistance = distance;
@@ -280,7 +297,10 @@ public:
                 }
 
                 if (((distance > minEdgeDistance) || (i >= (swipeLength - 1))) && (minEdgeDistance < keyThreshold) && headedTowardsCharacterYet) {
-                    //AKLOGI("found!");
+#if(DEBUG_SWIPE)
+                    AKLOGI("found!");
+#endif
+
                     found = true;
                     break;
                 }
@@ -309,8 +329,10 @@ public:
                             threshold);
 
                     if (punishment >= MAX_VALUE_FOR_WEIGHTING) {
-                        //AKLOGI("Culled due to too large distance (%.2f, %.2f)", totalDistance, punishment);
-                        //dicNode->dump("CULLED");
+#if(DEBUG_SWIPE)
+                        AKLOGI("Culled due to too large distance (%.2f, %.2f)", totalDistance, punishment);
+                        dicNode->dump("CULLED");
+#endif
                         return MAX_VALUE_FOR_WEIGHTING;
                     }
 
@@ -324,8 +346,10 @@ public:
 
                 return totalDistance;
             } else {
-                //AKLOGI("Culled due to not found or nullptr parent %p %d %.2f. inputIndex is %d and swipeLength is %d", parentDicNode, found, minEdgeDistance, inputIndex, swipeLength);
-                //dicNode->dump("CULLED");
+#if(DEBUG_SWIPE)
+                AKLOGI("Culled due to not found or nullptr parent %p %d %.2f. inputIndex is %d and swipeLength is %d", parentDicNode, found, minEdgeDistance, inputIndex, swipeLength);
+                dicNode->dump("CULLED");
+#endif
             }
 
             if(parentDicNode == nullptr) {

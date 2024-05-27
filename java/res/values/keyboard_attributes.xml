@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <fraction name="keyboardHeightMultiplierAddl">100%</fraction>
+    <fraction name="keyboardGapMultiplierAddl">100%</fraction>
+    <dimen name="keyboardSidePaddingAddl">0dp</dimen>
+    <dimen name="keyboardBottomPaddingAddl">0dp</dimen>
+</resources>

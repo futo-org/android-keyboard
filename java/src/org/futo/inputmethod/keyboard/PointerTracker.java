@@ -696,6 +696,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                 key = onDownKey(x, y, eventTime);
             }
 
+            if(key == null) return;
+
             startRepeatKey(key);
             startLongPressTimer(key);
             setPressedKeyGraphics(key, eventTime);
