@@ -53,6 +53,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -346,7 +351,10 @@ fun BottomRowKeyboardNavigation(onExit: () -> Unit, onBackspace: () -> Unit, onS
             .height(58.dp)
     ) {
         Row(modifier = Modifier.padding(2.dp, 8.dp, 2.dp, 2.dp)) {
-            IconButton(onClick = { onExit() }) {
+            IconButton(onClick = { onExit() }, modifier = Modifier.clearAndSetSemantics {
+                this.role = Role.Button
+                this.text = AnnotatedString("Letters")
+            }) {
                 Text("ABC", fontSize = 14.sp)
             }
 
@@ -355,6 +363,10 @@ fun BottomRowKeyboardNavigation(onExit: () -> Unit, onBackspace: () -> Unit, onS
                     .weight(1.0f)
                     .minimumInteractiveComponentSize()
                     .fillMaxHeight()
+                    .clearAndSetSemantics {
+                        this.role = Role.Button
+                        this.text = AnnotatedString("Space")
+                    }
                     .padding(8.dp, 2.dp), colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.33f),
                     contentColor = MaterialTheme.colorScheme.onBackground,
@@ -365,12 +377,15 @@ fun BottomRowKeyboardNavigation(onExit: () -> Unit, onBackspace: () -> Unit, onS
                 Text("")
             }
 
-//            IconButton(onClick = { onBackspace() }) {
             Box(modifier = Modifier
                 .minimumInteractiveComponentSize()
                 .repeatablyClickableAction { onBackspace() }
                 .size(40.dp)
-                .clip(RoundedCornerShape(100)),
+                .clip(RoundedCornerShape(100))
+                .clearAndSetSemantics {
+                    this.role = Role.Button
+                    this.text = AnnotatedString("Delete")
+                },
                 contentAlignment = Alignment.Center)
             {
                 val icon = painterResource(id = R.drawable.delete)
