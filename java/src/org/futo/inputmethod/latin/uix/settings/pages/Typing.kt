@@ -55,6 +55,13 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             subtitle = "Suggest emojis while you're typing",
             setting = SHOW_EMOJI_SUGGESTIONS
         )
+
+        SettingToggleSharedPrefs(
+            title = "Swipe typing",
+            key = Settings.PREF_GESTURE_INPUT,
+            default = true
+        )
+
         SettingToggleSharedPrefs(
             title = "Number row",
             key = Settings.PREF_ENABLE_NUMBER_ROW,
