@@ -56,6 +56,13 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -83,7 +90,7 @@ fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHost
         Spacer(modifier = Modifier.width(16.dp))
 
         if(showBack) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Back", modifier = Modifier.align(CenterVertically))
+            Icon(Icons.Default.ArrowBack, contentDescription = null, modifier = Modifier.align(CenterVertically))
             Spacer(modifier = Modifier.width(18.dp))
         }
         Text(title, style = Typography.titleLarge, modifier = Modifier
@@ -97,7 +104,7 @@ fun ScreenTitleWithIcon(title: String, painter: Painter) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.width(16.dp))
 
-        Icon(painter, contentDescription = "", modifier = Modifier.align(CenterVertically))
+        Icon(painter, contentDescription = null, modifier = Modifier.align(CenterVertically))
         Spacer(modifier = Modifier.width(18.dp))
         Text(title, style = Typography.titleLarge, modifier = Modifier
             .align(CenterVertically)
@@ -130,10 +137,11 @@ fun SettingItem(
     onClick: (() -> Unit)? = null,
     icon: (@Composable () -> Unit)? = null,
     disabled: Boolean = false,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(0.dp, 68.dp)
             .clickable(enabled = !disabled && onClick != null, onClick = {
@@ -207,7 +215,12 @@ fun SettingToggleRaw(
                 setValue(!enabled)
             }
         },
-        icon = icon
+        icon = icon,
+        modifier = Modifier.clearAndSetSemantics {
+            this.text = AnnotatedString("$title. $subtitle")
+            this.role = Role.Switch
+            this.toggleableState = ToggleableState(enabled)
+        }
     ) {
         Switch(checked = enabled, onCheckedChange = {
             if (!disabled) {
@@ -527,8 +540,8 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
         }
     ) {
         when(style) {
-            NavigationItemStyle.Misc -> Icon(Icons.Default.ArrowForward, contentDescription = "Go")
-            NavigationItemStyle.Mail -> Icon(Icons.Default.Send, contentDescription = "Send")
+            NavigationItemStyle.Misc -> Icon(Icons.Default.ArrowForward, contentDescription = null)
+            NavigationItemStyle.Mail -> Icon(Icons.Default.Send, contentDescription = null)
             else -> {}
         }
     }
