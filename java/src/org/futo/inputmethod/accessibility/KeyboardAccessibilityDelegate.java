@@ -17,22 +17,32 @@
 package org.futo.inputmethod.accessibility;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.inputmethod.EditorInfo;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.AccessibilityDelegateCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityNodeProviderCompat;
+import androidx.customview.widget.ExploreByTouchHelper;
 
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.KeyDetector;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardView;
+import org.futo.inputmethod.latin.common.Constants;
+import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.settings.SettingsValues;
+
+import java.util.List;
 
 /**
  * This class represents a delegate that can be registered in a class that extends
@@ -40,25 +50,23 @@ import org.futo.inputmethod.keyboard.KeyboardView;
  *
  * To implement accessibility mode, the target keyboard view has to:<p>
  * - Call {@link #setKeyboard(Keyboard)} when a new keyboard is set to the keyboard view.
- * - Dispatch a hover event by calling {@link #onHoverEnter(MotionEvent)}.
  *
  * @param <KV> The keyboard view class type.
  */
 public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
-        extends AccessibilityDelegateCompat {
+        extends ExploreByTouchHelper {
     private static final String TAG = KeyboardAccessibilityDelegate.class.getSimpleName();
     protected static final boolean DEBUG_HOVER = false;
 
     protected final KV mKeyboardView;
     protected final KeyDetector mKeyDetector;
     private Keyboard mKeyboard;
-    private KeyboardAccessibilityNodeProvider<KV> mAccessibilityNodeProvider;
     private Key mLastHoverKey;
 
     public static final int HOVER_EVENT_POINTER_ID = 0;
 
     public KeyboardAccessibilityDelegate(final KV keyboardView, final KeyDetector keyDetector) {
-        super();
+        super(keyboardView);
         mKeyboardView = keyboardView;
         mKeyDetector = keyDetector;
 
@@ -76,9 +84,6 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
     public void setKeyboard(final Keyboard keyboard) {
         if (keyboard == null) {
             return;
-        }
-        if (mAccessibilityNodeProvider != null) {
-            mAccessibilityNodeProvider.setKeyboard(keyboard);
         }
         mKeyboard = keyboard;
     }
@@ -126,128 +131,57 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         }
     }
 
-    /**
-     * Delegate method for View.getAccessibilityNodeProvider(). This method is called in SDK
-     * version 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) and higher to obtain the virtual
-     * node hierarchy provider.
-     *
-     * @param host The host view for the provider.
-     * @return The accessibility node provider for the current keyboard.
-     */
     @Override
-    public AccessibilityNodeProviderCompat getAccessibilityNodeProvider(final View host) {
-        return getAccessibilityNodeProvider();
+    protected int getVirtualViewAt(float x, float y) {
+        Key k = mKeyDetector.detectHitKey((int)x, (int)y);
+        if(k == null) {
+            return HOST_ID;
+        }
+
+        return getVirtualViewIdOf(k);
     }
 
-    /**
-     * @return A lazily-instantiated node provider for this view delegate.
-     */
-    protected AccessibilityNodeProviderCompat getAccessibilityNodeProvider() {
-        // Instantiate the provide only when requested. Since the system
-        // will call this method multiple times it is a good practice to
-        // cache the provider instance.
-        if (mAccessibilityNodeProvider == null) {
-            mAccessibilityNodeProvider =
-                    new KeyboardAccessibilityNodeProvider<>(mKeyboardView, this);
+    @Override
+    protected void getVisibleVirtualViews(List<Integer> virtualViewIds) {
+        final List<Key> sortedKeys = mKeyboard.getSortedKeys();
+        final int size = sortedKeys.size();
+        for (int index = 0; index < size; index++) {
+            virtualViewIds.add(index);
         }
-        return mAccessibilityNodeProvider;
     }
 
-    /**
-     * Get a key that a hover event is on.
-     *
-     * @param event The hover event.
-     * @return key The key that the <code>event</code> is on.
-     */
-    protected final Key getHoverKeyOf(final MotionEvent event) {
-        final int actionIndex = event.getActionIndex();
-        final int x = (int)event.getX(actionIndex);
-        final int y = (int)event.getY(actionIndex);
-        return mKeyDetector.detectHitKey(x, y);
+    @Override
+    protected void onPopulateNodeForVirtualView(int virtualViewId, @NonNull AccessibilityNodeInfoCompat node) {
+        Key k = getKeyOf(virtualViewId);
+        if(k == null) return;
+
+        String description = getKeyDescription(k);
+
+        node.setContentDescription(description);
+        node.setBoundsInParent(k.getHitBox());
+
+        node.setFocusable(true);
+        node.setScreenReaderFocusable(true);
+
+        if(k.isActionKey() || k.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL || k.getCode() == Constants.CODE_EMOJI || k.getCode() == Constants.CODE_SYMBOL_SHIFT) {
+            node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+            node.setClickable(true);
+        } else {
+            node.setTextEntryKey(true);
+        }
     }
 
-    /**
-     * Receives hover events when touch exploration is turned on in SDK versions ICS and higher.
-     *
-     * @param event The hover event.
-     * @return {@code true} if the event is handled.
-     */
-    public boolean onHoverEvent(final MotionEvent event) {
-        switch (event.getActionMasked()) {
-        case MotionEvent.ACTION_HOVER_ENTER:
-            onHoverEnter(event);
-            break;
-        case MotionEvent.ACTION_HOVER_MOVE:
-            onHoverMove(event);
-            break;
-        case MotionEvent.ACTION_HOVER_EXIT:
-            onHoverExit(event);
-            break;
-        default:
-            Log.w(getClass().getSimpleName(), "Unknown hover event: " + event);
-            break;
-        }
-        return true;
-    }
+    @Override
+    protected boolean onPerformActionForVirtualView(int virtualViewId, int action, @Nullable Bundle arguments) {
+        Key k = getKeyOf(virtualViewId);
+        if(k == null) return false;
 
-    /**
-     * Process {@link MotionEvent#ACTION_HOVER_ENTER} event.
-     *
-     * @param event A hover enter event.
-     */
-    protected void onHoverEnter(final MotionEvent event) {
-        final Key key = getHoverKeyOf(event);
-        if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverEnter: key=" + key);
+        if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
+            // Handle the click action for the virtual button
+            performClickOn(k);
+            return true;
         }
-        if (key != null) {
-            onHoverEnterTo(key);
-        }
-        setLastHoverKey(key);
-    }
-
-    /**
-     * Process {@link MotionEvent#ACTION_HOVER_MOVE} event.
-     *
-     * @param event A hover move event.
-     */
-    protected void onHoverMove(final MotionEvent event) {
-        final Key lastKey = getLastHoverKey();
-        final Key key = getHoverKeyOf(event);
-        if (key != lastKey) {
-            if (lastKey != null) {
-                onHoverExitFrom(lastKey);
-            }
-            if (key != null) {
-                onHoverEnterTo(key);
-            }
-        }
-        if (key != null) {
-            onHoverMoveWithin(key);
-        }
-        setLastHoverKey(key);
-    }
-
-    /**
-     * Process {@link MotionEvent#ACTION_HOVER_EXIT} event.
-     *
-     * @param event A hover exit event.
-     */
-    protected void onHoverExit(final MotionEvent event) {
-        final Key lastKey = getLastHoverKey();
-        if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverExit: key=" + getHoverKeyOf(event) + " last=" + lastKey);
-        }
-        if (lastKey != null) {
-            onHoverExitFrom(lastKey);
-        }
-        final Key key = getHoverKeyOf(event);
-        // Make sure we're not getting an EXIT event because the user slid
-        // off the keyboard area, then force a key press.
-        if (key != null) {
-            onHoverExitFrom(key);
-        }
-        setLastHoverKey(null);
+        return false;
     }
 
     /**
@@ -279,43 +213,6 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         touchEvent.recycle();
     }
 
-    /**
-     * Handles a hover enter event on a key.
-     *
-     * @param key The currently hovered key.
-     */
-    protected void onHoverEnterTo(final Key key) {
-        if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverEnterTo: key=" + key);
-        }
-        key.onPressed();
-        mKeyboardView.invalidateKey(key);
-        final KeyboardAccessibilityNodeProvider<KV> provider = mAccessibilityNodeProvider;
-        provider.onHoverEnterTo(key);
-        provider.performActionForKey(key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
-    }
-
-    /**
-     * Handles a hover move event on a key.
-     *
-     * @param key The currently hovered key.
-     */
-    protected void onHoverMoveWithin(final Key key) { }
-
-    /**
-     * Handles a hover exit event on a key.
-     *
-     * @param key The currently hovered key.
-     */
-    protected void onHoverExitFrom(final Key key) {
-        if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverExitFrom: key=" + key);
-        }
-        key.onReleased();
-        mKeyboardView.invalidateKey(key);
-        final KeyboardAccessibilityNodeProvider<KV> provider = mAccessibilityNodeProvider;
-        provider.onHoverExitFrom(key);
-    }
 
     /**
      * Perform long click on a key.
@@ -324,5 +221,52 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      */
     public void performLongClickOn(final Key key) {
         // A extended class should override this method to implement long press.
+    }
+
+
+    public Key getKeyOf(final int virtualViewId) {
+        if (mKeyboard == null) {
+            return null;
+        }
+        final List<Key> sortedKeys = mKeyboard.getSortedKeys();
+        // Use a virtual view id as an index of the sorted keys list.
+        if (virtualViewId >= 0 && virtualViewId < sortedKeys.size()) {
+            return sortedKeys.get(virtualViewId);
+        }
+        return null;
+    }
+
+    public int getVirtualViewIdOf(final Key key) {
+        if (mKeyboard == null) {
+            return View.NO_ID;
+        }
+        final List<Key> sortedKeys = mKeyboard.getSortedKeys();
+        final int size = sortedKeys.size();
+        for (int index = 0; index < size; index++) {
+            if (sortedKeys.get(index) == key) {
+                // Use an index of the sorted keys list as a virtual view id.
+                return index;
+            }
+        }
+        return View.NO_ID;
+    }
+
+    /**
+     * Returns the context-specific description for a {@link Key}.
+     *
+     * @param key The key to describe.
+     * @return The context-specific description of the key.
+     */
+    public String getKeyDescription(final Key key) {
+        final EditorInfo editorInfo = mKeyboard.mId.mEditorInfo;
+        final boolean shouldObscure = AccessibilityUtils.getInstance().shouldObscureInput(editorInfo);
+        final SettingsValues currentSettings = Settings.getInstance().getCurrent();
+        final String keyCodeDescription = KeyCodeDescriptionMapper.getInstance().getDescriptionForKey(
+                mKeyboardView.getContext(), mKeyboard, key, shouldObscure);
+        if (currentSettings.isWordSeparator(key.getCode())) {
+            return AccessibilityUtils.getInstance().getAutoCorrectionDescription(
+                    keyCodeDescription, shouldObscure);
+        }
+        return keyCodeDescription;
     }
 }

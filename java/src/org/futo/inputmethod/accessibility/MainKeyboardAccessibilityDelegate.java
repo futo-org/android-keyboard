@@ -223,34 +223,6 @@ public final class MainKeyboardAccessibilityDelegate
     }
 
     @Override
-    protected void onHoverEnterTo(final Key key) {
-        final int x = key.getHitBox().centerX();
-        final int y = key.getHitBox().centerY();
-        if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverEnterTo: key=" + key
-                    + " inIgnoreBounds=" + mBoundsToIgnoreHoverEvent.contains(x, y));
-        }
-        if (mBoundsToIgnoreHoverEvent.contains(x, y)) {
-            return;
-        }
-        // This hover enter event points to the key that isn't in the ignoring region.
-        // Further hover events should be handled.
-        mBoundsToIgnoreHoverEvent.setEmpty();
-        super.onHoverEnterTo(key);
-    }
-
-    @Override
-    protected void onHoverExitFrom(final Key key) {
-        final int x = key.getHitBox().centerX();
-        final int y = key.getHitBox().centerY();
-        if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverExitFrom: key=" + key
-                    + " inIgnoreBounds=" + mBoundsToIgnoreHoverEvent.contains(x, y));
-        }
-        super.onHoverExitFrom(key);
-    }
-
-    @Override
     public void performLongClickOn(final Key key) {
         if (DEBUG_HOVER) {
             Log.d(TAG, "performLongClickOn: key=" + key);

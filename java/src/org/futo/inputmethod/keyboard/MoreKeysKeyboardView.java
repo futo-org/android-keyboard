@@ -20,8 +20,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -211,6 +213,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         final Key newKey = mKeyDetector.detectHitKey(x, y);
         if (newKey == oldKey) {
             return newKey;
+        } else {
+            if(mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+                mAccessibilityDelegate.onKeyHovered(newKey);
+            }
         }
         // A new key is detected.
         if (oldKey != null) {
@@ -281,17 +287,25 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public boolean onHoverEvent(final MotionEvent event) {
-        final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
-        if (accessibilityDelegate != null
-                && AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return accessibilityDelegate.onHoverEvent(event);
+    public boolean dispatchHoverEvent(MotionEvent event) {
+        return (mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isTouchExplorationEnabled() && mAccessibilityDelegate.dispatchHoverEvent(event))
+                || super.dispatchHoverEvent(event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return (mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isTouchExplorationEnabled() && mAccessibilityDelegate.dispatchKeyEvent(event))
+                || super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public void onFocusChanged(boolean gainFocus, int direction,
+                               Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        if(mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            mAccessibilityDelegate.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
         }
-        return super.onHoverEvent(event);
     }
 
     private View getContainerView() {

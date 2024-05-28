@@ -26,10 +26,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -752,17 +754,25 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public boolean onHoverEvent(final MotionEvent event) {
-        final MainKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
-        if (accessibilityDelegate != null
-                && AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return accessibilityDelegate.onHoverEvent(event);
+    public boolean dispatchHoverEvent(MotionEvent event) {
+        return (mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isTouchExplorationEnabled() && mAccessibilityDelegate.dispatchHoverEvent(event))
+                || super.dispatchHoverEvent(event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return (mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isTouchExplorationEnabled() && mAccessibilityDelegate.dispatchKeyEvent(event))
+                || super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public void onFocusChanged(boolean gainFocus, int direction,
+                               Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        if(mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            mAccessibilityDelegate.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
         }
-        return super.onHoverEvent(event);
     }
 
     public void updateShortcutKey(final boolean available) {

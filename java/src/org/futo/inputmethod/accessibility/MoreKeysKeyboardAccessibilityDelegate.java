@@ -19,6 +19,10 @@ package org.futo.inputmethod.accessibility;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.accessibility.AccessibilityEvent;
+
+import androidx.core.view.accessibility.AccessibilityEventCompat;
+import androidx.core.view.accessibility.AccessibilityRecordCompat;
 
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.KeyDetector;
@@ -59,62 +63,21 @@ public class MoreKeysKeyboardAccessibilityDelegate
         sendWindowStateChanged(mCloseAnnounceResId);
     }
 
-    @Override
-    protected void onHoverEnter(final MotionEvent event) {
-        if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverEnter: key=" + getHoverKeyOf(event));
-        }
-        super.onHoverEnter(event);
-        final int actionIndex = event.getActionIndex();
-        final int x = (int)event.getX(actionIndex);
-        final int y = (int)event.getY(actionIndex);
-        final int pointerId = event.getPointerId(actionIndex);
-        final long eventTime = event.getEventTime();
-        mKeyboardView.onDownEvent(x, y, pointerId, eventTime);
+    public AccessibilityEvent createAccessibilityEvent(final Key key, final int eventType) {
+        final int virtualViewId = getVirtualViewIdOf(key);
+        final String keyDescription = getKeyDescription(key);
+        final AccessibilityEvent event = AccessibilityEvent.obtain(eventType);
+        event.setPackageName(mKeyboardView.getContext().getPackageName());
+        event.setClassName(key.getClass().getName());
+        event.setContentDescription(keyDescription);
+        event.setEnabled(true);
+        final AccessibilityRecordCompat record = AccessibilityEventCompat.asRecord(event);
+        record.setSource(mKeyboardView, virtualViewId);
+        return event;
     }
 
-    @Override
-    protected void onHoverMove(final MotionEvent event) {
-        super.onHoverMove(event);
-        final int actionIndex = event.getActionIndex();
-        final int x = (int)event.getX(actionIndex);
-        final int y = (int)event.getY(actionIndex);
-        final int pointerId = event.getPointerId(actionIndex);
-        final long eventTime = event.getEventTime();
-        mKeyboardView.onMoveEvent(x, y, pointerId, eventTime);
-    }
-
-    @Override
-    protected void onHoverExit(final MotionEvent event) {
-        final Key lastKey = getLastHoverKey();
-        if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverExit: key=" + getHoverKeyOf(event) + " last=" + lastKey);
-        }
-        if (lastKey != null) {
-            super.onHoverExitFrom(lastKey);
-        }
-        setLastHoverKey(null);
-        final int actionIndex = event.getActionIndex();
-        final int x = (int)event.getX(actionIndex);
-        final int y = (int)event.getY(actionIndex);
-        final int pointerId = event.getPointerId(actionIndex);
-        final long eventTime = event.getEventTime();
-        // A hover exit event at one pixel width or height area on the edges of more keys keyboard
-        // are treated as closing.
-        mMoreKeysKeyboardValidBounds.set(0, 0, mKeyboardView.getWidth(), mKeyboardView.getHeight());
-        mMoreKeysKeyboardValidBounds.inset(CLOSING_INSET_IN_PIXEL, CLOSING_INSET_IN_PIXEL);
-        if (mMoreKeysKeyboardValidBounds.contains(x, y)) {
-            // Invoke {@link MoreKeysKeyboardView#onUpEvent(int,int,int,long)} as if this hover
-            // exit event selects a key.
-            mKeyboardView.onUpEvent(x, y, pointerId, eventTime);
-            // TODO: Should fix this reference. This is a hack to clear the state of
-            // {@link PointerTracker}.
-            PointerTracker.dismissAllMoreKeysPanels();
-            return;
-        }
-        // Close the more keys keyboard.
-        // TODO: Should fix this reference. This is a hack to clear the state of
-        // {@link PointerTracker}.
-        PointerTracker.dismissAllMoreKeysPanels();
+    public void onKeyHovered(Key k) {
+        AccessibilityEvent event = createAccessibilityEvent(k, AccessibilityEventCompat.TYPE_VIEW_ACCESSIBILITY_FOCUSED);
+        AccessibilityUtils.getInstance().requestSendAccessibilityEvent(event);
     }
 }
