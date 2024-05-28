@@ -214,7 +214,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         if (newKey == oldKey) {
             return newKey;
         } else {
-            if(mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            if(mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isAccessibilityEnabled() && newKey != null) {
                 mAccessibilityDelegate.onKeyHovered(newKey);
             }
         }
