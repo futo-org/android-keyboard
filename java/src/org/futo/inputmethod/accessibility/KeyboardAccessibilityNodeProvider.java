@@ -18,6 +18,8 @@ package org.futo.inputmethod.accessibility;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
@@ -218,11 +220,19 @@ final class KeyboardAccessibilityNodeProvider<KV extends KeyboardView>
             return rootInfo;
         }
 
+        // Obtain and initialize an AccessibilityNodeInfo with information about the virtual view.
+        final AccessibilityNodeInfoCompat info = AccessibilityNodeInfoCompat.obtain();
+        populateNodeForVirtualView(virtualViewId, info);
+
+        return info;
+    }
+
+    public void populateNodeForVirtualView(int virtualViewId, @NonNull AccessibilityNodeInfoCompat info) {
         // Find the key that corresponds to the given virtual view id.
         final Key key = getKeyOf(virtualViewId);
         if (key == null) {
             Log.e(TAG, "Invalid virtual view ID: " + virtualViewId);
-            return null;
+            return;
         }
         final String keyDescription = getKeyDescription(key);
         final Rect boundsInParent = key.getHitBox();
@@ -233,10 +243,7 @@ final class KeyboardAccessibilityNodeProvider<KV extends KeyboardView>
                 CoordinateUtils.x(mParentLocation), CoordinateUtils.y(mParentLocation));
         final Rect boundsInScreen = mTempBoundsInScreen;
 
-        // Obtain and initialize an AccessibilityNodeInfo with information about the virtual view.
-        final AccessibilityNodeInfoCompat info = AccessibilityNodeInfoCompat.obtain();
         info.setPackageName(mKeyboardView.getContext().getPackageName());
-        //info.setTextEntryKey(true);
         info.setClassName(key.getClass().getName());
         info.setContentDescription(keyDescription);
         info.setBoundsInParent(boundsInParent);
@@ -245,6 +252,7 @@ final class KeyboardAccessibilityNodeProvider<KV extends KeyboardView>
         info.setSource(mKeyboardView, virtualViewId);
         info.setEnabled(key.isEnabled());
         info.setVisibleToUser(true);
+        info.setTextEntryKey(true);
         info.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
         if (key.isLongPressEnabled()) {
             info.addAction(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK);
@@ -255,7 +263,6 @@ final class KeyboardAccessibilityNodeProvider<KV extends KeyboardView>
         } else {
             info.addAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
         }
-        return info;
     }
 
     @Override

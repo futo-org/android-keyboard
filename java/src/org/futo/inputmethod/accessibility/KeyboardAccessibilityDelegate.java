@@ -18,14 +18,16 @@ package org.futo.inputmethod.accessibility;
 
 import android.content.Context;
 import android.os.SystemClock;
-import androidx.core.view.AccessibilityDelegateCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
+
+import androidx.core.view.AccessibilityDelegateCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.accessibility.AccessibilityNodeProviderCompat;
 
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.KeyDetector;
@@ -133,14 +135,14 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * @return The accessibility node provider for the current keyboard.
      */
     @Override
-    public KeyboardAccessibilityNodeProvider<KV> getAccessibilityNodeProvider(final View host) {
+    public AccessibilityNodeProviderCompat getAccessibilityNodeProvider(final View host) {
         return getAccessibilityNodeProvider();
     }
 
     /**
      * @return A lazily-instantiated node provider for this view delegate.
      */
-    protected KeyboardAccessibilityNodeProvider<KV> getAccessibilityNodeProvider() {
+    protected AccessibilityNodeProviderCompat getAccessibilityNodeProvider() {
         // Instantiate the provide only when requested. Since the system
         // will call this method multiple times it is a good practice to
         // cache the provider instance.
@@ -288,7 +290,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         }
         key.onPressed();
         mKeyboardView.invalidateKey(key);
-        final KeyboardAccessibilityNodeProvider<KV> provider = getAccessibilityNodeProvider();
+        final KeyboardAccessibilityNodeProvider<KV> provider = mAccessibilityNodeProvider;
         provider.onHoverEnterTo(key);
         provider.performActionForKey(key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
     }
@@ -311,7 +313,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         }
         key.onReleased();
         mKeyboardView.invalidateKey(key);
-        final KeyboardAccessibilityNodeProvider<KV> provider = getAccessibilityNodeProvider();
+        final KeyboardAccessibilityNodeProvider<KV> provider = mAccessibilityNodeProvider;
         provider.onHoverExitFrom(key);
     }
 
