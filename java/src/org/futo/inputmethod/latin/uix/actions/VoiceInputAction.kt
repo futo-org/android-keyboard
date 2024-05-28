@@ -208,6 +208,7 @@ private class VoiceInputActionWindow(
         wasFinished = true
 
         inputTransaction.commit(result)
+        manager.announce(result)
         manager.closeActionWindow()
     }
 

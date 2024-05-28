@@ -39,6 +39,7 @@ interface KeyboardManagerForAction {
     fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean)
 
     fun performHapticAndAudioFeedback(code: Int, view: View)
+    fun announce(s: String)
     fun getActiveLocale(): Locale
 }
 

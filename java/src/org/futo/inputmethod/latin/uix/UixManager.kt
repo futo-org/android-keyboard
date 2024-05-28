@@ -44,6 +44,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
@@ -183,6 +184,13 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun getActiveLocale(): Locale {
         return latinIME.latinIMELegacy.locale
     }
+
+    override fun announce(s: String) {
+        AccessibilityUtils.init(getContext())
+        if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
+            AccessibilityUtils.getInstance().announceForAccessibility(uixManager.getComposeView(), s)
+        }
+    }
 }
 
 class UixManager(private val latinIME: LatinIME) {
@@ -261,10 +269,14 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         setContent()
+
+        keyboardManagerForAction.announce("${latinIME.resources.getString(action.name)} mode")
     }
 
     fun returnBackToMainKeyboardViewFromAction() {
         if(currWindowActionWindow == null) return
+
+        val name = latinIME.resources.getString(currWindowAction!!.name)
 
         currWindowActionWindow!!.close()
 
@@ -278,6 +290,8 @@ class UixManager(private val latinIME: LatinIME) {
         latinIME.window.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setContent()
+
+        keyboardManagerForAction.announce("$name closed")
     }
 
     private fun toggleExpandAction() {
