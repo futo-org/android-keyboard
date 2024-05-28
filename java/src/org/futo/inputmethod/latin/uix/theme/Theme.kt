@@ -20,7 +20,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import kotlin.math.sqrt
 
 val DarkColorScheme = darkColorScheme(
-    primary = Slate600,
+    primary = Slate500,
     onPrimary = Slate50,
 
     primaryContainer = Slate700,
