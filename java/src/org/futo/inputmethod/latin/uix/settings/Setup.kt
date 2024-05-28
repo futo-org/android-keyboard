@@ -29,6 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,7 +49,7 @@ fun SetupContainer(inner: @Composable () -> Unit) {
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "FUTO Logo",
+                contentDescription = null,
                 modifier = Modifier
                     .matchParentSize()
                     .align(Alignment.Center),
@@ -77,7 +80,12 @@ fun SetupContainer(inner: @Composable () -> Unit) {
 
 @Composable
 fun Step(fraction: Float, text: String) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .clearAndSetSemantics {
+            this.text = AnnotatedString(text)
+        }
+    ) {
         Text(text, style = Typography.labelSmall)
         LinearProgressIndicator(progress = fraction, modifier = Modifier.fillMaxWidth())
     }

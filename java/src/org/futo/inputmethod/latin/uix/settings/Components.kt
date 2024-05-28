@@ -73,7 +73,9 @@ fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHost
     val rowModifier = if(showBack) {
         Modifier
             .fillMaxWidth()
-            .clickable { navController.navigateUp() }
+            .clickable(onClickLabel = "Navigate back") {
+                navController.navigateUp()
+            }
     } else {
         Modifier.fillMaxWidth()
     }
