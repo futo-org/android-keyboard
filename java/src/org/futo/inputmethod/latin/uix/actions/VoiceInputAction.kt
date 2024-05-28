@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
@@ -171,7 +173,10 @@ private class VoiceInputActionWindow(
                 onClick = { recognizerView.value?.finish() },
                 role = null,
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() })) {
+                interactionSource = remember { MutableInteractionSource() })
+            .semantics(mergeDescendants = true) {
+                traversalIndex = -1.0f
+            }) {
             Box(modifier = Modifier.align(Alignment.Center)) {
                 when {
                     modelException.value != null -> ModelDownloader(modelException.value!!)
