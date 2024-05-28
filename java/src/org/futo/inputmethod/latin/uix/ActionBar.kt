@@ -169,7 +169,7 @@ fun AutoFitText(
 ) {
     val measurer = rememberTextMeasurer()
 
-    Canvas(modifier = modifier.fillMaxSize()) {
+    Canvas(modifier = modifier.fillMaxSize(), contentDescription = text) {
         val measurement = measurer.measure(
             text = AnnotatedString(text),
             style = style,
