@@ -29,6 +29,16 @@ val DISALLOW_SYMBOLS = SettingsKey(
     default = true
 )
 
+val PREFER_BLUETOOTH = SettingsKey(
+    key = booleanPreferencesKey("prefer_bluetooth_recording"),
+    default = false
+)
+
+val AUDIO_FOCUS = SettingsKey(
+    key = booleanPreferencesKey("request_audio_focus"),
+    default = true
+)
+
 val ENGLISH_MODEL_INDEX = SettingsKey(
     key = intPreferencesKey("english_model_index"),
     default = 0

@@ -27,11 +27,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.DISALLOW_SYMBOLS
 import org.futo.inputmethod.latin.uix.ENABLE_SOUND
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
+import org.futo.inputmethod.latin.uix.PREFER_BLUETOOTH
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
@@ -43,6 +45,7 @@ import org.futo.voiceinput.shared.ModelDoesNotExistException
 import org.futo.voiceinput.shared.RecognizerView
 import org.futo.voiceinput.shared.RecognizerViewListener
 import org.futo.voiceinput.shared.RecognizerViewSettings
+import org.futo.voiceinput.shared.RecordingSettings
 import org.futo.voiceinput.shared.SoundPlayer
 import org.futo.voiceinput.shared.types.Language
 import org.futo.voiceinput.shared.types.ModelLoader
@@ -84,6 +87,8 @@ private class VoiceInputActionWindow(
         val enableSound = async { context.getSetting(ENABLE_SOUND) }
         val verboseFeedback = async { context.getSetting(VERBOSE_PROGRESS) }
         val disallowSymbols = async { context.getSetting(DISALLOW_SYMBOLS) }
+        val useBluetoothAudio = async { context.getSetting(PREFER_BLUETOOTH) }
+        val requestAudioFocus = async { context.getSetting(AUDIO_FOCUS) }
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
@@ -104,6 +109,10 @@ private class VoiceInputActionWindow(
                 glossary = state.userDictionaryObserver.getWords().map { it.word },
                 languages = allowedLanguages,
                 suppressSymbols = disallowSymbols.await()
+            ),
+            recordingConfiguration = RecordingSettings(
+                preferBluetoothMic = useBluetoothAudio.await(),
+                requestAudioFocus = requestAudioFocus.await()
             )
         )
     }
@@ -203,7 +212,7 @@ private class VoiceInputActionWindow(
         }
     }
 
-    override fun recordingStarted() {
+    override fun recordingStarted(device: String) {
         if (shouldPlaySounds) {
             state.soundPlayer.playStartSound()
         }

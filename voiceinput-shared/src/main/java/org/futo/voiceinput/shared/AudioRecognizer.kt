@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.SensorPrivacyManager
+import android.media.AudioDeviceInfo
+import android.media.AudioFocusRequest
 import android.media.AudioFormat
+import android.media.AudioManager
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.media.MicrophoneDirection
@@ -42,9 +45,43 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+private fun getRecordingDeviceKind(type: Int): String {
+    return when (type) {
+        AudioDeviceInfo.TYPE_BUILTIN_EARPIECE -> "BUILTIN"
+        AudioDeviceInfo.TYPE_BUILTIN_MIC -> "BUILTIN"
+        AudioDeviceInfo.TYPE_BLUETOOTH_SCO -> "BLUETOOTH_SCO"
+        AudioDeviceInfo.TYPE_BLUETOOTH_A2DP -> "BLUETOOTH_A2DP"
+        AudioDeviceInfo.TYPE_WIRED_HEADSET -> "WIRED_HEADSET"
+        AudioDeviceInfo.TYPE_HDMI -> "HDMI"
+        AudioDeviceInfo.TYPE_TELEPHONY -> "TELEPHONY"
+        AudioDeviceInfo.TYPE_DOCK -> "DOCK"
+        AudioDeviceInfo.TYPE_USB_ACCESSORY -> "USB_ACCESSORY"
+        AudioDeviceInfo.TYPE_USB_DEVICE -> "USB_DEVICE"
+        AudioDeviceInfo.TYPE_USB_HEADSET -> "USB_HEADSET"
+        AudioDeviceInfo.TYPE_FM_TUNER -> "FM_TUNER"
+        AudioDeviceInfo.TYPE_TV_TUNER -> "TV_TUNER"
+        AudioDeviceInfo.TYPE_LINE_ANALOG -> "LINE_ANALOG"
+        AudioDeviceInfo.TYPE_LINE_DIGITAL -> "LINE_DIGITAL"
+        AudioDeviceInfo.TYPE_IP -> "IP"
+        AudioDeviceInfo.TYPE_BUS -> "BUS"
+        AudioDeviceInfo.TYPE_REMOTE_SUBMIX -> "REMOTE_SUBMIX"
+        AudioDeviceInfo.TYPE_BLE_HEADSET -> "BLE_HEADSET"
+        AudioDeviceInfo.TYPE_HDMI_ARC -> "HDMI_ARC"
+        AudioDeviceInfo.TYPE_HDMI_EARC -> "HDMI_EARC"
+        AudioDeviceInfo.TYPE_DOCK_ANALOG -> "DOCK_ANALOG"
+        else -> "unknown@${type}"
+    }
+}
+
+data class RecordingSettings(
+    val preferBluetoothMic: Boolean,
+    val requestAudioFocus: Boolean
+)
+
 data class AudioRecognizerSettings(
     val modelRunConfiguration: MultiModelRunConfiguration,
-    val decodingConfiguration: DecodingConfiguration
+    val decodingConfiguration: DecodingConfiguration,
+    val recordingConfiguration: RecordingSettings
 )
 
 class ModelDoesNotExistException(val models: List<ModelLoader>) : Throwable()
@@ -65,6 +102,69 @@ class AudioRecognizer(
     private var recorderJob: Job? = null
     private var modelJob: Job? = null
     private var loadModelJob: Job? = null
+
+    private var focusRequest: AudioFocusRequest? = null
+
+    private var communicationDevice = "unknown"
+
+    private fun focusAudio() {
+        unfocusAudio()
+
+        if(!settings.recordingConfiguration.requestAudioFocus) return
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                focusRequest =
+                    AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
+                        .build()
+                audioManager.requestAudioFocus(focusRequest!!)
+            }
+        }catch(e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun unfocusAudio() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                if (focusRequest != null) {
+                    audioManager.abandonAudioFocusRequest(focusRequest!!)
+                }
+                focusRequest = null
+            }
+        }catch(e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun setCommunicationDevice() {
+        communicationDevice = "Unset"
+        if(!settings.recordingConfiguration.preferBluetoothMic) return
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                val devices = audioManager.availableCommunicationDevices
+                val tgtDevice = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO } ?: devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_MIC } ?: devices.first()
+
+                if (!audioManager.setCommunicationDevice(tgtDevice)) {
+                    audioManager.clearCommunicationDevice()
+                } else {
+                    communicationDevice =
+                        tgtDevice.productName.toString() + " (${getRecordingDeviceKind(tgtDevice.type)})"
+                }
+            }
+        } catch(_: Exception) {}
+    }
+
+    private fun clearCommunicationDevice() {
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            audioManager.clearCommunicationDevice()
+        }
+    }
 
     @Throws(ModelDoesNotExistException::class)
     private fun verifyModelsExist() {
@@ -100,6 +200,10 @@ class AudioRecognizer(
         isRecording = false
 
         modelRunner.cancelAll()
+
+        unfocusAudio()
+
+        clearCommunicationDevice()
     }
 
     fun finish() {
@@ -144,10 +248,17 @@ class AudioRecognizer(
         }
     }
 
+
     @Throws(SecurityException::class)
     private fun createAudioRecorder(): AudioRecord {
+        val purpose = if(settings.recordingConfiguration.preferBluetoothMic) {
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION
+        } else {
+            MediaRecorder.AudioSource.VOICE_RECOGNITION
+        }
+
         val recorder = AudioRecord(
-            MediaRecorder.AudioSource.VOICE_RECOGNITION,
+            purpose,
             16000,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT,
@@ -159,8 +270,6 @@ class AudioRecognizer(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             recorder.setPreferredMicrophoneDirection(MicrophoneDirection.MIC_DIRECTION_TOWARDS_USER)
         }
-
-        recorder.startRecording()
 
         return recorder
     }
@@ -310,13 +419,31 @@ class AudioRecognizer(
             throw IllegalStateException("Start recording when already recording")
         }
 
+        setCommunicationDevice()
+
         val recorder = try {
             createAudioRecorder()
         } catch (e: SecurityException) {
             // It's possible we may have lost permission, so let's just ask for permission again
+            clearCommunicationDevice()
             requestPermission()
             return
         }
+
+        focusAudio()
+
+        if(communicationDevice == "Unset") {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                communicationDevice = recorder.activeMicrophones.joinToString {
+                    getRecordingDeviceKind(it.type)
+                } + " (may be stale)"
+            }
+        }
+
+        listener.recordingStarted(communicationDevice)
+
+
+        recorder.startRecording()
 
         this.recorder = recorder
 
@@ -336,7 +463,6 @@ class AudioRecognizer(
             }
         }
 
-        listener.recordingStarted()
     }
 
     private val runnerCallback: ModelInferenceCallback = object : ModelInferenceCallback {

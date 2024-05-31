@@ -14,7 +14,7 @@ interface AudioRecognizerListener {
     fun loading()
     fun needPermission(onResult: (Boolean) -> Unit)
 
-    fun recordingStarted()
+    fun recordingStarted(device: String)
     fun updateMagnitude(magnitude: Float, state: MagnitudeState)
 
     fun processing()

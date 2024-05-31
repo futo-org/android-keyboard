@@ -23,13 +23,14 @@ data class RecognizerViewSettings(
     val shouldShowInlinePartialResult: Boolean,
 
     val modelRunConfiguration: MultiModelRunConfiguration,
-    val decodingConfiguration: DecodingConfiguration
+    val decodingConfiguration: DecodingConfiguration,
+    val recordingConfiguration: RecordingSettings
 )
 
 private val VerboseAnnotations = hashMapOf(
     InferenceState.ExtractingMel to R.string.extracting_features,
     InferenceState.LoadingModel to R.string.loading_model,
-    InferenceState.Encoding to R.string.encoding,
+    InferenceState.Encoding to R.string.processing,
     InferenceState.DecodingLanguage to R.string.decoding,
     InferenceState.SwitchingModel to R.string.switching_model,
     InferenceState.DecodingStarted to R.string.decoding
@@ -47,7 +48,7 @@ private val DefaultAnnotations = hashMapOf(
 interface RecognizerViewListener {
     fun cancelled()
 
-    fun recordingStarted()
+    fun recordingStarted(device: String)
 
     fun finished(result: String)
 
@@ -75,6 +76,8 @@ class RecognizerView(
     private val partialDecodingText = mutableStateOf("")
     private val currentViewState = mutableStateOf(CurrentView.LoadingCircle)
 
+    private val currentDeviceState = mutableStateOf("Recording not started")
+
     @Composable
     fun Content() {
         when (currentViewState.value) {
@@ -93,7 +96,8 @@ class RecognizerView(
             CurrentView.InnerRecognize -> {
                 InnerRecognize(
                     magnitude = magnitudeState,
-                    state = statusState
+                    state = statusState,
+                    device = if(settings.shouldShowVerboseFeedback) { currentDeviceState } else { null }
                 )
             }
 
@@ -168,9 +172,10 @@ class RecognizerView(
             }
         }
 
-        override fun recordingStarted() {
+        override fun recordingStarted(device: String) {
             updateMagnitude(0.0f, MagnitudeState.NOT_TALKED_YET)
-            listener.recordingStarted()
+            currentDeviceState.value = device
+            listener.recordingStarted(device)
         }
 
         override fun updateMagnitude(magnitude: Float, state: MagnitudeState) {
@@ -192,7 +197,8 @@ class RecognizerView(
         listener = audioRecognizerListener,
         settings = AudioRecognizerSettings(
             modelRunConfiguration = settings.modelRunConfiguration,
-            decodingConfiguration = settings.decodingConfiguration
+            decodingConfiguration = settings.decodingConfiguration,
+            recordingConfiguration = settings.recordingConfiguration
         )
     )
 

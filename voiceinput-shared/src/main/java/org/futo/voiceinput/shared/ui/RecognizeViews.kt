@@ -54,7 +54,8 @@ fun AnimatedRecognizeCircle(magnitude: MutableFloatState = mutableFloatStateOf(0
 @Composable
 fun InnerRecognize(
     magnitude: MutableFloatState = mutableFloatStateOf(0.5f),
-    state: MutableState<MagnitudeState> = mutableStateOf(MagnitudeState.MIC_MAY_BE_BLOCKED)
+    state: MutableState<MagnitudeState> = mutableStateOf(MagnitudeState.MIC_MAY_BE_BLOCKED),
+    device: MutableState<String>? = mutableStateOf("")
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         AnimatedRecognizeCircle(magnitude = magnitude)
@@ -78,6 +79,16 @@ fun InnerRecognize(
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )
+
+        if(device != null) {
+            Text(
+                "Device: ${device.value}",
+                style = Typography.labelSmall,
+                modifier = Modifier.fillMaxWidth().offset(x = 0.dp, y = 64.dp),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
+            )
+        }
     }
 }
 
