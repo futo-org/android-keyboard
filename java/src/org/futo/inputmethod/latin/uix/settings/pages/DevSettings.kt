@@ -27,6 +27,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
+import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
 
 
 val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
@@ -51,6 +52,8 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             subtitle = "Hides all keys. Touch typists only! Recommended to disable emoji key and enable key borders",
             setting = HiddenKeysSetting
         )
+
+        SettingToggleDataStore(title = "Dismissed migration notice", setting = dismissedMigrateUpdateNotice)
 
         NavigationItem(
             title = "Crash the app",

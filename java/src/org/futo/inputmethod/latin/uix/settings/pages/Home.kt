@@ -30,6 +30,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.updates.ConditionalMigrateUpdateNotice
 import org.futo.inputmethod.updates.ConditionalUpdate
 
 @Preview(showBackground = true)
@@ -51,6 +52,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             Spacer(modifier = Modifier.height(24.dp))
             ScreenTitle("FUTO Keyboard Settings")
 
+            ConditionalMigrateUpdateNotice()
             ConditionalUpdate(navController)
             ConditionalUnpaidNoticeWithNav(navController)
 
@@ -90,15 +92,12 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 icon = painterResource(id = R.drawable.eye)
             )
 
-            UnpaidNoticeCondition(showOnlyIfReminder = true) {
-                NavigationItem(
-                    title = stringResource(R.string.payment),
-                    style = NavigationItemStyle.HomePrimary,
-                    navigate = { navController.navigate("payment") },
-                    icon = painterResource(R.drawable.dollar_sign)
-                )
-            }
-
+            NavigationItem(
+                title = stringResource(R.string.payment),
+                style = NavigationItemStyle.HomePrimary,
+                navigate = { navController.navigate("payment") },
+                icon = painterResource(R.drawable.dollar_sign)
+            )
 
             NavigationItem(
                 title = "Help & Feedback",

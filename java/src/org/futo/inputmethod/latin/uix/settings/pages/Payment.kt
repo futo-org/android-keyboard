@@ -66,6 +66,7 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
 import org.futo.inputmethod.updates.openURI
 import kotlin.math.absoluteValue
 
@@ -159,7 +160,6 @@ const val TRIAL_PERIOD_DAYS = 30
 @Composable
 fun UnpaidNoticeCondition(
     force: Boolean = LocalInspectionMode.current,
-    showOnlyIfReminder: Boolean = false,
     inner: @Composable () -> Unit
 ) {
     val paymentUrl = useDataStoreValueBlocking(TMP_PAYMENT_URL)
@@ -171,19 +171,20 @@ fun UnpaidNoticeCondition(
     val pushReminderTime = useDataStoreValueBlocking(NOTICE_REMINDER_TIME)
     val currentTime = System.currentTimeMillis() / 1000L
 
+    val isDisplayingMigrationNotice = !useDataStoreValueBlocking(dismissedMigrateUpdateNotice)
+
     val reminderTimeIsUp = (currentTime >= pushReminderTime)
 
-    val displayCondition = if(showOnlyIfReminder) {
-        // Either the reminder time is not up, or we're not past the trial period
-        (!isAlreadyPaid) && ((!reminderTimeIsUp) || (!forceShowNotice && numDaysInstalled.intValue < TRIAL_PERIOD_DAYS))
-    } else {
+    val displayCondition =
         // The trial period time is over
         (forceShowNotice || (numDaysInstalled.intValue >= TRIAL_PERIOD_DAYS))
                 // and the current time is past the reminder time
                 && reminderTimeIsUp
                 // and we have not already paid
                 && (!isAlreadyPaid)
-    }
+                // and not overridden by migration notice
+                && !isDisplayingMigrationNotice
+
     if (force || displayCondition) {
         inner()
     }

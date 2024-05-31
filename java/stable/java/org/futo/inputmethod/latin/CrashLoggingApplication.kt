@@ -5,11 +5,11 @@ import android.content.Context
 import androidx.datastore.preferences.core.Preferences
 import org.acra.ACRA
 import org.acra.config.dialog
-import org.acra.config.httpSender
+//import org.acra.config.httpSender
+//import org.acra.sender.HttpSender
 import org.acra.config.mailSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
-import org.acra.sender.HttpSender
 
 class CrashLoggingApplication : Application() {
     override fun attachBaseContext(base: Context?) {
@@ -20,11 +20,11 @@ class CrashLoggingApplication : Application() {
 
             dialog {
                 text = getString(
-                    if(BuildConfig.ENABLE_ACRA) {
-                        R.string.crashed_text
-                    } else {
+                    //if(BuildConfig.ENABLE_ACRA) {
+                    //    R.string.crashed_text
+                    //} else {
                         R.string.crashed_text_email
-                    }
+                    //}
                 )
                 title = getString(R.string.crashed_title)
                 positiveButtonText = getString(R.string.crash_report_accept)
@@ -32,14 +32,15 @@ class CrashLoggingApplication : Application() {
                 resTheme = android.R.style.Theme_DeviceDefault_Dialog
             }
 
-            if(BuildConfig.ENABLE_ACRA) {
-                httpSender {
-                    uri = BuildConfig.ACRA_URL
-                    basicAuthLogin = BuildConfig.ACRA_USER
-                    basicAuthPassword = BuildConfig.ACRA_PASSWORD
-                    httpMethod = HttpSender.Method.POST
-                }
-            } else {
+
+            //if(BuildConfig.ENABLE_ACRA) {
+            //    httpSender {
+            //        uri = BuildConfig.ACRA_URL
+            //        basicAuthLogin = BuildConfig.ACRA_USER
+            //        basicAuthPassword = BuildConfig.ACRA_PASSWORD
+            //        httpMethod = HttpSender.Method.POST
+            //    }
+            //} else {
                 mailSender {
                     mailTo = "keyboard@futo.org"
                     reportAsFile = true
@@ -48,7 +49,7 @@ class CrashLoggingApplication : Application() {
                     body =
                         "I experienced this crash. My version: ${BuildConfig.VERSION_NAME}.\n\n(Enter details here if necessary)"
                 }
-            }
+            //}
         }
     }
 

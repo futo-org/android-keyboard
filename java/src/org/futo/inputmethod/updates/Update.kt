@@ -5,23 +5,42 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.SettingItem
+import org.futo.inputmethod.latin.uix.settings.pages.ParagraphText
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.theme.Typography
 
 val LAST_UPDATE_CHECK_RESULT = stringPreferencesKey("last_update_check_result")
 val LAST_UPDATE_CHECK_FAILED = booleanPreferencesKey("last_update_check_failed")
@@ -78,7 +97,7 @@ fun Context.openManualUpdateCheck() {
 
 @Composable
 @Preview
-fun ConditionalUpdate(navController: NavHostController) {
+fun ConditionalUpdate(navController: NavHostController = rememberNavController()) {
     if(!BuildConfig.UPDATE_CHECKING) return
 
     val (updateInfo, _) = useDataStore(key = LAST_UPDATE_CHECK_RESULT, default = "")
@@ -104,13 +123,76 @@ fun ConditionalUpdate(navController: NavHostController) {
         }
     } else if(lastFailed) {
         SettingItem(
-            title = "Unable to check online for updates",
-            subtitle = "Please tap to check manually",
+            title = "Check for updates manually",
             onClick = {
                 context.openManualUpdateCheck()
             }
         ) {
             Icon(Icons.Default.ArrowForward, contentDescription = "Go")
+        }
+    }
+}
+
+val dismissedMigrateUpdateNotice = SettingsKey(
+    key = booleanPreferencesKey("dismissedMigrateFdroidObtainiumNotice"),
+    default = BuildConfig.IS_PLAYSTORE_BUILD
+)
+
+@Composable
+@Preview
+fun ConditionalMigrateUpdateNotice() {
+    val context = LocalContext.current
+    val value = useDataStore(dismissedMigrateUpdateNotice)
+    if(!value.value) {
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp, 8.dp), shape = RoundedCornerShape(24.dp)
+        ) {
+            Column(modifier = Modifier.padding(8.dp, 0.dp)) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "Use F-Droid or Obtainium",
+                    modifier = Modifier.padding(8.dp),
+                    style = Typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                ParagraphText("The standalone APK has been updated to remove the network permission.")
+
+                ParagraphText("As a consequence, it can no longer offer automatic updates.")
+
+                ParagraphText("If you are still using the apk, we recommend downloading the app from F-Droid, Obtainium or Play Store so that you receive updates.")
+
+                ParagraphText("Visit keyboard.futo.org for download options.")
+
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+
+                    Box(modifier = Modifier.weight(1.0f)) {
+                        Button(onClick = {
+                            context.openURI("https://keyboard.futo.org/#downloads")
+                        }, modifier = Modifier.align(Alignment.Center)) {
+                            Text("Visit")
+                        }
+                    }
+                    Box(modifier = Modifier.weight(1.0f)) {
+                        Button(
+                            onClick = { value.setValue(true) },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary,
+                                contentColor = MaterialTheme.colorScheme.onSecondary
+                            ), modifier = Modifier.align(Alignment.Center)
+                        ) {
+                            Text("Dismiss")
+                        }
+                    }
+
+                }
+            }
         }
     }
 }
