@@ -184,6 +184,8 @@ fun UnpaidNoticeCondition(
                 && (!isAlreadyPaid)
                 // and not overridden by migration notice
                 && !isDisplayingMigrationNotice
+                // and you can pay to begin with
+                && BuildConfig.PAYMENT_URL.isNotBlank()
 
     if (force || displayCondition) {
         inner()
