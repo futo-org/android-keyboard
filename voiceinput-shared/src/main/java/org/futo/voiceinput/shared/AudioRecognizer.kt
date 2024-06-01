@@ -436,7 +436,7 @@ class AudioRecognizer(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 communicationDevice = recorder.activeMicrophones.joinToString {
                     getRecordingDeviceKind(it.type)
-                } + " (may be stale)"
+                } + "@"
             }
         }
 
