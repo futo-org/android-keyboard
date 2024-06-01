@@ -155,6 +155,8 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         Key k = getKeyOf(virtualViewId);
         if(k == null) return;
 
+        node.setClassName(android.inputmethodservice.Keyboard.Key.class.getName());
+
         String description = getKeyDescription(k);
 
         node.setContentDescription(description);
