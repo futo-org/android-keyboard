@@ -15,6 +15,17 @@
     <string name="classic_material_light_theme_name">AOSP Material Light</string>
     <string name="voice_input_theme_name">FUTO VI Theme</string>
 
+
+    <string name="deep_sea_light_theme_name">Deep Sea Light</string>
+    <string name="deep_sea_dark_theme_name">Deep Sea Dark</string>
+
+    <string name="emerald_theme_name">Emerald</string>
+
+    <string name="snowfall_theme_name">Snowfall</string>
+    <string name="steel_gray_theme_name">Steel Gray</string>
+    <string name="sunflower_theme_name">Sunflower</string>
+    <string name="cotton_candy_theme_name">Cotton Candy</string>
+
     <string name="dynamic_system_theme_name">Dynamic Auto</string>
     <string name="dynamic_light_theme_name">Dynamic Light</string>
     <string name="dynamic_dark_theme_name">Dynamic Dark</string>

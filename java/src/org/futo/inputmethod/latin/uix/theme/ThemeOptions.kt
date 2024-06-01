@@ -6,9 +6,16 @@ import androidx.compose.material3.ColorScheme
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialLight
+import org.futo.inputmethod.latin.uix.theme.presets.CottonCandy
+import org.futo.inputmethod.latin.uix.theme.presets.DeepSeaDark
+import org.futo.inputmethod.latin.uix.theme.presets.DeepSeaLight
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
+import org.futo.inputmethod.latin.uix.theme.presets.Emerald
+import org.futo.inputmethod.latin.uix.theme.presets.Snowfall
+import org.futo.inputmethod.latin.uix.theme.presets.SteelGray
+import org.futo.inputmethod.latin.uix.theme.presets.Sunflower
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 
 data class ThemeOption(
@@ -19,24 +26,26 @@ data class ThemeOption(
     val obtainColors: (Context) -> ColorScheme,
 )
 
-val ThemeOptions = hashMapOf(
+val ThemeOptions = mapOf(
+    VoiceInputTheme.key to VoiceInputTheme,
+
     DynamicSystemTheme.key to DynamicSystemTheme,
     DynamicDarkTheme.key to DynamicDarkTheme,
     DynamicLightTheme.key to DynamicLightTheme,
 
     ClassicMaterialDark.key to ClassicMaterialDark,
     ClassicMaterialLight.key to ClassicMaterialLight,
-    VoiceInputTheme.key to VoiceInputTheme,
     AMOLEDDarkPurple.key to AMOLEDDarkPurple,
+
+    Sunflower.key to Sunflower,
+    Snowfall.key to Snowfall,
+    SteelGray.key to SteelGray,
+    Emerald.key to Emerald,
+    CottonCandy.key to CottonCandy,
+
+    DeepSeaLight.key to DeepSeaLight,
+    DeepSeaDark.key to DeepSeaDark,
+
 )
 
-val ThemeOptionKeys = arrayOf(
-    VoiceInputTheme.key,
-    DynamicDarkTheme.key,
-    DynamicLightTheme.key,
-    DynamicSystemTheme.key,
-
-    ClassicMaterialDark.key,
-    ClassicMaterialLight.key,
-    AMOLEDDarkPurple.key,
-)
+val ThemeOptionKeys = ThemeOptions.keys
