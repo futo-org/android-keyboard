@@ -318,6 +318,10 @@ fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
 }
 
 object ResourceHelper {
+    val BuiltInVoiceInputFallbacks = mapOf(
+        "en" to BUILTIN_ENGLISH_MODEL
+    )
+
     suspend fun findKeyForLocaleAndKind(context: Context, locale: Locale, kind: FileKind): String? {
         val keysToTry = listOf(
             locale.language,
@@ -348,11 +352,7 @@ object ResourceHelper {
 
     fun tryFindingVoiceInputModelForLocale(context: Context, locale: Locale): ModelLoader? {
         val file = runBlocking { findFileForKind(context, locale, FileKind.VoiceInput) }
-            ?: return if(locale.language == "en") {
-                BUILTIN_ENGLISH_MODEL
-            } else {
-                null
-            }
+            ?: return BuiltInVoiceInputFallbacks[locale.language]
 
         return ModelFileFile(R.string.externally_imported_model, file)
     }

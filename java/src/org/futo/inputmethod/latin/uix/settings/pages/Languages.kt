@@ -51,6 +51,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.openModelImpor
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.youAreImporting
+import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
 import java.util.Locale
@@ -73,6 +74,14 @@ fun ConfirmResourceActionDialog(
     isCurrentlySet: Boolean,
     locale: Locale
 ) {
+    val hasBuiltInFallback = if(resourceKind == FileKind.VoiceInput) {
+        ResourceHelper.BuiltInVoiceInputFallbacks[locale.language] != null
+    } else if(resourceKind == FileKind.Dictionary) {
+        Dictionaries.getDictionaryId(locale) != 0
+    } else {
+        true
+    }
+
     AlertDialog(
         icon = {
             Icon(painterResource(id = resourceKind.icon()), contentDescription = "Action")
@@ -81,8 +90,10 @@ fun ConfirmResourceActionDialog(
             Text(text = "${locale.displayLanguage} - ${resourceKind.kindTitle()}")
         },
         text = {
-            if(isCurrentlySet) {
-                Text(text = "Would you like to delete ${resourceKind.youAreImporting()} for ${locale.displayLanguage}, or replace it with another file?")
+            if(isCurrentlySet && hasBuiltInFallback) {
+                Text(text = "Would you like to revert ${resourceKind.youAreImporting()} to default for ${locale.displayLanguage}, or replace it with another file?")
+            } else if(isCurrentlySet) {
+                Text(text = "Would you like to remove the ${resourceKind.youAreImporting()} for ${locale.displayLanguage}, or replace it with another file?\n\nNo built-in ${resourceKind.youAreImporting()} exists for this language, so if you remove it, it will stop working until you import a different one!")
             } else {
                 Text(text = "No ${resourceKind.youAreImporting()} override is set for ${locale.displayLanguage}. You can explore downloads online, or import an existing file.")
             }
@@ -106,7 +117,12 @@ fun ConfirmResourceActionDialog(
         dismissButton = {
             if(isCurrentlySet) {
                 TextButton(onClick = { onDelete() }) {
-                    Text("Delete")
+                    if(hasBuiltInFallback) {
+                        Text("Revert to Default")
+                    } else {
+                        Text("Remove")
+                    }
+
                 }
             } else {
                 TextButton(onClick = { onExplore() }) {
@@ -159,7 +175,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
     }
     LazyColumn {
         item {
-            ScreenTitle("Languages", showBack = true, navController)
+            ScreenTitle("Languages & Models", showBack = true, navController)
         }
 
         item {

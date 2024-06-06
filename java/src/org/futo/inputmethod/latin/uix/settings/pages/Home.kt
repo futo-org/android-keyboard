@@ -57,7 +57,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             ConditionalUnpaidNoticeWithNav(navController)
 
             NavigationItem(
-                title = "Languages",
+                title = "Languages & Models",
                 style = NavigationItemStyle.HomePrimary,
                 navigate = { navController.navigate("languages") },
                 icon = painterResource(id = R.drawable.globe)

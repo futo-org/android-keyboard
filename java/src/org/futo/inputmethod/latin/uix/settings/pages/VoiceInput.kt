@@ -79,8 +79,8 @@ fun VoiceInputScreen(navController: NavHostController = rememberNavController())
             )
 
             NavigationItem(
-                title = "Languages",
-                subtitle = "To change the model, visit Languages menu",
+                title = "Models",
+                subtitle = "To change the models, visit Languages & Models menu",
                 style = NavigationItemStyle.Misc,
                 navigate = { navController.navigate("languages") }
             )
