@@ -38,6 +38,7 @@ import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
 import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
 import org.futo.inputmethod.updates.openURI
@@ -50,6 +51,7 @@ import org.futo.voiceinput.shared.SoundPlayer
 import org.futo.voiceinput.shared.types.Language
 import org.futo.voiceinput.shared.types.ModelLoader
 import org.futo.voiceinput.shared.types.getLanguageFromWhisperString
+import org.futo.voiceinput.shared.ui.MicrophoneDeviceState
 import org.futo.voiceinput.shared.whisper.DecodingConfiguration
 import org.futo.voiceinput.shared.whisper.ModelManager
 import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
@@ -212,9 +214,17 @@ private class VoiceInputActionWindow(
         }
     }
 
-    override fun recordingStarted(device: String) {
+    override fun recordingStarted(device: MicrophoneDeviceState) {
         if (shouldPlaySounds) {
             state.soundPlayer.playStartSound()
+
+            // Only set the setting if bluetooth is available, else it would reset the setting
+            // every time it's used without a bluetooth device connected.
+            if(device.bluetoothAvailable) {
+                manager.getLifecycleScope().launch {
+                    context.setSetting(PREFER_BLUETOOTH, device.bluetoothActive)
+                }
+            }
         }
     }
 

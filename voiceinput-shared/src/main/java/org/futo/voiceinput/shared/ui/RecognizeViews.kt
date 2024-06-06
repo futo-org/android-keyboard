@@ -1,7 +1,12 @@
 package org.futo.voiceinput.shared.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -21,20 +26,45 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import org.futo.voiceinput.shared.R
 import org.futo.voiceinput.shared.types.MagnitudeState
 import org.futo.voiceinput.shared.ui.theme.Typography
+
+data class MicrophoneDeviceState(
+    val bluetoothAvailable: Boolean,
+    val bluetoothActive: Boolean,
+    val bluetoothPreferredByUser: Boolean,
+    val setBluetooth: (Boolean) -> Unit,
+    val deviceName: String
+)
 
 @Composable
 fun AnimatedRecognizeCircle(magnitude: MutableFloatState = mutableFloatStateOf(0.5f)) {
@@ -52,10 +82,91 @@ fun AnimatedRecognizeCircle(magnitude: MutableFloatState = mutableFloatStateOf(0
 }
 
 @Composable
+private fun FakeToast(modifier: Modifier, message: String?) {
+    val visible = remember { mutableStateOf(false) }
+
+    LaunchedEffect(message) {
+        if(message != null) {
+            visible.value = true
+            delay(2500L)
+            visible.value = false
+        } else {
+            visible.value = false
+        }
+    }
+
+    if(message != null) {
+        AnimatedVisibility(
+            visible = visible.value,
+            modifier = modifier.alpha(0.9f).background(MaterialTheme.colorScheme.surfaceDim, RoundedCornerShape(100)).padding(16.dp),
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Box {
+                Text(message, modifier = Modifier.align(Alignment.Center), style = Typography.labelSmall)
+            }
+        }
+    }
+}
+
+@Composable
+private fun BoxScope.BluetoothToggleIcon(device: MutableState<MicrophoneDeviceState>? = null) {
+    FakeToast(modifier = Modifier.align(Alignment.BottomCenter).offset(y = (-16).dp), message = if(device?.value?.bluetoothActive == true) {
+        "Using Bluetooth mic (${device.value.deviceName})"
+    } else if(device?.value?.bluetoothAvailable == true || device?.value?.bluetoothPreferredByUser == true) {
+        "Using Built-in mic (${device.value.deviceName})"
+    } else {
+        null
+    })
+
+    if(device?.value?.bluetoothAvailable == true) {
+        val bluetoothColor = MaterialTheme.colorScheme.primary
+        val iconColor = if(device.value.bluetoothActive) {
+            MaterialTheme.colorScheme.onPrimary
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
+
+        IconButton(modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .offset(x = (-16).dp, y = (-16).dp)
+            .drawBehind {
+                val radius = size.height / 4.0f
+                drawRoundRect(
+                    bluetoothColor,
+                    topLeft = Offset(size.width * 0.1f, size.height * 0.05f),
+                    size = Size(size.width * 0.8f, size.height * 0.9f),
+                    cornerRadius = CornerRadius(radius, radius),
+                    style = if (device.value.bluetoothActive) {
+                        Fill
+                    } else {
+                        Stroke(width = 4.0f)
+                    }
+                )
+            }
+            .clearAndSetSemantics {
+                this.text = AnnotatedString("Use bluetooth mic")
+                this.role = Role.Switch
+                this.toggleableState = ToggleableState(device.value.bluetoothActive)
+            },
+            onClick = {
+                device.value.setBluetooth(!device.value.bluetoothActive)
+            },
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.bluetooth),
+                contentDescription = null,
+                tint = iconColor
+            )
+        }
+    }
+}
+
+@Composable
 fun InnerRecognize(
     magnitude: MutableFloatState = mutableFloatStateOf(0.5f),
     state: MutableState<MagnitudeState> = mutableStateOf(MagnitudeState.MIC_MAY_BE_BLOCKED),
-    device: MutableState<String>? = mutableStateOf("")
+    device: MutableState<MicrophoneDeviceState>? = null
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         AnimatedRecognizeCircle(magnitude = magnitude)
@@ -75,20 +186,14 @@ fun InnerRecognize(
 
         Text(
             text,
-            modifier = Modifier.fillMaxWidth().offset(x = 0.dp, y = 48.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(x = 0.dp, y = 48.dp),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        if(device != null) {
-            Text(
-                "Device: ${device.value}",
-                style = Typography.labelSmall,
-                modifier = Modifier.fillMaxWidth().offset(x = 0.dp, y = 64.dp),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
-            )
-        }
+        BluetoothToggleIcon(device)
     }
 }
 

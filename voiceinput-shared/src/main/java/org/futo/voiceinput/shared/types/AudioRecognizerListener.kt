@@ -1,5 +1,7 @@
 package org.futo.voiceinput.shared.types
 
+import org.futo.voiceinput.shared.ui.MicrophoneDeviceState
+
 enum class MagnitudeState {
     NOT_TALKED_YET, MIC_MAY_BE_BLOCKED, TALKING
 }
@@ -14,7 +16,7 @@ interface AudioRecognizerListener {
     fun loading()
     fun needPermission(onResult: (Boolean) -> Unit)
 
-    fun recordingStarted(device: String)
+    fun recordingStarted(device: MicrophoneDeviceState)
     fun updateMagnitude(magnitude: Float, state: MagnitudeState)
 
     fun processing()

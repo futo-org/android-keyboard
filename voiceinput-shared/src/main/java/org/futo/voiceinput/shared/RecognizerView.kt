@@ -11,6 +11,7 @@ import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
 import org.futo.voiceinput.shared.types.MagnitudeState
 import org.futo.voiceinput.shared.ui.InnerRecognize
+import org.futo.voiceinput.shared.ui.MicrophoneDeviceState
 import org.futo.voiceinput.shared.ui.PartialDecodingResult
 import org.futo.voiceinput.shared.ui.RecognizeLoadingCircle
 import org.futo.voiceinput.shared.ui.RecognizeMicError
@@ -48,7 +49,7 @@ private val DefaultAnnotations = hashMapOf(
 interface RecognizerViewListener {
     fun cancelled()
 
-    fun recordingStarted(device: String)
+    fun recordingStarted(device: MicrophoneDeviceState)
 
     fun finished(result: String)
 
@@ -76,7 +77,13 @@ class RecognizerView(
     private val partialDecodingText = mutableStateOf("")
     private val currentViewState = mutableStateOf(CurrentView.LoadingCircle)
 
-    private val currentDeviceState = mutableStateOf("Recording not started")
+    private val currentDeviceState = mutableStateOf(MicrophoneDeviceState(
+        bluetoothAvailable = false,
+        bluetoothActive = false,
+        setBluetooth = { },
+        deviceName = "",
+        bluetoothPreferredByUser = false
+    ))
 
     @Composable
     fun Content() {
@@ -97,7 +104,7 @@ class RecognizerView(
                 InnerRecognize(
                     magnitude = magnitudeState,
                     state = statusState,
-                    device = if(settings.shouldShowVerboseFeedback) { currentDeviceState } else { null }
+                    device = currentDeviceState
                 )
             }
 
@@ -172,7 +179,7 @@ class RecognizerView(
             }
         }
 
-        override fun recordingStarted(device: String) {
+        override fun recordingStarted(device: MicrophoneDeviceState) {
             updateMagnitude(0.0f, MagnitudeState.NOT_TALKED_YET)
             currentDeviceState.value = device
             listener.recordingStarted(device)
