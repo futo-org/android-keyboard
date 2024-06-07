@@ -31,6 +31,7 @@ interface KeyboardManagerForAction {
     fun triggerSystemVoiceInput()
 
     fun updateTheme(newTheme: ThemeOption)
+    fun getThemeProvider(): DynamicThemeProvider
 
     fun sendCodePointEvent(codePoint: Int)
     fun sendKeyEvent(keyCode: Int, metaState: Int)

@@ -159,6 +159,10 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         latinIME.updateTheme(newTheme)
     }
 
+    override fun getThemeProvider(): DynamicThemeProvider {
+        return latinIME.getDrawableProvider()
+    }
+
     override fun sendCodePointEvent(codePoint: Int) {
         latinIME.latinIMELegacy.onCodeInput(codePoint,
             Constants.NOT_A_COORDINATE,

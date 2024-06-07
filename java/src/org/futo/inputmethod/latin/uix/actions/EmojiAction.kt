@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,20 +10,21 @@ import android.widget.TextView
 import androidx.annotation.UiThread
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +32,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,10 +42,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -58,6 +62,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -79,11 +84,13 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.AutoFitText
 import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
+import org.futo.voiceinput.shared.ui.theme.Typography
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -92,8 +99,24 @@ import kotlin.streams.toList
 data class PopupInfo(val emoji: EmojiItem, val x: Int, val y: Int)
 
 sealed class EmojiViewItem
-class CategoryItem(val title: String) : EmojiViewItem()
-class EmojiItemItem(val emoji: EmojiItem) : EmojiViewItem()
+class CategoryItem(val title: String) : EmojiViewItem() {
+    override fun equals(other: Any?): Boolean {
+        return (other is CategoryItem) && (title == other.title)
+    }
+
+    override fun hashCode(): Int {
+        return title.hashCode()
+    }
+}
+class EmojiItemItem(val emoji: EmojiItem) : EmojiViewItem() {
+    override fun equals(other: Any?): Boolean {
+        return (other is EmojiItemItem) && (emoji == other.emoji)
+    }
+
+    override fun hashCode(): Int {
+        return emoji.hashCode()
+    }
+}
 
 const val VIEW_EMOJI = 0
 const val VIEW_CATEGORY = 1
@@ -213,7 +236,9 @@ fun Emojis(
     emojis: List<EmojiViewItem>,
     onClick: (EmojiItem) -> Unit,
     modifier: Modifier = Modifier,
-    emojiMap: Map<String, EmojiItem>
+    emojiMap: Map<String, EmojiItem>,
+    currentCategory: MutableState<CategoryItem>,
+    jumpCategory: MutableState<CategoryItem?>
 ) {
     val emojiWidth = with(LocalDensity.current) {
         remember {
@@ -258,11 +283,45 @@ fun Emojis(
                         }
                     }
                     adapter = emojiAdapter
+
+                    addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                            super.onScrolled(recyclerView, dx, dy)
+                            val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                            val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
+                            val lastVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition()
+
+                            val finalCategoryIndex = emojis.indexOfLast { it is CategoryItem }
+                            if(finalCategoryIndex < lastVisiblePosition) {
+                                currentCategory.value = emojis[finalCategoryIndex] as CategoryItem
+                            } else {
+                                val itm = emojis.subList(0, firstVisiblePosition + 1)
+                                    .lastOrNull { it is CategoryItem }
+
+                                if (itm != null) {
+                                    currentCategory.value = itm as CategoryItem
+                                }
+                            }
+                        }
+                    })
                 }
             },
             update = {
                 if (viewWidth > 0) {
                     (it.layoutManager as GridLayoutManager).spanCount = viewWidth / emojiWidth
+                }
+
+                jumpCategory.value?.let { item ->
+                    val idx = emojis.indexOf(item)
+                    if (idx != -1) {
+                        it.post {
+                            (it.layoutManager as GridLayoutManager).scrollToPositionWithOffset(
+                                idx,
+                                0
+                            )
+                        }
+                    }
+                    jumpCategory.value = null
                 }
             },
             modifier = Modifier
@@ -278,9 +337,13 @@ fun Emojis(
                             val event = awaitPointerEvent(PointerEventPass.Initial)
                             if (event.type == PointerEventType.Press && popupIsActive) {
                                 popupIsActive = false
-                                event.changes.firstOrNull()?.consume()
-                            } else if(event.type == PointerEventType.Move && popupIsActive) {
-                                event.changes.firstOrNull()?.consume()
+                                event.changes
+                                    .firstOrNull()
+                                    ?.consume()
+                            } else if (event.type == PointerEventType.Move && popupIsActive) {
+                                event.changes
+                                    .firstOrNull()
+                                    ?.consume()
                             }
                         }
                     }
@@ -304,7 +367,7 @@ fun Emojis(
             }
             .absoluteOffset {
                 IntOffset(x, y)
-        }) {
+            }) {
             activePopup?.let { popupInfo ->
                 Box {
                     Surface(
@@ -344,65 +407,80 @@ fun Emojis(
 }
 
 @Composable
-fun BottomRowKeyboardNavigation(onExit: () -> Unit, onBackspace: () -> Unit, onSpace: () -> Unit) {
+fun EmojiNavigation(
+    showKeys: Boolean,
+    onExit: () -> Unit,
+    onBackspace: () -> Unit,
+    categories: List<CategoryItem>,
+    activeCategoryItem: CategoryItem,
+    goToCategory: (CategoryItem) -> Unit,
+    keyBackground: Drawable
+) {
+    val listState = rememberLazyListState()
+    LaunchedEffect(activeCategoryItem) {
+        val idx = categories.indexOf(activeCategoryItem)
+        if(idx != -1) {
+            val visibleSize = listState.layoutInfo.viewportEndOffset
+            val itemWidth = listState.layoutInfo.visibleItemsInfo.first().size
+            listState.animateScrollToItem(idx, itemWidth / 2 - visibleSize / 2)
+        }
+    }
     Surface(
         color = MaterialTheme.colorScheme.background, modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(48.dp)
     ) {
-        Row(modifier = Modifier.padding(2.dp, 8.dp, 2.dp, 2.dp)) {
-            IconButton(onClick = { onExit() }, modifier = Modifier.clearAndSetSemantics {
-                this.role = Role.Button
-                this.text = AnnotatedString("Letters")
-            }) {
-                Text("ABC", fontSize = 14.sp)
-            }
-
-            Button(
-                onClick = { onSpace() }, modifier = Modifier
-                    .weight(1.0f)
-                    .minimumInteractiveComponentSize()
-                    .fillMaxHeight()
+        Row(modifier = Modifier.padding(2.dp, 0.dp)) {
+            if(showKeys) {
+                IconButton(onClick = { onExit() }, modifier = Modifier
                     .clearAndSetSemantics {
                         this.role = Role.Button
-                        this.text = AnnotatedString("Space")
+                        this.text = AnnotatedString("Letters")
                     }
-                    .padding(8.dp, 2.dp), colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.33f),
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    disabledContainerColor = MaterialTheme.colorScheme.outline,
-                    disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                ), shape = RoundedCornerShape(32.dp)
-            ) {
-                Text("")
+                    .size(48.dp)) {
+                    Text("ABC", fontSize = 14.sp)
+                }
             }
 
-            Box(modifier = Modifier
-                .minimumInteractiveComponentSize()
-                .repeatablyClickableAction { onBackspace() }
-                .size(40.dp)
-                .clip(RoundedCornerShape(100))
-                .clearAndSetSemantics {
-                    this.role = Role.Button
-                    this.text = AnnotatedString("Delete")
-                },
-                contentAlignment = Alignment.Center)
-            {
-                val icon = painterResource(id = R.drawable.delete)
-                val iconColor = MaterialTheme.colorScheme.onBackground
+            LazyRow(state = listState, modifier = Modifier.weight(1.0f).padding(8.dp, 0.dp)) {
+                items(categories) {
+                    IconButton(onClick = { goToCategory(it) }, modifier = if(it == activeCategoryItem) {
+                        Modifier.background(MaterialTheme.colorScheme.outline.copy(alpha = 0.1f), shape = RoundedCornerShape(100))
+                    } else {
+                        Modifier
+                    }) {
+                        AutoFitText(it.title, style = Typography.labelSmall.copy(color = MaterialTheme.colorScheme.onBackground.copy(alpha = if(it == activeCategoryItem) { 1.0f } else { 0.6f })))
+                    }
+                }
+            }
 
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    translate(
-                        left = this.size.width / 2.0f - icon.intrinsicSize.width / 2.0f,
-                        top = this.size.height / 2.0f - icon.intrinsicSize.height / 2.0f
-                    ) {
-                        with(icon) {
-                            draw(
-                                icon.intrinsicSize,
-                                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                                    iconColor
+            if(showKeys) {
+                Box(modifier = Modifier
+                    .minimumInteractiveComponentSize()
+                    .repeatablyClickableAction { onBackspace() }
+                    .size(48.dp)
+                    .clearAndSetSemantics {
+                        this.role = Role.Button
+                        this.text = AnnotatedString("Delete")
+                    },
+                    contentAlignment = Alignment.Center
+                ) {
+                    val icon = painterResource(id = R.drawable.delete)
+                    val iconColor = MaterialTheme.colorScheme.onBackground
+
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        translate(
+                            left = this.size.width / 2.0f - icon.intrinsicSize.width / 2.0f,
+                            top = this.size.height / 2.0f - icon.intrinsicSize.height / 2.0f
+                        ) {
+                            with(icon) {
+                                draw(
+                                    icon.intrinsicSize,
+                                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                                        iconColor
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
@@ -419,7 +497,8 @@ fun EmojiGrid(
     onSpace: () -> Unit,
     emojis: List<EmojiItem>,
     keyboardShown: Boolean,
-    emojiMap: Map<String, EmojiItem>
+    emojiMap: Map<String, EmojiItem>,
+    keyBackground: Drawable
 ) {
     val context = LocalContext.current
     val recentEmojis = remember {
@@ -445,25 +524,46 @@ fun EmojiGrid(
         data
     }
 
+    val currentCategory = remember { mutableStateOf(CategoryItem("Recent")) }
+    val jumpCategory: MutableState<CategoryItem?> = remember { mutableStateOf(null) }
+
 
     Column {
         Emojis(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
-                .weight(1.0f),
+                .weight(1.0f)
+                .drawBehind {
+                    keyBackground.setBounds(
+                        0,
+                        0,
+                        this.size.width.roundToInt(),
+                        this.size.height.roundToInt()
+                    )
+                    keyBackground.state = intArrayOf()
+                    keyBackground.draw(this.drawContext.canvas.nativeCanvas)
+                },
             emojis = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis,
             onClick = onClick,
-            emojiMap = emojiMap
+            emojiMap = emojiMap,
+            currentCategory = currentCategory,
+            jumpCategory = jumpCategory
         )
 
-        if (!keyboardShown) {
-            BottomRowKeyboardNavigation(
-                onExit = onExit,
-                onBackspace = onBackspace,
-                onSpace = onSpace
-            )
-        }
+        EmojiNavigation(
+            showKeys = !keyboardShown,
+            onExit = onExit,
+            onBackspace = onBackspace,
+            categories = listOf(
+                CategoryItem("Recent")
+            ) + categorizedEmojis.filterIsInstance<CategoryItem>(),
+            activeCategoryItem = currentCategory.value,
+            goToCategory = {
+                jumpCategory.value = it
+            },
+            keyBackground = keyBackground
+        )
     }
 }
 
@@ -576,7 +676,7 @@ val EmojiAction = Action(
                     }, onBackspace = {
                         manager.sendCodePointEvent(Constants.CODE_DELETE)
                         manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
-                    }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap)
+                    }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap, keyBackground = manager.getThemeProvider().keyBackground)
                 }
             }
 
@@ -588,20 +688,21 @@ val EmojiAction = Action(
 )
 
 
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun EmojiGridPreview() {
+    val context = LocalContext.current
     EmojiGrid(
         onBackspace = {},
         onClick = {},
         onExit = {},
         onSpace = {},
         emojis = listOf("😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇").map {
-            EmojiItem(emoji = it, description = "", category = "", skinTones = false)
+            EmojiItem(emoji = it, description = "", category = "Category", skinTones = false, aliases = listOf(), tags = listOf())
         },
         keyboardShown = false,
-        emojiMap = hashMapOf()
+        emojiMap = hashMapOf(),
+        keyBackground = context.getDrawable(R.drawable.btn_keyboard_spacebar_lxx_dark)!!
     )
 }
-*/
