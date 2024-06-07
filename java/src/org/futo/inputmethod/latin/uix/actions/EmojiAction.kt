@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
@@ -410,11 +411,36 @@ fun Emojis(
 fun EmojiNavigation(
     showKeys: Boolean,
     onExit: () -> Unit,
-    onBackspace: () -> Unit,
+    onBackspace: (Boolean) -> Unit,
     categories: List<CategoryItem>,
     activeCategoryItem: CategoryItem,
     goToCategory: (CategoryItem) -> Unit,
-    keyBackground: Drawable
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.background, modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+    ) {
+        Row(modifier = Modifier.padding(2.dp, 0.dp)) {
+            if(showKeys) {
+                LettersKey(onExit)
+            }
+
+            EmojiCategoriesContainer(Modifier.weight(1.0f), categories, goToCategory, activeCategoryItem)
+
+            if(showKeys) {
+                BackspaceKey(onBackspace)
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmojiCategoriesContainer(
+    modifier: Modifier,
+    categories: List<CategoryItem>,
+    goToCategory: (CategoryItem) -> Unit,
+    activeCategoryItem: CategoryItem
 ) {
     val listState = rememberLazyListState()
     LaunchedEffect(activeCategoryItem) {
@@ -425,64 +451,63 @@ fun EmojiNavigation(
             listState.animateScrollToItem(idx, itemWidth / 2 - visibleSize / 2)
         }
     }
-    Surface(
-        color = MaterialTheme.colorScheme.background, modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-    ) {
-        Row(modifier = Modifier.padding(2.dp, 0.dp)) {
-            if(showKeys) {
-                IconButton(onClick = { onExit() }, modifier = Modifier
-                    .clearAndSetSemantics {
-                        this.role = Role.Button
-                        this.text = AnnotatedString("Letters")
-                    }
-                    .size(48.dp)) {
-                    Text("ABC", fontSize = 14.sp)
+
+    LazyRow(state = listState, modifier = modifier.padding(8.dp, 0.dp)) {
+        items(categories) {
+            IconButton(
+                onClick = { goToCategory(it) }, modifier = if (it == activeCategoryItem) {
+                    Modifier.background(
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(100)
+                    )
+                } else {
+                    Modifier
                 }
-            }
-
-            LazyRow(state = listState, modifier = Modifier.weight(1.0f).padding(8.dp, 0.dp)) {
-                items(categories) {
-                    IconButton(onClick = { goToCategory(it) }, modifier = if(it == activeCategoryItem) {
-                        Modifier.background(MaterialTheme.colorScheme.outline.copy(alpha = 0.1f), shape = RoundedCornerShape(100))
-                    } else {
-                        Modifier
-                    }) {
-                        AutoFitText(it.title, style = Typography.labelSmall.copy(color = MaterialTheme.colorScheme.onBackground.copy(alpha = if(it == activeCategoryItem) { 1.0f } else { 0.6f })))
-                    }
-                }
-            }
-
-            if(showKeys) {
-                Box(modifier = Modifier
-                    .minimumInteractiveComponentSize()
-                    .repeatablyClickableAction { onBackspace() }
-                    .size(48.dp)
-                    .clearAndSetSemantics {
-                        this.role = Role.Button
-                        this.text = AnnotatedString("Delete")
-                    },
-                    contentAlignment = Alignment.Center
-                ) {
-                    val icon = painterResource(id = R.drawable.delete)
-                    val iconColor = MaterialTheme.colorScheme.onBackground
-
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        translate(
-                            left = this.size.width / 2.0f - icon.intrinsicSize.width / 2.0f,
-                            top = this.size.height / 2.0f - icon.intrinsicSize.height / 2.0f
-                        ) {
-                            with(icon) {
-                                draw(
-                                    icon.intrinsicSize,
-                                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                                        iconColor
-                                    )
-                                )
+            ) {
+                AutoFitText(
+                    it.title,
+                    style = Typography.labelSmall.copy(
+                        color = MaterialTheme.colorScheme.onBackground.copy(
+                            alpha = if (it == activeCategoryItem) {
+                                1.0f
+                            } else {
+                                0.6f
                             }
-                        }
-                    }
+                        )
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BackspaceKey(onBackspace: (Boolean) -> Unit) {
+    Box(modifier = Modifier
+        .minimumInteractiveComponentSize()
+        .repeatablyClickableAction(onTrigger = onBackspace)
+        .size(48.dp)
+        .clearAndSetSemantics {
+            this.role = Role.Button
+            this.text = AnnotatedString("Delete")
+        },
+        contentAlignment = Alignment.Center
+    ) {
+        val icon = painterResource(id = R.drawable.delete)
+        val iconColor = MaterialTheme.colorScheme.onBackground
+
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            translate(
+                left = this.size.width / 2.0f - icon.intrinsicSize.width / 2.0f,
+                top = this.size.height / 2.0f - icon.intrinsicSize.height / 2.0f
+            ) {
+                with(icon) {
+                    draw(
+                        icon.intrinsicSize,
+                        colorFilter = ColorFilter.tint(
+                            iconColor
+                        )
+                    )
                 }
             }
         }
@@ -490,10 +515,22 @@ fun EmojiNavigation(
 }
 
 @Composable
+private fun LettersKey(onExit: () -> Unit) {
+    IconButton(onClick = { onExit() }, modifier = Modifier
+        .clearAndSetSemantics {
+            this.role = Role.Button
+            this.text = AnnotatedString("Letters")
+        }
+        .size(48.dp)) {
+        Text("ABC", fontSize = 14.sp)
+    }
+}
+
+@Composable
 fun EmojiGrid(
     onClick: (EmojiItem) -> Unit,
     onExit: () -> Unit,
-    onBackspace: () -> Unit,
+    onBackspace: (Boolean) -> Unit,
     onSpace: () -> Unit,
     emojis: List<EmojiItem>,
     keyboardShown: Boolean,
@@ -561,8 +598,7 @@ fun EmojiGrid(
             activeCategoryItem = currentCategory.value,
             goToCategory = {
                 jumpCategory.value = it
-            },
-            keyBackground = keyBackground
+            }
         )
     }
 }
@@ -673,9 +709,11 @@ val EmojiAction = Action(
                     }, onSpace = {
                         manager.sendCodePointEvent(Constants.CODE_SPACE)
                         manager.performHapticAndAudioFeedback(Constants.CODE_SPACE, view)
-                    }, onBackspace = {
+                    }, onBackspace = { isRepeated ->
                         manager.sendCodePointEvent(Constants.CODE_DELETE)
-                        manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
+                        if(!isRepeated) {
+                            manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
+                        }
                     }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap, keyBackground = manager.getThemeProvider().keyBackground)
                 }
             }

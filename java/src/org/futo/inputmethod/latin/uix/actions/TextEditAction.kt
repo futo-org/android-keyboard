@@ -92,17 +92,17 @@ fun TogglableKey(
 }
 
 @Composable
-fun Modifier.repeatablyClickableAction(repeatable: Boolean = true, onTrigger: () -> Unit): Modifier {
+fun Modifier.repeatablyClickableAction(repeatable: Boolean = true, onTrigger: (Boolean) -> Unit): Modifier {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
     LaunchedEffect(isPressed) {
         if(isPressed) {
-            onTrigger()
+            onTrigger(false)
             if(repeatable) {
                 delay(670L)
                 while (isPressed) {
-                    onTrigger()
+                    onTrigger(true)
                     delay(50L)
                 }
             }
@@ -125,7 +125,7 @@ fun ActionKey(
             .padding(4.dp)
             .repeatablyClickableAction(
                 repeatable = repeatable,
-                onTrigger = onTrigger
+                onTrigger = { onTrigger() }
             ),
         shape = RoundedCornerShape(8.dp),
         color = color
