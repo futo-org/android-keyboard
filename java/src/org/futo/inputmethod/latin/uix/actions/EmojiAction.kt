@@ -465,7 +465,7 @@ private fun EmojiCategoriesContainer(
         val idx = categories.indexOf(activeCategoryItem)
         if(idx != -1) {
             val visibleSize = listState.layoutInfo.viewportEndOffset
-            val itemWidth = listState.layoutInfo.visibleItemsInfo.first().size
+            val itemWidth = listState.layoutInfo.visibleItemsInfo.firstOrNull()?.size ?: return@LaunchedEffect
             listState.animateScrollToItem(idx, itemWidth / 2 - visibleSize / 2)
         }
     }
