@@ -92,12 +92,14 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 icon = painterResource(id = R.drawable.eye)
             )
 
-            NavigationItem(
-                title = stringResource(R.string.payment),
-                style = NavigationItemStyle.HomePrimary,
-                navigate = { navController.navigate("payment") },
-                icon = painterResource(R.drawable.dollar_sign)
-            )
+            if(!isPaid) {
+                NavigationItem(
+                    title = stringResource(R.string.payment),
+                    style = NavigationItemStyle.HomePrimary,
+                    navigate = { navController.navigate("payment") },
+                    icon = painterResource(R.drawable.dollar_sign)
+                )
+            }
 
             NavigationItem(
                 title = "Help & Feedback",

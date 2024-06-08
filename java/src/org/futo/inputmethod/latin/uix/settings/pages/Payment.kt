@@ -356,6 +356,10 @@ fun PaymentScreen(
     onExit: () -> Unit = { }
 ) {
     val isAlreadyPaid = useDataStore(IS_ALREADY_PAID)
+    if(isAlreadyPaid.value) {
+        PaymentThankYouScreen(onExit)
+        return
+    }
     val pushReminderTime = useDataStore(NOTICE_REMINDER_TIME)
     val numDaysInstalled = useNumberOfDaysInstalled()
     val forceShowNotice = useDataStore(FORCE_SHOW_NOTICE)
