@@ -142,7 +142,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     private static final String SCHEME_PACKAGE = "package";
 
     public static boolean mPendingDictionaryUpdate = false;
-    final Settings mSettings;
+    public final Settings mSettings;
     private Locale mLocale;
     final DictionaryFacilitator mDictionaryFacilitator =
             DictionaryFacilitatorProvider.getDictionaryFacilitator(

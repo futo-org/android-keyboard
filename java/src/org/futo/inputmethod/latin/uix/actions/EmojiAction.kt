@@ -2,12 +2,18 @@ package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.text.InputType
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
+import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.UiThread
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -88,6 +94,7 @@ import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.AutoFitText
 import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
+import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
@@ -96,6 +103,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.streams.toList
+
 
 data class PopupInfo(val emoji: EmojiItem, val x: Int, val y: Int)
 
@@ -427,6 +435,7 @@ fun EmojiNavigation(
             }
 
             EmojiCategoriesContainer(Modifier.weight(1.0f), categories, goToCategory, activeCategoryItem)
+            //CustomEditTextView()
 
             if(showKeys) {
                 BackspaceKey(onBackspace)

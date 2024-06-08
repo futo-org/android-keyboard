@@ -12,6 +12,7 @@ import android.view.inputmethod.CompletionInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InlineSuggestionsRequest
 import android.view.inputmethod.InlineSuggestionsResponse
+import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodSubtype
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
@@ -661,6 +662,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                 unuseEmoji(emoji)
             }
         }
+    }
+
+    var overrideInputConnection: InputConnection? = null
+    override fun getCurrentInputConnection(): InputConnection? {
+        return overrideInputConnection ?: super.getCurrentInputConnection()
     }
 
     override val lifecycle: Lifecycle

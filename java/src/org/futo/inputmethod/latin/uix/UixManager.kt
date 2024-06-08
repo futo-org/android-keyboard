@@ -9,6 +9,7 @@ import android.os.Vibrator
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InlineSuggestionsResponse
+import android.view.inputmethod.InputConnection
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -28,8 +29,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +53,7 @@ import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
@@ -68,6 +72,10 @@ import org.futo.inputmethod.updates.isManualUpdateTimeExpired
 import org.futo.inputmethod.updates.openManualUpdateCheck
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 import java.util.Locale
+
+val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
+    error("No LocalManager provided")
+}
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
@@ -187,6 +195,18 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun getActiveLocale(): Locale {
         return latinIME.latinIMELegacy.locale
+    }
+
+    override fun overrideInputConnection(inputConnection: InputConnection) {
+        latinIME.overrideInputConnection = inputConnection
+        latinIME.inputLogic.startInput(RichInputMethodManager.getInstance().combiningRulesExtraValueOfCurrentSubtype,
+            latinIME.latinIMELegacy.mSettings.current)
+    }
+
+    override fun unsetInputConnection() {
+        latinIME.overrideInputConnection = null
+        latinIME.inputLogic.startInput(RichInputMethodManager.getInstance().combiningRulesExtraValueOfCurrentSubtype,
+            latinIME.latinIMELegacy.mSettings.current)
     }
 
     override fun announce(s: String) {
@@ -445,25 +465,27 @@ class UixManager(private val latinIME: LatinIME) {
     fun setContent() {
         composeView?.setContent {
             UixThemeWrapper(latinIME.colorScheme) {
-                Column {
-                    Spacer(modifier = Modifier.weight(1.0f))
-                    Surface(modifier = Modifier.onSizeChanged {
-                        latinIME.updateTouchableHeight(it.height)
-                    }, color = latinIME.keyboardColor) {
-                        Box {
-                            Column {
-                                when {
-                                    currWindowActionWindow != null -> ActionViewWithHeader(
-                                        currWindowActionWindow!!
-                                    )
+                CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
+                    Column {
+                        Spacer(modifier = Modifier.weight(1.0f))
+                        Surface(modifier = Modifier.onSizeChanged {
+                            latinIME.updateTouchableHeight(it.height)
+                        }, color = latinIME.keyboardColor) {
+                            Box {
+                                Column {
+                                    when {
+                                        currWindowActionWindow != null -> ActionViewWithHeader(
+                                            currWindowActionWindow!!
+                                        )
 
-                                    else -> MainKeyboardViewWithActionBar()
+                                        else -> MainKeyboardViewWithActionBar()
+                                    }
+
+                                    latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                                 }
 
-                                latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+                                ForgetWordDialog()
                             }
-
-                            ForgetWordDialog()
                         }
                     }
                 }
