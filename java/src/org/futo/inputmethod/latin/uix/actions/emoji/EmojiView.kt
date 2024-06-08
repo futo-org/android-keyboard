@@ -125,7 +125,13 @@ class EmojiView @JvmOverloads constructor(
             if (emoji is Spanned) {
                 createStaticLayout(emoji, width).draw(this)
             } else {
-                val textWidth = textPaint.measureText(emoji, 0, emoji.length)
+                var textWidth = textPaint.measureText(emoji, 0, emoji.length)
+                if(textWidth > width) {
+                    scale(width / textWidth, 1.0f)
+                    textWidth = width.toFloat()
+                } else {
+                    scale(1.0f, 1.0f)
+                }
                 drawText(
                     emoji,
                     /* start = */ 0,

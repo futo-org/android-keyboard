@@ -2,18 +2,12 @@ package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.text.InputType
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputConnection
-import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.UiThread
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -31,6 +25,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -66,8 +61,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.text
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -94,7 +92,6 @@ import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.AutoFitText
 import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
-import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
@@ -435,7 +432,6 @@ fun EmojiNavigation(
             }
 
             EmojiCategoriesContainer(Modifier.weight(1.0f), categories, goToCategory, activeCategoryItem)
-            //CustomEditTextView()
 
             if(showKeys) {
                 BackspaceKey(onBackspace)
@@ -444,6 +440,19 @@ fun EmojiNavigation(
     }
 }
 
+val iconMap = mapOf(
+    "Recent" to R.drawable.ic_emoji_recents_activated_lxx_dark,
+    "Smileys & Emotion" to R.drawable.smileys_and_emotion,
+    "People & Body" to R.drawable.people_and_body,
+    "Animals & Nature" to R.drawable.animals_and_nature,
+    "Food & Drink" to R.drawable.food_and_drink,
+    "Travel & Places" to R.drawable.travel_and_places,
+    "Activities" to R.drawable.activities,
+    "Objects" to R.drawable.objects,
+    "Symbols" to R.drawable.symbols,
+    "Flags" to R.drawable.flags,
+    "ASCII" to R.drawable.ic_emoji_emoticons_activated_lxx_dark,
+)
 @Composable
 private fun EmojiCategoriesContainer(
     modifier: Modifier,
@@ -471,20 +480,33 @@ private fun EmojiCategoriesContainer(
                     )
                 } else {
                     Modifier
+                }.clearAndSetSemantics {
+                    contentDescription = "Jump to ${it.title}"
+                    toggleableState = ToggleableState(it == activeCategoryItem)
                 }
             ) {
-                AutoFitText(
-                    it.title,
-                    style = Typography.labelSmall.copy(
-                        color = MaterialTheme.colorScheme.onBackground.copy(
-                            alpha = if (it == activeCategoryItem) {
-                                1.0f
-                            } else {
-                                0.6f
-                            }
-                        )
-                    )
+                val color = MaterialTheme.colorScheme.onBackground.copy(
+                    alpha = if (it == activeCategoryItem) {
+                        1.0f
+                    } else {
+                        0.6f
+                    }
                 )
+
+                val icon = iconMap[it.title]
+                if(icon != null) {
+                    Icon(
+                        painterResource(id = icon),
+                        contentDescription = null,
+                        tint = color,
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else {
+                    AutoFitText(
+                        it.title,
+                        style = Typography.labelSmall.copy(color = color)
+                    )
+                }
             }
         }
     }
@@ -746,7 +768,7 @@ fun EmojiGridPreview() {
         onExit = {},
         onSpace = {},
         emojis = listOf("😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇").map {
-            EmojiItem(emoji = it, description = "", category = "Category", skinTones = false, aliases = listOf(), tags = listOf())
+            EmojiItem(emoji = it, description = "", category = "Smileys & Emotion", skinTones = false, aliases = listOf(), tags = listOf())
         },
         keyboardShown = false,
         emojiMap = hashMapOf(),
