@@ -4,7 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,18 +14,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableFloatStateOf
@@ -32,15 +37,19 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -120,7 +129,22 @@ fun useNumberOfDaysInstalled(): MutableIntState {
 @Composable
 fun ParagraphText(it: String, modifier: Modifier = Modifier) {
     Text(it, modifier = modifier.padding(16.dp, 8.dp), style = Typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onBackground)
+        color = LocalContentColor.current)
+}
+
+@Composable
+fun IconText(icon: Painter, title: String, body: String) {
+    Row(modifier = Modifier.padding(8.dp)) {
+        Icon(icon, contentDescription = null, modifier = Modifier
+            .align(Alignment.Top)
+            .padding(8.dp, 10.dp)
+            .size(with(LocalDensity.current) { Typography.titleMedium.fontSize.toDp() }))
+        Column(modifier = Modifier.padding(6.dp)) {
+            Text(title, style = Typography.titleMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(body, style = Typography.bodySmall, color = LocalContentColor.current.copy(alpha = 0.8f))
+        }
+    }
 }
 
 @Composable
@@ -134,10 +158,28 @@ fun PaymentText(verbose: Boolean) {
         ParagraphText(stringResource(R.string.payment_text_1_alt))
     }
 
-    ParagraphText(stringResource(R.string.payment_text_2))
-
     if(verbose) {
-        ParagraphText(stringResource(R.string.payment_text_3))
+        IconText(
+            icon = painterResource(id = R.drawable.activity),
+            title = "Sustainable Development",
+            body = "FUTO's mission is for open-source software and non-malicious software business practices to become a sustainable income source for projects and their developers. For this reason, we are in favor of users actually paying for software."
+        )
+
+        IconText(
+            icon = painterResource(id = R.drawable.unlock),
+            title = "Commitment to Privacy",
+            body = "This app will never serve you ads or sell your data. We are not in the business of doing that."
+        )
+
+        /*
+        IconText(
+            icon = painterResource(id = R.drawable.code),
+            title = "Ongoing Work",
+            body = "Creating and maintaining great software requires significant resources. Your support will help us keep development going."
+        )
+        */
+    } else {
+        ParagraphText(stringResource(R.string.payment_text_2))
     }
 }
 
@@ -209,46 +251,41 @@ fun ConditionalUnpaidNoticeInVoiceInputWindow(onClose: (() -> Unit)? = null) {
 
 
 @Composable
+fun MediumTitle(text: String) {
+    Text(
+        text,
+        modifier = Modifier.padding(8.dp),
+        style = Typography.titleMedium,
+        color = LocalContentColor.current
+    )
+}
+
+@Composable
 @Preview
 fun UnpaidNotice(openMenu: () -> Unit = { }) {
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier
-            .clickable { openMenu() }
-            .fillMaxWidth()
-            .padding(24.dp, 8.dp), shape = RoundedCornerShape(24.dp)
-    ) {
-        Column(modifier = Modifier.padding(8.dp, 0.dp)) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                stringResource(R.string.unpaid_title),
-                modifier = Modifier.padding(8.dp),
-                style = Typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+    PaymentSurface(isPrimary = true, title = stringResource(R.string.unpaid_title), onClick = openMenu) {
+        PaymentText(false)
 
-            PaymentText(false)
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) {
 
-            Row(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(CenterHorizontally)
-            ) {
-
-                Box(modifier = Modifier.weight(1.0f)) {
-                    Button(onClick = openMenu, modifier = Modifier.align(Center)) {
-                        Text(stringResource(R.string.pay_now))
-                    }
+            Box(modifier = Modifier.weight(1.0f)) {
+                Button(onClick = openMenu, modifier = Modifier.align(Center)) {
+                    Text(stringResource(R.string.pay_now))
                 }
+            }
 
-                Box(modifier = Modifier.weight(1.0f)) {
-                    Button(
-                        onClick = openMenu, colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
-                            contentColor = MaterialTheme.colorScheme.onSecondary
-                        ), modifier = Modifier.align(Center)
-                    ) {
-                        Text(stringResource(R.string.i_already_paid))
-                    }
+            Box(modifier = Modifier.weight(1.0f)) {
+                Button(
+                    onClick = openMenu, colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    ), modifier = Modifier.align(Center)
+                ) {
+                    Text(stringResource(R.string.i_already_paid))
                 }
             }
         }
@@ -350,7 +387,47 @@ fun PaymentFailedScreen(onExit: () -> Unit = { }) {
 }
 
 @Composable
-@Preview(showBackground = true)
+fun PaymentSurface(isPrimary: Boolean, title: String, onClick: (() -> Unit)? = null, content: @Composable () -> Unit) {
+    val containerColor = if (isPrimary) {
+        MaterialTheme.colorScheme.surfaceVariant
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    }
+
+    val contentColor = if (isPrimary) {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Center) {
+        Surface(
+            color = containerColor,
+            border = BorderStroke(2.dp, contentColor.copy(alpha = 0.33f)),
+            shape = RoundedCornerShape(24.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .widthIn(Dp.Unspecified, 400.dp)
+                .let {
+                    if (onClick != null) {
+                        it.clickable { onClick() }
+                    } else {
+                        it
+                    }
+                }
+        ) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                CompositionLocalProvider(LocalContentColor provides contentColor) {
+                    MediumTitle(title)
+                    content()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true, heightDp = 10000)
 fun PaymentScreen(
     navController: NavHostController = rememberNavController(),
     onExit: () -> Unit = { }
@@ -377,92 +454,107 @@ fun PaymentScreen(
 
     ScrollableList {
         ScreenTitle(stringResource(R.string.payment_title), showBack = true, navController = navController)
-        PaymentText(true)
+
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Center) {
+            Icon(painterResource(id = R.drawable.keyboard_icon), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+        }
 
         val context = LocalContext.current
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(modifier = Modifier.padding(8.dp, 0.dp)) {
-                Button(
-                    onClick = {
-                        val url = runBlocking { context.getSetting(TMP_PAYMENT_URL) }
-                        if(url.isNotBlank()) {
-                            context.openURI(url)
-                        } else {
-                            val toast = Toast.makeText(context, "Payment is unsupported on this build (still WIP)", Toast.LENGTH_SHORT)
-                            toast.show()
-                        }
-                    }, modifier = Modifier
-                        .weight(1.0f)
-                        .padding(8.dp)
-                ) {
-                    Text(stringResource(R.string.pay))
-                }
 
+        PaymentSurface(isPrimary = true, title = "Pay for FUTO Keyboard") {
+            PaymentText(true)
 
-                Button(
-                    onClick = {
-                        counter.intValue += 1
-                        if(counter.intValue == 2) {
-                            onAlreadyPaid()
-                        }
-                    }, colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    ), modifier = Modifier
-                        .weight(1.0f)
-                        .padding(8.dp)
-                ) {
-                    Text(stringResource(
-                        when(counter.intValue) {
+            Button(
+                onClick = {
+                    val url = runBlocking { context.getSetting(TMP_PAYMENT_URL) }
+                    if(url.isNotBlank()) {
+                        context.openURI(url)
+                    } else {
+                        val toast = Toast.makeText(context, "Payment is unsupported on this build", Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(stringResource(R.string.pay))
+            }
+        }
+
+        PaymentSurface(isPrimary = false, title = "Already paid?") {
+            ParagraphText(it = "If you already paid for FUTO Keyboard or FUTO Voice Input, tap below.")
+            Button(
+                onClick = {
+                    counter.intValue += 1
+                    if (counter.intValue == 2) {
+                        onAlreadyPaid()
+                    }
+                }, colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                ), modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(
+                    stringResource(
+                        when (counter.intValue) {
                             0 -> R.string.i_already_paid
                             else -> R.string.i_already_paid_2
-                        })
+                        }
                     )
-                }
+                )
             }
+        }
 
-            if (reminderTimeIsUp) {
+        if (reminderTimeIsUp) {
+            PaymentSurface(isPrimary = false, title = "Remind later") {
+                ParagraphText("This will hide the reminder in the settings screen for the period of days entered.")
+
                 val lastValidRemindValue = remember { mutableFloatStateOf(5.0f) }
                 val remindDays = remember { mutableStateOf("5") }
-                Row(
-                    modifier = Modifier
-                        .align(CenterHorizontally)
-                        .padding(16.dp, 0.dp)
-                        .fillMaxWidth()
-                ) {
-                    val coroutineScope = rememberCoroutineScope()
-                    OutlinedButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                pushNoticeReminderTime(context, lastValidRemindValue.floatValue)
-                            }
-                            onExit()
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(R.string.remind_me_in_x))
-                        Surface(color = MaterialTheme.colorScheme.primaryContainer) {
-                            BasicTextField(
-                                value = remindDays.value,
-                                onValueChange = {
-                                    remindDays.value = it
-
-                                    it.toFloatOrNull()?.let { lastValidRemindValue.floatValue = it }
-                                },
-                                modifier = Modifier
-                                    .width(32.dp)
-                                    .background(MaterialTheme.colorScheme.primaryContainer)
-                                    .padding(4.dp),
-                                textStyle = Typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
-                                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-                            )
+                val coroutineScope = rememberCoroutineScope()
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            pushNoticeReminderTime(context, lastValidRemindValue.floatValue)
                         }
-                        Text(stringResource(R.string.in_x_days))
-                    }
+                        onExit()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Text(stringResource(R.string.remind_me_in_x))
+                    BasicTextField(
+                        value = remindDays.value,
+                        onValueChange = {
+                            remindDays.value = it
+
+                            it.toFloatOrNull()
+                                ?.let { lastValidRemindValue.floatValue = it }
+                        },
+                        modifier = Modifier
+                            .width(32.dp)
+                            .border(Dp.Hairline, LocalContentColor.current)
+                            .padding(4.dp),
+                        textStyle = Typography.bodyMedium.copy(color = LocalContentColor.current),
+                        cursorBrush = SolidColor(LocalContentColor.current),
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                    )
+                    Text(stringResource(R.string.in_x_days))
                 }
             }
         }
+
+        NavigationItem(title = "Help", subtitle = "Need help? Visit our website", style = NavigationItemStyle.Misc, navigate = {
+            context.openURI("https://keyboard.futo.org/")
+        })
     }
 }
 
