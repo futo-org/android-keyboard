@@ -5,6 +5,7 @@
     <string name="theme_switcher_action_title">Theme Switcher</string>
     <string name="emoji_action_title">Emojis</string>
     <string name="clipboard_action_title">Paste from Clipboard</string>
+    <string name="clipboard_manager_action_title">Clipboard Manager</string>
     <string name="undo_action_title">Undo</string>
     <string name="redo_action_title">Redo</string>
     <string name="text_edit_action_title">Text Editor</string>

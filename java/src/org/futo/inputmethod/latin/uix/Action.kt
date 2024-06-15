@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputConnection
 import androidx.annotation.DrawableRes
@@ -25,6 +26,7 @@ interface KeyboardManagerForAction {
     fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction
 
     fun typeText(v: String)
+    fun typeUri(uri: Uri, mimeTypes: List<String>): Boolean
     fun backspace(amount: Int)
 
     fun closeActionWindow()
@@ -68,6 +70,11 @@ interface PersistentActionState {
     suspend fun cleanUp()
 }
 
+enum class PersistentStateInitialization {
+    OnActionTrigger,
+    OnKeyboardLoad
+}
+
 data class Action(
     @DrawableRes val icon: Int,
     @StringRes val name: Int,
@@ -77,4 +84,5 @@ data class Action(
     val windowImpl: ((KeyboardManagerForAction, PersistentActionState?) -> ActionWindow)?,
     val simplePressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)?,
     val persistentState: ((KeyboardManagerForAction) -> PersistentActionState)? = null,
+    val persistentStateInitialization: PersistentStateInitialization = PersistentStateInitialization.OnActionTrigger
 )

@@ -317,6 +317,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                 CrashLoggingApplication.logPreferences(it)
             }
         }
+
+        uixManager.onCreate()
     }
 
     override fun onDestroy() {

@@ -18,6 +18,7 @@ import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.Settings.PREF_VIBRATION_DURATION_SETTINGS
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
@@ -67,6 +68,12 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             key = Settings.PREF_ENABLE_NUMBER_ROW,
             default = false
         )
+
+        SettingToggleDataStore(
+            title = "Clipboard History",
+            setting = ClipboardHistoryEnabled
+        )
+
         SettingToggleSharedPrefs(
             title = "Emoji key",
             subtitle = "Show the emoji key on the bottom row",

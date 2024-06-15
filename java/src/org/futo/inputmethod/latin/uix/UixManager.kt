@@ -1,15 +1,19 @@
 package org.futo.inputmethod.latin.uix
 
 import android.app.Activity
+import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputConnection
+import android.view.inputmethod.InputContentInfo
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -60,6 +64,7 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
+import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -140,6 +145,26 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun typeText(v: String) {
         latinIME.latinIMELegacy.onTextInput(v)
+    }
+
+    override fun typeUri(uri: Uri, mimeTypes: List<String>): Boolean {
+        if(mimeTypes.isEmpty()) {
+            Log.w("UixManager", "mimeTypes is empty")
+            return false
+        }
+
+        val description = ClipDescription("Pasted image", mimeTypes.toTypedArray())
+
+        val info = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            InputContentInfo(uri, description, null)
+        } else {
+            return false
+        }
+
+        return latinIME.currentInputConnection?.commitContent(info, InputConnection.INPUT_CONTENT_GRANT_READ_URI_PERMISSION, null) ?: run {
+            Log.w("UixManager", "Current input connection is null")
+            return false
+        }
     }
 
     override fun backspace(amount: Int) {
@@ -643,6 +668,14 @@ class UixManager(private val latinIME: LatinIME) {
             v!!.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
             v!!.vibrate(50)
+        }
+    }
+
+    fun onCreate() {
+        AllActions.forEach { action ->
+            if(action.persistentStateInitialization == PersistentStateInitialization.OnKeyboardLoad) {
+                persistentStates[action] = action.persistentState?.let { it(keyboardManagerForAction) }
+            }
         }
     }
 }
