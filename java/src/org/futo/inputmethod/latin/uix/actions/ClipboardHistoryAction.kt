@@ -4,8 +4,12 @@ import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +29,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +51,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.PersistentActionState
@@ -87,14 +94,21 @@ data class ClipboardEntry(
     val mimeTypes: List<String>
 )
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ClipboardEntryView(clipboardEntry: ClipboardEntry, onPaste: (ClipboardEntry) -> Unit, onRemove: (ClipboardEntry) -> Unit, onPin: (ClipboardEntry) -> Unit) {
+fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPaste: (ClipboardEntry) -> Unit, onRemove: (ClipboardEntry) -> Unit, onPin: (ClipboardEntry) -> Unit) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.padding(2.dp),
+        modifier = modifier.padding(2.dp)
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = androidx.compose.material.ripple.rememberRipple(),
+                enabled = true,
+                onClick = { onPaste(clipboardEntry) },
+                onLongClick = { onPin(clipboardEntry) }
+            ),
         shape = RoundedCornerShape(8.dp),
-        onClick = { onPaste(clipboardEntry) }
     ) {
         Column {
             Row(modifier = Modifier.padding(0.dp)) {
@@ -102,12 +116,14 @@ fun ClipboardEntryView(clipboardEntry: ClipboardEntry, onPaste: (ClipboardEntry)
                     onPin(clipboardEntry)
                 }, modifier = Modifier.size(32.dp)) {
                     Icon(
-                        painterResource(id = R.drawable.unlock), contentDescription = "Pin",
-                        tint = if (clipboardEntry.pinned) {
+                        painterResource(id = R.drawable.push_pin),
+                        contentDescription = "Pin",
+                        tint = if(clipboardEntry.pinned) {
                             MaterialTheme.colorScheme.onSurfaceVariant
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f)
-                        }, modifier = Modifier.size(16.dp)
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                        },
+                        modifier = Modifier.size(16.dp)
                     )
                 }
 
@@ -145,7 +161,7 @@ fun ClipboardEntryViewPreview() {
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         items(sampleText.size) {
-            ClipboardEntryView(clipboardEntry = ClipboardEntry(0L, false, sampleText[it], null, listOf()), onPin = {}, onPaste = {}, onRemove = {})
+            ClipboardEntryView(modifier = Modifier, clipboardEntry = ClipboardEntry(0L, it % 2 == 0, sampleText[it], null, listOf()), onPin = {}, onPaste = {}, onRemove = {})
         }
     }
 }
@@ -176,7 +192,11 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                     val text = clip?.getItemAt(0)?.coerceToText(context)?.toString()
                     val uri = clip?.getItemAt(0)?.uri
 
-                    val timestamp = clip?.description?.timestamp ?: System.currentTimeMillis()
+                    val timestamp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        clip?.description?.timestamp
+                    } else {
+                        null
+                    } ?: System.currentTimeMillis()
 
                     val mimeTypes = List(clip?.description?.mimeTypeCount ?: 0) {
                         clip?.description?.getMimeType(it)
@@ -309,6 +329,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 val ClipboardHistoryAction = Action(
     icon = R.drawable.clipboard,
     name = R.string.clipboard_manager_action_title,
@@ -330,6 +351,7 @@ val ClipboardHistoryAction = Action(
 
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
+                val view = LocalView.current
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!clipboardHistory.value) {
                     ScrollableList {
@@ -349,10 +371,17 @@ val ClipboardHistoryAction = Action(
                         verticalItemSpacing = 4.dp,
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        items(clipboardHistoryManager.clipboardHistory.size) { r_i ->
+                        items(clipboardHistoryManager.clipboardHistory.size, key = { r_i ->
                             val i = clipboardHistoryManager.clipboardHistory.size - r_i - 1
                             val entry = clipboardHistoryManager.clipboardHistory[i]
-                            ClipboardEntryView(clipboardEntry = entry, onPaste = {
+
+                            entry.text ?: i
+                        }) { r_i ->
+                            val i = clipboardHistoryManager.clipboardHistory.size - r_i - 1
+                            val entry = clipboardHistoryManager.clipboardHistory[i]
+                            ClipboardEntryView(
+                                modifier = Modifier.animateItemPlacement(),
+                                clipboardEntry = entry, onPaste = {
                                 if (it.uri != null) {
                                     if (!manager.typeUri(it.uri, it.mimeTypes)) {
                                         val toast = Toast.makeText(
@@ -366,10 +395,13 @@ val ClipboardHistoryAction = Action(
                                     manager.typeText(it.text)
                                 }
                                 clipboardHistoryManager.onPaste(it)
+                                manager.performHapticAndAudioFeedback(Constants.CODE_OUTPUT_TEXT, view)
                             }, onRemove = {
                                 clipboardHistoryManager.onRemove(it)
+                                manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                             }, onPin = {
                                 clipboardHistoryManager.onPin(it)
+                                manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                             })
                         }
                     }
