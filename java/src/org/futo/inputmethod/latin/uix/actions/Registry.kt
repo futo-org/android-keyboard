@@ -21,7 +21,8 @@ val AllActions = listOf(
     VoiceInputAction,
     SystemVoiceInputAction,
     SwitchLanguageAction,
-    ClipboardHistoryAction
+    ClipboardHistoryAction,
+    MemoryDebugAction
 )
 
 
@@ -42,8 +43,8 @@ object ActionRegistry {
         return actions.map { AllActions.indexOf(it) }.joinToString(separator = ",")
     }
 
-    fun moveElement(string: String, action: Action, direction: Int): String {
-        val actions = stringToActions(string, listOf())
+    fun moveElement(string: String, defaults: List<Action>, action: Action, direction: Int): String {
+        val actions = stringToActions(string, defaults)
         val index = actions.indexOf(action)
         val filtered = actions.filter { it != action }.toMutableList()
         filtered.add((index + direction).coerceIn(0 .. filtered.size), action)
