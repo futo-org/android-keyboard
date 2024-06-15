@@ -44,8 +44,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
@@ -259,6 +261,8 @@ class UixManager(private val latinIME: LatinIME) {
     private var numSuggestionsSinceNotice = 0
     private var currentNotice: MutableState<ImportantNotice?> = mutableStateOf(null)
 
+    private val actionsForcedOpenByUser = mutableStateOf(false)
+
     var currWindowActionWindow: ActionWindow? = null
 
     val isMainKeyboardHidden get() = mainKeyboardHidden
@@ -295,7 +299,8 @@ class UixManager(private val latinIME: LatinIME) {
                 inlineSuggestions = inlineSuggestions,
                 onActionActivated = { onActionActivated(it) },
                 importantNotice = currentNotice.value,
-                keyboardManagerForAction = keyboardManagerForAction
+                keyboardManagerForAction = keyboardManagerForAction,
+                actionsForcedOpenByUser = actionsForcedOpenByUser
             )
         }
     }
@@ -319,6 +324,7 @@ class UixManager(private val latinIME: LatinIME) {
 
         setContent()
 
+        actionsForcedOpenByUser.value = false
         keyboardManagerForAction.announce("${latinIME.resources.getString(action.name)} mode")
     }
 
@@ -340,6 +346,7 @@ class UixManager(private val latinIME: LatinIME) {
 
         setContent()
 
+        actionsForcedOpenByUser.value = false
         keyboardManagerForAction.announce("$name closed")
     }
 
@@ -491,25 +498,27 @@ class UixManager(private val latinIME: LatinIME) {
         composeView?.setContent {
             UixThemeWrapper(latinIME.colorScheme) {
                 CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
-                    Column {
-                        Spacer(modifier = Modifier.weight(1.0f))
-                        Surface(modifier = Modifier.onSizeChanged {
-                            latinIME.updateTouchableHeight(it.height)
-                        }, color = latinIME.keyboardColor) {
-                            Box {
-                                Column {
-                                    when {
-                                        currWindowActionWindow != null -> ActionViewWithHeader(
-                                            currWindowActionWindow!!
-                                        )
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr ) {
+                        Column {
+                            Spacer(modifier = Modifier.weight(1.0f))
+                            Surface(modifier = Modifier.onSizeChanged {
+                                latinIME.updateTouchableHeight(it.height)
+                            }, color = latinIME.keyboardColor) {
+                                Box {
+                                    Column {
+                                        when {
+                                            currWindowActionWindow != null -> ActionViewWithHeader(
+                                                currWindowActionWindow!!
+                                            )
 
-                                        else -> MainKeyboardViewWithActionBar()
+                                            else -> MainKeyboardViewWithActionBar()
+                                        }
+
+                                        latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                                     }
 
-                                    latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+                                    ForgetWordDialog()
                                 }
-
-                                ForgetWordDialog()
                             }
                         }
                     }
@@ -606,6 +615,7 @@ class UixManager(private val latinIME: LatinIME) {
 
     fun onInputFinishing() {
         closeActionWindow()
+        actionsForcedOpenByUser.value = false
         languageSwitcherDialog?.dismiss()
     }
 

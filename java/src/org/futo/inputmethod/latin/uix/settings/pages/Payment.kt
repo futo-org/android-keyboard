@@ -45,11 +45,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -75,6 +77,8 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
 import org.futo.inputmethod.updates.openURI
 import kotlin.math.absoluteValue
@@ -151,35 +155,37 @@ fun IconText(icon: Painter, title: String, body: String) {
 fun PaymentText(verbose: Boolean) {
     val numDaysInstalled = useNumberOfDaysInstalled()
 
-    // Doesn't make sense to say "You've been using for ... days" if it's less than seven days
-    if(numDaysInstalled.intValue >= 7) {
-        ParagraphText(stringResource(R.string.payment_text_1, numDaysInstalled.value))
-    } else {
-        ParagraphText(stringResource(R.string.payment_text_1_alt))
-    }
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        // Doesn't make sense to say "You've been using for ... days" if it's less than seven days
+        if (numDaysInstalled.intValue >= 7) {
+            ParagraphText(stringResource(R.string.payment_text_1, numDaysInstalled.value))
+        } else {
+            ParagraphText(stringResource(R.string.payment_text_1_alt))
+        }
 
-    if(verbose) {
-        IconText(
-            icon = painterResource(id = R.drawable.activity),
-            title = "Sustainable Development",
-            body = "FUTO's mission is for open-source software and non-malicious software business practices to become a sustainable income source for projects and their developers. For this reason, we are in favor of users actually paying for software."
-        )
+        if (verbose) {
+            IconText(
+                icon = painterResource(id = R.drawable.activity),
+                title = "Sustainable Development",
+                body = "FUTO's mission is for open-source software and non-malicious software business practices to become a sustainable income source for projects and their developers. For this reason, we are in favor of users actually paying for software."
+            )
 
-        IconText(
-            icon = painterResource(id = R.drawable.unlock),
-            title = "Commitment to Privacy",
-            body = "This app will never serve you ads or sell your data. We are not in the business of doing that."
-        )
+            IconText(
+                icon = painterResource(id = R.drawable.unlock),
+                title = "Commitment to Privacy",
+                body = "This app will never serve you ads or sell your data. We are not in the business of doing that."
+            )
 
-        /*
+            /*
         IconText(
             icon = painterResource(id = R.drawable.code),
             title = "Ongoing Work",
             body = "Creating and maintaining great software requires significant resources. Your support will help us keep development going."
         )
         */
-    } else {
-        ParagraphText(stringResource(R.string.payment_text_2))
+        } else {
+            ParagraphText(stringResource(R.string.payment_text_2))
+        }
     }
 }
 
@@ -427,7 +433,7 @@ fun PaymentSurface(isPrimary: Boolean, title: String, onClick: (() -> Unit)? = n
 }
 
 @Composable
-@Preview(showBackground = true, heightDp = 10000)
+@Preview(showBackground = true, heightDp = 2048)
 fun PaymentScreen(
     navController: NavHostController = rememberNavController(),
     onExit: () -> Unit = { }
@@ -515,39 +521,41 @@ fun PaymentScreen(
                 val lastValidRemindValue = remember { mutableFloatStateOf(5.0f) }
                 val remindDays = remember { mutableStateOf("5") }
                 val coroutineScope = rememberCoroutineScope()
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            pushNoticeReminderTime(context, lastValidRemindValue.floatValue)
-                        }
-                        onExit()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    Text(stringResource(R.string.remind_me_in_x))
-                    BasicTextField(
-                        value = remindDays.value,
-                        onValueChange = {
-                            remindDays.value = it
-
-                            it.toFloatOrNull()
-                                ?.let { lastValidRemindValue.floatValue = it }
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                pushNoticeReminderTime(context, lastValidRemindValue.floatValue)
+                            }
+                            onExit()
                         },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        ),
                         modifier = Modifier
-                            .width(32.dp)
-                            .border(Dp.Hairline, LocalContentColor.current)
-                            .padding(4.dp),
-                        textStyle = Typography.bodyMedium.copy(color = LocalContentColor.current),
-                        cursorBrush = SolidColor(LocalContentColor.current),
-                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-                    )
-                    Text(stringResource(R.string.in_x_days))
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Text(stringResource(R.string.remind_me_in_x))
+                        BasicTextField(
+                            value = remindDays.value,
+                            onValueChange = {
+                                remindDays.value = it
+
+                                it.toFloatOrNull()
+                                    ?.let { lastValidRemindValue.floatValue = it }
+                            },
+                            modifier = Modifier
+                                .width(32.dp)
+                                .border(Dp.Hairline, LocalContentColor.current)
+                                .padding(4.dp),
+                            textStyle = Typography.bodyMedium.copy(color = LocalContentColor.current),
+                            cursorBrush = SolidColor(LocalContentColor.current),
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                        )
+                        Text(stringResource(R.string.in_x_days))
+                    }
                 }
             }
         }
@@ -555,6 +563,17 @@ fun PaymentScreen(
         NavigationItem(title = "Help", subtitle = "Need help? Visit our website", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://keyboard.futo.org/")
         })
+    }
+}
+
+@Composable
+@Preview(heightDp = 2048)
+private fun PaymentScreenDark() {
+    val context = LocalContext.current
+    UixThemeWrapper(colorScheme = DynamicDarkTheme.obtainColors(context)) {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            PaymentScreen()
+        }
     }
 }
 

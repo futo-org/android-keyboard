@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,10 +33,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
@@ -234,65 +238,83 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
         }
     }
 
+
+    val originalDirection = LocalLayoutDirection.current
+
     Column {
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth(),
-            columns = GridCells.Adaptive(minSize = 172.dp)
-        ) {
-            items(availableThemeOptions.count()) {
-                val themeOption = availableThemeOptions[it].second
-
-                ThemePreview(themeOption, isSelected = themeOption.key == currentTheme) {
-                    onSelected(themeOption)
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxWidth(),
+                columns = GridCells.Adaptive(minSize = 172.dp),
+                horizontalArrangement = if (LocalLayoutDirection.current == LayoutDirection.Rtl) {
+                    Arrangement.End
+                } else {
+                    Arrangement.Start
                 }
-            }
+            ) {
+                items(availableThemeOptions.count()) {
+                    val themeOption = availableThemeOptions[it].second
 
-            item {
-                AddCustomThemeButton {
-                    // TODO: Custom themes
-                    val toast = Toast.makeText(
-                        context,
-                        "Custom themes coming eventually",
-                        Toast.LENGTH_SHORT
-                    )
-                    toast.show()
+                    ThemePreview(themeOption, isSelected = themeOption.key == currentTheme) {
+                        onSelected(themeOption)
+                    }
                 }
-            }
 
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) { }
+                item {
+                    AddCustomThemeButton {
+                        // TODO: Custom themes
+                        val toast = Toast.makeText(
+                            context,
+                            "Custom themes coming eventually",
+                            Toast.LENGTH_SHORT
+                        )
+                        toast.show()
+                    }
+                }
 
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                SettingToggleDataStore(
-                    title = "Key borders",
-                    setting = KeyBordersSetting
-                )
-            }
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                SettingToggleDataStore(
-                    title = "Show symbol hints",
-                    setting = KeyHintsSetting
-                )
-            }
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) { }
 
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                SettingSlider(
-                    title = "Keyboard Height",
-                    setting = KeyboardHeightMultiplierSetting,
-                    range = 0.33f .. 1.75f, transform = { it },
-                    indicator = { "${(it * 100.0f).roundToInt()}%" },
-                    steps = 16
-                )
-            }
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                SettingSlider(
-                    title = "Keyboard Offset",
-                    setting = KeyboardBottomOffsetSetting,
-                    range = 0.0f .. 50.0f,
-                    hardRange = 0.0f .. 250.0f,
-                    transform = { it },
-                    indicator = { "${String.format("%.1f", it)} dp" },
-                    steps = 9
-                )
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                    CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
+                        SettingToggleDataStore(
+                            title = "Key borders",
+                            setting = KeyBordersSetting
+                        )
+                    }
+                }
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                    CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
+                        SettingToggleDataStore(
+                            title = "Show symbol hints",
+                            setting = KeyHintsSetting
+                        )
+                    }
+                }
+
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                    CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
+                        SettingSlider(
+                            title = "Keyboard Height",
+                            setting = KeyboardHeightMultiplierSetting,
+                            range = 0.33f..1.75f, transform = { it },
+                            indicator = { "${(it * 100.0f).roundToInt()}%" },
+                            steps = 16
+                        )
+                    }
+                }
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                    CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
+                        SettingSlider(
+                            title = "Keyboard Offset",
+                            setting = KeyboardBottomOffsetSetting,
+                            range = 0.0f..50.0f,
+                            hardRange = 0.0f..250.0f,
+                            transform = { it },
+                            indicator = { "${String.format("%.1f", it)} dp" },
+                            steps = 9
+                        )
+                    }
+                }
             }
         }
     }

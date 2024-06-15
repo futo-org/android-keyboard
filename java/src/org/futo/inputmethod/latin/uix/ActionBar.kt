@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -403,6 +404,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
                         context.setSetting(
                             ExpandableActionItems, ActionRegistry.moveElement(
                                 context.getSetting(ExpandableActionItems, DefaultActionsString),
+                                DefaultActions,
                                 action,
                                 1
                             )
@@ -414,6 +416,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
                         context.setSetting(
                             ExpandableActionItems, ActionRegistry.moveElement(
                                 context.getSetting(ExpandableActionItems, DefaultActionsString),
+                                DefaultActions,
                                 action,
                                 -1
                             )
@@ -486,13 +489,11 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit) {
 fun ActionItems(onSelect: (Action) -> Unit) {
     val actions = useDataStoreValueBlocking(key = ExpandableActionItems, default = DefaultActionsString)
 
-    if(actions != null) {
-        val actionItems = ActionRegistry.stringToActions(actions, DefaultActions)
+    val actionItems = ActionRegistry.stringToActions(actions, DefaultActions)
 
-        LazyRow {
-            items(actionItems.size, key = { actionItems[it].name }) {
-                ActionItem(it, actionItems[it], onSelect)
-            }
+    LazyRow {
+        items(actionItems.size, key = { actionItems[it].name }) {
+            ActionItem(it, actionItems[it], onSelect)
         }
     }
 }
@@ -588,7 +589,8 @@ fun ActionBar(
     inlineSuggestions: List<MutableState<View?>>,
     forceOpenActionsInitially: Boolean = false,
     importantNotice: ImportantNotice? = null,
-    keyboardManagerForAction: KeyboardManagerForAction? = null
+    keyboardManagerForAction: KeyboardManagerForAction? = null,
+    actionsForcedOpenByUser: MutableState<Boolean> = mutableStateOf(false)
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -600,14 +602,16 @@ fun ActionBar(
     }
 
     LaunchedEffect(words) {
-        if(words != null && !words.isEmpty) {
+        if(words != null && !words.isEmpty && !actionsForcedOpenByUser.value) {
             isActionsOpen.value = false
+            actionsForcedOpenByUser.value = false
         }
     }
 
     LaunchedEffect(inlineSuggestions) {
         if(inlineSuggestions.isNotEmpty()) {
             isActionsOpen.value = false
+            actionsForcedOpenByUser.value = false
         }
     }
 
@@ -618,6 +622,8 @@ fun ActionBar(
         Row {
             ExpandActionsButton(isActionsOpen.value) {
                 isActionsOpen.value = !isActionsOpen.value
+                actionsForcedOpenByUser.value = isActionsOpen.value
+
                 if(isActionsOpen.value && importantNotice != null) {
                     importantNotice.onDismiss(context)
                 }
