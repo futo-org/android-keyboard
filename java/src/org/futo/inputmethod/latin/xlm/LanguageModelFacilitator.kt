@@ -18,6 +18,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
+import org.futo.inputmethod.latin.BinaryDictionary
 import org.futo.inputmethod.latin.DictionaryFacilitator
 import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.Suggest
@@ -237,6 +238,10 @@ public class LanguageModelFacilitator(
         computationSemaphore.acquire()
 
         inputLogic.mWordComposer.setAutoCorrection(null)
+
+        if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH) {
+            inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
+        }
 
         try {
             var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
