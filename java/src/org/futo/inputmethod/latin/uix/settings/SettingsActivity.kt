@@ -197,8 +197,21 @@ class SettingsActivity : ComponentActivity() {
             val destination = intent.getStringExtra("navDest")
             if(destination != null) {
                 lifecycleScope.launch {
-                    delay(1000L)
-                    navController.navigate(destination)
+                    // The navigation graph has to initialize, and this can take some time.
+                    // For now, just keep trying every 100ms until it doesn't throw an exception
+                    // for up to 10 seconds
+                    var navigated = false
+                    for(i in 0 until 100) {
+                        delay(100L)
+                        try {
+                            navController.navigate(destination)
+                            navigated = true
+                        } catch (ignored: Exception) {
+
+                        }
+
+                        if(navigated) break
+                    }
                 }
             }
         }
