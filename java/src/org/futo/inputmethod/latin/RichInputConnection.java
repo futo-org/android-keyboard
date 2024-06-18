@@ -698,7 +698,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             ngramContext.fullContext = seq.toString();
 
             if (ngramContext.fullContext.length() == 4096) {
-                ngramContext.fullContext = String.join(" ", ngramContext.fullContext.split(" ")).substring(ngramContext.fullContext.split(" ")[0].length() + 1);
+                int begin_index = ngramContext.fullContext.split(" ")[0].length() + 1;
+
+                // If we have a 4096 character long word with no spaces this check will fail
+                if(begin_index < 4096) {
+                    ngramContext.fullContext = String.join(" ", ngramContext.fullContext.split(" ")).substring(begin_index);
+                }
             }
         } else {
             ngramContext.fullContext = "";
