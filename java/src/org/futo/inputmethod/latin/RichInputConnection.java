@@ -216,6 +216,13 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
+    public void restartBatchEdit() {
+        if(mNestLevel == 1) {
+            endBatchEdit();
+            beginBatchEdit();
+        }
+    }
+
     /**
      * Reset the cached text and retrieve it again from the editor.
      *
@@ -723,6 +730,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (!isConnected()) {
             return null;
         }
+
+        // In some editors, due to batch edit, we will receive stale information after having
+        // just performed an action (e.g. deleted text). Restarting batch edit will force
+        // the editor to process actions so far
+        restartBatchEdit();
+
         final CharSequence before = getTextBeforeCursorAndDetectLaggyConnection(
                 OPERATION_GET_WORD_RANGE_AT_CURSOR,
                 SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS,
