@@ -607,7 +607,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="layout_serbian_qwertz">Serbian (QWERTZ)</string>
     <string name="layout_sinhala">Sinhala</string>
     <string name="layout_south_slavic">South Slavic</string>
-    <string name="layout_spanish">Spanish</string>
+    <string name="layout_spanish">QWERTY+</string>
     <string name="layout_swiss">Swiss</string>
     <string name="layout_tamil">Tamil</string>
     <string name="layout_telugu">Telugu</string>
