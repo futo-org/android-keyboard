@@ -329,7 +329,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         // Clear the clipboard if the item being removed is the current one
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // TODO: URI
-            if(item.text != null && item.text == clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context)) {
+            if((item.text != null) && item.text == clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString()) {
                 clipboardManager.clearPrimaryClip()
             }
         }
