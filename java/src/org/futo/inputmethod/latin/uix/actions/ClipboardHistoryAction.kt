@@ -13,6 +13,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,6 +55,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.PersistentStateInitialization
 import org.futo.inputmethod.latin.uix.SettingsKey
@@ -100,7 +102,8 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = modifier.padding(2.dp)
+        modifier = modifier
+            .padding(2.dp)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = androidx.compose.material.ripple.rememberRipple(),
@@ -361,6 +364,62 @@ val ClipboardHistoryAction = Action(
             }
 
             @Composable
+            override fun WindowTitleBar(rowScope: RowScope) {
+                super.WindowTitleBar(rowScope)
+
+                val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
+                if(!clipboardHistory.value) return
+
+                IconButton(onClick = {
+                    val numUnpinnedItems = clipboardHistoryManager.clipboardHistory.count { !it.pinned }
+                    if(clipboardHistoryManager.clipboardHistory.size == 0) {
+                        manager.requestDialog(
+                            "There are no items to clear. Disable clipboard history?",
+                            listOf(
+                                DialogRequestItem("Cancel") {},
+                                DialogRequestItem("Disable") {
+                                    clipboardHistory.setValue(false)
+                                },
+                            ),
+                            {}
+                        )
+                    } else if(numUnpinnedItems == 0) {
+                        manager.requestDialog(
+                            "There are no unpinned items to clear. Unpin all items?",
+                            listOf(
+                                DialogRequestItem("Cancel") {},
+                                DialogRequestItem("Unpin") {
+                                    clipboardHistoryManager.clipboardHistory.toList().forEach {
+                                        if(it.pinned) {
+                                            clipboardHistoryManager.onPin(it)
+                                        }
+                                    }
+                                },
+                            ),
+                            {}
+                        )
+                    } else {
+                        manager.requestDialog(
+                            "Clear all unpinned items?",
+                            listOf(
+                                DialogRequestItem("Cancel") {},
+                                DialogRequestItem("Clear") {
+                                    clipboardHistoryManager.clipboardHistory.toList().forEach {
+                                        if (!it.pinned) {
+                                            clipboardHistoryManager.onRemove(it)
+                                        }
+                                    }
+                                },
+                            ),
+                            {}
+                        )
+                    }
+                }) {
+                    Icon(painterResource(id = R.drawable.close), contentDescription = "Clear clipboard")
+                }
+            }
+
+            @Composable
             override fun WindowContents(keyboardShown: Boolean) {
                 val view = LocalView.current
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
@@ -370,7 +429,9 @@ val ClipboardHistoryAction = Action(
                             ParagraphText("Clipboard history is not enabled. To save clipboard items, you can enable clipboard history. This will keep up to 25 items for 3 days unless pinned. Passwords and other items marked sensitive are excluded from history.")
                             Button(onClick = {
                                 clipboardHistory.setValue(true)
-                            }, modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+                            }, modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()) {
                                 Text("Enable Clipboard History")
                             }
                         }

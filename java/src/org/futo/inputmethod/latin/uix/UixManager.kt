@@ -46,7 +46,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -70,6 +69,7 @@ import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
@@ -236,6 +236,11 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
             latinIME.latinIMELegacy.mSettings.current)
     }
 
+    override fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit) {
+        uixManager.activeDialogRequest.value = ActiveDialogRequest(text, options, onCancel)
+        uixManager.activeDialogRequestDismissed.value = false
+    }
+
     override fun announce(s: String) {
         AccessibilityUtils.init(getContext())
         if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
@@ -243,6 +248,12 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         }
     }
 }
+
+data class ActiveDialogRequest(
+    val text: String,
+    val options: List<DialogRequestItem>,
+    val onCancel: () -> Unit
+)
 
 class UixManager(private val latinIME: LatinIME) {
     private var shouldShowSuggestionStrip: Boolean = true
@@ -372,7 +383,7 @@ class UixManager(private val latinIME: LatinIME) {
                     onBack = { returnBackToMainKeyboardViewFromAction() },
                     canExpand = currWindowAction!!.canShowKeyboard,
                     onExpand = { toggleExpandAction() },
-                    windowName = windowImpl.windowName()
+                    windowTitleBar = { windowImpl.WindowTitleBar(this) }
                 )
             }
 
@@ -404,18 +415,18 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    private val wordBeingForgotten: MutableState<SuggestedWordInfo?> = mutableStateOf(null)
-    private val forgetWordDismissed: MutableState<Boolean> = mutableStateOf(true)
+    val activeDialogRequest: MutableState<ActiveDialogRequest?> = mutableStateOf(null)
+    val activeDialogRequestDismissed: MutableState<Boolean> = mutableStateOf(true)
 
     @Composable
     fun BoxScope.ForgetWordDialog() {
         AnimatedVisibility(
-            visible = !forgetWordDismissed.value,
+            visible = !activeDialogRequestDismissed.value,
             modifier = Modifier.matchParentSize(),
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            if (wordBeingForgotten.value != null) {
+            if (activeDialogRequest.value != null) {
                 Box(modifier = Modifier.matchParentSize()) {
                     Surface(
                         color = Color.Black.copy(alpha = 0.66f),
@@ -423,50 +434,34 @@ class UixManager(private val latinIME: LatinIME) {
                             .matchParentSize()
                             .pointerInput(Unit) {
                                 this.detectTapGestures(onPress = {
-                                    forgetWordDismissed.value = true
+                                    activeDialogRequestDismissed.value = true
+                                    activeDialogRequest.value?.onCancel?.invoke()
                                 })
                             }
                     ) { }
 
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        modifier = Modifier.align(Alignment.Center)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                stringResource(
-                                    R.string.blacklist_from_suggestions,
-                                    wordBeingForgotten.value?.mWord!!
-                                ))
+                    Box(modifier = Modifier.matchParentSize().padding(8.dp)) {
+                        Surface(
+                            shape = RoundedCornerShape(16.dp),
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            modifier = Modifier.align(Alignment.Center)
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(
+                                    activeDialogRequest.value?.text ?: "",
+                                    style = Typography.bodyMedium
+                                )
 
-                            Row {
-                                TextButton(
-                                    onClick = {
-                                        forgetWordDismissed.value = true
-                                    }
-                                ) {
-                                    Text(stringResource(R.string.cancel))
-                                }
-
-                                TextButton(
-                                    onClick = {
-                                        latinIME.forceForgetWord(wordBeingForgotten.value!!)
-                                        forgetWordDismissed.value = true
-                                    }
-                                ) {
-                                    Text(stringResource(R.string.blacklist))
-                                }
-
-                                if(wordBeingForgotten.value!!.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
-                                    TextButton(
-                                        onClick = {
-                                            runBlocking { latinIME.setSetting(SHOW_EMOJI_SUGGESTIONS, false) }
-                                            forgetWordDismissed.value = true
-                                            latinIME.refreshSuggestions()
+                                Row {
+                                    activeDialogRequest.value?.options?.forEach {
+                                        TextButton(
+                                            onClick = {
+                                                it.onClick()
+                                                activeDialogRequestDismissed.value = true
+                                            }
+                                        ) {
+                                            Text(it.option)
                                         }
-                                    ) {
-                                        Text(stringResource(R.string.disable_emoji))
                                     }
                                 }
                             }
@@ -670,8 +665,25 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {
-        wordBeingForgotten.value = suggestedWordInfo
-        forgetWordDismissed.value = false
+        keyboardManagerForAction.requestDialog(
+            latinIME.getString(R.string.blacklist_from_suggestions, suggestedWordInfo.mWord),
+            listOf(
+                DialogRequestItem(latinIME.getString(R.string.cancel)) { },
+                DialogRequestItem(latinIME.getString(R.string.blacklist)) {
+                    latinIME.forceForgetWord(suggestedWordInfo)
+                },
+            ) + if(suggestedWordInfo.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
+                listOf(
+                    DialogRequestItem(latinIME.getString(R.string.disable_emoji)) {
+                        runBlocking { latinIME.setSetting(SHOW_EMOJI_SUGGESTIONS, false) }
+                        latinIME.refreshSuggestions()
+                    }
+                )
+            } else {
+                listOf()
+            },
+            { }
+        )
 
         val v = latinIME.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

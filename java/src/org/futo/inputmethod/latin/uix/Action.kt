@@ -6,7 +6,12 @@ import android.view.View
 import android.view.inputmethod.InputConnection
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import java.util.Locale
@@ -16,6 +21,11 @@ interface ActionInputTransaction {
     fun commit(text: String)
     fun cancel()
 }
+
+data class DialogRequestItem(
+    val option: String,
+    val onClick: () -> Unit
+)
 
 interface KeyboardManagerForAction {
     fun getContext(): Context
@@ -48,6 +58,8 @@ interface KeyboardManagerForAction {
 
     fun overrideInputConnection(inputConnection: InputConnection)
     fun unsetInputConnection()
+
+    fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit)
 }
 
 interface ActionWindow {
@@ -56,6 +68,14 @@ interface ActionWindow {
 
     @Composable
     fun WindowContents(keyboardShown: Boolean)
+
+    @Composable
+    fun WindowTitleBar(rowScope: RowScope) {
+        with(rowScope) {
+            Text(windowName(), modifier = Modifier.align(Alignment.CenterVertically))
+            Spacer(modifier = Modifier.weight(1.0f))
+        }
+    }
 
     fun close()
 }

@@ -30,9 +30,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -61,7 +61,6 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -674,7 +673,7 @@ fun ActionBar(
 
 @Composable
 fun ActionWindowBar(
-    windowName: String,
+    windowTitleBar: @Composable RowScope.() -> Unit,
     canExpand: Boolean,
     onBack: () -> Unit,
     onExpand: () -> Unit
@@ -693,13 +692,9 @@ fun ActionWindowBar(
                 )
             }
 
-            Text(
-                windowName,
-                style = Typography.titleMedium,
-                modifier = Modifier.align(CenterVertically)
-            )
-
-            Spacer(modifier = Modifier.weight(1.0f))
+            CompositionLocalProvider(LocalTextStyle provides Typography.titleMedium) {
+                windowTitleBar()
+            }
 
             if(canExpand) {
                 IconButton(onClick = onExpand) {
