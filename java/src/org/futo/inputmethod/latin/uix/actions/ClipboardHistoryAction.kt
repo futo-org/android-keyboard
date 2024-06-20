@@ -131,11 +131,15 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
 
                 IconButton(onClick = {
                     onRemove(clipboardEntry)
-                }, modifier = Modifier.size(32.dp)) {
+                }, modifier = Modifier.size(32.dp), enabled = !clipboardEntry.pinned) {
                     Icon(
                         painterResource(id = R.drawable.close),
                         contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = if(clipboardEntry.pinned) {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -319,6 +323,13 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
     }
 
     fun onRemove(item: ClipboardEntry) {
+        // Clear the clipboard if the item being removed is the current one
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // TODO: URI
+            if(item.text != null && item.text == clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context)) {
+                clipboardManager.clearPrimaryClip()
+            }
+        }
         clipboardHistory.remove(item)
         saveClipboard()
     }
