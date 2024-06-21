@@ -30,7 +30,7 @@ import java.util.Locale;
 public final class MoreKeySpecTests extends KeySpecParserTestsBase {
     @Override
     protected void assertParser(final String message, final String moreKeySpec,
-            final String expectedLabel, final String expectedOutputText, final int expectedIconId,
+            final String expectedLabel, final String expectedOutputText, final String expectedIconId,
             final int expectedCode) {
         final String labelResolved = mTextsSet.resolveTextReference(moreKeySpec);
         final MoreKeySpec spec = new MoreKeySpec(
@@ -38,8 +38,8 @@ public final class MoreKeySpecTests extends KeySpecParserTestsBase {
         assertEquals(message + " [label]", expectedLabel, spec.mLabel);
         assertEquals(message + " [ouptputText]", expectedOutputText, spec.mOutputText);
         assertEquals(message + " [icon]",
-                KeyboardIconsSet.getIconName(expectedIconId),
-                KeyboardIconsSet.getIconName(spec.mIconId));
+                expectedIconId,
+                spec.mIconId);
         assertEquals(message + " [code]",
                 Constants.printableCode(expectedCode),
                 Constants.printableCode(spec.mCode));

@@ -42,6 +42,7 @@ import org.futo.inputmethod.latin.common.StringUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -95,7 +96,7 @@ public class Key implements Comparable<Key> {
     private static final int LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS = 0x80000000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
-    private final int mIconId;
+    private final String mIconId;
 
     /** Width of the key, excluding the gap */
     private final int mWidth;
@@ -172,30 +173,24 @@ public class Key implements Comparable<Key> {
         /** Text to output when pressed. This can be multiple characters, like ".com" */
         public final String mOutputText;
         public final int mAltCode;
-        /** Icon for disabled state */
-        public final int mDisabledIconId;
         /** The visual insets */
         public final int mVisualInsetsLeft;
         public final int mVisualInsetsRight;
 
-        private OptionalAttributes(final String outputText, final int altCode,
-                final int disabledIconId, final int visualInsetsLeft, final int visualInsetsRight) {
+        private OptionalAttributes(final String outputText, final int altCode, final int visualInsetsLeft, final int visualInsetsRight) {
             mOutputText = outputText;
             mAltCode = altCode;
-            mDisabledIconId = disabledIconId;
             mVisualInsetsLeft = 0;//visualInsetsLeft;
             mVisualInsetsRight = 0;//visualInsetsRight;
         }
 
         @Nullable
-        public static OptionalAttributes newInstance(final String outputText, final int altCode,
-                final int disabledIconId, final int visualInsetsLeft, final int visualInsetsRight) {
-            if (outputText == null && altCode == CODE_UNSPECIFIED
-                    && disabledIconId == ICON_UNDEFINED && visualInsetsLeft == 0
+        public static OptionalAttributes newInstance(final String outputText, final int altCode, final int visualInsetsLeft, final int visualInsetsRight) {
+            if (outputText == null && altCode == CODE_UNSPECIFIED && visualInsetsLeft == 0
                     && visualInsetsRight == 0) {
                 return null;
             }
-            return new OptionalAttributes(outputText, altCode, disabledIconId, visualInsetsLeft,
+            return new OptionalAttributes(outputText, altCode, visualInsetsLeft,
                     visualInsetsRight);
         }
     }
@@ -211,7 +206,7 @@ public class Key implements Comparable<Key> {
      * Constructor for a key on <code>MoreKeyKeyboard</code>, on <code>MoreSuggestions</code>,
      * and in a <GridRows/>.
      */
-    public Key(@Nullable final String label, final int iconId, final int code,
+    public Key(@Nullable final String label, final String iconId, final int code,
             @Nullable final String outputText, @Nullable final String hintLabel,
             final int labelFlags, final int backgroundType, final int x, final int y,
             final int width, final int height, final int horizontalGap, final int verticalGap) {
@@ -227,8 +222,7 @@ public class Key implements Comparable<Key> {
         mMoreKeys = null;
         mMoreKeysColumnAndFlags = 0;
         mLabel = label;
-        mOptionalAttributes = OptionalAttributes.newInstance(outputText, CODE_UNSPECIFIED,
-                ICON_UNDEFINED, 0 /* visualInsetsLeft */, 0 /* visualInsetsRight */);
+        mOptionalAttributes = OptionalAttributes.newInstance(outputText, CODE_UNSPECIFIED, 0 /* visualInsetsLeft */, 0 /* visualInsetsRight */);
         mCode = code;
         mEnabled = (code != CODE_UNSPECIFIED);
         mIconId = iconId;
@@ -348,8 +342,6 @@ public class Key implements Comparable<Key> {
         mActionFlags = actionFlags;
 
         mIconId = KeySpecParser.getIconId(keySpec);
-        final int disabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyIconDisabled));
 
         final int code = KeySpecParser.getCode(keySpec);
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
@@ -424,8 +416,7 @@ public class Key implements Comparable<Key> {
         final int altCode = needsToUpcase
                 ? StringUtils.toTitleCaseOfKeyCode(altCodeInAttr, localeForUpcasing)
                 : altCodeInAttr;
-        mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode,
-                disabledIconId, visualInsetsLeft, visualInsetsRight);
+        mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode, visualInsetsLeft, visualInsetsRight);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr, null);
         mHashCode = computeHashCode(this);
     }
@@ -562,9 +553,9 @@ public class Key implements Comparable<Key> {
     }
 
     public String toLongString() {
-        final int iconId = getIconId();
-        final String topVisual = (iconId == KeyboardIconsSet.ICON_UNDEFINED)
-                ? KeyboardIconsSet.PREFIX_ICON + KeyboardIconsSet.getIconName(iconId) : getLabel();
+        final String iconId = getIconId();
+        final String topVisual = (Objects.equals(iconId, ICON_UNDEFINED))
+                ? KeyboardIconsSet.PREFIX_ICON + iconId : getLabel();
         final String hintLabel = getHintLabel();
         final String visual = (hintLabel == null) ? topVisual : topVisual + "^" + hintLabel;
         return toString() + " " + visual + "/" + backgroundName(mBackgroundType);
@@ -830,15 +821,14 @@ public class Key implements Comparable<Key> {
         return (attrs != null) ? attrs.mAltCode : CODE_UNSPECIFIED;
     }
 
-    public int getIconId() {
+    public String getIconId() {
         return mIconId;
     }
 
     @Nullable
     public Drawable getIcon(final KeyboardIconsSet iconSet, final int alpha) {
         final OptionalAttributes attrs = mOptionalAttributes;
-        final int disabledIconId = (attrs != null) ? attrs.mDisabledIconId : ICON_UNDEFINED;
-        final int iconId = mEnabled ? getIconId() : disabledIconId;
+        final String iconId = getIconId();
         final Drawable icon = iconSet.getIconDrawable(iconId);
         if (icon != null) {
             icon.setAlpha(alpha);

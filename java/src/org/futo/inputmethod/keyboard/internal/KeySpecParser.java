@@ -235,7 +235,7 @@ public final class KeySpecParser {
         return defaultCode;
     }
 
-    public static int getIconId(@Nullable final String keySpec) {
+    public static String getIconId(@Nullable final String keySpec) {
         if (keySpec == null) {
             // TODO: Throw {@link KeySpecParserError} once Key.keyLabel attribute becomes mandatory.
             return KeyboardIconsSet.ICON_UNDEFINED;
@@ -246,7 +246,7 @@ public final class KeySpecParser {
         final int labelEnd = indexOfLabelEnd(keySpec);
         final String iconName = getBeforeLabelEnd(keySpec, labelEnd)
                 .substring(KeyboardIconsSet.PREFIX_ICON.length());
-        return KeyboardIconsSet.getIconId(iconName);
+        return iconName;
     }
 
     @SuppressWarnings("serial")

@@ -152,7 +152,6 @@ public final class KeyStylesSet {
             readStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
             readStringArray(keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
             readFlags(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags);
-            readString(keyAttr, R.styleable.Keyboard_Key_keyIconDisabled);
             readInt(keyAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn);
             readInt(keyAttr, R.styleable.Keyboard_Key_backgroundType);
             readFlags(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
@@ -226,5 +225,14 @@ public final class KeyStylesSet {
             throw new XmlParseUtils.ParseException("Unknown key style: " + styleName, parser);
         }
         return style;
+    }
+
+    public void addDynamicKeyStyle(final String styleName, final String keySpec, final int backgroundType, final int keyActionFlags) {
+        final DeclaredKeyStyle style = new DeclaredKeyStyle(EMPTY_STYLE_NAME, mTextsSet, mStyles);
+        style.mStyleAttributes.put(R.styleable.Keyboard_Key_keySpec, mTextsSet.resolveTextReference(keySpec));
+        style.mStyleAttributes.put(R.styleable.Keyboard_Key_backgroundType, (backgroundType));
+        style.mStyleAttributes.put(R.styleable.Keyboard_Key_keyActionFlags, (keyActionFlags));
+
+        mStyles.put(styleName, style);
     }
 }

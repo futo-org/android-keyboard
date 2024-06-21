@@ -171,6 +171,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
         mParams = params;
 
+        mParams.mKeyStyles.addDynamicKeyStyle("bottomEmojiKeyStyle",
+                "!icon/emoji_normal_key|!code/key_emoji",
+                2,
+                2);
+
         params.GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         params.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
     }
@@ -815,8 +820,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             return true;
         }
         final String iconName = a.getString(index);
-        final int iconId = KeyboardIconsSet.getIconId(iconName);
-        return iconsSet.getIconDrawable(iconId) != null;
+        return iconsSet.getIconDrawable(iconName) != null;
     }
 
     private boolean parseDefault(final XmlPullParser parser, final KeyboardRow row,

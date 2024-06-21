@@ -33,11 +33,11 @@ public abstract class ExpectedKeyVisual {
         return new Label(label);
     }
 
-    public static ExpectedKeyVisual newInstance(final int iconId) {
+    public static ExpectedKeyVisual newIconInstance(final String iconId) {
         return new Icon(iconId);
     }
 
-    public abstract int getIconId();
+    public abstract String getIconId();
     public abstract String getLabel();
     abstract ExpectedKeyVisual toUpperCase(final Locale locale);
     abstract ExpectedKeyVisual preserveCase();
@@ -51,20 +51,20 @@ public abstract class ExpectedKeyVisual {
      * This class represents an integer icon id.
      */
     private static class Icon extends ExpectedKeyVisual {
-        private final int mIconId;
+        private final String mIconId;
 
-        Icon(final int iconId) {
+        Icon(final String iconId) {
             mIconId = iconId;
         }
 
         @Override
-        public int getIconId() {
+        public String getIconId() {
             return mIconId;
         }
 
         @Override
         public String getLabel() {
-            return null;
+            return mIconId;
         }
 
         @Override
@@ -109,7 +109,7 @@ public abstract class ExpectedKeyVisual {
 
         @Override
         public String toString() {
-            return KeyboardIconsSet.getIconName(mIconId);
+            return mIconId;
         }
     }
 
@@ -124,7 +124,7 @@ public abstract class ExpectedKeyVisual {
         }
 
         @Override
-        public int getIconId() {
+        public String getIconId() {
             return KeyboardIconsSet.ICON_UNDEFINED;
         }
 

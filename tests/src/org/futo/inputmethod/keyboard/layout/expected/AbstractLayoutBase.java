@@ -106,32 +106,19 @@ public abstract class AbstractLayoutBase {
     }
 
     // Icon ids.
-    private static final int ICON_DELETE = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_DELETE_KEY);
-    private static final int ICON_SPACE = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_SPACE_KEY);
-    private static final int ICON_TAB = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_TAB_KEY);
-    private static final int ICON_SHORTCUT = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_SHORTCUT_KEY);
-    private static final int ICON_SETTINGS = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_SETTINGS_KEY);
-    private static final int ICON_LANGUAGE_SWITCH = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_LANGUAGE_SWITCH_KEY);
-    private static final int ICON_ENTER = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_ENTER_KEY);
-    private static final int ICON_EMOJI_ACTION = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_EMOJI_ACTION_KEY);
-    private static final int ICON_EMOJI_NORMAL = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY);
-    private static final int ICON_SHIFT = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_SHIFT_KEY);
-    private static final int ICON_SHIFTED_SHIFT = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_SHIFT_KEY_SHIFTED);
-    private static final int ICON_ZWNJ = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_ZWNJ_KEY);
-    private static final int ICON_ZWJ = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_ZWJ_KEY);
+    private static final String ICON_DELETE = KeyboardIconsSet.NAME_DELETE_KEY;
+    private static final String ICON_SPACE = KeyboardIconsSet.NAME_SPACE_KEY;
+    private static final String ICON_TAB = KeyboardIconsSet.NAME_TAB_KEY;
+    private static final String ICON_SHORTCUT = KeyboardIconsSet.NAME_SHORTCUT_KEY;
+    private static final String ICON_SETTINGS = KeyboardIconsSet.NAME_SETTINGS_KEY;
+    private static final String ICON_LANGUAGE_SWITCH = KeyboardIconsSet.NAME_LANGUAGE_SWITCH_KEY;
+    private static final String ICON_ENTER = KeyboardIconsSet.NAME_ENTER_KEY;
+    private static final String ICON_EMOJI_ACTION = KeyboardIconsSet.NAME_EMOJI_ACTION_KEY;
+    private static final String ICON_EMOJI_NORMAL = KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY;
+    private static final String ICON_SHIFT = KeyboardIconsSet.NAME_SHIFT_KEY;
+    private static final String ICON_SHIFTED_SHIFT = KeyboardIconsSet.NAME_SHIFT_KEY_SHIFTED;
+    private static final String ICON_ZWNJ = KeyboardIconsSet.NAME_ZWNJ_KEY;
+    private static final String ICON_ZWJ = KeyboardIconsSet.NAME_ZWJ_KEY;
 
     // Functional keys.
     protected static final ExpectedKey DELETE_KEY = key(ICON_DELETE, Constants.CODE_DELETE);

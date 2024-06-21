@@ -30,6 +30,7 @@ import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.latin.R;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * The pop up key preview view.
@@ -54,8 +55,8 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
     public void setPreviewVisual(final Key key, final KeyboardIconsSet iconsSet,
             final KeyDrawParams drawParams) {
         // What we show as preview should match what we show on a key top in onDraw().
-        final int iconId = key.getIconId();
-        if (iconId != KeyboardIconsSet.ICON_UNDEFINED) {
+        final String iconId = key.getIconId();
+        if (!Objects.equals(iconId, KeyboardIconsSet.ICON_UNDEFINED)) {
             setCompoundDrawables(null, null, null, key.getPreviewIcon(iconsSet));
             setText(null);
             return;

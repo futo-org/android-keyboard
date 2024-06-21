@@ -50,7 +50,7 @@ public final class MoreKeySpec {
     public final String mLabel;
     @Nullable
     public final String mOutputText;
-    public final int mIconId;
+    public final String mIconId;
 
     public MoreKeySpec(@Nonnull final String moreKeySpec, boolean needsToUpperCase,
             @Nonnull final Locale locale) {
@@ -88,7 +88,7 @@ public final class MoreKeySpec {
     public int hashCode() {
         int hashCode = 1;
         hashCode = 31 + mCode;
-        hashCode = hashCode * 31 + mIconId;
+        hashCode = hashCode * 31 + (mIconId == null ? 0 : mIconId.hashCode());
         final String label = mLabel;
         hashCode = hashCode * 31 + (label == null ? 0 : label.hashCode());
         final String outputText = mOutputText;
@@ -114,7 +114,7 @@ public final class MoreKeySpec {
     @Override
     public String toString() {
         final String label = (mIconId == KeyboardIconsSet.ICON_UNDEFINED ? mLabel
-                : KeyboardIconsSet.PREFIX_ICON + KeyboardIconsSet.getIconName(mIconId));
+                : KeyboardIconsSet.PREFIX_ICON + (mIconId));
         final String output = (mCode == Constants.CODE_OUTPUT_TEXT ? mOutputText
                 : Constants.printableCode(mCode));
         if (StringUtils.codePointCount(label) == 1 && label.codePointAt(0) == mCode) {

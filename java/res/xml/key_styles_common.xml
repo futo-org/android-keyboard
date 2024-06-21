@@ -112,23 +112,11 @@
         latin:keyLabelFlags="hasPopupHint"
         latin:keyActionFlags="noKeyPreview" />
     <key-style
-        latin:styleName="shortcutKeyStyle"
-        latin:keySpec="!icon/shortcut_key|!code/key_shortcut"
-        latin:keyIconDisabled="!icon/shortcut_key_disabled"
-        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:altCode="!code/key_space"
-        latin:parentStyle="settingsMoreKeysStyle" />
-    <key-style
         latin:styleName="settingsKeyStyle"
         latin:keySpec="!icon/settings_key|!code/key_settings"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:altCode="!code/key_space"
         latin:backgroundType="functional" />
-    <key-style
-        latin:styleName="bottomEmojiKeyStyle"
-        latin:keySpec="!icon/emoji_normal_key|!code/key_emoji"
-        latin:backgroundType="functional"
-        latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="tabKeyStyle"
         latin:keySpec="!icon/tab_key|!code/key_tab"

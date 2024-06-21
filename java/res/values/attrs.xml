@@ -365,8 +365,6 @@
             <!-- If true, disable additionalMoreKeys. -->
             <flag name="disableAdditionalMoreKeys" value="0x80000000" />
         </attr>
-        <!-- The icon for disabled key -->
-        <attr name="keyIconDisabled" format="string" />
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
         <!-- Visual insets, in the proportion of keyboard width. -->

@@ -39,8 +39,7 @@ import java.util.Locale;
 abstract class ActionTestsBase extends KeyboardLayoutSetTestsBase {
     static class ExpectedActionKey {
         static ExpectedActionKey newIconKey(final String iconName) {
-            final int iconId = KeyboardIconsSet.getIconId(iconName);
-            return new ExpectedActionKey(ExpectedKeyVisual.newInstance(iconId));
+            return new ExpectedActionKey(ExpectedKeyVisual.newIconInstance(iconName));
         }
 
         static ExpectedActionKey newLabelKey(final String label) {
@@ -64,7 +63,7 @@ abstract class ActionTestsBase extends KeyboardLayoutSetTestsBase {
             mVisual = visual;
         }
 
-        public int getIconId() { return mVisual.getIconId(); }
+        public String getIconId() { return mVisual.getIconId(); }
 
         public String getLabel() { return mVisual.getLabel(); }
     }

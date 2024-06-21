@@ -63,11 +63,11 @@ abstract class KeyboardLayoutSetNavigateMoreKeysBase extends KeyboardLayoutSetTe
         public static final ExpectedMoreKey[] EMPTY_MORE_KEYS = new ExpectedMoreKey[0];
 
         public final int mLabelResId;
-        public final int mIconId;
+        public final String mIconId;
 
         public ExpectedMoreKey(final String iconName) {
             mLabelResId = NO_LABEL;
-            mIconId = KeyboardIconsSet.getIconId(iconName);
+            mIconId = iconName;
         }
 
         public ExpectedMoreKey(final int labelResId) {
@@ -112,7 +112,7 @@ abstract class KeyboardLayoutSetNavigateMoreKeysBase extends KeyboardLayoutSetTe
                 final CharSequence expectedLabel = getContext().getText(expectedLabelResId);
                 assertEquals(tag + " label " + index, expectedLabel, actualMoreKeys[index].mLabel);
             }
-            final int expectedIconId = expectedMoreKeys[index].mIconId;
+            final String expectedIconId = expectedMoreKeys[index].mIconId;
             assertEquals(tag + " icon " + index, expectedIconId, actualMoreKeys[index].mIconId);
         }
     }

@@ -1,13 +1,13 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import com.google.android.material.color.DynamicColors
+import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import kotlin.math.roundToInt
@@ -85,6 +86,17 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         return drawables[i]
     }
 
+    val icons: HashMap<String, Drawable?> = hashMapOf()
+    override fun getIcon(iconName: String): Drawable? {
+        if(iconName == KeyboardIconsSet.ICON_UNDEFINED) return null
+
+        if(!icons.containsKey(iconName)) {
+            Log.e("BasicThemeProvider", "Unknown icon $iconName")
+        }
+
+        return icons[iconName]
+    }
+
     override fun getKeyboardHeightMultiplier(): Float {
         return keyboardHeight
     }
@@ -142,6 +154,20 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
                 || np.get(KeyBordersSetting) != keyBorders
                 || np.get(KeyHintsSetting) != showKeyHints
                 || np.get(KeyboardHeightMultiplierSetting) != keyboardHeight
+    }
+
+
+    private fun addIcon(iconName: String, drawableIntResId: Int, tint: Int) {
+        addIcon(iconName, AppCompatResources.getDrawable(
+            context,
+            drawableIntResId
+        ), tint)
+    }
+
+    private fun addIcon(iconName: String, drawable: Drawable?, tint: Int) {
+        icons[iconName] = drawable?.apply {
+            setTint(tint)
+        }
     }
 
     init {
@@ -227,6 +253,26 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
                 setTint(color)
             }
         }
+
+        addIcon(KeyboardIconsSet.NAME_SHIFT_KEY, R.drawable.shift, onBackground)
+        addIcon(KeyboardIconsSet.NAME_SHIFT_KEY_SHIFTED, R.drawable.shiftshifted, onBackground)
+        addIcon(KeyboardIconsSet.NAME_DELETE_KEY, R.drawable.delete, onBackground)
+        addIcon(KeyboardIconsSet.NAME_SETTINGS_KEY, R.drawable.settings, onBackground)
+        addIcon(KeyboardIconsSet.NAME_SPACE_KEY, null, onBackground)
+        addIcon(KeyboardIconsSet.NAME_ENTER_KEY, R.drawable.sym_keyboard_return_lxx_light, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_GO_KEY, R.drawable.sym_keyboard_go_lxx_light, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_SEARCH_KEY, R.drawable.sym_keyboard_search_lxx_light, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_SEND_KEY, R.drawable.sym_keyboard_send_lxx_light, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_NEXT_KEY, R.drawable.sym_keyboard_next_lxx_light, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_DONE_KEY, R.drawable.sym_keyboard_done_lxx_light, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_PREVIOUS_KEY, R.drawable.sym_keyboard_previous_lxx_light, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_TAB_KEY, R.drawable.sym_keyboard_tab_holo_dark, onBackground) // TODO: Correct tint
+        addIcon(KeyboardIconsSet.NAME_ZWNJ_KEY, R.drawable.sym_keyboard_zwnj_lxx_dark, onBackground)
+        addIcon(KeyboardIconsSet.NAME_ZWJ_KEY, R.drawable.sym_keyboard_zwj_lxx_dark, onPrimary)
+
+
+        addIcon(KeyboardIconsSet.NAME_EMOJI_ACTION_KEY, R.drawable.smile, onPrimary)
+        addIcon(KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY, R.drawable.smile, onBackground)
 
         // No good replacements for these icons yet, but we set them anyway for setTint
         overrideDrawable(R.styleable.Keyboard_iconEnterKey, R.drawable.sym_keyboard_return_lxx_light, enterKeyForeground)

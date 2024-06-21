@@ -27,18 +27,18 @@ import org.futo.inputmethod.latin.common.Constants;
 public final class KeySpecParserTests extends KeySpecParserTestsBase {
     @Override
     protected void assertParser(final String message, final String keySpec,
-            final String expectedLabel, final String expectedOutputText, final int expectedIcon,
+            final String expectedLabel, final String expectedOutputText, final String expectedIcon,
             final int expectedCode) {
         final String keySpecResolved = mTextsSet.resolveTextReference(keySpec);
         final String actualLabel = KeySpecParser.getLabel(keySpecResolved);
         final String actualOutputText = KeySpecParser.getOutputText(keySpecResolved);
-        final int actualIcon = KeySpecParser.getIconId(keySpecResolved);
+        final String actualIcon = KeySpecParser.getIconId(keySpecResolved);
         final int actualCode = KeySpecParser.getCode(keySpecResolved);
         assertEquals(message + " [label]", expectedLabel, actualLabel);
         assertEquals(message + " [ouptputText]", expectedOutputText, actualOutputText);
         assertEquals(message + " [icon]",
-                KeyboardIconsSet.getIconName(expectedIcon),
-                KeyboardIconsSet.getIconName(actualIcon));
+                expectedIcon,
+                actualIcon);
         assertEquals(message + " [code]",
                 Constants.printableCode(expectedCode),
                 Constants.printableCode(actualCode));

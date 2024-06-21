@@ -22,6 +22,8 @@ interface DynamicThemeProvider {
 
     fun getDrawable(i: Int): Drawable?
 
+    fun getIcon(iconName: String): Drawable?
+
     fun getKeyboardHeightMultiplier(): Float
 
     companion object {

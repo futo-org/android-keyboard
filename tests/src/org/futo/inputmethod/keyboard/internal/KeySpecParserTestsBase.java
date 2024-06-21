@@ -41,7 +41,7 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
 
     private int mCodeSettings;
     private int mCodeActionNext;
-    private int mSettingsIconId;
+    private String mSettingsIconId;
 
     @Override
     protected void setUp() throws Exception {
@@ -50,15 +50,15 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
         mTextsSet.setLocale(TEST_LOCALE, getContext());
         mCodeSettings = KeyboardCodesSet.getCode(CODE_SETTINGS_NAME);
         mCodeActionNext = KeyboardCodesSet.getCode("key_action_next");
-        mSettingsIconId = KeyboardIconsSet.getIconId(ICON_SETTINGS_NAME);
+        mSettingsIconId = ICON_SETTINGS_NAME;
     }
 
     abstract protected void assertParser(final String message, final String keySpec,
-            final String expectedLabel, final String expectedOutputText, final int expectedIcon,
+            final String expectedLabel, final String expectedOutputText, final String expectedIcon,
             final int expectedCode);
 
     protected void assertParserError(final String message, final String keySpec,
-            final String expectedLabel, final String expectedOutputText, final int expectedIconId,
+            final String expectedLabel, final String expectedOutputText, final String expectedIconId,
             final int expectedCode) {
         try {
             assertParser(message, keySpec, expectedLabel, expectedOutputText, expectedIconId,
