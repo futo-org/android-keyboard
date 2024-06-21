@@ -31,7 +31,7 @@ object ActionRegistry {
         listOf(SwitchLanguageAction, TextEditAction, ClipboardHistoryAction, EmojiAction, UndoAction, RedoAction).map {
             AllActions.indexOf(it)
         }.joinToString(separator = ",") {
-            "!icon/action_primary_$it|!code/action_$it"
+            "!icon/action_$it|!code/action_$it"
         }
 
     fun stringToActions(string: String, defaults: List<Action>): List<Action> {
