@@ -67,7 +67,9 @@ public class SettingsValues {
     public final boolean mKeyPreviewPopupOn;
     public final boolean mShowsVoiceInputKey;
     public final boolean mIncludesOtherImesInLanguageSwitchList;
-    public final boolean mShowsEmojiKey;
+    public final boolean mShowsActionKey;
+    public final int mActionKeyId;
+
     public final boolean mUseContactsDict;
     public final boolean mUsePersonalizedDicts;
     public final boolean mUseDoubleSpacePeriod;
@@ -142,7 +144,8 @@ public class SettingsValues {
         mIncludesOtherImesInLanguageSwitchList = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
                 ? prefs.getBoolean(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false)
                 : true /* forcibly */;
-        mShowsEmojiKey = Settings.readShowsEmojiKey(prefs);
+        mShowsActionKey = prefs.getBoolean(Settings.PREF_SHOW_ACTION_KEY, true);
+        mActionKeyId = prefs.getInt(Settings.PREF_ACTION_KEY_ID, 0);
         mIsNumberRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
@@ -270,10 +273,6 @@ public class SettingsValues {
         return mInputAttributes.mShouldInsertSpacesAutomatically;
     }
 
-    public boolean isEmojiKeyEnabled() {
-        return mShowsEmojiKey;
-    }
-
     public boolean isSameInputType(final EditorInfo editorInfo) {
         return mInputAttributes.isSameInputType(editorInfo);
     }
@@ -384,8 +383,10 @@ public class SettingsValues {
         sb.append("" + mShowsVoiceInputKey);
         sb.append("\n   mIncludesOtherImesInLanguageSwitchList = ");
         sb.append("" + mIncludesOtherImesInLanguageSwitchList);
-        sb.append("\n   mShowsEmojiKey = ");
-        sb.append("" + mShowsEmojiKey);
+        sb.append("\n   mShowsActionKey = ");
+        sb.append("" + mShowsActionKey);
+        sb.append("\n   mActionKeyId = ");
+        sb.append("" + mActionKeyId);
         sb.append("\n   mUseContactsDict = ");
         sb.append("" + mUseContactsDict);
         sb.append("\n   mUsePersonalizedDicts = ");

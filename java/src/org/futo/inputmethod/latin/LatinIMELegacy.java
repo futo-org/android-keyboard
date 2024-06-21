@@ -532,6 +532,13 @@ public class LatinIMELegacy implements KeyboardActionListener,
                 }
             }
         }
+
+        public void triggerAction(int actionId) {
+            final LatinIMELegacy latinImeLegacy = getOwnerInstance();
+            if (latinImeLegacy != null) {
+                ((LatinIME) (latinImeLegacy.getInputMethodService())).getUixManager().triggerAction(actionId);
+            }
+        }
     }
 
     static final class SubtypeState {
@@ -1941,13 +1948,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
             return fallbackValue;
         }
         return mRichImm.shouldOfferSwitchingToNextInputMethod(token, fallbackValue);
-    }
-
-    public boolean shouldShowEmojiKey() {
-        // TODO: Revisit here to reorganize the settings. Probably we can/should use different
-        // strategy once the implementation of
-        // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} is defined well.
-        return mSettings.getCurrent().isEmojiKeyEnabled();
     }
 
     private void setNavigationBarVisibility(final boolean visible) {

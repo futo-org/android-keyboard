@@ -101,8 +101,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final String PREF_ENABLE_METRICS_LOGGING = "pref_enable_metrics_logging";
 
-    public static final String PREF_SHOW_EMOJI_KEY =
+    public static final String PREF_SHOW_ACTION_KEY =
             "pref_show_emoji_key";
+    public static final String PREF_ACTION_KEY_ID = "pref_action_key_id";
 
     public static final String PREF_ENABLE_NUMBER_ROW = "pref_enable_number_row";
 
@@ -259,10 +260,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return Integer.parseInt(prefs.getString(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(res.getInteger(
                         R.integer.config_key_preview_linger_timeout))));
-    }
-
-    public static boolean readShowsEmojiKey(final SharedPreferences prefs) {
-        return prefs.getBoolean(PREF_SHOW_EMOJI_KEY, true);
     }
 
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,

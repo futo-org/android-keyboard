@@ -24,6 +24,8 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import com.google.android.material.color.DynamicColors
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.actions.ActionRegistry
+import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import kotlin.math.roundToInt
 
@@ -270,9 +272,12 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         addIcon(KeyboardIconsSet.NAME_ZWNJ_KEY, R.drawable.sym_keyboard_zwnj_lxx_dark, onBackground)
         addIcon(KeyboardIconsSet.NAME_ZWJ_KEY, R.drawable.sym_keyboard_zwj_lxx_dark, onPrimary)
 
-
         addIcon(KeyboardIconsSet.NAME_EMOJI_ACTION_KEY, R.drawable.smile, onPrimary)
         addIcon(KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY, R.drawable.smile, onBackground)
+
+        AllActions.forEachIndexed { i, it ->
+            addIcon("action_${i}", it.icon, onBackground)
+        }
 
         // No good replacements for these icons yet, but we set them anyway for setTint
         overrideDrawable(R.styleable.Keyboard_iconEnterKey, R.drawable.sym_keyboard_return_lxx_light, enterKeyForeground)

@@ -171,11 +171,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
         mParams = params;
 
-        mParams.mKeyStyles.addDynamicKeyStyle("bottomEmojiKeyStyle",
-                "!icon/emoji_normal_key|!code/key_emoji",
-                2,
-                2);
-
         params.GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         params.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
     }
@@ -186,6 +181,13 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     public KeyboardBuilder<KP> load(final int xmlId, final KeyboardId id) {
         mParams.mId = id;
+
+        final String actionKeySpec = "!icon/action_" + id.mBottomActionKeyId + "|!code/action_" + id.mBottomActionKeyId;
+        mParams.mKeyStyles.addDynamicKeyStyle("bottomEmojiKeyStyle",
+                actionKeySpec,
+                2,
+                2);
+
         final XmlResourceParser parser = mResources.getXml(xmlId);
         try {
             parseKeyboard(parser);

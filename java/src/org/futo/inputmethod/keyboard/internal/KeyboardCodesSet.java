@@ -16,12 +16,16 @@
 
 package org.futo.inputmethod.keyboard.internal;
 
+import static org.futo.inputmethod.latin.common.Constants.CODE_ACTION_0;
+import static org.futo.inputmethod.latin.common.Constants.CODE_UNSPECIFIED;
+
 import org.futo.inputmethod.latin.common.Constants;
 
 import java.util.HashMap;
 
 public final class KeyboardCodesSet {
     public static final String PREFIX_CODE = "!code/";
+    public static final String ACTION_CODE_PREFIX = "action_";
 
     private static final HashMap<String, Integer> sNameToIdMap = new HashMap<>();
 
@@ -30,6 +34,11 @@ public final class KeyboardCodesSet {
     }
 
     public static int getCode(final String name) {
+        if(name.startsWith(ACTION_CODE_PREFIX)) {
+            int id = CODE_ACTION_0 + Integer.parseInt(name.substring(ACTION_CODE_PREFIX.length()));
+            if(id >= CODE_UNSPECIFIED) throw new RuntimeException("Action ID too high!");
+            return id;
+        }
         Integer id = sNameToIdMap.get(name);
         if (id == null) throw new RuntimeException("Unknown key code: " + name);
         return DEFAULT[id];

@@ -1,12 +1,15 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.preference.PreferenceManager
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.navigation.NavHostController
@@ -18,14 +21,18 @@ import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.Settings.PREF_VIBRATION_DURATION_SETTINGS
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
+import org.futo.inputmethod.latin.uix.settings.DropDownPicker
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
 import kotlin.math.roundToInt
 
 val vibrationDurationSetting = SettingsKey(
@@ -75,11 +82,28 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
         )
 
         SettingToggleSharedPrefs(
-            title = "Emoji key",
-            subtitle = "Show the emoji key on the bottom row",
-            key = Settings.PREF_SHOW_EMOJI_KEY,
+            title = "Action key enabled",
+            subtitle = "Show the action key on the bottom row",
+            key = Settings.PREF_SHOW_ACTION_KEY,
             default = true
         )
+
+        val emojiKey = useSharedPrefsInt(key = Settings.PREF_ACTION_KEY_ID, default = 0)
+        SettingItem(title = "Action key") {
+            DropDownPicker(
+                label = "",
+                options = AllActions,
+                selection = AllActions[emojiKey.value],
+                onSet = {
+                    emojiKey.setValue(AllActions.indexOf(it))
+                },
+                getDisplayName = {
+                    context.getString(it.name)
+                },
+                modifier = Modifier.width(180.dp)
+            )
+        }
+
         SettingToggleSharedPrefs(
             title = stringResource(R.string.auto_cap),
             subtitle = stringResource(R.string.auto_cap_summary),

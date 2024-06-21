@@ -119,6 +119,7 @@ public final class KeyboardLayoutSet {
         boolean mVoiceInputKeyEnabled;
         boolean mNoSettingsKey;
         boolean mBottomEmojiKeyEnabled;
+        int mBottomActionKeyId;
         RichInputMethodSubtype mSubtype;
         boolean mIsSpellChecker;
         int mKeyboardWidth;
@@ -324,8 +325,9 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        public Builder setBottomEmojiKeyEnabled(final boolean enabled) {
+        public Builder setBottomActionKey(final boolean enabled, final int action) {
             mParams.mBottomEmojiKeyEnabled = enabled;
+            mParams.mBottomActionKeyId = action;
             return this;
         }
 

@@ -674,6 +674,14 @@ public final class InputLogic {
      */
     private void handleFunctionalEvent(final Event event, final InputTransaction inputTransaction,
             final int currentKeyboardScriptId, final LatinIMELegacy.UIHandler handler) {
+
+        if(event.mKeyCode <= Constants.CODE_ACTION_MAX && event.mKeyCode >= Constants.CODE_ACTION_0) {
+            final int actionId = event.mKeyCode - Constants.CODE_ACTION_0;
+            handler.triggerAction(actionId);
+
+            return;
+        }
+
         switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
                 handleBackspaceEvent(event, inputTransaction, currentKeyboardScriptId);

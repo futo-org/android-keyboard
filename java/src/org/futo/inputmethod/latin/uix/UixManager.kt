@@ -664,6 +664,14 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
+    fun triggerAction(id: Int) {
+        if(currWindowAction == null) {
+            onActionActivated(
+                AllActions.getOrNull(id) ?: throw IllegalArgumentException("No such action with ID $id")
+            )
+        }
+    }
+
     fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {
         keyboardManagerForAction.requestDialog(
             latinIME.getString(R.string.blacklist_from_suggestions, suggestedWordInfo.mWord),
