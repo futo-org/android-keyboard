@@ -16,6 +16,8 @@
 
 package org.futo.inputmethod.keyboard.internal;
 
+import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
+
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -480,7 +482,7 @@ public final class KeyboardTextsTable {
         /* morekeys_single_quote */ "!fixedColumnOrder!5,!text/single_quotes,!text/single_angle_quotes",
         /* morekeys_double_quote */ "!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes",
         /* morekeys_tablet_double_quote */ "!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes",
-        /* keyspec_emoji_action_key */ "!icon/emoji_action_key|!code/key_emoji",
+        /* keyspec_emoji_action_key */ ActionRegistry.INSTANCE.getEnterActions(),
     };
 
     /* Locale af: Afrikaans */

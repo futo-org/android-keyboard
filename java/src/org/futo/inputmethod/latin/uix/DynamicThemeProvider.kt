@@ -16,6 +16,7 @@ interface DynamicThemeProvider {
     val moreKeysTextColor: Int
     val moreKeysKeyboardBackground: Drawable
     val popupKey: Drawable
+    val actionPopupKey: Drawable
 
     @ColorInt
     fun getColor(i: Int): Int?

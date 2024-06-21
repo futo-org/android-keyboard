@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 
@@ -137,19 +138,25 @@ public class KeyboardView extends View {
         final TypedArray keyboardViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
 
+        final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
+                R.styleable.Keyboard_Key, defStyle, R.style.KeyboardView);
+
         assert(context instanceof ContextThemeWrapper);
         assert(((ContextThemeWrapper) context).getBaseContext() instanceof DynamicThemeProviderOwner);
 
         mDrawableProvider = ((DynamicThemeProviderOwner) ((ContextThemeWrapper) context).getBaseContext()).getDrawableProvider();
 
-        boolean isMoreKeys = defStyle == R.attr.moreKeysKeyboardViewStyle || defStyle == R.attr.moreKeysKeyboardViewForActionStyle;
+        boolean isMoreKeys = keyAttr.getBoolean(R.styleable.Keyboard_Key_isMoreKey, false);
+        boolean isMoreKeysAction = keyAttr.getBoolean(R.styleable.Keyboard_Key_isAction, false);
 
-        mKeyboardBackground = isMoreKeys ?
-                mDrawableProvider.getMoreKeysKeyboardBackground() : mDrawableProvider.getKeyboardBackground();
+        mKeyboardBackground = isMoreKeysAction ? null :
+                isMoreKeys ?  mDrawableProvider.getMoreKeysKeyboardBackground() :
+                        mDrawableProvider.getKeyboardBackground();
         setBackground(mKeyboardBackground);
 
-        mKeyBackground = isMoreKeys ?
-                mDrawableProvider.getPopupKey() : mDrawableProvider.getKeyBackground();
+        mKeyBackground = isMoreKeysAction ? mDrawableProvider.getActionPopupKey() :
+                isMoreKeys ? mDrawableProvider.getPopupKey() :
+                        mDrawableProvider.getKeyBackground();
         mKeyBackground.getPadding(mKeyBackgroundPadding);
 
         mFunctionalKeyBackground = mKeyBackground;
@@ -172,12 +179,10 @@ public class KeyboardView extends View {
                 R.styleable.KeyboardView_verticalCorrection, 0.0f);
         keyboardViewAttr.recycle();
 
-        final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
-                R.styleable.Keyboard_Key, defStyle, R.style.KeyboardView);
         mDefaultKeyLabelFlags = keyAttr.getInt(R.styleable.Keyboard_Key_keyLabelFlags, 0);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr, mDrawableProvider);
 
-        if(isMoreKeys && mKeyVisualAttributes != null) {
+        if((isMoreKeys || isMoreKeysAction) && mKeyVisualAttributes != null) {
             mKeyVisualAttributes.mTextColor = mDrawableProvider.getMoreKeysTextColor();
         }
 
@@ -382,12 +387,8 @@ public class KeyboardView extends View {
         if (key.needsToKeepBackgroundAspectRatio(mDefaultKeyLabelFlags)
                 // HACK: To disable expanding normal/functional key background.
                 && !key.hasCustomActionLabel()) {
-            final int intrinsicWidth = background.getIntrinsicWidth();
-            final int intrinsicHeight = background.getIntrinsicHeight();
-            final float minScale = Math.min(
-                    keyWidth / (float)intrinsicWidth, keyHeight / (float)intrinsicHeight);
-            bgWidth = (int)(intrinsicWidth * minScale);
-            bgHeight = (int)(intrinsicHeight * minScale);
+            bgWidth = Math.min(keyWidth, keyHeight);
+            bgHeight = Math.min(keyWidth, keyHeight);
             bgX = (keyWidth - bgWidth) / 2;
             bgY = (keyHeight - bgHeight) / 2;
         } else {
@@ -535,6 +536,8 @@ public class KeyboardView extends View {
                 iconY = (keyHeight - iconHeight) / 2; // Align vertically center.
             }
             final int iconX = (keyWidth - iconWidth) / 2; // Align horizontally center.
+
+            icon.setTint(key.selectTextColor(params));
             drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
         }
 

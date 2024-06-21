@@ -677,6 +677,10 @@ public class Key implements Comparable<Key> {
     }
 
     public final int selectTextColor(final KeyDrawParams params) {
+        if (isActionKey()) {
+            return params.mActionKeyTextColor;
+        }
+
         if ((mLabelFlags & LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR) != 0) {
             return params.mFunctionalTextColor;
         }

@@ -27,6 +27,13 @@ val AllActions = listOf(
 
 
 object ActionRegistry {
+    val EnterActions = "!fixedColumnOrder!4,!needsDividers!," +
+        listOf(SwitchLanguageAction, TextEditAction, ClipboardHistoryAction, EmojiAction, UndoAction, RedoAction).map {
+            AllActions.indexOf(it)
+        }.joinToString(separator = ",") {
+            "!icon/action_primary_$it|!code/action_$it"
+        }
+
     fun stringToActions(string: String, defaults: List<Action>): List<Action> {
         return string.split(",").mapNotNull { idx ->
             idx.toIntOrNull()?.let { AllActions.getOrNull(it) }

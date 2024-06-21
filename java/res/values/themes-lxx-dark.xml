@@ -121,6 +121,7 @@
         <item name="divider">@drawable/more_keys_divider</item>
         <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
+        <item name="isMoreKey">true</item>
     </style>
     <style
         name="MoreKeysKeyboardView.LXX_Dark.Action"
@@ -130,6 +131,7 @@
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_action_lxx_dark</item>
         <item name="divider">@null</item>
         <item name="keyLabelFlags">keepBackgroundAspectRatio</item>
+        <item name="isAction">true</item>
     </style>
     <style
         name="SuggestionStripView.LXX_Dark"

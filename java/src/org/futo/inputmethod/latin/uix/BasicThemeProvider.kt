@@ -76,6 +76,7 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
     override val moreKeysTextColor: Int
     override val moreKeysKeyboardBackground: Drawable
     override val popupKey: Drawable
+    override val actionPopupKey: Drawable
 
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {
@@ -237,6 +238,7 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         colors[R.styleable.Keyboard_Key_keyTextInactivatedColor] = onBackgroundHalf
         colors[R.styleable.Keyboard_Key_keyPressedTextColor] = onPrimary
         colors[R.styleable.Keyboard_Key_keyTextShadowColor] = 0
+        colors[R.styleable.Keyboard_Key_actionKeyTextColor] = enterKeyForeground
         colors[R.styleable.Keyboard_Key_functionalTextColor] = onBackground
         colors[R.styleable.Keyboard_Key_keyHintLetterColor] = onBackgroundHalf
         colors[R.styleable.Keyboard_Key_keyHintLabelColor] = onBackgroundHalf
@@ -413,6 +415,13 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
                 coloredRoundedRectangle(primaryContainer, dp(8.dp))
             )
         }
+        actionPopupKey = StateListDrawable().apply {
+            addStateWithHighlightLayerOnPressed(primary, intArrayOf(),
+                coloredRoundedRectangle(primaryContainer, dp(128.dp)),
+                128.dp
+            )
+        }
+
     }
 
 }
