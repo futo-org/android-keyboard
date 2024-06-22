@@ -148,7 +148,15 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
                 }
             }
 
-            Text(clipboardEntry.text ?: "", modifier = Modifier.padding(8.dp, 2.dp), style = Typography.bodySmall)
+            val text = (clipboardEntry.text ?: "").let {
+                if(it.length > 256) {
+                    it.substring(0, 256) + "..."
+                } else {
+                    it
+                }
+            }
+
+            Text(text, modifier = Modifier.padding(8.dp, 2.dp), style = Typography.bodySmall)
 
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -238,7 +246,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         }
     }
 
-    fun pruneOldItems() {
+    suspend fun pruneOldItems() = withContext(Dispatchers.Main) {
         val maxDays = 3L
         val minimumTimestamp = System.currentTimeMillis() - (maxDays * 24L * 60L * 60L * 1000L)
         clipboardHistory.removeAll {
@@ -343,6 +351,18 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
 }
 
+fun String.toFNV1aHash(): Long {
+    val fnvPrime: Long = 1099511628211L
+    var hash: Long = -3750763034362895579L
+
+    for (byte in this.toByteArray()) {
+        hash = hash xor byte.toLong()
+        hash *= fnvPrime
+    }
+
+    return hash
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 val ClipboardHistoryAction = Action(
     icon = R.drawable.clipboard,
@@ -356,7 +376,7 @@ val ClipboardHistoryAction = Action(
     windowImpl = { manager, persistent ->
         val clipboardHistoryManager = persistent as ClipboardHistoryManager
 
-        clipboardHistoryManager.pruneOldItems()
+        manager.getLifecycleScope().launch { clipboardHistoryManager.pruneOldItems() }
         object : ActionWindow {
             @Composable
             override fun windowName(): String {
@@ -447,7 +467,16 @@ val ClipboardHistoryAction = Action(
                             val i = clipboardHistoryManager.clipboardHistory.size - r_i - 1
                             val entry = clipboardHistoryManager.clipboardHistory[i]
 
-                            entry.text ?: i
+                            entry.text?.let {
+                                if(it.length > 512) {
+                                    // Compose really doesn't like extremely long keys, so
+                                    // to avoid crashing we just provide a hash
+                                    it.toFNV1aHash()
+                                } else {
+                                    it
+                                }
+                            } ?: i
+                            i
                         }) { r_i ->
                             val i = clipboardHistoryManager.clipboardHistory.size - r_i - 1
                             val entry = clipboardHistoryManager.clipboardHistory[i]
