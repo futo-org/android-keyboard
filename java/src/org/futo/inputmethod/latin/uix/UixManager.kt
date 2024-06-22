@@ -665,11 +665,13 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun triggerAction(id: Int) {
-        if(currWindowAction == null) {
-            onActionActivated(
-                AllActions.getOrNull(id) ?: throw IllegalArgumentException("No such action with ID $id")
-            )
+        val action = AllActions.getOrNull(id) ?: throw IllegalArgumentException("No such action with ID $id")
+
+        if(currWindowAction != null && action.windowImpl != null) {
+            closeActionWindow()
         }
+
+        onActionActivated(action)
     }
 
     fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {

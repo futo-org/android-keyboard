@@ -24,8 +24,8 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import com.google.android.material.color.DynamicColors
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
+import org.futo.inputmethod.latin.uix.actions.AllActionsMap
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import kotlin.math.roundToInt
 
@@ -249,15 +249,6 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         colors[R.styleable.MainKeyboardView_gestureTrailColor] = primary
         colors[R.styleable.MainKeyboardView_slidingKeyInputPreviewColor] = primary
 
-        val overrideDrawable: (Int, Int, Int) -> Unit = { a, b, color ->
-            drawables[a] = AppCompatResources.getDrawable(
-                context,
-                b
-            )!!.apply {
-                setTint(color)
-            }
-        }
-
         addIcon(KeyboardIconsSet.NAME_SHIFT_KEY, R.drawable.shift, onBackground)
         addIcon(KeyboardIconsSet.NAME_SHIFT_KEY_SHIFTED, R.drawable.shiftshifted, onBackground)
         addIcon(KeyboardIconsSet.NAME_DELETE_KEY, R.drawable.delete, onBackground)
@@ -277,28 +268,15 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         addIcon(KeyboardIconsSet.NAME_EMOJI_ACTION_KEY, R.drawable.smile, onPrimary)
         addIcon(KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY, R.drawable.smile, onBackground)
 
-        AllActions.forEachIndexed { i, it ->
+        // Add by name (action_emoji)
+        AllActionsMap.forEach { (i, it) ->
             addIcon("action_${i}", it.icon, onBackground)
         }
 
-        // No good replacements for these icons yet, but we set them anyway for setTint
-        overrideDrawable(R.styleable.Keyboard_iconEnterKey, R.drawable.sym_keyboard_return_lxx_light, enterKeyForeground)
-        overrideDrawable(R.styleable.Keyboard_iconGoKey, R.drawable.sym_keyboard_go_lxx_light, enterKeyForeground)
-        overrideDrawable(R.styleable.Keyboard_iconNextKey, R.drawable.sym_keyboard_next_lxx_light, enterKeyForeground)
-        overrideDrawable(R.styleable.Keyboard_iconDoneKey, R.drawable.sym_keyboard_done_lxx_light, enterKeyForeground)
-        overrideDrawable(R.styleable.Keyboard_iconPreviousKey, R.drawable.sym_keyboard_previous_lxx_light, enterKeyForeground)
-        overrideDrawable(R.styleable.Keyboard_iconSearchKey, R.drawable.sym_keyboard_search_lxx_light, enterKeyForeground)
-
-        overrideDrawable(R.styleable.Keyboard_iconZwjKey, R.drawable.sym_keyboard_zwj_lxx_dark, onPrimary)
-        overrideDrawable(R.styleable.Keyboard_iconZwnjKey, R.drawable.sym_keyboard_zwnj_lxx_dark, onBackground)
-
-        overrideDrawable(R.styleable.Keyboard_iconDeleteKey, R.drawable.delete, onBackground)
-        overrideDrawable(R.styleable.Keyboard_iconSettingsKey, R.drawable.settings, onBackground)
-        overrideDrawable(R.styleable.Keyboard_iconEmojiActionKey, R.drawable.smile, onPrimary)
-        overrideDrawable(R.styleable.Keyboard_iconEmojiNormalKey, R.drawable.smile, onBackground)
-        overrideDrawable(R.styleable.Keyboard_iconLanguageSwitchKey, R.drawable.globe, onBackground)
-        overrideDrawable(R.styleable.Keyboard_iconShiftKey, R.drawable.shift, onBackground)
-        overrideDrawable(R.styleable.Keyboard_iconShiftKeyShifted, R.drawable.shiftshifted, onBackground)
+        // Add by id (action_0)
+        AllActions.forEachIndexed { i, it ->
+            addIcon("action_${i}", it.icon, onBackground)
+        }
 
         if(!showKeyHints) {
             colors[R.styleable.Keyboard_Key_keyHintLetterColor] = transparent
@@ -314,10 +292,6 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
 
             // Note: We don't fully hide some things, but fade them away as they may be important landmarks
             colors[R.styleable.Keyboard_Key_functionalTextColor] = onBackgroundThird
-            overrideDrawable(R.styleable.Keyboard_iconShiftKey, R.drawable.shift, onBackgroundThird)
-            overrideDrawable(R.styleable.Keyboard_iconShiftKeyShifted, R.drawable.shiftshifted, onBackgroundThird)
-            overrideDrawable(R.styleable.Keyboard_iconDeleteKey, R.drawable.delete, onBackgroundThird)
-            overrideDrawable(R.styleable.Keyboard_iconEmojiNormalKey, R.drawable.smile, transparent)
         }
 
         keyboardBackground = coloredRectangle(primaryKeyboardColor)

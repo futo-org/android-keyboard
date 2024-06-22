@@ -24,21 +24,21 @@
     <Key
         latin:keySpec="z"
         latin:keyHintLabel="*"
-        latin:additionalMoreKeys="*"
+        latin:additionalMoreKeys="*,!icon/action_undo|!code/action_undo"
         latin:moreKeys="!text/morekeys_z" />
     <Key
         latin:keySpec="!text/keyspec_x"
         latin:keyHintLabel="&quot;"
-        latin:additionalMoreKeys="&quot;"
+        latin:additionalMoreKeys="&quot;,!icon/action_cut|!code/action_cut"
         latin:moreKeys="!text/morekeys_x" />
     <Key
         latin:keySpec="c"
         latin:keyHintLabel="'"
-        latin:additionalMoreKeys="'"
+        latin:additionalMoreKeys="',!icon/action_copy|!code/action_copy"
         latin:moreKeys="!text/morekeys_c" />
     <Key
         latin:keySpec="v"
         latin:keyHintLabel=":"
-        latin:additionalMoreKeys=":"
+        latin:additionalMoreKeys=":,!icon/action_paste|!code/action_paste"
         latin:moreKeys="!text/morekeys_v" />
 </merge>

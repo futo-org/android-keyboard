@@ -4,6 +4,9 @@
     <string name="system_voice_input_action_title">Voice Input (System)</string>
     <string name="theme_switcher_action_title">Theme Switcher</string>
     <string name="emoji_action_title">Emojis</string>
+    <string name="select_all_action_title">Select All</string>
+    <string name="cut_action_title">Cut to Clipboard</string>
+    <string name="copy_action_title">Copy to Clipboard</string>
     <string name="clipboard_action_title">Paste from Clipboard</string>
     <string name="clipboard_manager_action_title">Clipboard Manager</string>
     <string name="undo_action_title">Undo</string>

@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
 import androidx.datastore.preferences.core.stringPreferencesKey
+import org.futo.inputmethod.keyboard.internal.KeyboardCodesSet
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.getSetting
@@ -10,26 +11,34 @@ val ExpandableActionItems = stringPreferencesKey("expandableActions")
 val PinnedActionItems = stringPreferencesKey("pinnedActions")
 
 // Note: indices must stay stable
-val AllActions = listOf(
-    EmojiAction,
-    SettingsAction,
-    ClipboardAction,
-    TextEditAction,
-    ThemeAction,
-    UndoAction,
-    RedoAction,
-    VoiceInputAction,
-    SystemVoiceInputAction,
-    SwitchLanguageAction,
-    ClipboardHistoryAction,
-    MemoryDebugAction
+val AllActionsMap = mapOf(
+    "emoji" to EmojiAction,
+    "settings" to SettingsAction,
+    "paste" to PasteAction,
+    "text_edit" to TextEditAction,
+    "themes" to ThemeAction,
+    "undo" to UndoAction,
+    "redo" to RedoAction,
+    "voice_input" to VoiceInputAction,
+    "system_voice_input" to SystemVoiceInputAction,
+    "switch_language" to SwitchLanguageAction,
+    "clipboard_history" to ClipboardHistoryAction,
+    "mem_dbg" to MemoryDebugAction,
+    "cut" to CutAction,
+    "copy" to CopyAction,
+    "select_all" to SelectAllAction
 )
 
+val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
+
+val AllActions = AllActionsMap.values.toList()
+
+val ActionIdToInt = AllActionsMap.entries.associate { it.key to AllActions.indexOf(it.value) }
 
 object ActionRegistry {
     val EnterActions = "!fixedColumnOrder!4,!needsDividers!," +
         listOf(SwitchLanguageAction, TextEditAction, ClipboardHistoryAction, EmojiAction, UndoAction, RedoAction).map {
-            AllActions.indexOf(it)
+            ActionToId[it]
         }.joinToString(separator = ",") {
             "!icon/action_$it|!code/action_$it"
         }
@@ -70,6 +79,16 @@ object ActionRegistry {
             action
         }
     }
+
+    fun parseAction(actionString: String): Int {
+        val action = if(actionString.startsWith(KeyboardCodesSet.ACTION_CODE_PREFIX)) {
+            actionString.substring(KeyboardCodesSet.ACTION_CODE_PREFIX.length)
+        } else {
+            actionString
+        }
+
+        return action.toIntOrNull() ?: ActionIdToInt[action] ?: throw IllegalArgumentException("Unknown action $actionString")
+    }
 }
 
 val DefaultActions = listOf(
@@ -77,7 +96,7 @@ val DefaultActions = listOf(
     TextEditAction,
     UndoAction,
     RedoAction,
-    ClipboardAction,
+    PasteAction,
     SettingsAction,
     ThemeAction,
     MemoryDebugAction,

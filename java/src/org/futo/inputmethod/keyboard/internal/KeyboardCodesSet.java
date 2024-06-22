@@ -20,6 +20,7 @@ import static org.futo.inputmethod.latin.common.Constants.CODE_ACTION_0;
 import static org.futo.inputmethod.latin.common.Constants.CODE_UNSPECIFIED;
 
 import org.futo.inputmethod.latin.common.Constants;
+import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
 
 import java.util.HashMap;
 
@@ -35,7 +36,7 @@ public final class KeyboardCodesSet {
 
     public static int getCode(final String name) {
         if(name.startsWith(ACTION_CODE_PREFIX)) {
-            int id = CODE_ACTION_0 + Integer.parseInt(name.substring(ACTION_CODE_PREFIX.length()));
+            int id = CODE_ACTION_0 + ActionRegistry.INSTANCE.parseAction(name);
             if(id >= CODE_UNSPECIFIED) throw new RuntimeException("Action ID too high!");
             return id;
         }

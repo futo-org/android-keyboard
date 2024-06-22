@@ -24,7 +24,7 @@
     <Key
         latin:keySpec="a"
         latin:keyHintLabel="\@"
-        latin:additionalMoreKeys="\\@"
+        latin:additionalMoreKeys="\\@,!icon/action_select_all|!code/action_select_all"
         latin:moreKeys="!text/morekeys_a" />
     <Key
         latin:keySpec="s"
