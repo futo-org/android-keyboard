@@ -1,6 +1,6 @@
 [submodule "libs"]
 	path = libs
-	url = git@gitlab.futo.org:alex/android-libs.git
+	url = ../android-libs.git
 [submodule "voiceinput-shared/src/main/ml"]
 	path = voiceinput-shared/src/main/ml
-	url = git@gitlab.futo.org:alex/voice-input-models.git
+	url = ../voice-input-models.git
