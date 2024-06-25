@@ -69,6 +69,12 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             icon = painterResource(id = R.drawable.close)
         )
 
+        NavigationItem(
+            title = "Text edit variations",
+            style = NavigationItemStyle.Misc,
+            navigate = { navController.navigate("devtextedit") }
+        )
+
 
         ScreenTitle(title = "Payment stuff")
 

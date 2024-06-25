@@ -198,7 +198,7 @@ fun FileKind.kindTitle(): String {
 
 fun FileKind.icon(): Int {
     return when(this) {
-        FileKind.VoiceInput -> R.drawable.mic_fill
+        FileKind.VoiceInput -> R.drawable.mic
         FileKind.Transformer -> R.drawable.cpu
         FileKind.Dictionary -> R.drawable.book
         FileKind.Invalid -> R.drawable.close
