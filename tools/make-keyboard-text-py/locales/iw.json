@@ -1,0 +1,39 @@
+{
+    "locale": "iw",
+    "morekeys": {
+        "star": [
+            "★"
+        ],
+        "plus": [
+            "±",
+            "﬩"
+        ]
+    },
+    "keyspec": {
+        "left_parenthesis": "(|)",
+        "right_parenthesis": ")|(",
+        "left_square_bracket": "[|]",
+        "right_square_bracket": "]|[",
+        "left_curly_bracket": "{|}",
+        "right_curly_bracket": "}|{",
+        "less_than": "<|>",
+        "greater_than": ">|<",
+        "less_than_equal": "≤|≥",
+        "greater_than_equal": "≥|≤",
+        "left_double_angle_quote": "«|»",
+        "right_double_angle_quote": "»|«",
+        "left_single_angle_quote": "‹|›",
+        "right_single_angle_quote": "›|‹",
+        "currency": "₪"
+    },
+    "label": {},
+    "keylabel": {
+        "to_alpha": "אבג"
+    },
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {
+        "single_quotes": "!text/single_rqm_9qm",
+        "double_quotes": "!text/double_rqm_9qm"
+    }
+}

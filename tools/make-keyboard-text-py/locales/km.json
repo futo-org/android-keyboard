@@ -1,0 +1,21 @@
+{
+    "locale": "km",
+    "morekeys": {
+        "currency_dollar": [
+            "៛",
+            "¢",
+            "£",
+            "€",
+            "¥",
+            "₱"
+        ]
+    },
+    "keyspec": {},
+    "label": {},
+    "keylabel": {
+        "to_alpha": "កខគ"
+    },
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {}
+}

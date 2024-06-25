@@ -62,4 +62,6 @@
          U+010D: "č" LATIN SMALL LETTER C WITH CARON
          U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE -->
     <string name="morekeys_c">&#x00E7;,&#x010D;,&#x0107;</string>
+
+    <string name="keyspec_spanish_row2_10">&#x00E7;</string>
 </resources>

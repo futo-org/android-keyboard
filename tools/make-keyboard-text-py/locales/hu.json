@@ -1,0 +1,62 @@
+{
+    "locale": "hu",
+    "morekeys": {
+        "a": [
+            "á",
+            "à",
+            "â",
+            "ä",
+            "æ",
+            "ã",
+            "å",
+            "ā"
+        ],
+        "e": [
+            "é",
+            "è",
+            "ê",
+            "ë",
+            "ę",
+            "ė",
+            "ē"
+        ],
+        "i": [
+            "í",
+            "î",
+            "ï",
+            "ì",
+            "į",
+            "ī"
+        ],
+        "o": [
+            "ó",
+            "ö",
+            "ő",
+            "ô",
+            "ò",
+            "õ",
+            "œ",
+            "ø",
+            "ō"
+        ],
+        "u": [
+            "ú",
+            "ü",
+            "ű",
+            "û",
+            "ù",
+            "ū"
+        ]
+    },
+    "keyspec": {},
+    "label": {},
+    "keylabel": {},
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {
+        "single_quotes": "!text/single_9qm_rqm",
+        "double_quotes": "!text/double_9qm_rqm",
+        "single_angle_quotes": "!text/single_raqm_laqm",
+        "double_angle_quotes": "!text/double_raqm_laqm"
+    }
+}

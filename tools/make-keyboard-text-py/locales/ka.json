@@ -1,0 +1,15 @@
+{
+    "locale": "ka",
+    "morekeys": {},
+    "keyspec": {},
+    "label": {},
+    "keylabel": {
+        "to_alpha": "აბგ"
+    },
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {
+        "single_quotes": "!text/single_9qm_lqm",
+        "double_quotes": "!text/double_9qm_lqm"
+    }
+}

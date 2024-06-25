@@ -1,0 +1,29 @@
+{
+    "locale": "sr",
+    "morekeys": {
+        "cyrillic_ie": [
+            "ѐ"
+        ],
+        "cyrillic_i": [
+            "ѝ"
+        ]
+    },
+    "keyspec": {
+        "south_slavic_row1_6": "з",
+        "south_slavic_row2_11": "ћ",
+        "south_slavic_row3_1": "ѕ",
+        "south_slavic_row3_8": "ђ"
+    },
+    "label": {},
+    "keylabel": {
+        "to_alpha": "АБВ"
+    },
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {
+        "single_quotes": "!text/single_9qm_lqm",
+        "double_quotes": "!text/double_9qm_lqm",
+        "single_angle_quotes": "!text/single_raqm_laqm",
+        "double_angle_quotes": "!text/double_raqm_laqm"
+    }
+}

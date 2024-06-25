@@ -1,0 +1,42 @@
+{
+    "locale": "ro",
+    "morekeys": {
+        "a": [
+            "ă",
+            "â",
+            "ã",
+            "à",
+            "á",
+            "ä",
+            "æ",
+            "å",
+            "ā"
+        ],
+        "i": [
+            "î",
+            "ï",
+            "ì",
+            "í",
+            "į",
+            "ī"
+        ],
+        "s": [
+            "ș",
+            "ß",
+            "ś",
+            "š"
+        ],
+        "t": [
+            "ț"
+        ]
+    },
+    "keyspec": {},
+    "label": {},
+    "keylabel": {},
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {
+        "single_quotes": "!text/single_9qm_rqm",
+        "double_quotes": "!text/double_9qm_rqm"
+    }
+}

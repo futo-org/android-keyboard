@@ -1,0 +1,21 @@
+{
+    "locale": "hi_ZZ",
+    "morekeys": {},
+    "keyspec": {
+        "currency": "₹"
+    },
+    "label": {
+        "go_key": "Go",
+        "send_key": "Send",
+        "next_key": "Next",
+        "done_key": "Done",
+        "search_key": "Search",
+        "previous_key": "Prev",
+        "pause_key": "Pause",
+        "wait_key": "Wait"
+    },
+    "keylabel": {},
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {}
+}

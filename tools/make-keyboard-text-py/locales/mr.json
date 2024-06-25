@@ -1,0 +1,56 @@
+{
+    "locale": "mr",
+    "morekeys": {},
+    "keyspec": {
+        "symbols_1": "१",
+        "symbols_2": "२",
+        "symbols_3": "३",
+        "symbols_4": "४",
+        "symbols_5": "५",
+        "symbols_6": "६",
+        "symbols_7": "७",
+        "symbols_8": "८",
+        "symbols_9": "९",
+        "symbols_0": "०",
+        "currency": "₹"
+    },
+    "label": {},
+    "keylabel": {
+        "to_alpha": "कखग",
+        "to_symbol": "?१२३"
+    },
+    "keyhintlabel": {},
+    "additional_morekeys": {
+        "symbols_1": [
+            "1"
+        ],
+        "symbols_2": [
+            "2"
+        ],
+        "symbols_3": [
+            "3"
+        ],
+        "symbols_4": [
+            "4"
+        ],
+        "symbols_5": [
+            "5"
+        ],
+        "symbols_6": [
+            "6"
+        ],
+        "symbols_7": [
+            "7"
+        ],
+        "symbols_8": [
+            "8"
+        ],
+        "symbols_9": [
+            "9"
+        ],
+        "symbols_0": [
+            "0"
+        ]
+    },
+    "other": {}
+}

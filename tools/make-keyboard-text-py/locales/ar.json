@@ -1,0 +1,142 @@
+{
+    "locale": "ar",
+    "morekeys": {
+        "period": [
+            "!text/morekeys_arabic_diacritics"
+        ],
+        "tablet_period": [
+            "!text/morekeys_arabic_diacritics"
+        ],
+        "question": [
+            "?",
+            "¿"
+        ],
+        "symbols_semicolon": [
+            ";"
+        ],
+        "symbols_percent": [
+            "\\%",
+            "‰"
+        ],
+        "tablet_comma": [
+            "!fixedColumnOrder!4",
+            ":",
+            "!",
+            "؟",
+            "؛",
+            "-",
+            "\\\"",
+            "\\'"
+        ],
+        "bullet": [
+            "♪"
+        ],
+        "star": [
+            "★",
+            "٭"
+        ],
+        "left_parenthesis": [
+            "!fixedColumnOrder!4",
+            "﴾|﴿",
+            "!text/keyspecs_left_parenthesis_more_keys"
+        ],
+        "right_parenthesis": [
+            "!fixedColumnOrder!4",
+            "﴿|﴾",
+            "!text/keyspecs_right_parenthesis_more_keys"
+        ],
+        "arabic_diacritics": [
+            "!fixedColumnOrder!7",
+            " ٕ|ٕ",
+            " ٔ|ٔ",
+            " ْ|ْ",
+            " ٍ|ٍ",
+            " ٌ|ٌ",
+            " ً|ً",
+            " ّ|ّ",
+            " ٖ|ٖ",
+            " ٰ|ٰ",
+            " ٓ|ٓ",
+            " ِ|ِ",
+            " ُ|ُ",
+            " َ|َ",
+            "ـــ|ـ"
+        ]
+    },
+    "keyspec": {
+        "symbols_1": "١",
+        "symbols_2": "٢",
+        "symbols_3": "٣",
+        "symbols_4": "٤",
+        "symbols_5": "٥",
+        "symbols_6": "٦",
+        "symbols_7": "٧",
+        "symbols_8": "٨",
+        "symbols_9": "٩",
+        "symbols_0": "٠",
+        "comma": "،",
+        "symbols_question": "؟",
+        "symbols_semicolon": "؛",
+        "symbols_percent": "٪",
+        "tablet_comma": "،",
+        "left_parenthesis": "(|)",
+        "right_parenthesis": ")|(",
+        "left_square_bracket": "[|]",
+        "right_square_bracket": "]|[",
+        "left_curly_bracket": "{|}",
+        "right_curly_bracket": "}|{",
+        "less_than": "<|>",
+        "greater_than": ">|<",
+        "less_than_equal": "≤|≥",
+        "greater_than_equal": "≥|≤",
+        "left_double_angle_quote": "«|»",
+        "right_double_angle_quote": "»|«",
+        "left_single_angle_quote": "‹|›",
+        "right_single_angle_quote": "›|‹"
+    },
+    "label": {},
+    "keylabel": {
+        "to_alpha": "أ‌ب‌ج",
+        "to_symbol": "٣٢١؟"
+    },
+    "keyhintlabel": {
+        "period": "ّ",
+        "tablet_period": "ّ",
+        "tablet_comma": "؟"
+    },
+    "additional_morekeys": {
+        "symbols_1": [
+            "1"
+        ],
+        "symbols_2": [
+            "2"
+        ],
+        "symbols_3": [
+            "3"
+        ],
+        "symbols_4": [
+            "4"
+        ],
+        "symbols_5": [
+            "5"
+        ],
+        "symbols_6": [
+            "6"
+        ],
+        "symbols_7": [
+            "7"
+        ],
+        "symbols_8": [
+            "8"
+        ],
+        "symbols_9": [
+            "9"
+        ],
+        "symbols_0": [
+            "0",
+            "٫",
+            "٬"
+        ]
+    },
+    "other": {}
+}

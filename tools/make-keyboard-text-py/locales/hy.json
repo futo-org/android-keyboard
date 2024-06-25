@@ -1,0 +1,48 @@
+{
+    "locale": "hy",
+    "morekeys": {
+        "punctuation": [
+            "!autoColumnOrder!8",
+            "\\",
+            "՞",
+            "՜",
+            ".",
+            "՚",
+            "ՙ",
+            "?",
+            "!",
+            "՝",
+            "՛",
+            "֊",
+            "»",
+            "«",
+            "՟",
+            ";",
+            ":"
+        ],
+        "question": [
+            "՞",
+            "¿"
+        ],
+        "exclamation": [
+            "՜",
+            "¡"
+        ],
+        "tablet_period": [
+            "!text/morekeys_punctuation"
+        ]
+    },
+    "keyspec": {
+        "comma": "՝",
+        "tablet_comma": "՝",
+        "period": "։",
+        "tablet_period": "։"
+    },
+    "label": {},
+    "keylabel": {
+        "to_alpha": "ԱԲԳ"
+    },
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {}
+}

@@ -1,0 +1,319 @@
+{
+    "locale": "DEFAULT",
+    "morekeys": {
+        "a": [],
+        "e": [],
+        "i": [],
+        "o": [],
+        "u": [],
+        "s": [],
+        "n": [],
+        "c": [],
+        "y": [],
+        "d": [],
+        "r": [],
+        "t": [],
+        "z": [],
+        "k": [],
+        "l": [],
+        "g": [],
+        "v": [],
+        "h": [],
+        "j": [],
+        "w": [],
+        "q": [],
+        "x": [],
+        "nordic_row2_10": [],
+        "nordic_row2_11": [],
+        "east_slavic_row2_2": [],
+        "east_slavic_row2_11": [],
+        "cyrillic_u": [],
+        "cyrillic_ka": [],
+        "cyrillic_en": [],
+        "cyrillic_ghe": [],
+        "cyrillic_a": [],
+        "cyrillic_o": [],
+        "cyrillic_i": [],
+        "cyrillic_ie": [],
+        "cyrillic_soft_sign": [],
+        "swiss_row1_11": [],
+        "swiss_row2_10": [],
+        "swiss_row2_11": [],
+        "currency_dollar": [
+            "¢",
+            "£",
+            "€",
+            "¥",
+            "₱"
+        ],
+        "currency_generic": [
+            "$",
+            "¢",
+            "€",
+            "£",
+            "¥",
+            "₱"
+        ],
+        "punctuation": [
+            "?",
+            "!",
+            "\u203d",
+            "\u2026",
+            "_",
+            "\\\\",
+            "|",
+            "="
+        ],
+        "tablet_punctuation": [
+            "?",
+            "!",
+            "\u203d",
+            "\u2026",
+            "_",
+            "\\\\",
+            "|",
+            "="
+        ],
+        "star": [
+            "†",
+            "‡",
+            "★"
+        ],
+        "bullet": [
+            "♪",
+            "♥",
+            "♠",
+            "♦",
+            "♣"
+        ],
+        "plus": [
+            "±"
+        ],
+        "left_parenthesis": [
+            "!fixedColumnOrder!3",
+            "!text/keyspecs_left_parenthesis_more_keys"
+        ],
+        "right_parenthesis": [
+            "!fixedColumnOrder!3",
+            "!text/keyspecs_right_parenthesis_more_keys"
+        ],
+        "less_than": [
+            "!fixedColumnOrder!3",
+            "!text/keyspec_left_single_angle_quote",
+            "!text/keyspec_less_than_equal",
+            "!text/keyspec_left_double_angle_quote"
+        ],
+        "greater_than": [
+            "!fixedColumnOrder!3",
+            "!text/keyspec_right_single_angle_quote",
+            "!text/keyspec_greater_than_equal",
+            "!text/keyspec_right_double_angle_quote"
+        ],
+        "arabic_diacritics": [],
+        "symbols_1": [
+            "¹",
+            "½",
+            "⅓",
+            "¼",
+            "⅛"
+        ],
+        "symbols_2": [
+            "²",
+            "⅔"
+        ],
+        "symbols_3": [
+            "³",
+            "¾",
+            "⅜"
+        ],
+        "symbols_4": [
+            "⁴"
+        ],
+        "symbols_5": [
+            "⅝"
+        ],
+        "symbols_6": [],
+        "symbols_7": [
+            "⅞"
+        ],
+        "symbols_8": [],
+        "symbols_9": [],
+        "symbols_0": [
+            "ⁿ",
+            "∅"
+        ],
+        "tablet_comma": [],
+        "period": [
+            "!text/morekeys_punctuation"
+        ],
+        "tablet_period": [
+            "!text/morekeys_tablet_punctuation"
+        ],
+        "exclamation": [
+            "¡",
+            "‽"
+        ],
+        "question": [
+            "¿"
+        ],
+        "symbols_semicolon": [],
+        "symbols_percent": [
+            "‰"
+        ],
+        "am_pm": [
+            "!fixedColumnOrder!2",
+            "!hasLabels!",
+            "!text/keylabel_time_am",
+            "!text/keylabel_time_pm"
+        ],
+        "popular_domain": [
+            "!hasLabels!",
+            ".net",
+            ".org",
+            ".gov",
+            ".edu"
+        ],
+        "single_quote": [
+            "!fixedColumnOrder!5",
+            "!text/single_quotes",
+            "!text/single_angle_quotes"
+        ],
+        "double_quote": [
+            "!fixedColumnOrder!5",
+            "!text/double_quotes",
+            "!text/double_angle_quotes"
+        ],
+        "tablet_double_quote": [
+            "!fixedColumnOrder!6",
+            "!text/double_quotes",
+            "!text/single_quotes",
+            "!text/double_angle_quotes",
+            "!text/single_angle_quotes"
+        ]
+    },
+    "keyspec": {
+        "q": "q",
+        "w": "w",
+        "y": "y",
+        "x": "x",
+        "nordic_row1_11": "",
+        "nordic_row2_10": "",
+        "nordic_row2_11": "",
+        "east_slavic_row1_9": "",
+        "east_slavic_row2_2": "",
+        "east_slavic_row2_11": "",
+        "east_slavic_row3_5": "",
+        "south_slavic_row1_6": "",
+        "south_slavic_row2_11": "",
+        "south_slavic_row3_1": "",
+        "south_slavic_row3_8": "",
+        "swiss_row1_11": "",
+        "swiss_row2_10": "",
+        "swiss_row2_11": "",
+        "currency": "$",
+        "spanish_row2_10": "ñ",
+        "symbols_1": "1",
+        "symbols_2": "2",
+        "symbols_3": "3",
+        "symbols_4": "4",
+        "symbols_5": "5",
+        "symbols_6": "6",
+        "symbols_7": "7",
+        "symbols_8": "8",
+        "symbols_9": "9",
+        "symbols_0": "0",
+        "left_parenthesis": "(",
+        "right_parenthesis": ")",
+        "left_square_bracket": "[",
+        "right_square_bracket": "]",
+        "left_curly_bracket": "{",
+        "right_curly_bracket": "}",
+        "less_than": "<",
+        "greater_than": ">",
+        "less_than_equal": "≤",
+        "greater_than_equal": "≥",
+        "left_double_angle_quote": "«",
+        "right_double_angle_quote": "»",
+        "left_single_angle_quote": "‹",
+        "right_single_angle_quote": "›",
+        "comma": ",",
+        "tablet_comma": ",",
+        "period": ".",
+        "tablet_period": ".",
+        "symbols_question": "?",
+        "symbols_semicolon": ";",
+        "symbols_percent": "%",
+        "settings": "!icon/settings_key|!code/key_settings",
+        "shortcut": "!icon/shortcut_key|!code/key_shortcut",
+        "action_next": "!hasLabels!,!text/label_next_key|!code/key_action_next",
+        "action_previous": "!hasLabels!,!text/label_previous_key|!code/key_action_previous",
+        "popular_domain": ".com",
+        "emoji_action_key": [
+            "!fixedColumnOrder!4",
+            "!needsDividers!",
+            "!icon/action_switch_language|!code/action_switch_language",
+            "!icon/action_text_edit|!code/action_text_edit",
+            "!icon/action_clipboard_history|!code/action_clipboard_history",
+            "!icon/action_emoji|!code/action_emoji",
+            "!icon/action_undo|!code/action_undo",
+            "!icon/action_redo|!code/action_redo"
+        ]
+    },
+    "label": {
+        "go_key": "!string/label_go_key",
+        "send_key": "!string/label_send_key",
+        "next_key": "!string/label_next_key",
+        "done_key": "!string/label_done_key",
+        "search_key": "!string/label_search_key",
+        "previous_key": "!string/label_previous_key",
+        "pause_key": "!string/label_pause_key",
+        "wait_key": "!string/label_wait_key"
+    },
+    "keylabel": {
+        "to_alpha": "ABC",
+        "to_symbol": "?123",
+        "to_more_symbol": "= \\\\ <",
+        "tablet_to_more_symbol": "~ [ <",
+        "to_phone_numeric": "123",
+        "to_phone_symbols": "＊＃",
+        "time_am": "AM",
+        "time_pm": "PM"
+    },
+    "keyhintlabel": {
+        "tablet_comma": "",
+        "period": "",
+        "tablet_period": ""
+    },
+    "additional_morekeys": {
+        "symbols_1": [],
+        "symbols_2": [],
+        "symbols_3": [],
+        "symbols_4": [],
+        "symbols_5": [],
+        "symbols_6": [],
+        "symbols_7": [],
+        "symbols_8": [],
+        "symbols_9": [],
+        "symbols_0": []
+    },
+    "other": {
+        "single_quotes": "!text/single_lqm_rqm",
+        "double_quotes": "!text/double_lqm_rqm",
+        "single_angle_quotes": "!text/single_laqm_raqm",
+        "double_angle_quotes": "!text/double_laqm_raqm",
+        "keyspecs_left_parenthesis_more_keys": "!text/keyspec_less_than,!text/keyspec_left_curly_bracket,!text/keyspec_left_square_bracket",
+        "keyspecs_right_parenthesis_more_keys": "!text/keyspec_greater_than,!text/keyspec_right_curly_bracket,!text/keyspec_right_square_bracket",
+        "single_laqm_raqm": "!text/keyspec_left_single_angle_quote,!text/keyspec_right_single_angle_quote",
+        "single_raqm_laqm": "!text/keyspec_right_single_angle_quote,!text/keyspec_left_single_angle_quote",
+        "double_laqm_raqm": "!text/keyspec_left_double_angle_quote,!text/keyspec_right_double_angle_quote",
+        "double_raqm_laqm": "!text/keyspec_right_double_angle_quote,!text/keyspec_left_double_angle_quote",
+        "single_lqm_rqm": "‚,‘,’",
+        "single_9qm_lqm": "’,‚,‘",
+        "single_9qm_rqm": "‘,‚,’",
+        "single_rqm_9qm": "‘,’,‚",
+        "double_lqm_rqm": "„,“,”",
+        "double_9qm_lqm": "”,„,“",
+        "double_9qm_rqm": "“,„,”",
+        "double_rqm_9qm": "“,”,„"
+    }
+}

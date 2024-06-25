@@ -1,0 +1,20 @@
+{
+    "locale": "rm",
+    "morekeys": {
+        "o": [
+            "ò",
+            "ó",
+            "ö",
+            "ô",
+            "õ",
+            "œ",
+            "ø"
+        ]
+    },
+    "keyspec": {},
+    "label": {},
+    "keylabel": {},
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {}
+}

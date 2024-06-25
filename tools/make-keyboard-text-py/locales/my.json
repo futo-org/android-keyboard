@@ -1,0 +1,61 @@
+{
+    "locale": "my",
+    "morekeys": {
+        "tablet_comma": [
+            "\\"
+        ],
+        "punctuation": [
+            "!autoColumnOrder!9",
+            "၊",
+            ".",
+            "?",
+            "!",
+            "#",
+            ")",
+            "(",
+            "/",
+            ";",
+            "...",
+            "'",
+            "@",
+            ":",
+            "-",
+            "\\\"",
+            "+",
+            "\\%",
+            "&"
+        ],
+        "tablet_punctuation": [
+            "!autoColumnOrder!8",
+            ".",
+            "'",
+            "#",
+            ")",
+            "(",
+            "/",
+            ";",
+            "@",
+            "...",
+            ":",
+            "-",
+            "\\\"",
+            "+",
+            "\\%",
+            "&"
+        ]
+    },
+    "keyspec": {
+        "tablet_comma": "၊",
+        "tablet_period": "။",
+        "period": "။"
+    },
+    "label": {},
+    "keylabel": {
+        "to_alpha": "ကခဂ"
+    },
+    "keyhintlabel": {
+        "period": "၊"
+    },
+    "additional_morekeys": {},
+    "other": {}
+}

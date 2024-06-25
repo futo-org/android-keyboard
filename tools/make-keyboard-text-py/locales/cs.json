@@ -1,0 +1,95 @@
+{
+    "locale": "cs",
+    "morekeys": {
+        "a": [
+            "á",
+            "à",
+            "â",
+            "ä",
+            "æ",
+            "ã",
+            "å",
+            "ā"
+        ],
+        "e": [
+            "é",
+            "ě",
+            "è",
+            "ê",
+            "ë",
+            "ę",
+            "ė",
+            "ē"
+        ],
+        "i": [
+            "í",
+            "î",
+            "ï",
+            "ì",
+            "į",
+            "ī"
+        ],
+        "o": [
+            "ó",
+            "ö",
+            "ô",
+            "ò",
+            "õ",
+            "œ",
+            "ø",
+            "ō"
+        ],
+        "u": [
+            "ú",
+            "ů",
+            "û",
+            "ü",
+            "ù",
+            "ū"
+        ],
+        "s": [
+            "š",
+            "ß",
+            "ś"
+        ],
+        "n": [
+            "ň",
+            "ñ",
+            "ń"
+        ],
+        "c": [
+            "č",
+            "ç",
+            "ć"
+        ],
+        "y": [
+            "ý",
+            "ÿ"
+        ],
+        "d": [
+            "ď"
+        ],
+        "r": [
+            "ř"
+        ],
+        "t": [
+            "ť"
+        ],
+        "z": [
+            "ž",
+            "ź",
+            "ż"
+        ]
+    },
+    "keyspec": {},
+    "label": {},
+    "keylabel": {},
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {
+        "single_quotes": "!text/single_9qm_lqm",
+        "double_quotes": "!text/double_9qm_lqm",
+        "single_angle_quotes": "!text/single_raqm_laqm",
+        "double_angle_quotes": "!text/double_raqm_laqm"
+    }
+}

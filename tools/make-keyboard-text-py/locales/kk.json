@@ -1,0 +1,49 @@
+{
+    "locale": "kk",
+    "morekeys": {
+        "cyrillic_u": [
+            "ү",
+            "ұ"
+        ],
+        "cyrillic_ka": [
+            "қ"
+        ],
+        "cyrillic_ie": [
+            "ё"
+        ],
+        "cyrillic_en": [
+            "ң"
+        ],
+        "cyrillic_ghe": [
+            "ғ"
+        ],
+        "east_slavic_row2_2": [
+            "і"
+        ],
+        "cyrillic_a": [
+            "ә"
+        ],
+        "cyrillic_o": [
+            "ө"
+        ],
+        "east_slavic_row2_11": [
+            "һ"
+        ],
+        "cyrillic_soft_sign": [
+            "ъ"
+        ]
+    },
+    "keyspec": {
+        "east_slavic_row1_9": "щ",
+        "east_slavic_row2_2": "ы",
+        "east_slavic_row2_11": "э",
+        "east_slavic_row3_5": "и"
+    },
+    "label": {},
+    "keylabel": {
+        "to_alpha": "АБВ"
+    },
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {}
+}
