@@ -16,12 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.Subtypes
+import org.futo.inputmethod.latin.stripExtensionsIfNeeded
 import org.futo.inputmethod.latin.uix.settings.DropDownPicker
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingItem
 
-val QwertyVariants = listOf("qwerty", "qwertz", "dvorak", "azerty", "colemak", "bepo", "pcqwerty")
+val QwertyVariants = listOf("qwerty", "qwertz", "dvorak", "azerty", "colemak", "bepo", "pcqwerty", "nordic")
 
 fun makeQwertyWithPrimary(primary: String): List<String> {
     return listOf(primary) + QwertyVariants.filter { it != primary }
@@ -120,7 +121,7 @@ val LocaleLayoutMap = mapOf(
 fun AddLanguageScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
 
-    val selectedLocale: MutableState<String> = remember { mutableStateOf(context.resources.configuration.locale.toString()) }
+    val selectedLocale: MutableState<String> = remember { mutableStateOf(context.resources.configuration.locale.stripExtensionsIfNeeded().toString()) }
     val selectedLayout: MutableState<String> = remember { mutableStateOf("qwerty") }
 
     val keys = remember { LocaleLayoutMap.keys.toList() }

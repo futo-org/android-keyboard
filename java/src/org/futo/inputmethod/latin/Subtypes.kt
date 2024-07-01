@@ -2,6 +2,8 @@ package org.futo.inputmethod.latin
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
 import android.view.inputmethod.InputMethodSubtype.InputMethodSubtypeBuilder
@@ -45,6 +47,16 @@ import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
 import java.util.Locale
 
+fun Locale.stripExtensionsIfNeeded(): Locale {
+    val newLocale = if(Build.VERSION.SDK_INT >= 26) {
+        this.stripExtensions().stripExtensions() // TODO: Sometimes this requires two calls??
+    } else {
+        this
+    }
+
+    return newLocale
+}
+
 val SubtypesSetting = SettingsKey(
     stringSetPreferencesKey("subtypes"),
     setOf()
@@ -56,16 +68,43 @@ val ActiveSubtype = SettingsKey(
 )
 
 object Subtypes {
+    // Removes extensions from existing existing subtypes which are not meant to be there
+    private fun removeExtensionsIfNecessary(context: Context) {
+        val currentSubtypes = context.getSettingBlocking(SubtypesSetting)
+        if(currentSubtypes.isEmpty()) return
+
+        val newSubtypes = currentSubtypes.map {
+            val subtype = convertToSubtype(it)
+            if(subtype.locale.contains("_#u-")) {
+                subtypeToString(InputMethodSubtypeBuilder()
+                    .setSubtypeLocale(subtype.locale.split("_#u-")[0])
+                    .setSubtypeExtraValue(subtype.extraValue)
+                    .setLanguageTag(subtype.languageTag)
+                    .build())
+            } else {
+                it
+            }
+        }.toSet()
+
+        if(newSubtypes != currentSubtypes) {
+            Log.w("Subtypes", "Removed extensions: $currentSubtypes - $newSubtypes")
+            context.setSettingBlocking(SubtypesSetting.key, newSubtypes)
+        }
+    }
+
     fun addDefaultSubtypesIfNecessary(context: Context) {
         val currentSubtypes = context.getSettingBlocking(SubtypesSetting)
-        if(currentSubtypes.isNotEmpty()) return
+        if(currentSubtypes.isNotEmpty()) {
+            removeExtensionsIfNecessary(context)
+            return
+        }
 
         val locales = context.resources.configuration.locales
         if(locales.size() == 0) return
 
         var numAdded = 0
         for(i in 0 until locales.size()) {
-            val locale = locales.get(i)
+            val locale = locales.get(i).stripExtensionsIfNeeded()
             val layout = findClosestLocaleLayouts(locale).firstOrNull() ?: continue
 
             addLanguage(context, locale, layout)
@@ -139,7 +178,7 @@ object Subtypes {
     fun addLanguage(context: Context, language: Locale, layout: String) {
         val value = subtypeToString(
             InputMethodSubtypeBuilder()
-                .setSubtypeLocale(language.toString())
+                .setSubtypeLocale(language.stripExtensionsIfNeeded().toString())
                 .setSubtypeExtraValue("KeyboardLayoutSet=$layout")
                 .build()
         )
@@ -157,7 +196,7 @@ object Subtypes {
     }
 
     fun getLocale(locale: String): Locale {
-        return Locale.forLanguageTag(locale.replace("_", "-"))
+        return Locale.forLanguageTag(locale.replace("_", "-")).stripExtensionsIfNeeded()
     }
 
     fun getLocale(inputMethodSubtype: InputMethodSubtype): Locale {
