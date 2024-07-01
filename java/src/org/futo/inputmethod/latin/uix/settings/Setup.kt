@@ -114,7 +114,7 @@ fun SetupEnableIME() {
             Step(fraction = 1.0f/3.0f, text = "Setup - Step 1 of 3")
 
             Text(
-                "Welcome to FUTO Keyboard pre-alpha! Please keep in mind things may be rough. This is not a finished product in any way.\n\nFirst, enable FUTO Keyboard as an input method.",
+                "Welcome to FUTO Keyboard alpha! Please keep in mind things may be rough. This is not a finished product in any way.\n\nFirst, enable FUTO Keyboard as an input method.",
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )

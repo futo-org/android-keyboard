@@ -59,7 +59,7 @@
     <string name="disable_emoji">Disable emoji suggestions</string>
     <string name="try_typing">Try typing here…</string>
     <string name="externally_imported_model">Externally imported model</string>
-    <string name="spacebar_default_text">Pre-Alpha</string>
+    <string name="spacebar_default_text">Alpha</string>
 
     <string name="payment_text_1">You\'ve been using FUTO Keyboard for <xliff:g name="days" example="30">%d</xliff:g> days. If you find this app useful, please consider paying to support future development of FUTO software.</string>
     <string name="payment_text_1_alt">Thank you for trying out FUTO Keyboard! If you find this app useful, please consider paying to support future development of FUTO software.</string>
