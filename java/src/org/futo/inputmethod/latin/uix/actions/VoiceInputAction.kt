@@ -217,13 +217,13 @@ private class VoiceInputActionWindow(
     override fun recordingStarted(device: MicrophoneDeviceState) {
         if (shouldPlaySounds) {
             state.soundPlayer.playStartSound()
+        }
 
-            // Only set the setting if bluetooth is available, else it would reset the setting
-            // every time it's used without a bluetooth device connected.
-            if(device.bluetoothAvailable) {
-                manager.getLifecycleScope().launch {
-                    context.setSetting(PREFER_BLUETOOTH, device.bluetoothActive)
-                }
+        // Only set the setting if bluetooth is available, else it would reset the setting
+        // every time it's used without a bluetooth device connected.
+        if(device.bluetoothAvailable) {
+            manager.getLifecycleScope().launch {
+                context.setSetting(PREFER_BLUETOOTH, device.bluetoothActive)
             }
         }
     }
