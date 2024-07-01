@@ -207,7 +207,7 @@ fun SetupEnableMic(onClick: () -> Unit = { }) {
         Column {
             Step(fraction = 0.9f, text = "Setup - Step 3 of 3")
             Text(
-                "Choose whether you want to use built-in voice input, or the system voice input.",
+                "Choose which voice input you'd like to use",
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -218,7 +218,7 @@ fun SetupEnableMic(onClick: () -> Unit = { }) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Use built-in (mic permission needed)")
+                Text("FUTO Keyboard (needs mic permission)")
             }
 
             Button(
@@ -230,7 +230,7 @@ fun SetupEnableMic(onClick: () -> Unit = { }) {
                     .fillMaxWidth()
                     .padding(16.dp, 4.dp)
             ) {
-                Text("Use system")
+                Text("Device Default")
             }
         }
     }
