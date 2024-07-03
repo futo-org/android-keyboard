@@ -10,7 +10,7 @@ Check out the [FUTO Keyboard Wiki](https://gitlab.futo.org/alex/keyboard-wiki/-/
 
 When cloning the repository, you must perform a recursive clone to fetch all dependencies:
 ```
-git clone --recursive https://gitlab.futo.org/alex/latinime.git
+git clone --recursive https://gitlab.futo.org/keyboard/latinime.git
 ```
 
 You can also initialize this way if you forgot to specify the recursive clone:
