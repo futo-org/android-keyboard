@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+
+    <!-- U+0632: "ز" ARABIC LETTER Z
+         U+0636: "ض" ARABIC LETTER THAD   -->
+    <Key latin:keySpec="&#x0632;"
+        latin:moreKeys="&#x0636;"
+        />
+    <!-- U+0624: "خ" ARABIC LETTER XA
+         U+0635: "ص" ARABIC LETTER THAD
+    -->
+    <Key latin:keySpec="&#x062E;"
+         latin:moreKeys="&#x0635;"
+        />
+    <!-- U+0631: "ج" ARABIC LETTER JIM
+         U+0686: "چ" KURDISH LETTER CH -->
+    <Key latin:keySpec="&#x062C;"
+        latin:moreKeys="&#x0686;" />
+
+    <!-- U+0649: "ڤ" KURDISH LETTER V
+         U+0638: "ظ" ARABIC LETTER THA -->
+    <Key
+        latin:keySpec="&#x06A4;"
+        latin:moreKeys="&#x0638;" />
+    <!-- U+0629: "ب" ARABIC LETTER BA
+         U+0649: "ى" ARABIC LETTER YA
+    -->
+    <Key latin:keySpec="&#x0628;"
+        latin:moreKeys="&#x0649;"/>
+    <!-- U+0648: "ن" ARABIC LETTER NUN
+         U+0648: "ة" ARABIC LETTER TA
+    -->
+    <Key latin:keySpec="&#x0646;"
+        latin:moreKeys="&#x0648;"/>
+    <!-- U+0632: "م" ARABIC LETTER MEEM
+         U+0698: "-" SYMBOL Dash -->
+    <Key
+        latin:keySpec="&#x0645;"
+        latin:moreKeys="&#x0640;" />
+
+</merge>

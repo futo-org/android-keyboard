@@ -57,6 +57,7 @@ val LocaleLayoutMap = mapOf(
     "et_EE"  to   makeQwertyWithPrimary("nordic"),
     "eu_ES"  to   makeQwertyWithPrimary("spanish"),
     "fa"     to   listOf("farsi"),
+    "ckb"    to   listOf("kurdish"),
     "fi"     to   makeQwertyWithPrimary("nordic"),
     "fr"     to   makeQwertyWithPrimary("azerty", "swiss"),
     "fr_CA"  to   makeQwertyWithPrimary("qwerty", "swiss"),
