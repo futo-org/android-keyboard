@@ -484,7 +484,11 @@ fun PaymentScreen(
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                Text(stringResource(R.string.pay))
+                if(BuildConfig.IS_PLAYSTORE_BUILD) {
+                    Text(stringResource(R.string.pay_via_google, BuildConfig.PAYMENT_PRICE))
+                } else {
+                    Text(stringResource(R.string.pay, BuildConfig.PAYMENT_PRICE))
+                }
             }
         }
 

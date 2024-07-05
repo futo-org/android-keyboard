@@ -128,6 +128,7 @@ android {
             getIsDefault().set(true)
 
             buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
+            buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
         }
         playstore {
             dimension "buildType"
@@ -137,7 +138,8 @@ android {
             buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "true"
             buildConfigField "boolean", "UPDATE_CHECKING", "false"
 
-            buildConfigField "String", "PAYMENT_URL", "\"\""
+            buildConfigField "String", "PAYMENT_URL", "\"https://play.google.com/store/apps/details?id=org.futo.keyboardpayment\""
+            buildConfigField "String", "PAYMENT_PRICE", "\"~\$11.99\""
         }
     }
 

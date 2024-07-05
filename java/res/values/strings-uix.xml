@@ -71,8 +71,8 @@
     <string name="payment_pending">Payment Pending</string>
     <string name="payment_failed_body">Unfortunately, your payment has failed for one reason or another. Please contact us if you need help. You can reach us at keyboard@futo.org, with the button below, or with Send Feedback in Help</string>
     <string name="payment_failed_body_ex">There may have been a problem with your payment. If it did go through, you should receive an email with a license key. Please contact us if you need help. You can reach us at keyboard@futo.org, with the button below, or with Share Feedback at the main screen.</string>
-    <string name="pay_via_x">Pay via <xliff:g name="paymentMethod" example="Play Store">%s</xliff:g></string>
-    <string name="pay">Pay (about $4.99 + tax)</string>
+    <string name="pay_via_google">Pay via Google Play (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
+    <string name="pay">Pay (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
     <string name="i_already_paid">I already paid</string>
     <string name="i_already_paid_2">I already paid (tap again to confirm)</string>
     <string name="remind_me_in_x">"Remind me in "</string>
