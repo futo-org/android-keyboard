@@ -368,17 +368,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     // shown, but resized to 0 if an action window is open
     @Composable
     internal fun LegacyKeyboardView(hidden: Boolean) {
-        LaunchedEffect(hidden) {
-            if(hidden) {
-                latinIMELegacy.mKeyboardSwitcher.saveKeyboardState()
-            } else {
-                if(pendingRecreateKeyboard) {
-                    pendingRecreateKeyboard = false
-                    recreateKeyboard()
-                }
-            }
-        }
-
         val modifier = if(hidden) {
             Modifier
                 .clipToBounds()
