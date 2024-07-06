@@ -50,6 +50,7 @@ public final class InputAttributes {
      */
     final public boolean mDisableGestureFloatingPreviewText;
     final public boolean mIsGeneralTextInput;
+    final public boolean mNoLearning;
     final private int mInputType;
     final private EditorInfo mEditorInfo;
     final private String mPackageNameForPrivateImeOptions;
@@ -86,6 +87,7 @@ public final class InputAttributes {
             mShouldShowVoiceInputKey = false;
             mDisableGestureFloatingPreviewText = false;
             mIsGeneralTextInput = false;
+            mNoLearning = false;
             return;
         }
         // inputClass == InputType.TYPE_CLASS_TEXT
@@ -147,6 +149,13 @@ public final class InputAttributes {
                 && InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD != variation
                 && InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS != variation
                 && InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD != variation;
+
+        boolean noLearning = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            noLearning = (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
+        }
+
+        mNoLearning = noLearning;
     }
 
     public boolean isTypeNull() {

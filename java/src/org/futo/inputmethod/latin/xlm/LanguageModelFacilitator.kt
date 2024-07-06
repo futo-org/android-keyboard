@@ -550,6 +550,7 @@ public class LanguageModelFacilitator(
     ) {
         if(shouldPassThroughToLegacy()) return
         if(!trainingEnabled) return
+        if(settings.current?.mInputAttributes?.mNoLearning != false) return
 
         val wordCtx = ngramContext.fullContext.trim().lines().last()
         var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
