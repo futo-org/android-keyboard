@@ -32,7 +32,31 @@
             latin:keyboardLayout="@xml/rowkeys_symbols1" />
     </Row>
     <switch>
-        <case latin:numberRow="true"> <Row /> </case>
+        <case latin:numberRow="true">
+            <Row>
+                <Key
+                    latin:keySpec="!text/keyspec_symbols_percent"
+                    latin:moreKeys="!text/morekeys_symbols_percent" />
+                <Key
+                    latin:keySpec="\\\\" />
+                <Key
+                    latin:keySpec="\|" />
+                <Key
+                    latin:keySpec="=" />
+                <Key
+                    latin:keySpec="[" />
+                <Key
+                    latin:keySpec="]" />
+                <Key
+                    latin:keySpec="&#x003C;" />
+                <Key
+                    latin:keySpec="&#x003E;" />
+                <Key
+                    latin:keySpec="{" />
+                <Key
+                    latin:keySpec="}" />
+            </Row>
+        </case>
         <default> </default>
     </switch>
     <Row
