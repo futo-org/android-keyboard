@@ -101,7 +101,7 @@ public final class KeyboardId {
                 ? mEditorInfo.actionLabel.toString() : null;
         mHasShortcutKey = params.mVoiceInputKeyEnabled;
         mIsSplitLayout = params.mIsSplitLayoutEnabled;
-        mNumberRow = params.mNumberRow;
+        mNumberRow = params.mNumberRow || params.mIsPasswordField;
 
         mHashCode = computeHashCode(this);
     }
