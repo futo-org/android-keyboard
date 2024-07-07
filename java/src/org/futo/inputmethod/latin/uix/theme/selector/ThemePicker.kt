@@ -282,39 +282,6 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
                         )
                     }
                 }
-                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                    CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
-                        SettingToggleDataStore(
-                            title = "Show symbol hints",
-                            setting = KeyHintsSetting
-                        )
-                    }
-                }
-
-                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                    CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
-                        SettingSlider(
-                            title = "Keyboard Height",
-                            setting = KeyboardHeightMultiplierSetting,
-                            range = 0.33f..1.75f, transform = { it },
-                            indicator = { "${(it * 100.0f).roundToInt()}%" },
-                            steps = 16
-                        )
-                    }
-                }
-                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                    CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
-                        SettingSlider(
-                            title = "Keyboard Offset",
-                            setting = KeyboardBottomOffsetSetting,
-                            range = 0.0f..50.0f,
-                            hardRange = 0.0f..250.0f,
-                            transform = { it },
-                            indicator = { "${String.format("%.1f", it)} dp" },
-                            steps = 9
-                        )
-                    }
-                }
             }
         }
     }

@@ -16,10 +16,13 @@ def transform_to_texts(locale_data):
 
     texts["locale"] = locale_data["locale"]
 
-    prefixes = ['morekeys_', 'keyspec_', 'label_', 'keylabel_', 'keyhintlabel_', 'additional_morekeys_']
+    prefixes = ['morekeys_', 'keyspec_', 'label_', 'keylabel_', 'keyhintlabel_', 'additional_morekeys_', 'qwertysyms_', 'actions_']
 
     for prefix in prefixes:
-        for k, v in locale_data[prefix.rstrip("_")].items():
+        key = prefix.rstrip("_")
+        if key not in locale_data: continue
+
+        for k, v in locale_data[key].items():
             if isinstance(v, list):
                 texts[prefix + k] = ",".join(v)
             else:

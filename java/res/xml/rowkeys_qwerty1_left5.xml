@@ -23,27 +23,17 @@
 >
     <Key
         latin:keySpec="!text/keyspec_q"
-        latin:keyHintLabel="1"
-        latin:additionalMoreKeys="1,\\%"
-        latin:moreKeys="!text/morekeys_q" />
+        latin:moreKeys="!text/morekeys_q,!text/qwertysyms_q,!text/number_1,!text/actions_q" />
     <Key
         latin:keySpec="!text/keyspec_w"
-        latin:keyHintLabel="2"
-        latin:additionalMoreKeys="2,\\\\"
-        latin:moreKeys="!text/morekeys_w" />
+        latin:moreKeys="!text/morekeys_w,!text/qwertysyms_w,!text/number_2,!text/actions_w" />
     <Key
         latin:keySpec="e"
-        latin:keyHintLabel="3"
-        latin:additionalMoreKeys="3,|"
-        latin:moreKeys="!text/morekeys_e" />
+        latin:moreKeys="!text/morekeys_e,!text/morekeys_misc_e,!text/qwertysyms_e,!text/number_3,!text/actions_e" />
     <Key
         latin:keySpec="r"
-        latin:keyHintLabel="4"
-        latin:additionalMoreKeys="4,="
-        latin:moreKeys="!text/morekeys_r" />
+        latin:moreKeys="!text/morekeys_r,!text/qwertysyms_r,!text/number_4,!text/actions_r" />
     <Key
         latin:keySpec="t"
-        latin:keyHintLabel="5"
-        latin:additionalMoreKeys="5,!text/keyspec_left_square_bracket"
-        latin:moreKeys="!text/morekeys_t" />
+        latin:moreKeys="!text/morekeys_t,!text/qwertysyms_t,!text/number_5,!text/actions_t" />
 </merge>

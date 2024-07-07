@@ -64,32 +64,43 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             )
 
             NavigationItem(
-                title = "Predictive Text",
+                title = "Keyboard & Typing",
                 style = NavigationItemStyle.HomeSecondary,
-                navigate = { navController.navigate("predictiveText") },
-                icon = painterResource(id = R.drawable.shift)
+                navigate = { navController.navigate("typing") },
+                icon = painterResource(id = R.drawable.keyboard)
             )
 
             NavigationItem(
-                title = "Typing Preferences",
-                style = NavigationItemStyle.HomeSecondary,
-                navigate = { navController.navigate("typing") },
-                icon = painterResource(id = R.drawable.delete)
+                title = "Text Prediction",
+                style = NavigationItemStyle.HomeTertiary,
+                navigate = { navController.navigate("predictiveText") },
+                icon = painterResource(id = R.drawable.text_prediction)
             )
 
             NavigationItem(
                 title = "Voice Input",
-                style = NavigationItemStyle.HomeSecondary,
+                style = NavigationItemStyle.HomePrimary,
                 subtitle = if(useDataStoreValueBlocking(USE_SYSTEM_VOICE_INPUT)) { "Built-in voice input is disabled!" } else { null },
                 navigate = { navController.navigate("voiceInput") },
                 icon = painterResource(id = R.drawable.mic_fill)
             )
 
             NavigationItem(
+                title = stringResource(R.string.edit_personal_dictionary),
+                style = NavigationItemStyle.HomeSecondary,
+                icon = painterResource(id = R.drawable.book),
+                navigate = {
+                    val intent = Intent("android.settings.USER_DICTIONARY_SETTINGS")
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(intent)
+                }
+            )
+
+            NavigationItem(
                 title = "Theme",
                 style = NavigationItemStyle.HomeTertiary,
                 navigate = { navController.navigate("themes") },
-                icon = painterResource(id = R.drawable.eye)
+                icon = painterResource(id = R.drawable.themes)
             )
 
             if(!isPaid) {
@@ -103,7 +114,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
             NavigationItem(
                 title = "Help & Feedback",
-                style = NavigationItemStyle.HomePrimary,
+                style = NavigationItemStyle.HomeSecondary,
                 navigate = { navController.navigate("help") },
                 icon = painterResource(id = R.drawable.help_circle)
             )
@@ -111,7 +122,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             if(isDeveloper || LocalInspectionMode.current) {
                 NavigationItem(
                     title = "Developer Settings",
-                    style = NavigationItemStyle.HomeSecondary,
+                    style = NavigationItemStyle.HomeTertiary,
                     navigate = { navController.navigate("developer") },
                     icon = painterResource(id = R.drawable.code)
                 )

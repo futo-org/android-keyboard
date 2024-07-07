@@ -42,7 +42,7 @@
     <key-style
         latin:styleName="baseForShiftKeyStyle"
         latin:keyActionFlags="noKeyPreview"
-        latin:keyLabelFlags="preserveCase"
+        latin:keyLabelFlags="preserveCase|disableKeyHintLabel"
         latin:moreKeys="!noPanelAutoMoreKey!, |!code/key_capslock" />
     <switch>
         <case
@@ -75,6 +75,7 @@
         latin:styleName="deleteKeyStyle"
         latin:keySpec="!icon/delete_key|!code/key_delete"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
+        latin:keyLabelFlags="disableKeyHintLabel"
         latin:backgroundType="functional" />
     <!-- emojiKeyStyle must be defined before including @xml/key_syles_enter. -->
     <key-style
@@ -89,6 +90,7 @@
         latin:styleName="spaceKeyStyle"
         latin:keySpec="!icon/space_key|!code/key_space"
         latin:backgroundType="spacebar"
+        latin:keyLabelFlags="disableKeyHintLabel"
         latin:keyActionFlags="noKeyPreview|enableLongPress" />
     <!-- U+200C: ZERO WIDTH NON-JOINER
          U+200D: ZERO WIDTH JOINER -->

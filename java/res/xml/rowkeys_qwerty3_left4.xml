@@ -23,22 +23,14 @@
 >
     <Key
         latin:keySpec="z"
-        latin:keyHintLabel="*"
-        latin:additionalMoreKeys="*,!icon/action_undo|!code/action_undo"
-        latin:moreKeys="!text/morekeys_z" />
+        latin:moreKeys="!text/morekeys_z,!text/qwertysyms_z,!text/actions_z" />
     <Key
         latin:keySpec="!text/keyspec_x"
-        latin:keyHintLabel="&quot;"
-        latin:additionalMoreKeys="&quot;,!icon/action_cut|!code/action_cut"
-        latin:moreKeys="!text/morekeys_x" />
+        latin:moreKeys="!text/morekeys_x,!text/qwertysyms_x,!text/actions_x" />
     <Key
         latin:keySpec="c"
-        latin:keyHintLabel="'"
-        latin:additionalMoreKeys="',!icon/action_copy|!code/action_copy"
-        latin:moreKeys="!text/morekeys_c" />
+        latin:moreKeys="!text/morekeys_c,!text/morekeys_misc_c,!text/qwertysyms_c,!text/actions_c" />
     <Key
         latin:keySpec="v"
-        latin:keyHintLabel=":"
-        latin:additionalMoreKeys=":,!icon/action_paste|!code/action_paste"
-        latin:moreKeys="!text/morekeys_v" />
+        latin:moreKeys="!text/morekeys_v,!text/qwertysyms_v,!text/actions_v" />
 </merge>

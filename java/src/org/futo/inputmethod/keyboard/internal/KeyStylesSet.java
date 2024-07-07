@@ -28,6 +28,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,14 +60,14 @@ public final class KeyStylesSet {
 
         @Override
         @Nullable
-        public String[] getStringArray(final TypedArray a, final int index) {
-            return parseStringArray(a, index);
+        public String[] getStringArray(final TypedArray a, final int index, Function<String, String> stringMutator) {
+            return parseStringArray(a, index, stringMutator);
         }
 
         @Override
         @Nullable
-        public String getString(final TypedArray a, final int index) {
-            return parseString(a, index);
+        public String getString(final TypedArray a, final int index, Function<String, String> stringMutator) {
+            return parseString(a, index, stringMutator);
         }
 
         @Override
@@ -95,9 +96,9 @@ public final class KeyStylesSet {
 
         @Override
         @Nullable
-        public String[] getStringArray(final TypedArray a, final int index) {
+        public String[] getStringArray(final TypedArray a, final int index, Function<String, String> stringMutator) {
             if (a.hasValue(index)) {
-                return parseStringArray(a, index);
+                return parseStringArray(a, index, stringMutator);
             }
             final Object value = mStyleAttributes.get(index);
             if (value != null) {
@@ -105,21 +106,21 @@ public final class KeyStylesSet {
                 return Arrays.copyOf(array, array.length);
             }
             final KeyStyle parentStyle = mStyles.get(mParentStyleName);
-            return parentStyle.getStringArray(a, index);
+            return parentStyle.getStringArray(a, index, stringMutator);
         }
 
         @Override
         @Nullable
-        public String getString(final TypedArray a, final int index) {
+        public String getString(final TypedArray a, final int index, Function<String, String> stringMutator) {
             if (a.hasValue(index)) {
-                return parseString(a, index);
+                return parseString(a, index, stringMutator);
             }
             final Object value = mStyleAttributes.get(index);
             if (value != null) {
                 return (String)value;
             }
             final KeyStyle parentStyle = mStyles.get(mParentStyleName);
-            return parentStyle.getString(a, index);
+            return parentStyle.getString(a, index, stringMutator);
         }
 
         @Override
@@ -159,7 +160,7 @@ public final class KeyStylesSet {
 
         private void readString(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
-                mStyleAttributes.put(index, parseString(a, index));
+                mStyleAttributes.put(index, parseString(a, index, null));
             }
         }
 
@@ -179,7 +180,7 @@ public final class KeyStylesSet {
 
         private void readStringArray(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
-                mStyleAttributes.put(index, parseStringArray(a, index));
+                mStyleAttributes.put(index, parseStringArray(a, index, null));
             }
         }
     }

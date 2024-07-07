@@ -18,14 +18,16 @@ package org.futo.inputmethod.keyboard.internal;
 
 import android.content.res.TypedArray;
 
+import java.util.function.Function;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class KeyStyle {
     private final KeyboardTextsSet mTextsSet;
 
-    public abstract @Nullable String[] getStringArray(TypedArray a, int index);
-    public abstract @Nullable String getString(TypedArray a, int index);
+    public abstract @Nullable String[] getStringArray(TypedArray a, int index, Function<String, String> stringMutator);
+    public abstract @Nullable String getString(TypedArray a, int index, Function<String, String> stringMutator);
     public abstract int getInt(TypedArray a, int index, int defaultValue);
     public abstract int getFlags(TypedArray a, int index);
 
@@ -34,17 +36,23 @@ public abstract class KeyStyle {
     }
 
     @Nullable
-    protected String parseString(final TypedArray a, final int index) {
+    protected String parseString(final TypedArray a, final int index, Function<String, String> stringMutator) {
         if (a.hasValue(index)) {
-            return mTextsSet.resolveTextReference(a.getString(index));
+            String s = a.getString(index);
+            if(stringMutator != null) s = stringMutator.apply(s);
+
+            return mTextsSet.resolveTextReference(s);
         }
         return null;
     }
 
     @Nullable
-    protected String[] parseStringArray(final TypedArray a, final int index) {
+    protected String[] parseStringArray(final TypedArray a, final int index, Function<String, String> stringMutator) {
         if (a.hasValue(index)) {
-            final String text = mTextsSet.resolveTextReference(a.getString(index));
+            String s = a.getString(index);
+            if(stringMutator != null) s = stringMutator.apply(s);
+
+            final String text = mTextsSet.resolveTextReference(s);
             return MoreKeySpec.splitKeySpecs(text);
         }
         return null;

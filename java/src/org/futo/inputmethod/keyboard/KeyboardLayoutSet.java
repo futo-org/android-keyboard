@@ -39,7 +39,7 @@ import org.futo.inputmethod.keyboard.internal.UniqueKeysCache;
 import org.futo.inputmethod.latin.InputAttributes;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
-import org.futo.inputmethod.latin.define.DebugFlags;
+import org.futo.inputmethod.latin.settings.LongPressKeySettings;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 import org.futo.inputmethod.latin.utils.ScriptUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -136,6 +136,8 @@ public final class KeyboardLayoutSet {
                 new SparseArray<>();
 
         boolean mNumberRow;
+
+        LongPressKeySettings mLongPressKeySettings;
     }
 
     public static void onSystemLocaleChanged() {
@@ -271,6 +273,8 @@ public final class KeyboardLayoutSet {
             mPackageName = context.getPackageName();
             mResources = context.getResources();
             final Params params = mParams;
+
+            params.mLongPressKeySettings = new LongPressKeySettings(context);
 
             final EditorInfo editorInfo = (ei != null) ? ei : EMPTY_EDITOR_INFO;
             params.mMode = getKeyboardMode(editorInfo);

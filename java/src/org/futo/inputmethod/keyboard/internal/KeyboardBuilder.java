@@ -512,7 +512,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         final TypedArray keyAttr = mResources.obtainAttributes(
                 Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
         final KeyStyle keyStyle = mParams.mKeyStyles.getKeyStyle(keyAttr, parser);
-        final String keySpec = keyStyle.getString(keyAttr, R.styleable.Keyboard_Key_keySpec);
+        final String keySpec = keyStyle.getString(keyAttr, R.styleable.Keyboard_Key_keySpec, null);
         if (TextUtils.isEmpty(keySpec)) {
             throw new ParseException("Empty keySpec", parser);
         }

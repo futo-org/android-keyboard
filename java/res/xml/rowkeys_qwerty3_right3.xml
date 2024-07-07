@@ -23,15 +23,11 @@
 >
     <Key
         latin:keySpec="b"
-        latin:keyHintLabel=";"
-        latin:additionalMoreKeys=";" />
+        latin:moreKeys="!text/morekeys_b,!text/qwertysyms_b,!text/actions_b" />
     <Key
         latin:keySpec="n"
-        latin:keyHintLabel="!"
-        latin:additionalMoreKeys="!"
-        latin:moreKeys="!text/morekeys_n" />
+        latin:moreKeys="!text/morekeys_n,!text/morekeys_misc_n,!text/qwertysyms_n,!text/actions_n" />
     <Key
         latin:keySpec="m"
-        latin:keyHintLabel="\?"
-        latin:additionalMoreKeys="\?,/" />
+        latin:moreKeys="!text/morekeys_m,!text/qwertysyms_m,!text/actions_m" />
 </merge>

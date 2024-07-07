@@ -327,7 +327,7 @@ class UixManager(private val latinIME: LatinIME) {
             persistentStates[action] = action.persistentState?.let { it(keyboardManagerForAction) }
         }
 
-        currWindowActionWindow = action.windowImpl?.let { it(keyboardManagerForAction, persistentStates[action]) }
+        currWindowActionWindow = (action.windowImpl!!)(keyboardManagerForAction, persistentStates[action])
 
         if(action.keepScreenAwake) {
             latinIME.window.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

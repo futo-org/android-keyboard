@@ -24,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 
 import org.futo.inputmethod.compat.EditorInfoCompatUtils;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
+import org.futo.inputmethod.latin.settings.LongPressKeySettings;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 
 import java.util.Arrays;
@@ -84,6 +85,7 @@ public final class KeyboardId {
     public final boolean mHasShortcutKey;
     public final boolean mIsSplitLayout;
     public final boolean mNumberRow;
+    public final LongPressKeySettings mLongPressKeySettings;
 
     private final int mHashCode;
 
@@ -102,6 +104,7 @@ public final class KeyboardId {
         mHasShortcutKey = params.mVoiceInputKeyEnabled;
         mIsSplitLayout = params.mIsSplitLayoutEnabled;
         mNumberRow = params.mNumberRow || params.mIsPasswordField;
+        mLongPressKeySettings = params.mLongPressKeySettings;
 
         mHashCode = computeHashCode(this);
     }
@@ -124,7 +127,8 @@ public final class KeyboardId {
                 id.navigatePrevious(),
                 id.mSubtype,
                 id.mIsSplitLayout,
-                id.mNumberRow
+                id.mNumberRow,
+                id.mLongPressKeySettings.hashCode()
         });
     }
 
@@ -147,7 +151,8 @@ public final class KeyboardId {
                 && other.navigatePrevious() == navigatePrevious()
                 && other.mSubtype.equals(mSubtype)
                 && other.mIsSplitLayout == mIsSplitLayout
-                && other.mNumberRow == mNumberRow;
+                && other.mNumberRow == mNumberRow
+                && other.mLongPressKeySettings.equals(mLongPressKeySettings);
     }
 
     private static boolean isAlphabetKeyboard(final int elementId) {

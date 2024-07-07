@@ -136,6 +136,7 @@ val dismissedMigrateUpdateNotice = SettingsKey(
 @Composable
 @Preview
 fun ConditionalMigrateUpdateNotice() {
+    if(LocalInspectionMode.current) { return }
     val context = LocalContext.current
     val value = useDataStore(dismissedMigrateUpdateNotice, blocking = true)
     if(!value.value) {

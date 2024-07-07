@@ -465,11 +465,11 @@ fun SettingSliderSharedPrefsInt(
 }
 
 @Composable
-fun ScrollableList(content: @Composable () -> Unit) {
+fun ScrollableList(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {

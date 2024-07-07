@@ -24,9 +24,9 @@ import org.futo.inputmethod.latin.uix.settings.pages.PaymentScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentThankYouScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
-import org.futo.inputmethod.latin.uix.settings.pages.TypingScreen
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputScreen
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
+import org.futo.inputmethod.latin.uix.settings.pages.addTypingNavigation
 import org.futo.inputmethod.latin.uix.urlDecode
 import org.futo.inputmethod.latin.uix.urlEncode
 
@@ -54,7 +54,7 @@ fun SettingsNavigator(
         composable("addLanguage") { AddLanguageScreen(navController) }
         composable("predictiveText") { PredictiveTextScreen(navController) }
         composable("advancedparams") { AdvancedParametersScreen(navController) }
-        composable("typing") { TypingScreen(navController) }
+        addTypingNavigation(navController)
         composable("voiceInput") { VoiceInputScreen(navController) }
         composable("themes") { ThemeScreen(navController) }
         composable("help") { HelpScreen(navController) }

@@ -60,6 +60,7 @@ public class Key implements Comparable<Key> {
     private final String mLabel;
     /** Hint label to display on the key in conjunction with the label */
     private final String mHintLabel;
+    private final String mHintIconId;
     /** Flags of the label */
     private final int mLabelFlags;
     private static final int LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM = 0x02;
@@ -215,6 +216,7 @@ public class Key implements Comparable<Key> {
         mHorizontalGap = horizontalGap;
         mVerticalGap = verticalGap;
         mHintLabel = hintLabel;
+        mHintIconId = ICON_UNDEFINED;
         mLabelFlags = labelFlags;
         mBackgroundType = backgroundType;
         // TODO: Pass keyActionFlags as an argument.
@@ -287,7 +289,8 @@ public class Key implements Comparable<Key> {
         final boolean needsToUpcase = needsToUpcase(mLabelFlags, params.mId.mElementId);
         final Locale localeForUpcasing = params.mId.getLocale();
         int actionFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
-        String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
+
+        String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys, s -> params.mId.mLongPressKeySettings.reorderMoreKeys(s));
 
         // Get maximum column order number and set a relevant mode value.
         int moreKeysColumnAndFlags = MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER
@@ -320,7 +323,7 @@ public class Key implements Comparable<Key> {
             additionalMoreKeys = null;
         } else {
             additionalMoreKeys = style.getStringArray(keyAttr,
-                    R.styleable.Keyboard_Key_additionalMoreKeys);
+                    R.styleable.Keyboard_Key_additionalMoreKeys, null);
         }
         moreKeys = MoreKeySpec.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
 
@@ -357,28 +360,31 @@ public class Key implements Comparable<Key> {
                     ? StringUtils.toTitleCaseOfKeyLabel(label, localeForUpcasing)
                     : label;
         }
+
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
             mHintLabel = null;
+            mHintIconId = null;
         } else {
-            String hintLabel = style.getString(
-                    keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
-
-            if(params.mId.mNumberRow && hintLabel != null && hintLabel.matches("\\d+")) {
-                hintLabel = "";
-            }
+            String hintLabel = null;
+            String hintIcon = null;
 
             if(moreKeys != null && moreKeys.length > 0) {
                 String hintLabelCandidate = moreKeys[0];
                 if(hintLabelCandidate.startsWith("\\")) hintLabelCandidate = hintLabelCandidate.substring(1);
 
                 if(hintLabelCandidate.length() == 1) {
-                    hintLabel = hintLabelCandidate;
+                    hintLabel = needsToUpcase
+                            ? StringUtils.toTitleCaseOfKeyLabel(hintLabelCandidate, localeForUpcasing)
+                            : hintLabelCandidate;
+                } else if(hintLabelCandidate.contains("!icon/")) {
+                    hintIcon = KeySpecParser.getIconId(hintLabelCandidate);
                 }
             }
-            mHintLabel = needsToUpcase
-                    ? StringUtils.toTitleCaseOfKeyLabel(hintLabel, localeForUpcasing)
-                    : hintLabel;
+
+            mHintLabel = hintLabel;
+            mHintIconId = hintIcon;
         }
+
         String outputText = KeySpecParser.getOutputText(keySpec);
         if (needsToUpcase) {
             outputText = StringUtils.toTitleCaseOfKeyLabel(outputText, localeForUpcasing);
@@ -412,7 +418,7 @@ public class Key implements Comparable<Key> {
                     : code;
         }
         final int altCodeInAttr = KeySpecParser.parseCode(
-                style.getString(keyAttr, R.styleable.Keyboard_Key_altCode), CODE_UNSPECIFIED);
+                style.getString(keyAttr, R.styleable.Keyboard_Key_altCode, null), CODE_UNSPECIFIED);
         final int altCode = needsToUpcase
                 ? StringUtils.toTitleCaseOfKeyCode(altCodeInAttr, localeForUpcasing)
                 : altCodeInAttr;
@@ -435,6 +441,7 @@ public class Key implements Comparable<Key> {
         mCode = key.mCode;
         mLabel = key.mLabel;
         mHintLabel = key.mHintLabel;
+        mHintIconId = key.mHintIconId;
         mLabelFlags = key.mLabelFlags;
         mIconId = key.mIconId;
         mWidth = key.mWidth;
@@ -487,6 +494,7 @@ public class Key implements Comparable<Key> {
                 key.mCode,
                 key.mLabel,
                 key.mHintLabel,
+                key.mHintIconId,
                 key.mIconId,
                 key.mBackgroundType,
                 Arrays.hashCode(key.mMoreKeys),
@@ -514,6 +522,7 @@ public class Key implements Comparable<Key> {
                 && o.mCode == mCode
                 && TextUtils.equals(o.mLabel, mLabel)
                 && TextUtils.equals(o.mHintLabel, mHintLabel)
+                && TextUtils.equals(o.mHintIconId, mHintIconId)
                 && o.mIconId == mIconId
                 && o.mBackgroundType == mBackgroundType
                 && Arrays.equals(o.mMoreKeys, mMoreKeys)
@@ -586,6 +595,11 @@ public class Key implements Comparable<Key> {
     @Nullable
     public String getHintLabel() {
         return mHintLabel;
+    }
+
+    @Nullable
+    public String getHintIconId() {
+        return mHintIconId;
     }
 
     @Nullable
@@ -833,6 +847,19 @@ public class Key implements Comparable<Key> {
     public Drawable getIcon(final KeyboardIconsSet iconSet, final int alpha) {
         final OptionalAttributes attrs = mOptionalAttributes;
         final String iconId = getIconId();
+        final Drawable icon = iconSet.getIconDrawable(iconId);
+        if (icon != null) {
+            icon.setAlpha(alpha);
+        }
+        return icon;
+    }
+
+    @Nullable
+    public Drawable getHintIcon(final KeyboardIconsSet iconSet, final int alpha) {
+        final OptionalAttributes attrs = mOptionalAttributes;
+        final String iconId = getHintIconId();
+        if(iconId == null) return null;
+
         final Drawable icon = iconSet.getIconDrawable(iconId);
         if (icon != null) {
             icon.setAlpha(alpha);

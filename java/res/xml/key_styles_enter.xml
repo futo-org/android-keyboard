@@ -217,7 +217,7 @@
             <key-style
                 latin:styleName="defaultEnterKeyStyle"
                 latin:keySpec="!icon/enter_key|!code/key_enter"
-                latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor"
+                latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor|disableKeyHintLabel"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action"
                 latin:parentStyle="navigateMoreKeysStyle" />
@@ -227,7 +227,7 @@
             <key-style
                 latin:styleName="defaultEnterKeyStyle"
                 latin:keySpec="!icon/enter_key|!code/key_enter"
-                latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor"
+                latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor|disableKeyHintLabel"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action"
                 latin:parentStyle="navigateMoreKeysStyle" />

@@ -142,9 +142,15 @@ public class KeyboardView extends View {
                 R.styleable.Keyboard_Key, defStyle, R.style.KeyboardView);
 
         assert(context instanceof ContextThemeWrapper);
-        assert(((ContextThemeWrapper) context).getBaseContext() instanceof DynamicThemeProviderOwner);
 
-        mDrawableProvider = ((DynamicThemeProviderOwner) ((ContextThemeWrapper) context).getBaseContext()).getDrawableProvider();
+        if(((ContextThemeWrapper) context).getBaseContext() instanceof DynamicThemeProviderOwner) {
+            mDrawableProvider = ((DynamicThemeProviderOwner) ((ContextThemeWrapper) context).getBaseContext()).getDrawableProvider();
+        } else if(context instanceof DynamicThemeProviderOwner) {
+            mDrawableProvider = ((DynamicThemeProviderOwner) context).getDrawableProvider();
+        } else {
+            throw new IllegalStateException("Failed to obtain DynamicThemeProvider");
+        }
+
 
         boolean isMoreKeys = keyAttr.getBoolean(R.styleable.Keyboard_Key_isMoreKey, false);
         boolean isMoreKeysAction = keyAttr.getBoolean(R.styleable.Keyboard_Key_isAction, false);
@@ -419,6 +425,8 @@ public class KeyboardView extends View {
         final Keyboard keyboard = getKeyboard();
         final Drawable icon = (keyboard == null) ? null
                 : key.getIcon(keyboard.mIconsSet, params.mAnimAlpha);
+        final Drawable hintIcon = (keyboard == null) ? null
+                : key.getHintIcon(keyboard.mIconsSet, params.mAnimAlpha);
         float labelX = centerX;
         float labelBaseline = centerY;
         final String label = key.getLabel();
@@ -510,6 +518,17 @@ public class KeyboardView extends View {
             final float adjustmentY = params.mHintLabelVerticalAdjustment * labelCharHeight;
             canvas.drawText(
                     hintLabel, 0, hintLabel.length(), hintX, hintBaseline + adjustmentY, paint);
+        } else if(hintIcon != null) {
+            final float size = key.selectHintTextSize(params);
+
+            int iconWidth = (int)size;
+            int iconHeight = (int)size;
+
+            int hintX = keyWidth - iconWidth - (int)mKeyHintLetterPadding;
+            int hintY = (int)mKeyHintLetterPadding;
+
+            hintIcon.setTint(key.selectHintTextColor(params));
+            drawIcon(canvas, hintIcon, hintX, hintY, iconWidth, iconHeight);
         }
 
         // Draw key icon.

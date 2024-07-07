@@ -30,11 +30,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.futo.inputmethod.latin.uix.BasicThemeProvider
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider
+import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.ImportResourceActivity
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
@@ -76,7 +80,7 @@ public const val IMPORT_GGUF_MODEL_REQUEST = 71067309
 public const val EXPORT_GGUF_MODEL_REQUEST = 80595439
 
 
-class SettingsActivity : ComponentActivity() {
+class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
     private val themeOption: MutableState<ThemeOption?> = mutableStateOf(null)
 
     private val inputMethodEnabled = mutableStateOf(false)
@@ -181,6 +185,23 @@ class SettingsActivity : ComponentActivity() {
             checkForUpdateAndSaveToPreferences(applicationContext)
         }
 
+        lifecycleScope.launch {
+            getSettingFlow(THEME_KEY).collect {
+                val themeOptionFromSettings = ThemeOptions[it]
+                val themeOption = when {
+                    themeOptionFromSettings == null -> VoiceInputTheme
+                    !themeOptionFromSettings.available(this@SettingsActivity) -> VoiceInputTheme
+                    else -> themeOptionFromSettings
+                }
+
+                this@SettingsActivity.themeOption.value = themeOption
+                this@SettingsActivity.themeProvider = BasicThemeProvider(
+                    context = this@SettingsActivity,
+                    overrideColorScheme = themeOption.obtainColors(this@SettingsActivity)
+                )
+            }
+        }
+
         deferGetSetting(THEME_KEY) {
             val themeOptionFromSettings = ThemeOptions[it]
             val themeOption = when {
@@ -251,5 +272,11 @@ class SettingsActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    // Provides theme for keyboard preview
+    private var themeProvider: BasicThemeProvider? = null
+    override fun getDrawableProvider(): DynamicThemeProvider {
+        return themeProvider!!
     }
 }
