@@ -45,6 +45,14 @@
                 latin:keySpec="\@"
                 latin:keyStyle="settingsMoreKeysStyle" />
         </case>
+        <case
+            latin:keyboardLayoutSet="kurdish|arabic|farsi"
+            >
+            <Key
+                latin:keySpec="&#x060C;"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:keyStyle="settingsMoreKeysStyle" />
+        </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_comma"

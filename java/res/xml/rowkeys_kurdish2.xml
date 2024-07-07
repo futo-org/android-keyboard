@@ -19,8 +19,13 @@
 -->
 
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+    <case
+        latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
+        >
     <!-- U+x0627: "ا" ARABIC LETTER ALF
          U+x0622: "آ" ARABIC LETTER ALF WITH SHADA  -->
+
     <Key
         latin:keySpec="&#x0627;"
         latin:moreKeys="&#x0622;" />
@@ -65,6 +70,54 @@
           U+06B5: "ل" KURDISH LETTER LAA  -->
     <Key latin:keySpec="&#x0644;"
         latin:moreKeys="&#x06B5;" />
+    </case>
+        <default>
+            <!-- swap keyspec with morekeys -->
+            <!-- U+x0622: "آ" ARABIC LETTER ALF WITH SHADA
+                 U+x0627: "ا" ARABIC LETTER ALF  -->
+            <Key
+                latin:keySpec="&#x0622;"
+                latin:moreKeys="&#x0627;" />
+            <!-- U+0634: "ش" ARABIC LETTER SHA
+                 U+0633: "س" ARABIC LETTER SEEN -->
+            <Key latin:keySpec="&#x0634;"
+                latin:moreKeys="&#x0633;"
+                />
+            <!-- U+0630: "ذ" ARABIC LETTER THAL
+                 U+062F: "د" ARABIC LETTER DAL -->
+            <Key
+                latin:keySpec="&#x0630;"
+                latin:moreKeys="&#x062F;" />
+            <!-- U+0625: "إ" ARABIC LETTER ALF WITH KASRA
+                 U+0641: "ف" ARABIC LETTER FAH -->
+            <Key
+                latin:keySpec="&#x0625;"
+                latin:moreKeys="&#x0641;" />
+            <!-- U+063A: "غ" ARABIC LETTER GH
+                 U+06AF: "گ" KURDISH LETTER G -->
+            <Key
+                latin:keySpec="&#x063A;"
+                latin:moreKeys="&#x06AF;" />
+            <!-- U+200C: "" KURDISH LETTER NO SPACE BREAK
+                 U+0647: "ه" KURDISH LETTER HA -->
+            <Key
+                latin:keySpec="&#x200C;"
+                latin:moreKeys="&#x0647;" />
+            <!-- U+0623: "أ" ARABIC LETTER ALF WITH HAMZA ABOVE
+                 U+0698: "ژ" KURDISH LETTER ZH -->
+            <Key latin:keySpec="&#x0623;"
+                    latin:moreKeys="&#x0698;" />
+            <!-- U+0643: "ك" ARABIC LETTER ISOLATE KAF
+                    U+06A9: "ک" ARABIC LETTER KAF -->
+            <Key latin:keySpec="&#x0643;"
+                latin:moreKeys="&#x06A9;" />
+            <!-- U+06B5: "ل" KURDISH LETTER LAA
+                 U+0644: "ل" ARABIC LETTER LAM -->
+            <Key latin:keySpec="&#x06B5;"
+                latin:moreKeys="&#x0644;" />
+        </default>
 
+
+    </switch>
 
 </merge>
