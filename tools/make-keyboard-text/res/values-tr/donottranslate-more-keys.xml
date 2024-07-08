@@ -25,13 +25,14 @@
     <!-- U+0259: "ə" LATIN SMALL LETTER SCHWA
          U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE -->
     <string name="morekeys_e">&#x0259;,&#x00E9;</string>
-    <!-- U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+    <!-- U+0131: "ı" LATIN SMALL LETTER DOTLESS I
+         U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
          U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
          U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
          U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
          U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
          U+012B: "ī" LATIN SMALL LETTER I WITH MACRON -->
-    <string name="morekeys_i">&#x00EE;,&#x00EF;,&#x00EC;,&#x00ED;,&#x012F;,&#x012B;</string>
+    <string name="morekeys_i">&#x0131;,&#x00EE;,&#x00EF;,&#x00EC;,&#x00ED;,&#x012F;,&#x012B;</string>
     <!-- U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
          U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
          U+0153: "œ" LATIN SMALL LIGATURE OE
