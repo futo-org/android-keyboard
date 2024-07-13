@@ -17,6 +17,7 @@
 package org.futo.inputmethod.accessibility;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -153,11 +154,28 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
     @Override
     protected void onPopulateNodeForVirtualView(int virtualViewId, @NonNull AccessibilityNodeInfoCompat node) {
         Key k = getKeyOf(virtualViewId);
-        if(k == null) return;
+        if(k == null) {
+            // TODO: For some reason, sometimes this is null and crashes.
+            // Just set this to something to prevent crash
+            Log.e(TAG, "Invalid virtual view id " + virtualViewId);
+
+            node.setContentDescription("Unknown");
+            node.setBoundsInParent(new Rect(0, 0, 0, 0));
+
+            node.setFocusable(false);
+            node.setScreenReaderFocusable(false);
+
+            return;
+        }
 
         node.setClassName(android.inputmethodservice.Keyboard.Key.class.getName());
 
         String description = getKeyDescription(k);
+
+        if(description == null || description.isBlank()) {
+            Log.e(TAG, "Invalid key has blank description: " + k.toLongString());
+            description = "Unknown";
+        }
 
         node.setContentDescription(description);
         node.setBoundsInParent(k.getHitBox());
