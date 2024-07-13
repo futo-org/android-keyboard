@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="crashed_text_email">FUTO Keyboard has crashed! Please email us a report to help us fix this (voiceinput@futo.org)</string>
+    <string name="crashed_text_email">FUTO Keyboard has crashed! Please email us a report to help us fix this (keyboard@futo.org)</string>
     <string name="crashed_text">FUTO Keyboard has crashed! Please send a report to help us fix this.</string>
     <string name="crashed_title">Crash Reporter</string>
 
