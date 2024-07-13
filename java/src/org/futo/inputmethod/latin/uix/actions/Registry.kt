@@ -89,6 +89,10 @@ object ActionRegistry {
 
         return action.toIntOrNull() ?: ActionIdToInt[action] ?: throw IllegalArgumentException("Unknown action $actionString")
     }
+
+    fun actionIdToName(context: Context, id: Int): String {
+        return context.getString(AllActions[id].name)
+    }
 }
 
 val DefaultActions = listOf(

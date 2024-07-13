@@ -29,6 +29,7 @@ import org.futo.inputmethod.keyboard.KeyboardId;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.StringUtils;
+import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
 
 import java.util.Locale;
 
@@ -285,6 +286,12 @@ final class KeyCodeDescriptionMapper {
         if (Character.isDefined(codePoint) && !Character.isISOControl(codePoint)) {
             return StringUtils.newSingleCodePointString(codePoint);
         }
+
+        if(codePoint <= Constants.CODE_ACTION_MAX && codePoint >= Constants.CODE_ACTION_0) {
+            final int actionId = codePoint - Constants.CODE_ACTION_0;
+            return ActionRegistry.INSTANCE.actionIdToName(context, actionId);
+        }
+
         return null;
     }
 
