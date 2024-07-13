@@ -11,9 +11,11 @@ import androidx.annotation.UiThread
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +27,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -43,6 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
@@ -73,8 +78,10 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -88,9 +95,12 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
+import org.futo.inputmethod.latin.uix.ActionTextEditor
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.AutoFitText
+import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
+import org.futo.inputmethod.latin.uix.EmojiTracker.resetRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
@@ -127,14 +137,24 @@ class EmojiItemItem(val emoji: EmojiItem) : EmojiViewItem() {
 const val VIEW_EMOJI = 0
 const val VIEW_CATEGORY = 1
 
+private object EmojiViewItemDiffCallback : DiffUtil.ItemCallback<EmojiViewItem>() {
+    override fun areItemsTheSame(oldItem: EmojiViewItem, newItem: EmojiViewItem): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(oldItem: EmojiViewItem, newItem: EmojiViewItem): Boolean {
+        return oldItem == newItem
+    }
+
+}
+
 // Note: Using traditional View here, because Android Compose leaves a lot of performance to be desired
 class EmojiGridAdapter(
-    private val data: List<EmojiViewItem>,
     private val onClick: (EmojiItem) -> Unit,
     private val onSelectSkinTone: (PopupInfo) -> Unit,
     private val emojiCellWidth: Int,
     private val contentColor: Color
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : ListAdapter<EmojiViewItem, RecyclerView.ViewHolder>(EmojiViewItemDiffCallback) {
 
     class EmojiViewHolder(
         context: Context,
@@ -189,7 +209,7 @@ class EmojiGridAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = data[position]
+        val item = getItem(position)
         if(item is EmojiItemItem && holder is EmojiViewHolder) {
             holder.bindEmoji(item.emoji, onClick, onSelectSkinTone, contentColor.toArgb())
         }else if(item is CategoryItem && holder is CategoryViewHolder) {
@@ -197,10 +217,8 @@ class EmojiGridAdapter(
         }
     }
 
-    override fun getItemCount() = data.size
-
     override fun getItemViewType(position: Int): Int {
-        return when(data[position]) {
+        return when(getItem(position)) {
             is CategoryItem -> VIEW_CATEGORY
             is EmojiItemItem -> VIEW_EMOJI
         }
@@ -259,7 +277,6 @@ fun Emojis(
 
     val emojiAdapter = remember {
         EmojiGridAdapter(
-            emojis,
             onClick,
             onSelectSkinTone = {
                 activePopup = it
@@ -268,6 +285,10 @@ fun Emojis(
             emojiWidth,
             color
         )
+    }
+
+    LaunchedEffect(emojis) {
+        emojiAdapter.submitList(emojis)
     }
 
     var viewWidth by remember { mutableIntStateOf(0) }
@@ -281,13 +302,14 @@ fun Emojis(
                     layoutManager = GridLayoutManager(context, 8).apply {
                         spanSizeLookup = object : SpanSizeLookup() {
                             override fun getSpanSize(position: Int): Int {
-                                return when(emojis[position]) {
+                                return when(emojiAdapter.currentList[position]) {
                                     is EmojiItemItem -> 1
                                     is CategoryItem -> spanCount
                                 }
                             }
                         }
                     }
+
                     adapter = emojiAdapter
 
                     addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -566,7 +588,9 @@ fun EmojiGrid(
     emojis: List<EmojiItem>,
     keyboardShown: Boolean,
     emojiMap: Map<String, EmojiItem>,
-    keyBackground: Drawable
+    keyBackground: Drawable,
+    isSearching: Boolean,
+    searchFilter: String
 ) {
     val context = LocalContext.current
     val recentEmojis = remember {
@@ -596,6 +620,23 @@ fun EmojiGrid(
     val jumpCategory: MutableState<CategoryItem?> = remember { mutableStateOf(null) }
 
 
+    var emojiList = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis
+
+    if(isSearching) {
+        emojiList = emojiList.filter {
+            (it is EmojiItemItem) &&
+                    (it.emoji.description.contains(searchFilter)
+                            || it.emoji.aliases.joinToString().contains(searchFilter)
+                            || it.emoji.tags.joinToString().contains(searchFilter))
+        }.take(48).map {
+            EmojiItemItem((it as EmojiItemItem).emoji.copy(category = "Search Results"))
+        }
+
+        if(emojiList.isEmpty()) {
+            emojiList = emojiList + listOf(CategoryItem("No results found"))
+        }
+    }
+
     Column {
         Emojis(
             modifier = Modifier
@@ -612,25 +653,27 @@ fun EmojiGrid(
                     keyBackground.state = intArrayOf()
                     keyBackground.draw(this.drawContext.canvas.nativeCanvas)
                 },
-            emojis = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis,
+            emojis = emojiList,
             onClick = onClick,
             emojiMap = emojiMap,
             currentCategory = currentCategory,
             jumpCategory = jumpCategory
         )
 
-        EmojiNavigation(
-            showKeys = !keyboardShown,
-            onExit = onExit,
-            onBackspace = onBackspace,
-            categories = listOf(
-                CategoryItem("Recent")
-            ) + categorizedEmojis.filterIsInstance<CategoryItem>(),
-            activeCategoryItem = currentCategory.value,
-            goToCategory = {
-                jumpCategory.value = it
-            }
-        )
+        if(!isSearching) {
+            EmojiNavigation(
+                showKeys = !keyboardShown,
+                onExit = onExit,
+                onBackspace = onBackspace,
+                categories = listOf(
+                    CategoryItem("Recent")
+                ) + categorizedEmojis.filterIsInstance<CategoryItem>(),
+                activeCategoryItem = currentCategory.value,
+                goToCategory = {
+                    jumpCategory.value = it
+                }
+            )
+        }
     }
 }
 
@@ -719,6 +762,9 @@ val EmojiAction = Action(
     windowImpl = { manager, persistentState ->
         val state = persistentState as PersistentEmojiState
         object : ActionWindow {
+            private val searchText = mutableStateOf("")
+            private val searching = mutableStateOf(false)
+
             @Composable
             override fun windowName(): String {
                 return stringResource(R.string.emoji_action_title)
@@ -745,7 +791,67 @@ val EmojiAction = Action(
                         if(!isRepeated) {
                             manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
                         }
-                    }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap, keyBackground = manager.getThemeProvider().keyBackground)
+                    }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap, keyBackground = manager.getThemeProvider().keyBackground,
+                        isSearching = searching.value, searchFilter = searchText.value)
+                }
+            }
+
+
+            @Composable
+            override fun WindowTitleBar(rowScope: RowScope) {
+                if(searching.value) {
+                    with(rowScope) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.surfaceBright,
+                            shape = RoundedCornerShape(24.dp),
+                            modifier = Modifier
+                                .minimumInteractiveComponentSize()
+                                .padding(2.dp)
+                                .weight(1.0f)
+                        ) {
+                            Box(
+                                modifier = Modifier.padding(8.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                ActionTextEditor(text = searchText)
+                            }
+                        }
+                    }
+                } else {
+                    super.WindowTitleBar(rowScope)
+                    Surface(color = MaterialTheme.colorScheme.surfaceBright, shape = RoundedCornerShape(24.dp), modifier = Modifier
+                        .minimumInteractiveComponentSize()
+                        .padding(2.dp)
+                        .width(128.dp)
+                        .clickable { searching.value = true }) {
+                        Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterStart) {
+                            Row {
+                                Icon(Icons.Default.Search, contentDescription = null)
+                                Text("Search", style = Typography.bodySmall, modifier = Modifier
+                                    .alpha(0.75f)
+                                    .align(Alignment.CenterVertically))
+                            }
+                        }
+                    }
+
+                    IconButton(onClick = {
+                        manager.requestDialog(
+                            "Clear recent emojis?",
+                            listOf(
+                                DialogRequestItem("Cancel") {},
+                                DialogRequestItem("Clear") {
+                                    runBlocking {
+                                        manager.getContext().resetRecentEmojis()
+                                    }
+                                    manager.closeActionWindow()
+                                },
+                            ),
+                            {}
+                        )
+                    }) {
+                        Icon(painterResource(id = R.drawable.close), contentDescription = "Clear recent emojis")
+                    }
+
                 }
             }
 
@@ -772,6 +878,8 @@ fun EmojiGridPreview() {
         },
         keyboardShown = false,
         emojiMap = hashMapOf(),
-        keyBackground = context.getDrawable(R.drawable.btn_keyboard_spacebar_lxx_dark)!!
+        keyBackground = context.getDrawable(R.drawable.btn_keyboard_spacebar_lxx_dark)!!,
+        isSearching = false,
+        searchFilter = ""
     )
 }

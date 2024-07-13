@@ -49,7 +49,7 @@ class EmojiView @JvmOverloads constructor(
     View(context, attrs) {
 
     companion object {
-        private const val EMOJI_DRAW_TEXT_SIZE_SP = 32
+        private const val EMOJI_DRAW_TEXT_SIZE_DP = 42
     }
 
     init {
@@ -61,8 +61,8 @@ class EmojiView @JvmOverloads constructor(
 
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply {
         textSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP,
-            EMOJI_DRAW_TEXT_SIZE_SP.toFloat(),
+            TypedValue.COMPLEX_UNIT_DIP,
+            EMOJI_DRAW_TEXT_SIZE_DP.toFloat(),
             context.resources.displayMetrics
         )
     }

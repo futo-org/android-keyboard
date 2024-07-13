@@ -11,6 +11,7 @@ import android.os.Vibrator
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputContentInfo
@@ -146,7 +147,11 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun typeText(v: String) {
-        latinIME.latinIMELegacy.onTextInput(v)
+        if(latinIME.isInputConnectionOverridden) {
+            latinIME.getBaseInputConnection()?.commitText(v, 1)
+        } else {
+            latinIME.latinIMELegacy.onTextInput(v)
+        }
     }
 
     override fun typeUri(uri: Uri, mimeTypes: List<String>): Boolean {
@@ -224,16 +229,13 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         return latinIME.latinIMELegacy.locale
     }
 
-    override fun overrideInputConnection(inputConnection: InputConnection) {
-        latinIME.overrideInputConnection = inputConnection
-        latinIME.inputLogic.startInput(RichInputMethodManager.getInstance().combiningRulesExtraValueOfCurrentSubtype,
-            latinIME.latinIMELegacy.mSettings.current)
+    override fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo) {
+        latinIME.overrideInputConnection(inputConnection, editorInfo)
+        uixManager.toggleExpandAction(true)
     }
 
     override fun unsetInputConnection() {
-        latinIME.overrideInputConnection = null
-        latinIME.inputLogic.startInput(RichInputMethodManager.getInstance().combiningRulesExtraValueOfCurrentSubtype,
-            latinIME.latinIMELegacy.mSettings.current)
+        latinIME.overrideInputConnection(null, null)
     }
 
     override fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit) {
@@ -361,8 +363,8 @@ class UixManager(private val latinIME: LatinIME) {
         keyboardManagerForAction.announce("$name closed")
     }
 
-    private fun toggleExpandAction() {
-        mainKeyboardHidden = !mainKeyboardHidden
+    fun toggleExpandAction(to: Boolean? = null) {
+        mainKeyboardHidden = !(to ?: mainKeyboardHidden)
         if(!mainKeyboardHidden) {
             latinIME.onKeyboardShown()
         }
@@ -378,7 +380,7 @@ class UixManager(private val latinIME: LatinIME) {
             1.5
         }
         Column {
-            if(mainKeyboardHidden) {
+            if(mainKeyboardHidden || latinIME.isInputConnectionOverridden) {
                 ActionWindowBar(
                     onBack = { returnBackToMainKeyboardViewFromAction() },
                     canExpand = currWindowAction!!.canShowKeyboard,
@@ -398,7 +400,7 @@ class UixManager(private val latinIME: LatinIME) {
                 windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden)
             }
 
-            if(!mainKeyboardHidden) {
+            if(!mainKeyboardHidden && !latinIME.isInputConnectionOverridden) {
                 val suggestedWordsOrNull = if (shouldShowSuggestionStrip) {
                     suggestedWords
                 } else {

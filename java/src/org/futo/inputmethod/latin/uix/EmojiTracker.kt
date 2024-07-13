@@ -36,4 +36,8 @@ object EmojiTracker {
             .filter { it.isNotBlank() }
             .distinct()
     }
+
+    suspend fun Context.resetRecentEmojis() {
+        setSetting(lastUsedEmoji, "")
+    }
 }

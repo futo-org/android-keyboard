@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.uix
 import android.content.Context
 import android.net.Uri
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -56,7 +57,7 @@ interface KeyboardManagerForAction {
     fun announce(s: String)
     fun getActiveLocale(): Locale
 
-    fun overrideInputConnection(inputConnection: InputConnection)
+    fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo)
     fun unsetInputConnection()
 
     fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit)

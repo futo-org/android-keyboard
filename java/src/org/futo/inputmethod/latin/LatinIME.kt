@@ -678,9 +678,38 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
-    var overrideInputConnection: InputConnection? = null
+    private var overrideInputConnection: InputConnection? = null
+    private var overrideEditorInfo: EditorInfo? = null
+    fun overrideInputConnection(to: InputConnection?, editorInfo: EditorInfo?) {
+        this.overrideInputConnection = to
+        this.overrideEditorInfo = editorInfo
+
+        latinIMELegacy.loadSettings()
+
+        inputLogic.finishInput()
+        inputLogic.startInput(RichInputMethodManager.getInstance().combiningRulesExtraValueOfCurrentSubtype, latinIMELegacy.mSettings.current)
+
+        val currentIC = currentInputConnection
+        currentIC?.requestCursorUpdates(InputConnection.CURSOR_UPDATE_IMMEDIATE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            super.getCurrentInputConnection()?.setImeConsumesInput(to != null)
+        }
+    }
+
+    val isInputConnectionOverridden
+        get() = overrideInputConnection != null
+
     override fun getCurrentInputConnection(): InputConnection? {
         return overrideInputConnection ?: super.getCurrentInputConnection()
+    }
+
+    override fun getCurrentInputEditorInfo(): EditorInfo? {
+        return overrideEditorInfo ?: super.getCurrentInputEditorInfo()
+    }
+
+    fun getBaseInputConnection(): InputConnection? {
+        return super.getCurrentInputConnection()
     }
 
     override val lifecycle: Lifecycle
