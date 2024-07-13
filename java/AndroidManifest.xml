@@ -32,8 +32,6 @@
          android:roundIcon="@mipmap/ic_launcher_round"
          android:supportsRtl="true"
          android:allowBackup="true"
-         android:defaultToDeviceProtectedStorage="true"
-         android:directBootAware="true"
          android:largeHeap="true"
          android:name=".CrashLoggingApplication">
 
@@ -41,6 +39,7 @@
         <service android:name=".LatinIME"
              android:label="@string/english_ime_name"
              android:permission="android.permission.BIND_INPUT_METHOD"
+             android:directBootAware="true"
              android:exported="true">
             <intent-filter>
                 <action android:name="android.view.InputMethod"/>

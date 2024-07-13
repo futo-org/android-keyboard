@@ -22,7 +22,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.futo.inputmethod.compat.BuildCompatUtils;
@@ -30,6 +29,7 @@ import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager;
 import org.futo.inputmethod.latin.InputAttributes;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.StringUtils;
+import org.futo.inputmethod.latin.uix.PreferenceUtils;
 import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.latin.utils.RunInLocale;
@@ -145,7 +145,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private void onCreate(final Context context) {
         mContext = context;
         mRes = context.getResources();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if(mPrefs != null) {
+            mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        mPrefs = PreferenceUtils.INSTANCE.getDefaultSharedPreferences(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         upgradeAutocorrectionSettings(mPrefs, mRes);
     }

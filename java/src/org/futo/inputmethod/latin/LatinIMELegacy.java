@@ -38,7 +38,6 @@ import android.os.Build;
 import android.os.Debug;
 import android.os.IBinder;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
@@ -573,7 +572,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     public void onCreate() {
         Settings.init(mInputMethodService);
-        DebugFlags.init(PreferenceManager.getDefaultSharedPreferences(mInputMethodService));
         RichInputMethodManager.init(mInputMethodService);
         mRichImm = RichInputMethodManager.getInstance();
         AudioAndHapticFeedbackManager.init(mInputMethodService);
@@ -933,10 +931,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
         final boolean inputTypeChanged = !currentSettingsValues.isSameInputType(editorInfo);
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
-
-        StatsUtils.onStartInputView(editorInfo.inputType,
-                Settings.getInstance().getCurrent().mDisplayOrientation,
-                !isDifferentTextField);
 
         // The EditorInfo might have a flag that affects fullscreen mode.
         // Note: This call should be done by InputMethodService?

@@ -60,6 +60,7 @@ import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.PersistentStateInitialization
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.pages.ParagraphText
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurface
@@ -268,6 +269,8 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
     }
 
     private fun saveClipboard() {
+        if(!context.isDirectBootUnlocked) return
+
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
                 pruneOldItems()
@@ -281,6 +284,8 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
     }
 
     private suspend fun loadClipboard() {
+        if(!context.isDirectBootUnlocked) return
+
         try {
             val file = File(context.filesDir, "clipboard.json")
 
@@ -374,6 +379,7 @@ val ClipboardHistoryAction = Action(
     },
     persistentStateInitialization = PersistentStateInitialization.OnKeyboardLoad,
     windowImpl = { manager, persistent ->
+        val unlocked = manager.getContext().isDirectBootUnlocked
         val clipboardHistoryManager = persistent as ClipboardHistoryManager
 
         manager.getLifecycleScope().launch { clipboardHistoryManager.pruneOldItems() }
@@ -443,7 +449,13 @@ val ClipboardHistoryAction = Action(
             override fun WindowContents(keyboardShown: Boolean) {
                 val view = LocalView.current
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
-                if(!clipboardHistory.value) {
+                if(!unlocked) {
+                    ScrollableList {
+                        PaymentSurface(isPrimary = true, title = "Device Locked") {
+                            ParagraphText("Please unlock your device to access clipboard history")
+                        }
+                    }
+                } else if(!clipboardHistory.value) {
                     ScrollableList {
                         PaymentSurface(isPrimary = true, title = "Clipboard History Inactive") {
                             ParagraphText("Clipboard history is not enabled. To save clipboard items, you can enable clipboard history. This will keep up to 25 items for 3 days unless pinned. Passwords and other items marked sensitive are excluded from history.")

@@ -1,27 +1,147 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.UserManager
+import android.preference.PreferenceManager
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.preferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.latin.ActiveSubtype
+import org.futo.inputmethod.latin.Subtypes
+import org.futo.inputmethod.latin.SubtypesSetting
+import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+// Used before first unlock (direct boot)
+private object DefaultDataStore : DataStore<Preferences> {
+    private var activePreferences = preferencesOf(
+        ActiveSubtype.key to "en_US:",
+        SubtypesSetting.key to setOf("en_US:"),
+        THEME_KEY.key to ClassicMaterialDark.key,
+        KeyHintsSetting.key to true
+    )
+
+    var subtypesInitialized = false
+
+    suspend fun updateSubtypes(subtypes: Set<String>) {
+        val newPreferences = activePreferences.toMutablePreferences()
+        newPreferences[SubtypesSetting.key] = subtypes
+
+        activePreferences = newPreferences
+        sharedData.emit(activePreferences)
+    }
+
+    val sharedData = MutableSharedFlow<Preferences>(1)
+
+    override val data: Flow<Preferences>
+        get() {
+            return unlockedDataStore?.data ?: sharedData
+        }
+
+    init {
+        sharedData.tryEmit(activePreferences)
+    }
+
+    override suspend fun updateData(transform: suspend (t: Preferences) -> Preferences): Preferences {
+        return unlockedDataStore?.updateData(transform) ?: run {
+            val newActiveSubtype = transform(activePreferences)[ActiveSubtype.key]
+            if(newActiveSubtype != null && newActiveSubtype != activePreferences[ActiveSubtype.key]) {
+                val newPreferences = activePreferences.toMutablePreferences()
+                newPreferences[ActiveSubtype.key] = newActiveSubtype
+                activePreferences = newPreferences
+                sharedData.emit(newPreferences)
+            }
+
+            return activePreferences
+        }
+    }
+}
+
+// Set and used after first unlock (direct boot)
+private var unlockedDataStore: DataStore<Preferences>? = null
+
+// Initializes unlockedDataStore, or uses DefaultDataStore if device is still locked (direct boot)
+@OptIn(DelicateCoroutinesApi::class)
+val Context.dataStore: DataStore<Preferences>
+    get() {
+        val userManager = getSystemService(Context.USER_SERVICE) as UserManager
+        if (userManager.isUserUnlocked) {
+            // The device has been unlocked
+            return unlockedDataStore ?: run {
+                val newDataStore = PreferenceDataStoreFactory.create(
+                    corruptionHandler = null,
+                    migrations = listOf(),
+                    scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+                ) {
+                    applicationContext.preferencesDataStoreFile("settings")
+                }
+
+                unlockedDataStore = newDataStore
+
+                // Send new values to the DefaultDataStore for any listeners
+                GlobalScope.launch {
+                    newDataStore.data.collect { value ->
+                        DefaultDataStore.sharedData.emit(value)
+                    }
+                }
+
+                newDataStore
+            }
+        } else {
+            // The device is still locked, return default data store
+
+            if(!DefaultDataStore.subtypesInitialized) {
+                DefaultDataStore.subtypesInitialized = true
+                GlobalScope.launch {
+                    DefaultDataStore.updateSubtypes(Subtypes.getDirectBootInitialLayouts(this@dataStore))
+                }
+            }
+
+            return DefaultDataStore
+        }
+    }
+
+
+object PreferenceUtils {
+    fun getDefaultSharedPreferences(context: Context): SharedPreferences {
+        val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
+        return if (userManager.isUserUnlocked) {
+            PreferenceManager.getDefaultSharedPreferences(context)
+        } else {
+            PreferenceManager.getDefaultSharedPreferences(context.createDeviceProtectedStorageContext())
+        }
+    }
+}
+
+val Context.isDirectBootUnlocked: Boolean
+    get() {
+        val userManager = getSystemService(Context.USER_SERVICE) as UserManager
+        return userManager.isUserUnlocked
+    }
+
 
 suspend fun <T> Context.getSetting(key: Preferences.Key<T>, default: T): T {
     val valueFlow: Flow<T> =

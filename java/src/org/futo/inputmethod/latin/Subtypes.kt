@@ -37,6 +37,7 @@ import okhttp3.internal.toImmutableList
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -93,6 +94,8 @@ object Subtypes {
     }
 
     fun addDefaultSubtypesIfNecessary(context: Context) {
+        if(!context.isDirectBootUnlocked) return
+
         val currentSubtypes = context.getSettingBlocking(SubtypesSetting)
         if(currentSubtypes.isNotEmpty()) {
             removeExtensionsIfNecessary(context)
@@ -116,7 +119,7 @@ object Subtypes {
             addLanguage(context, Locale.forLanguageTag("zz"), "qwerty")
         }
 
-        context.setSettingBlocking(ActiveSubtype.key, context.getSettingBlocking(SubtypesSetting).first())
+        context.setSettingBlocking(ActiveSubtype.key, context.getSettingBlocking(SubtypesSetting).firstOrNull() ?: return)
     }
 
     fun findClosestLocaleLayouts(locale: Locale): List<String> {
@@ -224,6 +227,30 @@ object Subtypes {
             }
         }.mapValues { it.value.toImmutableList() }
     }
+
+    fun getDirectBootInitialLayouts(context: Context): Set<String> {
+        val layouts = mutableSetOf("en_US:")
+
+        val locales = context.resources.configuration.locales
+        if(locales.size() == 0) return layouts
+
+        for(i in 0 until locales.size()) {
+            val locale = locales.get(i).stripExtensionsIfNeeded()
+            val layout = findClosestLocaleLayouts(locale).firstOrNull() ?: continue
+
+            val value = subtypeToString(
+                InputMethodSubtypeBuilder()
+                    .setSubtypeLocale(locale.stripExtensionsIfNeeded().toString())
+                    .setSubtypeExtraValue("KeyboardLayoutSet=$layout")
+                    .build()
+            )
+
+            layouts.add(value)
+        }
+
+        return layouts
+    }
+
 }
 
 

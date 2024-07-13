@@ -1,7 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.content.Context
-import android.preference.PreferenceManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -59,6 +58,7 @@ import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardBottomOffsetSetting
 import org.futo.inputmethod.latin.uix.KeyboardHeightMultiplierSetting
+import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.AllActions
@@ -437,7 +437,7 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
     val (vibration, _) = useDataStore(key = vibrationDurationSetting.key, default = vibrationDurationSetting.default)
 
     LaunchedEffect(vibration) {
-        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val sharedPrefs = PreferenceUtils.getDefaultSharedPreferences(context)
         withContext(Dispatchers.Main) {
             sharedPrefs.edit {
                 putInt(PREF_VIBRATION_DURATION_SETTINGS, vibration)

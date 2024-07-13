@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -289,6 +290,7 @@ class TrainingWorker(val context: Context, val parameters: WorkerParameters) : C
 
 private val WORKER_TAG: String = "TRAINING_WORKER"
 public fun scheduleTrainingWorkerBackground(context: Context) {
+    if(!context.isDirectBootUnlocked) return
     val workManager = WorkManager.getInstance(context)
     workManager.cancelAllWorkByTag(WORKER_TAG)
 

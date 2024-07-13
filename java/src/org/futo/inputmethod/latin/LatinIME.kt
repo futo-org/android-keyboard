@@ -1,5 +1,9 @@
 package org.futo.inputmethod.latin
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.inputmethodservice.InputMethodService
@@ -19,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
@@ -50,6 +53,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
+import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
@@ -67,6 +71,7 @@ import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getSettingFlow
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -76,9 +81,17 @@ import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
 
+private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        println("Unlocked Broadcast Receiver: ${intent?.action}")
+        if (intent?.action == Intent.ACTION_USER_UNLOCKED) {
+            onDeviceUnlocked()
+        }
+    }
+}
+
 class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner,
     LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner {
-
 
     private lateinit var mLifecycleRegistry: LifecycleRegistry
     private lateinit var mViewModelStore: ViewModelStore
@@ -222,8 +235,13 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         jobs.clear()
     }
 
+    private var unlockReceiver = UnlockedBroadcastReceiver { onDeviceUnlocked() }
+
     override fun onCreate() {
         super.onCreate()
+
+        val filter = IntentFilter(Intent.ACTION_USER_UNLOCKED)
+        registerReceiver(unlockReceiver, filter)
 
         mLifecycleRegistry = LifecycleRegistry(this)
         mLifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
@@ -264,7 +282,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         latinIMELegacy.onCreate()
 
         languageModelFacilitator.launchProcessor()
-        languageModelFacilitator.loadHistoryLog()
+
+        if(isDirectBootUnlocked) {
+            languageModelFacilitator.loadHistoryLog()
+        }
 
         scheduleUpdateCheckingJob(this)
         launchJob { uixManager.showUpdateNoticeIfNeeded() }
@@ -322,6 +343,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onDestroy() {
+        unregisterReceiver(unlockReceiver)
+
         stopJobs()
         mLifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         viewModelStore.clear()
@@ -666,4 +689,22 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         get() = mSavedStateRegistryController.savedStateRegistry
     override val viewModelStore: ViewModelStore
         get() = mViewModelStore
+
+
+    private fun onDeviceUnlocked() {
+        Log.i("LatinIME", "DEVICE has UNLOCKED!!! Reloading settings...")
+        // Every place that called getDefaultSharedPreferences now needs to be refreshed or call it again
+
+        // Mainly Settings singleton needs to be refreshed
+        Settings.init(applicationContext)
+        Settings.getInstance().onSharedPreferenceChanged(null /* unused */, "")
+        latinIMELegacy.loadSettings()
+        recreateKeyboard()
+
+        Log.i("LatinIME", "DEVICE has UNLOCKED!!! Finished reloading: ${Settings.getInstance().current.dump()}")
+
+        languageModelFacilitator.loadHistoryLog()
+
+        // TODO: Spell checker service
+    }
 }

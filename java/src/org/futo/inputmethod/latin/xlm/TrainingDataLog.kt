@@ -4,6 +4,7 @@ import android.content.Context
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import java.io.File
 
 @Serializable
@@ -23,6 +24,8 @@ data class HistoryLogForTraining(
 )
 
 fun saveHistoryLogBackup(context: Context, log: List<HistoryLogForTraining>) {
+    if(!context.isDirectBootUnlocked) return
+
     val json = Json.encodeToString(log)
 
     val file = File(context.cacheDir, "historyLog.json")
@@ -30,6 +33,8 @@ fun saveHistoryLogBackup(context: Context, log: List<HistoryLogForTraining>) {
 }
 
 fun loadHistoryLogBackup(context: Context, to: MutableList<HistoryLogForTraining>) {
+    if(!context.isDirectBootUnlocked) return
+
     try {
         val file = File(context.cacheDir, "historyLog.json")
         if(file.exists()) {

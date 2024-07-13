@@ -69,20 +69,10 @@ public final class ImportantNoticeUtils {
         }
     }
 
-    @UsedForTesting
-    static SharedPreferences getImportantNoticePreferences(final Context context) {
-        return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-    }
-
-    @UsedForTesting
-    static boolean hasContactsNoticeShown(final Context context) {
-        return getImportantNoticePreferences(context).getBoolean(
-                KEY_SUGGEST_CONTACTS_NOTICE, false);
-    }
-
     public static boolean shouldShowImportantNotice(final Context context,
             final SettingsValues settingsValues) {
         // Check to see whether "Use Contacts" is enabled by the user.
+        /*
         if (!settingsValues.mUseContactsDict) {
             return false;
         }
@@ -107,8 +97,8 @@ public final class ImportantNoticeUtils {
         if (hasContactsNoticeTimeoutPassed(context, System.currentTimeMillis())) {
             updateContactsNoticeShown(context);
             return false;
-        }
-        return true;
+        }*/
+        return false;
     }
 
     public static String getSuggestContactsNoticeTitle(final Context context) {
@@ -118,23 +108,11 @@ public final class ImportantNoticeUtils {
     @UsedForTesting
     static boolean hasContactsNoticeTimeoutPassed(
             final Context context, final long currentTimeInMillis) {
-        final SharedPreferences prefs = getImportantNoticePreferences(context);
-        if (!prefs.contains(KEY_TIMESTAMP_OF_CONTACTS_NOTICE)) {
-            prefs.edit()
-                    .putLong(KEY_TIMESTAMP_OF_CONTACTS_NOTICE, currentTimeInMillis)
-                    .apply();
-        }
-        final long firstDisplayTimeInMillis = prefs.getLong(
-                KEY_TIMESTAMP_OF_CONTACTS_NOTICE, currentTimeInMillis);
-        final long elapsedTime = currentTimeInMillis - firstDisplayTimeInMillis;
-        return elapsedTime >= TIMEOUT_OF_IMPORTANT_NOTICE;
+
+        return false;
     }
 
     public static void updateContactsNoticeShown(final Context context) {
-        getImportantNoticePreferences(context)
-                .edit()
-                .putBoolean(KEY_SUGGEST_CONTACTS_NOTICE, true)
-                .remove(KEY_TIMESTAMP_OF_CONTACTS_NOTICE)
-                .apply();
+
     }
 }

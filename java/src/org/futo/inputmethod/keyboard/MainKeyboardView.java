@@ -200,9 +200,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
         PointerTracker.init(mainKeyboardViewAttr, mTimerHandler, this /* DrawingProxy */);
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        final boolean forceNonDistinctMultitouch = prefs.getBoolean(
-                DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH, false);
+        final boolean forceNonDistinctMultitouch = false;
         final boolean hasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT)
                 && !forceNonDistinctMultitouch;

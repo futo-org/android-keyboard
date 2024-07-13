@@ -159,9 +159,7 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
     }
 
     public static KeyboardTheme getKeyboardTheme(final Context context) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        final KeyboardTheme[] availableThemeArray = getAvailableThemeArray(context);
-        return getKeyboardTheme(prefs, BuildCompatUtils.EFFECTIVE_SDK_INT, availableThemeArray);
+        return KEYBOARD_THEMES[0];
     }
 
     /* package private for testing */

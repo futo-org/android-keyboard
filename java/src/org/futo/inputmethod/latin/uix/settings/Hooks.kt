@@ -1,7 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings
 
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.getSetting
@@ -94,7 +94,7 @@ fun <T> useDataStore(key: SettingsKey<T>, blocking: Boolean = false): DataStoreI
 fun<T> useSharedPrefsGeneric(key: String, default: T, get: (SharedPreferences, String, T) -> T, put: (SharedPreferences, String, T) -> Unit): DataStoreItem<T> {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val sharedPrefs = remember { PreferenceManager.getDefaultSharedPreferences(context) }
+    val sharedPrefs = remember { PreferenceUtils.getDefaultSharedPreferences(context) }
 
     val value = remember { mutableStateOf(get(sharedPrefs, key, default)) }
 
@@ -158,7 +158,7 @@ fun useSharedPrefsInt(key: String, default: Int): DataStoreItem<Int> {
 @Composable
 private fun<T> SyncDataStoreToPreferences(key: SettingsKey<T>, update: (newValue: T, editor: SharedPreferences.Editor) -> Unit) {
     val context = LocalContext.current
-    val sharedPrefs = remember { PreferenceManager.getDefaultSharedPreferences(context) }
+    val sharedPrefs = remember { PreferenceUtils.getDefaultSharedPreferences(context) }
     val value = useDataStoreValueBlocking(key)
 
     LaunchedEffect(value) {

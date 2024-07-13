@@ -34,6 +34,7 @@ import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.compat.InputMethodManagerCompatWrapper;
 import org.futo.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.uix.PreferenceUtils;
 import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -108,7 +109,7 @@ public class RichInputMethodManager {
     }
 
     public InputMethodSubtype[] getAdditionalSubtypes() {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final SharedPreferences prefs = PreferenceUtils.INSTANCE.getDefaultSharedPreferences(mContext);
         final String prefAdditionalSubtypes = Settings.readPrefAdditionalSubtypes(
                 prefs, mContext.getResources());
         return AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefAdditionalSubtypes);
