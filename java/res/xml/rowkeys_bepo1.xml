@@ -18,49 +18,32 @@
 >
     <Key
         latin:keySpec="b"
-        latin:keyHintLabel="1"
-        latin:additionalMoreKeys="1,\\%"/>
+        latin:moreKeys="!text/number_1,!text/qwertysyms_q,!text/morekeys_b,!text/actions_b" />
     <Key
         latin:keySpec="&#xE9;"
-        latin:keyHintLabel="2"
-        latin:additionalMoreKeys="2,&#xE8;,\\\\" />
+        latin:moreKeys="!text/number_2,!text/qwertysyms_w,&#xE8;" />
     <Key
         latin:keySpec="p"
-        latin:keyHintLabel="3"
-        latin:additionalMoreKeys="3,|" />
+        latin:moreKeys="!text/number_3,!text/qwertysyms_e,!text/morekeys_p,!text/actions_p" />
     <Key
         latin:keySpec="o"
-        latin:keyHintLabel="4"
-        latin:additionalMoreKeys="4,="
-        latin:moreKeys="!text/morekeys_o" />
+        latin:moreKeys="!text/number_4,!text/qwertysyms_r,!text/morekeys_o,!text/morekeys_misc_o,!text/actions_o" />
     <Key
         latin:keySpec="v"
-        latin:keyHintLabel="5"
-        latin:additionalMoreKeys="5,!text/keyspec_left_square_bracket"
-        latin:moreKeys="!text/morekeys_v" />
+        latin:moreKeys="!text/number_5,!text/qwertysyms_t,!text/morekeys_v,!text/actions_v" />
     <Key
         latin:keySpec="d"
-        latin:keyHintLabel="6"
-        latin:additionalMoreKeys="6,!text/keyspec_right_square_bracket"
-        latin:moreKeys="!text/morekeys_d" />
+        latin:moreKeys="!text/number_6,!text/qwertysyms_y,!text/morekeys_d,!text/actions_d" />
     <Key
         latin:keySpec="l"
-        latin:keyHintLabel="7"
-        latin:additionalMoreKeys="7,!text/keyspec_less_than"
-        latin:moreKeys="!text/morekeys_l" />
+        latin:moreKeys="!text/number_7,!text/qwertysyms_u,!text/morekeys_l,!text/actions_l" />
     <Key
         latin:keySpec="j"
-        latin:keyHintLabel="8"
-        latin:additionalMoreKeys="8,!text/keyspec_greater_than"
-        latin:moreKeys="!text/morekeys_j" />
+        latin:moreKeys="!text/number_8,!text/qwertysyms_i,!text/morekeys_j,!text/actions_j" />
     <Key
         latin:keySpec="z"
-        latin:keyHintLabel="9"
-        latin:additionalMoreKeys="9,!text/keyspec_left_curly_bracket"
-        latin:moreKeys="!text/morekeys_z" />
+        latin:moreKeys="!text/number_9,!text/qwertysyms_o,!text/morekeys_z,!text/actions_z" />
     <Key
         latin:keySpec="w"
-        latin:keyHintLabel="0"
-        latin:additionalMoreKeys="0,!text/keyspec_right_curly_bracket"
-        latin:moreKeys="!text/morekeys_w" />
+        latin:moreKeys="!text/number_0,!text/qwertysyms_p,!text/morekeys_w,!text/actions_w" />
 </merge>

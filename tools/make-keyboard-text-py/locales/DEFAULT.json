@@ -78,9 +78,12 @@
         "misc_c": [
             "ç"
         ],
-
-        "nordic_row2_10": [],
-        "nordic_row2_11": [],
+        "nordic_row2_10": [
+            "ø"
+        ],
+        "nordic_row2_11": [
+            "æ"
+        ],
         "east_slavic_row2_2": [],
         "east_slavic_row2_11": [],
         "cyrillic_u": [],
@@ -254,9 +257,9 @@
         "w": "w",
         "y": "y",
         "x": "x",
-        "nordic_row1_11": "",
-        "nordic_row2_10": "",
-        "nordic_row2_11": "",
+        "nordic_row1_11": "å",
+        "nordic_row2_10": "ö",
+        "nordic_row2_11": "ä",
         "east_slavic_row1_9": "",
         "east_slavic_row2_2": "",
         "east_slavic_row2_11": "",

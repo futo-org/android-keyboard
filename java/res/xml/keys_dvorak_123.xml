@@ -27,31 +27,26 @@
         >
             <Key
                 latin:keySpec="&quot;"
-                latin:keyHintLabel="1"
-                latin:additionalMoreKeys="1" />
+                latin:moreKeys="!text/qwertysyms_q,!text/number_1" />
         </case>
         <case
             latin:mode="url"
         >
             <Key
                 latin:keySpec="/"
-                latin:keyHintLabel="1"
-                latin:additionalMoreKeys="1" />
+                latin:moreKeys="!text/qwertysyms_q,!text/number_1" />
         </case>
         <case
             latin:mode="email"
         >
             <Key
                 latin:keySpec="\@"
-                latin:keyHintLabel="1"
-                latin:additionalMoreKeys="1" />
+                latin:moreKeys="!text/qwertysyms_q,!text/number_1" />
         </case>
         <default>
             <Key
                 latin:keySpec="\'"
-                latin:keyHintLabel="1"
-                latin:additionalMoreKeys="1"
-                latin:moreKeys="!,&quot;" />
+                latin:moreKeys="!text/qwertysyms_q,!text/number_1" />
         </default>
     </switch>
     <switch>
@@ -60,24 +55,18 @@
         >
             <Key
                 latin:keySpec="&lt;"
-                latin:keyHintLabel="2"
-                latin:additionalMoreKeys="2" />
+                latin:moreKeys="!text/qwertysyms_w,!text/number_2" />
             <Key
                 latin:keySpec="&gt;"
-                latin:keyHintLabel="3"
-                latin:additionalMoreKeys="3" />
+                latin:moreKeys="!text/qwertysyms_e,!text/number_3" />
         </case>
         <default>
             <Key
                 latin:keySpec=","
-                latin:keyHintLabel="2"
-                latin:additionalMoreKeys="2"
-                latin:moreKeys="\?,&lt;" />
+                latin:moreKeys="!text/qwertysyms_w,!text/number_2" />
             <Key
                 latin:keySpec="."
-                latin:keyHintLabel="3"
-                latin:additionalMoreKeys="3"
-                latin:moreKeys="&gt;" />
+                latin:moreKeys="!text/qwertysyms_e,!text/number_3" />
         </default>
     </switch>
 </merge>

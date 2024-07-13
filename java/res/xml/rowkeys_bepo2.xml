@@ -18,49 +18,32 @@
 >
     <Key
         latin:keySpec="a"
-        latin:keyHintLabel="\@"
-        latin:additionalMoreKeys="\\@"
-        latin:moreKeys="!text/morekeys_a" />
+        latin:moreKeys="!text/qwertysyms_a,!text/morekeys_a,!text/morekeys_misc_a,!text/actions_a" />
     <Key
         latin:keySpec="u"
-        latin:keyHintLabel="#"
-        latin:additionalMoreKeys="#"
-        latin:moreKeys="!text/morekeys_u" />
+        latin:moreKeys="!text/qwertysyms_s,!text/morekeys_u,!text/morekeys_misc_u,!text/actions_y" />
     <Key
         latin:keySpec="i"
-        latin:keyHintLabel="$"
-        latin:additionalMoreKeys="&#x24;,&#x20AC;,&#x00A3;,&#x00A5;,&#x00A2;"
-        latin:moreKeys="!text/morekeys_i" />
+        latin:moreKeys="!text/qwertysyms_d,!text/morekeys_i,!text/morekeys_misc_i,!text/actions_i" />
     <Key
         latin:keySpec="e"
-        latin:keyHintLabel="%"
-        latin:additionalMoreKeys="%"
-        latin:moreKeys="!text/morekeys_e" />
+        latin:moreKeys="!text/qwertysyms_f,!text/morekeys_e,!text/morekeys_misc_e,!text/actions_e" />
     <Key
         latin:keySpec="c"
-        latin:keyHintLabel="&amp;"
-        latin:additionalMoreKeys="&amp;,|"
-        latin:moreKeys="!text/morekeys_c" />
+        latin:moreKeys="!text/qwertysyms_g,!text/morekeys_c,!text/morekeys_misc_c,!text/actions_c" />
     <Key
         latin:keySpec="t"
-        latin:keyHintLabel="-"
-        latin:additionalMoreKeys="-,&#x2013;,&#x2014;,_"
-        latin:moreKeys="!text/morekeys_t" />
+        latin:moreKeys="!text/qwertysyms_h,!text/morekeys_t,!text/actions_t" />
     <Key
         latin:keySpec="s"
-        latin:keyHintLabel="+"
-        latin:additionalMoreKeys="+,="
-        latin:moreKeys="!text/morekeys_s" />
+        latin:moreKeys="!text/qwertysyms_j,!text/morekeys_s,!text/morekeys_misc_s,!text/actions_s" />>
     <Key
         latin:keySpec="r"
-        latin:keyHintLabel="("
-        latin:additionalMoreKeys="(,[,{,&#x3c;"
-        latin:moreKeys="!text/morekeys_r" />
+        latin:moreKeys="!text/qwertysyms_k,!text/morekeys_r,!text/actions_r" />
     <Key
         latin:keySpec="n"
-        latin:keyHintLabel=")"
-        latin:additionalMoreKeys="),],},&#x3e;"
-        latin:moreKeys="!text/morekeys_n" />
+        latin:moreKeys="!text/qwertysyms_l,!text/morekeys_n,!text/actions_n" />
     <Key
-        latin:keySpec="m" />
+        latin:keySpec="m"
+        latin:moreKeys="!text/morekeys_c,!text/actions_m" />
 </merge>

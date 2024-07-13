@@ -25,35 +25,23 @@
         latin:keyboardLayout="@xml/keys_dvorak_123" />
     <Key
         latin:keySpec="p"
-        latin:keyHintLabel="4"
-        latin:additionalMoreKeys="4" />
+        latin:moreKeys="!text/morekeys_p,!text/qwertysyms_r,!text/number_4,!text/actions_p" />
     <Key
         latin:keySpec="y"
-        latin:keyHintLabel="5"
-        latin:additionalMoreKeys="5"
-        latin:moreKeys="!text/morekeys_y" />
+        latin:moreKeys="!text/morekeys_y,!text/qwertysyms_t,!text/number_5,!text/actions_y" />
     <Key
         latin:keySpec="f"
-        latin:keyHintLabel="6"
-        latin:additionalMoreKeys="6" />
+        latin:moreKeys="!text/morekeys_f,!text/qwertysyms_y,!text/number_6,!text/actions_f" />
     <Key
         latin:keySpec="g"
-        latin:keyHintLabel="7"
-        latin:additionalMoreKeys="7"
-        latin:moreKeys="!text/morekeys_g" />
+        latin:moreKeys="!text/morekeys_g,!text/qwertysyms_u,!text/number_7,!text/actions_g" />
     <Key
         latin:keySpec="c"
-        latin:keyHintLabel="8"
-        latin:additionalMoreKeys="8"
-        latin:moreKeys="!text/morekeys_c" />
+        latin:moreKeys="!text/morekeys_c,!text/morekeys_misc_c,!text/qwertysyms_i,!text/number_8,!text/actions_c" />
     <Key
         latin:keySpec="r"
-        latin:keyHintLabel="9"
-        latin:additionalMoreKeys="9"
-        latin:moreKeys="!text/morekeys_r" />
+        latin:moreKeys="!text/morekeys_r,!text/qwertysyms_o,!text/number_9,!text/actions_r" />
     <Key
         latin:keySpec="l"
-        latin:keyHintLabel="0"
-        latin:additionalMoreKeys="0"
-        latin:moreKeys="!text/morekeys_l" />
+        latin:moreKeys="!text/morekeys_l,!text/qwertysyms_p,!text/number_0,!text/actions_l" />
 </merge>

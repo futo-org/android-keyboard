@@ -23,32 +23,32 @@
 >
     <Key
         latin:keySpec="a"
-        latin:moreKeys="!text/morekeys_a" />
+        latin:moreKeys="!text/morekeys_a,!text/morekeys_misc_a,!text/actions_a,!text/qwertysyms_a" />
     <Key
         latin:keySpec="o"
-        latin:moreKeys="!text/morekeys_o" />
+        latin:moreKeys="!text/morekeys_o,!text/morekeys_misc_o,!text/actions_o,!text/qwertysyms_s" />
     <Key
         latin:keySpec="e"
-        latin:moreKeys="!text/morekeys_e" />
+        latin:moreKeys="!text/morekeys_e,!text/morekeys_misc_e,!text/actions_e,!text/qwertysyms_d" />
     <Key
         latin:keySpec="u"
-        latin:moreKeys="!text/morekeys_u" />
+        latin:moreKeys="!text/morekeys_u,!text/morekeys_misc_u,!text/actions_u,!text/qwertysyms_f" />
     <Key
         latin:keySpec="i"
-        latin:moreKeys="!text/morekeys_i" />
+        latin:moreKeys="!text/morekeys_i,!text/morekeys_misc_i,!text/actions_i,!text/qwertysyms_g" />
     <Key
         latin:keySpec="d"
-        latin:moreKeys="!text/morekeys_d" />
+        latin:moreKeys="!text/morekeys_d,!text/actions_d,!text/qwertysyms_h" />
     <Key
         latin:keySpec="h"
-        latin:moreKeys="!text/morekeys_h" />
+        latin:moreKeys="!text/morekeys_h,!text/actions_h,!text/qwertysyms_j" />
     <Key
         latin:keySpec="t"
-        latin:moreKeys="!text/morekeys_t" />
+        latin:moreKeys="!text/morekeys_t,!text/actions_t,!text/qwertysyms_k" />
     <Key
         latin:keySpec="n"
-        latin:moreKeys="!text/morekeys_n" />
+        latin:moreKeys="!text/morekeys_n,!text/morekeys_misc_n,!text/actions_n,!text/qwertysyms_l" />
     <Key
         latin:keySpec="s"
-        latin:moreKeys="!text/morekeys_s" />
+        latin:moreKeys="!text/morekeys_s,!text/morekeys_misc_s,!text/actions_s" />
 </merge>
