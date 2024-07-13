@@ -25,46 +25,7 @@
         <case
             latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
             >
-            <Key
-                latin:keySpec="1"
-                latin:additionalMoreKeys="!,!text/morekeys_exclamation"
-                latin:moreKeys="!text/morekeys_symbols_1" />
-            <Key
-                latin:keySpec="2"
-                latin:additionalMoreKeys="\@"
-                latin:moreKeys="!text/morekeys_symbols_2" />
-            <Key
-                latin:keySpec="3"
-                latin:additionalMoreKeys="\#"
-                latin:moreKeys="!text/morekeys_symbols_3" />
-            <Key
-                latin:keySpec="4"
-                latin:additionalMoreKeys="$"
-                latin:moreKeys="!text/morekeys_symbols_4" />
-            <Key
-                latin:keySpec="5"
-                latin:additionalMoreKeys="\\%"
-                latin:moreKeys="!text/morekeys_symbols_5" />
-            <Key
-                latin:keySpec="6"
-                latin:additionalMoreKeys="^"
-                latin:moreKeys="!text/morekeys_symbols_6" />
-            <Key
-                latin:keySpec="7"
-                latin:additionalMoreKeys="&amp;"
-                latin:moreKeys="!text/morekeys_symbols_7" />
-            <Key
-                latin:keySpec="8"
-                latin:additionalMoreKeys="*"
-                latin:moreKeys="!text/morekeys_symbols_8" />
-            <Key
-                latin:keySpec="9"
-                latin:additionalMoreKeys="("
-                latin:moreKeys="!text/morekeys_symbols_9" />
-            <Key
-                latin:keySpec="0"
-                latin:additionalMoreKeys=")"
-                latin:moreKeys="!text/morekeys_symbols_0" />
+            <include latin:keyboardLayout="@xml/rowkeys_symbols1" />
         </case>
         <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted" -->
         <default>
