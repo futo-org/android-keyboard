@@ -243,6 +243,10 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         uixManager.activeDialogRequestDismissed.value = false
     }
 
+    override fun openInputMethodPicker() {
+        uixManager.showLanguageSwitcher()
+    }
+
     override fun announce(s: String) {
         AccessibilityUtils.init(getContext())
         if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
@@ -666,14 +670,20 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    fun triggerAction(id: Int) {
+    fun triggerAction(id: Int, alt: Boolean) {
         val action = AllActions.getOrNull(id) ?: throw IllegalArgumentException("No such action with ID $id")
 
-        if(currWindowAction != null && action.windowImpl != null) {
-            closeActionWindow()
-        }
+        if(alt) {
+            if(action.altPressImpl != null) {
+                action.altPressImpl.invoke(keyboardManagerForAction, persistentStates[action])
+            }
+        } else {
+            if (currWindowAction != null && action.windowImpl != null) {
+                closeActionWindow()
+            }
 
-        onActionActivated(action)
+            onActionActivated(action)
+        }
     }
 
     fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {

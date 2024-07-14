@@ -535,7 +535,14 @@ public class LatinIMELegacy implements KeyboardActionListener,
         public void triggerAction(int actionId) {
             final LatinIMELegacy latinImeLegacy = getOwnerInstance();
             if (latinImeLegacy != null) {
-                ((LatinIME) (latinImeLegacy.getInputMethodService())).getUixManager().triggerAction(actionId);
+                ((LatinIME) (latinImeLegacy.getInputMethodService())).getUixManager().triggerAction(actionId, false);
+            }
+        }
+
+        public void triggerActionAlt(int actionId) {
+            final LatinIMELegacy latinImeLegacy = getOwnerInstance();
+            if (latinImeLegacy != null) {
+                ((LatinIME) (latinImeLegacy.getInputMethodService())).getUixManager().triggerAction(actionId, true);
             }
         }
     }
@@ -1355,12 +1362,24 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mInputLogic.restartSuggestionsOnWordTouchedByCursor(mSettings.getCurrent(), false, mKeyboardSwitcher.getCurrentKeyboardScriptId());
     }
 
+    @Override
+    public void onSwipeLanguage(int direction) {
+        Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, direction);
+    }
+
+    @Override
+    public void onMovingCursorLockEvent(boolean canMoveCursor) {
+        if(canMoveCursor) {
+            hapticAndAudioFeedback(Constants.CODE_UNSPECIFIED, 0);
+        }
+    }
+
     private boolean isShowingOptionDialog() {
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
     public void switchToNextSubtype() {
-        SwitchLanguageActionKt.switchToNextLanguage(mInputMethodService);
+        Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, 1);
     }
 
     // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for

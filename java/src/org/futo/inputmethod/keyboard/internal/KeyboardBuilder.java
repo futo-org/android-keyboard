@@ -186,7 +186,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         mParams.mKeyStyles.addDynamicKeyStyle("bottomEmojiKeyStyle",
                 actionKeySpec,
                 2,
-                2);
+                0x02 | 0x08);
 
         final XmlResourceParser parser = mResources.getXml(xmlId);
         try {

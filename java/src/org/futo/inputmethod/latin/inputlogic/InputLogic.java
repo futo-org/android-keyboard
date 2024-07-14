@@ -683,6 +683,13 @@ public final class InputLogic {
             return;
         }
 
+        if(event.mKeyCode <= Constants.CODE_ALT_ACTION_MAX && event.mKeyCode >= Constants.CODE_ALT_ACTION_0) {
+            final int actionId = event.mKeyCode - Constants.CODE_ALT_ACTION_0;
+            handler.triggerActionAlt(actionId);
+
+            return;
+        }
+
         switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
                 handleBackspaceEvent(event, inputTransaction, currentKeyboardScriptId);

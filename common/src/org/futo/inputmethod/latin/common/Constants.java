@@ -251,6 +251,9 @@ public final class Constants {
     public static final int CODE_ACTION_0 = -1050;
     public static final int CODE_ACTION_MAX = CODE_ACTION_0 + 100;
 
+    public static final int CODE_ALT_ACTION_0 = -2050;
+    public static final int CODE_ALT_ACTION_MAX = CODE_ALT_ACTION_0 + 100;
+
     public static boolean isLetterCode(final int code) {
         return code >= CODE_SPACE;
     }

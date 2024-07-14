@@ -61,6 +61,7 @@ interface KeyboardManagerForAction {
     fun unsetInputConnection()
 
     fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit)
+    fun openInputMethodPicker()
 }
 
 interface ActionWindow {
@@ -105,5 +106,6 @@ data class Action(
     val windowImpl: ((KeyboardManagerForAction, PersistentActionState?) -> ActionWindow)?,
     val simplePressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)?,
     val persistentState: ((KeyboardManagerForAction) -> PersistentActionState)? = null,
-    val persistentStateInitialization: PersistentStateInitialization = PersistentStateInitialization.OnActionTrigger
+    val persistentStateInitialization: PersistentStateInitialization = PersistentStateInitialization.OnActionTrigger,
+    val altPressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)? = null,
 )

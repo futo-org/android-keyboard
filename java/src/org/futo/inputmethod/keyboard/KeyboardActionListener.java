@@ -105,6 +105,8 @@ public interface KeyboardActionListener {
     public void onMoveDeletePointer(int steps);
     public void onUpWithDeletePointerActive();
     public void onUpWithPointerActive();
+    public void onSwipeLanguage(int direction);
+    public void onMovingCursorLockEvent(boolean canMoveCursor);
 
     public static final KeyboardActionListener EMPTY_LISTENER = new Adapter();
 
@@ -139,5 +141,9 @@ public interface KeyboardActionListener {
         public void onUpWithDeletePointerActive() {}
         @Override
         public void onUpWithPointerActive() {}
+        @Override
+        public void onSwipeLanguage(int direction) {}
+        @Override
+        public void onMovingCursorLockEvent(boolean canMoveCursor) {}
     }
 }

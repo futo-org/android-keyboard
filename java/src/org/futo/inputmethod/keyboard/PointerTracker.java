@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.common.CoordinateUtils;
 import org.futo.inputmethod.latin.common.InputPointers;
 import org.futo.inputmethod.latin.define.DebugFlags;
 import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.ArrayList;
@@ -86,6 +87,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     // Parameters for pointer handling.
     private static PointerTrackerParams sParams;
     private static final int sPointerStep = (int)(16.0 * Resources.getSystem().getDisplayMetrics().density);
+    private static final int sPointerBigStep = (int)(32.0 * Resources.getSystem().getDisplayMetrics().density);
+    private static final int sPointerHugeStep = Integer.min(
+            (int)(128.0 * Resources.getSystem().getDisplayMetrics().density),
+            Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 2
+    );
 
     private static GestureStrokeRecognitionParams sGestureStrokeRecognitionParams;
     private static GestureStrokeDrawingParams sGestureStrokeDrawingParams;
@@ -135,6 +141,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private int mStartY;
     private long mStartTime;
     private boolean mCursorMoved = false;
+    private boolean mSpacebarLongPressed = false;
 
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
@@ -705,6 +712,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mStartX = x;
             mStartY = y;
             mStartTime = System.currentTimeMillis();
+            mSpacebarLongPressed = false;
 
             mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
             mCurrentKey = key;
@@ -910,25 +918,48 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int lastY = mLastY;
         final Key oldKey = mCurrentKey;
 
+        final SettingsValues settingsValues = Settings.getInstance().getCurrent();
+
         if (mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_SPACE) {
-            int steps = (x - mStartX) / sPointerStep;
-            final int swipeIgnoreTime = Settings.getInstance().getCurrent().mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
+            int pointerStep = sPointerStep;
+            if(settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE && !mSpacebarLongPressed) {
+                pointerStep = sPointerHugeStep;
+            }
+
+            int steps = (x - mStartX) / pointerStep;
+            final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
             if (steps != 0 && mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
                 mCursorMoved = true;
-                mStartX += steps * sPointerStep;
-                sListener.onMovePointer(steps);
+                mStartX += steps * pointerStep;
+
+                if(settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE && !mSpacebarLongPressed) {
+                    sListener.onSwipeLanguage(steps);
+                } else {
+                    sListener.onMovePointer(steps);
+                }
             }
+
+            mLastX = x;
+            mLastY = y;
             return;
         }
 
         if (mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_DELETE) {
-            int steps = (x - mStartX) / sPointerStep;
+            int pointerStep = sPointerStep;
+            if(settingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS) {
+                pointerStep = sPointerBigStep;
+            }
+
+            int steps = (x - mStartX) / pointerStep;
             if (steps != 0) {
                 sTimerProxy.cancelKeyTimersOf(this);
                 mCursorMoved = true;
-                mStartX += steps * sPointerStep;
+                mStartX += steps * pointerStep;
                 sListener.onMoveDeletePointer(steps);
             }
+
+            mLastX = x;
+            mLastY = y;
             return;
         }
 
@@ -1086,12 +1117,33 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
+            int spacebarMode = Settings.getInstance().getCurrent().mSpacebarMode;
+            if(spacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE) {
+                mSpacebarLongPressed = true;
+                mStartX = mLastX;
+                mStartY = mLastY;
+                sListener.onMovingCursorLockEvent(true);
+                return;
+            }else if(spacebarMode == Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY) {
+                return;
+            }
+
             // Long pressing the space key invokes IME switcher dialog.
             if (sListener.onCustomRequest(Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER)) {
                 cancelKeyTracking();
                 sListener.onReleaseKey(code, false /* withSliding */);
                 return;
             }
+        }
+
+        if (code > Constants.CODE_ACTION_0 && code < Constants.CODE_ACTION_MAX) {
+            cancelKeyTracking();
+            sListener.onCodeInput(
+                    code - Constants.CODE_ACTION_0 + Constants.CODE_ALT_ACTION_0,
+                    Constants.NOT_A_COORDINATE,
+                    Constants.NOT_A_COORDINATE,
+                    false /* isKeyRepeat */);
+            return;
         }
 
         setReleasedKeyGraphics(key, false /* withAnimation */);
@@ -1195,6 +1247,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         if (mIsInSlidingKeyInput) {
             // We use longer timeout for sliding finger input started from the modifier key.
             return longpressTimeout * MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
+        }
+
+        if (code == Constants.CODE_SPACE) {
+            return longpressTimeout * 2;
         }
         return longpressTimeout;
     }

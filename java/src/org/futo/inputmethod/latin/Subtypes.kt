@@ -47,6 +47,7 @@ import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
 import java.util.Locale
+import kotlin.math.sign
 
 fun Locale.stripExtensionsIfNeeded(): Locale {
     val newLocale = if(Build.VERSION.SDK_INT >= 26) {
@@ -251,6 +252,23 @@ object Subtypes {
         return layouts
     }
 
+    fun switchToNextLanguage(context: Context, direction: Int) {
+        if(direction == 0) return
+
+        val enabledSubtypes = context.getSettingBlocking(SubtypesSetting).toList()
+        val currentSubtype = context.getSettingBlocking(ActiveSubtype)
+
+        val index = enabledSubtypes.indexOf(currentSubtype)
+        val nextIndex = if(index == -1) {
+            0
+        } else {
+            (index + direction.sign).mod(enabledSubtypes.size)
+        }
+
+        if(enabledSubtypes.isEmpty()) return
+
+        context.setSettingBlocking(ActiveSubtype.key, enabledSubtypes[nextIndex])
+    }
 }
 
 
