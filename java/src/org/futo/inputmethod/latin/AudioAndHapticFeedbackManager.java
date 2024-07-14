@@ -60,7 +60,7 @@ public final class AudioAndHapticFeedbackManager {
 
     public void performHapticAndAudioFeedback(final int code,
             final View viewToPerformHapticFeedbackOn) {
-        performHapticFeedback(viewToPerformHapticFeedbackOn);
+        performHapticFeedback(viewToPerformHapticFeedbackOn, false);
         performAudioFeedback(code);
     }
 
@@ -108,12 +108,12 @@ public final class AudioAndHapticFeedbackManager {
         mAudioManager.playSoundEffect(sound, mSettingsValues.mKeypressSoundVolume);
     }
 
-    public void performHapticFeedback(final View viewToPerformHapticFeedbackOn) {
+    public void performHapticFeedback(final View viewToPerformHapticFeedbackOn, final boolean repeatKey) {
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
         if (mSettingsValues.mKeypressVibrationDuration >= 0) {
-            vibrate(mSettingsValues.mKeypressVibrationDuration);
+            vibrate(mSettingsValues.mKeypressVibrationDuration / (repeatKey ? 2 : 1));
             return;
         }
         // Go ahead with the system default

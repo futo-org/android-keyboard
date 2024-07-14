@@ -1304,14 +1304,12 @@ public class LatinIMELegacy implements KeyboardActionListener,
     @Override
     public void onMoveDeletePointer(int steps) {
         if (mInputLogic.mConnection.hasCursorPosition()) {
-            steps = mInputLogic.mConnection.getUnicodeSteps(steps, false);
-            final int end = mInputLogic.mConnection.getExpectedSelectionEnd();
-            final int start = mInputLogic.mConnection.getExpectedSelectionStart() + steps;
-            if (start > end)
-                return;
-
-            mInputLogic.finishInput();
-            mInputLogic.mConnection.setSelection(start, end);
+            boolean stepOverWords = mSettings.getCurrent().mBackspaceMode == Settings.BACKSPACE_MODE_WORDS;
+            if(steps < 0) {
+                mInputLogic.cursorLeft(steps, stepOverWords, true);
+            } else {
+                mInputLogic.cursorRight(steps, stepOverWords, true);
+            }
         } else {
             for (; steps < 0; steps++)
                 onCodeInput(
@@ -1691,10 +1689,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         }
         final AudioAndHapticFeedbackManager feedbackManager =
                 AudioAndHapticFeedbackManager.getInstance();
-        if (repeatCount == 0) {
-            // TODO: Reconsider how to perform haptic feedback when repeating key.
-            feedbackManager.performHapticFeedback(keyboardView);
-        }
+        feedbackManager.performHapticFeedback(keyboardView, repeatCount > 0);
         feedbackManager.performAudioFeedback(code);
     }
 

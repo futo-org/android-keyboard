@@ -1077,7 +1077,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public int getUnicodeSteps(int chars, boolean rightSidePointer) {
         int steps = 0;
         if (chars < 0) {
-            CharSequence charsBeforeCursor = rightSidePointer && hasSelection() ?
+            CharSequence charsBeforeCursor = !rightSidePointer && hasSelection() ?
                     getSelectedText(0) :
                     getTextBeforeCursor(-chars * 2, 0);
             if (charsBeforeCursor != null) {
@@ -1089,7 +1089,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 }
             }
         } else if (chars > 0) {
-            CharSequence charsAfterCursor = !rightSidePointer && hasSelection() ?
+            CharSequence charsAfterCursor = rightSidePointer && hasSelection() ?
                     getSelectedText(0) :
                     getTextAfterCursor(chars * 2, 0);
             if (charsAfterCursor != null) {
@@ -1105,7 +1105,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     private int getCharacterClass(char c) {
-        if(Character.isLetter(c) || c == '_' || Character.isDigit(c)) return 1;
+        if(Character.isLetter(c) || c == '_' || Character.isDigit(c) || c == '\'') return 1;
         else if(Character.isWhitespace(c)) return 2;
         else return 3;
     }

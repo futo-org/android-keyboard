@@ -93,6 +93,9 @@ public class SettingsValues {
     public final boolean mIsNumberRowEnabled;
     public final int mScreenMetrics;
 
+    public final int mSpacebarMode;
+    public final int mBackspaceMode;
+
     // From the input box
     @Nonnull
     public final InputAttributes mInputAttributes;
@@ -163,6 +166,9 @@ public class SettingsValues {
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
         mIsSplitKeyboardEnabled = prefs.getBoolean(Settings.PREF_ENABLE_SPLIT_KEYBOARD, false);
         mScreenMetrics = Settings.readScreenMetrics(res);
+
+        mSpacebarMode = prefs.getInt(Settings.PREF_SPACEBAR_MODE, Settings.SPACEBAR_MODE_SWIPE_CURSOR);
+        mBackspaceMode = prefs.getInt(Settings.PREF_BACKSPACE_MODE, Settings.BACKSPACE_MODE_CHARACTERS);
 
         mShouldShowLxxSuggestionUi = Settings.SHOULD_SHOW_LXX_SUGGESTION_UI
                 && prefs.getBoolean(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI, true);

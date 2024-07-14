@@ -114,6 +114,16 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private static final String PREF_CORPUS_HANDLES_FOR_PERSONALIZATION =
             "pref_corpus_handles_for_personalization";
 
+    public static final String PREF_SPACEBAR_MODE = "pref_spacebar_mode";
+    public static final int SPACEBAR_MODE_SWIPE_CURSOR = 0; // Long-Press switches language, swipe moves cursor
+    public static final int SPACEBAR_MODE_SWIPE_LANGUAGE = 1; // Swipe switches language, long-press+drag moves cursor
+    public static final int SPACEBAR_MODE_SWIPE_CURSOR_ONLY = 2; // Swipe and long-press+drag moves cursor
+
+    public static final String PREF_BACKSPACE_MODE = "pref_backspace_mode";
+    public static final int BACKSPACE_MODE_CHARACTERS = 0; // Long-press backspace and swipe backspace removes just characters
+    public static final int BACKSPACE_MODE_WORDS = 1; // Long-press backspace and swipe backspace removes entire words
+
+
     // Emoji
     public static final String PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys";
     public static final String PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id";

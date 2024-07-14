@@ -83,6 +83,7 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingListLazy
+import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
@@ -364,17 +365,43 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
             )
         }
 
-        /*
-        SettingRadio(
-            title = "Spacebar behavior",
-            options = listOf(0, 1, 2),
-            optionNames = listOf(
-                "Swiping moves cursor, long-pressing switches language",
-                "Swiping changes language, long-pressing moves cursor",
-                "Swiping and long-pressing only moves cursor"
-            ),
-            setting =
-        )*/
+        item {
+            SettingRadio(
+                title = "Backspace Behavior when holding/swiping",
+                options = listOf(
+                    Settings.BACKSPACE_MODE_CHARACTERS,
+                    Settings.BACKSPACE_MODE_WORDS
+                ),
+                optionNames = listOf(
+                    "Delete characters",
+                    "Delete entire words"
+                ),
+                setting = useSharedPrefsInt(
+                    key = Settings.PREF_BACKSPACE_MODE,
+                    default = Settings.BACKSPACE_MODE_CHARACTERS
+                )
+            )
+        }
+
+        item {
+            SettingRadio(
+                title = "Spacebar Behavior",
+                options = listOf(
+                    Settings.SPACEBAR_MODE_SWIPE_CURSOR,
+                    Settings.SPACEBAR_MODE_SWIPE_LANGUAGE,
+                    Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY
+                ),
+                optionNames = listOf(
+                    "Swiping moves cursor, long-pressing switches language",
+                    "Swiping changes language, long-pressing moves cursor",
+                    "Swiping and long-pressing only moves cursor"
+                ),
+                setting = useSharedPrefsInt(
+                    key = Settings.PREF_SPACEBAR_MODE,
+                    default = Settings.SPACEBAR_MODE_SWIPE_CURSOR
+                )
+            )
+        }
     }
 }
 

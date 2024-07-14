@@ -49,6 +49,7 @@ import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.InputPointers;
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.define.DebugFlags;
+import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -1053,6 +1054,10 @@ public final class InputLogic {
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
         }
+
+        final boolean deleteWholeWords = event.isKeyRepeat()
+                && Settings.getInstance().getCurrent().mBackspaceMode == Settings.BACKSPACE_MODE_WORDS;
+
         if (mWordComposer.isComposingWord()) {
             if (mWordComposer.isBatchMode()) {
                 final String rejectedSuggestion = mWordComposer.getTypedWord();
@@ -1063,6 +1068,13 @@ public final class InputLogic {
                             Constants.EVENT_REJECTION);
                 }
                 StatsUtils.onBackspaceWordDelete(rejectedSuggestion.length());
+            } else if(deleteWholeWords) {
+                final String removedWord = mWordComposer.getTypedWord();
+                mWordComposer.reset();
+                if (!TextUtils.isEmpty(removedWord)) {
+                    unlearnWord(removedWord, inputTransaction.mSettingsValues,
+                            Constants.EVENT_BACKSPACE);
+                }
             } else {
                 mWordComposer.applyProcessedEvent(event);
                 StatsUtils.onBackspacePressed(1);
@@ -1195,12 +1207,22 @@ public final class InputLogic {
                             Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
 
                     // Handle emoji sequences (flags, etc)
-                    CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(8, 0);
+                    CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(deleteWholeWords ? 48 : 8, 0);
                     if (textBeforeCursor != null && textBeforeCursor.length() > 0) {
-                        BreakIterator breakIterator = BreakIterator.getCharacterInstance();
+                        BreakIterator breakIterator;
+
+                        if(deleteWholeWords) {
+                            breakIterator = BreakIterator.getWordInstance();
+                        } else {
+                            breakIterator = BreakIterator.getCharacterInstance();
+                        }
                         breakIterator.setText(textBeforeCursor.toString());
                         int end = breakIterator.last();
                         int start = breakIterator.previous();
+
+                        if(deleteWholeWords && textBeforeCursor.subSequence(start, end).toString().equals(" ")) {
+                            start = breakIterator.previous();
+                        }
 
                         if (start != BreakIterator.DONE) {
                             lengthToDelete = end - start;

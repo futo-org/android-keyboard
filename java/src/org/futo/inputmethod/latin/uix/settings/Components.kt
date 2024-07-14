@@ -282,15 +282,13 @@ fun<T> SettingRadio(
     title: String,
     options: List<T>,
     optionNames: List<String>,
-    setting: SettingsKey<T>,
+    setting: DataStoreItem<T>,
 ) {
-    val (value, setValue) = useDataStore(key = setting.key, default = setting.default)
-
     ScreenTitle(title, showBack = false)
     Column {
         options.zip(optionNames).forEach {
-            SettingItem(title = it.second, onClick = { setValue(it.first) }, icon = {
-                RadioButton(selected = value == it.first, onClick = null)
+            SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
+                RadioButton(selected = setting.value == it.first, onClick = null)
             }) {
                 
             }

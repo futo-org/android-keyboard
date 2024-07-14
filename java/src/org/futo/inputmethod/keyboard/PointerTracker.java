@@ -1217,7 +1217,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         // Don't start key repeat when we are in the dragging finger mode.
         if (mIsInDraggingFinger) return;
         final int startRepeatCount = 1;
-        startKeyRepeatTimer(startRepeatCount);
+        startKeyRepeatTimer(key.getCode(), startRepeatCount);
     }
 
     public void onKeyRepeat(final int code, final int repeatCount) {
@@ -1229,15 +1229,20 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         mCurrentRepeatingKeyCode = code;
         mIsDetectingGesture = false;
         final int nextRepeatCount = repeatCount + 1;
-        startKeyRepeatTimer(nextRepeatCount);
+        startKeyRepeatTimer(code, nextRepeatCount);
         callListenerOnPressAndCheckKeyboardLayoutChange(key, repeatCount);
         callListenerOnCodeInput(key, code, mKeyX, mKeyY, SystemClock.uptimeMillis(),
                 true /* isKeyRepeat */);
     }
 
-    private void startKeyRepeatTimer(final int repeatCount) {
-        final int delay =
-                (repeatCount == 1) ? sParams.mKeyRepeatStartTimeout : sParams.mKeyRepeatInterval;
+    private void startKeyRepeatTimer(final int code, final int repeatCount) {
+        int delay = (repeatCount == 1) ? sParams.mKeyRepeatStartTimeout : sParams.mKeyRepeatInterval;
+
+        // Slow down the repeat key if we are deleting whole words
+        if(code == Constants.CODE_DELETE && Settings.getInstance().getCurrent().mBackspaceMode == Settings.BACKSPACE_MODE_WORDS && repeatCount > 1) {
+            delay = (int)((float)delay * (7.0f * (1.0f / ((float)(repeatCount - 1))) + 1.0f));
+        }
+
         sTimerProxy.startKeyRepeatTimerOf(this, repeatCount, delay);
     }
 
