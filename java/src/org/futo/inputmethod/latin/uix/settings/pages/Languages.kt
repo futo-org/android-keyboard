@@ -59,6 +59,7 @@ import org.futo.inputmethod.latin.uix.namePreferenceKeyFor
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.openModelImporter
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
@@ -209,7 +210,12 @@ fun LanguageSurface(
     ) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
             Text(item.languageName, modifier = Modifier.padding(start = 16.dp, end = 16.dp), style = TextHeadingMediumMlStyle)
-            Spacer(modifier = Modifier.height(32.dp))
+
+            if(item.options.dictionary == null) {
+                Tip("This language has no built-in dictionary. We recommend downloading and importing one to get autocorrect and word suggestions.")
+            } else {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
 
             LanguageConfigurable(kind = FileKind.VoiceInput, selection = item.options.voiceInputModel ?: "(None)") { onConfigurableSelected(FileKind.VoiceInput) }
             LanguageConfigurable(kind = FileKind.Dictionary, selection = item.options.dictionary ?: "(None)") { onConfigurableSelected(FileKind.Dictionary) }
