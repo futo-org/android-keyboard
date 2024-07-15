@@ -1,11 +1,11 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,14 +17,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -42,7 +40,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -62,12 +59,12 @@ import org.futo.inputmethod.latin.uix.namePreferenceKeyFor
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
-import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.openModelImporter
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
+import org.futo.inputmethod.latin.uix.urlEncode
 import org.futo.inputmethod.latin.uix.youAreImporting
 import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.xlm.ModelPaths
@@ -92,9 +89,11 @@ val TextBodyRegularMlStyle = Typography.titleMedium.copy(fontWeight = FontWeight
 @Composable
 fun LanguageConfigurable(
     kind: FileKind,
-    selection: String
+    selection: String,
+    onSelected: () -> Unit
 ) {
     Row(modifier = Modifier
+        .clickable(enabled = true) { onSelected() }
         .padding(start = 16.dp, top = 8.dp, end = 6.dp, bottom = 8.dp)
         .defaultMinSize(0.dp, 50.dp)) {
         Column(modifier = Modifier
@@ -140,7 +139,9 @@ fun LanguageConfigurable(
 @Composable
 fun LayoutConfigurable(
     name: String,
-    active: Boolean
+    active: Boolean,
+    onDelete: () -> Unit,
+    canDelete: Boolean
 ) {
     Row(modifier = Modifier
         .padding(start = 16.dp, end = 6.dp)
@@ -153,11 +154,13 @@ fun LayoutConfigurable(
 
         Spacer(modifier = Modifier.weight(1.0f))
 
-        Switch(checked = active, onCheckedChange = {}, modifier = Modifier.align(Alignment.CenterVertically))
+        //Switch(checked = active, onCheckedChange = {}, modifier = Modifier.align(Alignment.CenterVertically))
         Spacer(modifier = Modifier.width(8.dp))
 
-        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.align(Alignment.CenterVertically)) {
-            Icon(painterResource(id = R.drawable.trash), contentDescription = null)
+        if(canDelete) {
+            IconButton(onClick = onDelete, modifier = Modifier.align(Alignment.CenterVertically)) {
+                Icon(painterResource(id = R.drawable.trash), contentDescription = null)
+            }
         }
     }
 }
@@ -166,9 +169,10 @@ fun LayoutConfigurable(
 fun ActionableItem(
     icon: Painter,
     text: String,
-    color: Color
+    color: Color,
+    onTrigger: () -> Unit
 ) {
-    TextButton(onClick = { /*TODO*/ }, colors = ButtonColors(
+    TextButton(onClick = onTrigger, colors = ButtonColors(
         containerColor = Color.Transparent,
         contentColor = color,
         disabledContainerColor = Color.Transparent,
@@ -185,24 +189,31 @@ fun ActionableItem(
 }
 
 @Composable
-fun LanguageSurface(item: LanguageItem, modifier: Modifier = Modifier) {
+fun LanguageSurface(
+    item: LanguageItem,
+    modifier: Modifier = Modifier,
+    onConfigurableSelected: (FileKind) -> Unit,
+    onLayoutRemoved: (String) -> Unit,
+    onLayoutAdditionRequested: () -> Unit,
+    onLanguageRemoved: () -> Unit
+) {
     Column(
         modifier
             .padding(start = 32.dp, end = 32.dp)
             .widthIn(296.dp, 400.dp)
             .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(size = 16.dp)
             )
             .padding(top = 14.dp, bottom = 12.dp)
     ) {
-        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondaryContainer) {
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
             Text(item.languageName, modifier = Modifier.padding(start = 16.dp, end = 16.dp), style = TextHeadingMediumMlStyle)
             Spacer(modifier = Modifier.height(32.dp))
 
-            LanguageConfigurable(kind = FileKind.VoiceInput, selection = item.options.voiceInputModel ?: "(None)")
-            LanguageConfigurable(kind = FileKind.Dictionary, selection = item.options.dictionary ?: "(None)")
-            LanguageConfigurable(kind = FileKind.Transformer, selection = item.options.transformerModel ?: "(None)")
+            LanguageConfigurable(kind = FileKind.VoiceInput, selection = item.options.voiceInputModel ?: "(None)") { onConfigurableSelected(FileKind.VoiceInput) }
+            LanguageConfigurable(kind = FileKind.Dictionary, selection = item.options.dictionary ?: "(None)") { onConfigurableSelected(FileKind.Dictionary) }
+            LanguageConfigurable(kind = FileKind.Transformer, selection = item.options.transformerModel ?: "(None)") { onConfigurableSelected(FileKind.Transformer) }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -217,7 +228,7 @@ fun LanguageSurface(item: LanguageItem, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(9.dp))
 
             item.layouts.forEach {
-                LayoutConfigurable(name = it, active = true)
+                LayoutConfigurable(name = it, active = true, onDelete = { onLayoutRemoved(it) }, canDelete = item.layouts.size > 1)
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
@@ -226,7 +237,8 @@ fun LanguageSurface(item: LanguageItem, modifier: Modifier = Modifier) {
             ActionableItem(
                 icon = painterResource(id = R.drawable.plus_circle),
                 text = "Add Keyboard Layout",
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                onTrigger = onLayoutAdditionRequested
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -234,7 +246,8 @@ fun LanguageSurface(item: LanguageItem, modifier: Modifier = Modifier) {
             ActionableItem(
                 icon = painterResource(id = R.drawable.trash),
                 text = "Remove Language",
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
+                onTrigger = onLanguageRemoved
             )
         }
     }
@@ -255,7 +268,7 @@ fun LanguageSurfacePreview() {
                 "Keyboard Name",
                 "Keyboard Name"
             )
-        ))
+        ), onLanguageRemoved = { }, onLayoutRemoved = { }, onConfigurableSelected = { }, onLayoutAdditionRequested = { })
     }
 }
 
@@ -336,6 +349,40 @@ fun ConfirmResourceActionDialog(
     )
 }
 
+
+@Composable
+fun ConfirmDeleteLanguageDialog(
+    onDismissRequest: () -> Unit,
+    onDelete: () -> Unit,
+    locale: Locale
+) {
+    AlertDialog(
+        icon = {
+            Icon(painterResource(id = R.drawable.trash), contentDescription = null)
+        },
+        title = {
+            Text(text = "Delete ${locale.displayLanguage}?")
+        },
+        text = {
+            Text(text = "Remove ${locale.displayLanguage}, all of its associated layouts and custom resources?")
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(onClick = onDelete) {
+                Text("Remove")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+
 data class DeleteInfo(
     val locale: Locale,
     val kind: FileKind
@@ -346,6 +393,7 @@ data class DeleteInfo(
 fun LanguagesScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val deleteDialogInfo: MutableState<DeleteInfo?> = remember { mutableStateOf(null) }
+    val languageDeleteInfo: MutableState<Locale?> = remember { mutableStateOf(null) }
 
     val inputMethods = useDataStoreValueBlocking(SubtypesSetting)
     val inputMethodList = remember(inputMethods) {
@@ -374,6 +422,26 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             resourceKind = info.kind,
             locale = info.locale,
             isCurrentlySet = runBlocking { ResourceHelper.findFileForKind(context, info.locale, info.kind)?.exists() == true }
+        )
+    }else if(languageDeleteInfo.value != null) {
+        val info = languageDeleteInfo.value!!
+        ConfirmDeleteLanguageDialog(
+            locale = info,
+            onDelete = {
+                languageDeleteInfo.value = null
+
+                val key = inputMethodKeys.find { localeString ->
+                    Subtypes.getLocale(localeString) == info
+                }
+
+                if(key != null) {
+                    val subtypes = inputMethodList[key]!!
+                    subtypes.forEach { Subtypes.removeLanguage(context, it) }
+                }
+            },
+            onDismissRequest = {
+                languageDeleteInfo.value = null
+            }
         )
     }
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -417,7 +485,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 transformerModel = transformerName
             )
 
-            /*
+
             Spacer(modifier = Modifier.height(12.dp))
 
             LanguageSurface(
@@ -431,89 +499,30 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                         )
                     }
                 ),
+                onLanguageRemoved = {
+                    languageDeleteInfo.value = locale
+                },
+                onLayoutRemoved = { layout ->
+                    val subtype = subtypes.find {
+                        Subtypes.getLayoutName(
+                            context,
+                            it.getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET) ?: "default"
+                        ) == layout
+                    }
+
+                    if(subtype != null) {
+                        Subtypes.removeLanguage(context, subtype)
+                    }
+                },
+                onConfigurableSelected = { kind ->
+                    deleteDialogInfo.value = DeleteInfo(locale, kind)
+                },
+                onLayoutAdditionRequested = {
+                    navController.navigate("addLayout/${locale.toString().urlEncode()}")
+                }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-            */
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column(modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(0.dp, 16.dp)) {
-                    Text(name, style = Typography.titleLarge)
-                    if(subtypes.size == 1) {
-                        val layout = Subtypes.getLayoutName(context,
-                            subtypes.first().getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET) ?: ""
-                        )
-
-                        Text(layout,
-                            style = Typography.bodySmall,
-                            color = MaterialTheme.colorScheme.outline)
-                    }
-                }
-
-                Spacer(modifier = Modifier.weight(1.0f))
-
-                if(subtypes.size == 1) {
-                    IconButton(modifier = Modifier
-                        .fillMaxHeight()
-                        .align(Alignment.CenterVertically), onClick = {
-                        Subtypes.removeLanguage(context, subtypes.first())
-                    }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = "Remove language",
-                            modifier = Modifier
-                        )
-                    }
-                }
-            }
-
-            NavigationItem(
-                title = options.voiceInputModel ?: "None",
-                style = options.voiceInputModel?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
-                navigate = {
-                    deleteDialogInfo.value = DeleteInfo(locale, FileKind.VoiceInput)
-                },
-                icon = painterResource(FileKind.VoiceInput.icon())
-            )
-            NavigationItem(
-                title = options.dictionary ?: "None",
-                style = options.dictionary?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
-                navigate = {
-                    deleteDialogInfo.value = DeleteInfo(locale, FileKind.Dictionary)
-                },
-                icon = painterResource(FileKind.Dictionary.icon())
-            )
-            NavigationItem(
-                title = options.transformerModel ?: "None",
-                style = options.transformerModel?.let { NavigationItemStyle.HomeTertiary } ?: NavigationItemStyle.MiscNoArrow,
-                navigate = {
-                    navController.navigate("models")
-                },
-                icon = painterResource(FileKind.Transformer.icon())
-            )
-            if(subtypes.size > 1) {
-                subtypes.forEach {
-                    val layout = Subtypes.getLayoutName(
-                        context,
-                        it.getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET) ?: "default"
-                    )
-                    SettingItem(title = "Layout $layout") {
-                        IconButton(modifier = Modifier.fillMaxHeight(), onClick = {
-                            Subtypes.removeLanguage(context, it)
-                        }) {
-                            Icon(
-                                Icons.Default.Clear,
-                                contentDescription = "Remove layout $layout",
-                                modifier = Modifier
-                            )
-                        }
-                    }
-                }
-            }
         }
 
         item {

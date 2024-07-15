@@ -52,6 +52,7 @@ fun SettingsNavigator(
         composable("home") { HomeScreen(navController) }
         composable("languages") { LanguagesScreen(navController) }
         composable("addLanguage") { AddLanguageScreen(navController) }
+        composable("addLayout/{lang}") { AddLanguageScreen(navController, it.arguments?.getString("lang")?.urlDecode()) }
         composable("predictiveText") { PredictiveTextScreen(navController) }
         composable("advancedparams") { AdvancedParametersScreen(navController) }
         addTypingNavigation(navController)

@@ -118,11 +118,14 @@ val LocaleLayoutMap = mapOf(
 
 @Preview
 @Composable
-fun AddLanguageScreen(navController: NavHostController = rememberNavController()) {
+fun AddLanguageScreen(navController: NavHostController = rememberNavController(), defaultLocale: String? = null) {
     val context = LocalContext.current
 
-    val selectedLocale: MutableState<String> = remember { mutableStateOf(context.resources.configuration.locale.stripExtensionsIfNeeded().toString()) }
-    val selectedLayout: MutableState<String> = remember { mutableStateOf("qwerty") }
+    val defaultLocaleVal = defaultLocale ?: context.resources.configuration.locale.stripExtensionsIfNeeded().toString()
+    val defaultLayout = Subtypes.findClosestLocaleLayouts(Subtypes.getLocale(defaultLocaleVal)).firstOrNull() ?: "qwerty"
+
+    val selectedLocale: MutableState<String> = remember { mutableStateOf(defaultLocale ?: context.resources.configuration.locale.stripExtensionsIfNeeded().toString()) }
+    val selectedLayout: MutableState<String> = remember { mutableStateOf(defaultLayout) }
 
     val keys = remember { LocaleLayoutMap.keys.toList() }
     ScrollableList {
