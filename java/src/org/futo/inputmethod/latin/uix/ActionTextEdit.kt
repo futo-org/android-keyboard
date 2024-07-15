@@ -6,9 +6,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -60,6 +62,8 @@ fun ActionTextEditor(text: MutableState<String>) {
 
     val inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE or EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
+    val color = LocalContentColor.current
+
     AndroidView(
         factory = {
             ActionEditText(context).apply {
@@ -68,6 +72,7 @@ fun ActionTextEditor(text: MutableState<String>) {
                 setTextChangeCallback { text.value = it }
 
                 setText(text.value)
+                setTextColor(color.toArgb())
 
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
