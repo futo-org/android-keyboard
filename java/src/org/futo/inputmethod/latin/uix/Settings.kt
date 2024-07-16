@@ -87,10 +87,10 @@ private var unlockedDataStore: DataStore<Preferences>? = null
 @OptIn(DelicateCoroutinesApi::class)
 val Context.dataStore: DataStore<Preferences>
     get() {
-        val userManager = getSystemService(Context.USER_SERVICE) as UserManager
-        if (userManager.isUserUnlocked) {
-            // The device has been unlocked
-            return unlockedDataStore ?: run {
+        return unlockedDataStore ?: run {
+            val userManager = getSystemService(Context.USER_SERVICE) as UserManager
+            return if (userManager.isUserUnlocked) {
+                // The device has been unlocked
                 val newDataStore = PreferenceDataStoreFactory.create(
                     corruptionHandler = null,
                     migrations = listOf(),
@@ -109,18 +109,17 @@ val Context.dataStore: DataStore<Preferences>
                 }
 
                 newDataStore
-            }
-        } else {
-            // The device is still locked, return default data store
-
-            if(!DefaultDataStore.subtypesInitialized) {
-                DefaultDataStore.subtypesInitialized = true
-                GlobalScope.launch {
-                    DefaultDataStore.updateSubtypes(Subtypes.getDirectBootInitialLayouts(this@dataStore))
+            } else {
+                // The device is still locked, return default data store
+                if (!DefaultDataStore.subtypesInitialized) {
+                    DefaultDataStore.subtypesInitialized = true
+                    GlobalScope.launch {
+                        DefaultDataStore.updateSubtypes(Subtypes.getDirectBootInitialLayouts(this@dataStore))
+                    }
                 }
-            }
 
-            return DefaultDataStore
+                DefaultDataStore
+            }
         }
     }
 
