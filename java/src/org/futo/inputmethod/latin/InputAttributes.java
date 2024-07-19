@@ -101,14 +101,13 @@ public final class InputAttributes {
         final boolean flagAutoComplete =
                 0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
+        final boolean forceNoSuggestionsByPrivateFlag = editorInfo.privateImeOptions != null
+                && editorInfo.privateImeOptions.contains("org.futo.inputmethod.latin.NoSuggestions=1");
+
         // TODO: Have a helper method in InputTypeUtils
         // Make sure that passwords are not displayed in {@link SuggestionStripView}.
         final boolean shouldSuppressSuggestions = mIsPasswordField
-                //|| InputTypeUtils.isEmailVariation(variation)
-                //|| InputType.TYPE_TEXT_VARIATION_URI == variation
-                //|| InputType.TYPE_TEXT_VARIATION_FILTER == variation
-                //|| flagNoSuggestions
-                || flagAutoComplete;
+                || forceNoSuggestionsByPrivateFlag;
         mShouldShowSuggestions = !shouldSuppressSuggestions;
 
         mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
@@ -155,7 +154,7 @@ public final class InputAttributes {
             noLearning = (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
         }
 
-        mNoLearning = noLearning;
+        mNoLearning = noLearning || mIsPasswordField;
     }
 
     public boolean isTypeNull() {

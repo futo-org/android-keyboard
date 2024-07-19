@@ -34,7 +34,8 @@ fun AndroidTextInput(allowPredictions: Boolean = true) {
                     inputType = EditorInfo.TYPE_CLASS_TEXT
                     isSingleLine = false
                 } else {
-                    inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE
+                    inputType = EditorInfo.TYPE_CLASS_TEXT
+                    privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1"
                     isSingleLine = true
                 }
 
