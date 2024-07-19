@@ -102,10 +102,15 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
         ScreenTitleWithIcon(title = "Import ${fileKind.kind.kindTitle()}", painter = painterResource(id = fileKind.kind.icon()))
 
         if(fileKind.kind == FileKind.Invalid) {
-            Text("This file does not appear to be a dictionary, voice input or transformer model. It may be an invalid file or corrupted. Please try a different file.")
+            if(fileKind.invalidKindHint == InvalidFileHint.ImportedWordListInsteadOfDict) {
+                Text("Error: This file appears to be a source wordlist (_wordlist.combined) instead of a compiled dictionary (.dict) file.")
+                Tip("Please download the main dictionary file instead of the source wordlist. In the aosp-dictionaries repo, this would be the first blue link that says something like [German Main], instead of the long blue link to a wordlist.")
+            } else {
+                Text("Error: This file does not appear to be a dictionary, voice input or transformer model. It may be an invalid file or corrupted. Please try a different file.")
+            }
 
             NavigationItem(
-                title = "Close",
+                title = "Cancel",
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
                     onCancel()
@@ -214,10 +219,15 @@ fun FileKind.extension(): String {
     }
 }
 
+enum class InvalidFileHint {
+    ImportedWordListInsteadOfDict
+}
+
 data class FileKindAndInfo(
     val kind: FileKind,
     val name: String?,
-    val locale: String?
+    val locale: String?,
+    val invalidKindHint: InvalidFileHint? = null
 )
 
 private fun parseDictionaryMetadataKV(inputStream: InputStream): Map<String, String>? {
@@ -300,10 +310,10 @@ fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
 
         val magic = ByteBuffer.wrap(array).getInt().toUInt()
 
-        when(magic) {
-            voiceInputMagic -> FileKindAndInfo(FileKind.VoiceInput, null, null)
-            transformerMagic -> FileKindAndInfo(FileKind.Transformer, null, null)
-            dictionaryMagic -> {
+        when {
+            magic == voiceInputMagic -> FileKindAndInfo(FileKind.VoiceInput, null, null)
+            magic == transformerMagic -> FileKindAndInfo(FileKind.Transformer, null, null)
+            magic == dictionaryMagic -> {
                 val metadata = parseDictionaryMetadataKV(inputStream)
 
                 FileKindAndInfo(
@@ -312,6 +322,10 @@ fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
                     locale = metadata?.get("locale")
                 )
             }
+
+            (magic == 0x1f8b0808.toUInt()) || (magic == 0x1f8b0800.toUInt()) || (magic == 0x64696374.toUInt()) ->
+                FileKindAndInfo(FileKind.Invalid, null, null, InvalidFileHint.ImportedWordListInsteadOfDict)
+
             else -> FileKindAndInfo(FileKind.Invalid, null, null)
         }
     } ?: FileKindAndInfo(FileKind.Invalid, null, null)
