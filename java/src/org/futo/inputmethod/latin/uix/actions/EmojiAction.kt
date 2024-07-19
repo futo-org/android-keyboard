@@ -111,6 +111,44 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.streams.toList
 
+private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
+    val lhsLen = lhs.length
+    val rhsLen = rhs.length
+    var cost = IntArray(lhsLen + 1) { it }
+    for (i in 1 until rhsLen + 1) {
+        val newCost = IntArray(lhsLen + 1)
+        newCost[0] = i
+        for (j in 1 until lhsLen + 1) {
+            val match = if (lhs[j - 1].lowercaseChar() == rhs[i - 1].lowercaseChar()) 0 else 1
+            val costReplace = cost[j - 1] + match
+            val costInsert = cost[j] + 1
+            val costDelete = newCost[j - 1] + 1
+            newCost[j] = minOf(costInsert, costDelete, costReplace)
+        }
+        cost = newCost
+    }
+    return cost[lhsLen]
+}
+
+private fun <T> List<T>.search(searchTarget: String, keyFunction: (T) -> String): List<T> {
+    val maxDistance = searchTarget.length * 2 / 3
+    return this.mapNotNull { item ->
+        val key = keyFunction(item)
+        val distance = levenshteinDistance(searchTarget, key)
+        if (distance <= maxDistance) Pair(item, distance) else null
+    }.sortedBy { it.second }.map { it.first }
+}
+
+private fun <T> List<T>.searchMultiple(searchTarget: String, keyFunction: (T) -> List<String>): List<T> {
+    val maxDistance = searchTarget.length * 2 / 3
+    return this.mapNotNull { item ->
+        val keys = keyFunction(item)
+        val minDistanceKey = keys.minByOrNull { levenshteinDistance(searchTarget, it) }
+        val minDistance = minDistanceKey?.let { levenshteinDistance(searchTarget, it) }
+        if (minDistance != null && minDistance <= maxDistance) Pair(item, minDistance) else null
+    }.sortedBy { it.second }.map { it.first }
+}
+
 
 data class PopupInfo(val emoji: EmojiItem, val x: Int, val y: Int)
 
@@ -320,6 +358,8 @@ fun Emojis(
                             val lastVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition()
 
                             val finalCategoryIndex = emojis.indexOfLast { it is CategoryItem }
+                            if(finalCategoryIndex == -1) return
+
                             if(finalCategoryIndex < lastVisiblePosition) {
                                 currentCategory.value = emojis[finalCategoryIndex] as CategoryItem
                             } else {
@@ -623,14 +663,9 @@ fun EmojiGrid(
     var emojiList = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis
 
     if(isSearching) {
-        emojiList = emojiList.filter {
-            (it is EmojiItemItem) &&
-                    (it.emoji.description.contains(searchFilter)
-                            || it.emoji.aliases.joinToString().contains(searchFilter)
-                            || it.emoji.tags.joinToString().contains(searchFilter))
-        }.take(48).map {
-            EmojiItemItem((it as EmojiItemItem).emoji.copy(category = "Search Results"))
-        }
+        emojiList = emojiList.filterIsInstance<EmojiItemItem>().searchMultiple(searchFilter) {
+            listOf(it.emoji.description) + it.emoji.aliases + it.emoji.tags
+        }.take(30)
 
         if(emojiList.isEmpty()) {
             emojiList = emojiList + listOf(CategoryItem("No results found"))
