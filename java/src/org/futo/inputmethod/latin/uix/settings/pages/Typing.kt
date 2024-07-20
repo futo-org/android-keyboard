@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -35,9 +34,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.content.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -61,22 +60,9 @@ import org.futo.inputmethod.latin.uix.KeyboardHeightMultiplierSetting
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
-import org.futo.inputmethod.latin.uix.actions.AllActions
-import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryAction
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
-import org.futo.inputmethod.latin.uix.actions.CopyAction
-import org.futo.inputmethod.latin.uix.actions.CutAction
-import org.futo.inputmethod.latin.uix.actions.EmojiAction
-import org.futo.inputmethod.latin.uix.actions.PasteAction
-import org.futo.inputmethod.latin.uix.actions.RedoAction
-import org.futo.inputmethod.latin.uix.actions.SelectAllAction
-import org.futo.inputmethod.latin.uix.actions.SwitchLanguageAction
-import org.futo.inputmethod.latin.uix.actions.TextEditAction
-import org.futo.inputmethod.latin.uix.actions.UndoAction
-import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
-import org.futo.inputmethod.latin.uix.settings.DropDownPicker
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -89,7 +75,6 @@ import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
@@ -100,13 +85,17 @@ val vibrationDurationSetting = SettingsKey(
     -1
 )
 
+val ActionBarDisplayedSetting = SettingsKey(
+    booleanPreferencesKey("enable_action_bar"),
+    true
+)
+
 fun NavGraphBuilder.addTypingNavigation(
     navController: NavHostController
 ) {
     composable("typing") { TypingScreen(navController) }
     composable("resize") { ResizeScreen(navController) }
     composable("longPress") { LongPressScreen(navController) }
-    composable("actionKey") { ActionKeyScreen(navController) }
 }
 
 @Preview(showBackground = true)
@@ -407,58 +396,6 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
 
 @Preview(showBackground = true)
 @Composable
-fun ActionKeyScreen(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
-    val isActionKeyActive = useSharedPrefsBool(key = Settings.PREF_SHOW_ACTION_KEY, default = true)
-    val emojiKey = useSharedPrefsInt(key = Settings.PREF_ACTION_KEY_ID, default = 0)
-
-    val permittedOptions = listOf(
-        EmojiAction,
-        SwitchLanguageAction,
-        VoiceInputAction,
-        ClipboardHistoryAction,
-        TextEditAction,
-        UndoAction,
-        RedoAction,
-        CutAction,
-        CopyAction,
-        PasteAction,
-        SelectAllAction,
-    )
-
-    ScrollableList {
-        ScreenTitle("Action Key", showBack = true, navController)
-
-
-        SettingToggleSharedPrefs(
-            title = "Action key enabled",
-            subtitle = "Show the action key on the bottom row",
-            key = Settings.PREF_SHOW_ACTION_KEY,
-            default = true
-        )
-
-        if(isActionKeyActive.value) {
-            SettingItem(title = "Action key") {
-                DropDownPicker(
-                    label = "",
-                    options = permittedOptions,
-                    selection = AllActions[emojiKey.value],
-                    onSet = {
-                        emojiKey.setValue(AllActions.indexOf(it))
-                    },
-                    getDisplayName = {
-                        context.getString(it.name)
-                    },
-                    modifier = Modifier.width(180.dp)
-                )
-            }
-        }
-
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
 fun TypingScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val (vibration, _) = useDataStore(key = vibrationDurationSetting.key, default = vibrationDurationSetting.default)
@@ -474,7 +411,6 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
 
     ScrollableList {
         ScreenTitle("Keyboard", showBack = true, navController)
-
 
         NavigationItem(
             title = "Resize Keyboard",
@@ -501,19 +437,20 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
         )
 
         NavigationItem(
-            title = "Action Key",
-            subtitle = "Change the action key into an emoji key, language switch key, or disable it altogether.",
-            style = NavigationItemStyle.Misc,
-            navigate = { navController.navigate("actionKey") },
-            icon = painterResource(id = R.drawable.smile)
-        )
-
-        NavigationItem(
             title = "Additional Layouts",
             subtitle = "Configure additional layouts in the languages screen",
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("languages") },
             icon = painterResource(id = R.drawable.keyboard)
+        )
+
+        SettingToggleDataStore(
+            title = "Show action/suggestions bar",
+            subtitle = "Show the bar containing suggestions. Recommended to keep enabled",
+            setting = ActionBarDisplayedSetting,
+            icon = {
+                Icon(painterResource(id = R.drawable.more_horizontal), contentDescription = null)
+            }
         )
 
         ScreenTitle(title = "Typing preferences")

@@ -78,6 +78,8 @@ import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
+import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
+import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
@@ -348,6 +350,8 @@ class UixManager(private val latinIME: LatinIME) {
     private fun MainKeyboardViewWithActionBar() {
         val view = LocalView.current
 
+        val actionBarShown = useDataStore(ActionBarDisplayedSetting)
+
         Column {
             // Don't show suggested words when it's not meant to be shown
             val suggestedWordsOrNull = if(shouldShowSuggestionStrip) {
@@ -356,25 +360,33 @@ class UixManager(private val latinIME: LatinIME) {
                 null
             }
 
-            ActionBar(
-                suggestedWordsOrNull,
-                latinIME.latinIMELegacy as SuggestionStripView.Listener,
-                inlineSuggestions = inlineSuggestions,
-                onActionActivated = {
-                    keyboardManagerForAction.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
-                    onActionActivated(it)
-                },
-                onActionAltActivated = {
-                    if(it.altPressImpl != null) {
-                        keyboardManagerForAction.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
-                    }
-                    onActionAltActivated(it)
-                },
-                importantNotice = currentNotice.value,
-                keyboardManagerForAction = keyboardManagerForAction,
-                isActionsExpanded = isActionsExpanded.value,
-                toggleActionsExpanded = { toggleActionsExpanded() },
-            )
+            if(actionBarShown.value) {
+                ActionBar(
+                    suggestedWordsOrNull,
+                    latinIME.latinIMELegacy as SuggestionStripView.Listener,
+                    inlineSuggestions = inlineSuggestions,
+                    onActionActivated = {
+                        keyboardManagerForAction.performHapticAndAudioFeedback(
+                            Constants.CODE_TAB,
+                            view
+                        )
+                        onActionActivated(it)
+                    },
+                    onActionAltActivated = {
+                        if (it.altPressImpl != null) {
+                            keyboardManagerForAction.performHapticAndAudioFeedback(
+                                Constants.CODE_TAB,
+                                view
+                            )
+                        }
+                        onActionAltActivated(it)
+                    },
+                    importantNotice = currentNotice.value,
+                    keyboardManagerForAction = keyboardManagerForAction,
+                    isActionsExpanded = isActionsExpanded.value,
+                    toggleActionsExpanded = { toggleActionsExpanded() },
+                )
+            }
         }
     }
 
