@@ -64,7 +64,8 @@ val SystemVoiceInputAction = Action(
         it.triggerSystemVoiceInput()
     },
     persistentState = null,
-    windowImpl = null
+    windowImpl = null,
+    shownInEditor = false
 )
 
 

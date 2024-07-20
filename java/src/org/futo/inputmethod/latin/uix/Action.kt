@@ -110,4 +110,6 @@ data class Action(
     val persistentState: ((KeyboardManagerForAction) -> PersistentActionState)? = null,
     val persistentStateInitialization: PersistentStateInitialization = PersistentStateInitialization.OnActionTrigger,
     val altPressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)? = null,
+
+    val shownInEditor: Boolean = true
 )

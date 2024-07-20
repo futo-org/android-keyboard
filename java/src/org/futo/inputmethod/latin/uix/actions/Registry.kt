@@ -171,7 +171,8 @@ fun Map<ActionCategory, List<Action>>.ensureAllActionsPresent(): Map<ActionCateg
     val actionsMissing = actionsRequired.subtract(actionsPresent)
 
     if(actionsMissing.isNotEmpty()) {
-        map[ActionCategory.More] = map[ActionCategory.More]!! + actionsMissing
+        map[ActionCategory.More] = map[ActionCategory.More]!! + actionsMissing.filter { it.shownInEditor }
+        map[ActionCategory.Disabled] = map[ActionCategory.Disabled]!! + actionsMissing.filter { !it.shownInEditor }
     }
 
     return map
@@ -220,7 +221,7 @@ val DefaultActionSettings = mapOf(
     ActionCategory.PinnedKey to listOf(VoiceInputAction),
     ActionCategory.Favorites to listOf(SwitchLanguageAction, UndoAction, RedoAction, TextEditAction, ClipboardHistoryAction, ThemeAction),
     ActionCategory.More to listOf(), // Remaining actions get populated automatically by ensureWellFormed
-    ActionCategory.Disabled to listOf(MemoryDebugAction)
+    ActionCategory.Disabled to listOf(MemoryDebugAction, SystemVoiceInputAction)
 )
 
 val ActionsSettings = SettingsKey(

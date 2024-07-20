@@ -122,7 +122,9 @@ fun ActionsEditor() {
     val view = LocalView.current
 
     val initialList: List<ActionEditorItem> = remember {
-        context.getSettingBlocking(ActionsSettings).toActionEditorItems().ensureWellFormed()
+        context.getSettingBlocking(ActionsSettings).toActionEditorItems().ensureWellFormed().filter {
+            it !is ActionEditorItem.Item || it.action.shownInEditor
+        }
     }
 
     val list = remember { initialList.toMutableStateList() }
@@ -212,6 +214,7 @@ val MoreActionsAction = Action(
     icon = R.drawable.more_horizontal,
     name = R.string.more_actions_action_title,
     simplePressImpl = null,
+    shownInEditor = false,
     windowImpl = { manager, _ ->
         object : ActionWindow {
             @Composable
