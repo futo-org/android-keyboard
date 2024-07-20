@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import org.futo.inputmethod.keyboard.internal.KeyboardCodesSet
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.PreferenceUtils
@@ -82,6 +83,16 @@ enum class ActionCategory {
     Favorites,
     More,
     Disabled
+}
+
+fun ActionCategory.name(context: Context): String {
+    return context.getString(when(this) {
+        ActionCategory.ActionKey -> R.string.action_kind_action_key
+        ActionCategory.PinnedKey -> R.string.action_kind_pinned_key
+        ActionCategory.Favorites -> R.string.action_kind_favorites
+        ActionCategory.More -> R.string.action_kind_more
+        ActionCategory.Disabled -> R.string.action_kind_disabled
+    })
 }
 
 fun ActionCategory.toSepName(): String {

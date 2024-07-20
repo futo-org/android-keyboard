@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -38,6 +40,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,14 +57,23 @@ import sh.calvin.reorderable.rememberReorderableLazyGridState
 
 
 @Composable
-fun ActionItem(action: Action, modifier: Modifier = Modifier) {
-    Surface(color = MaterialTheme.colorScheme.primaryContainer, modifier = modifier
+fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean = false, dragIconModifier: Modifier = Modifier) {
+    Surface(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), modifier = modifier
         .fillMaxWidth()
         .height(92.dp)
-        , shape = RoundedCornerShape(8.dp)) {
+        , shape = RoundedCornerShape(16.dp)) {
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(8.dp)) {
+
+            if(dragIcon) {
+                Icon(
+                    painterResource(id = R.drawable.move),
+                    contentDescription = null,
+                    modifier = dragIconModifier.size(16.dp).align(Alignment.TopEnd),
+                    tint = LocalContentColor.current.copy(alpha = 0.6f)
+                )
+            }
 
             Column(modifier = Modifier
                 .align(Center)
@@ -113,6 +125,8 @@ fun MoreActionsView() {
         }
     }
 }
+
+val CategoryTitleStyle = Typography.titleMedium.copy(fontWeight = FontWeight.W500)
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -171,7 +185,7 @@ fun ActionsEditor() {
                             onDragStopped = {
                                 view.performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
                             },
-                        ))
+                        ), dragIcon = true, dragIconModifier = Modifier.draggableHandle())
                     }
                 }
                 is ActionEditorItem.Separator -> {
@@ -186,7 +200,7 @@ fun ActionsEditor() {
                                     }
                                 }
                             }
-                            Text(it.category.name)
+                            Text(it.category.name(context), modifier = Modifier.padding(top = 24.dp), style = CategoryTitleStyle, color = LocalContentColor.current.copy(alpha = 0.6f))
                         }
                     }
                 }
