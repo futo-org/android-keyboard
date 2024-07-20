@@ -11,8 +11,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +21,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
@@ -34,36 +37,34 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -80,8 +81,8 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
-import kotlinx.coroutines.runBlocking
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -89,11 +90,10 @@ import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SU
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
-import org.futo.inputmethod.latin.uix.actions.ActionRegistry
-import org.futo.inputmethod.latin.uix.actions.DefaultActions
-import org.futo.inputmethod.latin.uix.actions.DefaultActionsString
-import org.futo.inputmethod.latin.uix.actions.ExpandableActionItems
-import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
+import org.futo.inputmethod.latin.uix.actions.FavoriteActions
+import org.futo.inputmethod.latin.uix.actions.MoreActionsAction
+import org.futo.inputmethod.latin.uix.actions.PinnedActions
+import org.futo.inputmethod.latin.uix.actions.toActionList
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.Typography
@@ -361,138 +361,170 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Unit) {
-    val dragging = remember { mutableStateOf(false) }
-    val offsetX = remember { mutableFloatStateOf(0.0f) }
-    val offsetY = remember { mutableFloatStateOf(0.0f) }
-    val haptic = LocalHapticFeedback.current
-
+fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
     val width = 56.dp
-    val widthPx = with(LocalDensity.current) {
-        width.toPx()
-    }
-
-    val context = LocalContext.current
-
-    val isWindowAction = action.windowImpl != null
-
-    val col = MaterialTheme.colorScheme.secondaryContainer
 
     val modifier = Modifier
-        .pointerInput(Unit) {
-            detectDragGesturesAfterLongPress(onDragStart = {
-                dragging.value = true
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                offsetY.floatValue = -widthPx / 8.0f
-            }, onDragCancel = {
-                dragging.value = false
-                offsetX.floatValue = 0.0f
-                offsetY.floatValue = 0.0f
-            }, onDragEnd = {
-                dragging.value = false
-                offsetX.floatValue = 0.0f
-                offsetY.floatValue = 0.0f
-            }, onDrag = { change, dragAmount ->
-                change.consume()
-                offsetX.floatValue += dragAmount.x
-                offsetY.floatValue += dragAmount.y
-
-                if (offsetX.floatValue >= widthPx) {
-                    offsetX.floatValue -= widthPx
-                    runBlocking {
-                        context.setSetting(
-                            ExpandableActionItems, ActionRegistry.moveElement(
-                                context.getSetting(ExpandableActionItems, DefaultActionsString),
-                                DefaultActions,
-                                action,
-                                1
-                            )
-                        )
-                    }
-                } else if (offsetX.floatValue <= -widthPx) {
-                    offsetX.floatValue += widthPx
-                    runBlocking {
-                        context.setSetting(
-                            ExpandableActionItems, ActionRegistry.moveElement(
-                                context.getSetting(ExpandableActionItems, DefaultActionsString),
-                                DefaultActions,
-                                action,
-                                -1
-                            )
-                        )
-                    }
-                }
-            })
-        }
         .width(width)
-        .let {
-            if (!dragging.value) {
-                it.animateItemPlacement()
-            } else {
-                it
-                    .zIndex(10.0f)
-                    .graphicsLayer {
-                        clip = false
-                        translationX = offsetX.floatValue
-                        translationY = offsetY.floatValue
-                    }
-            }
-        }
-        .drawBehind {
-            val radius = size.height / 4.0f
-            drawRoundRect(
-                col,
-                topLeft = Offset(size.width * 0.1f, size.height * 0.05f),
-                size = Size(size.width * 0.8f, size.height * 0.9f),
-                cornerRadius = CornerRadius(radius, radius),
-                style = if (isWindowAction) {
-                    Fill
-                } else {
-                    Stroke(width = 4.0f)
-                }
-            )
-        }
         .fillMaxHeight()
 
-    val contentCol = if(isWindowAction) {
-        MaterialTheme.colorScheme.onSecondaryContainer
+    val contentCol = MaterialTheme.colorScheme.onBackground
+
+    Box(modifier = modifier
+        .clip(CircleShape)
+        .combinedClickable(onLongClick = action.altPressImpl?.let { { onLongSelect(action) } },
+            onClick = { onSelect(action) }), contentAlignment = Center) {
+        Icon(
+            painter = painterResource(id = action.icon),
+            contentDescription = stringResource(action.name),
+            tint = contentCol,
+            modifier = Modifier.size(20.dp),
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
+    val bgCol = if(!LocalInspectionMode.current) {
+        Color(LocalThemeProvider.current.keyColor)
     } else {
-        MaterialTheme.colorScheme.onBackground
+        MaterialTheme.colorScheme.surfaceVariant
     }
 
-    IconButton(onClick = { onSelect(action) }, modifier = modifier,
-        colors = IconButtonDefaults.iconButtonColors(contentColor = contentCol)
-    ) {
-        Icon(
-            painter = painterResource(id = action.icon),
-            contentDescription = stringResource(action.name)
-        )
+    val circleRadius = with(LocalDensity.current) {
+        16.dp.toPx()
     }
-}
 
-@Composable
-fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit) {
-    IconButton(onClick = {
-        onSelect(action)
-    }, modifier = Modifier
+    Box(modifier = Modifier
         .width(42.dp)
-        .fillMaxHeight()) {
+        .fillMaxHeight()
+        .drawBehind {
+            drawCircle(
+                color = bgCol,
+                radius = circleRadius,
+                style = Fill
+            )
+        }
+        .clip(CircleShape)
+        .combinedClickable(onLongClick = action.altPressImpl?.let { { onLongSelect(action) } }) {
+            onSelect(
+                action
+            )
+        },
+        contentAlignment = Alignment.Center) {
         Icon(
             painter = painterResource(id = action.icon),
-            contentDescription = stringResource(action.name)
+            contentDescription = stringResource(action.name),
+            tint = contentColorFor(backgroundColor = bgCol),
+            modifier = Modifier.size(16.dp)
         )
     }
 }
 
+val ActionBarScrollIndexSetting = SettingsKey(
+    intPreferencesKey("action_bar_scroll_index"),
+    0
+)
+val ActionBarScrollOffsetSetting = SettingsKey(
+    intPreferencesKey("action_bar_scroll_offset"),
+    0
+)
+
 @Composable
-fun ActionItems(onSelect: (Action) -> Unit) {
-    val actions = useDataStoreValueBlocking(key = ExpandableActionItems, default = DefaultActionsString)
+fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
+    val context = LocalContext.current
+    val lifecycle = LocalLifecycleOwner.current
+    val actions = if(!LocalInspectionMode.current) {
+        useDataStoreValueBlocking(FavoriteActions)
+    } else {
+        FavoriteActions.default
+    }
 
-    val actionItems = ActionRegistry.stringToActions(actions, DefaultActions)
+    val scrollItemIndex = if(LocalInspectionMode.current) { 0 } else {
+        remember {
+            context.getSettingBlocking(ActionBarScrollIndexSetting)
+        }
+    }
 
-    LazyRow {
-        items(actionItems.size, key = { actionItems[it].name }) {
-            ActionItem(it, actionItems[it], onSelect)
+    val scrollItemOffset = if(LocalInspectionMode.current) { 0 } else {
+        remember {
+            context.getSettingBlocking(ActionBarScrollOffsetSetting)
+        }
+    }
+
+    val actionItems = remember(actions) {
+        actions.toActionList()
+    }
+
+    val lazyListState = rememberLazyListState(scrollItemIndex, scrollItemOffset)
+
+    DisposableEffect(Unit) {
+        onDispose {
+            lifecycle.deferSetSetting(ActionBarScrollIndexSetting, lazyListState.firstVisibleItemIndex)
+            lifecycle.deferSetSetting(ActionBarScrollOffsetSetting, lazyListState.firstVisibleItemScrollOffset)
+        }
+    }
+
+    val bgCol = if(!LocalInspectionMode.current) {
+        Color(LocalThemeProvider.current.keyColor)
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+
+    val gradientColor = if(bgCol.alpha > 0.5) {
+        bgCol.copy(alpha = 0.9f)
+    } else {
+        MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+    }
+
+    val drawLeftGradient = lazyListState.firstVisibleItemIndex > 0
+    val drawRightGradient = lazyListState.layoutInfo.visibleItemsInfo.isNotEmpty() && actionItems.isNotEmpty() && (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key != actionItems.lastOrNull()?.name)
+
+    Box {
+        LazyRow(state = lazyListState) {
+            item {
+                ActionItemSmall(action = MoreActionsAction, onSelect = {
+                    onSelect(MoreActionsAction)
+                }, onLongSelect = { })
+
+            }
+            items(actionItems.size, key = { actionItems[it].name }) {
+                ActionItem(it, actionItems[it], onSelect, onLongSelect)
+            }
+        }
+
+
+        if(drawLeftGradient) {
+            Canvas(modifier = Modifier
+                .fillMaxHeight()
+                .width(72.dp)
+                .align(Alignment.CenterStart)) {
+                drawRect(
+                    Brush.linearGradient(
+                        0.0f to gradientColor,
+                        1.0f to Color.Transparent,
+                        start = Offset.Zero,
+                        end = Offset(Float.POSITIVE_INFINITY, 0.0f)
+                    )
+                )
+            }
+        }
+
+        if(drawRightGradient) {
+            Canvas(modifier = Modifier
+                .fillMaxHeight()
+                .width(72.dp)
+                .align(Alignment.CenterEnd)) {
+                drawRect(
+                    Brush.linearGradient(
+                        0.0f to Color.Transparent,
+                        1.0f to gradientColor,
+                        start = Offset.Zero,
+                        end = Offset(Float.POSITIVE_INFINITY, 0.0f)
+                    )
+                )
+            }
         }
     }
 }
@@ -500,12 +532,16 @@ fun ActionItems(onSelect: (Action) -> Unit) {
 
 @Composable
 fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
-    val moreActionsColor = MaterialTheme.colorScheme.primary
-
-    val actionsContent = if(isActionsOpen) {
-        MaterialTheme.colorScheme.onPrimary
+    val bgCol = if(!LocalInspectionMode.current) {
+        Color(LocalThemeProvider.current.keyColor)
     } else {
-        MaterialTheme.colorScheme.onBackground
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+
+    val actionsContent = MaterialTheme.colorScheme.onSurface
+
+    val circleRadius = with(LocalDensity.current) {
+        16.dp.toPx()
     }
 
     IconButton(
@@ -514,7 +550,7 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
             .width(42.dp)
             .rotate(
                 if (isActionsOpen) {
-                    180.0f
+                    -90.0f
                 } else {
                     0.0f
                 }
@@ -522,13 +558,9 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
             .fillMaxHeight()
             .drawBehind {
                 drawCircle(
-                    color = moreActionsColor,
-                    radius = size.width / 3.0f + 1.0f,
-                    style = if (!isActionsOpen) {
-                        Stroke(3.0f)
-                    } else {
-                        Fill
-                    }
+                    color = bgCol,
+                    radius = circleRadius,
+                    style = Fill
                 )
             },
 
@@ -536,7 +568,8 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.chevron_right),
-            contentDescription = "Open Actions"
+            contentDescription = "Open Actions",
+            Modifier.size(20.dp)
         )
     }
 }
@@ -580,66 +613,96 @@ fun ImportantNoticeView(
     }
 }
 
+val ActionBarExpanded = SettingsKey(
+    booleanPreferencesKey("actionExpanded"),
+    false
+)
+
+@Composable
+fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
+    val actions = if(!LocalInspectionMode.current) {
+        useDataStoreValueBlocking(PinnedActions)
+    } else {
+        PinnedActions.default
+    }
+
+    val actionItems = remember(actions) {
+        actions.toActionList()
+    }
+
+    actionItems.forEach {
+        ActionItemSmall(it, onSelect, onLongSelect)
+    }
+}
+
 @Composable
 fun ActionBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
     onActionActivated: (Action) -> Unit,
+    onActionAltActivated: (Action) -> Unit,
     inlineSuggestions: List<MutableState<View?>>,
-    forceOpenActionsInitially: Boolean = false,
+    isActionsExpanded: Boolean,
+    toggleActionsExpanded: () -> Unit,
     importantNotice: ImportantNotice? = null,
     keyboardManagerForAction: KeyboardManagerForAction? = null,
-    actionsForcedOpenByUser: MutableState<Boolean> = mutableStateOf(false)
 ) {
     val view = LocalView.current
     val context = LocalContext.current
-    val isActionsOpen = remember { mutableStateOf(forceOpenActionsInitially) }
 
-    val activateActionWithHaptic: (Action) -> Unit = {
-        keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
-        onActionActivated(it)
+    val actionBarHeight = 40.dp
+
+    val sepCol = if(!LocalInspectionMode.current) {
+        Color(LocalThemeProvider.current.keyColor)
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
     }
 
-    LaunchedEffect(words) {
-        if(words != null && !words.isEmpty && !actionsForcedOpenByUser.value) {
-            isActionsOpen.value = false
-            actionsForcedOpenByUser.value = false
-        }
-    }
+    Column {
+        if(isActionsExpanded) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(sepCol)) {}
 
-    LaunchedEffect(inlineSuggestions) {
-        if(inlineSuggestions.isNotEmpty()) {
-            isActionsOpen.value = false
-            actionsForcedOpenByUser.value = false
-        }
-    }
-
-    Surface(modifier = Modifier
-        .fillMaxWidth()
-        .height(40.dp), color = MaterialTheme.colorScheme.background)
-    {
-        Row {
-            ExpandActionsButton(isActionsOpen.value) {
-                isActionsOpen.value = !isActionsOpen.value
-                actionsForcedOpenByUser.value = isActionsOpen.value
-
-                if(isActionsOpen.value && importantNotice != null) {
-                    importantNotice.onDismiss(context)
-                }
-                keyboardManagerForAction?.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(actionBarHeight), color = MaterialTheme.colorScheme.background
+            ) {
+                ActionItems(onActionActivated, onActionAltActivated)
             }
+        }
 
-            if(importantNotice != null && !isActionsOpen.value) {
-                ImportantNoticeView(importantNotice)
-            }else {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(sepCol)) {}
 
-                AnimatedVisibility(isActionsOpen.value) {
-                    ActionItems(activateActionWithHaptic)
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(actionBarHeight), color = MaterialTheme.colorScheme.background
+        ) {
+            Row {
+                ExpandActionsButton(isActionsExpanded) {
+                    toggleActionsExpanded()
+
+                    keyboardManagerForAction?.performHapticAndAudioFeedback(
+                        Constants.CODE_TAB,
+                        view
+                    )
                 }
 
-                if(!isActionsOpen.value) {
+                if (importantNotice != null) {
+                    ImportantNoticeView(importantNotice)
+                } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        AnimatedVisibility(inlineSuggestions.isNotEmpty(), enter = fadeIn(), exit = fadeOut()) {
+                        AnimatedVisibility(
+                            inlineSuggestions.isNotEmpty(),
+                            enter = fadeIn(),
+                            exit = fadeOut()
+                        ) {
                             InlineSuggestions(inlineSuggestions)
                         }
                     }
@@ -664,7 +727,8 @@ fun ActionBar(
                     } else {
                         Spacer(modifier = Modifier.weight(1.0f))
                     }
-                    ActionItemSmall(VoiceInputAction, activateActionWithHaptic)
+
+                    PinnedActionItems(onActionActivated, onActionAltActivated)
                 }
             }
         }
@@ -823,7 +887,10 @@ fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) 
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
-            inlineSuggestions = listOf()
+            inlineSuggestions = listOf(),
+            isActionsExpanded = false,
+            toggleActionsExpanded = { },
+            onActionAltActivated = { }
         )
     }
 }
@@ -837,6 +904,9 @@ fun PreviewActionBarWithNotice(colorScheme: ColorScheme = DarkColorScheme) {
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
             inlineSuggestions = listOf(),
+            isActionsExpanded = true,
+            toggleActionsExpanded = { },
+            onActionAltActivated = { },
             importantNotice = object : ImportantNotice {
                 @Composable
                 override fun getText(): String {
@@ -864,7 +934,10 @@ fun PreviewActionBarWithEmptySuggestions(colorScheme: ColorScheme = DarkColorSch
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
-            inlineSuggestions = listOf()
+            inlineSuggestions = listOf(),
+            isActionsExpanded = true,
+            toggleActionsExpanded = { },
+            onActionAltActivated = { }
         )
     }
 }
@@ -878,7 +951,9 @@ fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
             inlineSuggestions = listOf(),
-            forceOpenActionsInitially = true
+            isActionsExpanded = true,
+            toggleActionsExpanded = { },
+            onActionAltActivated = { }
         )
     }
 }

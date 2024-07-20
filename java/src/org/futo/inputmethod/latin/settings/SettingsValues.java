@@ -28,7 +28,7 @@ import android.view.inputmethod.EditorInfo;
 import org.futo.inputmethod.compat.AppWorkaroundsUtils;
 import org.futo.inputmethod.latin.InputAttributes;
 import org.futo.inputmethod.latin.R;
-import org.futo.inputmethod.latin.RichInputMethodManager;
+import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
 import org.futo.inputmethod.latin.utils.AsyncResultHolder;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.latin.utils.TargetPackageInfoGetterTask;
@@ -147,8 +147,8 @@ public class SettingsValues {
         mIncludesOtherImesInLanguageSwitchList = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
                 ? prefs.getBoolean(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false)
                 : true /* forcibly */;
-        mShowsActionKey = prefs.getBoolean(Settings.PREF_SHOW_ACTION_KEY, true);
-        mActionKeyId = prefs.getInt(Settings.PREF_ACTION_KEY_ID, 0);
+        mActionKeyId = ActionRegistry.INSTANCE.actionStringIdToIdx(prefs.getString(Settings.PREF_ACTION_KEY_ID, ""));
+        mShowsActionKey = mActionKeyId != -1;
         mIsNumberRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);

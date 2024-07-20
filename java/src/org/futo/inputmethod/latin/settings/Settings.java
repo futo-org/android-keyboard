@@ -103,7 +103,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final String PREF_SHOW_ACTION_KEY =
             "pref_show_emoji_key";
-    public static final String PREF_ACTION_KEY_ID = "pref_action_key_id";
+    public static final String PREF_ACTION_KEY_ID = "pref_action_key_strid";
 
     public static final String PREF_ENABLE_NUMBER_ROW = "pref_enable_number_row";
 

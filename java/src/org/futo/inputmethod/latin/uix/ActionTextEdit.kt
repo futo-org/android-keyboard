@@ -60,7 +60,7 @@ fun ActionTextEditor(text: MutableState<String>) {
         48.dp.toPx()
     }
 
-    val inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE or EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+    val inputType = EditorInfo.TYPE_CLASS_TEXT
 
     val color = LocalContentColor.current
 
@@ -78,6 +78,8 @@ fun ActionTextEditor(text: MutableState<String>) {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
+
+                privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1"
 
                 setHeight(height.toInt())
 

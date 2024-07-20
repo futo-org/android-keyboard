@@ -17,14 +17,20 @@ import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputContentInfo
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +41,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
@@ -46,6 +54,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -59,12 +68,12 @@ import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
@@ -83,6 +92,10 @@ import java.util.Locale
 
 val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
     error("No LocalManager provided")
+}
+
+val LocalThemeProvider = staticCompositionLocalOf<DynamicThemeProvider> {
+    error("No LocalThemeProvider provided")
 }
 
 private class LatinIMEActionInputTransaction(
@@ -232,10 +245,12 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo) {
         latinIME.overrideInputConnection(inputConnection, editorInfo)
         uixManager.toggleExpandAction(true)
+        uixManager.isInputOverridden.value = true
     }
 
     override fun unsetInputConnection() {
         latinIME.overrideInputConnection(null, null)
+        uixManager.isInputOverridden.value = false
     }
 
     override fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit) {
@@ -252,6 +267,14 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
             AccessibilityUtils.getInstance().announceForAccessibility(uixManager.getComposeView(), s)
         }
+    }
+
+    override fun activateAction(action: Action) {
+        uixManager.onActionActivated(action)
+    }
+
+    override fun showActionEditor() {
+        uixManager.showActionEditor()
     }
 }
 
@@ -278,13 +301,24 @@ class UixManager(private val latinIME: LatinIME) {
     private var numSuggestionsSinceNotice = 0
     private var currentNotice: MutableState<ImportantNotice?> = mutableStateOf(null)
 
-    private val actionsForcedOpenByUser = mutableStateOf(false)
+    private var isActionsExpanded = mutableStateOf(false)
+    private fun toggleActionsExpanded() {
+        isActionsExpanded.value = !isActionsExpanded.value
+        latinIME.deferSetSetting(ActionBarExpanded, isActionsExpanded.value)
+    }
+
+    private var isShowingActionEditor = mutableStateOf(false)
+    fun showActionEditor() {
+        isShowingActionEditor.value = true
+    }
+
+    var isInputOverridden = mutableStateOf(false)
 
     var currWindowActionWindow: ActionWindow? = null
 
     val isMainKeyboardHidden get() = mainKeyboardHidden
 
-    private fun onActionActivated(rawAction: Action) {
+    fun onActionActivated(rawAction: Action) {
         latinIME.inputLogic.finishInput()
 
         val action = runBlocking {
@@ -300,8 +334,20 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
+    fun onActionAltActivated(rawAction: Action) {
+        latinIME.inputLogic.finishInput()
+
+        val action = runBlocking {
+            ActionRegistry.getActionOverride(latinIME, rawAction)
+        }
+
+        action.altPressImpl?.invoke(keyboardManagerForAction, persistentStates[action])
+    }
+
     @Composable
     private fun MainKeyboardViewWithActionBar() {
+        val view = LocalView.current
+
         Column {
             // Don't show suggested words when it's not meant to be shown
             val suggestedWordsOrNull = if(shouldShowSuggestionStrip) {
@@ -314,10 +360,20 @@ class UixManager(private val latinIME: LatinIME) {
                 suggestedWordsOrNull,
                 latinIME.latinIMELegacy as SuggestionStripView.Listener,
                 inlineSuggestions = inlineSuggestions,
-                onActionActivated = { onActionActivated(it) },
+                onActionActivated = {
+                    keyboardManagerForAction.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                    onActionActivated(it)
+                },
+                onActionAltActivated = {
+                    if(it.altPressImpl != null) {
+                        keyboardManagerForAction.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                    }
+                    onActionAltActivated(it)
+                },
                 importantNotice = currentNotice.value,
                 keyboardManagerForAction = keyboardManagerForAction,
-                actionsForcedOpenByUser = actionsForcedOpenByUser
+                isActionsExpanded = isActionsExpanded.value,
+                toggleActionsExpanded = { toggleActionsExpanded() },
             )
         }
     }
@@ -341,7 +397,6 @@ class UixManager(private val latinIME: LatinIME) {
 
         setContent()
 
-        actionsForcedOpenByUser.value = false
         keyboardManagerForAction.announce("${latinIME.resources.getString(action.name)} mode")
     }
 
@@ -363,7 +418,6 @@ class UixManager(private val latinIME: LatinIME) {
 
         setContent()
 
-        actionsForcedOpenByUser.value = false
         keyboardManagerForAction.announce("$name closed")
     }
 
@@ -446,7 +500,9 @@ class UixManager(private val latinIME: LatinIME) {
                             }
                     ) { }
 
-                    Box(modifier = Modifier.matchParentSize().padding(8.dp)) {
+                    Box(modifier = Modifier
+                        .matchParentSize()
+                        .padding(8.dp)) {
                         Surface(
                             shape = RoundedCornerShape(16.dp),
                             color = MaterialTheme.colorScheme.primaryContainer,
@@ -495,32 +551,82 @@ class UixManager(private val latinIME: LatinIME) {
         languageSwitcherDialog?.show()
     }
 
+    @Composable
+    fun ActionEditorHost() {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            AnimatedVisibility(
+                visible = isShowingActionEditor.value,
+                enter = slideInVertically { it },
+                exit = slideOutVertically { it },
+                content = {
+                    ActionEditor()
+                },
+            )
+        }
+    }
+
+    @Composable
+    fun InputDarkener(darken: Boolean, onClose: () -> Unit) {
+        val color by animateColorAsState(
+            if (darken) Color.Black.copy(alpha = 0.25f) else Color.Transparent
+        )
+
+        LaunchedEffect(darken) {
+            latinIME.setInputModal(darken)
+        }
+
+        Box(Modifier
+            .background(color)
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .then(
+                if (darken) {
+                    Modifier.pointerInput(Unit) {
+                        detectTapGestures {
+                            onClose()
+                        }
+                    }
+                } else {
+                    Modifier
+                })
+        )
+    }
+
     fun setContent() {
         composeView?.setContent {
             UixThemeWrapper(latinIME.colorScheme) {
                 CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
-                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr ) {
-                        Column {
-                            Spacer(modifier = Modifier.weight(1.0f))
-                            Surface(modifier = Modifier.onSizeChanged {
-                                latinIME.updateTouchableHeight(it.height)
-                            }, color = latinIME.keyboardColor) {
-                                Box {
-                                    Column {
-                                        when {
-                                            currWindowActionWindow != null -> ActionViewWithHeader(
-                                                currWindowActionWindow!!
-                                            )
+                    CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
+                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                            InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
+                                closeActionWindow()
+                                isShowingActionEditor.value = false
+                            }
 
-                                            else -> MainKeyboardViewWithActionBar()
+                            Column {
+                                Spacer(modifier = Modifier.weight(1.0f))
+                                Surface(modifier = Modifier.onSizeChanged {
+                                    latinIME.updateTouchableHeight(it.height)
+                                }, color = latinIME.keyboardColor) {
+                                    Box {
+                                        Column {
+                                            when {
+                                                currWindowActionWindow != null -> ActionViewWithHeader(
+                                                    currWindowActionWindow!!
+                                                )
+
+                                                else -> MainKeyboardViewWithActionBar()
+                                            }
+
+                                            latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                                         }
 
-                                        latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+                                        ForgetWordDialog()
                                     }
-
-                                    ForgetWordDialog()
                                 }
                             }
+
+                            ActionEditorHost()
                         }
                     }
                 }
@@ -616,7 +722,6 @@ class UixManager(private val latinIME: LatinIME) {
 
     fun onInputFinishing() {
         closeActionWindow()
-        actionsForcedOpenByUser.value = false
         languageSwitcherDialog?.dismiss()
     }
 
@@ -674,9 +779,7 @@ class UixManager(private val latinIME: LatinIME) {
         val action = AllActions.getOrNull(id) ?: throw IllegalArgumentException("No such action with ID $id")
 
         if(alt) {
-            if(action.altPressImpl != null) {
-                action.altPressImpl.invoke(keyboardManagerForAction, persistentStates[action])
-            }
+            onActionAltActivated(action)
         } else {
             if (currWindowAction != null && action.windowImpl != null) {
                 closeActionWindow()
@@ -721,5 +824,7 @@ class UixManager(private val latinIME: LatinIME) {
                 persistentStates[action] = action.persistentState?.let { it(keyboardManagerForAction) }
             }
         }
+
+        isActionsExpanded.value = latinIME.getSettingBlocking(ActionBarExpanded)
     }
 }

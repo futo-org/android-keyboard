@@ -66,6 +66,7 @@ fun<T> Preferences.get(key: SettingsKey<T>): T {
 class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorScheme? = null) :
     DynamicThemeProvider {
     override val primaryKeyboardColor: Int
+    override val keyColor: Int
 
     override val keyboardBackground: Drawable
     override val keyBackground: Drawable
@@ -225,6 +226,9 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         } else {
             transparent
         }
+
+        this.keyColor = keyColor
+
         val functionalKeyColor = if(keyBorders) {
             adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, ratio / 2.0f + 0.5f, adjustSaturation = true)
         } else {

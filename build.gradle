@@ -222,9 +222,10 @@ dependencies {
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
     implementation 'androidx.autofill:autofill:1.1.0'
 
-    //stableImplementation 'ch.acra:acra-http:5.11.1' // TODO: Remove upon release
     stableImplementation 'ch.acra:acra-mail:5.11.1'
     stableImplementation 'ch.acra:acra-dialog:5.11.1'
+
+    implementation 'sh.calvin.reorderable:reorderable:2.2.0'
 
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'

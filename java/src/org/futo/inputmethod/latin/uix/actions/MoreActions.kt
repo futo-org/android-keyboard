@@ -1,0 +1,239 @@
+package org.futo.inputmethod.latin.uix.actions
+
+import android.view.HapticFeedbackConstants
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.Action
+import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.LocalManager
+import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.settings.Tip
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
+import org.futo.voiceinput.shared.ui.theme.Typography
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyGridState
+
+
+@Composable
+fun ActionItem(action: Action, modifier: Modifier = Modifier) {
+    Surface(color = MaterialTheme.colorScheme.primaryContainer, modifier = modifier
+        .fillMaxWidth()
+        .height(92.dp)
+        , shape = RoundedCornerShape(8.dp)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)) {
+
+            Column(modifier = Modifier
+                .align(Center)
+                .padding(8.dp)) {
+                Spacer(modifier = Modifier.weight(1.0f))
+                Icon(
+                    painterResource(id = action.icon), contentDescription = null, modifier = Modifier.align(
+                        CenterHorizontally
+                    ))
+
+                Spacer(modifier = Modifier.weight(1.0f))
+
+                Text(stringResource(id = action.name), modifier = Modifier.align(
+                    CenterHorizontally), style = Typography.labelSmall, textAlign = TextAlign.Center)
+            }
+
+        }
+    }
+}
+
+
+@Composable
+@Preview(showBackground = true)
+fun MoreActionsView() {
+    val manager = if(LocalInspectionMode.current) { null } else { LocalManager.current }
+    val context = LocalContext.current
+
+    val actionList = if(LocalInspectionMode.current) {
+        ActionsSettings.default
+    } else {
+        useDataStoreValueBlocking(ActionsSettings)
+    }
+
+    val actions = remember(actionList) {
+        actionList.toActionEditorItems().toActionMap()[ActionCategory.More] ?: listOf()
+    }
+
+
+    LazyVerticalGrid(
+        modifier = Modifier.fillMaxWidth(),
+        columns = GridCells.Adaptive(98.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(actions, key = { it.name }) {
+            ActionItem(it, Modifier.clickable {
+                manager!!.activateAction(it)
+            })
+        }
+    }
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ActionsEditor() {
+    val context = LocalContext.current
+    val view = LocalView.current
+
+    val initialList: List<ActionEditorItem> = remember {
+        context.getSettingBlocking(ActionsSettings).toActionEditorItems().ensureWellFormed()
+    }
+
+    val list = remember { initialList.toMutableStateList() }
+    val lazyListState = rememberLazyGridState()
+    val reorderableLazyListState = rememberReorderableLazyGridState(lazyListState) { from, to ->
+        val itemToAdd = list.removeAt(from.index)
+        list.add(to.index, itemToAdd)
+
+        view.performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            val map = list.toActionMap()
+            context.updateSettingsWithNewActions(map)
+        }
+    }
+
+    val actionMap = list.toActionMap()
+
+    LazyVerticalGrid(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp, 0.dp),
+        state = lazyListState,
+        columns = GridCells.Adaptive(98.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+        items(list, key = { it.toKey() }, span = {
+            when(it) {
+                is ActionEditorItem.Item -> GridItemSpan(1)
+                is ActionEditorItem.Separator -> GridItemSpan(maxLineSpan)
+            }
+        }) {
+            when(it) {
+                is ActionEditorItem.Item -> {
+                    ReorderableItem(reorderableLazyListState, key = it.toKey()) { isDragging ->
+                        ActionItem(it.action, Modifier.longPressDraggableHandle(
+                            onDragStarted = {
+                                view.performHapticFeedback(HapticFeedbackConstants.DRAG_START)
+                            },
+                            onDragStopped = {
+                                view.performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
+                            },
+                        ))
+                    }
+                }
+                is ActionEditorItem.Separator -> {
+                    ReorderableItem(reorderableLazyListState, key = it.toKey(), enabled = it.category != ActionCategory.entries[0]) { _ ->
+                        Column {
+                            if (it.category == ActionCategory.entries[0]) {
+                                Box(Modifier.defaultMinSize(minHeight = 72.dp), contentAlignment = Alignment.BottomStart) {
+                                    if (actionMap[ActionCategory.ActionKey]?.let { it.size > 1 } == true) {
+                                        Tip("Only one Action Key can be set, anything after the first is ignored")
+                                    } else if (actionMap[ActionCategory.PinnedKey]?.let { it.size > 4 } == true) {
+                                        Tip("You have more pinned actions than seems reasonable. Consider moving some to favorites")
+                                    }
+                                }
+                            }
+                            Text(it.category.name)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ActionEditor() {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.75f),
+        color = MaterialTheme.colorScheme.background,
+        shape = RoundedCornerShape(32.dp, 32.dp, 0.dp, 0.dp)
+    ) {
+        ActionsEditor()
+    }
+}
+
+
+val MoreActionsAction = Action(
+    icon = R.drawable.more_horizontal,
+    name = R.string.more_actions_action_title,
+    simplePressImpl = null,
+    windowImpl = { manager, _ ->
+        object : ActionWindow {
+            @Composable
+            override fun windowName(): String = stringResource(id = R.string.more_actions_action_title)
+
+            @Composable
+            override fun WindowContents(keyboardShown: Boolean) {
+                MoreActionsView()
+            }
+
+            @Composable
+            override fun WindowTitleBar(rowScope: RowScope) {
+                super.WindowTitleBar(rowScope)
+
+                OutlinedButton(onClick = { manager.showActionEditor() }, modifier = Modifier.padding(8.dp, 0.dp)) {
+                    Text("Edit Pinned", color = MaterialTheme.colorScheme.onBackground)
+                }
+            }
+
+            override fun close() {
+
+            }
+        }
+    },
+)

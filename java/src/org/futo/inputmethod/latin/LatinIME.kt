@@ -140,7 +140,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     private fun recreateKeyboard() {
         latinIMELegacy.updateTheme()
         latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(latinIMELegacy.currentAutoCapsState, latinIMELegacy.currentRecapitalizeState);
-        Log.w("LatinIME", "Recreating keyboard")
     }
 
     private var isNavigationBarVisible = false
@@ -387,6 +386,11 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     fun updateTouchableHeight(to: Int) { touchableHeight = to }
     fun getInputViewHeight(): Int = inputViewHeight
 
+    private var isInputModal = false
+    fun setInputModal(to: Boolean) {
+        isInputModal = to
+    }
+
     // The keyboard view really doesn't like being detached, so it's always
     // shown, but resized to 0 if an action window is open
     @Composable
@@ -554,7 +558,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             return
         }
 
-        val visibleTopY = inputHeight - touchableHeight
+        val visibleTopY = if(isInputModal) { 0 } else { inputHeight - touchableHeight }
 
         val touchLeft = 0
         val touchTop = visibleTopY
@@ -729,8 +733,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         Settings.getInstance().onSharedPreferenceChanged(null /* unused */, "")
         latinIMELegacy.loadSettings()
         recreateKeyboard()
-
-        Log.i("LatinIME", "DEVICE has UNLOCKED!!! Finished reloading: ${Settings.getInstance().current.dump()}")
 
         languageModelFacilitator.loadHistoryLog()
 

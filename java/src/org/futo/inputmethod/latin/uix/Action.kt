@@ -62,6 +62,8 @@ interface KeyboardManagerForAction {
 
     fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit)
     fun openInputMethodPicker()
+    fun activateAction(action: Action)
+    fun showActionEditor()
 }
 
 interface ActionWindow {

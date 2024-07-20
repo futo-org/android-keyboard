@@ -6,6 +6,7 @@ import androidx.annotation.ColorInt
 
 interface DynamicThemeProvider {
     val primaryKeyboardColor: Int
+    val keyColor: Int
 
     val keyboardBackground: Drawable
     val keyBackground: Drawable

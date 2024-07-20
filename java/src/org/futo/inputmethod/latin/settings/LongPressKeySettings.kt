@@ -26,7 +26,7 @@ fun LongPressKey.name(context: Context): String {
 fun LongPressKey.description(context: Context): String {
     return when(this) {
         LongPressKey.Numbers -> "e.g. [1] on [q]"
-        LongPressKey.LanguageKeys -> "e.g. [á] on [a] in Spanish"
+        LongPressKey.LanguageKeys -> "e.g. [ñ] on [n] in Spanish"
         LongPressKey.Symbols -> "e.g. [@] on [a]"
         LongPressKey.QuickActions -> "e.g. [Copy] on [c]"
         LongPressKey.MiscLetters -> "e.g. [ß] on [s] in all Latin script languages"
