@@ -63,6 +63,11 @@ fun CreditsScreen(navController: NavHostController = rememberNavController()) {
                 context.openURI("https://fonts.google.com/noto/specimen/Noto+Emoji")
             })
 
+        ParagraphText("Actions rearrangement menu uses the Reorderable library made by Calvin Liang, licensed under Apache-2.0. Reorderable is Copyright (c) 2023 Calvin Liang",
+            modifier = Modifier.clickable {
+                context.openURI("https://github.com/Calvin-LL/Reorderable")
+            })
+
         Spacer(modifier = Modifier.height(16.dp))
         ParagraphText("Note: The authors listed above are not affiliated with us and do not endorse or promote us")
     }
