@@ -558,10 +558,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             return
         }
 
-        val visibleTopY = if(isInputModal) { 0 } else { inputHeight - touchableHeight }
+        val visibleTopY = inputHeight - touchableHeight
 
         val touchLeft = 0
-        val touchTop = visibleTopY
+        val touchTop = if(isInputModal) { 0 } else { visibleTopY }
         val touchRight = composeView.width
         val touchBottom = inputHeight
 
