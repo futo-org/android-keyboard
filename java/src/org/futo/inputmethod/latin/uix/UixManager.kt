@@ -723,6 +723,7 @@ class UixManager(private val latinIME: LatinIME) {
     fun onInputFinishing() {
         closeActionWindow()
         languageSwitcherDialog?.dismiss()
+        isShowingActionEditor.value = false
     }
 
     fun cleanUpPersistentStates() {
