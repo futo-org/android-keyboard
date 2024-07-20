@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
 import android.view.inputmethod.InputMethodSubtype.InputMethodSubtypeBuilder
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -258,14 +259,19 @@ object Subtypes {
         val enabledSubtypes = context.getSettingBlocking(SubtypesSetting).toList()
         val currentSubtype = context.getSettingBlocking(ActiveSubtype)
 
+        if(enabledSubtypes.isEmpty()) return
+
+        if(enabledSubtypes.size == 1) {
+            Toast.makeText(context, "Only one language is enabled, can't switch to next", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val index = enabledSubtypes.indexOf(currentSubtype)
         val nextIndex = if(index == -1) {
             0
         } else {
             (index + direction.sign).mod(enabledSubtypes.size)
         }
-
-        if(enabledSubtypes.isEmpty()) return
 
         context.setSettingBlocking(ActiveSubtype.key, enabledSubtypes[nextIndex])
     }
