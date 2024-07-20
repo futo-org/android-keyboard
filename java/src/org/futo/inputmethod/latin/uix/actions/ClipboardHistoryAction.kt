@@ -370,7 +370,7 @@ fun String.toFNV1aHash(): Long {
 
 @OptIn(ExperimentalFoundationApi::class)
 val ClipboardHistoryAction = Action(
-    icon = R.drawable.clipboard,
+    icon = R.drawable.clipboard_manager,
     name = R.string.clipboard_manager_action_title,
     simplePressImpl = null,
     canShowKeyboard = true,
