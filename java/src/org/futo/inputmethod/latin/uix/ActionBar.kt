@@ -645,6 +645,20 @@ fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action
 }
 
 @Composable
+fun ActionSep() {
+    val sepCol = if(!LocalInspectionMode.current) {
+        Color(LocalThemeProvider.current.keyColor)
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(1.dp)
+        .background(sepCol)) {}
+}
+
+@Composable
 fun ActionBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
@@ -661,20 +675,11 @@ fun ActionBar(
 
     val actionBarHeight = 40.dp
 
-    val sepCol = if(!LocalInspectionMode.current) {
-        Color(LocalThemeProvider.current.keyColor)
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
-
     val oldActionBar = useDataStore(OldStyleActionsBar)
 
     Column {
         if(isActionsExpanded && !oldActionBar.value) {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(sepCol)) {}
+            ActionSep()
 
             Surface(
                 modifier = Modifier
@@ -685,10 +690,7 @@ fun ActionBar(
             }
         }
 
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(1.dp)
-            .background(sepCol)) {}
+        ActionSep()
 
         Surface(
             modifier = Modifier
@@ -706,7 +708,9 @@ fun ActionBar(
                 }
 
                 if(oldActionBar.value && isActionsExpanded) {
-                    Box(modifier = Modifier.weight(1.0f).fillMaxHeight()) {
+                    Box(modifier = Modifier
+                        .weight(1.0f)
+                        .fillMaxHeight()) {
                         ActionItems(onActionActivated, onActionAltActivated)
                     }
                 } else {
@@ -759,30 +763,33 @@ fun ActionWindowBar(
     onBack: () -> Unit,
     onExpand: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp), color = MaterialTheme.colorScheme.background
-    )
-    {
-        Row {
-            IconButton(onClick = onBack) {
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow_left_26),
-                    contentDescription = "Back"
-                )
-            }
-
-            CompositionLocalProvider(LocalTextStyle provides Typography.titleMedium) {
-                windowTitleBar()
-            }
-
-            if(canExpand) {
-                IconButton(onClick = onExpand) {
+    Column {
+        ActionSep()
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp), color = MaterialTheme.colorScheme.background
+        )
+        {
+            Row {
+                IconButton(onClick = onBack) {
                     Icon(
-                        painter = painterResource(id = R.drawable.arrow_up),
-                        contentDescription = "Show Keyboard"
+                        painter = painterResource(id = R.drawable.arrow_left_26),
+                        contentDescription = "Back"
                     )
+                }
+
+                CompositionLocalProvider(LocalTextStyle provides Typography.titleMedium) {
+                    windowTitleBar()
+                }
+
+                if (canExpand) {
+                    IconButton(onClick = onExpand) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_up),
+                            contentDescription = "Show Keyboard"
+                        )
+                    }
                 }
             }
         }
@@ -796,51 +803,59 @@ fun CollapsibleSuggestionsBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripView.Listener,
 ) {
-    Surface(modifier = Modifier
-        .fillMaxWidth()
-        .height(40.dp), color = MaterialTheme.colorScheme.background)
-    {
-        Row {
-            val color = MaterialTheme.colorScheme.primary
+    Column {
+        ActionSep()
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp), color = MaterialTheme.colorScheme.background
+        )
+        {
+            Row {
+                val color = MaterialTheme.colorScheme.primary
 
-            IconButton(
-                onClick = onClose,
-                modifier = Modifier
-                    .width(42.dp)
-                    .fillMaxHeight()
-                    .drawBehind {
-                        drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
-                    },
+                IconButton(
+                    onClick = onClose,
+                    modifier = Modifier
+                        .width(42.dp)
+                        .fillMaxHeight()
+                        .drawBehind {
+                            drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
+                        },
 
-                colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.close),
-                    contentDescription = "Close"
-                )
-            }
-
-            if(words != null) {
-                SuggestionItems(words, onClick = {
-                    suggestionStripListener.pickSuggestionManually(
-                        words.getInfo(it)
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.close),
+                        contentDescription = "Close"
                     )
-                }, onLongClick = { suggestionStripListener.requestForgetWord(words.getInfo(it)) })
-            } else {
-                Spacer(modifier = Modifier.weight(1.0f))
-            }
+                }
 
-            IconButton(
-                onClick = onCollapse,
-                modifier = Modifier
-                    .width(42.dp)
-                    .fillMaxHeight(),
-                colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow_down),
-                    contentDescription = "Collapse"
-                )
+                if (words != null) {
+                    SuggestionItems(
+                        words,
+                        onClick = {
+                            suggestionStripListener.pickSuggestionManually(
+                                words.getInfo(it)
+                            )
+                        },
+                        onLongClick = { suggestionStripListener.requestForgetWord(words.getInfo(it)) })
+                } else {
+                    Spacer(modifier = Modifier.weight(1.0f))
+                }
+
+                IconButton(
+                    onClick = onCollapse,
+                    modifier = Modifier
+                        .width(42.dp)
+                        .fillMaxHeight(),
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_down),
+                        contentDescription = "Collapse"
+                    )
+                }
             }
         }
     }
