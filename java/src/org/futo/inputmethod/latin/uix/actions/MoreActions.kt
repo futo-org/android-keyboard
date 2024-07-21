@@ -49,6 +49,7 @@ import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.voiceinput.shared.ui.theme.Typography
@@ -112,8 +113,12 @@ fun MoreActionsView() {
     }
 
 
+    if(actions.isEmpty()) {
+        ScreenTitle("No actions are assigned to More Actions")
+    }
+
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
         columns = GridCells.Adaptive(98.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
