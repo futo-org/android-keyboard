@@ -1,18 +1,26 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.updates.openURI
+
+data class ContributorInfo(
+    val name: String,
+    val features: List<String>
+)
+
+private fun contributor(name: String, vararg features: String) = ContributorInfo(name, features.toList())
+
+val contributors = listOf<ContributorInfo>(
+
+)
 
 @Preview(showBackground = true)
 @Composable
@@ -68,7 +76,12 @@ fun CreditsScreen(navController: NavHostController = rememberNavController()) {
                 context.openURI("https://github.com/Calvin-LL/Reorderable")
             })
 
-        Spacer(modifier = Modifier.height(16.dp))
-        ParagraphText("Note: The authors listed above are not affiliated with us and do not endorse or promote us")
+        ScreenTitle("Contributors")
+        contributors.forEach {
+            ParagraphText("Thank you to ${it.name} for contributing the following features: ${it.features.joinToString()}")
+        }
+
+        ScreenTitle("Notice")
+        ParagraphText("The authors listed above are not affiliated with us and may not necessarily endorse or promote us")
     }
 }
