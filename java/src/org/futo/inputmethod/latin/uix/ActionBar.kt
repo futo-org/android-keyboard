@@ -94,6 +94,7 @@ import org.futo.inputmethod.latin.uix.actions.FavoriteActions
 import org.futo.inputmethod.latin.uix.actions.MoreActionsAction
 import org.futo.inputmethod.latin.uix.actions.PinnedActions
 import org.futo.inputmethod.latin.uix.actions.toActionList
+import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.Typography
@@ -129,6 +130,27 @@ import kotlin.math.roundToInt
  *
  * TODO: Will need to make RTL languages work
  */
+
+val ActionBarScrollIndexSetting = SettingsKey(
+    intPreferencesKey("action_bar_scroll_index"),
+    0
+)
+
+val ActionBarScrollOffsetSetting = SettingsKey(
+    intPreferencesKey("action_bar_scroll_offset"),
+    0
+)
+
+val ActionBarExpanded = SettingsKey(
+    booleanPreferencesKey("actionExpanded"),
+    false
+)
+
+val OldStyleActionsBar = SettingsKey(
+    booleanPreferencesKey("oldActionBar"),
+    false
+)
+
 
 interface ImportantNotice {
     @Composable fun getText(): String
@@ -422,14 +444,6 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit, onLongSelect: (A
     }
 }
 
-val ActionBarScrollIndexSetting = SettingsKey(
-    intPreferencesKey("action_bar_scroll_index"),
-    0
-)
-val ActionBarScrollOffsetSetting = SettingsKey(
-    intPreferencesKey("action_bar_scroll_offset"),
-    0
-)
 
 @Composable
 fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
@@ -613,11 +627,6 @@ fun ImportantNoticeView(
     }
 }
 
-val ActionBarExpanded = SettingsKey(
-    booleanPreferencesKey("actionExpanded"),
-    false
-)
-
 @Composable
 fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
     val actions = if(!LocalInspectionMode.current) {
@@ -658,8 +667,10 @@ fun ActionBar(
         MaterialTheme.colorScheme.surfaceVariant
     }
 
+    val oldActionBar = useDataStore(OldStyleActionsBar)
+
     Column {
-        if(isActionsExpanded) {
+        if(isActionsExpanded && !oldActionBar.value) {
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
@@ -694,41 +705,47 @@ fun ActionBar(
                     )
                 }
 
-                if (importantNotice != null) {
-                    ImportantNoticeView(importantNotice)
+                if(oldActionBar.value && isActionsExpanded) {
+                    Box(modifier = Modifier.weight(1.0f).fillMaxHeight()) {
+                        ActionItems(onActionActivated, onActionAltActivated)
+                    }
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        AnimatedVisibility(
-                            inlineSuggestions.isNotEmpty(),
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            InlineSuggestions(inlineSuggestions)
-                        }
-                    }
-
-                    if (words != null && inlineSuggestions.isEmpty()) {
-                        SuggestionItems(
-                            words,
-                            onClick = {
-                                suggestionStripListener.pickSuggestionManually(
-                                    words.getInfo(it)
-                                )
-                                keyboardManagerForAction?.performHapticAndAudioFeedback(
-                                    Constants.CODE_TAB,
-                                    view
-                                )
-                            },
-                            onLongClick = {
-                                suggestionStripListener.requestForgetWord(
-                                    words.getInfo(it)
-                                )
-                            })
+                    if (importantNotice != null) {
+                        ImportantNoticeView(importantNotice)
                     } else {
-                        Spacer(modifier = Modifier.weight(1.0f))
-                    }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            AnimatedVisibility(
+                                inlineSuggestions.isNotEmpty(),
+                                enter = fadeIn(),
+                                exit = fadeOut()
+                            ) {
+                                InlineSuggestions(inlineSuggestions)
+                            }
+                        }
 
-                    PinnedActionItems(onActionActivated, onActionAltActivated)
+                        if (words != null && inlineSuggestions.isEmpty()) {
+                            SuggestionItems(
+                                words,
+                                onClick = {
+                                    suggestionStripListener.pickSuggestionManually(
+                                        words.getInfo(it)
+                                    )
+                                    keyboardManagerForAction?.performHapticAndAudioFeedback(
+                                        Constants.CODE_TAB,
+                                        view
+                                    )
+                                },
+                                onLongClick = {
+                                    suggestionStripListener.requestForgetWord(
+                                        words.getInfo(it)
+                                    )
+                                })
+                        } else {
+                            Spacer(modifier = Modifier.weight(1.0f))
+                        }
+
+                        PinnedActionItems(onActionActivated, onActionAltActivated)
+                    }
                 }
             }
         }

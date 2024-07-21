@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.HiddenKeysSetting
+import org.futo.inputmethod.latin.uix.OldStyleActionsBar
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -54,6 +55,8 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         )
 
         SettingToggleDataStore(title = "Dismissed migration notice", setting = dismissedMigrateUpdateNotice)
+
+        SettingToggleDataStore(title = "Old action bar", setting = OldStyleActionsBar)
 
         NavigationItem(
             title = "Crash the app",
