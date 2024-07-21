@@ -19,7 +19,8 @@ data class ContributorInfo(
 private fun contributor(name: String, vararg features: String) = ContributorInfo(name, features.toList())
 
 val contributors = listOf<ContributorInfo>(
-    contributor("Ravyar Tahir (@ravarage)", "Central Kurdish keyboard layout")
+    contributor("Ravyar Tahir (@ravarage)", "Central Kurdish keyboard layout"),
+    contributor("Emre Eren (@remreren)", "Turkish keyboard layout"),
 )
 
 @Preview(showBackground = true)

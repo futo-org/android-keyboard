@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <include
+        latin:keyboardLayout="@xml/rowkeys_qwerty3" />
+
+    <!-- U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+         U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE -->
+    <Key
+        latin:keySpec="&#x00F6;"
+        latin:keyHintLabel="&#x00F3;"
+        latin:moreKeys="!text/morekeys_o" />
+
+    <!-- U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
+         U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE -->
+    <Key
+        latin:keySpec="&#x00E7;"
+        latin:keyHintLabel="&#x0107;"
+        latin:additionalMoreKeys="!text/morekeys_c" />
+</merge>

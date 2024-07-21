@@ -123,5 +123,7 @@
         <item>nordic</item>
         <item>tr:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
+        <item>tr:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
+        <item>turkish</item>
     </string-array>
 </resources>
