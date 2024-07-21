@@ -85,6 +85,8 @@
         <item>qwerty</item>
         <item>ar:SupportTouchPositionCorrection,EmojiCapable</item>
         <item>arabic</item>
+        <item>ckb:SupportTouchPositionCorrection,EmojiCapable</item>
+        <item>Kurdish</item>
         <item>cs:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwertz</item>
         <item>da:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>

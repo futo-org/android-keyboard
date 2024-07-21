@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+
+    <switch>
+    <case
+        latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
+        >
+        <!-- U+0642: "ق" ARABIC LETTER QAF
+        U+x0060   "`" SYMBOL BACKTICK -->
+    <Key
+        latin:keySpec="&#x0642;"
+        latin:keyHintLabel="1"
+        latin:additionalMoreKeys="&#x0060;,&#x0661;,1"
+
+        />
+    <!-- U+0648: "و" ARABIC LETTER WAW
+         U+0648: "وو" ARABIC LETTER DOUBLE WAW -->
+    <Key
+        latin:keySpec="&#x0648;"
+        latin:keyHintLabel="2"
+        latin:additionalMoreKeys="&#x0648;&#x0648;,&#x0662;,2" />
+    <!-- U+06D5: "ە" ARABIC LETTER BZWEN
+         U+064A: "ی" ARABIC LETTER YA WITH DOUBLE DOT -->
+    <Key
+        latin:keySpec="&#x06D5;"
+        latin:keyHintLabel="3"
+        latin:additionalMoreKeys="&#x064A;,&#x0663;,3" />
+    <!-- U+0631: "ر" ARABIC LETTER REH
+         U+0695: "ڕ" KURDISH LETTER RAA -->
+    <Key
+        latin:keySpec="&#x0631;"
+        latin:keyHintLabel="4"
+        latin:additionalMoreKeys="&#x0695;,&#x0664;,4" />
+    <!-- U+062A: "ت" ARABIC LETTER TEH
+         U+0637: "ط" ARABIC LETTER TA -->
+    <Key
+        latin:keySpec="&#x062A;"
+        latin:keyHintLabel="5"
+        latin:additionalMoreKeys="&#x0637;,&#x0665;,5" />
+    <!-- U+06CC: "ی" ARABIC LETTER KURDISH YEH
+         U+06CE: "ێ" KURDISH LETTER KURDISH YE  -->
+    <Key
+        latin:keySpec="&#x06CC;"
+        latin:keyHintLabel="6"
+        latin:additionalMoreKeys="&#x06CE;,&#x0666;,6" />
+    <!-- U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
+         U+0621: "ء" ARABIC LETTER A -->
+    <Key
+        latin:keySpec="&#x0626;"
+        latin:keyHintLabel="7"
+        latin:additionalMoreKeys="&#x0621;,&#x0667;,7" />
+    <!-- U+062D: "ح" ARABIC LETTER HA
+         U+0639: "ع" ARABIC LETTER AA -->
+    <Key
+        latin:keySpec="&#x062D;"
+        latin:keyHintLabel="8"
+        latin:additionalMoreKeys="&#x0639;,&#x0668;,8" />
+    <!-- U+06C6: "ۆ" KURDISH LETTER WO
+         U+0624: "ؤ" ARABIC LETTER WA-->
+    <Key
+        latin:keySpec="&#x06C6;"
+        latin:keyHintLabel="9"
+        latin:additionalMoreKeys="&#x0624;,&#x0669;,9" />
+    <!-- U+067E: "پ" KURDISH LETTER PA
+         U+062B: "ث" ARABIC LETTER THA -->
+
+    <Key
+        latin:keySpec="&#x067E;"
+        latin:keyHintLabel="0"
+        latin:additionalMoreKeys="&#x062B;,&#x0660;,0" />
+    </case>
+        <!-- reverse layout additional keys is spec and spec is addicat-->
+        <default>
+            <!-- U+x0060   "`" SYMBOL BACKTICK
+            U+0642: "ق" ARABIC LETTER QAF-->
+        <Key
+            latin:keySpec="&#x0060;"
+            latin:keyHintLabel="1"
+            latin:additionalMoreKeys="&#x0642;,&#x0661;,1" />
+        <!-- U+0648: "وو" ARABIC LETTER DOUBLE WAW
+             U+0648: "و" ARABIC LETTER WAW -->
+        <Key
+            latin:keySpec="&#x0648;&#x0648;"
+            latin:keyHintLabel="2"
+            latin:additionalMoreKeys="&#x0648;,&#x0662;,2" />
+        <!-- U+064A: "ی" ARABIC LETTER YA WITH DOUBLE DOT
+             U+06D5: "ە" ARABIC LETTER BZWEN -->
+        <Key
+            latin:keySpec="&#x064A;"
+            latin:keyHintLabel="3"
+            latin:additionalMoreKeys="
+            &#x06D5;,&#x0663;,3" />
+        <!-- U+0695: "ڕ" KURDISH LETTER RAA
+             U+0631: "ر" ARABIC LETTER REH -->
+        <Key
+            latin:keySpec="&#x0695;"
+            latin:keyHintLabel="4"
+            latin:additionalMoreKeys="
+            &#x0631;,&#x0664;,4" />
+        <!-- U+0637: "ط" ARABIC LETTER TA
+             U+062A: "ت" ARABIC LETTER TEH -->
+        <Key
+            latin:keySpec="&#x0637;"
+            latin:keyHintLabel="5"
+            latin:additionalMoreKeys="
+            &#x062A;,&#x0665;,5" />
+        <!-- U+06CE: "ێ" KURDISH LETTER KURDISH YE
+             U+06CC: "ی" ARABIC LETTER KURDISH YEH -->
+        <Key
+            latin:keySpec="&#x06CE;"
+            latin:keyHintLabel="6"
+            latin:additionalMoreKeys="
+            &#x06CC;,&#x0666;,6" />
+        <!-- U+0621: "ء" ARABIC LETTER A
+             U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE -->
+        <Key
+            latin:keySpec="&#x0621;"
+            latin:keyHintLabel="7"
+            latin:additionalMoreKeys="
+            &#x0626;,&#x0667;,7" />
+        <!-- U+0639: "ع" ARABIC LETTER AA
+             U+062D: "ح" ARABIC LETTER HA -->
+        <Key
+            latin:keySpec="&#x0639;"
+            latin:keyHintLabel="8"
+            latin:additionalMoreKeys="
+            &#x062D;,&#x0668;,8" />
+        <!-- U+0624: "ؤ" ARABIC LETTER WA
+             U+06C6: "ۆ" KURDISH LETTER WO -->
+        <Key
+            latin:keySpec="&#x0624;"
+            latin:keyHintLabel="9"
+            latin:additionalMoreKeys="
+            &#x06C6;,&#x0669;,9" />
+        <!-- U+062B: "ث" ARABIC LETTER THA
+             U+067E: "پ" KURDISH LETTER PA -->
+        <Key
+            latin:keySpec="&#x062B;"
+            latin:keyHintLabel="0"
+            latin:additionalMoreKeys="
+            &#x067E;,&#x0660;,0" />
+
+
+    </default>
+
+    </switch>
+
+
+</merge>
+

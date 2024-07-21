@@ -613,5 +613,6 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="layout_telugu">Telugu</string>
     <string name="layout_thai">Thai</string>
     <string name="layout_uzbek">Uzbek</string>
+    <string name="layout_kurdish">Kurdish</string>
     <string name="layout_default">Default</string>
 </resources>
