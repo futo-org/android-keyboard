@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.LifecycleCoroutineScope
+import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import java.util.Locale
 
@@ -64,6 +65,8 @@ interface KeyboardManagerForAction {
     fun openInputMethodPicker()
     fun activateAction(action: Action)
     fun showActionEditor()
+
+    fun getLatinIMEForDebug(): LatinIME
 }
 
 interface ActionWindow {

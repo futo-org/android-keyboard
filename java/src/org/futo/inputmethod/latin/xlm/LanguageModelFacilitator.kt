@@ -649,6 +649,8 @@ public class LanguageModelFacilitator(
         ignoringNextUpdate = false
     }
 
+    public fun isTransformerDisabled(): Boolean = transformerDisabled
+
     var ignoringNextUpdate = false
     fun ignoreNextUpdate() {
         ignoringNextUpdate = true

@@ -279,6 +279,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun showActionEditor() {
         uixManager.showActionEditor()
     }
+
+    override fun getLatinIMEForDebug(): LatinIME = latinIME
 }
 
 data class ActiveDialogRequest(
