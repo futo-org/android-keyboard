@@ -663,8 +663,11 @@ fun EmojiGrid(
     var emojiList = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis
 
     if(isSearching) {
-        emojiList = emojiList.filterIsInstance<EmojiItemItem>().searchMultiple(searchFilter) {
-            listOf(it.emoji.description) + it.emoji.aliases + it.emoji.tags
+        emojiList = emojiList.filterIsInstance<EmojiItemItem>().searchMultiple(searchFilter) { item ->
+            listOf(item.emoji.description) +
+                    item.emoji.aliases.map { it.replace("_", " ") } +
+                    item.emoji.tags +
+                    item.emoji.aliases.filter { it.contains("_") }.flatMap { it.split("_") }
         }.take(30)
 
         if(emojiList.isEmpty()) {
