@@ -8,7 +8,7 @@ import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePicker
 
 val ThemeAction = Action(
-    icon = R.drawable.eye,
+    icon = R.drawable.themes,
     name = R.string.theme_switcher_action_title,
     simplePressImpl = null,
     canShowKeyboard = true,
