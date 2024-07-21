@@ -61,7 +61,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.openModelImporter
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
@@ -401,7 +401,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
     val deleteDialogInfo: MutableState<DeleteInfo?> = remember { mutableStateOf(null) }
     val languageDeleteInfo: MutableState<Locale?> = remember { mutableStateOf(null) }
 
-    val inputMethods = useDataStoreValueBlocking(SubtypesSetting)
+    val inputMethods = useDataStoreValue(SubtypesSetting)
     val inputMethodList = remember(inputMethods) {
         Subtypes.layoutsMappedByLanguage(inputMethods)
     }

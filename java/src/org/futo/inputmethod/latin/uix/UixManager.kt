@@ -77,6 +77,7 @@ import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
+import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
@@ -553,10 +554,12 @@ class UixManager(private val latinIME: LatinIME) {
 
         // Create new dialog
         languageSwitcherDialog = createDialogComposeView(latinIME) {
-            UixThemeAuto {
-                LanguageSwitcherDialog(
-                    onDismiss = { it.dismiss() }
-                )
+            DataStoreCacheProvider {
+                UixThemeAuto {
+                    LanguageSwitcherDialog(
+                        onDismiss = { it.dismiss() }
+                    )
+                }
             }
         }
 
@@ -607,38 +610,40 @@ class UixManager(private val latinIME: LatinIME) {
     fun setContent() {
         composeView?.setContent {
             UixThemeWrapper(latinIME.colorScheme) {
-                CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
-                    CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
-                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                            InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
-                                closeActionWindow()
-                                isShowingActionEditor.value = false
-                            }
+                DataStoreCacheProvider {
+                    CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
+                        CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
+                            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                                InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
+                                    closeActionWindow()
+                                    isShowingActionEditor.value = false
+                                }
 
-                            Column {
-                                Spacer(modifier = Modifier.weight(1.0f))
-                                Surface(modifier = Modifier.onSizeChanged {
-                                    latinIME.updateTouchableHeight(it.height)
-                                }, color = latinIME.keyboardColor) {
-                                    Box {
-                                        Column {
-                                            when {
-                                                currWindowActionWindow != null -> ActionViewWithHeader(
-                                                    currWindowActionWindow!!
-                                                )
+                                Column {
+                                    Spacer(modifier = Modifier.weight(1.0f))
+                                    Surface(modifier = Modifier.onSizeChanged {
+                                        latinIME.updateTouchableHeight(it.height)
+                                    }, color = latinIME.keyboardColor) {
+                                        Box {
+                                            Column {
+                                                when {
+                                                    currWindowActionWindow != null -> ActionViewWithHeader(
+                                                        currWindowActionWindow!!
+                                                    )
 
-                                                else -> MainKeyboardViewWithActionBar()
+                                                    else -> MainKeyboardViewWithActionBar()
+                                                }
+
+                                                latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                                             }
 
-                                            latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+                                            ForgetWordDialog()
                                         }
-
-                                        ForgetWordDialog()
                                     }
                                 }
-                            }
 
-                            ActionEditorHost()
+                                ActionEditorHost()
+                            }
                         }
                     }
                 }

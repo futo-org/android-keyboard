@@ -44,7 +44,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.LocaleLayoutMap
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
 import java.util.Locale
@@ -288,7 +288,7 @@ fun LanguageSwitcherDialog(
     val subtypeSet = if(inspection) {
         setOf("en_US:", "pt_PT:", "lt:", "fr:KeyboardLayoutSet=bepo:")
     } else {
-        useDataStoreValueBlocking(SubtypesSetting)
+        useDataStoreValue(SubtypesSetting)
     }
 
     val subtypes = remember(subtypeSet) {
@@ -300,7 +300,7 @@ fun LanguageSwitcherDialog(
     val activeSubtype = if(inspection) {
         "pt_PT:"
     } else {
-        useDataStoreValueBlocking(ActiveSubtype)
+        useDataStoreValue(ActiveSubtype)
     }
 
     Surface(shape = RoundedCornerShape(48.dp), color = MaterialTheme.colorScheme.background) {

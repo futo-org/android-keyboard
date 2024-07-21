@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
@@ -34,15 +35,17 @@ import org.futo.inputmethod.updates.openURI
 class PaymentCompleteActivity : ComponentActivity() {
     private fun updateContent() {
         setContent {
-            UixThemeAuto {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    PaymentThankYouScreen(onExit = {
-                        startAppActivity(SettingsActivity::class.java, clearTop = true)
-                        finish()
-                    })
+            DataStoreCacheProvider {
+                UixThemeAuto {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        PaymentThankYouScreen(onExit = {
+                            startAppActivity(SettingsActivity::class.java, clearTop = true)
+                            finish()
+                        })
+                    }
                 }
             }
         }
@@ -68,20 +71,25 @@ class PaymentCompleteActivity : ComponentActivity() {
                 finish()
             } else {
                 setContent {
-                    UixThemeAuto {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            Column {
-                                Text(
-                                    getString(R.string.license_check_failed),
-                                    modifier = Modifier.padding(8.dp)
-                                )
+                    DataStoreCacheProvider {
+                        UixThemeAuto {
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = MaterialTheme.colorScheme.background
+                            ) {
+                                Column {
+                                    Text(
+                                        getString(R.string.license_check_failed),
+                                        modifier = Modifier.padding(8.dp)
+                                    )
 
-                                NavigationItem(title = "Email keyboard@futo.org", style = NavigationItemStyle.Mail, navigate = {
-                                    openURI("mailto:keyboard@futo.org")
-                                })
+                                    NavigationItem(
+                                        title = "Email keyboard@futo.org",
+                                        style = NavigationItemStyle.Mail,
+                                        navigate = {
+                                            openURI("mailto:keyboard@futo.org")
+                                        })
+                                }
                             }
                         }
                     }

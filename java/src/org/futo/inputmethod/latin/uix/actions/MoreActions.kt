@@ -50,7 +50,7 @@ import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.Tip
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.voiceinput.shared.ui.theme.Typography
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
@@ -104,7 +104,7 @@ fun MoreActionsView() {
     val actionList = if(LocalInspectionMode.current) {
         ActionsSettings.default
     } else {
-        useDataStoreValueBlocking(ActionsSettings)
+        useDataStoreValue(ActionsSettings)
     }
 
     val actions = remember(actionList) {

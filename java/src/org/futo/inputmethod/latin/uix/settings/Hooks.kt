@@ -2,76 +2,64 @@ package org.futo.inputmethod.latin.uix.settings
 
 import android.content.SharedPreferences
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.dataStore
-import org.futo.inputmethod.latin.uix.getSetting
+
+class DataStoreCache(
+    val currPreferences: Preferences
+)
+
+val LocalDataStoreCache = staticCompositionLocalOf<DataStoreCache?> {
+    null
+}
+
+@Composable
+fun DataStoreCacheProvider(content: @Composable () -> Unit) {
+    val context = LocalContext.current
+    val initialPrefs = remember {
+        runBlocking {
+            context.dataStore.data.first()
+        }
+    }
+    val prefs = context.dataStore.data.collectAsState(initialPrefs)
+
+    val cache = remember(prefs.value) {
+        DataStoreCache(prefs.value)
+    }
+
+    CompositionLocalProvider(LocalDataStoreCache provides cache) {
+        content()
+    }
+}
 
 data class DataStoreItem<T>(val value: T, val setValue: (T) -> Job)
 
 @Composable
-fun <T> useDataStoreValueBlocking(key: Preferences.Key<T>, default: T): T {
-    val context = LocalContext.current
-
-    val initialValue = remember {
-        runBlocking {
-            context.getSetting(key, default)
-        }
-    }
-
-    val valueFlow: Flow<T> = remember {
-        context.dataStore.data.map { preferences ->
-            preferences[key] ?: default
-        }
-    }
-
-    return valueFlow.collectAsState(initial = initialValue).value
-}
-
-@Composable
-fun <T> useDataStoreValueBlocking(v: SettingsKey<T>): T {
-    return useDataStoreValueBlocking(key = v.key, default = v.default)
-}
-
-@Composable
 fun <T> useDataStore(key: Preferences.Key<T>, default: T, blocking: Boolean = false): DataStoreItem<T> {
     val context = LocalContext.current
+    val cache = LocalDataStoreCache.current
     val coroutineScope = rememberCoroutineScope()
 
-    val initialValue = remember {
-        if(blocking) {
-            runBlocking {
-                context.getSetting(key, default)
-            }
-        } else {
-            default
-        }
-    }
-
-    val valueFlow: Flow<T> = remember {
-        context.dataStore.data.map { preferences ->
-            preferences[key] ?: default
-        }
-    }
-
-    val value = valueFlow.collectAsState(initial = initialValue).value!!
+    val value = cache?.currPreferences?.get(key) ?: default
 
     val setValue = { newValue: T ->
         coroutineScope.launch {
@@ -82,6 +70,13 @@ fun <T> useDataStore(key: Preferences.Key<T>, default: T, blocking: Boolean = fa
     }
 
     return DataStoreItem(value, setValue)
+}
+
+@Composable
+fun <T> useDataStoreValue(settingsKey: SettingsKey<T>): T {
+    val cache = LocalDataStoreCache.current
+
+    return cache?.currPreferences?.get(settingsKey.key) ?: settingsKey.default
 }
 
 
@@ -159,11 +154,11 @@ fun useSharedPrefsInt(key: String, default: Int): DataStoreItem<Int> {
 private fun<T> SyncDataStoreToPreferences(key: SettingsKey<T>, update: (newValue: T, editor: SharedPreferences.Editor) -> Unit) {
     val context = LocalContext.current
     val sharedPrefs = remember { PreferenceUtils.getDefaultSharedPreferences(context) }
-    val value = useDataStoreValueBlocking(key)
+    val value = useDataStore(key)
 
     LaunchedEffect(value) {
         val edit = sharedPrefs.edit {
-            update(value, this)
+            update(value.value, this)
         }
     }
 }

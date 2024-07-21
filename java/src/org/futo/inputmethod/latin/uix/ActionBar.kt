@@ -95,7 +95,7 @@ import org.futo.inputmethod.latin.uix.actions.MoreActionsAction
 import org.futo.inputmethod.latin.uix.actions.PinnedActions
 import org.futo.inputmethod.latin.uix.actions.toActionList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -450,7 +450,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current
     val actions = if(!LocalInspectionMode.current) {
-        useDataStoreValueBlocking(FavoriteActions)
+        useDataStoreValue(FavoriteActions)
     } else {
         FavoriteActions.default
     }
@@ -630,7 +630,7 @@ fun ImportantNoticeView(
 @Composable
 fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
     val actions = if(!LocalInspectionMode.current) {
-        useDataStoreValueBlocking(PinnedActions)
+        useDataStoreValue(PinnedActions)
     } else {
         PinnedActions.default
     }

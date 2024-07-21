@@ -75,7 +75,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
@@ -210,16 +210,16 @@ fun UnpaidNoticeCondition(
     force: Boolean = LocalInspectionMode.current,
     inner: @Composable () -> Unit
 ) {
-    val paymentUrl = useDataStoreValueBlocking(TMP_PAYMENT_URL)
+    val paymentUrl = useDataStoreValue(TMP_PAYMENT_URL)
     if(paymentUrl.isBlank()) return
 
     val numDaysInstalled = useNumberOfDaysInstalled()
-    val forceShowNotice = useDataStoreValueBlocking(FORCE_SHOW_NOTICE)
-    val isAlreadyPaid = useDataStoreValueBlocking(IS_ALREADY_PAID)
-    val pushReminderTime = useDataStoreValueBlocking(NOTICE_REMINDER_TIME)
+    val forceShowNotice = useDataStoreValue(FORCE_SHOW_NOTICE)
+    val isAlreadyPaid = useDataStoreValue(IS_ALREADY_PAID)
+    val pushReminderTime = useDataStoreValue(NOTICE_REMINDER_TIME)
     val currentTime = System.currentTimeMillis() / 1000L
 
-    val isDisplayingMigrationNotice = !useDataStoreValueBlocking(dismissedMigrateUpdateNotice)
+    val isDisplayingMigrationNotice = !useDataStoreValue(dismissedMigrateUpdateNotice)
 
     val reminderTimeIsUp = (currentTime >= pushReminderTime)
 

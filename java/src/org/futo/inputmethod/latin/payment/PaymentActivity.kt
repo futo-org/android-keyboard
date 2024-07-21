@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
+import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentScreenSwitch
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 
@@ -18,14 +19,16 @@ import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 class PaymentActivity : ComponentActivity() {
     private fun updateContent() {
         setContent {
-            UixThemeAuto {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    PaymentScreenSwitch(onExit = {
-                        finish()
-                    })
+            DataStoreCacheProvider {
+                UixThemeAuto {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        PaymentScreenSwitch(onExit = {
+                            finish()
+                        })
+                    }
                 }
             }
         }

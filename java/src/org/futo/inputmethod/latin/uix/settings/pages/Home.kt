@@ -28,7 +28,7 @@ import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.ConditionalMigrateUpdateNotice
 import org.futo.inputmethod.updates.ConditionalUpdate
@@ -38,8 +38,8 @@ import org.futo.inputmethod.updates.ConditionalUpdate
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val isDeveloper = useDataStoreValueBlocking(IS_DEVELOPER)
-    val isPaid = useDataStoreValueBlocking(IS_ALREADY_PAID)
+    val isDeveloper = useDataStoreValue(IS_DEVELOPER)
+    val isPaid = useDataStoreValue(IS_ALREADY_PAID)
     
 
     Column {
@@ -80,7 +80,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             NavigationItem(
                 title = "Voice Input",
                 style = NavigationItemStyle.HomePrimary,
-                subtitle = if(useDataStoreValueBlocking(USE_SYSTEM_VOICE_INPUT)) { "Built-in voice input is disabled!" } else { null },
+                subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) { "Built-in voice input is disabled!" } else { null },
                 navigate = { navController.navigate("voiceInput") },
                 icon = painterResource(id = R.drawable.mic_fill)
             )

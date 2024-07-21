@@ -15,7 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import org.futo.inputmethod.latin.uix.THEME_KEY
-import org.futo.inputmethod.latin.uix.settings.useDataStoreValueBlocking
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import kotlin.math.sqrt
 
@@ -108,7 +108,7 @@ fun ThemeOption?.ensureAvailable(context: Context): ThemeOption? {
 fun UixThemeAuto(content: @Composable () -> Unit) {
     val context = LocalContext.current
 
-    val themeIdx = useDataStoreValueBlocking(THEME_KEY.key, THEME_KEY.default)
+    val themeIdx = useDataStoreValue(THEME_KEY)
 
     val theme: ThemeOption = themeIdx?.let { ThemeOptions[it].ensureAvailable(context) }
         ?: VoiceInputTheme
