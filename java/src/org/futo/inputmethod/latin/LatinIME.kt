@@ -137,9 +137,25 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     private var lastEditorInfo: EditorInfo? = null
 
+    private var settingsRefreshRequired = false
     private fun recreateKeyboard() {
         latinIMELegacy.updateTheme()
-        latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(latinIMELegacy.currentAutoCapsState, latinIMELegacy.currentRecapitalizeState);
+
+        if(settingsRefreshRequired) {
+            latinIMELegacy.mKeyboardSwitcher.loadKeyboard(
+                currentInputEditorInfo ?: return,
+                latinIMELegacy.mSettings.current,
+                latinIMELegacy.currentAutoCapsState,
+                latinIMELegacy.currentRecapitalizeState
+            )
+        } else {
+            latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(
+                latinIMELegacy.currentAutoCapsState,
+                latinIMELegacy.currentRecapitalizeState
+            )
+        }
+
+        settingsRefreshRequired = false
     }
 
     private var isNavigationBarVisible = false
@@ -197,6 +213,18 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
+    private fun invalidateKeyboard(refreshSettings: Boolean = false) {
+        settingsRefreshRequired = settingsRefreshRequired || refreshSettings
+
+        if(!uixManager.isMainKeyboardHidden) {
+            println("Recreating keyboard")
+            recreateKeyboard()
+        } else {
+            println("Pend recreate keyboard")
+            pendingRecreateKeyboard = true
+        }
+    }
+
     fun updateTheme(newTheme: ThemeOption) {
         assert(newTheme.available(this))
 
@@ -204,12 +232,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             activeThemeOption = newTheme
             updateDrawableProvider(newTheme.obtainColors(this))
             deferSetSetting(THEME_KEY, newTheme.key)
-
-            if(!uixManager.isMainKeyboardHidden) {
-                recreateKeyboard()
-            } else {
-                pendingRecreateKeyboard = true
-            }
+            invalidateKeyboard()
         }
     }
 
@@ -298,11 +321,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
                         if (provider.hasUpdated(it)) {
                             activeThemeOption?.obtainColors?.let { f ->
                                 updateDrawableProvider(f(this@LatinIME))
-                                if (!uixManager.isMainKeyboardHidden) {
-                                    recreateKeyboard()
-                                } else {
-                                    pendingRecreateKeyboard = true
-                                }
+                                invalidateKeyboard()
                             }
                         }
                     }
@@ -339,6 +358,15 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
 
         uixManager.onCreate()
+
+        Settings.getInstance().settingsChangedListeners.add { oldSettings, newSettings ->
+            val differs = (oldSettings.mActionKeyId != newSettings.mActionKeyId)
+                    || (oldSettings.mShowsActionKey != newSettings.mShowsActionKey)
+
+            if (differs) {
+                invalidateKeyboard(refreshSettings = true)
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -353,6 +381,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         runBlocking {
             languageModelFacilitator.destroyModel()
         }
+
+        Settings.getInstance().settingsChangedListeners.clear()
 
         latinIMELegacy.onDestroy()
         super.onDestroy()

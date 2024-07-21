@@ -36,6 +36,7 @@ import org.futo.inputmethod.latin.utils.RunInLocale;
 import org.futo.inputmethod.latin.utils.StatsUtils;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
@@ -140,6 +141,11 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     private static final Settings sInstance = new Settings();
 
+    public interface SettingsChangedListener {
+        void onChanged(SettingsValues old, SettingsValues settings);
+    }
+    public HashSet<SettingsChangedListener> settingsChangedListeners = new HashSet<>();
+
     public static Settings getInstance() {
         return sInstance;
     }
@@ -189,6 +195,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public void loadSettings(final Context context, final Locale locale,
             @Nonnull final InputAttributes inputAttributes) {
         mSettingsValuesLock.lock();
+
+        SettingsValues oldSettings = mSettingsValues;
+
         mContext = context;
         try {
             final SharedPreferences prefs = mPrefs;
@@ -201,6 +210,14 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             mSettingsValues = job.runInLocale(mRes, locale);
         } finally {
             mSettingsValuesLock.unlock();
+        }
+
+        for (SettingsChangedListener x : settingsChangedListeners) {
+            try {
+                x.onChanged(oldSettings, mSettingsValues);
+            } catch(Exception ignored) {
+
+            }
         }
     }
 
