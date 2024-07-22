@@ -36,7 +36,7 @@
         latin:moreKeys="!text/qwertysyms_h,!text/morekeys_t,!text/actions_t" />
     <Key
         latin:keySpec="s"
-        latin:moreKeys="!text/qwertysyms_j,!text/morekeys_s,!text/morekeys_misc_s,!text/actions_s" />>
+        latin:moreKeys="!text/qwertysyms_j,!text/morekeys_s,!text/morekeys_misc_s,!text/actions_s" />
     <Key
         latin:keySpec="r"
         latin:moreKeys="!text/qwertysyms_k,!text/morekeys_r,!text/actions_r" />
