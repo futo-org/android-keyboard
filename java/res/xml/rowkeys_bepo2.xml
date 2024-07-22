@@ -21,7 +21,7 @@
         latin:moreKeys="!text/qwertysyms_a,!text/morekeys_a,!text/morekeys_misc_a,!text/actions_a" />
     <Key
         latin:keySpec="u"
-        latin:moreKeys="!text/qwertysyms_s,!text/morekeys_u,!text/morekeys_misc_u,!text/actions_y" />
+        latin:moreKeys="!text/qwertysyms_s,!text/morekeys_u,!text/morekeys_misc_u,!text/actions_u" />
     <Key
         latin:keySpec="i"
         latin:moreKeys="!text/qwertysyms_d,!text/morekeys_i,!text/morekeys_misc_i,!text/actions_i" />
