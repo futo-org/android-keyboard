@@ -12,8 +12,6 @@ stages:          # List of stages for jobs, and their order of execution
 
 build:
   stage: build
-  tags:
-    - docker
   before_script:
     - git fetch origin master:master
     - export VERSION_NAME=`git describe --tags --dirty`
