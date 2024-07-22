@@ -12,7 +12,7 @@ stages:          # List of stages for jobs, and their order of execution
 
 build:
   tags:
-    - on-prem
+    - docker
   stage: build
   before_script:
     - git fetch origin master:master
