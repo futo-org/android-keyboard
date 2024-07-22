@@ -429,8 +429,8 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
         )
 
         NavigationItem(
-            title = "Long-Press Letters & Symbols",
-            subtitle = "Configure long-press duration and how to order letters/symbols.",
+            title = "Long-Press Keys & Spacebar",
+            subtitle = "Configure long-press duration, how to order letters/symbols, and behavior of spacebar and delete key.",
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("longPress") },
             icon = painterResource(id = R.drawable.arrow_up)
