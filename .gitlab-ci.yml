@@ -1,5 +1,5 @@
 default:
-  image: "docker.io/abb128/android-build:v3@sha256:fc062b587302a66902b2abb463d886b53ec173e157d8297d16b9f00bce4633e7"
+  image: "gitlab.futo.org:5050/keyboard/latinime/gradle:latest"
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
