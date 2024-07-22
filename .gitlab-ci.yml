@@ -11,6 +11,8 @@ stages:          # List of stages for jobs, and their order of execution
   - build
 
 build:
+  tags:
+    - on-prem
   stage: build
   before_script:
     - git fetch origin master:master
