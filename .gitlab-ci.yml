@@ -9,7 +9,6 @@ variables:
 
 stages:          # List of stages for jobs, and their order of execution
   - build
-  - testupload
 
 build:
   tags:
@@ -35,22 +34,11 @@ build:
     - touch VERSION_NAME_$VERSION_NAME.txt
     - echo "Keyboard $VERSION_NAME - https://gitlab.futo.org/alex/latinime/-/jobs/$CI_JOB_ID/artifacts/raw/keyboard-$VERSION_NAME.apk"
     - echo $VERSION_CODE $VERSION_NAME
+    - ./uploadNightly.sh
   artifacts:
     name: "keyboard-$VERSION_NAME"
     paths:
       - ./*.apk
       - ./*.aab
       - ./*.txt
-  when: manual
-
-testupload:
-  tags:
-    - docker
-  stage: testupload
-  script:
-    - echo example > test.apk
-    - aws configure set aws_access_key_id $KEYBOARD_R2_ACCESS_KEY_ID
-    - aws configure set aws_secret_access_key $KEYBOARD_R2_SECRET_ACCESS_KEY
-    - aws configure set region $KEYBOARD_R2_DEFAULT_REGION
-    - aws s3 cp ./test.apk s3://$KEYBOARD_R2_BUCKET_NAME/test.apk --endpoint=$KEYBOARD_R2_ENDPOINT_URL
   when: manual
