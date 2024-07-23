@@ -29,6 +29,7 @@ import org.futo.inputmethod.compat.AppWorkaroundsUtils;
 import org.futo.inputmethod.latin.InputAttributes;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
+import org.futo.inputmethod.latin.uix.actions.RegistryKt;
 import org.futo.inputmethod.latin.utils.AsyncResultHolder;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.latin.utils.TargetPackageInfoGetterTask;
@@ -147,7 +148,11 @@ public class SettingsValues {
         mIncludesOtherImesInLanguageSwitchList = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
                 ? prefs.getBoolean(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false)
                 : true /* forcibly */;
-        mActionKeyId = ActionRegistry.INSTANCE.actionStringIdToIdx(prefs.getString(Settings.PREF_ACTION_KEY_ID, ""));
+        mActionKeyId = ActionRegistry.INSTANCE.actionStringIdToIdx(
+                prefs.getString(
+                        Settings.PREF_ACTION_KEY_ID,
+                        RegistryKt.getDefaultActionKey()
+                ));
         mShowsActionKey = mActionKeyId != -1;
         mIsNumberRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);

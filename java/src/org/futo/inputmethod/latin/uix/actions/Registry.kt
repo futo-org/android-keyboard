@@ -235,6 +235,10 @@ val DefaultActionSettings = mapOf(
     ActionCategory.Disabled to listOf(MemoryDebugAction, SystemVoiceInputAction)
 )
 
+val DefaultActionKey = DefaultActionSettings[ActionCategory.ActionKey]!!.firstOrNull()?.let {
+    ActionRegistry.actionToStringId(it)
+} ?: ""
+
 val ActionsSettings = SettingsKey(
     stringPreferencesKey("actions_settings_map"),
     DefaultActionSettings.flattenToActionEditorItems().ensureWellFormed().serializeActionEditorItemListToString()
