@@ -108,13 +108,20 @@ fun MoreActionsView() {
         useDataStoreValue(ActionsSettings)
     }
 
+    val map = remember(actionList) {
+        actionList.toActionEditorItems().toActionMap()
+    }
+
     val actions = remember(actionList) {
-        actionList.toActionEditorItems().toActionMap()[ActionCategory.More] ?: listOf()
+        (map[ActionCategory.Favorites] ?: listOf()) +
+                (map[ActionCategory.ActionKey] ?: listOf()) +
+                (map[ActionCategory.PinnedKey] ?: listOf()) +
+                (map[ActionCategory.More] ?: listOf())
     }
 
 
     if(actions.isEmpty()) {
-        ScreenTitle("No actions are assigned to More Actions")
+        ScreenTitle("No actions are enabled")
     }
 
     LazyVerticalGrid(
@@ -249,7 +256,7 @@ val MoreActionsAction = Action(
                 super.WindowTitleBar(rowScope)
 
                 OutlinedButton(onClick = { manager.showActionEditor() }, modifier = Modifier.padding(8.dp, 0.dp)) {
-                    Text("Edit Pinned", color = MaterialTheme.colorScheme.onBackground)
+                    Text("Edit actions", color = MaterialTheme.colorScheme.onBackground)
                 }
             }
 
