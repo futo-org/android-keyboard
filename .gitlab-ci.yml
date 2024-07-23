@@ -9,6 +9,7 @@ variables:
 
 stages:          # List of stages for jobs, and their order of execution
   - build
+  - testupload
 
 build:
   tags:
@@ -40,4 +41,16 @@ build:
       - ./*.apk
       - ./*.aab
       - ./*.txt
+  when: manual
+
+testupload:
+  tags:
+    - docker
+  stage: testupload
+  script:
+    - echo example > test.apk
+    - aws configure set aws_access_key_id $KEYBOARD_R2_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $KEYBOARD_R2_SECRET_ACCESS_KEY
+    - aws configure set region $KEYBOARD_R2_DEFAULT_REGION
+    - aws s3 cp ./test.apk s3://$KEYBOARD_R2_BUCKET_NAME/test.apk
   when: manual
