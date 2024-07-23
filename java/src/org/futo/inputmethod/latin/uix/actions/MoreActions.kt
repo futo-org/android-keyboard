@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -211,7 +211,7 @@ fun ActionsEditor(header: @Composable () -> Unit) {
                     }
                 }
                 is ActionEditorItem.Separator -> {
-                    ReorderableItem(reorderableLazyListState, key = it.toKey(), enabled = it.category != ActionCategory.entries[0]) { _ ->
+                    ReorderableItem(reorderableLazyListState, modifier = Modifier.fillMaxWidth(), key = it.toKey(), enabled = it.category != ActionCategory.entries[0]) { _ ->
                         Column {
                             if (it.category == ActionCategory.entries[0]) {
                                 header()
@@ -223,6 +223,24 @@ fun ActionsEditor(header: @Composable () -> Unit) {
                                 }
                             }
                             Text(it.category.name(context), modifier = Modifier.padding(top = 24.dp), style = CategoryTitleStyle, color = LocalContentColor.current.copy(alpha = 0.6f))
+
+                            if(actionMap[it.category]?.isEmpty() == true && it.category != ActionCategory.entries.last()) {
+                                TextButton(onClick = {
+                                    val selfIdx = list.indexOf(it)
+                                    val itemToMove = list.subList(
+                                        selfIdx,
+                                        list.size
+                                    ).firstOrNull { v -> v is ActionEditorItem.Item }
+
+                                    if (itemToMove != null) {
+                                        val idx = list.indexOf(itemToMove)
+
+                                        list.add(selfIdx + 1, list.removeAt(idx))
+                                    }
+                                }) {
+                                    Text("Add next")
+                                }
+                            }
                         }
                     }
                 }
