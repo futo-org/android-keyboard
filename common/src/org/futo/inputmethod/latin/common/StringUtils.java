@@ -20,6 +20,7 @@ import org.futo.inputmethod.annotations.UsedForTesting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -40,6 +41,12 @@ public final class StringUtils {
     private static final char CHAR_NEXT_LINE = 0X0085;
     private static final char CHAR_LINE_SEPARATOR = 0X2028;
     private static final char CHAR_PARAGRAPH_SEPARATOR = 0X2029;
+
+    // Java's .toUpperCase converts Sharp S to "SS", this is a workaround
+    private static final HashMap<Integer, Integer> uppercaseCodeReplacements = new HashMap<>();
+    static {
+        uppercaseCodeReplacements.put(0x00DF, 0x1E9E); // ß : ẞ
+    }
 
     private StringUtils() {
         // This utility class is not publicly instantiable.
@@ -607,6 +614,15 @@ public final class StringUtils {
         if (label == null) {
             return label;
         }
+
+        if(codePointCount(label) == 1) {
+            int code = label.codePointAt(0);
+            Integer replacementCode = uppercaseCodeReplacements.get(code);
+            if(replacementCode != null) {
+                return new String(Character.toChars(replacementCode));
+            }
+        }
+
         return label.toUpperCase(getLocaleUsedForToTitleCase(locale));
     }
 
