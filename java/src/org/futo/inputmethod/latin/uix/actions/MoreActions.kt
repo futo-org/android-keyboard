@@ -71,7 +71,9 @@ fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean 
                 Icon(
                     painterResource(id = R.drawable.move),
                     contentDescription = null,
-                    modifier = dragIconModifier.size(16.dp).align(Alignment.TopEnd),
+                    modifier = dragIconModifier
+                        .size(16.dp)
+                        .align(Alignment.TopEnd),
                     tint = LocalContentColor.current.copy(alpha = 0.6f)
                 )
             }
@@ -125,7 +127,9 @@ fun MoreActionsView() {
     }
 
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         columns = GridCells.Adaptive(98.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -143,14 +147,18 @@ val CategoryTitleStyle = Typography.titleMedium.copy(fontWeight = FontWeight.W50
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ActionsEditor() {
+fun ActionsEditor(header: @Composable () -> Unit) {
     val context = LocalContext.current
     val view = LocalView.current
 
-    val initialList: List<ActionEditorItem> = remember {
-        context.getSettingBlocking(ActionsSettings).toActionEditorItems().ensureWellFormed().filter {
-            it !is ActionEditorItem.Item || it.action.shownInEditor
+    val initialList: List<ActionEditorItem> = if(!LocalInspectionMode.current) {
+        remember {
+            context.getSettingBlocking(ActionsSettings).toActionEditorItems().ensureWellFormed().filter {
+                it !is ActionEditorItem.Item || it.action.shownInEditor
+            }
         }
+    } else {
+        DefaultActionSettings.flattenToActionEditorItems()
     }
 
     val list = remember { initialList.toMutableStateList() }
@@ -162,10 +170,12 @@ fun ActionsEditor() {
         view.performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
     }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            val map = list.toActionMap()
-            context.updateSettingsWithNewActions(map)
+    if(!LocalInspectionMode.current) {
+        DisposableEffect(Unit) {
+            onDispose {
+                val map = list.toActionMap()
+                context.updateSettingsWithNewActions(map)
+            }
         }
     }
 
@@ -204,12 +214,12 @@ fun ActionsEditor() {
                     ReorderableItem(reorderableLazyListState, key = it.toKey(), enabled = it.category != ActionCategory.entries[0]) { _ ->
                         Column {
                             if (it.category == ActionCategory.entries[0]) {
-                                Box(Modifier.defaultMinSize(minHeight = 72.dp), contentAlignment = Alignment.BottomStart) {
-                                    if (actionMap[ActionCategory.ActionKey]?.let { it.size > 1 } == true) {
-                                        Tip("Only one Action Key can be set, anything after the first is ignored")
-                                    } else if (actionMap[ActionCategory.PinnedKey]?.let { it.size > 4 } == true) {
-                                        Tip("You have more pinned actions than seems reasonable. Consider moving some to favorites")
-                                    }
+                                header()
+                                
+                                if (actionMap[ActionCategory.ActionKey]?.let { it.size > 1 } == true) {
+                                    Tip("Only one Action Key can be set, anything after the first is ignored")
+                                } else if (actionMap[ActionCategory.PinnedKey]?.let { it.size > 4 } == true) {
+                                    Tip("You have more pinned actions than seems reasonable. Consider moving some to favorites")
                                 }
                             }
                             Text(it.category.name(context), modifier = Modifier.padding(top = 24.dp), style = CategoryTitleStyle, color = LocalContentColor.current.copy(alpha = 0.6f))
@@ -231,7 +241,9 @@ fun ActionEditor() {
         color = MaterialTheme.colorScheme.background,
         shape = RoundedCornerShape(32.dp, 32.dp, 0.dp, 0.dp)
     ) {
-        ActionsEditor()
+        ActionsEditor {
+            ScreenTitle(title = "Edit actions")
+        }
     }
 }
 

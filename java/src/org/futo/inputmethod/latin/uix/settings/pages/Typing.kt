@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
@@ -60,6 +61,8 @@ import org.futo.inputmethod.latin.uix.KeyboardHeightMultiplierSetting
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.actions.ActionEditor
+import org.futo.inputmethod.latin.uix.actions.ActionsEditor
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
@@ -96,6 +99,16 @@ fun NavGraphBuilder.addTypingNavigation(
     composable("typing") { TypingScreen(navController) }
     composable("resize") { ResizeScreen(navController) }
     composable("longPress") { LongPressScreen(navController) }
+    composable("actionEdit") { ActionEditorScreen(navController) }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ActionEditorScreen(navController: NavHostController = rememberNavController()) {
+    Column {
+        ScreenTitle("Edit Actions", showBack = true, navController)
+        ActionsEditor { }
+    }
 }
 
 @Preview(showBackground = true)
@@ -328,13 +341,6 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
             )
         }
 
-        /*
-        SettingToggleDataStore(
-            title = "Spacebar language switcher",
-            subtitle = "Show the language switching menu when long-pressing the space",
-            setting = KeyHintsSetting
-        )*/
-
         longPressKeyLayoutEditor(
             context = context,
             setting = setting,
@@ -442,6 +448,14 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("languages") },
             icon = painterResource(id = R.drawable.keyboard)
+        )
+
+        NavigationItem(
+            title = "Edit Actions",
+            subtitle = "Edit favorite actions, pinned actions, and the action key next to the spacebar",
+            style = NavigationItemStyle.Misc,
+            navigate = { navController.navigate("actionEdit") },
+            icon = painterResource(id = R.drawable.smile)
         )
 
         SettingToggleDataStore(
