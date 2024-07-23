@@ -30,14 +30,6 @@
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!text/morekeys_punctuation,!text/morekeys_z" />
         </case>
-        <case
-            latin:keyboardLayoutSet="kurdish|arabic|farsi"
-            >
-            <Key
-                latin:keySpec="&#x002E;"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="&#x061F;" />
-        </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_period"
