@@ -465,11 +465,18 @@ public class Key implements Comparable<Key> {
 
     @Nonnull
     public static Key removeRedundantMoreKeys(@Nonnull final Key key,
-            @Nonnull final MoreKeySpec.LettersOnBaseLayout lettersOnBaseLayout) {
+            @Nonnull final MoreKeySpec.LettersOnBaseLayout lettersOnBaseLayout, boolean onlyDuplicateKeys) {
         final MoreKeySpec[] moreKeys = key.getMoreKeys();
-        final MoreKeySpec[] filteredMoreKeys = MoreKeySpec.removeRedundantMoreKeys(
-                moreKeys, lettersOnBaseLayout);
-        return (filteredMoreKeys == moreKeys) ? key : new Key(key, filteredMoreKeys);
+
+        MoreKeySpec[] clearedMoreKeys = moreKeys;
+
+        clearedMoreKeys = MoreKeySpec.removeDuplicateMoreKeys(moreKeys);
+
+        if(!onlyDuplicateKeys) {
+            clearedMoreKeys = MoreKeySpec.removeRedundantMoreKeys(
+                    moreKeys, lettersOnBaseLayout);
+        }
+        return (clearedMoreKeys == moreKeys) ? key : new Key(key, clearedMoreKeys);
     }
 
     private static boolean needsToUpcase(final int labelFlags, final int keyboardElementId) {

@@ -169,6 +169,29 @@ public final class MoreKeySpec {
         return filteredMoreKeys.toArray(new MoreKeySpec[size]);
     }
 
+
+    @Nullable
+    public static MoreKeySpec[] removeDuplicateMoreKeys(@Nullable final MoreKeySpec[] moreKeys) {
+        if (moreKeys == null) {
+            return null;
+        }
+
+        final ArrayList<MoreKeySpec> filteredMoreKeys = new ArrayList<>();
+        for (final MoreKeySpec moreKey : moreKeys) {
+            if (!filteredMoreKeys.contains(moreKey)) {
+                filteredMoreKeys.add(moreKey);
+            }
+        }
+
+        final int size = filteredMoreKeys.size();
+        if (size == moreKeys.length) {
+            return moreKeys;
+        }
+
+        return filteredMoreKeys.toArray(new MoreKeySpec[size]);
+    }
+
+
     // Constants for parsing.
     private static final char COMMA = Constants.CODE_COMMA;
     private static final char BACKSLASH = Constants.CODE_BACKSLASH;
