@@ -23,7 +23,7 @@
 >
     <Key
         latin:keySpec="!text/keyspec_y"
-        latin:moreKeys="!text/morekeys_y,!text/qwertysyms_y,!text/number_6,!text/actions_y" />
+        latin:moreKeys="!text/morekeys_y,!text/qwertysyms_z,!text/actions_y" />
     <Key
         latin:keySpec="!text/keyspec_x"
         latin:moreKeys="!text/morekeys_x,!text/qwertysyms_x,!text/actions_x" />

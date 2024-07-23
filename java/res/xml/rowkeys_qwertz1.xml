@@ -28,7 +28,7 @@
     <!-- z, u, i, o, p -->
     <Key
         latin:keySpec="z"
-        latin:moreKeys="!text/morekeys_z,!text/qwertysyms_z,!text/actions_z" />
+        latin:moreKeys="!text/morekeys_z,!text/qwertysyms_y,!text/number_6,!text/actions_z" />
     <Key
         latin:keySpec="u"
         latin:moreKeys="!text/morekeys_u,!text/morekeys_misc_u,!text/qwertysyms_u,!text/number_7,!text/actions_u" />
