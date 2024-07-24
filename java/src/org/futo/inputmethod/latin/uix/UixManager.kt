@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
@@ -278,6 +279,10 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun showActionEditor() {
         uixManager.showActionEditor()
+    }
+
+    override fun isDeviceLocked(): Boolean {
+        return getContext().isDeviceLocked
     }
 
     override fun getLatinIMEForDebug(): LatinIME = latinIME
@@ -846,5 +851,13 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         isActionsExpanded.value = latinIME.getSettingBlocking(ActionBarExpanded)
+    }
+
+    fun onPersistentStatesUnlocked() {
+        persistentStates.forEach {
+            latinIME.lifecycleScope.launch {
+                it.value?.onDeviceUnlocked()
+            }
+        }
     }
 }

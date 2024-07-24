@@ -476,7 +476,7 @@ public final class KeyboardLayoutSet {
                 elementParams.mSupportsSplitLayout = a.getBoolean(
                         R.styleable.KeyboardLayoutSet_Element_supportsSplitLayout, false);
                 elementParams.mAllowRedundantMoreKeys = a.getBoolean(
-                        R.styleable.KeyboardLayoutSet_Element_allowRedundantMoreKeys, true);
+                        R.styleable.KeyboardLayoutSet_Element_allowRedundantMoreKeys, false);
                 mParams.mKeyboardLayoutSetElementIdToParamsMap.put(elementName, elementParams);
             } finally {
                 a.recycle();

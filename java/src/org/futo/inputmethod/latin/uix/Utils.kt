@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.app.Dialog
+import android.app.KeyguardManager
 import android.content.Context
 import android.util.TypedValue
 import android.view.Gravity
@@ -109,3 +110,12 @@ fun DialogComposeView.show() {
 fun DialogComposeView.dismiss() {
     dialog.dismiss()
 }
+
+val Context.isDeviceLocked: Boolean
+    get() {
+        if(!isDirectBootUnlocked) return false
+
+        val keyguardManager: KeyguardManager? = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
+
+        return keyguardManager?.let { it.isDeviceLocked || it.isKeyguardLocked } ?: false
+    }

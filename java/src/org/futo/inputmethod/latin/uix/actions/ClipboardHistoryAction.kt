@@ -192,6 +192,10 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         uri = null,
         mimeTypes = listOf()
     ))
+    
+    override suspend fun onDeviceUnlocked() {
+        loadClipboard()
+    }
 
     init {
         coroutineScope.launch {
@@ -379,7 +383,7 @@ val ClipboardHistoryAction = Action(
     },
     persistentStateInitialization = PersistentStateInitialization.OnKeyboardLoad,
     windowImpl = { manager, persistent ->
-        val unlocked = manager.getContext().isDirectBootUnlocked
+        val unlocked = !manager.isDeviceLocked()
         val clipboardHistoryManager = persistent as ClipboardHistoryManager
 
         manager.getLifecycleScope().launch { clipboardHistoryManager.pruneOldItems() }
@@ -396,52 +400,58 @@ val ClipboardHistoryAction = Action(
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!clipboardHistory.value) return
 
-                IconButton(onClick = {
-                    val numUnpinnedItems = clipboardHistoryManager.clipboardHistory.count { !it.pinned }
-                    if(clipboardHistoryManager.clipboardHistory.size == 0) {
-                        manager.requestDialog(
-                            "There are no items to clear. Disable clipboard history?",
-                            listOf(
-                                DialogRequestItem("Cancel") {},
-                                DialogRequestItem("Disable") {
-                                    clipboardHistory.setValue(false)
-                                },
-                            ),
-                            {}
-                        )
-                    } else if(numUnpinnedItems == 0) {
-                        manager.requestDialog(
-                            "There are no unpinned items to clear. Unpin all items?",
-                            listOf(
-                                DialogRequestItem("Cancel") {},
-                                DialogRequestItem("Unpin") {
-                                    clipboardHistoryManager.clipboardHistory.toList().forEach {
-                                        if(it.pinned) {
-                                            clipboardHistoryManager.onPin(it)
+                if(unlocked) {
+                    IconButton(onClick = {
+                        val numUnpinnedItems =
+                            clipboardHistoryManager.clipboardHistory.count { !it.pinned }
+                        if (clipboardHistoryManager.clipboardHistory.size == 0) {
+                            manager.requestDialog(
+                                "There are no items to clear. Disable clipboard history?",
+                                listOf(
+                                    DialogRequestItem("Cancel") {},
+                                    DialogRequestItem("Disable") {
+                                        clipboardHistory.setValue(false)
+                                    },
+                                ),
+                                {}
+                            )
+                        } else if (numUnpinnedItems == 0) {
+                            manager.requestDialog(
+                                "There are no unpinned items to clear. Unpin all items?",
+                                listOf(
+                                    DialogRequestItem("Cancel") {},
+                                    DialogRequestItem("Unpin") {
+                                        clipboardHistoryManager.clipboardHistory.toList().forEach {
+                                            if (it.pinned) {
+                                                clipboardHistoryManager.onPin(it)
+                                            }
                                         }
-                                    }
-                                },
-                            ),
-                            {}
-                        )
-                    } else {
-                        manager.requestDialog(
-                            "Clear all unpinned items?",
-                            listOf(
-                                DialogRequestItem("Cancel") {},
-                                DialogRequestItem("Clear") {
-                                    clipboardHistoryManager.clipboardHistory.toList().forEach {
-                                        if (!it.pinned) {
-                                            clipboardHistoryManager.onRemove(it)
+                                    },
+                                ),
+                                {}
+                            )
+                        } else {
+                            manager.requestDialog(
+                                "Clear all unpinned items?",
+                                listOf(
+                                    DialogRequestItem("Cancel") {},
+                                    DialogRequestItem("Clear") {
+                                        clipboardHistoryManager.clipboardHistory.toList().forEach {
+                                            if (!it.pinned) {
+                                                clipboardHistoryManager.onRemove(it)
+                                            }
                                         }
-                                    }
-                                },
-                            ),
-                            {}
+                                    },
+                                ),
+                                {}
+                            )
+                        }
+                    }) {
+                        Icon(
+                            painterResource(id = R.drawable.close),
+                            contentDescription = "Clear clipboard"
                         )
                     }
-                }) {
-                    Icon(painterResource(id = R.drawable.close), contentDescription = "Clear clipboard")
                 }
             }
 

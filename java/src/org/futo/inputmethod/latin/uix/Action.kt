@@ -67,6 +67,7 @@ interface KeyboardManagerForAction {
     fun showActionEditor()
 
     fun getLatinIMEForDebug(): LatinIME
+    fun isDeviceLocked(): Boolean
 }
 
 interface ActionWindow {
@@ -95,6 +96,9 @@ interface PersistentActionState {
      * after this.
      */
     suspend fun cleanUp()
+
+
+    suspend fun onDeviceUnlocked() { }
 }
 
 enum class PersistentStateInitialization {

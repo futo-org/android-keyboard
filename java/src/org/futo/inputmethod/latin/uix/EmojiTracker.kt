@@ -10,12 +10,16 @@ val lastUsedColor = stringPreferencesKey("last_used_color")
 
 object EmojiTracker {
     suspend fun Context.setLastUsedColor(color: String) {
+        if(isDeviceLocked) return
+        
         dataStore.edit {
             it[lastUsedColor] = color
         }
     }
 
     suspend fun Context.useEmoji(emoji: String) {
+        if(isDeviceLocked) return
+
         dataStore.edit {
             val combined = emoji + "<|>" + (it[lastUsedEmoji] ?: "")
             it[lastUsedEmoji] = combined.split("<|>").take(128).joinToString("<|>")
@@ -23,6 +27,8 @@ object EmojiTracker {
     }
 
     suspend fun Context.unuseEmoji(emoji: String) {
+        if(isDeviceLocked) return
+
         dataStore.edit {
             val split = (it[lastUsedEmoji] ?: "").split("<|>")
             val idxToRemove = split.indexOfFirst { v -> v == emoji || v.trim() == emoji.trim() }
@@ -31,6 +37,8 @@ object EmojiTracker {
     }
 
     suspend fun Context.getRecentEmojis(): List<String> {
+        if(isDeviceLocked) return listOf()
+
         return getSetting(lastUsedEmoji, "")
             .split("<|>")
             .filter { it.isNotBlank() }
@@ -38,6 +46,8 @@ object EmojiTracker {
     }
 
     suspend fun Context.resetRecentEmojis() {
+        if(isDeviceLocked) return
+
         setSetting(lastUsedEmoji, "")
     }
 }

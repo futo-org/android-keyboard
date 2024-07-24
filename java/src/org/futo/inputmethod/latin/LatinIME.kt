@@ -766,6 +766,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         languageModelFacilitator.loadHistoryLog()
 
+        uixManager.onPersistentStatesUnlocked()
+
         // TODO: Spell checker service
     }
 }
