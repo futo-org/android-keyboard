@@ -1,4 +1,4 @@
-# FUTO Source First License 1.0
+# FUTO Source First License 1.0-kb
 
 ## Acceptance
 By using the software, you agree to all of the terms and conditions below.
@@ -7,9 +7,11 @@ By using the software, you agree to all of the terms and conditions below.
 FUTO Holdings, Inc. (the “Licensor”) grants you a non-exclusive, royalty-free, worldwide, non-sublicensable, non-transferable license to use, copy, distribute, make available, and prepare derivative works of the software, in each case subject to the limitations below.
 
 ## Limitations
-You may use or modify the software only for non-commercial purposes such as personal use for research, experiment, and testing for the benefit of public knowledge, personal study, private entertainment, hobby projects, amateur pursuits, or religious observance, all without any anticipated commercial application.
+You may use the software for any purpose.
 
-You may distribute the software or provide it to others only if you do so free of charge for non-commercial purposes.
+You may modify the software only for non-commercial purposes such as personal use for research, experiment, and testing for the benefit of public knowledge, personal study, private entertainment, hobby projects, amateur pursuits, or religious observance, all without any anticipated commercial application.
+
+You may distribute the software or any part of its source code only if you do so free of charge for non-commercial purposes.
 
 Notwithstanding the above, you may not remove or obscure any functionality in the software related to payment to the Licensor in any copy you distribute to others.
 
