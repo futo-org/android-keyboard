@@ -1,11 +1,11 @@
 {
     "locale": "sr",
     "morekeys": {
-        "cyrillic_ie": [
-            "ѐ"
-        ],
         "cyrillic_i": [
             "ѝ"
+        ],
+        "cyrillic_ie": [
+            "ѐ"
         ]
     },
     "keyspec": {

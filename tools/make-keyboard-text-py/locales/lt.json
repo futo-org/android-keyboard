@@ -2,11 +2,17 @@
     "locale": "lt",
     "morekeys": {
         "a": "ą",
-        "e": ["ė", "ę"],
-        "i": "į",
-        "u": ["ū", "ų"],
-        "s": "š",
         "c": "č",
+        "e": [
+            "ė",
+            "ę"
+        ],
+        "i": "į",
+        "s": "š",
+        "u": [
+            "ū",
+            "ų"
+        ],
         "z": "ž"
     },
     "keyspec": {},
@@ -15,7 +21,15 @@
     "keyhintlabel": {},
     "additional_morekeys": {},
     "other": {
-        "single_quotes": ["’", "‚", "‘"],
-        "double_quotes": ["”", "„", "“"]
+        "single_quotes": [
+            "’",
+            "‚",
+            "‘"
+        ],
+        "double_quotes": [
+            "”",
+            "„",
+            "“"
+        ]
     }
 }
