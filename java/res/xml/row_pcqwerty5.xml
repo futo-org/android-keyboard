@@ -36,7 +36,6 @@
         <switch>
             <case
                 latin:bottomEmojiKeyEnabled="true"
-                latin:mode="text|im"
             >
                 <Key
                     latin:keyStyle="bottomEmojiKeyStyle"

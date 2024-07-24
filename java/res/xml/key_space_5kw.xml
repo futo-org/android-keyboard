@@ -25,7 +25,6 @@
         <case
             latin:keyboardLayoutSet="bengali_akkhor|farsi|kannada|nepali_romanized|nepali_traditional|telugu"
             latin:bottomEmojiKeyEnabled="true"
-            latin:mode="text|im"
         >
             <Key
                 latin:keyStyle="bottomEmojiKeyStyle" />
@@ -47,7 +46,6 @@
         </case>
         <case
             latin:bottomEmojiKeyEnabled="true"
-            latin:mode="text|im"
         >
             <Key
                 latin:keyStyle="bottomEmojiKeyStyle" />
