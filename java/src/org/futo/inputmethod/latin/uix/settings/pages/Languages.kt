@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -198,63 +199,83 @@ fun LanguageSurface(
     onLayoutAdditionRequested: () -> Unit,
     onLanguageRemoved: () -> Unit
 ) {
-    Column(
-        modifier
-            .padding(start = 32.dp, end = 32.dp)
-            .widthIn(296.dp, 400.dp)
-            .background(
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(size = 16.dp)
-            )
-            .padding(top = 14.dp, bottom = 12.dp)
-    ) {
-        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
-            Text(item.languageName, modifier = Modifier.padding(start = 16.dp, end = 16.dp), style = TextHeadingMediumMlStyle)
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Column(
+            modifier
+                .padding(start = 32.dp, end = 32.dp)
+                .widthIn(296.dp, 400.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(size = 16.dp)
+                )
+                .padding(top = 14.dp, bottom = 12.dp)
+        ) {
+            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
+                Text(
+                    item.languageName,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                    style = TextHeadingMediumMlStyle
+                )
 
-            if(item.options.dictionary == null) {
-                Tip("This language has no built-in dictionary. We recommend downloading and importing one to get autocorrect and word suggestions.")
-            } else {
-                Spacer(modifier = Modifier.height(32.dp))
+                if (item.options.dictionary == null) {
+                    Tip("This language has no built-in dictionary. We recommend downloading and importing one to get autocorrect and word suggestions.")
+                } else {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+
+                LanguageConfigurable(
+                    kind = FileKind.VoiceInput,
+                    selection = item.options.voiceInputModel ?: "(None)"
+                ) { onConfigurableSelected(FileKind.VoiceInput) }
+                LanguageConfigurable(
+                    kind = FileKind.Dictionary,
+                    selection = item.options.dictionary ?: "(None)"
+                ) { onConfigurableSelected(FileKind.Dictionary) }
+                LanguageConfigurable(
+                    kind = FileKind.Transformer,
+                    selection = item.options.transformerModel ?: "(None)"
+                ) { onConfigurableSelected(FileKind.Transformer) }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    "Keyboard Layouts",
+                    modifier = Modifier
+                        .alpha(0.75f)
+                        .padding(start = 16.dp, end = 16.dp),
+                    style = TextSmallStyle
+                )
+
+                Spacer(modifier = Modifier.height(9.dp))
+
+                item.layouts.forEach {
+                    LayoutConfigurable(
+                        name = it,
+                        active = true,
+                        onDelete = { onLayoutRemoved(it) },
+                        canDelete = item.layouts.size > 1
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
+                Spacer(modifier = Modifier.height(21.dp))
+
+                ActionableItem(
+                    icon = painterResource(id = R.drawable.plus_circle),
+                    text = "Add Keyboard Layout",
+                    color = MaterialTheme.colorScheme.primary,
+                    onTrigger = onLayoutAdditionRequested
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                ActionableItem(
+                    icon = painterResource(id = R.drawable.trash),
+                    text = "Remove Language",
+                    color = MaterialTheme.colorScheme.error,
+                    onTrigger = onLanguageRemoved
+                )
             }
-
-            LanguageConfigurable(kind = FileKind.VoiceInput, selection = item.options.voiceInputModel ?: "(None)") { onConfigurableSelected(FileKind.VoiceInput) }
-            LanguageConfigurable(kind = FileKind.Dictionary, selection = item.options.dictionary ?: "(None)") { onConfigurableSelected(FileKind.Dictionary) }
-            LanguageConfigurable(kind = FileKind.Transformer, selection = item.options.transformerModel ?: "(None)") { onConfigurableSelected(FileKind.Transformer) }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                "Keyboard Layouts",
-                modifier = Modifier
-                    .alpha(0.75f)
-                    .padding(start = 16.dp, end = 16.dp),
-                style = TextSmallStyle
-            )
-
-            Spacer(modifier = Modifier.height(9.dp))
-
-            item.layouts.forEach {
-                LayoutConfigurable(name = it, active = true, onDelete = { onLayoutRemoved(it) }, canDelete = item.layouts.size > 1)
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-
-            Spacer(modifier = Modifier.height(21.dp))
-
-            ActionableItem(
-                icon = painterResource(id = R.drawable.plus_circle),
-                text = "Add Keyboard Layout",
-                color = MaterialTheme.colorScheme.primary,
-                onTrigger = onLayoutAdditionRequested
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            ActionableItem(
-                icon = painterResource(id = R.drawable.trash),
-                text = "Remove Language",
-                color = MaterialTheme.colorScheme.error,
-                onTrigger = onLanguageRemoved
-            )
         }
     }
 }
