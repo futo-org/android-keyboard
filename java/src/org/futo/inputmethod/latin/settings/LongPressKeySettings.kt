@@ -83,7 +83,7 @@ private fun getBestMatchForAction(moreKeys: List<String>): String? {
 
 val LongPressKeyLayoutSetting = SettingsKey(
     stringPreferencesKey("longPressKeyOrdering"),
-    "${LongPressKey.Numbers.ordinal},${LongPressKey.LanguageKeys.ordinal},${LongPressKey.Symbols.ordinal},${LongPressKey.QuickActions.ordinal},${LongPressKey.MiscLetters.ordinal}"
+    "${LongPressKey.LanguageKeys.ordinal},${LongPressKey.Numbers.ordinal},${LongPressKey.Symbols.ordinal},${LongPressKey.QuickActions.ordinal},${LongPressKey.MiscLetters.ordinal}"
 )
 
 fun String.toLongPressKeyLayoutItems(): List<LongPressKey> {
