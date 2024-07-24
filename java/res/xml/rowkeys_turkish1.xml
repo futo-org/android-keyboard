@@ -23,36 +23,36 @@
 >
     <Key
         latin:keySpec="!text/keyspec_q"
-        latin:moreKeys="!text/morekeys_q,!text/qwertysyms_q,!text/number_1,!text/actions_q" />
+        latin:moreKeys="!text/morekeys_q,!text/qwertysyms_q,!text/number_1" />
     <Key
         latin:keySpec="!text/keyspec_w"
-        latin:moreKeys="!text/morekeys_w,!text/qwertysyms_w,!text/number_2,!text/actions_w" />
+        latin:moreKeys="!text/morekeys_w,!text/qwertysyms_w,!text/number_2" />
     <Key
         latin:keySpec="e"
-        latin:moreKeys="!text/morekeys_e,!text/morekeys_misc_e,!text/qwertysyms_e,!text/number_3,!text/actions_e" />
+        latin:moreKeys="!text/morekeys_e,!text/qwertysyms_e,!text/number_3" />
     <Key
         latin:keySpec="r"
-        latin:moreKeys="!text/morekeys_r,!text/qwertysyms_r,!text/number_4,!text/actions_r" />
+        latin:moreKeys="!text/morekeys_r,!text/qwertysyms_r,!text/number_4" />
     <Key
         latin:keySpec="t"
-        latin:moreKeys="!text/morekeys_t,!text/qwertysyms_t,!text/number_5,!text/actions_t" />
+        latin:moreKeys="!text/morekeys_t,!text/qwertysyms_t,!text/number_5" />
     <Key
         latin:keySpec="!text/keyspec_y"
-        latin:moreKeys="!text/morekeys_y,!text/qwertysyms_y,!text/number_6,!text/actions_y" />
+        latin:moreKeys="!text/morekeys_y,!text/qwertysyms_y,!text/number_6" />
     <Key
         latin:keySpec="u"
-        latin:moreKeys="!text/morekeys_u,!text/morekeys_misc_u,!text/qwertysyms_u,!text/number_7,!text/actions_u" />
+        latin:moreKeys="!text/morekeys_u,!text/qwertysyms_u,!text/number_7" />
 
     <!-- U+0131: "ı" LATIN SMALL LETTER DOTLESS I -->
     <Key
         latin:keySpec="&#x0131;"
-        latin:moreKeys="!text/morekeys_i,!text/morekeys_misc_i,!text/qwertysyms_i,!text/number_8,!text/actions_i" />
+        latin:moreKeys="!text/morekeys_i,!text/qwertysyms_i,!text/number_8" />
     <Key
         latin:keySpec="o"
-        latin:moreKeys="!text/morekeys_o,!text/morekeys_misc_o,!text/qwertysyms_o,!text/number_9,!text/actions_o" />
+        latin:moreKeys="!text/morekeys_o,!text/qwertysyms_o,!text/number_9" />
     <Key
         latin:keySpec="p"
-        latin:moreKeys="!text/morekeys_p,!text/qwertysyms_p,!text/number_0,!text/actions_p" />
+        latin:moreKeys="!text/morekeys_p,!text/qwertysyms_p,!text/number_0" />
 
     <!-- U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE
          U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA -->

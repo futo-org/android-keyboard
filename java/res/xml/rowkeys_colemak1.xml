@@ -23,31 +23,31 @@
 >
     <Key
         latin:keySpec="!text/keyspec_q"
-        latin:moreKeys="!text/number_1,!text/qwertysyms_q,!text/morekeys_q,!text/actions_q" />
+        latin:moreKeys="!text/number_1,!text/qwertysyms_q,!text/morekeys_q" />
     <Key
         latin:keySpec="!text/keyspec_w"
-        latin:moreKeys="!text/number_2,!text/qwertysyms_w,!text/morekeys_w,!text/actions_w" />
+        latin:moreKeys="!text/number_2,!text/qwertysyms_w,!text/morekeys_w" />
     <Key
         latin:keySpec="f"
-        latin:moreKeys="!text/number_3,!text/qwertysyms_e,!text/morekeys_f,!text/actions_f" />
+        latin:moreKeys="!text/number_3,!text/qwertysyms_e,!text/morekeys_f" />
     <Key
         latin:keySpec="p"
-        latin:moreKeys="!text/number_4,!text/qwertysyms_r,!text/morekeys_p,!text/actions_p" />
+        latin:moreKeys="!text/number_4,!text/qwertysyms_r,!text/morekeys_p" />
     <Key
         latin:keySpec="g"
-        latin:moreKeys="!text/number_5,!text/qwertysyms_t,!text/morekeys_g,!text/actions_g" />
+        latin:moreKeys="!text/number_5,!text/qwertysyms_t,!text/morekeys_g" />
     <Key
         latin:keySpec="j"
-        latin:moreKeys="!text/number_6,!text/qwertysyms_y,!text/morekeys_j,!text/actions_j" />
+        latin:moreKeys="!text/number_6,!text/qwertysyms_y,!text/morekeys_j" />
     <Key
         latin:keySpec="l"
-        latin:moreKeys="!text/number_7,!text/qwertysyms_u,!text/morekeys_l,!text/actions_l" />
+        latin:moreKeys="!text/number_7,!text/qwertysyms_u,!text/morekeys_l" />
     <Key
         latin:keySpec="u"
-        latin:moreKeys="!text/number_8,!text/qwertysyms_i,!text/morekeys_u,!text/morekeys_misc_u,!text/actions_u" />
+        latin:moreKeys="!text/number_8,!text/qwertysyms_i,!text/morekeys_u" />
     <Key
         latin:keySpec="y"
-        latin:moreKeys="!text/number_9,!text/qwertysyms_o,!text/morekeys_y,!text/actions_y" />
+        latin:moreKeys="!text/number_9,!text/qwertysyms_o,!text/morekeys_y" />
     <switch>
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"

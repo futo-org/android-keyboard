@@ -24,19 +24,19 @@
     <!-- a, z, e, r, t -->
     <Key
         latin:keySpec="a"
-        latin:moreKeys="!text/number_1,!text/qwertysyms_q,!text/morekeys_a,!text/morekeys_misc_a,!text/actions_a" />
+        latin:moreKeys="!text/number_1,!text/qwertysyms_q,!text/morekeys_a" />
     <Key
         latin:keySpec="z"
-        latin:moreKeys="!text/number_2,!text/qwertysyms_w,!text/morekeys_z,!text/actions_z" />
+        latin:moreKeys="!text/number_2,!text/qwertysyms_w,!text/morekeys_z" />
     <Key
         latin:keySpec="e"
-        latin:moreKeys="!text/number_3,!text/qwertysyms_e,!text/morekeys_e,!text/morekeys_misc_e,!text/actions_e" />
+        latin:moreKeys="!text/number_3,!text/qwertysyms_e,!text/morekeys_e" />
     <Key
         latin:keySpec="r"
-        latin:moreKeys="!text/number_4,!text/qwertysyms_r,!text/morekeys_r,!text/actions_r" />
+        latin:moreKeys="!text/number_4,!text/qwertysyms_r,!text/morekeys_r" />
     <Key
         latin:keySpec="t"
-        latin:moreKeys="!text/number_5,!text/qwertysyms_t,!text/morekeys_t,!text/actions_t" />
+        latin:moreKeys="!text/number_5,!text/qwertysyms_t,!text/morekeys_t" />
 
     <!-- y, u, i, o, p -->
     <include

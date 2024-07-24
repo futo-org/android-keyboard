@@ -23,16 +23,16 @@
 >
     <Key
         latin:keySpec="!text/keyspec_y"
-        latin:moreKeys="!text/morekeys_y,!text/qwertysyms_z,!text/actions_y" />
+        latin:moreKeys="!text/morekeys_y,!text/qwertysyms_z" />
     <Key
         latin:keySpec="!text/keyspec_x"
-        latin:moreKeys="!text/morekeys_x,!text/qwertysyms_x,!text/actions_x" />
+        latin:moreKeys="!text/morekeys_x,!text/qwertysyms_x" />
     <Key
         latin:keySpec="c"
-        latin:moreKeys="!text/morekeys_c,!text/morekeys_misc_c,!text/qwertysyms_c,!text/actions_c" />
+        latin:moreKeys="!text/morekeys_c,!text/qwertysyms_c" />
     <Key
         latin:keySpec="v"
-        latin:moreKeys="!text/morekeys_v,!text/qwertysyms_v,!text/actions_v" />
+        latin:moreKeys="!text/morekeys_v,!text/qwertysyms_v" />
 
     <!-- b, n, m -->
     <include
