@@ -126,7 +126,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     private var activeThemeOption: ThemeOption? = null
     private var activeColorScheme = DarkColorScheme
-    private var colorSchemeLoaderJob: Job? = null
     private var pendingRecreateKeyboard: Boolean = false
 
     val themeOption get() = activeThemeOption
@@ -182,17 +181,10 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun getDrawableProvider(): DynamicThemeProvider {
-        if (drawableProvider == null) {
-            if (colorSchemeLoaderJob != null && !colorSchemeLoaderJob!!.isCompleted) {
-                // Must have completed by now!
-                runBlocking {
-                    colorSchemeLoaderJob!!.join()
-                }
-            }
-            drawableProvider = BasicThemeProvider(this, activeColorScheme)
+        return drawableProvider ?: BasicThemeProvider(this, activeColorScheme).let {
+            drawableProvider = it
+            it
         }
-
-        return drawableProvider!!
     }
 
     private fun updateColorsIfDynamicChanged() {
@@ -289,7 +281,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             suggestionBlacklist
         )
 
-        colorSchemeLoaderJob = deferGetSetting(THEME_KEY) {
+        getSettingBlocking(THEME_KEY).let {
             val themeOptionFromSettings = ThemeOptions[it]
             val themeOption = when {
                 themeOptionFromSettings == null -> VoiceInputTheme
