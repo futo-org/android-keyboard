@@ -52,11 +52,16 @@ public final class MoreKeySpec {
     public final String mOutputText;
     public final String mIconId;
 
+    public final boolean mNeedsToUpperCase;
+    public final Locale mLocale;
+
     public MoreKeySpec(@Nonnull final String moreKeySpec, boolean needsToUpperCase,
             @Nonnull final Locale locale) {
         if (moreKeySpec.isEmpty()) {
             throw new KeySpecParser.KeySpecParserError("Empty more key spec");
         }
+        mLocale = locale;
+        mNeedsToUpperCase = needsToUpperCase;
         final String label = KeySpecParser.getLabel(moreKeySpec);
         mLabel = needsToUpperCase ? StringUtils.toTitleCaseOfKeyLabel(label, locale) : label;
         final int codeInSpec = KeySpecParser.getCode(moreKeySpec);

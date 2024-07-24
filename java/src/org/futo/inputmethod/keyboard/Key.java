@@ -440,8 +440,6 @@ public class Key implements Comparable<Key> {
         // Final attributes.
         mCode = key.mCode;
         mLabel = key.mLabel;
-        mHintLabel = key.mHintLabel;
-        mHintIconId = key.mHintIconId;
         mLabelFlags = key.mLabelFlags;
         mIconId = key.mIconId;
         mWidth = key.mWidth;
@@ -461,6 +459,29 @@ public class Key implements Comparable<Key> {
         // Key state.
         mPressed = key.mPressed;
         mEnabled = key.mEnabled;
+
+
+        if (((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) || moreKeys == null || moreKeys.length == 0 || moreKeys[0].mLabel == null) {
+            mHintLabel = key.mHintLabel;
+            mHintIconId = key.mHintIconId;
+        } else {
+            String hintLabel = null;
+            String hintIcon = null;
+
+            String hintLabelCandidate = moreKeys[0].mLabel;
+            if(hintLabelCandidate.startsWith("\\")) hintLabelCandidate = hintLabelCandidate.substring(1);
+
+            if(hintLabelCandidate.length() == 1) {
+                hintLabel = moreKeys[0].mNeedsToUpperCase
+                        ? StringUtils.toTitleCaseOfKeyLabel(hintLabelCandidate, moreKeys[0].mLocale)
+                        : hintLabelCandidate;
+            } else if(hintLabelCandidate.contains("!icon/")) {
+                hintIcon = KeySpecParser.getIconId(hintLabelCandidate);
+            }
+
+            mHintLabel = hintLabel;
+            mHintIconId = hintIcon;
+        }
     }
 
     @Nonnull
