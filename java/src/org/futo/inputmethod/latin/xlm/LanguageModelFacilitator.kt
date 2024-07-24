@@ -237,19 +237,21 @@ public class LanguageModelFacilitator(
 
         computationSemaphore.acquire()
 
-        inputLogic.mWordComposer.setAutoCorrection(null)
-
-        if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH) {
-            inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
-        }
-
         try {
+            inputLogic.mWordComposer.setAutoCorrection(null)
+
+            if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH) {
+                inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
+                return
+            }
+
             var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
 
             val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
+
             inputLogic.getSuggestedWords(
                 settings.current,
-                keyboardSwitcher.keyboard,
+                keyboardSwitcher.keyboard ?: return,
                 keyboardSwitcher.keyboardShiftMode,
                 values.inputStyle,
                 SuggestedWords.NOT_A_SEQUENCE_NUMBER
