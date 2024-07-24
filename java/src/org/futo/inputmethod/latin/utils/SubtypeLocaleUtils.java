@@ -28,6 +28,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.Subtypes;
+import org.futo.inputmethod.latin.SubtypesKt;
 import org.futo.inputmethod.latin.common.LocaleUtils;
 import org.futo.inputmethod.latin.common.StringUtils;
 
@@ -269,6 +270,9 @@ public final class SubtypeLocaleUtils {
     @Nonnull
     public static String getSubtypeDisplayNameInSystemLocale(
             @Nonnull final InputMethodSubtype subtype) {
+        if(sResources == null) {
+            return Subtypes.INSTANCE.getLocale(subtype).getDisplayName();
+        }
         final Locale displayLocale = sResources.getConfiguration().locale;
         return getSubtypeDisplayNameInternal(subtype, displayLocale);
     }
