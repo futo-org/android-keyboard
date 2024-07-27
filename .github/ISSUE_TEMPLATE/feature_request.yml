@@ -20,7 +20,6 @@ body:
       label: Use Cases
       description: |
         In order to properly evaluate a feature request, it is necessary to understand the use cases for it. Please describe the usability problem you are having. Please keep this section focused on the problem and not on the suggested solution.
-      placeholder: ""
     validations:
       required: true
 
@@ -32,7 +31,6 @@ body:
         If you have an idea for a way to address the problem, please describe it below.
         
         In this section, it's helpful to include specific examples of how what you are suggesting might look in the application. If this is a standard feature in some other keyboards, you may want to mention it here and attach screenshots if applicable.
-      placeholder: ""
     validations:
       required: false
 
@@ -45,7 +43,6 @@ body:
         ```
           - #10
         ```
-      placeholder: ""
     validations:
       required: false
 

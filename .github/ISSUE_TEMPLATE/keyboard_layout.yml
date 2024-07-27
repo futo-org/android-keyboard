@@ -43,7 +43,6 @@ body:
     attributes:
       label: Complexity
       description: Does this language or layout require any complex input logic (e.g. Pinyin input method, Hangul character combiner) that does not already exist in the existing keyboard layouts? If so, please link to any open-source libraries or code that you're aware of for input in this language that may serve as a useful reference.
-      placeholder: ""
     validations:
       required: false
 
