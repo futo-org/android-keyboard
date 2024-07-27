@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Want to pay for FUTO Keyboard?
+    url: https://pay.futo.org/api/PaymentPortal
+    about: Pay for FUTO Keyboard at pay.futo.org
+  - name: Zulip Chat
+    url: https://chat.futo.org/#narrow/stream/53-Keyboard
+    about: FUTO Keyboard community chat
+  - name: Discord Chat (if you don't like Zulip)
+    url: https://keyboard.futo.org/discord
+    about: FUTO Keyboard community chat

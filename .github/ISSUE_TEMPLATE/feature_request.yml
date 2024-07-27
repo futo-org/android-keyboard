@@ -1,0 +1,55 @@
+name: Feature Request
+description: Suggest a new feature or other enhancement.
+labels: ["enhancement", "new"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Thank you for opening a feature request.
+
+        The [android-keyboard](https://github.com/futo-org/android-keyboard) issue tracker is reserved for issues relating to the FUTO Keyboard Android Application
+
+        For discussion related to enhancements, please see the [FUTO Keyboard Zulip Channel](https://chat.futo.org/#narrow/stream/53-Keyboard) or the [FUTO Keyboard Discord](https://keyboard.futo.org/discord)
+
+        Please open feature requests one at a time. If you have 3 separate feature requests/bugs, do not combine them into one issue, this makes it really difficult to track and understand them.
+        
+        Before opening a feature request, please make sure you're using the latest version of the keyboard, it may have already been added.
+  - type: textarea
+    id: keyboard-use-case
+    attributes:
+      label: Use Cases
+      description: |
+        In order to properly evaluate a feature request, it is necessary to understand the use cases for it. Please describe the usability problem you are having. Please keep this section focused on the problem and not on the suggested solution.
+      placeholder: ""
+    validations:
+      required: true
+
+  - type: textarea
+    id: keyboard-proposal
+    attributes:
+      label: Proposal
+      description: |
+        If you have an idea for a way to address the problem, please describe it below.
+        
+        In this section, it's helpful to include specific examples of how what you are suggesting might look in the application. If this is a standard feature in some other keyboards, you may want to mention it here and attach screenshots if applicable.
+      placeholder: ""
+    validations:
+      required: false
+
+  - type: textarea
+    id: keyboard-references
+    attributes:
+      label: References
+      description: |
+        Are there any other GitHub issues, whether open or closed, that are related to the problem you've described above or to the suggested solution? If so, please create a list below that mentions each of them. For example:
+        ```
+          - #10
+        ```
+      placeholder: ""
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        **Note:** If the submit button is disabled and you have filled out all required fields, please check that you did not forget a **Title** for the issue.
