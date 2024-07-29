@@ -44,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -98,7 +99,7 @@ val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
     error("No LocalManager provided")
 }
 
-val LocalThemeProvider = staticCompositionLocalOf<DynamicThemeProvider> {
+val LocalThemeProvider = compositionLocalOf<DynamicThemeProvider> {
     error("No LocalThemeProvider provided")
 }
 
