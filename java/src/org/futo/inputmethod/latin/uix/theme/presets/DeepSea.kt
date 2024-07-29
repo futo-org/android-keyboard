@@ -8,6 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
+import org.futo.inputmethod.latin.uix.wrapColorScheme
 
 
 private val primaryLight = Color(0xFF4062D3)
@@ -164,7 +165,7 @@ val DeepSeaLight = ThemeOption(
     name = R.string.deep_sea_light_theme_name,
     available = { true }
 ) {
-    lightScheme
+    wrapColorScheme(lightScheme)
 }
 
 val DeepSeaDark = ThemeOption(
@@ -173,7 +174,7 @@ val DeepSeaDark = ThemeOption(
     name = R.string.deep_sea_dark_theme_name,
     available = { true }
 ) {
-    darkScheme
+    wrapColorScheme(darkScheme)
 }
 
 @Composable

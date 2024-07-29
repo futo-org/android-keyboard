@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
+import org.futo.inputmethod.latin.uix.wrapColorScheme
 
 private val primaryDark = Color(0xFF67FB59)
 private val onPrimaryDark = Color(0xFF003A02)
@@ -88,7 +89,7 @@ val Emerald = ThemeOption(
     name = R.string.emerald_theme_name,
     available = { true }
 ) {
-    darkScheme
+    wrapColorScheme(darkScheme)
 }
 
 @Composable

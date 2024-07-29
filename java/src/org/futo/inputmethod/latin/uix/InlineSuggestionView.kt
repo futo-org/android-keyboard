@@ -50,7 +50,7 @@ private const val maxHeightDp = 48.0f
 @RequiresApi(Build.VERSION_CODES.R)
 fun createInlineSuggestionsRequest(
     context: Context,
-    activeColorScheme: ColorScheme
+    activeColorScheme: KeyboardColorScheme
 ): InlineSuggestionsRequest {
     val fromDp = { v: Float ->
         context.fromDp(v).roundToInt()

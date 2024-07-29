@@ -36,34 +36,11 @@ val KeyHintsSetting   = SettingsKey(booleanPreferencesKey("keyHints"), false)
 val KeyboardHeightMultiplierSetting = SettingsKey(floatPreferencesKey("keyboardHeightMultiplier"), 1.0f)
 val KeyboardBottomOffsetSetting = SettingsKey(floatPreferencesKey("keyboardOffset"), 0.0f)
 
-fun adjustColorBrightnessForContrast(bgColor: Int, fgColor: Int, desiredContrast: Float, adjustSaturation: Boolean = false): Int {
-    // Convert RGB colors to HSL
-    val bgHSL = FloatArray(3)
-    ColorUtils.colorToHSL(bgColor, bgHSL)
-    val fgHSL = FloatArray(3)
-    ColorUtils.colorToHSL(fgColor, fgHSL)
-
-    // Estimate the adjustment needed in lightness to achieve the desired contrast
-    // This is a simplified approach and may not be perfectly accurate
-    val lightnessAdjustment = (desiredContrast - 1) / 10.0f // Simplified and heuristic-based adjustment
-
-    // Adjust the background color's lightness
-    bgHSL[2] = bgHSL[2] + lightnessAdjustment
-    bgHSL[2] = bgHSL[2].coerceIn(0f, 1f) // Ensure the lightness stays within valid range
-
-    if(adjustSaturation) {
-        bgHSL[1] = (bgHSL[1] + lightnessAdjustment).coerceIn(0f, 1f)
-    }
-
-    // Convert back to RGB and return the adjusted color
-    return ColorUtils.HSLToColor(bgHSL)
-}
-
 fun<T> Preferences.get(key: SettingsKey<T>): T {
     return this[key.key] ?: key.default
 }
 
-class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorScheme? = null) :
+class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorScheme) :
     DynamicThemeProvider {
     override val primaryKeyboardColor: Int
     override val keyColor: Int
@@ -175,16 +152,6 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
     }
 
     init {
-        val colorScheme = if(overrideColorScheme != null) {
-            overrideColorScheme
-        }else if(!DynamicColors.isDynamicColorAvailable()) {
-            DarkColorScheme
-        } else {
-            val dCtx = DynamicColors.wrapContextIfAvailable(context)
-
-            dynamicLightColorScheme(dCtx)
-        }
-
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
         keyBorders = context.getSettingBlocking(KeyBordersSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
@@ -217,12 +184,7 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
 
         val ratio = 1.5f
         val keyColor = if(keyBorders) {
-            var c = adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, ratio)
-            if(c == primaryKeyboardColor) {
-                // May happen if the color is already 100% white
-                c = adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, 1.0f / (ratio / 2.0f + 0.5f))
-            }
-            c
+            colorScheme.backgroundContainer.toArgb()
         } else {
             transparent
         }
@@ -230,7 +192,7 @@ class BasicThemeProvider(val context: Context, val overrideColorScheme: ColorSch
         this.keyColor = keyColor
 
         val functionalKeyColor = if(keyBorders) {
-            adjustColorBrightnessForContrast(primaryKeyboardColor, primaryKeyboardColor, ratio / 2.0f + 0.5f, adjustSaturation = true)
+            colorScheme.backgroundContainerDim.toArgb()
         } else {
             transparent
         }

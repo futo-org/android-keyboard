@@ -21,7 +21,6 @@ import android.view.inputmethod.InputMethodSubtype
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
@@ -60,6 +59,7 @@ import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.EmojiTracker.unuseEmoji
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.KeyboardBottomOffsetSetting
+import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
@@ -73,7 +73,6 @@ import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.setSetting
-import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
@@ -125,7 +124,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     lateinit var suggestionBlacklist: SuggestionBlacklist
 
     private var activeThemeOption: ThemeOption? = null
-    private var activeColorScheme = DarkColorScheme
+    private var activeColorScheme = VoiceInputTheme.obtainColors(this)
     private var pendingRecreateKeyboard: Boolean = false
 
     val themeOption get() = activeThemeOption
@@ -172,9 +171,9 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
-    private fun updateDrawableProvider(colorScheme: ColorScheme) {
+    private fun updateDrawableProvider(colorScheme: KeyboardColorScheme) {
         activeColorScheme = colorScheme
-        drawableProvider = BasicThemeProvider(this, overrideColorScheme = colorScheme)
+        drawableProvider = BasicThemeProvider(this, colorScheme)
 
         updateNavigationBarVisibility()
         uixManager.onColorSchemeChanged()

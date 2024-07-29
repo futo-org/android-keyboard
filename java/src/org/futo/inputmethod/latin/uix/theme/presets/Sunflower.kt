@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
+import org.futo.inputmethod.latin.uix.wrapColorScheme
 
 private val primaryLight = Color(0xFF6D5E0F)
 private val onPrimaryLight = Color(0xFFFFFFFF)
@@ -89,7 +90,7 @@ val Sunflower = ThemeOption(
     name = R.string.sunflower_theme_name,
     available = { true }
 ) {
-    lightScheme
+    wrapColorScheme(lightScheme)
 }
 
 @Composable

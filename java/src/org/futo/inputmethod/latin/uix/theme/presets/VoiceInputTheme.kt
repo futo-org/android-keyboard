@@ -6,6 +6,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
+import org.futo.inputmethod.latin.uix.wrapColorScheme
 
 val VoiceInputTheme = ThemeOption(
     dynamic = false,
@@ -13,7 +14,7 @@ val VoiceInputTheme = ThemeOption(
     name = R.string.voice_input_theme_name,
     available = { true }
 ) {
-    DarkColorScheme
+    wrapColorScheme(DarkColorScheme)
 }
 
 @Composable

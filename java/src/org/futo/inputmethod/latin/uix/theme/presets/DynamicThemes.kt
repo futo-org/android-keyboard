@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import org.futo.inputmethod.latin.uix.wrapColorScheme
 
 val DynamicSystemTheme = ThemeOption(
     dynamic = true,
@@ -20,7 +21,7 @@ val DynamicSystemTheme = ThemeOption(
         }
 
         val uiModeManager = it.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        when (uiModeManager.nightMode) {
+        wrapColorScheme(when (uiModeManager.nightMode) {
             UiModeManager.MODE_NIGHT_YES -> dynamicDarkColorScheme(it)
             UiModeManager.MODE_NIGHT_NO -> dynamicLightColorScheme(it)
             else -> {
@@ -31,7 +32,7 @@ val DynamicSystemTheme = ThemeOption(
                     dynamicDarkColorScheme(it)
                 }
             }
-        }
+        })
     }
 )
 
@@ -45,7 +46,7 @@ val DynamicDarkTheme = ThemeOption(
             throw IllegalStateException("DynamicDarkTheme obtainColors called when available() == false")
         }
 
-        dynamicDarkColorScheme(it)
+        wrapColorScheme(dynamicDarkColorScheme(it))
     }
 )
 
@@ -59,6 +60,6 @@ val DynamicLightTheme = ThemeOption(
             throw IllegalStateException("DynamicLightTheme obtainColors called when available() == false")
         }
 
-        dynamicLightColorScheme(it)
+        wrapColorScheme(dynamicLightColorScheme(it))
     }
 )

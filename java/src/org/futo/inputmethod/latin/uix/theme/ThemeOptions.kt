@@ -2,7 +2,7 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.compose.material3.ColorScheme
+import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialLight
@@ -23,7 +23,7 @@ data class ThemeOption(
     val key: String,
     @StringRes val name: Int,
     val available: (Context) -> Boolean,
-    val obtainColors: (Context) -> ColorScheme,
+    val obtainColors: (Context) -> KeyboardColorScheme,
 )
 
 val ThemeOptions = mapOf(

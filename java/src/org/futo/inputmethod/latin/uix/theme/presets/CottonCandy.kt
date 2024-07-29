@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
+import org.futo.inputmethod.latin.uix.wrapColorScheme
 
 private val primaryLight = Color(0xFFEC5EB4)
 private val onPrimaryLight = Color(0xFFFFFFFF)
@@ -90,7 +91,7 @@ val CottonCandy = ThemeOption(
     name = R.string.cotton_candy_theme_name,
     available = { true }
 ) {
-    lightScheme
+    wrapColorScheme(lightScheme)
 }
 
 @Composable

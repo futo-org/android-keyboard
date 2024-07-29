@@ -208,7 +208,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
                 this@SettingsActivity.themeOption.value = themeOption
                 this@SettingsActivity.themeProvider = BasicThemeProvider(
                     context = this@SettingsActivity,
-                    overrideColorScheme = themeOption.obtainColors(this@SettingsActivity)
+                    colorScheme = themeOption.obtainColors(this@SettingsActivity)
                 )
 
                 updateEdgeToEdge()
@@ -226,7 +226,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
             this.themeOption.value = themeOption
             this.themeProvider = BasicThemeProvider(
                 context = this@SettingsActivity,
-                overrideColorScheme = themeOption.obtainColors(this@SettingsActivity)
+                colorScheme = themeOption.obtainColors(this@SettingsActivity)
             )
 
             updateEdgeToEdge()

@@ -408,11 +408,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
-    val bgCol = if(!LocalInspectionMode.current) {
-        Color(LocalThemeProvider.current.keyColor)
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
+    val bgCol = LocalKeyboardScheme.current.backgroundContainer
 
     val circleRadius = with(LocalDensity.current) {
         16.dp.toPx()
@@ -480,11 +476,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
         }
     }
 
-    val bgCol = if(!LocalInspectionMode.current) {
-        Color(LocalThemeProvider.current.keyColor)
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
+    val bgCol = LocalKeyboardScheme.current.backgroundContainer
 
     val gradientColor = if(bgCol.alpha > 0.5) {
         bgCol.copy(alpha = 0.9f)
@@ -546,11 +538,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
 
 @Composable
 fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
-    val bgCol = if(!LocalInspectionMode.current) {
-        Color(LocalThemeProvider.current.keyColor)
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
+    val bgCol = LocalKeyboardScheme.current.backgroundContainer
 
     val actionsContent = MaterialTheme.colorScheme.onSurface
 
@@ -646,11 +634,7 @@ fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action
 
 @Composable
 fun ActionSep() {
-    val sepCol = if(!LocalInspectionMode.current) {
-        Color(LocalThemeProvider.current.keyColor)
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
+    val sepCol = LocalKeyboardScheme.current.backgroundContainer
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -914,7 +898,7 @@ val exampleSuggestedWordsEmpty = SuggestedWords(
 @Composable
 @Preview
 fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) {
-    UixThemeWrapper(colorScheme) {
+    UixThemeWrapper(wrapColorScheme(colorScheme)) {
         ActionBar(
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
@@ -930,7 +914,7 @@ fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) 
 @Composable
 @Preview
 fun PreviewActionBarWithNotice(colorScheme: ColorScheme = DarkColorScheme) {
-    UixThemeWrapper(colorScheme) {
+    UixThemeWrapper(wrapColorScheme(colorScheme)) {
         ActionBar(
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
@@ -961,7 +945,7 @@ fun PreviewActionBarWithNotice(colorScheme: ColorScheme = DarkColorScheme) {
 @Composable
 @Preview
 fun PreviewActionBarWithEmptySuggestions(colorScheme: ColorScheme = DarkColorScheme) {
-    UixThemeWrapper(colorScheme) {
+    UixThemeWrapper(wrapColorScheme(colorScheme)) {
         ActionBar(
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
@@ -977,7 +961,7 @@ fun PreviewActionBarWithEmptySuggestions(colorScheme: ColorScheme = DarkColorSch
 @Composable
 @Preview
 fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
-    UixThemeWrapper(colorScheme) {
+    UixThemeWrapper(wrapColorScheme(colorScheme)) {
         ActionBar(
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),

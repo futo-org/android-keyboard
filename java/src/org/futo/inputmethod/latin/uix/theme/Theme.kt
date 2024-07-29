@@ -10,10 +10,13 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import org.futo.inputmethod.latin.uix.KeyboardColorScheme
+import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
@@ -84,12 +87,14 @@ fun StatusBarColorSetter() {
 }
 
 @Composable
-fun UixThemeWrapper(colorScheme: ColorScheme, content: @Composable () -> Unit) {
-    MaterialTheme(
-            colorScheme = colorScheme,
+fun UixThemeWrapper(colorScheme: KeyboardColorScheme, content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalKeyboardScheme provides colorScheme) {
+        MaterialTheme(
+            colorScheme = colorScheme.base,
             typography = Typography,
             content = content,
-    )
+        )
+    }
 }
 
 fun ThemeOption?.ensureAvailable(context: Context): ThemeOption? {

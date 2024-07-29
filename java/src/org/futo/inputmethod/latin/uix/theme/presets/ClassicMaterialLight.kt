@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
-
+import org.futo.inputmethod.latin.uix.wrapColorScheme
 
 
 val md_theme_light_primary = Color(0xFF4db6ac)
@@ -94,7 +94,7 @@ val ClassicMaterialLight = ThemeOption(
     name = R.string.classic_material_light_theme_name,
     available = { true }
 ) {
-    colorScheme
+    wrapColorScheme(colorScheme)
 }
 
 @Composable

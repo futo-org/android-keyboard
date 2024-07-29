@@ -20,7 +20,7 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 
 // Not exhaustive
-fun ColorScheme.differsFrom(other: ColorScheme): Boolean {
+fun KeyboardColorScheme.differsFrom(other: KeyboardColorScheme): Boolean {
     return this.background != other.background
             || this.surface != other.surface
             || this.primary != other.primary

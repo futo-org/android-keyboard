@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
+import org.futo.inputmethod.latin.uix.wrapColorScheme
 
 private val primaryLightHighContrast = Color(0xFF212223)
 private val onPrimaryLightHighContrast = Color(0xFFFFFFFF)
@@ -89,7 +90,7 @@ val Snowfall = ThemeOption(
     name = R.string.snowfall_theme_name,
     available = { true }
 ) {
-    highContrastLightColorScheme
+    wrapColorScheme(highContrastLightColorScheme)
 }
 
 @Composable
