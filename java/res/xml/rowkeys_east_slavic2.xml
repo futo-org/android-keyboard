@@ -23,37 +23,50 @@
 >
     <!-- U+0444: "ф" CYRILLIC SMALL LETTER EF -->
     <Key
-        latin:keySpec="&#x0444;" />
+        latin:keySpec="&#x0444;"
+	latin:moreKeys="!text/morekeys_a,!text/qwertysyms_a" />
     <Key
         latin:keySpec="!text/keyspec_east_slavic_row2_2"
-        latin:moreKeys="!text/morekeys_east_slavic_row2_2" />
+        latin:moreKeys="!text/morekeys_east_slavic_row2_2,!text/morekeys_s,!text/qwertysyms_s" />
     <!-- U+0432: "в" CYRILLIC SMALL LETTER VE -->
     <Key
-        latin:keySpec="&#x0432;" />
+        latin:keySpec="&#x0432;"
+        latin:keyHintLabel="₽"
+        latin:additionalMoreKeys="₽" />
     <!-- U+0430: "а" CYRILLIC SMALL LETTER A -->
     <Key
         latin:keySpec="&#x0430;"
-        latin:moreKeys="!text/morekeys_cyrillic_a" />
+        latin:moreKeys="!text/morekeys_cyrillic_a"
+        latin:keyHintLabel="_"
+        latin:additionalMoreKeys="_" />
     <!-- U+043F: "п" CYRILLIC SMALL LETTER PE -->
     <Key
-        latin:keySpec="&#x043F;" />
+        latin:keySpec="&#x043F;"
+        latin:moreKeys="!text/morekeys_d,!text/qwertysyms_d" />
     <!-- U+0440: "р" CYRILLIC SMALL LETTER ER -->
     <Key
-        latin:keySpec="&#x0440;" />
+        latin:keySpec="&#x0440;"
+        latin:moreKeys="!text/morekeys_h,!text/qwertysyms_h" />
     <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
     <Key
         latin:keySpec="&#x043E;"
-        latin:moreKeys="!text/morekeys_cyrillic_o" />
+        latin:moreKeys="!text/morekeys_cyrillic_o,!text/morekeys_j,!text/qwertysyms_j" />
     <!-- U+043B: "л" CYRILLIC SMALL LETTER EL -->
     <Key
-        latin:keySpec="&#x043B;" />
+        latin:keySpec="&#x043B;"
+        latin:moreKeys="!text/morekeys_k,!text/qwertysyms_k" />
     <!-- U+0434: "д" CYRILLIC SMALL LETTER DE -->
     <Key
-        latin:keySpec="&#x0434;" />
+        latin:keySpec="&#x0434;"
+        latin:moreKeys="!text/morekeys_l,!text/qwertysyms_l" />
     <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
     <Key
-        latin:keySpec="&#x0436;" />
+        latin:keySpec="&#x0436;"
+        latin:keyHintLabel="/"
+        latin:additionalMoreKeys="/" />
     <Key
         latin:keySpec="!text/keyspec_east_slavic_row2_11"
-        latin:moreKeys="!text/morekeys_east_slavic_row2_11" />
+        latin:moreKeys="!text/morekeys_east_slavic_row2_11"
+        latin:keyHintLabel="~"
+        latin:additionalMoreKeys="~" />
 </merge>
