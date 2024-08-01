@@ -327,7 +327,13 @@ public class Key implements Comparable<Key> {
         }
         moreKeys = MoreKeySpec.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
 
-        if(params.mId.mNumberRow && moreKeys != null) {
+        boolean shouldSuppressNumbersInMoreKeys = moreKeys != null &&
+                // Number row is active
+                params.mId.mNumberRow &&
+                // This key is not part of number row
+                style.getFlags(keyAttr, R.styleable.Keyboard_Key_doNotSuppressNumbersInMoreKeys) == 0;
+
+        if(shouldSuppressNumbersInMoreKeys) {
             moreKeys = Arrays.stream(moreKeys)
                     .filter(s -> !s.matches("\\d+"))
                     .toArray(String[]::new);
@@ -372,7 +378,7 @@ public class Key implements Comparable<Key> {
                 String hintLabelCandidate = moreKeys[0];
                 if(hintLabelCandidate.startsWith("\\")) hintLabelCandidate = hintLabelCandidate.substring(1);
 
-                if(hintLabelCandidate.length() == 1) {
+                if(hintLabelCandidate.length() < 3) {
                     hintLabel = needsToUpcase
                             ? StringUtils.toTitleCaseOfKeyLabel(hintLabelCandidate, localeForUpcasing)
                             : hintLabelCandidate;
@@ -471,7 +477,7 @@ public class Key implements Comparable<Key> {
             String hintLabelCandidate = moreKeys[0].mLabel;
             if(hintLabelCandidate.startsWith("\\")) hintLabelCandidate = hintLabelCandidate.substring(1);
 
-            if(hintLabelCandidate.length() == 1) {
+            if(hintLabelCandidate.length() < 3) {
                 hintLabel = moreKeys[0].mNeedsToUpperCase
                         ? StringUtils.toTitleCaseOfKeyLabel(hintLabelCandidate, moreKeys[0].mLocale)
                         : hintLabelCandidate;

@@ -443,6 +443,9 @@
         <attr name="keyPreviewTextColor" format="color" />
         <!-- Size of the text for key press feedback popup, in the proportion of key height. -->
         <attr name="keyPreviewTextRatio" format="fraction" />
+
+        <!-- If true, numbers will not be suppressed in moreKeys due to enabled number row (This should be set to true for number row keys) -->
+        <attr name="doNotSuppressNumbersInMoreKeys" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Include">
