@@ -409,6 +409,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
 @Composable
 fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
     val bgCol = LocalKeyboardScheme.current.backgroundContainer
+    val fgCol = LocalKeyboardScheme.current.onBackgroundContainer
 
     val circleRadius = with(LocalDensity.current) {
         16.dp.toPx()
@@ -430,11 +431,12 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit, onLongSelect: (A
                 action
             )
         },
-        contentAlignment = Alignment.Center) {
+        contentAlignment = Center
+    ) {
         Icon(
             painter = painterResource(id = action.icon),
             contentDescription = stringResource(action.name),
-            tint = contentColorFor(backgroundColor = bgCol),
+            tint = fgCol,
             modifier = Modifier.size(16.dp)
         )
     }
@@ -539,8 +541,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
 @Composable
 fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
     val bgCol = LocalKeyboardScheme.current.backgroundContainer
-
-    val actionsContent = MaterialTheme.colorScheme.onSurface
+    val fgCol = LocalKeyboardScheme.current.onBackgroundContainer
 
     val circleRadius = with(LocalDensity.current) {
         16.dp.toPx()
@@ -566,7 +567,7 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
                 )
             },
 
-        colors = IconButtonDefaults.iconButtonColors(contentColor = actionsContent)
+        colors = IconButtonDefaults.iconButtonColors(contentColor = fgCol)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.chevron_right),

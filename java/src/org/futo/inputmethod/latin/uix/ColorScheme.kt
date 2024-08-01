@@ -11,7 +11,7 @@ val LocalKeyboardScheme = staticCompositionLocalOf {
     wrapColorScheme(lightColorScheme())
 }
 
-class ExtraColors(
+data class ExtraColors(
     val backgroundContainer: Color,
     val backgroundContainerDim: Color,
     val onBackgroundContainer: Color,

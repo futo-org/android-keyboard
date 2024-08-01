@@ -13,6 +13,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 import org.futo.inputmethod.latin.uix.theme.presets.Emerald
+import org.futo.inputmethod.latin.uix.theme.presets.HotDog
 import org.futo.inputmethod.latin.uix.theme.presets.Snowfall
 import org.futo.inputmethod.latin.uix.theme.presets.SteelGray
 import org.futo.inputmethod.latin.uix.theme.presets.Sunflower
@@ -46,6 +47,7 @@ val ThemeOptions = mapOf(
     DeepSeaLight.key to DeepSeaLight,
     DeepSeaDark.key to DeepSeaDark,
 
+    HotDog.key to HotDog
 )
 
 val ThemeOptionKeys = ThemeOptions.keys
