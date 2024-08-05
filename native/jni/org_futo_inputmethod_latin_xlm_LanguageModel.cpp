@@ -1090,6 +1090,7 @@ namespace latinime {
             }
 
             if(total_sum == 0.0f) {
+                numSkippedDueToNoCoordinate++;
                 continue;
             }
 
@@ -1127,7 +1128,7 @@ namespace latinime {
             mixes.push_back(results);
         }
 
-        if(mixes.size() == 0 && numSkippedDueToNoCoordinate > 0) {
+        if(mixes.empty() && numSkippedDueToNoCoordinate > 0) {
             AKLOGI("BUG: Mixes is empty due to lacking input coordinates. Falling back to non-mixing");
             for(size_t i=0; i<inputSize; i++) {
                 char wc = partialWordString[i];
